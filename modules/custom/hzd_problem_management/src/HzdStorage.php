@@ -643,7 +643,7 @@ static function problems_default_display($sql_where = NULL, $string = NULL, $lim
   $sql_select->condition('nfs.field_services_target_id', $group_problems_view_service_id,'IN');
   
   if($limit == 'all') {
-        $result = $sql_select->execute()->fetchAll();
+    $result = $sql_select->execute()->fetchAll();
   }
   else {
     $page_limit = ($limit ? $limit : self::DISPLAY_LIMIT);
@@ -722,15 +722,15 @@ static function problems_default_display($sql_where = NULL, $string = NULL, $lim
   }
 
   $header = array(
-  0 => array('data' => t('Service'), 'class' => 'service'),
-  1 => array('data' => t('Function'), 'class' => 'function'),
-  2 => array('data' => t('Release'), 'class' => 'release'),
-  4 => array('data' => t('Title'), 'class' => 'problem_title'),
-  5 => array('data' => t('Status'), 'class' => 'status'),
-  6 => array('data' => t('Priority'), 'class' => 'priority'),
-  7 => array('data' => t('Last Update'), 'class' => 'last_update'),
-  8 => array('data' => t('Fixed With Release'), 'class' => 'field_version'),
-  9 => array('data' => t('SDCallID'), 'class' => 'action'),
+    0 => array('data' => t('Service'), 'class' => 'service'),
+    1 => array('data' => t('Function'), 'class' => 'function'),
+    2 => array('data' => t('Release'), 'class' => 'release'),
+    4 => array('data' => t('Title'), 'class' => 'problem_title'),
+    5 => array('data' => t('Status'), 'class' => 'status'),
+    6 => array('data' => t('Priority'), 'class' => 'priority'),
+    7 => array('data' => t('Last Update'), 'class' => 'last_update'),
+    8 => array('data' => t('Fixed With Release'), 'class' => 'field_version'),
+    9 => array('data' => t('SDCallID'), 'class' => 'action'),
   );
   if ($string == 'archived') {
     $header[7] = array('data' => t('Closed On'), 'class' => 'closed');

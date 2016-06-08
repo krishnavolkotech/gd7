@@ -106,7 +106,7 @@ class ProblemFilterFrom extends FormBase {
         'message' => NULL,
         ),
       ),
-    "#prefix" => "<div class = 'service_search_dropdown'>",
+    "#prefix" => "<div class = 'service_search_dropdown hzd-form-element'>",
     '#suffix' => '</div>',
   );
 
@@ -126,7 +126,7 @@ class ProblemFilterFrom extends FormBase {
           'message' => NULL,
         ),
       ),
-    "#prefix" => "<div class = 'function_search_dropdown'>",
+    "#prefix" => "<div class = 'function_search_dropdown hzd-form-element'>",
     '#suffix' => '</div>',
     );
 
@@ -145,7 +145,7 @@ class ProblemFilterFrom extends FormBase {
         'message' => NULL,
         ),
      ),
-    "#prefix" => "<div class = 'release_search_dropdown'>",
+    "#prefix" => "<div class = 'release_search_dropdown hzd-form-element'>",
     '#suffix' => '</div>',
     );
  
@@ -166,7 +166,7 @@ class ProblemFilterFrom extends FormBase {
     '#size' => 42,
     '#default_value' => ($default_value_string?$default_value_string:t('Search Title, Description, cause, Workaround, solution')),
     '#attributes' => array("class" => "search_string"),
-    "#prefix" => "<div class = 'string_search'>",
+    "#prefix" => "<div class = 'string_search hzd-form-element'>",
     '#suffix' => '</div>',
     );
 
@@ -184,7 +184,7 @@ class ProblemFilterFrom extends FormBase {
     // "#prefix" => "<div class = 'filter_submit'>",
     // '#suffix' => '</div>',
   
-    '#prefix' => '<div class = "search_string_submit">',
+    '#prefix' => '<div class = "search_string_submit  hzd-form-element">',
     //'#suffix' => '</div><div style="clear:both;"></div>',
     '#suffix' => '</div>',
     );
@@ -211,7 +211,7 @@ class ProblemFilterFrom extends FormBase {
         'message' => NULL,
        ),
     ),
-    "#prefix" => "<div class = 'limit_search_dropdown'>",
+    "#prefix" => "<div class = 'limit_search_dropdown  hzd-form-element'>",
     '#suffix' => '</div>',
   );
 

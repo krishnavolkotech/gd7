@@ -87,7 +87,7 @@ class EarlyWarningsFilterForm extends FormBase {
             'message' => NULL,
           ),
       ),
-      "#prefix" => "<div class = 'release_type_dropdown'>",
+      "#prefix" => "<div class = 'release_type_dropdown  hzd-form-element'>",
       '#suffix' => '</div><div style="clear:both"></div>',    
     );
 
@@ -108,7 +108,7 @@ class EarlyWarningsFilterForm extends FormBase {
             'message' => NULL,
           ),
      ),
-      "#prefix" => "<div class = 'service_search_dropdown'>",
+      "#prefix" => "<div class = 'service_search_dropdown  hzd-form-element'>",
       '#suffix' => '</div>', 
     );
 
@@ -130,7 +130,7 @@ class EarlyWarningsFilterForm extends FormBase {
             'message' => NULL,
           ),
       ),
-    "#prefix" => "<div class = 'releases_search_dropdown'>",
+    "#prefix" => "<div class = 'releases_search_dropdown  hzd-form-element'>",
     '#suffix' => '</div>',
     );
     
@@ -153,7 +153,7 @@ class EarlyWarningsFilterForm extends FormBase {
         'message' => NULL,
         ),
     ),
-    '#prefix' => "<div class = 'filter_start_date'>",
+    '#prefix' => "<div class = 'filter_start_date  hzd-form-element'>",
     '#suffix' => "</div>",    
   );
   
@@ -175,7 +175,7 @@ class EarlyWarningsFilterForm extends FormBase {
         'message' => NULL,
        ),
     ),
-    '#prefix' => "<div class = 'filter_end_date'>",
+    '#prefix' => "<div class = 'filter_end_date  hzd-form-element'>",
     '#suffix' => "</div>",
   );
   
@@ -201,7 +201,7 @@ class EarlyWarningsFilterForm extends FormBase {
             'message' => NULL,
           ),
       ),
-    "#prefix" => "<div class = 'limit_search_dropdown'>",
+    "#prefix" => "<div class = 'limit_search_dropdown  hzd-form-element'>",
     '#suffix' => '</div>',    
   );
 

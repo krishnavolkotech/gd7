@@ -60,7 +60,7 @@ class ReleaseFilterForm extends FormBase {
       $release_type_list[$value->tid] =$value->name;
     }
     
-    $form['#prefix'] = "<div class = 'releases_filters'>";
+    $form['#prefix'] = "<div class = 'releases_filters hzd-form-element'>";
     $form['#suffix'] = "</div>";
     
     $path = '::releases_search_results';
@@ -72,24 +72,6 @@ class ReleaseFilterForm extends FormBase {
       $rel_path = '::releases_search_results';
     }
 
-    $form['release_type'] = array(
-      '#type' => 'select',
-      '#default_value' => $default_type,
-      '#options' => $release_type_list,
-      '#weight' => -1,
-      '#ajax' => array(
-          'callback' => $rel_path,
-          'wrapper' =>  $wrapper,
-          'event' => 'change',
-          'method' => 'replace',
-          'progress' => array(
-            'type' => 'throbber',
-          ),
-      ),
-      "#prefix" => "<div class = 'release_type_dropdown'>",
-      '#suffix' => '</div><div style="clear:both"></div>',
-      '#validated' => TRUE,
-    );
 
   if ($type == 'deployed') {
       $states = get_all_user_state();
@@ -107,7 +89,7 @@ class ReleaseFilterForm extends FormBase {
             'type' => 'throbber',
           ),
         ),
-      "#prefix" => "<div class = 'state_search_dropdown'>",
+      "#prefix" => "<div class = 'state_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
       '#validated' => TRUE
       );
@@ -127,7 +109,7 @@ class ReleaseFilterForm extends FormBase {
             'type' => 'throbber',
           ),
         ),
-      "#prefix" => "<div class = 'type_dropdown'>",
+      "#prefix" => "<div class = 'type_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
       '#validated' => TRUE,
       );
@@ -145,11 +127,29 @@ class ReleaseFilterForm extends FormBase {
           'method' => 'replace',
           'progress' => array(
             'type' => 'throbber',
-          ),
+          ), 
         ),
         '#validated' => TRUE,
       );
     }
+    $form['release_type'] = array(
+      '#type' => 'select',
+      '#default_value' => $default_type,
+      '#options' => $release_type_list,
+      '#weight' => -1,
+      '#ajax' => array(
+          'callback' => $rel_path,
+          'wrapper' =>  $wrapper,
+          'event' => 'change',
+          'method' => 'replace',
+          'progress' => array(
+            'type' => 'throbber',
+          ),
+      ),
+      "#prefix" => "<div class = 'release_type_dropdown hzd-form-element'>",
+      '#suffix' => '</div><div style="clear:both"></div>',
+      '#validated' => TRUE,
+    );
 
     $timer = \Drupal::config('hzd_release_management.settings')->get('timer');
     $default_value_services = $timer ? $timer : \Drupal::request()->get('services');
@@ -167,7 +167,7 @@ class ReleaseFilterForm extends FormBase {
             'type' => 'throbber',
           ),
      ),
-      "#prefix" => "<div class = 'service_search_dropdown'>",
+      "#prefix" => "<div class = 'service_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
       '#validated' => TRUE,
     );
@@ -202,7 +202,7 @@ class ReleaseFilterForm extends FormBase {
             'type' => 'throbber',
           ),
       ),
-    "#prefix" => "<div class = 'releases_search_dropdown'>",
+    "#prefix" => "<div class = 'releases_search_dropdown hzd-form-element'>",
     '#suffix' => '</div>',
     '#validated' => TRUE
     );
@@ -224,7 +224,7 @@ class ReleaseFilterForm extends FormBase {
         'type' => 'throbber',
         ),
     ),
-    '#prefix' => "<div class = 'filter_start_date'>",
+    '#prefix' => "<div class = 'filter_start_date  hzd-form-element'>",
     '#suffix' => "</div>",
     '#validated' => TRUE,  
   );
@@ -246,7 +246,7 @@ class ReleaseFilterForm extends FormBase {
         'type' => 'throbber',
        ),
     ),
-    '#prefix' => "<div class = 'filter_end_date'>",
+    '#prefix' => "<div class = 'filter_end_date hzd-form-element'>",
     '#suffix' => "</div>",
     '#validated' => TRUE,
   );
@@ -273,7 +273,7 @@ class ReleaseFilterForm extends FormBase {
             'type' => 'throbber',
           ),
       ),
-    "#prefix" => "<div class = 'limit_search_dropdown'>",
+    "#prefix" => "<div class = 'limit_search_dropdown hzd-form-element'>",
     '#suffix' => '</div>',    
   );
 
@@ -415,7 +415,6 @@ class ReleaseFilterForm extends FormBase {
     if ($string != 'deployed') {
       $output[] = array('#markup' => "<div class = 'releses_output'>");
       $output[] = HzdreleasemanagementStorage::releases_display_table($string, $filter_where, $limit, $release_type);
-      echo '<pre>';  echo 'releases_kjsdhftyp';  exit;
       $output[] = array('#markup' => "</div>");
     }
     else {
@@ -571,7 +570,6 @@ class ReleaseFilterForm extends FormBase {
     if ($string != 'deployed') {
       $output[] = array('#markup' => "<div class = 'releses_output'>");
       $output[] = HzdreleasemanagementStorage::releases_display_table($string, $filter_where, $limit, $release_type);
-      echo '<pre>';  echo 'releases_type_search_results';  exit;
       $output[] = array('#markup' => "</div>");
     }
     else {
@@ -586,7 +584,8 @@ class ReleaseFilterForm extends FormBase {
         'env_type' => $env_type);
       $_SESSION['filter_options'] = $filter_options;
       $output[] = array('#markup' => "<div class = 'deployed_releses_output'>");
-      $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable($filter_options, $limit, $release_type);
+      $output['fgg']['table'] = HzdreleasemanagementStorage::deployed_releases_displaytable($filter_options, $limit, $release_type);
+//      echo '<pre>';  print_r($output['fgg']['table']);  exit;
       $output[] = array('#markup' => "</div>");
     }
     $output[] = array('#markup' => "</div>");

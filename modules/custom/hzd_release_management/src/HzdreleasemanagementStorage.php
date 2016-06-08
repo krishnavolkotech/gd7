@@ -912,7 +912,8 @@ function get_release_details_from_title($values_title, $link) {
   }
 
   if (count($rows) == 0) {
-    return $output = t('No Data to be displayed');
+     $output[]['#markup'] = 'No Data to be displayed';
+     return $output;
   }
   
   if (isset($_SESSION['Group_id'])) {
@@ -934,8 +935,14 @@ function get_release_details_from_title($values_title, $link) {
     $download = array('data' => t('D/L'), 'class' => 'download-hdr');
     $header = array($state, $environment, $service, $release, $date, $download);
   }
-  echo '<pre>'; print_r($rows); exit;
+
   if (!empty($rows)) {
+
+    $output['pager'] = array(
+      '#type' => 'pager',
+      '#quantity' => 5,
+    );
+
     $output['deployed'] = array(
       '#theme' => 'table',
       '#rows' => $rows,
@@ -944,10 +951,6 @@ function get_release_details_from_title($values_title, $link) {
       '#empty' => t('No records found'),
     );
     
-    $output['pager'] = array(
-      '#type' => 'pager',
-      '#quantity' => 5,
-    );
 
     $output['#attached']['library'] = array('hzd_release_management/hzd_release_management', 
     'hzd_customizations/hzd_customizations', 'downtimes/downtimes');
