@@ -1,0 +1,85 @@
+problem_management.read_problem_csv:
+  path: 'read_problem_csv'
+  defaults:
+    _controller: '\Drupal\problem_management\Controller\ReadexcelController::read_problem_csv'
+    _title: 'Read Excel'
+  requirements:
+    _permission: 'access content'
+
+problem_management.problem_settings:
+  path: 'node/{node}/problem_settings'
+  defaults:
+    _form: '\Drupal\problem_management\Form\ProblemsettingsForm'
+    _title: 'Problems'
+    _description: 'View Setting for Problems.'
+    _weight: 10
+  requirements:
+    _permission: 'access content'
+
+#  requirements:
+#    _permission: 'cust_og_is_admin' --siva
+#    access callback: cust_og_is_admin
+#    access arguments: array(1)
+
+problem_management.problems:
+  path: 'node/{node}/problems'
+  defaults:
+    _controller: '\Drupal\problem_management\Controller\ProblemsController::problems_display'
+    _title: 'Problems'
+    _description: 'View Setting for Problems.'
+  requirements:
+    _permission: 'access content'
+    node: \d+
+#  requirements:
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array(1),
+
+problem_management.current_problems:
+  path: 'node/{node}/problems/current_problems'
+  defaults:
+    _controller: '\Drupal\problem_management\Controller\ProblemsController::problems_display'
+    _title: 'Current Problems'
+  requirements:
+    _permission: 'access content'
+    node: \d+
+#  requirements:
+#    _permission: 'cust_og_is_member'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array(1),
+
+problem_management.archived_problems:
+  path: 'node/{node}/problems/archived_problems'
+  defaults:
+    _controller: '\Drupal\problem_management\Controller\ArchivedProblemsController::archived_problems'
+    _title: 'Archive'
+  requirements:
+    _permission: 'access content'
+    node: \d+
+#  requirements:
+#    _permission: 'cust_og_is_member'
+#     access callback: 'cust_og_is_member', 
+#     access arguments: array(1),
+
+problem_management.import_history:
+  path: 'node/{node}/problems/import_history'
+  defaults:
+    _controller: '\Drupal\problem_management\Controller\ImportHistoryController::import_history'
+    _title: 'Import History'
+#    _weight: 4
+  requirements:
+    _permission: 'access content'
+    node: \d+
+#  requirements:
+#    _permission: 'cust_og_is_admin'
+#     access callback: 'cust_og_is_admin', 
+#     access arguments: array(1),
+
+problem_management.problem_management_settings:
+  path: 'admin/config/problem'
+  defaults:
+    _form: '\Drupal\problem_management\Form\ProblemmanagementsettingsForm'
+    _title: 'Problem Database Configuration'
+  requirements:
+    _permission: 'access content'
+#  requirements:
+#    access arguments: 'administer problems'

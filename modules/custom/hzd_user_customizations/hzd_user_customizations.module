@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Contains hzd user customizations.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+// development functions
+function __hzd($object) {
+  if (empty($object)) {
+    $object = new stdClass();
+  }
+  pr(get_class_methods(get_class($object)));
+  exit;
+}
+
+// development functions
+function pr($data) {
+  echo "<pre>";
+  print_r($data);
+}
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+
+  if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+    $user_states = hzd_states();
+    if($form_id == 'user_form') {
+      $account = $form_state->getFormObject()->getEntity();
+      $userid = $account->id();
+      $db = \Drupal::database();
+      $result = $db->select('cust_profile', 'cp')
+        ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+        ->condition('cp.uid', $userid);
+      $val = $result->execute()->fetchAssoc();
+    }
+    $form['profile'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Personal Information',
+    );
+    $form['profile']['user_firstname'] = array(
+      '#type' => 'textfield',
+      '#title' => 'First Name',
+      '#default_value' => $val['firstname'] ? $val['firstname'] : '',
+      '#size' => 60,
+      '#maxlength' => 128,
+    );
+    $form['profile']['user_lastname'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Last Name',
+      '#default_value' => $val['lastname'] ? $val['lastname'] : '',
+      '#size' => 60,
+      '#maxlength' => 128,
+    );
+    $form['profile']['user_position'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Position',
+      '#default_value' => $val['position'] ? $val['position'] : '',
+      '#size' => 60,
+      '#maxlength' => 128,
+    );
+    $form['profile']['user_phone'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Phone',
+      '#default_value' => $val['phone'] ? $val['phone'] : '',
+      '#size' => 60,
+      '#maxlength' => 128,
+    );
+    $form['profile']['user_state'] = array(
+      '#type' => 'select',
+      '#title' => 'State',
+      '#options' => $user_states,
+      '#default_value' => $val['state_id'] ? $val['state_id'] : '',
+    );
+    $form['#validate'][] = 'hzd_user_register_form_validate';
+    $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
+  }
+  return $form;
+}
+
+/**
+ * custom validate function to validate user state 
+ */
+function hzd_user_register_form_validate(array &$form, FormStateInterface $form_state) {
+  $state = $form_state->getValue('user_state');
+  if($state == 1) {
+    $form_state->setErrorByName('user_state', 'select state');
+  }
+}
+
+/**
+ * custom submit function to save user details
+ */
+function hzd_user_register_form_submit(array &$form, FormStateInterface $form_state) {
+  $account = $form_state->getFormObject()->getEntity();
+  $userid = $account->id();
+  $firstname = $form_state->getValue('user_firstname');
+  $lastname = $form_state->getValue('user_lastname');
+  $position = $form_state->getValue('user_position');
+  $phone = $form_state->getValue('user_phone');
+  $state = $form_state->getValue('user_state');
+  db_merge('cust_profile')
+          ->key(array('uid' => $userid))
+          ->fields(array('firstname' => $firstname, 'lastname' => $lastname, 'phone' => $phone, 'position' => $position, 'state_id' => $state))
+          ->execute(); 
+}
+
+/**
+ * get list of hzd states
+ */
+function hzd_states() {
+  $db = \Drupal::database();
+  $result = $db->select('states', 's')
+        ->fields('s', array('id', 'state'))
+        ->condition('s.entity', 1, '!=');
+  $val = $result->execute()->fetchAll();
+  $states = array();
+  foreach($val as $user_states_list) {
+    $states[$user_states_list->id] = $user_states_list->state;
+  }
+  return $states;
+}

@@ -1,0 +1,322 @@
+<?php
+
+define('RELEASE_MANAGEMENT', 339);
+define('SITE_ADMIN', 5);
+use Drupal\Core\Url;
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_release_management_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+
+  if($form_id == 'node_deployed_releases_form' || $form_id == 'node_deployed_releases_edit_form') {
+    $service_options = hzd_get_deployed_serivces_list();
+    $env_options = non_productions_list();
+    $form['field_release_service']['widget']['#options'] = $service_options;
+    $form['field_environment']['widget']['#options'] = $env_options;
+    if($form_id == 'node_deployed_releases_edit_form') {
+      $node = $form_state->getFormObject()->getEntity();
+      $nid = $node->id();
+      $default_service_val = db_query("SELECT field_release_service_value FROM {node__field_release_service} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
+      $form['field_release_service']['widget']['#default_value'] = array($default_service_val);
+      $default_env_val = db_query("SELECT field_environment_value FROM {node__field_environment} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
+      $form['field_environment']['widget']['#default_value'] = array($default_env_val);
+      $default_release_val = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
+      $form['field_earlywarning_release']['widget']['#default_value'] = array($default_release_val);
+    }
+    
+    $release_options = hzd_earlywarning_release();
+    $form['field_earlywarning_release']['widget']['#options'] = $release_options;
+  }
+  
+  if($form_id == 'node_early_warnings_form' || $form_id == 'node_early_warnings_edit_form') {
+    $service_options = hzd_get_deployed_serivces_list();
+    $form['field_release_service']['widget']['#options'] = $service_options;
+    $release_options = hzd_earlywarning_release();
+    $form['field_earlywarning_release']['widget']['#options'] = $release_options;
+    if($form_id == 'node_early_warnings_edit_form') {
+      $node = $form_state->getFormObject()->getEntity();
+      $nid = $node->id();
+      $default_service_val = db_query("SELECT field_release_service_value FROM {node__field_release_service} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
+      $form['field_release_service']['widget']['#default_value'] = array($default_service_val);
+      $default_release_val = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
+      $form['field_earlywarning_release']['widget']['#default_value'] = array($default_release_val);
+    }
+  }
+  
+}
+
+/**
+ * get deployed services list
+ */
+function hzd_get_deployed_serivces_list() {
+  $current_url = Url::fromRoute('<current>');
+  $path = $current_url->toString();
+  $current_path = explode("/", $path);
+
+  if(is_numeric($current_path[2])) {
+    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+  }
+  if ($type == 'deployed_releases') {
+    $services_releases = released_deployed_releases();
+    return $services_data = $services_releases['services'];
+  }
+  $group_id = ($_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT);
+  $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
+  $services['none'] = " < ".t('Service') . ' > ';
+
+  foreach($services_obj as $services_data) {
+    $services[$services_data->nid] = $services_data->title;
+  }
+  return $services;
+}
+
+/**
+ * returns the released releses for the deployment 
+ */
+function released_deployed_releases($service = NULL) {
+
+  $select = "SELECT DISTINCT n.nid as release_id, n.title, nfrs.field_relese_services_target_id as service";
+  $from = " FROM {node_field_data} n , {node__field_relese_services} nfrs, {group_releases_view} GRV, {node__field_release_type} nfrt ";
+  $where = " WHERE n.nid = nfrs.entity_id AND n.nid = nfrt.entity_id AND n.status = 1 AND nfrs.field_relese_services_target_id = GRV.service_id AND GRV.group_id = :gid AND nfrt.field_release_type_value IN (1, 2) ";
+  if ($service) {
+    $where .= " AND nfrs.field_relese_services_target_id = $service";
+  }
+  $order = " ORDER BY n.title ";
+  $sql = $select . $from . $where . $order;
+  $services = array();
+  $query = db_query($sql, array(":gid" => RELEASE_MANAGEMENT))->fetchAll();
+  foreach($query as $releases_info) {
+    if (!in_array($releases_info->service, $services)) {
+      $services[] = $releases_info->service;
+    }
+    $releases[$releases_info->release_id] = $releases_info->title;
+  }
+
+  $deployed_services[] = t('Service');
+  if (!empty($services)) {
+    $list = implode(", ", $services);
+    $sql = db_query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
+    foreach($sql as $services_info) {
+      $deployed_services[$services_info->nid] = $services_info->title;
+    }
+  }
+  return $service_releases = array('services' => $deployed_services, 'releases' => $releases);
+}
+
+/**
+ * get all non production environment lists
+ */
+function non_productions_list() {
+  $account = \Drupal::currentUser();
+  $roles = $account->getRoles();
+  if(in_array('site_administrator', $roles)) {
+    $non_productions_lists = db_query("SELECT nid, title FROM {node_field_data} WHERE type = :type", array(":type" => 'non_production_environment'))->fetchAll();
+  }
+  else {
+    $state = hzd_user_state();
+    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfnps WHERE n.nid = nfnps.entity_id and nfnps.field_non_production_state_value = :state and n.type = :type", array(":state" => $state, ":type" => 'non_production_environment'))->fetchAll();
+  }
+  $environment_lists[0] = t("Bitte Umgebung auswählen");
+  $environment_lists[1] = t('Produktion');
+  foreach($non_productions_lists as $vals) {
+    $environment_lists[$vals->nid] = $vals->title;
+  }
+  return $environment_lists;
+}
+
+/**
+ * get user state id
+ */
+function hzd_user_state($uid = NULL) {
+  if(!$uid) {
+    $account = \Drupal::currentUser();
+    $uid = $account->id();
+  }
+  $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+  return $state;
+}
+
+/**
+ * get early warning releases
+ */
+function hzd_earlywarning_release() {
+  $current_url = Url::fromRoute('<current>');
+  $path = $current_url->toString();
+  $current_path = explode("/", $path);
+
+  if(isset($current_path[2]) && is_numeric($current_path[2])) {
+    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+  }
+  if (isset($type) && $type == 'deployed_releases') {
+    $service = Drupal::request()->get('ser');
+    $env = Drupal::request()->get('env');
+    $release = Drupal::request()->get('rel');
+    return get_undeployed_dependent_release($service, $env, $release);
+  }
+  $options = get_earlywarning_release();
+  return $options['releases'];
+}
+
+/**
+ *Returns the releases associated with the provided sevices
+ *@service is service id for which releses has to be returned
+ *
+ */
+function get_earlywarning_release($service = NULL) {
+  $group = ($_SESSION['Group_id'] ? $_SESSION['Group_id']: RELEASE_MANAGEMENT);
+  $query = db_select('node_field_data', 'nfd');
+  $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
+  $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
+  $query->fields('nfd', array('nid', 'title'))
+     ->condition('grv.group_id', $group);
+  if($service) {
+    $query->condition('nfrs.field_relese_services_target_id', $service);
+  }
+  $query->orderBy('nfd.title', 'ASC');
+  $result = $query->execute()->fetchAll();
+
+  $default_release[] =  t("Release");
+  foreach($result as $vals) {
+    $default_release[$vals->nid] = $vals->title;
+  }
+  return array('releases' => $default_release);
+}
+
+/*
+ *@returns: the releases which are not deployed
+ */
+function get_undeployed_dependent_release($service = NULL, $environment = NULL, $release = NULL) {
+  $releases = released_deployed_releases($service);
+  $state_id = hzd_user_state();
+  $query = db_select('node_field_data', 'n');
+  $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
+  $query->join('node__field_user_state', 'nfus', 'nfus.entity_id = n.nid');
+  $query->join('node__field_environment', 'nfe', 'nfe.entity_id = n.nid');
+  $query->isNotNull('nfer.field_earlywarning_release_value');
+  $query->AddExpression('distinct nfer.field_earlywarning_release_value', 'dep_release');
+  $query->condition('nfus.field_user_state_value', $state_id)
+        ->condition('n.status', 1);
+  if($environment) {
+    $query->condition('nfe.field_environment_value', $environment);
+  }
+  $result = $query->execute()->fetchAll();
+
+  $deployed_releases = array();
+  foreach($result as $vals) {
+    $deployed_releases[$vals->dep_release] =  $vals->dep_release;
+  }
+
+  $undeployed_releases[] = t("Release");
+  foreach ($releases['releases'] as $key => $value) {
+    if (!in_array($key, $deployed_releases)) {
+      $undeployed_releases[$key] = $value; 
+    }
+  }
+  if($release) {
+    $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(":env" => $environment, ":eid" => $release))->fetchField();
+    if ($deployed_nid) {
+      $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
+      $undeployed_releases[$deployed_nid] = $title;
+    }
+  }
+  return $undeployed_releases;
+}
+
+function get_release($string = NULL, $service = NULL) {
+  $release_type = get_release_type($string);
+  $query = db_query("SELECT n.nid, n.title from {node_field_data} n, {node__field_relese_services} nfrs, 
+         {group_releases_view} GRV, {node__field_release_type} nfrt 
+         WHERE n.nid = nfrs.entity_id and nfrt.entity_id = n.nid 
+         and nfrs.field_relese_services_target_id = GRV.service_id 
+         and GRV.group_id = :gid
+         and nfrt.field_release_type_value = :type
+         and nfrs.field_relese_services_target_id = :sid ORDER by title", 
+         array(":gid" => RELEASE_MANAGEMENT, ":type" => $release_type, ":sid" => $service))->fetchAll();
+  
+  $default_release[] = t("Releases");
+  foreach($query as $function) {
+    $default_release[$function->title] = $function->title;
+  }
+  return array('releases' => $default_release);
+}
+
+/*
+ *Returns the type of release
+*/
+function get_release_type($type) {
+  switch ($type) {
+  case 'released':
+    $release_type = 1;
+    break;
+  case 'progress':
+    $release_type = 2;
+    break;
+  case 'locked':
+    $release_type = 3;
+    break;
+  case 'rejected':
+    $release_type = 4;
+    break;
+  }
+  return  $release_type ;
+}
+
+
+/**
+ * Implementation of hook_cron()
+ */
+function release_management_cron() {
+  $set_time = trim(variable_get('import_time_releases','03:00'));
+  $time = date("H:i", time());
+  if ($set_time == $time) {
+    read_release_csv();
+  }
+}
+
+/*
+ * @return:returns abbreviations of states from states table
+ */
+
+function get_all_user_state($active = 0) {
+  if ($active) {
+    $sql_active = "where active = 1";
+  }
+  else {
+    $sql_active = "";
+  }
+  $user_states = db_query("select id, concat(state,' (',abbr,')') as state from {states} $sql_active ORDER BY weight ASC")->fetchAll();
+  foreach($user_states as $states_values) {
+    // when we concat, when no abbr value is present, then it returns NULL. As of now it returns NULL for please select. so adding that value back to show in drop down.
+    if ($states_values->state == NULL) {
+      $states[$states_values->id] = 'Bundesland';
+    }
+    else {
+      $states[$states_values->id] = $states_values->state;
+    }
+  }
+  return $states;
+}
+
+/**
+ *  get non production environments list when the state was selected.
+ */
+function get_environment_options($state = 1) {
+  $environment_lists[0] = t('All');
+  $environment_lists[1] = t('Produktion');
+  if ($state != 1) {
+    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfns WHERE n.nid = nfns.entity_id and nfns.field_non_production_state_value = :val and n.type = :type", array(":val" => $state, "type" => 'non_production_environment'))->fetchAll();
+    foreach($non_productions_lists as $row) {
+      $environment_lists[$row->nid] = $row->title;
+    }
+  }
+  return $environment_lists;
+}
+
+/**
+
+function hzd_release_management_node_presave(\Drupal\Core\Entity\EntityInterface $node) {
+  echo '<pre>';  print_r($node);  exit;
+}
+
+*/

@@ -1,0 +1,11 @@
+problem_management.problem_settings:
+  title: 'Problems'
+  description: 'Problems settings page'
+  parent: system.admin_structure
+  route_name: problem_management.problem_settings
+
+problem_management.problem_management_settings:
+  title: 'problem Database Configuration'
+  description: 'problem Database Configuration'
+  parent: system.admin_structure
+  route_name: problem_management.problem_management_settings

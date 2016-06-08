@@ -1,0 +1,23 @@
+hzd_release_management.release_documentation_settings:
+  title: 'Release Documentation Settings'
+  description: 'Release Documentation Settings'
+  parent: system.admin_structure
+  route_name: hzd_release_management.release_documentation_settings
+
+hzd_release_management.release_management_settings:
+  title: 'Release Database Configuration'
+  description: 'Release Database Configuration'
+  parent: system.admin_structure
+  route_name: hzd_release_management.release_management_settings
+
+hzd_release_management.release_documentation_credentials:
+  title: 'Release Documentation Credentials'
+  description: 'Release Documentation Credentials'
+  parent: system.admin_structure
+  route_name: hzd_release_management.release_documentation_credentials
+
+hzd_release_management.release_type_settings:
+  title: 'Release Type Settings'
+  description: 'Release Type Settings'
+  parent: system.admin_structure
+  route_name: hzd_release_management.release_type_settings

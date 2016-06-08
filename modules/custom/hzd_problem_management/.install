@@ -1,0 +1,22 @@
+/**
+ * Implementation of hook_install()
+ */
+function problem_management_install() {
+  drupal_install_schema('problem_management');
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function problem_management_uninstall() {
+  drupal_uninstall_schema('problem_management');
+}
+
+
+
+function problem_management_update_7000() {
+  $ret = array();
+  $sql = "UPDATE {content_type_problem} SET field_problem_eroffnet_value = unix_timestamp(concat(SUBSTRING(field_eroffnet_value,7,4), '-', SUBSTRING(field_eroffnet_value,4,2),'-',SUBSTRING(field_eroffnet_value,1,2)))";
+  db_query($sql);
+  return $ret;
+}

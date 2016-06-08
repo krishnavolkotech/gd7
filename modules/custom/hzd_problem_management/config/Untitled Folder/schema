@@ -1,0 +1,56 @@
+  $schema['problem_import_history'] = array(
+    'fields' => array(
+      'id' => array(
+  'description' => 'The primary key of the table',
+  'type' => 'serial',
+  'unsigned' => TRUE,
+  'not null' => TRUE
+  ),
+      'problem_date' => array(
+  'description' => 'date of import',
+  'type' => 'int',
+  'size' => 'big',
+  'unsigned' => TRUE,
+  'not null' => TRUE
+  ),
+      'import_status' => array(
+  'description' => 'Status of Import',
+  'type' => 'varchar',
+  'length' => 32,
+  'default' => ''
+  ),
+
+      'error_message' => array(
+  'description' => 'Error Message',
+  'type' => 'varchar',
+  'length' => 100,
+  'default' => ''
+  ),
+
+    ),
+    'primary key' => array('id'),
+    );
+
+  $schema['group_problems_view'] = array(
+    'fields' => array(
+      'id' => array(
+  'description' => 'The primary key of the table',
+  'type' => 'serial',
+  'unsigned' => TRUE,
+  'not null' => TRUE
+  ),
+      'group_id' => array(
+  'description' => 'Group id',
+  'type' => 'int',
+  'unsigned' => TRUE,
+  'not null' => TRUE
+  ),
+      'service_id' => array(
+  'description' => 'Service id',
+  'type' => 'int',
+  'unsigned' => TRUE,
+  'not null' => TRUE
+  ),
+      ),
+    'primary key' => array('id'),
+    );

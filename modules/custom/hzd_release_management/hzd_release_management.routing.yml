@@ -1,0 +1,129 @@
+hzd_release_management.view_deployed_releases:
+  path: 'node/{node}/releases/view_deployed_releases'
+  defaults:
+    _title: 'Deployed Releases (Overview)'
+    _form: '\Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew'
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.released:
+  path: 'node/{node}/releases'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
+    _title: 'Released'
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.inprogress:
+  path: 'node/{node}/releases/in_progress'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
+    _title: 'In Progress'
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.locked:
+  path: 'node/{node}/releases/locked'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
+    _title: 'Locked'
+  requirements:
+    _permission: 'access content'
+    
+hzd_release_management.deployed:
+  path: 'node/{node}/releases/deployed'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
+    _title: 'Deployed'
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.release_management_settings:
+  path: 'admin/config/releases'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasemanagementsettingsForm'
+    _title: 'Release Database Configuration'
+  requirements:
+    _permission: 'administer problems'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('administer problems'),
+
+hzd_release_management.read_release_csv:
+  path: 'read_release_csv'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\ReadexcelController::read_release_csv'
+    _title: 'Read release'
+  requirements:
+    _permission: 'access content'
+#   _csrf_token: 'TRUE'
+
+hzd_release_management.release_type_settings:
+  path: 'admin/config/releases/release_type_settings'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasetypesettingForm'
+    _title: 'Release Type Settings'
+  requirements:
+    _permission: 'administer problems'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('access all views'),
+
+hzd_release_management.release_documentation_settings:
+  path: 'admin/config/releases/release_documentation_settings'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasedocumentsettingForm'
+    _title: 'Release Documentation Settings'
+  requirements:
+    _permission: 'access all views'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('access all views'),
+
+hzd_release_management.release_documentation_credentials:
+  path: 'admin/config/releases/release_documentation_credentials'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasedocumentcredentsettingForm'
+    _title: 'Release Documentation Credentials'
+  requirements:
+    _permission: 'access all views'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('access all views'),
+
+#  this is for initial release document download
+#hzd_release_management.read_import_release_csv:
+#  path: 'read_import_release_csv'
+#  defaults:
+#    _controller: '\Drupal\hzd_release_management\Controller\ReadimportreleasecsvController::read_import_release_csv'
+#    _title: 'Read import release'
+#  requirements:
+#    _permission: 'access content'
+#   _csrf_token: 'TRUE'
+
+hzd_release_management.release_management_settings:
+  path: 'admin/config/releases/csv_paths'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasemanagementsettingsForm'
+    _title: 'Release Database Configuration'
+  requirements:
+    _permission: 'administer problems'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('administer problems'),
+
+hzd_release_management.document_page_link:
+  path: 'node/{node}/releases/documentation/{service_id}/{release_id}'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::documentation'
+    _title_callback: '\Drupal\hzd_release_management\Controller\HzdReleases::getTitle'
+  requirements:
+    _permission: 'access content'
+
+# create a zip link to download document files
+hzd_release_management.document_zip_link:
+  path: 'documentation_link_zip/{service_id}/{release_id}'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::DownloadDocumentFiles'
+  requirements:
+    _permission: 'access content'

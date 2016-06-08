@@ -1,0 +1,32 @@
+<?php
+/**
+ * @file
+ * Contains \Drupal\problem_management\Controller\ProblemsController
+ */
+
+namespace Drupal\problem_management\Controller;
+
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\problem_management\HzdproblemmanagementHelper;
+
+/**
+ * Class CurrentProblemsController
+ * @package Drupal\problem_management\Controller
+ */
+class ProblemsController extends ControllerBase {
+/*
+ *callback for problems display
+*/
+function problems_display($node) {
+  $current_path = \Drupal::service('path.current')->getPath();
+  $get_uri = explode('/', $current_path);
+  if ($get_uri['3'] == 'problems') {
+    unset($_SESSION['sql_where']);
+    unset($_SESSION['limit']);
+  }
+  $string = 'current';
+  HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
+  $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
+  return $response;
+ }
+}

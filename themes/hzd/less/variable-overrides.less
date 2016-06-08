@@ -1,0 +1,270 @@
+/**
+ * Variable Overrides.
+ *
+ * Modify this file to override the Bootstrap Framework variables. You can copy
+ * these variables directly from ../bootstrap/less/variables.less to this file.
+ */
+
+// Set the proper directory for the Bootstrap Glyphicon font.
+@icon-font-path: '../bootstrap/fonts/';
+
+@font-face {
+    font-family: 'robotoregular';
+    src: url('../fonts/roboto-regular_6-webfont.eot');
+    src: url('../fonts/roboto-regular_6-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-regular_6-webfont.woff2') format('woff2'),
+         url('../fonts/roboto-regular_6-webfont.woff') format('woff'),
+         url('../fonts/roboto-regular_6-webfont.ttf') format('truetype'),
+         url('../fonts/roboto-regular_6-webfont.svg#robotoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@color-base: #1475a0;
+@pritext-color: #fff;
+@sectext-color:#424241;
+@hov-color:#0c4f6d;
+@static-color:#eaeff5;
+@display-none:none;
+
+/***** Global Styles *****/
+a, span, div, img, input, ul, li{ 
+  outline:none;
+}
+
+body{
+  font-family: 'robotoregular';
+  padding:0;
+  margin:0;
+  }
+#block-primarylinks {
+    background-color: @color-base;
+	width:100%;
+	float:left;
+    h2 {
+    display:@display-none; 
+	}
+}
+	
+#block-primarylinks ul{
+    width:100%;
+    float:left;
+    li{ 
+	width:auto;
+    display:inline-block;
+    a{
+	  color:@pritext-color;
+	  font-size:14px;
+	  text-decoration:none;
+	  line-height:22px;     	
+      }
+	  a:hover{
+	  background:@hov-color;
+	  }
+    }
+}
+footer h2,
+a.name.navbar-brand,
+#block-customtable h2.block-title,
+/*.form-group{
+   display:@display-none;
+}*/
+
+#block-hzd-main-menu{
+     float:right;
+   ul{
+     width:auto;
+     float:right;
+    li{
+	 float:right;
+	 a{
+	  color:@sectext-color;
+	  padding:22px 10px 0 10px;
+	  line-height:25px;
+	 }
+	 a:hover, a:focus{
+	  color:@hov-color;
+	  background:@pritext-color;
+	  }
+	}	 
+   }
+}
+
+footer .region-footer{
+    background-color: @color-base;
+	padding:8px !important;
+	margin:20px auto 0 auto ;
+	color:@pritext-color;
+	.cp, .footer-links a{
+	color:@pritext-color;
+	font-size:12px;
+	}
+	a:hover{
+	 text-decoration:none;
+	}
+}
+.footer-links{ 
+  float:right;
+  text-align:right;
+}
+#block-customtable table{
+  width:100%;
+  float:left;
+  margin-bottom:50px;
+  th{
+   font-weight:bold;
+  }
+td, th{
+  border:1px solid #c6dee8;
+  padding:8px;
+  color:@sectext-color;
+  font-size:12px;
+  }
+}
+
+h1, h2, h3, h4, h5, h6{
+  color:@color-base;
+  font-family: 'robotoregular';
+  margin:15px 0 5px 0 !important;
+}
+h1{
+  font-size:27px;
+}
+h2{
+  font-size:25px;
+}
+h3{
+  font-size:22px;
+}
+h4{
+  font-size:20px;
+}
+h5{
+  font-size:18px;
+}
+h6{
+  font-size:16px;
+}
+.cus-table{
+  width:100%;
+  float:left;
+}
+
+@media screen and (min-width:781px){
+#block-customtable tr.odd,
+#block-customtable thead tr{
+  background:@static-color;
+}
+footer{
+	width:1154px !important;  
+}
+header{ 
+   padding:0 !important;
+}
+}
+@media screen and (max-width:780px){
+.logo img{ 
+  margin-left:20px;
+}
+#block-hzd-main-menu ul li a{ 
+  padding-left:15px !important;
+}
+nav#block-hzd-main-menu,
+nav#block-hzd-main-menu ul {
+    width: 100%;
+	margin:0 !important;
+}
+#block-hzd-main-menu ul li,
+#block-primarylinks ul li{ 
+  width:100%;
+}
+#block-customtable table,
+#block-customtable thead,
+#block-customtable tbody,
+#block-customtable tr,
+#block-customtable th,
+#block-customtable td{
+  display:block;
+}
+.cp, .footer-links{ 
+  width:100%; 
+  float:left; 
+  text-align:center;
+}
+#block-customtable td:before {
+    content: attr(data-title);
+}
+#block-customtable td:before {
+    font-weight: bold;
+    left: 6px;
+    padding-right: 10px;
+    position: absolute;
+    text-align: left;
+    top: 6px;
+    white-space: nowrap;
+    width: 45%;
+}
+#block-customtable td {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color rgb(238, 238, 238);
+    border-image: none;
+    border-style: none none solid;
+    border-width: medium medium 1px;
+    padding-left: 50% !important;
+    position: relative;
+    text-align: left;
+    white-space: normal;
+}
+#block-customtable thead{ 
+  display:none;
+}
+#block-customtable tr{
+  margin-bottom:15px;
+}
+}
+header{ 
+  background:transparent !important; 
+  border:none !important;
+}
+header .navbar-collapse.collapse{ 
+  padding:0 !important;
+}
+#block-general{
+  width:100%;
+  float:left;
+  border:1px solid @color-base;
+  background:@static-color;
+  margin-top:20px;
+  margin-bottom:20px;
+  li a{
+    font-size:14px;
+	padding:5px 10px !important;
+	color:@sectext-color;
+  }
+  li a:hover{
+  color:@color-base;
+  background:@static-color;
+  }
+}
+#block-general h2{
+  margin:0 !important;
+  color:@pritext-color;
+  font-size:15px;
+  font-weight:bold;
+  padding:10px 15px;
+  background:@color-base;
+}
+.navbar-toggle{
+  margin-top:20px !important;
+}
+.navbar-brand,
+footer h2{ display:none;}
+.footer{ 
+  border:none; 
+}
+.main-container{ 
+  min-height:300px;
+}

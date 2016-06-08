@@ -1,0 +1,10 @@
+name: "Hzd manage services"
+description: "manage services display view"
+package: "HZD"
+project: "hzd_services"
+core: "8.x"
+type: module
+dependencies:
+  - field
+  - rest
+

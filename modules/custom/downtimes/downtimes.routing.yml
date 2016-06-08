@@ -1,0 +1,9 @@
+downtimes.downtimes_setting_form:
+  path: 'node/{node}/downtimes_setting'
+  defaults:
+    _form: '\Drupal\downtimes\Form\DowntimesettingsForm'
+    _title: 'Downtimes'
+    _description: 'View Setting for downtimes.'
+    _weight: 10
+  requirements:
+    _permission: 'access content'

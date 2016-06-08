@@ -1,0 +1,22 @@
+<?php 
+
+/**
+ * implements hook_mail
+ */
+use Drupal\Component\Utility\SafeMarkup;
+
+function problem_management_mail($key, &$message, $params= array()) {
+  $options = array(
+                   'langcode' => $message['langcode'],
+                   );
+//  pr($message);exit;
+//  switch ($key) {
+//  case 'grn_email_notification':
+    $message['from'] = \Drupal::config('system.site')->get('mail');
+    $message['subject'] = $params['subject'];
+    //$message['body'][] = $params['message'];
+    $message['body'][] = SafeMarkup::checkPlain($params['message']);
+    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+//    break;
+//  }
+}

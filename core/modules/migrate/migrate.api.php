@@ -5,7 +5,7 @@
  * Hooks provided by the Migrate module.
  */
 
-use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Row;
 
@@ -77,7 +77,7 @@ use Drupal\migrate\Row;
  * The definition of how to migrate each type of data is stored in configuration
  * entities. The migration configuration entity class is
  * \Drupal\migrate\Entity\Migration, with interface
- * \Drupal\migrate\Entity\MigrationInterface; the configuration schema can be
+ * \Drupal\migrate\Plugin\MigrationInterface; the configuration schema can be
  * found in the migrate.schema.yml file. Migration configuration consists of IDs
  * and configuration for the source, process, and destination plugins, as well
  * as information on dependencies. Process configuration consists of sections,

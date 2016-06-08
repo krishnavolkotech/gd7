@@ -1,0 +1,20 @@
+downtimes:
+  version: 1.x
+  css:
+    theme:
+      css/downtimes_tables.css: {}
+      css/downtimes.css: {}
+  js:
+    js/downtime_create.js: {}
+    js/downtimelink.js: {}
+    js/downtimes.js: {}
+    js/downtimes_date.js: {}
+    js/downtimes_filter.js: {}
+    js/maintenance_windows.js: {}
+    js/sitewide_maintenance_windows.js: {}
+    js/jquery.ui.datepicker-de.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker

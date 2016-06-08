@@ -1,0 +1,6 @@
+# $Id:
+name: 'Problem Management'
+description: Custom module for Problem Management.
+package: "HZD"
+type: module
+core: 8.x

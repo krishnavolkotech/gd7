@@ -1,0 +1,43 @@
+
+<table  class = '<?php print $attributes['class']; ?>' >
+ <?php
+  $heading .= "<thead><tr>";
+foreach($header as $key => $value){
+  $heading .= "<th class = '".$value['class']."'>".$value['data']."</th>";
+}
+$heading .= "</tr></thead>";
+print $heading;
+
+
+if($rows) {
+  $class_count = 0;
+  foreach ($rows as $key => $value) {
+    $class_val = $class_count % 2;
+    $class = (($class_val == 0) ? 'even' : 'odd' );
+     $rows_data .= "<tr class ='".$class."'> ";
+     //if($type == 'archived') {
+      //$rows_data .= "<td>".$value['type']."</td>";
+     //}
+      
+    $rows_data .= "<td>" . $value['service'] ."</td>";
+    $rows_data .= "<td>" . $value->start_date . "</td>";
+    $rows_data .= "<td>" . $value['end_date']."</td>";
+    $rows_data .= "<td>" . $value['title'] . "</td>";
+    $rows_data .= "<td>".$value[0]."</td>";
+    $rows_data .= "<td>".$value[0]."</td>";
+    $rows_data .= "<td>".$value[0]."</td>";
+    $rows_data .= "<td>".$value['actions']."</td>";
+    $rows_data .= "</tr> ";
+   
+    $class_count++;
+  }
+ }
+ else{
+   $rows_data .= "<tr class ='".$class."'> ";
+   $rows_data .= "<td colspan = '8' class = 'reason'>".$rows['no_data'][0]['data']."</td>";
+   $rows_data .= "</tr> ";
+ }
+print $rows_data;
+
+?>
+</table>

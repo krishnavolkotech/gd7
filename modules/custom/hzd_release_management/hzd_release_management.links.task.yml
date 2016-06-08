@@ -1,0 +1,62 @@
+hzd_release_management.release_manangement: #give it the same name as the route to make it clear
+  title: Release Documentation Settings
+  route_name: hzd_release_management.release_documentation_settings #route defined in .routing.yml
+  base_route: hzd_release_management.release_documentation_settings #same as the route name
+  weight: 0
+
+#add another tab next to the home tab
+hzd_release_management.release_documentation_credentials_tab: #name it same as route to avoid confusion
+  title: Release Documentation Credentials
+  #route defined in .routing.yml
+  route_name: hzd_release_management.release_documentation_credentials #link to tab1 route
+  #route defined in .routing.yml
+  base_route: hzd_release_management.release_documentation_settings #set the base tab
+  weight: 1
+
+#add another tab next to the base tab
+hzd_release_management.release_management_settings_tab: #name it same as route to avoid confusion
+  title: Release Database Configuration
+  #route defined in .routing.yml
+  route_name: hzd_release_management.release_management_settings #link to tab2 route
+  #route defined in .routing.yml
+  base_route: hzd_release_management.release_documentation_settings #set the base tab
+  weight: 2
+
+
+hzd_release_management.release_type_settings_tab: #name it same as route to avoid confusion
+  title: Release Type Settings
+  #route defined in .routing.yml
+  route_name: hzd_release_management.release_type_settings #link to tab2 route
+  #route defined in .routing.yml
+  base_route: hzd_release_management.release_documentation_settings #set the base tab
+  weight: 3
+
+hzd_release_management.release_management_release_tab:
+  title: Release
+  route_name: hzd_release_management.released
+  base_route: hzd_release_management.released
+  weight: 0
+  
+hzd_release_management.release_management_progress_tab:
+  title: In Progress
+  route_name: hzd_release_management.inprogress
+  base_route: hzd_release_management.released
+  weight: 1
+  
+hzd_release_management.release_management_locked_tab:
+  title: Locked
+  route_name: hzd_release_management.locked
+  base_route: hzd_release_management.released
+  weight: 2
+  
+hzd_release_management.release_management_deployed_tab:
+  title: Deployed
+  route_name: hzd_release_management.deployed
+  base_route: hzd_release_management.released
+  weight: 3
+  
+hzd_release_management.release_management_overview_deployed_tab:
+  title: Deployed(Overview)
+  route_name: hzd_release_management.view_deployed_releases
+  base_route: hzd_release_management.released
+  weight: 4

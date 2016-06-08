@@ -1,0 +1,15 @@
+front_page.settings:
+  path: 'admin/config/front/settings'
+  defaults:
+    _form: '\Drupal\front\Form\FrontPageSettingsForm'
+    _title: 'Settings'
+  requirements:
+    _permission: 'administer front page'
+    
+front_page.front:
+  path: 'front_page'
+  defaults:
+    _controller: '\Drupal\front\Controller\FrontPage::view'
+    _title: 'Willkommen beim Betriebsportal KONSENS'
+  requirements:
+    _permission: 'access content'

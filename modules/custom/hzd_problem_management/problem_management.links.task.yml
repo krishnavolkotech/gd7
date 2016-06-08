@@ -1,0 +1,19 @@
+problem_management.problems_tab: #give it the same name as the route to make it clear
+  title: Problems
+  route_name: problem_management.problems #route defined in .routing.yml
+  base_route: problem_management.problems #same as the route name
+  weight: 0
+
+#add another tab next to the home tab
+problem_management.archived_problems_tab: #name it same as route to avoid confusion
+  title: Archive
+  route_name: problem_management.archived_problems #link to tab1 route
+  base_route: problem_management.problems #set the base tab
+  weight: 1
+
+#add another tab next to the base tab
+problem_management.import_history_tab: #name it same as route to avoid confusion
+  title: Import History
+  route_name: problem_management.import_history #link to tab2 route
+  base_route: problem_management.problems #set the base tab
+  weight: 2

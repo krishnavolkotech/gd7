@@ -1,0 +1,338 @@
+/* TABLE CSS FOR DOWNTIMES */
+
+font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+        font-size: .8em; } .dpDiv { } .dpTable { font-family: Tahoma,
+        Arial, Helvetica, sans-serif; font-size: 12px; text-align:
+        center; color: #505050; background-color: #ece9d8; border: 1px
+        solid #AAAAAA; } .dpTR { } .dpTitleTR { } .dpDayTR { }
+        .dpTodayButtonTR { } .dpTD { border: 1px solid #ece9d8; }
+        .dpDayHighlightTD { background-color: #CCCCCC; border: 1px
+        solid #AAAAAA; } .dpTDHover { background-color: #aca998;
+        border: 1px solid #888888; cursor: pointer; color: red; }
+        .dpTitleTD { } .dpButtonTD { } .dpTodayButtonTD { } .dpDayTD {
+        background-color: #CCCCCC; border: 1px solid #AAAAAA; color:
+        white; } .dpTitleText { font-size: 12px; color: gray;
+        font-weight: bold; } .dpDayHighlight { color: 4060ff;
+        font-weight: bold; } .dpButton { font-family: Verdana, Tahoma,
+        Arial, Helvetica, sans-serif; font-size: 10px; color: gray;
+        background: #d8e8ff; font-weight: bold; padding: 0px; }
+        .dpTodayButton { font-family: Verdana, Tahoma, Arial,
+        Helvetica, sans-serif; font-size: 10px; color: gray;
+        background: #d8e8ff; font-weight: bold;
+}
+
+table.downtimes_incidents {
+        font-family:arial;
+        margin:10px 0pt 15px;
+        font-size: 8pt;
+        width: 750px;
+        text-align: center;
+		border:1px solid #375f92;
+		background:	#CDCDCD;
+}
+table.downtimes_incidents thead tr th, table.downtimes_incidents tfoot tr th {
+        background-color: #5e90cd;
+        font-size: 8pt;
+        padding: 4px;
+		text-align:center;
+		color:#fff;
+		}
+
+
+. tr.even td {background-color:#d9e8fb;}
+.downtimes_incidents tr.odd td {background-color:#f8f8f8;}
+
+.downtimes_incidents .reason {text-align:left;}
+
+table.downtimes_incidents thead tr .header {
+        background-image: url(images/bg.gif);
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+}
+table.downtimes_incidents tbody td {
+        color: #3D3D3D;
+        padding: 4px;
+        background-color: #FFF;
+        vertical-align: top;
+}
+
+table.downtimes_incidents thead tr .headerSortUp {
+        background-image: url(images/asc.gif);
+}
+table.downtimes_incidents thead tr .headerSortDown {
+        background-image: url(images/desc.gif);
+}
+table.downtimes_incidents thead tr .headerSortDown, table.downtimes_incidents thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+table.downtimes_incidents thead tr .state {
+        width: 114px;}
+		
+
+
+		
+
+table.downtimes_incidents thead tr .service {
+        width: 114px;
+}
+table.downtimes_incidents thead tr .start {
+        width: 80px;
+}
+table.downtimes_incidents thead tr .end {
+        width: 80px;
+}
+
+table.downtimes_incidents thead tr .reported_by {
+        width: 100px;
+}
+table.downtimes_incidents thead tr .owner {
+        width: 125px;
+}
+table.downtimes_incidents thead tr .action {
+        width: 48px;
+}
+
+
+
+
+
+.item-list ul li {
+display:inline;
+}
+
+.reason {
+	text-align:center;
+}
+
+
+
+.curr_incidents_form .state_search_dropdown { 
+	float:left;
+        padding-left:5px;
+}
+
+
+.curr_incidents_form .service_search_dropdown {
+	float:left;                                                                                                                             
+        padding-left:5px;
+} 
+
+
+.filter_end_date {
+  float:left;
+  margin-top:-16px;
+  padding-left:5px;
+}
+.filter_start_date {
+  float:left;
+  margin-top:-16px;
+  padding-left:5px;
+ }
+
+.filter_end_date input, .filter_start_date input { border:1px solid #7f9db9; background:url(../../downtimes/images/calender_icon.gif) right center no-repeat;}
+
+.type_search_dropdown {
+	float:left;
+	 padding-left:5px;	
+}
+.time_period_search_dropdown{
+  float:left;
+ padding-left:5px;	
+}
+
+.resolved_details{
+  margin-top:30px;
+}
+
+.string_search {
+float:left;
+ padding-left:5px;
+}
+.filter_submit {
+float:left;
+margin-top:5px;
+width:75px;
+//display:none;
+}
+
+.downtime_reason {
+margin-top:30px;
+}
+
+.groups{
+display:none;
+}
+
+
+.downtimes_title{
+width:13%;
+float:left;
+}
+
+.downtimes_content{
+width:70%;
+float:left;
+}
+
+.filter_start_date input {
+cursor:pointer;
+}
+.filter_end_date input {
+cursor:pointer;
+}
+
+
+
+/*   CSS FOR MAINTENANCE TABLE */
+
+
+table.downtimes_maintenance {
+        font-family:arial;
+        margin:10px 0pt 15px;
+        font-size: 8pt;
+        width: 750px;
+        text-align: center;
+		border:1px solid #375f92;
+		background:	#CDCDCD;
+}
+table.downtimes_maintenance thead tr th, table.downtimes_maintenance tfoot tr th {
+        background-color: #5e90cd;
+        font-size: 8pt;
+        padding: 4px;
+		text-align:center;
+		color:#fff;
+		}
+
+
+. tr.even td {background-color:#d9e8fb;}
+.downtimes_maintenance tr.odd td {background-color:#f8f8f8;}
+
+.downtimes_maintenance .reason {text-align:left;}
+
+table.downtimes_maintenance thead tr .header {
+        background-image: url(images/bg.gif);
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+}
+table.downtimes_maintenance tbody td {
+        color: #3D3D3D;
+        padding: 4px;
+        background-color: #FFF;
+        vertical-align: top;
+}
+
+table.downtimes_maintenance thead tr .headerSortUp {
+        background-image: url(images/asc.gif);
+}
+table.downtimes_maintenance thead tr .headerSortDown {
+        background-image: url(images/desc.gif);
+}
+table.downtimes_maintenance thead tr .headerSortDown, table.downtimes_maintenance thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+table.downtimes_maintenance thead tr .state {
+        width: 114px;}
+		
+
+
+		
+
+table.downtimes_maintenance thead tr .service {
+        width: 114px;
+}
+table.downtimes_maintenance thead tr .start {
+        width: 80px;
+}
+table.downtimes_maintenance thead tr .end {
+        width: 80px;
+}
+
+table.downtimes_maintenance thead tr .reported_by {
+        width: 100px;
+}
+table.downtimes_maintenance thead tr .owner {
+        width: 125px;
+}
+table.downtimes_maintenance thead tr .action {
+        width: 48px;
+}
+
+
+
+/* CSS FOR Archived tabs downtimes page*/
+
+table.downtimes_archived {
+        font-family:arial;
+        margin:10px 0pt 15px;
+        font-size: 8pt;
+        width: 750px;
+        text-align: center;
+		border:1px solid #375f92;
+		background:	#CDCDCD;
+}
+table.downtimes_archived thead tr th, table.downtimes_archived tfoot tr th {
+        background-color: #5e90cd;
+        font-size: 8pt;
+        padding: 4px;
+		text-align:center;
+		color:#fff;
+		}
+
+
+.downtimes_archived tr.even td {background-color:#d9e8fb;}
+.downtimes_archived tr.odd td {background-color:#f8f8f8;}
+
+.downtimes_archived .reason {text-align:left;}
+
+table.downtimes_archived thead tr .header {
+        background-image: url(images/bg.gif);
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+}
+table.downtimes_archived tbody td {
+        color: #3D3D3D;
+        padding: 4px;
+        background-color: #FFF;
+        vertical-align: top;
+}
+
+table.downtimes_archived thead tr .headerSortUp {
+        background-image: url(images/asc.gif);
+}
+table.downtimes_archived thead tr .headerSortDown {
+        background-image: url(images/desc.gif);
+}
+table.downtimes_archived thead tr .headerSortDown, table.downtimes_archived thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+table.downtimes_archived thead tr .state {
+        width: 114px;}
+	
+
+table.downtimes_archived thead tr .service {
+        width: 114px;
+}
+table.downtimes_archived thead tr .start {
+        width: 80px;
+}
+table.downtimes_archived thead tr .end {
+        width: 80px;
+}
+
+table.downtimes_archived thead tr .reported_by {
+        width: 100px;
+}
+table.downtimes_archived thead tr .owner {
+        width: 125px;
+}
+table.downtimes_archived thead tr .action {
+        width: 48px;
+}
+
+

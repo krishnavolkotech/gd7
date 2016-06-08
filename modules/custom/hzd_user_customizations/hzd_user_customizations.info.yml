@@ -1,0 +1,6 @@
+name: HZD User Customizations
+type: module
+description: HZD User Customizations
+core: 8.x
+package: HZD
+

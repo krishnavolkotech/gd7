@@ -1,0 +1,27 @@
+#api_url: 'api.drupal.org'
+#page_alter: FALSE
+#raw_names: FALSE
+#error_handlers:
+#  1: 1
+#rebuild_theme: FALSE
+#debug_mail_file_format: '%to-%subject-%datetime.mail.txt'
+#debug_mail_directory: 'temporary://devel-mails'
+#devel_dumper: 'default'
+import_alias_releases: 'releases'
+import_path_csv_released: ''
+import_path_csv_locked: ''
+import_path_csv_progress: ''
+import_path_csv_rejected: ''
+import_time_releases: ''
+import_mail_releases: ''
+release_vocabulary_id: NULL
+konsens_service_term_id: NULL
+ex_eoss_service_term_id: NULL
+import_path_csv_initial_released: ''
+secure_download_text: NULL
+failed_download_text: NULL
+release_mail_body: NULL
+release_not_import: NULL
+release_import_password: NULL
+release_import_username: NULL
+import_path_csv_ex_eoss: ''

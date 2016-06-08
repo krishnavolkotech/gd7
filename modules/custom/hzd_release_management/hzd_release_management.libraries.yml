@@ -1,0 +1,9 @@
+hzd_release_management:
+  version: 1.x
+  css:
+    theme:
+      css/release_management.css: {}
+  js:
+    js/release_management.js: {}
+  dependencies:
+    - core/jquery

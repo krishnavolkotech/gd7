@@ -1,13 +1,8 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\text\Plugin\migrate\cckfield\TextField.
- */
-
 namespace Drupal\text\Plugin\migrate\cckfield;
 
-use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\migrate_drupal\Plugin\migrate\cckfield\CckFieldPluginBase;
 
@@ -121,6 +116,17 @@ class TextField extends CckFieldPluginBase {
           break;
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function transformFieldStorageSettings(Row $row) {
+    $settings = parent::transformFieldStorageSettings($row);
+    $global_settings = $row->getSourceProperty('global_settings');
+    $max_length = isset($global_settings['max_length']) ? $global_settings['max_length'] : '';
+    $settings['max_length'] = empty($max_length) ? 255 : $max_length;
+    return $settings;
   }
 
 }
