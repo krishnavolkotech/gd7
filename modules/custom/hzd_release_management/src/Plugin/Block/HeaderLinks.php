@@ -37,8 +37,7 @@ class HeaderLinks extends BlockBase {
       $name->addExpression("CONCAT(c.firstname, ' ', c.lastname)", 'full_name');
       $name->condition('c.uid', $uid, '=');
       $results = $name->execute()->fetchField();
-  pr($results);exit;
-      $login = 'Abmelden' . ' (' . \Drupal::currentUser()->getUsername . ')';
+      $login = 'Abmelden' . ' (' . $results . ')';
       $output .= \Drupal::l($login, Url::fromUserInput('/user/logout')) . ' | ';
       $output .= \Drupal::l('Mein Profil', Url::fromUserInput('/user')) . ' | ';   
     }
