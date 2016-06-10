@@ -217,7 +217,11 @@ static function saving_problem_node($values) {
           'value' => $values['ticketstore_count'],
           )
         ),
-
+      'field_timezone' => Array(
+        '0' => Array(
+          'value' => $values['timezone'],
+          )
+        ),
       'og_initial_groups' => Array(
         '0' => $problem_management_group_id,
        ),
@@ -300,7 +304,9 @@ static function import_history_display_table($limit = NULL) {
    // '#class' => 'tablesorter',
   );
   $build['pager'] = array(
-    '#type' => 'pager'
+    '#type' => 'pager',
+    '#prefix' => '<div id="pagination">',
+    '#suffix' => '</div>',
   );
   // echo '<pre>';  print_r($build); exit;
   return $build; 
@@ -740,7 +746,9 @@ static function problems_default_display($sql_where = NULL, $string = NULL, $lim
    // $output .= theme('table', $header, $rows , array('id' => 'sortable', 'class' => 'tablesorter'));
    // return $output .= theme('pager', NULL, $page_limit, 0);
     $build['pager'] = array(
-     '#type' => 'pager'
+      '#type' => 'pager',
+      '#prefix' => '<div id="pagination">',
+      '#suffix' => '</div>',
     );
 
     $build['problem_table'] = array(

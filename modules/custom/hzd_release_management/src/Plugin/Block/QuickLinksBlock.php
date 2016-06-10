@@ -38,8 +38,8 @@ class QuickLinksBlock extends BlockBase {
       //if(quicklink_maintenance_access(32454)) {
         $output .= "<li>" . \Drupal::l('Blockzeit melden', Url::fromUserInput('/incident-management/stoerungen/blockzeit-melden')) . "</li>\n";
       //}
-      $output .= "<li>" . \Drupal::l('Bekannte Fehler und Probleme', Url::fromUserInput('/problem-management/problems')) . "</li>\n";
-      $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/release-management/releases')) . "</li>\n";
+      $output .= "<li>" . \Drupal::l('Bekannte Fehler und Probleme', Url::fromUserInput('/node/825/problems')) . "</li>\n";
+      $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/node/339/releases')) . "</li>\n";
       $output .= "<li>" . \Drupal::l('RZ-Schnellinfos', Url::fromUserInput('/release-management/rz-schnellinfos')) . "</li>\n";
       $output .= "<li><a target=\"_blank\" href=\"http://glossar.konsens.ktz.testa-de.net/\">KONSENS-Glossar</a></li>\n";
       $output .= "<li><a target=\"_blank\" href=\"!nsm_link\">Service Monitoring</a></li>";

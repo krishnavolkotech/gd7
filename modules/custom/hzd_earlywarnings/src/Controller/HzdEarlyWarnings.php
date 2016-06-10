@@ -28,8 +28,7 @@ class HzdEarlyWarnings extends ControllerBase {
   }
 
   // display releases earlywarnings
-  public function view_earlywarnings_display_table($limit = 10) {
-    $release_type = KONSONS;
+  public function view_earlywarnings_display_table($limit = 10, $release_type = KONSONS) {
     $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warningslink-hdr');
     $date = array('data' => t('Created On'), 'class' => 'date-hdr');
     $responses = array('data' => t('Responses'), 'class' => 'responses-hdr');
@@ -40,8 +39,6 @@ class HzdEarlyWarnings extends ControllerBase {
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
     $query->join('node__release_type', 'nrt', 'nfrs.field_release_service_value = nrt.entity_id');
-
-    
     $query->condition('n.type', 'early_warnings', '=');
     if(\Drupal::request()->get('rel_type')) {
       $release_type = \Drupal::request()->get('rel_type');
@@ -51,7 +48,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $release = \Drupal::request()->get('rel');
     if($service && $release) {
       $query->condition('nfrs.field_release_service_value', $service, '=')
-            //->condition('nfer.field_earlywarning_release_value', $release, '=')
+            ->condition('nfer.field_earlywarning_release_value', $release, '=')
             ->condition('nrt.release_type_target_id', $release_type, '=');
     }
     elseif(isset($filter_options)) {
@@ -98,6 +95,8 @@ class HzdEarlyWarnings extends ControllerBase {
     $output['pager'] = array(
       '#type' => 'pager',
       '#quantity' => 5,
+      '#prefix' => '<div id="pagination">',
+      '#suffix' => '</div>',
     );
     return $output;
   }

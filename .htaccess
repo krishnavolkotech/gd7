@@ -34,6 +34,12 @@ AddEncoding gzip svgz
   php_value mbstring.http_input             pass
   php_value mbstring.http_output            pass
   php_flag mbstring.encoding_translation    off
+  php_value max_execution_time  600
+  php_value max_input_time 600
+  php_value max_input_nesting_level 600
+  php_value memory_limit 750M
+  php_value upload_max_filesize 4000M
+  php_value post_max_size  4000M
   # PHP 5.6 has deprecated $HTTP_RAW_POST_DATA and produces warnings if this is
   # not set.
   php_value always_populate_raw_post_data   -1
@@ -185,3 +191,9 @@ AddEncoding gzip svgz
   # Disable content sniffing, since it's an attack vector.
   Header always set X-Content-Type-Options nosniff
 </IfModule>
+
+# Require popup dialog for access 
+AuthType Basic 
+AuthName "You must give a password" 
+AuthUserFile /var/www/.hzdev1pwd 
+Require valid-user

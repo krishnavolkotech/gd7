@@ -33,8 +33,8 @@ class HzdservicesHelper {
  */
 function send_problems_notification($to, $subject, $message_text) {
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $module = 'grn_messages';
-  $key = 'grn_email_notification';
+  $module = 'problem_management';
+  $key = 'problem_management_read_csv';
   $params['message'] = $message_text;
   $params['subject'] = $subject;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();

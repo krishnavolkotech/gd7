@@ -79,7 +79,6 @@ function validate_releases_csv(&$values) {
   $service = trim($service);
   
   if (HzdservicesHelper::service_exist($service, $type)) {
-    // echo 'haiiiii8';  exit;
     $services = HzdservicesStorage::get_related_services($type);
     $service_id = array_keys($services, $service);
     $values['service'] = $service_id[0];

@@ -1,0 +1,6 @@
+front_page.settings:
+  title: 'Front page Settings'
+  route_name: front_page.settings
+  parent: system.admin_config
+  description: 'Front page settings'
+  weight: -15

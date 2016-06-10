@@ -33,7 +33,7 @@ class EarlyWarningsFilterForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $wrapper = 'earlywarnings_results_wrapper';
-    $services[] = $this->t('Service');
+    $services[] = 'Service';
 
     $path = '::search_earlywarning';
     $type_path = '::search_type_earlywarning';
@@ -46,20 +46,18 @@ class EarlyWarningsFilterForm extends FormBase {
     else {
       $default_type = $release_type ? $release_type : KONSONS;
     }
-    
+
     $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
-                     ORDER BY n.title asc", array(":gid" => 339, ":tid" => $default_type))->fetchAll();
+                     ORDER BY n.title asc", array(":gid" => $_SESSION['Group_id'], ":tid" => $default_type))->fetchAll();
 
     foreach($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
     }
 
-
     $container = \Drupal::getContainer();
     $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
-    $group_id = 339;
 
     foreach($terms as $key => $value) {
       $release_type_list[$value->tid] =$value->name;
@@ -92,7 +90,7 @@ class EarlyWarningsFilterForm extends FormBase {
     );
 
   
-    $default_value_services = \Drupal::request()->get('services');
+    $default_value_services = \Drupal::request()->get('ser');
    $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
@@ -113,11 +111,11 @@ class EarlyWarningsFilterForm extends FormBase {
     );
 
   
-    $default_value_releases = \Drupal::request()->get('releases');
-    $options = array('Release');
+    $default_value_releases = \Drupal::request()->get('rel');
+    $options = HzdreleasemanagementHelper::get_dependent_release($default_value_services);
     $form['releases'] = array(
       '#type' => 'select',
-      '#options' => $options,
+      '#options' => $options['releases'],
       '#default_value' => $default_value_releases,
       '#weight' => -3,
       '#ajax' => array(

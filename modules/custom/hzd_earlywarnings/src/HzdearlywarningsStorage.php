@@ -134,7 +134,8 @@ db_result(db_query("SELECT count(*) FROM {comments} c, {content_field_earlywarni
       // $output .= theme('table', $header, $rows , array('id' => 'sortable', 'class' => 'tablesorter'));
       // return $output .= theme('pager', NULL, $page_limit, 0);
       $output['pager'] = array(
-        '#type' => 'pager'
+        '#type' => 'pager',
+        
       );
 
       $output['problem_table'] = array(

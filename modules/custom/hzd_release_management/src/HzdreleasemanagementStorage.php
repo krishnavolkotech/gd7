@@ -74,9 +74,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
       self::release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values);
     }
   }
-
   $count = 1;
-  
   while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
     if ($count == 1) {
       $heading = $data;
@@ -87,11 +85,9 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
         //$values[$header_values[$key]] = utf8_encode($data[$key]);
         $values[$header_values[$key]] = $data[$key];
       }
-
      // $values['type'] = SafeMarkup::checkPlain($type);
       $values['type'] = $type;
       $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
-
       if ($validation) {
         $sucess = self::saving_release_node($values);
       }
@@ -110,9 +106,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
   * function for saving release node
   */
  function saving_release_node($values) {
-
    global $user;
-
    $query = db_select('node_field_data', 'n');
    $query->Fields('n', array('nid'));
    $query->condition('type', 'group', '=');
@@ -146,7 +140,6 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr',array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
 
    $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
-
    if ($nid) {
      $node = \Drupal\node\Entity\Node::load($nid);
      $node->set("vid", $vid);
@@ -261,7 +254,6 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     "date_value" => $field_date_value['field_date_value'], 
     "release_value" => $field_release_value['field_release_value'], 
     "doku_link" => $field_documentation_link_value['field_documentation_link_value']);
-
   self::documentation_link_download($params,$values);
 
   return TRUE;
@@ -579,7 +571,6 @@ function move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonst
  *
  */
 function release_documentation_link_download($username,$password,$paths,$link,$compressed_file,$nid) {
-  
   shell_exec("chmod -R 777 " . $paths);
   shell_exec("wget --no-check-certificate --user='" .  $username . "'  --password='" . $password  . "' -P " . $paths . "  " . $link);
 
@@ -601,7 +592,6 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
     $extracted_file = scandir($remove_quotes);
     unset($extracted_file[0]);
     unset($extracted_file[1]);
-
     shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/ginster/risrv/');
     // shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/ginster/risrv/');
     // Check documentation zip file extracted or not.
@@ -611,7 +601,6 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
       $paths = str_replace("'","",$paths);
       $paths = trim($paths, "'");
       $extract_file = scandir($paths);
-
       // Check documentation folder exist or not.
       if ((is_dir($paths . "/" . $extract_file[2])) && (!empty($extract_file[2]))) {
         rename($paths . "/" . $extract_file[2], $paths . "/" . $upper);
@@ -619,7 +608,6 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
         $sonstige_content = array();
         // $list_scandir = scandir($new_file);
         $list_scandir = array();
-
         if ($dh = opendir($paths)) {
           while (($file = readdir($dh)) !== false){
             if (!is_dir( $paths . DIRECTORY_SEPARATOR . $file)) {
@@ -632,11 +620,13 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
      //   unset($list_scandir[1]);
         $root_folders = array("afb", "benutzerhandbuch", "betriebshandbuch", "releasenotes", "sonstige", "zertifikat");
         // move root level documents to sonstige folder
+
         foreach ($list_scandir as $list_values) {
           if (!in_array($list_values, $root_folders)) {
             $new_path = $dokument_path ."/" . $upper;
             shell_exec("mkdir " . $new_path . "/sonstige");
-            shell_exec("mv " . $new_path . "/'" . $list_values . "' " . $new_path . "/sonstige");   
+            shell_exec("chmod 777 -R " . $new_path . "/sonstige");
+            shell_exec("mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige");
           }
         }
       }
@@ -665,7 +655,6 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
       'created' => time(), 
       'reason' => $failed_link);
       db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-
       // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason) 
       //          VALUES (%d, %d, '%s')", $nid, time(), $failed_link);
     }
@@ -673,15 +662,13 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
   else {
     // using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table
     $failed_link = "Documentation link was not downloaded";
-
     $failed_info = array(
       'nid' => $nid, 
       'created' => time(), 
       'reason' => $failed_link);
       db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-//    db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason) 
- //             VALUES (%d, %d, '%s')", $nid, time(), $failed_link);
-
+  //    db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason) 
+  //             VALUES (%d, %d, '%s')", $nid, time(), $failed_link);
   }
  }
 
@@ -941,6 +928,8 @@ function get_release_details_from_title($values_title, $link) {
     $output['pager'] = array(
       '#type' => 'pager',
       '#quantity' => 5,
+      '#prefix' => '<div id="pagination">',
+      '#suffix' => '</div>',
     );
 
     $output['deployed'] = array(
@@ -1061,6 +1050,8 @@ static function get_environment_options($state = 1) {
       $output['pager'] = array(
         '#type' => 'pager',
         '#quantity' => 5,
+        '#prefix' => '<div id="pagination">',
+        '#suffix' => '</div>',
       );
 
       $output['#attached']['library'] = array('locale.libraries/translations', 
