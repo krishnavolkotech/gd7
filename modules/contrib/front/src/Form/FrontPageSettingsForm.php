@@ -42,6 +42,7 @@ class FrontPageSettingsForm extends ConfigFormBase {
       $default_val = \Drupal::config('front.settings')->get('front_'. $role .'_text');
       $form['front_'. $role .'_text'] = array(
         '#type' => 'text_format',
+        '#format' => 'full_html',
         '#title' => t('Front Page for @rolename.', array('@rolename' => $rolename)),
         '#default_value' => $default_val['value'],
         '#cols' => 60,
@@ -49,7 +50,7 @@ class FrontPageSettingsForm extends ConfigFormBase {
       );
     }
 
-    $form['site'] = array(
+    /*$form['site'] = array(
       '#type' => 'fieldset',
       '#collapsible' => true,
       '#collapsed' => false,
@@ -62,7 +63,7 @@ class FrontPageSettingsForm extends ConfigFormBase {
       '#default_value' => \Drupal::config('front.settings')->get('site_frontpage'),
       '#size' => 40,
       '#description' => t('Change this setting to <em>front_page</em> to activate your front page settings.'),
-    );
+    );*/
 
     $form['submit'] = array(
       '#attributes' => array('readonly' => 'readonly'),

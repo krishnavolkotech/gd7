@@ -9,6 +9,7 @@ namespace Drupal\hzd_earlywarnings\Controller;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
+use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 
 define('EARLYWARNING_TEXT', 11217);
 /**
@@ -19,16 +20,25 @@ class HzdEarlyWarnings extends ControllerBase {
 
  // const KONSONS = 459;
   public function view_early_warnings() {
-    $output[] = $this->early_warning_text();
-    $output[]['#prefix'] =     $result[]['#prefix'] = "<div id = 'earlywarnings_results_wrapper'>"; 
-    $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm');
-    $output[] = $this->view_earlywarnings_display_table();
-    $output[]['#suffix'] = "</div>";
+    // drupal_add_css(drupal_get_path('module', 'downtimes') . '/downtimes.css');
+    // drupal_add_js(array('type' => 'public'), 'setting');
+    // drupal_add_js(drupal_get_path('module', 'hzd_customizations') . '/jquery.tablesorter.min.js');
+    // drupal_add_js(drupal_get_path('module', 'earlywarnings') . '/earlywarnings.js');
+    
+    $output['content']['#attached']['library'] = array('hzd_customizations/hzd_customizations', 
+      'downtimes/downtimes', 'hzd_earlywarnings/hzd_earlywarnings');
+    
+    $output['content']['pretext'] = HzdearlywarningsStorage::early_warning_text();
+    $output['content']['#prefix'] = '<div id = "earlywarnings_results_wrapper">';
+    $output['content']['earlywarnings_filter_form'] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm');
+    $output['content']['earlywarnings_filter_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table();
+    $output['content']['#suffix'] = '</div>';
     return $output;
   }
 
   // display releases earlywarnings
-  public function view_earlywarnings_display_table($limit = 10, $release_type = KONSONS) {
+  /*public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+    $limit = 10;
     $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warningslink-hdr');
     $date = array('data' => t('Created On'), 'class' => 'date-hdr');
     $responses = array('data' => t('Responses'), 'class' => 'responses-hdr');
@@ -99,7 +109,7 @@ class HzdEarlyWarnings extends ControllerBase {
       '#suffix' => '</div>',
     );
     return $output;
-  }
+  }*/
 
   // get early warning responses info
   public function get_earlywarning_responses_info($earlywarnings_nid) {
@@ -123,16 +133,6 @@ class HzdEarlyWarnings extends ControllerBase {
     }
     $response_info = array('total_responses' => $total_responses, 'response_lastposted' => $response_lastposted);
     return $response_info;
-  }
-
-  // display early warning text on view warly warnings page.
-  public function early_warning_text() {
-    $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
-    $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>"; 
-    $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
-    $output = "<div class = 'earlywarnings_text'>" . $body . "<a href='/release-management/add/early-warnings?\ destination=node/339/early-warnings&amp;ser=0&amp;rel=0' title='". t("Add an Early Warning for this release"). "'>". $create_icon ."</a></div>";
-    $build['#markup'] = $output;
-    return $build;
   }
 
 }

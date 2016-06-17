@@ -1,0 +1,34 @@
+hzd_notifications.notifications:
+  route_name: hzd_notifications.notifications
+  base_route: entity.user.canonical
+  title: 'Notifications'
+  weight: 3
+
+hzd_notifications.notifications_new:
+  title: 'Overview'
+  route_name: hzd_notifications.notifications
+  parent_id: hzd_notifications.notifications
+
+hzd_notifications.group_notifications:
+  title: 'Group Notifications'
+  route_name: hzd_notifications.group_notifications
+  parent_id: hzd_notifications.notifications
+  weight: 1
+
+hzd_notifications.set_service_notifications:
+  title: 'Service Notifications'
+  route_name: hzd_notifications.set_service_notifications
+  parent_id: hzd_notifications.notifications
+  weight: 2
+
+hzd_notifications.set_exeoss_notifications:
+  title: 'Ex-EOSS'
+  route_name: hzd_notifications.set_exeoss_notifications
+  parent_id: hzd_notifications.notifications
+  weight: 3
+
+hzd_notifications.rz_schnellinfos_notifications:
+  title: 'RZ-Schnellinfos'
+  route_name: hzd_notifications.rz_schnellinfos_notifications
+  parent_id: hzd_notifications.notifications
+  weight: 4

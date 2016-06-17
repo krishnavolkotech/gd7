@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\hzd_release_management\Controller\HzdReleases;
-use Drupal\Core\Form\FormCache;
+use Drupal\Core\Form\FormBuilder;
 
 define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 define('RELEASE_MANAGEMENT', 339);
@@ -29,17 +29,44 @@ class ReleaseFilterForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $type = NULL){
+
+    $deploy_filter_options = $_SESSION['deploy_filter_options'];
+    $request = \Drupal::request();
+    $page = $request->get('page');
+
+    if (isset($page) && $type == 'deployed') {
+      $default_state_value = $deploy_filter_options['state'];
+      $default_service_value = $deploy_filter_options['service'];
+      $default_release_value = $deploy_filter_options['release'];
+      $default_startdate_value = $deploy_filter_options['startdate'];
+      $default_enddate_value = $deploy_filter_options['enddate'];
+      $default_deployed_type_value = $deploy_filter_options['deployed_type'];
+      $default_release_type_value = $deploy_filter_options['release_type'];
+      $default_env_type_value = $deploy_filter_options['env_type'];
+    } else {
+      $filter_options = $_SESSION['filter_where'];
+      $default_release_type_value = $filter_options['release_type'];
+      $default_service_value = $filter_options['service'];
+      $default_release_value = $filter_options['release'];
+      $default_startdate_value = $filter_options['startdate'];
+      $default_enddate_value = $filter_options['enddate'];
+    }  
+
     $wrapper = 'released_results_wrapper';    
     $services[] = $this->t('Service');  
 
-    $release_type = \Drupal::request()->get('release_type');
-    if(isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-      $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
-      $default_type = ($release_type ? $release_type : ($default_type ? $default_type : KONSONS));
-    }
-    else {
-      $default_type = $release_type ? $release_type : KONSONS;
+
+    $release_type = $form_state->getValue('release_type');
+    $default_type = $default_release_type_value;
+    if ($default_type) {
+      if(isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
+        $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
+        $default_type = ($release_type ? $release_type : ($default_type ? $default_type : KONSONS));
+      }
+      else {
+        $default_type = $release_type ? $release_type : KONSONS;
+      }
     }
     
     $services_obj = db_query("SELECT n.title, n.nid 
@@ -53,14 +80,14 @@ class ReleaseFilterForm extends FormBase {
 
     $container = \Drupal::getContainer();
     $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
-    $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
-    $group_id = $tempstore->get('Group_id');
-
+    // $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
+    // $group_id = $tempstore->get('Group_id');
+    $group_id = $_SESSION['Group_id'];
     foreach($terms as $key => $value) {
       $release_type_list[$value->tid] =$value->name;
     }
     
-    $form['#prefix'] = "<div class = 'releases_filters hzd-form-element'>";
+    $form['#prefix'] = "<div class = 'releases_filters'>";
     $form['#suffix'] = "</div>";
     
     $path = '::releases_search_results';
@@ -72,14 +99,15 @@ class ReleaseFilterForm extends FormBase {
       $rel_path = '::releases_search_results';
     }
 
+  if ($type == 'deployed') { 
 
-  if ($type == 'deployed') {
       $states = get_all_user_state();
       $form['states'] = array(
         '#type' => 'select',
         '#options' => $states,
-        '#default_value' => \Drupal::request()->get('states'),
-        '#weight' => -11,
+        // '#default_value' => \Drupal::request()->get('states'),
+        '#default_value' => isset($default_state_value) ? $default_state_value : $form_state->getValue('states'),
+        '#weight' => -28,
         '#ajax' => array(
           'callback' => $path,
           'wrapper' => $wrapper,
@@ -98,8 +126,8 @@ class ReleaseFilterForm extends FormBase {
       $form['deployed_type'] = array(
         '#type' => 'select',
         '#options' => $types,
-        '#default_value' => \Drupal::request()->get('deployed_type') ? \Drupal::request()->get('deployed_type') : array('current'),
-        '#weight' => 1,
+        '#default_value' => isset($default_deployed_type_value) ? $default_deployed_type_value : $form_state->getValue('deployed_type'),
+        '#weight' => -5,
         '#ajax' => array(
         'callback' => $path,
         'wrapper' => $wrapper,          
@@ -117,9 +145,9 @@ class ReleaseFilterForm extends FormBase {
       $environment_data = HzdreleasemanagementStorage::get_environment_options(\Drupal::request()->get('states'));
       $form['environment_type'] = array(
         '#type' => 'select',
-        '#default_value' => \Drupal::request()->get('environment_type') ? \Drupal::request()->get('environment_type') : array(1),
+        '#default_value' => isset($default_env_type_value) ? $default_env_type_value : $form_state->getValue('environment_type'),
         '#options' => $environment_data,
-        '#weight' => -10,
+        '#weight' => -26,
         '#ajax' => array(
         'callback' => $path,
         'wrapper' => $wrapper,
@@ -130,13 +158,15 @@ class ReleaseFilterForm extends FormBase {
           ), 
         ),
         '#validated' => TRUE,
+        "#prefix" => "<div class = 'env-type hzd-form-element'>",
+        '#suffix' => '</div>',
       );
     }
     $form['release_type'] = array(
       '#type' => 'select',
       '#default_value' => $default_type,
       '#options' => $release_type_list,
-      '#weight' => -1,
+      '#weight' => -25,
       '#ajax' => array(
           'callback' => $rel_path,
           'wrapper' =>  $wrapper,
@@ -152,7 +182,11 @@ class ReleaseFilterForm extends FormBase {
     );
 
     $timer = \Drupal::config('hzd_release_management.settings')->get('timer');
-    $default_value_services = $timer ? $timer : \Drupal::request()->get('services');
+    $default_value_services = $default_service_value;
+    if (!$default_service_value) {
+      $default_value_services = isset($timer) ? $timer : $form_state->getValue('services');
+    }
+
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
@@ -172,7 +206,7 @@ class ReleaseFilterForm extends FormBase {
       '#validated' => TRUE,
     );
 
-    $service = \Drupal::request()->get('services');
+    $service = $form_state->getValue('services');
     $options = array('Release');
     /*if ($service) {
       $release = \Drupal::request()->get('releases');
@@ -186,13 +220,16 @@ class ReleaseFilterForm extends FormBase {
     $form['r_type'] = array('#type' => 'hidden', '#value' => $type);
     
     $timer = \Drupal::config('hzd_release_management.settings')->get('timer');
-    $default_value_releases = $timer?$timer:$release_type = \Drupal::request()->get('releases');
-
+    $default_value_releases = $default_release_value;
+    if (!$default_release_value) {
+      $default_value_releases = isset($timer) ? $timer : $form_state->getValue('releases'); 
+    } 
+      
     $form['releases'] = array(
       '#type' => 'select',
       '#options' => $options,
       '#default_value' => $default_value_releases,
-      '#weight' => -3,
+      '#weight' => -6,
       '#ajax' => array(
          'callback' => $rel_path,
          'wrapper' => $wrapper,
@@ -212,9 +249,9 @@ class ReleaseFilterForm extends FormBase {
     '#title' => $this->t('Start Date'),
     // '#attributes' => array("class" => "start_date"), 
     '#attributes'=> array('class' => array("start_date")),
-    '#default_value' => \Drupal::request()->get('filter_startdate'),
-    '#size' => 15,
-    '#weight' => 3,
+    '#default_value' => isset($default_startdate_value) ? $default_startdate_value:$form_state->getValue('filter_startdate'),
+   // '#size' => 15,
+    '#weight' => -4,
       '#ajax' => array(
       'callback' => $path,
       'wrapper' =>  $wrapper,
@@ -232,11 +269,11 @@ class ReleaseFilterForm extends FormBase {
   $form['filter_enddate'] = array(
     '#type' => 'textfield',
     '#title' => t('End Date'),
-    '#size' => 15,
-    '#weight' => 4,
+  //  '#size' => 15,
+    '#weight' => -3,
     '#attributes'=> array('class' => array("end_date")),
     // '#attributes' => array("class" => "end_date"),
-    '#default_value' => \Drupal::request()->get('filter_enddate'),
+    '#default_value' => isset($default_enddate_value) ? $default_enddate_value:$form_state->getValue('filter_enddate'),
     '#ajax' => array(
       'callback' => $path,
       'wrapper' =>  $wrapper,
@@ -262,7 +299,7 @@ class ReleaseFilterForm extends FormBase {
   $form['limit'] = array(
     '#type' => 'select',
     '#options' => $default_limit,
-    '#default_value' => \Drupal::request()->get('limit'),
+    '#default_value' => isset($_SESSION['release_limit']) ? $_SESSION['release_limit']:$form_state->getValue('limit'),
     '#weight' => 8,
     '#ajax' => array(
       'callback' => $path,
@@ -299,23 +336,32 @@ class ReleaseFilterForm extends FormBase {
    *   service section of the form.
    */
   public function releases_search_results(array &$form, FormStateInterface $form_state) {
-    // echo '<pre>';  echo ';skjdhfkjshdf';  exit;
     $form_state->setValue('submitted', FALSE);
-    $form_build_id = $_POST['form_build_id'];
+    $form_build_id = $form_state->getValue('form_build_id');
     // $form = form_get_cache($form_build_id, $form_state);
-    // FormCache::getCache($form_build_id, $form_state); 
-    $string = $form_state->getValue('r_type');
-    //$string = $_REQUEST['type'];  
+    // echo '<pre>';  print_r($form_build_id); exit;
+    // $this->formCache->getCache($form_build_id, $form_state);
+    $current_path = \Drupal::service('path.current')->getPath();
+    $get_uri = explode('/', $current_path);
+    
+    // $string = $form_state->getValue('r_type');
+    if (isset($get_uri['4'])) {
+      $string = $get_uri['4'];
+    }
+    $request = \Drupal::request();
+    if ($_REQUEST) {
+      $state = $request->get('states');
+      $service = $request->get('services');
+      $release = $request->get('releases');
 
-      $state = \Drupal::request()->get('states');
-      $service = \Drupal::request()->get('services');
-      $release = \Drupal::request()->get('releases');
-      $start_date = strtotime(\Drupal::request()->get('filter_startdate'));
-      $end_date = strtotime(\Drupal::request()->get('filter_enddate'));
-      $limit = \Drupal::request()->get('limit');
-      $deployed_type = \Drupal::request()->get('deployed_type');
-      $release_type = \Drupal::request()->get('release_type');
-      $env_type = \Drupal::request()->get('environment_type');
+      $start_date = strtotime($request->get('filter_startdate'));
+      $end_date = strtotime($request->get('filter_enddate'));
+
+      $limit = $request->get('limit');
+      $deployed_type = $request->get('deployed_type');
+      $release_type = $request->get('release_type');
+      $env_type = $request->get('environment_type');
+    }
     if ($string != 'deployed') {
       //Geting  release data
       $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
@@ -329,11 +375,12 @@ class ReleaseFilterForm extends FormBase {
       if (array_key_exists($release, $default_releases['releases'])) {
         $form['releases']['#value'] = $release;
       }
+      /**
       else {
         $release = 0;
         $form['releases']['#value'] = $release;        
       }
-
+      */  
       if ($service) {
         // $filter_where .= " and field_relese_services_nid = ". $service;
         
@@ -373,34 +420,35 @@ class ReleaseFilterForm extends FormBase {
     else {
         $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
         $env_options = HzdreleasemanagementStorage::get_environment_options($state);
+
         $form['services']['#options'] = $default_services['services'];
         if (array_key_exists($service, $default_services['services'])) {
           $form['services']['#value'] = $service;
         }
         $form['states']['#value'] = $state;
         $form['deployed_type']['#value'] = $deployed_type;
-        $form['environment_type']['#value'] = (!array_key_exists($env_type ,$env_options)) ? 1 : $env_type;
         $form['environment_type']['#options'] = $env_options;
+        $form['environment_type']['#value'] = (!array_key_exists($env_type ,$env_options)) ? 1 : $env_type;
         if (!array_key_exists($env_type ,$env_options)) {
           $env_type = 1;
         }
-      if ($service > 0) {
-        $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
-        $form['releases']['#options'] = $default_releases['releases'];
+        if ($service > 0) {
+          $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
+          $form['releases']['#options'] = $default_releases['releases'];
 
-        if (array_key_exists($release, $default_releases['releases'])) {
-          $form['releases']['#value'] = $release;
-        }
-        else {
-          $release = 0;
-          $form['releases']['#value'] = $release;        
+          if (array_key_exists($release, $default_releases['releases'])) {
+            $form['releases']['#value'] = $release;
+          }
+          /**
+          else {
+            $release = 0;
+            $form['releases']['#value'] = $release;        
+          }
+          */
         }
       }
-    }
-   $form_state->setValue('rebuild', TRUE);
-   // form_set_cache($form_build_id, $form, $form_state);
-    // FormCache::setCache($form_build_id, $form, $form_state);
-   // $output .= drupal_get_form('release_filter_form', $string);
+    $form_state->setValue('rebuild', TRUE);
+   // $this->formCache->setCache($form_build_id, $form, $form_state);
     $output[]['#prefix'] = "<div id = 'released_results_wrapper'>" ;
     $output[] = $form;
     //$output .= '<div style="clear:both;"></div>';
@@ -424,8 +472,8 @@ class ReleaseFilterForm extends FormBase {
       $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable($filter_options, $limit, $release_type);
       $output[] = array('#markup' => "</div>");
     }
-/**
-    $output[] = array( => "<script>
+
+    $output[]['#attached']['#library'][] = array("<script>
                 if ($.browser.msie){
                   if($.browser.version == '10.0') {
                   setTimeout(function(){
@@ -434,7 +482,7 @@ class ReleaseFilterForm extends FormBase {
                   }
                 }                     
               </script>");
-*/  $output[] = array('#markup' => "</div>");
+    $output[] = array('#markup' => "</div>");
     $output[] = array(
       '#attached' => array(
         'library' => array(
@@ -453,25 +501,50 @@ class ReleaseFilterForm extends FormBase {
           )
         )
       );
-
+   // echo '4554 545 45';  exit;
 //    print drupal_to_js(array('data' => $output, 'status' => TRUE));
     return $output;
   }
 
   public function releases_type_search_results(array &$form, FormStateInterface $form_state) {
-    $filter_where = array();
-    /*$_REQUEST['services'] = 0;
-    $_REQUEST['releases'] = 0;*/
+    \Drupal::request()->request->set('services', '0');
+    \Drupal::request()->request->set('releases', '0');
+ 
     $form_state->setValue('submitted', FALSE);
-    $form_build_id = $_POST['form_build_id'];
-    $string = $form_state->getValue('r_type');
-    $service = \Drupal::request()->get('services');
-    $release = \Drupal::request()->get('releases');
-    $start_date = strtotime(\Drupal::request()->get('filter_startdate'));
-    $end_date = strtotime(\Drupal::request()->get('filter_enddate'));
-    $limit = \Drupal::request()->get('limit');
-    $release_type = \Drupal::request()->get('release_type');
+    $form_build_id = $form_state->getValue('form_build_id');
+
+    $current_path = \Drupal::service('path.current')->getPath();
+    $get_uri = explode('/', $current_path);
     
+    // $string = $form_state->getValue('r_type');
+    if (isset($get_uri['4'])) {
+      $string = $get_uri['4'];
+    }
+
+    $request = \Drupal::request();
+    // $form = form_get_cache($form_build_id, $form_state);
+    // FormCache::getCache($form_build_id, $form_state);
+    // $this->formCache->getCache($form_build_id, $form_state);
+    // $string = $_REQUEST['type'];
+    if ($_REQUEST) {
+      $limit = $request->get('limit');
+      $deployed_type = $request->get('deployed_type');
+      $release_type = $request->get('release_type');
+    }
+
+    // $string = $form_state->getValue('r_type');
+
+    $start_date = strtotime($form_state->getValue('filter_startdate'));
+    $end_date = strtotime($form_state->getValue('filter_enddate'));
+
+    $limit = $form_state->getValue('limit');
+    $release_type = $form_state->getValue('release_type');    
+    $user_input = $form_state->getUserInput(); 
+    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
+      $service = $form_state->getValue('services');
+      $release = $form_state->getValue('releases');
+    }
+
     if ($string != 'deployed') {
       if($service) {
         // $filter_where .= " and field_relese_services_nid = ". $service;
@@ -522,9 +595,10 @@ class ReleaseFilterForm extends FormBase {
         }
     }
     else {
-        $state = \Drupal::request()->get('states');
-        $deployed_type = \Drupal::request()->get('deployed_type');
-        $env_type = \Drupal::request()->get('environment_type');
+        $state = $form_state->getValue('states');
+        $deployed_type = $form_state->getValue('deployed_type');
+        $env_type = $form_state->getValue('environment_type');
+      
         $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
         $env_options = HzdreleasemanagementStorage::get_environment_options($state);
 
@@ -538,9 +612,9 @@ class ReleaseFilterForm extends FormBase {
         if (array_key_exists($release, $default_releases['releases'])) {
           $form['releases']['#value'] = $release;
         }
-
         $form['states']['#value'] = $state;
         $form['deployed_type']['#value'] = $deployed_type;
+
         $form['environment_type']['#value'] = $env_type;
         $form['environment_type']['#options'] = $env_options;
 
@@ -555,7 +629,7 @@ class ReleaseFilterForm extends FormBase {
     $form['filter_startdate']['#value'] = '';
     $form['filter_enddate']['#value'] = '';
    // form_set_cache($form_build_id, $form, $form_state);
-   // FormCache::setCache($form_build_id, $form, $form_state);
+   // $this->formCache->setCache($form_build_id, $form, $form_state);
     $form_state->setValue('rebuild', TRUE);
     $output[]['#prefix'] = "<div id = 'released_results_wrapper'>" ;
     $output[] = $form;
@@ -563,6 +637,7 @@ class ReleaseFilterForm extends FormBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
+
     $_SESSION['filter_where'] = $filter_where;
     $_SESSION['release_limit'] = $limit;
     $_SESSION['release_type'] = $release_type;
@@ -582,10 +657,10 @@ class ReleaseFilterForm extends FormBase {
         'deployed_type' => $deployed_type, 
         'release_type' => $release_type, 
         'env_type' => $env_type);
-      $_SESSION['filter_options'] = $filter_options;
+
+      $_SESSION['filter_options'] = $filter_where;
       $output[] = array('#markup' => "<div class = 'deployed_releses_output'>");
-      $output['fgg']['table'] = HzdreleasemanagementStorage::deployed_releases_displaytable($filter_options, $limit, $release_type);
-//      echo '<pre>';  print_r($output['fgg']['table']);  exit;
+      $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable($filter_options, $limit, $release_type);
       $output[] = array('#markup' => "</div>");
     }
     $output[] = array('#markup' => "</div>");

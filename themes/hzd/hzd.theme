@@ -6,9 +6,23 @@
  * Place your custom PHP code in this file.
  */
 
-function hzd_template_preprocess_pager(&$variables) {
+function hzd_preprocess_page(&$variables){
+  $user = \Drupal::currentUser();
+  $headerlinks =  \Drupal\block\Entity\Block::load('hzdheaderlinks');
+  $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);
 
-  // echo 'jhmnhjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjghfjgjgj';  exit;
-
+  if($user->id()) {
+    $searchform =  \Drupal\block\Entity\Block::load('searchform');
+    $variables['content']['block_searchform'] = \Drupal::entityManager()->getViewBuilder('block')->view($searchform);
+  }
 }
 
+/**
+ * Implements hook_preprocess_html().
+ */
+function hzd_preprocess_html(&$variables) {
+  $user = \Drupal::currentUser()->id();
+  if(!$user) {
+    $variables['attributes']['class'][] = 'not-loggedin';
+  }
+}

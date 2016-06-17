@@ -1,0 +1,5 @@
+name: HZD Notifications
+type: module
+description: HZD Notifications
+core: 8.x
+package: HZD

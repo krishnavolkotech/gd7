@@ -1,0 +1,21 @@
+hzd_earlywarnings:
+  version: 1.x
+#  css:
+#    theme:
+#      css/problem_management.css: {}
+  js:
+    js/earlywarnings.js: {}
+    js/jquery.datePicker.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+
+hzd_earlywarnings.earlywarnings_view:
+  version: 1.x
+  js:   
+    js/earlywarnings_view.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal

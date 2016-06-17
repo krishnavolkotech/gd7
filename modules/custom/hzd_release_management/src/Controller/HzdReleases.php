@@ -26,7 +26,20 @@ class HzdReleases extends ControllerBase {
     $type = 'released';
     $output[] = HzdreleasemanagementStorage::release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
+
+    $request = \Drupal::request();
+    $page = $request->get('page');
+
+    if (!isset($page)) {
+      unset($_SESSION['filter_where']);
+      unset($_SESSION['limit']);
+      unset($_SESSION['release_type']);
+      unset($_SESSION['service_release_type']);
+    }
     $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+    $output[] = array('#markup' => "<div class = 'reset_form'>"); 
+    $output[] = HzdreleasemanagementHelper::releases_reset_element();
+    $output[] = array('#markup' =>'</div><div style = "clear:both"></div>');
     $output[] = HzdreleasemanagementStorage::releases_display_table($type);
     $output[] = array('#markup' => '</div>');
     return $output;
@@ -64,16 +77,42 @@ class HzdReleases extends ControllerBase {
     $type = 'progress';
     $output[] = HzdreleasemanagementStorage::release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
+
+    $request = \Drupal::request();
+    $page = $request->get('page');
+    if (!isset($page)) {
+      unset($_SESSION['filter_where']);
+      unset($_SESSION['limit']);
+      unset($_SESSION['release_type']);
+      unset($_SESSION['service_release_type']);
+    }
     $output[] = \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+    $output[] = array('#markup' => "<div class = 'reset_form'>"); 
+    $output[] = HzdreleasemanagementHelper::releases_reset_element();
+    $output[] = array('#markup' =>'</div><div style = "clear:both"></div>');
     $output[] = HzdreleasemanagementStorage::releases_display_table($type);
     $output[] = array('#markup' => '</div>');
+
+
+
     return $output;
   }
 
   public function locked() {
     $type = 'locked';
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
+    $request = \Drupal::request();
+    $page = $request->get('page');
+    if (!isset($page)) {
+      unset($_SESSION['filter_where']);
+      unset($_SESSION['limit']);
+      unset($_SESSION['release_type']);
+      unset($_SESSION['service_release_type']);
+    }
     $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+    $output[] = array('#markup' => "<div class = 'reset_form'>"); 
+    $output[] = HzdreleasemanagementHelper::releases_reset_element();
+    $output[] = array('#markup' =>'</div><div style = "clear:both"></div>');
     $output[] = HzdreleasemanagementStorage::releases_display_table($type);
     $output[] = array('#markup' => '</div>');
     return $output;
@@ -83,8 +122,18 @@ class HzdReleases extends ControllerBase {
     $type = 'deployed';
     $output[] = HzdreleasemanagementStorage::deployed_releases_text();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
+    $request = \Drupal::request();
+    $page = $request->get('page');
+    if (!isset($page)) {
+      unset($_SESSION['deploy_filter_options']);
+      unset($_SESSION['limit']);
+      unset($_SESSION['release_type']);
+    }
     $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
-    $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable($type);
+    $output[] = array('#markup' => "<div class = 'reset_form'>"); 
+    $output[] = HzdreleasemanagementHelper::releases_reset_element();
+    $output[] = array('#markup' =>'</div><div style = "clear:both"></div>');
+    $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable();
     $output[] = array('#markup' => '</div>');
     return $output;
   }

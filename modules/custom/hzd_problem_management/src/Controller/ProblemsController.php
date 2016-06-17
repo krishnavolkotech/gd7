@@ -25,6 +25,15 @@ function problems_display($node) {
     unset($_SESSION['limit']);
   }
   $string = 'current';
+
+  $request = \Drupal::request();
+  $page = $request->get('page');
+  if (!$page) {
+    unset($_SESSION['problems_query']);
+    unset($_SESSION['sql_where']);
+    unset($_SESSION['limit']);
+  }
+
   HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
   $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
   return $response;

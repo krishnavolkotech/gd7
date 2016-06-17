@@ -1,23 +1,18 @@
 (function ($) {
   Drupal.behaviors.release_management = {
     attach: function (context, settings) {
-      $(context).find('table#sortable').once('release_management').each(function () {
-        if ( jQuery('.end_date').length>0) {
-	   jQuery('.end_date').datepicker();
-	}
-        if ( jQuery('.end_date').length>0) {
-           jQuery('.start_date').datepicker();
-        }
-   
-       var anchors = $('#released_results_wrapper > nav > ul > li > a');  
-            anchors.each(function( index ) {
-              var links = $( this ).attr('href'); 
-              var new_href = links.replace('#released_results_wrapper > nav > ul > li > a', '');   
-              $( this ).attr('href', new_href);
-            });
 
+//    $(context).find('div#released_results_wrapper').once('release_management').each(function () {
+//      alert('kjdfkjhsd');
 
-// Drupal.behaviors.release_management = function (context) {
+           var anchor = $("#released_results_wrapper #pagination > nav > ul > li > a");
+             anchor.each(function( index ) {
+               var links = $( this ).attr('href'); 
+               var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
+               $( this ).attr('href', new_href);
+             });
+
+        // Drupal.behaviors.release_management = function (context) {
         $.tablesorter.addParser({
           // set a unique id
           id: 'release_date',
@@ -77,7 +72,7 @@
 	 }, 'json');
 	 return false;
         });
-      });
+  //    });
     }
   };
 })(jQuery);
@@ -89,7 +84,10 @@ function reset_form_elements(){
   jQuery('.filter_start_date input').val('');
   jQuery('.filter_end_date').val('');
   jQuery('.limit_search_dropdown select').val(0);
-  window.location.reload();
+  url = window.location.href; 
+  res = url.split('?');
+  window.location.assign(res['0']);
+  return false;
 }
 
 

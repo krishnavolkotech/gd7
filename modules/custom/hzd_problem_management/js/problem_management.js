@@ -17,13 +17,7 @@
            // $("#import_search_results_wrapper > nav > ul > li > a").removeajaxparameter();
            // $("#problem_search_results_wrapper > nav > ul > li > a").removeajaxparameter();
 
-           var anchor = $("#import_search_results_wrapper > nav > ul > li > a");
-	     anchor.each(function( index ) {
-               var links = $( this ).attr('href'); 
-               var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
-               $( this ).attr('href', new_href);
-             });
-           var anchor = $("#problem_search_results_wrapper > nav > ul > li > a");
+           var anchor = $("#pagination > nav > ul > li > a");
              anchor.each(function( index ) {
                var links = $( this ).attr('href'); 
                var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
@@ -73,45 +67,49 @@
         type: 'POST',
         dataType:'json'
       };
-    $('#problems-filter-form').ajaxForm(options);  
-    $("#sortable").tablesorter({
-      headers: {
-      	6: {
-  	      sorter: 'date_sorting'
-  	    }
-      }
-    });
-    $('.filter_submit').hide();  
-    $('.search_string').blur(text_textfield);
-    $('.search_string').focus(function() { $(this).val('') });  
-    $('#problem_search_results_wrapper .pager li a').click(function() {
-      var ele = $(this);
-      var url = ele.attr('href');
-      var params = url.split('?')[1];
-      var group_id = Drupal.settings.group_id;
-      var type = Drupal.settings.type;
-      var base_path = Drupal.settings.basePath;
-      url = base_path + 'node/' + group_id + '/problem_search_results/' + type + '?' + params;
-      $.post(url, {}, function(data) {
-        if (data.status == true) {
-          $('#problem_search_results_wrapper').html(data.data);
-          $(window).scrollTop(0);
-          Drupal.attachBehaviors('#problem_search_results_wrapper');
-        }
-      }, 'json');
-      return false;
-    });
-    $('.problems_details_link').click(function(){
-      var query = $(this).attr('query');
-      var nid = $(this).attr('nid');
-      var url = Drupal.settings.basePath + 'back_to_search';
-      $.post(url, {'from':'problems','query':query}, function(data) {
-        if (data.status == true) {
-          window.location.href = Drupal.settings.basePath + 'node/' + nid;
-        }
-      }, 'json');
-      return false;
-    });
+
+      $('#problems-filter-form').ajaxForm(options);  
+	    $("#sortable").tablesorter({
+	      headers: {
+	      	6: {
+	  	      sorter: 'date_sorting'
+	  	    }
+	      }
+	    });
+	    $('.filter_submit').hide();  
+	    $('.search_string').blur(text_textfield);
+	    $('.search_string').focus(function() { $(this).val('') });  
+
+	    $('#problem_search_results_wrapper #pagination > nav > ul > li > a').click(function() {
+	      var ele = $(this);
+	      var url = ele.attr('href');
+	      var params = url.split('?')[1];
+	      var group_id = Drupal.settings.group_id;
+	      var type = Drupal.settings.type;
+	      var base_path = Drupal.settings.basePath;
+	      url = base_path + 'node/' + group_id + '/problem_search_results/' + type + '?' + params;
+	      $.post(url, {}, function(data) {
+		if (data.status == true) {
+		  $('#problem_search_results_wrapper').html(data.data);
+		  $(window).scrollTop(0);
+		  Drupal.attachBehaviors('#problem_search_results_wrapper');
+		}
+	      }, 'json');
+	      return false;
+	    });
+
+	    $('.problems_details_link').click(function(){
+	      var query = $(this).attr('query');
+	      var nid = $(this).attr('nid');
+	      var url = Drupal.settings.basePath + 'back_to_search';
+	      $.post(url, {'from':'problems','query':query}, function(data) {
+		if (data.status == true) {
+		  window.location.href = Drupal.settings.basePath + 'node/' + nid;
+		}
+	      }, 'json');
+	      return false;
+	    });
+
         $('#import_search_results_wrapper .pager li a').click(function() {
           var ele = $(this);
           var url = ele.attr('href');
@@ -153,10 +151,13 @@ function text_textfield(){
 }
 
 function reset_form_elements() {
+  var res;
   jQuery('.service_search_dropdown select').val(0);
   jQuery('.release_search_dropdown select').val(0);
   jQuery('.function_search_dropdown select').val(0);
   jQuery('.limit_search_dropdown select').val(0);
-  window.location.reload();
- return false;
+  url = window.location.href; 
+  res = url.split('?');
+  window.location.assign(res['0']);
+  return false;
 }

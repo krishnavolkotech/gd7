@@ -65,10 +65,9 @@ class ProblemImportstatusFrom extends FormBase {
         'event' => 'change',
         'progress' => array(
           'type' => 'throbber',
-          'message' => NULL,
          ),
       ),
-      "#prefix" => "<div class = 'limit_search_dropdown'>",
+      '#prefix' => "<div class = 'limit_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
     );
 

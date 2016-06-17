@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function hzd_notifications_schema() {
+  $schema['service_notifications'] = array(
+    'description' => 'Stores the service immediate notifications',
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 255,
+      ),
+      
+      'send_interval' => array(
+        'type' => 'int',
+      ),
+      
+      'uids' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+      ),
+      
+    ),
+    'primary key' => array('sid'),
+  );
+  
+  
+  $schema['service_notifications_override'] = array(
+    'description' => 'Override service notifications',
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 255,
+      ),
+      
+      'send_interval' => array(
+        'type' => 'int',
+      ),
+      
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      
+      'rel_type' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      
+    ),
+    'primary key' => array('sid'),
+  );
+
+  return $schema;
+}
+
+function hzd_notifications_update_8008() {
+  $query = db_select('node_field_data', 'n');
+    $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
+    $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
+    $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
+    $query->leftJoin('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
+    $query->condition('n.type', 'services', '=')
+          ->fields('n', array('nid'))
+          ->fields('nfrn', array('field_release_name_value'))
+          ->fields('nfpn', array('field_problem_name_value'))
+          ->fields('nrt', array('release_type_target_id'))
+          ->fields('nfed', array('field_enable_downtime_value'));
+    $result = $query->execute()->fetchAll();
+    foreach($result as $services_info) {
+      if($services_info->field_enable_downtime_value && $services_info->release_type_target_id == 459) {
+          insert_service_notifications('downtimes', $services_info->nid);
+      }
+      if($services_info->field_problem_name_value && $services_info->release_type_target_id == 459) {
+          //$problem_record = array('service_id' => $services_info->nid, 'type' => 'problem', 'send_interval' => 0, 'uids' => 0);
+	        //db_insert('service_immediate_notifications')->fields($problem_record)->execute();
+	        insert_service_notifications('problem', $services_info->nid);
+      }
+      if($services_info->field_release_name_value) {
+        //$release_record = array('service_id' => $services_info->nid, 'type' => 'release', 'send_interval' => 0, 'uids' => 0);
+        //db_insert('service_immediate_notifications')->fields($release_record)->execute();
+        insert_service_notifications('release', $services_info->nid);
+      }
+      insert_service_notifications('early_warnings', $services_info->nid);
+      //$early_warnings_record = array('service_id' => $services_info->nid, 'type' => 'early_warnings', 'send_interval' => 0, 'uids' => 0);
+      //db_insert('service_immediate_notifications')->fields($early_warnings_record)->execute();
+    }
+}
+
+function insert_service_notifications($type, $nid) {
+  $interval = array('-1', 0, 86400, 604800);
+  foreach($interval as $vals) {
+    $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $vals, 'uids' => 0);
+	  db_insert('service_notifications')->fields($record)->execute();
+  }
+}
