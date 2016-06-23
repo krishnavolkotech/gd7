@@ -172,3 +172,21 @@ function group_update_8002() {
     $database->insert($data_table)->from($data_query)->execute();
   }
 }
+
+/**
+ * Add a request_status column to the group_content_field_data table.
+ */
+function group_update_8003() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $spec = array(
+    'description' => 'Request status code.',
+    'type' => 'int',
+    'size' => 'small',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 1,
+  );
+  $schema->addField('group_content_field_data', 'request_status', $spec);
+}

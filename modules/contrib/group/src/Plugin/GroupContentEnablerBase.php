@@ -226,10 +226,13 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     $path_key = $this->pluginDefinition['path_key'];
     return empty($path_key) ? [] : [
       'collection' => "/group/{group}/$path_key",
+      'pending-collection' => "/group/{group}/pending-$path_key",
       'add-form' => "/group/{group}/$path_key/add",
       'canonical' => "/group/{group}/$path_key/{group_content}",
       'edit-form' => "/group/{group}/$path_key/{group_content}/edit",
       'delete-form' => "/group/{group}/$path_key/{group_content}/delete",
+      'approve-form' => "/group/{group}/$path_key/{group_content}/approve",
+      'reject-form' => "/group/{group}/$path_key/{group_content}/reject",
     ];
   }
 
@@ -271,6 +274,36 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
         ->setOption('_group_operation_route', TRUE)
         ->setOption('parameters', [
           'group' => ['type' => 'entity:group'],
+        ]);
+
+      return $route;
+    }
+  }
+  
+   /**
+   * Gets the collection route.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getPendingCollectionRoute() {
+    
+    if ($path = $this->getPath('pending-collection')) {
+      $plugin_id = $this->getPluginId();
+      $route = new Route($path);
+
+      $route
+        ->setDefaults([
+          '_entity_list' => 'group_content',
+          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
+          'plugin_id' => $plugin_id,
+        ])
+        ->setRequirement('_group_permission', "access $plugin_id overview")
+        ->setRequirement('_group_installed_content', $plugin_id)
+        
+        ->setOption('_group_operation_route', TRUE)
+        ->setOption('parameters', [
+          'group' => ['type' => 'entity:group', 'request_status' => '0'],
         ]);
 
       return $route;
@@ -383,7 +416,61 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       return $route;
     }
   }
+  
+  /**
+   * Gets the delete form route.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getApproveFormRoute() {
+    if ($path = $this->getPath('approve-form')) {
+      $route = new Route($path);
 
+      $route
+        ->setDefaults([
+          '_entity_form' => 'group_content.approve',
+          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::editTitle',
+        ])
+        ->setRequirement('_entity_access', 'group_content.update')
+        ->setRequirement('_group_owns_content', 'TRUE')
+        ->setOption('_group_operation_route', TRUE)
+        ->setOption('parameters', [
+          'group' => ['type' => 'entity:group'],
+          'group_content' => ['type' => 'entity:group_content'],
+        ]);
+
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the reject form route.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getRejectFormRoute() {
+    if ($path = $this->getPath('reject-form')) {
+      $route = new Route($path);
+
+      $route
+        ->setDefaults([
+          '_entity_form' => 'group_content.reject',
+          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::deleteTitle',
+        ])
+        ->setRequirement('_entity_access', 'group_content.delete')
+        ->setRequirement('_group_owns_content', 'TRUE')
+        ->setOption('_group_operation_route', TRUE)
+        ->setOption('parameters', [
+          'group' => ['type' => 'entity:group'],
+          'group_content' => ['type' => 'entity:group_content'],
+        ]);
+
+      return $route;
+    }
+  }
+  
   /**
    * {@inheritdoc}
    */
@@ -392,6 +479,10 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
 
     if ($route = $this->getCollectionRoute()) {
       $routes[$this->getRouteName('collection')] = $route;
+    }
+    
+    if ($route = $this->getPendingCollectionRoute()) {
+      $routes[$this->getRouteName('pending-collection')] = $route;
     }
 
     if ($route = $this->getCanonicalRoute()) {
@@ -409,7 +500,14 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     if ($route = $this->getDeleteFormRoute()) {
       $routes[$this->getRouteName('delete-form')] = $route;
     }
+    
+    if ($route = $this->getApproveFormRoute()) {
+      $routes[$this->getRouteName('approve-form')] = $route;
+    }
 
+    if ($route = $this->getRejectFormRoute()) {
+      $routes[$this->getRouteName('reject-form')] = $route;
+    }
     return $routes;
   }
 
@@ -420,6 +518,15 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     $actions = [];
 
     if (($appears_on = $this->getRouteName('collection')) && ($route_name = $this->getRouteName('add-form'))) {
+      $prefix = str_replace(':', '-', $this->getPluginId());
+      $actions["$prefix.add"] = [
+        'title' => 'Add ' . $this->getLabel(),
+        'route_name' => $route_name,
+        'appears_on' => [$appears_on],
+      ];
+    }
+
+    if (($appears_on = $this->getRouteName('pending-collection')) && ($route_name = $this->getRouteName('add-form'))) {
       $prefix = str_replace(':', '-', $this->getPluginId());
       $actions["$prefix.add"] = [
         'title' => 'Add ' . $this->getLabel(),

@@ -90,8 +90,8 @@ class Group extends ContentEntityBase implements GroupInterface {
   public function getOwnerId() {
     return $this->get('uid')->target_id;
   }
-
-  /**
+  
+ /**
    * {@inheritdoc}
    */
   public function setOwnerId($uid) {
@@ -161,6 +161,7 @@ class Group extends ContentEntityBase implements GroupInterface {
           'type' => $plugin->getContentTypeConfigId(),
           'gid' => $this->id(),
           'entity_id' => $account->id(),
+          'request_status' => 1,
         ] + $values);
       $group_content->save();
     }
@@ -173,6 +174,14 @@ class Group extends ContentEntityBase implements GroupInterface {
     return GroupMembership::load($this, $account);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getMemberRequestStatus(AccountInterface $account) {
+    $group_content = GroupMembership::load($this, $account);
+    $data = $group_content->getGroupContent();
+    return $data->values['request_status']['x-default'];
+  }
   /**
    * {@inheritdoc}
    */
@@ -284,7 +293,7 @@ class Group extends ContentEntityBase implements GroupInterface {
         'weight' => 0,
       ))
       ->setDisplayConfigurable('view', TRUE);
-
+    
     return $fields;
   }
 

@@ -42,7 +42,13 @@ class GroupMembership extends GroupContentEnablerBase {
     $operations = [];
 
     if ($group->getMember($account)) {
-      if ($group->hasPermission('leave group', $account)) {
+      if($group->getMemberRequestStatus($account) == 0) {
+        $operations['group-cancel'] = [
+          'title' => $this->t('Cancel requested membership'),
+          'url' => new Url($this->getRouteName('cancel-membership-form'), ['group' => $group->id()]),
+          'weight' => 99,
+        ];
+      }elseif ($group->hasPermission('leave group', $account)) {
         $operations['group-leave'] = [
           'title' => $this->t('Leave group'),
           'url' => new Url($this->getRouteName('leave-form'), ['group' => $group->id()]),
@@ -57,6 +63,13 @@ class GroupMembership extends GroupContentEnablerBase {
         'weight' => 0,
       ];
     }
+    if ($group->hasPermission('request group membership', $account) && (!$group->getMember($account))) {
+      $operations['group-request'] = [
+        'title' => $this->t('Request group membership'),
+        'url' => new Url($this->getRouteName('request-membership-form'), ['group' => $group->id()]),
+        'weight' => 0,
+      ];
+    }
 
     return $operations;
   }
@@ -68,6 +81,8 @@ class GroupMembership extends GroupContentEnablerBase {
     return [
       'group-join' => 'Drupal\group\Form\GroupJoinForm',
       'group-leave' => 'Drupal\group\Form\GroupLeaveForm',
+      'group-request' => 'Drupal\group\Form\GroupRequestMembershipForm',
+      'group-cancel' => 'Drupal\group\Form\GroupCancelRequestMembershipForm',
     ];
   }
 
@@ -94,6 +109,11 @@ class GroupMembership extends GroupContentEnablerBase {
       'title' => 'Leave group',
       'allowed for' => ['member'],
     ];
+    
+    $permissions['request group membership'] = [
+      'title' => 'Request group membership',
+      'allowed for' => ['outsider'],
+    ];
 
     // Update the labels of the default permissions.
     $permissions['access group_membership overview']['title'] = 'Access the member overview page';
@@ -119,6 +139,8 @@ class GroupMembership extends GroupContentEnablerBase {
     return parent::getPaths() + [
       'join-form' => '/group/{group}/join',
       'leave-form' => '/group/{group}/leave',
+      'request-membership-form' => '/group/{group}/requestMembership',
+      'cancel-membership-form' => '/group/{group}/cancelMembership',
     ];
   }
 
@@ -190,6 +212,57 @@ class GroupMembership extends GroupContentEnablerBase {
       return $route;
     }
   }
+  
+  /**
+   * Gets the leave form route.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getRequestMembershipFormRoute() {
+    if ($path = $this->getPath('request-membership-form')) {
+      $route = new Route($path);
+
+      $route
+        ->setDefaults([
+          '_controller' => '\Drupal\group\Controller\GroupMembershipController::requestMembership',
+          '_title_callback' => '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle',
+          'plugin_id' => $this->getPluginId(),
+        ])
+        ->setRequirement('_group_permission', 'request group membership')
+        ->setRequirement('_group_member', 'FALSE')
+        ->setOption('parameters', [
+          'group' => ['type' => 'entity:group'],
+        ]);
+
+      return $route;
+    }
+  }
+  
+  /**
+   * Gets the cancel membership form route.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getCancelMembershipFormRoute() {
+    if ($path = $this->getPath('cancel-membership-form')) {
+      $route = new Route($path);
+
+      $route
+        ->setDefaults([
+          '_controller' => '\Drupal\group\Controller\GroupMembershipController::cancelMembership',
+          '_title_callback' => '\Drupal\group\Controller\GroupMembershipController::cancelMembershipTitle',
+          'plugin_id' => $this->getPluginId(),
+        ])
+        ->setRequirement('_group_member', 'TRUE')
+        ->setOption('parameters', [
+          'group' => ['type' => 'entity:group'],
+        ]);
+
+      return $route;
+    }
+  }
 
   /**
    * {@inheritdoc}
@@ -203,6 +276,14 @@ class GroupMembership extends GroupContentEnablerBase {
 
     if ($route = $this->getLeaveFormRoute()) {
       $routes[$this->getRouteName('leave-form')] = $route;
+    }
+    
+    if ($route = $this->getRequestMembershipFormRoute()) {
+      $routes[$this->getRouteName('request-membership-form')] = $route;
+    }
+    
+    if ($route = $this->getCancelMembershipFormRoute()) {
+      $routes[$this->getRouteName('cancel-membership-form')] = $route;
     }
 
     return $routes;

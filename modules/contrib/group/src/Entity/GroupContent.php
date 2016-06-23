@@ -40,6 +40,8 @@ use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
  *       "add" = "Drupal\group\Entity\Form\GroupContentForm",
  *       "edit" = "Drupal\group\Entity\Form\GroupContentForm",
  *       "delete" = "Drupal\group\Entity\Form\GroupContentDeleteForm",
+ *       "approve" = "Drupal\group\Entity\Form\GroupContentApproveForm",
+ *       "reject" = "Drupal\group\Entity\Form\GroupContentRejectForm",
  *     },
  *     "access" = "Drupal\group\Entity\Access\GroupContentAccessControlHandler",
  *   },
@@ -234,6 +236,12 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
+  public function getRequestStatus() {
+    return $this->get('request_status')->value;
+  }
+  /**
+   * {@inheritdoc}
+   */
   public function setOwnerId($uid) {
     $this->set('uid', $uid);
     return $this;
@@ -244,6 +252,14 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
    */
   public function setOwner(UserInterface $account) {
     $this->set('uid', $account->id());
+    return $this;
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function setRequestStatus($value) {
+    $this->set('request_status', $value);
     return $this;
   }
 
@@ -345,6 +361,13 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
+    
+    $fields['request_status'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Request Status'))
+      ->setDescription(t('Request mebership status.'))
+      ->setSetting('unsigned', TRUE)
+      ->setDefaultValue(1)
+      ->setTranslatable(TRUE);
 
     return $fields;
   }
@@ -414,6 +437,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->loadByProperties([
         'type' => array_keys($group_content_types),
         'entity_id' => $entity->id(),
+        'request_status' => 0,
       ]);
   }
 

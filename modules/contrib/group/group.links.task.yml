@@ -34,6 +34,12 @@ group.members:
   base_route: 'entity.group.canonical'
   route_name: 'entity.group_content.group_membership.collection'
   weight: 15
+  
+group.pending_members:
+  title: 'Pending Members'
+  base_route: 'entity.group.canonical'
+  route_name: 'entity.group_content.group_membership.pending_collection'
+  weight: 15
 
 group_type.edit_form:
   title: 'Edit'
