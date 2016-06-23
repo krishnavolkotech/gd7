@@ -3,6 +3,7 @@
 define('RELEASE_MANAGEMENT', 339);
 define('SITE_ADMIN', 5);
 use Drupal\Core\Url;
+use Drupal\Component\Utility\SafeMarkup;
 
 /**
  * implements hook_form_alter
@@ -314,9 +315,246 @@ function get_environment_options($state = 1) {
 }
 
 /**
+ * implements hook_ENTITY_TYPE_presave()
+ */
+function hzd_release_management_node_presave($entity) {
 
-function hzd_release_management_node_presave(\Drupal\Core\Entity\EntityInterface $node) {
-  echo '<pre>';  print_r($node);  exit;
+  if($entity->getType() == 'quickinfo') {
+    $services = $entity->get('field_other_services')->getValue();
+    $result = hzd_get_immediate_qi_notification_user_mails($services);
+    /*if(is_array($result) && count($result) > 0) {
+      $mails = implode(",", $result);
+      // trigger mail functionality to send immediate notifications of quickinfo
+      $subject = 'test subject';
+      $message_text = 'test body';
+      send_immediate_notifications($subject, $message_text, $mails);
+    }*/
+  }
+
 }
 
-*/
+/**
+ * implements hook_ENTITY_TYPE_insert()
+ */
+function hzd_release_management_node_insert($entity) {
+  if($entity->getType() == 'release') {
+    $nid = $entity->id();
+    $service_field = $entity->get('field_relese_services')->getValue();
+    $service_id = $service_field[0]['target_id'];
+    
+    // get immediate notifications user mails
+    $result = hzd_get_immediate_notification_user_mails($service_id, 'release');
+    if(is_array($result) && count($result) > 0) {
+      $mails = implode(",", $result);
+      // trigger mail functionality to send immediate notifications of a service
+      $subject = 'test release subject';
+      $message_text = 'test release body';
+      send_immediate_notifications($subject, $message_text, $mails);
+    }
+  }
+  if($entity->getType() == 'problem') {
+    $service_field = $entity->get('field_services')->getValue();
+    $service_id = $service_field[0]['target_id'];
+
+    // get immediate notifications user mails
+    $result = hzd_get_immediate_notification_user_mails($service_id, 'problem');
+    if(is_array($result) && count($result) > 0) {
+      $mails = implode(",", $result);
+      // trigger mail functionality to send immediate notifications of a service
+      $subject = 'test problem subject';
+      $message_text = 'test problem body';
+      send_immediate_notifications($subject, $message_text, $mails);
+    }
+  }
+  if($entity->getType() == 'downtimes') {
+    
+  }
+  if($entity->getType() == 'planning_files') {
+    $subject = 'test subject';
+    $message_text = 'test body';
+    $result = hzd_get_immediate_pf_notification_user_mails();
+    if(is_array($result) && count($result) > 0) {
+      $mails = implode(",", $result);
+      // trigger mail functionality to send immediate notifications of planning files
+      $subject = 'test subject';
+      $message_text = 'test body';
+      send_immediate_notifications($subject, $message_text, $mails);
+    }
+  }
+
+  if($entity->getType() == 'quickinfo') {
+    $services = $entity->get('field_other_services')->getValue();
+    $result = hzd_get_immediate_qi_notification_user_mails($services);
+    if(is_array($result) && count($result) > 0) {
+      $mails = implode(",", $result);
+      // trigger mail functionality to send immediate notifications of quickinfo
+      $subject = 'test subject';
+      $message_text = 'test body';
+      send_immediate_notifications($subject, $message_text, $mails);
+    }
+  }
+
+  /*if($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+    $downtime = $entity->get('field_enable_downtime')->getValue()[0]['value'];
+    $problem = $entity->get('field_problem_name')->getValue()[0]['value'];
+    $release = $entity->get('field_release_name')->getValue()[0]['value'];
+
+    if($downtime && $rel_type == 459) {
+      insert_new_service_notifications('downtimes', $nid);
+    }
+    if($problem != '' && $rel_type == 459) {
+	    insert_service_notifications('problem', $nid);
+    }
+    if($release != '') {
+      insert_service_notifications('release', $nid);
+    }
+    insert_service_notifications('early_warnings', $nid);
+  }*/
+
+}
+
+// get user mail ids
+function hzd_get_immediate_notification_user_mails($service_id, $type) {
+  $get_immediate_notifications_users = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND send_interval = :intval AND type = :type", array(":sid" => $service_id, ":intval" => 0, ":type" => $type))->fetchField();
+  $unserialized_user_array = unserialize($get_immediate_notifications_users);
+  if(count($unserialized_user_array) > 0) {
+    return hzd_user_mails($unserialized_user_array);   
+    /*$query = db_select('users_field_data', 'u')
+           ->condition('status', 1, '=')
+           ->fields('u', array('mail'))
+           ->condition('uid', $unserialized_user_array, 'IN');
+    $result = $query->execute()->fetchCol();
+    return $result;*/
+  }
+  return '';
+}
+
+function hzd_get_immediate_pf_notification_user_mails() {
+  $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
+  $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
+  if(is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
+    return hzd_user_mails($unserialized_user_array);
+  }
+  return '';
+}
+
+function hzd_get_immediate_qi_notification_user_mails($services) {
+  $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
+  $affetced_services = array();
+  foreach($services as $val) {
+    $affetced_services[] = $options[$val['value']];
+  }
+
+  $query = db_select('quickinfo_notifications','q')
+         ->fields('q', array('uids'))
+         ->condition('q.cck', $affetced_services,'IN')
+         ->condition('q.send_interval', 0, '=');
+   
+  $results = $query->execute()->fetchCol();
+  $uids_list = array();
+  foreach($results as $serialized_uids) {
+    $uids = unserialize($serialized_uids);
+    $uids_list = array_unique(array_merge($uids_list, $uids));
+  }
+  
+  if(is_array($uids_list) && (count($uids_list) > 0)) {
+    return hzd_user_mails(array_vlues($uids_list));
+  }
+  return '';
+}
+
+// get user mail ids
+function hzd_user_mails($uids) {
+  $query = db_select('users_field_data', 'u')
+         ->condition('status', 1, '=')
+         ->fields('u', array('mail'))
+         ->condition('uid', $uids, 'IN');
+  $result = $query->execute()->fetchCol();
+  return $result;
+}
+
+// send immediate notifications
+function send_immediate_notifications($subject, $message_text, $to) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'hzd_release_management';
+  $key = 'immediate_notifications';
+  $params['message'] = $message_text;
+  $params['subject'] = $subject;
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = true;
+  $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+  if($result['result'] !== true) {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+}
+
+/**
+ * implements hook_mail
+ */
+function hzd_release_management_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = SafeMarkup::checkPlain($params['message']);
+      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
+      break;
+  }
+}
+
+/**
+ * implements hook_ENTITY_TYPE_delete()
+ */
+function hzd_release_management_node_delete($entity) {
+  if($entity->getType() == 'services') {
+    $nid = $entity->id();
+    db_delete('service_notifications')->condition('service_id', $nid)->execute();
+  }
+}
+
+/**
+ * implements hook_ENTITY_TYPE_update()
+ */
+function hzd_release_management_node_update($entity) {
+  if($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $diff = $entity->get('field_diff')->getValue()[0]['value'];
+    if($nid) {
+      //update_service_notifications($nid);
+      insert_new_service_notifications('downtimes', $nid);
+    }
+  }
+}
+
+/*function update_service_notifications($nid) {
+    
+}*/
+
+function insert_new_service_notifications($type, $nid) {
+  $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type ORDER BY uid ASC", array(":type" => $type))->fetchAll();
+  $result = array();
+  foreach($service_notifications as $vals) {
+    $result[$vals->default_send_interval][$vals->uid] = $vals->uid;
+  }
+  $override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(":sid" => $nid, ":type" => $type))->fetchAll();
+  $new_result = array();
+  foreach($override as $overrides_services) {
+    $new_result[$overrides_services->send_interval][$overrides_services->uid] = $overrides_services->uid;
+  }
+  
+  foreach($new_result as $key => $val) {
+    // union the same interval
+    $union[$key] = $val + $result[$key];
+  }
+  
+  //remove the user of default
+  foreach($union as $key => $new_vals) {
+    
+  }
+}

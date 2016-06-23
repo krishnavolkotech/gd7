@@ -45,7 +45,7 @@ class ReleaseFilterForm extends FormBase {
       $default_release_type_value = $deploy_filter_options['release_type'];
       $default_env_type_value = $deploy_filter_options['env_type'];
     } else {
-      $filter_options = $_SESSION['filter_where'];
+      $filter_options = $_SESSION['new_filter_options'];
       $default_release_type_value = $filter_options['release_type'];
       $default_service_value = $filter_options['service'];
       $default_release_value = $filter_options['release'];
@@ -59,7 +59,7 @@ class ReleaseFilterForm extends FormBase {
 
     $release_type = $form_state->getValue('release_type');
     $default_type = $default_release_type_value;
-    if ($default_type) {
+    if (!isset($default_type)) {
       if(isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
         $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
         $default_type = ($release_type ? $release_type : ($default_type ? $default_type : KONSONS));
@@ -68,7 +68,7 @@ class ReleaseFilterForm extends FormBase {
         $default_type = $release_type ? $release_type : KONSONS;
       }
     }
-    
+
     $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
@@ -343,11 +343,14 @@ class ReleaseFilterForm extends FormBase {
     // $this->formCache->getCache($form_build_id, $form_state);
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
-    
     // $string = $form_state->getValue('r_type');
     if (isset($get_uri['4'])) {
       $string = $get_uri['4'];
+    } else if (isset($get_uri['3'])  && $get_uri['3'] == 'releases') {
+      $string = 'released';
     }
+    if ($string == 'in_progress') { $string = 'progress';}
+
     $request = \Drupal::request();
     if ($_REQUEST) {
       $state = $request->get('states');
@@ -362,6 +365,18 @@ class ReleaseFilterForm extends FormBase {
       $release_type = $request->get('release_type');
       $env_type = $request->get('environment_type');
     }
+
+    $new_filter_options = array(
+        'service' => $service, 
+        'release' => $release, 
+        'startdate' => $start_date, 
+        'enddate' => $end_date, 
+        'deployed_type' => $deployed_type, 
+        'release_type' => $release_type
+        );
+
+    $_SESSION['new_filter_options'] = $new_filter_options;
+
     if ($string != 'deployed') {
       //Geting  release data
       $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
@@ -459,7 +474,7 @@ class ReleaseFilterForm extends FormBase {
     $_SESSION['filter_where'] = $filter_where;
     $_SESSION['release_limit'] = $limit;
     $_SESSION['release_type'] = $release_type;
-
+    
     if ($string != 'deployed') {
       $output[] = array('#markup' => "<div class = 'releses_output'>");
       $output[] = HzdreleasemanagementStorage::releases_display_table($string, $filter_where, $limit, $release_type);
@@ -501,7 +516,6 @@ class ReleaseFilterForm extends FormBase {
           )
         )
       );
-   // echo '4554 545 45';  exit;
 //    print drupal_to_js(array('data' => $output, 'status' => TRUE));
     return $output;
   }
@@ -515,12 +529,13 @@ class ReleaseFilterForm extends FormBase {
 
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
-    
     // $string = $form_state->getValue('r_type');
     if (isset($get_uri['4'])) {
       $string = $get_uri['4'];
+    } else if (isset($get_uri['3'])  && $get_uri['3'] == 'releases') {
+      $string = 'released';
     }
-
+    if ($string == 'in_progress') { $string = 'progress';}
     $request = \Drupal::request();
     // $form = form_get_cache($form_build_id, $form_state);
     // FormCache::getCache($form_build_id, $form_state);
@@ -544,6 +559,18 @@ class ReleaseFilterForm extends FormBase {
       $service = $form_state->getValue('services');
       $release = $form_state->getValue('releases');
     }
+
+      $new_filter_options = array(
+        'service' => $service, 
+        'release' => $release, 
+        'startdate' => $start_date, 
+        'enddate' => $end_date, 
+        'deployed_type' => $deployed_type, 
+        'release_type' => $release_type
+        );
+
+      $_SESSION['new_filter_options'] = $new_filter_options;
+
 
     if ($string != 'deployed') {
       if($service) {

@@ -6,6 +6,13 @@
 
 // Drupal.behaviors.earlywarnings_view = function() {
 
+         var anchor = $("#earlywarnings_results_wrapper #pagination > nav > ul > li > a");
+         anchor.each(function( index ) {
+         var links = $( this ).attr('href'); 
+         var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
+           $( this ).attr('href', new_href);
+         });
+
 
  $("#earlywarnings_release_sortable").tablesorter({
     headers: {
@@ -54,16 +61,20 @@ function reset_form_elements(){
   // var path = base_path + 'node/' + group_id +'/view_earlywarnings';
   // var path = base_path + 'release-management/earlywarnings';
 
-  $('#edit-deployed-services').val(0);
-  $('#edit-deployed-releases').val(0);
-  $('#edit-deployed-date').val('');
+  jQuery('#edit-deployed-services').val(0);
+  jQuery('#edit-deployed-releases').val(0);
+  jQuery('#edit-deployed-date').val('');
 
-  $('.state_search_dropdown select').val(0);
-  $('.service_search_dropdown select').val(0);
-  $('.releases_search_dropdown select').val(0);
-  $('.filter_start_date input').val('');
-  $('.filter_end_date input').val('');
-  $('.limit_search_dropdown select').val(0);
-  window.location.reload();
+  jQuery('.state_search_dropdown select').val(0);
+  jQuery('.service_search_dropdown select').val(0);
+  jQuery('.releases_search_dropdown select').val(0);
+  jQuery('.filter_start_date input').val('');
+  jQuery('.filter_end_date input').val('');
+  jQuery('.limit_search_dropdown select').val(0);
+  url = window.location.href; 
+  res = url.split('?');
+  window.location.assign(res['0']);
+  return false;
+  // window.location.reload();
 }
   

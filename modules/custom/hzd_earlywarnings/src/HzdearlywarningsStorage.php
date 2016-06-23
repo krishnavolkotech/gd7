@@ -14,6 +14,10 @@ class HzdearlywarningsStorage {
  * In the display the responses field contains the count of comments posted on the early warning.
 */
   function release_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+    if (!$filter_options) {
+      $filter_options = $_SESSION['earlywarning_filter_option'];
+      $release_type = $_SESSION['earlywarning_filter_option']['release_type'];
+    }
     if ($filter_options['limit'] != 'all') {
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : DISPLAY_LIMIT); 
     }
@@ -47,15 +51,17 @@ class HzdearlywarningsStorage {
         // $where .= " and field_earlywarning_release_value =  " . $filter_options['release'];
       }
       if ($filter_options['startdate']) {
-        $startdate_info = explode('.', $filter_options['startdate']);
-        $startdate = mktime(0, 0, 0, $startdate_info[1], $startdate_info[0], $startdate_info[2]);
+        // $startdate_info = explode('.', $filter_options['startdate']);
+        // $startdate = mktime(0, 0, 0, $startdate_info[1], $startdate_info[0], $startdate_info[2]);
+        $startdate = strtotime($startdate);
         $query->condition('created', $startdate, '>');
         // $where .= " and created > ". $startdate;
       }
       if ($filter_options['enddate']) {
-        $enddate_info = explode('.', $filter_options['enddate']);
-        $enddate = mktime(23, 59, 59, $enddate_info[1], $enddate_info[0], $enddate_info[2]);
+        // $enddate_info = explode('.', $filter_options['enddate']);
+        // $enddate = mktime(23, 59, 59, $enddate_info[1], $enddate_info[0], $enddate_info[2]);
        // $where .= " and created between " . ($startdate?$startdate:0) . " and " . $enddate;
+        $enddate = strtotime($filter_options['enddate']);
         $query->condition('created', array(($startdate?$startdate:0), $enddate), 'between');
       }
     }
@@ -190,14 +196,15 @@ db_result(db_query("SELECT count(*) FROM {comments} c, {content_field_earlywarni
       }
 
       if($filter_options['startdate']) {
-        $startdate_info = explode('/', $filter_options['startdate']);
-        $startdate = mktime(0, 0, 0, $startdate_info[1], $startdate_info[0], $startdate_info[2]);
-        echo $startdate; exit;
+        //$startdate_info = explode('.', $filter_options['startdate']);
+        // $startdate = mktime(0, 0, 0, $startdate_info[1], $startdate_info[0], $startdate_info[2]);
+        $startdate = strtotime($filter_options['startdate']);
         $query->condition('n.created', $startdate, '>');
       }
       if($filter_options['enddate']) {
-        $enddate_info = explode('/', $filter_options['enddate']);
-        $enddate = mktime(23, 59, 59, $enddate_info[1], $enddate_info[0], $enddate_info[2]);
+        // $enddate_info = explode('.', $filter_options['enddate']);
+        // $enddate = mktime(23, 59, 59, $enddate_info[1], $enddate_info[0], $enddate_info[2]);
+        $startdate = strtotime($filter_options['enddate']);
         $query->condition('n.created', array($startdate?$startdate:0, $enddate), 'between');
       }
     }
@@ -212,7 +219,8 @@ db_result(db_query("SELECT count(*) FROM {comments} c, {content_field_earlywarni
     $paged_query->setCountQuery($count_query);
     $paged_query->fields('n', array('nid', 'title', 'created', 'uid'))
                 ->orderBy('n.created', 'DESC');
-   // echo '<pre>'; print_r($query->execute()); exit;
+
+//    echo '<pre>'; print_r($query->conditions()); exit;
 
     if($filter_options['limit'] != 'all') {      
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);

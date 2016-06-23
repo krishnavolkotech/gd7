@@ -32,11 +32,18 @@ class EarlyWarningsFilterForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
+
     $wrapper = 'earlywarnings_results_wrapper';
     $services[] = 'Service';
 
     $path = '::search_earlywarning';
     $type_path = '::search_type_earlywarning';
+
+    $earlywarning_filter_option = $_SESSION['earlywarning_filter_option'];
+    $request = \Drupal::request();
+    $page = $request->get('page');
+    
+
 
     $release_type = \Drupal::request()->get('release_type');
     if(isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
@@ -68,7 +75,7 @@ class EarlyWarningsFilterForm extends FormBase {
     }    
     $form['release_type'] = array(
       '#type' => 'select',
-      '#default_value' => $default_type,
+      '#default_value' => $earlywarning_filter_option['release_type'] ? $earlywarning_filter_option['release_type'] : $default_type,
       '#options' => $release_type_list,
       '#weight' => -9,
       '#ajax' => array(
@@ -84,11 +91,11 @@ class EarlyWarningsFilterForm extends FormBase {
       '#suffix' => '</div><div style="clear:both"></div>',    
     );
 
-    $default_value_services = $form_state->getValue('ser');
+    $default_value_services = $form_state->getValue('service');
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
-      '#default_value' => $default_value_services,
+      '#default_value' => $earlywarning_filter_option['service'] ? $earlywarning_filter_option['service'] : $default_value_services,
       '#weight' => -7,
       '#ajax' => array(
         'callback' => $path,
@@ -103,12 +110,12 @@ class EarlyWarningsFilterForm extends FormBase {
       '#suffix' => '</div>', 
     );
 
-    $default_value_releases = $form_state->getValue('releases');
+    $default_value_releases = $form_state->getValue('release');
     $options = HzdreleasemanagementHelper::get_dependent_release($default_value_services);
     $form['releases'] = array(
       '#type' => 'select',
       '#options' => $options['releases'],
-      '#default_value' => $default_value_releases,
+      '#default_value' => $earlywarning_filter_option['release'] ? $earlywarning_filter_option['release'] : $default_value_releases,
       '#weight' => -3,
       '#ajax' => array(
          'callback' => $path,
@@ -128,7 +135,7 @@ class EarlyWarningsFilterForm extends FormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Start Date'),
       '#attributes'=> array('class' => array("start_date")),
-      '#default_value' => $form_state->getValue('filter_startdate'),
+      '#default_value' => $earlywarning_filter_option['startdate'] ? $earlywarning_filter_option['startdate'] : $form_state->getValue('filter_startdate'),
       '#size' => 15,
       '#weight' => 3,
       '#ajax' => array(
@@ -151,7 +158,7 @@ class EarlyWarningsFilterForm extends FormBase {
     '#weight' => 4,
     '#attributes'=> array('class' => array("end_date")),
     // '#attributes' => array("class" => "end_date"),
-    '#default_value' => $form_state->getValue('filter_enddate'),
+    '#default_value' => $earlywarning_filter_option['enddate'] ? $earlywarning_filter_option['enddate'] : $form_state->getValue('filter_enddate'),
     '#ajax' => array(
       'callback' => $path,
       'wrapper' =>  $wrapper,
@@ -175,7 +182,7 @@ class EarlyWarningsFilterForm extends FormBase {
   $form['limit'] = array(
     '#type' => 'select',
     '#options' => $default_limit,
-    '#default_value' => $form_state->getValue('limit'),
+    '#default_value' => $earlywarning_filter_option['limit'] ? $earlywarning_filter_option['limit'] : $form_state->getValue('limit'),
     '#weight' => 8,
     '#ajax' => array(
       'callback' => $path,
@@ -209,13 +216,16 @@ class EarlyWarningsFilterForm extends FormBase {
     $form_build_id = $_POST['form_build_id'];
     $request = \Drupal::request();
 
-    $service = $form_state->getValue('services');
-    $release = $form_state->getValue('releases');
     $startdate = $form_state->getValue('filter_startdate');
     $enddate = $form_state->getValue('filter_enddate');
     $type =  $form_state->getValue('type');
     $limit =  $form_state->getValue('limit');
     $release_type = $form_state->getValue('release_type');
+    $user_input = $form_state->getUserInput(); 
+    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
+      $service = $form_state->getValue('services');
+      $release = $form_state->getValue('releases');   
+    }
 
     $filter_options = array(
       'service' => $service, 
@@ -225,7 +235,7 @@ class EarlyWarningsFilterForm extends FormBase {
       'enddate' => $enddate,
       'release_type' => $release_type
     );
-
+    $_SESSION['earlywarning_filter_option'] = $filter_options;
     $string = '';
     $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
     $form['services']['#options'] = $default_services['services'];
@@ -267,11 +277,13 @@ class EarlyWarningsFilterForm extends FormBase {
     $type = $form_state->getValue('type');
     $limit = $form_state->getValue('limit');
     $startdate = $form_state->getValue('filter_startdate');
-    $enddate = $form_state->getValue('filter_enddate');
+    $enddate = $form_state->getValue('filter_enddate');    
     $release_type = $form_state->getValue('release_type');
-    $service = $form_state->getValue('services');
-    $release = $form_state->getValue('releases');
-
+    $user_input = $form_state->getUserInput(); 
+    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
+        $service = $form_state->getValue('services');
+        $release = $form_state->getValue('releases');
+    }
     $filter_options = array(
       'service' => $service, 
       'release' => $release,
@@ -280,7 +292,7 @@ class EarlyWarningsFilterForm extends FormBase {
       'enddate' => $enddate,
       'release_type' => $release_type
     );
-
+    $_SESSION['earlywarning_filter_option'] = $filter_options;
     $string = '';
     $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
     $form['services']['#options'] = $default_services['services'];

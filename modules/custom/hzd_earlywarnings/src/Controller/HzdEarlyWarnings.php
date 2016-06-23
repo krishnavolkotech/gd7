@@ -30,6 +30,13 @@ class HzdEarlyWarnings extends ControllerBase {
     
     $output['content']['pretext'] = HzdearlywarningsStorage::early_warning_text();
     $output['content']['#prefix'] = '<div id = "earlywarnings_results_wrapper">';
+    $request = \Drupal::request();
+    $page = $request->get('page');
+
+    if (!isset($page)) {
+      unset($_SESSION['earlywarning_filter_option']);
+    }
+
     $output['content']['earlywarnings_filter_form'] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm');
     $output['content']['earlywarnings_filter_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table();
     $output['content']['#suffix'] = '</div>';
@@ -44,7 +51,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $responses = array('data' => t('Responses'), 'class' => 'responses-hdr');
     $lastcomment = array('data' => t('Last Comment'), 'class' => 'last-comment-hdr');
     $header = array($earlywarnings, $date, $responses, $lastcomment);
-  
+  0
     $query = db_select('node_field_data', 'n');
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');

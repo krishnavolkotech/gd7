@@ -30,7 +30,7 @@ class ServiceNotificationsUserForm extends FormBase {
     $form['rel_type'] = array('#type' => 'hidden', '#value' => $rel_type);
     $uid = $uid ? $uid : \Drupal::currentUser()->id();
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-    $content_types = $this->_service_notifications_content_type($rel_type);
+    $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $default_interval = HzdNotificationsHelper::_get_default_timeintervals($uid, $rel_type);
     $form['account'] = array('#type' => 'value', '#value' => $uid);
     if($rel_type == KONSONS) {
@@ -59,11 +59,11 @@ class ServiceNotificationsUserForm extends FormBase {
         '#suffix' => "</div>"
       );
     }
-    
+
     if ($rel_type == KONSONS) {
       //Getting the default time intervals for the planning files of release management
-      //$planning_files_default_interval = db_query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} 
-                                         //WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+      $planning_files_default_interval = db_query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} 
+                                         WHERE uid = :uid", array(":uid" => $uid))->fetchField();
       $form['subscriptions'][5]['subscriptions_type_5'] = array(
         '#markup' => t("Planning Files"),
         '#prefix' => "<div class = 'hzd_type'>",
@@ -72,55 +72,36 @@ class ServiceNotificationsUserForm extends FormBase {
       $form['subscriptions'][5]['subscriptions_interval_5'] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => '',
+        '#default_value' => $planning_files_default_interval ? $planning_files_default_interval : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
-        '#suffix' => "</div>"
+        '#suffix' => '</div>'
       );
     }
 
     $form['actions'] = array('#type' => 'actions');
-      $form['actions']['submit'] = array(
-        '#type' => 'submit',
-        '#value' => $this->t('Save'),
-      );
-      
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => $this->t('Save'),
+    );
+
     return $form;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-  
     $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
-    
-    if($rel_type == KONSONS) {
-      $types = array(1 => 'downtimes', 'problem', 'release', 'early_warnings');
-    }
-    else {
-      $types = array(1 => 'release', 'early_warnings');
-    }
-    $content_types = $this->_service_notifications_content_type($rel_type);
+    $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
+    $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
+    $subscriptions = $form_state->getValue('subscriptions');
     foreach($content_types as $content_key => $content) {
-      $subscriptions = $form_state->getValue('subscriptions');
       $int_val = $subscriptions[$content_key]['subscriptions_interval_' . $content_key];
       HzdNotificationsHelper::insert_default_user_intervel($types[$content_key], $int_val, $uid, $rel_type);
     }
+    $pf_int_val = $subscriptions[5]['subscriptions_interval_5'];
+    //HzdNotificationsHelper::insert_default_pf_user_intervel($pf_int_val, $uid);
   }
-  
-  
-  
-    /*
-     * service notifications content type
-     */
-    function _service_notifications_content_type($rel_type = KONSONS) {
-      if ($rel_type == KONSONS) {
-        return array('1' => 'Current Incidents and Planned Maintenances', 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
-      }
-      else {
-        return array('1' => 'Releases', 'Early Warnings');
-      }
-    }
 
 }

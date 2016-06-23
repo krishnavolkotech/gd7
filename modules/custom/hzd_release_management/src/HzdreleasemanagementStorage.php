@@ -998,22 +998,25 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
     public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL , $service_release_type = KONSONS) {
       $header = self::hzd_get_release_tab_headers($type);
-
       $gid = $_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT; 
-      $release_type = get_release_type($type);
+      $release_type = get_release_type($type);      
       if (!$filter_where) {
         $filter_where = $_SESSION['filter_where'];
       }
-/**
-      $release_type = $_SESSION['release_type'] ? $_SESSION['release_type'] : $release_type;
-      $service_release_type = $_SESSION['service_release_type'] ? $_SESSION['service_release_type'] : $service_release_type;
-  */
-      $release_query = self::hzd_release_query($release_type, $filter_where, $service_release_type, $gid);
 
+      if (!$release_type) { 
+        $release_type = $_SESSION['release_type'];
+      } 
+
+      if (!$service_release_type) {
+         $service_release_type =  $_SESSION['service_release_type'];
+      } 
+
+      $release_query = self::hzd_release_query($release_type, $filter_where, $service_release_type, $gid);
       $_SESSION['filter_where'] = $filter_where;
       $_SESSION['release_type'] = $release_type;
       $_SESSION['service_release_type'] = $service_release_type;
-
+      
       foreach($release_query as $releases) {
         if ($releases->documentation_link) {
           $link = self::hzd_get_release_documentation_link($releases->documentation_link, $releases->service, $releases->release_id);
@@ -1059,12 +1062,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $rows[] = $row;
       }
-
-     $output['#attached']['library'] = array('locale.libraries/translations', 
-        'locale.libraries/drupal.locale.datepicker',
-        'hzd_release_management/hzd_release_management', 
-        'hzd_customizations/hzd_customizations', 
-        'downtimes/downtimes');
 
     if ($rows) { 
       $output['releases'] = array(
@@ -1132,7 +1129,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $paged_query->fields('n', array('title'))
                 ->orderBy('nfd.field_date_value', 'DESC');
     
-//    echo '<pre>'; print_r($release_query->execute()->getqueryString()); exit;
+   // echo '<pre>'; print_r($release_query->conditions()); exit;
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $paged_query->limit($page_limit);

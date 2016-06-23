@@ -7,12 +7,25 @@ define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konse
 
 class HzdNotificationsHelper {
 
+  // default send intervals array
   function hzd_notification_send_interval() {
     return array(-1 => 'Never', 0 => 'Immediately', 86400 => 'Daily', 604800 => 'Weekly');
   }
 
+  /*
+   * service notifications content type
+   */
+  function service_notifications_content_type($rel_type = KONSONS) {
+    if($rel_type == KONSONS) {
+      return array('1' => 'Current Incidents and Planned Maintenances', 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
+    }
+    else {
+      return array('1' => 'Releases', 'Early Warnings');
+    }
+  }
+
+  // Update service notifications user default interval
   function insert_default_user_intervel($type, $int_val, $uid, $rel_type) {
-    // Update the node-level data.
     db_merge('service_notifications_user_default_interval')
       ->key(array(
         'rel_type' => $rel_type,
@@ -25,6 +38,11 @@ class HzdNotificationsHelper {
       ->execute();
   }
 
+  /*function insert_default_pf_user_intervel($pf_int_val, $uid) {
+    
+  }*/
+
+  // get default interval of user
   function _get_default_timeintervals($uid, $rel_type) {
     $default_vals = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} WHERE uid = :uid AND rel_type = :rel_type", array(':uid' => $uid, ':rel_type' => $rel_type))->fetchAll();
     foreach($default_vals as $val) {
@@ -33,7 +51,8 @@ class HzdNotificationsHelper {
     return $time_interval;
   }
 
-  function _services_list($rel_type = 459){
+  // get list of all services of a release type
+  function _services_list($rel_type = KONSONS){
     $services_query = db_query("SELECT n.nid, n.title FROM node_field_data n, node__release_type nrt WHERE n.nid = nrt.entity_id and nrt.release_type_target_id = :tid AND n.type = :type ORDER BY n.title ASC", array(":tid" => $rel_type, ":type" => 'services'))->fetchAll();
     $services = array();
     foreach($services_query as $services_info) {
@@ -43,8 +62,8 @@ class HzdNotificationsHelper {
   }
 
   /*
-  * Return content types for the service related
-  */
+   * Return content types for the service related
+   */
   function _get_content_types($service, $default = NULL, $rel_type = KONSONS) {
     if (!$default) {
       $content_types = array('0' => t('Content Type'));
@@ -95,7 +114,7 @@ class HzdNotificationsHelper {
   /*
    * Inserting user default intervel
    */
-  function  insert_default_quickinfo_user_intervel($type, $intervel, $uid) {
+  function insert_default_quickinfo_user_intervel($type, $intervel, $uid) {
     $quickinfo_record = array('uid' => $uid, 'affected_service' => $type, 'default_send_interval' => $intervel);
     db_insert('quickinfo_notifications_user_default_interval')->fields($quickinfo_record)->execute();
   }
@@ -161,5 +180,46 @@ class HzdNotificationsHelper {
 	    ->condition('type', $type)
 	    ->condition('send_interval', $default_intval)
       ->execute();
+  }
+  
+  // update user quickinfo notifications
+  function hzd_modify_quickinfo_notifications($content, $intval, $default_intval, $uid) {
+    // get users list of previous default interval of user
+    $uids = self::hzd_get_user_quickinfo_interval($content, $intval);
+    if(is_array($uids) && (count($uids) > 0)) {
+      if(in_array($uid, $uids)) {
+        $diff = array_diff($uids, array($uid));
+        $serialized_uid = serialize($diff);
+        //update user quickinfo notifications
+        self::hzd_update_quickinfo_notifications($content, $intval, $serialized_uid);
+      }
+    }
+    
+    // get users list of user submitted default interval of user
+    $default_uids = self::hzd_get_user_quickinfo_interval($content, $default_intval);
+    if(is_array($default_uids) && (count($default_uids) > 0)) {
+      if(!in_array($uid, $default_uids)) {
+        $default_uids[] = $uid;
+        $serialized_users = serialize($default_uids);
+        //update user quickinfo notifications
+        self::hzd_update_quickinfo_notifications($content, $default_intval, $serialized_users);
+      }
+    }
+  }
+
+  // get users list from quickinfo notifications table
+  function hzd_get_user_quickinfo_interval($content, $intval) {
+    $serialized_uids_query = db_query("SELECT uids FROM {quickinfo_notifications} WHERE cck = :cck AND send_interval = :intval",
+                             array(":cck" => $content, ":intval" => $intval))->fetchField();
+    $uids = unserialize($serialized_uids_query);
+    return $uids;
+  }
+
+  // update quickinfo notifications table
+  function hzd_update_quickinfo_notifications($content, $intval, $serialized_uid) {
+    db_update('quickinfo_notifications')->fields(array('uids' => $serialized_uid))
+     ->condition('cck', $content)
+     ->condition('send_interval', $intval)
+     ->execute();
   }
 }
