@@ -80,4 +80,86 @@ class HzdNotificationsHelper {
     return $content_types;
   }
 
+  /*
+   * Returns the default time intervals
+   */
+  function get_default_quickinfo_timeintervals($uid) {
+    $query = db_query("SELECT default_send_interval as send_interval, affected_service as value 
+             FROM {quickinfo_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
+    foreach($query as $default_values) {
+      $time_interval[$default_values->value] = $default_values->send_interval; 
+    }
+    return $time_interval;
+  }
+  
+  /*
+   * Inserting user default intervel
+   */
+  function  insert_default_quickinfo_user_intervel($type, $intervel, $uid) {
+    $quickinfo_record = array('uid' => $uid, 'affected_service' => $type, 'default_send_interval' => $intervel);
+    db_insert('quickinfo_notifications_user_default_interval')->fields($quickinfo_record)->execute();
+  }
+
+  // get default interval of a particular content type
+  function hzd_default_content_type_intval($uid, $type, $rel_type) {
+    $intval = db_query("SELECT default_send_interval FROM {service_notifications_user_default_interval} 
+              WHERE uid = :uid AND service_type = :type AND rel_type = :rel_type", 
+              array(":uid" => $uid, ":type" => $type, ":rel_type" => $rel_type))->fetchField();
+    return $intval;
+  }
+
+  // get content types list of release type
+  function hzd_get_content_type_name($rel_type = KONSONS) {
+    if($rel_type == KONSONS) {
+      $types = array(1 => 'downtimes', 'problem', 'release', 'early_warnings');
+    }
+    else {
+      $types = array(1 => 'release', 'early_warnings');
+    }
+    return $types;
+  }
+
+  // update the overrided content type interval
+  function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
+    // get uids list of default user interval of service
+    $uids_list = self::hzd_get_user_service_interval($service, $type, $default_intval);
+
+    if(($key = array_search($uid, $uids_list)) !== false) {
+      unset($uids_list[$key]);
+    }
+    $serialized_uid = serialize($uids_list);
+
+    // update old default send interval of service id
+    self::hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid);
+
+    // update new default send interval of service id
+    $new_uids_list = self::hzd_get_user_service_interval($service, $type, $send_interval);
+    if(($key = array_search($uid, $new_uids_list)) !== false) {
+      
+    }
+    else {
+      $new_uids_list[] = $uid;
+      $new_serialized_uid = serialize($new_uids_list);
+
+      // update old default send interval of service id
+      self::hzd_update_users_service_notifications($service, $type, $send_interval, $new_serialized_uid);
+    }
+  }
+
+  // get uids list of default user interval of service
+  function hzd_get_user_service_interval($service, $type, $default_intval) {
+    $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval", 
+                   array(":sid" => $service, ":type" => $type, ":intval" => $default_intval))->fetchField();
+    $uids_list = unserialize($uids_query);
+    return $uids_list;
+  }
+
+  // update user service notifications
+  function hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid) {
+    db_update('service_notifications')->fields(array('uids' => $serialized_uid))
+	    ->condition('service_id', $service)
+	    ->condition('type', $type)
+	    ->condition('send_interval', $default_intval)
+      ->execute();
+  }
 }

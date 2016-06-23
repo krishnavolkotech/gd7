@@ -26,34 +26,19 @@ class ServiceNotificationsUserForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $rel_type = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $rel_type = NULL) {
     $form['rel_type'] = array('#type' => 'hidden', '#value' => $rel_type);
-    $uid = \Drupal::currentUser()->id();
+    $uid = $uid ? $uid : \Drupal::currentUser()->id();
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
     $content_types = $this->_service_notifications_content_type($rel_type);
     $default_interval = HzdNotificationsHelper::_get_default_timeintervals($uid, $rel_type);
+    $form['account'] = array('#type' => 'value', '#value' => $uid);
     if($rel_type == KONSONS) {
       $types = array(1 => 'downtimes', 'problem', 'release', 'early_warnings');
     }
     else {
       $types = array(1 => 'release', 'early_warnings');
     }
-
-    /*foreach($content_types as $content_key => $content) {
-      $form['subscriptions_type_' . $content_key] = array(
-        '#markup' => $content,
-        '#prefix' => "<div class = 'hzd_type'>",
-        '#suffix' => "</div>"
-      );
-
-      $form['subscriptions_interval_' . $content_key] = array(
-        '#type' => 'radios',
-        '#options' => $intervals,
-        '#default_value' => $default_interval[$types[$content_key]] ? $default_interval[$types[$content_key]] : -1,
-        '#prefix' => "<div class = 'hzd_time_interval'>",
-        '#suffix' => "</div>"
-      );
-    }*/
 
     $form['subscriptions'] = array(
       '#type' => 'table',
@@ -75,6 +60,24 @@ class ServiceNotificationsUserForm extends FormBase {
       );
     }
     
+    if ($rel_type == KONSONS) {
+      //Getting the default time intervals for the planning files of release management
+      //$planning_files_default_interval = db_query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} 
+                                         //WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+      $form['subscriptions'][5]['subscriptions_type_5'] = array(
+        '#markup' => t("Planning Files"),
+        '#prefix' => "<div class = 'hzd_type'>",
+        '#suffix' => "</div>"
+      );
+      $form['subscriptions'][5]['subscriptions_interval_5'] = array(
+        '#type' => 'radios',
+        '#options' => $intervals,
+        '#default_value' => '',
+        '#prefix' => "<div class = 'hzd_time_interval'>",
+        '#suffix' => "</div>"
+      );
+    }
+
     $form['actions'] = array('#type' => 'actions');
       $form['actions']['submit'] = array(
         '#type' => 'submit',
@@ -89,7 +92,7 @@ class ServiceNotificationsUserForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
   
-    $uid = \Drupal::currentUser()->id();
+    $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
     
     if($rel_type == KONSONS) {

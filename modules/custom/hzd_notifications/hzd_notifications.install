@@ -35,7 +35,49 @@ function hzd_notifications_schema() {
     'primary key' => array('sid'),
   );
   
-  
+  $schema['planning_files_notifications'] = array(
+    'description' => 'Stores the planning files notifications',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'send_interval' => array(
+        'type' => 'int',
+      ),
+      'uids' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['quickinfo_notifications'] = array(
+    'description' => 'Stores the quickinfo notifications',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'cck' => array(
+        'type' => 'VARCHAR',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'send_interval' => array(
+        'type' => 'int',
+      ),
+      'uids' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
   $schema['service_notifications_override'] = array(
     'description' => 'Override service notifications',
     'fields' => array(
@@ -113,5 +155,39 @@ function insert_service_notifications($type, $nid) {
   foreach($interval as $vals) {
     $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $vals, 'uids' => 0);
 	  db_insert('service_notifications')->fields($record)->execute();
+  }
+}
+
+/*function hzd_notifications_update_8009() {
+  // migrate planning file notifications.
+  $interval = array('-1', 0, 86400, 604800);
+  foreach($interval as $vals) {
+    $record = array('send_interval' => $vals, 'uids' => 0);
+	  db_insert('planning_files_notifications')->fields($record)->execute();
+  }
+}*/
+
+function hzd_notifications_update_8010() {
+  // migrate quickinfo notifications.
+  $interval = array('-1', 0, 86400, 604800);
+  foreach($interval as $vals) {
+    $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(":val" => 'planning_files', "intval" => $vals))->fetchCol();
+    $serialized_uids = serialize($uids);
+    $record = array('send_interval' => $vals, 'uids' => $serialized_uids);
+	  db_insert('planning_files_notifications')->fields($record)->execute();
+  }
+}
+
+// migrate quickinfo notifications
+function hzd_notifications_update_8012() {
+  $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
+  $interval = array('-1', 0, 86400, 604800);
+  foreach($options as $content_key => $content) {
+    foreach($interval as $vals) {
+      $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(":val" => $content, ":intval" => $vals))->fetchCol();
+      $serialized_uids = serialize($uids);
+      $record = array('cck' => $content, 'send_interval' => $vals, 'uids' => $serialized_uids);
+	    db_insert('quickinfo_notifications')->fields($record)->execute();
+    }
   }
 }

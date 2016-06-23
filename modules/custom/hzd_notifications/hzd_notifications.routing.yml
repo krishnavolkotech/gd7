@@ -37,3 +37,19 @@ hzd_notifications.group_notifications:
     _title: 'Add Group subscription'
   requirements:
     _permission: 'access content'
+
+hzd_notifications.update_notifications:
+  path: '/migrate_service_notifications'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_notifications'
+    _title: 'Migrate Notifications'
+  requirements:
+    _permission: 'access content'
+
+hzd_notifications.delete_notifications:
+  path: '/update_notifications'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::delete_notifications'
+    _title: 'Delete Notifications'
+  requirements:
+    _permission: 'access content'
