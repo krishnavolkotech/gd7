@@ -1,0 +1,7 @@
+hzd_notifications:
+  js:
+    js/hzd_service_notifications.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
