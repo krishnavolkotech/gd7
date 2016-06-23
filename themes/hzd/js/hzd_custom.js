@@ -1,4 +1,4 @@
-/*(function ($) {
+(function ($) {
   Drupal.behaviors.hzd = {
     attach: function (context, settings) {
       //  $(document).ready(function(){
@@ -14,4 +14,4 @@
 	}
     }
   }
-})(jQuery);*/
+})(jQuery);
