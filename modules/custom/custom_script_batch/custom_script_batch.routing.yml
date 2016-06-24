@@ -1,0 +1,7 @@
+custom_script_batch.form:
+  path: 'custom_script/migrate_group'
+  defaults:
+    _form: '\Drupal\custom_script_batch\Form\MigrateGroupForm'
+    _title: 'Migrating Groups using Batch processing'
+  requirements:
+    _permission: 'access content'
