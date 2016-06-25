@@ -15,6 +15,7 @@ problem_management.problem_settings:
     _weight: 10
   requirements:
     _permission: 'access content'
+#   cust_og_is_admin: 'TRUE' 
 
 #  requirements:
 #    _permission: 'cust_og_is_admin' --siva
@@ -30,7 +31,11 @@ problem_management.problems:
   requirements:
     _permission: 'access content'
     node: \d+
+    _permission: 'access content'
+#   cust_og_is_member: 'TRUE' 
+
 #  requirements:
+
 #     'access callback' => 'cust_og_is_member', 
 #     'access arguments' => array(1),
 
@@ -42,6 +47,7 @@ problem_management.current_problems:
   requirements:
     _permission: 'access content'
     node: \d+
+#    cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_member'
 #     'access callback' => 'cust_og_is_member', 
@@ -52,9 +58,10 @@ problem_management.archived_problems:
   defaults:
     _controller: '\Drupal\problem_management\Controller\ArchivedProblemsController::archived_problems'
     _title: 'Archive'
+#    node: \d+
   requirements:
     _permission: 'access content'
-    node: \d+
+#   cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_member'
 #     access callback: 'cust_og_is_member', 
@@ -68,11 +75,15 @@ problem_management.import_history:
 #    _weight: 4
   requirements:
     _permission: 'access content'
-    node: \d+
+    node: ^[0-9]+
+#    node: \d+
+#   cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_admin'
 #     access callback: 'cust_og_is_admin', 
 #     access arguments: array(1),
+#    node:
+#      type: entity:node
 
 problem_management.problem_management_settings:
   path: 'admin/config/problem'
@@ -80,6 +91,8 @@ problem_management.problem_management_settings:
     _form: '\Drupal\problem_management\Form\ProblemmanagementsettingsForm'
     _title: 'Problem Database Configuration'
   requirements:
-    _permission: 'access content'
+    _permission: 'administer problems'
 #  requirements:
 #    access arguments: 'administer problems'
+
+

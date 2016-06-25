@@ -12,6 +12,13 @@
           }
         });
 
+           var anchor = $('#import_search_results_wrapper > #pagination > nav > ul > li > a');
+             anchor.each(function( index ) {
+               var links = $( this ).attr('href'); 
+               var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
+               $( this ).attr('href', new_href);
+             });
+
    
         $(context).find('table#sortable').once('problem_management').each(function () {
            // $("#import_search_results_wrapper > nav > ul > li > a").removeajaxparameter();
@@ -24,6 +31,7 @@
                $( this ).attr('href', new_href);
              });
            
+         // #pagination > nav > ul > li > a
          // $('body').once('problem_management').each(function () {
         $.tablesorter.addParser({
           // set a unique id

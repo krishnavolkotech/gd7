@@ -318,7 +318,7 @@ function get_environment_options($state = 1) {
  * implements hook_ENTITY_TYPE_presave()
  */
 function hzd_release_management_node_presave($entity) {
-
+// echo '<pre>'; print_r($entity->toArray()); exit;
   if($entity->getType() == 'quickinfo') {
     $services = $entity->get('field_other_services')->getValue();
     $result = hzd_get_immediate_qi_notification_user_mails($services);
@@ -420,7 +420,8 @@ function hzd_get_immediate_notification_user_mails($service_id, $type) {
   $get_immediate_notifications_users = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND send_interval = :intval AND type = :type", array(":sid" => $service_id, ":intval" => 0, ":type" => $type))->fetchField();
   $unserialized_user_array = unserialize($get_immediate_notifications_users);
   if(count($unserialized_user_array) > 0) {
-    return hzd_user_mails($unserialized_user_array);   
+    //return hzd_user_mails($unserialized_user_array);
+    return '';
     /*$query = db_select('users_field_data', 'u')
            ->condition('status', 1, '=')
            ->fields('u', array('mail'))

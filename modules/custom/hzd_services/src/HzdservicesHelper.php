@@ -36,11 +36,20 @@ function send_problems_notification($to, $subject, $message_text) {
   $module = 'problem_management';
   $key = 'problem_management_read_csv';
   $params['message'] = $message_text;
+  //  echo '<pre>';  print_r($params['message']); exit;
   $params['subject'] = $subject;
+  //   echo '<pre>';  print_r($params['message']); exit; 
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = true;
+  // $params['from'] = \Drupal::config('system.site')->get('mail');
+  // $message['subject'] = $params['subject'];
+  // $message['body'][] = $params['message'];
+  //  $message['body'][] = SafeMarkup::checkPlain($params['message']);
+  // message['body'][] = $params['message'];
+  //  $params['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+
   $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-  if ($result['result'] !== true) {
+  if (!$result['result']) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }
 }

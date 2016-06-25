@@ -95,9 +95,10 @@ class ProblemmanagementsettingsForm extends ConfigFormBase {
    // $import_time = $form_state->getValue('import_time');
     $import_mail = $form_state->getValue('import_mail');
     $import_alias = $form_state->getValue('import_alias');
-
-    $ptn = "/^([0-1]\d|2[0-3]):([0-5]\d)$/";
-
+    if (strpos($import_path, '.csv') == false) {
+      $form_state->setErrorByName('import_path', $this->t('Please enter csv problem file path'));
+    } 
+   // $ptn = "/^([0-1]\d|2[0-3]):([0-5]\d)$/";
    //  preg_match($ptn, trim($import_time), $matches);
     if (!valid_email_address($import_mail)) {
       // form_set_error('',t('Invalid mail id'));
@@ -131,5 +132,6 @@ class ProblemmanagementsettingsForm extends ConfigFormBase {
 
     HzdcustomisationStorage::change_url_alias($import_alias, 'problems');
     menu_cache_clear_all();
+    parent::submitForm($form, $form_state);
   }
 }

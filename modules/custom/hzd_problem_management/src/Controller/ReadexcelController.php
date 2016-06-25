@@ -24,8 +24,9 @@ class ReadexcelController extends ControllerBase {
   function read_problem_csv() {
    $header_values = array(
 		  'sno', 'status', 'service', 'function', 'release', 'title' ,
-		  'body', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
-		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 'timezone', 'closed'
+		  'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
+		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 
+                  'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
 		  );
    
    $path = \Drupal::config('problem_management.settings')->get('import_path');
@@ -48,6 +49,7 @@ class ReadexcelController extends ControllerBase {
      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
      $subject = 'Error while import';
      $body = t("There is an issue while importing of the problems from file" . $path . "Check whether the format of problems is in proper CSV format or not.");
+
      HzdservicesHelper::send_problems_notification($mail, $subject, $body);
      // $output =  t('Set the import path at') . \Drupal::l('set import path', Url::fromRoute('admin/config/problem'));  
     }
