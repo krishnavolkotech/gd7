@@ -64,7 +64,6 @@ class MigrateGroupForm extends FormBase {
     return $default_file;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -76,10 +75,19 @@ class MigrateGroupForm extends FormBase {
     $connection->truncate('group_content_field_data')->execute();
     $connection->truncate('group__field_description')->execute();
     $connection->truncate('group__field_old_reference')->execute();
+    $connection->truncate('group__field_group_body')->execute();
     //$connection->commit();
-
   }
-
+  
+    /**
+   * {@inheritdoc}
+   */
+  protected function groupContentCleanUp() {
+    $connection = Database::getConnection();
+    $connection->truncate('group_downtimes_view')->execute();
+    $connection->truncate('group_problems_view')->execute();
+    $connection->truncate('group_releases_view')->execute();
+  }
 
   /**
    * {@inheritdoc}
@@ -87,32 +95,42 @@ class MigrateGroupForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $default_file = $this->getDefaultFile();
 
+    $form['batch'] = array(
+      '#type' => 'select',
+      '#title' => 'Choose batch operation to perform',
+      '#options' => array(
+        'import_group' => t('Import groups'),
+        'add_members' => t('Add group Members'),
+        'add_group_content' => t('Add Group Content'),
+      ),
+    );
+
     $form['fileops_file'] = array(
       '#type' => 'textfield',
       '#default_value' => $default_file,
-      '#title' => $this->t('Enter the URI of a file'),      
+      '#title' => $this->t('Enter the URI of a file'),
     );
 
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Apply'),
-      //'#submit' => array('::handleFileRead'),
+        //'#submit' => array('::handleFileRead'),
     );
 
     return $form;
   }
 
- 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $batch = array();
     $filedata = array();
+        // Gather our form value.
+    $value = $form_state->getValues()['batch'];
     $form_values = $form_state->getValues();
     $uri = $form_values['fileops_file'];
     if (fopen($uri, "r")) {
-      $this->groupCleanUp();
       $handle = fopen($uri, "r");
       $count = 0;
       while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
@@ -123,7 +141,22 @@ class MigrateGroupForm extends FormBase {
         $filedata[] = $data;
       }
       
-      $batch = $this->generateBatch1($filedata);
+    // Set the batch, using convenience methods.
+    switch ($value) {
+      case 'import_group':
+//         $this->groupCleanUp();
+//         $this->groupContentCleanUp();
+//        $batch = $this->create_groups($filedata);
+        break;
+      
+      case 'add_members':
+        $batch = $this->add_members($filedata);
+        break;
+      case 'add_group_content':
+        //$batch = $this->add_group_content($filedata);
+        break;
+    }
+
       batch_set($batch);
     }
 
@@ -132,21 +165,14 @@ class MigrateGroupForm extends FormBase {
       drupal_set_message(t('The file "%uri" does not exist', array('%uri' => $uri)), 'error');
       return;
     }
-
-    
   }
 
-  /**
-   * Generate Batch 1.
-   *
-   * Batch 1 will process one item at a time.
-   *
-   * This creates an operations array defining what batch 1 should do, including
-   * what it should do when it's finished. In this case, each operation is the
-   * same and by chance even has the same $nid to operate on, but we could have
-   * a mix of different types of operations in the operations array.
-   */
-  public function generateBatch1($filedata) {
+/**
+ * 
+ * @param type $filedata
+ * @return type
+ */
+  public function create_groups($filedata) {
     $num_operations = count($filedata);
     drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
 
@@ -154,6 +180,62 @@ class MigrateGroupForm extends FormBase {
     foreach ($filedata as $key => $row) {
       $operations[] = array(
         'create_group_batch_op_1',
+        array(
+          $row,
+          $key,
+          t('(Operation @operation)', array('@operation' => $key)),
+        ),
+      );
+    }
+    $batch = array(
+      'title' => t('Creating an array of @num operations', array('@num' => $num_operations)),
+      'operations' => $operations,
+      'finished' => 'custom_script_batch_finished',
+    );
+    return $batch;
+  }
+
+  /**
+ * 
+ * @param type $filedata
+ * @return type
+ */
+  public function add_members($filedata) {
+    $num_operations = count($filedata);
+    drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
+
+    $operations = array();
+    foreach ($filedata as $key => $row) {
+      $operations[] = array(
+        'add_members_batch',
+        array(
+          $row,
+          $key,
+          t('(Operation @operation)', array('@operation' => $key)),
+        ),
+      );
+    }
+    $batch = array(
+      'title' => t('Creating an array of @num operations', array('@num' => $num_operations)),
+      'operations' => $operations,
+      'finished' => 'custom_script_batch_finished',
+    );
+    return $batch;
+  }
+
+/**
+ * 
+ * @param type $filedata
+ * @return type
+ */
+  public function add_group_content($filedata) {
+    $num_operations = count($filedata);
+    drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
+
+    $operations = array();
+    foreach ($filedata as $key => $row) {
+      $operations[] = array(
+        'add_group_content_batch_op_1',
         array(
           $row,
           $key,

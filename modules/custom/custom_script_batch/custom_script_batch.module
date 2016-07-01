@@ -6,13 +6,16 @@
  */
 use Drupal\group\Entity\Group;
 use Drupal\user\Entity\User;
-
+use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\GroupContentType;
 //use Drupal\Component\Utility\SafeMarkup;
 
 /**
- * Batch operation for batch 1: one at a time.
- *
- * This is the function that is called on each operation in batch 1.
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
  */
 function create_group_batch_op_1($row, $id, $operation_details, &$context) {
 //dsm($row);
@@ -51,28 +54,75 @@ function create_group_batch_op_1($row, $id, $operation_details, &$context) {
   }
 
   $group_nid_ref = $row[8];
-  $group_members = explode('+', $row[9]);
-//$group_members = array(60, 68);
-
-
+  $node = \Drupal\node\Entity\Node::load($group_nid_ref);
   $group = Group::create([
         'type' => $group_type,
         'label' => $group_label,
         'langcode' => 'de',
         'field_old_reference' => $group_nid_ref,
         'field_description' => $group_desc,
+        'field_group_body' => $node->body->value,
   ]);
-//$group = Group::create(['type' => $group_type, 'label' => $group_label]);
   $group->save();
-  if (count($group_members) > 0) {
-    foreach (User::loadMultiple($group_members) as $account) {
-//$account = \Drupal\user\Entity\User::load($group_member);
-      if ($account->isActive()) {
-        $group->addMember($account);
-      }
+//$group = Group::create(['type' => $group_type, 'label' => $group_label]);
+  $context['results'][] = $id;
+// Optional message displayed under the progressbar.
+  $context['message'] = t('Running Batch "@id" @details', array('@id' => $id, '@details' => $operation_details)
+  );
+}
+
+/**
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
+ */
+function add_members_batch($row, $id, $operation_details, &$context) {
+//dsm($row);
+  $group_id = trim($row[2]);
+  $group = Group::load($group_id);
+  $group_member = trim($row[1]);
+  if (isset($group_member) > 0) {
+//    foreach (User::loadMultiple($group_members) as $account) {
+    $account = \Drupal\user\Entity\User::load($group_member);
+    if ($account->isActive()) {
+      $group->addMember($account);
     }
   }
 
+  $context['results'][] = $id;
+
+// Optional message displayed under the progressbar.
+  $context['message'] = t('Running Batch "@id" @details', array('@id' => $id, '@details' => $operation_details)
+  );
+}
+
+/**
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
+ */
+function add_group_content_batch_op_1($row, $id, $operation_details, &$context) {
+  $group_id = trim($row[0]);
+  $content_type = trim($row[2]);
+  $node_id = trim($row[3]);
+  
+  $group = Group::load($group_id);
+  $content_name = $content_type;
+  $plugin_id = 'group_node:' . $content_name;
+  $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
+
+  $group_content = GroupContent::create([
+        'type' => $plugin->getContentTypeConfigId(),
+        'gid' => $group->id(),
+        'langcode' => 'de',
+        'entity_id' => $node_id,
+  ]);
+  
+  $group_content->save();
   $context['results'][] = $id;
 
 // Optional message displayed under the progressbar.
