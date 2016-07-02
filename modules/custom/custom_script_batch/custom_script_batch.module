@@ -105,24 +105,27 @@ function add_members_batch($row, $id, $operation_details, &$context) {
  * @param type $operation_details
  * @param type $context
  */
-function add_group_content_batch_op_1($row, $id, $operation_details, &$context) {
+function add_group_content($row, $id, $operation_details, &$context) {
   $group_id = trim($row[0]);
   $content_type = trim($row[2]);
   $node_id = trim($row[3]);
+  $node = \Drupal\node\Entity\Node::load($node_id);
   
   $group = Group::load($group_id);
   $content_name = $content_type;
   $plugin_id = 'group_node:' . $content_name;
   $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
 
-  $group_content = GroupContent::create([
-        'type' => $plugin->getContentTypeConfigId(),
-        'gid' => $group->id(),
-        'langcode' => 'de',
-        'entity_id' => $node_id,
-  ]);
-  
-  $group_content->save();
+  if ($node->status->value) {
+    $group_content = GroupContent::create([
+          'type' => $plugin->getContentTypeConfigId(),
+          'gid' => $group->id(),
+          'langcode' => 'de',
+          'entity_id' => $node_id,
+    ]);
+
+    $group_content->save();
+  }
   $context['results'][] = $id;
 
 // Optional message displayed under the progressbar.

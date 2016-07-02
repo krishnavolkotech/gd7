@@ -150,10 +150,10 @@ class MigrateGroupForm extends FormBase {
         break;
       
       case 'add_members':
-        $batch = $this->add_members($filedata);
+    //    $batch = $this->add_members($filedata);
         break;
       case 'add_group_content':
-        //$batch = $this->add_group_content($filedata);
+        $batch = $this->add_group_content($filedata);
         break;
     }
 
@@ -235,7 +235,7 @@ class MigrateGroupForm extends FormBase {
     $operations = array();
     foreach ($filedata as $key => $row) {
       $operations[] = array(
-        'add_group_content_batch_op_1',
+        'add_group_content',
         array(
           $row,
           $key,
