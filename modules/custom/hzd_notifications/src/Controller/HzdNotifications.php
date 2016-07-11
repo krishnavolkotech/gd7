@@ -69,7 +69,7 @@ class HzdNotifications extends ControllerBase {
   }
 
   public function group_notifications($user = NULL) {
-    $output[] = array('#markup' => $this->t('Group Notifications Comes Here'));
+    $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_notifications\Form\GroupNotifications', $user);
     return $output;
   }
 
@@ -115,6 +115,13 @@ class HzdNotifications extends ControllerBase {
     //$output[] = array('#markup' => $this->t('Delete Notifications Comes Here'));
     return $output;
   }
+
+  public function notification_templates() {
+    $output[] = array('#markup' => $this->t('Notifications Templates'));
+    $output[] =  \Drupal::formBuilder()->getForm('Drupal\hzd_notifications\Form\NotificationsTemplates');
+    return $output;
+  }
+
   // migrate priority table
   /*function test1() {
     $distinct_uids = db_query("select distinct uid from service_notifications_priority order by uid asc")->fetchCol();

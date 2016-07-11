@@ -33,11 +33,25 @@ class HzdEarlyWarnings extends ControllerBase {
     $request = \Drupal::request();
     $page = $request->get('page');
 
+//    ser=383&rel=51341&type=released
+
+    $service = $request->query->get('ser');
+    $release = $request->query->get('rel');
+    $type = $request->query->get('type');
+
+   // echo '<pre>'; print_r($_SESSION['earlywarning_filter_option']); exit; 
     if (!isset($page)) {
       unset($_SESSION['earlywarning_filter_option']);
     }
+    
+    if (isset($service) && isset($release) && isset($type)) {
+      $_SESSION['earlywarning_filter_option']['service'] = $service;
+      $_SESSION['earlywarning_filter_option']['release'] = $release;
+      $output['content']['earlywarnings_filter_form'] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm', $type);
+    } else {
+          $output['content']['earlywarnings_filter_form'] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm');
+    }
 
-    $output['content']['earlywarnings_filter_form'] =  \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm');
     $output['content']['earlywarnings_filter_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table();
     $output['content']['#suffix'] = '</div>';
     return $output;

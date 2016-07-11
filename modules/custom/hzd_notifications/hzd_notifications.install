@@ -78,6 +78,62 @@ function hzd_notifications_schema() {
     'primary key' => array('id'),
   );
 
+  $schema['group_notifications'] = array(
+    'description' => 'Stores the Group notifications',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'group_name' => array(
+        'type' => 'VARCHAR',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'send_interval' => array(
+        'type' => 'int',
+      ),
+      'uids' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['group_notifications_user_default_interval'] = array(
+    'description' => 'Stores the Group notifications default interval',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'group_name' => array(
+        'type' => 'VARCHAR',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'default_send_interval' => array(
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
   $schema['service_notifications_override'] = array(
     'description' => 'Override service notifications',
     'fields' => array(
@@ -191,3 +247,48 @@ function hzd_notifications_update_8012() {
     }
   }
 }
+
+// update user group notifications default interval
+function hzd_notifications_update_8015() {
+  $user_ids = db_query("SELeCT uid FROM users where uid <>0")->fetchCol();
+  foreach($user_ids as $uid) {
+    $default_groups_send_interval = array();
+    $default_groups_query  = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
+                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(":field" => 'group', ":uid" => $uid))->fetchAll();
+    foreach($default_groups_query as $default_groups_info) {
+      $default_groups_send_interval[$default_groups_info->value] = $default_groups_info->send_interval;
+    }
+    
+    $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
+                   WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
+    $user_groups = array();
+    foreach($user_groups_query as $groups_list) {
+      $user_groups[$groups_list->id] = $groups_list->label;
+    }
+    
+    if(count($user_groups) > 0) {
+      foreach($user_groups as $gid => $label) {
+        // old ref
+        $old_ref = db_query("SELECT field_old_reference_value FROM {group__field_old_reference} 
+                   WHERE entity_id = :eid", array(":eid" => $gid))->fetchField();
+        if($old_ref && $default_groups_send_interval[$old_ref]) {
+          $int_val = $default_groups_send_interval[$old_ref] ? $default_groups_send_interval[$old_ref] : 0;
+          $record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
+	        db_insert('group_notifications_user_default_interval')->fields($record)->execute();
+        }
+      }
+    }
+
+  }
+}
+
+/*function hzd_migrate_group_notifications() {
+  $groups = db_query("SELECT id FROM {groups}")->fetchCol();
+  $interval = array('-1', 0, 86400, 604800);
+  foreach($groups as $id) {
+    // get the list of users for each greoup and interval
+    foreach($interval as $vals) {
+      $uids = db_query()->fetchAll();
+    }
+  }
+}*/

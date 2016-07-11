@@ -1,0 +1,9 @@
+hzd_customizations.planning_files_form:
+  path: 'admin/config/planning_files'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\PlanningFilesForm'
+    _title: 'Planning Files of Release Management'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

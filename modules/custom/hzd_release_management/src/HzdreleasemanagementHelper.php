@@ -50,7 +50,7 @@ static function _csv_headers() {
 */  
   if ($locked_path) {
     $path['locked'] = $locked_path;
-    $header_values['locked'] = array('title', 'status', 'service', 'date', 'comment');
+    $header_values['locked'] = array('title', 'status', 'service', 'date', 'link', 'comment');
   }
   $path_header = array('path' => $path, 'headers' => $header_values);
   return $path_header;
@@ -77,19 +77,20 @@ function validate_releases_csv(&$values) {
   $type = 'releases';
   $service = $values['service'];
   $service = trim($service);
-  
+ // echo $service; exit;
   if (HzdservicesHelper::service_exist($service, $type)) {
+   // echo 'nhlskdjfkl';  exit;
     $services = HzdservicesStorage::get_related_services($type);
     $service_id = array_keys($services, $service);
     $values['service'] = $service_id[0];
     return TRUE;
   }
   else {
-    // echo 'hahsjdhfjsdhf';  exit;
+   // echo $service; echo $type; exit;
     $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases');
     $subject = 'New service found while importing Releases';
     $body = t("New service found in import file: ") . $service . ' ' . t("Please add this service to the release database.");
-    HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+    HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     return FALSE;
   }
   return FALSE;

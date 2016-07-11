@@ -41,7 +41,7 @@ class ArchivedProblemsController extends ControllerBase {
       unset($_SESSION['sql_where']);
       unset($_SESSION['limit']);
     }
-        
+    
     $string = $get_uri['4'];
     HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
     // drupal_add_js(array('group_id' => $group_id, 'type' => $string), 'setting');

@@ -1,0 +1,134 @@
+<?php
+
+/**
+ * @file
+ * custom group module install file.
+ */
+
+
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ *
+ * @see hook_schema()
+ *
+ * @ingroup dbtng_example
+ */
+function dbtng_example_schema() {
+    switch ($GLOBALS['db_type']) {
+        case 'mysql':
+        case 'mysqli':
+        $schema['cust_group_module'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'not null' => TRUE,
+                'length' => 3,
+            ),
+
+            'group_id' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'size' => 'tiny',
+                'length' => 4,
+            ),
+
+            'module_id' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'size' => 'tiny',
+                'length' => 4,
+            ),
+        ),
+        'primary key' => array('id'),
+        'indexes' => array(
+            'group_id' => array('group_id'),
+            'module_id' => array('module_id'),
+        ),
+    );
+
+        $schema['cust_group_archive'] = array(
+            'fields' => array(
+                'id' => array(
+                    'type' => 'serial',
+                    'not null' => TRUE,
+                    'length' => 3,
+                ),
+
+                'group_id' => array(
+                    'type' => 'int',
+                    'size' => 'tiny',
+                    'length' => 4,
+                ),
+
+                'is_archive' => array(
+                    'type' => 'int',
+                    'not null' => TRUE,
+                    'size' => 'tiny',
+                ),
+            ),
+            'primary key' => array('id'),
+            'indexes' => array(
+                'group_id' => array('group_id'),
+                'is_archive' => array('is_archive'),
+            ),
+        );
+
+        case 'pgsql':
+            $schema['faq_weights'] = array(
+                'fields' => array(
+                    'tid' => array(
+                        'type' => 'int',
+                        'not null' => TRUE,
+                        'default' => 0,
+                    ),
+
+                    'nid' => array(
+                        'type' => 'int',
+                        'not null' => TRUE,
+                        'size' => 'smallint',
+                        'default' => 0,
+                    ),
+
+                    'weight' => array(
+                        'type' => 'int',
+                        'not null' => TRUE,
+                        'size' => 'tiny',
+                        'default' => 0,
+                    ),
+                ),
+                'primary key' => array('tid', 'nid'),
+            );
+
+            $schema['faq_questions'] = array(
+                'fields' => array(
+                    'nid' => array(
+                        'type' => 'int',
+                        'not null' => TRUE,
+                        'default' => 0,
+                    ),
+
+                    'vid' => array(
+                        'type' => 'int',
+                        'size' => 'tiny',
+                        'default' => 0,
+                    ),
+
+                    'question' => array(
+                        'type' => 'varchar',
+                        'not null' => TRUE,
+                        'length' => 500,
+                    ),
+                ),
+
+                'primary key' => array('nid', 'vid'),
+                'indexes' => array(
+                    'question' => array('question'),
+                ),
+            );
+
+            break;
+    }
+    return $schema;
+}

@@ -1,0 +1,897 @@
+<?php
+// $Id$
+define('SITE_ADMIN', 5);
+define('RELEASE_MANAGEMENT', 339);
+
+// define('QUICKINFO', variable_get('quickinfo_group_id', NULL));
+
+define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
+/**
+function cust_og_init() {
+    check_group_pages();
+    $arg = arg(1);
+    if (is_numeric($arg)) {
+        $node = node_load($arg);
+        if ($node->type != 'page') {
+            unset($_SESSION['access_page_type']);
+            unset($_SESSION['access_page_id']);
+        }
+    }
+
+}
+*/
+
+function cust_group_menu_links_discovered_alter(&$callbacks) {
+   //echo 'sdfgyk nsbjhsd';  exit;
+}
+
+function cust_group_contextual_links_view_alter(&$callbacks) {
+    //echo 'sdfgyk jsjkdhs';  exit;
+}
+
+function cust_group_local_tasks_alter(&$callbacks) {
+    //echo 'sdfgyk  shdkjhsjdhjahdsj';  exit;
+}
+
+
+function cust_group_menu_alter(&$callbacks) {
+    //echo 'jhdgfkhsghd';  exit;
+    /**
+    global $user;
+    // First: Replace access callback to all content types and handle all create content pages.
+    $types = node_get_types();
+    foreach ($types as $type) {
+        $type_url_str = str_replace('_', '-', $type->type);
+        if ($type_url_str != 'quickinfo' && $type_url_str != 'service-profile') {
+            $callbacks['node/%node/add/'. $type_url_str] = array(
+                'title' => drupal_ucfirst($type->name),
+                'title callback' => 'check_plain',
+                'page callback' => 'node_add',
+                'page arguments' => array(3),
+                'access callback' => 'cust_og_content_type_access',
+                'access arguments' => array('create', 1, 3),
+                'description' => $type->description,
+                'file' => 'node.pages.inc',
+                'file path' => drupal_get_path('module', 'node'),
+            );
+        }
+        else if ($type_url_str == 'service-profile') {
+            $callbacks['node/' . MAINTENANCE_GROUP_ID . '/add/service-profile'] = array(
+                'title' => drupal_ucfirst($type->name),
+                'title callback' => 'check_plain',
+                'page callback' => 'node_add',
+                'page arguments' => array(3),
+                'access callback' => 'saved_quickinfo_og_is_member',
+                'access arguments' => array(1),
+                'description' => $type->description,
+                'file' => 'node.pages.inc',
+                'file path' => drupal_get_path('module', 'node'),
+            );
+        }
+        else {
+            $callbacks['node/' . QUICKINFO . '/add/quickinfo'] = array(
+                'title' => drupal_ucfirst($type->name),
+                'title callback' => 'check_plain',
+                'page callback' => 'node_add',
+                'page arguments' => array(3),
+                'access callback' => 'saved_quickinfo_og_is_member',
+                'access arguments' => array(1),
+                'description' => $type->description,
+                'file' => 'node.pages.inc',
+                'file path' => drupal_get_path('module', 'node'),
+            );
+        }
+    }
+     */
+    /*TODO: Would something like the below work above ? 
+     *$callbacks[]['access callback'] = FALSE;  
+     *$callbacks[]['page callback'] = 'og_content_type_admin_node_add';
+     */
+    /**
+    $callbacks['node/%node/broadcast']['title'] = t('E-mail');
+    $callbacks['og/unsubscribe/%node/%user']['access callback'] = 'cust_og_unsubscribe_access';
+    $callbacks['og/unsubscribe/%node/%user']['access arguments'] = array(2, 3);
+
+    $callbacks['node/%node/broadcast']['access callback'] = 'cust_og_is_admin';
+    $callbacks['node/%node/revisions/%/revert']['access callback'] = 'cust_og_is_admin';
+    $callbacks['node/%node/revisions']['access callback'] = 'custom_node_revision_access';
+    $callbacks['node/%node/revisions']['page callback'] = 'custom_node_revision_overview';
+    $callbacks['node/%node/revisions/%/delete']['access callback'] = 'cust_og_is_admin';
+    $callbacks['node/%node/revisions/%/view']['access callback'] = 'cust_og_is_member';
+    $callbacks['node/%node/broadcast']['access arguments'] = array(1);
+    $callbacks['og']['type'] = MENU_CALLBACK;
+    $callbacks['faq']['type'] = MENU_CALLBACK;
+    $callbacks['webfm']['type'] = MENU_CALLBACK;
+    $old_callback = $callbacks['node/%node']['access callback'];
+    $original_callback = $callbacks['node/%node']['access callback'];
+    $original_args = $callbacks['node/%node']['access arguments'];
+    $callbacks['node/%node']['access callback'] = 'cust_og_access';
+    array_unshift($original_args, $original_callback);
+    $callbacks['node/%node']['access arguments'] = $original_args;
+    */
+}
+/**
+function check_group_pages() {
+    if (!function_exists('arg')){
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_PATH);
+    }
+    /*setting session name
+     if arg(0) contains group name set session and check for membership
+     if member show page elese access denied message
+    */
+/**
+    $arg_0 = arg(0);
+    $arg_1 = arg(1);
+    $arg_2 = arg(2);
+
+    if ($arg_0 != 'node' && $arg_0 != 'comment' &&
+        $arg_0 != 'print' && $arg_0 != 'printpdf' && $arg_0 != 'printmail') {
+        $nid = db_result(db_query("SELECT nid from node WHERE title = '%s' AND type = 'group' ", $arg_0));
+        if ($nid) {
+            $_SESSION['Group_id'] = $nid;
+            $_SESSION['Group_name'] = $arg_0;
+            $_GET['gids'] = array($nid);
+            return;
+        }
+    }
+    else if ((($arg_0 == 'node' || $arg_0 == 'print' || $arg_0 == 'printpdf' || $arg_0 == 'printmail') && is_numeric($arg_1)) || ($arg_0 == 'comment' && $arg_1 == 'reply' && is_numeric($arg_2))) {
+        if ($arg_0 == 'comment') {
+            $node = node_load($arg_2);
+        } else {
+            $node = node_load($arg_1);
+        }
+        if ($node->type == 'forum' && $og_forum_nid = db_result(db_query('SELECT nid FROM {og_term} WHERE tid = %d', $node->tid))) {
+            $arg_1 = $og_forum_nid;
+        }
+
+        $title = db_result(db_query("SELECT title from {node} WHERE nid = %d AND type = 'group'", $arg_1));
+        if ($title) {
+            $_SESSION['Group_id'] = $arg_1;
+            $_SESSION['Group_name'] = $title;
+            $_GET['gids'] = array($arg_1);
+            return;
+        }
+        // check if the node is group node
+        $group_id = db_result(db_query("SELECT group_nid FROM {og_ancestry} WHERE nid=%d", $arg_1));
+        if ($group_id) {
+            $title = db_result(db_query("SELECT title from {node} WHERE nid = %d AND type = 'group'", $group_id));
+            if ($title) {
+                $_SESSION['Group_id'] = $group_id;
+                $_SESSION['Group_name'] = $title;
+                $_GET['gids'] = array($group_id);
+                return;
+            }
+        }
+    }
+    unset($_SESSION['Group_id']);
+    unset($_SESSION['Group_name']);
+}
+*/
+/**
+ * retun true or false for quickinfo node edit form.
+ */
+/**
+function node_custom_access() {
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+    check_group_pages();
+    $args = func_get_args();
+    $original_callback = array_shift($args);
+
+    // First: Allow access to add a particlar type of group content 
+    if (isset($_SESSION['Group_name'])) {
+        $gid = $_SESSION['Group_id'];
+        $group = node_load($gid);
+        $node = node_load(arg(1));
+        if ($node->type == 'quickinfo' || $node->type == 'service-profile') {
+            return cust_og_is_member($group);
+        }
+
+        if ($node->type == 'downtimes' || $node->type == 'problem' || $node->type == 'release' || $node->type == 'early_warnings') {
+            return TRUE;
+        }
+        return cust_og_is_member($group);
+    }
+    return call_user_func_array($original_callback, $args);
+}
+
+function cust_og_access() {
+
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+    check_group_pages();
+    $args = func_get_args();
+    $original_callback = array_shift($args);
+
+    // First: Allow access to add a particlar type of group content 
+    if (isset($_SESSION['Group_name'])) {
+        $gid = $_SESSION['Group_id'];
+        $group = node_load($gid);
+        $node = node_load(arg(1));
+        if ($node->type == 'quickinfo') {
+            if ($node->status == 1) {
+                return cust_quickinfo_og_is_member(RELEASE_MANAGEMENT);
+            }
+            else {
+                return cust_og_is_member($group);
+            }
+        }
+
+        if ($node->type == 'downtimes') {
+            return TRUE;
+        }
+        return cust_og_is_member($group);
+    }
+    return call_user_func_array($original_callback, $args);
+}
+
+function cust_og_content_type_access($op, $node, $type) {
+    check_group_pages();
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+    // First: Allow access to add a particlar type of group content 
+    if ($_SESSION['Group_name'] && ($type == 'downtimes' || $type == 'early-warnings')) {
+        return cust_og_is_member($node);
+    }
+    else if ($_SESSION['Group_name']) {
+        return cust_og_is_admin($node);
+    }
+}
+
+function custom_node_revision_overview($node) {
+    drupal_set_title(t('Revisions for %title', array('%title' => $node->title)));
+    return custom_revisions_view($node);
+}
+
+function custom_node_revision_access($node, $op = 'view') {
+    if ($node->type == 'quickinfo') {
+        return cust_og_is_member($node);
+    }
+    else {
+        global $user;
+        static $access = array();
+        if (!isset($access[$node->vid])) {
+            $node_current_revision = node_load($node->nid);
+            $is_current_revision = $node_current_revision->vid == $node->vid;
+            // There should be at least two revisions. If the vid of the given node
+            // and the vid of the current revision differs, then we already have two
+            // different revisions so there is no need for a separate database check.
+            // Also, if you try to revert to or delete the current revision, that's
+            // not good.
+            if (array_key_exists(SITE_ADMIN,$user->roles)) {
+                return TRUE;
+            }
+            if (og_is_group_type($node->type)) {
+                if ($user->uid == 1) {
+                    return TRUE;
+                }
+                $result = db_query(og_list_users_sql(0), $node->nid);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        if ($row->is_admin > 0) {
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+            if (custom_og_is_group_type($node->type)) {
+                if ($user->uid == 1) {
+                    return TRUE;
+                }
+                if (is_array($node->og_groups)) {
+                    foreach ($node->og_groups as $group) {
+                        $result = db_query(og_list_users_sql(0), $group);
+                        while ($row = db_fetch_object($result)) {
+                            if ($row->uid == $user->uid) {
+                                if ($row->is_admin > 0) {
+                                    return TRUE;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (og_is_group_type($node->type)) {
+                $result = db_query(og_list_users_sql(0), $node->nid);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        unset($user->roles[3]);
+                        if ($row->is_admin >= 0) {
+                            $user->roles[3] = t('group member');
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+            if (custom_og_is_group_type($node->type)) {
+                if ($user->uid == 1) {
+                    return TRUE;
+                }
+                if (is_array($node->og_groups)) {
+                    foreach ($node->og_groups as $group) {
+                        $result = db_query(og_list_users_sql(0), $group);
+                        while ($row = db_fetch_object($result)) {
+                            if ($row->uid == $user->uid) {
+                                unset($user->roles[3]);
+                                if ($row->is_admin >= 0) {
+                                    $user->roles[3] = t('group member');
+                                    return TRUE;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($is_current_revision && (db_result(db_query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d', $node->nid)) == 0 || $op == 'update' || $op == 'delete')) {
+                $access[$node->vid] = FALSE;
+            }
+            elseif (user_access('administer nodes')) {
+                $access[$node->vid] = TRUE;
+            }
+            else {
+                $map = array('view' => 'view revisions', 'update' => 'revert revisions', 'delete' => 'delete revisions');
+                // First check the user permission, second check the access to the
+                // current revision and finally, if the node passed in is not the current
+                // revision then access to that, too.
+                $access[$node->vid] = isset($map[$op]) && user_access($map[$op]) && node_access($op, $node_current_revision) && ($is_current_revision || node_access($op, $node));
+            }
+        }
+        return $access[$node->vid];
+    }
+}
+
+
+function custom_og_is_group_type($type) {
+    $get_og_group_type = variable_get('og_content_type_usage_'. $type, 'omitted');
+    if (($get_og_group_type == 'group_post_standard') || ($get_og_group_type == 'group')) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+function cust_og_is_admin($node) {
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+
+    if (og_is_group_type($node->type)) {
+        if ($user->uid == 1) return TRUE;
+        $result = db_query(og_list_users_sql(0), $node->nid);
+        while ($row = db_fetch_object($result)) {
+            if ($row->uid == $user->uid) {
+                if ($row->is_admin > 0) return TRUE;
+                if (arg(3) == 'forum' || arg(3) == 'quickinfo') {
+                    return true;
+                }
+            }
+        }
+    }
+
+    if (custom_og_is_group_type($node->type)) {
+        if ($user->uid == 1) {
+            return TRUE;
+        }
+        if (is_array($node->og_groups)) {
+            foreach ($node->og_groups as $group) {
+                $result = db_query(og_list_users_sql(0), $group);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        if ($row->is_admin > 0) {
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return FALSE;
+}
+
+function cust_og_is_member($node) {
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+
+    if (og_is_group_type($node->type)) {
+        if ($user->uid == 1) return TRUE;
+        $result = db_query(og_list_users_sql(1), $node->nid);
+        while ($row = db_fetch_object($result)) {
+            if ($row->uid == $user->uid) {
+                unset($user->roles[3]);
+                if ($row->is_admin >= 0) {
+                    $user->roles[3] = t('group member');
+                    return TRUE;
+                }
+            }
+        }
+    }
+    if (custom_og_is_group_type($node->type)) {
+        if ($user->uid == 1) {
+            return TRUE;
+        }
+        if (is_array($node->og_groups)) {
+            foreach ($node->og_groups as $group) {
+                $result = db_query(og_list_users_sql(1), $group);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        unset($user->roles[3]);
+                        if ($row->is_admin >= 0) {
+                            $user->roles[3] = t('group member');
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return FALSE;
+}
+*/
+/**
+ * Access callback function for quickinfo saved content view
+ */
+/**
+function saved_quickinfo_og_is_member($id) {
+    $node = node_load($id);
+    return cust_og_is_member($node);
+}
+
+function cust_quickinfo_og_is_member($id) {
+    $node = node_load($id);
+    $quickinfo_id = node_load(QUICKINFO);
+    global $user;
+    if (array_key_exists(SITE_ADMIN,$user->roles)) {
+        return TRUE;
+    }
+
+    if (og_is_group_type($node->type) || og_is_group_type($quickinfo_id->type)) {
+        if ($user->uid == 1) return TRUE;
+        $result = db_query(og_list_users_sql(0), $node->nid);
+        while ($row = db_fetch_object($result)) {
+            if ($row->uid == $user->uid) {
+                unset($user->roles[3]);
+                if ($row->is_admin >= 0) {
+                    $user->roles[3] = t('group member');
+                    return TRUE;
+                }
+            }
+        }
+        $result_quickinfo = db_query(og_list_users_sql(0), $quickinfo_id->nid);
+        while ($row = db_fetch_object($result_quickinfo)) {
+            if ($row->uid == $user->uid) {
+                unset($user->roles[3]);
+                if ($row->is_admin >= 0) {
+                    $user->roles[3] = t('group member');
+                    return TRUE;
+                }
+            }
+        }
+    }
+    if (custom_og_is_group_type($node->type) || custom_og_is_group_type($quickinfo_id->type)) {
+        if ($user->uid == 1) {
+            return TRUE;
+        }
+        if (is_array($node->og_groups)) {
+            foreach ($node->og_groups as $group) {
+                $result = db_query(og_list_users_sql(0), $group);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        unset($user->roles[3]);
+                        if ($row->is_admin >= 0) {
+                            $user->roles[3] = t('group member');
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+        }
+        if (is_array($quickinfo_id->og_groups)) {
+            foreach ($quickinfo_id->og_groups as $group) {
+                $result = db_query(og_list_users_sql(0), $group);
+                while ($row = db_fetch_object($result)) {
+                    if ($row->uid == $user->uid) {
+                        unset($user->roles[3]);
+                        if ($row->is_admin >= 0) {
+                            $user->roles[3] = t('group member');
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return FALSE;
+}
+
+
+function cust_og_menu() {
+    $items['node/%node/members/portal/users/list'] = array(
+        'title' => t('Members'),
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'access callback' => 'cust_og_is_member',
+        'access arguments' => array(1),
+        'weight'=> 9,
+    );
+
+    $items['node/%node/members/portal/users'] = array(
+        'page callback' => 'portal_users',
+        'title' => t('Users'),
+        'weight'=> 9,
+        'access callback' => 'cust_og_is_member',
+        'access arguments' => array(1),
+        'type' => MENU_LOCAL_TASK,
+    );
+
+    $items['node/%node/members/portal/users/add'] = array(
+        'page callback' => 'drupal_get_form',
+        'title' => 'Add members',
+        'page arguments' => array('og_add_users', 1),
+        'file' => 'og.pages.inc',
+        'file path' => drupal_get_path('module', 'og'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 10,
+        'access callback' => 'cust_og_is_admin',
+        'access arguments' => array(1),
+    );
+
+    $items['node/%node/downtimes_setting'] = array(
+        'title' => t('Downtimes'),
+        'type' => MENU_LOCAL_TASK,
+        'description' => 'View Setting for downtimes.',
+        'weight' => 10,
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('downtimes_setting'),
+        'access callback' => 'cust_og_is_admin',
+        'access arguments' => array(1),
+    );
+
+    $items['node/%node/group_add'] = array(
+        'title' => t('Add Group Content'),
+        'type' => MENU_LOCAL_TASK,
+        'description' => 'View Setting for downtimes.',
+        'weight' => 5,
+        'page callback' => 'add_group_content',
+        'access callback' => 'cust_og_is_admin',
+        'access arguments' => array(1),
+    );
+    $items['node/%node/content/node'] = array(
+        'title callback' => 'group_content_title',
+        'title arguments' => array(1),
+        'page callback' => 'group_content_node',
+        'page arguments' => array(1),
+        'access callback' => 'cust_og_is_admin',
+        'access arguments' => array(1),
+    );
+    return $items;
+}
+
+function group_content_node($group) {
+    // add group filters
+    if (!isset($_SESSION['node_overview_filter']) || (isset($_SESSION['node_overview_filter']) && count($_SESSION['node_overview_filter']) == 0)) {
+        $_SESSION['node_overview_filter'][] = array('group', $group->nid);
+    } else if (count($_SESSION['node_overview_filter']) > 0) {
+        // Check all the filters if there is a group filter.
+        $group_filter_exists = false;
+        foreach ($_SESSION['node_overview_filter'] as $key => $filter) {
+            if ($filter[0] == 'group' && $filter[1] == $group->nid) {
+                $group_filter_exists = true;
+            } else if ($filter[0] == 'group' && $filter[1] != $group->nid) {
+                $_SESSION['node_overview_filter'][$key][1] = $group->nid;
+                $group_filter_exists = true;
+            }
+        }
+        // add group filter if it does not exist.
+        if (!$group_filter_exists) {
+            array_unshift($_SESSION['node_overview_filter'], array('group', $group->nid));
+        }
+    }
+    module_load_include('inc', 'node', 'node.admin');
+    return drupal_get_form('node_admin_content');
+}
+*/
+/*
+ * Implementation of hook_form_FORM_ID_alter().
+ * Altering node_admin_content.
+ */
+/**
+function cust_og_form_node_admin_content_alter(&$form, &$form_state) {
+    // Alter this form and change form submit handler only in the context of group
+    if (isset($_SESSION['Group_name'])) {
+        // remove group filter.
+        unset($form['filters']['status']['group']);
+        unset($form['filters']['filter']['#options']['group']);
+    }
+    if ($form['admin']['nodes']['#options']) {
+        foreach($form['admin']['nodes']['#options'] as $nid => $value) {
+            $form['admin']['path'][$nid] = array('#value' => check_url(url('node/'.$nid)));
+        }
+    }
+}
+
+function group_content_title($group) {
+    return $group->title .' Content';
+}
+
+function cust_og_admin_node_filters_alter(&$filters) {
+    $options = og_all_groups_options();
+    $filters['group'] = array(
+        'title' => t('Group'),
+        'options' => $options,
+        'join' => 'LEFT JOIN {og_ancestry} oga ON n.nid = oga.nid',
+        'where' => 'oga.group_nid = %d',
+    );
+}
+
+function add_group_content() {
+    global $user;
+    $nid = arg(1);
+    $group = node_load($nid);
+    og_set_theme($group->nid);
+    og_set_group_context($group);
+    $gid = $group->nid;
+    $sql = "SELECT octa.gid, octa.name, octa.types_allowed, octa.types_active FROM {og_content_type_admin} octa WHERE octa.gid = %d";
+    if (!$result = db_fetch_object(db_query($sql, $group->nid))) { //if the group isn't one we're monitoring yet, get the defaults
+        $result = db_fetch_object(db_query($sql, 0));
+    }
+
+    $assigned = unserialize($result->types_allowed);
+    $activated_status = unserialize($result->types_active);
+    $types = node_get_types();
+    $out = t("Choose the appropriate item from the list").':';
+    foreach ($assigned as $type => $value) {
+        if(!in_array($type, excluded_group_content_types ())) {
+            if($value) {
+                $count = 1;
+                $type_url_str = str_replace('_', '-', $types[$type]->type);
+                $out .= '<dt>' .l(t(drupal_ucfirst($types[$type]->name)), 'node/'.$_SESSION['Group_id']."/add/$type_url_str"). '</dt>';
+                $out .= '<dd>' .filter_xss_admin($types[$type]->description). '</dd>';
+            }
+        }
+    }
+    $enabled = module_exists('og_forum');
+    if ($enabled) {
+        $out .= '<dt>' .l(t(drupal_ucfirst('og Forums')), 'node/'.$_SESSION['Group_id']."/add/forum"). '</dt>';
+        $out .= '<dd>' .filter_xss_admin(t('Create a new topic for discussion in the forums.')). '</dd>';
+    }
+
+    if($count) {
+        return $out;
+    }
+    else {
+        return t("NO Content is Assigned for this Group");
+    }
+}
+
+function portal_users(){
+    $view = views_get_view('og_members');
+    $argument = arg(1);
+    $args = array($argument);
+    return $view->execute_display('page', $args);
+}
+ */
+/**
+ * Implementation of hook_nodeapi().
+ *
+ */
+/**
+function cust_og_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+    global $user;
+    $file_path = "files";
+    switch ($op) {
+        case 'validate' :
+            //Check in the database if the same name is existing
+            //drupal_set_message($node->title ." We need to check for the group name before inserting");
+            //We need to check for an existing group trying to use an active group name
+            //Replace in the form validation    
+            break;
+        case 'view':
+            if (og_is_group_type($node->type)) {
+                // creating group menus for the already existing group if there is no menu item.
+                //_create_group_menu_items($node->nid, $node->title);    
+            }
+            break;
+        case 'delete':
+            if (og_is_group_type($node->type)) {
+                _delete_group_menus($node->nid, $node->title);
+                $sql = "DELETE FROM {url_alias} WHERE nid = %d";
+                db_query($sql, $node->nid);
+
+                $sql = 'DELETE FROM {url_alias} WHERE dst like "%%%s%%"';
+                db_query($sql, $node->title);
+
+                //Delete files of this group
+                $group_files_path = file_directory_path()."/".$node->title."_files";
+                $err_message = "";
+                if (file_exists($group_files_path))
+                    $res = webfm_delete_dir_recur($group_files_path, FALSE, $err_message);
+                unset($_SESSION['Group_name']);
+            }
+            break;
+        case 'insert':
+            if (og_is_group_type($node->type)) {
+                //Url aliasing for the group links 
+                //_insert_url_alias($node->nid,$node->title);
+                _create_group_menu_items($node->nid, $node->title);
+            }
+            break;
+        case 'update':
+            if (og_is_group_type($node->type)) {
+                if($_SESSION['Group_name'] != $node->title){
+
+                }
+            }
+            _update_url_alias($node->nid,$node->title);
+            break;
+    }
+}
+*/
+/**
+ * Insert url_alias for the group either on insert or update
+ * @param : $nid -int- the id of the node
+ * @param : $node_title string the title of the node
+ */
+/**
+function _insert_url_alias($nid, $node_title) {
+    $node_title = trim($node_title);
+    $query_alias = "INSERT INTO {url_alias} (src,dst,nid) VALUES ('%s','%s',%d)";
+    $release_path = variable_get('import_alias_releases', 'releases');
+    $problem_path = variable_get('import_alias', 'problems');
+    $url_aliases = array(
+        "$node_title/Benutzer" => "og/users/$nid",
+        "$node_title/FAQs" => "node/$nid/faq",
+        "$node_title/Dateien" => "node/$nid/files",
+        "$node_title/mitglieder" => "node/$nid/address",
+        "$node_title/Stoerungen" => "node/$nid/downtimes",
+        "$node_title/Stoerungen/Blockzeiten" => "node/$nid/downtimes/maintenance",
+        "$node_title/Stoerungen/Archiv" => "node/$nid/downtimes/archived_downtimes",
+        "$node_title/$release_path" => "node/$nid/releases",
+        "$node_title/$problem_path" => "node/$nid/problems",
+        "$node_title/downtimes_setting" => "node/$nid/downtimes_setting",
+        "$node_title/problem_settings" => "node/$nid/problem_settings",
+        "$node_title/release_settings" => "node/$nid/release_settings",
+        "$node_title/broadcast" => "node/$nid/broadcast",
+        "$node_title/members/portal/users" => "node/$nid/members/portal/users",
+        "$node_title/content/node" => "node/$nid/content/node",
+        "$node_title/group_add" => "node/$nid/group_add",
+        "$node_title/ogct" => "node/$nid/ogct",
+        "$node_title/forum" => "node/$nid/forum",
+    );
+
+    foreach ($url_aliases as $dst => $src) {
+        db_query($query_alias, $src, $dst, $nid);
+    }
+}
+ */
+/**
+ * update url aliases for a grup
+ */
+/**
+function _update_url_alias($nid,$node_title) {
+    // get the unique id pid of the  url_aliases for the group.
+    $url_alias_pids = db_query("SELECT pid FROM {url_alias} u WHERE u.src like '%s%%'", $node_title."/");
+
+    while ($pid = db_fetch_object($url_alias_pids)) {
+        db_query("UPDATE {url_alias} set src = replace(src, '%s','%s') where pid=%d", $node_title,'node/'.$nid,$pid->pid);
+    }
+
+}
+
+
+function _create_group_menu_items($gid, $gtitle) {
+    $menu_name = "menu-". $gid;
+    $group_menu = db_result(db_query("SELECT menu_name FROM {menu_custom} WHERE menu_name='%s'", $menu_name));
+    if (empty($group_menu)) {
+        $menu_title = $gtitle;
+        $link['link_title'] = $menu_title;
+        $path = 'admin/build/menu-customize/';
+        $link['link_path'] = $path . $menu_name;
+        $link['router_path'] = $path .'%';
+        $link['module'] = 'menu';
+        $link['plid'] = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s' AND module = '%s'", 'admin/build/menu', 'system'));
+        menu_link_save($link);
+        db_query("INSERT INTO {menu_custom} (menu_name, title) VALUES ('%s', '%s')", $menu_name, $menu_title);
+    }
+
+    // Need to create these links directly when the group is created. Check if the links for the group present in the below array existed or not.
+    $group_links = array('Allgemeines' => ' ','Ansprechpartner' => '/Ansprechpartner', 'Dokumentation' => '/Dokumentation','FAQs' => '/faq', 'Reporting' => '/Reporting', 'Forums' => '/forum', 'Gruppenmitglieder' => '/address');
+    $group_link_title = array_keys($group_links);
+
+    foreach($group_links as $link_title => $link_path) {
+        //check whether the link title already exists in database. if not create it.
+        $group_link = db_result(db_query("SELECT mlid from {menu_links} ml where ml.link_title = '%s' and ml.menu_name = '%s'", $link_title, $menu_name));
+        if (empty($group_link)) {
+            $flink['link_title'] = $link_title;
+            $flink['link_path'] = (trim($link_path) ? 'node/'. $gid . $link_path: 'node/'. $gid);
+            $flink['router_path'] = 'node/%/'.$link_path;
+            $flink['plid'] = 0;
+            $flink['menu_name'] = $menu_name;
+            menu_link_save($flink);
+            //need to unset the array so that a new is built. otherwise it overwrites the array and only the last menu link gets created.
+            unset($flink);
+        }
+    }
+}
+
+function _delete_group_menus($gid, $gtitle) {
+    $menu_name = 'menu-'.$gid;
+    db_query("DELETE FROM {menu_links} WHERE menu_name='%s'", $menu_name);
+    db_query("DELETE FROM {menu_custom} WHERE menu_name='%s'", $menu_name);
+}
+
+function cust_og_unsubscribe_access($group, $user) {
+    $member_count = db_result(db_query("SELECT count(*) FROM {og_uid} WHERE nid=%d ", $group->nid));
+    if ($member_count == 1) {
+        drupal_set_message(t('You are the only member in the group. Make another user as admin to this group and leave'));
+        return false;
+    }
+    return cust_og_is_member($group);
+}
+
+//display revisons
+function custom_revisions_view($node) {
+    $colspan = ($node->type == quickinfo) ? 3 : 2;
+    $rows = array();
+    $header = array(t('Revision'), array('data' => t('Operations'), 'colspan' => $colspan));
+    $revisions = node_revision_list($node);
+    if (count($revisions) == 1) {
+        return t('* No revisions avaiable for this content');
+    }
+    else {
+        foreach ($revisions as $revision) {
+            $row = array();
+            $operations = array();
+
+            if ($revision->current_vid > 0) {
+                $row[] = array('data' => t('!date by !username', array('!date' => l(format_date($revision->timestamp, 'small'), "node/$node->nid"), '!username' => theme('username', $revision))) . (($revision->log != '') ? '<p class="revision-log">'. filter_xss($revision->log) .'</p>' : ''), 'class' => 'revision-current');
+                $operations[] = array('data' => theme('placeholder', t('current revision')), 'class' => 'revision-current', 'colspan' => $colspan);
+            }
+            else {
+                $row[] = t('!date by !username', array('!date' => l(format_date($revision->timestamp, 'small'), "node/$node->nid/revisions/$revision->vid/view"), '!username' => theme('username', $revision))) . (($revision->log != '') ? '<p class="revision-log">'. filter_xss($revision->log) .'</p>' : '');
+                if ($node->type == quickinfo) {
+                    if (cust_og_is_member($node)) {
+                        $operations[] = l(t('view'), "node/$node->nid/revisions/$revision->vid/view");
+                    }
+                    if (cust_og_is_admin($node)) {
+                        $operations[] = l(t('revert'), "node/$node->nid/revisions/$revision->vid/revert");
+                    }
+                    $delete_permission = FALSE;
+                    if ((user_access('delete revisions') || user_access('administer nodes')) && node_access('delete', $node)) {
+                        $delete_permission = TRUE;
+                    }
+                    if ($delete_permission) {
+                        $operations[] = l(t('delete'), "node/$node->nid/revisions/$revision->vid/delete");
+                    }
+                }
+                else {
+                    $revert_permission = FALSE;
+                    if ((user_access('revert revisions') || user_access('administer nodes')) && node_access('update', $node)) {
+                        $revert_permission = TRUE;
+                    }
+                    $delete_permission = FALSE;
+                    if ((user_access('delete revisions') || user_access('administer nodes')) && node_access('delete', $node)) {
+                        $delete_permission = TRUE;
+                    }
+                    if ($revert_permission) {
+                        $operations[] = l(t('revert'), "node/$node->nid/revisions/$revision->vid/revert");
+                    }
+                    if ($delete_permission) {
+                        $operations[] = l(t('delete'), "node/$node->nid/revisions/$revision->vid/delete");
+                    }
+                }
+            }
+            $rows[] = array_merge($row, $operations);
+        }
+
+        return theme('table', $header, $rows);
+    }
+}
+*/

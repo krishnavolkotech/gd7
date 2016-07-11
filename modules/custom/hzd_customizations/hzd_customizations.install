@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function hzd_customizations_uninstall() {
+  \Drupal::configFactory()->getEditable('planning.settings')->delete();
+}

@@ -113,7 +113,7 @@ function importing_problem_csv($path, $header_values) {
           $mail = \Drupal::config('problem_management.settings')->get('import_mail');
           $subject = 'Error while import';
           $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-          HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
           $status = t('Error');
           $msg = t('Import file could not be parsed.');
           HzdStorage::insert_import_status($status, $msg);
@@ -132,7 +132,7 @@ function importing_problem_csv($path, $header_values) {
           $mail = \Drupal::config('problem_management.settings')->get('import_mail');
           $subject = 'Error while import';
           $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-          HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
           $status = t('Error');
           $msg = t('Import file could not be parsed.');
           HzdStorage::insert_import_status($status, $msg);
@@ -145,7 +145,7 @@ function importing_problem_csv($path, $header_values) {
           $mail = \Drupal::config('problem_management.settings')->get('import_mail');
           $subject = 'Error while import';
           $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-          HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
           
           $status = t('Error');
           $msg = t('Import file could not be parsed.');
@@ -169,7 +169,7 @@ function importing_problem_csv($path, $header_values) {
     $mail = \Drupal::config('problem_management.settings')->get('import_mail');
     $subject = 'Error while import';
     $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-    HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+    HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
     
     $status = t('Error');
     $msg = t('Import file could not be parsed.');
@@ -207,7 +207,7 @@ function validate_csv(&$values) {
     $mail = \Drupal::config('problem_management.settings')->get('import_mail');
     $subject = 'New service found while importing problems';
     $body = t(" We have found a new service" . $service ." which does not match the service in our database.");
-    HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+    HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
     return FALSE;
   }
   return FALSE;

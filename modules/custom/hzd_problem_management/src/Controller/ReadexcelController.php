@@ -38,7 +38,7 @@ class ReadexcelController extends ControllerBase {
        $mail = \Drupal::config('problem_management.settings')->get('import_mail');
        $subject = 'Error while import';
        $body = t("There is an issue while importing of the file" . $path . ". The filename does not exist or it could have been corrupted.");
-       HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
        $status = t('Error');
        $msg = t('No import file found');
        HzdStorage::insert_import_status($status, $msg);
@@ -50,7 +50,7 @@ class ReadexcelController extends ControllerBase {
      $subject = 'Error while import';
      $body = t("There is an issue while importing of the problems from file" . $path . "Check whether the format of problems is in proper CSV format or not.");
 
-     HzdservicesHelper::send_problems_notification($mail, $subject, $body);
+     HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
      // $output =  t('Set the import path at') . \Drupal::l('set import path', Url::fromRoute('admin/config/problem'));  
     }
     $response = array(

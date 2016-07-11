@@ -9,6 +9,7 @@ class HzdservicesHelper {
  */
  function service_exist($service, $type) {
    $services = HzdservicesStorage::get_related_services($type);
+   // echo $service;
    // echo '<pre>';  print_r($services);  exit;
    # return in_array(trim($service), $services);
   // echo '<pre>'; print_r(in_array(strtoupper(trim($service)), array_map('strtoupper',$services)));  exit;
@@ -31,10 +32,9 @@ class HzdservicesHelper {
 /**
  *  Message Mail Functionality
  */
-function send_problems_notification($to, $subject, $message_text) {
+function send_problems_notification($key, $to, $subject, $message_text) {
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $module = 'problem_management';
-  $key = 'problem_management_read_csv';
+  $module  = 'problem_management';
   $params['message'] = $message_text;
   //  echo '<pre>';  print_r($params['message']); exit;
   $params['subject'] = $subject;

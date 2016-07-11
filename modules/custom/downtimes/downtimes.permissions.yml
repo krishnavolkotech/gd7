@@ -1,0 +1,9 @@
+service profiles view/add:
+  title: 'Service profiles view/add'
+  description: 'service profiles view/add'
+  restrict access: true
+administer messaging:
+  title: 'Administer messaging'
+  description: 'administer messaging'
+  restrict access: true
+

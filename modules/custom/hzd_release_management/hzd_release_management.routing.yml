@@ -127,3 +127,20 @@ hzd_release_management.document_zip_link:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::DownloadDocumentFiles'
   requirements:
     _permission: 'access content'
+
+
+
+hzd_release_management.release_settings:
+  path: 'node/{node}/release_settings'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\ReleasesettingsForm'
+    _title: 'Releases'
+    _description: 'View Setting for Releases.'
+    _weight: 10
+  requirements:
+    _permission: 'access content'
+#   cust_og_is_admin: 'TRUE' 
+
+
+
+

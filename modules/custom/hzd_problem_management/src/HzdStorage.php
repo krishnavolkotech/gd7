@@ -108,10 +108,10 @@ static function saving_problem_node($values) {
       // $node_array['status'] = 1;
         $problem_node = node_load($nid);
         $problem_node->setTitle($values['title']);
-	$problem_node->set('status', 1);
-	$problem_node->set('created', $created ? $created : time());
-	$problem_node->set('body', $values['problem_text']);
-	$problem_node->set('comment', array
+    	$problem_node->set('status', 1);
+	    $problem_node->set('created', $created ? $created : time());
+	    $problem_node->set('body', $values['problem_text']);
+	    $problem_node->set('comment', array
 		        (
 		            'status' => 2,
 		            'cid' => 0,
@@ -120,10 +120,10 @@ static function saving_problem_node($values) {
 		            'last_comment_uid' => 0,
 		            'comment_count' => 0,
 		        )
-	);
-	$problem_node->set('field_attachment', $values['attachment']);
-	$problem_node->set('field_closed', $values['closed']);
-	$problem_node->set('field_comments', array
+	    );
+	    $problem_node->set('field_attachment', $values['attachment']);
+    	$problem_node->set('field_closed', $values['closed']);
+	    $problem_node->set('field_comments', array
 		        (
 		            'value' => $values['comment'],
 		            'format' => 'basic_html',
@@ -244,7 +244,6 @@ static function saving_problem_node($values) {
   static function insert_group_problems_view($selected_services) {
    // $sql = 'insert into {group_problems_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
-    $query = db_insert('group_problems_view');
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $group_id = $tempstore->get('Group_id');
@@ -252,7 +251,7 @@ static function saving_problem_node($values) {
     if ($selected_services) {
       foreach ($selected_services as $service) {
         $counter++;
-        $query->fields(array(
+        $query = db_insert('group_problems_view')->fields(array(
         'group_id' => $group_id,
         'service_id' => $service
          ))->execute();
@@ -535,7 +534,7 @@ static function problems_default_display($sql_where = NULL, $string = NULL, $lim
   
   $request = \Drupal::request();
   $serialized_data = unserialize($_SESSION['problems_query']);
-//  echo '<pre>';  print_r($serialized_data['sql']); exit;
+  // echo '<pre>';  print_r($serialized_data['sql']); exit;
 
   $sql_where = $sql_where?$sql_where:$serialized_data['sql'];
   $string = $string?$string:$serialized_data['string'];

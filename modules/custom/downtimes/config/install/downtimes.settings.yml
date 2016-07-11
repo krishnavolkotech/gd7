@@ -1,0 +1,9 @@
+maintenance_group_id: NULL
+reminder_mail_subject: NULL
+reminder_mail_body: NULL
+resolve_maintenance_mail_subject: NULL
+resolve_maintenance_mail_body: NULL
+number_of_days: 0
+maintenance_advance_time: NULL
+howmany: 0
+

@@ -47,7 +47,7 @@ class HzdearlywarningsStorage {
         // $where .= " and field_release_service_value = " . $filter_options['service'];
       }
       if ($filter_options['release']) {
-        $query->condition('field_release_service_value', $filter_options['service'], '=');
+        $query->condition('field_earlywarning_release_value', $filter_options['release'], '=');
         // $where .= " and field_earlywarning_release_value =  " . $filter_options['release'];
       }
       if ($filter_options['startdate']) {

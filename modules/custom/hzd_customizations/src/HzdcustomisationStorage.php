@@ -1,9 +1,15 @@
 <?php
 
 namespace Drupal\hzd_customizations;
+
+use Drupal\Core;
 // use Drupal\node\Entity\Node;
 // use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Path\Path;
+use Drupal\Core\Url;
+
+
+ define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
 
 class HzdcustomisationStorage {
 /**
@@ -198,15 +204,16 @@ static function reset_menu_link($counter = 0, $link_title = NULL, $link_path = N
       //check once the hidden value before updating.
      // $hidden_value = db_result(db_query("SELECT hidden from {menu_links} WHERE mlid = %d", $group_link));
       $query = db_select('menu_link_content_data', 'mlcd');
-      $query->Fields('mlcd', array('hidden'));
+      $query->Fields('mlcd', array('enabled'));
       $query->condition('id', $group_link, '=');
       $hidden_value = $query->execute()->fetchAssoc();
 
-      if ($hidden_value['hidden'] == 1) {
+      if ($hidden_value['enabled'] == 1) {
         // droy: When hiding a menu entry, we only set hidden = 1. Why the need to update many more fields when unhiding?
         // db_query("UPDATE {menu_links} set hidden = %d, link_path= '%s', router_path = '%s' WHERE mlid = %d", 0, "node/$gid/$link_path", "node/%/$link_path", $group_link);
         // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 0, $group_link);
-        db_update('menu_link_content_data')->fields('hidden', 0 )->condition('id', $group_link, '=')->execute();
+        db_update('menu_link_content_data')->fields(array('enabled'=> 0) )->condition('id', $group_link, '=')->execute();
+       
         //need to clear the menu cache to get the new menu item affected.
         menu_cache_clear_all();
       }
@@ -215,11 +222,70 @@ static function reset_menu_link($counter = 0, $link_title = NULL, $link_path = N
   else {
     //all links were unset. So we need to make the menu item hidden.
     if ($group_link) {
-      db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 1, $group_link);
-      db_update('menu_link_content_data')->fields('hidden', 1 )->condition('id', $group_link, '=')->execute();
+      // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 1, $group_link);
+      db_update('menu_link_content_data')->fields(array('enabled'=> 1))->condition('id', $group_link, '=')->execute();
       //need to clear the menu cache to get the new menu item affected.
       menu_cache_clear_all();
     }
   }
 }
+
+ /*
+  * Display published services
+  */
+  function service_profiles() {
+
+ //   $servicesdata['#markup']['#title'] = Drupal::config()->get('system.site')->get('name');
+     // $servicesdata['#markup']['#title'] = "<p>" . t("Please select a Service") . "</p>";
+
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->fields('nfd', ['nid']);
+    $query->addField('nfd', 'title', 'service');
+    $query->join('node__field_enable_downtime', 'nfed', 'nfd.nid = nfed.entity_id');
+    $query->join('node__field_downtime_type', 'nfdt', 'nfed.entity_id = nfdt.entity_id');
+    $query->condition('nfdt.field_downtime_type_value', 'Publish');
+    $query->condition('nfed.field_enable_downtime_value', '1');
+    $query->orderBy('service');
+    $services = $query->execute()->fetchAll();
+    
+    foreach ($services as $service) {
+        $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
+ 	    $query->addField('nfds', 'entity_id');
+	    $query->condition('nfds.entity_id', $service->nid);
+	    $query->range(0, 1);
+        $id = $query->execute()->fetchField();
+        //   echo '<pre>';  print_r($query->execute()->getQueryString());  exit;
+ 
+        if ($id) {
+		  $query = \Drupal::database()->select('url_alias', 'ua');
+		  $query->addField('ua', 'alias');
+		  $query->condition('ua.source', '/node/' . $id);
+		  $query->range(0, 1);
+		  $path_alias = $query->execute()->fetchField();
+          $text = $service->service;
+          $url = Url::fromUserInput($path_alias . '/edit');
+            $data[]   = Drupal::l($text, $url);
+	    }
+	    else {
+          $text = $service->service;
+          $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile/', array('service' => $service->nid));
+          $data[] =  \Drupal::l($text, $url);
+           //    echo '<pre>';  print_r($check);  exit;
+	    }
+    }
+
+      $service_profiile_data = array();
+
+//      $service_profiile_data[] = "<p>" . t("Please select a Service") . "</p>";
+
+      $service_profiile_data[] = array(
+          '#theme' => 'item_list',
+          '#items' => $data,
+          '#prefix' => "<div class='service-profile'>",
+          '#suffix' => "</div>",
+          '#title' =>  t("Please select a Service"),
+      );
+
+      return $service_profiile_data;
+  }
 }

@@ -72,7 +72,7 @@ class ServiceNotificationsUserForm extends FormBase {
       $form['subscriptions'][5]['subscriptions_interval_5'] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => $planning_files_default_interval ? $planning_files_default_interval : -1,
+        '#default_value' => ($planning_files_default_interval == 0 || $planning_files_default_interval) ? $planning_files_default_interval : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
         '#suffix' => '</div>'
       );
@@ -96,12 +96,31 @@ class ServiceNotificationsUserForm extends FormBase {
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
     $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $subscriptions = $form_state->getValue('subscriptions');
+    $default_interval = hzd_get_default_interval($uid, $rel_type);
+    // get all services
+    $services = hzd_get_all_services($rel_type);
+
+    //get default interval of each services and type
+    $user_notifications = HzdNotificationsHelper::hzd_get_user_notifications($uid, $rel_type, $services, $default_interval);
     foreach($content_types as $content_key => $content) {
       $int_val = $subscriptions[$content_key]['subscriptions_interval_' . $content_key];
       HzdNotificationsHelper::insert_default_user_intervel($types[$content_key], $int_val, $uid, $rel_type);
+      if($default_interval[$types[$content_key]] != $int_val) {
+        // get all services to update the interval
+        HzdNotificationsHelper::hzd_modify_services($user_notifications, $types[$content_key], $uid, $default_interval[$types[$content_key]], $int_val);
+      }
     }
-    $pf_int_val = $subscriptions[5]['subscriptions_interval_5'];
-    //HzdNotificationsHelper::insert_default_pf_user_intervel($pf_int_val, $uid);
+
+    // planning files notifications
+    if($rel_type == KONSONS) {
+      $pf_int_val = $subscriptions[5]['subscriptions_interval_5'];
+      $default_pf_interval = HzdNotificationsHelper::get_default_pf_timeintervals($uid);
+      HzdNotificationsHelper::insert_default_pf_user_intervel($pf_int_val, $uid);
+      if(($pf_int_val != $default_pf_interval) || ($default_pf_interval == '')) {
+        //remove notifications from previous interval and update with user submitted interval
+        HzdNotificationsHelper::hzd_modify_pf_notifications($uid, $pf_int_val, $default_pf_interval);
+      }
+    }
   }
 
 }

@@ -1,0 +1,7 @@
+hzd_services:
+  js:
+    js/services.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
