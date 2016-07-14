@@ -1,15 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\hzd_customizations\Form\PlanningFilesForm.
- */
-
 namespace Drupal\hzd_customizations\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-
 
 /**
  * Implements an Planning Files form.
@@ -22,20 +16,20 @@ class PlanningFilesForm extends ConfigFormBase {
   public function getFormId() {
     return 'planning_files';
   }
-  
+
   /**
    * {@inheritdoc}
-   */  
+   */
   protected function getEditableConfigNames() {
-    return ['planning.settings'];
+    return ['hzd_customizations.settings'];
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('planning.settings');
-    
+    $config = $this->config('hzd_customizations.settings');
+
     $form['mlrp'] = array(
       '#type' => 'textfield',
       '#title' => t('mlRP id'),
@@ -70,13 +64,13 @@ class PlanningFilesForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    $this->config('planning.settings')
+    $this->config('hzd_customizations.settings')
       ->set('mlrp', $form_state->getValue('mlrp'))
       ->set('test_kalender', $form_state->getValue('test_kalender'))
       ->set('transkription_pp', $form_state->getValue('transkription_pp'))

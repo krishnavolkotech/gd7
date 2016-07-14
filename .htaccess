@@ -195,5 +195,5 @@ AddEncoding gzip svgz
 # Require popup dialog for access 
 AuthType Basic 
 AuthName "You must give a password" 
-AuthUserFile /var/www/.hzdev1pwd 
+AuthUserFile /var/www/.hzdevpwd 
 Require valid-user

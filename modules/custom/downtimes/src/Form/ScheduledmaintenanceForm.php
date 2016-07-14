@@ -282,7 +282,7 @@ class ScheduledmaintenanceForm extends ConfigFormBase {
 	  $date_format = 'H:i';
 	  $form['sitewide_maintenance_windows'][$name] = array(
 							       //'#title' => t($title),
-							       '#type' => 'date_select',
+							       '#type' => 'datetime',
 							       '#date_format' => $date_format,
 							       '#date_label_position' => 'within',
 							       '#default_value' => $data,

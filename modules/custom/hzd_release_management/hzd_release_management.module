@@ -6,47 +6,6 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
 
 define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-/**
- * implements hook_form_alter
- */
-function hzd_release_management_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-
-  if($form_id == 'node_deployed_releases_form' || $form_id == 'node_deployed_releases_edit_form') {
-    $service_options = hzd_get_deployed_serivces_list();
-    //$env_options = non_productions_list();
-    $form['field_release_service']['widget']['#options'] = $service_options;
-    //$form['field_environment']['widget']['#options'] = $env_options;
-    if($form_id == 'node_deployed_releases_edit_form') {
-      $node = $form_state->getFormObject()->getEntity();
-      $nid = $node->id();
-      $default_service_val = db_query("SELECT field_release_service_value FROM {node__field_release_service} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
-      $form['field_release_service']['widget']['#default_value'] = array($default_service_val);
-      $default_env_val = db_query("SELECT field_environment_value FROM {node__field_environment} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
-      $form['field_environment']['widget']['#default_value'] = array($default_env_val);
-      $default_release_val = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
-      $form['field_earlywarning_release']['widget']['#default_value'] = array($default_release_val);
-    }
-    
-    $release_options = hzd_earlywarning_release();
-    $form['field_earlywarning_release']['widget']['#options'] = $release_options;
-  }
-  
-  if($form_id == 'node_early_warnings_form' || $form_id == 'node_early_warnings_edit_form') {
-    $service_options = hzd_get_deployed_serivces_list();
-    $form['field_release_service']['widget']['#options'] = $service_options;
-    $release_options = hzd_earlywarning_release();
-    $form['field_earlywarning_release']['widget']['#options'] = $release_options;
-    if($form_id == 'node_early_warnings_edit_form') {
-      $node = $form_state->getFormObject()->getEntity();
-      $nid = $node->id();
-      $default_service_val = db_query("SELECT field_release_service_value FROM {node__field_release_service} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
-      $form['field_release_service']['widget']['#default_value'] = array($default_service_val);
-      $default_release_val = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} WHERE entity_id = :eid", array(":eid" => $nid))->fetchField();
-      $form['field_earlywarning_release']['widget']['#default_value'] = array($default_release_val);
-    }
-  }
-  
-}
 
 /**
  * get deployed services list
@@ -315,25 +274,6 @@ function get_environment_options($state = 1) {
   return $environment_lists;
 }
 
-/**
- * implements hook_ENTITY_TYPE_presave()
- */
-function hzd_release_management_node_presave($entity) {
-// echo '<pre>'; print_r($entity->toArray()); exit;
-  if($entity->getType() == 'quickinfo') {
-    $services = $entity->get('field_other_services')->getValue();
-    $result = hzd_get_immediate_qi_notification_user_mails($services);
-    /*if(is_array($result) && count($result) > 0) {
-      $mails = implode(",", $result);
-      // trigger mail functionality to send immediate notifications of quickinfo
-      $subject = 'test subject';
-      $message_text = 'test body';
-      send_immediate_notifications($subject, $message_text, $mails);
-    }*/
-  }
-
-}
-
 // send immediate release notifications.
 function send_release_notifications($entity) {
   $nid = $entity->id();
@@ -467,12 +407,6 @@ function hzd_get_immediate_notification_user_mails($service_id, $type) {
   $unserialized_user_array = unserialize($get_immediate_notifications_users);
   if(is_array($unserialized_user_array) && count($unserialized_user_array) > 0) {
     return hzd_user_mails($unserialized_user_array);
-    /*$query = db_select('users_field_data', 'u')
-           ->condition('status', 1, '=')
-           ->fields('u', array('mail'))
-           ->condition('uid', $unserialized_user_array, 'IN');
-    $result = $query->execute()->fetchCol();
-    return $result;*/
   }
   return '';
 }
@@ -628,24 +562,6 @@ function update_service_notifications($entity) {
   else {
     hzd_notifications_delete_subscriptions('release', $entity->id());
   }
-  
-
-
-
-
-
-  /*$interval = array('-1', 0, 86400, 604800);
-  $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
-  $result = array();
-  foreach($service_notifications as $vals) {
-    $result[$vals->uid] = [$vals->default_send_interval];
-  }
-  
-  $override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(":sid" => $nid, ":type" => $type))->fetchAll();
-  $new_result = array();
-  foreach($override as $overrides_services) {
-    $new_result[$overrides_services->send_interval][$overrides_services->uid] = $overrides_services->uid;
-  }*/
 }
 
 function hzd_service_update_notifications($type, $nid) {
@@ -692,19 +608,4 @@ function insert_new_service_notifications($type, $nid) {
 	    db_insert('service_notifications')->fields($record)->execute();
     }
   }
-  /*$override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(":sid" => $nid, ":type" => $type))->fetchAll();
-  $new_result = array();
-  foreach($override as $overrides_services) {
-    $new_result[$overrides_services->send_interval][$overrides_services->uid] = $overrides_services->uid;
-  }
-  
-  foreach($new_result as $key => $val) {
-    // union the same interval
-    $union[$key] = $val + $result[$key];
-  }
-  
-  //remove the user of default
-  foreach($union as $key => $new_vals) {
-    
-  }*/
 }

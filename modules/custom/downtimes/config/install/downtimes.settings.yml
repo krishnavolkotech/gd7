@@ -6,4 +6,13 @@ resolve_maintenance_mail_body: NULL
 number_of_days: 0
 maintenance_advance_time: NULL
 howmany: 0
+current_downtimes: ''
+archived_downtimes: ''
+report_downtimes: ''
+report_downtimes_2: ''
+report_downtimes_3: ''
+notes_downtimes: ''
+report_maintenance: ''
+report_maintenance_2: ''
+report_maintenance_3: ''
 

@@ -1,0 +1,24 @@
+cust_group.service_profile_create:
+  path: '/node/{group_id}/add/{node_type}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController:add'
+#   _title: drupal_ucfirst($type->name)
+#   _title_callback: check_plain
+#   'access_callback' => 'saved_quickinfo_og_is_member',
+#   'access_arguments' => array(1),
+#   'description' => $type->description
+  requirements:
+    _permission: 'access content'
+    
+cust_group.quickinfo:
+  path: '/node/{group_id}/add/{node_type}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController:add'
+#   _title: drupal_ucfirst($type->name)
+#   _title_callback: check_plain
+#   'access_callback' => 'saved_quickinfo_og_is_member',
+#   'access_arguments' => array(1),
+#   'description' => $type->description
+  requirements:
+    _permission: 'access content'
+

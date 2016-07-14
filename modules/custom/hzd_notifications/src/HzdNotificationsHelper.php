@@ -352,14 +352,6 @@ class HzdNotificationsHelper {
     }
   }
 
-  // get users list from service notifications table
-  /*function hzd_get_user_service_interval($sid, $type, $int_val) {
-    $serialized_uids = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type 
-                       AND send_interval = :intval", array(":sid" => $sid, ":type" => $type, ":intval" => $int_val))->fetchField();
-    $uids = unserialize($serialized_uids);
-    return $uids;
-  }*/
-
   // update service notifications
   function hzd_update_service_notifications($serialized_uid, $sid, $type, $int_val) {
     db_update('service_notifications')->fields(array('uids' => $serialized_uid))
