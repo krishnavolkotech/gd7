@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ */
+
+use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Utility\Token;
 use Drupal\Core\Url;
 
@@ -8,7 +13,7 @@ use Drupal\hzd_services\HzdservicesStorage;
 define('SITE_ADMIN', 'site_administrator');
 
 /**
- * implements hook_mail
+ * Implements hook_mail.
  */
 function hzd_customizations_mail($key, &$message, $params) {
   $options = array(
@@ -22,10 +27,11 @@ function hzd_customizations_mail($key, &$message, $params) {
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
       $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
       break;
+
     case 'custom_mails':
       $message['subject'] = $params['subject'];
       $message['body'][] = SafeMarkup::checkPlain($params['body']);
-      if($params['Bcc']) {
+      if ($params['Bcc']) {
         $message['headers']['Bcc'] = $params['Bcc'];
       }
       break;
@@ -35,7 +41,7 @@ function hzd_customizations_mail($key, &$message, $params) {
 /**
  * Implements hook_tokens().
  */
-function hzd_customizations_tokens($type, $tokens, array $data, array $options, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata) {
+function hzd_customizations_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $token_service = \Drupal::token();
 
   $url_options = array('absolute' => TRUE);
@@ -71,7 +77,6 @@ function hzd_customizations_token_info() {
   );
 
   // Core tokens for group.
-
   $group['title'] = array(
     'name' => t("Title"),
   );
@@ -82,30 +87,21 @@ function hzd_customizations_token_info() {
   );
 }
 
-/*
- *  Get downtime services in service profile dependent dropdown.
+/**
+ * Get downtime services in service profile dependent dropdown.
  */
-
 function get_related_downtime_services($type) {
-  // global $user;
+  // Global $user;.
   $user = Drupal::currentUser();
   $user_roles = $user->getRoles();
 
- // echo '<pre>';  print_r(Drupal::currentUser()->getRoles());  exit;
-
   if (in_array('site_administrator', $user_roles)) {
     $dependent_Services = HzdservicesStorage::get_related_services($type);
-   // echo $_REQUEST['service']; exit;
     $request = \Drupal::request()->getRequestUri();
-
-    // echo '<pre>';  print_r($request); exit;
-
     unset($dependent_Services[$_REQUEST['service']]);
-   // $current_path = \Drupal::service('path.current')->getPath();
-    $current_path =  Url::fromRoute('<current>');
+    $current_path = Url::fromRoute('<current>');
     $path = explode("/", $current_path->getInternalPath());
-    if($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
-      // $service_id = db_result(db_query("SELECT field_dependent_service_nid FROM {content_type_service_profile} WHERE nid = %d", arg(1)));
+    if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
       $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
       $query->addField('nfds', 'field_dependent_service');
       $query->condition('nfds.entity_id', '1', '=');
@@ -119,25 +115,24 @@ function get_related_downtime_services($type) {
   }
 }
 
-
 /**
- * get related file attachments of planning files
+ * Get related file attachments of planning files.
  */
 function get_related_files($planning_filename) {
   $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
-    $files = array();
-    foreach ($fids as $fid) {
-      $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
-      if ($fid->display == 1) {
-//        $icon = theme('filefield_icon', $fileObject);
-        $files_heading = "<p><b>Dateien:</b></p>";
-        $files_details .= '<div class="filefield-file clear-block">';
-//        $files_details .= $icon . ' ' . l($fileObject['filename'], file_create_url($fileObject['filepath']), array('attributes' => array('target' => '_blank')));
-        $files_details .= '<a target= "_blank" href="' . file_create_url($fileObject[0]->uri) . '">' . $fileObject[0]->filename ;
-        $files_details .= " (". date('d.m.Y H:i:s',$fileObject[0]->changed). ")";
-        $files_details .= '</div>';
-      }
+  $files = array();
+  foreach ($fids as $fid) {
+    $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
+    if ($fid->display == 1) {
+      // $icon = theme('filefield_icon', $fileObject);.
+      $files_heading = "<p><b>Dateien:</b></p>";
+      $files_details .= '<div class="filefield-file clear-block">';
+      // $files_details .= $icon . ' ' . l($fileObject['filename'], file_create_url($fileObject['filepath']), array('attributes' => array('target' => '_blank')));.
+      $files_details .= '<a target= "_blank" href="' . file_create_url($fileObject[0]->uri) . '">' . $fileObject[0]->filename;
+      $files_details .= " (" . date('d.m.Y H:i:s', $fileObject[0]->changed) . ")";
+      $files_details .= '</div>';
     }
-    //return $files;
-    return array('#markup' => $files_heading . $files_details);
+  }
+  // Return $files;.
+  return array('#markup' => $files_heading . $files_details);
 }

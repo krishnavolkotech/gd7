@@ -61,4 +61,32 @@ downtimes.downtimes_scheduled_maintenance_mail_template_form:
   requirements:
     _permission: 'administer messaging'
 
+downtimes.service_profiles:
+  path: 'node/{node}/downtimes/service-profiles'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+    _title: 'Service Profiles'
+    _description: 'Service Profiles.'
+  requirements:
+     _permission: 'service profiles view/add'
+
+downtimes.downtimes_config_downtimes:
+  path: 'admin/config/downtimes'
+  defaults:
+    _form: '\Drupal\downtimes\Form\downtimes'
+    _title: 'Downtimes'
+  requirements:
+    _permission: 'access all views'
+
+downtimes.downtimes_config_downtimes:
+  path: 'downtimes/%/settings'
+  defaults:
+    _form: '\Drupal\downtimes\Form\downtimes_settings'
+    _title: 'Downtimes'
+    _description: 'View Setting for downtimes.'
+  requirements:
+    _permission: 'access content'
+
+
+
 

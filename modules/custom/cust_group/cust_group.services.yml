@@ -1,0 +1,6 @@
+services:
+  cust_group.route_subscriber:
+    class: Drupal\cust_group\Routing\RouteSubscriber
+    arguments: ['@config.factory', '@current_user', '@module_handler', '@url_generator']
+    tags:
+      - { name: event_subscriber }

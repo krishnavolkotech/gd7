@@ -21,7 +21,7 @@ class HzdMigrateNotifications {
 
   // konsons notification settings
   public function migrate_notifications() {
-  
+
     $batch = array(
       'operations' => array(),
       'title' => t('Migrate Notifications'),
@@ -30,7 +30,7 @@ class HzdMigrateNotifications {
       'error_message' => t('An error occurred during processing'),
       'finished' => 'custom_date_deployed_batch_finished',
     );
-  
+
     $uids = db_query("SELECT uid FROM users ORDER BY uid ASC")->fetchCol();
     foreach($uids as $user_vals) {
       if($user_vals != 0) {
@@ -38,7 +38,7 @@ class HzdMigrateNotifications {
         $batch['operations'][] = array('migrate_each_user', array($user_vals, 460));
       }
     }
-    
+
     $url = array('node/1');
     batch_set($batch);
     return batch_process($url);
@@ -53,7 +53,7 @@ class HzdMigrateNotifications {
       'progress_message' => t('Processed @current out of @total.'),
       'error_message' => t('An error occurred during processing'),
     );
-  
+
     $uids = db_query("SELECT uid FROM users ORDER BY uid ASC")->fetchCol();
     foreach($uids as $user_vals) {
       if($user_vals != 0) {
@@ -66,6 +66,7 @@ class HzdMigrateNotifications {
     return batch_process($url);
   }
 
+  // migrating date deployed field
   function migrate_date_deployed() {
     $batch = array(
       'operations' => array(),
@@ -94,5 +95,4 @@ class HzdMigrateNotifications {
     }
     drupal_set_message($message);
   }*/
-  
 }
