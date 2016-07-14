@@ -7,3 +7,7 @@ hzd_customizations:
     js/jquery.tablesorter.min.js: {}
   dependencies:
     - core/jquery
+
+hzd_node_quickinfo:
+  js:
+    js/hzd-node-quickinfo.js: {}

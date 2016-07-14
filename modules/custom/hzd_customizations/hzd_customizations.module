@@ -141,3 +141,25 @@ function get_related_files($planning_filename) {
     //return $files;
     return array('#markup' => $files_heading . $files_details);
 }
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form') {
+    $form['actions']['publish']['#value'] = t('Publish');
+    $form['actions']['unpublish']['#value'] = t('Save');
+    $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
+    $form['actions']['publish']['#submit'][] = 'hzd_node_quickinfo_form_submit';
+    $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
+  }
+  return $form;
+}
+
+
+/**
+ * implements custom submit
+ */
+function hzd_node_quickinfo_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state){
+    dpm($form_state, '$form_state');
+}
