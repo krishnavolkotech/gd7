@@ -1,0 +1,72 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present all user data.
+ *
+ * This template is used when viewing a registered user's page,
+ * e.g., example.com/user/123. 123 being the user's ID.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.field_example'. Fields attached to a user
+ *   such as 'user_picture' are available as 'content.user_picture'.
+ * - attributes: HTML attributes for the container element.
+ * - user: A Drupal User entity.
+ *
+ * @see template_preprocess_user()
+ *
+ * @ingroup themeable
+ */
+#}
+
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+  <h2 class="title">Profile </h2>
+  {% if name %}
+    <div class="field field--name-field-name field--type-text field--label-inline">
+        <div class="field--label">User Name</div>
+        <div class="field--item">{{ name }}</div>
+    </div>
+  {% endif %}
+  {% if firstname %}
+    <div class="field field--name-field-firstname field--type-text field--label-inline">
+        <div class="field--label">First Name</div>
+        <div class="field--item">{{ firstname }}</div>
+    </div>
+  {% endif %}
+  {% if lastname %}
+    <div class="field field--name-field-lastname field--type-text field--label-inline">
+        <div class="field--label">Last Name</div>
+        <div class="field--item">{{ lastname }}</div>
+    </div>
+  {% endif %}
+  {% if position %}
+    <div class="field field--name-field-position field--type-text field--label-inline">
+        <div class="field--label">Position</div>
+        <div class="field--item">{{ position }}</div>
+    </div>
+  {% endif %}
+  {% if phone %}
+    <div class="field field--name-field-phone field--type-text field--label-inline">
+        <div class="field--label">Phone</div>
+        <div class="field--item">{{ phone }}</div>
+    </div>
+  {% endif %}
+  {% if email %}
+    <div class="field field--name-field-email field--type-text field--label-inline">
+        <div class="field--label">Email</div>
+        <div class="field--item">{{ email }}</div>
+    </div>
+  {% endif %}
+  {% if state %}
+    <div class="field field--name-field-state field--type-text field--label-inline">
+        <div class="field--label">State</div>
+        <div class="field--item">{{ state }}</div>
+    </div>
+  {% endif %}
+  {% if group_list %}
+    <h2 class="title">Groups </h2>
+    {{ group_list }}
+  {% endif %}
+

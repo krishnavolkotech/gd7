@@ -1,0 +1,95 @@
+diff --git a/auto_nodetitle.libraries.yml b/auto_nodetitle.libraries.yml
+new file mode 100644
+index 0000000..45bc54d
+--- /dev/null
++++ b/auto_nodetitle.libraries.yml
+@@ -0,0 +1,6 @@
++## YAML Template.
++auto_nodetitle:
++  version: 1.x
++  js:
++    auto_nodetitle.js: {}
++
+diff --git a/auto_nodetitle.module b/auto_nodetitle.module
+index a4f062f..6852659 100644
+--- a/auto_nodetitle.module
++++ b/auto_nodetitle.module
+@@ -8,6 +8,7 @@
+ use Drupal\node\NodeInterface;
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\node\NodeTypeInterface;
++use Drupal\Core\Form\FormStateInterface;
+ 
+ define('AUTO_NODETITLE_DISABLED', 0);
+ define('AUTO_NODETITLE_ENABLED', 1);
+@@ -29,8 +30,8 @@ function auto_nodetitle_permission() {
+ /**
+  * Implements hook_form_FORM_ID_alter() for the node form.
+  */
+-function auto_nodetitle_form_node_form_alter(&$form, &$form_state, $form_id) {
+-  $type = $form_state['controller']->getEntity()->getType();
++function auto_nodetitle_form_node_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
++  $type = $form_state->getFormObject()->getEntity()->getType();
+   if (auto_nodetitle_get_setting($type) == AUTO_NODETITLE_ENABLED) {
+     $widget = &$form['title']['widget'][0];
+     // We will autogenerate the title later, just hide the title field in the
+@@ -150,8 +151,8 @@ function _auto_nodetitle_patternprocessor($pattern, $node) {
+ /**
+  * Implements hook_form_FORM_ID_alter() for the node type form.
+  */
+-function auto_nodetitle_form_node_type_form_alter(&$form, &$form_state) {
+-  $type          = $form_state['controller']->getEntity()->type;
++function auto_nodetitle_form_node_type_form_alter(array &$form, FormStateInterface $form_state) {
++  $type          = $form_state->getFormObject()->getEntity()->get('type');
+   $default_value = auto_nodetitle_get_setting($type);
+   $form['auto_nodetitle'] = array(
+     '#type'     => 'details',
+@@ -160,8 +161,8 @@ function auto_nodetitle_form_node_type_form_alter(&$form, &$form_state) {
+     '#group'    => 'additional_settings',
+     '#tree'     => TRUE,
+     '#attached' => array(
+-      'js' => array(
+-        'auto-nodetitle' => drupal_get_path('module', 'auto_nodetitle') . '/auto_nodetitle.js',
++      'library' => array(
++        'auto_nodetitle/auto_nodetitle',
+       ),
+     ),
+   );
+@@ -194,14 +195,14 @@ function auto_nodetitle_form_node_type_form_alter(&$form, &$form_state) {
+       '#token_types' => array('node'),
+     );
+   }
+-
+-  $form['auto_nodetitle']['php'] = array(
+-    '#access'      => user_access('use PHP for title patterns'),
+-    '#type'        => 'checkbox',
+-    '#title'       => t('Evaluate PHP in pattern.'),
+-    '#description' => t('Put PHP code above that returns your string, but make sure you surround code in &lt;?php and ?&gt;. Note that $node is available and can be used by your code.'),
+-    '#default_value' => \Drupal::config('auto_nodetitle.node.' . $type)->get('php') ?: '',
+-  );
++//
++//  $form['auto_nodetitle']['php'] = array(
++//    '#access'      => user_access('use PHP for title patterns'),
++//    '#type'        => 'checkbox',
++//    '#title'       => t('Evaluate PHP in pattern.'),
++//    '#description' => t('Put PHP code above that returns your string, but make sure you surround code in &lt;?php and ?&gt;. Note that $node is available and can be used by your code.'),
++//    '#default_value' => \Drupal::config('auto_nodetitle.node.' . $type)->get('php') ?: '',
++//  );
+   $form['actions']['submit']['#submit'][] = 'auto_nodetitle_form_node_type_form_submit';
+ }
+ 
+@@ -210,10 +211,10 @@ function auto_nodetitle_form_node_type_form_alter(&$form, &$form_state) {
+  *
+  * @see auto_nodetitle_form_node_type_form_alter().
+  */
+-function auto_nodetitle_form_node_type_form_submit(&$form, $form_state) {
+-  $type     = $form_state['controller']->getEntity()->type;
+-  $settings = \Drupal::config('auto_nodetitle.node.' . $type);
+-  foreach ($form_state['values']['auto_nodetitle'] as $config_name => $config_value) {
++function auto_nodetitle_form_node_type_form_submit(array &$form, FormStateInterface $form_state) {
++  $type     = $form_state->getFormObject()->getEntity()->get('type');
++  $settings = \Drupal::configFactory()->getEditable('auto_nodetitle.node.' . $type);
++  foreach ($form_state->getValue('auto_nodetitle') as $config_name => $config_value) {
+     $settings->set($config_name, $config_value);
+   }
+   $settings->save();

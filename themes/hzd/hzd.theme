@@ -75,3 +75,25 @@ function hzd_theme_suggestions_node_alter(array &$suggestions, array $variables)
   }
 }
 
+/**
+ * Implements hook_preprocess_user().
+ */
+function hzd_preprocess_user(&$variables) {
+  $db = \Drupal::database();
+  $result = $db->select('cust_profile', 'cp')
+        ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+        ->condition('cp.uid', $variables['user']->id());
+  $val = $result->execute()->fetchAssoc();
+  $state = $db->select('states', 's')
+        ->fields('s', array('state'))
+        ->condition('s.id', $val['state_id'], '=');
+  $state_name = $state->execute()->fetchField();
+  $variables['name']       = $variables['user']->getDisplayName();
+  $variables['firstname']  = $val['firstname'];
+  $variables['lastname']   = $val['lastname'];
+  $variables['phone']      = $val['phone'];
+  $variables['position']   = $val['position'];
+  $variables['email']      = $variables['user']->getEmail();
+  $variables['state']      = $state_name;
+  $variables['group_list'] = hzd_group_list($variables['user']->id());
+}
