@@ -54,6 +54,9 @@ function hzd_preprocess_node(&$variables) {
     $files = get_related_files('transcription fmk');
     $variables['transkription_fmk_files'] = $files;
   }
+  if ($variables['node']->getType() == 'quickinfo' && $variables['node']->isPublished()) {
+    $variables['printfile']= array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link"><a data-placement="bottom" data-toggle="tooltip" title="" type="text/plain; length=278" href="/entityprint/node/' . $nid . '"> RZ-Schnellinfo-Nr-' . $variables['node']->field_unique_id->value . '.pdf</a></span><span class="file-size"></span></span>');
+  }
 }
 
 /**

@@ -1,0 +1,84 @@
+diff --git a/favorites.routing.yml b/favorites.routing.yml
+index 53074c0..d5a8e3f 100644
+--- a/favorites.routing.yml
++++ b/favorites.routing.yml
+@@ -6,6 +6,14 @@ favorites.add:
+   requirements:
+     _permission: 'manage favorites'
+ 
++favorites.list:
++  path: '/my-favorites'
++  defaults:
++    _controller: '\Drupal\favorites\Controller\MyFavController::myFavorites'
++    _title: 'MY Favorites'
++  requirements:
++    _permission: 'manage favorites'
++
+ favorites.remove:
+   path: '/favorites/remove/{fid}'
+   defaults:
+diff --git a/src/Controller/MyFavController.php b/src/Controller/MyFavController.php
+index db54253..14b4112 100644
+--- a/src/Controller/MyFavController.php
++++ b/src/Controller/MyFavController.php
+@@ -8,13 +8,14 @@ namespace Drupal\favorites\Controller;
+ 
+ use Symfony\Component\HttpFoundation\JsonResponse;
+ use Drupal\Core\Ajax\AjaxResponse;
+-use Drupal\Core\Ajax\HtmlCommand;;
++use Drupal\Core\Ajax\HtmlCommand;
+ use Drupal\Core\Controller\ControllerBase;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+ use Drupal\Core\Render\Element\Link;
+ 
+ 
++
+ /**
+  * Class MyFavController.
+  *
+@@ -69,6 +70,44 @@ class MyFavController extends ControllerBase {
+         }
+         
+         /**
++        * My favorite.
++        */
++        public function myFavorites(){
++            global $base_url;
++            $items = array();
++            $account = \Drupal::currentUser(); 
++            $uid = $account->id();
++            if ($uid) {
++                $result = FavoriteStorage::getFavorites($uid);
++                $i = 0;
++                foreach ($result as $favorite) {
++                    $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/'.trim($favorite->path,'/'));
++                    if($favorite->query != ''){
++                        $url = $base_url.$favorite->path.'?'.$favorite->query;    
++                    }
++                    else{
++                        $url = $base_url.$favorite->path;    
++                    }                
++                    $url = Url::fromUri($url);
++                    $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
++                    $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
++                    $items[$i]['remove_link'] = \Drupal::l('Delete', $url_delete);
++                    $items[$i]['id'] = $favorite->fid;
++                    $i++;
++                }
++            }
++            return array(     
++              '#attached' => array(
++                  'library' => array('favorites/favorites.custom'),
++              ),  
++              'fav_lists' => array(  
++                '#theme' => 'favlist_item_list',       
++                'items' => $items,  
++              ),
++            );   	          
++        }
++        
++        /**
+         * Remove a favorite.
+         */
+         public function remove($fid){
