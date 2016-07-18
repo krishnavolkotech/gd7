@@ -1,0 +1,6 @@
+## YAML Template.
+auto_nodetitle:
+  version: 1.x
+  js:
+    auto_nodetitle.js: {}
+

@@ -1,0 +1,12 @@
+create services:
+  title: 'Create Services'
+  description: 'Create Services'
+  restrict access: true
+edit own services:
+  title: 'Edit Own Services'
+  description: 'Edit Own Services'
+  restrict access: true
+manage services:
+  title: 'Manage Services'
+  description: 'Manage Services'
+  restrict access: true

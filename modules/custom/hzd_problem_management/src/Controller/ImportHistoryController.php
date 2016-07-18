@@ -14,6 +14,7 @@ use Drupal\problem_management\HzdStorage;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\node\NodeInterface;
 // use Drupal\node\NodeInterface;
 
 /**
@@ -26,15 +27,22 @@ class ImportHistoryController extends ControllerBase {
  * Callback import history
  * Table format display of import history
 */
-function import_history($node) {
+function import_history() {
   $response = array();
   
   $current_path = \Drupal::service('path.current')->getPath();
   $get_uri = explode('/', $current_path);
 
-  if ($get_uri[4] == 'import_history') {
+//  if ($get_uri[4] == 'import_history') {
+//    unset($_SESSION['history_limit']);
+//  }
+
+  $request = \Drupal::request();
+  $page = $request->get('page');
+  if (!$page) {
     unset($_SESSION['history_limit']);
   }
+
 //  echo 'kjsdhfpsdk';    exit;
  // drupal_add_js(drupal_get_path('module', 'hzd_customizations') . '/jquery.tablesorter.min.js');
  // drupal_add_js(drupal_get_path('module', 'problem_management') . '/problem_management.js');
@@ -61,7 +69,7 @@ function import_history($node) {
     // $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('node', $group_id)));
     // $breadcrumb[] = \Drupal::l($title, Url::fromEntityUri(array('node', $group_id, 'problems')));
   } else {
-     $breadcrumb[] = \Drupal::l($title, Url::fromRoute('problem_management.problems', array($node1)));
+    // $breadcrumb[] = \Drupal::l($title, Url::fromRoute('problem_management.problems', array($node)));
   }
   
     $breadcrumb[] = t('Import History');
@@ -84,20 +92,20 @@ function import_history($node) {
     );
     
     \Drupal::service('renderer')->renderRoot($breadcrumb);
-
-     $result['content']['#prefix'] = "<div>";
-     $result['content']['import_status_filter_form']['form'] = \Drupal::formBuilder()->getForm('\Drupal\problem_management\Form\ProblemImportstatusFrom');
+     $result[]['#attached']['library'] = array('problem_management/problem_management');
+     $result[]['#prefix'] = "<div>";
+     $result[]['import_status_filter_form']['form'] = \Drupal::formBuilder()->getForm('\Drupal\problem_management\Form\ProblemImportstatusFrom');
   
-    $result['content']['#suffix'] = '</div><div style = "clear:both"></div>';
+    $result[]['#suffix'] = '</div><div style = "clear:both"></div>';
     if (isset($_SESSION['history_limit'])) {
       $limit = $_SESSION['history_limit'];
     } else {
       $limit = NULL;
     }
 
-    $result['content']['import_search_results_wrapper']['#prefix'] = "<div id = 'import_search_results_wrapper' > ";
-    $result['content']['import_search_results_table'] = HzdStorage::import_history_display_table($limit);
-    $result['content']['#suffix'] = "</div>";
+    $result[]['import_search_results_wrapper']['#prefix'] = "<div id = 'import_search_results_wrapper' > ";
+    $result[]['import_search_results_table'] = HzdStorage::import_history_display_table($limit);
+    $result[]['#suffix'] = "</div>";
 
     return $result;
   }

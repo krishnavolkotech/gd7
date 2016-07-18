@@ -71,14 +71,14 @@ class ReleasedocumentsettingForm extends ConfigFormBase {
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('secure_download_text')['value'],
     '#description' => t('There are few documents which are available for download in a separate part of the DSL which requires a different user/password for access. If user access those files, then the above given text will be displayed and a direct link of external system to download will be provided.'),
   );
-
+/**
   $form['import_path_csv_initial_released'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to csv file for documentation import'),
     '#description' => t('/srv/www/betriebsportal/files/import/released.csv'),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_initial_released'),
    );
-  
+  */
    return parent::buildForm($form, $form_state);
   }
 
@@ -92,7 +92,7 @@ class ReleasedocumentsettingForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $import_path_csv_initial_released = $form_state->getValue('import_path_csv_initial_released');
+ //   $import_path_csv_initial_released = $form_state->getValue('import_path_csv_initial_released');
     $import_path_locked = $form_state->getValue('import_path_csv_locked');
     $secure_download_text = $form_state->getValue('secure_download_text');
     $failed_download_text = $form_state->getValue('failed_download_text');
@@ -100,11 +100,12 @@ class ReleasedocumentsettingForm extends ConfigFormBase {
     $release_not_import = $form_state->getValue('release_not_import');
 
     \Drupal::configFactory()->getEditable('hzd_release_management.settings')
-      ->set('import_path_csv_initial_released', $import_path_csv_initial_released)
+   //   ->set('import_path_csv_initial_released', $import_path_csv_initial_released)
       ->set('secure_download_text', $secure_download_text)
       ->set('failed_download_text', $failed_download_text)
       ->set('release_mail_body', $release_mail_body)
       ->set('release_not_import', $release_not_import)
       ->save();
+       parent::submitForm($form, $form_state);
   }
 }

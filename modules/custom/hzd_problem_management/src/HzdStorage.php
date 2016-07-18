@@ -72,8 +72,9 @@ static function saving_problem_node($values) {
     $date = mktime((int)$time_format[0],(int)$time_format[1],(int)$time_format[2],(int)$date_format[1],(int)$date_format[0],(int)$date_format[2]);
   }
   $eroffnet = ($date?$date:time());
-
   // Generate notifications for updated problems.
+
+// echo '<pre>';  print_r($values); exit;
   if($nid) {
     unset($values['sno']);
     $exist_node = node_load($nid);
@@ -84,7 +85,7 @@ static function saving_problem_node($values) {
     $existing_node_vals['function'] = $exist_node->field_function->value;
     $existing_node_vals['release'] = $exist_node->field_release->value;
     $existing_node_vals['title'] = $exist_node->getTitle();
-    $existing_node_vals['body'] = $exist_node->body->value;
+    $existing_node_vals['problem_text'] = $exist_node->body->value;
     $existing_node_vals['diagnose'] = $exist_node->field_diagnose->value;
     $existing_node_vals['solution'] = $exist_node->field_solution->value;
     $existing_node_vals['workaround'] = $exist_node->field_work_around->value;
@@ -95,155 +96,154 @@ static function saving_problem_node($values) {
     $existing_node_vals['processing'] = $exist_node->field_processing->value;
     $existing_node_vals['attachment'] = $exist_node->field_attachment->value;
     $existing_node_vals['eroffnet'] = $exist_node->field_eroffnet->value;
-    $existing_node_vals['timezone'] = 'Europe/Berlin';
-    
+   // $existing_node_vals['timezone'] = 'Europe/Berlin';
+    $existing_node_vals['closed'] = $exist_node->field_closed->value;
+    $existing_node_vals['problem_eroffnet'] = $exist_node->field_problem_eroffnet->value;
+   // $existing_node_vals['problem_status'] = $exist_node->field_problem_status->value;
+    $existing_node_vals['ticketstore_count'] = $exist_node->field_ticketstore_count->value;
+    $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
+			
+
     if(count(array_diff($existing_node_vals, $values)) != 0) {
-      $node_array['status'] = 1;
+      // $node_array['status'] = 1;
+        $problem_node = node_load($nid);
+        $problem_node->setTitle($values['title']);
+    	$problem_node->set('status', 1);
+	    $problem_node->set('created', $created ? $created : time());
+	    $problem_node->set('body', $values['problem_text']);
+	    $problem_node->set('comment', array
+		        (
+		            'status' => 2,
+		            'cid' => 0,
+		            'last_comment_timestamp' => 0,
+		            'last_comment_name' => '',
+		            'last_comment_uid' => 0,
+		            'comment_count' => 0,
+		        )
+	    );
+	    $problem_node->set('field_attachment', $values['attachment']);
+    	$problem_node->set('field_closed', $values['closed']);
+	    $problem_node->set('field_comments', array
+		        (
+		            'value' => $values['comment'],
+		            'format' => 'basic_html',
+		        )
+	);
+	$problem_node->set('field_diagnose', $values['diagnose']);
+	$problem_node->set('field_eroffnet', $values['eroffnet']);
+	$problem_node->set('field_function', $values['function']);
+	$problem_node->set('field_priority', $values['priority']);
+	$problem_node->set('field_problem_eroffnet', $eroffnet);
+	$problem_node->set('field_problem_status', $values['problem_status']);
+	$problem_node->set('field_processing', $values['processing']);
+	$problem_node->set('field_release', $values['release']);
+	$problem_node->set('field_sdcallid', $values['sdcallid']);
+	$problem_node->set('field_solution', array
+		        (
+		            'value' => $values['solution'],
+		            'format' => 'basic_html'
+		        ));
+//	$problem_node->set('field_s_no', $values['s_no']);
+	// $problem_node->set('field_release', $values['release']);
+	$problem_node->set('field_task_force', array($values['taskforce']));
+	// $problem_node->set('field_release', $values['release']);
+	$problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
+	// $problem_node->set('field_release', $values['release']);
+	$problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
+	$problem_node->set('field_version', $values['version']);
+	$problem_node->set('field_work_around', array
+		        (
+		            'value' => $values['workaround'],
+		            'format' => 'basic_html',
+		        ));
+    $problem_node->save();
+
+ //      $exist_node->set('status', 1);
+ //     $exist_node->save();
+      return TRUE;
     } 
-   
   } 
   else {
-    $node_array = array(
-      'nid' => ($nid ? $nid : ''), 
-      'vid' => ($vid ? $vid : ''), 
-      'uid' => 1,
-      'created' => ($created ? $created : time()),
-      'type' => 'problem',
-      'title' => $values['title'],
-      'body' => $values['body'],
-      'revision' => 0,
-      'op' => 'Save',
-      'submit' => 'Save',
-      'preview' => 'Preview',
-      'form_id' => 'problem_node_form',
-      'comment' => 2,
-      'field_problem_status' => Array(
-        '0' => Array(
-          'value' => $values['status'],
-          )
-        ),
-      'field_services' => Array(
-        '0' => Array(
-          'nid' => $values['service'],
-          )
-        ),
-      'field_s_no' => Array(
-        '0' => Array(
-          'value' => $values['sno'],
-          )
-        ),
-      'field_function' => Array(
-        '0' => Array(
-          'value' => $values['function'],
-          )
-        ),
-      'field_release' => Array(
-        '0' => Array(
-          'value' => $values['release'],
-          )
-        ),
-      'field_closed' => Array(
-        '0' => Array(
-          'value' => $values['closed'],
-          )
-        ),
-      'field_diagnose' => Array(
-        '0' => Array(
-          'value' => $values['diagnose'],
-          )
-        ),
-      'field_solution' => Array(
-        '0' => Array(
-         'value' => $values['solution'],
-         )
-        ),
-      'field_work_around' => Array(
-        '0' => Array(
-          'value' => $values['workaround'],
-          )
-        ),
-      'field_priority' => Array(
-        '0' => Array(
-          'value' => $values['priority'],
-          )
-        ),
-      'field_eroffnet' => Array(
-        '0' => Array(
-          'value' => $values['eroffnet'],
-          )
-        ),
-      'field_problem_eroffnet' => Array(
-        '0' => Array(
-          'value' => $eroffnet,
-          )
-       ),
-      'field_version' => Array(
-        '0' => Array(
-          'value' => $values['version'],
-          )
-        ),
 
-      'field_task_force' => Array(
-        '0' => Array(
-          'value' => $values['taskforce'],
-          )
-        ),
-      'field_comments' => Array(
-        '0' => Array(
-          'value' => $values['comment'],
-          )
-        ),
-
-      'field_processing' => Array(
-        '0' => Array(
-          'value' => $values['processing'],
-          )
-        ),
-
-      'field_attachment' => Array(
-        '0' => Array(
-          'value' => $values['attachment'],
-          )
-        ),
-
-      'field_ticketstore_link' => Array(
-        '0' => Array(
-          'value' => $values['ticketstore_link'],
-          )
-        ),
-
-      'field_ticketstore_count' => Array(
-        '0' => Array(
-          'value' => $values['ticketstore_count'],
-          )
-        ),
-      'field_timezone' => Array(
-        '0' => Array(
-          'value' => $values['timezone'],
-          )
-        ),
-      'og_initial_groups' => Array(
-        '0' => $problem_management_group_id,
-       ),
-      'og_public' => 0,
-      'og_groups' => Array(
-        $problem_management_group_id => $problem_management_group_id,
-      ),
-      'notifications_content_disable' => 0,
-      'teaser' => '',
-      'validated' => 1
-      );
-    $node = Node::create($node_array);
-    $node->save();
-    return TRUE;
-  }
+    $node_array = array
+	(
+	    'nid' => array
+	       (''),
+	    'vid' => array
+	       (''),
+	    'type' => 'problem',
+	    'title' => $values['title'],
+	    'uid' =>   1,
+	    'status' => 1 ,
+	    'created' => $created ? $created : time(),
+            'body' => array
+		        (
+		            'summary' => '',
+		            'value' => $values['problem_text'],
+		            'format' => 'basic_html',
+		        ),
+            'comment' =>  array
+		        (
+		            'status' => 2,
+		            'cid' => 0,
+		            'last_comment_timestamp' => 0,
+		            'last_comment_name' => '',
+		            'last_comment_uid' => 0,
+		            'comment_count' => 0,
+		        ),
+            'field_attachment' => $values['attachment'],
+	    'field_closed' =>  $values['closed'],
+	    'field_comments' => array
+		        (
+		            'value' => $values['comment'],
+		            'format' => 'basic_html',
+		        ),
+	    'field_diagnose' => $values['diagnose'],
+	    'field_eroffnet' => $values['eroffnet'],
+	    'field_function' => array
+		        (
+		            'value' => $values['function'],
+		        ),
+	    'field_priority' => $values['priority'],
+	    'field_problem_eroffnet' => $eroffnet,
+	    'field_problem_status' => $values['problem_status'],
+	    'field_processing' =>  $values['processing'],
+	    'field_release' => $values['release'],
+	   // 'field_sdcallid' => $values['sdcallid'],
+	    'field_services' =>  array
+                     (
+		            'target_id' => $values['service'],
+		        ),
+	    'field_solution' => array
+		        (
+		            'value' => $values['solution'],
+		            'format' => 'basic_html',
+		        ),
+	    'field_s_no' => $values['sno'],
+	    'field_task_force' => $values['taskforce'],
+	    'field_ticketstore_count' => $values['ticketstore_count'],
+	    'field_ticketstore_link' => $values['ticketstore_link'],
+	    'field_version' => $values['version'],
+	    'field_work_around' => array
+		        (
+		            'value' => $values['workaround'],
+		            'format' => 'basic_html',
+            ),
+            'status' => 1,
+	  );
+	       $node = Node::create($node_array);
+	       $node->save();
+            $nid = $node->getId();
+            if ($nid) { 
+              return TRUE;
+            }
+     }
   return FALSE;
 }
 
   static function insert_group_problems_view($selected_services) {
    // $sql = 'insert into {group_problems_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
-    $query = db_insert('group_problems_view');
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $group_id = $tempstore->get('Group_id');
@@ -251,7 +251,7 @@ static function saving_problem_node($values) {
     if ($selected_services) {
       foreach ($selected_services as $service) {
         $counter++;
-        $query->fields(array(
+        $query = db_insert('group_problems_view')->fields(array(
         'group_id' => $group_id,
         'service_id' => $service
          ))->execute();
@@ -263,7 +263,7 @@ static function saving_problem_node($values) {
 
 static function import_history_display_table($limit = NULL) {
   $build = array();
-  $build['#attached']['library'] = array('problem_management/problem_management');
+  
   
   $query = db_select('problem_import_history','pmh');
   $query->Fields('pmh', array('problem_date', 'import_status', 'error_message'));
@@ -534,7 +534,7 @@ static function problems_default_display($sql_where = NULL, $string = NULL, $lim
   
   $request = \Drupal::request();
   $serialized_data = unserialize($_SESSION['problems_query']);
-//  echo '<pre>';  print_r($serialized_data['sql']); exit;
+  // echo '<pre>';  print_r($serialized_data['sql']); exit;
 
   $sql_where = $sql_where?$sql_where:$serialized_data['sql'];
   $string = $string?$string:$serialized_data['string'];

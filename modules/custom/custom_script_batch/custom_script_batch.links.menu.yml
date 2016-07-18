@@ -1,0 +1,5 @@
+# Define default links for this module.
+custom_script_batch.form:
+  title: Custom script batch
+  description: Batch examples using Drupal Batch API.
+  route_name: custom_script_batch.form

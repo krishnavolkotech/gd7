@@ -1,0 +1,24 @@
+downtimes.downtimes_scheduled_maintenance_form: #give it the same name as the route to make it clear
+  title: 'Scheduled Maintenances'
+  route_name: downtimes.downtimes_scheduled_maintenance_form #route defined in .routing.yml
+  base_route: downtimes.downtimes_scheduled_maintenance_form #same as the route name
+  weight: 0
+
+#add another tab next to the base tab
+downtimes.downtimes_scheduled_maintenance_mail_template_form: #name it same as route to avoid confusion
+  title: 'Mail Template'
+  #route defined in .routing.yml
+  route_name: downtimes.downtimes_scheduled_maintenance_mail_template_form #link to tab2 route
+  #route defined in .routing.yml
+  base_route: downtimes.downtimes_scheduled_maintenance_form #set the base tab
+  weight: 1
+
+#add another tab next to the home tab
+downtimes.release_documentation_credentials_tab: #name it same as route to avoid confusion
+  title: 'Group ID'
+  #route defined in .routing.yml
+  route_name: downtimes.downtimes_maintenance_groupid_form #link to tab1 route
+  #route defined in .routing.yml
+  base_route: downtimes.downtimes_scheduled_maintenance_form #set the base tab
+  weight: 2
+

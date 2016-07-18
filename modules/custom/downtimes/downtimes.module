@@ -1,0 +1,418 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+
+define('INCEDENT_MANAGEMENT', 340);
+// Use Drupal\Core\Utility\Token;
+/*
+ * get available token lists
+ */
+/**
+ * Function get_available_tokens() {
+ * $token = \Drupal::token()->getInfo();
+ * $return = array();
+ * // pr($token);  exit;
+ * foreach ($token  as $category => $token_entity_type) {
+ * foreach ($token_entity_type as $token => $fields) {
+ * foreach ($fields as $field_key => $description) {
+ * if (is_object($description)) {
+ * $return[$field_key] = $description;
+ * } else {
+ * $return[$field_key] = $description['description'];
+ * }
+ * }
+ * }
+ * }
+ * return $return;
+ * }.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  if ($form_id == 'downtimes_node_form') {
+
+    // droy: Disabling preview button due to js validation bug #11569.
+    $form['buttons']['preview']['#access'] = FALSE;
+    /**
+         *   TO do  og
+         */
+
+    $user = Drupal::currentUser();
+    // $user_roles = $user->getRoles();
+    if (!$user->og_groups[$_SESSION['Group_id']]['is_admin'] && $user->getUid() != 1) {
+
+      $form['buttons']['delete']['#prefix'] = "<div class = 'hide_content'>";
+      $form['buttons']['delete']['#suffix'] = '</div>';
+    }
+
+    $form['menu']['#prefix'] = "<div class = 'hide_content'>";
+    $form['menu']['#suffix'] = '</div>';
+
+    $form['attachments']['#prefix'] = "<div class = 'hide_content'>";
+    $form['attachments']['#suffix'] = '</div>';
+
+    $form['path']['#prefix'] = "<div class = 'hide_content'>";
+    $form['path']['#suffix'] = '</div>';
+
+    $form['body_filter']['filter']['#prefix'] = "<div class = 'hide_content'>";
+    $form['body_filter']['filter']['#suffix'] = '</div>';
+    if ($form['downtime_type']['#default_value'] == 0) {
+      /**
+             * TO do title
+             */
+      // drupal_set_title(t("Report an Incident"));.
+    }
+    $form['#after_build'][] = 'add_service_data';
+  }
+
+  if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_form_edit') {
+    $form['notifications']['#weight'] = 4;
+    // drupal_add_js(drupal_get_path('module', 'downtimes') . '/maintenance_windows.js');
+    // breadcrumb for service profile form.
+    /**
+         * $breadcrumb = array();
+         * $breadcrumb[] = l(t('Home'), NULL);
+         * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
+         * $breadcrumb[] = drupal_set_title();
+         * drupal_set_breadcrumb($breadcrumb);
+        */
+    if (empty($form['nid']['#value'])) {
+      // $service_name = db_result(db_query("SELECT title FROM {node} WHERE nid=%d", $_REQUEST['service']));.
+      $service_name = \Drupal::database()->select('node_field_data', 'nfd')
+                ->fields('nfd', array('title'))
+                ->condition('nid', $_REQUEST['service'], '=')
+                ->execute()->fetchField();
+
+      // drupal_set_title(check_plain(t("Service Profile for ") . $service_name['title']));.
+      /**
+             *  TO DO
+             *  title #title
+             */
+    }
+    $serialized_data = array();
+    if ($form['nid']['#value']) {
+      $data  = \Drupal::database()->select('service_profile_maintenance_service_time', 'smst')
+                ->fields('smst', array('day_time'))
+                ->condition('nid', $form['nid']['#value'], '=')
+                ->execute()->fetchAll();
+
+      $serialized_data = unserialize($data);
+
+      $maintenance_windows = \Drupal::database()->select('service_profile_maintenance_windows', 'mw')
+                ->fields('smw', array('day', 'day_until', 'from_time', 'to_time'))
+                ->condition('nid', $form['nid']['#value'], '=')
+                ->execute()->fetchAll();
+
+      // db_query("SELECT day, day_until, from_time, to_time FROM {maintenance_windows} WHERE nid=%d", $form['nid']['#value']);.
+      foreach ($maintenance_windows as $maintenance_windows_list) {
+        $day = $maintenance_windows_list->day;
+        $maintenance_windows_data['maintenance_windows_' . $day] = $day;
+        $maintenance_windows_data['maintenance_windows_' . $day . '_from'] = $maintenance_windows_list->from_time;
+        $maintenance_windows_data['maintenance_windows_' . $day . '_until'] = $maintenance_windows_list->to_time;
+        $maintenance_windows_info[] = array(
+          'mw_day_from' => $day,
+          'mw_hm_from' => $maintenance_windows_list->from_time,
+          'mw_day_to' => $maintenance_windows_list->day_until,
+          'mw_hm_to' => $maintenance_windows_list->to_time,
+        );
+      }
+    }
+    /**
+         * $arr = array(
+         * t("Mon") => "Mon",
+         * t("Tue") => "Tue",
+         * t("Wed") => "Wed",
+         * t("Thu") => "Thu",
+         * t("Fri") => "Fri",
+         * t("Sat") => "Sat",
+         * t("Sun") => "Sun");
+        */
+    $arr = array(
+      "Mon" => "Mon",
+      "Tue" => "Tue",
+      "Wed" => "Wed",
+      "Thu" => "Thu",
+      "Fri" => "Fri",
+      "Sat" => "Sat",
+      "Sun" => "Sun",
+    );
+
+    foreach ($arr as $key => $val) {
+      $form['service_time_' . $val] = array(
+        '#type' => 'checkbox',
+        '#prefix' => ($key == 'Mon') ? "<div class='service-time'><b>" . t('Service Time:') . "</b>" : '<div class="service-time">',
+        '#default_value' => $serialized_data['service_time_' . $val] ? $serialized_data['service_time_' . $val] : '',
+        '#title' => Html::escape($key),
+      );
+      // Echo '<pre>'; print_r($serialized_data);  exit;.
+      append_hours_minutes($form, 'service_time_' . $val, $serialized_data);
+    }
+    /*Foreach ($arr as $key => $val) {
+    $form['maintenance_windows_' . $val] = array(
+    '#type' => 'checkbox',
+    '#prefix' => ($key == t('Mon')) ? "<div class='maintenance-time'><b>" . t('Maintenance Windows:') . "</b>" : '<div class="maintenance-time">',
+    '#default_value' => $maintenance_windows_data['maintenance_windows_' . $val] ? $maintenance_windows_data['maintenance_windows_' . $val] : '',
+    '#title' => check_plain($key),
+    );
+    append_hours_minutes($form, 'maintenance_windows_' . $val, $maintenance_windows_data);
+    }*/
+    // $form['field_maintenance_advance_time']['#weight'] = 2;.
+    $arr1 = array(
+      "Mon" => t("Mon"),
+      "Tue" => t("Tue"),
+      "Wed" => t("Wed"),
+      "Thu" => t("Thu"),
+      "Fri" => t("Fri"),
+      "Sat" => t("Sat"),
+      "Sun" => t("Sun"),
+    );
+
+    $form['maintenancewindows'] = array(
+      '#title' => t("Maintenance Windows"),
+      '#prefix' => '<div id="maintenancewindows">',
+      '#suffix' => '</div>',
+      '#type' => 'fieldset',
+        // '#description' => t('This is where we get automatically generated checkboxes'),.
+    );
+
+    $count = count($maintenance_windows_info);
+    $num_items = !empty($count) ? $count : 1;
+    if (isset($_POST['howmany'])) {
+      $num_items = $_POST['howmany'];
+    }
+
+    $form['maintenancewindows']['howmany'] = array('#type' => 'hidden', '#default_value' => $num_items);
+    if (isset($_POST['howmany'])) {
+      $first_month_first_day = date('Y-01-01');
+      // Echo '<pre>';print_r($_POST); echo '</pre>';.
+      for ($inc = 1; $inc <= $num_items; $inc++) {
+        $hm_from = date_create($first_month_first_day . ' ' . $_POST["mw_hm_from$inc"]['hour'] . ':' . $_POST["mw_hm_from$inc"]['minute']);
+        $hm_from = date_format($hm_from, 'Y-m-d H:i:s');
+
+        $hm_until = date_create($first_month_first_day . ' ' . $_POST["mw_hm_until$inc"]['hour'] . ':' . $_POST["mw_hm_until$inc"]['minute']);
+        $hm_until = date_format($hm_until, 'Y-m-d H:i:s');
+
+        field_mw_day($form, "mw_day_from$inc", $arr1, $_POST["mw_day_from$inc"], 'From', 1);
+        field_hours_minutes($form, "mw_hm_from$inc", $hm_from);
+
+        field_mw_day($form, "mw_day_until$inc", $arr1, $_POST["mw_day_until$inc"], 'Until');
+        field_hours_minutes($form, "mw_hm_until$inc", $hm_until);
+
+        if ($num_items > 1) {
+          append_remove_button($form, "remove-$inc");
+        }
+      }
+    }
+    else {
+
+      for ($inc = 0; $inc < $num_items; $inc++) {
+        field_mw_day($form, "mw_day_from" . ($inc + 1), $arr1, $maintenance_windows_info[$inc]['mw_day_from'], 'From', 1);
+        field_hours_minutes($form, "mw_hm_from" . ($inc + 1), $maintenance_windows_info[$inc]['mw_hm_from']);
+        if (empty($maintenance_windows_info[$inc]['mw_day_to'])) {
+          $mw_day_to = $maintenance_windows_info[$inc]['mw_day_from'];
+        }
+        else {
+          $mw_day_to = $maintenance_windows_info[$inc]['mw_day_to'];
+        }
+        field_mw_day($form, "mw_day_until" . ($inc + 1), $arr1, $mw_day_to, 'Until');
+        field_hours_minutes($form, "mw_hm_until" . ($inc + 1), $maintenance_windows_info[$inc]['mw_hm_to']);
+        if (count($maintenance_windows_info) > 1) {
+          append_remove_button($form, "remove-" . ($inc + 1));
+        }
+      }
+    }
+    $form['addmore'] = array(
+      '#type' => 'button',
+      '#default_value' => t('Add more'),
+    );
+    // print_R($maintenance_windows_info);
+    $form['#validate'][] = 'custom_service_profile_form_validate';
+    $form['#redirect'] = 'node/' . INCEDENT_MANAGEMENT . '/downtimes/service-profiles';
+
+    // $form_state['no_cache'] = TRUE;
+    // $form_state['rebuild'] = TRUE;
+    // $form['#after_build'][] = 'downtime_service_maintenance';.
+    /**
+         *  field_dependent_downtimeservices dropdown
+         */
+    $dependent_service_options = get_related_downtime_services('downtimes');
+    $form['field_dependent_downtimeservices']['widget']['#options'] = $dependent_service_options;
+
+    if ($form_id == 'node_early_warnings_edit_form') {
+      $node = $form_state->getFormObject()->getEntity();
+      $nid = $node->id();
+
+      $default_dependent_service_val = \Drupal::database()->select('node__field_dependent_service', nfds)
+                ->fields('nfds', array('field_dependent_service_target_id'))
+                ->condition('entity_id', $nid, '=')->execute()->fetchField();
+      $form['field_dependent_downtimeservices']['widget']['#default_value'] = array($default_dependent_service_val);
+    }
+    $form['field_dependent_service']['#attributes']['class'][] = 'hide-field-content';
+  }
+}
+
+/**
+ * Append hours and minutes to day form.
+ */
+function append_hours_minutes(&$form, $name, $data) {
+  $date_format = 'H:i';
+  $form[$name . '_from'] = array(
+    '#title' => t('From'),
+    '#type' => 'datetime',
+    '#date_format' => 'H:i',
+    '#date_label_position' => 'within',
+    '#default_value' => $data[$name . '_from'] ? $data[$name . '_from'] : '',
+  );
+
+  $form[$name . '_until'] = array(
+    '#title' => t('Until'),
+    '#type' => 'datetime',
+    '#date_label_position' => 'within',
+    '#default_value' => $data[$name . '_until'] ? $data[$name . '_until'] : '',
+      // '#suffix' => '</div>',.
+  );
+}
+
+/**
+ * Add Hour Minute dropdown to maintenance window.
+ */
+function field_hours_minutes(&$form, $name, $data) {
+
+  $date_format = 'H:i';
+  $form[maintenancewindows][$name] = array(
+       // '#title' => t($title),
+    '#type' => 'datetime',
+    '#date_format' => $date_format,
+    '#date_label_position' => 'within',
+    '#default_value' => $data,
+  );
+
+}
+
+/**
+ * Add day dropdown to maintenance window.
+ */
+function field_mw_day(&$form, $name, $options, $data, $title, $prefix) {
+  $form['maintenancewindows'][$name] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#default_value' => $data,
+    '#title' => t($title),
+  );
+  if ($prefix) {
+    $form['maintenancewindows'][$name]['#prefix'] = '<div class=mw-item-set>';
+  }
+}
+
+/**
+ *
+ */
+function append_remove_button(&$form, $name) {
+  /*$form['maintenancewindows'][$name] = array(
+  '#type' => 'button',
+  '#title' => "Remove",
+  '#default_value' => 'Remove',
+  '#attributes' => array('class' => 'mw-remove')
+  );*/
+  $form['maintenancewindows'][$name] = array(
+    '#value' => "<a href='' class='mw-remove' id='$name'>Remove</a></div>",
+  );
+}
+
+/**
+ * Validate function for service profile service time and maintenance windows fields.
+ */
+function custom_service_profile_form_validate(&$form, &$form_state) {
+  /**
+ * // breadcrumb for service profile form
+ * $breadcrumb = array();
+ * $breadcrumb[] = l(t('Home'), NULL);
+ * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
+ * $breadcrumb[] = drupal_set_title();
+ * drupal_set_breadcrumb($breadcrumb);
+*/
+  $arr = array(
+    "Mon" => "Mon",
+    "Tue" => "Tue",
+    "Wed" => "Wed",
+    "Thu" => "Thu",
+    "Fri" => "Fri",
+    "Sat" => "Sat",
+    "Sun" => "Sun",
+  );
+
+  foreach ($arr as $vals) {
+    if ($form_state->getValue('service_time_' . $vals)) {
+      if ($form_state->getValue('service_time_' . $vals . '_from') >= $form_state->getValue('service_time_' . $vals . '_until')) {
+        // form_set_error($form_state['values']['service_time_' . $vals . '_until'], t("End Date must be greater than Start Date."));.
+        $form_state->setErrorByName('service_time_' . $vals . '_until', t("End Date must be greater than Start Date."));
+      }
+    }
+    /*if ($form_state['values']['maintenance_windows_' . $vals]) {
+    if ($form_state['values']['maintenance_windows_' . $vals . '_from'] >= $form_state['values']['maintenance_windows_' . $vals . '_until']) {
+    form_set_error($form_state['values']['maintenance_windows_' . $vals . '_until'], t("End Date must be greater than Start Date."));
+    }
+    }*/
+
+    if (($form_state->getValue('service_time_' . $vals . '_from') > $form_state->getValue('service_time_' . $vals . '_until')) ||
+        ($form_state->getValue('service_time_' . $vals . '_from') < $form_state->getValue('service_time_' . $vals . '_until'))) {
+      if (!$form_state->getValue('service_time_' . $vals)) {
+        // form_set_error($form_state['values']['service_time_' . $vals], t("Select day"));.
+        $form_state->setErrorByName('service_time_' . $vals, t("Select day"));
+      }
+    }
+
+    /*if (($form_state['values']['maintenance_windows_' . $vals . '_from'] > $form_state['values']['maintenance_windows_' . $vals . '_until']) ||
+    ($form_state['values']['maintenance_windows_' . $vals . '_from'] < $form_state['values']['maintenance_windows_' . $vals . '_until'])) {
+    if (!$form_state['values']['maintenance_windows_' . $vals]) {
+    form_set_error($form_state['values']['maintenance_windows_' . $vals], t("Select day"));
+    }
+    }*/
+
+  }
+  if (isset($_POST['howmany'])) {
+    $days_arr = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
+    $howmany = $_POST['howmany'];
+    $first_month_first_day = date('Y-01-01');
+    for ($inc = 1; $inc <= $howmany; $inc++) {
+      /*if(array_search($_POST["mw_day_from$inc"], $days_arr) > array_search($_POST["mw_day_until$inc"], $days_arr)) {
+      form_set_error($form_state['values']['howmany'], t("End Date must be greater than Start Date."));
+      }*/
+      if ($_POST["mw_hm_from" . $inc]['hour'] == '' || $_POST["mw_hm_from" . $inc]['minute'] == '' ||
+        $_POST["mw_hm_until" . $inc]['hour'] == '' || $_POST["mw_hm_until" . $inc]['minute'] == '') {
+        if ($_POST['howmany'] > 1) {
+          $form_state->setErrorByName('howmany', t("Select Hour and Minutes."));
+        }
+      }
+      elseif (array_search($_POST["mw_day_from$inc"], $days_arr) == array_search($_POST["mw_day_until$inc"], $days_arr)) {
+        $date = date_create($first_month_first_day);
+        date_time_set($date, $_POST["mw_hm_from" . $inc]['hour'], $_POST["mw_hm_from" . $inc]['minute'], 0);
+        $hm_from = date_format($date, 'Y-m-d H:i:s');
+
+        $date = date_create($first_month_first_day);
+        date_time_set($date, $_POST["mw_hm_until" . $inc]['hour'], $_POST["mw_hm_until" . $inc]['minute'], 0);
+        $hm_to = date_format($date, 'Y-m-d H:i:s');
+
+        if ($hm_from > $hm_to) {
+          $form_state->setErrorByName('mw_hm_from1', t("End Date must be greater than Start Date."));
+        }
+      }
+    }
+  }
+  if (form_get_errors()) {
+    // $form_id = $_POST['form_id'];.
+    $form_state['post'] = $form['#post'] = $_POST;
+    /*$args = $form['#parameters'];
+    $form_build_id = $_POST['form_build_id'];
+    //drupal_process_form($form_id, $form, $form_state);
+    $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);*/
+  }
+}

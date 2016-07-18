@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains custom_views_php.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function custom_views_php_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the custom_views_php module.
+    case 'help.page.custom_views_php':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom views field to include PHP logic in views.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * 
+ * @param array $data
+ * @param \Drupal\field\FieldStorageConfigInterface $field_storage
+ */
+function custom_views_php_views_plugins_argument_default_alter(array &$plugins) {
+  // Remove the available plugin because the users should not have access to it.
+  $plugins['group_id_from_url']['class'] = 'Drupal\custom_views_php\Plugin\views\argument_default\GroupIdFromLoggedinUser';
+  $plugins['group_id_from_url']['provider'] = 'custom_views_php';
+}

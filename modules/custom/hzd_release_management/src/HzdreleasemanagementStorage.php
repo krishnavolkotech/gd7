@@ -27,7 +27,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
 
   setlocale(LC_ALL, 'de_DE.UTF-8');
 //delete the nodes if the release type is locked or in progress.
-  $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'rejected' => 4);
+  $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
   $release_type = $types[$type];
   // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
   // in-progress release will not get deleted
@@ -87,9 +87,12 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
       }
      // $values['type'] = SafeMarkup::checkPlain($type);
       $values['type'] = $type;
-      $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
-      if ($validation) {
-        $sucess = self::saving_release_node($values);
+      // echo '<pre>'; print_r($values);
+      if ($values['title']) {
+        $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
+        if ($validation) {
+          $sucess = self::saving_release_node($values);
+        }
       }
     }
     $count++;
@@ -124,7 +127,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
      $created = $info->created;
    }
 
-   $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'rejected' => 4);
+   $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
   
    // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));
    $field_date_value_query = db_select('node__field_date', 'ntr')->Fields('ntr',array('field_date_value'))->condition('entity_id', $nid, '=');
@@ -169,6 +172,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    //  $node->set("notifications_content_disable", 0);
     // $node->set("teaser", '');
    //  $node->set("validated", 1);
+       $node->set("status", 1);
        $node->save();
   } 
   else {
@@ -192,7 +196,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     ),
     'field_relese_services' => Array(
       '0' => Array(
-        'nid' => $values['service'],
+        'target_id' => $values['service'],
       )
     ),
     'field_date' => Array(
@@ -254,6 +258,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     "date_value" => $field_date_value['field_date_value'], 
     "release_value" => $field_release_value['field_release_value'], 
     "doku_link" => $field_documentation_link_value['field_documentation_link_value']);
+
   self::documentation_link_download($params,$values);
 
   return TRUE;
@@ -394,7 +399,7 @@ function documentation_link_download($params,$values) {
 
   $field_release_type_value = $field_release_type['field_release_type_value'];
  
- 
+
   //Checked documentation link empty or not.
   if ($link != '') {
     /* Check It is new release or not
@@ -410,7 +415,7 @@ function documentation_link_download($params,$values) {
       
       list($release_title, $product, $release, $compressed_file, $link_search) =                    
       self::get_release_details_from_title($values_title, $link);
-      
+
       // Check secure-download string is in documentation link. If yes excluded from documentation download.
       if (empty($link_search)) {
 
@@ -804,7 +809,7 @@ function get_release_details_from_title($values_title, $link) {
     $paged_query->addField('nfar', 'field_archived_release_value', 'archived');
     $paged_query->fields('nfd', array('nid'));
 
-    // echo '<pre>';  print_r($query->execute()->getqueryString());  exit;
+    // echo '<pre>';  print_r($query->conditions());  exit;
     
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
@@ -1016,7 +1021,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $_SESSION['filter_where'] = $filter_where;
       $_SESSION['release_type'] = $release_type;
       $_SESSION['service_release_type'] = $service_release_type;
-      
       foreach($release_query as $releases) {
         if ($releases->documentation_link) {
           $link = self::hzd_get_release_documentation_link($releases->documentation_link, $releases->service, $releases->release_id);
@@ -1129,7 +1133,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $paged_query->fields('n', array('title'))
                 ->orderBy('nfd.field_date_value', 'DESC');
     
-   // echo '<pre>'; print_r($release_query->conditions()); exit;
+  // echo '<pre>'; print_r($release_query->conditions()); exit;
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $paged_query->limit($page_limit);
@@ -1218,5 +1222,62 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
     $create_warning =  \Drupal::service('renderer')->renderRoot($create_earlywarning);
     $release_earlywarning = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
     return $release_earlywarning;
+  }
+
+  static function delete_group_release_view() {
+    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
+    $group_id = $_SESSION['Group_id'];
+    db_delete('group_releases_view')->condition('group_id', $group_id, '=')
+    ->execute();
+  }
+ 
+  static function get_default_release_services_current_session() {
+    //Getting the default Services
+    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
+    $group_id = $_SESSION['Group_id'];
+    $query = db_select('group_releases_view', 'grv');
+    $query->Fields('grv', array('service_id'));
+    $query->conditions('group_id', $group_id, '=');
+    $result = $query->execute()->fetchAll();
+    return $result;
+  }
+
+  static function get_release_type_current_session() {
+    $release_type_query = db_select('default_release_type', 'drt');
+    $release_type_query->Fields('drt', array('release_type'));
+    $release_type_query->condition('drt.group_id', $_SESSION['Group_id'], '=');  
+    $release_type = $release_type_query->execute()->fetchCol();
+    return $release_type['0'];
+  }
+
+  static function insert_group_release_view($default_release_type, $selected_services) {
+    $release_type_query = db_select('default_release_type', 'drt');
+    $release_type_query->Fields('drt', array('release_type'));
+    $release_type_query->condition('drt.group_id', $_SESSION['Group_id'], '=');  
+    $release_type = $release_type_query->execute()->fetchCol();
+    if ($release_type) {
+      db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $_SESSION['Group_id'], '=')->execute();
+    } else {
+     db_insert('default_release_type')->fields(array('group_id' => $_SESSION['Group_id'], 'release_type' => $default_release_type));
+    }
+    // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';
+    $counter = 0;
+    $group_id = $_SESSION['Group_id'];
+    // echo '<pre>';   print_r($selected_services);  exit; 
+    if (sizeof($selected_services) > 0) {
+      foreach ($selected_services as $service) {
+        if ($service !=  0 ) {
+              echo $count;
+		$counter++;
+		// db_query($sql, $_SESSION['Group_id'], $service);
+		 db_insert('group_releases_view')->fields(array(
+		  'group_id' => $group_id,
+		  'service_id' => $service
+		))->execute();
+	 }
+       }
+     }
+ // exit;
+    return $counter; 
   }
 }

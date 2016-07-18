@@ -1,0 +1,584 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_user_cancel().
+ */
+
+/**
+ *
+ */
+function inactive_user_user_cancel($edit, $account, $method) {
+  \Drupal::database()->delete('inactive_users')
+      ->condition('uid', $account->uid)
+      ->execute();
+}
+
+/**
+ * Implements hook_cron().
+ */
+function inactive_user_cron() {
+  // Echo ' hai';   exit;
+  // Only check once every almost-day,
+  // so we slide around the clock and don't overload the server.
+  // If ((REQUEST_TIME - variable_get('inactive_user_timestamp', '0')) >= 86100) {.
+  if ((REQUEST_TIME - \Drupal::config('inactive_user.settings')->get('inactive_user_timestamp')) >= 86100) {
+
+    // variable_set('inactive_user_timestamp', REQUEST_TIME);.
+    \Drupal::config('inactive_user.settings')
+        ->set('inactive_user_timestamp', REQUEST_TIME)
+        ->save();
+
+    $user_list = '';
+
+    // Reset notifications if recent user activity.
+    /**
+     * $results = db_query('SELECT uid
+     * FROM {inactive_users}
+     * WHERE uid <> :one', array(':one' => 1)
+     * );
+     */
+    $query = \Drupal::database()->select('inactive_users', 'iu');
+    $query->addField('iu', 'uid');
+    $query->condition('iu.uid', '1', '<>');
+    $results = $query->execute()->fetchField();
+
+    if ($results->rowCount()) {
+      foreach ($results as $record) {
+        $query = \Drupal::database()->select('users', 'u');
+        $query->fields('u', array('access', 'name'));
+        $query->condition('u.uid', $record->uid, '=');
+        $user = $query->execute()->fetchAssoc();
+
+        if ($user['access'] > REQUEST_TIME - 604800) {
+          // User activity in last week, remove from inactivity table.
+          \Drupal::database()->delete('inactive_users')
+              ->condition('uid', $record->uid, '=')
+              ->execute();
+          watchdog('user', 'recent user activity: %user removed from inactivity list', array('%user' => $user['name']), WATCHDOG_NOTICE, l(t('edit user'), "user/" . $record->uid . "/edit", array('query' => array('destination' => 'admin/user/user'))));
+        }
+      }
+    }
+    // Notify administrator of inactive user accounts.
+    // if ($notify_time = variable_get('inactive_user_notify_admin', 0)) {.
+    if ($notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify_admin')) {
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'access', 'created'));
+      $orandcond1 = Condition::andConditionGroup()->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - $notify_time, '<');
+
+      $orandcond2 = Condition::andConditionGroup()->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - $notify_time, '<');
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+      $query->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('notify_admin');
+
+      $results = $query->execute->fetchAll();
+
+      foreach ($results as $user) {
+        // Has the admin been notified?
+        \Drupal::database()->select('inactive_users', 'ia');
+        $query->fields('ia', array('uid'));
+        $query->condition('ia.uid', $user->uid, '=');
+        $admin_notify = $query->execute()->fetchAssoc();
+
+        $admin_notify_results = $admin_notify->execute()->rowCount();
+
+        if ($user->uid && !$admin_notify_results && ($user->access < (REQUEST_TIME - $notify_time))) {
+          $query = \Drupal::database()->update('inactive_users')
+              ->fields(array('notified_admin' => 1))
+              ->condition('uid', $user->uid)
+              ->execute();
+
+          // Update queries return rows updated.
+          if (!$query) {
+            // No rows updated, must create a new row.
+            \Drupal::database()->insert('inactive_users')
+                ->fields(array('uid' => $user->uid, 'notified_admin' => 1))
+                ->execute();
+          }
+          $user_list .= "$user->name ($user->mail) last active on " . format_date($user->access, 'large') . ".\n";
+        }
+      }
+
+      if (isset($user_list)) {
+        // _inactive_user_mail(t('[@sitename] Inactive users', array('@sitename' => variable_get('site_name', 'drupal'))), _inactive_user_mail_text('notify_admin_text'), $notify_time, NULL, $user_list);.
+        $config = \Drupal::config('system.site');
+        Inactiveuserhelper::inactive_user_mail(t('[@sitename] Inactive users', array('@sitename' => $config->get('name'))), Inactiveuserhelper::inactive_user_mail_text('notify_admin_text'), $notify_time, NULL, $user_list);
+
+        $user_list = '';
+      }
+    }
+
+    // Notify users that their account has been inactive.
+    // if ($notify_time = variable_get('inactive_user_notify', 0)) {.
+    if ($notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify')) {
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'created', 'access'));
+      $orandcond1 = Condition::andConditionGroup()->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - $notify_time, '<');
+
+      $orandcond2 = Condition::andConditionGroup()->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - $notify_time, '<');
+
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+
+      $query->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('notify_users_inactive_account');
+
+      $results = $query->execute();
+
+      foreach ($results as $user) {
+
+        $notified_user = \Drupal::database()->select('inactive_users', 'ia')
+            ->fields('ia', array('uid'))
+            ->condition('ia.notified_user', 1, '=')
+            ->condition('ia.uid', $user->uid, '=');
+
+        $notified_user_results = $notified_user->execute()->rowCount();
+
+        if ($user->uid && !$notified_user_results && ($user->access < (REQUEST_TIME - $notify_time))) {
+          $query = \Drupal::database()->update('inactive_users')
+              ->fields(array('notified_user' => 1))
+              ->condition('uid', $user->uid)->execute();
+
+          if (!$query) {
+            \Drupal::database()->insert('inactive_users')->fields(array('uid' => $user->uid, 'notified_user' => 1))->execute();
+          }
+          // Inactiveuserhelper::inactive_user_mail(t('[@sitename] Account inactivity',
+          //            array('@sitename' => variable_get('site_name', 'drupal'))),
+          //           variable_get('inactive_user_notify_text', _inactive_user_mail_text('notify_text')), $notify_time, $user, NULL);.
+          Inactiveuserhelper::inactive_user_mail(t('[@sitename] Account inactivity',
+              array('@sitename' => \Drupal::config('system.site')->get('site_name'))),
+              \Drupal::config('inactive_user.settings')->get('inactive_user_notify_text'), $notify_time, $user, NULL);
+
+          watchdog('user', 'user %user notified of inactivity', array('%user' => $user->name), WATCHDOG_INFO, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));
+        }
+      }
+    }
+
+    // Warn users when they are about to be blocked.
+    // This query asks for all users who are not user 0, that have logged in
+    // at least once, but not since the request_time minus the interval
+    // represented by the block time plus the warning lead time or
+    // all users who haven't logged in but were created since the
+    // request time minus the interval represented by the block time
+    // plus the warning lead time.
+    if (($warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block_warn')) &&
+        ($block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block'))) {
+
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'created', 'access'));
+      $orandcond1 = Condition::andConditionGroup()
+          ->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - $block_time + $warn_time, '<');
+
+      $orandcond2 = Condition::andConditionGroup()
+          ->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - $block_time + $warn_time, '<');
+
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+
+      $query->condition('u.status', 0, '<>')
+          ->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('warn_users_blocked');
+
+      $results = $query->execute();
+
+      foreach ($results as $user) {
+        $warned_user = \Drupal::database()->select('inactive_users', 'ia')
+            ->fields('ia', array('uid'))
+            ->condition('ia.warned_user_block_timestamp', 0, '>')
+            ->condition('ia.uid', $user->uid);
+
+        $warned_user_results = $warned_user->execute()->rowCount();
+
+        if ($user->uid && !$warned_user_results && ($user->access < (REQUEST_TIME - $block_time + $warn_time))) {
+          $query = \Drupal::database()->update('inactive_users')
+              ->fields(array('warned_user_block_timestamp' => REQUEST_TIME + $warn_time))
+              ->condition('uid', $user->uid, '=')->execute();
+
+          // Update statements return rows updated.
+          if (!$query) {
+            \Drupal::database()->insert('inactive_users')
+                ->fields(array('uid' => $user->uid, 'warned_user_block_timestamp' => REQUEST_TIME + $warn_time))
+                ->execute();
+          }
+          Inactiveuserhelper::inactive_user_mail(t('[@sitename] Account inactivity', array(
+            '@sitename' => \Drupal::config('system.site')->get('site_name'),
+          )), \Drupal::config('inactive_user.settings')->get('inactive_user_block_warn_text'), $warn_time, $user, NULL);
+          watchdog('user', 'user %user warned will be blocked due to inactivity', array('%user' => $user->name), WATCHDOG_NOTICE, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));
+        }
+      }
+    }
+
+    // Automatically block users.
+    if ($block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block')) {
+
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'created', 'access'));
+      $orandcond1 = Condition::andConditionGroup()
+          ->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - $block_time, '<');
+
+      $orandcond2 = Condition::andConditionGroup()
+          ->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - $block_time, '<');
+
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+
+      $query->condition('u.status', 0, '<>')
+          ->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('block_users');
+
+      $results = $query->execute();
+
+      foreach ($results as $user) {
+        // Don't block user yet if we sent a warning and it hasn't expired.
+        $notexpired_user = \Drupal::database()->select('inactive_users', 'ia')
+            ->fields('ia', array('uid'))
+            ->condition('ia.warned_user_block_timestamp', REQUEST_TIME, '>')
+            ->condition('ia.uid', $user->uid);
+
+        $notexpired_user_results = $notexpired_user->execute()->rowCount();
+
+        if ($user->uid && $notexpired_user_results && ($user->access < (REQUEST_TIME - $block_time))) {
+          $query = \Drupal::database()->update('users')
+              ->fields(array('status' => 0))
+              ->condition('uid', $user->uid)->execute();
+
+          // Notify user.
+          if (\Drupal::config('inactive_user.settings')->get('inactive_user_notify_block')) {
+            if (!db_select('inactive_users', 'ia')->fields('ia', array('uid'))->condition('notified_user_block', 1)->condition('ia.uid', $user->uid)->execute()->rowCount()) {
+              $query = \Drupal::database()->update('inactive_users')
+                  ->fields(array('notified_user_block' => 1))
+                  ->condition('uid', $user->uid)->execute();
+              // Update statements return rows altered.
+              if (!$query) {
+                \Drupal::database()->insert('inactive_users')->fields(array('uid' => $user->uid, 'notified_user_block' => 1))->execute();
+              }
+
+              _inactive_user_mail(t('[@sitename] Account blocked due to inactivity', array(
+                '@sitename' => \Drupal::config('system.site')->get('site_name'),
+              )), \Drupal::config('inactive_user.settings')->get('inactive_user_block_notify_text'), $block_time, $user, NULL);
+              watchdog('user', 'user %user blocked due to inactivity', array('%user' => $user->name), WATCHDOG_NOTICE, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));
+            }
+          }
+
+          // Notify admin.
+          if (variable_get('inactive_user_notify_block_admin', 0)) {
+            if (!\Drupal::database()->select('inactive_users', 'ia')
+                ->fields('ia', array('uid'))->condition('notified_admin_block', 1)
+                ->condition('ia.uid', $user->uid)
+                ->execute()->rowCount()) {
+              $query = \Drupal::database()->update('inactive_users')
+                  ->fields(array('notified_admin_block' => 1))
+                  ->condition('uid', $user->uid, '=')->execute();
+
+              // Update statements return rows altered.
+              if (!$query) {
+                \Drupal::database()->insert('inactive_users')->fields(array('uid' => $user->uid, 'notified_admin_block' => 1))->execute();
+              }
+              $user_list .= "$user->name ($user->mail) last active on " . format_date($user->access, 'large') . ".\n";
+            }
+          }
+        }
+        if (!empty($user_list)) {
+          Inactiveuserhelper::inactive_user_mail(t('[@sitename] Blocked users', array(
+            '@sitename' => \Drupal::config('system.site')->get('site_name'),
+          )), Inactiveuserhelper::inactive_user_mail_text('block_notify_admin_text'), $block_time, NULL, $user_list);
+          $user_list = '';
+        }
+      }
+    }
+
+    // Warn users when they are about to be deleted.
+    if (($warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete_warn')) &&
+        ($delete_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete'))) {
+
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'created', 'access'));
+
+      $orandcond1 = Condition::andConditionGroup()
+          ->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - ($delete_time + $warn_time), '<');
+
+      $orandcond2 = Condition::andConditionGroup()
+          ->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - ($delete_time + $warn_time), '<');
+
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+
+      $query->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('warn_users_deleted');
+
+      $results = $query->execute();
+
+      foreach ($results as $user) {
+        $warned_user = \Drupal::database()->select('inactive_users', 'ia')
+            ->fields('ia', array('uid'))
+            ->condition('ia.warned_user_delete_timestamp', 0, '>')
+            ->condition('ia.uid', $user->uid);
+        $warned_user_results = $warned_user->execute()->rowCount();
+
+        if ($user->uid && !$warned_user_results && ($user->access < (REQUEST_TIME - $warn_time))) {
+
+          if (\Drupal::config('inactive_user.settings')->get('inactive_user_preserve_content') && _inactive_user_with_content($user->uid)) {
+            $protected = 1;
+          }
+          else {
+            $protected = 0;
+          }
+
+          // The db_update function returns the number of rows altered.
+          $query = \Drupal::database()->update('inactive_users')
+              ->fields(array('warned_user_delete_timestamp' => REQUEST_TIME + $warn_time, 'protected' => $protected))
+              ->condition('uid', $user->uid, '=')->execute();
+
+          if (!$query) {
+            \Drupal::database()->insert('inactive_users')->fields(
+                array(
+                  'uid' => $user->uid,
+                  'warned_user_delete_timestamp' => REQUEST_TIME + $warn_time,
+                  'protected' => $protected,
+                ))->execute();
+          }
+          if (!$protected) {
+            Inactiveuserhelper::inactive_user_mail(t('[@sitename] Account inactivity', array(
+              '@sitename' => \Drupal::config('system.site')->get('site_name'),
+            )
+            ), \Drupal::config('inactive_user.settings')->get('inactive_user_delete_warn_text'), $warn_time, $user, NULL);
+            watchdog('user', 'user %user warned will be deleted due to inactivity', array('%user' => $user->mail), WATCHDOG_NOTICE, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));
+          }
+        }
+      }
+    }
+
+    // Automatically delete users.
+    if ($delete_time = variable_get('inactive_user_auto_delete', 0)) {
+      $query = \Drupal::database()->select('users', 'u');
+      $query->fields('u', array('uid', 'name', 'mail', 'created', 'access'));
+
+      $orandcond1 = Condition::andConditionGroup()
+          ->condition('u.access', 0, '<>')
+          ->condition('u.login', 0, '<>')
+          ->condition('u.access', REQUEST_TIME - $delete_time, '<');
+
+      $orandcond2 = Condition::andConditionGroup()
+          ->condition('u.login', 0)
+          ->condition('u.created', REQUEST_TIME - $delete_time, '<');
+
+      $query->orConditionGroup()
+          ->condition($orandcond1)
+          ->condition($orandcond2);
+
+      $query->condition('u.uid', 1, '<>');
+
+      // Adds queryTag to identify this query in a custom module using the hook_query_TAG_alter().
+      // The first tag is a general identifier so you can include all the queries that are being processed in this hook_cron().
+      // The second tag is unique and only used to make changes to this particular query.
+      $query->addTag('inactive_user');
+      $query->addTag('delete_users');
+
+      $results = $query->execute();
+
+      foreach ($results as $user) {
+        $deleteable_user = \Drupal::database()->select('inactive_users', 'ia')
+            ->fields('ia', array('uid'))
+            ->condition('ia.warned_user_delete_timestamp', REQUEST_TIME, '<')
+            ->condition('ia.uid', $user->uid)
+            ->condition('ia.protected', 1, '<>');
+
+        $deleteable_user_results = $deleteable_user->execute()->rowCount();
+
+        if ($user->uid && (((\Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete_warn') > 0) && !$deleteable_user_results) || (!\Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete_warn'))) && ($user->access < (REQUEST_TIME - $delete_time))) {
+
+          $is_protected = (\Drupal::config('inactive_user.settings')->get('inactive_user_preserve_content') && _inactive_user_with_content($user->uid)) ? 1 : 0;
+          if ($is_protected == 1) {
+            // This is a protected user, mark as such.
+            $query = \Drupal::database()->update('inactive_users')
+                ->fields(array('protected' => $is_protected))
+                ->condition('uid', $user->uid)->execute();
+          }
+          else {
+
+            // Delete the user.
+            // Not using user_delete() to send custom emails and watchdog.
+            $array = (array) $user;
+
+            drupal_session_destroy_uid($user->uid);
+
+            \Drupal::database()->delete('users')
+                ->condition('uid', $user->uid)
+                ->execute();
+            \Drupal::database()->delete('users_roles')
+                ->condition('uid', $user->uid)
+                ->execute();
+            \Drupal::database()->delete('authmap')
+                ->condition('uid', $user->uid)
+                ->execute();
+            \Drupal::database()->delete('inactive_users')
+                ->condition('uid', $user->uid)
+                ->execute();
+
+            // module_invoke_all('user', 'delete', $array, $user);.
+            ModuleHandler::invokeAll('user', 'delete', $array, $user);
+
+            // If (variable_get('inactive_user_notify_delete', 0)) {.
+            if (\Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete')) {
+              Inactiveuserhelper::inactive_user_mail(t('[@sitename] Account removed', array(
+                    // '@sitename' => variable_get('site_name', 'drupal')
+                '@sitename' => \Drupal::config('system.site')->get('site_name'),
+              )
+              ),
+                  // variable_get('inactive_user_delete_notify_text', Inactiveuserhelper::inactive_user_mail_text('delete_notify_text')
+                  \Drupal::config('inactive_user.settings')->get('inactive_user_delete_notify_text'), $delete_time, $user, NULL);
+            }
+            // If (variable_get('inactive_user_notify_delete_admin', 0)) {.
+            if (\Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete_admin')) {
+              $user_list .= "$user->name ($user->mail) last active on " . format_date($user->access, 'large') . ".\n";
+            }
+            watchdog('user', 'user %user deleted due to inactivity', array('%user' => $user->name));
+          }
+        }
+      }
+      if (!empty($user_list)) {
+        Inactiveuserhelper::inactive_user_mail(t('[@sitename] Deleted accounts', array(
+          // '@sitename' => variable_get('site_name', 'drupal')
+          '@sitename' => \Drupal::config('system.site')->get('site_name'),
+        )),
+            Inactiveuserhelper::inactive_user_mail_text('delete_notify_admin_text'), $delete_time, NULL, $user_list);
+        unset($user_list);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+
+/**
+ * Function inactive_user_mail($key, &$message, $params) {.
+ */
+function inactive_user_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['message'];
+}
+
+/**
+ * Implements hook_schema().
+ */
+function inactive_user_schema() {
+  $schema['inactive_users'] = array(
+    'description' => 'The base table for inactive_users.',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'The primary identifier for a user.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'notified_admin' => array(
+        'description' => 'Admin notifier.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'notified_user' => array(
+        'description' => 'User notifier.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'warned_user_block_timestamp' => array(
+        'description' => 'Timestamp warning.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'notified_user_block' => array(
+        'description' => 'User block warning.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'notified_admin_block' => array(
+        'description' => 'Timestamp warning.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'warned_user_delete_timestamp' => array(
+        'description' => 'Timestamp warning.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'protected' => array(
+        'description' => 'Timestamp warning.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('uid'),
+  );
+  return $schema;
+}

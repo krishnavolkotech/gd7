@@ -1,0 +1,22 @@
+cust_address_book.address:
+  path: '/address'
+  defaults:
+    _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book'
+    _title: 'Members'
+  requirements:
+    _permission: 'administer search'
+cust_address_book.group_address:
+  path: '/node/{group}/address'
+  defaults:
+    _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book'
+    _title: 'Members'
+  requirements:
+    _permission: 'administer search'
+cust_address_book.address_username:
+  path: '/address/{username}'
+  defaults:
+    _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book_user_view'
+    _title: 'Members'
+  requirements:
+    _permission: 'administer search'
+

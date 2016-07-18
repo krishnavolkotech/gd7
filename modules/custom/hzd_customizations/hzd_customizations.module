@@ -1,0 +1,138 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Utility\Token;
+use Drupal\Core\Url;
+
+use Drupal\hzd_services\HzdservicesStorage;
+
+define('SITE_ADMIN', 'site_administrator');
+
+/**
+ * Implements hook_mail.
+ */
+function hzd_customizations_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = SafeMarkup::checkPlain($params['message']);
+      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
+      break;
+
+    case 'custom_mails':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = SafeMarkup::checkPlain($params['body']);
+      if ($params['Bcc']) {
+        $message['headers']['Bcc'] = $params['Bcc'];
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function hzd_customizations_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $token_service = \Drupal::token();
+
+  $url_options = array('absolute' => TRUE);
+  if (isset($options['langcode'])) {
+    $url_options['language'] = \Drupal::languageManager()->getLanguage($options['langcode']);
+    $langcode = $options['langcode'];
+  }
+  else {
+    $langcode = NULL;
+  }
+  $replacements = array();
+  if ($type == 'group') {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'title':
+          $replacements[$original] = isset($group) ? str_replace(' ', '', $group->label()) : '';
+          break;
+      }
+    }
+  }
+  return $replacements;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function hzd_customizations_token_info() {
+  $type = array(
+    'name' => t('Groups'),
+    'description' => t('Tokens related to individual groups.'),
+    'needs-data' => 'group',
+  );
+
+  // Core tokens for group.
+  $group['title'] = array(
+    'name' => t("Title"),
+  );
+
+  return array(
+    'types' => array('group' => $type),
+    'tokens' => array('group' => $group),
+  );
+}
+
+/**
+ * Get downtime services in service profile dependent dropdown.
+ */
+function get_related_downtime_services($type) {
+  // Global $user;.
+  $user = Drupal::currentUser();
+  $user_roles = $user->getRoles();
+
+  if (in_array('site_administrator', $user_roles)) {
+    $dependent_Services = HzdservicesStorage::get_related_services($type);
+    $request = \Drupal::request()->getRequestUri();
+    unset($dependent_Services[$_REQUEST['service']]);
+    $current_path = Url::fromRoute('<current>');
+    $path = explode("/", $current_path->getInternalPath());
+    if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
+      $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
+      $query->addField('nfds', 'field_dependent_service');
+      $query->condition('nfds.entity_id', '1', '=');
+      $service_id = $query->execute()->fetchField();
+      unset($dependent_Services[$service_id]);
+    }
+    return $dependent_Services;
+  }
+  else {
+    return array(0 => t("This list is only editable by site admins"));
+  }
+}
+
+/**
+ * Get related file attachments of planning files.
+ */
+function get_related_files($planning_filename) {
+  $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
+  $files = array();
+  foreach ($fids as $fid) {
+    $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
+    if ($fid->display == 1) {
+      // $icon = theme('filefield_icon', $fileObject);.
+      $files_heading = "<p><b>Dateien:</b></p>";
+      $files_details .= '<div class="filefield-file clear-block">';
+      // $files_details .= $icon . ' ' . l($fileObject['filename'], file_create_url($fileObject['filepath']), array('attributes' => array('target' => '_blank')));.
+      $files_details .= '<a target= "_blank" href="' . file_create_url($fileObject[0]->uri) . '">' . $fileObject[0]->filename;
+      $files_details .= " (" . date('d.m.Y H:i:s', $fileObject[0]->changed) . ")";
+      $files_details .= '</div>';
+    }
+  }
+  // Return $files;.
+  return array('#markup' => $files_heading . $files_details);
+}

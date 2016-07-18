@@ -76,5 +76,6 @@ class ReleasedocumentcredentsettingForm extends ConfigFormBase {
       ->set('release_import_username', $release_import_username)
       ->set('release_import_password', $release_import_password)
       ->save();
+     parent::submitForm($form, $form_state);
   }
 }

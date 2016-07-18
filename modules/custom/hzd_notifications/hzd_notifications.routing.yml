@@ -53,3 +53,27 @@ hzd_notifications.delete_notifications:
     _title: 'Delete Notifications'
   requirements:
     _permission: 'access content'
+
+hzd_notifications.notifications_template:
+  path: '/admin/config/notification-templates'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::notification_templates'
+    _title: 'Notifications Templates'
+  requirements:
+    _permission: 'access content'
+
+hzd_notifications.migrate_group_notifications:
+  path: '/migrate_group_notifications'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_group_notifications'
+    _title: 'Migrate Group Notifications'
+  requirements:
+    _permission: 'access content'
+
+hzd_notifications.migrate_date_deployed:
+  path: '/migrate_date_deployed'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_date_deployed'
+    _title: 'Migrate Date field in Deployed Releases'
+  requirements:
+    _permission: 'access content'

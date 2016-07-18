@@ -91,6 +91,13 @@ class GroupContentListBuilder extends EntityListBuilder {
     $query = $this->getStorage()->getQuery();
     $query->sort($this->entityType->getKey('id'));
     $query->condition('gid', $this->group->id());
+    $current_path = explode('/', \Drupal::service('path.current')->getPath());
+    if ($current_path[3] == 'pending-members') {
+      $query->condition('request_status', 0, '=');
+    }
+    else {
+      $query->condition('request_status', 1, '=');
+    }
 
     // Filter on bundles if they were specified by the constructor.
     if (!empty($this->bundles)) {
@@ -139,13 +146,34 @@ class GroupContentListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   protected function getDefaultOperations(EntityInterface $entity) {
-    $operations = parent::getDefaultOperations($entity);
+    $operations = array();
+    $current_path = explode('/', \Drupal::service('path.current')->getPath());
+    if ($current_path[3] == 'pending-members') {
+      if ($entity->access('update') && $entity->hasLinkTemplate('edit-form')) {
+        $operations['approve'] = array(
+          'title' => $this->t('Approve'),
+          'weight' => 10,
+          'url' => $entity->urlInfo('approve-form'),
+        );
+      }
+      if ($entity->access('delete') && $entity->hasLinkTemplate('delete-form')) {
+        $operations['reject'] = array(
+          'title' => $this->t('Reject'),
+          'weight' => 100,
+          'url' => $entity->urlInfo('reject-form'),
+        );
+      }
+    }
+    else {
+      $operations = parent::getDefaultOperations($entity);
+    }
+
 
     $destination = $this->redirectDestination->getAsArray();
     foreach ($operations as $key => $operation) {
       $operations[$key]['query'] = $destination;
     }
-    
+
     return $operations;
   }
 

@@ -31,3 +31,69 @@ function hzd_preprocess_html(&$variables) {
     $variables['attributes']['class'][] = 'hzd-secondary-tabs';
   }
 }
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function hzd_preprocess_node(&$variables) {
+  $config = \Drupal::config('planning.settings');
+  $nid = $variables['node']->id();
+  if ($nid == $config->get('mlrp')) {
+    $files = get_related_files('mlrp');
+    $variables['mlrp_files'] = $files;
+  }
+  if ($nid == $config->get('test_kalender')) {
+    $files = get_related_files('test calendar');
+    $variables['testcalender_files'] = $files;
+  }
+  if ($nid == $config->get('transkription_pp')) {
+    $files = get_related_files('transcription pp');
+    $variables['transkription_pp_files'] = $files;
+  }
+  if ($nid == $config->get('transkription_fmk')) {
+    $files = get_related_files('transcription fmk');
+    $variables['transkription_fmk_files'] = $files;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for node templates.
+ */
+function hzd_theme_suggestions_node_alter(array &$suggestions, array $variables) {
+  $config = \Drupal::config('planning.settings');
+  if(in_array('node__'.$config->get('mlrp').'__full', $suggestions)){
+    $suggestions[] = 'node__mlrp';
+  }
+  if(in_array('node__'.$config->get('test_kalender').'__full', $suggestions)){
+    $suggestions[] = 'node__test_kalender';
+  }
+  if(in_array('node__'.$config->get('transkription_pp').'__full', $suggestions)){
+    $suggestions[] = 'node__transkription_pp';
+  }
+  if(in_array('node__'.$config->get('transkription_fmk').'__full', $suggestions)){
+    $suggestions[] = 'node__transkription_fmk';
+  }
+}
+
+/**
+ * Implements hook_preprocess_user().
+ */
+function hzd_preprocess_user(&$variables) {
+  $db = \Drupal::database();
+  $result = $db->select('cust_profile', 'cp')
+        ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+        ->condition('cp.uid', $variables['user']->id());
+  $val = $result->execute()->fetchAssoc();
+  $state = $db->select('states', 's')
+        ->fields('s', array('state'))
+        ->condition('s.id', $val['state_id'], '=');
+  $state_name = $state->execute()->fetchField();
+  $variables['name']       = $variables['user']->getDisplayName();
+  $variables['firstname']  = $val['firstname'];
+  $variables['lastname']   = $val['lastname'];
+  $variables['phone']      = $val['phone'];
+  $variables['position']   = $val['position'];
+  $variables['email']      = $variables['user']->getEmail();
+  $variables['state']      = $state_name;
+  $variables['group_list'] = hzd_group_list($variables['user']->id());
+}

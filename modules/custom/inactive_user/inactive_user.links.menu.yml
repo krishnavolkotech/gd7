@@ -1,0 +1,21 @@
+inactive_user.settings_menu:
+  title: Inactive user configuration
+  description: Inactive user configuration
+  parent: entity.user.collection
+  route_name: inactive_user.settings
+  weight: 120 
+
+# inactive_user.settings:
+#  title: Inactive user configuration
+#  description: Inactive user configuration
+#  parent: entity.user.collection
+#  route_name: inactive_user.settings
+#  weight: 110
+
+# user.admin_index:
+#  title: People
+#  route_name: user.admin_index
+#  parent: system.admin_config
+#  description: 'Configure user accounts.'
+#  position: left
+#  weight: -20

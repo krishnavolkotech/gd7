@@ -1,0 +1,8 @@
+<?php
+
+function notifications_insert($nid, $type, $rel_type, &$context) {
+
+  print "<pre>aaaa: ";
+  print "asdasda";exit;
+  error_log("qwertyuiop");
+}

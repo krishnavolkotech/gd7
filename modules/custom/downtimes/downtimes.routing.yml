@@ -1,9 +1,92 @@
 downtimes.downtimes_setting_form:
   path: 'node/{node}/downtimes_setting'
   defaults:
-    _form: '\Drupal\downtimes\Form\DowntimesettingsForm'
+    _form: '\Drupal\downtimes\Form\DowntimesettingForm'
     _title: 'Downtimes'
     _description: 'View Setting for downtimes.'
     _weight: 10
   requirements:
     _permission: 'access content'
+
+downtimes.service_profiles:
+  path: 'node/{node}/downtimes/service-profiles'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+    _title: 'Service Profiles'
+    _description: 'Service Profiles.'
+  requirements:
+     _permission: 'service profiles view/add'
+#    _permission: 'access content'
+#    node: \d+
+#    _permission: 'access content'
+
+#   cust_og_is_member: 'TRUE' 
+#  requirements:
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array(1),
+
+
+
+# scheduled-maintenance-groupid  
+
+downtimes.downtimes_maintenance_groupid_form:
+  path: 'admin/config/downtimes/scheduled-maintenances/scheduled-maintenance-groupid'
+  defaults:
+    _form: '\Drupal\downtimes\Form\maintenancegroupidForm'
+    _title: 'Group ID'
+    _description: 'Group ID'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
+
+
+downtimes.downtimes_scheduled_maintenance_form:
+  path: 'admin/config/downtimes/scheduled-maintenances'
+  defaults:
+    _form: '\Drupal\downtimes\Form\ScheduledmaintenanceForm'
+    _title: 'Scheduled Maintenances'
+    _description: 'Scheduled Maintenances'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
+
+
+downtimes.downtimes_scheduled_maintenance_mail_template_form:
+  path: 'admin/config/downtimes/scheduled-maintenances/mail-template'
+  defaults:
+    _form: '\Drupal\downtimes\Form\scheduled_maintenance_mail_templateForm'
+    _title: 'Mail Template'
+    _description: 'Mail Template'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
+
+downtimes.service_profiles:
+  path: 'node/{node}/downtimes/service-profiles'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+    _title: 'Service Profiles'
+    _description: 'Service Profiles.'
+  requirements:
+     _permission: 'service profiles view/add'
+
+downtimes.downtimes_config_downtimes:
+  path: 'admin/config/downtimes'
+  defaults:
+    _form: '\Drupal\downtimes\Form\downtimes'
+    _title: 'Downtimes'
+  requirements:
+    _permission: 'access all views'
+
+downtimes.downtimes_config_downtimes:
+  path: 'downtimes/%/settings'
+  defaults:
+    _form: '\Drupal\downtimes\Form\downtimes_settings'
+    _title: 'Downtimes'
+    _description: 'View Setting for downtimes.'
+  requirements:
+    _permission: 'access content'
+
+
+
+

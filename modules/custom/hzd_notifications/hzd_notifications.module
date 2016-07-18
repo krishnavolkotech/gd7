@@ -110,3 +110,131 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
 	    
   }
 }
+
+/**
+ * Implements callback_batch_operation().
+ */
+function migrate_group_each_user($uid, &$context) {
+  $default_groups_send_interval = array();
+  $default_groups_query  = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
+                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(":field" => 'group', ":uid" => $uid))->fetchAll();
+  foreach($default_groups_query as $default_groups_info) {
+    $default_groups_send_interval[$default_groups_info->value] = $default_groups_info->send_interval;
+  }
+
+  $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
+                       WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
+  $user_groups = array();
+  foreach($user_groups_query as $groups_list) {
+    $user_groups[$groups_list->id] = $groups_list->label;
+  }
+  
+  if(count($user_groups) > 0) {
+    foreach($user_groups as $gid => $label) {
+      // old ref
+      $old_ref = db_query("SELECT field_old_reference_value FROM {group__field_old_reference} 
+                 WHERE entity_id = :eid", array(":eid" => $gid))->fetchField();
+      if($old_ref && $default_groups_send_interval[$old_ref]) {
+        $int_val = $default_groups_send_interval[$old_ref] ? $default_groups_send_interval[$old_ref] : 0;
+        $record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
+       db_insert('group_notifications_user_default_interval')->fields($record)->execute();
+      }
+    }
+  }
+}
+
+function migrate_date_field($nid, $date, &$context) {
+  $node = \Drupal\node\Entity\Node::load($nid);
+  $node->set('field_date_deployed', date('Y-m-d', $date));
+  $node->save();
+}
+
+function custom_date_deployed_batch_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message(t("Date field in Deployed releases content type was migrated"));
+  }
+  else {
+    // An error occurred.
+    // $operations contains the operations that remained unprocessed.
+    $error_operation = reset($operations);
+    drupal_set_message(
+        t('An error occurred while processing @operation with arguments : @args', array(
+      '@operation' => $error_operation[0],
+      '@args' => print_r($error_operation[0], TRUE),
+            )
+        )
+    );
+  }
+}
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  if($form_id == 'node_type_add_form' || $form_id == 'node_type_edit_form') {
+    $form['notification'] = array(
+      '#type' => 'details',
+      '#title' => t('Notifications settings'),
+      '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+      '#group' => 'additional_settings',
+    );
+    $form['notification']['notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Notifications'),
+      '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_'.$form['type']['#default_value']) ?: 0,
+    );
+    $form['actions']['submit']['#submit'][]  = 'hzd_notifications_form_submit';
+    $form['actions']['save_continue']['#submit'][]  = 'hzd_notifications_form_submit';
+  }
+}
+
+/**
+ * implements custom form submit
+ */
+function hzd_notifications_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    dpm($form_state->getValue('type'));
+    dpm($form_state->getValue('notification_checkbox'));
+  \Drupal::configFactory()->getEditable('node.settings')
+    ->set('notification_checkbox_' . $form_state->getValue('type'), $form_state->getValue('notification_checkbox'))
+    ->save();
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+   //Validate content type.
+    $type = str_replace('node_', '', $form['#form_id']);
+    $type = str_replace('_form', '', $type);
+    $type = str_replace('_edit', '', $type);
+    if (\Drupal::config('node.settings')->get('notification_checkbox_' . $type )) {
+        $getnode = \Drupal::routeMatch()->getParameter('node');
+        $form['notification'] = array(
+          '#type' => 'details',
+          '#title' => t('Notifications settings'),
+          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+          '#group' => 'advanced',
+        );
+        $form['notification']['node_notification_checkbox'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Do not send notifications for this update.'),
+        );
+        if (isset($getnode) && $getnode->id()) {
+            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_update_node_form_submit';
+        }
+        else {
+            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_add_node_form_submit';
+        }
+    }
+}
+
+/**
+ * implements custom form submit
+ */
+function hzd_notifications_form_update_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    dpm('update');
+}
+
+function hzd_notifications_form_add_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    dpm('inset');
+}

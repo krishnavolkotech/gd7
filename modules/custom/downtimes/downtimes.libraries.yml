@@ -18,3 +18,15 @@ downtimes:
     - core/jquery.ui
     - core/drupal.dialog
     - core/jquery.ui.datepicker
+
+downtimes.sitewardjs:
+  version: 1.x
+  js:
+    js/sitewide_maintenance_windows.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker
+

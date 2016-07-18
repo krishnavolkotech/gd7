@@ -1,0 +1,7 @@
+inactive_user.settings:
+  path: '/admin/people/inactive_user/settings'
+  defaults:
+    _form: '\Drupal\inactive_user\InactiveuserSettingsForm'
+    _title: 'Inactive user configuration'
+  requirements:
+    _permission: 'change inactive user settings'

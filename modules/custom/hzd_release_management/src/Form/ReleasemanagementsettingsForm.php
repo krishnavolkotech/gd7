@@ -84,7 +84,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
 */
   $form['import_path_csv_ex_eoss'] = array(
     '#type' => 'textfield',
-    '#title' => t('Path to Ex-EOSS csv file (Released)'),
+    '#title' => t('Path to Ex-EOSS csv file (Released Exeoss)'),
     '#description' => t('/srv/www/betriebsportal/files/import/ex_eoss.csv'),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_ex_eoss'),
     '#required' => TRUE,
@@ -92,7 +92,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#suffix' => '</div>'
     );
 
-
+/**
   $form['import_time'] = array(
     '#type' => 'textfield',
     '#title' => t('Import daily at (hh:mm)'),
@@ -101,6 +101,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#required' => TRUE,
     '#size' => 25,
     );
+*/
   $form['import_mail'] = array(
     '#type' => 'textfield',
     '#title' => t('Email address for import errors'),
@@ -130,10 +131,24 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
   $import_paths = array();
   $import_paths["released"] = $form_state->getValue('import_path_csv_released');
-  $import_paths["rejected"] = $form_state->getValue('import_path_csv_rejected');
+  $import_paths["ex_eoss"] = $form_state->getValue('import_path_csv_ex_eoss');
   $import_paths["locked"] = $form_state->getValue('import_path_csv_locked');
   $import_paths["progress"] = $form_state->getValue('import_path_csv_progress');
-  $import_time = $form_state->getValue('import_time');
+
+    if (strpos($import_paths["released"], '.csv') == false) {
+      $form_state->setErrorByName('import_path_csv_released', $this->t('Please enter released csv  file path'));
+    } 
+    if (strpos($import_paths["ex_eoss"], '.csv') == false) {
+      $form_state->setErrorByName('import_path_csv_ex_eoss', $this->t('Please enter ex_eoss csv  file path'));
+    } 
+    if (strpos($import_paths["locked"], '.csv') == false) {
+      $form_state->setErrorByName('import_path_csv_locked', $this->t('Please enter locked csv  file path'));
+    } 
+    if (strpos($import_paths["progress"], '.csv') == false) {
+      $form_state->setErrorByName('import_path_csv_progress', $this->t('Please enter progress csv  file path'));
+    } 
+
+  // $import_time = $form_state->getValue('import_time');
   $import_mail = $form_state->getValue('import_mail');
   $import_alias = $form_state->getValue('import_alias');
 
@@ -144,10 +159,11 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
   if (!valid_email_address($import_mail)) {
     $form_state->setErrorByName('import_mail', $this->t('Invalid mail'));
   }
-
+/**
   if (!$matches) {
     $form_state->setErrorByName('import_time', $this->t('Invalid time'));
   }
+*/
   }
   
   /** 
@@ -160,7 +176,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     $import_path_progress = $form_state->getValue('import_path_csv_progress');
     $import_path_csv_ex_eoss = $form_state->getValue('import_path_csv_ex_eoss');
    // $import_path_rejected = $form_state->getValue('import_path_csv_rejected');
-    $import_time = $form_state->getValue('import_time');
+   // $import_time = $form_state->getValue('import_time');
     $import_mail = $form_state->getValue('import_mail');
     $import_alias = trim($form_state->getValue('import_alias'));
 
@@ -170,11 +186,12 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
       ->set('import_path_csv_released', $import_path_released)
       ->set('import_path_csv_locked', $import_path_locked)
       ->set('import_path_csv_progress', $import_path_progress)
-      ->set('import_time_releases', $import_time)
+    //  ->set('import_time_releases', $import_time)
       ->set('import_mail_releases', $import_mail)
       ->set('import_alias_releases', $import_alias)
       ->save();
     HzdcustomisationStorage::change_url_alias($import_alias, 'releases');
     menu_cache_clear_all();
+    parent::submitForm($form, $form_state);
   }
 }

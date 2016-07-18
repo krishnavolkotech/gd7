@@ -1,0 +1,162 @@
+<?php
+
+/**
+ * @file
+ * Outlines how a module can use the Batch API.
+ */
+use Drupal\group\Entity\Group;
+use Drupal\user\Entity\User;
+use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\GroupContentType;
+//use Drupal\Component\Utility\SafeMarkup;
+
+/**
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
+ */
+function create_group_batch_op_1($row, $id, $operation_details, &$context) {
+//dsm($row);
+//  $group_label = SafeMarkup::checkPlain($row[0]);
+//  $group_desc = SafeMarkup::checkPlain($row[1]);
+  $group_label = iconv('ISO-8859-1', 'UTF-8', $row[0]);
+  $group_desc = iconv('ISO-8859-1', 'UTF-8', $row[1]);
+  $gt = trim($row[7]);
+  $pvt = trim($row[6]);
+  switch ($gt) {
+    case 'Open':
+      $group_type = 'open';
+      break;
+
+    case 'Closed':
+      if ($pvt == 'Yes') {
+        $group_type = 'closed_private';
+      }
+      else {
+        $group_type = 'closed';
+      }
+      break;
+
+    case 'Moderated':
+      if ($pvt == 'Yes') {
+        $group_type = 'moderate_private';
+      }
+      else {
+        $group_type = 'moderate';
+      }
+      break;
+
+    default:
+      $group_type = 'open';
+      break;
+  }
+
+  $group_nid_ref = $row[8];
+  $node = \Drupal\node\Entity\Node::load($group_nid_ref);
+  $group = Group::create([
+        'type' => $group_type,
+        'label' => $group_label,
+        'langcode' => 'de',
+        'field_old_reference' => $group_nid_ref,
+        'field_description' => $group_desc,
+        'field_group_body' => $node->body->value,
+  ]);
+  $group->save();
+//$group = Group::create(['type' => $group_type, 'label' => $group_label]);
+  $context['results'][] = $id;
+// Optional message displayed under the progressbar.
+  $context['message'] = t('Running Batch "@id" @details', array('@id' => $id, '@details' => $operation_details)
+  );
+}
+
+/**
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
+ */
+function add_members_batch($row, $id, $operation_details, &$context) {
+//dsm($row);
+  $group_id = trim($row[2]);
+  $group = Group::load($group_id);
+  $group_member = trim($row[1]);
+  if (isset($group_member) > 0) {
+//    foreach (User::loadMultiple($group_members) as $account) {
+    $account = \Drupal\user\Entity\User::load($group_member);
+    if ($account->isActive()) {
+      $group->addMember($account);
+    }
+  }
+
+  $context['results'][] = $id;
+
+// Optional message displayed under the progressbar.
+  $context['message'] = t('Running Batch "@id" @details', array('@id' => $id, '@details' => $operation_details)
+  );
+}
+
+/**
+ * 
+ * @param type $row
+ * @param type $id
+ * @param type $operation_details
+ * @param type $context
+ */
+function add_group_content($row, $id, $operation_details, &$context) {
+  $group_id = trim($row[0]);
+  $content_type = trim($row[2]);
+  $node_id = trim($row[3]);
+  $node = \Drupal\node\Entity\Node::load($node_id);
+  
+  $group = Group::load($group_id);
+  $content_name = $content_type;
+  $plugin_id = 'group_node:' . $content_name;
+  $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
+
+  if ($node->status->value) {
+    $group_content = GroupContent::create([
+          'type' => $plugin->getContentTypeConfigId(),
+          'gid' => $group->id(),
+          'langcode' => 'de',
+          'entity_id' => $node_id,
+    ]);
+
+    $group_content->save();
+  }
+  $context['results'][] = $id;
+
+// Optional message displayed under the progressbar.
+  $context['message'] = t('Running Batch "@id" @details', array('@id' => $id, '@details' => $operation_details)
+  );
+}
+
+/**
+ * Batch 'finished' callback used by both batch 1 and batch 2.
+ */
+function custom_script_batch_finished($success, $results, $operations) {
+  if ($success) {
+// Here we could do something meaningful with the results.
+// We just display the number of nodes we processed...
+    drupal_set_message(t('@count results processed.', array('@count' => count($results))));
+    drupal_set_message(t('The final result was "%final"', array('%final' => end($results))));
+  }
+  else {
+// An error occurred.
+// $operations contains the operations that remained unprocessed.
+    $error_operation = reset($operations);
+    drupal_set_message(
+        t('An error occurred while processing @operation with arguments : @args', array(
+      '@operation' => $error_operation[0],
+      '@args' => print_r($error_operation[0], TRUE),
+            )
+        )
+    );
+  }
+}
+
+/**
+ * @} End of "defgroup batch_example".
+ */
