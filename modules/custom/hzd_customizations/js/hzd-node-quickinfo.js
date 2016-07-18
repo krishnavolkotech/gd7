@@ -7,8 +7,7 @@
 (function ($) {
   $(document).ready( function (){
     $('.node-quickinfo-publish').click( function (){
-      //$.confirm.okButton = 'Publish';
-      var r = confirm("Are you sure you want to publish this quickinfo?");
+      var r = confirm("Are you sure you want to publish this quickinfo?\n\n\nClick Ok to Publish");
       if (r == true) {
         return true;
       } else {

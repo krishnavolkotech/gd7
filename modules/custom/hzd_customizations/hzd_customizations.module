@@ -7,10 +7,13 @@
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Utility\Token;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
+use Drupal\entity_print\Controller\EntityPrintController;
 
 use Drupal\hzd_services\HzdservicesStorage;
-
-define('SITE_ADMIN', 'site_administrator');
+if(SITE_ADMIN){
+    define('SITE_ADMIN', 'site_administrator');
+}
 
 /**
  * Implements hook_mail.
@@ -25,7 +28,7 @@ function hzd_customizations_mail($key, &$message, $params) {
       $message['subject'] = $params['subject'];
       $message['body'][] = SafeMarkup::checkPlain($params['message']);
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
+//      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
       break;
 
     case 'custom_mails':
@@ -120,7 +123,7 @@ function get_related_downtime_services($type) {
  */
 function get_related_files($planning_filename) {
   $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
-  $files = array();
+    $files_details = '';
   foreach ($fids as $fid) {
     $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
     if ($fid->display == 1) {
@@ -145,16 +148,20 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
     $form['actions']['publish']['#value'] = t('Publish');
     $form['actions']['unpublish']['#value'] = t('Save');
     $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
-    $form['actions']['publish']['#submit'][] = 'hzd_node_quickinfo_form_submit';
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
   }
   return $form;
 }
 
-
 /**
- * implements custom submit
+ * Implements hook_ENTITY_TYPE_presave() for node entities.
  */
-function hzd_node_quickinfo_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state){
-    dpm($form_state, '$form_state');
+function hzd_customizations_node_presave(NodeInterface $node) {
+    if ($node->getType() == 'quickinfo' && $node->isPublished()) {
+        //$node->upload[] = array('target_id' => 1640, 'display' => 1, ); //for add file
+        $quick_info_id = db_query("SELECT max(field_unique_id_value) FROM {node__field_unique_id}")->fetchField();
+        $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id', NULL);
+        $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
+        $node->set('field_unique_id', $quick_info_val);
+    }
 }

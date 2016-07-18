@@ -1,0 +1,60 @@
+entity_print.settings:
+  type: config_object
+  label: 'Entity Print settings.'
+  mapping:
+    default_css:
+      type: boolean
+      label: 'Enable the default CSS.'
+    force_download:
+      type: boolean
+      label: 'Force download of PDF'
+    pdf_engine:
+      type: string
+      label: 'The plugin id of the PDF engine to use.'
+
+entity_print.pdf_engine.*:
+  type: config_entity
+  label: 'PDF Engine'
+  mapping:
+    id:
+      type: string
+      label: 'PDF Engine Id'
+    settings:
+      type: entity_print_pdf_engine.[%parent.id]
+      label: 'Settings for the PDF Engine.'
+
+entity_print_pdf_engine.dompdf:
+  type: mapping
+  label: 'Dompdf specific settings'
+  mapping:
+    default_paper_size:
+      type: string
+      label: 'Default Paper Size'
+    enable_html5_parser:
+      type: boolean
+      label: 'Enable HTML5 parsing'
+    enable_remote:
+      type: boolean
+      label: 'Enable remote urls'
+
+entity_print_pdf_engine.phpwkhtmltopdf:
+  type: mapping
+  label: 'PHP Wkhtmltopdf'
+  type: mapping
+  mapping:
+    binary_location:
+      type: string
+      label: 'Path to the wkhtmltopdf binary'
+
+# Add schema for our extra field settings.
+core.entity_view_display.*.*.*.third_party.entity_print:
+  type: mapping
+  label: 'Schema for Entity Print third party settings'
+  mapping:
+    label:
+      type: string
+      label: 'Label for view link'
+
+action.configuration.entity_print_download_action:
+  type: action_configuration_default
+  label: 'Download entities as a PDF'

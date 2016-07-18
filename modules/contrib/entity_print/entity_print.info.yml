@@ -1,0 +1,13 @@
+name: Entity Print
+description: 'Allows any Drupal entity to be converted to a PDF'
+type: module
+# core: 8.x
+package: Entity Print
+# version: VERSION
+configure: entity_print.settings
+
+# Information added by Drupal.org packaging script on 2016-05-19
+version: '8.x-1.3'
+core: '8.x'
+project: 'entity_print'
+datestamp: 1463662580

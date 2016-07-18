@@ -1,0 +1,10 @@
+entity_print_pdf_engine.testpdfengine:
+  type: mapping
+  label: 'Test Pdf Engine setting'
+  mapping:
+    test_engine_setting:
+      type: string
+      label: 'Test setting'
+    test_engine_suffix:
+      type: string
+      label: 'Test suffix'
