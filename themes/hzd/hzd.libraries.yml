@@ -3,6 +3,11 @@ global-styling:
     theme:
       css/style.css: {}
 
+quickinfo:
+  css:
+    theme:
+      css/entity-print.css: {}
+
 bootstrap-scripts:
   js:
     js/hzd_custom.js : {}

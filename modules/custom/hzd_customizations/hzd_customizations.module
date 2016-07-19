@@ -159,9 +159,11 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
 function hzd_customizations_node_presave(NodeInterface $node) {
     if ($node->getType() == 'quickinfo' && $node->isPublished()) {
         //$node->upload[] = array('target_id' => 1640, 'display' => 1, ); //for add file
-        $quick_info_id = db_query("SELECT max(field_unique_id_value) FROM {node__field_unique_id}")->fetchField();
-        $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id', NULL);
-        $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
-        $node->set('field_unique_id', $quick_info_val);
+      if (!$node->field_unique_id->value) {
+          $quick_info_id = db_query("SELECT max(field_unique_id_value) FROM {node__field_unique_id}")->fetchField();
+          $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id', NULL);
+          $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
+          $node->set('field_unique_id', $quick_info_val);
+      }
     }
 }

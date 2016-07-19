@@ -22,3 +22,7 @@ regions:
 libraries:
   - 'hzd/global-styling'
   - 'hzd/bootstrap-scripts'
+
+entity_print:
+ node:
+   quickinfo: hzd/quickinfo
