@@ -66,11 +66,6 @@ class maintenancegroupidForm extends ConfigFormBase {
    * {@inheritDoc}
    */
 
-  /*
-   * submit handler for the problems settings page
-   * selected services for the individual groups are stored in the table "group_problems_view"
-   */
-
   public function submitForm(array &$form, FormStateInterface $form_state) {
      $maintenance_group_id = $form_state->getValue('maintenance_group_id');
    //  echo '<pre>';  print_r($maintenance_group_id);  exit;
