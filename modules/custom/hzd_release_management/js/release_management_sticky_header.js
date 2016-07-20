@@ -6,10 +6,10 @@
 
 	jQuery(window).scroll(function() {  
 	    if (jQuery(window).scrollTop() > stickySidebar) {
-		jQuery('#released_results_wrapper > table > thead ').addClass('affix');
+		jQuery('#released_results_wrapper > table > thead ').addClass('sticky_do_header');
 	    }
 	    else {
-		jQuery('#released_results_wrapper > table > thead ').removeClass('affix');
+		jQuery('#released_results_wrapper > table > thead ').removeClass('sticky_do_header');
 	    }  
 	});
 

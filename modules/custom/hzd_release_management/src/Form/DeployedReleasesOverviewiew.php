@@ -60,8 +60,9 @@ class DeployedReleasesOverviewiew extends FormBase {
       '#markup' => $this->display_deployed_release_table($default_type),
       '#prefix' => '<div id="deployed-overview">',
       '#suffix' => '</div>',
+      
     );
-
+    $form['#attached']['library'] = array('hzd_release_management/hzd_release_management_sticky_header');
     return $form;
   }
 
@@ -78,6 +79,7 @@ class DeployedReleasesOverviewiew extends FormBase {
     $output = $this->display_deployed_release_table($release_type);
     $element = $form['deployed_overview'];
     $element['#markup'] = $output;
+    $element['#attached']['library'] = array('hzd_release_management/hzd_release_management_sticky_header');
     return $element;
   }
 
