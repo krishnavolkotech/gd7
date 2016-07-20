@@ -35,3 +35,53 @@ function problem_management_mail($key, &$message, $params = array()) {
     break;
   }
 }
+
+
+// Default cron-function, configurable through /admin/config/system/cron
+/**
+function problem_management_cron() {
+  // Do some stuff ...
+}
+*/
+
+// Define custom cron functions.
+function problem_management_cronapi($op, $job = NULL) {
+  return array(
+    'problem_management_cronjob_2' => array(
+      'title' => 'Cron-2 Handler',
+      'callback' => 'problem_management_run_importcsv',
+      'scheduler' => array(
+        'name' => 'crontab',
+        'crontab' => array(
+          'rules' => array('00 01,13 * * *'),
+        ),
+      ),
+    ),
+  );
+}
+
+
+// Custom cron-function
+function problem_management_run_importcsv($job) {
+/**
+
+  // global $base_url;
+  // $currency_value_url =  $base_url . '/currecy_values';
+  // $request = Drupal::httpClient()->get($currency_value_url);
+  // $request->addHeader('If-Modified-Since', gmdate(DATE_RFC1123, $last_fetched));
+  try {
+    $currencyvalue =  new CurrencyValuesController();
+    // print_r($currencyvalue); exit;
+    $currencyvalue->CurrencyValues();
+    // $request->send();
+    // $response = $request->send();
+    // Expected result.
+    // $data = $response->getBody(TRUE);
+  } catch (RequestException $e) {
+    watchdog_exception('grn_custom', $e);
+  }
+*/
+  return $this->redirect('');
+  // Do some stuff ...
+}
+
