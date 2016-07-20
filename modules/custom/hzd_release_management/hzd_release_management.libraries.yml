@@ -8,3 +8,14 @@ hzd_release_management:
 #    js/jquery.datePicker.js: {}
   dependencies:
     - core/jquery
+
+
+hzd_release_management_sticky_header:
+  version: 1.x
+  js:
+    js/release_management_sticky_header.js: {}
+#    js/jquery.datePicker.js: {}
+  dependencies:
+    - core/jquery
+
+

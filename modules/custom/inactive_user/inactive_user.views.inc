@@ -26,6 +26,10 @@ function inactive_user_views_data() {
       'left_field' => 'uid',
       'field' => 'uid',
      ),
+    'states' => array(
+      'left_field' => 'id',
+      'field' => 'state_id',
+     ),
   );
 
    $data['cust_profile']['uid'] = array(
@@ -41,9 +45,23 @@ function inactive_user_views_data() {
 	      // Default label for relationship in the UI.
 	      'label' => t(' user profile uid'),
 	    ),
-
-
   );
+
+   $data['cust_profile']['uid'] = array(
+    'title' => t('Uid'),
+    'help' => t('The custom user profile  ID'),
+	'relationship' => array(
+	      // Views name of the table to join to for the relationship.
+	      'base' => 'users_field_data',
+	      // Database field name in the other table to join on.
+	      'base field' => 'uid',
+	      // ID of relationship handler plugin to use.
+	      'id' => 'standard',
+	      // Default label for relationship in the UI.
+	      'label' => t(' user profile uid'),
+	    ),
+  );
+
 
   $data['cust_profile']['firstname'] = array(
     'title' => t('Firstname'),
@@ -140,20 +158,16 @@ function inactive_user_views_data() {
     'title' => t('State id'),
     'help' => t('State id'),
 
-    'field' => array(
-      // ID of field handler plugin to use.
-      'id' => 'numeric',
-    ),
-
-    'sort' => array(
-      // ID of sort handler plugin to use.
-      'id' => 'numeric',
-    ),
-
-    'filter' => array(
-      // ID of filter handler plugin to use.
-      'id' => 'numeric',
-    ),
+  	'relationship' => array(
+	      // Views name of the table to join to for the relationship.
+	      'base' => 'states',
+	      // Database field name in the other table to join on.
+	      'base field' => 'id',
+	      // ID of relationship handler plugin to use.
+	      'id' => 'standard',
+	      // Default label for relationship in the UI.
+	      'label' => t(' State id'),
+	    ),
   );
 
 
@@ -172,6 +186,90 @@ function inactive_user_views_data() {
     ),
 
 */
+
+  $data['states']['table']['group'] = t('States');
+
+  $data['states']['table']['base'] = array(
+    'field' => 'id',
+    'title' => t('State id'),
+    'weight' => -10,
+  );
+
+ $data['states']['abbr'] = array(
+    'title' => t('State abbr'),
+    'help' => t('State abbr'),
+
+    'field' => array(
+      // ID of field handler plugin to use.
+      'id' => 'standard',
+    ),
+
+    'sort' => array(
+      // ID of sort handler plugin to use.
+      'id' => 'standard',
+    ),
+
+    'filter' => array(
+      // ID of filter handler plugin to use.
+      'id' => 'string',
+    ),
+
+    'argument' => array(
+      // ID of argument handler plugin to use.
+      'id' => 'string',
+    ),
+  );
+
+
+ $data['states']['state'] = array(
+    'title' => t('State name'),
+    'help' => t('State name'),
+
+   'field' => array(
+      'id' => 'standard',
+    ),
+    'argument' => array(
+      'id' => 'string',
+    ),
+    'filter' => array(
+      'id' => 'string',
+    ),
+    'sort' => array(
+      'id' => 'standard',
+    ),
+  );
+
+
+ $data['states']['active'] = array(
+    'title' => t('active'),
+    'help' => t('State active'),
+
+    'field' => array(
+      // ID of field handler plugin to use.
+      'id' => 'boolean',
+    ),
+
+    'sort' => array(
+      // ID of sort handler plugin to use.
+      'id' => 'standard',
+    ),
+
+    'filter' => array(
+      // ID of filter handler plugin to use.
+      'id' => 'boolean',
+      // Override the generic field title, so that the filter uses a different
+      // label in the UI.
+      'label' => t('Published'),
+      // Override the default BooleanOperator filter handler's 'type' setting,
+      // to display this as a "Yes/No" filter instead of a "True/False" filter.
+      'type' => 'yes-no',
+      // Override the default Boolean filter handler's 'use_equal' setting, to
+      // make the query use 'boolean_field = 1' instead of 'boolean_field <> 0'.
+      'use_equal' => TRUE,
+    ),
+  );
+
+
 
   return $data;
 
