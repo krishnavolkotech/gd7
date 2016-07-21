@@ -54,11 +54,13 @@ function create_group_batch_op_1($row, $id, $operation_details, &$context) {
   }
 
   $group_nid_ref = $row[8];
+  $group_admin = $row[9];
   $node = \Drupal\node\Entity\Node::load($group_nid_ref);
   $group = Group::create([
         'type' => $group_type,
         'label' => $group_label,
         'langcode' => 'de',
+        'uid' => $group_admin,
         'field_old_reference' => $group_nid_ref,
         'field_description' => $group_desc,
         'field_group_body' => $node->body->value,
