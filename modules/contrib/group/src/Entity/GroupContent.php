@@ -30,6 +30,7 @@ use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
  *   id = "group_content",
  *   label = @Translation("Group content"),
  *   handlers = {
+ *     "storage" = "Drupal\group\Entity\Storage\GroupContentStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data" = "Drupal\group\Entity\Views\GroupContentViewsData",
  *     "list_builder" = "Drupal\group\Entity\Controller\GroupContentListBuilder",
@@ -254,7 +255,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
     $this->set('uid', $account->id());
     return $this;
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -361,7 +362,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
-    
+
     $fields['request_status'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Request Status'))
       ->setDescription(t('Request mebership status.'))

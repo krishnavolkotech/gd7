@@ -11,6 +11,7 @@
         "drupal/core": "~8.1",
         "drupal/webprofiler": "8.*",
         "drupal/php": "8.*",
+        "drupal/realname": "8.*",
         "drupal/search_api_solr": "8.*"
     },
     "minimum-stability": "dev",
@@ -29,6 +30,7 @@
                 "core/composer.json",
                 "modules/contrib/devel/webprofiler/composer.json",
                 "modules/contrib/php/composer.json",
+                "modules/contrib/realname/composer.json",
                 "modules/contrib/search_api_solr/composer.json"
             ],
             "recurse": false,

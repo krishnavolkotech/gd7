@@ -1,3 +1,90 @@
 <?php
 
+/**
+ * Return the role of the user based on the global
+ * variable $user.  
+ * In case we need to see if the user is authenticated
+ * just check for the isset($user->uid).
+ *
+ * @return string or false 
+ */
+function get_user_role($value = NULL) {
+  global $user;
+  if ($user->uid == 1) {
+    return 'site_admin';
+  }
+   // The user is site administrator ? site-administrator's rid = 5
+  if (in_array(5 , array_keys($user->roles))) {
+      return 'site_admin';
+  } 
+  elseif (isset($_SESSION['Group_id'])) {
+    if(!isset($user->og_groups)){
+      $user->og_groups = og_get_subscriptions($user->uid);
+    }
+    if (is_array($user->og_groups[$_SESSION['Group_id']])) {
+      return ((int)$user->og_groups[$_SESSION['Group_id']]['is_admin'] == 1) ? 'group_admin' : 'group_member' ;	  
+    }
+    
+  }
+  return FALSE;
+}
+
+//user hook for providing nsm role for the user
+function cust_user_user($op, &$edit, &$user, $category = NULL) {
+  global $user;
+  $user_role = get_user_role();
+  switch($op) {
+  case 'form':
+    if (in_array($user_role,array('site_admin'))) {
+      $output = nsm_user_form($edit);
+      $output[] = inactive_users_flag($edit);
+    }
+    return $output;
+  case 'update':
+    nsm_user_role_update($edit);
+    inactive_users_flag_update($edit); 
+    break;
+  case 'insert':
+    nsm_user_role_insert($edit);
+    break;
+  }
+}
+
+//updating value for do not automatically block or delete the users.
+function inactive_users_flag_update($edit){
+  $user_id = arg(1);
+  $count = db_result(db_query("select count(value) from {inactive_user_flag} where user_id = %d",$user_id));
+  $val = db_result(db_query("select value from {inactive_user_flag} where user_id = %d",$user_id));
+  if ($count > 0) {
+    if ($val != $edit['inactive_user_flag']) {
+      db_query("update {inactive_user_flag} set value=%d where user_id=%d",$edit['inactive_user_flag'],$user_id);
+    }
+  }
+  else {
+    db_query("INSERT INTO {inactive_user_flag} (user_id,value) values(%d,%d)",$user_id,$edit['inactive_user_flag']);
+  }
+}
+
+
+
+/*
+ * adding checkbox to a user edit form
+ */
+function inactive_users_flag($edit) {
+
+  $user_flag = db_result(db_query("select value from {inactive_user_flag} where user_id=%d",$edit['uid']));
+  $user_flag_val = !empty($user_flag)?$user_flag:0;
+  $form['inactive_users'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Inactive Users'),
+    '#weight'=>2
+  );
+  $form['inactive_users']['inactive_user_flag'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => $user_flag_val,
+    '#title' => t('Do not automatically block or delete this user'),
+    '#description' => t('Do not automatically block or delete this user'),
+  );
+  return $form;
+}
 

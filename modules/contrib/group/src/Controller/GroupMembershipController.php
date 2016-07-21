@@ -107,7 +107,7 @@ class GroupMembershipController extends ControllerBase {
 
     return $this->entityFormBuilder()->getForm($group_content, 'group-request');
   }
-  
+
   /**
    * The _title_callback for the request membership form route.
    *
@@ -120,7 +120,7 @@ class GroupMembershipController extends ControllerBase {
   public function requestMembershipTitle(GroupInterface $group) {
     return $this->t('Request membership group %label', ['%label' => $group->label()]);
   }
-  
+
   /**
    * The _title_callback for the request membership form route.
    *
@@ -133,7 +133,7 @@ class GroupMembershipController extends ControllerBase {
   public function cancelMembershipTitle(GroupInterface $group) {
     return $this->t('Cancel membership request for group %label', ['%label' => $group->label()]);
   }
-  
+
   /**
    * Provides the form cancel membership for a group.
    *
@@ -147,7 +147,7 @@ class GroupMembershipController extends ControllerBase {
     $group_content = $group->getMember($this->currentUser)->getGroupContent();
     return $this->entityFormBuilder()->getForm($group_content, 'group-cancel');
   }
-  
+
   /**
    * Provides the form for leaving a group.
    *

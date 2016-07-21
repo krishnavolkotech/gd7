@@ -18,7 +18,7 @@ class HzdcustomisationStorage {
    */
   static function change_url_alias($dst_path = NULL, $src_path = NULL) {
     // $result = db_query("SELECT nid,title FROM {node} where type = '%s'", 'group');.
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->Fields('n', array('nid', 'title'));
     $query->condition('type', 'group', '=');
     $group = $query->execute()->fetchObject();
@@ -26,7 +26,7 @@ class HzdcustomisationStorage {
     $dst = "$group->title/$dst_path";
     $src = "node/$group->nid/$src_path";
     // Check if the url alias of releases existed or not. if not, inserrt them. otherwise, update them.
-    $query = db_select('url_alias', 'ua');
+    $query = \Drupal::database()->select('url_alias', 'ua');
     $query->Fields('ua', array('pid'));
     $query->condition('source', $src, '=');
     $url_alias = $query->execute()->fetchCol();
@@ -166,7 +166,7 @@ class HzdcustomisationStorage {
   static function reset_menu_link($counter = 0, $link_title = NULL, $link_path = NULL, $menu_name = NULL, $gid = NULL) {
     // $group_link = db_result(db_query("SELECT mlid from {menu_links} ml where ml.link_title = '%s' and ml.menu_name = '%s'", $link_title, $menu_name));
     // droy: Replaced unique identifier link_title by link_path because of issues with German special characters in link_title which result in no sql query results found.
-    $group_link = db_select('menu_link_content_data', 'mlcd')
+    $group_link = \Drupal::database()->select('menu_link_content_data', 'mlcd')
                 ->Fields('mlcd', array('id'))
                 ->condition('link__uri', '%' . $link_path, 'LIKE')
                 ->condition('menu_name', $menu_name, 'LIKE')
@@ -189,7 +189,7 @@ class HzdcustomisationStorage {
         // This is probably not the right place to do this so please move when you see this comment.
         if ($link_path == 'downtimes') {
           // $group_path = db_result(db_query("select dst from url_alias where src = '%s'", "node/$gid"));.
-          $query = db_select('url_alias', 'ua')
+          $query = \Drupal::database()->select('url_alias', 'ua')
             ->Fields('ua', array('dst'))
             ->condition('source', "node/$gid", '=');
           $group_path = $query->execute()->fetchAssoc();
@@ -201,7 +201,7 @@ class HzdcustomisationStorage {
         // The item is present but it is in hidden state. so make the hidden value to 0. The $group_link contains mlid and also place the correct router_path and link_path for old groups.
         // check once the hidden value before updating.
         // $hidden_value = db_result(db_query("SELECT hidden from {menu_links} WHERE mlid = %d", $group_link));.
-        $query = db_select('menu_link_content_data', 'mlcd');
+        $query = \Drupal::database()->select('menu_link_content_data', 'mlcd');
         $query->Fields('mlcd', array('enabled'));
         $query->condition('id', $group_link, '=');
         $hidden_value = $query->execute()->fetchAssoc();

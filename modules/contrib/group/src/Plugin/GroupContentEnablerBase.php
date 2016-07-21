@@ -279,7 +279,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       return $route;
     }
   }
-  
+
    /**
    * Gets the collection route.
    *
@@ -287,7 +287,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    *   The generated route, if available.
    */
   protected function getPendingCollectionRoute() {
-    
+
     if ($path = $this->getPath('pending-collection')) {
       $plugin_id = $this->getPluginId();
       $route = new Route($path);
@@ -300,7 +300,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
         ])
         ->setRequirement('_group_permission', "access $plugin_id overview")
         ->setRequirement('_group_installed_content', $plugin_id)
-        
+
         ->setOption('_group_operation_route', TRUE)
         ->setOption('parameters', [
           'group' => ['type' => 'entity:group', 'request_status' => '0'],
@@ -416,7 +416,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       return $route;
     }
   }
-  
+
   /**
    * Gets the delete form route.
    *
@@ -470,7 +470,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       return $route;
     }
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -480,7 +480,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     if ($route = $this->getCollectionRoute()) {
       $routes[$this->getRouteName('collection')] = $route;
     }
-    
+
     if ($route = $this->getPendingCollectionRoute()) {
       $routes[$this->getRouteName('pending-collection')] = $route;
     }
@@ -500,7 +500,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     if ($route = $this->getDeleteFormRoute()) {
       $routes[$this->getRouteName('delete-form')] = $route;
     }
-    
+
     if ($route = $this->getApproveFormRoute()) {
       $routes[$this->getRouteName('approve-form')] = $route;
     }
@@ -684,9 +684,17 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
+    // Warning: For every key defined here you need to have a matching config
+    // schema entry following the pattern group_content_enabler.config.MY_KEY!
+    // @see group.schema.yml
     return [
       'group_cardinality' => 0,
       'entity_cardinality' => 0,
+      'info_text' => [
+        // This string will be saved as part of the group type config entity. We
+        // do not use a t() function here as it needs to be stored untranslated.
+        'value' => '<p>Please fill out any available fields to describe the relation between the content and the group.</p>',
+      ],
     ];
   }
 
@@ -720,6 +728,18 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       '#min' => 0,
       '#required' => TRUE,
     ];
+
+    $form['info_text'] = [
+      '#type' => 'text_format',
+      '#title' => $this->t('Informational text'),
+      '#description' => $this->t('A bit of info to show atop every form that links a %entity_type entity to a %group_type group.', $replace),
+      '#default_value' => $this->configuration['info_text']['value'],
+    ];
+
+    // Only specify a default format if the data has been saved before.
+    if (!empty($this->configuration['info_text']['format'])) {
+      $form['info_text']['#format'] = $this->configuration['info_text']['format'];
+    }
 
     return $form;
   }

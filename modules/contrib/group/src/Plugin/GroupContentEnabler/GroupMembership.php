@@ -109,7 +109,7 @@ class GroupMembership extends GroupContentEnablerBase {
       'title' => 'Leave group',
       'allowed for' => ['member'],
     ];
-    
+
     $permissions['request group membership'] = [
       'title' => 'Request group membership',
       'allowed for' => ['outsider'],
@@ -212,7 +212,7 @@ class GroupMembership extends GroupContentEnablerBase {
       return $route;
     }
   }
-  
+
   /**
    * Gets the leave form route.
    *
@@ -238,7 +238,7 @@ class GroupMembership extends GroupContentEnablerBase {
       return $route;
     }
   }
-  
+
   /**
    * Gets the cancel membership form route.
    *
@@ -277,11 +277,11 @@ class GroupMembership extends GroupContentEnablerBase {
     if ($route = $this->getLeaveFormRoute()) {
       $routes[$this->getRouteName('leave-form')] = $route;
     }
-    
+
     if ($route = $this->getRequestMembershipFormRoute()) {
       $routes[$this->getRouteName('request-membership-form')] = $route;
     }
-    
+
     if ($route = $this->getCancelMembershipFormRoute()) {
       $routes[$this->getRouteName('cancel-membership-form')] = $route;
     }
@@ -412,6 +412,10 @@ class GroupMembership extends GroupContentEnablerBase {
   public function defaultConfiguration() {
     $config = parent::defaultConfiguration();
     $config['entity_cardinality'] = 1;
+
+    // This string will be saved as part of the group type config entity. We do
+    // not use a t() function here as it needs to be stored untranslated.
+    $config['info_text']['value'] = '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>';
     return $config;
   }
 
