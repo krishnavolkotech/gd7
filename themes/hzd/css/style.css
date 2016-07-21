@@ -182,6 +182,9 @@ h6 {
   float: left;
 }
 @media only screen and (min-width: 768px) {
+  #block-primarylinks ul ul {
+    width: auto !important;
+  }
   .path-user .region-content nav.tabs li a {
     padding: 8px 36px !important;
   }
@@ -212,7 +215,18 @@ h6 {
   }
   button.navbar-toggle {
     float: left !important;
-    margin-left: 20px;
+    margin-left: 15px;
+    margin-bottom: 0 !important;
+    border-radius: 0 !important;
+    background: #1475a0;
+    border: none !important;
+  }
+  button.navbar-toggle:hover,
+  button.navbar-toggle:focus {
+    background: rgba(20, 117, 160, 0.8) !important;
+  }
+  .navbar-default .navbar-toggle .icon-bar {
+    background: #fff !important;
   }
   .navbar-collapse {
     width: 100% !important;
@@ -299,6 +313,7 @@ header {
 }
 header .navbar-collapse.collapse {
   padding: 0 !important;
+  border-top: 0 !important;
 }
 #block-general {
   width: 100%;
@@ -973,9 +988,6 @@ table.view-deployed-releases {
 .nav .open > a:focus {
   background-color: #0c4f6d !important;
 }
-#block-primarylinks ul ul {
-  width: auto !important;
-}
 #block-primarylinks ul ul.dropdown-menu {
   background: #ffffff !important;
   border-radius: 0 !important;
@@ -995,6 +1007,8 @@ table.view-deployed-releases {
   width: 100%;
   float: left;
   border-bottom: 1px solid #1475a0;
+  padding-bottom: 5px;
+  padding-top: 5px;
   color: #1475a0;
 }
 #block-primarylinks ul ul.dropdown-menu li a:hover {
@@ -1013,4 +1027,14 @@ article .quickedit-field .field__items .field--item {
   float: left;
   display: inline-block;
   padding-right: 5px;
+}
+.hide-field-content {
+  display: none;
+}
+.breadcrumb {
+  width: 100%;
+  float: left;
+}
+#header-right a {
+  padding: 0 2px;
 }
