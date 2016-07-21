@@ -7,3 +7,13 @@ hzd_customizations.planning_files_form:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+hzd_customizations.inactive_users:
+  path: 'inactive_users'
+  defaults:
+    _controller: '\Drupal\hzd_customizations\Controller\Inactiveusers::inactive_users'
+    _title: 'Inactive Users'
+  requirements:
+    _permission: 'access content'
+
+
