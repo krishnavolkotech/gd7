@@ -30,6 +30,10 @@ function inactive_user_views_data() {
       'left_field' => 'id',
       'field' => 'state_id',
      ),
+    'group_content_field_data' => array(
+      'left_field' => 'entity_id',
+      'field' => 'uid',
+    )
   );
 
    $data['cust_profile']['uid'] = array(
