@@ -9,6 +9,7 @@ use Drupal\Core\Utility\Token;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\entity_print\Controller\EntityPrintController;
+use Drupal\Component\Utility\Html;
 
 use Drupal\hzd_services\HzdservicesStorage;
 if(SITE_ADMIN){
@@ -26,17 +27,24 @@ function hzd_customizations_mail($key, &$message, $params) {
     case 'immediate_notifications':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = $params['subject'];
-      $message['body'][] = SafeMarkup::checkPlain($params['message']);
+      $message['body'][] = Html::escape($params['message']);
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
 //      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
       break;
 
     case 'custom_mails':
       $message['subject'] = $params['subject'];
-      $message['body'][] = SafeMarkup::checkPlain($params['body']);
+      $message['body'][] = Html::escape($params['body']);
       if ($params['Bcc']) {
         $message['headers']['Bcc'] = $params['Bcc'];
       }
+      break;
+
+    case 'inactive_user':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = Html::escape($params['message']);
+      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
       break;
   }
 }
@@ -186,6 +194,10 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
                 }
             }
         }
+    }
+    if ($view->id() == 'group_members_lists') {
+        // Traverse through the 'where' part of the query.
+//        dpm($view);
     }
 }
 

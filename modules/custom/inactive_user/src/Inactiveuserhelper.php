@@ -1,6 +1,8 @@
 <?php
 
 namespace Drupal\inactive_user;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  *
@@ -37,55 +39,49 @@ class Inactiveuserhelper {
         return t("Hello,\n\n  This automatic notification is to inform you that the following users have been automatically deleted due to inactivity on %sitename for more than %period:\n\n%userlist");
     }
   }
+/**
+ * Wrapper for user_mail.
+ */
+function inactive_user_mail($subject, $message, $period, $user = NULL, $user_list = NULL) {
+  global $base_url;
 
-  /**
-   * Wrapper for user_mail.
-   */
-  static function inactive_user_mail($subject, $message, $period, $user = NULL, $user_list = NULL) {
-    global $base_url;
-    if ($user_list) {
-      $to = _inactive_user_admin_mail();
-      $variables = array(
-        '%period' => format_interval($period),
-        '%sitename' => variable_get('site_name', 'drupal'),
-        '%siteurl' => l($base_url, $base_url),
-        "%userlist" => $user_list,
-      );
-    }
-    elseif (isset($user->uid)) {
-      $to = $user->mail;
-      $variables = array(
-        '%username' => $user->name,
-        '%useremail' => $user->mail,
-        '%lastaccess' => empty($user->access) ? t('never') : format_date($user->access, 'custom', 'M d, Y'),
-        '%period' => format_interval($period),
-        '%sitename' => variable_get('site_name', 'drupal'),
-        '%siteurl' => l($base_url, $base_url),
-      );
-    }
-    if (isset($to)) {
-      $from = variable_get('site_mail', ini_get('sendmail_from'));
-      $headers = array(
-        'Reply-to' => $from,
-        'Return-path' => "<$from>",
-        'Errors-to' => $from,
-      );
-      $recipients = explode(',', $to);
-      foreach ($recipients as $recipient) {
-        $recipient = trim($recipient);
-        $params = array(
-          'subject' => $subject,
-          'message' => strtr($message, $variables),
-          'headers' => $headers,
-        );
-        $users = user_load_multiple(array(), array('mail' => $recipient));
-        $user = array_shift($users);
-        $language = isset($user->uid) ? user_preferred_language($user) : language_default();
-        // drupal_mail('example', 'notice', $account->mail, user_preferred_langcode($account), $params);
-        // .
-        drupal_mail('inactive_user', 'inactive_user_notice', $recipient, $language, $params, $from, TRUE);
-      }
+  if ($user_list) {
+    $to = _inactive_user_admin_mail();
+    $variables = array(
+      '%period' => \Drupal::service('date.formatter')->formatInterval($period),
+      '%sitename' => \Drupal::config('system.site')->get('site_name'),
+      '%siteurl' => $base_url,
+      "%userlist" => $user_list
+    );
+  }
+  elseif (isset($user->uid)) {
+    $to = $user->mail;
+    $variables = array(
+      '%username' => $user->name,
+      '%useremail' => $user->mail,
+      '%lastaccess' => empty($user->access) ? t('never') : \Drupal::service('date.formatter')->format($user->access, 'custom', 'M d, Y'),
+      '%period' => \Drupal::service('date.formatter')->formatInterval($period),
+      '%sitename' => \Drupal::config('system.site')->get('site_name'),
+      '%siteurl' => $base_url
+    );
+  }
+  if (isset($to)) {
+    $recipients = explode(',', $to);
+    foreach ($recipients as $recipient) {
+         $recipient = trim($recipient);
+	 $mailManager = \Drupal::service('plugin.manager.mail');
+	 $module = 'hzd_customizations';
+	 $key = 'inactive_user';
+	 $to = $recipient;
+	 $params['subject'] = $subject;
+	 $params['message'] = strtr($message, $variables);
+         $user = user_load_by_mail($recipient);
+	 $langcode = isset($user->uid) ? $user->getPreferredLangcode() : language_default();
+	 $send = true;
+	 $mailManager->mail($module, $key, $recipient, $langcode, $params, NULL, $send);
     }
   }
+}
 
+  
 }
