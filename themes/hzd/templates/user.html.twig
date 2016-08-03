@@ -22,7 +22,9 @@
   {% if content %}
     {{- content -}}
   {% endif %}
+  <div class="hzd-user-profile">
   <h2 class="title">Profile </h2>
+   <div class="hzd-user-profile-info">
   {% if name %}
     <div class="field field--name-field-name field--type-text field--label-inline">
         <div class="field--label">User Name</div>
@@ -65,8 +67,15 @@
         <div class="field--item">{{ state }}</div>
     </div>
   {% endif %}
+ </div>
+
   {% if group_list %}
     <h2 class="title">Groups </h2>
+	<div class="hzd-groups-info">
     {{ group_list }}
+	</div>
   {% endif %}
+  </div>
+
+
 

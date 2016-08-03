@@ -176,6 +176,9 @@ h6{
 }
 
 @media only screen and (min-width:768px){
+#block-primarylinks ul ul{
+  width:auto !important;
+}
 .path-user .region-content nav.tabs li a{
   padding:8px 36px !important;
 }
@@ -205,8 +208,18 @@ header{
   font-size:14px !important;
 }
 button.navbar-toggle{
- float:left !important;
- margin-left:20px;
+  float:left !important;
+  margin-left:15px;
+  margin-bottom:0 !important;
+  border-radius:0 !important;
+  background:rgb(20, 117, 160);
+  border:none !important;
+}
+button.navbar-toggle:hover, button.navbar-toggle:focus{
+  background:rgba(20, 117, 160, 0.8) !important;
+}
+.navbar-default .navbar-toggle .icon-bar{
+  background:#fff !important;
 }
 .navbar-collapse{
   width:100% !important;
@@ -292,6 +305,7 @@ header{
 }
 header .navbar-collapse.collapse{ 
   padding:0 !important;
+  border-top:0 !important;
 }
 #block-general{
   width:100%;
@@ -377,7 +391,7 @@ body.not-loggedin.path-user .region-content{
 .path-user .region-content nav.tabs{ 
   padding:0 !important;
   width:100%;
-  /*border:3px solid #f4f4f4;*/
+  border-top:1px solid rgb(20, 117, 160);
   border-bottom:0 !important;
   background:rgb(20, 117, 160);
   .nav-tabs{
@@ -597,7 +611,7 @@ h1.page-header{
   font-weight:bold;
   font-size:25px;
 }
-.region-content ul{
+.col-sm-9 .field--name-body.field--type-text-with-summary ul{
   width:100%;
   float:left;
   margin:0 0 10px 0;
@@ -934,9 +948,6 @@ table.view-deployed-releases{
 .nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
   background-color:@hov-color !important;
 }
-#block-primarylinks ul ul{
-  width:auto !important;
-}
 #block-primarylinks ul ul.dropdown-menu{
   background:@pritext-color !important;
   border-radius:0 !important;
@@ -954,6 +965,8 @@ table.view-deployed-releases{
 	   width:100%;
 	   float:left;
 	   border-bottom:1px solid @color-base;
+	   padding-bottom:5px;
+	   padding-top:5px;
 	   color:@color-base;
 	  }
 	  a:hover{
@@ -981,4 +994,41 @@ article .quickedit-field .field__items .field--item{
 .breadcrumb{
   width:100%;
   float:left;
-} 
+}
+#header-right a{
+  padding:0 2px;
+}
+.table-responsive ul.dropdown-menu{
+  padding:0 !important;
+  margin:0 !important;
+  min-width:105px !important;
+   li{
+     padding:0px !important;
+	 a{
+	   padding:5px !important;
+	 }
+   } 
+}
+.masquerade-block-form #masquerade-block-form{
+  .form-actions{
+  margin-bottom:0 !important;
+  }
+  input{
+    height:29px !important;
+  }
+  .input-group-addon{
+    padding:5px 10px !important;
+  }
+}
+.path-user .region-content nav.tabs .tabs--secondary li.active a{
+  background:transparent !important;
+}
+#group-notifications-user-form .table-responsive tr td{
+  width:50%;
+}
+#group-notifications-user-form .table-responsive .hzd_time_interval div.form-type-radio{
+  width:auto !important;
+  float:left;
+  margin:5px 7px !important;
+  line-height:22px;
+}
