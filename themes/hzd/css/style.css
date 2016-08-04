@@ -193,7 +193,7 @@ h6 {
     width: auto !important;
   }
   .path-user .region-content nav.tabs li a {
-    padding: 8px 36px !important;
+    padding: 8px 33px !important;
   }
   body.not-loggedin.path-user .region-content {
     width: 506px;
@@ -1129,4 +1129,27 @@ article .quickedit-field .field__items .field--item {
 }
 .table-striped > tbody > tr:nth-of-type(odd) {
   background: #edf4fa !important;
+}
+.node-preview-container {
+  width: 250px;
+  background: #1475a0;
+  top: 95px;
+  left: 10px;
+}
+.node-preview-container a.node-preview-backlink {
+  color: #fff !important;
+  font-size: 15px;
+  font-family: 'robotomedium';
+  padding-bottom: 5px;
+  float: left;
+}
+.node-preview-container a:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+.node-preview-container label.control-label {
+  display: none;
+}
+.node-preview-container select {
+  display: inline;
 }

@@ -33,8 +33,18 @@
          url('../fonts/robotocondensed-bold-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
+@font-face {
+    font-family: 'robotomedium';
+    src: url('../fonts/Roboto-Medium-webfont.eot');
+    src: url('../fonts/Roboto-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Medium-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Medium-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Medium-webfont.svg#robotomedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 
 @color-base: #1475a0;
 @pritext-color: #fff;
@@ -180,7 +190,7 @@ h6{
   width:auto !important;
 }
 .path-user .region-content nav.tabs li a{
-  padding:8px 36px !important;
+  padding:8px 33px !important;
 }
 body.not-loggedin.path-user .region-content{
   width:506px;
@@ -423,6 +433,34 @@ body.not-loggedin.path-user .region-content{
 	   }
    }
 }
+.path-user .region-content .tabs--primary.nav-tabs li{
+   border:3px solid @color-base;
+}
+
+.region-content .field--label-inline, .user-groups .user-group-list{
+  width:100%;
+  float:left;
+  background:rgb(237, 244, 250);
+  line-height:22px;
+  padding:1% 0% 1% 1%;
+  border:2px solid #d9e4ee;
+  border-bottom:none;
+   
+   .field--label{
+     width:19%;
+	 float:left;
+	 font-family: 'robotomedium';
+	 font-weight:300 !important;
+	} 
+   .field--item{
+     background:rgb(237, 244, 250);
+     width:80%;
+	 float:left;
+	 padding-left:1%;
+    }
+}
+
+
 
 /*****  Messages Styles *****/
 
@@ -548,8 +586,8 @@ table tr.odd{
   background:#edf4fa !important;
 }
 table tr.odd td{
-  border-top: 1px solid #d4e7f5 !important;
-  border-bottom: 1px solid #d4e7f5 !important;
+  border-top: 1px solid rgb(217, 228, 238) !important;
+  border-bottom: 1px solid rgb(217, 228, 238) !important;
 }
 table tr.even:hover{
   background: #f9f9f9 !important;
@@ -639,7 +677,7 @@ table.tablesorter thead tr .header {
 table{
   width:100% !important;
   float:left;
-  border:1px solid #ccc;
+  border:1px solid rgb(217, 228, 238);
   margin:10px 0 !important;
   th{
    background:rgb(20, 117, 160);
@@ -665,9 +703,9 @@ input.end_date{
   height:32px !important;
   border-radius: 4px 0px 0px 4px !important;
 }
-.form-control{
+/*.form-control{
   border-radius: 4px 0px 0px 4px !important;
-}
+}*/
 .filter_end_date input, 
 .filter_start_date input{
   border:1px solid #ccc;
@@ -774,7 +812,7 @@ input[type="button"]:hover,
 .btn-default:hover{
   background:@hov-color !important;
 }
-.btn-default{
+.btn-default, .views-exposed-form button{
   background:@color-base !important;
   font-size:14px;
   color:@pritext-color !important;
@@ -994,6 +1032,7 @@ article .quickedit-field .field__items .field--item{
 .breadcrumb{
   width:100%;
   float:left;
+  margin-bottom:0 !important;
 }
 #header-right a{
   padding:0 2px;
@@ -1031,4 +1070,50 @@ article .quickedit-field .field__items .field--item{
   float:left;
   margin:5px 7px !important;
   line-height:22px;
+}
+.views-exposed-form .js-form-item label.control-label{
+  font-family: 'robotomedium';
+  font-weight:300 !important;	
+}
+.views-exposed-form #edit-actions{
+  margin-bottom:0 !important;
+}
+.views-exposed-form input[type="text"]{
+  height:28px !important;
+  border-radius:3px !important;
+  margin-left:3px;
+}
+.hzd-user-profile-info, .hzd-groups-info{
+  width:100%;
+  float:left;
+  border-bottom:2px solid rgb(217, 228, 238);
+}
+.hzd-user-profile{
+  margin-top:-18px;
+}
+.table-striped > tbody > tr:nth-of-type(odd){
+  background:#edf4fa !important;
+}
+.node-preview-container{
+  width:250px;
+  background:@color-base;
+  top:95px;
+  left:10px;
+    a.node-preview-backlink {
+     color: #fff !important;
+     font-size: 15px;
+     font-family: 'robotomedium';
+     padding-bottom:5px;
+	 float:left;
+    }
+	a:hover{
+	 text-decoration:none;
+	 opacity:0.8;
+	}
+   label.control-label{
+     display:none;
+   }
+   select{
+     display:inline;
+   }
 }
