@@ -34,14 +34,14 @@ class HzdcustomisationStorage {
     if (!empty($url_alias)) {
       if (!isset($url_alias['0'])) {
         // Populate the node access table.
-        db_insert('url_alias')
+        \Drupal::database()->insert('url_alias')
           ->fields(array(
             'source' => $src,
             'alias' => $dst,
           ))->execute();
       }
       else {
-        db_update('url_alias')
+        \Drupal::database()->update('url_alias')
           ->fields(array(
             'source' => $src,
             'alias' => $dst,

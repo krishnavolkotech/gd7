@@ -292,7 +292,7 @@ class InactiveuserSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('inactive_user.settings')
+    \Drupal::configFactory()->getEditable('inactive_user.settings')
       ->set('inactive_user_admin_email', $form_state->getValue('inactive_user_admin_email'))
       ->set('inactive_user_notify_admin', $form_state->getValue('inactive_user_notify_admin'))
       ->set('inactive_user_notify', $form_state->getValue('inactive_user_notify'))
@@ -311,6 +311,7 @@ class InactiveuserSettingsForm extends ConfigFormBase {
       ->set('inactive_user_notify_delete_admin', $form_state->getValue('inactive_user_notify_delete_admin'))
       ->set('inactive_user_auto_delete_warn', $form_state->getValue('inactive_user_auto_delete_warn'))
       ->save();
+
     parent::submitForm($form, $form_state);
   }
 

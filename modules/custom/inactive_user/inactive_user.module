@@ -104,3 +104,26 @@ function inactive_user_schema() {
   );
   return $schema;
 }
+
+
+/**
+ * Returns 1 if the user has ever created a node or a comment.
+ *
+ * The settings of inactive_user.module allow to protect such
+ * users from deletion.
+ */
+function _inactive_user_with_content($uid) {
+
+  $query = \Drupal::database()->select('node_field_data', 'nfd');
+		$query->addField('nfd', 'uid');
+                $query->condition('nfd.uid', $uid , '=');
+  $node_field_data_uid = $query->execute()->fetchField();
+
+  $query = \Drupal::database()->select('comment_field_data', 'cfd');
+		$query->addField('cfd', 'uid');
+                $query->condition('nfd.uid', $uid , '=');
+  $comment_field_data_uid = $query->execute()->fetchField();
+
+  return ($node_field_data_uid || $comment_field_data_uid);
+
+}

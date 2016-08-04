@@ -42,7 +42,7 @@ class QuickLinksBlock extends BlockBase {
       $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/node/339/releases')) . "</li>\n";
       $output .= "<li>" . \Drupal::l('RZ-Schnellinfos', Url::fromUserInput('/release-management/rz-schnellinfos')) . "</li>\n";
       $output .= "<li><a target=\"_blank\" href=\"http://glossar.konsens.ktz.testa-de.net/\">KONSENS-Glossar</a></li>\n";
-      $output .= "<li><a target=\"_blank\" href=\"!nsm_link\">Service Monitoring</a></li>";
+      $output .= "<li><a target=\"_blank\" href=\"/login_from_bp\">Service Monitoring</a></li>";
       $output .= "<li>" . \Drupal::l('Architektursteuerung', Url::fromUserInput('/architektursteuerung')) . "</li>\n";   
     }
     else {
