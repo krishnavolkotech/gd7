@@ -1153,3 +1153,6 @@ article .quickedit-field .field__items .field--item {
 .node-preview-container select {
   display: inline;
 }
+.node-preview-container .form-type-select {
+  margin-left: 0 !important;
+}
