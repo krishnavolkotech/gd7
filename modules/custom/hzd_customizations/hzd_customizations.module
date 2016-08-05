@@ -158,6 +158,23 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
     $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
   }
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
+
+      $db = \Drupal::database();
+      $result = $db->select('states', 's')
+          ->fields('s', array('abbr', 'state'))
+          ->condition('s.entity', 1, '!=');
+      $val = $result->execute()->fetchAll();
+      $states = array();
+      foreach($val as $user_states_list) {
+          $states[$user_states_list->abbr] = $user_states_list->state;
+      }
+      $form['abbr'] = array(
+          '#type' => 'select',
+          '#options' => $states,
+          '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
+      );
+  }
   return $form;
 }
 
@@ -190,14 +207,19 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
                     $result->fields('gcfd', array('gid'))
                         ->condition('gcfd.entity_id', \Drupal::currentUser()->id());
                     $val = $result->execute()->fetchCol();
+		    //		    pr($val);exit;
                     $condition['value'][':groups_field_data_id[]'] = $val;
                 }
             }
         }
     }
-    if ($view->id() == 'group_members_lists') {
-        // Traverse through the 'where' part of the query.
-//        dpm($view);
-    }
 }
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+function hzd_customizations_node_view($node, $view_mode, $langcode){
+  if($node['#node']->getType() == 'group' && !\Drupal::currentUser()->id()){
+    $currentPath = \Drupal::service('path.current')->getPath();
+    $loginPath = '/user/login?destination='.$currentPath;
+    return (new RedirectResponse($loginPath))->send();
+  }
+}

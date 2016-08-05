@@ -609,3 +609,15 @@ function insert_new_service_notifications($type, $nid) {
     }
   }
 }
+/*
+use Drupal\Core\Access\AccessResult;
+function hzd_release_management_group_access(\Drupal\Core\Entity\EntityInterface $entity, $operation, \Drupal\Core\Session\AccountInterface $account){
+  if(in_array('site_administrator',$account->getRoles())){
+    //    return AccessResult::allowed();
+  }else{
+    
+  }
+  //  return true;
+  //  pr($entity->toArray());
+  //exit;
+  }*/
