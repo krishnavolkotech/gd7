@@ -1,0 +1,33 @@
+uuid: 476e93d4-af4a-4720-908f-fb1f5bbdb79c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.story.body
+    - field.field.node.story.comment
+    - node.type.story
+  module:
+    - comment
+    - text
+    - user
+id: node.story.default
+targetEntityType: node
+bundle: story
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden: {  }

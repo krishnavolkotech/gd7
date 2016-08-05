@@ -1,0 +1,26 @@
+uuid: d9118b9c-46ba-4e72-8977-6972dc522bb2
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - group
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: groupoperations
+theme: hzd
+region: sidebar_first
+weight: -15
+provider: null
+plugin: group_operations
+settings:
+  id: group_operations
+  label: 'Group operations'
+  provider: group
+  label_display: visible
+  context_mapping:
+    group: '@group.group_route_context:group'
+visibility: {  }

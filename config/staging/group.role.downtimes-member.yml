@@ -1,0 +1,12 @@
+uuid: bc82badd-9d5e-4f6d-9a34-dec0b33c8c27
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: downtimes-member
+label: Member
+weight: -100
+internal: true
+group_type: downtimes
+permissions: {  }

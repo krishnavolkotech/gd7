@@ -1,0 +1,12 @@
+uuid: c69d8116-64c3-4040-a46c-a5e214aade23
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: moderate-member
+label: Member
+weight: -100
+internal: true
+group_type: moderate
+permissions: {  }

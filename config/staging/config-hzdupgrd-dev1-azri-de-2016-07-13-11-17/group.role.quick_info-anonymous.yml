@@ -1,0 +1,12 @@
+uuid: 1d20fcd9-4841-4f9f-9849-9f8795a2bc91
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+id: quick_info-anonymous
+label: Anonymous
+weight: -102
+internal: true
+group_type: quick_info
+permissions: {  }

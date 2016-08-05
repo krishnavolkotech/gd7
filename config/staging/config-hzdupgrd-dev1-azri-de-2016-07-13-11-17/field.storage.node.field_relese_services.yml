@@ -1,0 +1,19 @@
+uuid: da3b8088-2499-4c43-bc77-8f33d0b73f67
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_relese_services
+field_name: field_relese_services
+entity_type: node
+type: entity_reference
+settings:
+  target_type: node
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

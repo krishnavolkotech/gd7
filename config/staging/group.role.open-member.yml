@@ -1,0 +1,12 @@
+uuid: 99729356-b365-4ddd-8240-305581a826ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-member
+label: Member
+weight: -100
+internal: true
+group_type: open
+permissions: {  }

@@ -1,0 +1,22 @@
+uuid: 3cd1c972-1ef1-4b87-977b-2497bd862086
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.planning_files
+id: node.planning_files.promote
+field_name: promote
+entity_type: node
+bundle: planning_files
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

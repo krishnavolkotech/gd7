@@ -1,0 +1,13 @@
+uuid: 26ade8e5-9584-43ea-908f-87afd5f4a818
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - gnode
+id: open-group_node-page
+label: 'Open: Group node (Seite)'
+description: 'Adds <em class="placeholder">Seite</em> content to groups both publicly and privately.'
+group_type: open
+content_plugin: 'group_node:page'

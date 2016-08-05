@@ -1,0 +1,8 @@
+uuid: 4126a26c-2b75-4c48-bc82-46683842cade
+langcode: en
+status: true
+dependencies: {  }
+id: menu-34696
+label: 'Geplante Blockzeiten'
+description: null
+locked: false

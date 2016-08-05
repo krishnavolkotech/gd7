@@ -1,0 +1,153 @@
+uuid: 50885cf1-75bc-42a9-b6b3-4c20b0bfa82b
+langcode: en
+status: true
+dependencies: {  }
+id: upgrade_d6_node_revision_release
+migration_tags:
+  - 'Drupal 6'
+migration_group: migrate_drupal_6
+label: 'Node revisions (release)'
+source:
+  plugin: d6_node_revision
+  node_type: release
+process:
+  nid: nid
+  vid: vid
+  type: type
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: und
+  title: title
+  uid: node_uid
+  status: status
+  created: created
+  changed: changed
+  promote: promote
+  sticky: sticky
+  body/format:
+    plugin: migration
+    migration: upgrade_d6_filter_format
+    source: format
+  body/value: body
+  body/summary: teaser
+  revision_uid: revision_uid
+  revision_log: log
+  revision_timestamp: timestamp
+  field_date: field_date
+  field_release_comments:
+    plugin: iterator
+    source: field_release_comments
+    process:
+      value: value
+      format:
+        -
+          plugin: static_map
+          bypass: true
+          source: format
+          map:
+            - null
+        -
+          plugin: skip_on_empty
+          method: process
+        -
+          plugin: migration
+          migration:
+            - d6_filter_format
+            - d7_filter_format
+          source: format
+  field_release_type:
+    plugin: iterator
+    source: field_release_type
+    process:
+      value: value
+      format:
+        -
+          plugin: static_map
+          bypass: true
+          source: format
+          map:
+            - null
+        -
+          plugin: skip_on_empty
+          method: process
+        -
+          plugin: migration
+          migration:
+            - d6_filter_format
+            - d7_filter_format
+          source: format
+  field_relese_services:
+    plugin: iterator
+    source: field_relese_services
+    process:
+      target_id: nid
+  field_status:
+    plugin: iterator
+    source: field_status
+    process:
+      value: value
+      format:
+        -
+          plugin: static_map
+          bypass: true
+          source: format
+          map:
+            - null
+        -
+          plugin: skip_on_empty
+          method: process
+        -
+          plugin: migration
+          migration:
+            - d6_filter_format
+            - d7_filter_format
+          source: format
+  field_link:
+    plugin: iterator
+    source: field_link
+    process:
+      value: value
+      format:
+        -
+          plugin: static_map
+          bypass: true
+          source: format
+          map:
+            - null
+        -
+          plugin: skip_on_empty
+          method: process
+        -
+          plugin: migration
+          migration:
+            - d6_filter_format
+            - d7_filter_format
+          source: format
+  field_documentation_link:
+    plugin: iterator
+    source: field_documentation_link
+    process:
+      value: value
+      format:
+        -
+          plugin: static_map
+          bypass: true
+          source: format
+          map:
+            - null
+        -
+          plugin: skip_on_empty
+          method: process
+        -
+          plugin: migration
+          migration:
+            - d6_filter_format
+            - d7_filter_format
+          source: format
+destination:
+  plugin: 'entity_revision:node'
+migration_dependencies:
+  required:
+    - upgrade_d6_node_release
+  optional: {  }

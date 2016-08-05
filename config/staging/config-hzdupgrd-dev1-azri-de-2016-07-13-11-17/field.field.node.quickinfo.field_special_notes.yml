@@ -1,0 +1,21 @@
+uuid: ab8bd3e8-f957-4729-acda-461f71c71718
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_special_notes
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_special_notes
+field_name: field_special_notes
+entity_type: node
+bundle: quickinfo
+label: '2.9 Special notes'
+description: '(z.B. auch planerische Hinweise)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

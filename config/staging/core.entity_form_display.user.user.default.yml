@@ -1,0 +1,67 @@
+uuid: 1d0dd98d-efaf-4eb0-baeb-b4507054053e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.user.user.field_do_not_deactivate_automati
+    - field.field.user.user.field_message_preference
+    - field.field.user.user.field_notifications_status
+    - field.field.user.user.l10n_client_contributor_key
+    - field.field.user.user.user_picture
+    - image.style.thumbnail
+  module:
+    - image
+    - l10n_client_contributor
+    - user
+_core:
+  default_config_hash: LLAieeozVsoZDb-2PbFxRJpQqnKmpR7-4OoRJnduz-U
+id: user.user.default
+targetEntityType: user
+bundle: user
+mode: default
+content:
+  account:
+    weight: -10
+    settings: {  }
+    third_party_settings: {  }
+  contact:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+  field_do_not_deactivate_automati:
+    weight: 11
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+  field_message_preference:
+    weight: 9
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+  field_notifications_status:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+  l10n_client_contributor_key:
+    type: l10n_client_contributor_key_widget
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  language:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  timezone:
+    weight: 6
+  user_picture:
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    type: image_image
+    weight: 7
+    third_party_settings: {  }
+hidden: {  }

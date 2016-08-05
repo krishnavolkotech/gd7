@@ -1,0 +1,8 @@
+uuid: ee34dfb3-28e3-4020-a97e-4e3fd5c142ec
+langcode: en
+status: true
+dependencies: {  }
+id: menu-32768
+label: 'ELSTER - Ek VaSt'
+description: null
+locked: false

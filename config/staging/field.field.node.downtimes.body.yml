@@ -1,0 +1,22 @@
+uuid: 5e36005f-1706-4679-8047-d8e5393a208d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.downtimes
+  module:
+    - text
+id: node.downtimes.body
+field_name: body
+entity_type: node
+bundle: downtimes
+label: Reason
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+field_type: text_with_summary

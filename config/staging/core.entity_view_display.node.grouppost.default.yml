@@ -1,0 +1,33 @@
+uuid: 61f932fb-e154-45ce-90eb-38cf58ff8cd4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.grouppost.body
+    - field.field.node.grouppost.comment
+    - node.type.grouppost
+  module:
+    - comment
+    - text
+    - user
+id: node.grouppost.default
+targetEntityType: node
+bundle: grouppost
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden: {  }

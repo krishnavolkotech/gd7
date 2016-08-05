@@ -1,0 +1,19 @@
+uuid: 058f17c3-6237-4be1-a065-824d3eef6fdb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_description
+    - group.type.quick_info
+id: group.quick_info.field_description
+field_name: field_description
+entity_type: group
+bundle: quick_info
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

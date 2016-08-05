@@ -1,0 +1,21 @@
+uuid: f2fb00ba-7099-4457-b5f1-ba3d9e235167
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_intial_situation
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_intial_situation
+field_name: field_intial_situation
+entity_type: node
+bundle: quickinfo
+label: '2.1 Initial situation'
+description: '(z.B. Arbeitsaufträge in PROGDOK, aus AGs)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

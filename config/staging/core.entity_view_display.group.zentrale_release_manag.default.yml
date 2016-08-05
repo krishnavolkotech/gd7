@@ -1,0 +1,49 @@
+uuid: 2a2fa6d8-1d54-4943-bef6-0da2e4b3c78b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.zentrale_release_manag.field_description
+    - field.field.group.zentrale_release_manag.field_group_body
+    - field.field.group.zentrale_release_manag.field_old_reference
+    - group.type.zentrale_release_manag
+  module:
+    - text
+id: group.zentrale_release_manag.default
+targetEntityType: group
+bundle: zentrale_release_manag
+mode: default
+content:
+  field_description:
+    weight: -3
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+  field_group_body:
+    weight: -2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+  field_old_reference:
+    weight: -4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  label:
+    label: hidden
+    type: string
+    weight: -5
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+hidden:
+  changed: true
+  created: true
+  langcode: true
+  uid: true

@@ -1,0 +1,41 @@
+uuid: 3bae1eda-087b-4226-b709-0aeba03d3788
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.downtimes.body
+    - field.field.node.downtimes.comment
+    - field.field.node.downtimes.upload
+    - node.type.downtimes
+  module:
+    - comment
+    - file
+    - text
+    - user
+id: node.downtimes.default
+targetEntityType: node
+bundle: downtimes
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+    third_party_settings: {  }
+  links:
+    weight: 100
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 102
+    third_party_settings: {  }
+hidden: {  }

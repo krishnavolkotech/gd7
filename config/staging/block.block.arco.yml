@@ -1,0 +1,33 @@
+uuid: b41f7a33-9c46-4163-afb8-0c202ff6a5e8
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.menu-36070
+  module:
+    - block_class
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: arco
+theme: hzd
+region: sidebar_first
+weight: -18
+provider: null
+plugin: 'system_menu_block:menu-36070'
+settings:
+  id: 'system_menu_block:menu-36070'
+  label: ARCO
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility:
+  request_path:
+    id: request_path
+    pages: "/group/2\r\n/group/2/*\r\n/arco/*\r\n"
+    negate: false
+    context_mapping: {  }

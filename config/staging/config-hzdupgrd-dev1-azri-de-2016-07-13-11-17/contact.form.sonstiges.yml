@@ -1,0 +1,10 @@
+uuid: 7b4a5c48-2950-4c3d-87bb-9d6652b3d99e
+langcode: en
+status: true
+dependencies: {  }
+id: sonstiges
+label: Sonstiges
+recipients:
+  - betriebsportal-konsens@hzd.hessen.de
+reply: "Vielen Dank für Ihre Nachricht. Wir bemühen uns um eine schnellstmögliche Bearbeitung.\r\n\r\n-- Team Betriebsportal KONSENS"
+weight: 10

@@ -1,0 +1,22 @@
+uuid: 852f6807-af48-4c62-9e9c-3d66dbaf834c
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.forum
+id: node.forum.status
+field_name: status
+entity_type: node
+bundle: forum
+label: null
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

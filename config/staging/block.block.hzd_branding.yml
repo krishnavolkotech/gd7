@@ -1,0 +1,25 @@
+uuid: 71547f52-45a3-4522-888d-977f3ccbce21
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - hzd
+_core:
+  default_config_hash: NDwadleLD3YVSbDUaakxyYZyINYtkFtOVGShfq4kWy8
+id: hzd_branding
+theme: hzd
+region: navigation
+weight: -15
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Site branding'
+  provider: system
+  label_display: '0'
+  use_site_logo: true
+  use_site_name: true
+  use_site_slogan: true
+visibility: {  }

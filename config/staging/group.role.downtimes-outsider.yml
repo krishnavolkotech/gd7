@@ -1,0 +1,12 @@
+uuid: 5547ad0f-46fe-4501-b6d6-1ee729f43a6f
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: downtimes-outsider
+label: Outsider
+weight: -101
+internal: true
+group_type: downtimes
+permissions: {  }

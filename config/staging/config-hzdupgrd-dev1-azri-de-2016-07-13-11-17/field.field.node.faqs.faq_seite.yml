@@ -1,0 +1,25 @@
+uuid: f91ad917-b629-4cb0-b5de-2888886c93c6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.faq_seite
+    - node.type.faqs
+    - taxonomy.vocabulary.faq_seite
+id: node.faqs.faq_seite
+field_name: faq_seite
+entity_type: node
+bundle: faqs
+label: FAQ-Seite
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      - faq_seite
+    auto_create: true
+field_type: entity_reference

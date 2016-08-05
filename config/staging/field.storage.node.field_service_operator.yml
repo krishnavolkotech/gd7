@@ -1,0 +1,21 @@
+uuid: 269d7ba5-3bb0-4c22-bdc5-401e51ccc2ab
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_service_operator
+field_name: field_service_operator
+entity_type: node
+type: list_string
+settings:
+  allowed_values: {  }
+  allowed_values_function: get_all_user_state
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

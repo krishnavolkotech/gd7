@@ -1,0 +1,21 @@
+uuid: 27a17115-d37d-4963-a804-30de185f336e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_solution
+    - node.type.problem
+  module:
+    - text
+id: node.problem.field_solution
+field_name: field_solution
+entity_type: node
+bundle: problem
+label: Solution
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

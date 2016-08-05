@@ -1,0 +1,19 @@
+uuid: b88e4418-7d56-4686-a90d-f25a30ba4a81
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_description
+    - group.type.downtimes
+id: group.downtimes.field_description
+field_name: field_description
+entity_type: group
+bundle: downtimes
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

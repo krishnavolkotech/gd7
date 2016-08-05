@@ -1,0 +1,21 @@
+uuid: 7fb000b6-637e-45fe-af3a-fec3f06d401b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_tech_requirements
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_tech_requirements
+field_name: field_tech_requirements
+entity_type: node
+bundle: quickinfo
+label: '2.3 Technical Requirements for use'
+description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

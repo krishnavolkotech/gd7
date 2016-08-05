@@ -1,0 +1,22 @@
+uuid: 870e0e43-3af0-4e79-9972-e88a6a1b197b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.im_upload_page
+id: node.im_upload_page.sticky
+field_name: sticky
+entity_type: node
+bundle: im_upload_page
+label: 'Sticky at the top of lists'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

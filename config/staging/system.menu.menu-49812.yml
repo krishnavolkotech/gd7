@@ -1,0 +1,8 @@
+uuid: 9a03375d-8777-41c8-b57a-0f63b76953f4
+langcode: en
+status: true
+dependencies: {  }
+id: menu-49812
+label: Architektursteuerung
+description: null
+locked: false

@@ -1,0 +1,27 @@
+uuid: 1ed0eafc-da48-47dd-8217-a36808d97b88
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_index
+    - field.field.node.im_upload_page.body
+    - field.field.node.im_upload_page.field_im_upload_page_files
+    - node.type.im_upload_page
+  module:
+    - file
+    - user
+id: node.im_upload_page.search_index
+targetEntityType: node
+bundle: im_upload_page
+mode: search_index
+content:
+  field_im_upload_page_files:
+    label: above
+    weight: 31
+    type: file_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  body: true

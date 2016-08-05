@@ -1,0 +1,12 @@
+uuid: df61aace-dabd-4d18-ac55-ae231d8a89f2
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+id: zentrale_release_manag-anonymous
+label: Anonymous
+weight: -102
+internal: true
+group_type: zentrale_release_manag
+permissions: {  }
