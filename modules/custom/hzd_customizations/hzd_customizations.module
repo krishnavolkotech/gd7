@@ -202,11 +202,14 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
     }
 }
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 function hzd_customizations_node_view($node, $view_mode, $langcode){
+  global $base_url;
   if($node['#node']->getType() == 'group' && !\Drupal::currentUser()->id()){
     $currentPath = \Drupal::service('path.current')->getPath();
     $loginPath = '/user/login?destination='.$currentPath;
-    return (new RedirectResponse($loginPath))->send();
+    header('Location: '.$baseurl.$loginPath);
+    exit();
+    //    return new RedirectResponse($loginPath);///this doesn't do a server redirect instead it sends a redirect request to browser
   }
 }
