@@ -1156,3 +1156,8 @@ article .quickedit-field .field__items .field--item {
 .node-preview-container .form-type-select {
   margin-left: 0 !important;
 }
+.navbar-collapse.collapsing {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
