@@ -158,6 +158,23 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
     $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
   }
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
+
+      $db = \Drupal::database();
+      $result = $db->select('states', 's')
+          ->fields('s', array('abbr', 'state'))
+          ->condition('s.entity', 1, '!=');
+      $val = $result->execute()->fetchAll();
+      $states = array();
+      foreach($val as $user_states_list) {
+          $states[$user_states_list->abbr] = $user_states_list->state;
+      }
+      $form['abbr'] = array(
+          '#type' => 'select',
+          '#options' => $states,
+          '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
+      );
+  }
   return $form;
 }
 
@@ -195,10 +212,6 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
                 }
             }
         }
-    }
-    if ($view->id() == 'group_members_lists') {
-        // Traverse through the 'where' part of the query.
-//        dpm($view);
     }
 }
 
