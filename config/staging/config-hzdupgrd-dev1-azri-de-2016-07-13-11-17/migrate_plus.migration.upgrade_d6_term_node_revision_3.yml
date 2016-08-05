@@ -1,0 +1,54 @@
+uuid: 4e1cf34f-150d-462e-9832-bfa0afdcdcb8
+langcode: en
+status: true
+dependencies: {  }
+id: upgrade_d6_term_node_revision_3
+migration_tags:
+  - 'Drupal 6'
+migration_group: migrate_drupal_6
+label: 'Term/node relationship revisions'
+source:
+  plugin: d6_term_node_revision
+  vid: '3'
+process:
+  vid:
+    -
+      plugin: migration
+      migration: d6_node
+      source: vid
+    -
+      plugin: skip_on_empty
+      method: row
+  type: type
+  thema1: tid
+destination:
+  plugin: 'entity_revision:node'
+migration_dependencies:
+  required:
+    170: upgrade_d6_term_node_2
+    171: upgrade_d6_term_node_3
+    172: upgrade_d6_term_node_4
+    173: upgrade_d6_term_node_5
+    174: upgrade_d6_term_node_8
+    123: upgrade_d6_node_revision_book
+    124: upgrade_d6_node_revision_deployed_releases
+    125: upgrade_d6_node_revision_downtimes
+    126: upgrade_d6_node_revision_early_warnings
+    127: upgrade_d6_node_revision_event
+    128: upgrade_d6_node_revision_faq
+    129: upgrade_d6_node_revision_faqs
+    130: upgrade_d6_node_revision_forum
+    131: upgrade_d6_node_revision_group
+    132: upgrade_d6_node_revision_grouppost
+    133: upgrade_d6_node_revision_im_upload_page
+    134: upgrade_d6_node_revision_newsletter
+    135: upgrade_d6_node_revision_non_production_environment
+    136: upgrade_d6_node_revision_page
+    137: upgrade_d6_node_revision_planning_files
+    138: upgrade_d6_node_revision_problem
+    139: upgrade_d6_node_revision_quickinfo
+    140: upgrade_d6_node_revision_release
+    141: upgrade_d6_node_revision_service_profile
+    142: upgrade_d6_node_revision_services
+    143: upgrade_d6_node_revision_story
+  optional: {  }

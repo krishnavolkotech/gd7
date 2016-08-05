@@ -1,0 +1,12 @@
+uuid: 0f081c8d-8e5c-42dc-bff9-dd3f15a1246c
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: closed_private-outsider
+label: Outsider
+weight: -101
+internal: true
+group_type: closed_private
+permissions: {  }

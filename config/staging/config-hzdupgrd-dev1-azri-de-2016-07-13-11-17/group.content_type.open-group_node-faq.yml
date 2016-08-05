@@ -1,0 +1,13 @@
+uuid: 2433cbf6-12ca-445c-b0dd-30303857f89f
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - gnode
+id: open-group_node-faq
+label: 'Open: Group node (FAQ)'
+description: 'Adds <em class="placeholder">FAQ</em> content to groups both publicly and privately.'
+group_type: open
+content_plugin: 'group_node:faq'

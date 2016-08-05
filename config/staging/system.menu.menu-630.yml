@@ -1,0 +1,8 @@
+uuid: 72a3a5a0-04cb-427b-b507-43e71f8b8e23
+langcode: en
+status: true
+dependencies: {  }
+id: menu-630
+label: 'Test Center KONSENS'
+description: null
+locked: false

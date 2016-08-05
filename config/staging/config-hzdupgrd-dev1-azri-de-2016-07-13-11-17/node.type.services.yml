@@ -1,0 +1,11 @@
+uuid: b07c0e70-33a1-4f74-b5bd-423a979d20ef
+langcode: en
+status: true
+dependencies: {  }
+name: Verfahren
+type: services
+description: Verfahren
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: true

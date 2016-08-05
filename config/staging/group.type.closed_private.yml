@@ -1,0 +1,26 @@
+uuid: e3eee204-e65c-4a94-bb98-c4ab26ae3428
+langcode: en
+status: true
+dependencies: {  }
+id: closed_private
+label: 'Closed Private'
+description: 'Same as Closed, But visible to only Members.'
+content:
+  group_membership:
+    id: group_membership
+    group_type: closed_private
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+  'group_node:faq':
+    id: 'group_node:faq'
+    group_type: closed_private
+    data:
+      group_cardinality: '0'
+      entity_cardinality: 1
+  'group_node:page':
+    id: 'group_node:page'
+    group_type: closed_private
+    data:
+      group_cardinality: '0'
+      entity_cardinality: 1

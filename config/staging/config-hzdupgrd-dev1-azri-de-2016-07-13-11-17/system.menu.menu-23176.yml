@@ -1,0 +1,8 @@
+uuid: 5fd1abad-273f-466f-aefd-e428edeeaa50
+langcode: en
+status: true
+dependencies: {  }
+id: menu-23176
+label: 'ElsterLohn II - ELStAM'
+description: ''
+locked: false

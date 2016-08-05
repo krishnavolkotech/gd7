@@ -1,0 +1,20 @@
+uuid: 1d79157c-8b2d-41dd-94ce-1bd26464055e
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+_core:
+  default_config_hash: zhtPXoRcC6REiepM0k16zw__FDW5YOXDR6U2WlldTrs
+name: Seite
+type: page
+description: 'Eine Seite ist am besten für statische Inhalte, die sich nicht häufig ändern, geeignet.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

@@ -1,0 +1,21 @@
+uuid: 147af52b-ea35-48c1-91a7-46ca618ae5d0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_contact
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_contact
+field_name: field_contact
+entity_type: node
+bundle: quickinfo
+label: '2.12 Contact'
+description: '(für Rückfragen, falls abweichend vom Ersteller in 2.11)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

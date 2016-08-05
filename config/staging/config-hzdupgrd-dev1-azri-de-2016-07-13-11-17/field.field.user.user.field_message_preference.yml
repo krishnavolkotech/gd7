@@ -1,0 +1,23 @@
+uuid: d64fba83-b4e3-4b4a-bf9d-51f957a61bba
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_message_preference
+  module:
+    - options
+    - user
+id: user.user.field_message_preference
+field_name: field_message_preference
+entity_type: user
+bundle: user
+label: 'Message Preference'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: html
+default_value_callback: ''
+settings: {  }
+field_type: list_string

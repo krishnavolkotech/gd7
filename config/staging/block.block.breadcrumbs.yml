@@ -1,0 +1,33 @@
+uuid: f47c102c-647f-41ff-a1b0-a51a6d19d873
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - language
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: breadcrumbs
+theme: hzd
+region: navigation_collapsible
+weight: -15
+provider: null
+plugin: system_breadcrumb_block
+settings:
+  id: system_breadcrumb_block
+  label: Breadcrumbs
+  provider: system
+  label_display: '0'
+visibility:
+  language:
+    id: language
+    langcodes:
+      en: en
+      de: de
+    negate: false
+    context_mapping:
+      language: '@language.current_language_context:language_interface'

@@ -1,0 +1,19 @@
+uuid: c55d1d73-6c61-4bd2-98c3-d2ed5d0e4dff
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+id: quick_info-admin
+label: Admin
+weight: -92
+internal: false
+group_type: quick_info
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'

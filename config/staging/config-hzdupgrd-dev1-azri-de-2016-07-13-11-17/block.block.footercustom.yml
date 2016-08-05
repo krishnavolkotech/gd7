@@ -1,0 +1,25 @@
+uuid: 307fcc70-ae47-40a4-8d2b-74b93232ec10
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:a4067fda-527c-4db0-9427-b23d4809a7d8'
+  module:
+    - block_content
+  theme:
+    - hzd
+id: footercustom
+theme: hzd
+region: footer
+weight: -10
+provider: null
+plugin: 'block_content:a4067fda-527c-4db0-9427-b23d4809a7d8'
+settings:
+  id: 'block_content:a4067fda-527c-4db0-9427-b23d4809a7d8'
+  label: Footer-custom
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

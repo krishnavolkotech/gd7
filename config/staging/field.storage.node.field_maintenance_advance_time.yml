@@ -1,0 +1,18 @@
+uuid: 4a82d0a1-d4ac-4a19-bb9d-14633ff495f7
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_maintenance_advance_time
+field_name: field_maintenance_advance_time
+entity_type: node
+type: float
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,25 @@
+uuid: eacae139-8b0c-4032-923f-0eb9aa1293ae
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.non_production_environment.field_non_production_state
+    - node.type.non_production_environment
+  module:
+    - text
+    - user
+id: node.non_production_environment.teaser
+targetEntityType: node
+bundle: non_production_environment
+mode: teaser
+content:
+  field_non_production_state:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden: {  }

@@ -1,0 +1,19 @@
+uuid: 66cc6fcb-0905-4dcf-8b4f-5c665c7bea7f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_closed
+    - node.type.problem
+id: node.problem.field_closed
+field_name: field_closed
+entity_type: node
+bundle: problem
+label: Closed
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

@@ -1,0 +1,55 @@
+uuid: 975a2459-c509-4097-aa9f-4b2e13f68e47
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-admin
+label: Admin
+weight: -99
+internal: false
+group_type: closed
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'
+  - 'view group_node:faq content'
+  - 'create group_node:faq content'
+  - 'edit own group_node:faq content'
+  - 'edit any group_node:faq content'
+  - 'delete own group_node:faq content'
+  - 'delete any group_node:faq content'
+  - 'view faq node'
+  - 'create faq node'
+  - 'edit own faq node'
+  - 'edit any faq node'
+  - 'delete own faq node'
+  - 'delete any faq node'
+  - 'view group_node:forum content'
+  - 'create group_node:forum content'
+  - 'edit own group_node:forum content'
+  - 'edit any group_node:forum content'
+  - 'delete own group_node:forum content'
+  - 'delete any group_node:forum content'
+  - 'view forum node'
+  - 'create forum node'
+  - 'edit own forum node'
+  - 'edit any forum node'
+  - 'delete own forum node'
+  - 'delete any forum node'
+  - 'view group_node:page content'
+  - 'create group_node:page content'
+  - 'edit own group_node:page content'
+  - 'edit any group_node:page content'
+  - 'delete own group_node:page content'
+  - 'delete any group_node:page content'
+  - 'view page node'
+  - 'create page node'
+  - 'edit own page node'
+  - 'edit any page node'
+  - 'delete own page node'
+  - 'delete any page node'

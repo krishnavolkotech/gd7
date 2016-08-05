@@ -1,0 +1,19 @@
+uuid: 97f5612b-5c49-4f4d-b28e-373ae0fb6726
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_function
+    - node.type.problem
+id: node.problem.field_function
+field_name: field_function
+entity_type: node
+bundle: problem
+label: Function
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

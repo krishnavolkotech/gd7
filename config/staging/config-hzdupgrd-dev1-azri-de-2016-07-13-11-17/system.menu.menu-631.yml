@@ -1,0 +1,8 @@
+uuid: fec2e9d8-0f0b-4939-911d-3201e0a2f3e1
+langcode: en
+status: true
+dependencies: {  }
+id: menu-631
+label: 'Zentrale Release Manager der Länder'
+description: null
+locked: false

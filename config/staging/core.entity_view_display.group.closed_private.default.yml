@@ -1,0 +1,49 @@
+uuid: 5ffabcc4-dff6-4ead-ae6a-f86c756d8498
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.closed_private.field_description
+    - field.field.group.closed_private.field_group_body
+    - field.field.group.closed_private.field_old_reference
+    - group.type.closed_private
+  module:
+    - text
+id: group.closed_private.default
+targetEntityType: group
+bundle: closed_private
+mode: default
+content:
+  field_description:
+    weight: -3
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+  field_group_body:
+    weight: -2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+  field_old_reference:
+    weight: -4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  label:
+    label: hidden
+    type: string
+    weight: -5
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+hidden:
+  changed: true
+  created: true
+  langcode: true
+  uid: true

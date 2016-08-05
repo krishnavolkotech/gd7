@@ -1,0 +1,24 @@
+uuid: 658a71fe-8f8c-4d97-bcfc-d760d21fed46
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - user
+id: user.field_notifications_status
+field_name: field_notifications_status
+entity_type: user
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: Enable
+      label: Enable
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,21 @@
+uuid: f65ba1a0-cd6a-4a77-ab6b-b855c45bceeb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_release_service
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_release_service
+field_name: field_release_service
+entity_type: node
+bundle: deployed_releases
+label: Services
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

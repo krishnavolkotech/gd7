@@ -1,0 +1,24 @@
+uuid: 37d04f19-5777-41a2-b49a-159954a3fffa
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_services
+    - node.type.problem
+    - node.type.services
+id: node.problem.field_services
+field_name: field_services
+entity_type: node
+bundle: problem
+label: Services
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      services: services
+field_type: entity_reference

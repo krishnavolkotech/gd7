@@ -1,0 +1,11 @@
+uuid: 7ccab3ac-de7f-4d78-8d35-9d74cea2e245
+langcode: en
+status: true
+dependencies: {  }
+name: 'IM Ablage Attachments'
+type: im_upload_page
+description: 'Dieser Inhaltstyp stellt eine Seite bereit, auf der alle registrierten Mitglieder Daten hochladen können.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

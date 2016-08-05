@@ -1,0 +1,12 @@
+uuid: 08d8c109-8bce-4284-95d7-d62b86d37b48
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: downtimes-anonymous
+label: Anonymous
+weight: -102
+internal: true
+group_type: downtimes
+permissions: {  }

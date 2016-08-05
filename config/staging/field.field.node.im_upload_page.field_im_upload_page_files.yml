@@ -1,0 +1,46 @@
+uuid: 288c47d5-85b9-4ded-8d4e-fcc4c0d5fed7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_im_upload_page_files
+    - node.type.im_upload_page
+  module:
+    - file
+    - filefield_paths
+third_party_settings:
+  filefield_paths:
+    enabled: true
+    file_path:
+      value: '[group:title]/[content-type:name]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+    redirect: false
+    retroactive_update: false
+    active_updating: false
+    file_name:
+      value: '[file:ffp-name-only-original].[file:ffp-extension-original]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+id: node.im_upload_page.field_im_upload_page_files
+field_name: field_im_upload_page_files
+entity_type: node
+bundle: im_upload_page
+label: Dateien
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: im-ablage-attachments
+  file_extensions: 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp docx xlsx pptx zip mpp mm tar gz xsd'
+  max_filesize: ''
+  description_field: true
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file
