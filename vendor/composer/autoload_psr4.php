@@ -7,6 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'mikehaertl\\wkhtmlto\\' => array($vendorDir . '/mikehaertl/phpwkhtmltopdf/src'),
+    'mikehaertl\\tmp\\' => array($vendorDir . '/mikehaertl/php-tmpfile/src'),
+    'mikehaertl\\shellcommand\\' => array($vendorDir . '/mikehaertl/php-shellcommand/src'),
     'Zumba\\Mink\\Driver\\' => array($vendorDir . '/jcalderonzumba/mink-phantomjs-driver/src'),
     'Zumba\\GastonJS\\' => array($vendorDir . '/jcalderonzumba/gastonjs/src'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
@@ -43,7 +46,6 @@ return array(
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Goutte\\' => array($vendorDir . '/fabpot/goutte/Goutte'),
-    'Drupal\\composer_manager\\Composer\\' => array($baseDir . '/modules/contrib/composer_manager/src/Composer'),
     'Drupal\\Driver\\' => array($baseDir . '/drivers/lib/Drupal/Driver'),
     'Drupal\\Core\\Composer\\' => array($baseDir . '/core/lib/Drupal/Core/Composer'),
     'Drupal\\Core\\' => array($baseDir . '/core/lib/Drupal/Core'),
