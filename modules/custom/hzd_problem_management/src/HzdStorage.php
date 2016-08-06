@@ -242,16 +242,20 @@ static function saving_problem_node($values) {
 }
 
   static function insert_group_problems_view($selected_services) {
+
    // $sql = 'insert into {group_problems_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $group_id = $tempstore->get('Group_id');
     $group_id = $_SESSION['Group_id'];
-    if ($selected_services) {
+
+    if (!empty($selected_services)) {
+
       foreach ($selected_services as $service) {
+
         $counter++;
-        $query = db_insert('group_problems_view')->fields(array(
+        $query = \Drupal::database()->insert('group_problems_view')->fields(array(
         'group_id' => $group_id,
         'service_id' => $service
          ))->execute();
@@ -261,447 +265,461 @@ static function saving_problem_node($values) {
     return $counter; 
   }
 
-static function import_history_display_table($limit = NULL) {
-  $build = array();
-  
-  
-  $query = db_select('problem_import_history','pmh');
-  $query->Fields('pmh', array('problem_date', 'import_status', 'error_message'));
-  // $table_sort = $query->extend('Drupal\Core\Database\Query\TableSortExtender');
+	static function import_history_display_table($limit = NULL) {
+	  $build = array();
+	  
+	  
+	  $query = db_select('problem_import_history','pmh');
+	  $query->Fields('pmh', array('problem_date', 'import_status', 'error_message'));
+	  // $table_sort = $query->extend('Drupal\Core\Database\Query\TableSortExtender');
 
-  if($limit != 'all') {
-    $page_limit = ($limit ? $limit : 20);
-    $query->orderBy('id');
-    $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
-    $result = $pager->execute();
-  } else {
-    $result = $query->execute()->fetchAll();
-  }
+	  if($limit != 'all') {
+	    $page_limit = ($limit ? $limit : 20);
+	    $query->orderBy('id');
+	    $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
+	    $result = $pager->execute();
+	  } else {
+	    $result = $query->execute()->fetchAll();
+	  }
 
-  foreach($result as $row) {
-    $elements = array (
-      'date' => date('d-m-Y', $row->problem_date),
-      'time' => date('H:i', $row->problem_date),
-      'import_status' => $row->import_status,
-      'error' => $row->error_message,
-      );
-    $rows[] = $elements;
-  }
-  
-  $header = array(
-    '0' => array('data' => t('Date'), 'class' => 'import_date'),
-    '1' => array('data' => t('Time'), 'class' => 'time'),
-    '2' => array('data' => t('Import Status'), 'class' => 'import_status'),
-    '3' => array('data' => t('Error Message'), 'class' => 'error_message'),
-  );
+	  foreach($result as $row) {
+	    $elements = array (
+	      'date' => date('d-m-Y', $row->problem_date),
+	      'time' => date('H:i', $row->problem_date),
+	      'import_status' => $row->import_status,
+	      'error' => $row->error_message,
+	      );
+	    $rows[] = $elements;
+	  }
+	  
+	  $header = array(
+	    '0' => array('data' => t('Date'), 'class' => 'import_date'),
+	    '1' => array('data' => t('Time'), 'class' => 'time'),
+	    '2' => array('data' => t('Import Status'), 'class' => 'import_status'),
+	    '3' => array('data' => t('Error Message'), 'class' => 'error_message'),
+	  );
 
-  $build['history_table'] = array(
-    '#theme' => 'table', 
-    '#header' => $header,
-    '#rows' => $rows,
-    '#empty' => t('No Data Created Yet'),
-    '#attributes' => array(
-      'id' => 'sortable_new', 
-      '#class' => 'tablesorter'
-      ),
-  );
-  $build['pager'] = array(
-    '#type' => 'pager',
-    '#prefix' => '<div id="pagination">',
-    '#suffix' => '</div>',
-  );
-  // echo '<pre>';  print_r($build); exit;
-  return $build; 
-}
+	  $build['history_table'] = array(
+	    '#theme' => 'table', 
+	    '#header' => $header,
+	    '#rows' => $rows,
+	    '#empty' => t('No Data Created Yet'),
+	    '#attributes' => array(
+	      'id' => 'sortable_new', 
+	      '#class' => 'tablesorter'
+	      ),
+	  );
+	  $build['pager'] = array(
+	    '#type' => 'pager',
+	    '#prefix' => '<div id="pagination">',
+	    '#suffix' => '</div>',
+	  );
+	  // echo '<pre>';  print_r($build); exit;
+	  return $build; 
+	}
 
-static function build_ahah_query($form_state) {
-  $sql_where = array();
+	static function build_ahah_query($form_state) {
+	  $sql_where = array();
+	 if ($form_state['values']['service']) {
+	    $service = $form_state['values']['service'];
+	    $sql_where[] = array('and' => array(
+	      'field' => 'nfs.field_services_target_id',
+	      'value' => $service,
+	      'operator' => '=',
+	      )
+	    );
+	  }
 
- if ($form_state['values']['service']) {
-    $service = $form_state['values']['service'];
-    $sql_where[] = array('and' => array(
-      'field' => 'nfs.field_services_target_id',
-      'value' => $service,
-      'operator' => '=',
-      )
-    );
-  }
+	  if ($form_state['values']['string']) {
+	    $text = $form_state['values']['string'];
+	    if ($text != t('Search Title, Description, cause, Workaround, solution')) { 
 
-  if ($form_state['values']['string']) {
-    $text = $form_state['values']['string'];
-    if ($text != t('Search Title, Description, cause, Workaround, solution')) { 
+	      $query = db_select('node_field_data', 'nfd');
+	      $query->Fields('nfd', array('nid'));
+	      // $or = db_or();
+	      // $or->condition('field_s_no_value', $text, '=');
+	      // $or->condition('nfd.title', '%' . $text . '%' , 'like');
+	      // $or->condition('nrb.body_value', '%' . $text . '%' , 'like'); 
+	      // $or->condition('field_work_around_value', '%' . $text . '%' , 'like');
+	      $sql_where[] = array( 'or' => 
+		array(
+		  array(      
+		    'field' => 'nfsn.field_s_no_value',
+		    'value' => $text,
+		    'operator' => '=',
+		  ), 
+		  array(
+		    'field' => 'nfd.title',
+		    'value' => '%' . $text . '%',
+		    'operator' => 'like',
+		  ), 
+		  array(     
+		    'field' => 'nb.body_value',
+		    'value' => '%' . $text . '%',
+		    'operator' => 'like',
+		  ),
+		  array(     
+		    'field' => 'nfwa.field_work_around_value',
+		    'value' => '%' . $text . '%',
+		    'operator' => 'like',
+		  ),
+		)
+	      );
 
-      $query = db_select('node_field_data', 'nfd');
-      $query->Fields('nfd', array('nid'));
-      // $or = db_or();
-      // $or->condition('field_s_no_value', $text, '=');
-      // $or->condition('nfd.title', '%' . $text . '%' , 'like');
-      // $or->condition('nrb.body_value', '%' . $text . '%' , 'like'); 
-      // $or->condition('field_work_around_value', '%' . $text . '%' , 'like');
-      $sql_where[] = array( 'or' => 
-        array(
-          array(      
-            'field' => 'nfsn.field_s_no_value',
-            'value' => $text,
-            'operator' => '=',
-          ), 
-          array(
-            'field' => 'nfd.title',
-            'value' => '%' . $text . '%',
-            'operator' => 'like',
-          ), 
-          array(     
-            'field' => 'nb.body_value',
-            'value' => '%' . $text . '%',
-            'operator' => 'like',
-          ),
-          array(     
-            'field' => 'nfwa.field_work_around_value',
-            'value' => '%' . $text . '%',
-            'operator' => 'like',
-          ),
-        )
-      );
+	      $query->join('node_revision', 'nr', 'nfd.nid = nr.nid');
+	      $query->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
+	      $query->join('node__field_s_no', 'nfsn', 'nb.entity_id = nfsn.entity_id');
+	      $query->join('node__field_problem_status', 'nfps', 'nfsn.entity_id = nfps.entity_id');
+	      $query->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
+	      $query->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
+	      $query->join('node__field_work_around', 'nfwa', 'nff.entity_id = nfwa.entity_id');
+	      
+	       $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
+	  $group_problems_view_service_id_query->addField('gpv', 'service_id');
+	  $group_problems_view_service_id_query->conditions('group_id', $_SESSION['Group_id'] ? $_SESSION['Group_id']: self::PROBLEM_MANAGEMENT , '=');
+	  $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
+	  $group_problems_view = array();
+	  if (!empty($group_problems_view_service)) {
+	    foreach($group_problems_view_service as $service) {
+	      $group_problems_view[] = $service->service_id;
+	    }
+	  }
 
-      $query->join('node_revision', 'nr', 'nfd.nid = nr.nid');
-      $query->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
-      $query->join('node__field_s_no', 'nfsn', 'nb.entity_id = nfsn.entity_id');
-      $query->join('node__field_problem_status', 'nfps', 'nfsn.entity_id = nfps.entity_id');
-      $query->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
-      $query->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
-      $query->join('node__field_work_around', 'nfwa', 'nff.entity_id = nfwa.entity_id');
-      
-      $group_problems_view_service_id_query = db_select('group_problems_view', 'gpv');
-      $group_problems_view_service_id_query->Fields('gpv', array('service_id'));
-      $group_problems_view_service_id_query->conditions('group_id', $_SESSION['Group_id']?$_SESSION['Group_id']: self::PROBLEM_MANAGEMENT ,'=');
-      $group_problems_view_service_id = $group_problems_view_service_id_query->execute()->fetchCol();
+	      $or = db_or();
+	      if (!empty($sql_where)) {
+		foreach ($sql_where as $where) {
+		  foreach ($where as $conjuction => $condition) {
+		    if ($conjuction == 'and') {
+		      $query->condition($condition['field'], $condition['value'], $condition['operator']);
+		    } else if ( $conjuction == 'or') {
+		      foreach ($condition as $conditions) {
+		        $or->condition($conditions['field'], $conditions['value'], $conditions['operator']);
+		      } 
+		      $query->condition($or); 
+		    }
+		  }
+		}
+	      }
 
-      $or = db_or();
-      if (!empty($sql_where)) {
-        foreach ($sql_where as $where) {
-          foreach ($where as $conjuction => $condition) {
-            if ($conjuction == 'and') {
-              $query->condition($condition['field'], $condition['value'], $condition['operator']);
-            } else if ( $conjuction == 'or') {
-              foreach ($condition as $conditions) {
-                $or->condition($conditions['field'], $conditions['value'], $conditions['operator']);
-              } 
-              $query->condition($or); 
-            }
-          }
-        }
-      }
-      $query->condition('nfsn.field_s_no_value', $text, '=');
-      $query->condition('nfs.field_services_target_id', $group_problems_view_service_id,'IN');
+	      $query->condition('nfsn.field_s_no_value', $text, '=');
+	      if (!empty($group_problems_view)) {
+		$query->condition('nfs.field_services_target_id', $group_problems_view_service_id,'IN');
+	      }
+	      $current_path = \Drupal::service('path.current')->getPath();
+	      $get_uri = explode('/', $current_path);
 
-      $current_path = \Drupal::service('path.current')->getPath();
-      $get_uri = explode('/', $current_path);
-
-      if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
-        $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems/archived_problems':'problems/archived_problems');
-       // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
-        $query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
-      }
-      else {
-        $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems':'problems');
-        $query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
-      }
-      $sid = $query->execute()->fetchCol();
-    }
-  }
-
-
-  if ($form_state['values']['function']) {
-    $function = trim($form_state['values']['function']);
-    $sql_where[] = array( 'and' => 
-      array(
-        'field' => 'nff.field_function_value',
-        'value' => $function,
-        'operator' => '=',
-      ) 
-    );
-  }
-  
-  if ($form_state['values']['release']) {
-    $release = trim($form_state['values']['release']);
-      $sql_where[] = array(
-        'and' => array(
-          'field' => 'nfr.field_release_value',
-          'value' => $release,
-          'operator' => '=',
-        )
-      );
-  }
-  
-  if ($form_state['values']['limit']) {
-    $limit = $form_state['values']['limit'];
-  }
-
-  if ($sid) {
-      $params = array(
-			  'url' => $url,
-			  );
-       $params_seralized = serialize($params);
-       $_SESSION['params_seralized'] = $params_seralized;
-  }
-  if ($sid) {
-    return array("sid" => $sid,"query" => $sql_where);
-  }
-  else {
-    return array("query" => $sql_where);
-  }
-}
+	      if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
+		$url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems/archived_problems':'problems/archived_problems');
+	       // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
+		$query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
+	      }
+	      else {
+		$url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems':'problems');
+		$query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
+	      }
+	      $sid = $query->execute()->fetchCol();
+	    }
+	  }
 
 
-static function ahah_problems_display($form, $form_state, $sql_where = NULL, $string = NULL, $limit = NULL) {
-  $form_state->setValue('submitted', FALSE);
-  $form_build_id = $_POST['form_build_id'];
-  // FormCache::getCache($form_build_id, $form_state); 
-  if ($_POST) {
-    $service = $form_state->getValue('service'); 
-  }
+	  if ($form_state['values']['function']) {
+	    $function = trim($form_state['values']['function']);
+	    $sql_where[] = array( 'and' => 
+	      array(
+		'field' => 'nff.field_function_value',
+		'value' => $function,
+		'operator' => '=',
+	      ) 
+	    );
+	  }
+	  
+	  if ($form_state['values']['release']) {
+	    $release = trim($form_state['values']['release']);
+	      $sql_where[] = array(
+		'and' => array(
+		  'field' => 'nfr.field_release_value',
+		  'value' => $release,
+		  'operator' => '=',
+		)
+	      );
+	  }
+	  
+	  if ($form_state['values']['limit']) {
+	    $limit = $form_state['values']['limit'];
+	  }
 
-  //Geting functions and release data
-  $default_function_releases = self::get_functions_release($string, $service);
-  $form['function']['#options'] = !empty($default_function_releases['functions']) ? $default_function_releases['functions'] : $this->t("Select Service");
-  // $form['function']['#options'] = $default_function_releases['functions'];
-  $form['release']['#options'] = $default_function_releases['releases'];
-  //  FormCache::setCache($form_build_id, $form, $form_state);
-  $_SESSION['sql_where'] = $sql_where;
-  $_SESSION['limit'] = $limit;
-
-  $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>" ;
-  $result['content']['problems_filter_element'] = \Drupal::formBuilder()->getForm('Drupal\problem_management\Form\ProblemFilterFrom', $string);
-  $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
-  $result['content']['problems_reset_element']['form'] = HzdproblemmanagementHelper::problem_reset_element();
-  $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
-  $result['content']['problems_default_display'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
-  $result['content']['#suffix'] = "</div>";
-
-  return $result;
-}
+	  if ($sid) {
+	      $params = array(
+				  'url' => $url,
+				  );
+	       $params_seralized = serialize($params);
+	       $_SESSION['params_seralized'] = $params_seralized;
+	  }
+	  if ($sid) {
+	    return array("sid" => $sid,"query" => $sql_where);
+	  }
+	  else {
+	    return array("query" => $sql_where);
+	  }
+	}
 
 
-/*
- *Function for populating the Functions and releses option values
-*/
-static  function get_functions_release($string = NULL, $service = NULL) {
-  $sql_query = db_select('node__field_function', 'nff');
-  $sql_query->join('node__field_problem_status', 'nfps', 'nff.entity_id = nfps.entity_id');
-  $sql_query->join('node__field_release', 'nfr', 'nfps.entity_id = nfr.entity_id');
-  $sql_query->join('node__field_services', 'nfs', 'nfr.entity_id = nfs.entity_id');
-  $sql_query->addField('nff', 'field_function_value', 'function');
-  $sql_query->addField('nfr', 'field_release_value', 'prob_release');
-  $sql_query->condition('nfs.field_services_target_id', $service, '=');
+	static function ahah_problems_display($form, $form_state, $sql_where = NULL, $string = NULL, $limit = NULL) {
+	  $form_state->setValue('submitted', FALSE);
+	  $form_build_id = $_POST['form_build_id'];
+	  // FormCache::getCache($form_build_id, $form_state); 
+	  if ($_POST) {
+	    $service = $form_state->getValue('service'); 
+	  }
 
-  if ($string == 'archived_problems') {
-    $sql_query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
-    $sql_query->orderBy('nff.field_function_value');
-  }
-  else {
-    $sql_query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
-    $sql_query->orderBy('nff.field_function_value');
-  }
-  $default_function[] = t("Select Function");
-  $default_release[] = t("Select Release");
-  $functions = $sql_query->execute()->fetchAll();
-  foreach ($functions as $function) {
-    $default_function[$function->function] = $function->function;
-    if ($function->prob_release) {
-      $default_release[$function->prob_release] = $function->prob_release;
-    }
-  }
+	  //Geting functions and release data
+	  $default_function_releases = self::get_functions_release($string, $service);
+	  $form['function']['#options'] = !empty($default_function_releases['functions']) ? $default_function_releases['functions'] : $this->t("Select Service");
+	  // $form['function']['#options'] = $default_function_releases['functions'];
+	  $form['release']['#options'] = $default_function_releases['releases'];
+	  //  FormCache::setCache($form_build_id, $form, $form_state);
+	  $_SESSION['sql_where'] = $sql_where;
+	  $_SESSION['limit'] = $limit;
 
-  return array('releases' => $default_release, 'functions' => $default_function);
-}
+	  $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>" ;
+	  $result['content']['problems_filter_element'] = \Drupal::formBuilder()->getForm('Drupal\problem_management\Form\ProblemFilterFrom', $string);
+	  $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
+	  $result['content']['problems_reset_element']['form'] = HzdproblemmanagementHelper::problem_reset_element();
+	  $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
+	  $result['content']['problems_default_display'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
+	  $result['content']['#suffix'] = "</div>";
 
-/*
- * Problems display table
- * @sql_where: sql query for filtering the problems.
- * @string: type of problem(current, archived)
- * @limit: limit of problems to display per page.
+	  return $result;
+	}
 
- * archived problems will have the status "geschlossen".
- * problems which does not have the status 'geschlossen' will come under current
- * Details will displays the detailed problems display page where back to search is available.
- * While back from search same value need to be shown to user.
- * values are stored in session for showing the same results while back to search.
- */
-static function problems_default_display($sql_where = NULL, $string = NULL, $limit = NULL) { 
-  $sql_select = db_select('node_field_data', 'nfd');
-  $sql_select->Fields('nfd', array('nid'));
-  $build = array();
-  
-  $request = \Drupal::request();
-  $serialized_data = unserialize($_SESSION['problems_query']);
-  // echo '<pre>';  print_r($serialized_data['sql']); exit;
 
-  $sql_where = $sql_where?$sql_where:$serialized_data['sql'];
-  $string = $string?$string:$serialized_data['string'];
-  $limit = $limit?$limit:$serialized_data['limit'];
+	/*
+	 *Function for populating the Functions and releses option values
+	*/
+	static  function get_functions_release($string = NULL, $service = NULL) {
+	  $sql_query = db_select('node__field_function', 'nff');
+	  $sql_query->join('node__field_problem_status', 'nfps', 'nff.entity_id = nfps.entity_id');
+	  $sql_query->join('node__field_release', 'nfr', 'nfps.entity_id = nfr.entity_id');
+	  $sql_query->join('node__field_services', 'nfs', 'nfr.entity_id = nfs.entity_id');
+	  $sql_query->addField('nff', 'field_function_value', 'function');
+	  $sql_query->addField('nfr', 'field_release_value', 'prob_release');
+	  $sql_query->condition('nfs.field_services_target_id', $service, '=');
 
-  if ($string == 'archived_problems') {
-    $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems/archived_problems':'problems/archived_problems');
-   // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
-    $sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '=');
-  }
-  else {
-    $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems':'problems');
-   // $filter_where = " and nfps.field_problem_status_value != 'geschlossen' ";
-    $sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
-  }
-  // $sql_select = " SELECT n.nid ";
+	  if ($string == 'archived_problems') {
+	    $sql_query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
+	    $sql_query->orderBy('nff.field_function_value');
+	  }
+	  else {
+	    $sql_query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
+	    $sql_query->orderBy('nff.field_function_value');
+	  }
+	  $default_function[] = t("Select Function");
+	  $default_release[] = t("Select Release");
+	  $functions = $sql_query->execute()->fetchAll();
+	  foreach ($functions as $function) {
+	    $default_function[$function->function] = $function->function;
+	    if ($function->prob_release) {
+	      $default_release[$function->prob_release] = $function->prob_release;
+	    }
+	  }
 
-  $sql_select->join('node_revision', 'nr', 'nfd.nid = nr.nid');
-  $sql_select->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
-  $sql_select->join('node__field_processing', 'nfp', 'nfd.nid = nfp.entity_id');
-  $sql_select->join('node__field_problem_status', 'nfps', 'nfp.entity_id = nfps.entity_id');
-  $sql_select->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
- // $sql_select->join('node__field_problem_eroffnet', 'nfpe', 'nfsn.entity_id = nfpe.entity_id');
-  $sql_select->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
-  $sql_select->join('node__field_release', 'nfr', 'nff.entity_id = nfr.entity_id');
-  $sql_select->join('node__field_work_around', 'nfwa', 'nfr.entity_id = nfwa.entity_id');
-  $sql_select->join('node__field_s_no', 'nfsn', 'nfwa.entity_id = nfsn.entity_id');
+	  return array('releases' => $default_release, 'functions' => $default_function);
+	}
 
-  $group_problems_view_service_id_query = db_select('group_problems_view', 'gpv');
-  $group_problems_view_service_id_query->Fields('gpv', array('service_id'));
-  $group_problems_view_service_id_query->conditions('group_id', $_SESSION['Group_id']?$_SESSION['Group_id']: self::PROBLEM_MANAGEMENT ,'=');
-  $group_problems_view_service_id = $group_problems_view_service_id_query->execute()->fetchCol();
-  
-  if (!empty($sql_where)) {
-          $or = db_or();
-    foreach ($sql_where as $where) {
-      foreach ($where as $conjuction => $condition) {
-        if ($conjuction == 'and') {
-          $sql_select->condition($condition['field'], $condition['value'], $condition['operator']);
-        } else if ( $conjuction == 'or') {
-          foreach ($condition as $conditions) {
-            $or->condition($conditions['field'], $conditions['value'], $conditions['operator']);
-          } 
-          $sql_select->condition($or); 
-        }
-        // $query->condition($sql_where);
-      }
-    }
-  }
+	/*
+	 * Problems display table
+	 * @sql_where: sql query for filtering the problems.
+	 * @string: type of problem(current, archived)
+	 * @limit: limit of problems to display per page.
 
-  $sql_select->condition('nfs.field_services_target_id', $group_problems_view_service_id,'IN');
-  if($limit == 'all') {
-    $result = $sql_select->execute()->fetchAll();
-  }
-  else {
-    $page_limit = ($limit ? $limit : self::DISPLAY_LIMIT);
-    $pager = $sql_select->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
-    $result = $pager->execute()->fetchAll();
-  }
+	 * archived problems will have the status "geschlossen".
+	 * problems which does not have the status 'geschlossen' will come under current
+	 * Details will displays the detailed problems display page where back to search is available.
+	 * While back from search same value need to be shown to user.
+	 * values are stored in session for showing the same results while back to search.
+	 */
+	static function problems_default_display($sql_where = NULL, $string = NULL, $limit = NULL) { 
+	  $sql_select = db_select('node_field_data', 'nfd');
+	  $sql_select->Fields('nfd', array('nid'));
+	  $build = array();
+	  
+	  $request = \Drupal::request();
+	  $serialized_data = unserialize($_SESSION['problems_query']);
+	  // echo '<pre>';  print_r($serialized_data['sql']); exit;
 
-  $req_service = $request->request->get('service');
-  $req_release = $request->request->get('release');
-  $req_function = $request->request->get('function');
-  $req_string = $request->request->get('string');
-  $req_limit = $request->request->get('limit');
-  $page = $request->request->get('page');
+	  $sql_where = $sql_where?$sql_where:$serialized_data['sql'];
+	  $string = $string?$string:$serialized_data['string'];
+	  $limit = $limit?$limit:$serialized_data['limit'];
 
-  $rows = array();
-  $status_msgs = array('Neues Problem', 'Known Error', 'Geschlossen', 'behoben');
-  
-  foreach ($result as $problems_info) {
-    $problems_node = node_load($problems_info->nid);
+	  if ($string == 'archived_problems') {
+	    $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems/archived_problems':'problems/archived_problems');
+	   // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
+	    $sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '=');
+	  }
+	  else {
+	    $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems':'problems');
+	   // $filter_where = " and nfps.field_problem_status_value != 'geschlossen' ";
+	    $sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
+	  }
+	  // $sql_select = " SELECT n.nid ";
 
-    $service_query = db_query("select title 
-      from {node_field_data}
-      where nid = :mlid", array( ':mlid' => $problems_node->field_services->target_id))->fetchAssoc();
-    $service = $service_query['title'];    
-    $last_update = $problems_node->field_processing->value;
+	  $sql_select->join('node_revision', 'nr', 'nfd.nid = nr.nid');
+	  $sql_select->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
+	  $sql_select->join('node__field_processing', 'nfp', 'nfd.nid = nfp.entity_id');
+	  $sql_select->join('node__field_problem_status', 'nfps', 'nfp.entity_id = nfps.entity_id');
+	  $sql_select->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
+	 // $sql_select->join('node__field_problem_eroffnet', 'nfpe', 'nfsn.entity_id = nfpe.entity_id');
+	  $sql_select->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
+	  $sql_select->join('node__field_release', 'nfr', 'nff.entity_id = nfr.entity_id');
+	  $sql_select->join('node__field_work_around', 'nfwa', 'nfr.entity_id = nfwa.entity_id');
+	  $sql_select->join('node__field_s_no', 'nfsn', 'nfwa.entity_id = nfsn.entity_id');
 
-    unset($_SESSION['problems_query']);
-        $query_params = array(
-        'nid' => $problems_node->nid->value,
-        'page' => $page ,
-        'type' => $string , 
-        'sql' => $sql_where, 
-        'service' => $req_service, 
-        'function' => $req_function, 
-        'string' => $req_string,
-        'release' => $req_release, 
-        'limit'  => $limit,
-        'url' => $url,
-        'from' => 1 
-        );
-    
-    $query_seralized = serialize($query_params);  
-    $_SESSION['problems_query'] = $query_seralized;
-    $url = Url::fromUserInput('/node/' . $problems_node->nid->value, array(
-               'attributes' => array(
-                   'class' => 'problems_details_link',
-                   'nid' => $problems_node->nid->value,
-                   'query' => $query_seralized,
-                   )));
+	  $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
+	  $group_problems_view_service_id_query->addField('gpv', 'service_id');
+	  $group_problems_view_service_id_query->conditions('group_id', $_SESSION['Group_id'] ? $_SESSION['Group_id']: self::PROBLEM_MANAGEMENT , '=');
+	  $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
+	  $group_problems_view = array();
+	  if (!empty($group_problems_view_service)) {
+	    foreach($group_problems_view_service as $service) {
+	      $group_problems_view[] = $service->service_id;
+	    }
+	  }
 
-    $download_link = array('#title' => array(
-      '#markup' => $problems_node->field_s_no->value
-    ), 
-    '#type' => 'link', 
-    '#url' => $url
-  );
+	  if (!empty($sql_where)) {
+		  $or = db_or();
+	    foreach ($sql_where as $where) {
+	      foreach ($where as $conjuction => $condition) {
+		if ($conjuction == 'and') {
+		  $sql_select->condition($condition['field'], $condition['value'], $condition['operator']);
+		} else if ( $conjuction == 'or') {
+		  foreach ($condition as $conditions) {
+		    $or->condition($conditions['field'], $conditions['value'], $conditions['operator']);
+		  } 
+		  $sql_select->condition($or); 
+		}
+		// $query->condition($sql_where);
+	      }
+	    }
+	  }
+	  if (!empty($group_problems_view)) {
+	    $sql_select->condition('nfs.field_services_target_id', $group_problems_view, 'IN');
+	  }
+	  if($limit == 'all') {
+	    $result = $sql_select->execute()->fetchAll();
+	  }
+	  else {
+	    $page_limit = ($limit ? $limit : self::DISPLAY_LIMIT);
+	    $pager = $sql_select->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
+	    $result = $pager->execute()->fetchAll();
+	  }
 
-    $link_path = \Drupal::service('renderer')->renderRoot($download_link);
-    $user_input = '/node/' . $problems_node->nid->value;
-    $elements = array( 
-      'service' => $service,
-      'function' => $problems_node->field_function->value,
-      'release' => $problems_node->field_release->value,
-      'title' => $problems_node->title->value,
-      'status' => $problems_node->field_problem_status->value,
-      'priority' => $problems_node->field_priority->value,
-      'closed' => $last_update,
-      'field_version' => $problems_node->field_version->value,
-    //  'actions' =>  $url_data->getGeneratedLink(),
-      'actions' =>  $link_path,
-      );
-    if ($string == 'archived_problems') {
-      $elements['closed'] =  $problems_node->field_processing->value;
-    }
-    $rows[] = $elements;
-  }
+	  $req_service = $request->request->get('service');
+	  $req_release = $request->request->get('release');
+	  $req_function = $request->request->get('function');
+	  $req_string = $request->request->get('string');
+	  $req_limit = $request->request->get('limit');
+	  $page = $request->request->get('page');
 
-  $header = array(
-    0 => array('data' => t('Service'), 'class' => 'service'),
-    1 => array('data' => t('Function'), 'class' => 'function'),
-    2 => array('data' => t('Release'), 'class' => 'release'),
-    4 => array('data' => t('Title'), 'class' => 'problem_title'),
-    5 => array('data' => t('Status'), 'class' => 'status'),
-    6 => array('data' => t('Priority'), 'class' => 'priority'),
-    7 => array('data' => t('Last Update'), 'class' => 'last_update'),
-    8 => array('data' => t('Fixed With Release'), 'class' => 'field_version'),
-    9 => array('data' => t('SDCallID'), 'class' => 'action'),
-  );
-  if ($string == 'archived_problems') {
-    $header[7] = array('data' => t('Closed On'), 'class' => 'closed');
-  }
-  if ($rows) {
-    $build['problem_table'] = array(
-     '#theme' => 'table', 
-     '#header' => $header,
-     '#rows' => $rows,
-     '#empty' => t('No Data Created Yet'),
-     '#attributes' => ['id' => "sortable", 'class' =>"tablesorter"],
-    );
+	  $rows = array();
+	  $status_msgs = array('Neues Problem', 'Known Error', 'Geschlossen', 'behoben');
+	  
+	  foreach ($result as $problems_info) {
+	    $problems_node = node_load($problems_info->nid);
 
-    $build['pager'] = array(
-      '#type' => 'pager',
-      '#prefix' => '<div id="pagination">',
-      '#suffix' => '</div>',
-    );
-    return $build; 
-  }
-  return $build = array('#markup' => t("No Data Created Yet"));  
- }
+	    $service_query = db_query("select title 
+	      from {node_field_data}
+	      where nid = :mlid", array( ':mlid' => $problems_node->field_services->target_id))->fetchAssoc();
+	    $service = $service_query['title'];    
+	    $last_update = $problems_node->field_processing->value;
 
-static function delete_group_problems_view() {
-    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
-    db_delete('group_problems_view')->condition('group_id', $group_id, '=')
-    ->execute();
-  }
-}
+	    unset($_SESSION['problems_query']);
+		$query_params = array(
+		'nid' => $problems_node->nid->value,
+		'page' => $page ,
+		'type' => $string , 
+		'sql' => $sql_where, 
+		'service' => $req_service, 
+		'function' => $req_function, 
+		'string' => $req_string,
+		'release' => $req_release, 
+		'limit'  => $limit,
+		'url' => $url,
+		'from' => 1 
+		);
+	    
+	    $query_seralized = serialize($query_params);  
+	    $_SESSION['problems_query'] = $query_seralized;
+	    $url = Url::fromUserInput('/node/' . $problems_node->nid->value, array(
+		       'attributes' => array(
+		           'class' => 'problems_details_link',
+		           'nid' => $problems_node->nid->value,
+		           'query' => $query_seralized,
+		           )));
+
+	    $download_link = array('#title' => array(
+	      '#markup' => $problems_node->field_s_no->value
+	    ), 
+	    '#type' => 'link', 
+	    '#url' => $url
+	  );
+
+	    $link_path = \Drupal::service('renderer')->renderRoot($download_link);
+	    $user_input = '/node/' . $problems_node->nid->value;
+	    $elements = array( 
+	      'service' => $service,
+	      'function' => $problems_node->field_function->value,
+	      'release' => $problems_node->field_release->value,
+	      'title' => $problems_node->title->value,
+	      'status' => $problems_node->field_problem_status->value,
+	      'priority' => $problems_node->field_priority->value,
+	      'closed' => $last_update,
+	      'field_version' => $problems_node->field_version->value,
+	    //  'actions' =>  $url_data->getGeneratedLink(),
+	      'actions' =>  $link_path,
+	      );
+	    if ($string == 'archived_problems') {
+	      $elements['closed'] =  $problems_node->field_processing->value;
+	    }
+	    $rows[] = $elements;
+	  }
+
+	  $header = array(
+	    0 => array('data' => t('Service'), 'class' => 'service'),
+	    1 => array('data' => t('Function'), 'class' => 'function'),
+	    2 => array('data' => t('Release'), 'class' => 'release'),
+	    4 => array('data' => t('Title'), 'class' => 'problem_title'),
+	    5 => array('data' => t('Status'), 'class' => 'status'),
+	    6 => array('data' => t('Priority'), 'class' => 'priority'),
+	    7 => array('data' => t('Last Update'), 'class' => 'last_update'),
+	    8 => array('data' => t('Fixed With Release'), 'class' => 'field_version'),
+	    9 => array('data' => t('SDCallID'), 'class' => 'action'),
+	  );
+	  if ($string == 'archived_problems') {
+	    $header[7] = array('data' => t('Closed On'), 'class' => 'closed');
+	  }
+	  if ($rows) {
+	    $build['problem_table'] = array(
+	     '#theme' => 'table', 
+	     '#header' => $header,
+	     '#rows' => $rows,
+	     '#empty' => t('No Data Created Yet'),
+	     '#attributes' => ['id' => "sortable", 'class' =>"tablesorter"],
+	    );
+
+	    $build['pager'] = array(
+	      '#type' => 'pager',
+	      '#prefix' => '<div id="pagination">',
+	      '#suffix' => '</div>',
+	    );
+	    return $build; 
+	  }
+	  return $build = array('#markup' => t("No Data Created Yet"));  
+	 }
+
+	static function delete_group_problems_view() {
+	    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
+	    $group_id = $_SESSION['Group_id'];
+	    db_delete('group_problems_view')->condition('group_id', $group_id, '=')
+	    ->execute();
+	  }
+	}

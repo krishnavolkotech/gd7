@@ -52,8 +52,18 @@ class ProblemsettingsForm extends FormBase {
     $current_route_match = \Drupal::service('current_route_match');
     $breadcrumb = $breadcrumb_manager->build($current_route_match);
 
-    $default_services[$services['service_id']] = HzdservicesStorage::get_default_services_current_session();
+    //Getting the default Services
+//    $query = db_query("select service_id from {group_problems_view} where group_id = %d", $_SESSION['Group_id']);
 
+    $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
+    $group_problems_view_service_query->Fields('gpv', array('service_id'));
+    $group_problems_view_service_query->conditions('group_id', $_SESSION['Group_id'] ? $_SESSION['Group_id']: self::PROBLEM_MANAGEMENT ,'=');
+    $group_problems_view_service = $group_problems_view_service_query->execute()->fetchAll();
+
+    foreach($group_problems_view_service as $service) {
+      $default_services[$service->service_id] = $service->service_id;
+    }
+    // echo '<pre>'; print_r($default_services); exit;
     $type = 'problems';
     $options = HzdservicesStorage::get_related_services($type);
 
@@ -85,7 +95,7 @@ class ProblemsettingsForm extends FormBase {
       $form['services'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
-        '#default_value' => ($default_services?$default_services:array('')),
+        '#default_value' => ($default_services ? $default_services : array('')),
         '#weight' => -6
         );
       
@@ -120,10 +130,11 @@ class ProblemsettingsForm extends FormBase {
     // db_query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);
     
     HzdStorage::delete_group_problems_view();
-  
-    $selected_services = $form['services']['#post']['services'];
+
+    $selected_services = $form_state->getValue('services');
+
     $counter = HzdStorage::insert_group_problems_view($selected_services);
-    
+
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $gid = $tempstore->get('Group_id');
     $gid = $_SESSION['Group_id'];

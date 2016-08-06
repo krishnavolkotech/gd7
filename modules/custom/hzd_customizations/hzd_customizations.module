@@ -175,6 +175,17 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
           '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
       );
   }
+  if ($form_id == 'views_exposed_form' && ($form['#id'] == 'views-exposed-form-user-admin-people-page-1' || $form['#id'] == 'views-exposed-form-user-admin-people-page-2')) {
+      $db = \Drupal::database();
+      $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
+      $groups = '<div class="user-groups">';
+      foreach ($result as $group) {
+          $url = Url::fromUserInput('/admin/people/list/' . strtolower($group->lname));
+          $groups .= '<span class="user-group-list">'.\Drupal::l($group->lname, $url).'</span>';
+      }
+      $groups .= '</div>';
+      $form['glossarylist'] = array('#markup' => $groups);
+  }
   return $form;
 }
 
