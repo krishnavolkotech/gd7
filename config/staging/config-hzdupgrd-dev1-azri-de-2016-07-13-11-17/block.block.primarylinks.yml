@@ -1,0 +1,33 @@
+uuid: 5481a08a-cd1b-4fb3-a3fa-c7d272ebb484
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.primary-links
+  module:
+    - language
+    - system
+  theme:
+    - hzd
+id: primarylinks
+theme: hzd
+region: navigation_collapsible
+weight: -16
+provider: null
+plugin: 'system_menu_block:primary-links'
+settings:
+  id: 'system_menu_block:primary-links'
+  label: 'Primary links'
+  provider: system
+  label_display: '0'
+  level: 1
+  depth: 0
+visibility:
+  language:
+    id: language
+    langcodes:
+      en: en
+      de: de
+    negate: false
+    context_mapping:
+      language: '@language.current_language_context:language_interface'

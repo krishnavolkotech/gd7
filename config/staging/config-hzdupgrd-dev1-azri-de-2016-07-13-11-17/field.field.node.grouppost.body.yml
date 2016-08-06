@@ -1,0 +1,22 @@
+uuid: 6537f49a-1a23-48b0-a955-ddef0a7bb93c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.grouppost
+  module:
+    - text
+id: node.grouppost.body
+field_name: body
+entity_type: node
+bundle: grouppost
+label: Inhalt
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+field_type: text_with_summary

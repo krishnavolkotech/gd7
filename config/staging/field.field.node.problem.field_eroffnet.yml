@@ -1,0 +1,19 @@
+uuid: 29971f5a-8975-4fef-92c1-b95d6b658483
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_eroffnet
+    - node.type.problem
+id: node.problem.field_eroffnet
+field_name: field_eroffnet
+entity_type: node
+bundle: problem
+label: Eroffnet
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

@@ -1,0 +1,22 @@
+uuid: 2a37b546-a113-4bc6-b35b-bd179a28181f
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.service_profile
+id: node.service_profile.status
+field_name: status
+entity_type: node
+bundle: service_profile
+label: null
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

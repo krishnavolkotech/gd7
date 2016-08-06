@@ -1,0 +1,25 @@
+uuid: 8301c294-7b93-4760-b6c0-5ca503c0be1c
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.print
+    - field.field.node.non_production_environment.field_non_production_state
+    - node.type.non_production_environment
+  module:
+    - text
+    - user
+id: node.non_production_environment.print
+targetEntityType: node
+bundle: non_production_environment
+mode: print
+content:
+  field_non_production_state:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden: {  }

@@ -1,0 +1,20 @@
+uuid: a644def5-42ad-45c0-bb1e-3693bb3c424d
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - taxonomy
+id: node.faq_seite
+field_name: faq_seite
+entity_type: node
+type: entity_reference
+settings:
+  target_type: taxonomy_term
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

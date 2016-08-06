@@ -1,0 +1,24 @@
+import_path_csv_rejected: null
+import_path_csv_released: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/released.csv
+import_path_csv_locked: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/locked.csv
+import_path_csv_progress: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/inprogress.csv
+import_time_releases: '03:40'
+import_mail_releases: sureshkumara+release@azrisolutions.com
+import_alias_releases: release
+import_path_csv_initial_released: /srv/www/betriebsportal/prd/imports/release/DSL-KONSENS_Gesamtuebersicht_in_Bearbeitung_befindlicher_Release_mit_Links.csv
+secure_download_text:
+  value: "<p>Die Dokumentation für dieses Release ist nicht im Betriebsportal verfügbar, da es sich hierbei um ein geschütztes Release handelt.<br />\r\n<br />\r\nFalls Sie die erforderlichen Berechtigungen besitzen, können Sie diese mit dem folgenden Link direkt aus der DSL herunterladen.</p>\r\n"
+  format: basic_html
+failed_download_text:
+  value: "<p>Die Dokumentation für dieses Release ist momentan leider nicht&nbsp;im Betriebsportal verfügbar. Falls Sie die erforderlichen Berechtigungen besitzen, können Sie diese mit dem folgenden Link direkt aus der DSL herunterladen.</p>\r\n"
+  format: basic_html
+release_mail_body:
+  value: "<p>Der Download der Release-Dokumentation ist drei Mal fehlgeschlagen.</p>\r\n"
+  format: basic_html
+release_not_import: sureshkumara@azrisolutions.com
+release_import_username: admin
+release_import_password: Azrihzdu@32
+release_vocabulary_id: '8'
+konsens_service_term_id: '459'
+ex_eoss_service_term_id: '460'
+import_path_csv_ex_eoss: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/released_exeoss.csv

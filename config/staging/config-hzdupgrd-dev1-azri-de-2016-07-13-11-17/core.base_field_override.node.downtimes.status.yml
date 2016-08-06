@@ -1,0 +1,22 @@
+uuid: f841d3ad-8ac2-48e4-baab-68d9e7ee2df7
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.status
+field_name: status
+entity_type: node
+bundle: downtimes
+label: null
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

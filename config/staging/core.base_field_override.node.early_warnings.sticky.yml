@@ -1,0 +1,22 @@
+uuid: a473c588-98b0-4ff1-9e6c-e621c0428927
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.early_warnings
+id: node.early_warnings.sticky
+field_name: sticky
+entity_type: node
+bundle: early_warnings
+label: 'Sticky at the top of lists'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,42 @@
+uuid: 74d776c2-6f89-4a22-aacc-a427ee9c0d42
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.print
+    - field.field.node.release.comment
+    - field.field.node.release.field_date
+    - field.field.node.release.field_documentation_link
+    - field.field.node.release.field_link
+    - field.field.node.release.field_release_comments
+    - field.field.node.release.field_release_type
+    - field.field.node.release.field_relese_services
+    - field.field.node.release.field_status
+    - field.field.node.release.upload
+    - node.type.release
+  module:
+    - text
+    - user
+id: node.release.print
+targetEntityType: node
+bundle: release
+mode: print
+content:
+  field_documentation_link:
+    label: above
+    weight: 32
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment: true
+  field_date: true
+  field_link: true
+  field_release_comments: true
+  field_release_type: true
+  field_relese_services: true
+  field_status: true
+  langcode: true
+  upload: true

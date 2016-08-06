@@ -1,0 +1,23 @@
+uuid: d50c497c-308c-471d-81ad-a037fbcc6db9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_old_reference
+    - group.type.downtimes
+id: group.downtimes.field_old_reference
+field_name: field_old_reference
+entity_type: group
+bundle: downtimes
+label: 'Old Reference'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

@@ -1,0 +1,14 @@
+uuid: d4f31386-9e84-4c59-8da8-6362bf457fb1
+langcode: en
+status: true
+dependencies: {  }
+id: quick_info
+label: 'Quick Info'
+description: 'Same as Closed.'
+content:
+  group_membership:
+    id: group_membership
+    group_type: quick_info
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1

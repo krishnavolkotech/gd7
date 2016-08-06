@@ -1,0 +1,22 @@
+uuid: 2843b9c4-e513-4be8-9f75-5bb65b13d4ce
+langcode: en
+status: false
+dependencies:
+  module:
+    - search
+  theme:
+    - hzd
+_core:
+  default_config_hash: za-39d5WDUg6XvbyqSnuVYEeq6QM4qKJxW8MnoAha5A
+id: hzd_search
+theme: hzd
+region: '-1'
+weight: -2
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: Search
+  provider: search
+  label_display: visible
+visibility: {  }

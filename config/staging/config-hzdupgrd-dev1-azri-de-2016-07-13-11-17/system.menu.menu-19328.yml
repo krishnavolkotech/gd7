@@ -1,0 +1,8 @@
+uuid: 98f33b79-c5a5-47ee-8a5f-87d2f5aec6e1
+langcode: en
+status: true
+dependencies: {  }
+id: menu-19328
+label: 'Betriebsportal KONSENS'
+description: null
+locked: false

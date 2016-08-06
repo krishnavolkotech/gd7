@@ -1,0 +1,13 @@
+uuid: 1a87f4a9-ec16-4d1f-b281-86ab0f880c43
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+  module:
+    - gnode
+id: closed-group_node-faq
+label: 'Closed: Group node (FAQ)'
+description: 'Adds <em class="placeholder">FAQ</em> content to groups both publicly and privately.'
+group_type: closed
+content_plugin: 'group_node:faq'

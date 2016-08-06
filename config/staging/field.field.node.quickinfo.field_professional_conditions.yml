@@ -1,0 +1,21 @@
+uuid: baf3382d-f0d7-4b7c-8bf3-160467154b5f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_professional_conditions
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_professional_conditions
+field_name: field_professional_conditions
+entity_type: node
+bundle: quickinfo
+label: '2.2 Professional / organizational conditions for employment'
+description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

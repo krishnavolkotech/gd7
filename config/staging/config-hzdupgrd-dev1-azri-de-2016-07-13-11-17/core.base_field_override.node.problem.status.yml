@@ -1,0 +1,22 @@
+uuid: f6ec4270-40f6-463c-86e8-092f372749f1
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.problem
+id: node.problem.status
+field_name: status
+entity_type: node
+bundle: problem
+label: null
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

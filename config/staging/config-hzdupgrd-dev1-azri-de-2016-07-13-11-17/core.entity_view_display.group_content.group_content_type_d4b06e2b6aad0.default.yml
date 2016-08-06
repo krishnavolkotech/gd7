@@ -1,0 +1,23 @@
+uuid: f6da3271-eb01-422c-a336-3a92ac0631cb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.group_content_type_d4b06e2b6aad0.group_roles
+    - group.content_type.group_content_type_d4b06e2b6aad0
+id: group_content.group_content_type_d4b06e2b6aad0.default
+targetEntityType: group_content
+bundle: group_content_type_d4b06e2b6aad0
+mode: default
+content:
+  group_roles:
+    label: above
+    type: entity_reference_label
+    settings:
+      link: false
+    weight: -4
+    third_party_settings: {  }
+hidden:
+  entity_id: true
+  langcode: true
+  uid: true

@@ -1,0 +1,42 @@
+uuid: 77cba4b2-4491-4e18-80cc-afaa4dac8b21
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_result
+    - field.field.node.early_warnings.body
+    - field.field.node.early_warnings.comment_no_subject
+    - field.field.node.early_warnings.field_earlywarning_release
+    - field.field.node.early_warnings.field_release_service
+    - field.field.node.early_warnings.upload
+    - node.type.early_warnings
+  module:
+    - user
+id: node.early_warnings.search_result
+targetEntityType: node
+bundle: early_warnings
+mode: search_result
+content:
+  field_earlywarning_release:
+    label: above
+    weight: 8
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_release_service:
+    label: above
+    weight: 7
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  body: true
+  comment_no_subject: true
+  langcode: true
+  upload: true

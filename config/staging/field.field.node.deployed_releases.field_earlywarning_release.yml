@@ -1,0 +1,21 @@
+uuid: 9c3faf2f-25e4-4ab2-a665-7b3e4b624f66
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_earlywarning_release
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_earlywarning_release
+field_name: field_earlywarning_release
+entity_type: node
+bundle: deployed_releases
+label: Releases
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

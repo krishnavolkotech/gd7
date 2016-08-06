@@ -1,0 +1,79 @@
+uuid: 3a9b7f3c-28a0-4f07-815f-982a80112ac7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.planning_files.comment
+    - field.field.node.planning_files.field_planning_file_type
+    - field.field.node.planning_files.field_upload_planning_file
+    - field.field.node.planning_files.upload
+    - node.type.planning_files
+  module:
+    - comment
+    - file
+    - path
+id: node.planning_files.default
+targetEntityType: node
+bundle: planning_files
+mode: default
+content:
+  comment:
+    type: comment_default
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+  created:
+    type: datetime_timestamp
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+  field_planning_file_type:
+    weight: -4
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+  field_upload_planning_file:
+    weight: -3
+    type: file_generic
+    settings:
+      progress_indicator: bar
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 15
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 16
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  upload:
+    settings:
+      progress_indicator: throbber
+    type: file_generic
+    weight: 31
+    third_party_settings: {  }
+hidden: {  }

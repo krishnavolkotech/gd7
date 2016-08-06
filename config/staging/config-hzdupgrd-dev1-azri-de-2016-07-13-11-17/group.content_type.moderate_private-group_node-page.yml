@@ -1,0 +1,13 @@
+uuid: e84c9d48-6455-40f3-a953-bcd96b01bfb1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  module:
+    - gnode
+id: moderate_private-group_node-page
+label: 'Moderate Private: Group node (Seite)'
+description: 'Adds <em class="placeholder">Seite</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:page'
