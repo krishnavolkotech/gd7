@@ -60,13 +60,13 @@ downtimes.cancel_confirm:
 
 
 
-downtimes.service_profiles:
-  path: 'node/{node}/downtimes/service-profiles'
-  defaults:
-    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
-    _title: 'Service Profiles'
-    _description: 'Service Profiles.'
-  requirements:
+#downtimes.service_profiles:
+#  path: 'node/{node}/downtimes/service-profiles'
+#  defaults:
+#    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+#    _title: 'Service Profiles'
+#    _description: 'Service Profiles.'
+#  requirements:
 #     _permission: 'service profiles view/add'
 #    _permission: 'access content'
 #    node: \d+

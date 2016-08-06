@@ -192,6 +192,7 @@ class HzdservicesStorage {
     }
   }
 
+  // written batch process for updating downtime services
   function update_downtime_notifications($node, $rel_type) {
     $batch = array(
       'operations' => array(),
