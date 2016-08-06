@@ -6,14 +6,6 @@ hzd_services.manage_services:
   requirements:
     _permission: 'manage services'
 
-##hzd_services.update_services:
-##  path: '/update_services/{nid}'
-##  defaults:
-##    _controller: '\Drupal\hzd_services\Controller\HzdServices::update_services_downtime'
-##    _title: 'update services'
-##  requirements:
-##    _permission: 'manage services'
-
 hzd_services.service_notifications_update:
   path: '/service_notifications_update/{nid}/{status}'
   defaults:
