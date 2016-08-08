@@ -60,7 +60,17 @@ downtimes.cancel_confirm:
 
 
 
-
+#downtimes.service_profiles:
+#  path: 'node/{node}/downtimes/service-profiles'
+#  defaults:
+#    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+#    _title: 'Service Profiles'
+#    _description: 'Service Profiles.'
+#  requirements:
+#     _permission: 'service profiles view/add'
+#    _permission: 'access content'
+#    node: \d+
+#    _permission: 'access content'
 
 
 
@@ -92,17 +102,7 @@ downtimes.cancel_confirm:
 #  requirements:
 #    _permission: 'access content'
 
-# downtimes.service_profiles:
-#  path: 'node/{node}/downtimes/service-profiles'
-#  defaults:
-#    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
-#    _title: 'Service Profiles'
-#    _description: 'Service Profiles.'
-#  requirements:
-#     _permission: 'service profiles view/add'
-#    _permission: 'access content'
-#    node: \d+
-#    _permission: 'access content'
+
 
 #   cust_og_is_member: 'TRUE' 
 #  requirements:
