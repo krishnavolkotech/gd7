@@ -237,17 +237,3 @@ function hzd_customizations_node_view($node, $view_mode, $langcode){
     //    return new RedirectResponse($loginPath);///this doesn't do a server redirect instead it sends a redirect request to browser
   }
 }
-/*
- * get available token lists
- */
-
-function quick_info_tokens_get_list() {
-
-    $list = \Drupal::token();
-    foreach ($list as $category => $tokens) {
-        foreach ($tokens as $token => $description) {
-            $return[$token] = $description;
-        }
-    }
-    return $return;
-}
