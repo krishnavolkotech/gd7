@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - group
+    - user
   theme:
     - hzd
 third_party_settings:
@@ -23,4 +24,31 @@ settings:
   label_display: visible
   context_mapping:
     group: '@group.group_route_context:group'
-visibility: {  }
+visibility:
+  group_type:
+    id: group_type
+    group_types:
+      closed: closed
+      closed_private: closed_private
+      downtimes: downtimes
+      incident_managent: incident_managent
+      moderate: moderate
+      moderate_private: moderate_private
+      open: open
+      quick_info: quick_info
+      realease_management: realease_management
+      zentrale_release_manag: zentrale_release_manag
+    negate: false
+    context_mapping:
+      group: '@group.group_route_context:group'
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+      administrator: administrator
+      group_member: group_member
+      group_administrator: group_administrator
+      site_administrator: site_administrator
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

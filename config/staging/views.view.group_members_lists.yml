@@ -845,6 +845,9 @@ display:
           entity_type: group_content
           entity_field: label
           plugin_id: string
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: 0
       contexts:

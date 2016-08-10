@@ -213,6 +213,9 @@ display:
     display_options:
       display_extenders: {  }
       path: user-list
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: -1
       contexts:

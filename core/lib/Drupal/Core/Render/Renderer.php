@@ -338,7 +338,9 @@ class Renderer implements RendererInterface {
     // If instructed to create a placeholder, and a #lazy_builder callback is
     // present (without such a callback, it would be impossible to replace the
     // placeholder), replace the current element with a placeholder.
-    if (isset($elements['#create_placeholder']) && $elements['#create_placeholder'] === TRUE) {
+    // @todo remove the isMethodSafe() check when
+    //       https://www.drupal.org/node/2367555 lands.
+    if (isset($elements['#create_placeholder']) && $elements['#create_placeholder'] === TRUE && $this->requestStack->getCurrentRequest()->isMethodSafe()) {
       if (!isset($elements['#lazy_builder'])) {
         throw new \LogicException('When #create_placeholder is set, a #lazy_builder callback must be present as well.');
       }
@@ -634,8 +636,33 @@ class Renderer implements RendererInterface {
       return FALSE;
     }
 
-    foreach (array_keys($elements['#attached']['placeholders']) as $placeholder) {
-      $elements = $this->renderPlaceholder($placeholder, $elements);
+    // The 'status messages' placeholder needs to be special cased, because it
+    // depends on global state that can be modified when other placeholders are
+    // being rendered: any code can add messages to render.
+    // This violates the principle that each lazy builder must be able to render
+    // itself in isolation, and therefore in any order. However, we cannot
+    // change the way drupal_set_message() works in the Drupal 8 cycle. So we
+    // have to accommodate its special needs.
+    // Allowing placeholders to be rendered in a particular order (in this case:
+    // last) would violate this isolation principle. Thus a monopoly is granted
+    // to this one special case, with this hard-coded solution.
+    // @see \Drupal\Core\Render\Element\StatusMessages
+    // @see https://www.drupal.org/node/2712935#comment-11368923
+
+    // First render all placeholders except 'status messages' placeholders.
+    $message_placeholders = [];
+    foreach ($elements['#attached']['placeholders'] as $placeholder => $placeholder_element) {
+      if (isset($placeholder_element['#lazy_builder']) && $placeholder_element['#lazy_builder'][0] === 'Drupal\Core\Render\Element\StatusMessages::renderMessages') {
+        $message_placeholders[] = $placeholder;
+      }
+      else {
+        $elements = $this->renderPlaceholder($placeholder, $elements);
+      }
+    }
+
+    // Then render 'status messages' placeholders.
+    foreach ($message_placeholders as $message_placeholder) {
+      $elements = $this->renderPlaceholder($message_placeholder, $elements);
     }
 
     return TRUE;

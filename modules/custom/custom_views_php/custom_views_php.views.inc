@@ -40,5 +40,14 @@ function custom_views_php_views_data() {
         ),
     );
 
+    $data['views']['group_type_value'] = array(
+        'title' => t('Group Type Value'),
+        'help' => t('Enable to include and GroupType code in your modules as part of a view'),
+        'field' => array(
+            'id' => 'group_type_value',
+        ),
+    );
+
+
     return $data;
 }

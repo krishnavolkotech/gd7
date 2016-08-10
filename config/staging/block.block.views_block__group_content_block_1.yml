@@ -1,6 +1,6 @@
 uuid: 87adece1-d7d0-4793-aa87-7ad044b5d2ec
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - views.view.group_content
@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: views_block__group_content_block_1
 theme: hzd
-region: sidebar_first
+region: '-1'
 weight: -17
 provider: null
 plugin: 'views_block:group_content-block_1'

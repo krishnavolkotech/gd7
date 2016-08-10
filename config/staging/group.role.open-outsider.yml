@@ -10,4 +10,6 @@ weight: -101
 internal: true
 group_type: open
 permissions:
-  1: 'view group'
+  - 'view group'
+  - 'join group'
+  - 'edit group'

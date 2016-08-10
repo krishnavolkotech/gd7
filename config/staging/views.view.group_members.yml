@@ -517,6 +517,9 @@ display:
             offset_label: Offset
           quantity: 9
       title: 'Members of Betriebsportal KONSENS'
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: 0
       contexts:

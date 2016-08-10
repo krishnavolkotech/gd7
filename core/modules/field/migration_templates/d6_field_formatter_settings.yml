@@ -163,10 +163,6 @@ process:
             default: basic_string
           int_phone:
             default: basic_string
-          nodereference:
-            default: entity_reference_label
-          userreference:
-            default: entity_reference_label
       -
         plugin: field_type_defaults
   "options/settings":

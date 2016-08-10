@@ -8,8 +8,10 @@ use Drupal\Core\Url;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
-define('RELEASE_MANAGEMENT', 339);
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+if(!defined('KONSONS'))
+  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+if(!defined('RELEASE_MANAGEMENT'))
+  define('RELEASE_MANAGEMENT', 339);
 $_SESSION['Group_id'] = 339;
 
 /**
@@ -24,7 +26,8 @@ class HzdReleases extends ControllerBase {
    */
   public function released() {
     $type = 'released';
-    $output[] = HzdreleasemanagementStorage::release_info();
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
 
     $request = \Drupal::request();

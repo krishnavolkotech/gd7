@@ -9,6 +9,7 @@ namespace Drupal\big_pipe\Tests;
 
 use Drupal\big_pipe\Render\BigPipeMarkup;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -49,7 +50,7 @@ class BigPipePlaceholderTestCases {
 
     // 1. Real-world example of HTML placeholder.
     $status_messages = new BigPipePlaceholderTestCase(
-      [], //['#type' => 'status_messages'],
+      ['#type' => 'status_messages'],
       '<drupal-render-placeholder callback="Drupal\Core\Render\Element\StatusMessages::renderMessages" arguments="0" token="a8c34b5e"></drupal-render-placeholder>',
       [
         '#lazy_builder' => [
@@ -93,7 +94,7 @@ class BigPipePlaceholderTestCases {
               'theme' => 'classy',
               'libraries' => 'big_pipe/big_pipe,classy/base,classy/messages,core/drupal.active-link,core/html5shiv,core/normalize,system/base',
             ],
-            'pluralDelimiter' => \Drupal\Core\StringTranslation\PluralTranslatableMarkup::DELIMITER,
+            'pluralDelimiter' => PluralTranslatableMarkup::DELIMITER,
             'user' => [
               'uid' => '1',
               'permissionsHash' => $container->get('user_permissions_hash_generator')->generate($user),
@@ -109,7 +110,7 @@ class BigPipePlaceholderTestCases {
           'command' => 'insert',
           'method' => 'replaceWith',
           'selector' => '[data-big-pipe-placeholder-id="callback=Drupal%5CCore%5CRender%5CElement%5CStatusMessages%3A%3ArenderMessages&args[0]&token=a8c34b5e"]',
-          'data' => "\n" . '    <div role="contentinfo" aria-label="Status message" class="messages messages--status">' . "\n" . '                  <h2 class="visually-hidden">Status message</h2>' . "\n" . '                    Hello from BigPipe!' . "\n" . '            </div>' . "\n    \n",
+          'data' => "\n" . '    <div role="contentinfo" aria-label="Status message" class="messages messages--status">' . "\n" . '                  <h2 class="visually-hidden">Status message</h2>' . "\n" . '                    Hello from BigPipe!' . "\n" . '            </div>' . "\n    ",
           'settings' => NULL,
         ],
       ];

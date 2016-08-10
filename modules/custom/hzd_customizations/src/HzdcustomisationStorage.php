@@ -7,7 +7,10 @@ namespace Drupal\hzd_customizations;
 use Drupal\Core\Path\Path;
 use Drupal\Core\Url;
 
-define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
+if (!defined('MAINTENANCE_GROUP_ID')) {
+  define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
+}
+
 /**
  *
  */
@@ -35,17 +38,17 @@ class HzdcustomisationStorage {
       if (!isset($url_alias['0'])) {
         // Populate the node access table.
         \Drupal::database()->insert('url_alias')
-          ->fields(array(
-            'source' => $src,
-            'alias' => $dst,
-          ))->execute();
+            ->fields(array(
+              'source' => $src,
+              'alias' => $dst,
+            ))->execute();
       }
       else {
         \Drupal::database()->update('url_alias')
-          ->fields(array(
-            'source' => $src,
-            'alias' => $dst,
-          ))->condition('pid', $url_alias['0'], '=')->execute();
+            ->fields(array(
+              'source' => $src,
+              'alias' => $dst,
+            ))->condition('pid', $url_alias['0'], '=')->execute();
       }
     }
     // Need to clear the menu cache to get the new menu item affected.
@@ -91,10 +94,7 @@ class HzdcustomisationStorage {
        * Check how many times release import attempted.If three attempts unsuccesssful failure is perment.
        * Check released release date/time changed or not.
        */
-      if ((!$title)
-      || ($field_release_value == 2 && $field_release_type_value == 1)
-      || (($count_nid < 3) && ($count_nid > 0))
-      || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
+      if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid > 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
         list($release_title, $product, $release, $compressed_file, $link_search) = get_release_details_from_title($values_title, $link);
 
@@ -117,8 +117,7 @@ class HzdcustomisationStorage {
            * Check Release status changes from inprogress to released.
            * Check released release date/time changed or not.
            */
-          if (($values_date != $field_date_value)
-          || ($field_release_value == 2 && $field_release_type_value == 1)) {
+          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
 
             $dokument_zip = explode("/", $field_documentation_link_value);
             $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
@@ -167,10 +166,10 @@ class HzdcustomisationStorage {
     // $group_link = db_result(db_query("SELECT mlid from {menu_links} ml where ml.link_title = '%s' and ml.menu_name = '%s'", $link_title, $menu_name));
     // droy: Replaced unique identifier link_title by link_path because of issues with German special characters in link_title which result in no sql query results found.
     $group_link = \Drupal::database()->select('menu_link_content_data', 'mlcd')
-                ->Fields('mlcd', array('id'))
-                ->condition('link__uri', '%' . $link_path, 'LIKE')
-                ->condition('menu_name', $menu_name, 'LIKE')
-                ->execute()->fetchAssoc();
+            ->Fields('mlcd', array('id'))
+            ->condition('link__uri', '%' . $link_path, 'LIKE')
+            ->condition('menu_name', $menu_name, 'LIKE')
+            ->execute()->fetchAssoc();
 
     if ($counter > 0) {
       if (empty($group_link)) {
@@ -190,8 +189,8 @@ class HzdcustomisationStorage {
         if ($link_path == 'downtimes') {
           // $group_path = db_result(db_query("select dst from url_alias where src = '%s'", "node/$gid"));.
           $query = \Drupal::database()->select('url_alias', 'ua')
-            ->Fields('ua', array('dst'))
-            ->condition('source', "node/$gid", '=');
+              ->Fields('ua', array('dst'))
+              ->condition('source', "node/$gid", '=');
           $group_path = $query->execute()->fetchAssoc();
           // path_set_alias('node/' . $gid . '/' . $link_path, $group_path['dst'] . '/' . 'stoerungen');.
           Path::save('node/' . $gid . '/' . $link_path, $group_path['dst'] . '/' . 'stoerungen');
@@ -231,7 +230,7 @@ class HzdcustomisationStorage {
   /**
    * Display published services.
    */
-  function service_profiles() {
+  static function service_profiles() {
     // $servicesdata['#markup']['#title'] = Drupal::config()->get('system.site')->get('name');
     // $servicesdata['#markup']['#title'] = "<p>" . t("Please select a Service") . "</p>";.
     $query = \Drupal::database()->select('node_field_data', 'nfd');
@@ -259,7 +258,7 @@ class HzdcustomisationStorage {
         $text = $service->service;
         // $url = Url::fromUserInput($path_alias . '/edit');.
         $url = Url::fromUserInput('/node/' . $id . '/edit');
-        $data[]   = \Drupal::l($text, $url);
+        $data[] = \Drupal::l($text, $url);
       }
       else {
         $text = $service->service;
@@ -280,6 +279,50 @@ class HzdcustomisationStorage {
     );
 
     return $service_profiile_data;
+  }
+
+  /**
+   * Get States.
+   */
+  static function get_states() {
+    // $servicesdata['#markup']['#title'] = Drupal::config()->get('system.site')->get('name');
+    // $servicesdata['#markup']['#title'] = "<p>" . t("Please select a Service") . "</p>";.
+    $query = \Drupal::database()->select('states', 's');
+    $query->isNotNull('s.abbr');
+    $query->fields('s');
+    $states = $query->execute()->fetchAll();
+    foreach ($states as $state) {
+      $data[$state->id] = t($state->state . " ($state->abbr)");
+    }
+    return $data;
+  }
+
+  /**
+   * Get Published Services.
+   */
+  static function get_published_services() {
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->fields('nfd', ['nid']);
+    $query->addField('nfd', 'title', 'service');
+    $query->join('node__field_enable_downtime', 'nfed', 'nfd.nid = nfed.entity_id');
+    $query->join('node__field_downtime_type', 'nfdt', 'nfed.entity_id = nfdt.entity_id');
+    $query->condition('nfdt.field_downtime_type_value', 'Publish');
+    $query->condition('nfed.field_enable_downtime_value', '1');
+    $query->orderBy('service');
+    $services = $query->execute()->fetchAll();
+    
+    $data = array();
+    foreach ($services as $service) {
+      $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
+      $query->addField('nfds', 'entity_id');
+      $query->condition('nfds.field_dependent_service_target_id', $service->nid);
+      $query->range(0, 1);
+      $id = $query->execute()->fetchField();
+      if ($id) {
+        $data[$id] = t($service->service);
+      }
+    }
+    return $data;
   }
 
 }

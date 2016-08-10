@@ -6,6 +6,7 @@
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\hzd_customizations\HzdcustomisationStorage;
 
 define('INCEDENT_MANAGEMENT', 340);
 // Use Drupal\Core\Utility\Token;
@@ -36,16 +37,95 @@ define('INCEDENT_MANAGEMENT', 340);
  * Implements hook_form_alter().
  */
 function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-
-  if ($form_id == 'downtimes_node_form') {
-
+  if ($form_id == 'node_downtimes_form' || $form_id == 'node_downtimes_edit_form') {
+    //dsm($form['title']);
+    $date_format = 'Y-m-d';
+    $time_format = 'H:i';
+    if($form_id == 'node_downtimes_form') {
+      $downtime_type = \Drupal::routeMatch()->getParameter('downtimes');
+      if($downtime_type != 'create_maintenance'){
+      $help_markup = t('Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden
+                          <em>(Beschluss AutomSt III/2011 TOP K9).</em>
+                          <br>
+                          <br>
+                          <strong>Geplante Blockzeit:</strong>
+                          Nichterreichbarkeit durch planmäßige Wartungsarbeiten
+                          <br>
+                          <strong>Land:</strong>
+                          Das Land oder System, in dem die Wartungsarbeiten ausgeführt werden.
+                          <br>
+                          <strong>Verfahren/ZPS:</strong>
+                          Verfahren oder ZPS, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen.
+                          <br>
+                          <br>
+                          Blockzeitmeldungen im BpK werden als regulär also konform mit dem
+                          <em>Beschluss AutomSt III/2011 TOP K9 </em>
+                          gewertet, wenn Beginn und Ende in der Zeit von Dienstag und Mittwoch 18:00 Uhr bis jeweils 05:59 des Folgetages liegen.
+                          <br>
+                          Bis zum Abschluss gültiger SLAs wird für alle Verfahren eine Vorlaufzeit von 2 Tagen konfiguriert.
+                          <br>
+                          Ihre Meldung wird an alle Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten" versandt.
+                          <br>
+                          <br>
+                          Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch Beheben wird die Meldung in das Archiv verschoben.');
+      }
+      else {
+        $help_markup = '<strong>Aktuelle Störung:</strong>&nbsp;Akuter Ausfall bzw. Nichterreichbarkeit eines Systems<br>
+                        <strong>Land:</strong> Das Land, in dem der Betrieb eines Verfahrens oder ZPS gestört ist.<br>
+                        <strong>Verfahren/ZPS:</strong> Verfahren oder ZPS, die durch die Störung nicht zur Verfügung stehen.<br>
+                        <br>
+                        Ihre Meldung wird an alle&nbsp;Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten"&nbsp;versandt.&nbsp;<br>
+                        <br>
+                        Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch&nbsp;<i>Beheben</i>&nbsp;wird die Meldung in das Archiv verschoben.&nbsp;';
+      }
+      $form['static_desc'] = [
+        '#type' => 'item',
+        '#markup' => $help_markup,
+        '#weight' => -1,
+      ];
+    }
+    $form['states'] = [
+      '#type' => 'checkboxes',
+      '#title' => t('States'),
+      '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
+      '#options' => HzdcustomisationStorage::get_published_services(),
+    ];
+    $form['services_effected'] = [
+      '#type' => 'checkboxes',
+      '#title' => t('Services Effected'),
+      '#description' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.'),
+      '#options' => HzdcustomisationStorage::get_published_services(),
+    ];
+    $form['start_date'] = [
+      '#type' => 'datetime',
+      '#title' => t('Start Date'),
+      '#date_date_format' => $date_format,
+      '#date_time_format' => $time_format,
+      '#description' => date($date_format, time()),
+      '#default_value' => Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp(time())
+    ];
+    $form['end_date'] = [
+      '#type' => 'datetime',
+      '#title' => t('End Date'),
+      '#date_date_format' => $date_format,
+      '#date_time_format' => $time_format,
+      '#description' => date($date_format, time()),
+      '#default_value' => Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp(time())
+    ];
+    $form['reason_for_noncompliance'] = [
+      '#type' => 'select',
+      '#title' => t('Reason for scheduling outside maintenance window'),
+      '#description' => t('Please select a reason'),
+      '#options' => array(t('Please select a reason here'), t('Urgency of the maintenance'), t('No staff available during maintenance hours'), t('No service partner (State) available during maintenance hours'), t('External service partner required'), t('Internal regulations do not allow maintenances during KONSENS maintenance windows'), t('Public holiday or weekend'), t('No service partner (KONSENS) available during maintenance hours'), t('No service interruption planned')),
+      '#size' => 5,
+    ];
     // droy: Disabling preview button due to js validation bug #11569.
-    $form['buttons']['preview']['#access'] = FALSE;
+    //$form['buttons']['preview']['#access'] = FALSE;
     /**
-         *   TO do  og
-         */
+      *   TO do  og
+      */
 
-    $user = Drupal::currentUser();
+    /*$user = Drupal::currentUser();
     // $user_roles = $user->getRoles();
     if (!$user->og_groups[$_SESSION['Group_id']]['is_admin'] && $user->getUid() != 1) {
 
@@ -69,8 +149,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
              * TO do title
              */
       // drupal_set_title(t("Report an Incident"));.
+    /*}
+    $form['#after_build'][] = 'add_service_data';*/
+    if($form_id == 'node_downtimes_edit_form') {
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if ($node) {
+        downtimes_set_default_values($form, $node->id());
+      }
     }
-    $form['#after_build'][] = 'add_service_data';
   }
 
   if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_form_edit') {
@@ -259,6 +345,20 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
   }
 }
 
+function downtimes_set_default_values(&$form, $nid) {
+  $downtime_data = \Drupal::database()->select('downtimes', 'd')
+                ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason'])
+                ->condition('downtime_id', $nid, '=')
+                ->execute()->fetchObject();
+  if(!empty($downtime_data)) {
+    $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
+    $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
+    $form['start_date']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->startdate_reported);
+    $form['end_date']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->enddate_reported);
+    $form['reason_for_noncompliance']['#default_value'] = $downtime_data->reason;
+  }
+}
+
 /**
  * Append hours and minutes to day form.
  */
@@ -415,4 +515,57 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
     //drupal_process_form($form_id, $form, $form_state);
     $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);*/
   }
+}
+
+function downtimes_node_insert($node) {
+  if($node->getType() == 'downtimes') {
+    $record = array();
+    $data = $_POST;
+    $date_format = 'd.m.Y H:i:s';
+
+    $record['state_id'] = implode(',', $data['states']);
+    $record['service_id'] = implode(',', $data['services_effected']);
+    $record['downtime_id'] = $node->id();
+    $record['enddate_reported'] = strtotime($data['end_date']['date'] . $data['end_date']['time']);
+    $record['startdate_reported'] = strtotime($data['start_date']['date'] . $data['start_date']['time']);
+    $record['resolved'] = 0;
+    $record['status'] = 1;
+    $record['email_reminder_sent'] = 1;
+    $record['cancelled'] = 0;
+    $record['reason'] = $data['reason_for_noncompliance'];
+    db_insert('downtimes')->fields((array)$record)->execute();
+  }
+}
+
+function downtimes_node_update($node) {
+  if($node->getType() == 'downtimes') {
+    $record = array();
+    $data = $_POST;
+    $date_format = 'd.m.Y H:i:s';
+
+    $record['state_id'] = implode(',', $data['states']);
+    $record['service_id'] = implode(',', $data['services_effected']);
+    //$record->downtime_id = $node->id();
+    $record['enddate_reported'] = strtotime($data['end_date']['date'] . $data['end_date']['time']);
+    $record['startdate_reported'] = strtotime($data['start_date']['date'] . $data['start_date']['time']);
+    $record['resolved'] = 0;
+    $record['status'] = 1;
+    $record['email_reminder_sent'] = 1;
+    $record['cancelled'] = 0;
+    $record['reason'] = $data['reason_for_noncompliance'];
+    db_update('downtimes')
+    ->fields($record)
+    ->condition('downtime_id', $node->id())
+    ->execute();
+  }
+}
+
+function get_unix_timestamp($date, $format = '%d.%m.%Y - %H:%M') {
+  //$informat = '%d.%m.%Y - %H:%M';
+  // 20140313 droy
+  // Extending the function with custom format parameter since date api form elements return wrong format.
+  // Using date api was necessary to implement proper date validation.
+  $start_date = strptime($date, $format);
+  $unix_date = mktime($start_date['tm_hour'], $start_date['tm_min'], $start_date['tm_sec'], $start_date['tm_mon'] + 1, $start_date['tm_mday'], ($start_date['tm_year'] + 1900));
+  return $unix_date;
 }

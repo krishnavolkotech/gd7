@@ -1274,6 +1274,9 @@ display:
           text: Details
           entity_type: node
           plugin_id: entity_link
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: 0
       contexts:
@@ -1296,6 +1299,9 @@ display:
     display_options:
       display_extenders: {  }
       path: release-management/rz-schnellinfos
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: 0
       contexts:

@@ -116,7 +116,7 @@ class ExposedFormTest extends ViewTestBase {
     $identifier = 'bad identifier';
     $view->displayHandlers->get('default')->overrideOption('filters', array(
       'type' => [
-        'exposed' =>  TRUE,
+        'exposed' => TRUE,
         'field' => 'type',
         'id' => 'type',
         'table' => 'node_field_data',
@@ -167,6 +167,9 @@ class ExposedFormTest extends ViewTestBase {
     $this->drupalGet('test_exposed_form_buttons', array('query' => array('type' => 'article', 'op' => 'Reset')));
     $this->assertResponse(200);
     $this->assertFieldById('edit-type', 'All', 'Article type filter has been reset.');
+
+    // Test the button is hidden after reset.
+    $this->assertNoField('edit-reset');
 
     // Rename the label of the reset button.
     $view = Views::getView('test_exposed_form_buttons');

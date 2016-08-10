@@ -5,6 +5,7 @@ namespace Drupal\cust_user\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Returns responses for NSM Users routes.
@@ -128,6 +129,12 @@ class NSMPortalController extends ControllerBase {
     $params = ['id='.$id,'user_bp='.$user_bp,'user_nsm='.$user_nsm];
     $preparedAuthUrl = $this->nsmDomain.'?'.implode('&',$params);
     return new TrustedRedirectResponse($preparedAuthUrl);
+  }
+
+  function access(AccountInterface $account){
+    $node = \Drupal::routeMatch()->getParameter('node');
+    //    echo $node->id();exit;
+    return \Drupal\Core\Access\AccessResult::allowed();    
   }
 
 }

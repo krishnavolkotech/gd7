@@ -210,3 +210,10 @@ function in_array_r($needle, $haystack, $strict = false) {
   }
   return false;
 }
+
+
+function cust_user_node_access($node, $op, $account) {
+  if($node->bundle() === 'problem' && $op == 'update'){
+    return Drupal\Core\Access\AccessResult::forbidden();
+  }
+}

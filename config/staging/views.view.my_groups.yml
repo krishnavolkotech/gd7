@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.storage.group.field_description
+    - user.role.authenticated
     - user.role.group_administrator
     - user.role.group_member
     - user.role.site_administrator
@@ -30,6 +31,7 @@ display:
         type: role
         options:
           role:
+            authenticated: authenticated
             group_member: group_member
             group_administrator: group_administrator
             site_administrator: site_administrator
@@ -504,6 +506,9 @@ display:
     display_options:
       display_extenders: {  }
       path: my-groups
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: 0
       contexts:

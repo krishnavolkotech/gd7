@@ -9,4 +9,10 @@ label: Member
 weight: -100
 internal: true
 group_type: open
-permissions: {  }
+permissions:
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'edit own group_membership content'
+  4: 'edit group'
+  10: 'leave group'

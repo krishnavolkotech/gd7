@@ -9,9 +9,11 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\Entity;
 use Drupal\Core\Url;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+if(!defined('KONSONS'))
+  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+if(!defined('RELEASE_MANAGEMENT'))
+  define('RELEASE_MANAGEMENT', 339);
 define('DISPLAY_LIMIT', 20);
-define('RELEASE_MANAGEMENT', 339);
 define('DEFAULT_PAGELIMIT', 20);
 $_SESSION['Group_id'] = 339;
 class HzdreleasemanagementStorage {
