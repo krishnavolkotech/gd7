@@ -1,26 +1,32 @@
 <?php
-/**
-* @file
-* Contains \Drupal\hzd_customizations\Routing\RouteSubscriber.
-*/
 
 namespace Drupal\hzd_customizations\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
+use Drupal\Core\Routing\RoutingEvents;
 
 /**
-* Listens to the dynamic route events.
-*/
+ * Class RouteSubscriber.
+ *
+ * @package Drupal\hzd_customizations\Routing
+ * Listens to the dynamic route events.
+ */
 class RouteSubscriber extends RouteSubscriberBase {
 
     /**
-    * {@inheritdoc}
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents() {
+        $events[RoutingEvents::ALTER] = ['onAlterRoutes',-9999];  // negative Values means "late"
+        return $events;
+    }
+    /**
+     * {@inheritdoc}
     */
-    public function alterRoutes(RouteCollection $collection) {
-        dsm('hello');
+    protected function alterRoutes(RouteCollection $collection) {
         if ($route = $collection->get('entity.node.edit_form')) {
-            dpm($route);
+            $route->setRequirement('_custom_access','\Drupal\hzd_customizations\Controller\HZDCustomizations::access');
         }
     }
 
