@@ -131,10 +131,4 @@ class NSMPortalController extends ControllerBase {
     return new TrustedRedirectResponse($preparedAuthUrl);
   }
 
-  function access(AccountInterface $account){
-    $node = \Drupal::routeMatch()->getParameter('node');
-    //    echo $node->id();exit;
-    return \Drupal\Core\Access\AccessResult::allowed();    
-  }
-
 }
