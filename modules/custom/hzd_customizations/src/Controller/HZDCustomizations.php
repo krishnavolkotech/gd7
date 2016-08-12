@@ -17,8 +17,8 @@ class HZDCustomizations extends ControllerBase {
         if($node = \Drupal::routeMatch()->getParameter('node')){
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
                 return \Drupal\Core\Access\AccessResult::forbidden();
-            }return \Drupal\Core\Access\AccessResult::neutral();
+            }return \Drupal\Core\Access\AccessResult::allowed();
         }
-        return \Drupal\Core\Access\AccessResult::neutral();
+        return \Drupal\Core\Access\AccessResult::allowed();
     }
 }
