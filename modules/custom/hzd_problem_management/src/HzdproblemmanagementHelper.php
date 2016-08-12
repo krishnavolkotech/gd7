@@ -34,6 +34,9 @@ static function set_breabcrumbs_problems($type) {
   case 'archived' :
     $page = t('Archived Problems');
     break;
+  default :
+    $page = t('Archive');
+    break;
   }
   $breadcrumb = array();
   $breadcrumb[] = \Drupal::l(t('Home'),  Url::fromUserInput('/'));
@@ -41,9 +44,10 @@ static function set_breabcrumbs_problems($type) {
   $request = \Drupal::request();
 //  $session = $request->getSession();
 //  $group_id = $session->get('Group_id');
-  $group_id = $_SESSION['Group_id'];
   $route_match = \Drupal::routeMatch();
   $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
+  $group = $route_match->getParameter('group');
+  $group_id = $group->id();
 
   if (isset($group_name)) {
     $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('node', $group_id)));
@@ -60,7 +64,7 @@ static function set_breabcrumbs_problems($type) {
 /*
  *Function returns the data according to the tabs(type of release)
 */
-function problems_tabs_callback_data($type) {
+static function problems_tabs_callback_data($type) {
   $result = array();
 
   $result['content']['#attached']['library'] = array('problem_management/problem_management', 
@@ -76,8 +80,8 @@ function problems_tabs_callback_data($type) {
   $result['content']['problems_reset_element']['#prefix'] =  "<div class = 'reset_form'>";
   $result['content']['problems_reset_element']['form'] = self::problem_reset_element();
   $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
-  $sql_where = $_SESSION['sql_where']?$_SESSION['sql_where']:NULL;
-  $limit = $_SESSION['limit']?$_SESSION['limit']:NULL;
+  $sql_where = !empty($_SESSION['sql_where'])?$_SESSION['sql_where']:NULL;
+  $limit = !empty($_SESSION['limit'])?$_SESSION['limit']:NULL;
   $result['content']['problems_default_display'] = HzdStorage::problems_default_display($sql_where, $type, $limit);
   $result['content']['#suffix'] = "</div>";
  

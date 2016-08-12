@@ -15,7 +15,7 @@ use Drupal\hzd_customizations\HzdcustomisationStorage;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 use Drupal\Core\Form\FormCache;
 
-$_SESSION['Group_id'] = 825;
+//$_SESSION['Group_id'] = 825;
 
 /**
  * Configure inactive_user settings for this site.
@@ -60,13 +60,13 @@ class ProblemFilterFrom extends FormBase {
     else {
       $filter_where = " and cfps.field_problem_status_value <> 'geschlossen' ";
     }
-
+    $group = \Drupal::routeMatch()->getParameter('group');
     //DEFAULT SERVICES
     $default_services[] = t("Select Service");
     $query = db_select('node_field_data', 'nfd');
     $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
     $query->Fields('nfd', array('nid', 'title'));
-    $query->condition('gpv.group_id', $_SESSION['Group_id'], '=');
+    $query->condition('gpv.group_id', $group->id(), '=');
     $service = $query->execute()->fetchAll();
 
     foreach ($service as $services) {
@@ -158,7 +158,7 @@ class ProblemFilterFrom extends FormBase {
       '#weight' => 6,
       '#size' => 42,
       '#default_value' => !empty($default_value_string) ? $default_value_string : $this->t('Search Title, Description, cause, Workaround, solution'),
-      '#attributes' => array("class" => "search_string"),
+      '#attributes' => array("class" => ["search_string"]),
       "#prefix" => "<div class = 'string_search hzd-form-element'>",
       '#suffix' => '</div>',
       );
@@ -173,7 +173,7 @@ class ProblemFilterFrom extends FormBase {
         'event' => 'click',
         'progress' => array('type' => 'throbber'),
         ),
-      '#attributes' => array("class" => "filter_submit"),
+      '#attributes' => array("class" => ["filter_submit"]),
       '#prefix' => '<div class = "search_string_submit  hzd-form-element-auto">',
       '#suffix' => '</div>',
       );
