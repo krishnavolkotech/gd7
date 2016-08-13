@@ -50,8 +50,8 @@ static function set_breabcrumbs_problems($type) {
   $group_id = $group->id();
 
   if (isset($group_name)) {
-    $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('node', $group_id)));
-    $breadcrumb[] = \Drupal::l($title, Url::fromEntityUri(array('node', $group_id, '/problems')));
+    $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('group', $group_id)));
+    $breadcrumb[] = \Drupal::l($title, Url::fromEntityUri(array('group', $group_id, '/problems')));
   } 
   $breadcrumb[] = $page;
   
@@ -66,12 +66,12 @@ static function set_breabcrumbs_problems($type) {
 */
 static function problems_tabs_callback_data($type) {
   $result = array();
-
+  $group = \Drupal::routeMatch()->getParameter('group');
   $result['content']['#attached']['library'] = array('problem_management/problem_management', 
     'hzd_customizations/hzd_customizations');
 
   $result['content']['#attached']['drupalSettings']['search_string']  = t('Search Title, Description, cause, Workaround, solution');
-  $result['content']['#attached']['drupalSettings']['group_id'] = $_SESSION['Group_id'];
+  $result['content']['#attached']['drupalSettings']['group_id'] = $group->id();
   $result['content']['#attached']['drupalSettings']['type'] = $type;
 
   $output = '';

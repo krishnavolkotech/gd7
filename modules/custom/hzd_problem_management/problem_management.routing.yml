@@ -12,6 +12,7 @@ problem_management.problem_settings:
     _form: '\Drupal\problem_management\Form\ProblemsettingsForm'
     _title: 'Problems'
     _description: 'View Setting for Problems.'
+    _entity_view: 'group.default'
     _weight: 10
   requirements:
     _permission: 'access content'

@@ -17,6 +17,9 @@ use Drupal\problem_management\HzdStorage;
 
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 
+if(!defined('PROBLEM_MANAGEMENT'))
+  define('PROBLEM_MANAGEMENT',31);
+
 class ProblemsettingsForm extends FormBase {
  /**
   * {@inheritDoc}
@@ -30,12 +33,14 @@ class ProblemsettingsForm extends FormBase {
    */
   public function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
     global $base_url;
+    $group = \Drupal::routeMatch()->getParameter('group');
+    //pr($group);exit;
     $breadcrumb = array();
    // $breadcrumb[] = \Drupal::l(t('Home'), Url::setUnrouted());
    // $group_name =  \Drupal::service('user.private_tempstore')->get()->get('Group_name');
-    $group_name = $_SESSION['Group_name'];
+    $group_name = $group->label();
    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
+    $group_id = $group->id();
 
     if ($group_name) {
      // Url::fromUserInput('/node/' . $problems_node->nid->value
@@ -57,7 +62,7 @@ class ProblemsettingsForm extends FormBase {
 
     $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
     $group_problems_view_service_query->Fields('gpv', array('service_id'));
-    $group_problems_view_service_query->conditions('group_id', $_SESSION['Group_id'] ? $_SESSION['Group_id']: self::PROBLEM_MANAGEMENT ,'=');
+    $group_problems_view_service_query->conditions('group_id', $group_id ? $group_id: self::PROBLEM_MANAGEMENT ,'=');
     $group_problems_view_service = $group_problems_view_service_query->execute()->fetchAll();
 
     foreach($group_problems_view_service as $service) {
