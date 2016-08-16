@@ -4,6 +4,24 @@ downtimes.downtimes_scheduled_maintenance_form: #give it the same name as the ro
   base_route: downtimes.downtimes_scheduled_maintenance_form #same as the route name
   weight: 0
 
+downtimes.service_profiles.profiles_management:
+  title: 'Current Downtimes and Maintenances'
+  route_name: downtimes.service_profiles #route defined in .routing.yml
+  base_route: downtimes.service_profiles #same as the route name
+  weight: 0
+
+downtimes.create_downtimes:
+  title: 'Report an Incident'
+  route_name: downtimes.create_downtimes #route defined in .routing.yml
+  base_route: downtimes.service_profiles #same as the route name
+  weight: 1
+
+downtimes.create_maintenance:
+  title: 'Report a Maintenance'
+  route_name: downtimes.create_maintenance #route defined in .routing.yml
+  base_route: downtimes.service_profiles #same as the route name
+  weight: 2
+  
 #add another tab next to the base tab
 downtimes.downtimes_scheduled_maintenance_mail_template_form: #name it same as route to avoid confusion
   title: 'Mail Template'
