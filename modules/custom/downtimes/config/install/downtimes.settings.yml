@@ -4,7 +4,7 @@ reminder_mail_body: NULL
 resolve_maintenance_mail_subject: NULL
 resolve_maintenance_mail_body: NULL
 number_of_days: 0
-maintenance_advance_time: NULL
+maintenance_advance_time: 60
 howmany: 0
 current_downtimes: ''
 archived_downtimes: ''
