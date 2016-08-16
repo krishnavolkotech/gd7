@@ -203,13 +203,25 @@ function inactive_users_flag_update($form, $form_state){
  */
 
 function in_array_r($needle, $haystack, $strict = false) {
-    foreach ($haystack as $item) {
-        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
-            return true;
-        }
+  foreach ($haystack as $item) {
+    if (($strict   ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
+      return true;
     }
-
-    return false;
+  }
+  return false;
 }
 
 
+function cust_user_node_access($node, $op, $account) {
+  if($node->bundle() === 'problem' && $op == 'update'){
+    return Drupal\Core\Access\AccessResult::forbidden();
+  }
+}
+
+function __gm($object) {                                                                                                                                                
+    if (empty($object)) {                                                                                                                                               
+        $object = new stdClass();                                                                                                                                       
+    }                                                                                                                                                                   
+    pr(get_class_methods(get_class($object)));
+    exit;                                                                                                                                                               
+}            

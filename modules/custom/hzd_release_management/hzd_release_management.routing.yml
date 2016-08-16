@@ -1,5 +1,5 @@
 hzd_release_management.view_deployed_releases:
-  path: 'node/{node}/releases/view_deployed_releases'
+  path: 'group/{group}/releases/view_deployed_releases'
   defaults:
     _title: 'Deployed Releases (Overview)'
     _form: '\Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew'
@@ -7,15 +7,17 @@ hzd_release_management.view_deployed_releases:
     _permission: 'access content'
 
 hzd_release_management.released:
-  path: 'node/{node}/releases'
+  path: 'group/{group}/releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
     _title: 'Released'
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 hzd_release_management.inprogress:
-  path: 'node/{node}/releases/in_progress'
+  path: 'group/{group}/releases/in_progress'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
     _title: 'In Progress'
@@ -23,7 +25,7 @@ hzd_release_management.inprogress:
     _permission: 'access content'
 
 hzd_release_management.locked:
-  path: 'node/{node}/releases/locked'
+  path: 'group/{group}/releases/locked'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
     _title: 'Locked'
@@ -31,7 +33,7 @@ hzd_release_management.locked:
     _permission: 'access content'
     
 hzd_release_management.deployed:
-  path: 'node/{node}/releases/deployed'
+  path: 'group/{group}/releases/deployed'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
     _title: 'Deployed'
@@ -113,7 +115,7 @@ hzd_release_management.release_management_settings:
 #     'access arguments' => array('administer problems'),
 
 hzd_release_management.document_page_link:
-  path: 'node/{node}/releases/documentation/{service_id}/{release_id}'
+  path: 'group/{group}/releases/documentation/{service_id}/{release_id}'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::documentation'
     _title_callback: '\Drupal\hzd_release_management\Controller\HzdReleases::getTitle'
@@ -131,7 +133,7 @@ hzd_release_management.document_zip_link:
 
 
 hzd_release_management.release_settings:
-  path: 'node/{node}/release_settings'
+  path: 'group/{group}/release_settings'
   defaults:
     _form: '\Drupal\hzd_release_management\Form\ReleasesettingsForm'
     _title: 'Releases'
@@ -140,7 +142,5 @@ hzd_release_management.release_settings:
   requirements:
     _permission: 'access content'
 #   cust_og_is_admin: 'TRUE' 
-
-
 
 

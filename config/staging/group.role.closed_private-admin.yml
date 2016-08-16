@@ -1,0 +1,44 @@
+uuid: 350dd092-dee0-4da2-9c45-9e47860d9113
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: closed_private-admin
+label: Admin
+weight: -98
+internal: false
+group_type: closed_private
+permissions:
+  - 'administer group'
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'
+  - 'view group_node:faq content'
+  - 'create group_node:faq content'
+  - 'edit own group_node:faq content'
+  - 'edit any group_node:faq content'
+  - 'delete own group_node:faq content'
+  - 'delete any group_node:faq content'
+  - 'view faq node'
+  - 'create faq node'
+  - 'edit own faq node'
+  - 'edit any faq node'
+  - 'delete own faq node'
+  - 'delete any faq node'
+  - 'view group_node:page content'
+  - 'create group_node:page content'
+  - 'edit own group_node:page content'
+  - 'edit any group_node:page content'
+  - 'delete own group_node:page content'
+  - 'delete any group_node:page content'
+  - 'view page node'
+  - 'create page node'
+  - 'edit own page node'
+  - 'edit any page node'
+  - 'delete own page node'
+  - 'delete any page node'

@@ -69,7 +69,7 @@ class AddressBookFilterForm extends FormBase {
     );
     $form['submit'] = array(
       '#type' => 'submit',
-      '#attributes' => array('class' => 'address_search_submit'),
+      '#attributes' => array('class' => ['address_search_submit']),
       '#prefix' => '<div class = "search_string_submit">',
       '#suffix' => '</div><div style="clear:both;"></div>',
     );

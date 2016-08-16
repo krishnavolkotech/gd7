@@ -1,0 +1,19 @@
+uuid: 365080d4-57cc-4b07-b394-4f984a147d29
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_task_force
+    - node.type.problem
+id: node.problem.field_task_force
+field_name: field_task_force
+entity_type: node
+bundle: problem
+label: 'Task Force'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

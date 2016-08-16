@@ -1,0 +1,21 @@
+uuid: 992ce865-4d1a-4a07-b1c7-86a15b21761f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_group_body
+    - group.type.realease_management
+  module:
+    - text
+id: group.realease_management.field_group_body
+field_name: field_group_body
+entity_type: group
+bundle: realease_management
+label: group_body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

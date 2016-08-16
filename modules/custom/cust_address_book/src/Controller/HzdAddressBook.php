@@ -68,7 +68,7 @@ class HzdAddressBook extends ControllerBase {
       unset($_SESSION['address_book_search']);
     }*/
     
-    $_REQUEST['sort'] == 'DESC'? $ord = "ASC": $ord = "DESC";
+    isset($_REQUEST['sort']) && $_REQUEST['sort'] == 'DESC'? $ord = "ASC": $ord = "DESC";
     if (\Drupal::request()->get('no_rows')) {
       $_SESSION['address_book_rows'] = \Drupal::request()->get('no_rows');
     }

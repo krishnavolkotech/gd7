@@ -6,6 +6,7 @@ use Drupal\comment\Entity\CommentType;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\Tests\migrate_drupal\Kernel\d7\MigrateDrupal7TestBase;
 use Drupal\node\Entity\NodeType;
 
@@ -88,6 +89,8 @@ class MigrateFieldFormatterSettingsTest extends MigrateDrupal7TestBase {
       'label' => $this->randomMachineName(),
     ])->save();
 
+    Vocabulary::create(['vid' => 'test_vocabulary'])->save();
+
     // Give one unfortunate field instance invalid display settings to ensure
     // that the migration provides an empty array as a default (thus avoiding
     // an "unsupported operand types" fatal).
@@ -109,9 +112,9 @@ class MigrateFieldFormatterSettingsTest extends MigrateDrupal7TestBase {
             ),
           'settings' =>
             array (
-              'display_summary' => true,
+              'display_summary' => TRUE,
               'text_processing' => 1,
-              'user_register_form' => false,
+              'user_register_form' => FALSE,
             ),
           'display' =>
             array (
@@ -136,7 +139,7 @@ class MigrateFieldFormatterSettingsTest extends MigrateDrupal7TestBase {
                   'weight' => 0,
                 ),
             ),
-          'required' => false,
+          'required' => FALSE,
           'description' => '',
         )),
       ))

@@ -1,0 +1,96 @@
+uuid: d45b59d9-95d3-4fed-8d08-bd726975157a
+langcode: en
+status: true
+dependencies: {  }
+id: open
+label: Open
+description: 'All authenticated users can join.'
+content:
+  group_membership:
+    id: group_membership
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>'
+  'group_node:page':
+    id: 'group_node:page'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:early_warnings':
+    id: 'group_node:early_warnings'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:faqs':
+    id: 'group_node:faqs'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:faq':
+    id: 'group_node:faq'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:deployed_releases':
+    id: 'group_node:deployed_releases'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:downtimes':
+    id: 'group_node:downtimes'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:newsletter':
+    id: 'group_node:newsletter'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:planning_files':
+    id: 'group_node:planning_files'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:problem':
+    id: 'group_node:problem'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:release':
+    id: 'group_node:release'
+    group_type: open
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

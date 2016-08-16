@@ -2,14 +2,14 @@
 
 namespace Drupal\cust_group\Routing;
 
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Routing\RouteSubscriberBase;
-use Drupal\Core\Routing\RoutingEvents;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Subscriber for cust_group routes.
+ * Class RouteSubscriber.
+ *
+ * @package Drupal\cust_group\Routing
+ * Listens to the dynamic route events.
  */
 class RouteSubscriber extends RouteSubscriberBase {
 
@@ -17,86 +17,16 @@ class RouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
-    /**
- * foreach ($this->entityTypeManager->getDefinitions() as $entity_type_id => $entity_type) {
- * if ($route = $this->getcust_groupLoadRoute($entity_type)) {
- * $collection->add("entity.$entity_type_id.cust_group_load", $route);
- * }
- * if ($route = $this->getcust_groupRenderRoute($entity_type)) {
- * $collection->add("entity.$entity_type_id.cust_group_render", $route);
- * }
- * }
-*/
-  }
-
-  /**
-   * Gets the cust_group load route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getcust_groupLoadRoute(EntityTypeInterface $entity_type) {
-    if ($cust_group_load = $entity_type->getLinkTemplate('cust_group-load')) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($cust_group_load);
-      $route
-        ->addDefaults([
-          '_controller' => '\Drupal\cust_group\Controller\cust_groupController::entityLoad',
-          '_title' => 'cust_group Load',
-        ])
-        ->addRequirements([
-          '_permission' => 'access cust_group information',
-        ])
-        ->setOption('_admin_route', TRUE)
-        ->setOption('_cust_group_entity_type_id', $entity_type_id)
-        ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
-        ]);
-
-      return $route;
+    // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
+    if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
+      if($route->getPath() == '/group/{group}/node/{group_content}'){
+	$route->setDefault('_controller','\Drupal\cust_group\Controller\CustNodeController::groupContentView');
+      }
+    }
+    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
+      if($route->getPath() == '/group/{group}/members/{group_content}'){
+        $route->setDefault('_controller','\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
+      }
     }
   }
-
-  /**
-   * Gets the cust_group render route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getcust_groupRenderRoute(EntityTypeInterface $entity_type) {
-    if ($cust_group_render = $entity_type->getLinkTemplate('cust_group-render')) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($cust_group_render);
-      $route
-        ->addDefaults([
-          '_controller' => '\Drupal\cust_group\Controller\cust_groupController::entityRender',
-          '_title' => 'cust_group Render',
-        ])
-        ->addRequirements([
-          '_permission' => 'access cust_group information',
-        ])
-        ->setOption('_admin_route', TRUE)
-        ->setOption('_cust_group_entity_type_id', $entity_type_id)
-        ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getSubscribedEvents() {
-    $events[RoutingEvents::ALTER] = 'onAlterRoutes';
-    return $events;
-  }
-
 }

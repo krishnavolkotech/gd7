@@ -90,16 +90,6 @@ class MigrateFieldTest extends MigrateDrupal6TestBase {
     $field_storage = FieldStorageConfig::load('node.field_test_text_single_checkbox');
     $this->assertIdentical("boolean", $field_storage->getType(), t('Field type is @fieldtype. It should be boolean.', array('@fieldtype' => $field_storage->getType())));
 
-    // Node reference to entity reference migration.
-    $field_storage = FieldStorageConfig::load('node.field_node_reference');
-    $this->assertIdentical('entity_reference', $field_storage->getType());
-    $this->assertIdentical('node', $field_storage->getSetting('target_type'));
-
-    // User reference to entity reference migration.
-    $field_storage = FieldStorageConfig::load('node.field_user_reference');
-    $this->assertIdentical('entity_reference', $field_storage->getType());
-    $this->assertIdentical('user', $field_storage->getSetting('target_type'));
-
     // Validate that the source count and processed count match up.
     /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
     $migration = $this->getMigration('d6_field');

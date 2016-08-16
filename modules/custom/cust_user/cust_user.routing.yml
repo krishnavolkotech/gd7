@@ -1,0 +1,21 @@
+cust_user.nsm_portal:
+  path: '/admin/user/nsmroles/settings'
+  defaults: 
+    _controller: '\Drupal\cust_user\Controller\NSMPortalController::userList'
+    _title: 'NSM Portal settings'
+  requirements:
+    _permission: "administer users"
+cust_user.nsm_auth:
+  path: '/auth_bp'
+  defaults: 
+    _controller: '\Drupal\cust_user\Controller\NSMPortalController::authentication'
+    _title: 'NSM Portal Authentication'
+  requirements:
+    _permission: "administer users"
+cust_user.nsm_login:
+  path: '/login_from_bp'
+  defaults: 
+    _controller: '\Drupal\cust_user\Controller\NSMPortalController::login'
+    _title: 'NSM Portal Login'
+  requirements:
+    _permission: "administer users"

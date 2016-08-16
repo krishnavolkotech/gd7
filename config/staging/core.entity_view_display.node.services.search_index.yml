@@ -1,0 +1,64 @@
+uuid: dcaa8c97-cc35-43f0-bb21-41d23f3b18d6
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_index
+    - field.field.node.services.comment
+    - field.field.node.services.field_diff
+    - field.field.node.services.field_downtime_type
+    - field.field.node.services.field_enable_downtime
+    - field.field.node.services.field_problem_name
+    - field.field.node.services.field_release_name
+    - field.field.node.services.release_type
+    - field.field.node.services.upload
+    - node.type.services
+  module:
+    - text
+    - user
+id: node.services.search_index
+targetEntityType: node
+bundle: services
+mode: search_index
+content:
+  field_diff:
+    label: above
+    weight: 1
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_downtime_type:
+    label: above
+    weight: 0
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_enable_downtime:
+    label: hidden
+    weight: -1
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_problem_name:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_release_name:
+    label: above
+    weight: -2
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment: true
+  langcode: true
+  release_type: true
+  upload: true

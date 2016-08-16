@@ -1,0 +1,30 @@
+uuid: a61314b6-b061-48d0-9dfe-03657b2c70ec
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:75cea717-4eec-4f0a-9903-b11e6e939745'
+  module:
+    - block_content
+    - system
+  theme:
+    - bartik
+id: block_2
+theme: bartik
+region: sidebar_first
+weight: -1
+provider: null
+plugin: 'block_content:75cea717-4eec-4f0a-9903-b11e6e939745'
+settings:
+  id: 'block_content:75cea717-4eec-4f0a-9903-b11e6e939745'
+  label: 'Incident Management'
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '/*Incident Management*'

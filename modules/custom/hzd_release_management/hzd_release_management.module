@@ -1,11 +1,12 @@
 <?php
 
-define('RELEASE_MANAGEMENT', 339);
+//define('RELEASE_MANAGEMENT', 339);
 define('SITE_ADMIN', 5);
 use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 
 /**
  * get deployed services list
@@ -341,7 +342,9 @@ function send_pf_notifications($entity) {
 }
 
 // send immediate Quickinfo Notifications
+// TODONOTIFICATIONS
 function send_qi_notifications($entity) {
+    return;
   $services = $entity->get('field_other_services')->getValue();
   $result = hzd_get_immediate_qi_notification_user_mails($services);
   if(is_array($result) && count($result) > 0) {
@@ -609,3 +612,15 @@ function insert_new_service_notifications($type, $nid) {
     }
   }
 }
+/*
+use Drupal\Core\Access\AccessResult;
+function hzd_release_management_group_access(\Drupal\Core\Entity\EntityInterface $entity, $operation, \Drupal\Core\Session\AccountInterface $account){
+  if(in_array('site_administrator',$account->getRoles())){
+    //    return AccessResult::allowed();
+  }else{
+    
+  }
+  //  return true;
+  //  pr($entity->toArray());
+  //exit;
+  }*/

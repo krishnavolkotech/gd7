@@ -1,0 +1,21 @@
+uuid: a02ea3d9-b723-4c95-80b9-02e5b66df980
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_depend_other_services
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_depend_other_services
+field_name: field_depend_other_services
+entity_type: node
+bundle: quickinfo
+label: '2.4 Depending on the use of other services'
+description: '(zu anderen Verfahren, z.B. Releases oder Datenbearbeitungsstände)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

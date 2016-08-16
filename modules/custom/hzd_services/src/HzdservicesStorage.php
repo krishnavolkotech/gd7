@@ -6,8 +6,6 @@ use Drupal\Core\Url;
 
 class HzdservicesStorage { 
 
-
-
 //function which returns the services array
 static function get_related_services($type = NULL) {
    $service_names = array();

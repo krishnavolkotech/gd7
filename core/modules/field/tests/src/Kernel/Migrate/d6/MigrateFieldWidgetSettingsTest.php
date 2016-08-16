@@ -30,40 +30,28 @@ class MigrateFieldWidgetSettingsTest extends MigrateDrupal6TestBase {
 
     // Text field.
     $component = $form_display->getComponent('field_test');
-    $expected = [];
     $expected = array('weight' => 1, 'type' => 'text_textfield');
     $expected['settings'] = array('size' => 60, 'placeholder' => '');
-    $expected['third_party_settings'] = [];
+    $expected['third_party_settings'] = array();
     $this->assertIdentical($expected, $component, 'Text field settings are correct.');
 
     // Integer field.
     $component = $form_display->getComponent('field_test_two');
-    $expected = [];
-    $expected['weight'] = 1;
     $expected['type'] = 'number';
+    $expected['weight'] = 1;
     $expected['settings'] = array('placeholder' => '');
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     // Float field.
     $component = $form_display->getComponent('field_test_three');
-    $expected = [];
     $expected['weight'] = 2;
-    $expected['type'] = 'number';
-    $expected['settings'] = array('placeholder' => '');
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     // Email field.
     $component = $form_display->getComponent('field_test_email');
-    $expected = [];
-    $expected['weight'] = 6;
     $expected['type'] = 'email_default';
-    $expected['settings'] = array(
-      'placeholder' => '',
-      'size' => 60
-    );
-    $expected['third_party_settings'] = [];
+    $expected['weight'] = 6;
+    $expected['settings'] = array('placeholder' => '', 'size' => 60);
     $this->assertIdentical($expected, $component);
 
     // Link field.
@@ -74,54 +62,38 @@ class MigrateFieldWidgetSettingsTest extends MigrateDrupal6TestBase {
 
     // File field.
     $component = $form_display->getComponent('field_test_filefield');
-    $expected = [];
-    $expected['weight'] = 8;
     $expected['type'] = 'file_generic';
+    $expected['weight'] = 8;
     $expected['settings'] = array('progress_indicator' => 'bar');
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     // Image field.
     $component = $form_display->getComponent('field_test_imagefield');
-    $expected = [];
+    $expected['type'] = 'image_image';
     $expected['weight'] = 9;
     $expected['settings'] = array('progress_indicator' => 'bar', 'preview_image_style' => 'thumbnail');
-    $expected['third_party_settings'] = [];
-    $expected['type'] = 'image_image';
     $this->assertIdentical($expected, $component);
 
     // Phone field.
     $component = $form_display->getComponent('field_test_phone');
-    $expected = [];
-    $expected['weight'] = 13;
     $expected['type'] = 'telephone_default';
+    $expected['weight'] = 13;
     $expected['settings'] = array('placeholder' => '');
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     // Date fields.
     $component = $form_display->getComponent('field_test_date');
-    $expected = [];
-    $expected['weight'] = 10;
     $expected['type'] = 'datetime_default';
+    $expected['weight'] = 10;
     $expected['settings'] = array();
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     $component = $form_display->getComponent('field_test_datestamp');
-    $expected = [];
     $expected['weight'] = 11;
-    $expected['type'] = 'datetime_default';
-    $expected['settings'] = array();
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
 
     $component = $form_display->getComponent('field_test_datetime');
-    $expected = [];
     $expected['weight'] = 12;
-    $expected['type'] = 'datetime_default';
-    $expected['settings'] = array();
-    $expected['third_party_settings'] = [];
     $this->assertIdentical($expected, $component);
   }
 

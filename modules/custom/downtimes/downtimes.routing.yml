@@ -17,7 +17,7 @@ downtimes.Downtimesnotesform:
 
     
 downtimes.Downtimesnotes:
-  path: 'admin/config/downtimes/notes'
+  path: '/admin/config/downtimes/notes'
   defaults:
     _form: '\Drupal\downtimes\Form\Downtimesnotesform'
     _title: 'Downtimes Notes'
@@ -60,10 +60,42 @@ downtimes.cancel_confirm:
 
 
 
+downtimes.service_profiles:
+  path: 'node/{node}/downtimes/service-profiles'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+    _title: 'Service Profiles'
+    _description: 'Service Profiles.'
+  requirements:
+     _permission: 'service profiles view/add'
+     node: \d+
+#    _permission: 'access content'
+#    node: \d+
+#    _permission: 'access content'
 
-
-
-
+downtimes.create_downtimes:
+  path: 'node/{node}/downtimes/create_downtimes'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
+    _title: 'Report an Incident'
+    #_title_callback: '\Drupal\downtimes\Controller\DowntimeController::getTitle'
+#  requirements:
+#    access arguments: 'master group'
+  requirements:
+    _permission: 'service profiles view/add'
+    node: \d+
+    
+downtimes.create_maintenance:
+  path: 'node/{node}/downtimes/create_maintenance'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
+    _title: 'Create Maintenance'
+    #_title_callback: '\Drupal\downtimes\Controller\DowntimeController::getTitle'
+#  requirements:
+#    access arguments: 'master group'
+  requirements:
+    _permission: 'service profiles view/add'
+    node: \d+
 
 
 
@@ -92,17 +124,7 @@ downtimes.cancel_confirm:
 #  requirements:
 #    _permission: 'access content'
 
-# downtimes.service_profiles:
-#  path: 'node/{node}/downtimes/service-profiles'
-#  defaults:
-#    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
-#    _title: 'Service Profiles'
-#    _description: 'Service Profiles.'
-#  requirements:
-#     _permission: 'service profiles view/add'
-#    _permission: 'access content'
-#    node: \d+
-#    _permission: 'access content'
+
 
 #   cust_og_is_member: 'TRUE' 
 #  requirements:
@@ -111,47 +133,47 @@ downtimes.cancel_confirm:
 
 # scheduled-maintenance-groupid  
 
-# downtimes.downtimes_maintenance_groupid_form:
-#  path: 'admin/config/downtimes/scheduled-maintenances/scheduled-maintenance-groupid'
-#  defaults:
-#    _form: '\Drupal\downtimes\Form\maintenancegroupidForm'
-#    _title: 'Group ID'
-#    _description: 'Group ID'
-#    _weight: 10
-#  requirements:
-#    _permission: 'administer messaging'
+downtimes.downtimes_maintenance_groupid_form:
+  path: 'admin/config/downtimes/scheduled-maintenances/scheduled-maintenance-groupid'
+  defaults:
+    _form: '\Drupal\downtimes\Form\maintenancegroupidForm'
+    _title: 'Group ID'
+    _description: 'Group ID'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
 
 
-# downtimes.downtimes_scheduled_maintenance_form:
-#  path: 'admin/config/downtimes/scheduled-maintenances'
-#  defaults:
-#    _form: '\Drupal\downtimes\Form\ScheduledmaintenanceForm'
-#    _title: 'Scheduled Maintenances'
-#    _description: 'Scheduled Maintenances'
-#    _weight: 10
-#  requirements:
-#    _permission: 'administer messaging'
+downtimes.downtimes_scheduled_maintenance_form:
+  path: 'admin/config/downtimes/scheduled-maintenances'
+  defaults:
+    _form: '\Drupal\downtimes\Form\ScheduledmaintenanceForm'
+    _title: 'Scheduled Maintenances'
+    _description: 'Scheduled Maintenances'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
 
-# downtimes.downtimes_scheduled_maintenance_time_settings_form:
-#  path: 'admin/config/downtimes/scheduled-maintenances/time-settings'
-#  defaults:
-#    _form: '\Drupal\downtimes\Form\ScheduledmaintenanceForm'
-#    _title: 'Scheduled Maintenances'
-#    _description: 'Scheduled Maintenances'
-#    _weight: 10
-#  requirements:
-#    _permission: 'administer messaging'
+downtimes.downtimes_scheduled_maintenance_time_settings_form:
+  path: 'admin/config/downtimes/scheduled-maintenances/time-settings'
+  defaults:
+    _form: '\Drupal\downtimes\Form\ScheduledmaintenanceForm'
+    _title: 'Scheduled Maintenances'
+    _description: 'Scheduled Maintenances'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
 
 
-# downtimes.downtimes_scheduled_maintenance_mail_template_form:
-#  path: 'admin/config/downtimes/scheduled-maintenances/mail-template'
-#  defaults:
-#    _form: '\Drupal\downtimes\Form\scheduled_maintenance_mail_templateForm'
-#    _title: 'Mail Template'
-#    _description: 'Mail Template'
-#    _weight: 10
-#  requirements:
-#    _permission: 'administer messaging'
+downtimes.downtimes_scheduled_maintenance_mail_template_form:
+  path: 'admin/config/downtimes/scheduled-maintenances/mail-template'
+  defaults:
+    _form: '\Drupal\downtimes\Form\scheduled_maintenance_mail_templateForm'
+    _title: 'Mail Template'
+    _description: 'Mail Template'
+    _weight: 10
+  requirements:
+    _permission: 'administer messaging'
 
 # downtimes.service_profiles:
 #  path: 'node/{node}/downtimes/service-profiles'
@@ -375,3 +397,20 @@ downtimes.cancel_confirm:
 #  requirements:
 #  'access callback' => 'saved_quickinfo_og_is_member'
 #  'access arguments' => array(MAINTENANCE_GROUP_ID),
+
+# downtimes.create_downtime:
+#  path: '/downtimes/create_downtime'
+#  defaults:
+#    _form: '\Drupal\downtimes\Form\CreateDowntime'
+#    _title: 'CreateDowntime'
+#  requirements:
+#    _access: 'TRUE'
+  
+
+downtimes.new_downtimes_controller_newDowntimes:
+  path: '/node/{node}/downtimes'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
+    _title: 'displayDowntimes'
+  requirements:
+    _permission: 'access content'

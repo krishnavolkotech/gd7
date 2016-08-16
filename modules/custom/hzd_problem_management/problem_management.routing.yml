@@ -7,11 +7,12 @@ problem_management.read_problem_csv:
     _permission: 'access content'
 
 problem_management.problem_settings:
-  path: 'node/{node}/problem_settings'
+  path: 'group/{group}/problem_settings'
   defaults:
     _form: '\Drupal\problem_management\Form\ProblemsettingsForm'
     _title: 'Problems'
     _description: 'View Setting for Problems.'
+    _entity_view: 'group.default'
     _weight: 10
   requirements:
     _permission: 'access content'
@@ -23,15 +24,17 @@ problem_management.problem_settings:
 #    access arguments: array(1)
 
 problem_management.problems:
-  path: 'node/{node}/problems'
+  path: 'group/{group}/problems'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ProblemsController::problems_display'
     _title: 'Problems'
     _description: 'View Setting for Problems.'
+    _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
-    node: \d+
+    group: \d+
     _permission: 'access content'
+    _custom_access: '\Drupal\problem_management\Controller\ProblemsController::access'
 #   cust_og_is_member: 'TRUE' 
 
 #  requirements:
@@ -40,13 +43,14 @@ problem_management.problems:
 #     'access arguments' => array(1),
 
 problem_management.current_problems:
-  path: 'node/{node}/problems/current_problems'
+  path: 'group/{group}/problems/current_problems'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ProblemsController::problems_display'
     _title: 'Current Problems'
+    _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
-    node: \d+
+    group: \d+
 #    cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_member'
@@ -54,11 +58,12 @@ problem_management.current_problems:
 #     'access arguments' => array(1),
 
 problem_management.archived_problems:
-  path: 'node/{node}/problems/archived_problems'
+  path: 'group/{group}/problems/archived_problems'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ArchivedProblemsController::archived_problems'
     _title: 'Archive'
-#    node: \d+
+    _entity_view: 'group.default'
+#    group: \d+
   requirements:
     _permission: 'access content'
 #   cust_og_is_member: 'TRUE'
@@ -68,14 +73,15 @@ problem_management.archived_problems:
 #     access arguments: array(1),
 
 problem_management.import_history:
-  path: 'node/{node}/problems/import_history'
+  path: 'group/{group}/problems/import_history'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ImportHistoryController::import_history'
     _title: 'Import History'
 #    _weight: 4
   requirements:
     _permission: 'access content'
-    node: ^[0-9]+
+    group: ^[0-9]+
+    _entity_view: 'group.default'
 #    node: \d+
 #   cust_og_is_member: 'TRUE'
 #  requirements:

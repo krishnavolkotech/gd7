@@ -19,16 +19,18 @@ use Drupal\Core\Url;
  */
 class ArchivedProblemsController extends ControllerBase {
 
-  function archived_problems($node) {
-    $_SESSION['Group_id'] = 825;
-    $_SESSION['Group_name'] = 'problem management';
+  function archived_problems() {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    //    $_SESSION['Group_id'] = 825;
+    //$_SESSION['Group_name'] = 'problem management';
     $result = array();
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
     // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
+    $group_id = $group->id();
     // $group_name = \Drupal::service('user.private_tempstore')->get()->get('Group_name');
-    $group_name =  $_SESSION['Group_name'];
+    //__gm($group);
+    $group_name =  $group->label();
     
     $request = \Drupal::request();
     $page = $request->get('page'); 

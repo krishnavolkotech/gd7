@@ -30,3 +30,25 @@ downtimes.sitewardjs:
     - core/drupal.dialog
     - core/jquery.ui.datepicker
 
+downtimes.maintenancejs:
+  version: 1.x
+  js:
+    js/service_data.js: {}
+    js/hzd_downtimes.js: {}
+    
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker
+
+downtimes.newdowntimes:
+  version: 1.x
+  js:
+    js/downtimes_filter.js: {}
+    
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker

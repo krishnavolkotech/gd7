@@ -1,0 +1,27 @@
+uuid: b647fbf2-4a73-42fe-9725-0e6bc5f4aa56
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_downtime_type
+field_name: field_downtime_type
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: Publish
+      label: Publish
+    -
+      value: Unpublish
+      label: Unpublish
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

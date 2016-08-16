@@ -1,0 +1,23 @@
+uuid: cdada872-bec9-468d-b269-187514decad6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_old_reference
+    - group.type.closed_private
+id: group.closed_private.field_old_reference
+field_name: field_old_reference
+entity_type: group
+bundle: closed_private
+label: 'Old Reference'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

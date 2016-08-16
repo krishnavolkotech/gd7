@@ -72,7 +72,7 @@ class ProblemImportstatusFrom extends FormBase {
     );
 
 
-    return parent::buildForm($form, $form_state);
+    return $form;
   }
   /**
    * {@inheritDoc}

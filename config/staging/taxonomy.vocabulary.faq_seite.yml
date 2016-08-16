@@ -1,0 +1,9 @@
+uuid: b4bd55a0-dc0f-4e58-8a9b-54516042ca44
+langcode: en
+status: true
+dependencies: {  }
+name: FAQ-Seite
+vid: faq_seite
+description: 'Bitte wählen Sie aus, auf welcher FAQ-Seite Sie diese Frage anzeigen wollen. Es gibt die Möglichkeit, mehrere FAQ-Seiten von einem Seitenadministrator anlegen zu lassen.'
+hierarchy: 1
+weight: 0

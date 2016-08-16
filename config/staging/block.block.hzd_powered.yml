@@ -1,0 +1,22 @@
+uuid: 36be1cdb-b115-42cc-b722-63c9db340c91
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+  theme:
+    - hzd
+_core:
+  default_config_hash: jQQUUWN2Uxr5qZtc9zcJKBCxpKY8orN1u2HPqYYRQDI
+id: hzd_powered
+theme: hzd
+region: '-1'
+weight: -4
+provider: null
+plugin: system_powered_by_block
+settings:
+  id: system_powered_by_block
+  label: 'Powered by Drupal'
+  provider: system
+  label_display: '0'
+visibility: {  }

@@ -11,8 +11,10 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-define('RELEASE_MANAGEMENT', 339);
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 339);
 
 // TODO
 $_SESSION['Group_id'] = 339;

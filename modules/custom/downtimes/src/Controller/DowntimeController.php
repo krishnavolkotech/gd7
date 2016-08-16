@@ -3,8 +3,9 @@
 namespace Drupal\downtimes\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-
 use Drupal\hzd_customizations\HzdcustomisationStorage;
+use Symfony\Component\HttpFoundation\Request;
+use Drupal\Component\Utility\Html;
 
 /**
  * Class DowntimeController.
@@ -21,6 +22,19 @@ class DowntimeController extends ControllerBase {
     $result['content'] = HzdcustomisationStorage::service_profiles();
     // Echo '<pre>';  print_r($result);  exit;.
     return $result;
+  }
+
+  function create_downtime($node) {
+    $type = node_type_load("downtimes"); // replace this with the node type in which we need to display the form for
+    $samplenode = $this->entityManager()->getStorage('node')->create(array(
+      'type' => $type->id(),
+    ));
+    $node_create_form = $this->entityFormBuilder()->getForm($samplenode);
+
+    return array(
+      '#type' => 'markup',
+      '#markup' => render($node_create_form),
+    );
   }
 
 }

@@ -1,0 +1,10 @@
+uuid: d1432eca-3389-4596-912b-9e0199905cec
+langcode: en
+status: true
+dependencies: {  }
+id: bpk_account_deaktivieren
+label: 'BpK-Account deaktivieren'
+recipients:
+  - betriebsportal-konsens@hzd.hessen.de
+reply: ''
+weight: 3

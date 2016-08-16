@@ -1,0 +1,11 @@
+uuid: ac066d4a-93f4-4b70-9101-97e9b0d35909
+langcode: en
+status: true
+dependencies: {  }
+name: 'Nichtproduktive Umgebungen'
+type: non_production_environment
+description: ''
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: false

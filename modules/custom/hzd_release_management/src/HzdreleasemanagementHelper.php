@@ -5,7 +5,8 @@ namespace Drupal\hzd_release_management;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 
-define('RELEASE_MANAGEMENT', 339);
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 339);
 /**
  *
  */

@@ -1,0 +1,21 @@
+uuid: 5d6ff5cb-ffe2-4276-986d-e21f7c7b3d43
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_business_impact_services
+    - node.type.quickinfo
+  module:
+    - text
+id: node.quickinfo.field_business_impact_services
+field_name: field_business_impact_services
+entity_type: node
+bundle: quickinfo
+label: '2.7 Business impact on other (business) services'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

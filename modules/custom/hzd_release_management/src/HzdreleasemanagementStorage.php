@@ -9,11 +9,13 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\Entity;
 use Drupal\Core\Url;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 32);
 define('DISPLAY_LIMIT', 20);
-define('RELEASE_MANAGEMENT', 339);
 define('DEFAULT_PAGELIMIT', 20);
-$_SESSION['Group_id'] = 339;
+//$_SESSION['Group_id'] = 339;
 class HzdreleasemanagementStorage {
 
 /*
@@ -974,7 +976,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   }
 
   // display text on releases and inprogress tabs.
-  function release_info() {
+  static function release_info() {
     $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src = '/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
     $build['#markup'] = $output;
     return $build;
@@ -1066,6 +1068,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $rows[] = $row;
       }
+//pr($rows);exit;
 
     if ($rows) { 
       $output['releases'] = array(
@@ -1132,7 +1135,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $paged_query->addField('nfd', 'field_date_value', 'date');
     $paged_query->fields('n', array('title'))
                 ->orderBy('nfd.field_date_value', 'DESC');
-    
+//	echo $release_query->__toString();exit;
   // echo '<pre>'; print_r($release_query->conditions()); exit;
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
@@ -1141,6 +1144,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     } else {
       $result = $query->execute()->fetchAll();
     }
+//pr($result);exit;
     return $result;
   }
 

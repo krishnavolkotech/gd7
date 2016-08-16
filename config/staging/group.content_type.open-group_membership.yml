@@ -1,0 +1,11 @@
+uuid: 80dd655c-c531-4d53-ab1e-75de7b894a7d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-group_membership
+label: 'Open: Group membership'
+description: 'Adds users to groups as members.'
+group_type: open
+content_plugin: group_membership

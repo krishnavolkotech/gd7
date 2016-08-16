@@ -1,0 +1,20 @@
+uuid: ed001c5d-42ec-4f1a-904e-bb62e5af31ce
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+id: zentrale_release_manag-admin
+label: Admin
+weight: -97
+internal: false
+group_type: zentrale_release_manag
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'edit own group_membership content'
+  - 'leave group'
+  - 'access group_node overview'

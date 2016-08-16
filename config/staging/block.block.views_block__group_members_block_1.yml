@@ -1,0 +1,28 @@
+uuid: 9c576bbe-e2f2-446c-a9f6-ce9c30e3f080
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.group_members
+  module:
+    - block_class
+    - views
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: views_block__group_members_block_1
+theme: hzd
+region: sidebar_first
+weight: -15
+provider: null
+plugin: 'views_block:group_members-block_1'
+settings:
+  id: 'views_block:group_members-block_1'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility: {  }

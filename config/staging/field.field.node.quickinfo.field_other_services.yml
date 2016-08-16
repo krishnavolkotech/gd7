@@ -1,0 +1,21 @@
+uuid: 1261835f-924d-47ae-b672-631437b1d1f8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_other_services
+    - node.type.quickinfo
+  module:
+    - options
+id: node.quickinfo.field_other_services
+field_name: field_other_services
+entity_type: node
+bundle: quickinfo
+label: '1.3 Affected service ids (according Progdok)'
+description: '(Mehrfachnennung möglich)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

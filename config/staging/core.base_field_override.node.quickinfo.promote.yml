@@ -1,0 +1,22 @@
+uuid: 137ee792-512a-4e75-a820-733554da80ed
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.quickinfo
+id: node.quickinfo.promote
+field_name: promote
+entity_type: node
+bundle: quickinfo
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

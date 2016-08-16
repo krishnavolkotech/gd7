@@ -1,0 +1,17 @@
+uuid: 680d5e7c-d58c-4f17-98f4-5187408336a3
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: j5zLMOdJBqC0bMvSdth5UebkprJB8g_2FXHqhfpJzow
+id: anonymous
+label: 'anonymous user'
+weight: 0
+is_admin: false
+permissions:
+  - 'access ckeditor'
+  - 'access site-wide contact form'
+  - 'access frontpage'
+  - 'access content'
+  - 'use text format filtered_html'
+  - 'access user profiles'

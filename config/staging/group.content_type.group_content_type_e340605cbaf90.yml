@@ -1,0 +1,13 @@
+uuid: adcd0308-637e-4d45-84f4-5899be2fec47
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  module:
+    - gnode
+id: group_content_type_e340605cbaf90
+label: 'Moderate Private: Group node (Verfahrenssteckbrief)'
+description: 'Adds <em class="placeholder">Verfahrenssteckbrief</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:service_profile'

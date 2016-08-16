@@ -58,8 +58,8 @@ function import_history() {
   $request = \Drupal::request();
  // $session = $request->getSession();
  // $group_id = $session->get('Group_id');
-  $group_id = $_SESSION['Group_id'];
-  $group_name = $_SESSION['Group_name'];
+  //$group_id = $_SESSION['Group_id'];
+  //$group_name = $_SESSION['Group_name'];
   $route_match = \Drupal::routeMatch();
 
   $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());

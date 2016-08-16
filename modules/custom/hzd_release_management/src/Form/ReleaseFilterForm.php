@@ -14,8 +14,10 @@ use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\hzd_release_management\Controller\HzdReleases;
 use Drupal\Core\Form\FormBuilder;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-define('RELEASE_MANAGEMENT', 339);
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 339);
 
 class ReleaseFilterForm extends FormBase {
 
@@ -82,7 +84,8 @@ class ReleaseFilterForm extends FormBase {
     $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
     // $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
     // $group_id = $tempstore->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
     foreach($terms as $key => $value) {
       $release_type_list[$value->tid] =$value->name;
     }
@@ -92,7 +95,7 @@ class ReleaseFilterForm extends FormBase {
     
     $path = '::releases_search_results';
 
-    if (isset($_SESSION['Group_id'])) {
+    if (isset($group_id)) {
       $rel_path = '::releases_type_search_results';
     }
     else {

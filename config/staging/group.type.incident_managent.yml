@@ -1,0 +1,14 @@
+uuid: 0e597fcf-6a28-43f4-adc0-84f1ae166a71
+langcode: en
+status: true
+dependencies: {  }
+id: incident_managent
+label: 'Incident Managent'
+description: 'Same as open group.'
+content:
+  group_membership:
+    id: group_membership
+    group_type: incident_managent
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1

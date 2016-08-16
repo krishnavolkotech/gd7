@@ -1,0 +1,23 @@
+uuid: f6b133f6-fca1-4e7e-a0ee-03ea87769850
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_ticketstore_count
+    - node.type.problem
+id: node.problem.field_ticketstore_count
+field_name: field_ticketstore_count
+entity_type: node
+bundle: problem
+label: 'Ticketstore Count'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

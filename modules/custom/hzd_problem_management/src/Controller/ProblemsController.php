@@ -8,6 +8,7 @@ namespace Drupal\problem_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\problem_management\HzdproblemmanagementHelper;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Class CurrentProblemsController
@@ -17,7 +18,7 @@ class ProblemsController extends ControllerBase {
 /*
  *callback for problems display
 */
-function problems_display($node) {
+function problems_display() {
   $current_path = \Drupal::service('path.current')->getPath();
   $get_uri = explode('/', $current_path);
   if ($get_uri['3'] == 'problems') {
@@ -38,4 +39,16 @@ function problems_display($node) {
   $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
   return $response;
  }
+
+function access(){
+  $group = \Drupal::routeMatch()->getParameter('group');
+  $user = \Drupal::currentUser();
+  if($user->isAnonymous()){
+    return AccessResult::forbidden();
+  }
+  if($user->getRoles()){
+    return AccessResult::allowed();
+  }
+}
+
 }

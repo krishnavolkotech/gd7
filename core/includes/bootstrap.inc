@@ -153,6 +153,7 @@ function config_get_config_directory($type) {
   if (!empty($config_directories[$type])) {
     return $config_directories[$type];
   }
+  // @todo https://www.drupal.org/node/2696103 Throw a more specific exception.
   throw new \Exception("The configuration directory type '$type' does not exist");
 }
 
@@ -623,7 +624,7 @@ function drupal_valid_test_ua($new_prefix = NULL) {
   $user_agent = isset($_COOKIE['SIMPLETEST_USER_AGENT']) ? $_COOKIE['SIMPLETEST_USER_AGENT'] : $http_user_agent;
   if (isset($user_agent) && preg_match("/^(simpletest\d+):(.+):(.+):(.+)$/", $user_agent, $matches)) {
     list(, $prefix, $time, $salt, $hmac) = $matches;
-    $check_string =  $prefix . ':' . $time . ':' . $salt;
+    $check_string = $prefix . ':' . $time . ':' . $salt;
     // Read the hash salt prepared by drupal_generate_test_ua().
     // This function is called before settings.php is read and Drupal's error
     // handlers are set up. While Drupal's error handling may be properly

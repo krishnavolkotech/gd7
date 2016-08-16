@@ -1,0 +1,6 @@
+cust_user.nsm_index:
+  title: NSM Portal index
+  route_name: cust_user.nsm_portal
+  parent: user.admin_index
+  description: 'Configure NSM user accounts.'
+  position: left
