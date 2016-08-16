@@ -1,15 +1,16 @@
 <?php
 
 namespace Drupal\hzd_services; 
+
 use Drupal\Core\Url;
 
 class HzdservicesStorage { 
 
-  //function which returns the services array
-  static function get_related_services($type = NULL) {
-    $service_names = array();
-    switch ($type) {
-    case 'problems':
+//function which returns the services array
+static function get_related_services($type = NULL) {
+   $service_names = array();
+   switch ($type) {
+   case 'problems':
      $query = db_select('node_field_data', 'n');
 	                  $query->join('node__field_problem_name', 'nfpn', 'nfpn.entity_id = n.nid');
 	                  $query->Fields('n', array('nid'));
@@ -108,14 +109,14 @@ class HzdservicesStorage {
 		$services_query = self::services_query();
 		$loader_path = drupal_get_path('module', 'hzd_services') . '/images/status-active.gif';
 		foreach($services_query as $service_info) {
-		  /*$value = TRUE; 
+		  $value = TRUE; 
       if(!$service_info->field_enable_downtime_value) {
         $value = FALSE;
-      }*/
+      }
       $form['downtime_checkbox'] = array(
         '#type' => 'checkbox', 
 				'#attributes' => array('node_id' => $service_info->nid, 'class' => 'enable_downtimes'),
-				'#value' => $service_info->field_enable_downtime_value,
+				'#value' => $value,
 				'#prefix' => "<div class = 'downtime_enable'><div class = 'downtime_check_form'>",
 				'#suffix' => "<div style = 'display:none' class = 'loader " . $service_info->nid . "'><img src =" . $loader_path . "  / ><div></div></div>",
       );
@@ -152,8 +153,7 @@ class HzdservicesStorage {
           ->fields('n', array('nid', 'title'))
           ->fields('nfrn', array('field_release_name_value'))
           ->fields('nfpn', array('field_problem_name_value'))
-          ->fields('nfed', array('field_enable_downtime_value'))
-          ->orderBy('title');
+          ->fields('nfed', array('field_enable_downtime_value'));
     $result = $query->execute()->fetchAll();
     return $result;
   }
@@ -192,7 +192,6 @@ class HzdservicesStorage {
     }
   }
 
-  // written batch process for updating downtime services
   function update_downtime_notifications($node, $rel_type) {
     $batch = array(
       'operations' => array(),
