@@ -3,10 +3,11 @@
 /**
  * @file
  */
-
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Drupal\hzd_services\HzdservicesStorage;
 
 define('INCEDENT_MANAGEMENT', 340);
 // Use Drupal\Core\Utility\Token;
@@ -39,44 +40,55 @@ define('INCEDENT_MANAGEMENT', 340);
 function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id == 'node_downtimes_form' || $form_id == 'node_downtimes_edit_form') {
     //dsm($form['title']);
-    $date_format = 'Y-m-d';
-    $time_format = 'H:i';
-    if($form_id == 'node_downtimes_form') {
-      $downtime_type = \Drupal::routeMatch()->getParameter('downtimes');
-      if($downtime_type != 'create_maintenance'){
-      $help_markup = t('Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden
-                          <em>(Beschluss AutomSt III/2011 TOP K9).</em>
-                          <br>
-                          <br>
-                          <strong>Geplante Blockzeit:</strong>
-                          Nichterreichbarkeit durch planmäßige Wartungsarbeiten
-                          <br>
-                          <strong>Land:</strong>
-                          Das Land oder System, in dem die Wartungsarbeiten ausgeführt werden.
-                          <br>
-                          <strong>Verfahren/ZPS:</strong>
-                          Verfahren oder ZPS, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen.
-                          <br>
-                          <br>
-                          Blockzeitmeldungen im BpK werden als regulär also konform mit dem
-                          <em>Beschluss AutomSt III/2011 TOP K9 </em>
-                          gewertet, wenn Beginn und Ende in der Zeit von Dienstag und Mittwoch 18:00 Uhr bis jeweils 05:59 des Folgetages liegen.
-                          <br>
-                          Bis zum Abschluss gültiger SLAs wird für alle Verfahren eine Vorlaufzeit von 2 Tagen konfiguriert.
-                          <br>
-                          Ihre Meldung wird an alle Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten" versandt.
-                          <br>
-                          <br>
-                          Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch Beheben wird die Meldung in das Archiv verschoben.');
+
+    /* $user_role = get_user_role();
+      if ($form_id == 'downtimes_node_form') {
+      if ($user_role != 'site_admin') {
+      if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == 'downtimes' && (arg(3) == 'create_downtimes' || arg(3) == 'create_maintenance')) {
+      $form['notifications']['#prefix'] = "<div class = 'hide_content'>";
+      $form['notifications']['#suffix'] = '</div>';
+      }
+      }
+      } */
+
+    $date_format = 'd.m.Y - H:i';
+    $current_path = \Drupal::service('path.current')->getPath();
+    $downtime_type = trim(pathinfo($current_path, PATHINFO_BASENAME));
+    if ($form_id == 'node_downtimes_form') {
+      if ($downtime_type != 'create_maintenance') {
+        $help_markup = t('Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden
+                            <em>(Beschluss AutomSt III/2011 TOP K9).</em>
+                            <br>
+                            <br>
+                            <strong>Geplante Blockzeit:</strong>
+                            Nichterreichbarkeit durch planmäßige Wartungsarbeiten
+                            <br>
+                            <strong>Land:</strong>
+                            Das Land oder System, in dem die Wartungsarbeiten ausgeführt werden.
+                            <br>
+                            <strong>Verfahren/ZPS:</strong>
+                            Verfahren oder ZPS, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen.
+                            <br>
+                            <br>
+                            Blockzeitmeldungen im BpK werden als regulär also konform mit dem
+                            <em>Beschluss AutomSt III/2011 TOP K9 </em>
+                            gewertet, wenn Beginn und Ende in der Zeit von Dienstag und Mittwoch 18:00 Uhr bis jeweils 05:59 des Folgetages liegen.
+                            <br>
+                            Bis zum Abschluss gültiger SLAs wird für alle Verfahren eine Vorlaufzeit von 2 Tagen konfiguriert.
+                            <br>
+                            Ihre Meldung wird an alle Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten" versandt.
+                            <br>
+                            <br>
+                            Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch Beheben wird die Meldung in das Archiv verschoben.');
       }
       else {
         $help_markup = '<strong>Aktuelle Störung:</strong>&nbsp;Akuter Ausfall bzw. Nichterreichbarkeit eines Systems<br>
-                        <strong>Land:</strong> Das Land, in dem der Betrieb eines Verfahrens oder ZPS gestört ist.<br>
-                        <strong>Verfahren/ZPS:</strong> Verfahren oder ZPS, die durch die Störung nicht zur Verfügung stehen.<br>
-                        <br>
-                        Ihre Meldung wird an alle&nbsp;Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten"&nbsp;versandt.&nbsp;<br>
-                        <br>
-                        Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch&nbsp;<i>Beheben</i>&nbsp;wird die Meldung in das Archiv verschoben.&nbsp;';
+                          <strong>Land:</strong> Das Land, in dem der Betrieb eines Verfahrens oder ZPS gestört ist.<br>
+                          <strong>Verfahren/ZPS:</strong> Verfahren oder ZPS, die durch die Störung nicht zur Verfügung stehen.<br>
+                          <br>
+                          Ihre Meldung wird an alle&nbsp;Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten"&nbsp;versandt.&nbsp;<br>
+                          <br>
+                          Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch&nbsp;<i>Beheben</i>&nbsp;wird die Meldung in das Archiv verschoben.&nbsp;';
       }
       $form['static_desc'] = [
         '#type' => 'item',
@@ -84,118 +96,180 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#weight' => -1,
       ];
     }
+    $downtime_data = new stdClass();
+    $node = array();
+    if ($form_id == 'node_downtimes_edit_form') {
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if ($node) {
+        $downtime_data = \Drupal::database()->select('downtimes', 'd')
+                ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p'])
+                ->condition('downtime_id', $node->id(), '=')
+                ->execute()->fetchObject();
+      }
+    }
     $form['states'] = [
       '#type' => 'checkboxes',
       '#title' => t('States'),
       '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
       '#options' => HzdcustomisationStorage::get_published_services(),
     ];
+    $list_groups = !empty($node) ? HzdcustomisationStorage::get_maintenance_related_services('service_profile', $node->nid, $downtime_services) : HzdcustomisationStorage::get_maintenance_related_services('service_profile');
     $form['services_effected'] = [
       '#type' => 'checkboxes',
       '#title' => t('Services Effected'),
-      '#description' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.'),
-      '#options' => HzdcustomisationStorage::get_published_services(),
+      '#options' => $list_groups,
+      '#theme' => 'service_checkboxes',
     ];
-    $form['start_date'] = [
-      '#type' => 'datetime',
-      '#title' => t('Start Date'),
-      '#date_date_format' => $date_format,
-      '#date_time_format' => $time_format,
-      '#description' => date($date_format, time()),
-      '#default_value' => Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp(time())
-    ];
-    $form['end_date'] = [
-      '#type' => 'datetime',
-      '#title' => t('End Date'),
-      '#date_date_format' => $date_format,
-      '#date_time_format' => $time_format,
-      '#description' => date($date_format, time()),
-      '#default_value' => Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp(time())
-    ];
-    $form['reason_for_noncompliance'] = [
-      '#type' => 'select',
-      '#title' => t('Reason for scheduling outside maintenance window'),
-      '#description' => t('Please select a reason'),
-      '#options' => array(t('Please select a reason here'), t('Urgency of the maintenance'), t('No staff available during maintenance hours'), t('No service partner (State) available during maintenance hours'), t('External service partner required'), t('Internal regulations do not allow maintenances during KONSENS maintenance windows'), t('Public holiday or weekend'), t('No service partner (KONSENS) available during maintenance hours'), t('No service interruption planned')),
-      '#size' => 5,
-    ];
+
+
     // droy: Disabling preview button due to js validation bug #11569.
     //$form['buttons']['preview']['#access'] = FALSE;
     /**
-      *   TO do  og
-      */
-
-    /*$user = Drupal::currentUser();
-    // $user_roles = $user->getRoles();
-    if (!$user->og_groups[$_SESSION['Group_id']]['is_admin'] && $user->getUid() != 1) {
+     *   TO do  og
+     */
+    /* $user = Drupal::currentUser();
+      // $user_roles = $user->getRoles();
+      if (!$user->og_groups[$_SESSION['Group_id']]['is_admin'] && $user->getUid() != 1) {
 
       $form['buttons']['delete']['#prefix'] = "<div class = 'hide_content'>";
       $form['buttons']['delete']['#suffix'] = '</div>';
-    }
+      }
 
-    $form['menu']['#prefix'] = "<div class = 'hide_content'>";
-    $form['menu']['#suffix'] = '</div>';
+      $form['menu']['#prefix'] = "<div class = 'hide_content'>";
+      $form['menu']['#suffix'] = '</div>';
 
-    $form['attachments']['#prefix'] = "<div class = 'hide_content'>";
-    $form['attachments']['#suffix'] = '</div>';
+      $form['attachments']['#prefix'] = "<div class = 'hide_content'>";
+      $form['attachments']['#suffix'] = '</div>';
 
-    $form['path']['#prefix'] = "<div class = 'hide_content'>";
-    $form['path']['#suffix'] = '</div>';
+      $form['path']['#prefix'] = "<div class = 'hide_content'>";
+      $form['path']['#suffix'] = '</div>';
 
-    $form['body_filter']['filter']['#prefix'] = "<div class = 'hide_content'>";
-    $form['body_filter']['filter']['#suffix'] = '</div>';
-    if ($form['downtime_type']['#default_value'] == 0) {
+      $form['body_filter']['filter']['#prefix'] = "<div class = 'hide_content'>";
+      $form['body_filter']['filter']['#suffix'] = '</div>';
+      if ($form['downtime_type']['#default_value'] == 0) {
       /**
-             * TO do title
-             */
-      // drupal_set_title(t("Report an Incident"));.
-    /*}
-    $form['#after_build'][] = 'add_service_data';*/
-    if($form_id == 'node_downtimes_edit_form') {
+     * TO do title
+     */
+    // drupal_set_title(t("Report an Incident"));.
+    /* }
+      $form['#after_build'][] = 'add_service_data'; */
+    $type = 0;
+    if ($form_id == 'node_downtimes_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
       if ($node) {
-        downtimes_set_default_values($form, $node->id());
+        $downtime_data = downtimes_set_default_values($form, $node->id());
       }
     }
-  }
+    else {
+      $form['title']['#type'] = 'hidden';
+      $title = ($downtime_type != 'create_maintenance') ? t('Downtime') : t('Maintenance');
+      $type = ($downtime_type != 'create_maintenance') ? 0 : 1;
+      $form['title']['widget'][0]['value']['#default_value'] = $title;
+    }
+    $form['downtime_type'] = array(
+      '#type' => 'hidden',
+      '#default_value' => (!empty($downtime_data->scheduled_p) ? $downtime_data->scheduled_p : $type),
+      '#weight' => -5
+    );
+    $form['startdate_planned'] = [
+      '#type' => 'textfield',
+      '#title' => t('Start Date'),
+      /* '#date_date_format' => $date_format,
+        '#date_time_format' => $time_format, */
+      '#description' => date($date_format, time()),
+      '#default_value' => date($date_format, time()),
+      '#required' => TRUE,
+    ];
+    $form['enddate_planned'] = [
+      '#type' => 'textfield',
+      '#title' => t('End Date'),
+      '#description' => date($date_format, time()),
+      '#default_value' => date($date_format, time()),
+      '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
+    ];
+    if ((!empty($downtime_data->scheduled_p) && $downtime_data->scheduled_p == 1) || ($downtime_type == 'create_maintenance')) {
+      $form['reason_for_noncompliance'] = [
+        '#type' => 'select',
+        '#title' => t('Reason for scheduling outside maintenance window'),
+        '#description' => t('Please select a reason'),
+        '#options' => array(
+          t('Please select a reason here'),
+          t('Urgency of the maintenance'),
+          t('No staff available during maintenance hours'),
+          t('No service partner (State) available during maintenance hours'),
+          t('External service partner required'),
+          t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+          t('Public holiday or weekend'),
+          t('No service partner (KONSENS) available during maintenance hours'),
+          t('No service interruption planned')
+        ),
+        '#size' => 5,
+        '#prefix' => '<div class="reason-for-noncompliance">',
+        '#suffix' => '</div>',
+      ];
+    }
 
-  if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_form_edit') {
+    if ($form['downtime_type']['#default_value']) {
+      $form['maintenance_result'] = array(
+        '#type' => 'hidden',
+        '#default_value' => '',
+        '#weight' => -1,
+      );
+      $form['maintenance_type'] = array(
+        '#type' => 'hidden',
+        '#default_value' => '',
+        '#weight' => -1,
+      );
+      $form['#validate'][] = 'custom_maintenance_validate';
+      pass_maitenance_value($form);
+    }
+    if ($type == 1) {
+      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
+    }
+    else {
+      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
+    }
+    $form['services_effected']['#description'] = $service_description;
+    $form['#validate'][] = 'downtimes_validate';
+    $form['#attached']['library'][] = 'downtimes/downtimes.maintenancejs';
+  }
+  else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_form_edit') {
     $form['notifications']['#weight'] = 4;
     // drupal_add_js(drupal_get_path('module', 'downtimes') . '/maintenance_windows.js');
     // breadcrumb for service profile form.
     /**
-         * $breadcrumb = array();
-         * $breadcrumb[] = l(t('Home'), NULL);
-         * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
-         * $breadcrumb[] = drupal_set_title();
-         * drupal_set_breadcrumb($breadcrumb);
-        */
+     * $breadcrumb = array();
+     * $breadcrumb[] = l(t('Home'), NULL);
+     * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
+     * $breadcrumb[] = drupal_set_title();
+     * drupal_set_breadcrumb($breadcrumb);
+     */
     if (empty($form['nid']['#value'])) {
       // $service_name = db_result(db_query("SELECT title FROM {node} WHERE nid=%d", $_REQUEST['service']));.
       $service_name = \Drupal::database()->select('node_field_data', 'nfd')
-                ->fields('nfd', array('title'))
-                ->condition('nid', $_REQUEST['service'], '=')
-                ->execute()->fetchField();
+              ->fields('nfd', array('title'))
+              ->condition('nid', $_REQUEST['service'], '=')
+              ->execute()->fetchField();
 
       // drupal_set_title(check_plain(t("Service Profile for ") . $service_name['title']));.
       /**
-             *  TO DO
-             *  title #title
-             */
+       *  TO DO
+       *  title #title
+       */
     }
     $serialized_data = array();
     if ($form['nid']['#value']) {
-      $data  = \Drupal::database()->select('service_profile_maintenance_service_time', 'smst')
-                ->fields('smst', array('day_time'))
-                ->condition('nid', $form['nid']['#value'], '=')
-                ->execute()->fetchAll();
+      $data = \Drupal::database()->select('service_profile_maintenance_service_time', 'smst')
+              ->fields('smst', array('day_time'))
+              ->condition('nid', $form['nid']['#value'], '=')
+              ->execute()->fetchAll();
 
       $serialized_data = unserialize($data);
 
       $maintenance_windows = \Drupal::database()->select('service_profile_maintenance_windows', 'mw')
-                ->fields('smw', array('day', 'day_until', 'from_time', 'to_time'))
-                ->condition('nid', $form['nid']['#value'], '=')
-                ->execute()->fetchAll();
+              ->fields('smw', array('day', 'day_until', 'from_time', 'to_time'))
+              ->condition('nid', $form['nid']['#value'], '=')
+              ->execute()->fetchAll();
 
       // db_query("SELECT day, day_until, from_time, to_time FROM {maintenance_windows} WHERE nid=%d", $form['nid']['#value']);.
       foreach ($maintenance_windows as $maintenance_windows_list) {
@@ -212,15 +286,15 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
     /**
-         * $arr = array(
-         * t("Mon") => "Mon",
-         * t("Tue") => "Tue",
-         * t("Wed") => "Wed",
-         * t("Thu") => "Thu",
-         * t("Fri") => "Fri",
-         * t("Sat") => "Sat",
-         * t("Sun") => "Sun");
-        */
+     * $arr = array(
+     * t("Mon") => "Mon",
+     * t("Tue") => "Tue",
+     * t("Wed") => "Wed",
+     * t("Thu") => "Thu",
+     * t("Fri") => "Fri",
+     * t("Sat") => "Sat",
+     * t("Sun") => "Sun");
+     */
     $arr = array(
       "Mon" => "Mon",
       "Tue" => "Tue",
@@ -241,15 +315,15 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       // Echo '<pre>'; print_r($serialized_data);  exit;.
       append_hours_minutes($form, 'service_time_' . $val, $serialized_data);
     }
-    /*Foreach ($arr as $key => $val) {
-    $form['maintenance_windows_' . $val] = array(
-    '#type' => 'checkbox',
-    '#prefix' => ($key == t('Mon')) ? "<div class='maintenance-time'><b>" . t('Maintenance Windows:') . "</b>" : '<div class="maintenance-time">',
-    '#default_value' => $maintenance_windows_data['maintenance_windows_' . $val] ? $maintenance_windows_data['maintenance_windows_' . $val] : '',
-    '#title' => check_plain($key),
-    );
-    append_hours_minutes($form, 'maintenance_windows_' . $val, $maintenance_windows_data);
-    }*/
+    /* Foreach ($arr as $key => $val) {
+      $form['maintenance_windows_' . $val] = array(
+      '#type' => 'checkbox',
+      '#prefix' => ($key == t('Mon')) ? "<div class='maintenance-time'><b>" . t('Maintenance Windows:') . "</b>" : '<div class="maintenance-time">',
+      '#default_value' => $maintenance_windows_data['maintenance_windows_' . $val] ? $maintenance_windows_data['maintenance_windows_' . $val] : '',
+      '#title' => check_plain($key),
+      );
+      append_hours_minutes($form, 'maintenance_windows_' . $val, $maintenance_windows_data);
+      } */
     // $form['field_maintenance_advance_time']['#weight'] = 2;.
     $arr1 = array(
       "Mon" => t("Mon"),
@@ -327,8 +401,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     // $form_state['rebuild'] = TRUE;
     // $form['#after_build'][] = 'downtime_service_maintenance';.
     /**
-         *  field_dependent_downtimeservices dropdown
-         */
+     *  field_dependent_downtimeservices dropdown
+     */
     $dependent_service_options = get_related_downtime_services('downtimes');
     $form['field_dependent_downtimeservices']['widget']['#options'] = $dependent_service_options;
 
@@ -337,26 +411,44 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $nid = $node->id();
 
       $default_dependent_service_val = \Drupal::database()->select('node__field_dependent_service', nfds)
-                ->fields('nfds', array('field_dependent_service_target_id'))
-                ->condition('entity_id', $nid, '=')->execute()->fetchField();
+              ->fields('nfds', array('field_dependent_service_target_id'))
+              ->condition('entity_id', $nid, '=')->execute()->fetchField();
       $form['field_dependent_downtimeservices']['widget']['#default_value'] = array($default_dependent_service_val);
     }
     $form['field_dependent_service']['#attributes']['class'][] = 'hide-field-content';
   }
 }
 
+function downtimes_validate(&$form, &$form_state) {
+  $startdate = strtotime($form_state->getValue('startdate_planned'));
+  $enddate = strtotime($form_state->getValue('enddate_planned'));
+  $current_date = time();
+  $output = '';
+  if ($form_state->getValue('downtime_type') == 0) {
+    if ($startdate > $current_date) {
+      $form_state->setErrorByName('startdate_planned', t('startdate must be less than current date.'));
+    }
+  }
+  if (!empty($enddate)) {
+    if ($enddate <= $startdate) {
+      $form_state->setErrorByName('enddate_planned', t('startdate must be less than current date.'));
+    }
+  }
+}
+
 function downtimes_set_default_values(&$form, $nid) {
   $downtime_data = \Drupal::database()->select('downtimes', 'd')
-                ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason'])
-                ->condition('downtime_id', $nid, '=')
-                ->execute()->fetchObject();
-  if(!empty($downtime_data)) {
+          ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p'])
+          ->condition('downtime_id', $nid, '=')
+          ->execute()->fetchObject();
+  if (!empty($downtime_data)) {
     $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
     $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
-    $form['start_date']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->startdate_reported);
-    $form['end_date']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->enddate_reported);
+    $form['startdate_planned']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->startdate_reported);
+    $form['enddate_planned']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($downtime_data->enddate_reported);
     $form['reason_for_noncompliance']['#default_value'] = $downtime_data->reason;
   }
+  return $downtime_data;
 }
 
 /**
@@ -388,13 +480,12 @@ function field_hours_minutes(&$form, $name, $data) {
 
   $date_format = 'H:i';
   $form[maintenancewindows][$name] = array(
-       // '#title' => t($title),
+    // '#title' => t($title),
     '#type' => 'datetime',
     '#date_format' => $date_format,
     '#date_label_position' => 'within',
     '#default_value' => $data,
   );
-
 }
 
 /**
@@ -416,12 +507,12 @@ function field_mw_day(&$form, $name, $options, $data, $title, $prefix) {
  *
  */
 function append_remove_button(&$form, $name) {
-  /*$form['maintenancewindows'][$name] = array(
-  '#type' => 'button',
-  '#title' => "Remove",
-  '#default_value' => 'Remove',
-  '#attributes' => array('class' => 'mw-remove')
-  );*/
+  /* $form['maintenancewindows'][$name] = array(
+    '#type' => 'button',
+    '#title' => "Remove",
+    '#default_value' => 'Remove',
+    '#attributes' => array('class' => 'mw-remove')
+    ); */
   $form['maintenancewindows'][$name] = array(
     '#value' => "<a href='' class='mw-remove' id='$name'>Remove</a></div>",
   );
@@ -432,13 +523,13 @@ function append_remove_button(&$form, $name) {
  */
 function custom_service_profile_form_validate(&$form, &$form_state) {
   /**
- * // breadcrumb for service profile form
- * $breadcrumb = array();
- * $breadcrumb[] = l(t('Home'), NULL);
- * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
- * $breadcrumb[] = drupal_set_title();
- * drupal_set_breadcrumb($breadcrumb);
-*/
+   * // breadcrumb for service profile form
+   * $breadcrumb = array();
+   * $breadcrumb[] = l(t('Home'), NULL);
+   * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
+   * $breadcrumb[] = drupal_set_title();
+   * drupal_set_breadcrumb($breadcrumb);
+   */
   $arr = array(
     "Mon" => "Mon",
     "Tue" => "Tue",
@@ -456,11 +547,11 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
         $form_state->setErrorByName('service_time_' . $vals . '_until', t("End Date must be greater than Start Date."));
       }
     }
-    /*if ($form_state['values']['maintenance_windows_' . $vals]) {
-    if ($form_state['values']['maintenance_windows_' . $vals . '_from'] >= $form_state['values']['maintenance_windows_' . $vals . '_until']) {
-    form_set_error($form_state['values']['maintenance_windows_' . $vals . '_until'], t("End Date must be greater than Start Date."));
-    }
-    }*/
+    /* if ($form_state['values']['maintenance_windows_' . $vals]) {
+      if ($form_state['values']['maintenance_windows_' . $vals . '_from'] >= $form_state['values']['maintenance_windows_' . $vals . '_until']) {
+      form_set_error($form_state['values']['maintenance_windows_' . $vals . '_until'], t("End Date must be greater than Start Date."));
+      }
+      } */
 
     if (($form_state->getValue('service_time_' . $vals . '_from') > $form_state->getValue('service_time_' . $vals . '_until')) ||
         ($form_state->getValue('service_time_' . $vals . '_from') < $form_state->getValue('service_time_' . $vals . '_until'))) {
@@ -470,24 +561,23 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
       }
     }
 
-    /*if (($form_state['values']['maintenance_windows_' . $vals . '_from'] > $form_state['values']['maintenance_windows_' . $vals . '_until']) ||
-    ($form_state['values']['maintenance_windows_' . $vals . '_from'] < $form_state['values']['maintenance_windows_' . $vals . '_until'])) {
-    if (!$form_state['values']['maintenance_windows_' . $vals]) {
-    form_set_error($form_state['values']['maintenance_windows_' . $vals], t("Select day"));
-    }
-    }*/
-
+    /* if (($form_state['values']['maintenance_windows_' . $vals . '_from'] > $form_state['values']['maintenance_windows_' . $vals . '_until']) ||
+      ($form_state['values']['maintenance_windows_' . $vals . '_from'] < $form_state['values']['maintenance_windows_' . $vals . '_until'])) {
+      if (!$form_state['values']['maintenance_windows_' . $vals]) {
+      form_set_error($form_state['values']['maintenance_windows_' . $vals], t("Select day"));
+      }
+      } */
   }
   if (isset($_POST['howmany'])) {
     $days_arr = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
     $howmany = $_POST['howmany'];
     $first_month_first_day = date('Y-01-01');
     for ($inc = 1; $inc <= $howmany; $inc++) {
-      /*if(array_search($_POST["mw_day_from$inc"], $days_arr) > array_search($_POST["mw_day_until$inc"], $days_arr)) {
-      form_set_error($form_state['values']['howmany'], t("End Date must be greater than Start Date."));
-      }*/
+      /* if(array_search($_POST["mw_day_from$inc"], $days_arr) > array_search($_POST["mw_day_until$inc"], $days_arr)) {
+        form_set_error($form_state['values']['howmany'], t("End Date must be greater than Start Date."));
+        } */
       if ($_POST["mw_hm_from" . $inc]['hour'] == '' || $_POST["mw_hm_from" . $inc]['minute'] == '' ||
-        $_POST["mw_hm_until" . $inc]['hour'] == '' || $_POST["mw_hm_until" . $inc]['minute'] == '') {
+          $_POST["mw_hm_until" . $inc]['hour'] == '' || $_POST["mw_hm_until" . $inc]['minute'] == '') {
         if ($_POST['howmany'] > 1) {
           $form_state->setErrorByName('howmany', t("Select Hour and Minutes."));
         }
@@ -510,15 +600,15 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
   if (form_get_errors()) {
     // $form_id = $_POST['form_id'];.
     $form_state['post'] = $form['#post'] = $_POST;
-    /*$args = $form['#parameters'];
-    $form_build_id = $_POST['form_build_id'];
-    //drupal_process_form($form_id, $form, $form_state);
-    $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);*/
+    /* $args = $form['#parameters'];
+      $form_build_id = $_POST['form_build_id'];
+      //drupal_process_form($form_id, $form, $form_state);
+      $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id); */
   }
 }
 
 function downtimes_node_insert($node) {
-  if($node->getType() == 'downtimes') {
+  if ($node->getType() == 'downtimes') {
     $record = array();
     $data = $_POST;
     $date_format = 'd.m.Y H:i:s';
@@ -526,19 +616,20 @@ function downtimes_node_insert($node) {
     $record['state_id'] = implode(',', $data['states']);
     $record['service_id'] = implode(',', $data['services_effected']);
     $record['downtime_id'] = $node->id();
-    $record['enddate_reported'] = strtotime($data['end_date']['date'] . $data['end_date']['time']);
-    $record['startdate_reported'] = strtotime($data['start_date']['date'] . $data['start_date']['time']);
+    $record['enddate_planned'] = strtotime($data['enddate_planned']);
+    $record['startdate_planned'] = strtotime($data['startdate_planned']);
     $record['resolved'] = 0;
     $record['status'] = 1;
     $record['email_reminder_sent'] = 1;
     $record['cancelled'] = 0;
     $record['reason'] = $data['reason_for_noncompliance'];
-    db_insert('downtimes')->fields((array)$record)->execute();
+    $record['scheduled_p'] = $data['downtime_type'];
+    db_insert('downtimes')->fields((array) $record)->execute();
   }
 }
 
 function downtimes_node_update($node) {
-  if($node->getType() == 'downtimes') {
+  if ($node->getType() == 'downtimes') {
     $record = array();
     $data = $_POST;
     $date_format = 'd.m.Y H:i:s';
@@ -546,17 +637,18 @@ function downtimes_node_update($node) {
     $record['state_id'] = implode(',', $data['states']);
     $record['service_id'] = implode(',', $data['services_effected']);
     //$record->downtime_id = $node->id();
-    $record['enddate_reported'] = strtotime($data['end_date']['date'] . $data['end_date']['time']);
-    $record['startdate_reported'] = strtotime($data['start_date']['date'] . $data['start_date']['time']);
+    $record['enddate_planned'] = strtotime($data['enddate_planned']['date'] . $data['enddate_planned']['time']);
+    $record['startdate_planned'] = strtotime($data['startdate_planned']['date'] . $data['startdate_planned']['time']);
     $record['resolved'] = 0;
     $record['status'] = 1;
     $record['email_reminder_sent'] = 1;
     $record['cancelled'] = 0;
     $record['reason'] = $data['reason_for_noncompliance'];
+    $record['scheduled_p'] = $data['downtime_type'];
     db_update('downtimes')
-    ->fields($record)
-    ->condition('downtime_id', $node->id())
-    ->execute();
+        ->fields($record)
+        ->condition('downtime_id', $node->id())
+        ->execute();
   }
 }
 
@@ -567,5 +659,289 @@ function get_unix_timestamp($date, $format = '%d.%m.%Y - %H:%M') {
   // Using date api was necessary to implement proper date validation.
   $start_date = strptime($date, $format);
   $unix_date = mktime($start_date['tm_hour'], $start_date['tm_min'], $start_date['tm_sec'], $start_date['tm_mon'] + 1, $start_date['tm_mday'], ($start_date['tm_year'] + 1900));
+  return $unix_date;
+}
+
+function downtimes_theme() {
+  return array(
+    /* 'Incidents_maintenances_view' => array(
+      'arguments' => array('node' => NULL),
+      ),
+      'block_downtime' => array(
+      'arguments' => array('items' => NULL, 'delta' => NULL),
+      ),
+      'current' => array(
+      'arguments' => array('data' => NULL, 'string' => NULL),
+      'template' => 'current_downtimes',
+      ),
+      'downtimes_table' => array(
+      'arguments' => array('header' => NULL, 'rows' => NULL, 'attributes' => NULL, 'type' => NULL),
+      'template' => 'downtimes_display',
+      ),
+      'service_checkbox' => array(
+      'file' => 'includes/downtimes.theme.inc',
+      'variables' => array('element' => NULL),
+      ), */
+    'service_checkboxes' => array(
+      'render element' => 'element',
+      'function' => 'theme_service_checkboxes',
+      'file' => 'downtimes.theme.inc',
+    ),
+      /* 'noncompliance_reason_select' => array(
+        'file' => 'includes/downtimes.theme.inc',
+        'variables' => array('element' => NULL),
+        ),
+        'published_downtime_services' => array(
+        'file' => 'includes/downtimes.theme.inc',
+        'arguments' => array('service' => NULL, 'nid' => NULL, 'img' => NULL, 'sdata' => NULL),
+        ),
+        'service_data' => array(
+        'file' => 'includes/downtimes.theme.inc',
+        'arguments' => array('data' => NULL),
+        ),
+        'downtimes_log' => array(
+        'file' => 'includes/downtimes.theme.inc',
+        'arguments' => array('result' => NULL, 'type' => 'html'),
+        ), */
+  );
+}
+
+function custom_maintenance_validate(&$form, &$form_state) {
+  pass_maitenance_value($form);
+  check_downtime_status($form, $form_state);
+  if ($form_state['values']['maintenance_result'] && $form_state['values']['reason_for_noncompliance'] == '0') {
+    form_set_error('reason_for_noncompliance', "Reason field is required.");
+  }
+}
+
+function pass_maitenance_value(&$form) {
+  $service_ids = HzdservicesStorage::get_related_services('downtimes');
+  //  $day = date('D');
+  foreach ($service_ids as $id => $name) {
+    $result = array();
+    // Building maintenance window values.
+    $get_maintain_window = \Drupal::database()->select('service_profile_maintenance_windows', 'spmw');
+    $get_maintain_window->fields('spmw', ['id', 'from_time', 'to_time', 'day', 'day_until']);
+    $get_maintain_window->addExpression("DATE_FORMAT(from_time,'%H:%i')", "from_time");
+    $get_maintain_window->addExpression("DATE_FORMAT(to_time,'%H:%i')", "to_time");
+    $get_maintain_window->where('service_id=' . $id);
+    $get_maintain_window->execute()->fetchObject();
+
+    //$maintenance[$id] = $get_maintain_window;
+    foreach ($get_maintain_window as $row) {
+      if ($row->day_until == '' || $row->day_until == NULL) {
+        $row->day_until = $row->day;
+      }
+      $result[$row->day] = (array) $row;
+    }
+    $maintenance[$id] = $result;
+    // Building advance time values.
+    $adv_query = \Drupal::database()->select('node__field_dependent_service', 'nfds')
+        ->fields('nfds')
+        ->where("nfds.field_dependent_service_target_id = $id");
+    $adv_query->join('node__field_maintenance_advance_time', 'nfmat', 'nfmat.entity_id = nfds.entity_id');
+    $adv_value = $adv_query->execute()->fetchAll();
+    if (!empty($adv_value)) {
+      $advance_time[$id] = $adv_value[0];
+    }
+    else {
+      $advance_time[$id] = array();
+    }
+  }
+  $howmany = \Drupal::config('downtimes.settings')->get('howmany');
+  if (!empty($howmany)) {
+    for ($inc = 1; $inc <= $howmany; $inc++) {
+      $day = \Drupal::config('downtimes.settings')->get("konsens_mw_day_from$inc");
+      $from_time = \Drupal::config('downtimes.settings')->get("konsens_mw_hm_from$inc");
+      $from_time = explode(' ', $from_time);
+      $from_time = $from_time[1];
+      $to_time = \Drupal::config('downtimes.settings')->get("konsens_mw_hm_until$inc");
+      $to_time = explode(' ', $to_time);
+      $to_time = $to_time[1];
+      $sitewide[$day] = array('from_time' => $from_time,
+        'to_time' => $to_time,
+        'day_until' => \Drupal::config('downtimes.settings')->get("konsens_mw_day_until$inc"));
+    }
+  }
+  else {
+    // Getting sitewide variables
+    $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',);
+    foreach ($days as $day) {
+      $sitewide_from_hours = 'konsens_maintenance_windows_' . $day . '_hours';
+      $sitewide_from_minutes = 'konsens_maintenance_windows_' . $day . '_minutes';
+
+      $sitewide[$day]['from_time'] = \Drupal::config('downtimes.settings')->get("$sitewide_from_hours") . ":" . \Drupal::config('downtimes.settings')->get("$sitewide_from_hours");
+
+      $sitewide_to_hours = 'konsens_maintenance_windows_' . $day . '_hours1';
+      $sitewide_to_minutes = 'konsens_maintenance_windows_' . $day . '_minutes1';
+
+      $sitewide[$day]['to_time'] = \Drupal::config('downtimes.settings')->get("$sitewide_to_minutes") . ":" . \Drupal::config('downtimes.settings')->get("$sitewide_to_minutes");
+    }
+  }
+  $sitewide_adv_time = \Drupal::config('downtimes.settings')->get("$sitewide_to_minutes");
+  $form['#attached']['drupalSettings']['downtime'] = array(
+    'maintenance' => $maintenance,
+    'advance_time' => $advance_time,
+    'sitewide_maintain' => $sitewide,
+    'sitewide_adv' => $sitewide_adv_time
+  );
+}
+
+/**
+ * validate function to check downtime status.
+ */
+function check_downtime_status(&$form, &$form_state) {
+  $start_date = get_maintenance_strtdate_timestamp($_POST['startdate_planned']);
+  $current_date = time();
+  $diff = $start_date - $current_date;
+  $present_time = mktime(23, 59, 59, date('m'), date('d') - 1, date('Y'));
+  $adv_time = array();
+
+  foreach ($form_state->getValue('service') as $service_vals) {
+    if ($service_vals) {
+      $adv_time = db_result(db_query("SELECT field_maintenance_advance_time_value FROM {content_type_service_profile} WHERE field_dependent_service_nid = %d", $service_vals));
+      if ($adv_time)
+        $advanced_time[] = $adv_time * 60;
+    }
+  }
+  if (is_array($advanced_time)) {
+    $max_adv_time = max($advanced_time);
+  }
+  else {
+    $max_adv_time = \Drupal::config('downtimes.settings')->get("maintenance_advance_time");
+  }
+
+  foreach ($form_state->getValue('service') as $service_vals) {
+    if ($service_vals) {
+      $adv_time = db_result(db_query("SELECT field_maintenance_advance_time_value FROM {content_type_service_profile} WHERE field_dependent_service_nid = %d", $service_vals));
+      if ($adv_time) {
+        $adv_in_seconds = $adv_time * 60 * 60;
+        if ($diff >= $adv_in_seconds) {
+          form_set_value($form['maintenance_type'], 'R', $form_state);
+        }
+        else if (($diff <= $adv_in_seconds ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
+          form_set_value($form['maintenance_type'], 'I', $form_state);
+        }
+        else {
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minutes before the actual start. If you need to perform immediate maintenance work, please ') . l(t("report an Incident instead"), "incident-management/stoerungen/melden"));
+        }
+      }
+      else {
+        if (($diff >= ($max_adv_time * 60))) {
+          form_set_value($form['maintenance_type'], 'R', $form_state);
+        }
+        else if (($diff <= ($max_adv_time * 60) ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
+          form_set_value($form['maintenance_type'], 'I', $form_state);
+        }
+        else if ($start_date < $present_time) {
+          $form_state->setErrorByName('current_date', t("start date must be in future"));
+        }
+        else {
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minutes before the actual start. If you need to perform immediate maintenance work, please ') . l("report an Incident instead", "incident-management/stoerungen/melden"));
+        }
+      }
+    }
+  }
+}
+
+/*
+ * Custom validation handler for maintenance node.
+ */
+
+function custom_maintenance_submit($form, &$form_state) {
+  $log = array();
+  //Startdate log.
+  $startdate_old = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
+  $startdate = new DateTime($form_state['values']['startdate_planned']);
+  $startdate_new = $startdate->format('d.m.Y - H:i');
+
+  if ($startdate_old != $startdate_new) {
+    $log['start_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
+    $log['start_date']['new'] = $startdate_new;
+  }
+  /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->startdate_planned)), trim($form_state['values']['startdate_planned']))) {
+    $log['start_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
+    $log['start_date']['new'] = trim($form_state['values']['startdate_planned']);
+    } */
+
+  // End date log.
+  $enddate_old = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));
+  if (!empty($form_state['values']['enddate_planned']['date'])) {
+    $enddate = new DateTime($form_state['values']['enddate_planned']);
+    $enddate_new = $enddate->format('d.m.Y - H:i');
+  }
+  else {
+    $enddate_new = "";
+  }
+
+  if ($enddate_old != $enddate_new) {
+    $log['end_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));
+    $log['end_date']['new'] = $enddate_new;
+  }
+  /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->enddate_planned)), trim($form_state['values']['enddate_planned']))) {
+    $log['end_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));
+    $log['end_date']['new'] = trim($form_state['values']['enddate_planned']);
+    } */
+
+  // Reason log.
+  if (strcmp($form['#node']->reason, $form_state['values']['reason'])) {
+    $log['reason']['old'] = $form['#node']->reason;
+    $log['reason']['new'] = $form_state['values']['reason'];
+  }
+
+  // Reason for non compliance log.
+  if ($form['#node']->downtime_type == 1) {
+    $new_reason = $form['reason_for_noncompliance']['#options'][$form_state['values']['reason_for_noncompliance']];
+    if ($new_reason != $form['#node']->mreason) {
+      $log['non_compliance']['old'] = $form['#node']->mreason;
+      $log['non_compliance']['new'] = $form_state['values']['reason_for_noncompliance'] ? $form['reason_for_noncompliance']['#options'][$form_state['values']['reason_for_noncompliance']] : "";
+    }
+  }
+
+  // Services log.
+  foreach ($form_state['values']['service'] as $key => $value) {
+    if ($value) {
+      $query = "SELECT title FROM {node} WHERE nid = %d ORDER BY title DESC";
+      $result[] = db_result(db_query($query, $value));
+    }
+  }
+  asort($result);
+  $old_services = explode(", ", $form['#node']->service_name);
+  asort($old_services);
+  if (strcmp(implode(", ", $result), implode(", ", $old_services))) {
+    $log['services']['old'] = implode(", ", $old_services);
+    $log['services']['new'] = implode(", ", $result);
+  }
+
+  // States log.
+  $states_list = get_all_user_state();
+  foreach ($form_state['values']['state'] as $key => $value) {
+    if ($value) {
+      $new_states[] = $states_list[$value];
+    }
+  }
+  asort($new_states);
+  $old_states = explode(", ", $form['#node']->state);
+  asort($old_states);
+
+  if (strcmp(implode(", ", $new_states), implode(", ", $old_states))) {
+    $log['states']['old'] = implode(", ", $old_states);
+    $log['states']['new'] = implode(", ", $new_states);
+  }
+
+  // Inserting values if any content has modified.
+  if ($log) {
+    global $user;
+    $insert_query = "INSERT INTO {downtime_log} (downtime_id, uid, updated,  log) VALUES ( %d, %d, %d, '%s')";
+    db_query($insert_query, $form_state['values']['nid'], $user->uid, time(), serialize($log));
+  }
+}
+
+/**
+ * get maintenance start date to unix timestamp
+ */
+function get_maintenance_strtdate_timestamp($date, $format = '%d.%m.%Y - %H:%M') {
+  $start_date = strptime($date, $format);
+  $unix_date = gmmktime($start_date['tm_hour'], $start_date['tm_min'], $start_date['tm_sec'], $start_date['tm_mon'] + 1, $start_date['tm_mday'], ($start_date['tm_year'] + 1900));
   return $unix_date;
 }
