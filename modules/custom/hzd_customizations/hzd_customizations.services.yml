@@ -1,0 +1,6 @@
+services:
+  hzd_customizations.route_subscriber:
+    class: Drupal\hzd_customizations\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+

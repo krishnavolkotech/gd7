@@ -342,7 +342,9 @@ function send_pf_notifications($entity) {
 }
 
 // send immediate Quickinfo Notifications
+// TODONOTIFICATIONS
 function send_qi_notifications($entity) {
+    return;
   $services = $entity->get('field_other_services')->getValue();
   $result = hzd_get_immediate_qi_notification_user_mails($services);
   if(is_array($result) && count($result) > 0) {
