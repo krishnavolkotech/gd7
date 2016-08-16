@@ -12,4 +12,3 @@ group_type: open
 permissions:
   - 'view group'
   - 'join group'
-  - 'edit group'

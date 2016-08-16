@@ -16,6 +16,9 @@ if(SITE_ADMIN){
     define('SITE_ADMIN', 'site_administrator');
 }
 
+define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));	
+define('RELEASE_MANAGEMENT', 32);
+
 /**
  * Implements hook_mail.
  */
@@ -114,7 +117,7 @@ function get_related_downtime_services($type) {
     $path = explode("/", $current_path->getInternalPath());
     if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
       $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
-      $query->addField('nfds', 'field_dependent_service');
+      $query->addField('nfds', 'field_dependent_service_target_id');
       $query->condition('nfds.entity_id', '1', '=');
       $service_id = $query->execute()->fetchField();
       unset($dependent_Services[$service_id]);
@@ -232,7 +235,7 @@ function hzd_customizations_node_view($node, $view_mode, $langcode){
   if($node['#node']->getType() == 'group' && !\Drupal::currentUser()->id()){
     $currentPath = \Drupal::service('path.current')->getPath();
     $loginPath = '/user/login?destination='.$currentPath;
-    header('Location: '.$baseurl.$loginPath);
+    header('Location: '.$base_url.$loginPath);
     exit();
     //    return new RedirectResponse($loginPath);///this doesn't do a server redirect instead it sends a redirect request to browser
   }

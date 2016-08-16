@@ -217,3 +217,11 @@ function cust_user_node_access($node, $op, $account) {
     return Drupal\Core\Access\AccessResult::forbidden();
   }
 }
+
+function __gm($object) {                                                                                                                                                
+    if (empty($object)) {                                                                                                                                               
+        $object = new stdClass();                                                                                                                                       
+    }                                                                                                                                                                   
+    pr(get_class_methods(get_class($object)));
+    exit;                                                                                                                                                               
+}            

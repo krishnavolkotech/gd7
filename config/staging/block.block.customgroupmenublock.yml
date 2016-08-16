@@ -1,29 +1,28 @@
-uuid: d9118b9c-46ba-4e72-8977-6972dc522bb2
+uuid: 935b888e-e784-4c8d-b6d0-a10abbfc1759
 langcode: en
 status: true
 dependencies:
   module:
     - block_class
+    - cust_group
     - group
-    - user
+    - system
   theme:
     - hzd
 third_party_settings:
   block_class:
-    classes: ''
-id: groupoperations
+    classes: blue
+id: customgroupmenublock
 theme: hzd
 region: sidebar_first
-weight: -17
+weight: -16
 provider: null
-plugin: group_operations
+plugin: cust_group_menu_block
 settings:
-  id: group_operations
-  label: 'Group operations'
-  provider: group
+  id: cust_group_menu_block
+  label: 'Custom Group Menu block'
+  provider: cust_group
   label_display: visible
-  context_mapping:
-    group: '@group.group_route_context:group'
 visibility:
   group_type:
     id: group_type
@@ -41,14 +40,8 @@ visibility:
     negate: false
     context_mapping:
       group: '@group.group_route_context:group'
-  user_role:
-    id: user_role
-    roles:
-      authenticated: authenticated
-      administrator: administrator
-      group_member: group_member
-      group_administrator: group_administrator
-      site_administrator: site_administrator
+  request_path:
+    id: request_path
+    pages: '/group/*'
     negate: false
-    context_mapping:
-      user: '@user.current_user_context:current_user'
+    context_mapping: {  }

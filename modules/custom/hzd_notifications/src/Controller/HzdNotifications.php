@@ -11,8 +11,10 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-define('EXEOSS', \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id'));
+if(!defined('KONSONS'))
+  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+if(!defined('EXEOSS'))
+  define('EXEOSS', \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id'));
 
 /**
  * Class HzdNotifications

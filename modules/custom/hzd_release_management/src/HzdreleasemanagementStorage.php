@@ -9,13 +9,13 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\Entity;
 use Drupal\Core\Url;
 
-if(!defined('KONSONS'))
-  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-if(!defined('RELEASE_MANAGEMENT'))
-  define('RELEASE_MANAGEMENT', 339);
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 32);
 define('DISPLAY_LIMIT', 20);
 define('DEFAULT_PAGELIMIT', 20);
-$_SESSION['Group_id'] = 339;
+//$_SESSION['Group_id'] = 339;
 class HzdreleasemanagementStorage {
 
 /*
@@ -1068,6 +1068,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $rows[] = $row;
       }
+//pr($rows);exit;
 
     if ($rows) { 
       $output['releases'] = array(
@@ -1134,7 +1135,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $paged_query->addField('nfd', 'field_date_value', 'date');
     $paged_query->fields('n', array('title'))
                 ->orderBy('nfd.field_date_value', 'DESC');
-    
+//	echo $release_query->__toString();exit;
   // echo '<pre>'; print_r($release_query->conditions()); exit;
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
@@ -1143,6 +1144,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     } else {
       $result = $query->execute()->fetchAll();
     }
+//pr($result);exit;
     return $result;
   }
 

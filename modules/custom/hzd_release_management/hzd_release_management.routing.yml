@@ -14,6 +14,7 @@ hzd_release_management.released:
     _entity_view: group.default
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 hzd_release_management.inprogress:
   path: 'group/{group}/releases/in_progress'

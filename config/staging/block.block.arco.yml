@@ -1,6 +1,6 @@
 uuid: b41f7a33-9c46-4163-afb8-0c202ff6a5e8
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.menu-36070
@@ -14,8 +14,8 @@ third_party_settings:
     classes: ''
 id: arco
 theme: hzd
-region: sidebar_first
-weight: -18
+region: '-1'
+weight: 1
 provider: null
 plugin: 'system_menu_block:menu-36070'
 settings:

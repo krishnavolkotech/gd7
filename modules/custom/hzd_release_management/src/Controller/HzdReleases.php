@@ -8,11 +8,11 @@ use Drupal\Core\Url;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
-if(!defined('KONSONS'))
-  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-if(!defined('RELEASE_MANAGEMENT'))
-  define('RELEASE_MANAGEMENT', 339);
-$_SESSION['Group_id'] = 339;
+//if(!defined('KONSONS'))
+//  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//if(!defined('RELEASE_MANAGEMENT'))
+//  define('RELEASE_MANAGEMENT', 339);
+//$_SESSION['Group_id'] = 339;
 
 /**
  * Class ReadexcelController.

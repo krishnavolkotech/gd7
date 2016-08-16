@@ -4,6 +4,7 @@ namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Returns responses for Node routes.
@@ -31,5 +32,30 @@ class CustNodeController extends ControllerBase {
 
     return $form;
   }
+  
+  
+  function groupContentView(){
+    $parm = \Drupal::routeMatch()->getParameter('group_content');
+    $node = \Drupal\node\Entity\Node::load($parm->get('entity_id')->referencedEntities()[0]->id());
+    $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+    return $view_builder->view($node);
+  }
 
+  function groupMemberView(){
+    $member = \Drupal::routeMatch()->getParameter('group_content');
+    $user = \Drupal\user\Entity\User::load($member->get('entity_id')->referencedEntities()[0]->id());
+    $view_builder = \Drupal::entityManager()->getViewBuilder('user');
+    return $view_builder->view($user);;
+  }
+
+  function hzdGroupAccess(){
+    if($group = \Drupal::routeMatch()->getParameter('group')){
+      if($group->getMember(\Drupal::currentUser())){
+	return AccessResult::allowed();
+      }else{
+        return AccessResult::forbidden();
+      }
+    }
+    return AccessResult::neutral();
+  }
 }
