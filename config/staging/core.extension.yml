@@ -74,9 +74,7 @@ module:
   rdf: 0
   reroute_email: 0
   rest: 0
-  sample_downtimes: 0
   search_api: 0
-  search_api_page: 0
   serialization: 0
   shortcut: 0
   statistics: 0
