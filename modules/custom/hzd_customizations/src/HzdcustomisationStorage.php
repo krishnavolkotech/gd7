@@ -306,6 +306,16 @@ class HzdcustomisationStorage {
     return $data;
   }
 
+  static function get_all_user_state_abbr() {
+    $user_states = \Drupal::database()->select("states", "s");
+    $user_states->fields('s');
+    $user_states->execute()->fetchAll();
+    foreach ($user_states as $user_state) {
+      $states[$states_values->id] = $states_values->abbr;
+    }
+    return $states;
+  }
+
   /**
    * Get Published Services.
    */
@@ -347,22 +357,22 @@ class HzdcustomisationStorage {
     $query->condition('nfdt.field_downtime_type_value', 'Publish');
     $query->condition('nfed.field_enable_downtime_value', '1');
     $query->orderBy('service');
-    $services = $query->execute()->fetchAll();
+    $services = $query->execute()->fetchAllKeyed();
 
     $img = drupal_get_path('theme', 'hzd') . '/images/i-icon-26.png';
-    foreach ($services as $service) {
+    foreach ($services as $service_nid => $service) {
       $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
       $query->addField('nfds', 'entity_id');
-      $query->condition('nfds.field_dependent_service_target_id', $service->nid);
+      $query->condition('nfds.field_dependent_service_target_id', $service_nid);
       $query->range(0, 1);
       $id = $query->execute()->fetchField();
-      $sdata = self::get_service_data($service->nid, $service->service);
+      $sdata = self::get_service_data($service_nid, $service);
       if ($id && !empty($sdata)) {
-        $c_data = trim($service->service) . "|<div class='service-tooltip' id = '" . $service->nid . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $service->nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $service->nid . "'><a id='close-" . $service->nid . "'>Close</a></div>" . $sdata . "</div></div>";
-        $service_names[$service->nid] = $c_data;
+        $c_data = trim($service) . "|<div class='service-tooltip' id = '" . $service_nid . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $service_nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $service_nid . "'><a id='close-" . $service_nid . "'>Close</a></div>" . $sdata . "</div></div>";
+        $service_names[$service_nid] = $c_data;
       }
       else {
-        $service_names[$service->nid] = $service->service;
+        $service_names[$service_nid] = $service;
       }
     }
 
@@ -370,9 +380,9 @@ class HzdcustomisationStorage {
     if ($nid) {
       foreach ($downtime_services as $val) {
         if (!array_key_exists($val, $service_names)) {
-          $service_title = db_result(db_query("SELECT title FROM {node_field_data} WHERE nid = %d", $val));
-          $sdata = $this->get_service_data($val, $service_title);
-          $c_data = trim($services['service']) . "|<div class='service-tooltip' style='display:none' id = '" . $services['nid'] . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $nid . "'><a id='close-" . $nid . "'>Close</a></div>" . $sdata . "</div></div>";
+          $service_title = db_query("SELECT title FROM {node_field_data} WHERE nid = $val")->fetchField();
+          $sdata = self::get_service_data($val, $service_title);
+          $c_data = trim($services[$val]) . "|<div class='service-tooltip' style='display:none' id = '" . $val . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $nid . "'><a id='close-" . $nid . "'>Close</a></div>" . $sdata . "</div></div>";
           $service_names[$val] = $c_data;
         }
       }
@@ -529,6 +539,271 @@ class HzdcustomisationStorage {
     }
     $downtime_service_data .= "</table>";
     return $downtime_service_data;
+  }
+
+  static function current_incidents($sql_where, $string = NULL, $service_id = NULL, $search_string = NULL, $limit = NULL, $state_id = NULL) {
+    global $user;
+    $serialized_data = unserialize($_SESSION['downtimes_query']);
+    if ($string == $serialized_data['downtime_type']) {
+      $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
+      $service_id = $serialized_data['service'] ? $serialized_data['service'] : $service_id;
+      $state_id = $serialized_data['state'] ? $serialized_data['state'] : $state_id;
+      $search_string = $serialized_data['search_string'] ? $serialized_data['search_string'] : $search_string;
+      $limit = $serialized_data['limit'];
+      unset($_SESSION['downtimes_query']);
+    }
+
+    //drupal_add_css(drupal_get_path('module', 'downtimes') . '/downtimes_tables.css');
+    $states = self::get_all_user_state_abbr();
+
+    $pagination = $_GET['pagination'];
+    $pos_slash = strripos($_GET['q'], '/');
+    $url_flag = substr($_GET['q'], $pos_slash + 1);
+    $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
+
+    if (isset($service_id) && $service_id != 1) {
+      $service = " sd.service_id = $service_id";
+    }
+    else {
+      $service = " sd.service_id != 0";
+    }
+
+    if (isset($state_id) && $state_id != 1) {
+      $state = " ds.state_id = $state_id";
+    }
+    else {
+      $state = " ds.state_id != 0";
+    }
+
+    if ($string == 'archived') {
+      $sql_where = str_replace('and resolved = 1', 'and (resolved = 1 or cancelled = 1)', $sql_where);
+      $select = "select group_concat(distinct title separator'<br>') as service,
+                       if(scheduled_p = 1, 'MAINTENANCE', 'INCIDENT') as type,
+                       sd.uid, down_id, group_concat(distinct s.abbr separator', ') as abbr, reason, startdate_planned";
+
+      if (isset($_POST['filter_enddate']) && !empty($_POST['filter_enddate'])) {
+        $end_date = explode('.', $_POST['filter_enddate']);
+        $day = $end_date[0];
+        $month = $end_date[1];
+        $year = $end_date[2];
+        $filter_end_date = mktime(23, 59, 59, $month, $day, $year);
+      }
+
+      if (isset($_SESSION['Group_id'])) {
+        $inner_where = " where $service and $state and group_id = $_SESSION[Group_id] ";
+        $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
+        $sql_select = "$select,sd.cancelled from {state_downtimes} sd,
+                       {service_downtimes} srd, {node} n, {og_ancestry} oa, {downtimes_states} ds,
+                       {states} s where sd.down_id = srd.downtime_id  and
+                       srd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and ds.nid = sd.down_id and
+                       sd.down_id = oa.nid and s.id=ds.state_id and
+                       srd.service_id in
+                             ($inner_select) ";
+        if ($filter_end_date) {
+          $sql_select .= " and (ri.end_date <= $filter_end_date) ";
+        }
+      }
+      else {
+        $inner_where = " where $service ";
+        $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
+        $sql_select = "$select,sd.cancelled from {state_downtimes} sd,
+                       {service_downtimes} srd, {node} n, {downtimes_states} ds, {states} s
+                       where sd.down_id = srd.downtime_id  and ds.nid = sd.down_id and
+                       srd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and s.id=ds.state_id and
+                       srd.service_id in
+                             ($inner_select) ";
+        if ($filter_end_date) {
+          $sql_select .= " and (ri.end_date <= $filter_end_date) ";
+        }
+      }
+    }
+    else {
+      $sql_where .= " and sd.cancelled = 0";
+      $select = "select group_concat(distinct n.title separator'<br>') as service,
+                       if(sd.scheduled_p = 1, 'MAINTENANCE', 'INCIDENT') as type,
+                       n.uid,sd.downtime_id, group_concat(distinct s.abbr separator', ') as abbr, sd.reason, sd.startdate_planned, sd.enddate_planned";
+
+
+      if (isset($_SESSION['Group_id'])) {
+        $inner_where = " where $service and $state and group_id = $_SESSION[Group_id] ";
+        $inner_select = "select ds.service_id as state_service_id from {group_downtimes_view}, {downtimes} ds $inner_where ";
+        $sql_select = "$select from {downtimes} sd, {node_field_data} n, {group_content_field_data} oa,  {states} s
+                 where sd.service_id = n.nid and
+                       sd.downtime_id = oa.entity_id and s.id=sd.state_id and
+                       sd.service_id in
+                             ($inner_select) ";
+      }
+      else {
+        $inner_where = " where $service and $state";
+        $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
+        $sql_select = "$select from {downtimes} sd, {service_downtimes} srd, {node} n, {downtimes_states} ds, {states} s
+                 where sd.down_id = srd.downtime_id  and ds.nid = sd.down_id and
+                       srd.service_id = n.nid   and s.id=ds.state_id and
+                       srd.service_id in
+                             ($inner_select) ";
+      }
+    }
+    $sql_group_by = " group by sd.downtime_id order by sd.startdate_planned $sort_order  ";
+    $sql = $sql_select . $sql_where . $sql_group_by;
+
+    //table header
+    $header = array();
+    array_push($header, array('data' => t('Service'), 'class' => 'service'));
+    if ($string == 'archived')
+    //array_push($header, array('data' => t('Flag'), 'class' => 'flag'));
+      $url = 'node/' . $_SESSION['Group_id'] . '/downtimes';
+    if ($string == 'archived') {
+      if (isset($_SESSION['Group_name'])) {
+        $url = 'node/' . $_SESSION['Group_id'] . '/downtimes/archived_downtimes';
+      }
+      array_push($header, array('data' => t('Type'), 'class' => 'type'));
+    }
+    array_push($header, array('data' => t('State'), 'class' => 'state'));
+    array_push($header, array('data' => t('Start'), 'class' => 'start'));
+    array_push($header, array('data' => t('End'), 'class' => 'end'));
+    array_push($header, array('data' => t('Reported By'), 'class' => 'reported_by'));
+    array_push($header, array('data' => t('Action'), 'class' => 'action'));
+
+    $master_group = \Drupal::database()->select("node_field_data", "s");
+    $master_group->fields('s', ['nid']);
+    $master_group->where("title = 'Incident Management'");
+    $master_group->execute()->fetchAll();
+
+    $output .= "<br>";
+    
+    if ($string == 'archived') {
+      $count_query_select = "select count(*) from ($sql) t ";
+      $count_query = $count_query_select;
+      $limit = ($limit ? $limit : PAGE_LIMIT);
+      $count_result = db_query($count_query);
+      $count_result->allowRowCount = TRUE;
+      $total_count = $count_result->fetchAssoc();
+      $total = $total_count['count'];
+      if ($limit != 'all') {
+        $result = pager_default_initialize($total, $limit);
+      }
+      else {
+        $result = db_query_range($sql, $pagination, $limit, $search_string);
+      }
+    }
+    else {
+      if ($search_string)
+        $result = db_query($sql, $search_string)->fetchAll();
+      else{
+        print $sql;
+        $result = db_query($sql)->fetchAll();
+      }
+    }
+    $rows = array();
+    print_r($result);
+    die();
+    while ($client = db_fetch_object($result)) {
+      $services = downtime_services_names($client->service);
+      //$user_state = display_update($states[$client->state_id]);
+      $user_state = $client->abbr;
+      $startdate = ($client->startdate_planned ? date('d-m-Y', $client->startdate_planned) . "&nbsp;" . date('H:i', $client->startdate_planned) : "unbekannt");
+      if ($string == 'archived') {
+        if (isset($client->cancelled) && $client->cancelled == 1) {
+          $enddate_cancelled = db_result(db_query("select end_date from {cancel_incident} where nid = %d", $client->down_id));
+          $enddate = date("d-m-Y", $enddate_cancelled) . "&nbsp;" . date("H:i", $enddate_cancelled);
+        }
+        else {
+          $enddate_resolved = db_result(db_query("select end_date from {resolve_incident} where nid = %d", $client->down_id));
+          $enddate = date("d-m-Y", $enddate_resolved) . "&nbsp;" . date("H:i", $enddate_resolved);
+        }
+      }
+      else {
+        $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . "&nbsp;" . date("H:i", $client->enddate_planned) : "");
+      }
+      $reporter_uid = db_result(db_query("SELECT uid FROM {node} WHERE nid = %d", $client->down_id));
+      $name = db_result(db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = %d ", $reporter_uid));
+      $user_name = ($user->uid ? l($name, 'user/' . $reporter_uid) : $name);
+
+      $downtime_ids = array();
+      $get_downtimes_states = db_query("SELECT state_id FROM {downtimes_states} WHERE nid = %d", $client->down_id);
+      while ($downtime_node_state_ids = db_fetch_array($get_downtimes_states)) {
+        $downtime_ids[] = $downtime_node_state_ids['state_id'];
+      }
+      $show_resolve = resolve_link_display($downtime_ids, $client->uid);
+      $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
+      if ($string == 'archived' && isset($client->cancelled) && $client->cancelled == 1) {
+        $flag = "<span class='cancelled-downtime'>" . t('Cancelled') . "</span>";
+      }
+      else {
+        $flag = "";
+      }
+      $elements = array(
+        'flag' => $flag,
+        'type' => t($client->type),
+        'state' => $user_state,
+        'service' => $services,
+        'start_date' => $startdate,
+        'end_date' => $enddate,
+        'reason' => $client->reason,
+        'name' => $user_name
+      );
+
+      $query_params = array(
+        'nid' => $client->down_id,
+        'sql' => $sql_where,
+        'state' => $state_id,
+        'service' => $service_id,
+        'type' => $_REQUEST['type'],
+        'start_date' => $_REQUEST['filter_startdate'],
+        'end_date' => $_REQUEST['filter_enddate'],
+        'url' => $url,
+        'time_period' => $_REQUEST['time_period'],
+        'search_string' => $search_string,
+        'from' => 1,
+        'downtime_type' => $string,
+        'limit' => $limit,
+      );
+      $query_seralized = serialize($query_params);
+      //$_SESSION['downtimes_query'] = $query_seralized;
+
+      $links = l(t('Details'), 'node/' . $client->down_id, $params = array(
+        'attributes' => array(
+          'class' => 'downtimes_details_link',
+          'nid' => $client->down_id,
+          'query' => $query_seralized,
+        ),
+          )
+      );
+
+      $downtime_type = db_result(db_query("SELECT scheduled_p FROM {downtimes} WHERE down_id = %d", $client->down_id));
+      if ($downtime_type == 1) {
+        if ($maintenance_edit && ($master_group->nid == $_SESSION['Group_id']) && $string != 'archived') {
+          $links .= "<br>" . l(t('Update'), 'node/' . $client->down_id . '/edit') . " <br>";
+          //l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->down_id);
+          if ($client->startdate_planned > time()) {
+            $links .= l(t('Cancel Maintenance'), 'node/' . $_SESSION['Group_id'] . '/cancel' . '/' . $client->down_id);
+          }
+          else {
+            $links .= l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->down_id);
+          }
+        }
+      }
+      else {
+        if ($show_resolve && ($master_group->nid == $_SESSION['Group_id'])) {
+          if ($string != 'archived') {
+            $links .= "<br>" . l(t('Update'), 'node/' . $client->down_id . '/edit') . " <br>" . l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->down_id);
+            //array_push($elements,l(t('Update'),$_SESSION['Group_name'].'/downtimes/'.$client->down_id.'/edit')."<br>".l(t('Resolve'),$_SESSION['Group_name'].'/resolve'.'/'.$client->down_id));
+          }
+        }
+      }
+      array_push($elements, $links);
+      $rows[] = $elements;
+    }
+    if (!$rows) {
+      $rows['no_data'] = array(array('data' => t('No data created yet.'), 'colspan' => 3));
+    }
+    $output .= theme('downtimes_table', $header, $rows, array('id' => 'sortable', 'class' => "tablesorter downtimes_$string"), $string);
+    if ($string == 'archived') {
+      $output .= theme('pager', NULL, $limit, 0);
+      $output .= drupal_get_form('archive_rows_per_page', $limit, $string);
+    }
+
+    return $output;
   }
 
 }

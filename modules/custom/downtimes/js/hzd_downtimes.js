@@ -1,5 +1,5 @@
 (function ($, Drupal) {
-    Drupal.behaviors.service_data = {
+    Drupal.behaviors.hzd_downtimes = {
         attach: function (context, settings) {
             var a = settings.downtime;
             $('.reason-for-noncompliance').hide();
@@ -218,7 +218,7 @@
             if ($('#edit-maintenance-result', context).val() == 1) {
                 $('.reason-for-noncompliance', context).show();
                 $('#edit-maintenance-result', context).val(1);
-            } else if (($('#edit-maintenance-result', context).val() == 1) || $("#edit-reason-for-noncompliance", context).val() != 0) {
+            } else if (($('#edit-maintenance-result', context).val() == 1) || ($("#edit-reason-for-noncompliance", context).val() != 0) && $("#edit-reason-for-noncompliance", context).val() != null) {
                 $('.reason-for-noncompliance', context).show();
                 $('#edit-maintenance-result', context).val(1);
             } else {
