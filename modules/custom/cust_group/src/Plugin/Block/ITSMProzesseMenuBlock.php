@@ -21,11 +21,11 @@ class ITSMProzesseMenuBlock extends BlockBase {
   public function build() {
     $menuHtml = '<ul class="">
     <li><a href="/group/24">Incident Management</a></li>
-    <li><a href="/kapazitaetsmanagement">Kapazitätsmanagement</a></li>
+    <li><a href="/group/26">Kapazitätsmanagement</a></li>
     <li><a href="/group/31">Problem Management</a></li>
     <li><a href="/group/32">Release Management</a></li>
-    <li><a href="/service-level-management">Service Level Management</a></li>
-    <li><a href="/betriebsportal-konsens">Betriebsportal KONSENS</a></li>
+    <li><a href="/group/34">Service Level Management</a></li>
+    <li><a href="/group/4">Betriebsportal KONSENS</a></li>
     </ul>';
     $title = "ITSM-Prozesse";
     return ['#title'=>$this->t($title),'#markup'=>$this->t($menuHtml)];

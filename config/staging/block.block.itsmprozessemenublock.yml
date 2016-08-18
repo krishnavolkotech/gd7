@@ -1,0 +1,24 @@
+uuid: 2a9e5086-6daa-4e37-a5b3-a0797676daca
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - cust_group
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: blue
+id: itsmprozessemenublock
+theme: hzd
+region: sidebar_first
+weight: -15
+provider: null
+plugin: itsmprozesse_menu_block
+settings:
+  id: itsmprozesse_menu_block
+  label: 'ITSM Prozesse'
+  provider: cust_group
+  label_display: visible
+visibility: {  }

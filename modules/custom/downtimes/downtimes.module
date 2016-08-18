@@ -674,12 +674,18 @@ function downtimes_theme() {
       'current' => array(
       'arguments' => array('data' => NULL, 'string' => NULL),
       'template' => 'current_downtimes',
+      ), */
+    'downtimes_table' => array(
+      'variables' => array(
+        'header' => array(),
+        'rows' => array(),
+        'attributes' => array(),
+        'empty' => array(),
+        'header_columns' => array(),
       ),
-      'downtimes_table' => array(
-      'arguments' => array('header' => NULL, 'rows' => NULL, 'attributes' => NULL, 'type' => NULL),
       'template' => 'downtimes_display',
-      ),
-      'service_checkbox' => array(
+    ),
+    /* 'service_checkbox' => array(
       'file' => 'includes/downtimes.theme.inc',
       'variables' => array('element' => NULL),
       ), */
@@ -956,5 +962,85 @@ function reset_filter_forms($type) {
     '#prefix' => "<div class = 'reset_all'>",
     '#suffix' => "</div>"
   );
+  return $form;
+}
+
+/*
+ * Form for showing the rows per page form
+ */
+
+function archive_rows_per_page($form_state, $limit, $string) {
+  if (($_REQUEST['type'] == 0 || $_REQUEST['type'] == 1) && isset($_REQUEST['type'])) {
+    if ($_REQUEST['type'] != 'select') {
+      $type = $_REQUEST['type'];
+    }
+    else {
+      $type = 'select';
+    }
+  }
+  $wrapper = 'archived_maintenance_search_results_wrapper';
+  if (isset($_SESSION['Group_id'])) {
+    $path = "node/" . $_SESSION['Group_id'] . '/downtimes_search_results/archived';
+  }
+  else {
+    $path = 'downtimes_search_results_public/' . $string;
+  }
+
+  $form['type'] = array(
+    '#type' => 'hidden',
+    '#value' => $type,
+  );
+  $form['states'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['states'] ? $_REQUEST['states'] : 0),
+  );
+  $form['services'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['services'] ? $_REQUEST['services'] : 0),
+  );
+  $form['filter_startdate'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['filter_startdate'] ? $_REQUEST['filter_startdate'] : ''),
+  );
+  $form['filter_enddate'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['filter_enddate'] ? $_REQUEST['filter_enddate'] : ''),
+  );
+  $form['time_period'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['time_period'] ? $_REQUEST['time_period'] : 0),
+  );
+  $form['string'] = array(
+    '#type' => 'hidden',
+    '#value' => ($_REQUEST['string'] ? $_REQUEST['string'] : t('Search Reason')),
+  );
+
+
+  $limit = $_REQUEST['limit'] ? $_REQUEST['limit'] : $limit;
+
+
+  $default_limit = array(
+    20 => 20,
+    50 => 50,
+    100 => 100,
+    'all' => t('All'),
+  );
+  $form['limit'] = array(
+    '#type' => 'select',
+    '#options' => $default_limit,
+    '#default_value' => array($limit),
+    '#weight' => 8,
+    '#title' => t('Rows per page'),
+    '#ahah' => array(
+      'path' => $path,
+      'wrapper' => $wrapper,
+      'method' => 'replace',
+      'event' => 'change',
+      'progress' => array('type' => 'throbber'),
+    ),
+    "#prefix" => "<div class = 'limit_search_dropdown'>",
+    '#suffix' => '</div>',
+  );
+
   return $form;
 }

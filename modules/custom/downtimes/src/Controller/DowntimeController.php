@@ -37,4 +37,15 @@ class DowntimeController extends ControllerBase {
     );
   }
 
+  function getTitle() {
+    $current_path = \Drupal::service('path.current')->getPath();
+    $downtime_type = pathinfo($current_path, PATHINFO_BASENAME);
+    if ($downtime_type == 'create_maintenance') {
+      return 'Create Maintenance';
+    }
+    else {
+      return 'Report an Incident';
+    }
+  }
+
 }

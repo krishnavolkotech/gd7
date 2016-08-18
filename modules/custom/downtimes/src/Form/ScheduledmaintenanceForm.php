@@ -231,7 +231,7 @@ class ScheduledmaintenanceForm extends ConfigFormBase {
 	$form_state->setErrorByName("konsens_mw_hm_until$inc", t("Select Minutes"));
       }
 
-      if($form_state['values']["konsens_mw_day_from$inc"] == $form_state['values']["konsens_mw_day_until$inc"]) {
+      if($form_state->getValue("konsens_mw_day_from$inc") == $form_state->getValue("konsens_mw_day_until$inc")) {
 	if($from_hour != '' && $from_minute != '' && $until_hour != '' && $until_minute != '') {
 	  $from_time  = ($from_hour * 60) + $from_minute;
 	  $to_time = ($until_hour * 60) + $until_minute;
