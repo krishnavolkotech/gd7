@@ -51,13 +51,13 @@ class ResolveForm extends FormBase {
           */ 
 	  // $resolved_title = db_result(db_query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
 
-          $query = \Drupal::database()->select('dowtimes', 'd');
+          $query = \Drupal::database()->select('downtimes', 'd');
           $query->fields('d', ['scheduled_p']);
 	  $query->condition('d.downtime_id', $nid, '=');
           $query->range(1);
 	  $services = $query->execute()->fetchField();
 
-          $resolved_title = $query['scheduled_p'];
+          $resolved_title = $services['scheduled_p'];
 
           if ($resolved_title == 0) {
 	    // drupal_set_title(t('Resolve Incident'));
@@ -70,7 +70,7 @@ class ResolveForm extends FormBase {
 	 // drupal_set_breadcrumb($breadcrumb);
 
 	  $form['comment'] = array(
-	    '#type' => 'textformat',
+	    '#type' => 'text_format',
 	    '#title' => t('Comment'),
 	    '#required' => TRUE,
 	    '#id' => 'reason',
@@ -111,6 +111,7 @@ class ResolveForm extends FormBase {
 	    '#weight' => -5,
 	    '#disabled' => true,
 	  );
+
 	  if (!empty($end_date_planned)) {
 	  $form['enddate_planned'] = array(
 	    '#title' => t('Expected End Date'),
@@ -121,6 +122,7 @@ class ResolveForm extends FormBase {
 	    '#disabled' => true,
 	  );
 	  }
+
 	  $first_month_first_day = date('Y-01-01 00:00');
 
 	  $form['date_reported'] = array(
@@ -151,12 +153,13 @@ class ResolveForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
 
 	 // $sql = db_fetch_object(db_query("select startdate_planned  from {state_downtimes} where down_id = %d", $form_state['values']['nid']));
-          $query = \Drupal::database()->select('dowtimes', 'd');
+        //  echo $form_state->getValue('nid');
+          $query = \Drupal::database()->select('downtimes', 'd');
 		    $query->fields('d', ['startdate_planned']);
 		    $query->condition('d.downtime_id', $form_state->getValue('nid') , '=');
                     $query->range(1);
-		    $sql = $query->execute()->fetchAll();
-
+	  $sql = $query->execute()->fetchAll();
+        //  pr($sql);
 	  $startdate = $sql->startdate_planned;
 	 // $enddate = get_unix_timestamp($_POST['date_reported']['date']);
 

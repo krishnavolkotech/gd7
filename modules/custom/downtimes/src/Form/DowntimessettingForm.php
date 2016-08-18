@@ -6,6 +6,9 @@ namespace Drupal\downtimes\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
+use Drupal\downtimes\HzdDowntimeStorage;
+// use Drupal\hzd_customizations\HzdDowntimeStorage;
+
 
 /**
  *  downtime settings form 
@@ -35,7 +38,18 @@ class DowntimessettingForm extends FormBase {
    */
 
 	  $type = 'downtimes';
-	  $options = HzdservicesStorage::get_related_services($type);
+
+	    $group_downtimes_view_service_query = \Drupal::database()->select('group_downtimes_view', 'gdv');
+	    $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
+	    $group_downtimes_view_service_query->conditions('group_id', $_SESSION['Group_id'] ,'=');
+	    $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchAll();
+
+	    foreach($group_downtimes_view_service as $service) {
+	      $default_services[$service->service_id] = $service->service_id;
+	    }
+
+          $options = HzdservicesStorage::get_related_services($type);
+
 	  $form['#prefix'] = "<div class = 'downtimes_settings'>" . $this->t('Please specify the services of which you would like to display the downtimes in this group.');
 	  $form['#suffix'] = "</div>";
 	  $form['services'] = array(
@@ -64,10 +78,14 @@ class DowntimessettingForm extends FormBase {
     $selected_services = $form_state->getvalue('services');
     HzdDowntimeStorage::delete_group_downtimes_view();
     // $selected_services = $form['services']['#post']['services'];
+
     $counter = HzdDowntimeStorage::insert_group_downtimes_view($selected_services);
+
     $gid = $_SESSION['Group_id'];
     $menu_name = 'menu-' . $gid;
-    reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);
+    // TO DO:
+    // reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);
+
     drupal_set_message($this->t('Downtime Settings Updated'));
   }
 }
