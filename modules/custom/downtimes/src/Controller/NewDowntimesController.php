@@ -3,6 +3,7 @@
 namespace Drupal\downtimes\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\hzd_customizations\HzdcustomisationStorage;
 
 /**
  * Class NewDowntimesController.
@@ -17,40 +18,18 @@ class NewDowntimesController extends ControllerBase {
    * @return string
    *   Return Hello string.
    */
-  public function newDowntimes($node) {
-
+  public function newDowntimes($group) {
     //Current Incidents
-    $string = 'current';
-    $output .= "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('current_downtimes') . '</div>';
-    $data = "<div class ='curr_incidents_form'>" . drupal_get_form('downtimes_filters', 'incidents');
-    $data .= "<div class = 'reset_form'>" . drupal_render(reset_filter_forms('incidents')) . "</div></div>";
-
-    $output .= theme('current', $data, $string);
-    $current_time = time();
-    $sql_where = " and scheduled_p = 0 and resolved = 0 and sd.startdate_planned <= $current_time";
-    $string = 'incidents';
-    $default_downtimes = current_incidents($sql_where, $string);
-    $output .= "<div id = 'incidents_search_results_wrapper'>" . $default_downtimes . "</div>";
+    $incidents_data = \Drupal::formBuilder()->getForm('\Drupal\downtimes\Form\DowntimesFilter', 'incidents', $group);
 
     //Planned Maintenence
-    $sql_where = "  and scheduled_p = 1 and resolved = 0 ";
-    $string = 'maintenance';
-    $data = "<div class ='curr_incidents_form maintenance_filters'>" . drupal_get_form('downtimes_filters', $string);
-    $data .= "<div class = 'reset_form'>" . drupal_render(reset_filter_forms($string)) . "</div></div>";
 
-    $output .= theme('current', $data, $string);
-    $default_downtimes = current_incidents($sql_where, $string);
-    $output .= "<div id = 'maintenance_search_results_wrapper'>" . $default_downtimes . "</div>";
+    $maintenance_data = \Drupal::formBuilder()->getForm('Drupal\downtimes\Form\DowntimesFilter', 'maintenance', $group);
+    //$data .= "<div class = 'reset_form'>" . drupal_render(reset_filter_forms($string)) . "</div></div>";
 
-    return [
-      '#type' => 'markup',
-      '#markup' => $this->t('Implement method: newDowntimes with parameter(s): $node'),
-      '#attached' => array(
-        'library' => array(
-          'downtimes.newdowntimes',
-        ),
-      ),
-    ];
+
+    $output = array($incidents_data, $maintenance_data);
+    return $output;
   }
 
 }
