@@ -42,6 +42,20 @@ downtimes.maintenancejs:
     - core/drupal.dialog
     - core/jquery.ui.datepicker
 
+downtimes.currentincidents:
+    version: 1.x
+    js:
+      js/jquery.tablesorter.min.js: {}
+      js/downtimes.js: {}
+    css:
+      css/downtimes.css: {}
+    
+    dependencies:
+      - core/jquery
+      - core/jquery.ui
+      - core/drupal.dialog
+      - core/jquery.ui.datepicker 
+
 downtimes.newdowntimes:
   version: 1.x
   js:
