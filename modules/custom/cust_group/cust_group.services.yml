@@ -4,3 +4,9 @@ services:
     tags:
       - { name: event_subscriber }
 
+  cust_group.default:
+    class: Drupal\cust_group\EventSubscriber\DefaultSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }
+
