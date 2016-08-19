@@ -39,6 +39,7 @@ class DefaultSubscriber extends DefaultExceptionHtmlSubscriber {
       $currentPath = \Drupal::service('path.current')->getPath();
       $loginPath = '/user/login?destination='.$currentPath;
       drupal_set_message(t('Please login to access the page.'), 'error');
+      return new \Zend\Diactoros\Response\RedirectResponse($loginPath);
       header('Location: '.$base_url.$loginPath);
       exit;
     }
