@@ -2,7 +2,7 @@ hzd_release_management.release_manangement: #give it the same name as the route 
   title: Release Documentation Settings
   route_name: hzd_release_management.release_documentation_settings #route defined in .routing.yml
   base_route: hzd_release_management.release_documentation_settings #same as the route name
-  weight: 0
+  weight: 2
 
 #add another tab next to the home tab
 hzd_release_management.release_documentation_credentials_tab: #name it same as route to avoid confusion
@@ -20,7 +20,7 @@ hzd_release_management.release_management_settings_tab: #name it same as route t
   route_name: hzd_release_management.release_management_settings #link to tab2 route
   #route defined in .routing.yml
   base_route: hzd_release_management.release_documentation_settings #set the base tab
-  weight: 2
+  weight: 0
 
 
 hzd_release_management.release_type_settings_tab: #name it same as route to avoid confusion

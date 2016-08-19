@@ -1,0 +1,48 @@
+downtimes.Downtimesnotesform:
+  title: 'Downtimes and Maintainance'
+  description: 'Downtimes and Maintainance'
+  parent: system.admin_config
+  route_name: downtimes.Downtimesnotesform
+  weight: 10 
+
+downtimes.downtimes_scheduled_maintenance_form:
+  title: 'Scheduled Maintenances'
+  description: 'Scheduled Maintenances'
+  parent: downtimes.Downtimesnotesform
+  route_name: downtimes.downtimes_scheduled_maintenance_form
+  weight: 0
+
+downtimes.Downtimesnotes:
+  title: 'Downtimes Notes'
+  description: 'Downtimes Notes'
+  parent: downtimes.Downtimesnotesform
+  route_name: downtimes.Downtimesnotes
+  weight: 1
+
+#downtimes.Downtimesnotesform:
+#  title: 'Problems'
+#  description: 'Problems settings page'
+#  parent: downtimes.Downtimesnotesform
+#  route_name: downtimes.Downtimesnotesform
+#  weight: 2
+
+downtimes.downtimes_scheduled_maintenance_time_settings_form:
+  title: 'General Setting'
+  description: 'Scheduled Maintenances General Setting'
+  parent: downtimes.downtimes_scheduled_maintenance_form
+  route_name: downtimes.downtimes_scheduled_maintenance_time_settings_form
+  weight: 0
+
+downtimes.downtimes_scheduled_maintenance_mail_template_form:
+  title: 'Mail Template'
+  description: 'Mail Template'
+  parent: downtimes.downtimes_scheduled_maintenance_form
+  route_name: downtimes.downtimes_scheduled_maintenance_mail_template_form
+  weight: 1
+
+downtimes.downtimes_maintenance_groupid_form:
+  title: 'Group ID'
+  description: 'Group ID'
+  parent: downtimes.downtimes_scheduled_maintenance_form
+  route_name: downtimes.downtimes_maintenance_groupid_form
+  weight: 2
