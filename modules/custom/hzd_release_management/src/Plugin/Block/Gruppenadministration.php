@@ -42,7 +42,11 @@ class Gruppenadministration extends BlockBase {
   
   function hzdGroupAdminLinks() {
     $group = \Drupal::routeMatch()->getParameter('group');
-    $groupId = $group->id();
+    if(is_object($group)){
+      $groupId = $group->id();
+    }else{
+      $groupId = $group;
+    }
     $menuHtml = '<ul class="menu nav">
     <li><a href="/group/'.$groupId.'/node">Contents</a></li>
     <li><a href="/group/'.$groupId.'/node/create">Content</a></li>
