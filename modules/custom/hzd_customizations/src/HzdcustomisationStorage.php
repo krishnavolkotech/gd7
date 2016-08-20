@@ -22,6 +22,7 @@ use Drupal\Core\Render\Markup;
 // use Drupal\user\PrivateTempStoreFactory;.
 use Drupal\Core\Path\Path;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\hzd_services\HzdservicesStorage;
 
 if (!defined('MAINTENANCE_GROUP_ID')) {
@@ -30,6 +31,10 @@ if (!defined('MAINTENANCE_GROUP_ID')) {
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
+}
+
+if (!defined('PAGE_LIMIT')) {
+  define('PAGE_LIMIT', 20);
 }
 
 /**
@@ -283,8 +288,9 @@ class HzdcustomisationStorage {
       }
       else {
         $text = $service->service;
-        $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile/', array('service' => $service->nid));
-        $data[] = \Drupal::l($text, $url);
+        $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile?service=' . $service->nid);
+        // $link = Link::fromTextAndUrl($text, $url);
+        $data[] = Link::fromTextAndUrl($text, $url);
         // Echo '<pre>';  print_r($check);  exit;.
       }
     }
@@ -312,7 +318,7 @@ class HzdcustomisationStorage {
     $query->isNotNull('s.abbr');
     $query->fields('s');
     if ($active) {
-      $query->addCondition('active', 1);
+      $query->condition('active', 1);
     }
     $states = $query->execute()->fetchAll();
     foreach ($states as $state) {
@@ -573,9 +579,9 @@ class HzdcustomisationStorage {
   static function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
     $owner = user_load($owner_id);
-    $group_id = \Drupal::routeMatch()->getParameter('group');
+    $group_id = \Drupal::routeMatch()->getParameter('group')->id();
     //dsm(\Drupal\user\Entity\User::load($owner_id));
-    $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = ' . $owner_id)->fetchField();
+    $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
     if ($owner_state) {
       $owner_state_id = $owner_state;
     }
@@ -598,10 +604,32 @@ class HzdcustomisationStorage {
     }
   }
 
+  static function reset_form() {
+    return $form['reset'] = array(
+      '#type' => 'button',
+      '#value' => t('Reset'),
+      '#attributes' => array('onclick' => "reset_form_elements()"),
+      '#prefix' => " <div class = 'reset_form'><div class = 'reset_all'>",
+      '#suffix' => '</div><div style = "clear:both"></div> </div>'
+    );
+  }
+
   static function current_incidents($sql_where, $string = NULL, $service_id = NULL, $search_string = NULL, $limit = NULL, $state_id = NULL) {
     $user = \Drupal::currentUser();
-    $group_id = \Drupal::routeMatch()->getParameter('group');
-    $group = \Drupal\group\Entity\Group::load($group_id);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
+
+    $reasons = array(
+      t('Please select a reason here'),
+      t('Urgency of the maintenance'),
+      t('No staff available during maintenance hours'),
+      t('No service partner (State) available during maintenance hours'),
+      t('External service partner required'),
+      t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+      t('Public holiday or weekend'),
+      t('No service partner (KONSENS) available during maintenance hours'),
+      t('No service interruption planned')
+    );
     /* $serialized_data = unserialize($_SESSION['downtimes_query']);
       if ($string == $serialized_data['downtime_type']) {
       $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
@@ -621,24 +649,24 @@ class HzdcustomisationStorage {
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
 
     if (isset($service_id) && $service_id != 1) {
-      $service = " sd.service_id = $service_id";
+      $service = " gdv.service_id = $service_id";
     }
     else {
-      $service = " sd.service_id != 0";
+      $service = " gdv.service_id != 0";
     }
 
     if (isset($state_id) && $state_id != 1) {
-      $state = " sd.state_id = $state_id";
+      $state = " ds.state_id = $state_id";
     }
     else {
-      $state = " sd.state_id != 0";
+      $state = " ds.state_id != 0";
     }
 
     if ($string == 'archived') {
       $sql_where = str_replace('and resolved = 1', 'and (resolved = 1 or cancelled = 1)', $sql_where);
       $select = "select group_concat(distinct title separator'<br>') as service,
                        if(scheduled_p = 1, 'MAINTENANCE', 'INCIDENT') as type,
-                       sd.uid, downtime_id, group_concat(distinct s.abbr separator', ') as abbr, reason, startdate_planned";
+                       n.uid, downtime_id, sd.startdate_reported, sd.enddate_reported,group_concat(distinct s.abbr separator', ') as abbr, reason, startdate_planned";
 
       if (isset($_POST['filter_enddate']) && !empty($_POST['filter_enddate'])) {
         $end_date = explode('.', $_POST['filter_enddate']);
@@ -650,11 +678,11 @@ class HzdcustomisationStorage {
 
       if (isset($group_id)) {
         $inner_where = " where $service and $state and group_id = $group_id ";
-        $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
+        $inner_select = "select gdv.service_id as state_service_id from {group_downtimes_view} gdv, {downtimes} ds $inner_where ";
         $sql_select = "$select,sd.cancelled from {downtimes} sd,
                        {node_field_data} n, {group_content_field_data} oa,
                        {states} s where sd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and
-                       sd.downtime_id = oa.nid and s.id=sd.state_id and
+                       sd.downtime_id = oa.entity_id and s.id=sd.state_id and
                        sd.service_id in
                              ($inner_select) ";
         if ($filter_end_date) {
@@ -676,13 +704,13 @@ class HzdcustomisationStorage {
     }
     else {
       $sql_where .= " and sd.cancelled = 0";
-      $select = "select sd.downtime_id,n.uid,sd.downtime_id, sd.reason, sd.startdate_planned, sd.enddate_planned,group_concat(distinct n.title separator'<br>') as service,
+      $select = "select sd.startdate_reported, sd.enddate_reported, sd.downtime_id,n.uid,sd.downtime_id, sd.reason, sd.startdate_planned, sd.enddate_planned,group_concat(distinct n.title separator'<br>') as service,
         if(sd.scheduled_p = 1, 'MAINTENANCE', 'INCIDENT') as type,
         group_concat(distinct s.abbr separator', ') as abbr";
 
       if (isset($group_id)) {
         $inner_where = " where $service and $state and group_id =  " . $group_id;
-        $inner_select = "select ds.service_id as state_service_id from {group_downtimes_view}, {downtimes} ds $inner_where ";
+        $inner_select = "select ds.service_id as state_service_id from {group_downtimes_view} gdv, {downtimes} ds $inner_where ";
         $sql_select = "$select from {downtimes} sd, {node_field_data} n, {group_content_field_data} oa,  {states} s
                  where sd.service_id = n.nid and
                        sd.downtime_id = oa.entity_id and s.id=sd.state_id and
@@ -691,14 +719,14 @@ class HzdcustomisationStorage {
       }
       else {
         $inner_where = " where $service and $state";
-        $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
+        $inner_select = "select service_id as state_service_id from {group_downtimes_view} gdv $inner_where ";
         $sql_select = "$select from {downtimes} sd, {node} n, {states} s
                  where sd.service_id = n.nid and s.id=sd.state_id and
                        sd.service_id in
                              ($inner_select) ";
       }
     }
-    $sql_group_by = " group by sd.downtime_id,n.uid,sd.downtime_id, sd.reason, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p order by sd.startdate_planned $sort_order";
+    $sql_group_by = " group by sd.downtime_id,n.uid,sd.downtime_id, sd.reason, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p,sd.cancelled order by sd.startdate_planned $sort_order";
     $sql = $sql_select . $sql_where . $sql_group_by;
 
     //table header
@@ -725,23 +753,35 @@ class HzdcustomisationStorage {
     $output = "<br>";
 
     if ($string == 'archived') {
-      $count_query_select = "select count(*) from ($sql) t ";
-      $count_query = $count_query_select;
       $limit = ($limit ? $limit : PAGE_LIMIT);
-      $count_result = db_query($count_query);
-      $count_result->allowRowCount = TRUE;
-      $total_count = $count_result->fetchAssoc();
-      $total = $total_count['count'];
       if ($limit != 'all') {
-        $result = pager_default_initialize($total, $limit);
+        //$result = db_query_range($sql, 0, $limit, array())->fetchAll();
+        //$page = pager_default_initialize($total, $limit);
+        /* print $sql; die();
+          $query = db_query($sql);
+          $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
+          $result = $pager->execute(); */
+        $query = db_select('downtimes', 'sd');
+        $query->Fields('sd', array('startdate_reported', 'enddate_reported', 'downtime_id', 'reason', 'startdate_planned', 'enddate_planned'));
+        $query->addExpression("Group_concat(DISTINCT s.abbr SEPARATOR', ')", 'abbr');
+        $query->addExpression("Group_concat(DISTINCT title SEPARATOR' ')", 'service');
+        $query->addExpression("IF(scheduled_p = 1, 'MAINTENANCE', 'INCIDENT')", 'type');
+        $query->join('node_field_data', 'n', 'sd.service_id = n.nid');
+        $query->join('group_content_field_data', 'oa', 'sd.downtime_id = oa.entity_id');
+        $query->join('states', 's', 's.id=sd.state_id');
+        $query->groupBy('sd.downtime_id, n.uid, sd.downtime_id, sd.reason, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
+        $query->where('sd.service_id = n.nid AND (sd.resolved = 1 OR sd.cancelled = 1) AND sd.service_id IN (SELECT gdv.service_id AS state_service_id FROM   {group_downtimes_view} gdv,  {downtimes} ds WHERE  ' . $service . ' AND ' . $state . ' AND group_id = ' . $group_id . ' ) ');
+        $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
+        $result = $pager->execute();
       }
       else {
-        $result = db_query_range($sql, $pagination, $limit, $search_string);
+        $result = db_query($sql, $search_string)->fetchAll();
       }
     }
     else {
-      if ($search_string)
+      if ($search_string) {
         $result = db_query($sql, $search_string)->fetchAll();
+      }
       else {
         $result = db_query($sql)->fetchAll();
       }
@@ -754,16 +794,14 @@ class HzdcustomisationStorage {
       $startdate = ($client->startdate_planned ? date('d-m-Y', $client->startdate_planned) . " " . date('H:i', $client->startdate_planned) : "unbekannt");
       if ($string == 'archived') {
         if (isset($client->cancelled) && $client->cancelled == 1) {
-          $enddate_cancelled = db_result(db_query("select end_date from {cancel_incident} where nid = %d", $client->downtime_id));
-          $enddate = date("d-m-Y", $enddate_cancelled) . "&nbsp;" . date("H:i", $enddate_cancelled);
+          $enddate = date("d-m-Y", $client->enddate_reported) . " " . date("H:i", $client->enddate_reported);
         }
         else {
-          $enddate_resolved = db_result(db_query("select end_date from {resolve_incident} where nid = %d", $client->downtime_id));
-          $enddate = date("d-m-Y", $enddate_resolved) . "&nbsp;" . date("H:i", $enddate_resolved);
+          $enddate = date("d-m-Y", $client->enddate_reported) . " " . date("H:i", $client->enddate_reported);
         }
       }
       else {
-        $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . "&nbsp;" . date("H:i", $client->enddate_planned) : "");
+        $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . " " . date("H:i", $client->enddate_planned) : "");
       }
       $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = $client->downtime_id")->fetchField();
       $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = $reporter_uid")->fetchField();
@@ -791,7 +829,7 @@ class HzdcustomisationStorage {
         'service' => $services,
         'start_date' => $startdate,
         'end_date' => $enddate,
-        'reason' => $client->reason,
+        'reason' => !empty($client->reason)? $reasons[$client->reason] : '',
         'name' => $user_name
       );
 
@@ -846,25 +884,30 @@ class HzdcustomisationStorage {
       $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
       if ($downtime_type == 1) {
         if ($maintenance_edit && ($master_group == $group_id) && $string != 'archived') {
+          $resolve_url = Url::fromUserInput('/node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
+          $cancel_url = Url::fromUserInput('/node/' . $group_id . '/cancel' . '/' . $client->downtime_id);
           $links .= "<br>" . l(t('Update'), 'node/' . $client->downtime_id . '/edit') . " <br>";
           //l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);
           if ($client->startdate_planned > time()) {
-            $links .= l(t('Cancel Maintenance'), 'node/' . $group_id . '/cancel' . '/' . $client->downtime_id);
+            $links .= \Drupal::l(t('Cancel Maintenance'), $cancel_url);
           }
           else {
-            $links .= l(t('Resolve'), 'node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
+            $links .= \Drupal::l(t('Resolve'), $resolve_url);
           }
         }
       }
       else {
         if ($show_resolve && ($master_group == $group_id)) {
           if ($string != 'archived') {
-            //$links .= "<br>" . l(t('Update'), 'node/' . $client->downtime_id . '/edit') . " <br>" . l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);
-            //array_push($elements,l(t('Update'),$_SESSION['Group_name'].'/downtimes/'.$client->downtime_id.'/edit')."<br>".l(t('Resolve'),$_SESSION['Group_name'].'/resolve'.'/'.$client->downtime_id));
+            $update_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
+            $resolve_url = Url::fromUserInput('/node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
+            $links .= "<br>" . \Drupal::l(t('Update'), $update_url) . " <br>" . \Drupal::l(t('Resolve'), $resolve_url);
+            //array_push($elements, \Drupal::l(t('Update'), $group->label() . '/downtimes/' . $client->downtime_id . '/edit') . "<br>" . l(t('Resolve'), $_SESSION['Group_name'] . '/resolve' . '/' . $client->downtime_id));
           }
         }
       }
       $elements['content'] = $links;
+      $elements['table_type'] = $string;
       $rows[] = $elements;
     }
     /* if (!$rows) {
@@ -878,7 +921,7 @@ class HzdcustomisationStorage {
     $variables = array('header' => $header, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => 'No data created yet.');
 
     self::downtimes_display_table($variables);
-    $output = array(
+    $build['problem_table'] = array(
       '#header' => $variables['header'],
       '#rows' => $variables['rows'],
       '#attributes' => $variables['attributes'],
@@ -886,8 +929,12 @@ class HzdcustomisationStorage {
       '#header_columns' => $variables['header_columns'],
       '#theme' => 'downtimes_table'
     );
-
-    return \Drupal::service('renderer')->render($output);
+    $build['pager'] = array(
+      '#type' => 'pager',
+      '#prefix' => '<div id="pagination">',
+      '#suffix' => '</div>',
+    );
+    return $build;
   }
 
   static function downtimes_display_table(&$variables) {
