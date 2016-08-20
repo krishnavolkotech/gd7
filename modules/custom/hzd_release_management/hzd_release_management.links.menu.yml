@@ -1,10 +1,3 @@
-hzd_release_management.release_documentation_settings:
-  title: 'Release Documentation Settings'
-  route_name: hzd_release_management.release_documentation_settings
-  parent: system.admin_config
-  description: 'Release Documentation Settings'
-  weight: -14
-
 hzd_release_management.release_management_settings:
   title: 'Release Database Configuration'
   route_name: hzd_release_management.release_management_settings
@@ -12,16 +5,31 @@ hzd_release_management.release_management_settings:
   description: 'Release Database Configuration'
   weight: -13
 
+hzd_release_management.release_documentation_settings:
+  title: 'Release Documentation Settings'
+  route_name: hzd_release_management.release_documentation_settings
+  parent: hzd_release_management.release_management_settings
+  description: 'Release Documentation Settings'
+  weight: -14
+
 hzd_release_management.release_documentation_credentials:
   title: 'Release Documentation Credentials'
   route_name: hzd_release_management.release_documentation_credentials
-  parent: system.admin_config
+  parent: hzd_release_management.release_management_settings
   description: 'Release Documentation Credentials'
-  weight: -12
+  weight: -13
 
 hzd_release_management.release_type_settings:
   title: 'Release Type Settings'
   route_name: hzd_release_management.release_type_settings
-  parent: system.admin_config
+  parent: hzd_release_management.release_management_settings
   description: 'Release Type Settings'
+  weight: -12
+
+hzd_release_management.release_management_settings_submenu:
+  title: 'Release Database Configuration'
+  route_name: hzd_release_management.release_management_settings
+  parent: hzd_release_management.release_management_settings
+  description: 'Release Database Configuration'
   weight: -11
+

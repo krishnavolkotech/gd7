@@ -58,4 +58,15 @@ class CustNodeController extends ControllerBase {
     }
     return AccessResult::neutral();
   }
+  
+  static function isGroupAdmin($group_id = null){
+    if(!$group_id){
+      return false;
+    }
+    $group = \Drupal\group\Entity\Group::load($group_id);
+    $contentId = $group->getMember(\Drupal::currentUser())->getGroupContent()->id();
+    $adminquery = \Drupal::database()->select('group_content__group_roles','gcgr')
+      ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
+    return (bool)!empty($adminquery);
+  }
 }

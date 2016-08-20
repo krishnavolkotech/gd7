@@ -78,6 +78,13 @@
                     <{{ row.cells.flag.tag }}{{ row.cells.flag.attributes }}>
                     {{- row.cells.flag.content -}}
                     </{{ row.cells.flag.tag }}>
+
+                    {% if row.cells.table_type.content == "archived" %}
+                        <{{ row.cells.type.tag }}{{ row.cells.type.attributes }}>
+                        {{- row.cells.type.content -}}
+                        </{{ row.cells.type.tag }}>
+
+                    {% endif %}
                     {# endfor #}
                     <{{ row.cells.state.tag }}{{ row.cells.state.attributes }}>
                     {{- row.cells.state.content -}}
@@ -97,7 +104,11 @@
                     <{{ row.cells.service.tag }}{{ row.cells.service.attributes }}>
                     {{- row.cells.service.content -}}
                     </{{ row.cells.service.tag }}>
-                    <{{ row.cells.reason.tag }}{{ row.cells.reason.attributes }} colspan = "4">
+                    {% if row.cells.table_type.content == "archived" %}
+                        <{{ row.cells.reason.tag }}{{ row.cells.reason.attributes }} colspan = "5">
+                     {% else %}
+                         <{{ row.cells.reason.tag }}{{ row.cells.reason.attributes }} colspan = "4">
+                    {% endif %}
                     {{- row.cells.reason.content -}}
                     </{{ row.cells.reason.tag }}>
                     <{{ row.cells.content.tag }}{{ row.cells.content.attributes }}>

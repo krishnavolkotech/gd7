@@ -26,7 +26,8 @@ class Gruppenadministration extends BlockBase {
   public function build() {
     return array(
       '#type' => 'markup',
-      '#markup' => $this->hzd_group_admin_links(),
+      '#markup' => $this->hzdGroupAdminLinks(),
+      '#cache'=>['max-age'=>0],
     );
   }
   
@@ -39,8 +40,23 @@ class Gruppenadministration extends BlockBase {
     }
   }
   
-  function hzd_group_admin_links() {
-    return t('Will update the links once groups feature complete.');
+  function hzdGroupAdminLinks() {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $groupId = $group->id();
+    }else{
+      $groupId = $group;
+    }
+    $menuHtml = '<ul class="menu nav">
+    <li><a href="/group/'.$groupId.'/node">Contents</a></li>
+    <li><a href="/group/'.$groupId.'/node/create">Content</a></li>
+    <li><a href="/group/'.$groupId.'/members">Users</a></li>
+    <li><a href="/group/'.$groupId.'/downtime_settings">Disturbances and block times</a></li>
+    <li><a href="/group/'.$groupId.'/problem_settings">Known Issues</a></li>
+    <li><a href="/group/'.$groupId.'/release_settings">Releases</a></li>
+    </ul>';
+
+    return $this->t($menuHtml);
   }
 
 }

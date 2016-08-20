@@ -17,14 +17,14 @@ class DowntimeController extends ControllerBase {
   /**
    * Callback for service_profiles.
    */
-  function service_profiles($node) {
+  function service_profiles($group) {
     // $service_data['content'] = HzdcustomisationStorage::service_profiles();
     $result['content'] = HzdcustomisationStorage::service_profiles();
     // Echo '<pre>';  print_r($result);  exit;.
     return $result;
   }
 
-  function create_downtime($node) {
+  function create_downtime($group) {
     $type = node_type_load("downtimes"); // replace this with the node type in which we need to display the form for
     $samplenode = $this->entityManager()->getStorage('node')->create(array(
       'type' => $type->id(),

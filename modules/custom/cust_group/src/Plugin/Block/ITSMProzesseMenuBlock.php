@@ -19,9 +19,9 @@ class ITSMProzesseMenuBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $menuHtml = '<ul class="">
+    $menuHtml = '<ul class="menu nav">
     <li><a href="/group/24">Incident Management</a></li>
-    <li><a href="/group/26">Kapazitätsmanagement</a></li>
+    <li><a href="/group/26">Capacity Management</a></li>
     <li><a href="/group/31">Problem Management</a></li>
     <li><a href="/group/32">Release Management</a></li>
     <li><a href="/group/34">Service Level Management</a></li>
