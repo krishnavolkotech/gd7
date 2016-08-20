@@ -1,11 +1,13 @@
 downtimes.DowntimessettingForm:
-  path: 'downtimes/{any}/settings'
-  defaults:
-    _form: '\Drupal\downtimes\Form\DowntimessettingForm'
-    _title: 'Downtimes'
-    _description: 'View Setting for downtimes.'
-  requirements:
-    _permission: 'administer messaging'
+ path: 'group/{group}/downtime_settings'
+ defaults:
+   _form: '\Drupal\downtimes\Form\DowntimessettingForm'
+   _title: 'Downtimes'
+   _description: 'View Setting for downtimes.'
+   _entity_view: 'group.default'
+ requirements:
+   _permission: 'access content'
+   _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 downtimes.Downtimesnotesform:
   path: 'admin/config/downtimes'
@@ -56,7 +58,7 @@ downtimes.cancel_confirm:
     _permission: 'administer messaging'
 
 downtimes.service_profiles:
-  path: 'node/{node}/downtimes/service-profiles'
+  path: '/group/{group}/downtimes/service-profiles'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
     _title: 'Service Profiles'
@@ -69,7 +71,7 @@ downtimes.service_profiles:
 #    _permission: 'access content'
 
 downtimes.create_downtimes:
-  path: 'node/{node}/downtimes/create_downtimes'
+  path: '/group/{group}/downtimes/create_downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report an Incident'
@@ -81,7 +83,7 @@ downtimes.create_downtimes:
     node: \d+
 
 downtimes.create_maintenance:
-  path: 'node/{node}/downtimes/create_maintenance'
+  path: '/group/{group}/downtimes/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Create Maintenance'
@@ -178,8 +180,16 @@ downtimes.new_downtimes_controller_newDowntimes:
   path: '/group/{group}/downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
-    _title: 'displayDowntimes'
+    _title: 'Disturbances and block times'
+    _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
 
-
+downtimes.archived_downtimes_controller:
+  path: '/group/{group}/downtimes/archive'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
+    _title: 'Disturbances and block times'
+    _entity_view: 'group.default'
+  requirements:
+    _permission: 'access content'
