@@ -56,10 +56,6 @@ function import_history() {
  // $group_name = \Drupal::service('user.private_tempstore')->get()->get('Group_name');
 
   $request = \Drupal::request();
- // $session = $request->getSession();
- // $group_id = $session->get('Group_id');
-  //$group_id = $_SESSION['Group_id'];
-  //$group_name = $_SESSION['Group_name'];
   $route_match = \Drupal::routeMatch();
 
   $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());

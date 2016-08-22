@@ -57,9 +57,6 @@ class ProblemsettingsForm extends FormBase {
     $current_route_match = \Drupal::service('current_route_match');
     $breadcrumb = $breadcrumb_manager->build($current_route_match);
 
-    //Getting the default Services
-//    $query = db_query("select service_id from {group_problems_view} where group_id = %d", $_SESSION['Group_id']);
-
     $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
     $group_problems_view_service_query->Fields('gpv', array('service_id'));
     $group_problems_view_service_query->conditions('group_id', $group_id ? $group_id: self::PROBLEM_MANAGEMENT ,'=');
@@ -132,7 +129,9 @@ class ProblemsettingsForm extends FormBase {
    */
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // db_query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    //pr($group);exit;
+    $group_id = $group->id();
     
     HzdStorage::delete_group_problems_view();
 
@@ -142,7 +141,7 @@ class ProblemsettingsForm extends FormBase {
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $gid = $tempstore->get('Group_id');
-    $gid = $_SESSION['Group_id'];
+    $gid = $group_id;
     $menu_name = 'menu-' . $gid;
     $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
     
