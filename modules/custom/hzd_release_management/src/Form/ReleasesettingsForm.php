@@ -22,7 +22,7 @@ use Drupal\hzd_customizations\HzdcustomisationStorage;
 //  define('RELEASE_MANAGEMENT', 339);
 
 // TODO
-$_SESSION['Group_id'] = 339;
+// $_SESSION['Group_id'] = 339;
 
 
 class ReleasesettingsForm extends FormBase {
@@ -43,6 +43,8 @@ class ReleasesettingsForm extends FormBase {
 	  global $base_url;
 	  $breadcrumb = array();
 //	  $breadcrumb[] = l(t('Home'), NULL);
+          
+          
 	  if (isset($_SESSION['Group_name'])) {
 //	    $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/'. $_SESSION['Group_id']);
 	  }
@@ -204,13 +206,17 @@ class ReleasesettingsForm extends FormBase {
 */
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-  //   db_query("delete from {group_releases_view} where group_id = %d ", $_SESSION['Group_id']);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }
    HzdreleasemanagementStorage::delete_group_release_view();
    $default_release_type = $form_state->getValue('default_release_type');
    $selected_services = $form_state->getValue('services');
-   // echo '<pre>';  print_r($selected_services); exit; 
    $counter = HzdreleasemanagementStorage::insert_group_release_view($default_release_type, $selected_services);
-   $gid = $_SESSION['Group_id'];
+   $gid = $group_id;
    $menu_name = 'menu-' . $gid;
    $path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
    // $path = variable_get('import_alias_releases', 'releases');

@@ -34,13 +34,17 @@ class ProblemsettingsForm extends FormBase {
   public function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
     global $base_url;
     $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }  
     //pr($group);exit;
     $breadcrumb = array();
    // $breadcrumb[] = \Drupal::l(t('Home'), Url::setUnrouted());
    // $group_name =  \Drupal::service('user.private_tempstore')->get()->get('Group_name');
     $group_name = $group->label();
    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $group->id();
 
     if ($group_name) {
      // Url::fromUserInput('/node/' . $problems_node->nid->value
@@ -130,8 +134,12 @@ class ProblemsettingsForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $group = \Drupal::routeMatch()->getParameter('group');
-    //pr($group);exit;
-    $group_id = $group->id();
+    
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }  
     
     HzdStorage::delete_group_problems_view();
 

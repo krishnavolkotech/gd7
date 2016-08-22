@@ -10,10 +10,10 @@ use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 if(!defined('KONSONS'))
   define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 if(!defined('RELEASE_MANAGEMENT'))
-  define('RELEASE_MANAGEMENT', 339);
+  define('RELEASE_MANAGEMENT', 32);
 
 // TODO.
-$_SESSION['Group_id'] = 339;
+// $_SESSION['Group_id'] = 339;
 /**
  *
  */
@@ -30,7 +30,13 @@ class EarlyWarningsFilterForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
-
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }  
+  
     $wrapper = 'earlywarnings_results_wrapper';
     $services[] = 'Service';
 

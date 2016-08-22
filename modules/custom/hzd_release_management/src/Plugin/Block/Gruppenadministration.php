@@ -41,7 +41,7 @@ class Gruppenadministration extends BlockBase {
   }
   
   function hzdGroupAdminLinks() {
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $group = \Drupal::routeMatch()->getParameter('group');  
     if(is_object($group)){
       $groupId = $group->id();
     }else{

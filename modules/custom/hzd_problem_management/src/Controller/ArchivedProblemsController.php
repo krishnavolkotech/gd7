@@ -24,7 +24,12 @@ class ArchivedProblemsController extends ControllerBase {
     $result = array();
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
-    $group_id = $group->id();
+
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }    
     $group_name =  $group->label();
     
     $request = \Drupal::request();

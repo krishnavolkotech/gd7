@@ -62,7 +62,7 @@
 	 var type = Drupal.settings.type;
 	 var base_path = Drupal.settings.basePath;
 	 // url = '/' + path + '/releases_search_results?'+params;	
-	 url = base_path + 'node/' + group_id + '/releases_search_results/' + type + '?' + params;
+	 url = base_path + 'group/' + group_id + '/releases_search_results/' + type + '?' + params;
 	 // url = window.location +'?'+params;
 	 $.post(url, {}, function(data) {
 	    if (data.status == true) {

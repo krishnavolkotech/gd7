@@ -243,8 +243,8 @@ function set_breabcrumbs_problems($type) {
   $breadcrumb[] = l(t('Home'), NULL);
   
   if (isset($_SESSION['Group_name'])) {
-    $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/'.$_SESSION['Group_id']);
-    $breadcrumb[] = l(drupal_get_title(), 'node/' . $_SESSION['Group_id'] . '/problems');
+    $breadcrumb[] = l(t($_SESSION['Group_name']), 'group/'.$group_id);
+    $breadcrumb[] = l(drupal_get_title(), 'group/' .$group_id . '/problems');
   } 
   $breadcrumb[] = $page;
   drupal_set_breadcrumb($breadcrumb);      
