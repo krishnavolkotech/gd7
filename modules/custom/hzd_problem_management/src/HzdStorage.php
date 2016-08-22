@@ -253,7 +253,7 @@ class HzdStorage {
     return FALSE;
   }
 
-  static function insert_group_problems_view($selected_services) {
+  static function insert_group_problems_view($group_id,$selected_services) {
 
     // $sql = 'insert into {group_problems_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
@@ -267,11 +267,12 @@ class HzdStorage {
 
       foreach ($selected_services as $service) {
 
-        $counter++;
-        $query = \Drupal::database()->insert('group_problems_view')->fields(array(
-										  'group_id' => $group_id,
-										  'service_id' => $service
-										  ))->execute();
+	if(!empty($service))
+        	$counter++;
+        $query = \Drupal::database()
+                   ->insert('group_problems_view')
+                   ->fields(array('group_id' => $group_id,'service_id' => $service))
+                   ->execute();
 	// db_query($sql, $_SESSION['Group_id'], $service);
       }
     }
@@ -736,11 +737,12 @@ class HzdStorage {
     return $build = array('#markup' => t("No Data Created Yet"));  
   }
 
-  static function delete_group_problems_view() {
+  static function delete_group_problems_view($group_id = null) {
+    if(!$group_id){
+      return false;
+    }
     // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group = \Drupal::routeMatch()->getParameter('group');
-    $group_id = $group->id();
-    db_delete('group_problems_view')->condition('group_id', $group_id, '=')
+    \Drupal::database()->delete('group_problems_view')->condition('group_id', $group_id, '=')
       ->execute();
   }
 }

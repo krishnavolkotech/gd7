@@ -28,5 +28,8 @@ class RouteSubscriber extends RouteSubscriberBase {
         $route->setDefault('_controller','\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
       }
     }
+    if ($route = $collection->get('entity.node.edit_form')){
+      $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
+    }
   }
 }
