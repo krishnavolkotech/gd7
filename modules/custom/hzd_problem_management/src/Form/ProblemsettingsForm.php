@@ -57,9 +57,6 @@ class ProblemsettingsForm extends FormBase {
     $current_route_match = \Drupal::service('current_route_match');
     $breadcrumb = $breadcrumb_manager->build($current_route_match);
 
-    //Getting the default Services
-//    $query = db_query("select service_id from {group_problems_view} where group_id = %d", $_SESSION['Group_id']);
-
     $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
     $group_problems_view_service_query->Fields('gpv', array('service_id'));
     $group_problems_view_service_query->condition('group_id', $group_id ,'=');

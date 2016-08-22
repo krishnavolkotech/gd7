@@ -35,7 +35,7 @@ function problems_display() {
     unset($_SESSION['limit']);
   }
 
-  HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
+
   $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
   return $response;
  }

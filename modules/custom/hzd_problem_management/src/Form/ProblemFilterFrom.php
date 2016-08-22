@@ -15,8 +15,6 @@ use Drupal\hzd_customizations\HzdcustomisationStorage;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 use Drupal\Core\Form\FormCache;
 
-//$_SESSION['Group_id'] = 825;
-
 /**
  * Configure inactive_user settings for this site.
  */
@@ -63,12 +61,11 @@ class ProblemFilterFrom extends FormBase {
     $group = \Drupal::routeMatch()->getParameter('group');
     //DEFAULT SERVICES
     $default_services[] = t("Select Service");
-    $query = db_select('node_field_data', 'nfd');
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
     $query->Fields('nfd', array('nid', 'title'));
     $query->condition('gpv.group_id', $group->id(), '=');
     $service = $query->execute()->fetchAll();
-
     foreach ($service as $services) {
       $default_services[$services->nid] = $services->title;
     }

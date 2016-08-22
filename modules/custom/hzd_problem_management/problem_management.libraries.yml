@@ -1,8 +1,8 @@
 problem_management:
   version: 1.x
-  css:
-    theme:
-      css/problem_management.css: {}
+#  css:
+#    theme:
+#      css/problem_management.css: {}
   js:
     js/jquery.tablesorter.min.js: {}
     js/problem_management.js: {}

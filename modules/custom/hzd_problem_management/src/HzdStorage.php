@@ -6,6 +6,7 @@ use Drupal\node\Entity\Node;
 use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\Core\Database\Query\Condition;
+use Drupal\group\Entity\GroupContent;
 
 class HzdStorage { 
   
@@ -42,18 +43,22 @@ class HzdStorage {
    *function for saving problem node
    */
   static function saving_problem_node($values) {
-    $query = db_select('node_field_data', 'n');
-    $query->Fields('n', array('nid'));
-    $query->condition('type', 'group', '=');
-    $query->condition('title', 'problem management', '='); 
-    $problem_management_group_id = $query->execute()->fetchCol();
-
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('groups_field_data', 'gfd');
+    $query->Fields('gfd', array('id'));
+    $query->condition('label', 'problem management', '='); 
+    $group_id = $query->execute()->fetchCol();
+  
+    
+    
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_s_no', 'nfsn', 'n.nid = nfsn.entity_id');
     $query->Fields('n', array('nid', 'vid', 'created'));
     $query->condition('field_s_no_value', $values['sno'], '=');
     $node_infos = $query->execute()->fetchAll();
 
+    
+    
+    
     foreach ($node_infos as $node_info) {
       $nid = $node_info->nid;
       $vid = $node_info->vid;
@@ -224,8 +229,24 @@ class HzdStorage {
 	 );
       $node = Node::create($node_array);
       $node->save();
-      $nid = $node->getId();
+      $nid = $node->id();
+      
       if ($nid) { 
+          dpm($nid);
+          // $group_id = \Drupal::routeMatch()->getParameter('group');
+           $group = \Drupal\group\Entity\Group::load($group_id['0']);
+           //Adding node to group
+           // dpm($group->getGroupType());
+           
+           $group_content = GroupContent::create([
+                  'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
+                  'gid' => $group_id,
+                  'entity_id' => $node->id(), 
+                  'request_status' => 1,
+                  'label' => $values['title'],
+            ]);
+            $group_content->save();
+                 
 	return TRUE;
       }
     }
@@ -239,7 +260,8 @@ class HzdStorage {
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $group_id = $tempstore->get('Group_id');
-    //$group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
 
     if (!empty($selected_services)) {
 
@@ -261,7 +283,7 @@ class HzdStorage {
     $build = array();
 	  
 	  
-    $query = db_select('problem_import_history','pmh');
+    $query = \Drupal::database()->select('problem_import_history','pmh');
     $query->Fields('pmh', array('problem_date', 'import_status', 'error_message'));
     // $table_sort = $query->extend('Drupal\Core\Database\Query\TableSortExtender');
 
@@ -311,6 +333,9 @@ class HzdStorage {
   }
 
   static function build_ahah_query($form_state) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
+    
     $sql_where = array();
     if ($form_state['values']['service']) {
       $service = $form_state['values']['service'];
@@ -326,7 +351,7 @@ class HzdStorage {
       $text = $form_state['values']['string'];
       if ($text != t('Search Title, Description, cause, Workaround, solution')) { 
 
-	$query = db_select('node_field_data', 'nfd');
+	$query = \Drupal::database()->select('node_field_data', 'nfd');
 	$query->Fields('nfd', array('nid'));
 	// $or = db_or();
 	// $or->condition('field_s_no_value', $text, '=');
@@ -368,7 +393,7 @@ class HzdStorage {
 	      
 	$group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
 	$group_problems_view_service_id_query->addField('gpv', 'service_id');
-	$group_problems_view_service_id_query->conditions('group_id', $_SESSION['Group_id'] ? $_SESSION['Group_id']: self::PROBLEM_MANAGEMENT , '=');
+	$group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id: self::PROBLEM_MANAGEMENT , '=');
 	$group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
 	$group_problems_view = array();
 	if (!empty($group_problems_view_service)) {
@@ -401,12 +426,12 @@ class HzdStorage {
 	$get_uri = explode('/', $current_path);
 
 	if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
-	  $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems/archived_problems':'problems/archived_problems');
+	  $url = ( isset($group_id)?'node/'.$group_id.'/problems/archived_problems':'problems/archived_problems');
 	  // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
 	  $query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
 	}
 	else {
-	  $url = ( isset($_SESSION['Group_id'])?'node/'.$_SESSION['Group_id'].'/problems':'problems');
+	  $url = ( isset($group_id)?'node/'.$group_id.'/problems':'problems');
 	  $query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
 	}
 	$sid = $query->execute()->fetchCol();
@@ -489,7 +514,7 @@ class HzdStorage {
    *Function for populating the Functions and releses option values
    */
   static  function get_functions_release($string = NULL, $service = NULL) {
-    $sql_query = db_select('node__field_function', 'nff');
+    $sql_query = \Drupal::database()->select('node__field_function', 'nff');
     $sql_query->join('node__field_problem_status', 'nfps', 'nff.entity_id = nfps.entity_id');
     $sql_query->join('node__field_release', 'nfr', 'nfps.entity_id = nfr.entity_id');
     $sql_query->join('node__field_services', 'nfs', 'nfr.entity_id = nfs.entity_id');
@@ -532,7 +557,7 @@ class HzdStorage {
    */
   static function problems_default_display($sql_where = NULL, $string = NULL, $limit = NULL) { 
     $group = \Drupal::routeMatch()->getParameter('group');
-    $sql_select = db_select('node_field_data', 'nfd');
+    $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
     $sql_select->Fields('nfd', array('nid'));
     $build = array();
 	  
@@ -717,7 +742,6 @@ class HzdStorage {
       return false;
     }
     // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    //$group_id = $_SESSION['Group_id'];
     \Drupal::database()->delete('group_problems_view')->condition('group_id', $group_id, '=')
       ->execute();
   }
