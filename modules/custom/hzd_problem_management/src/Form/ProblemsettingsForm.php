@@ -62,9 +62,9 @@ class ProblemsettingsForm extends FormBase {
 
     $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
     $group_problems_view_service_query->Fields('gpv', array('service_id'));
-    $group_problems_view_service_query->conditions('group_id', $group_id ? $group_id: self::PROBLEM_MANAGEMENT ,'=');
+    $group_problems_view_service_query->condition('group_id', $group_id ,'=');
     $group_problems_view_service = $group_problems_view_service_query->execute()->fetchAll();
-
+//pr($group_problems_view_service);exit;
     foreach($group_problems_view_service as $service) {
       $default_services[$service->service_id] = $service->service_id;
     }
@@ -133,21 +133,22 @@ class ProblemsettingsForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // db_query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    HzdStorage::delete_group_problems_view($group->id());
     
-    HzdStorage::delete_group_problems_view();
-
     $selected_services = $form_state->getValue('services');
-
-    $counter = HzdStorage::insert_group_problems_view($selected_services);
+    $counter = HzdStorage::insert_group_problems_view($group->id(),$selected_services);
 
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $gid = $tempstore->get('Group_id');
-    $gid = $_SESSION['Group_id'];
-    $menu_name = 'menu-' . $gid;
+    //$gid = $_SESSION['Group_id'];
+//menu names are the combination of groups field_old_referrence as these are the machine name so cannot be updated to new entity id.
+
+    $menu_name = 'menu-' . $group->get('field_old_reference')->value;
     $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
     
     // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
-    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $gid);    
+    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());    
     drupal_set_message(t('Problem Settings Updated'), 'status');
   }
 }
