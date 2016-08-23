@@ -8,11 +8,13 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\Entity;
 use Drupal\Core\Url;
+use Drupal\group\Entity\GroupContent;
 
 //if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 //if(!defined('RELEASE_MANAGEMENT'))
 //  define('RELEASE_MANAGEMENT', 32);
+
 define('DISPLAY_LIMIT', 20);
 define('DEFAULT_PAGELIMIT', 20);
 //$_SESSION['Group_id'] = 339;
@@ -249,10 +251,10 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    $node->save();
    if ($node->id()) {
       // $group_id = \Drupal::routeMatch()->getParameter('group');
-        $group = \Drupal\group\Entity\Group::load($group_id['0']);   
+        $group = \Drupal\group\Entity\Group::load($group_id['0']);
         $group_content = GroupContent::create([
                   'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
-                  'gid' => $group_id,
+                  'gid' => $group_id['0'],
                   'entity_id' => $node->id(), 
                   'request_status' => 1,
                   'label' => $values['title'],

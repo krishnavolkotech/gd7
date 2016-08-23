@@ -220,7 +220,7 @@ class ReleasesettingsForm extends FormBase {
    $menu_name = 'menu-' . $gid;
    $path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
    // $path = variable_get('import_alias_releases', 'releases');
-   HzdcustomisationStorage::reset_menu_link($counter, t('Releases'), 'releases', $menu_name, $gid);
+   // HzdcustomisationStorage::reset_menu_link($counter, t('Releases'), 'releases', $menu_name, $gid);
    drupal_set_message(t('Releases Settings Updated'), 'status');  
   }
 }

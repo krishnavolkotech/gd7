@@ -45,6 +45,7 @@ class ArchivedProblemsController extends ControllerBase {
     }
     
     $string = $get_uri['4'];
+  //  dpm($string);
     HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
     // drupal_add_js(array('group_id' => $group_id, 'type' => $string), 'setting');
     // drupal_add_js(array('search_string' => t('Search Title, Description, cause, Workaround, solution')), 'setting');

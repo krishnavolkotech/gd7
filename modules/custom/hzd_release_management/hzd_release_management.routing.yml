@@ -3,6 +3,7 @@ hzd_release_management.view_deployed_releases:
   defaults:
     _title: 'Deployed Releases (Overview)'
     _form: '\Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew'
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
 
@@ -21,6 +22,7 @@ hzd_release_management.inprogress:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
     _title: 'In Progress'
+    _entity_view: group.default    
   requirements:
     _permission: 'access content'
 
@@ -29,6 +31,7 @@ hzd_release_management.locked:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
     _title: 'Locked'
+    _entity_view: group.default    
   requirements:
     _permission: 'access content'
     
@@ -37,6 +40,7 @@ hzd_release_management.deployed:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
     _title: 'Deployed'
+    _entity_view: group.default    
   requirements:
     _permission: 'access content'
 
@@ -119,6 +123,7 @@ hzd_release_management.document_page_link:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::documentation'
     _title_callback: '\Drupal\hzd_release_management\Controller\HzdReleases::getTitle'
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
 
@@ -139,6 +144,7 @@ hzd_release_management.release_settings:
     _title: 'Releases'
     _description: 'View Setting for Releases.'
     _weight: 10
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
 #   cust_og_is_admin: 'TRUE' 

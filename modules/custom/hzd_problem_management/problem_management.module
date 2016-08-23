@@ -38,11 +38,11 @@ function problem_management_mail($key, &$message, $params = array()) {
 
 
 // Default cron-function, configurable through /admin/config/system/cron
-/**
+
 function problem_management_cron() {
-  // Do some stuff ...
+  
 }
-*/
+
 
 // Define custom cron functions.
 /**
@@ -89,57 +89,10 @@ function problem_management_run_importcsv($job) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-/////////////  TO DO: 
-/*
- *implementing hook user for setting focus
- */
-
-function problem_management_user($op, &$edit, &$account, $category = NULL) {
-  switch ($op) {
-  case 'load':
-    drupal_add_js(drupal_get_path('module', 'problem_management') . '/js/user_login_focus.js');
-  }
-}
-
-function problem_management_theme() {
-  return array(
-    'problems_table' => array(
-  'arguments' => array('header' => NULL, 'rows' => NULL, 'attributes' => NULL, 'type' => NULL),
-  'template' => 'problem_display',
-  ),
-    'configure_problems' => array(
-  'arguments' => array('form' => NULL, 'form_state' => NULL),
-  ),
-    );
-}
-
-
-/*
- *Implementing hook_form_alter for adding search funtionality on users page
- */
-
-function problem_management_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'group_node_form') {
-    _river_flow_content_field($form, $default = 0);
-  }
-  if ($form_id == 'problem_node_form') {    
-  }
-}
-
-
 /*
 * Get the no of problems for the node
 */
+/**
 function default_problem_no($nid = NULL) {
   if ($nid) {
     $sno = db_result(db_query("select max(field_s_no_value) from {content_type_problem} where nid = %d", $nid));
@@ -153,118 +106,5 @@ function default_problem_no($nid = NULL) {
   }
   return $sno;
 }
-
-/**
- * Add River flow display of content on group home page
+ * 
  */
-function _river_flow_content_field(&$form, $default = 0) {
-  if (user_access('create group content')) {
-    $arg = arg(1);
-    if (is_numeric($arg)) {
-      $node = node_load($arg);
-    }
-    // Add fieldset without affecting any other elements there
-    $form['river_flow']['#type'] = 'fieldset';
-    $form['river_flow']['#title'] = t('Home Page Display');
-    $form['river_flow']['#collapsible'] = TRUE;  
-    $form['river_flow']['river_flow_content'] = array(
-      '#type' => 'radios',
-      '#options' => array('Default Page', 'Content River Flow'),  
-      '#default_value' => variable_get('og_default_homepage_display_' . $node->nid, 0),
-      );
-  }  
-}
-
-/*
- *Implementing Hook node api 
- *Added functionality for displaying river flow content according to settings
- *NEED to set weight of og_view_group module higher then the present module
-*/
-
-function problem_management_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
-  switch ($op) {
-  case 'load':
-    $result =  db_result(db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = %d ", $node->uid));
-    $node->user_name = l($result, 'user/' . $node->uid);
-    break;
-  case 'view':
-    if ($node->type == 'problem') {
-      if($node->field_problem_status[0]['value'] == 'Geschlossen' || $node->field_problem_status[0]['value'] == 'geschlossen') {
-	$node->closed = date('d.m.Y', $node->changed); 
-      }
-
-      $eroffnet = $node->field_problem_eroffnet[0]['value'];
-      $node->eroffnet =  date('d.m.Y', $eroffnet);       
-      $service = node_load($node->field_services[0]['nid']);
-      $node->service = $service->title;
-    }
-    if ($node->type == 'group') {
-      $var = variable_get('og_default_homepage_display_' . $node->nid, 0);
-      if ($var == 1 ) {
-  variable_set('og_home_page_view', 'og_ghp_ron');
-      }
-      else {
-  variable_set('og_home_page_view', 0);
-      }
-    }
-    break;
-  case 'insert':
-  case 'update':
-    if ($node->type == 'group') {
-      if ($node->river_flow_content == 1) {
-  variable_set('og_default_homepage_display_' . $node->nid, 1);
-  variable_set('og_home_page_view', 'og_ghp_ron');
-    }
-    else {
-  variable_set('og_default_homepage_display_' . $node->nid, 0);
-  variable_set('og_home_page_view', 0);
-    }
-    }
-    break;
-  }
-}
-
-
-
-
-
-/**
-function set_breabcrumbs_problems($type) {
-  switch($type) {
-  case 'current' :
-    $page = t('Current Problems');
-    break;
-  case 'archived' :
-    $page = t('Archived Problems');
-    break;
-  }
-  $breadcrumb = array();
-  
-  $breadcrumb[] = l(t('Home'), NULL);
-  
-  if (isset($_SESSION['Group_name'])) {
-    $breadcrumb[] = l(t($_SESSION['Group_name']), 'group/'.$group_id);
-    $breadcrumb[] = l(drupal_get_title(), 'group/' .$group_id . '/problems');
-  } 
-  $breadcrumb[] = $page;
-  drupal_set_breadcrumb($breadcrumb);      
-}
-
-*/
-
-/**
- * Implementation of hook_cron()
- */
-/**
-function problem_management_cron() {
-  $set_time = trim(variable_get('import_time','03:00'));
-  $time = date("H:i", time());
-  if ($set_time == $time) {
-    read_problem_csv();
-  }
-}
-*/
-
-
-
-
