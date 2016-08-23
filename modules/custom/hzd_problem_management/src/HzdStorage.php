@@ -352,12 +352,12 @@ class HzdStorage {
 					  )
 			   );
     }
-
+    
     if ($form_state['values']['string']) {
       $text = $form_state['values']['string'];
       if ($text != t('Search Title, Description, cause, Workaround, solution')) { 
 
-	$query = \Drupal::database()->select('node_field_data', 'nfd');
+        $query = \Drupal::database()->select('node_field_data', 'nfd');
 	$query->Fields('nfd', array('nid'));
 	$sql_where[] = array( 'or' => 
 			      array(
@@ -430,9 +430,8 @@ class HzdStorage {
         
 	$current_path = \Drupal::service('path.current')->getPath();
 	$get_uri = explode('/', $current_path);
-    }
-
-	if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
+        
+        if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
 	  $url = ( isset($group_id)?'group/'.$group_id.'/problems/archived_problems':'problems/archived_problems');
 	  // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
 	  $query->condition('nfps.field_problem_status_value', 'geschlossen', 'like');
@@ -443,6 +442,9 @@ class HzdStorage {
 	}
 	$sid = $query->execute()->fetchCol();
       }
+    }
+
+
       
     if ($form_state['values']['function']) {
       $function = trim($form_state['values']['function']);
