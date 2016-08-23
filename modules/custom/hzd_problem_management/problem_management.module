@@ -40,9 +40,9 @@ function problem_management_mail($key, &$message, $params = array()) {
 // Default cron-function, configurable through /admin/config/system/cron
 
 function problem_management_cron() {
-  
+  $readExcel = new Drupal\problem_management\Controller\ReadexcelController();
+  $readExcel->read_problem_csv();
 }
-
 
 // Define custom cron functions.
 /**
