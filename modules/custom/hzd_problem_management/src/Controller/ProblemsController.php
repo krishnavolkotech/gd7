@@ -35,13 +35,19 @@ function problems_display() {
     unset($_SESSION['limit']);
   }
 
-  HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
+
   $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
   return $response;
  }
 
 function access(){
   $group = \Drupal::routeMatch()->getParameter('group');
+  if(is_object($group)){
+    $group_id = $group->id();
+  } else {
+    $group_id = $group;
+  }
+  
   $user = \Drupal::currentUser();
   if($user->isAnonymous()){
     return AccessResult::forbidden();

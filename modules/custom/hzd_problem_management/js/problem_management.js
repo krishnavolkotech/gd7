@@ -95,7 +95,7 @@
 	      var group_id = Drupal.settings.group_id;
 	      var type = Drupal.settings.type;
 	      var base_path = Drupal.settings.basePath;
-	      url = base_path + 'node/' + group_id + '/problem_search_results/' + type + '?' + params;
+	      url = base_path + 'group/' + group_id + '/problem_search_results/' + type + '?' + params;
 	      $.post(url, {}, function(data) {
 		if (data.status == true) {
 		  $('#problem_search_results_wrapper').html(data.data);

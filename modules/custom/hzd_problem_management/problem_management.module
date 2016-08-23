@@ -38,13 +38,14 @@ function problem_management_mail($key, &$message, $params = array()) {
 
 
 // Default cron-function, configurable through /admin/config/system/cron
-/**
+
 function problem_management_cron() {
-  // Do some stuff ...
+  $readExcel = new Drupal\problem_management\Controller\ReadexcelController();
+  $readExcel->read_problem_csv();
 }
-*/
 
 // Define custom cron functions.
+/**
 function problem_management_cronapi($op, $job = NULL) {
   return array(
     'problem_management_cronjob_2' => array(
@@ -60,7 +61,7 @@ function problem_management_cronapi($op, $job = NULL) {
   );
 }
 
-
+*/
 // Custom cron-function
 function problem_management_run_importcsv($job) {
 /**
@@ -85,3 +86,25 @@ function problem_management_run_importcsv($job) {
   // Do some stuff ...
 }
 
+
+
+
+/*
+* Get the no of problems for the node
+*/
+/**
+function default_problem_no($nid = NULL) {
+  if ($nid) {
+    $sno = db_result(db_query("select max(field_s_no_value) from {content_type_problem} where nid = %d", $nid));
+    return $sno;
+  }
+  else {
+    $sno = db_result(db_query("select max(field_s_no_value) from {content_type_problem} "));
+  }
+  if (!$sno) {
+    return 1;
+  }
+  return $sno;
+}
+ * 
+ */

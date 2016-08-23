@@ -64,7 +64,12 @@ static function get_related_services($type = NULL) {
  function get_default_services_current_session() {
   //Getting the default Services
   // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-  $group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }
   
   $query = db_select('group_problems_view', 'gpv');
   $query->Fields('gpv', array('service_id'));
@@ -77,7 +82,13 @@ static function get_related_services($type = NULL) {
   function get_downtimes_default_services() {
   //Getting the default Services
   // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-  $group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }
+    
   $query = db_select('group_downtimes_view', 'gdv');
   $query->Fields('gdv', array('service_id'));
   $query->conditions('group_id', $group_id, '=');

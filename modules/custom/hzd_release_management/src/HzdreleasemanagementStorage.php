@@ -8,11 +8,13 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\Entity;
 use Drupal\Core\Url;
+use Drupal\group\Entity\GroupContent;
 
 //if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 //if(!defined('RELEASE_MANAGEMENT'))
 //  define('RELEASE_MANAGEMENT', 32);
+
 define('DISPLAY_LIMIT', 20);
 define('DEFAULT_PAGELIMIT', 20);
 //$_SESSION['Group_id'] = 339;
@@ -112,11 +114,12 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
   */
  function saving_release_node($values) {
    global $user;
-   $query = db_select('node_field_data', 'n');
-   $query->Fields('n', array('nid'));
-   $query->condition('type', 'group', '=');
-   $query->condition('title', 'release management', '='); 
-   $release_management_group_id = $query->execute()->fetchCol();
+   
+    $query = \Drupal::database()->select('groups_field_data', 'gfd');
+    $query->Fields('gfd', array('id'));
+    $query->condition('label', 'release management', '='); 
+    $group_id = $query->execute()->fetchCol();
+   
    $query = db_select('node_field_data', 'n');
    $query->Fields('n', array('nid', 'vid', 'created'));
    $query->condition('n.type', 'release', '=');
@@ -246,6 +249,18 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    );
    $node = Node::create($node_array);
    $node->save();
+   if ($node->id()) {
+      // $group_id = \Drupal::routeMatch()->getParameter('group');
+        $group = \Drupal\group\Entity\Group::load($group_id['0']);
+        $group_content = GroupContent::create([
+                  'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
+                  'gid' => $group_id['0'],
+                  'entity_id' => $node->id(), 
+                  'request_status' => 1,
+                  'label' => $values['title'],
+            ]);
+        $group_content->save();       
+    }
   }
 
   // $title = db_result(db_query("select title from {node} where title = '%s' ", $values['title']));
@@ -700,8 +715,14 @@ function get_release_details_from_title($values_title, $link) {
    * @returns: table display of deployed releases
    */
   function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
-    if ($_SESSION['Group_id'] != RELEASE_MANAGEMENT) {
-      $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $_SESSION['Group_id']))->fetchField();
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    } 
+    if ($group_id != RELEASE_MANAGEMENT) {
+      $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
       $default_type = $default_type ? $default_type : KONSONS;
     }
     else {
@@ -780,7 +801,7 @@ function get_release_details_from_title($values_title, $link) {
       }
     }
 
-    $gid = $_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT;
+    $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
     
     // $limit = 20;
     // need to migrate date deployed cck field
@@ -844,7 +865,7 @@ function get_release_details_from_title($values_title, $link) {
     
     $_SESSION['deploy_filter_options'] = $filter_options;
     // echo '<pre>';  print_r($_SESSION['deploy_filter_options']); exit;
-    if (isset($_SESSION['Group_id'])) {
+    if (isset($group_id)) {
     //Early Warnigs count for specific service and release
       $query = db_select('node_field_data', 'n');
       $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
@@ -858,7 +879,7 @@ function get_release_details_from_title($values_title, $link) {
         $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
         $view_options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
         $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-        $view_earlywarning_url = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/view-early-warnings', $view_options);  
+        $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);  
         $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                                '#type' => 'link',
                                '#url' => $view_earlywarning_url,
@@ -875,9 +896,9 @@ function get_release_details_from_title($values_title, $link) {
       $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
       
       $options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
-      $options['query']['destinations'] = 'node/' . $_SESSION['Group_id'] . '/releases/deployed';
+      $options['query']['destinations'] = 'group/' . $group_id . '/releases/deployed';
       $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
-      $create_earlywarning_url = Url::fromUserInput('/node/'. $_SESSION['Group_id'] . '/add/early-warnings', $options);
+      $create_earlywarning_url = Url::fromUserInput('/group/'. $group_id . '/add/early-warnings', $options);
       $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
       $create_warning =  \Drupal::service('renderer')->renderRoot($create_earlywarning);
       $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
@@ -890,7 +911,7 @@ function get_release_details_from_title($values_title, $link) {
     $link_info = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid", array(':eid' => $releases->release_id))->fetchField();
     $link_info_path = db_query("SELECT field_link_value FROM {node__field_link} where entity_id = :eid", array(':eid' => $releases->release_id))->fetchField();
     if($link_info) {
-      $url = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/releases/documentation/' . $releases->service . '/' . $releases->release_id);
+      $url = Url::fromUserInput('/group/' . $group_id . '/releases/documentation/' . $releases->service . '/' . $releases->release_id);
       $doc_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
       $link = \Drupal::service('renderer')->renderRoot($doc_link);
     }
@@ -919,7 +940,7 @@ function get_release_details_from_title($values_title, $link) {
      return $output;
   }
   
-  if (isset($_SESSION['Group_id'])) {
+  if (isset($group_id)) {
     $state = array('data' => t('State'), 'class' => 'state-hdr');
     $environment = array('data' => t('Environment'), 'class' => 'environment-hdr');
     $service = array('data' => t('Service'), 'class' => 'service-hdr');
@@ -1004,8 +1025,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     }
 
     public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL , $service_release_type = KONSONS) {
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if(is_object($group)){
+        $group_id = $group->id();
+      }else{
+        $group_id  = $group;
+      } 
       $header = self::hzd_get_release_tab_headers($type);
-      $gid = $_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT; 
+      $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
       $release_type = get_release_type($type);      
       if (!$filter_where) {
         $filter_where = $_SESSION['filter_where'];
@@ -1056,7 +1083,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $row[] = $releases->date != NULL ? date('d.m.Y H:i:s', $releases->date) : '';
     
         if($type == 'released' || $type == 'progress') {
-          if(isset($_SESSION['Group_id'])) {
+          if(isset($group_id)) {
             $early_warnings = self::hzd_release_early_warnings($releases->service, $releases->release_id, $type, $tid);
             $earlywarnings_cell = array('data' => $early_warnings, 'class' => 'earlywarnings-cell');
             $row[] = $earlywarnings_cell;
@@ -1151,7 +1178,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     public function hzd_get_release_tab_headers($type) {
     if($type == 'released') {
       $header = array(t('Service'), t('Release'), t('Date'));
-      if(isset($_SESSION['Group_id'])) {
+      if(isset($group_id)) {
         $header[] = t('Early Warnings');
       }
       $header[] = t('D/L');
@@ -1159,7 +1186,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     if($type == 'progress' || $type == 'locked' || $type == 'in_progress') {
       $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
       if($type == 'progress') {
-        if(isset($_SESSION['Group_id'])) {
+        if(isset($group_id)) {
           $header[] = t('Early Warnings');
         }
         $header[] = t('D/L');
@@ -1172,15 +1199,23 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   }
 
   public function hzd_get_release_documentation_link($doc_link, $service_id, $release_id) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    } 
+    
+    
     $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
     $download = '<img src = "/' . $download_imgpaths . '">';
 
     $secure_downloads = array_search('secure-downloads', explode('/', $doc_link));
     if ($secure_downloads) {
-      $url = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/releases/documentation/' . $service_id . '/' . $release_id);
+      $url = Url::fromUserInput('/group/' . $group_id . '/releases/documentation/' . $service_id . '/' . $release_id);
     }
     else {
-      $url = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/releases/documentation/' . $service_id . '/' . $release_id);
+      $url = Url::fromUserInput('/group/' . $group_id . '/releases/documentation/' . $service_id . '/' . $release_id);
     }
     
     $docu_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
@@ -1188,6 +1223,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   }
 
 function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    }  
+    
+    
     // Early Warning create icon
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
     $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
@@ -1205,7 +1248,7 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
       $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-      $view_earlywarning_url = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/view-early-warnings', $view_options);      
+      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);      
       $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                              '#type' => 'link',
                              '#url' => $view_earlywarning_url,
@@ -1218,10 +1261,10 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
 
     //Redirection array after creation of early warnings
     $redirect = array('released' => 'releases', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
-    $options['query']['destinations'] = 'node/' . $_SESSION['Group_id'] . '/' . $redirect[$type];
+    $options['query']['destinations'] = 'group/' . $group_id . '/' . $redirect[$type];
     $options['query'][] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
     $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
-    $create_earlywarning_url = Url::fromUserInput('/node/'. $_SESSION['Group_id'] . '/add/early-warnings', $options);
+    $create_earlywarning_url = Url::fromUserInput('/group/'. $group_id . '/add/early-warnings', $options);
     $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
     $create_warning =  \Drupal::service('renderer')->renderRoot($create_earlywarning);
     $release_earlywarning = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
@@ -1230,7 +1273,13 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
 
   static function delete_group_release_view() {
     // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    }     
+
     db_delete('group_releases_view')->condition('group_id', $group_id, '=')
     ->execute();
   }
@@ -1238,7 +1287,13 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
   static function get_default_release_services_current_session() {
     //Getting the default Services
     // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $_SESSION['Group_id'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }
+    
     $query = db_select('group_releases_view', 'grv');
     $query->Fields('grv', array('service_id'));
     $query->conditions('group_id', $group_id, '=');
@@ -1247,33 +1302,47 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
   }
 
   static function get_release_type_current_session() {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    } 
+    
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
-    $release_type_query->condition('drt.group_id', $_SESSION['Group_id'], '=');  
+    $release_type_query->condition('drt.group_id', $group_id, '=');  
     $release_type = $release_type_query->execute()->fetchCol();
     return $release_type['0'];
   }
 
   static function insert_group_release_view($default_release_type, $selected_services) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id  = $group;
+    }   
+    
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
-    $release_type_query->condition('drt.group_id', $_SESSION['Group_id'], '=');  
+    $release_type_query->condition('drt.group_id', $group_id , '=');  
     $release_type = $release_type_query->execute()->fetchCol();
     if ($release_type) {
-      db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $_SESSION['Group_id'], '=')->execute();
+      db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $group_id, '=')->execute();
     } else {
-     db_insert('default_release_type')->fields(array('group_id' => $_SESSION['Group_id'], 'release_type' => $default_release_type));
+     db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type));
     }
     // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
-    $group_id = $_SESSION['Group_id'];
+
     // echo '<pre>';   print_r($selected_services);  exit; 
     if (sizeof($selected_services) > 0) {
       foreach ($selected_services as $service) {
         if ($service !=  0 ) {
               echo $count;
 		$counter++;
-		// db_query($sql, $_SESSION['Group_id'], $service);
+		// db_query($sql, $group_id, $service);
 		 db_insert('group_releases_view')->fields(array(
 		  'group_id' => $group_id,
 		  'service_id' => $service

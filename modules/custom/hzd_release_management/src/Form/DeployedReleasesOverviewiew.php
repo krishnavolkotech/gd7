@@ -17,7 +17,9 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 //  define('RELEASE_MANAGEMENT', 339);
 
 // TODO
-$_SESSION['Group_id'] = 339;
+// $_SESSION['Group_id'] = 339;
+
+
 class DeployedReleasesOverviewiew extends FormBase {
 
   /**
@@ -86,6 +88,13 @@ class DeployedReleasesOverviewiew extends FormBase {
   }
 
   public function display_deployed_release_table($release_type) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }  
+    
     $db = \Drupal::database();
     $states = $db->select('states', 's')
             ->condition('s.id', 1, '!=')
@@ -99,7 +108,7 @@ class DeployedReleasesOverviewiew extends FormBase {
       INNER JOIN group_releases_view grv ON grv.service_id = nfd.nid
       WHERE grv.group_id = :gid AND nrt.release_type_target_id = :type 
       AND nfd.status = 1 AND nfd.type = 'services' AND nfrn.field_release_name_value 
-      IS NOT NULL ORDER BY nfd.title", array(':gid' => $_SESSION['Group_id'], ':type' => $release_type))->fetchCol();
+      IS NOT NULL ORDER BY nfd.title", array(':gid' => $group_id, ':type' => $release_type))->fetchCol();
       
       
 
@@ -225,7 +234,17 @@ class DeployedReleasesOverviewiew extends FormBase {
  * get releases of particular service and state
  */
  public function get_releases_per_state($service_id, $deployed_services, $release_type) {
-  $group_id = ($_SESSION['Group_id'] ? $_SESSION['Group_id']: 339);
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if(is_object($group)){
+    $group_id = $group->id();
+  } else {
+    $group_id = $group;
+  }  
+    
+     
+  $group_id = ($group_id ? $group_id: 32);
+  
+  
   $deployed_query = db_select('node_field_data', 'n');
   $deployed_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
   $deployed_query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');

@@ -21,15 +21,15 @@ class ArchivedProblemsController extends ControllerBase {
 
   function archived_problems() {
     $group = \Drupal::routeMatch()->getParameter('group');
-    //    $_SESSION['Group_id'] = 825;
-    //$_SESSION['Group_name'] = 'problem management';
     $result = array();
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
-    // $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
-    $group_id = $group->id();
-    // $group_name = \Drupal::service('user.private_tempstore')->get()->get('Group_name');
-    //__gm($group);
+
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }    
     $group_name =  $group->label();
     
     $request = \Drupal::request();
@@ -45,6 +45,7 @@ class ArchivedProblemsController extends ControllerBase {
     }
     
     $string = $get_uri['4'];
+  //  dpm($string);
     HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
     // drupal_add_js(array('group_id' => $group_id, 'type' => $string), 'setting');
     // drupal_add_js(array('search_string' => t('Search Title, Description, cause, Workaround, solution')), 'setting');
