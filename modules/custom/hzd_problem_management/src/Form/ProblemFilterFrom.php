@@ -15,9 +15,7 @@ use Drupal\hzd_customizations\HzdcustomisationStorage;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 use Drupal\Core\Form\FormCache;
 
-/**
- * Configure inactive_user settings for this site.
- */
+
 class ProblemFilterFrom extends FormBase {
 
  //  protected $dateFormatter;
