@@ -18,3 +18,33 @@ notes_downtimes: "Hier können zukünftig auch die vereinbarten, regelmäßigen 
 report_maintenance: "Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden (Beschluss AutomSt III/2011 TOP K9).\r\n\r\nGeplante Blockzeit: Nichterreichbarkeit durch planmäßige Wartungsarbeiten\r\nLand: Das Land oder System, in dem die Wartungsarbeiten ausgeführt werden.\r\nVerfahren/ZPS: Verfahren oder ZPS, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen.\r\n\r\nBlockzeitmeldungen im BpK werden als regulär also konform mit dem Beschluss AutomSt III/2011 TOP K9 gewertet, wenn Beginn und Ende\_in der Zeit von Dienstag und Mittwoch 18:00 Uhr bis jeweils 05:59 des Folgetages liegen.\r\nBis zum Abschluss gültiger SLAs wird für alle Verfahren eine Vorlaufzeit von 2 Tagen konfiguriert.\r\nIhre Meldung wird an alle Abonnenten der Benachrichtigungsoption \"Störungen und Blockzeiten\" versandt.\r\n\r\nBitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch Beheben wird die Meldung in das Archiv verschoben."
 report_maintenance_2: 'Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'
 report_maintenance_3: 'Wählen Sie die Verfahren oder ZPS aus, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.'
+maintenance_advance_time: '60'
+howmany: 1
+konsens_mw_day_from_delete1: 1
+konsens_maintenance_windows_4: 1
+konsens_mw_day_from4: Mon
+konsens_mw_hm_from4: '0'
+konsens_mw_minutes_from4: '0'
+konsens_mw_day_until4: Mon
+konsens_mw_hm_until4: '0'
+konsens_mw_minutes_until4: '0'
+konsens_mw_day_from_delete2: 1
+konsens_mw_day_from_delete0: 1
+konsens_maintenance_windows_5: 1
+konsens_mw_day_from5: Mon
+konsens_mw_hm_from5: '0'
+konsens_mw_minutes_from5: '0'
+konsens_mw_day_until5: Mon
+konsens_mw_hm_until5: '0'
+konsens_mw_minutes_until5: '0'
+konsens_maintenance_windows_6: 1
+konsens_mw_day_from6: Mon
+konsens_mw_hm_from6: '0'
+konsens_mw_minutes_from6: '0'
+konsens_mw_day_until6: Mon
+konsens_mw_hm_until6: '0'
+konsens_mw_minutes_until6: '0'
+konsens_mw_day_from_delete6: 1
+konsens_mw_day_from_delete5: 1
+konsens_mw_day_from_delete3: 1
+konsens_mw_day_from_delete4: 1

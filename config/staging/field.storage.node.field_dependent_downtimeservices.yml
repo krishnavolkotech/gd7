@@ -1,18 +1,16 @@
-uuid: b986577c-acf1-4f5e-b9da-12283773c624
+uuid: cb36c780-4267-4833-b5d3-8ff78e9e3ad5
 langcode: en
 status: true
 dependencies:
   module:
     - node
-    - options
 id: node.field_dependent_downtimeservices
 field_name: field_dependent_downtimeservices
 entity_type: node
-type: list_string
+type: entity_reference
 settings:
-  allowed_values: {  }
-  allowed_values_function: ''
-module: options
+  target_type: node
+module: core
 locked: false
 cardinality: -1
 translatable: true

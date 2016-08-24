@@ -38,11 +38,12 @@ content:
       pager_id: 0
     third_party_settings: {  }
   field_dependent_downtimeservices:
-    label: inline
-    weight: -1
-    type: list_key
-    settings: {  }
+    weight: 103
+    label: above
+    settings:
+      link: true
     third_party_settings: {  }
+    type: entity_reference_label
   field_dependent_service:
     label: inline
     weight: -2
@@ -89,4 +90,5 @@ content:
     weight: 102
     third_party_settings: {  }
 hidden:
+  entity_print_view: true
   langcode: true
