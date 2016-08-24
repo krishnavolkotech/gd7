@@ -89,7 +89,7 @@ class HzdStorage {
       $existing_node_vals['function'] = $exist_node->field_function->value;
       $existing_node_vals['release'] = $exist_node->field_release->value;
       $existing_node_vals['title'] = $exist_node->getTitle();
-      $existing_node_vals['problem_text'] = $exist_node->body->value;
+      $existing_node_vals['body'] = $exist_node->body->value;
       $existing_node_vals['diagnose'] = $exist_node->field_diagnose->value;
       $existing_node_vals['solution'] = $exist_node->field_solution->value;
       $existing_node_vals['workaround'] = $exist_node->field_work_around->value;
@@ -100,13 +100,14 @@ class HzdStorage {
       $existing_node_vals['processing'] = $exist_node->field_processing->value;
       $existing_node_vals['attachment'] = $exist_node->field_attachment->value;
       $existing_node_vals['eroffnet'] = $exist_node->field_eroffnet->value;
-      // $existing_node_vals['timezone'] = 'Europe/Berlin';
+      $existing_node_vals['timezone'] = 'Europe/Berlin';
       $existing_node_vals['closed'] = $exist_node->field_closed->value;
+      /**
       $existing_node_vals['problem_eroffnet'] = $exist_node->field_problem_eroffnet->value;
       // $existing_node_vals['problem_status'] = $exist_node->field_problem_status->value;
       $existing_node_vals['ticketstore_count'] = $exist_node->field_ticketstore_count->value;
       $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
-			
+       */		
 
       if(count(array_diff($existing_node_vals, $values)) != 0) {
 	// $node_array['status'] = 1;
@@ -114,7 +115,7 @@ class HzdStorage {
         $problem_node->setTitle($values['title']);
     	$problem_node->set('status', 1);
 	$problem_node->set('created', $created ? $created : time());
-	$problem_node->set('body', $values['problem_text']);
+	$problem_node->set('body', $values['body']);
 	$problem_node->set('comment', array
 			   (
 		            'status' => 2,
@@ -138,7 +139,7 @@ class HzdStorage {
 	$problem_node->set('field_function', $values['function']);
 	$problem_node->set('field_priority', $values['priority']);
 	$problem_node->set('field_problem_eroffnet', $eroffnet);
-	$problem_node->set('field_problem_status', $values['problem_status']);
+	// $problem_node->set('field_problem_status', $values['problem_status']);
 	$problem_node->set('field_processing', $values['processing']);
 	$problem_node->set('field_release', $values['release']);
 	$problem_node->set('field_sdcallid', $values['sdcallid']);
@@ -147,13 +148,14 @@ class HzdStorage {
 		            'value' => $values['solution'],
 		            'format' => 'basic_html'
 			    ));
-	//	$problem_node->set('field_s_no', $values['s_no']);
+	// $problem_node->set('field_s_no', $values['s_no']);
 	// $problem_node->set('field_release', $values['release']);
 	$problem_node->set('field_task_force', array($values['taskforce']));
 	// $problem_node->set('field_release', $values['release']);
-	$problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
+	// $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
 	// $problem_node->set('field_release', $values['release']);
-	$problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
+        // $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
+      //  $problem_node->set('field_timezone', $values['timezone']);
 	$problem_node->set('field_version', $values['version']);
 	$problem_node->set('field_work_around', array
 			   (
@@ -180,7 +182,7 @@ class HzdStorage {
 	 'created' => $created ? $created : time(),
 	 'body' => array(
 	  'summary' => '',
-	  'value' => $values['problem_text'],
+	  'value' => $values['body'],
 	  'format' => 'basic_html',
 	  ),
 	 'comment' =>  array(
@@ -204,7 +206,7 @@ class HzdStorage {
 	  ),
 	 'field_priority' => $values['priority'],
 	 'field_problem_eroffnet' => $eroffnet,
-	 'field_problem_status' => $values['problem_status'],
+//	 'field_problem_status' => $values['problem_status'],
 	 'field_processing' =>  $values['processing'],
 	 'field_release' => $values['release'],
 	 // 'field_sdcallid' => $values['sdcallid'],
@@ -217,11 +219,12 @@ class HzdStorage {
 	  ),
 	 'field_s_no' => $values['sno'],
 	 'field_task_force' => $values['taskforce'],
-	 'field_ticketstore_count' => $values['ticketstore_count'],
-	 'field_ticketstore_link' => $values['ticketstore_link'],
+	// 'field_ticketstore_count' => $values['ticketstore_count'],
+	// 'field_ticketstore_link' => $values['ticketstore_link'],
 	 'field_version' => $values['version'],
 	 'field_work_around' => array(
 	  'value' => $values['workaround'],
+     //     'timezone' =>  $values['timezone'],
 	  'format' => 'basic_html',
 	  ),
 	 'status' => 1,
