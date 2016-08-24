@@ -14,7 +14,7 @@ class HzdStorage {
   // Pass the dependency to the object constructor
 
   const DISPLAY_LIMIT = 20;
-  const PROBLEM_MANAGEMENT = 825;
+  const PROBLEM_MANAGEMENT = 31;
 
 
   public function __construct(PrivateTempStoreFactory $temp_store_factory) {
@@ -79,7 +79,6 @@ class HzdStorage {
     $eroffnet = ($date?$date:time());
     // Generate notifications for updated problems.
 
-    // echo '<pre>';  print_r($values); exit;
     if($nid) {
       unset($values['sno']);
       $exist_node = node_load($nid);
@@ -232,7 +231,6 @@ class HzdStorage {
       $nid = $node->id();
       
       if ($nid) { 
-          dpm($nid);
           // $group_id = \Drupal::routeMatch()->getParameter('group');
            $group = \Drupal\group\Entity\Group::load($group_id['0']);
            //Adding node to group
@@ -261,7 +259,11 @@ class HzdStorage {
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $group_id = $tempstore->get('Group_id');
     $group = \Drupal::routeMatch()->getParameter('group');
-    $group_id = $group->id();
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    } 
 
     if (!empty($selected_services)) {
 
@@ -334,7 +336,11 @@ class HzdStorage {
 
   static function build_ahah_query($form_state) {
     $group = \Drupal::routeMatch()->getParameter('group');
-    $group_id = $group->id();
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    } 
     
     $sql_where = array();
     if ($form_state['values']['service']) {
@@ -346,18 +352,13 @@ class HzdStorage {
 					  )
 			   );
     }
-
+    
     if ($form_state['values']['string']) {
       $text = $form_state['values']['string'];
       if ($text != t('Search Title, Description, cause, Workaround, solution')) { 
 
-	$query = \Drupal::database()->select('node_field_data', 'nfd');
+        $query = \Drupal::database()->select('node_field_data', 'nfd');
 	$query->Fields('nfd', array('nid'));
-	// $or = db_or();
-	// $or->condition('field_s_no_value', $text, '=');
-	// $or->condition('nfd.title', '%' . $text . '%' , 'like');
-	// $or->condition('nrb.body_value', '%' . $text . '%' , 'like'); 
-	// $or->condition('field_work_around_value', '%' . $text . '%' , 'like');
 	$sql_where[] = array( 'or' => 
 			      array(
 				    array(      
@@ -395,6 +396,9 @@ class HzdStorage {
 	$group_problems_view_service_id_query->addField('gpv', 'service_id');
 	$group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id: self::PROBLEM_MANAGEMENT , '=');
 	$group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
+        
+        
+        
 	$group_problems_view = array();
 	if (!empty($group_problems_view_service)) {
 	  foreach($group_problems_view_service as $service) {
@@ -419,26 +423,29 @@ class HzdStorage {
 	}
 
 	$query->condition('nfsn.field_s_no_value', $text, '=');
+    
 	if (!empty($group_problems_view)) {
-	  $query->condition('nfs.field_services_target_id', $group_problems_view_service_id,'IN');
+	  $query->condition('nfs.field_services_target_id', $group_problems_view,'IN');
 	}
+        
 	$current_path = \Drupal::service('path.current')->getPath();
 	$get_uri = explode('/', $current_path);
-
-	if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
-	  $url = ( isset($group_id)?'node/'.$group_id.'/problems/archived_problems':'problems/archived_problems');
+        
+        if (isset($get_uri['4']) && $get_uri['4'] == 'archived_problems') {
+	  $url = ( isset($group_id)?'group/'.$group_id.'/problems/archived_problems':'problems/archived_problems');
 	  // $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
-	  $query->condition('nfps.field_problem_status_value', 'geschlossen', '=');
+	  $query->condition('nfps.field_problem_status_value', 'geschlossen', 'like');
 	}
 	else {
-	  $url = ( isset($group_id)?'node/'.$group_id.'/problems':'problems');
-	  $query->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
+	  $url = ( isset($group_id)?'group/'.$group_id.'/problems':'problems');
+	  $query->condition('nfps.field_problem_status_value', 'geschlossen', 'not like');
 	}
 	$sid = $query->execute()->fetchCol();
       }
     }
 
 
+      
     if ($form_state['values']['function']) {
       $function = trim($form_state['values']['function']);
       $sql_where[] = array( 'and' => 
@@ -557,30 +564,32 @@ class HzdStorage {
    */
   static function problems_default_display($sql_where = NULL, $string = NULL, $limit = NULL) { 
     $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    } 
     $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
     $sql_select->Fields('nfd', array('nid'));
     $build = array();
-	  
     $request = \Drupal::request();
     if(!empty($_SESSION['problems_query'])){
       $serialized_data = unserialize($_SESSION['problems_query']);
-      // echo '<pre>';  print_r($serialized_data['sql']); exit;
-
       $sql_where = $sql_where?$sql_where:$serialized_data['sql'];
       $string = $string?$string:$serialized_data['string'];
       $limit = $limit?$limit:$serialized_data['limit'];
-
+    }
+    
       if ($string == 'archived_problems') {
-	$url = ( $group->id()?'group/'.$group->id().'/problems/archived_problems':'problems/archived_problems');
+	$url = ( $group_id ?'group/' . $group_id . '/problems/archived_problems':'problems/archived_problems');
 	// $filter_where = " and nfps.field_problem_status_value = 'geschlossen' ";
-	$sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '=');
+	$sql_select->condition('nfps.field_problem_status_value', 'geschlossen', 'like');
       }
       else {
-	$url = ( $group->id()?'group/'.$group->id().'/problems':'problems');
+	$url = ( $group_id ?'group/' . $group_id . '/problems':'problems');
 	// $filter_where = " and nfps.field_problem_status_value != 'geschlossen' ";
-	$sql_select->condition('nfps.field_problem_status_value', 'geschlossen', '!=');
+	$sql_select->condition('nfps.field_problem_status_value', 'geschlossen', 'not like');
       }
-    }
     // $sql_select = " SELECT n.nid ";
 
     $sql_select->join('node_revision', 'nr', 'nfd.nid = nr.nid');
@@ -597,7 +606,7 @@ class HzdStorage {
 
     $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
     $group_problems_view_service_id_query->addField('gpv', 'service_id');
-    $group_problems_view_service_id_query->conditions('group_id', $group->id()?:self::PROBLEM_MANAGEMENT , '=');
+    $group_problems_view_service_id_query->conditions('group_id', $group_id?:self::PROBLEM_MANAGEMENT , '=');
     $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
     $group_problems_view = array();
     if (!empty($group_problems_view_service)) {
@@ -622,9 +631,11 @@ class HzdStorage {
 	}
       }
     }
+
     if (!empty($group_problems_view)) {
       $sql_select->condition('nfs.field_services_target_id', $group_problems_view, 'IN');
     }
+   
     if($limit == 'all') {
       $result = $sql_select->execute()->fetchAll();
     }

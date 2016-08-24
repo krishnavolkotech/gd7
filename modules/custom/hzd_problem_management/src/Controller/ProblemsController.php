@@ -42,6 +42,12 @@ function problems_display() {
 
 function access(){
   $group = \Drupal::routeMatch()->getParameter('group');
+  if(is_object($group)){
+    $group_id = $group->id();
+  } else {
+    $group_id = $group;
+  }
+  
   $user = \Drupal::currentUser();
   if($user->isAnonymous()){
     return AccessResult::forbidden();

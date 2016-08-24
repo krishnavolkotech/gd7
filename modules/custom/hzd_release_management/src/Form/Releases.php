@@ -56,7 +56,7 @@ class Releases extends FormBase {
     $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
-                     ORDER BY n.title asc", array(":gid" => 339, ":tid" => $default_type))->fetchAll();
+                     ORDER BY n.title asc", array(":gid" => 32, ":tid" => $default_type))->fetchAll();
 
     foreach($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;

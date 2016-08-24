@@ -45,8 +45,12 @@ class HzdproblemmanagementHelper {
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
         $group = $route_match->getParameter('group');
+        if(is_object($group)){
         $group_id = $group->id();
-
+        }else{
+          $group_id= $group;
+        }
+       
         if (isset($group_name)) {
             $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('group', $group_id)));
             $breadcrumb[] = \Drupal::l($title, Url::fromEntityUri(array('group', $group_id, '/problems')));
@@ -64,12 +68,18 @@ class HzdproblemmanagementHelper {
     static function problems_tabs_callback_data($type) {
         $result = array();
         $group = \Drupal::routeMatch()->getParameter('group');
+        if(is_object($group)){
+          $groupId = $group->id();
+        } else {
+          $groupId = $group;
+        }
+        
         $result['content']['#attached']['library'] = array('problem_management/problem_management',
             'hzd_customizations/hzd_customizations');
 
         // $result['content']['breadcrumb']['#breadcrumb'] =  $this->set_breabcrumbs_problems($string);
         $result['content']['#attached']['drupalSettings']['search_string'] = t('Search Title, Description, cause, Workaround, solution');
-        $result['content']['#attached']['drupalSettings']['group_id'] = $group->id();
+        $result['content']['#attached']['drupalSettings']['group_id'] = $groupId;
         $result['content']['#attached']['drupalSettings']['type'] = $type;
 
         $output = '';

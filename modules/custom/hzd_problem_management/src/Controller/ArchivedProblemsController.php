@@ -24,7 +24,12 @@ class ArchivedProblemsController extends ControllerBase {
     $result = array();
     $current_path = \Drupal::service('path.current')->getPath();
     $get_uri = explode('/', $current_path);
-    $group_id = $group->id();
+
+    if(is_object($group)){
+      $group_id = $group->id();
+    }else{
+      $group_id = $group;
+    }    
     $group_name =  $group->label();
     
     $request = \Drupal::request();
@@ -40,6 +45,7 @@ class ArchivedProblemsController extends ControllerBase {
     }
     
     $string = $get_uri['4'];
+  //  dpm($string);
     HzdproblemmanagementHelper::set_breabcrumbs_problems($string);
     // drupal_add_js(array('group_id' => $group_id, 'type' => $string), 'setting');
     // drupal_add_js(array('search_string' => t('Search Title, Description, cause, Workaround, solution')), 'setting');
