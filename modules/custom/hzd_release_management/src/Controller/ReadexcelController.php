@@ -53,7 +53,7 @@ class ReadexcelController extends ControllerBase {
               $subject = 'Error while import';
               $body = t("There is an issue while reading the file" . $file_path . ".");
               HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-              $response = $type . t('ERROR WHILE READING');
+              $response = $type . t(' ERROR WHILE READING');
             }
           }
           else {
@@ -62,7 +62,7 @@ class ReadexcelController extends ControllerBase {
             $subject = 'Error while import';
             $body = t("There is an issue while reading the file" . $file_path . ".");
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-            $response = $type . t('ERROR WHILE READING');
+            $response = $type . t(' ERROR WHILE READING');
           }
         }
         else {
