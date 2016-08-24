@@ -32,6 +32,7 @@ content:
     weight: 100
 hidden:
   comment: true
+  entity_print_view: true
   field_date: true
   field_link: true
   field_release_comments: true

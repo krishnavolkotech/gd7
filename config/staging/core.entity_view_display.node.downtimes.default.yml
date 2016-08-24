@@ -5,11 +5,9 @@ dependencies:
   config:
     - field.field.node.downtimes.body
     - field.field.node.downtimes.comment
-    - field.field.node.downtimes.upload
     - node.type.downtimes
   module:
     - comment
-    - file
     - text
     - user
 id: node.downtimes.default
@@ -32,10 +30,6 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-  upload:
-    label: hidden
-    settings: {  }
-    type: file_default
-    weight: 102
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  entity_print_view: true
+  langcode: true

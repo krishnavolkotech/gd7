@@ -71,5 +71,6 @@ content:
     weight: 100
 hidden:
   comment: true
+  entity_print_view: true
   langcode: true
   upload: true

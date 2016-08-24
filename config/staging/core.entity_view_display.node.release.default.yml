@@ -87,4 +87,5 @@ content:
     weight: 101
     third_party_settings: {  }
 hidden:
+  entity_print_view: true
   langcode: true

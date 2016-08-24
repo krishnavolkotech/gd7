@@ -6,7 +6,6 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.service_profile.body
     - field.field.node.service_profile.comment
-    - field.field.node.service_profile.field_dependent_downtimeservices
     - field.field.node.service_profile.field_dependent_service
     - field.field.node.service_profile.field_impact
     - field.field.node.service_profile.field_maintenance_advance_time
@@ -28,12 +27,6 @@ content:
     weight: 101
     settings:
       trim_length: 600
-    third_party_settings: {  }
-  field_dependent_downtimeservices:
-    label: above
-    weight: -1
-    type: text_default
-    settings: {  }
     third_party_settings: {  }
   field_dependent_service:
     label: above
@@ -74,5 +67,6 @@ content:
     weight: 100
 hidden:
   comment: true
+  entity_print_view: true
   langcode: true
   upload: true

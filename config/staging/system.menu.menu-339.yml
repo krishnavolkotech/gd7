@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: menu-339
 label: 'Release Management'
-description: null
+description: ''
 locked: false

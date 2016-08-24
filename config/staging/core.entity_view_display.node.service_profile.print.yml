@@ -6,7 +6,6 @@ dependencies:
     - core.entity_view_mode.node.print
     - field.field.node.service_profile.body
     - field.field.node.service_profile.comment
-    - field.field.node.service_profile.field_dependent_downtimeservices
     - field.field.node.service_profile.field_dependent_service
     - field.field.node.service_profile.field_impact
     - field.field.node.service_profile.field_maintenance_advance_time
@@ -22,12 +21,6 @@ targetEntityType: node
 bundle: service_profile
 mode: print
 content:
-  field_dependent_downtimeservices:
-    label: above
-    weight: -1
-    type: text_default
-    settings: {  }
-    third_party_settings: {  }
   field_dependent_service:
     label: above
     weight: -2
@@ -68,5 +61,6 @@ content:
 hidden:
   body: true
   comment: true
+  entity_print_view: true
   langcode: true
   upload: true

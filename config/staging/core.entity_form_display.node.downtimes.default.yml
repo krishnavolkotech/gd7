@@ -5,11 +5,9 @@ dependencies:
   config:
     - field.field.node.downtimes.body
     - field.field.node.downtimes.comment
-    - field.field.node.downtimes.upload
     - node.type.downtimes
   module:
     - comment
-    - file
     - path
     - text
 id: node.downtimes.default
@@ -33,6 +31,11 @@ content:
   created:
     type: datetime_timestamp
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
     settings: {  }
     third_party_settings: {  }
   path:
@@ -66,11 +69,5 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
-    third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 32
     third_party_settings: {  }
 hidden: {  }
