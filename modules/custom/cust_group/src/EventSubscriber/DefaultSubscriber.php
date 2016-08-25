@@ -19,15 +19,48 @@ use Drupal\Core\EventSubscriber\DefaultExceptionHtmlSubscriber;
  * Exception subscriber for handling core custom HTML error pages.
  */
 class DefaultSubscriber extends DefaultExceptionHtmlSubscriber {
- 
-  public function __construct(){
 
+  /**
+   * The configuration factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * The access manager.
+   *
+   * @var \Drupal\Core\Access\AccessManagerInterface
+   */
+  protected $accessManager;
+
+  /**
+   * Constructs a new CustomPageExceptionHtmlSubscriber.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The configuration factory.
+   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel
+   *   The HTTP Kernel service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger service.
+   * @param \Drupal\Core\Routing\RedirectDestinationInterface $redirect_destination
+   *   The redirect destination service.
+   * @param \Symfony\Component\Routing\Matcher\UrlMatcherInterface $access_unaware_router
+   *   A router implementation which does not check access.
+   * @param \Drupal\Core\Access\AccessManagerInterface $access_manager
+   *   The access manager.
+   */
+  public function __construct(ConfigFactoryInterface $config_factory, HttpKernelInterface $http_kernel, LoggerInterface $logger, RedirectDestinationInterface $redirect_destination, UrlMatcherInterface $access_unaware_router, AccessManagerInterface $access_manager) {
+    parent::__construct($http_kernel, $logger, $redirect_destination, $access_unaware_router);
+    $this->configFactory = $config_factory;
+    $this->accessManager = $access_manager;
   }
+
   /**
    * {@inheritdoc}
    */
   protected static function getPriority() {
-    return -49;
+    return -50;
   }
 
   /**
@@ -45,4 +78,14 @@ class DefaultSubscriber extends DefaultExceptionHtmlSubscriber {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function on404(GetResponseForExceptionEvent $event) {
+    $custom_404_path = $this->configFactory->get('system.site')->get('page.404');
+    if (!empty($custom_404_path)) {
+      $this->makeSubrequestToCustomPath($event, $custom_404_path, Response::HTTP_NOT_FOUND);
+    }
+  }
+  
 }

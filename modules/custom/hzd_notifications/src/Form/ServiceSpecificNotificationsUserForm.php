@@ -13,7 +13,7 @@ use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\Core\Form\FormCache;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 class ServiceSpecificNotificationsUserForm extends FormBase {
 
   /**

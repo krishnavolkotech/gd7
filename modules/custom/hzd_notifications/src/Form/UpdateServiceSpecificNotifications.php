@@ -13,7 +13,7 @@ use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\Core\Form\FormCache;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 class UpdateServiceSpecificNotifications extends FormBase {
 
   /**
@@ -47,7 +47,7 @@ class UpdateServiceSpecificNotifications extends FormBase {
     $form['content_type'] = array(
       '#type' => 'select',
       '#default_value' => $types[$type],
-      '#attributes' =>  array('class' => 'notification_content_type_' . $service_id),
+      '#attributes' =>  array('class' => ['notification_content_type_' . $service_id]),
       '#options' => $content_types,
       '#prefix' => "<div class = 'content-type hzd-form-element'>",
       '#suffix' => '</div>',
@@ -57,7 +57,7 @@ class UpdateServiceSpecificNotifications extends FormBase {
     $form['send_interval'] = array(
       '#type' => 'select',
       '#default_value' => $send_interval,
-      '#attributes' =>  array('class' => 'notification_interval_' . $service_id),
+      '#attributes' =>  array('class' => ['notification_interval_' . $service_id]),
       '#options' => $intervals,
       '#prefix' => "<div class = 'send-interval hzd-form-element'>",
       '#suffix' => '</div>',

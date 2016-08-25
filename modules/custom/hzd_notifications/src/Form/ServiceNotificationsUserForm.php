@@ -13,7 +13,7 @@ use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\Core\Form\FormCache;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+//define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 class ServiceNotificationsUserForm extends FormBase {
 
   /**
@@ -105,7 +105,7 @@ class ServiceNotificationsUserForm extends FormBase {
     foreach($content_types as $content_key => $content) {
       $int_val = $subscriptions[$content_key]['subscriptions_interval_' . $content_key];
       HzdNotificationsHelper::insert_default_user_intervel($types[$content_key], $int_val, $uid, $rel_type);
-      if($default_interval[$types[$content_key]] != $int_val) {
+      if(isset($default_interval[$types[$content_key]]) && $default_interval[$types[$content_key]] != $int_val) {
         // get all services to update the interval
         HzdNotificationsHelper::hzd_modify_services($user_notifications, $types[$content_key], $uid, $default_interval[$types[$content_key]], $int_val);
       }
