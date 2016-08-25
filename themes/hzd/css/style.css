@@ -1163,6 +1163,7 @@ article .quickedit-field .field__items .field--item {
   margin: 0 !important;
   padding: 0 !important;
 }
+.service-profile-data { display: none; }
 .btn-primary {
   background: #1475a0 !important;
   padding: 3px 10px !important;
