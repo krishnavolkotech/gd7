@@ -15,6 +15,7 @@ module:
   config_translation: 0
   contact: 0
   contextual: 0
+  ctools: 1
   cust_address_book: 0
   cust_group: 0
   cust_user: 0
