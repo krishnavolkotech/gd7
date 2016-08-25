@@ -15,9 +15,7 @@ use Drupal\problem_management\HzdStorage;
 // use Drupal\Core\Datetime\DateFormatter;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 
-/**
- * Configure inactive_user settings for this site.
- */
+
 class ProblemImportstatusFrom extends FormBase {
 
  //  protected $dateFormatter;

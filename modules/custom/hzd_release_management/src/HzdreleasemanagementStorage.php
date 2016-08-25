@@ -79,7 +79,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     }
   }
   $count = 1;
-  while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+  while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
     if ($count == 1) {
       $heading = $data;
     }
@@ -290,7 +290,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
    setlocale(LC_ALL, 'de_DE.UTF-8');
    $count_data = 1;
-   while (($data = fgetcsv($file, 5000, ",")) !== FALSE) {
+   while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
      if ($count_data == 1) {
        $heading = $data;
      } 
@@ -879,7 +879,7 @@ function get_release_details_from_title($values_title, $link) {
         $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
         $view_options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
         $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-        $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);  
+        $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);  
         $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                                '#type' => 'link',
                                '#url' => $view_earlywarning_url,
@@ -1248,7 +1248,7 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
       $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);      
+      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);      
       $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                              '#type' => 'link',
                              '#url' => $view_earlywarning_url,

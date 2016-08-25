@@ -1,0 +1,61 @@
+<?php
+use Drupal\Core\Url;
+
+
+function getErlywarningServies() {
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if(is_object($group)){
+    $group_id = $group->id();
+  } else {
+    $group_id = $group;
+  } 
+  
+  $current_url = Url::fromRoute('<current>');
+  $path = $current_url->toString();
+  $current_path = explode("/", $path);
+  
+  $query = \Drupal::database()->select('node_field_data', 'nfd');
+  $query->Fields('nfd', array('type'));
+  $query->condition('nfd.nid', $current_path[2], '=');         
+  $type = $query->execute()->fetchField();
+
+    if ($type == 'deployed_releases') {
+      $services_releases = released_deployed_releases();
+      return $services_data = $services_releases['services'];
+    }
+
+    $group_id = ( $group_id ?  $group_id:32);
+  
+
+    /**
+    $services_obj = db_query("SELECT title , n.nid FROM {node} n, {group_releases_view} grv  
+ WHERE n.nid = grv.service_id and grv.group_id = %d ORDER by title ", $group_id);
+    */
+ 
+    $services['none'] = " < ".t('Service') . ' > ';
+
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->join('group_releases_view', 'grv', 'nfd.nid = grv.service_id');
+    $query->Fields('nfd', array('title', 'nid'));
+    $query->condition('grv.group_id', $group_id, '='); 
+    $query->orderBy('title');
+    $services_obj = $query->execute()->fetchAll();
+    foreach($services_obj as $services_data) {
+      $services[$services_data->nid] = $services_data->title;
+    }
+    
+  return $services;
+}
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'node_early_warnings_form') {
+    $service = \Drupal::request()->query->get('ser');
+    $rel = \Drupal::request()->query->get('rel');
+    $form['field_release_service']['widget']['#default_value'] = $service;
+    $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
+  }
+  return $form;
+}

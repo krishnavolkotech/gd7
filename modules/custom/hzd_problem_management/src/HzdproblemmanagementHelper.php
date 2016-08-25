@@ -112,10 +112,10 @@ class HzdproblemmanagementHelper {
         $handle = fopen($path, "r");
         if (fopen($path, "r")) {
             $count = 1;
-            $data = fgetcsv($handle, 5000, ",");
+            $data = fgetcsv($handle, 5000, ";");
             if ($data) {
                // dpm(count($data));
-                while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
                     
                     if ($count == 1) {
                         $heading = $data;
@@ -163,7 +163,6 @@ class HzdproblemmanagementHelper {
                             $subject = 'Error while import';
                             $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
                             HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-
                             $status = t('Error');
                             $msg = t('Import file could not be parsed.');
                             HzdStorage::insert_import_status($status, $msg);

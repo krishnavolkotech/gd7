@@ -23,13 +23,21 @@ class ReadexcelController extends ControllerBase {
  * Use the function for the cron run
  */
   function read_problem_csv() {
+   /**
    $header_values = array(
 		  'sno', 'status', 'service', 'function', 'release', 'title' ,
 		  'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
 		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 
                   'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
 		  );
-   
+   */
+   $header_values = array(
+		  'sno', 'status', 'service', 'function', 'release', 'title' ,
+		  'body', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
+		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 'timezone',
+                  'closed'
+		  );
+      
    $path = \Drupal::config('problem_management.settings')->get('import_path');
 
    if ($path) {
