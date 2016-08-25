@@ -879,7 +879,7 @@ function get_release_details_from_title($values_title, $link) {
         $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
         $view_options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
         $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-        $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);  
+        $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);  
         $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                                '#type' => 'link',
                                '#url' => $view_earlywarning_url,
@@ -1248,7 +1248,7 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
       $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);      
+      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);      
       $view_earlywarning = array('#title' => array('#markup' => "<span class = '". $warningclass ."'>" . $earlywarnings_count . "</span> "), 
                              '#type' => 'link',
                              '#url' => $view_earlywarning_url,

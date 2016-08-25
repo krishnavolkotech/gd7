@@ -125,7 +125,7 @@ class HzdearlywarningsStorage {
         $elements = array(
           // db_result(db_query("SELECT title FROM {node} where nid = %d", $earlywarnings->release_id))
           array('data' => $title_query['title'], 'class' => 'releases-cell'),
-          array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" . $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>", "group/" . $group_id . "/view-early-warnings", array('attributes' => array('alt' => t('Read Early Warnings for this release'), 'class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release')), 'html' => TRUE, 'query' => 'ser=' . $earlywarnings->service . '&type=released' . '&rel=' . $earlywarnings->release_id . '&rel_type=' . $release_type)) : ''), 'class' => 'earlywarnings-cell'),
+          array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" . $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>", "group/" . $group_id . "/early-warnings", array('attributes' => array('alt' => t('Read Early Warnings for this release'), 'class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release')), 'html' => TRUE, 'query' => 'ser=' . $earlywarnings->service . '&type=released' . '&rel=' . $earlywarnings->release_id . '&rel_type=' . $release_type)) : ''), 'class' => 'earlywarnings-cell'),
           array('data' => $comment_count_query, 'class' => 'responses-cell'),
           array('data' => $warnings_lastpost['lastpost'], 'class' => 'lastpostdate-cell'),
         );

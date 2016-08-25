@@ -1,5 +1,5 @@
 hzd_earlywarnings.view_early_warnings:
-  path: 'group/{group}/view-early-warnings'
+  path: 'group/{group}/early-warnings'
   defaults:
     _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::view_early_warnings'
     _title: 'Early Warnings'
