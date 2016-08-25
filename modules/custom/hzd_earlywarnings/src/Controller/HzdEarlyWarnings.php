@@ -154,5 +154,17 @@ class HzdEarlyWarnings extends ControllerBase {
     $response_info = array('total_responses' => $total_responses, 'response_lastposted' => $response_lastposted);
     return $response_info;
   }
+  
+  public function add_early_warnings() {
+    $type = node_type_load("early_warnings"); // replace this with the node type in which we need to display the form for
+    $samplenode = $this->entityManager()->getStorage('node')->create(array(
+      'type' => $type->id(),
+    ));
+    $node_create_form = $this->entityFormBuilder()->getForm($samplenode);
 
+    return array(
+      '#type' => 'markup',
+      '#markup' => render($node_create_form),
+    );
+  }
 }

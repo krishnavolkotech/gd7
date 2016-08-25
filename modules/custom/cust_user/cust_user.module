@@ -159,7 +159,8 @@ function inactive_users_flag_update($form, $form_state){
     // Retrieve an array which contains the path pieces.
     $path_args = explode('/', $current_path);
     $user_id = $path_args[2];
-
+ 
+    
     $query = \Drupal::database()->update('inactive_users');
 			$query->fields([
 			  'notified_user' => 1
@@ -171,7 +172,7 @@ function inactive_users_flag_update($form, $form_state){
   $query->addField('iuf', 'value');
   $query->condition('iuf.user_id', $user_id , '=');
   $count =  $query->countQuery()->execute()->fetchField();
- 
+     
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
   $query->condition('iuf.user_id', $user_id , '=');

@@ -860,10 +860,12 @@ select {
 }
 .search_string_submit button {
   background: url(../images/form-search-btn.png) left top no-repeat !important;
-  border-radius: 3px !important;
+  border-radius: 0 3px 3px 0 !important;
   float: left;
   width: 36px;
-  height: 34px;
+  height: 35px;
+  display: block !important;
+  margin-top: -1px;
 }
 #problem_search_results_wrapper .reset_form {
   margin: 0 !important;
@@ -1160,4 +1162,15 @@ article .quickedit-field .field__items .field--item {
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+.btn-primary {
+  background: #1475a0 !important;
+  padding: 3px 10px !important;
+}
+form.contact-message-form label {
+  font-family: 'robotomedium';
+  font-weight: 400 !important;
+}
+form.problem-filter-form .string_search.hzd-form-element {
+  margin-right: -2px !important;
 }

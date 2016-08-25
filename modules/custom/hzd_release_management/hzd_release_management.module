@@ -1,6 +1,6 @@
 <?php
 
-//define('RELEASE_MANAGEMENT', 339);
+define('RELEASE_MANAGEMENT', 32);
 define('SITE_ADMIN', 5);
 use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
@@ -12,6 +12,13 @@ use Drupal\Component\Utility\SafeMarkup;
  * get deployed services list
  */
 function hzd_get_deployed_serivces_list() {
+      $group = \Drupal::routeMatch()->getParameter('group');
+    if(is_object($group)){
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    } 
+    
   $current_url = Url::fromRoute('<current>');
   $path = $current_url->toString();
   $current_path = explode("/", $path);
@@ -23,7 +30,7 @@ function hzd_get_deployed_serivces_list() {
     $services_releases = released_deployed_releases();
     return $services_data = $services_releases['services'];
   }
-  $group_id = ($_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT);
+  $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
   $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
   $services['none'] = " < ".t('Service') . ' > ';
 
@@ -126,12 +133,19 @@ function hzd_earlywarning_release() {
  *
  */
 function get_earlywarning_release($service = NULL) {
-  $group = ($_SESSION['Group_id'] ? $_SESSION['Group_id']: RELEASE_MANAGEMENT);
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if(is_object($group)){
+      $group_id = $group->id();
+  } else {
+      $group_id = $group;
+  } 
+  
+  $group = ($group_id ? $group_id: RELEASE_MANAGEMENT);
   $query = db_select('node_field_data', 'nfd');
   $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
   $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
   $query->fields('nfd', array('nid', 'title'))
-     ->condition('grv.group_id', $group);
+     ->condition('grv.group_id', $group_id);
   if($service) {
     $query->condition('nfrs.field_relese_services_target_id', $service);
   }

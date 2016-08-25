@@ -1,7 +1,16 @@
 hzd_earlywarnings.view_early_warnings:
-  path: 'node/{node}/view-early-warnings'
+  path: 'group/{group}/view-early-warnings'
   defaults:
     _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::view_early_warnings'
     _title: 'Early Warnings'
   requirements:
     _permission: 'access content'
+
+hzd_earlywarnings.add_early_warnings:
+  path: 'group/{group}/add/early-warnings'
+  defaults:
+    _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::add_early_warnings'
+    _title: 'Early Warnings'
+  requirements:
+    _permission: 'access content'
+    node: \d+
