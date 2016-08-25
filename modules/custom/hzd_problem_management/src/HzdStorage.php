@@ -43,6 +43,7 @@ class HzdStorage {
    *function for saving problem node
    */
   static function saving_problem_node($values) {
+    
     $query = \Drupal::database()->select('groups_field_data', 'gfd');
     $query->Fields('gfd', array('id'));
     $query->condition('label', 'problem management', '='); 
@@ -139,7 +140,7 @@ class HzdStorage {
 	$problem_node->set('field_function', $values['function']);
 	$problem_node->set('field_priority', $values['priority']);
 	$problem_node->set('field_problem_eroffnet', $eroffnet);
-	// $problem_node->set('field_problem_status', $values['problem_status']);
+	$problem_node->set('field_problem_status', $values['status']);
 	$problem_node->set('field_processing', $values['processing']);
 	$problem_node->set('field_release', $values['release']);
 	$problem_node->set('field_sdcallid', $values['sdcallid']);
@@ -206,7 +207,7 @@ class HzdStorage {
 	  ),
 	 'field_priority' => $values['priority'],
 	 'field_problem_eroffnet' => $eroffnet,
-//	 'field_problem_status' => $values['problem_status'],
+	 'field_problem_status' => $values['status'],
 	 'field_processing' =>  $values['processing'],
 	 'field_release' => $values['release'],
 	 // 'field_sdcallid' => $values['sdcallid'],
@@ -232,7 +233,7 @@ class HzdStorage {
       $node = Node::create($node_array);
       $node->save();
       $nid = $node->id();
-      
+
       if ($nid) { 
           // $group_id = \Drupal::routeMatch()->getParameter('group');
            $group = \Drupal\group\Entity\Group::load($group_id['0']);
@@ -247,7 +248,7 @@ class HzdStorage {
                   'label' => $values['title'],
             ]);
             $group_content->save();
-                 
+         // dpm($group_content->id());       
 	return TRUE;
       }
     }
@@ -553,6 +554,8 @@ class HzdStorage {
     return array('releases' => $default_release, 'functions' => $default_function);
   }
 
+  
+  
   /*
    * Problems display table
    * @sql_where: sql query for filtering the problems.
@@ -572,6 +575,8 @@ class HzdStorage {
     }else{
       $group_id = $group;
     } 
+   // dpm($group_id);
+    
     $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
     $sql_select->Fields('nfd', array('nid'));
     $build = array();
@@ -612,6 +617,7 @@ class HzdStorage {
     $group_problems_view_service_id_query->conditions('group_id', $group_id?:self::PROBLEM_MANAGEMENT , '=');
     $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
     $group_problems_view = array();
+    
     if (!empty($group_problems_view_service)) {
       foreach($group_problems_view_service as $service) {
 	$group_problems_view[] = $service->service_id;
@@ -751,6 +757,10 @@ class HzdStorage {
     return $build = array('#markup' => t("No Data Created Yet"));  
   }
 
+  
+  
+  
+  
   static function delete_group_problems_view($group_id = null) {
     if(!$group_id){
       return false;

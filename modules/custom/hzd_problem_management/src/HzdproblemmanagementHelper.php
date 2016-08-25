@@ -112,18 +112,20 @@ class HzdproblemmanagementHelper {
         $handle = fopen($path, "r");
         if (fopen($path, "r")) {
             $count = 1;
-            $data = fgetcsv($handle, 5000, ";");
-            if ($data) {
-               // dpm(count($data));
-                while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+            $readdata = fgetcsv($handle, 5000, ";");
                     
-                    if ($count == 1) {
+            if ($readdata) {
+                while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+                    if ($count == 0) {
                         $heading = $data;
+                  
                     } else {
+           
                         foreach ($data as $key => $value) {
                             $values[$header_values[$key]] = $data[$key];
+                              
                         }
-                        
+                 
                         if (count($values) == 1) {
                             // $mail = variable_get('import_mail', ' ');
                             $mail = \Drupal::config('problem_management.settings')->get('import_mail');
@@ -136,10 +138,14 @@ class HzdproblemmanagementHelper {
                             // watchdog('problem', $message, array(), 'error');
                             \Drupal::logger('problem')->error($msg);
                             return t('Error with file either permissions denied or file corrupted');
-                        }
+                        }   
+                        
+                 
+               
                         $validation = self::validate_csv($values);
+                        
                         if ($validation) {
-                            //    echo '<pre>';  echo 'hai';  exit;
+                           
                             $insert = HzdStorage::saving_problem_node($values);
                             if ($insert) {
                                 // TO DO :  New Node Inserted 
@@ -219,18 +225,20 @@ class HzdproblemmanagementHelper {
      */
 
     function validate_csv(&$values) {
+       
         $type = 'problems';
         $service = $values['service'];
-
+      
         if (!trim($values['sno'])) {
+      
             return FALSE;
         }
+
         if (HzdservicesHelper::service_exist(trim($service), $type)) {
-            //  echo '<pre>';  print_r($values);  exit;
             $services = HzdservicesStorage::get_related_services($type);
             $service_id = array_keys(array_map('strtoupper', $services), strtoupper($service));
-            # $service_id = array_keys($services, $service);
             $values['service'] = $service_id[0];
+         
             return TRUE;
         } else {
             $mail = \Drupal::config('problem_management.settings')->get('import_mail');
@@ -239,6 +247,8 @@ class HzdproblemmanagementHelper {
             HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
             return FALSE;
         }
+        
+   
         return FALSE;
         /*
           $service = db_result(db_query("select nid from {node} where title = '%s' and type = '%s'", $values['service'], 'services'));
