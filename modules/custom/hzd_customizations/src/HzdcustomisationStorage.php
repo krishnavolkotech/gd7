@@ -189,22 +189,25 @@ class HzdcustomisationStorage {
    * When all services are deselected then the menu should be hidden.
    */
   static function reset_menu_link($counter = 0, $link_title = NULL, $link_path = NULL, $menu_name = NULL, $gid = NULL) {
-    // $group_link = db_result(db_query("SELECT mlid from {menu_links} ml where ml.link_title = '%s' and ml.menu_name = '%s'", $link_title, $menu_name));
     // droy: Replaced unique identifier link_title by link_path because of issues with German special characters in link_title which result in no sql query results found.
+    $group = \Drupal::routeMatch()->getParameter('group')->id();
     $group_link = \Drupal::database()->select('menu_link_content_data', 'mlcd')
-            ->Fields('mlcd', array('id'))
+            ->fields('mlcd', array('id'))
             ->condition('link__uri', '%' . $link_path, 'LIKE')
             ->condition('menu_name', $menu_name, 'LIKE')
-            ->execute()->fetchAssoc();
-
+            ->execute()->fetchField();
+//pr($group_link);echo $counter;exit;
     if ($counter > 0) {
       if (empty($group_link)) {
-        $flink['link_title'] = t($link_title);
-        $flink['link_path'] = 'node/' . $gid . '/' . $link_path;
-        $flink['router_path'] = "node/%" . '/' . "$link_path";
-        $flink['plid'] = 0;
-        $flink['menu_name'] = $menu_name;
-        menu_link_save($flink);
+	$menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::create([
+            'title' => t($link_title),
+	    'link' => ['uri' => 'internal:/group/' . $group.'/problems'],
+	    'menu_name' => $menu_name,
+	    'expanded' => FALSE,
+        ]);
+  	$menu_link->save();
+	
+        //menu_link_save($flink);
         // Need to clear the menu cache to get the new menu item affected.
         menu_cache_clear_all();
         // Need to unset the array so that a new is built. otherwise it overwrites the array and only the last menu link gets created.
@@ -227,15 +230,14 @@ class HzdcustomisationStorage {
         // check once the hidden value before updating.
         // $hidden_value = db_result(db_query("SELECT hidden from {menu_links} WHERE mlid = %d", $group_link));.
         $query = \Drupal::database()->select('menu_link_content_data', 'mlcd');
-        $query->Fields('mlcd', array('enabled'));
+        $query->fields('mlcd', array('enabled'));
         $query->condition('id', $group_link, '=');
         $hidden_value = $query->execute()->fetchAssoc();
-
-        if ($hidden_value['enabled'] == 1) {
+        if ($hidden_value['enabled'] == 0) {
           // droy: When hiding a menu entry, we only set hidden = 1. Why the need to update many more fields when unhiding?
           // db_query("UPDATE {menu_links} set hidden = %d, link_path= '%s', router_path = '%s' WHERE mlid = %d", 0, "node/$gid/$link_path", "node/%/$link_path", $group_link);
           // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 0, $group_link);.
-          db_update('menu_link_content_data')->fields(array('enabled' => 0))->condition('id', $group_link, '=')->execute();
+          \Drupal::database()->update('menu_link_content_data')->fields(array('enabled' => 1))->condition('id', $group_link, '=')->execute();
 
           // Need to clear the menu cache to get the new menu item affected.
           menu_cache_clear_all();
@@ -246,7 +248,7 @@ class HzdcustomisationStorage {
       // All links were unset. So we need to make the menu item hidden.
       if ($group_link) {
         // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 1, $group_link);.
-        db_update('menu_link_content_data')->fields(array('enabled' => 1))->condition('id', $group_link, '=')->execute();
+        \Drupal::database()->update('menu_link_content_data')->fields(array('enabled' => 0))->condition('id', $group_link, '=')->execute();
         // Need to clear the menu cache to get the new menu item affected.
         menu_cache_clear_all();
       }
@@ -478,15 +480,15 @@ class HzdcustomisationStorage {
 
     // get dependent services list
     $query = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfd');
-    $query->fields('nfd', ['field_dependent_downtimeservices_value']);
+    $query->fields('nfd', ['field_dependent_downtimeservices_target_id']);
     $query->condition('nfd.entity_id', $nid);
-    $query->isNotNull('field_dependent_downtimeservices_value');
+    $query->isNotNull('field_dependent_downtimeservices_target_id');
     $service_depends_data = $query->execute()->fetchAll();
 
     $service_depends = array();
     foreach ($service_depends_data as $service_depends_vals) {
-      if (isset($downtime_services[$service_depends_vals->field_dependent_downtimeservices_value])) {
-        $service_depends[] = $downtime_services[$service_depends_vals->field_dependent_downtimeservices_value];
+      if (isset($downtime_services[$service_depends_vals->field_dependent_downtimeservices_target_id])) {
+        $service_depends[] = $downtime_services[$service_depends_vals->field_dependent_downtimeservices_target_id];
       }
     }
     $data['service_depends'] = $service_depends;
@@ -558,7 +560,7 @@ class HzdcustomisationStorage {
     if (isset($data['service_time'])) {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Service Time:") . "</b></div></td><td class='right'><div><table><tr><th>" . t("Day") . "</th><th>" . t("Start Time") . "</th><th>" . t("End Time") . "</th></tr>" . $data['service_time'] . "</table></div></td></tr>";
     }
-    if (isset($data['maintenance_windows_time'])) {
+    if (isset($data['maintenance_windows_time']) && !empty($data['maintenance_windows_time'])) {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Maintenance Windows:") . "</b></div></td><td class='right'><div><table><tr><th>" . t("Day") . "</th><th>" . t("Start Time") . "</th><th>" . t("Day") . "</th><th>" . t("End Time") . "</th></tr>" . $data['maintenance_windows_time'] . "</table></div></td></tr>";
     }
     if (isset($data['service_impact']) && trim($data['service_impact']) != '') {

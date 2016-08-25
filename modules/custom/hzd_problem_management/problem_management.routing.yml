@@ -16,6 +16,7 @@ problem_management.problem_settings:
     _weight: 10
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #   cust_og_is_admin: 'TRUE' 
 
 #  requirements:
@@ -34,7 +35,7 @@ problem_management.problems:
     _permission: 'access content'
     group: \d+
     _permission: 'access content'
-    _custom_access: '\Drupal\problem_management\Controller\ProblemsController::access'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #   cust_og_is_member: 'TRUE' 
 
 #  requirements:
@@ -51,6 +52,7 @@ problem_management.current_problems:
   requirements:
     _permission: 'access content'
     group: \d+
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #    cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_member'
@@ -66,6 +68,7 @@ problem_management.archived_problems:
 #    group: \d+
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #   cust_og_is_member: 'TRUE'
 #  requirements:
 #    _permission: 'cust_og_is_member'
@@ -77,11 +80,12 @@ problem_management.import_history:
   defaults:
     _controller: '\Drupal\problem_management\Controller\ImportHistoryController::import_history'
     _title: 'Import History'
+    _entity_view: 'group.default'
 #    _weight: 4
   requirements:
     _permission: 'access content'
     group: ^[0-9]+
-    _entity_view: 'group.default'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #    node: \d+
 #   cust_og_is_member: 'TRUE'
 #  requirements:
