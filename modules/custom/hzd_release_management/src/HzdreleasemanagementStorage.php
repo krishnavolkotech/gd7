@@ -82,7 +82,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     }
   }
   $count = 0;
-  while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+  while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
     if ($count == 0) {
       $heading = $data;
     }
@@ -306,7 +306,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
    setlocale(LC_ALL, 'de_DE.UTF-8');
    $count_data = 0;
-   while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
+   while (($data = fgetcsv($file, 5000, ",")) !== FALSE) {
      if ($count_data == 0) {
        $heading = $data;
      } 
