@@ -33,3 +33,4 @@ content:
 hidden:
   entity_print_view: true
   langcode: true
+  upload: true
