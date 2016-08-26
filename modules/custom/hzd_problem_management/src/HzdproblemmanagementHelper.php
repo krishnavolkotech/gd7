@@ -112,10 +112,10 @@ class HzdproblemmanagementHelper {
         $handle = fopen($path, "r");
         if (fopen($path, "r")) {
             $count = 1;
-            $readdata = fgetcsv($handle, 5000, ";");
+            $readdata = fgetcsv($handle, 5000, ",");
                     
             if ($readdata) {
-                while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+                while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
                     if ($count == 0) {
                         $heading = $data;
                   

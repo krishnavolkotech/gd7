@@ -13,9 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 // use Drupal\problem_management\Inactiveuserhelper;
 // use Drupal\Core\Datetime\DateFormatter;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
-/**
- * Configure inactive_user settings for this site.
- */
+
 
 class ReleasemanagementsettingsForm extends ConfigFormBase {
 
