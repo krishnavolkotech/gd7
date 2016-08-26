@@ -13,7 +13,7 @@ third_party_settings:
   filefield_paths:
     enabled: true
     file_path:
-      value: '[group:title]/[content-type:name]'
+      value: '[group:title]/[node:content-type]'
       options:
         slashes: false
         pathauto: false

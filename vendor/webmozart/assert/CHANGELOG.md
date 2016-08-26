@@ -1,15 +1,6 @@
 Changelog
 =========
 
-* 1.1.0 (2016-08-09)
-
- * added `Assert::object()`
- * added `Assert::propertyExists()`
- * added `Assert::propertyNotExists()`
- * added `Assert::methodExists()`
- * added `Assert::methodNotExists()`
- * added `Assert::uuid()`
-
 * 1.0.2 (2015-08-24)
 
  * integrated Style CI

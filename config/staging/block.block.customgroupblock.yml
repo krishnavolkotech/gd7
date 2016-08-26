@@ -1,0 +1,24 @@
+uuid: 1169fb7f-e340-4663-98fe-93ec24df4433
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - cust_group
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: customgroupblock
+theme: hzd
+region: sidebar_first
+weight: -17
+provider: null
+plugin: cust_group_block
+settings:
+  id: cust_group_block
+  label: 'Group Specific Links'
+  provider: cust_group
+  label_display: '0'
+visibility: {  }
