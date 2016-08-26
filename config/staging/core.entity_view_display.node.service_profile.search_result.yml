@@ -62,5 +62,6 @@ hidden:
   body: true
   comment: true
   entity_print_view: true
+  field_dependent_downtimeservices: true
   langcode: true
   upload: true

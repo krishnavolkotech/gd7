@@ -62,14 +62,8 @@ field_settings:
       config:
         - field.storage.node.field_creators
 processor_settings:
-  aggregated_field:
-    plugin_id: aggregated_field
-    settings: {  }
   rendered_item:
     plugin_id: rendered_item
-    settings: {  }
-  add_url:
-    plugin_id: add_url
     settings: {  }
   ignorecase:
     plugin_id: ignorecase
@@ -80,6 +74,12 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
 options:
   index_directly: true
   cron_limit: 50
