@@ -1307,6 +1307,8 @@
                 "random"
             ],
             "time": "2016-03-18 20:34:03"
+<<<<<<< HEAD
+=======
         },
         {
             "name": "phenx/php-font-lib",
@@ -1375,19 +1377,20 @@
             "description": "A library to read, parse and export to PDF SVG files.",
             "homepage": "https://github.com/PhenX/php-svg-lib",
             "time": "2015-05-06 18:49:49"
+>>>>>>> 6467f62a724e4603f13fa38c976c12cc04f7447c
         },
         {
             "name": "psr/http-message",
-            "version": "1.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
-                "reference": "85d63699f0dbedb190bbd4b0d2b9dc707ea4c298"
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/85d63699f0dbedb190bbd4b0d2b9dc707ea4c298",
-                "reference": "85d63699f0dbedb190bbd4b0d2b9dc707ea4c298",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
                 "shasum": ""
             },
             "require": {
@@ -1415,6 +1418,7 @@
                 }
             ],
             "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
             "keywords": [
                 "http",
                 "http-message",
@@ -1423,7 +1427,7 @@
                 "request",
                 "response"
             ],
-            "time": "2015-05-04 20:22:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "psr/log",
@@ -4633,6 +4637,26 @@
         },
         {
             "name": "webmozart/assert",
+<<<<<<< HEAD
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmozart/assert.git",
+                "reference": "bb2d123231c095735130cc8f6d31385a44c7b308"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/bb2d123231c095735130cc8f6d31385a44c7b308",
+                "reference": "bb2d123231c095735130cc8f6d31385a44c7b308",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3|^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.6",
+                "sebastian/version": "^1.0.1"
+=======
             "version": "1.0.2",
             "source": {
                 "type": "git",
@@ -4650,11 +4674,16 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6"
+>>>>>>> 6467f62a724e4603f13fa38c976c12cc04f7447c
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< HEAD
+                    "dev-master": "1.2-dev"
+=======
                     "dev-master": "1.0-dev"
+>>>>>>> 6467f62a724e4603f13fa38c976c12cc04f7447c
                 }
             },
             "autoload": {
@@ -4678,7 +4707,11 @@
                 "check",
                 "validate"
             ],
+<<<<<<< HEAD
+            "time": "2016-08-09 15:02:57"
+=======
             "time": "2015-08-24 13:29:44"
+>>>>>>> 6467f62a724e4603f13fa38c976c12cc04f7447c
         }
     ],
     "aliases": [],
