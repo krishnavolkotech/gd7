@@ -28,11 +28,11 @@ class HzdreleasemanagementStorage {
  * @returns the status. 
 */
 function release_reading_csv($handle, $header_values, $type, $file_path) {
-
   setlocale(LC_ALL, 'de_DE.UTF-8');
 //delete the nodes if the release type is locked or in progress.
   $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
   $release_type = $types[$type];
+  
   // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
   // in-progress release will not get deleted
   if ($release_type == 3) {
@@ -58,6 +58,9 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     }
     if (fopen($file_path, "r")) {
         $file = fopen($file_path, "r");
+        if ( $release_type == 3) {
+            $header_values['4'] = 'comment';
+        }
         self::release_inprogress_reading_csv($file, $header_values, $locked_nid_values, $release_type);
     }
   }
@@ -78,9 +81,9 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
       self::release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values);
     }
   }
-  $count = 1;
+  $count = 0;
   while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
-    if ($count == 1) {
+    if ($count == 0) {
       $heading = $data;
     }
     else {
@@ -114,7 +117,6 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
   */
  function saving_release_node($values) {
    global $user;
-   
     $query = \Drupal::database()->select('groups_field_data', 'gfd');
     $query->Fields('gfd', array('id'));
     $query->condition('label', 'release management', '='); 
@@ -162,8 +164,13 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
      $node->set("field_status",$values['status']);
      $node->set("field_relese_services", $values['service']);
      $node->set("field_date", $values['date']);
-     $node->set("field_release_comments", $values['comment']);
-     $node->set("field_link", $values['link']);
+     if($values['type'] == 'locked') {
+       $node->set("field_release_comments", $values['comment']);
+     } else {
+        $node->set("field_link", $values['link']); 
+        $node->set("field_documentation_link", $values['documentation_link']);
+     }
+     
      $node->set("field_release_type", $types[$values['type']]);
      /**
      $node->set("og_initial_groups", Array(
@@ -179,6 +186,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    //  $node->set("validated", 1);
        $node->set("status", 1);
        $node->save();
+     
   } 
   else {
    $node_array = array(
@@ -209,26 +217,11 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
         'value' => $values['date'],
       )
     ),
-    'field_release_comments' => Array(
-      '0' => Array(
-        'value' => $values['comment'],
-      )
-    ),
-    'field_link' => Array(
-      '0' => Array(
-        'value' => $values['link'],
-      )
-    ),
     'field_release_type' => Array(
       '0' => Array(
         'value' => $types[$values['type']],
       )
     ),
-        'field_documentation_link' => Array(
-      '0' => Array(
-    'value' => $values['documentation_link'],
-    )
-  ),
     'field_release_type' => Array(
       '0' => Array(
     'value' => $types[$values['type']],
@@ -247,8 +240,31 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     'teaser' => '',
     'validated' => 1
    );
+   
+   if($values['type'] == 'locked') { 
+     $node_array['field_release_comments'] = Array(
+      '0' => Array(
+        'value' => $values['comment'],
+      )
+    );
+   } else {
+    $node_array['field_link'] = array(
+      '0' => array(
+        'value' => $values['link'],
+      )
+    );
+    
+    $node_array['field_documentation_link'] = array(
+      '0' => array(
+        'value' => $values['documentation_link'],
+       )
+     );        
+   }
+   
    $node = Node::create($node_array);
    $node->save();
+
+   
    if ($node->id()) {
       // $group_id = \Drupal::routeMatch()->getParameter('group');
         $group = \Drupal\group\Entity\Group::load($group_id['0']);
@@ -289,17 +305,21 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  */
  function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
    setlocale(LC_ALL, 'de_DE.UTF-8');
-   $count_data = 1;
+   $count_data = 0;
    while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
-     if ($count_data == 1) {
+     if ($count_data == 0) {
        $heading = $data;
      } 
      else {
+         if($type == 3) {
+            $header_values['4'] = 'comment';
+         }
        foreach ($data as $key => $value) {
          // droy: removed utf8_encode since it gives issues when data is already in utf8 (setlocale above).
-         //$values[$header_values[$key]] = utf8_encode($data[$key]);
+         // $values[$header_values[$key]] = utf8_encode($data[$key]);
          $values[$header_values[$key]] = $data[$key];
        }
+   
        $query = db_select('node_field_data', 'n');  
        $query->Fields('n', array('nid'));
        $query->condition('title', $values['title'], '='); 
