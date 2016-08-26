@@ -193,6 +193,104 @@ display:
           hide_alter_empty: true
           plugin_id: user_bulk_form
           entity_type: user
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Lastname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        firstname:
+          id: firstname
+          table: cust_profile
+          field: firstname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Firstname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
         name:
           id: name
           table: users_field_data
@@ -528,104 +626,6 @@ display:
           plugin_id: field
           entity_type: user
           entity_field: mail
-        firstname:
-          id: firstname
-          table: cust_profile
-          field: firstname
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Firstname
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          plugin_id: standard
-        lastname:
-          id: lastname
-          table: cust_profile
-          field: lastname
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Lastname
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          plugin_id: standard
         phone:
           id: phone
           table: cust_profile
@@ -1127,21 +1127,12 @@ display:
           admin_label: ' State id'
           required: false
           plugin_id: standard
-        uid:
-          id: uid
-          table: cust_profile
-          field: uid
-          relationship: none
-          group_type: group
-          admin_label: ' user profile uid'
-          required: false
-          plugin_id: standard
       arguments:
         lastname:
           id: lastname
           table: cust_profile
           field: lastname
-          relationship: uid
+          relationship: none
           group_type: group
           admin_label: ''
           default_action: ignore
@@ -1151,9 +1142,10 @@ display:
             title: All
           title_enable: false
           title: ''
-          default_argument_type: fixed
+          default_argument_type: raw
           default_argument_options:
-            argument: ''
+            index: 3
+            use_alias: true
           default_argument_skip_url: false
           summary_options:
             base_path: ''
@@ -1164,67 +1156,6 @@ display:
             sort_order: asc
             number_of_records: 0
             format: default_summary
-          specify_validation: false
-          validate:
-            type: none
-            fail: 'not found'
-          validate_options: {  }
-          glossary: true
-          limit: 1
-          case: upper
-          path_case: lower
-          transform_dash: false
-          break_phrase: false
-          plugin_id: string
-    cache_metadata:
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
-        - user.permissions
-      max-age: 0
-      tags: {  }
-  attachment_1:
-    display_plugin: attachment
-    id: attachment_1
-    display_title: Attachment
-    position: 2
-    display_options:
-      display_extenders: {  }
-      displays:
-        page_1: page_1
-      attachment_position: before
-      arguments:
-        lastname:
-          id: lastname
-          table: cust_profile
-          field: lastname
-          relationship: uid
-          group_type: group
-          admin_label: ''
-          default_action: summary
-          exception:
-            value: all
-            title_enable: false
-            title: All
-          title_enable: false
-          title: ''
-          default_argument_type: fixed
-          default_argument_options:
-            argument: ''
-          default_argument_skip_url: false
-          summary_options:
-            base_path: ''
-            items_per_page: 25
-            inline: true
-            separator: ''
-            count: false
-            override: false
-          summary:
-            sort_order: asc
-            number_of_records: 0
-            format: unformatted_summary
           specify_validation: true
           validate:
             type: none
@@ -1234,24 +1165,27 @@ display:
           limit: 1
           case: upper
           path_case: lower
-          transform_dash: false
+          transform_dash: true
           break_phrase: false
           plugin_id: string
-      defaults:
-        arguments: false
-      inherit_exposed_filters: true
-      pager:
-        type: none
-        options:
-          offset: 0
+      header:
+        messages:
+          id: messages
+          table: views
+          field: messages
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          plugin_id: messages
     cache_metadata:
-      max-age: 0
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
         - user.permissions
+      max-age: 0
       tags: {  }
   page_1:
     display_plugin: page
@@ -1265,16 +1199,53 @@ display:
         type: 'default tab'
         title: List
         description: 'Find and manage people interacting with your site.'
-        menu_name: admin
-        weight: -10
-        context: ''
-        enabled: true
         expanded: false
+        parent: entity.user.collection
+        weight: -10
+        context: '0'
+        menu_name: admin
+        enabled: true
       tab_options:
         type: normal
         title: People
         description: 'Manage user accounts, roles, and permissions.'
+        weight: 0
+      defaults:
+        show_admin_links: false
+        arguments: false
+      display_extenders: {  }
+      arguments: {  }
+    cache_metadata:
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.permissions
+      max-age: 0
+      tags: {  }
+  page_2:
+    display_plugin: page
+    id: page_2
+    display_title: Page
+    position: 1
+    display_options:
+      path: admin/people/list/%
+      show_admin_links: false
+      menu:
+        type: tab
+        title: List
+        description: 'Find and manage people interacting with your site.'
+        expanded: false
+        parent: entity.user.collection
+        weight: -10
+        context: '0'
         menu_name: admin
+        enabled: true
+      tab_options:
+        type: normal
+        title: People
+        description: 'Manage user accounts, roles, and permissions.'
         weight: 0
       defaults:
         show_admin_links: false

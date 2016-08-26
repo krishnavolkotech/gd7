@@ -33,8 +33,10 @@ class ReadexcelController extends ControllerBase {
     $response = '';
 
     $path_header = HzdreleasemanagementHelper::_csv_headers();
+
     if ($path_header['path']) {
       $path = $path_header['path'];
+ 
       foreach ($path as $type => $file_path) {
         if (file_exists($file_path)) {
           $header = $path_header['headers'][$type];
