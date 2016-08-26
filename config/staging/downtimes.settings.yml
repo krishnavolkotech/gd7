@@ -19,32 +19,15 @@ report_maintenance: "Geplante Wartungs- und Blockzeiten, die sich auf länderüb
 report_maintenance_2: 'Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'
 report_maintenance_3: 'Wählen Sie die Verfahren oder ZPS aus, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.'
 maintenance_advance_time: '60'
-howmany: 1
-konsens_mw_day_from_delete1: 1
-konsens_maintenance_windows_4: 1
-konsens_mw_day_from4: Mon
-konsens_mw_hm_from4: '0'
-konsens_mw_minutes_from4: '0'
-konsens_mw_day_until4: Mon
-konsens_mw_hm_until4: '0'
-konsens_mw_minutes_until4: '0'
-konsens_mw_day_from_delete2: 1
-konsens_mw_day_from_delete0: 1
-konsens_maintenance_windows_5: 1
-konsens_mw_day_from5: Mon
-konsens_mw_hm_from5: '0'
-konsens_mw_minutes_from5: '0'
-konsens_mw_day_until5: Mon
-konsens_mw_hm_until5: '0'
-konsens_mw_minutes_until5: '0'
-konsens_maintenance_windows_6: 1
-konsens_mw_day_from6: Mon
-konsens_mw_hm_from6: '0'
-konsens_mw_minutes_from6: '0'
-konsens_mw_day_until6: Mon
-konsens_mw_hm_until6: '0'
-konsens_mw_minutes_until6: '0'
-konsens_mw_day_from_delete6: 1
-konsens_mw_day_from_delete5: 1
-konsens_mw_day_from_delete3: 1
-konsens_mw_day_from_delete4: 1
+howmany: 7
+sitewide_maintenance_windows:
+  -
+    day_from: Mon
+    day_to: Mon
+    time_from: '02:01:02'
+    time_to: '02:03:02'
+  -
+    day_from: Mon
+    day_to: Mon
+    time_from: '04:01:01'
+    time_to: '12:01:01'
