@@ -9,6 +9,8 @@ namespace Drupal\downtimes\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Datetime\DrupalDateTime;
+
 // use Drupal\problem_management\HzdStorage;
 // use Drupal\problem_management\Inactiveuserhelper;
 // use Drupal\Core\Datetime\DateFormatter;
@@ -17,16 +19,16 @@ use Drupal\Core\Form\FormStateInterface;
  * Configure inactive_user settings for this site.
  */
 class ScheduledmaintenanceForm extends ConfigFormBase {
-
- //  protected $dateFormatter;
-  /** 
+  
+  //  protected $dateFormatter;
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'downtime_scheduledmaintenance_form';
   }
 
-  /** 
+  /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
@@ -35,266 +37,242 @@ class ScheduledmaintenanceForm extends ConfigFormBase {
     ];
   }
 
- /*
-  * Menu callback; admin settings form for Scheduled Maintenance Group ID.
-  */
+  /*
+   * Menu callback; admin settings form for Scheduled Maintenance Group ID.
+   */
 
   public function buildForm(array $form, FormStateInterface $form_state) {
-   // drupal_add_js(drupal_get_path('module', 'downtimes') . '/sitewide_maintenance_windows.js');
-
-    $form['#attached']['library'] = array('downtimes/downtimes.sitewardjs');
-
+    $config = $this->config('downtimes.settings');
+    $form['#tree'] = TRUE;
     $form['maintenance_advance_time'] = array(
       '#type' => 'textfield',
       '#title' => t('Minimum time to schedule a maintenance in advance (in minutes)'),
       '#default_value' => \Drupal::config('downtimes.settings')->get('maintenance_advance_time'),
       '#required' => TRUE,
     );
-
-   $form['sitewide_maintenance_windows'] = array(
-     '#title' => t("KONSENS-wide Maintenance Windows"),
-     // The prefix/suffix provide the div that we're replacing, named by
-     // #ajax['wrapper'] above.
-     '#prefix' => '<div id="sitewide_maintenance_windows">',
-     '#suffix' => '</div>',
-     '#type' => 'fieldset',
-   );
-  
-   $num_items = !empty($form_state->getValues('howmany')) ? $form_state->getValues('howmany') : 0;
-   $val_inc = $num_items;
-
-   if(empty($form_state->getValues('remove-item'))) {
-     $num_items ++;
-   } else {
-     $num_items--;
-   }
-
-   $form['sitewide_maintenance_windows']['howmany'] = array('#type' => 'hidden','#value' => $num_items);
-   $form['sitewide_maintenance_windows']['remove-item'] = array('#type' => 'hidden','#value' => 0);
-  // $arr = array(t("Mon") => "Mon", t("Tue") => "Tue", t("Wed") => "Wed", t("Thu") => "Thu", t("Fri") => "Fri", t("Sat") => "Sat", t("Sun") => "Sun");
-   $arr = array(
-     "Mon" => t("Mon"), 
-     "Tue" => t("Tue"), 
-     "Wed" => t("Wed"), 
-     "Thu" => t("Thu"), 
-     "Fri" => t("Fri"), 
-     "Sat" => t("Sat"), 
-     "Sun" => t("Sun")
-   );
-   $post = $form_state->getValue('post');
-   if(isset($post) && !empty($post) ) {
-   $values_array = array();
-   $v_index = 1;
-   $first_month_first_day = date('Y-01-01');
-   for($v_inc = 1; $v_inc <= $val_inc; $v_inc++) {
-     if($form_state->getValues('remove-item') == $v_inc) {
-       continue;
-     }
-     $data = $form_state->getValues("konsens_mw_day_from$v_inc");
-     if(isset($data)) {
-       $hm_from = date_create($first_month_first_day.' '.$form_state->getValues('hour').':'.$form_state->getValues('minute'));
-       $hm_from = date_format($hm_from, 'Y-m-d H:i:s');
-       $hm_until = date_create($first_month_first_day.' '.$form_state->getValues('hour').':'.$form_state->getValues('minute'));
-       $hm_until = date_format($hm_until, 'Y-m-d H:i:s');
-       $values_array[$v_index] = array(
-           'day_from' => $form_state->getValues("konsens_mw_day_from$v_inc"),
-           'hm_from'  => $hm_from,
-           'day_until' => $form_state->getValues("konsens_mw_day_until$v_inc"),
-           'hm_until'  => $hm_until
-       );
-	$v_index++;
-      }
+    $savedConfigFields = $config->get('sitewide_maintenance_windows');    
+    $max = count($savedConfigFields);
+    if(empty($max)) {
+      $max = 0;
     }
-    for ($inc = 1; $inc <= $num_items; $inc++) {    
-      if(!isset($values_array[$inc])) {
-	$values_array[$inc] = array('day_from' => $form_state->getValues("konsens_mw_day_from$inc"),
-                                    'hm_from'  => $form_state->getValues("konsens_mw_hm_from$inc"),
-                                    'day_until' => $form_state->getValues("konsens_mw_day_until$inc"),
-                                    'hm_until'  => $form_state->getValues("konsens_mw_day_until$inc"));
-	
-      }
-
-        $this->konsens_mw_field_day($form, $form_state, "konsens_mw_day_from".$inc, $arr, $values_array[$inc]['day_from'], 'From', 1);
-        $this->konsens_mw_field_hours_minutes($form, $form_state,  "konsens_mw_hm_from".$inc, $values_array[$inc]['hm_from']);
-        $this->konsens_mw_field_day($form, $form_state,  "konsens_mw_day_until".$inc, $arr, $values_array[$inc]['day_until'], 'Until');
-        $this->konsens_mw_field_hours_minutes($form, $form_state,  "konsens_mw_hm_until".$inc, $values_array[$inc]['hm_until']);
-        $this->sitewide_mw_remove_button($form, $form_state,  "remove-$inc");
+    if($form_state->isSubmitted()){
+      $max = $form_state->get('fields_count');
     }
-  } else {
-    $inc = 0;
-
-    $howmany = \Drupal::config('downtimes.settings')->get('howmany');
-
-    if(!empty($howmany)) {
-      for($inc = 1; $inc <= $howmany; $inc++) {
-          $this->konsens_mw_field_day($form, $form_state,  "konsens_mw_day_from".$inc, $arr, \Drupal::config('downtimes.settings')->get("konsens_mw_day_from$inc"), 'From', 1);
-          $this->konsens_mw_field_hours_minutes($form, $form_state,  "konsens_mw_hm_from".$inc, \Drupal::config('downtimes.settings')->get("konsens_mw_hm_from$inc"));
-          $this->konsens_mw_field_day($form, $form_state,  "konsens_mw_day_until".$inc, $arr, \Drupal::config('downtimes.settings')->get("konsens_mw_day_until$inc"), 'Until');
-          $this->konsens_mw_field_hours_minutes($form, $form_state,  "konsens_mw_hm_until".$inc, \Drupal::config('downtimes.settings')->get("konsens_mw_hm_until$inc"));
-          $this->sitewide_mw_remove_button($form, $form_state,  "remove-$inc");
-      }
-      $form['sitewide_maintenance_windows']['howmany']['#value'] = $howmany;
-    }else {
-      foreach ($arr as $key => $val) {
-	    if(  \Drupal::config('downtimes.settings')->get("konsens_maintenance_windows_$val") ) {
-          $inc++;
-          $this->konsens_mw_field_day($form, $form_state,  "konsens_mw_day_from".$inc, $arr, $val, 'From', 1);
-          $date_time =  new DateTime("01-01-2015 ".\Drupal::config('downtimes.settings')->get('konsens_maintenance_windows_' . $val . '_hours', '').':'.\Drupal::config('downtimes.settings')->get('konsens_maintenance_windows_' . $val . '_minutes', '')); 
-          $date_time = date_format($date_time, 'Y-m-d H:i:s');
-          $this->konsens_mw_field_hours_minutes($form, $form_state,  "konsens_mw_hm_from".$inc, $date_time);
-          $date_time =  new DateTime("01-01-2015 ". \Drupal::config('downtimes.settings')->get('konsens_maintenance_windows_' . $val . '_hours1', '').':'. \Drupal::config('downtimes.settings')->get("konsens_maintenance_windows_' . $val . '_minutes1'"));
-          $date_time = date_format($date_time, 'Y-m-d H:i:s');
-          $this->konsens_mw_field_day($form, $form_state,  "konsens_mw_day_until".$inc, $arr, $val, 'Until');
-          $this->konsens_mw_field_hours_minutes($form, $form_state, "konsens_mw_hm_until".$inc, $date_time);
-          $this->sitewide_mw_remove_button($form, $form_state,  "remove-$inc");
-          $form['sitewide_maintenance_windows']['howmany']['#value'] = $inc;
-        }
-	
-      }
-    }
-    if($inc == 0) {
-      $inc++;
-
-        $this->konsens_mw_field_day($form, $form_state, "konsens_mw_day_from".$inc, $arr, '', 'From', 1);
-        $this->konsens_mw_field_hours_minutes($form, $form_state , "konsens_mw_hm_from".$inc, '');
-        $this->konsens_mw_field_day($form, $form_state, "konsens_mw_day_until".$inc, $arr, '', 'Until');
-        $this->konsens_mw_field_hours_minutes($form, $form_state, "konsens_mw_hm_until".$inc, '');
-
-      $form['sitewide_maintenance_windows']['howmany']['#value'] = $inc;
-    }
-  }
-  $form['addmore'] = array(
-			   '#type' => 'button',
-			   '#default_value' => t('Add more'),
-			   '#prefix' => '<div class="addmore-div">',
-			   '#suffix' => '</div>',
-			   '#ahah' => array(
-					    'path' => 'sitewide_mw_callback',
-					    'wrapper' => 'sitewide_maintenance_windows',
-					    'event' => 'click', // default value: does not need to be set explicitly.
-					    ),
-			   );
-  /*$form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit'),
+    $form_state->set('fields_count', $max);
+    $form['sitewide_maintenance_windows'] = [
+      '#type' => 'details',
+      '#open' => TRUE,
+      '#prefix' => '<div id="names-fieldset-wrapper">',
+      '#suffix' => '</div>',
+    ];
+    $arr = array(
+      "Mon" => t("Mon"),
+      "Tue" => t("Tue"),
+      "Wed" => t("Wed"),
+      "Thu" => t("Thu"),
+      "Fri" => t("Fri"),
+      "Sat" => t("Sat"),
+      "Sun" => t("Sun")
     );
     
-    return $form;*/
-  
-  //$arr = array(t("Mon") => "Mon", t("Tue") => "Tue", t("Wed") => "Wed", t("Thu") => "Thu", t("Fri") => "Fri", t("Sat") => "Sat", t("Sun") => "Sun");
-  /*foreach ($arr as $key => $val) {
-    $form['konsens_maintenance_windows_' . $val] = array(
-    '#type' => 'checkbox',
-    '#prefix' => ($key == t('Mon')) ? '<div class="konsens-wide-maintenance-time"><b>' . t('KONSENS-wide Maintenance Windows:') . '</b>': '<div class="konsens-wide-maintenance-time">',
-    '#default_value' => variable_get('konsens_maintenance_windows_' . $val, NULL),
-    '#title' => $key,
+    for($delta=0; $delta<$max; $delta++) {
+      if (!isset($form['sitewide_maintenance_windows'][$delta])) {
+        if(!empty($savedConfigFields[$delta]['time_from'])){
+          $fromTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s',$savedConfigFields[$delta]['time_from']));
+        }else{
+          $fromTime = '';
+        }
+        if(!empty($savedConfigFields[$delta]['time_to'])){
+          $untilTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s',$savedConfigFields[$delta]['time_to']));
+        }else{
+          $untilTime = '';
+        }
+        
+        $form['sitewide_maintenance_windows'][$delta] = [
+          '#type' => 'fieldset',
+          '#title'=>'value '.$delta,
+          '#prefix' => '<div id="downtimes-fieldset-wrapper">',
+          '#suffix' => '</div>',
+        ];
+        $form['sitewide_maintenance_windows'][$delta]['day_from'] = array(
+          '#type' => 'select',
+          '#options' => $arr,
+          '#title' => 'From',
+          '#default_value'=>isset($savedConfigFields[$delta]['day_from'])?$savedConfigFields[$delta]['day_from']:''
+        );
+        
+        $form['sitewide_maintenance_windows'][$delta]['time_from'] = array(
+          '#type' => 'datetime',
+          '#date_time_element'=>'time',
+          '#date_date_element'=>'none',
+          '#default_value'=>$fromTime
+        );
+        
+        $form['sitewide_maintenance_windows'][$delta]['day_to'] = array(
+          '#type' => 'select',
+          '#options' => $arr,
+          '#title' => 'Until',
+          '#default_value'=>isset($savedConfigFields[$delta]['day_to'])?$savedConfigFields[$delta]['day_to']:''
+        );
+        
+        $form['sitewide_maintenance_windows'][$delta]['time_to'] = array(
+          '#type' => 'datetime',
+          '#date_time_element'=>'time',
+          '#date_date_element'=>'none',
+          '#default_value'=>$untilTime
+        );
+        $form['sitewide_maintenance_windows'][$delta]['is_deleted'] = array(
+          '#type' => 'hidden',
+          '#default_value'=>0,
+          '#attributes'=>['class'=>['isDeleted']]
+        );
+      }
+      $form['sitewide_maintenance_windows'][$delta]['remove'] = array(
+        '#type' => 'button',
+        '#value'=>'Remove',
+        '#attributes'=>['class'=>['btn-error'],'onclick'=>"jQuery(this).parents('#downtimes-fieldset-wrapper').find('.isDeleted').val(1);jQuery(this).parents('#downtimes-fieldset-wrapper').hide();return false;"]
+      );
+    }
+    
+    $form['sitewide_maintenance_windows']['add'] = array(
+      '#type' => 'submit',
+      '#name' => 'addfield',
+      '#value' => t('Add more field'),
+      '#submit' => array(array($this, 'addfieldsubmit')),
+      '#ajax' => array(
+        'callback' => array($this, 'addfieldCallback'),
+        'wrapper' => 'names-fieldset-wrapper',
+        'effect' => 'fade',
+      ),
     );
-    append_konsens_hours_minutes($form, 'konsens_maintenance_windows_' . $val);
-    }*/
-//     $form['#validate'][] = 'scheduled_maintenance_validate';
-    return parent::buildForm($form, $form_state);
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+    );
+    return $form;
   }
 
- /**
+  /**
+    * Ajax submit to add new field.
+    */
+  public function addfieldsubmit(array &$form, FormStateInterface &$form_state) {
+    $max = $form_state->get('fields_count') + 1;
+    $form_state->set('fields_count',$max);
+    $form_state->setRebuild(TRUE);
+  }
+
+  /**
+    * Ajax callback to add new field.
+    */
+  public function addfieldCallback(array &$form, FormStateInterface &$form_state) {
+    return $form['sitewide_maintenance_windows'];
+  }
+  
+  
+
+/*  public function removeCallback(array &$form, FormStateInterface $form_state) {
+    $name_field = $form_state->get('fields_count');
+    $remove_element = $form_state->getTriggeringElement();
+    preg_match('/remove_name_(\d)/', $remove_element['#name'], $matches);
+    dsm($matches);
+    //dsm($form['sitewide_maintenance_windows']["konsens_mw_hm_from" . $matches[1]]);
+    if (isset($matches[1])) {
+      $config = \Drupal::service('config.factory')->getEditable('downtimes.settings');
+      $config->set("konsens_mw_day_from_delete" . $matches[1], 1)->save();
+      unset($form['sitewide_maintenance_windows']["konsens_mw_day_from" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["konsens_mw_hm_from" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["konsens_mw_minutes_from" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["konsens_mw_day_until" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["konsens_mw_hm_until" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["konsens_mw_minutes_until" . $matches[1]]);
+      unset($form['sitewide_maintenance_windows']["remove_name_" . $matches[1]]);
+    }
+    $form_state->setRebuild();
+  }
+*/
+  /**
    * {@inheritDoc}
    */
-
   public function validateForm(array &$form, FormStateInterface $form_state) {
-
-    if($form_state->getValues('op') != 'Add more') {
-      if (!is_numeric($form_state->getValues('maintenance_advance_time'))) {
-      //  form_set_error($form_state->getValues('maintenance_advance_time'), t("Enter Minimum time to schedule a maintenance in Numbers"));
-         $form_state->setErrorByName('maintenance_advance_time', $this->t("Enter Minimum time to schedule a maintenance in Numbers"));
-      }
-    
-      $arr = array(
-        t("Mon") => "Mon", 
-        t("Tue") => "Tue", 
-        t("Wed") => "Wed", 
-        t("Thu") => "Thu", 
-        t("Fri") => "Fri", 
-        t("Sat") => "Sat", 
-        t("Sun") => "Sun");
-
-    $howmany = $form_state->getValues('howmany');
-
-    for($inc = 1; $inc <= $howmany; $inc++) {
-      $from_hour = date('H', strtotime($form_state->getValue("konsens_mw_hm_from$inc")));
-      $from_minute = date('i', strtotime($form_state->getValue("konsens_mw_hm_from$inc")));
-      $until_hour = date('H', strtotime($form_state->getValue("konsens_mw_hm_until$inc")));
-      $until_minute = date('i', strtotime($form_state->getValue("konsens_mw_hm_until$inc")));
-
-      if($from_hour == '' || $until_hour == '') {
-	$form_state->setErrorByName("konsens_mw_hm_from$inc", t("Select Hours"));
-      }
-      if($from_minute == '' || $until_minute == '') {
-	$form_state->setErrorByName("konsens_mw_hm_until$inc", t("Select Minutes"));
-      }
-
-      if($form_state->getValue("konsens_mw_day_from$inc") == $form_state->getValue("konsens_mw_day_until$inc")) {
-	if($from_hour != '' && $from_minute != '' && $until_hour != '' && $until_minute != '') {
-	  $from_time  = ($from_hour * 60) + $from_minute;
-	  $to_time = ($until_hour * 60) + $until_minute;
-	    if($from_time >= $to_time) {
-	      $form_state->setErrorByName("konsens_mw_hm_until$inc", t("End Date must be greater than Start Date."));
-	    }
-	  }
+    $validateDays = array(1=>"Mon",2=>"Tue",3=>"Wed",4=>"Thu",5=>"Fri",6=>"Sat",7=>"Sun");
+    $sitewide_maintenance_windows = $form_state->getValue('sitewide_maintenance_windows');
+    foreach($sitewide_maintenance_windows as $key=>$field){
+      if((string)$key != 'add' && $field['is_deleted'] == 0){
+        if(array_search($field['day_from'],$validateDays) > array_search($field['day_to'],$validateDays)){
+          $form_state->setErrorByName('sitewide_maintenance_windows',$this->t('From day should be before Until day'));
+        }
+        if(array_search($field['day_from'],$validateDays) == array_search($field['day_to'],$validateDays) && $field['time_from'] > $field['time_to']){
+          $form_state->setErrorByName('sitewide_maintenance_windows',$this->t('From time should be before Until time'));
         }
       }
-
+      
     }
-
-
-    parent::validateForm($form, $form_state);
+    return parent::validateForm($form, $form_state);
   }
 
   /**
    * {@inheritDoc}
    */
-
   /*
    * submit handler for the problems settings page
    * selected services for the individual groups are stored in the table "group_problems_view"
    */
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    //pr($form_state->getValue('sitewide_maintenance_windows'));exit;
+    $config = \Drupal::service('config.factory')->getEditable('downtimes.settings');
+    $config->set('maintenance_advance_time', $form_state->getValue('maintenance_advance_time'))
+        ->save();
+    $sitewide_maintenance_windows = $form_state->getValue('sitewide_maintenance_windows');
+    unset($sitewide_maintenance_windows['add']);
+    $data = [];
+    foreach($sitewide_maintenance_windows as $key=>$field){
+      unset($field['remove']);
+      if($field['is_deleted'] == 0){
+        $data[$key]['day_from'] = $field['day_from'];
+        $data[$key]['day_to'] = $field['day_to'];
+        $data[$key]['time_from'] = isset($field['time_from'])?$field['time_from']->format('H:i:s'):'';
+        $data[$key]['time_to'] = isset($field['time_to'])?$field['time_to']->format('H:i:s'):'';
+      }
+      
+    }
+    $config->set('sitewide_maintenance_windows', $data)->save();
+    parent::submitForm($form, $form_state);
+  }
+  
+  /*
 
-     parent::submitForm($form, $form_state);
+  // Add day dropdown to maintenance window
+  function konsens_mw_field_day(array &$form, FormStateInterface $form_state, $name, $options, $data, $title, $add_prefix = 0) {
+    $form['sitewide_maintenance_windows'][$name] = array(
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => $data,
+      '#title' => t($title),
+    );
+    if ($add_prefix) {
+      $form['sitewide_maintenance_windows'][$name]['#prefix'] = '<div class=mw-item-set>';
+    }
   }
 
-	// Add day dropdown to maintenance window
-	function konsens_mw_field_day(array &$form, FormStateInterface $form_state, $name, $options, $data, $title, $add_prefix = 0) {
-	  $form['sitewide_maintenance_windows'][$name] = array(
-							       '#type' => 'select',
-							       '#options' => $options,
-							       '#default_value' => $data,
-							       '#title' => t($title),
-							       );
-	  if($add_prefix) {
-	    $form['sitewide_maintenance_windows'][$name]['#prefix'] = '<div class=mw-item-set>';
-	  }
-	  
-	}
+  // Add Hour Minute dropdown to maintenance window
+  function konsens_mw_field_hours_minutes(array &$form, FormStateInterface $form_state, $name, $data) {
 
-	// Add Hour Minute dropdown to maintenance window
-	function konsens_mw_field_hours_minutes(array &$form, FormStateInterface $form_state, $name, $data) {
-	  
-	  $date_format = 'H:i';
-	  $form['sitewide_maintenance_windows'][$name] = array(
-							       //'#title' => t($title),
-							       '#type' => 'datetime',
-							       '#date_format' => $date_format,
-							       '#date_label_position' => 'within',
-							       '#default_value' => $data,
-							       );
-	  
-	}
+    $date_format = 'H:i';
+    $form['sitewide_maintenance_windows'][$name] = array(
+      //'#title' => t($title),
+      '#type' => 'datetime',
+      '#date_format' => $date_format,
+      '#date_label_position' => 'within',
+      '#default_value' => $data,
+    );
+  }
 
-    function sitewide_mw_remove_button(array &$form, FormStateInterface $form_state) {
-        $form['sitewide_maintenance_windows'][$name] = array(
-            '#value' => "<a href='' class='mw-remove' id='$name'>Remove</a></div>",
-        );
-    }
-
+  function sitewide_mw_remove_button(array &$form, FormStateInterface $form_state, $name) {
+    $form['sitewide_maintenance_windows'][$name] = array(
+      '#value' => "<a href='' class='mw-remove' id='$name'>Remove</a></div>",
+    );
+  }
+*/
 }
-
