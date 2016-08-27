@@ -235,7 +235,6 @@ class ScheduledmaintenanceForm extends ConfigFormBase {
         $data[$key]['time_from'] = isset($field['time_from'])?$field['time_from']->format('H:i:s'):'';
         $data[$key]['time_to'] = isset($field['time_to'])?$field['time_to']->format('H:i:s'):'';
       }
-      
     }
     $config->set('sitewide_maintenance_windows', $data)->save();
     parent::submitForm($form, $form_state);

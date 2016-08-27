@@ -48,10 +48,10 @@ class CustNodeController extends ControllerBase {
     return $view_builder->view($user);;
   }
 
-  function hzdGroupAccess(){
+  static function hzdGroupAccess(){
     if($group = \Drupal::routeMatch()->getParameter('group')){
-      if($group->getMember(\Drupal::currentUser())){
-	return AccessResult::allowed();
+      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+				return AccessResult::allowed();
       }else{
         return AccessResult::forbidden();
       }
