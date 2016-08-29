@@ -502,6 +502,7 @@ class HzdcustomisationStorage {
     $unserialize_service_time = unserialize($service_time);
     if ($unserialize_service_time) {
       $get_service_time = array_chunk($unserialize_service_time, 3, TRUE);
+      $service_vals = '';
       foreach ($get_service_time as $time) {
         $service_vals .= "<tr>";
         $i = 1;

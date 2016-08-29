@@ -11,6 +11,7 @@ use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Core\Url;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Datetime\DrupalDateTime;
+
 define('INCEDENT_MANAGEMENT', 24);
 // Use Drupal\Core\Utility\Token;
 /*
@@ -256,14 +257,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
      */
     $node = \Drupal::routeMatch()->getParameter('node');
     //pr($node);exit;
-    
+
     if (empty($node)) {
       // $service_name = db_result(db_query("SELECT title FROM {node} WHERE nid=%d", $_REQUEST['service']));.
       $service_name = \Drupal::database()->select('node_field_data', 'nfd')
               ->fields('nfd', array('title'))
               ->condition('nid', $_REQUEST['service'], '=')
               ->execute()->fetchField();
-    
+
       // drupal_set_title(check_plain(t("Service Profile for ") . $service_name['title']));.
       /**
        *  TO DO
@@ -280,12 +281,12 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $serialized_data = unserialize($data);
 //pr($serialized_data);exit;
       $maintenance_windows = \Drupal::database()->select('service_profile_maintenance_windows', 'smw')
-              ->fields('smw', array('id','day', 'day_until', 'from_time', 'to_time'))
+              ->fields('smw', array('id', 'day', 'day_until', 'from_time', 'to_time'))
               ->condition('nid', $node->id(), '=')
               ->execute()->fetchAll();
-              foreach($maintenance_windows as $val){
-                $mwData[] = array('id'=>$val->id,'day'=>$val->day,'day_until'=>$val->day_until,'from_time'=>$val->from_time,'to_time'=>$val->to_time);
-              }
+      foreach ($maintenance_windows as $val) {
+        $mwData[] = array('id' => $val->id, 'day' => $val->day, 'day_until' => $val->day_until, 'from_time' => $val->from_time, 'to_time' => $val->to_time);
+      }
     }
     $arr = array(
       "Mon" => "Mon",
@@ -309,10 +310,10 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     $form['#tree'] = TRUE;
     $max = count($mwData);
-    if(empty($max)) {
+    if (empty($max)) {
       $max = 0;
     }
-    if($form_state->isSubmitted()){
+    if ($form_state->isSubmitted()) {
       $max = $form_state->get('fields_count');
     }
     $form_state->set('fields_count', $max);
@@ -331,25 +332,27 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       "Sat" => t("Sat"),
       "Sun" => t("Sun")
     );
-    for($delta=0; $delta<$max; $delta++) {
+    for ($delta = 0; $delta < $max; $delta++) {
       if (!isset($form['maintenance_windows'][$delta])) {
-        if(!empty($mwData[$delta]['from_time'])){
-          $frmDateTime = \DateTime::createFromFormat('Y-m-d H:i:s',$mwData[$delta]['from_time'])->format('H:i:s');
-          $fromTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s',$frmDateTime));
+        if (!empty($mwData[$delta]['from_time'])) {
+          $frmDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $mwData[$delta]['from_time'])->format('H:i:s');
+          $fromTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s', $frmDateTime));
           //echo 111;pr($frmDateTime);exit;
-        }else{
+        }
+        else {
           $fromTime = '';
         }
-        if(!empty($mwData[$delta]['to_time'])){
-          $toDateTime = \DateTime::createFromFormat('Y-m-d H:i:s',$mwData[$delta]['to_time'])->format('H:i:s');
-          $untilTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s',$toDateTime));
-        }else{
+        if (!empty($mwData[$delta]['to_time'])) {
+          $toDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $mwData[$delta]['to_time'])->format('H:i:s');
+          $untilTime = DrupalDateTime::createFromDateTime(\DateTime::createFromFormat('H:i:s', $toDateTime));
+        }
+        else {
           $untilTime = '';
         }
-        
+
         $form['maintenance_windows'][$delta] = [
           '#type' => 'fieldset',
-          '#title'=>'value '.$delta,
+          '#title' => 'value ' . $delta,
           '#prefix' => '<div id="downtimes-fieldset-wrapper">',
           '#suffix' => '</div>',
         ];
@@ -357,43 +360,43 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           '#type' => 'select',
           '#options' => $arr,
           '#title' => 'From',
-          '#default_value'=>isset($mwData[$delta]['day'])?$mwData[$delta]['day']:''
+          '#default_value' => isset($mwData[$delta]['day']) ? $mwData[$delta]['day'] : ''
         );
-        
+
         $form['maintenance_windows'][$delta]['from_time'] = array(
           '#type' => 'datetime',
-          '#date_time_element'=>'time',
-          '#date_date_element'=>'none',
-          '#default_value'=>$fromTime
+          '#date_time_element' => 'time',
+          '#date_date_element' => 'none',
+          '#default_value' => $fromTime
         );
-        
+
         $form['maintenance_windows'][$delta]['day_until'] = array(
           '#type' => 'select',
           '#options' => $arr,
           '#title' => 'Until',
-          '#default_value'=>isset($mwData[$delta]['day_until'])?$mwData[$delta]['day_until']:''
+          '#default_value' => isset($mwData[$delta]['day_until']) ? $mwData[$delta]['day_until'] : ''
         );
-        
+
         $form['maintenance_windows'][$delta]['to_time'] = array(
           '#type' => 'datetime',
-          '#date_time_element'=>'time',
-          '#date_date_element'=>'none',
-          '#default_value'=>$untilTime
+          '#date_time_element' => 'time',
+          '#date_date_element' => 'none',
+          '#default_value' => $untilTime
         );
         $form['maintenance_windows'][$delta]['is_deleted'] = array(
           '#type' => 'hidden',
-          '#default_value'=>0,
-          '#attributes'=>['class'=>['isDeleted']]
+          '#default_value' => 0,
+          '#attributes' => ['class' => ['isDeleted']]
         );
         $form['maintenance_windows'][$delta]['original_id'] = array(
           '#type' => 'hidden',
-          '#value'=>isset($mwData[$delta]['id'])?$mwData[$delta]['id']:'',
+          '#value' => isset($mwData[$delta]['id']) ? $mwData[$delta]['id'] : '',
         );
       }
       $form['maintenance_windows'][$delta]['remove'] = array(
         '#type' => 'button',
-        '#value'=>'Remove',
-        '#attributes'=>['class'=>['btn-error'],'onclick'=>"jQuery(this).parents('#downtimes-fieldset-wrapper').find('.isDeleted').val(1);jQuery(this).parents('#downtimes-fieldset-wrapper').hide();return false;"]
+        '#value' => 'Remove',
+        '#attributes' => ['class' => ['btn-error'], 'onclick' => "jQuery(this).parents('#downtimes-fieldset-wrapper').find('.isDeleted').val(1);jQuery(this).parents('#downtimes-fieldset-wrapper').hide();return false;"]
       );
     }
     $form['maintenance_windows']['add'] = array(
@@ -401,7 +404,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#name' => 'addfield',
       '#value' => t('Add more field'),
       '#submit' => array('addfieldsubmit'),
-      '#limit_validation_errors'=>[],
+      '#limit_validation_errors' => [],
       '#ajax' => array(
         'callback' => 'addfieldCallback',
         'wrapper' => 'names-fieldset-wrapper',
@@ -414,7 +417,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $dependent_service_options = get_related_downtime_services('downtimes');
     // pr($dependent_service_options);exit;
     $form['field_dependent_downtimeservices'] = array(
-      '#title'=>t('Dependant Services'),
+      '#title' => t('Dependant Services'),
       '#type' => 'checkboxes',
       '#multiple' => true,
       '#options' => $dependent_service_options
@@ -433,22 +436,22 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 
 function addfieldsubmit(array &$form, FormStateInterface &$form_state) {
   $max = $form_state->get('fields_count') + 1;
-  $form_state->set('fields_count',$max);
+  $form_state->set('fields_count', $max);
   $form_state->setRebuild(TRUE);
   return $form;
 }
 
 /**
-  * Ajax callback to add new field.
-  */
+ * Ajax callback to add new field.
+ */
 function addfieldCallback(array &$form, FormStateInterface &$form_state) {
   return $form['maintenance_windows'];
 }
 
-function cleanServices($data){
+function cleanServices($data) {
   $retArr = [];
-  foreach($data as $service){
-    if(!empty($service->field_dependent_downtimeservices_target_id)){
+  foreach ($data as $service) {
+    if (!empty($service->field_dependent_downtimeservices_target_id)) {
       $retArr[$service->field_dependent_downtimeservices_target_id] = $service->field_dependent_downtimeservices_target_id;
     }
   }
@@ -496,23 +499,25 @@ function downtimes_set_default_values(&$form, $nid) {
 function append_hours_minutes(&$form, $name, $data) {
   //$date_format = 'H:i';
   //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
-  if(!empty($data[$name . '_from'])){
-    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s',$data[$name . '_from']));
-  }else{
+  if (!empty($data[$name . '_from'])) {
+    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_from']));
+  }
+  else {
     $fromTime = '';
   }
-  if(!empty($data[$name . '_until'])){
-    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));
-  }else{
+  if (!empty($data[$name . '_until'])) {
+    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_until']));
+  }
+  else {
     $untilTime = '';
   }
 
   $form[$name . '_from'] = array(
     '#title' => t('From'),
     '#type' => 'datetime',
-    '#date_time_element'=>'time',
-    '#date_date_element'=>'none',
-    '#date_format'=>'H:i',
+    '#date_time_element' => 'time',
+    '#date_date_element' => 'none',
+    '#date_format' => 'H:i',
     '#date_label_position' => 'within',
     '#default_value' => $fromTime,
   );
@@ -520,9 +525,9 @@ function append_hours_minutes(&$form, $name, $data) {
   $form[$name . '_until'] = array(
     '#title' => t('Until'),
     '#type' => 'datetime',
-    '#date_time_element'=>'time',
-    '#date_date_element'=>'none',
-    '#date_format'=>'H:i',
+    '#date_time_element' => 'time',
+    '#date_date_element' => 'none',
+    '#date_format' => 'H:i',
     '#date_label_position' => 'within',
     '#default_value' => $untilTime
       // '#suffix' => '</div>',.
@@ -538,8 +543,8 @@ function field_hours_minutes(&$form, $name, $data) {
   $form[maintenancewindows][$name] = array(
     // '#title' => t($title),
     '#type' => 'datetime',
-    '#date_time_element'=>'time',
-    '#date_date_element'=>'none',
+    '#date_time_element' => 'time',
+    '#date_date_element' => 'none',
     '#date_label_position' => 'within',
     '#default_value' => $data,
   );
@@ -612,33 +617,32 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
         $form_state->setErrorByName('service_time_' . $vals, t("Select day"));
       }
     }
-    
-    // added by sandeep
-    //$validateDays = array(1=>"Mon",2=>"Tue",3=>"Wed",4=>"Thu",5=>"Fri",6=>"Sat",7=>"Sun");
-    //$maintenance_windows = $form_state->getValue('maintenance_windows');
-    //foreach($maintenance_windows as $key=>$field){
-    //  if((string)$key != 'add' && $field['is_deleted'] == 0){
-    //    if(array_search($field['day_from'],$validateDays) > array_search($field['day_to'],$validateDays)){
-    //      $form_state->setErrorByName('maintenance_windows',$this->t('From day should be before Until day'));
-    //    }
-    //    if(array_search($field['day_from'],$validateDays) == array_search($field['day_to'],$validateDays) && $field['time_from'] > $field['time_to']){
-    //      $form_state->setErrorByName('maintenance_windows',$this->t('From time should be before Until time'));
-    //    }
-    //  }
-    //  
-    //}
 
+    // added by sandeep
+    $validateDays = array(1 => "Mon", 2 => "Tue", 3 => "Wed", 4 => "Thu", 5 => "Fri", 6 => "Sat", 7 => "Sun");
+    $maintenance_windows = $form_state->getValue('maintenance_windows');
+    //pr($maintenance_windows);exit;
+    foreach ($maintenance_windows as $key => $field) {
+      if ((string) $key != 'add' && $field['is_deleted'] == 0) {
+        if (array_search($field['day'], $validateDays) > array_search($field['day_until'], $validateDays)) {
+          $form_state->setErrorByName('maintenance_windows', t('From day should be before Until day'));
+        }
+        if (array_search($field['day'], $validateDays) == array_search($field['day_until'], $validateDays) && $field['from_time'] > $field['to_time']) {
+          $form_state->setErrorByName('maintenance_windows', t('From time should be before Until time'));
+        }
+      }
+    }
   }
-  
+
   //pr($form_state->getErrors());exit;
   if ($form_state->getErrors()) {
     // $form_idform_idform_idform_id = $_POST['form_id'];.
     //$form_state['post'] =
     //$form['#post'] = $_POST;
-     //$args = $form['#parameters'];
-     // $form_build_id = $_POST['form_build_id'];
-     // //drupal_process_form($form_id, $form, $form_state);
-     // $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id); 
+    //$args = $form['#parameters'];
+    // $form_build_id = $_POST['form_build_id'];
+    // //drupal_process_form($form_id, $form, $form_state);
+    // $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id); 
   }
 }
 
@@ -673,8 +677,10 @@ function downtimes_node_insert($node) {
           'request_status' => 1,
     ]);
     $group_content->save();
-  }elseif($node->getType() == 'service_profile'){
-    saveSeviceTime($node,$_POST);
+  }
+  elseif ($node->getType() == 'service_profile') {
+    saveSeviceTime($node, $_POST);
+    saveMaintenanceWindows($node, $_POST);
   }
 }
 
@@ -699,39 +705,42 @@ function downtimes_node_update($node) {
         ->fields($record)
         ->condition('downtime_id', $node->id())
         ->execute();
-  }elseif($node->getType() == 'service_profile'){
-    saveSeviceTime($node,$_POST);
-    saveMaintenanceWindows($node,$_POST);
   }
-  
+  elseif ($node->getType() == 'service_profile') {
+    saveSeviceTime($node, $_POST);
+    saveMaintenanceWindows($node, $_POST);
+  }
+
   //pr($serviceData);exit;
 }
 
-function saveMaintenanceWindows($node,$data){
+function saveMaintenanceWindows($node, $data) {
   $mwData = $data['maintenance_windows'];
   $serviceId = $node->get('field_dependent_service')->first()->get('entity')->getTarget()->getValue()->id();
-  foreach($mwData as $item){
+  foreach ($mwData as $item) {
     $item['from_time'] = date('Y-m-d') . ' ' . $item['from_time']['time'];
     $item['to_time'] = date('Y-m-d') . ' ' . $item['to_time']['time'];
-    if(!empty($item['original_id'])){
-      if($item['is_deleted'] == 0){
+    if (!empty($item['original_id'])) {
+      if ($item['is_deleted'] == 0) {
         $query = \Drupal::database()->update('service_profile_maintenance_windows')
-          ->fields(['day'=>$item['day'],'from_time'=>$item['from_time'],'to_time'=>$item['to_time'],'day_until'=>$item['day_until'],'service_id'=>$serviceId])
-          ->condition('id',$item['original_id'])
-          ->execute();
-      }else{
-        $query = \Drupal::database()->delete('service_profile_maintenance_windows')
-          ->condition('id',$item['original_id'])->execute();
+            ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId])
+            ->condition('id', $item['original_id'])
+            ->execute();
       }
-    }else{
+      else {
+        $query = \Drupal::database()->delete('service_profile_maintenance_windows')
+                ->condition('id', $item['original_id'])->execute();
+      }
+    }
+    else {
       $query = \Drupal::database()->insert('service_profile_maintenance_windows')
-          ->fields(['day'=>$item['day'],'from_time'=>$item['from_time'],'to_time'=>$item['to_time'],'day_until'=>$item['day_until'],'service_id'=>$serviceId,'nid'=>$node->id()])
+          ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId, 'nid' => $node->id()])
           ->execute();
     }
   }
 }
 
-function saveSeviceTime($node,$data){
+function saveSeviceTime($node, $data) {
   $arr = array(
     "Mon" => "Mon",
     "Tue" => "Tue",
@@ -743,18 +752,18 @@ function saveSeviceTime($node,$data){
   );
   $serviceData = [];
   foreach ($arr as $val) {
-    if($data['service_time_' . $val]){
+    if ($data['service_time_' . $val]) {
       $serviceData['service_time_' . $val] = $data['service_time_' . $val];
-      $serviceData['service_time_' . $val.'_from'] = $data['service_time_' . $val.'_from']['time'];
-      $serviceData['service_time_' . $val.'_until'] = $data['service_time_' . $val.'_until']['time'];
+      $serviceData['service_time_' . $val . '_from'] = $data['service_time_' . $val . '_from']['time'];
+      $serviceData['service_time_' . $val . '_until'] = $data['service_time_' . $val . '_until']['time'];
     }
-  
-  $query = \Drupal::database()->update('service_profile_maintenance_service_time')
-    ->fields(['day_time'=>serialize($serviceData)])
-    ->condition('nid',$node->id())
-    ->execute();
+
+    $query = \Drupal::database()->update('service_profile_maintenance_service_time')
+        ->fields(['day_time' => serialize($serviceData)])
+        ->condition('nid', $node->id())
+        ->execute();
   }
-  return (bool)$query;
+  return (bool) $query;
 }
 
 function get_unix_timestamp($date, $format = '%d.%m.%Y - %H:%M') {
@@ -860,15 +869,19 @@ function pass_maitenance_value(&$form) {
       $advance_time[$id] = array();
     }
   }
-  $howmany = \Drupal::config('downtimes.settings')->get('howmany');
+  $config = \Drupal::config('downtimes.settings');
+  $savedConfigFields = $config->get('sitewide_maintenance_windows');
+  $howmany = count($savedConfigFields);
   if (!empty($howmany)) {
-    for ($inc = 1; $inc <= $howmany; $inc++) {
-      $day = \Drupal::config('downtimes.settings')->get("konsens_mw_day_from$inc");
-      $from_time = \Drupal::config('downtimes.settings')->get("konsens_mw_hm_from$inc" . ':' . "konsens_mw_minutes_from$inc");
-      $to_time = \Drupal::config('downtimes.settings')->get("konsens_mw_hm_until$inc" . ':' . "konsens_mw_minutes_until$inc");
-      $sitewide[$day] = array('from_time' => $from_time,
+    for ($delta = 0; $delta < $howmany; $delta++) {
+      $day = $savedConfigFields[$delta]['day_from'];
+      $from_time = $savedConfigFields[$delta]['time_to'];
+      $to_time = $savedConfigFields[$delta]['time_to'];
+      $sitewide[$day] = array(
+        'from_time' => $from_time,
         'to_time' => $to_time,
-        'day_until' => \Drupal::config('downtimes.settings')->get("konsens_mw_day_until$inc"));
+        'day_until' => $savedConfigFields[$delta]['day_to']
+      );
     }
   }
   else {
@@ -891,7 +904,8 @@ function pass_maitenance_value(&$form) {
     'maintenance' => $maintenance,
     'advance_time' => $advance_time,
     'maintain' => $sitewide,
-    'adv' => $adv_time
+    'sitewide_maintain' => $sitewide,
+    'sitewide_adv' => $adv_time
   );
 }
 

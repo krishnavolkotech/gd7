@@ -3,7 +3,6 @@
         attach: function (context, settings) {
             var a = settings.downtime;
             $('.reason-for-noncompliance').hide();
-
             function convert_to_valid_format(date) {
                 var temp = date.split('.');
                 var remove_white_space = temp['2'].replace(/-+/g, '');
@@ -39,9 +38,8 @@
             // Advance Time validations.
             $('input#edit-startdate-planned').blur(function () {
                 var start_date = convert_to_valid_format($(this).val());
-                var checkbox_count = $("#edit-services-effected--wrapper input:checked").length;
+                var checkbox_count = $("#edit-services-effected input:checked").length;
                 if (checkbox_count) {
-
                     //Getting today's timestamp.
                     var today = today_date();
                     var present = present_date();
@@ -54,22 +52,21 @@
                         $('input#edit-startdate-planned').addClass('error');
                         return;
                     }
-
-                    $("#edit-services-effected--wrapper input:checkbox:checked").each(function () {
+                    $("#edit-services-effected input:checkbox:checked").each(function () {
                         var service_id = $(this).val();
                         if (a.advance_time[service_id] instanceof Object) {
                             if (a.advance_time[service_id].adv_time)
                                 max_adv_time.push(a.advance_time[service_id].adv_time * 60);
                         }
                     });
-
+                    
                     if (max_adv_time.length) {
                         max_adv_time = Math.max.apply(Math, max_adv_time);
                     } else {
                         max_adv_time = a.sitewide_adv;
                     }
-
-                    $("#edit-services-effected--wrapper input:checkbox:checked").each(function () {
+                    
+                    $("#edit-services-effected input:checkbox:checked").each(function () {
                         var service_id = $(this).val();
                         if (a.advance_time[service_id].adv_time) {
                             var adv_in_seconds = a.advance_time[service_id].adv_time * 60 * 60;
@@ -79,7 +76,6 @@
                                 $('input#edit-startdate-planned').removeClass('error');
                                 $('input#edit-maintenance-type').val("R");
                                 $('input#edit-startdate-planned').removeClass('warning');
-                                return;
                             } else if ((diff <= adv_in_seconds) && (diff >= (a.sitewide_adv * 60))) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
                                 $('input#edit-maintenance-type').val("I");
@@ -87,13 +83,11 @@
                                 $('input#edit-startdate-planned').removeClass('error');
                                 $('input#edit-startdate-planned').addClass('warning');
                                 $('input#edit-startdate-planned').after('<p class="warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
-                                return;
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                                 $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
                                 $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
                                 $('input#edit-startdate-planned').addClass('error');
-                                return;
                             }
                         }
 
@@ -105,7 +99,6 @@
                                 $('input#edit-startdate-planned').removeClass('error');
                                 $('input#edit-maintenance-type').val("R");
                                 $('input#edit-startdate-planned').removeClass('warning');
-                                return;
                             } else if ((diff <= (max_adv_time * 60)) && (diff >= (a.sitewide_adv * 60))) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
                                 $('input#edit-maintenance-type').val("I");
@@ -113,13 +106,11 @@
                                 $('input#edit-startdate-planned').removeClass('error');
                                 $('input#edit-startdate-planned').addClass('warning');
                                 $('input#edit-startdate-planned').after('<p class="warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
-                                return;
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                                 $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
                                 $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
                                 $('input#edit-startdate-planned').addClass('error');
-                                return;
                             }
                         }
                     });
@@ -136,13 +127,13 @@
                     $('input#edit-startdate-planned').addClass('error');
                 }
             });
-
+            
             // Maintenance window validations.
-            $('input#edit-enddate-planned-date').blur(function () {
+            $('input#edit-enddate-planned').blur(function () {
                 if ($(this).val()) {
                     var end_date = $(this).val().split('-');
                     end_date = end_date[1];
-                    var checkbox_count = $("#edit-services-effected--wrapper input:checked").length;
+                    var checkbox_count = $("#edit-services-effected input:checked").length;
                     if (checkbox_count) {
                         var start_date_list = new Array();
                         var end_date_list = new Array();
@@ -158,11 +149,11 @@
                         var start_day = $('input#edit-startdate-planned').val();
                         start_day = new Date(convert_to_valid_format(start_day));
                         start_day = weekday[start_day.getDay()];
-
+                        
                         var end_day = $(this).val();
                         end_day = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day.getDay()];
-
+                       
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
                             $('.reason-for-noncompliance').show();
@@ -175,7 +166,7 @@
                         }
                         return true;
 
-                        $("#edit-services-effected--wrapper input:checkbox:checked").each(function () {
+                        $("#edit-services-effected input:checkbox:checked").each(function () {
                             var service_id = $(this).val();
                             if ((a.maintenance[service_id][start_day] instanceof Object) && (a.maintenance[service_id][end_day] instanceof Object)) {
                                 start_date_list.push(get_time_in_seconds(a.maintenance[service_id][start_day].from_time));
@@ -242,14 +233,14 @@
                 start_day = new Date(convert_to_valid_format(start_day));
                 start_day = weekday[start_day.getDay()];
 
-                var end_day = $('input#edit-enddate-planned-date').val();
+                var end_day = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_day));
                 end_day = weekday[end_day.getDay()];
 
                 var start_day1 = $('input#edit-startdate-planned').val().split("-");
                 start_day1[0] = $.trim(start_day1[0]);
 
-                var end_day1 = $('input#edit-enddate-planned-date').val().split("-");
+                var end_day1 = $('input#edit-enddate-planned').val().split("-");
                 end_day1[0] = $.trim(end_day1[0]);
                 var sitewide_from = get_time_in_seconds(a.sitewide_maintain[start_day].from_time);
                 var sitewide_to = get_time_in_seconds(a.sitewide_maintain[end_day].to_time);
@@ -291,7 +282,7 @@
                 start_day = new Date(convert_to_valid_format(start_date));
                 start_day = start_day.getDay();
 
-                var end_date = $('input#edit-enddate-planned-date').val();
+                var end_date = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_date));
                 end_day = end_day.getDay();
 
@@ -302,7 +293,7 @@
                     return 1;
                 }
 
-                $("#edit-services-effected--wrapper input:checkbox:checked").each(function () {
+                $("#edit-services-effected input:checkbox:checked").each(function () {
                     passed = 0;
                     var service_id = $(this).val();
                     $.each(a.maintenance[service_id], function (key, value) {
@@ -343,7 +334,6 @@
                 start_day = start_day.getDay();
                 var end_day = new Date(convert_to_valid_format(end_date));
                 end_day = end_day.getDay();
-
                 $.each(a.sitewide_maintain, function (key, value) {
                     var check_day = 0;
                     var day_from_index = jQuery.inArray(key, weekday);
@@ -383,7 +373,7 @@
                     }
                 }
                 if (end_day == day_until_index) {
-                    var end_time = $('input#edit-enddate-planned-date').val().split('-');
+                    var end_time = $('input#edit-enddate-planned').val().split('-');
                     end_time = end_time[1];
                     end_time = get_time_in_seconds(end_time);
                     var service_end_time = get_time_in_seconds(service_to_time);
