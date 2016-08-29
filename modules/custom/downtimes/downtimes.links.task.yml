@@ -28,6 +28,12 @@ downtimes.create_maintenance:
   base_route: downtimes.new_downtimes_controller_newDowntimes #same as the route name
   weight: 3
   
+downtimes.service_profiles:
+  title: 'Additional information for creators'
+  route_name: downtimes.service_profiles #route defined in .routing.yml
+  base_route: downtimes.new_downtimes_controller_newDowntimes #same as the route name
+  weight: 4
+  
 #add another tab next to the base tab
 downtimes.downtimes_scheduled_maintenance_mail_template_form: #name it same as route to avoid confusion
   title: 'Mail Template'
