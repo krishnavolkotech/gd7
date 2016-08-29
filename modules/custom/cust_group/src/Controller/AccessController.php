@@ -20,8 +20,10 @@ class AccessController extends ControllerBase {
         ->fields('gcfd',['gid'])
         ->condition('gcfd.entity_id',$node->id())
         ->execute()->fetchField();
-   
-    if($checkGroupNode){
+    if(\Drupal::currentUser()->id() == 1){
+      return AccessResult::allowed();
+    }
+    if($checkGroupNode || \Drupal::currentUser()->id() == 1){
       return \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
     }
     return AccessResult::neutral();
