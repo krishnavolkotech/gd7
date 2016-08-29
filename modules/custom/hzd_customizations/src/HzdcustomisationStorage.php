@@ -611,7 +611,7 @@ class HzdcustomisationStorage {
     return $form['reset'] = array(
       '#type' => 'button',
       '#value' => t('Reset'),
-      '#attributes' => array('onclick' => "reset_form_elements()"),
+      //'#attributes' => array('onclick' => "reset_form_elements()"),
       '#prefix' => " <div class = 'reset_form'><div class = 'reset_all'>",
       '#suffix' => '</div><div style = "clear:both"></div> </div>'
     );
@@ -621,7 +621,7 @@ class HzdcustomisationStorage {
     $user = \Drupal::currentUser();
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
-
+    
     $reasons = array(
       t('Please select a reason here'),
       t('Urgency of the maintenance'),
@@ -664,7 +664,6 @@ class HzdcustomisationStorage {
     else {
       $state = " ds.state_id != 0";
     }
-
     if ($string == 'archived') {
       $sql_where = str_replace('and resolved = 1', 'and (resolved = 1 or cancelled = 1)', $sql_where);
       $select = "select group_concat(distinct title separator'<br>') as service,
@@ -773,7 +772,7 @@ class HzdcustomisationStorage {
         $query->join('group_content_field_data', 'oa', 'sd.downtime_id = oa.entity_id');
         $query->join('states', 's', 's.id=sd.state_id');
         $query->groupBy('sd.downtime_id, n.uid, sd.downtime_id, sd.reason, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
-        $query->where('sd.service_id = n.nid AND (sd.resolved = 1 OR sd.cancelled = 1) AND sd.service_id IN (SELECT gdv.service_id AS state_service_id FROM   {group_downtimes_view} gdv,  {downtimes} ds WHERE  ' . $service . ' AND ' . $state . ' AND group_id = ' . $group_id . ' ) ');
+        $query->where('sd.service_id = n.nid AND (sd.resolved = 1 OR sd.cancelled = 1) AND sd.service_id IN (SELECT gdv.service_id AS state_service_id FROM   {group_downtimes_view} gdv,  {downtimes} ds WHERE  ' . $service . ' AND ' . $state . ' AND group_id = ' . $group_id . ' ) ' . $sql_where);
         $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
         $result = $pager->execute();
       }
