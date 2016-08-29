@@ -27,7 +27,7 @@ class HzdreleasemanagementStorage {
  * @type:type of the file (release, in progress, locked)
  * @returns the status. 
 */
-function release_reading_csv($handle, $header_values, $type, $file_path) {
+static public function release_reading_csv($handle, $header_values, $type, $file_path) {
   setlocale(LC_ALL, 'de_DE.UTF-8');
 //delete the nodes if the release type is locked or in progress.
   $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
@@ -43,18 +43,15 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     $node_ids->Fields('nfrt', array('entity_id'));
     $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');  
     $nids = $node_ids->execute()->fetchCol();
- //   echo '<pre>';  print_r($nids); exit;
   
     $query = db_select('node', 'n');
     $query->Fields('n', array('nid'));
     $query->condition('nid',$nids, 'IN');
     $locked_values = $query->execute()->fetchAssoc();
-
-  //  echo '<pre>';   print_r($locked_values);  exit; 
 //  $release_management_group_id = $query->execute()->fetchCol();
 
     foreach ($locked_values as $locked_value) {
-      $locked_nid_values[] = $locked_value['nid'];
+      $locked_nid_values[] = $locked_value->nid;
     }
     if (fopen($file_path, "r")) {
         $file = fopen($file_path, "r");
@@ -94,7 +91,6 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
       }
      // $values['type'] = SafeMarkup::checkPlain($type);
       $values['type'] = $type;
-      // echo '<pre>'; print_r($values);
       if ($values['title']) {
         $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
         if ($validation) {
@@ -115,7 +111,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  /*
   * function for saving release node
   */
- function saving_release_node($values) {
+ static public function saving_release_node($values) {
    global $user;
     $query = \Drupal::database()->select('groups_field_data', 'gfd');
     $query->Fields('gfd', array('id'));
@@ -137,7 +133,9 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
   
    // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));
-   $field_date_value_query = db_select('node__field_date', 'ntr')->Fields('ntr',array('field_date_value'))->condition('entity_id', $nid, '=');
+   $field_date_value_query = db_select('node__field_date', 'ntr')
+           ->Fields('ntr',array('field_date_value'))
+           ->condition('entity_id', $nid, '=');
 
    $field_date_value = $field_date_value_query->execute()->fetchAssoc();
    // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));
@@ -150,6 +148,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
    $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr',array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
 
    $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
+
    if ($nid) {
      $node = \Drupal\node\Entity\Node::load($nid);
      $node->set("vid", $vid);
@@ -163,7 +162,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
      $node->set("comment", 2);
      $node->set("field_status",$values['status']);
      $node->set("field_relese_services", $values['service']);
-     $node->set("field_date", $values['date']);
+     $node->set("field_date", $values['datum']);
      if($values['type'] == 'locked') {
        $node->set("field_release_comments", $values['comment']);
      } else {
@@ -214,7 +213,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     ),
     'field_date' => Array(
       '0' => Array(
-        'value' => $values['date'],
+        'value' => $values['datum'],
       )
     ),
     'field_release_type' => Array(
@@ -285,11 +284,10 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     ->condition('title', $values['title'], '=')->execute()->fetchAssoc();
 
   $title = $title_query['title'];
-
   //downloading the documentation link
   $params = array("title" => $title, 
     "date_value" => $field_date_value['field_date_value'], 
-    "release_value" => $field_release_value['field_release_value'], 
+    "release_value" => $field_release_value['field_release_type_value'], 
     "doku_link" => $field_documentation_link_value['field_documentation_link_value']);
 
   self::documentation_link_download($params,$values);
@@ -303,7 +301,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  * @header_values: header colums
  * @inprogress_nid_values: nids where the release type is progress.
  */
- function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
+static public function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
    setlocale(LC_ALL, 'de_DE.UTF-8');
    $count_data = 0;
    while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
@@ -338,7 +336,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
     }
   }
 
-  function locked_release_node($locked_csv_nid_values, $locked_nid_values) {
+  static public function locked_release_node($locked_csv_nid_values, $locked_nid_values) {
     if (is_array($locked_nid_values)) {
       foreach ($locked_nid_values as $release_title_nid_values) {
         if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
@@ -353,7 +351,7 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
  * @inprogress_csv_nid_values: inprogress csv file nids.
  * @inprogress_nid_values: nids where the release type is progress.
  */
- function inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values) {
+static public function inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values) {
    if (is_array($inprogress_nid_values)) {
      foreach ($inprogress_nid_values as $release_title_nid_values) {
        if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
@@ -370,8 +368,8 @@ function release_reading_csv($handle, $header_values, $type, $file_path) {
 /*
  * function for documentation link
  */
-function documentation_link_download($params,$values) {
-
+static public function documentation_link_download($params,$values) {
+  // dpm($values);
   $title = $params['title'];
   $field_release_value = $params['release_value'];
   $field_date_value = $params['date_value'];
@@ -380,7 +378,8 @@ function documentation_link_download($params,$values) {
   $values_title = $values['title'];
 
   $link = $values['documentation_link'];
-  $values_date = $values['date'];
+  
+  $values_date = $values['datum'];
 
 //  $service = strtolower(db_result(db_query("SELECT title FROM {node} where nid= %d", $values_service)));
 
@@ -455,10 +454,7 @@ function documentation_link_download($params,$values) {
 
       // Check secure-download string is in documentation link. If yes excluded from documentation download.
       if (empty($link_search)) {
-
-
         $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-
         $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . "/releases";
         // $service = "'" . $service . "'";
         $release_title = strtolower($release_title);
@@ -612,7 +608,7 @@ function move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonst
  * @return nothing
  *
  */
-function release_documentation_link_download($username,$password,$paths,$link,$compressed_file,$nid) {
+static public function release_documentation_link_download($username,$password,$paths,$link,$compressed_file,$nid) {
   shell_exec("chmod -R 777 " . $paths);
   shell_exec("wget --no-check-certificate --user='" .  $username . "'  --password='" . $password  . "' -P " . $paths . "  " . $link);
 
@@ -717,7 +713,7 @@ function release_documentation_link_download($username,$password,$paths,$link,$c
 /*
  * get release details from release title
  */
-function get_release_details_from_title($values_title, $link) {
+static public function get_release_details_from_title($values_title, $link) {
   $release_title = $values_title;
   $get_release_title = explode("_",$release_title);
   $product = $get_release_title[0];
@@ -851,8 +847,6 @@ function get_release_details_from_title($values_title, $link) {
     $paged_query->addField('nfrs', 'field_release_service_value', 'service');
     $paged_query->addField('nfar', 'field_archived_release_value', 'archived');
     $paged_query->fields('nfd', array('nid'));
-
-    // echo '<pre>';  print_r($query->conditions());  exit;
     
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
@@ -884,7 +878,7 @@ function get_release_details_from_title($values_title, $link) {
       }
     
     $_SESSION['deploy_filter_options'] = $filter_options;
-    // echo '<pre>';  print_r($_SESSION['deploy_filter_options']); exit;
+
     if (isset($group_id)) {
     //Early Warnigs count for specific service and release
       $query = db_select('node_field_data', 'n');
@@ -1182,8 +1176,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $paged_query->addField('nfd', 'field_date_value', 'date');
     $paged_query->fields('n', array('title'))
                 ->orderBy('nfd.field_date_value', 'DESC');
-//	echo $release_query->__toString();exit;
-  // echo '<pre>'; print_r($release_query->conditions()); exit;
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $paged_query->limit($page_limit);
@@ -1355,8 +1347,6 @@ function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
     }
     // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
-
-    // echo '<pre>';   print_r($selected_services);  exit; 
     if (sizeof($selected_services) > 0) {
       foreach ($selected_services as $service) {
         if ($service !=  0 ) {

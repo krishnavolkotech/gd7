@@ -34,15 +34,15 @@ class HzdreleasemanagementHelper {
 
     if ($released_path) {
       $path['released'] = $released_path;
-      $header_values['released'] = array('title', 'status', 'service', 'date', 'link', 'documentation_link');
+      $header_values['released'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
     }
     if ($progress_path) {
       $path['progress'] = $progress_path;
-      $header_values['progress'] = array('title', 'status', 'service', 'date', 'link', 'documentation_link');
+      $header_values['progress'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
     }
     if ($ex_eoss_path) {
       $path['ex_eoss'] = $ex_eoss_path;
-      $header_values['ex_eoss'] = array('title', 'status', 'service', 'date', 'link', 'documentation_link');
+      $header_values['ex_eoss'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
     }
 
     /*  if ($rejected_path) {
@@ -52,7 +52,7 @@ class HzdreleasemanagementHelper {
      */
     if ($locked_path) {
       $path['locked'] = $locked_path;
-      $header_values['locked'] = array('title', 'status', 'service', 'date', 'link', 'comment');
+      $header_values['locked'] = array('title', 'status', 'service', 'datum', 'link', 'comment');
     }
     $path_header = array('path' => $path, 'headers' => $header_values);
     return $path_header;
@@ -61,10 +61,11 @@ class HzdreleasemanagementHelper {
   /**
    * Validation for the release csv import.
    */
-  function validate_releases_csv(&$values) {
-    if ($values['date']) {
+  static public function validate_releases_csv(&$values) {
+      
+    if ($values['datum']) {
       $replace = array('/' => '.', '-' => '.');
-      $formatted_date = strtr($values['date'], $replace);
+      $formatted_date = strtr($values['datum'], $replace);
       if ($formatted_date) {
         $date_time = explode(" ", $formatted_date);
         $date_format = explode(".", $date_time[0]);
@@ -72,15 +73,13 @@ class HzdreleasemanagementHelper {
         if ($time_format[0] && $time_format[1] && $date_format[1] && $date_format[0] &&$date_format[2]) {
           $date = mktime((int) $time_format[0], (int) $time_format[1], (int) $time_format[2], (int) $date_format[1], (int) $date_format[0], (int) $date_format[2]);
         }
-        $values['date'] = $date;
+        $values['datum'] = $date;
       }
     }
     $type = 'releases';
     $service = $values['service'];
     $service = trim($service);
-    // Echo $service; exit;.
     if (HzdservicesHelper::service_exist($service, $type)) {
-      // Echo 'nhlskdjfkl';  exit;.
       $services = HzdservicesStorage::get_related_services($type);
       $service_id = array_keys($services, $service);
       $values['service'] = $service_id[0];
