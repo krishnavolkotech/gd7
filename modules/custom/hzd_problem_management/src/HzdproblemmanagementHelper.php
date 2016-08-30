@@ -40,8 +40,6 @@ class HzdproblemmanagementHelper {
         $breadcrumb[] = \Drupal::l(t('Home'), Url::fromUserInput('/'));
 
         $request = \Drupal::request();
-//  $session = $request->getSession();
-//  $group_id = $session->get('Group_id');
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
         $group = $route_match->getParameter('group');
@@ -107,7 +105,7 @@ class HzdproblemmanagementHelper {
      * status of the import is stored in the "insert_import_status"
      */
 
-    function importing_problem_csv($path, $header_values) {
+    static public function importing_problem_csv($path, $header_values) {
         setlocale(LC_ALL, 'de_DE.UTF-8');
         $handle = fopen($path, "r");
         if (fopen($path, "r")) {
@@ -224,7 +222,7 @@ class HzdproblemmanagementHelper {
      * returns TRUE if the service exists.
      */
 
-    function validate_csv(&$values) {
+    static public function validate_csv(&$values) {
        
         $type = 'problems';
         $service = $values['service'];

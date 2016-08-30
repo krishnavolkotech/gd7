@@ -7,6 +7,7 @@ use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\Core\Database\Query\Condition;
 use Drupal\group\Entity\GroupContent;
+use Drupal\hzd_services\HzdservicesHelper;
 
 class HzdStorage { 
   
@@ -42,30 +43,35 @@ class HzdStorage {
   /*
    *function for saving problem node
    */
-  static function saving_problem_node($values) {
-    
+  static public function saving_problem_node($values) {
+    if (($values['title'] == '') || ($values['status'] == ''))  {
+      $message = t('Required Field Values Are Missing');
+      \Drupal::logger('problem_management')->error($message);
+      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+      $subject = 'Error while import';
+      $body = t("There is an issue while importing of the file. Required field values are missing.");
+      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+      $status = t('Error');
+      $msg = t('Required Field Values Are Missing');
+      HzdStorage::insert_import_status($status, $msg);
+      return FALSE;
+    }
     $query = \Drupal::database()->select('groups_field_data', 'gfd');
     $query->Fields('gfd', array('id'));
     $query->condition('label', 'problem management', '='); 
     $group_id = $query->execute()->fetchCol();
-  
-    
     
     $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_s_no', 'nfsn', 'n.nid = nfsn.entity_id');
     $query->Fields('n', array('nid', 'vid', 'created'));
     $query->condition('field_s_no_value', $values['sno'], '=');
     $node_infos = $query->execute()->fetchAll();
-
-    
-    
     
     foreach ($node_infos as $node_info) {
       $nid = $node_info->nid;
       $vid = $node_info->vid;
       $created = $node_info->created;
     }
-
     //the erofnet date field conversion   
     $replace = array('/' => '.', '-' => '.');
     $formatted_date = strtr($values['eroffnet'], $replace);
@@ -77,10 +83,10 @@ class HzdStorage {
     if($date_format[1] && $date_format[0] &&$date_format[2]) {
       $date = mktime((int)$time_format[0],(int)$time_format[1],(int)$time_format[2],(int)$date_format[1],(int)$date_format[0],(int)$date_format[2]);
     }
-    $eroffnet = ($date?$date:time());
+    $eroffnet = ( $date ? $date: time());
     // Generate notifications for updated problems.
 
-    if($nid) {
+    if(isset($nid)) {
       unset($values['sno']);
       $exist_node = node_load($nid);
       $existing_node_vals = array();
@@ -113,7 +119,7 @@ class HzdStorage {
       if(count(array_diff($existing_node_vals, $values)) != 0) {
 	// $node_array['status'] = 1;
         $problem_node = node_load($nid);
-        $problem_node->setTitle($values['title']);
+        $problem_node->setTitle( \Drupal\Component\Utility\Html::escape($values['title']));
     	$problem_node->set('status', 1);
 	$problem_node->set('created', $created ? $created : time());
 	$problem_node->set('body', $values['body']);
@@ -127,7 +133,7 @@ class HzdStorage {
 		            'comment_count' => 0,
 			    )
 			   );
-	$problem_node->set('field_attachment', $values['attachment']);
+	$problem_node->set('field_attachment', \Drupal\Component\Utility\Html::escape($values['attachment']));
     	$problem_node->set('field_closed', $values['closed']);
 	$problem_node->set('field_comments', array
 			   (
@@ -135,6 +141,10 @@ class HzdStorage {
 		            'format' => 'basic_html',
 			    )
 			   );
+        $problem_node->set('field_services' , array(
+	  'target_id' => $values['service'],
+	  )
+        );
 	$problem_node->set('field_diagnose', $values['diagnose']);
 	$problem_node->set('field_eroffnet', $values['eroffnet']);
 	$problem_node->set('field_function', $values['function']);
@@ -143,31 +153,28 @@ class HzdStorage {
 	$problem_node->set('field_problem_status', $values['status']);
 	$problem_node->set('field_processing', $values['processing']);
 	$problem_node->set('field_release', $values['release']);
-	$problem_node->set('field_sdcallid', $values['sdcallid']);
+//	$problem_node->set('field_sdcallid', $values['sdcallid']);
 	$problem_node->set('field_solution', array
 			   (
 		            'value' => $values['solution'],
 		            'format' => 'basic_html'
 			    ));
-	// $problem_node->set('field_s_no', $values['s_no']);
+       // $problem_node->set('field_s_no', $values['sno']);
 	// $problem_node->set('field_release', $values['release']);
 	$problem_node->set('field_task_force', array($values['taskforce']));
 	// $problem_node->set('field_release', $values['release']);
 	// $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
 	// $problem_node->set('field_release', $values['release']);
         // $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
-      //  $problem_node->set('field_timezone', $values['timezone']);
+        // $problem_node->set('field_timezone', $values['timezone']);
 	$problem_node->set('field_version', $values['version']);
 	$problem_node->set('field_work_around', array
 			   (
 		            'value' => $values['workaround'],
 		            'format' => 'basic_html',
 			    ));
-	$problem_node->save();
-
-	//      $exist_node->set('status', 1);
-	//     $exist_node->save();
-	return TRUE;
+              $problem_node->save();
+             return TRUE;
       } 
     } 
     else {
@@ -177,10 +184,10 @@ class HzdStorage {
 	 'nid' => array(''),
 	 'vid' => array(''),
 	 'type' => 'problem',
-	 'title' => $values['title'],
+	 'title' => \Drupal\Component\Utility\Html::escape($values['title']),
 	 'uid' =>   1,
 	 'status' => 1 ,
-	 'created' => $created ? $created : time(),
+	 'created' => time(),
 	 'body' => array(
 	  'summary' => '',
 	  'value' => $values['body'],
@@ -207,13 +214,14 @@ class HzdStorage {
 	  ),
 	 'field_priority' => $values['priority'],
 	 'field_problem_eroffnet' => $eroffnet,
-	 'field_problem_status' => $values['status'],
+	 'field_problem_status' => \Drupal\Component\Utility\Html::escape($values['status']),
 	 'field_processing' =>  $values['processing'],
 	 'field_release' => $values['release'],
 	 // 'field_sdcallid' => $values['sdcallid'],
 	 'field_services' =>  array(
 	  'target_id' => $values['service'],
 	  ),
+        // 'field_timezone' => $values['timezone'],
 	 'field_solution' => array(
 	  'value' => $values['solution'],
 	  'format' => 'basic_html',
@@ -230,27 +238,30 @@ class HzdStorage {
 	  ),
 	 'status' => 1,
 	 );
-      $node = Node::create($node_array);
-      $node->save();
-      $nid = $node->id();
+    
+        $node = Node::create($node_array);
+        $node->save();
+        $nid = $node->id();
+   
+        if ($nid) { 
+            // $group_id = \Drupal::routeMatch()->getParameter('group');
+             $group = \Drupal\group\Entity\Group::load($group_id['0']);
+             //Adding node to group
+             // dpm($group->getGroupType());
 
-      if ($nid) { 
-          // $group_id = \Drupal::routeMatch()->getParameter('group');
-           $group = \Drupal\group\Entity\Group::load($group_id['0']);
-           //Adding node to group
-           // dpm($group->getGroupType());
-           
-           $group_content = GroupContent::create([
-                  'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
-                  'gid' => $group_id,
-                  'entity_id' => $node->id(), 
-                  'request_status' => 1,
-                  'label' => $values['title'],
-            ]);
-            $group_content->save();
-         // dpm($group_content->id());       
-	return TRUE;
-      }
+             $group_content = GroupContent::create([
+                    'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
+                    'gid' => $group_id,
+                    'entity_id' => $node->id(), 
+                    'request_status' => 1,
+                    'label' => $values['title'],
+                    'uid' => 1,
+              ]);
+              $group_content->save();
+           // dpm($group_content->id());       
+
+        }
+      return TRUE;
     }
     return FALSE;
   }
@@ -388,13 +399,13 @@ class HzdStorage {
 				    )
 			      );
 
-	$query->join('node_revision', 'nr', 'nfd.nid = nr.nid');
-	$query->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
-	$query->join('node__field_s_no', 'nfsn', 'nb.entity_id = nfsn.entity_id');
-	$query->join('node__field_problem_status', 'nfps', 'nfsn.entity_id = nfps.entity_id');
-	$query->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
-	$query->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
-	$query->join('node__field_work_around', 'nfwa', 'nff.entity_id = nfwa.entity_id');
+	$query->leftJoin('node_revision', 'nr', 'nfd.nid = nr.nid');
+	$query->leftJoin('node__body', 'nb', 'nfd.nid = nb.entity_id');
+	$query->leftJoin('node__field_s_no', 'nfsn', 'nb.entity_id = nfsn.entity_id');
+	$query->leftJoin('node__field_problem_status', 'nfps', 'nfsn.entity_id = nfps.entity_id');
+	$query->leftJoin('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
+	$query->leftJoin('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
+	$query->leftJoin('node__field_work_around', 'nfwa', 'nff.entity_id = nfwa.entity_id');
 	      
 	$group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
 	$group_problems_view_service_id_query->addField('gpv', 'service_id');
@@ -600,16 +611,16 @@ class HzdStorage {
       }
     // $sql_select = " SELECT n.nid ";
 
-    $sql_select->join('node_revision', 'nr', 'nfd.nid = nr.nid');
-    $sql_select->join('node__body', 'nb', 'nfd.nid = nb.entity_id');
-    $sql_select->join('node__field_processing', 'nfp', 'nfd.nid = nfp.entity_id');
-    $sql_select->join('node__field_problem_status', 'nfps', 'nfp.entity_id = nfps.entity_id');
-    $sql_select->join('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
+    $sql_select->leftJoin('node_revision', 'nr', 'nfd.nid = nr.nid');
+    $sql_select->leftJoin('node__body', 'nb', 'nfd.nid = nb.entity_id');
+    $sql_select->leftJoin('node__field_processing', 'nfp', 'nfd.nid = nfp.entity_id');
+    $sql_select->leftJoin('node__field_problem_status', 'nfps', 'nfp.entity_id = nfps.entity_id');
+    $sql_select->leftJoin('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
     // $sql_select->join('node__field_problem_eroffnet', 'nfpe', 'nfsn.entity_id = nfpe.entity_id');
-    $sql_select->join('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
-    $sql_select->join('node__field_release', 'nfr', 'nff.entity_id = nfr.entity_id');
-    $sql_select->join('node__field_work_around', 'nfwa', 'nfr.entity_id = nfwa.entity_id');
-    $sql_select->join('node__field_s_no', 'nfsn', 'nfwa.entity_id = nfsn.entity_id');
+    $sql_select->leftJoin('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
+    $sql_select->leftJoin('node__field_release', 'nfr', 'nff.entity_id = nfr.entity_id');
+    $sql_select->leftJoin('node__field_work_around', 'nfwa', 'nfr.entity_id = nfwa.entity_id');
+    $sql_select->leftJoin('node__field_s_no', 'nfsn', 'nfwa.entity_id = nfsn.entity_id');
 
 
     $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
