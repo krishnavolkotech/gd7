@@ -26,7 +26,7 @@ class HzdNotificationsHelper {
 
   // Update service notifications user default interval
   static function insert_default_user_intervel($type, $int_val, $uid, $rel_type) {
-    db_merge('service_notifications_user_default_interval')
+    \Drupal::database()->merge('service_notifications_user_default_interval')
       ->key(array(
         'rel_type' => $rel_type,
         'uid' => $uid,
@@ -40,7 +40,7 @@ class HzdNotificationsHelper {
 
   // insert default planning files notifications intervals of user
   function insert_default_pf_user_intervel($pf_int_val, $uid) {
-    db_merge('planning_files_notifications_default_interval')
+    \Drupal::database()->merge('planning_files_notifications_default_interval')
       ->key(array(
         'uid' => $uid,
         'planning_file_type' => 'planning_files'
@@ -53,7 +53,7 @@ class HzdNotificationsHelper {
 
   // get planning files default interval
   function get_default_pf_timeintervals($uid) {
-    $query = db_select('planning_files_notifications_default_interval', 'pf');
+    $query = \Drupal::database()->select('planning_files_notifications_default_interval', 'pf');
     $query->condition('pf.uid', $uid, '=')
           ->fields('pf', array('default_send_interval'));
     $result = $query->execute()->fetchField();
@@ -88,7 +88,7 @@ class HzdNotificationsHelper {
   // get default interval of user
   static function _get_default_timeintervals($uid, $rel_type) {
     $time_interval = [];
-    $default_vals = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} WHERE uid = :uid AND rel_type = :rel_type", array(':uid' => $uid, ':rel_type' => $rel_type))->fetchAll();
+    $default_vals = \Drupal::database()->query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} WHERE uid = :uid AND rel_type = :rel_type", array(':uid' => $uid, ':rel_type' => $rel_type))->fetchAll();
     foreach($default_vals as $val) {
       $time_interval[$val->service_type] = $val->default_send_interval; 
     }
@@ -97,7 +97,7 @@ class HzdNotificationsHelper {
 
   // get list of all services of a release type
   static function _services_list($rel_type = KONSONS){
-    $services_query = db_query("SELECT n.nid, n.title FROM node_field_data n, node__release_type nrt WHERE n.nid = nrt.entity_id and nrt.release_type_target_id = :tid AND n.type = :type ORDER BY n.title ASC", array(":tid" => $rel_type, ":type" => 'services'))->fetchAll();
+    $services_query = \Drupal::database()->query("SELECT n.nid, n.title FROM node_field_data n, node__release_type nrt WHERE n.nid = nrt.entity_id and nrt.release_type_target_id = :tid AND n.type = :type ORDER BY n.title ASC", array(":tid" => $rel_type, ":type" => 'services'))->fetchAll();
     $services = array();
     foreach($services_query as $services_info) {
       $services[$services_info->nid] = $services_info->title;
@@ -113,7 +113,7 @@ class HzdNotificationsHelper {
       $content_types = array('0' => t('Content Type'));
     }
 
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
     $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
     $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -147,7 +147,8 @@ class HzdNotificationsHelper {
    * Returns the default time intervals
    */
   static function get_default_quickinfo_timeintervals($uid) {
-    $query = db_query("SELECT default_send_interval as send_interval, affected_service as value 
+    $time_interval = [];
+    $query = \Drupal::database()->query("SELECT default_send_interval as send_interval, affected_service as value 
              FROM {quickinfo_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
     foreach($query as $default_values) {
       $time_interval[$default_values->value] = $default_values->send_interval; 
@@ -165,7 +166,7 @@ class HzdNotificationsHelper {
 
   // get default interval of a particular content type
   function hzd_default_content_type_intval($uid, $type, $rel_type) {
-    $intval = db_query("SELECT default_send_interval FROM {service_notifications_user_default_interval} 
+    $intval = \Drupal::database()->query("SELECT default_send_interval FROM {service_notifications_user_default_interval} 
               WHERE uid = :uid AND service_type = :type AND rel_type = :rel_type", 
               array(":uid" => $uid, ":type" => $type, ":rel_type" => $rel_type))->fetchField();
     return $intval;
@@ -211,7 +212,7 @@ class HzdNotificationsHelper {
 
   // get uids list of default user interval of service
   function hzd_get_user_service_interval($service, $type, $default_intval) {
-    $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval", 
+    $uids_query = \Drupal::database()->query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval", 
                    array(":sid" => $service, ":type" => $type, ":intval" => $default_intval))->fetchField();
     $uids_list = unserialize($uids_query);
     return $uids_list;
@@ -219,7 +220,7 @@ class HzdNotificationsHelper {
 
   // update user service notifications
   function hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid) {
-    db_update('service_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
 	    ->condition('service_id', $service)
 	    ->condition('type', $type)
 	    ->condition('send_interval', $default_intval)
@@ -253,7 +254,7 @@ class HzdNotificationsHelper {
 
   // get users list from quickinfo notifications table
   static function hzd_get_user_quickinfo_interval($content, $intval) {
-    $serialized_uids_query = db_query("SELECT uids FROM {quickinfo_notifications} WHERE cck = :cck AND send_interval = :intval",
+    $serialized_uids_query = \Drupal::database()->query("SELECT uids FROM {quickinfo_notifications} WHERE cck = :cck AND send_interval = :intval",
                              array(":cck" => $content, ":intval" => $intval))->fetchField();
     $uids = unserialize($serialized_uids_query);
     return $uids;
@@ -261,7 +262,7 @@ class HzdNotificationsHelper {
 
   // update quickinfo notifications table
   static function hzd_update_quickinfo_notifications($content, $intval, $serialized_uid) {
-    db_update('quickinfo_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('quickinfo_notifications')->fields(array('uids' => $serialized_uid))
      ->condition('cck', $content)
      ->condition('send_interval', $intval)
      ->execute();
@@ -269,7 +270,7 @@ class HzdNotificationsHelper {
 
   // get users list from pf notifications table
   function hzd_get_user_pf_interval($intval) {
-    $serialized_uids_query = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval",
+    $serialized_uids_query = \Drupal::database()->query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval",
                              array(":intval" => $intval))->fetchField();
     $uids = unserialize($serialized_uids_query);
     return $uids;
@@ -277,7 +278,7 @@ class HzdNotificationsHelper {
 
   // update pf notifications table
   function hzd_update_pf_notifications($intval, $serialized_uid) {
-    db_update('planning_files_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('planning_files_notifications')->fields(array('uids' => $serialized_uid))
      ->condition('send_interval', $intval)
      ->execute();
   }
@@ -356,7 +357,7 @@ class HzdNotificationsHelper {
 
   // update service notifications
   function hzd_update_service_notifications($serialized_uid, $sid, $type, $int_val) {
-    db_update('service_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
      ->condition('service_id', $sid)
      ->condition('type', $type)
      ->condition('send_interval', $int_val)
@@ -364,7 +365,7 @@ class HzdNotificationsHelper {
   }
 
   static function hzd_user_group_default_interval($uid) {
-    $default_intval = db_query("SELECT group_id, group_name, default_send_interval FROM {group_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
+    $default_intval = \Drupal::database()->query("SELECT group_id, group_name, default_send_interval FROM {group_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
     $interval = array();
     foreach($default_intval as $val) {
       $interval[$val->group_id] = $val->default_send_interval;
@@ -373,7 +374,7 @@ class HzdNotificationsHelper {
   }
 
   static function hzd_user_groups_list($uid) {
-    $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
+    $user_groups_query = \Drupal::database()->query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
                    WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
     $user_groups = array();
     foreach($user_groups_query as $groups_list) {
@@ -384,6 +385,6 @@ class HzdNotificationsHelper {
 
   static function insert_default_group_user_intervel($gid, $label, $int_val, $uid) {
     $group_record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
-    db_insert('group_notifications_user_default_interval')->fields($group_record)->execute();
+    \Drupal::database()->insert('group_notifications_user_default_interval')->fields($group_record)->execute();
   }
 }

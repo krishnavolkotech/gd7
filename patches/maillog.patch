@@ -1,0 +1,19 @@
+diff --git a/core/lib/Drupal/Core/Mail/MailManager.php b/core/lib/Drupal/Core/Mail/MailManager.php
+index 87ff04e..ac2be87 100755
+--- a/core/lib/Drupal/Core/Mail/MailManager.php
++++ b/core/lib/Drupal/Core/Mail/MailManager.php
+@@ -234,6 +234,14 @@ public function mail($module, $key, $to, $langcode, $params = array(), $reply =
+             '%reply' => $message['reply-to'] ? $message['reply-to'] : $this->t('not set'),
+           ));
+           drupal_set_message($this->t('Unable to send email. Contact the site administrator if the problem persists.'), 'error');
++        }else{
++          $path = 'public://mail_logs/';
++          $logFilePath =  \Drupal::service('file_system')->realpath($path);
++          $logFile = $logFilePath. '/'. date('Y-m').".txt";
++          $dataString = date('H:i:s')."; to:" . $message['to'] . "; subject:" . $message['subject'].";\n";
++          $fWrite = fopen($logFile,"a");
++          $wrote = fwrite($fWrite, $dataString);
++          fclose($fWrite);
+         }
+       }
+     }

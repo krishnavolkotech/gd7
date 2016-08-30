@@ -234,6 +234,14 @@ class MailManager extends DefaultPluginManager implements MailManagerInterface {
             '%reply' => $message['reply-to'] ? $message['reply-to'] : $this->t('not set'),
           ));
           drupal_set_message($this->t('Unable to send email. Contact the site administrator if the problem persists.'), 'error');
+        }else{
+          $path = 'public://mail_logs/';
+          $logFilePath =  \Drupal::service('file_system')->realpath($path);
+          $logFile = $logFilePath. '/'. date('Y-m').".txt";
+          $dataString = date('H:i:s')."; to:" . $message['to'] . "; subject:" . $message['subject'].";\n";
+          $fWrite = fopen($logFile,"a");
+          $wrote = fwrite($fWrite, $dataString);
+          fclose($fWrite);
         }
       }
     }

@@ -77,3 +77,10 @@ hzd_notifications.migrate_date_deployed:
     _title: 'Migrate Date field in Deployed Releases'
   requirements:
     _permission: 'access content'
+hzd_notifications.daily_notification_cron:
+  path: '/notifications-daily'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\NotificationsCronController::dailyCron'
+    _title: 'Daily Cron'
+  requirements:
+    _permission: 'access content'

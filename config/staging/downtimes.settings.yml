@@ -31,3 +31,18 @@ sitewide_maintenance_windows:
     day_to: Mon
     time_from: '04:01:01'
     time_to: '12:01:01'
+  -
+    day_from: Sun
+    day_to: Sun
+    time_from: '00:00:00'
+    time_to: '01:01:01'
+  -
+    day_from: Mon
+    day_to: Mon
+    time_from: ''
+    time_to: ''
+  -
+    day_from: Mon
+    day_to: Mon
+    time_from: ''
+    time_to: ''
