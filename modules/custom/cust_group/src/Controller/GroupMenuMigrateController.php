@@ -28,6 +28,9 @@ class GroupMenuMigrateController extends ControllerBase{
                 $menu->set('link',['uri'=>$changedUri])->save();
                 //echo $menu->get('link')->getValue()[0]['uri'].'<br>';
             }elseif(strpos($uri,'/group/'.$new) !== false){
+                if(strpos($uri,'/group/'.$new.'/members')){
+                    $menu->set('link',['uri'=>'internal:'.'/group/'.$new.'/address'])->save();
+                }
             }elseif(count(explode('/',trim(str_replace('internal:/','',$uri),'/'))) == 2){
                 $newUri = $this->getGroupNodeUri($uri);
                 if($newUri){
