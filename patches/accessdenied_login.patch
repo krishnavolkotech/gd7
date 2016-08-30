@@ -1,0 +1,20 @@
+diff --git a/core/lib/Drupal/Core/EventSubscriber/DefaultExceptionHtmlSubscriber.php b/core/lib/Drupal/Core/EventSubscriber/DefaultExceptionHtmlSubscriber.php
+index 0d876cc..7f79d26 100755
+--- a/core/lib/Drupal/Core/EventSubscriber/DefaultExceptionHtmlSubscriber.php
++++ b/core/lib/Drupal/Core/EventSubscriber/DefaultExceptionHtmlSubscriber.php
+@@ -96,6 +96,15 @@ public function on401(GetResponseForExceptionEvent $event) {
+    *   The event to process.
+    */
+   public function on403(GetResponseForExceptionEvent $event) {
++    if(\Drupal::currentUser()->isAnonymous()){
++      global $base_url;
++      $currentPath = \Drupal::service('path.current')->getPath();
++      $loginPath = '/user/login?destination='.$currentPath;
++      drupal_set_message(t('Please login to access the page.'), 'error');
++      //return new \Symfony\Component\HttpFoundation\RedirectResponse($loginPath);
++      header('Location: '.$base_url.$loginPath);
++      exit;
++    }
+     $this->makeSubrequest($event, '/system/403', Response::HTTP_FORBIDDEN);
+   }
+ 

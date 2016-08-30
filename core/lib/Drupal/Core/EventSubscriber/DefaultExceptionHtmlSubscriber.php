@@ -96,6 +96,15 @@ class DefaultExceptionHtmlSubscriber extends HttpExceptionSubscriberBase {
    *   The event to process.
    */
   public function on403(GetResponseForExceptionEvent $event) {
+    if(\Drupal::currentUser()->isAnonymous()){
+      global $base_url;
+      $currentPath = \Drupal::service('path.current')->getPath();
+      $loginPath = '/user/login?destination='.$currentPath;
+      drupal_set_message(t('Please login to access the page.'), 'error');
+      //return new \Symfony\Component\HttpFoundation\RedirectResponse($loginPath);
+      header('Location: '.$base_url.$loginPath);
+      exit;
+    }
     $this->makeSubrequest($event, '/system/403', Response::HTTP_FORBIDDEN);
   }
 
