@@ -20,7 +20,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
     if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
       if($route->getPath() == '/group/{group}/node/{group_content}'){
-	$route->setDefault('_controller','\Drupal\cust_group\Controller\CustNodeController::groupContentView');
+				$route->setDefault('_controller','\Drupal\cust_group\Controller\CustNodeController::groupContentView');
       }
     }
     if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
@@ -31,5 +31,12 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.node.edit_form')){
       $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
+		foreach($collection as $key=>$route){
+			if (strpos($route->getPath(),'/group/{') === 0 && $key !== 'entity.group.canonical'){
+				//echo $route->getPath();exit;
+			  $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
+			}
+		}
+		
   }
 }
