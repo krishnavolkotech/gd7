@@ -483,7 +483,7 @@ class ReleaseFilterForm extends FormBase {
     $_SESSION['filter_where'] = $filter_where;
     $_SESSION['release_limit'] = $limit;
     $_SESSION['release_type'] = $release_type;
-    
+
     if ($string != 'deployed') {
       $output[] = array('#markup' => "<div class = 'releses_output'>");
       $output[] = HzdreleasemanagementStorage::releases_display_table($string, $filter_where, $limit, $release_type);
