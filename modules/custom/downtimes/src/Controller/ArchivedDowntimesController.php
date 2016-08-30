@@ -31,7 +31,7 @@ class ArchivedDowntimesController extends ControllerBase {
     $result['archive_form_render']['archive_form'] = $archived_data;
     $result['archive_form_render']['archive_reset_form'] = HzdcustomisationStorage::reset_form();
     $result['archive_form_render']['#suffix'] = "</div>";
-    $result['archive_table_render']['#prefix'] = "<div id = 'archived_maintenance_search_results_wrapper'>";
+    $result['archive_table_render']['#prefix'] = "<div id = 'archived_search_results_wrapper'>";
     $result['archive_table_render']['archive_table'] = $default_downtimes;
     $result['archive_table_render']['#suffix'] = '</div>';
     $response = $result;
