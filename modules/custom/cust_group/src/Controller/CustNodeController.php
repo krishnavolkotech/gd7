@@ -50,6 +50,23 @@ class CustNodeController extends ControllerBase {
 
   static function hzdGroupAccess(){
     if($group = \Drupal::routeMatch()->getParameter('group')){
+			if(!is_object($group))
+				$group = \Drupal\group\Entity\Group::load($group);
+      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+				return AccessResult::allowed();
+      }else{
+        return AccessResult::forbidden();
+      }
+    }
+    return AccessResult::neutral();
+  }
+	
+	
+	///added for drupal core views 
+	static function hzdGroupViewsAccess(){
+    if($group = \Drupal::routeMatch()->getParameter('arg_0')){
+			if(!is_object($group))
+				$group = \Drupal\group\Entity\Group::load($group);
       if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
 				return AccessResult::allowed();
       }else{
