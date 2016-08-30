@@ -51,7 +51,9 @@ static public function release_reading_csv($handle, $header_values, $type, $file
 //  $release_management_group_id = $query->execute()->fetchCol();
 
     foreach ($locked_values as $locked_value) {
-      $locked_nid_values[] = $locked_value->nid;
+      if (isset($locked_value)) {
+        $locked_nid_values[] = $locked_value->nid;
+      }
     }
     if (fopen($file_path, "r")) {
         $file = fopen($file_path, "r");
@@ -63,8 +65,7 @@ static public function release_reading_csv($handle, $header_values, $type, $file
   }
 
   // Removed releases from "in progress" that do not appear in the release database anymore.
-  if ($release_type == 2) {
-    
+  if ($release_type == 2) { 
     $inprogress_values = db_select('node__field_release_type', 'nfrt')
                         ->Fields('nfrt', array('entity_id'))
                         ->condition('nfrt.field_release_type_value', '2', '=')
@@ -113,6 +114,16 @@ static public function release_reading_csv($handle, $header_values, $type, $file
   */
  static public function saving_release_node($values) {
    global $user;
+   dpm($values);
+   if (!$values['title']) {
+             // @sending mail to user when file need permissions or when file is corrupted
+              $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+              $subject = 'Error while import';
+              $body = t("Required fields not found");
+              HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+              $response = $type . t(' ERROR WHILE READING');
+   }
+   
     $query = \Drupal::database()->select('groups_field_data', 'gfd');
     $query->Fields('gfd', array('id'));
     $query->condition('label', 'release management', '='); 
@@ -273,6 +284,7 @@ static public function release_reading_csv($handle, $header_values, $type, $file
                   'entity_id' => $node->id(), 
                   'request_status' => 1,
                   'label' => $values['title'],
+                  'uid' => 1,
             ]);
         $group_content->save();       
     }

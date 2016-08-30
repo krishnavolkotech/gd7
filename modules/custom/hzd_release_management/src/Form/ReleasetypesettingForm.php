@@ -9,9 +9,6 @@ namespace Drupal\hzd_release_management\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-// use Drupal\problem_management\InactiveuserStorage;
-// use Drupal\problem_management\Inactiveuserhelper;
-// use Drupal\Core\Datetime\DateFormatter;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 
 class ReleasetypesettingForm extends ConfigFormBase {
@@ -37,7 +34,6 @@ class ReleasetypesettingForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-   // $config = $this->config('release_management.settings');
   global $base_url;
 
   //  drupal_set_title(t('Release Type settings'));
