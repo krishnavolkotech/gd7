@@ -114,7 +114,6 @@ static public function release_reading_csv($handle, $header_values, $type, $file
   */
  static public function saving_release_node($values) {
    global $user;
-   dpm($values);
    if (!$values['title']) {
              // @sending mail to user when file need permissions or when file is corrupted
               $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
@@ -381,7 +380,7 @@ static public function inprogress_release_node($inprogress_csv_nid_values, $inpr
  * function for documentation link
  */
 static public function documentation_link_download($params,$values) {
-  // dpm($values);
+
   $title = $params['title'];
   $field_release_value = $params['release_value'];
   $field_date_value = $params['date_value'];
@@ -749,6 +748,7 @@ static public function get_release_details_from_title($values_title, $link) {
     }else{
       $group_id  = $group;
     } 
+  
     if ($group_id != RELEASE_MANAGEMENT) {
       $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
       $default_type = $default_type ? $default_type : KONSONS;
@@ -756,7 +756,7 @@ static public function get_release_details_from_title($values_title, $link) {
     else {
       $default_type = KONSONS;
     }
-
+      
     if (!$filter_options) {
       $filter_options = $_SESSION['deploy_filter_options'];
     }
@@ -859,7 +859,7 @@ static public function get_release_details_from_title($values_title, $link) {
     $paged_query->addField('nfrs', 'field_release_service_value', 'service');
     $paged_query->addField('nfar', 'field_archived_release_value', 'archived');
     $paged_query->fields('nfd', array('nid'));
-    
+
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $paged_query->limit($page_limit);
@@ -1072,7 +1072,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
          $service_release_type =  $_SESSION['service_release_type'];
       } 
 
-      $release_query = self::hzd_release_query($release_type, $filter_where, $service_release_type, $gid);
+      $release_query = self::hzd_release_query($release_type, $filter_where, $limit, $service_release_type, $gid);
       $_SESSION['filter_where'] = $filter_where;
       $_SESSION['release_type'] = $release_type;
       $_SESSION['service_release_type'] = $service_release_type;
@@ -1121,6 +1121,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $rows[] = $row;
       }
+
 //pr($rows);exit;
 
     if ($rows) { 
@@ -1147,7 +1148,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     }
   }
 
-  public function hzd_release_query($release_type, $filter_where, $tid, $gid){
+  public function hzd_release_query($release_type, $filter_where, $limit = NULL, $tid, $gid){
     $release_query = db_select('node_field_data', 'n');
     $release_query->leftJoin('node__field_release_comments', 'nfrc', 'n.nid = nfrc.entity_id');
     $release_query->leftJoin('node__field_link', 'nfl', 'n.nid = nfl.entity_id');
