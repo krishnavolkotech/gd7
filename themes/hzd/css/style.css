@@ -860,12 +860,11 @@ select {
 }
 .search_string_submit button {
   background: url(../images/form-search-btn.png) left top no-repeat !important;
-  border-radius: 0 3px 3px 0 !important;
+  border-radius: 3px !important;
   float: left;
   width: 36px;
-  height: 35px;
+  height: 34px;
   display: block !important;
-  margin-top: -1px;
 }
 #problem_search_results_wrapper .reset_form {
   margin: 0 !important;
@@ -1163,7 +1162,6 @@ article .quickedit-field .field__items .field--item {
   margin: 0 !important;
   padding: 0 !important;
 }
-.service-profile-data { display: none; }
 .btn-primary {
   background: #1475a0 !important;
   padding: 3px 10px !important;
@@ -1175,3 +1173,121 @@ form.contact-message-form label {
 form.problem-filter-form .string_search.hzd-form-element {
   margin-right: -2px !important;
 }
+.region-sidebar-first section.blue {
+  padding: 0px;
+}
+.region-sidebar-first section.blue ul.menu.nav {
+  width: 100%;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+.region-sidebar-first section.blue ul.menu.nav li {
+  list-style-type: none;
+  padding: 6px 10px 8px 10px;
+  border-bottom: 1px solid rgba(20, 117, 160, 0.2);
+}
+.region-sidebar-first section.blue ul.menu.nav li a {
+  width: 100%;
+  display: block;
+  padding: 0;
+}
+.region-sidebar-first section.blue ul.menu.nav li a:hover {
+  background: transparent;
+}
+.region-sidebar-first section.blue ul.menu.nav li a:focus {
+  background: transparent;
+}
+.region-sidebar-first section.blue ul.menu.nav li:last-child {
+  border: none;
+}
+.region-sidebar-first section.blue ul.menu.nav li:hover {
+  background: rgba(20, 117, 160, 0.8);
+}
+.region-sidebar-first section.blue ul.menu.nav li:hover a {
+  color: #ffffff;
+  text-decoration: none;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active a {
+  background: transparent !important;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active a:hover {
+  color: #fff !important;
+  background: transparent !important;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active a:focus {
+  background: transparent !important;
+  color: #fff !important;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu {
+  padding: 0 !important;
+  border: none;
+  border-radius: none;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li {
+  background: rgba(206, 240, 253, 0.4);
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a {
+  font-size: 11px;
+  color: #3370b7;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a:hover {
+  font-size: 11px;
+  color: #3370b7;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li:hover {
+  background: #0c4f6d;
+}
+#edit-services-effected .form-checkbox {
+  width: 100%;
+  float: left;
+}
+#edit-services-effected .form-checkbox input[type="checkbox"] {
+  float: left;
+  margin-right: 5px;
+}
+#edit-services-effected .form-checkbox .published-services {
+  position: relative;
+}
+#edit-services-effected .form-checkbox .published-services label {
+  float: left;
+  width: auto;
+  padding-right: 5px;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data {
+  position: absolute;
+  top: 15px;
+  left: 100px;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
+  background: #fff !important;
+  float: left;
+  position: relative;
+  z-index: 10;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table {
+  border: 1px solid #3d95bc !important;
+}
+.form-required:after {
+  margin: 0 0 4px 4px;
+}
+form#downtimes-filter .search_string_submit {
+  padding: 0px !important;
+}
+form#downtimes-filter .search_string_submit button {
+  margin: -1px 0 0 -1px !important;
+}
+form#downtimes-filter .string_search {
+  margin-left: 0 !important;
+}
+form#downtimes-filter .type_search_dropdown label.control-label,
+form#downtimes-filter .time_period_search_dropdown label.control-label {
+  text-indent: -9999px;
+}
+form#downtimes-filter .type_search_dropdown {
+  padding-right: 0 !important;
+}
+form#downtimes-filter .string_search.hzd-form-element {
+  margin-right: 0 !important;
+}
+.filter_title_header { clear: both; }

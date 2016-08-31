@@ -109,7 +109,7 @@
                      {% else %}
                          <{{ row.cells.reason.tag }}{{ row.cells.reason.attributes }} colspan = "4">
                     {% endif %}
-                    {{- row.cells.reason.content -}}
+                    {{- row.cells.reason.content|raw -}}
                     </{{ row.cells.reason.tag }}>
                     <{{ row.cells.content.tag }}{{ row.cells.content.attributes }}>
                     {{- row.cells.content.content -}}

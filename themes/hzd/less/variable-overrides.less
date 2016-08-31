@@ -52,6 +52,7 @@
 @hov-color:#0c4f6d;
 @static-color:#eaeff5;
 @display-none:none;
+@anchor-color:#3370b7;
 
 /***** Global Styles *****/
 a, div, span, img, h1, h2, h3, h4, h5, h6, input, button{ 
@@ -1136,4 +1137,126 @@ form.contact-message-form label{
 }
 form.problem-filter-form .string_search.hzd-form-element{
   margin-right:-2px !important;
+}
+.region-sidebar-first section.blue{
+    padding:0px;
+	  ul.menu.nav{
+       width:100%;
+       float:left;
+       margin:0;
+       padding:0;
+        li{
+         list-style-type:none;
+         padding:6px 10px 8px 10px;
+         border-bottom:1px solid rgba(20, 117, 160, 0.2);
+          a{
+		    width:100%;
+			display:block;
+			padding:0
+		  }
+          a:hover{
+		    background:transparent;
+		  }
+          a:focus{
+		    background:transparent;
+		  }	  
+        }
+		li:last-child{
+		  border:none;
+		}
+		li:hover{
+		  background:rgba(20, 117, 160, 0.8);
+		   a{
+		     color:@pritext-color;
+			 text-decoration:none;
+		   }
+		}
+		li.active{
+		   a{
+		     background:transparent !important;
+		   }
+           a:hover{
+		    color:#fff !important;
+			background:transparent !important;
+		   }
+           a:focus{
+		    background:transparent !important;
+			color:#fff !important;
+		   }
+           ul.dropdown-menu{
+		     padding:0 !important;
+			 border:none;
+			 border-radius:none;
+			 li{
+			   background:rgba(206, 240, 253, 0.4);
+			 a{
+			   font-size:11px;
+			   color:@anchor-color;
+			   }
+			  a:hover{
+			   font-size:11px;
+			   color:@anchor-color;
+			   } 
+			 }
+			 li:hover{
+			   background:@hov-color;
+			}
+		  } 		   
+		}
+        		
+     }
+}
+#edit-services-effected{
+ .form-checkbox{
+   width:100%;
+   float:left;
+  input[type="checkbox"]{
+    float:left;
+	margin-right:5px;
+  }
+  .published-services{
+   position:relative;
+    label{
+	  float:left;
+	  width:auto;
+	  padding-right:5px;
+	}
+	.service-profile-data{
+	  position:absolute;
+	  top:15px;
+	  left:100px;
+	   .wrapper{
+	     background:#fff !important;
+		 float:left;
+		 position:relative;
+		 z-index:10;
+		  table{
+		    border:1px solid #3d95bc !important;
+		  }
+	   }
+	}
+  }
+ }
+}
+.form-required:after{
+  margin:0 0 4px 4px;
+}
+form#downtimes-filter .search_string_submit{
+  padding:0px !important;
+    button{
+	  margin:-1px 0 0 -1px !important;
+	}
+}
+form#downtimes-filter .string_search{
+  margin-left:0 !important;
+}
+form#downtimes-filter .type_search_dropdown label.control-label,
+form#downtimes-filter .time_period_search_dropdown label.control-label{
+  text-indent:-9999px;
+}
+form#downtimes-filter .type_search_dropdown{
+  padding-right:0 !important;
+}
+form#downtimes-filter .string_search.hzd-form-element{
+  margin-right:0 !important;
 }

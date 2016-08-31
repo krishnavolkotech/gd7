@@ -49,7 +49,7 @@ class DowntimesFilter extends FormBase {
       $wrapper = 'incidents_search_results_wrapper';
       $form_prefix = 'curr_incidents_form';
       $form['#prefix'] = "<div class =$form_prefix>";
-      $type_header = "<h3 class = 'current_incidents_title'>" . t('Current Incidents') . "</h3><br>";
+      $type_header = "<h3 class = 'current_incidents_title'>" . t('Current Incidents') . "</h3>";
       $form['incidents_header_notes'] = [
         '#type' => 'markup',
         '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('current_downtimes') . "</div>"
@@ -59,7 +59,7 @@ class DowntimesFilter extends FormBase {
       $wrapper = 'maintenance_search_results_wrapper';
       $form_prefix = 'curr_incidents_form maintenance_filters';
       $form['#prefix'] = "<div class =$form_prefix>";
-      $type_header = "<h3 class = 'current_maintainance_title'>" . t('Planned Maintenances') . "</h3><br>";
+      $type_header = "<h3 class = 'current_maintainance_title'>" . t('Planned Maintenances') . "</h3>";
     }
     else if ($type == 'archived') {
       $wrapper = 'archived_search_results_wrapper';
@@ -76,9 +76,8 @@ class DowntimesFilter extends FormBase {
       $form['type'] = array(
         '#type' => 'select',
         '#options' => $types,
+        '#title' => 'Type',
         '#weight' => -1,
-        "#prefix" => "<div class = 'type_search_dropdown'>",
-        '#suffix' => '</div>',
         '#ajax' => array(
           'callback' => $path,
           'wrapper' => $wrapper,
@@ -89,6 +88,8 @@ class DowntimesFilter extends FormBase {
             'message' => NULL,
           ),
         ),
+        '#prefix' => '<div class = "type_search_dropdown hzd-form-element">',
+        '#suffix' => '</div><div style="clear:both"></div>',
       );
 
       $period = array(
@@ -103,10 +104,9 @@ class DowntimesFilter extends FormBase {
       $form['time_period'] = array(
         '#type' => 'select',
         '#options' => $period,
+        '#title' => 'Period',
         '#weight' => 5,
         '#attributes' => array("class" => "time_period_date"),
-        "#prefix" => "<div class = 'time_period_search_dropdown'>",
-        '#suffix' => '</div>',
         '#ajax' => array(
           'callback' => $path,
           'wrapper' => $wrapper,
@@ -117,18 +117,20 @@ class DowntimesFilter extends FormBase {
             'message' => NULL,
           ),
         ),
+        '#prefix' => '<div class = "time_period_search_dropdown hzd-form-element">',
+        '#suffix' => '</div><div style="clear:both"></div>',
       );
       $form['group'] = array(
         '#type' => 'hidden',
-        '#valye' => $group_id,
+        '#value' => $group_id,
       );
       $form['string'] = array(
         '#type' => 'textfield',
         '#weight' => 6,
         '#size' => 45,
         '#attributes' => array("class" => "search_string"),
-        "#prefix" => "<div class = 'string_search'>",
-        '#suffix' => '</div>',
+        '#prefix' => '<div class = "string_search hzd-form-element">',
+        '#suffix' => '</div><div style="clear:both"></div>',
       );
 
       $form['submit'] = array(
@@ -155,7 +157,7 @@ class DowntimesFilter extends FormBase {
 
     $form[$type . '_header'] = [
       '#type' => 'markup',
-      '#markup' => $type_header,
+      '#markup' => '<div class="filter_title_header">' . $type_header . '</div>',
     ];
 
     $form['states'] = [
@@ -173,6 +175,8 @@ class DowntimesFilter extends FormBase {
           'message' => NULL,
         ),
       ),
+      '#prefix' => '<div class = "hzd-form-element">',
+      '#suffix' => '</div><div style="clear:both"></div>',
     ];
 
     $services[1] = '<' . t('Service') . '>';
@@ -208,6 +212,8 @@ class DowntimesFilter extends FormBase {
           'message' => NULL,
         ),
       ),
+      '#prefix' => '<div class = "hzd-form-element">',
+      '#suffix' => '</div><div style="clear:both"></div>',
     ];
     $form['filter_startdate'] = [
       '#type' => 'textfield',
@@ -226,6 +232,8 @@ class DowntimesFilter extends FormBase {
         ),
       ),
       '#attributes' => array('class' => array("start_date")),
+      '#prefix' => '<div class = "hzd-form-element">',
+      '#suffix' => '</div><div style="clear:both"></div>',
     ];
     $form['filter_enddate'] = [
       '#type' => 'textfield',
@@ -241,7 +249,9 @@ class DowntimesFilter extends FormBase {
           'message' => NULL,
         ),
       ),
-      '#attributes'=> array('class' => array("end_date")),
+      '#attributes' => array('class' => array("end_date")),
+      '#prefix' => '<div class = "hzd-form-element">',
+      '#suffix' => '</div><div style="clear:both"></div>',
     ];
     $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
     /* $form['submit'] = [
@@ -257,8 +267,8 @@ class DowntimesFilter extends FormBase {
       ]; */
     $form['#suffix'] = "</div>";
     $form['#attached']['library'] = array(
-      'downtimes.newdowntimes',
-      'downtimes.currentincidents',
+      'downtimes/downtimes.newdowntimes',
+      'downtimes/downtimes.currentincidents',
       'downtimes/downtimes',
     );
     $form['#attached']['drupalSettings'] = array('search_string' => t('Search Reason'), 'group_id' => $group_id);
