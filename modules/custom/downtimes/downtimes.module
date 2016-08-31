@@ -654,6 +654,7 @@ function downtimes_node_insert($node) {
 
     $record['state_id'] = implode(',', $data['states']);
     $record['service_id'] = implode(',', $data['services_effected']);
+    $record['description'] = $node->get('body')->value;
     $record['downtime_id'] = $node->id();
     if (!empty($data['enddate_planned'])) {
       $record['enddate_planned'] = get_unix_timestamp($data['enddate_planned']);
@@ -691,6 +692,7 @@ function downtimes_node_update($node) {
     $date_format = 'd.m.Y H:i:s';
 
     $record['state_id'] = implode(',', $data['states']);
+    $record['description'] = $node->get('body')->value;
     $record['service_id'] = implode(',', $data['services_effected']);
     //$record->downtime_id = $node->id();
     $record['enddate_planned'] = !empty($data['enddate_planned']) ? get_unix_timestamp($data['enddate_planned']) : 0;
