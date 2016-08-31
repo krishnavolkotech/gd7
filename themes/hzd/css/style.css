@@ -1290,3 +1290,4 @@ form#downtimes-filter .type_search_dropdown {
 form#downtimes-filter .string_search.hzd-form-element {
   margin-right: 0 !important;
 }
+.filter_title_header { clear: both; }
