@@ -132,8 +132,18 @@ class DowntimesFilter extends FormBase {
       );
 
       $form['submit'] = array(
-        '#type' => 'submit',
+        '#type' => 'button',
         '#weight' => 7,
+        '#ajax' => array(
+          'callback' => $path,
+          'wrapper' => $wrapper,
+          'method' => 'replace',
+          'event' => 'click',
+          'progress' => array(
+            'type' => 'throbber',
+            'message' => NULL,
+          ),
+        ),
         "#prefix" => "<div class = 'search_string_submit'>",
         '#suffix' => '</div>',
       );
@@ -205,7 +215,6 @@ class DowntimesFilter extends FormBase {
       /* '#date_date_format' => $date_format,
         '#date_time_format' => $time_format, */
       '#description' => date($date_format, time()),
-      '#required' => TRUE,
       '#ajax' => array(
         'callback' => $path,
         'wrapper' => $wrapper,
@@ -216,7 +225,7 @@ class DowntimesFilter extends FormBase {
           'message' => NULL,
         ),
       ),
-        //'#attributes'=> array('class' => array("start_date")),
+      '#attributes' => array('class' => array("start_date")),
     ];
     $form['filter_enddate'] = [
       '#type' => 'textfield',
@@ -232,7 +241,7 @@ class DowntimesFilter extends FormBase {
           'message' => NULL,
         ),
       ),
-        //'#attributes'=> array('class' => array("end_date")),
+      '#attributes'=> array('class' => array("end_date")),
     ];
     $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
     /* $form['submit'] = [
@@ -247,8 +256,11 @@ class DowntimesFilter extends FormBase {
       '#markup' => "<div id = '" . $type . "_search_results_wrapper'>" . $default_downtimes . "</div>"
       ]; */
     $form['#suffix'] = "</div>";
-    $form['#attached']['library'][] = 'downtimes.newdowntimes';
-    $form['#attached']['library'][] = 'downtimes.currentincidents';
+    $form['#attached']['library'] = array(
+      'downtimes.newdowntimes',
+      'downtimes.currentincidents',
+      'downtimes/downtimes',
+    );
     $form['#attached']['drupalSettings'] = array('search_string' => t('Search Reason'), 'group_id' => $group_id);
 
     return $form;
@@ -395,7 +407,7 @@ class DowntimesFilter extends FormBase {
         if ($form_state->getValue('string')) {
           if ($form_state->getValue('string') != t('Search Reason')) {
             $search_string = $form_state->getValue('string');
-            $sql_where .= " and reason like '%%$search_string%%' ";
+            $sql_where .= " and description like '%%$search_string%%' ";
           }
         }
         if ($form_state->getValue('time_period') && $form_state->getValue('time_period') != 6) {
@@ -474,8 +486,8 @@ class DowntimesFilter extends FormBase {
     $_SESSION['incident_state'] = $state;
     $_SESSION['incident_search_string'] = $search_string;
     $_SESSION['incident_limit'] = $limit;
-    $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, $service, $search_string, $limit, $state);
-    
+    $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, $service, $search_string, $limit, $state, $form_state->getValue('filter_enddate'));
+
     $form_state->setRebuild(TRUE);
     $result = array();
 

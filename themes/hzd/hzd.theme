@@ -73,6 +73,39 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo' && $variables['node']->isPublished()) {
     $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link"><a data-placement="bottom" data-toggle="tooltip" title="" type="text/plain; length=278" href="/entityprint/node/' . $nid . '"> RZ-Schnellinfo-Nr-' . $variables['node']->field_unique_id->value . '.pdf</a></span><span class="file-size"></span></span>');
   }
+  if ($variables['node']->getType() == 'downtimes') {
+    $id = $nid;
+    $get_maintain_window = \Drupal::database()->select('downtimes', 'd');
+    $get_maintain_window->fields('d', ['downtime_id', 'description', 'startdate_reported', 'state_id', 'status', 'email_reminder_sent', 'comment', 'reason', 'service_id', 'resolved', 'enddate_reported', 'startdate_planned', 'enddate_planned', 'scheduled_p', 'cancelled']);
+    $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
+    $get_maintain_window->where('downtime_id=' . $id);
+    $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
+    $get_maintain_window->join('node_field_data', 'n', 'd.service_id = n.nid');
+    $result = $get_maintain_window->execute()->fetchObject();
+    
+    $incident_data = new stdClass();
+    $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
+    $incident_data->service_name = \Drupal\hzd_customizations\HzdcustomisationStorage::downtime_services_names($result->service);
+    //$incident_data->state = $states[$result->state_id];
+    $incident_data->state_id = $result->state_id;
+    $incident_data->description = $result->description;
+    $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField();
+    $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
+    $incident_data->reported_by = $name;
+    $incident_data->downtimes_type = ($result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
+    $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) : '') . " " . t('Uhr');
+    $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
+    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) : '') . " " . t('Uhr');
+    $resolved = $result->resolved;
+    $cancelled = $result->cancelled;
+    $state_ids = db_query("SELECT state FROM {states} WHERE entity=?", array($result->downtime_id))->fetchAll();
+    $downtime_states = array();
+    foreach ($state_ids as $state_id) {
+      $downtime_states[] = $states[$state_id->state];
+    }
+    $incident_data->state = implode(", ", $downtime_states);
+    $variables['incident'] = $incident_data;
+  }
 }
 
 /**
