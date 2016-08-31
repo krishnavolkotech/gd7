@@ -1201,27 +1201,34 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   }
 
     public function hzd_get_release_tab_headers($type) {
-    if($type == 'released') {
-      $header = array(t('Service'), t('Release'), t('Date'));
-      if(isset($group_id)) {
-        $header[] = t('Early Warnings');
-      }
-      $header[] = t('D/L');
-    }
-    if($type == 'progress' || $type == 'locked' || $type == 'in_progress') {
-      $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
-      if($type == 'progress') {
-        if(isset($group_id)) {
-          $header[] = t('Early Warnings');
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        } else {
+            $group_id = $group;
         }
-        $header[] = t('D/L');
-      }
-      if($type == 'locked') {
-        $header[] = t('Comment');
-      }
+
+        if ($type == 'released') {
+            $header = array(t('Service'), t('Release'), t('Date'));
+            if (isset($group_id)) {
+                $header[] = t('Early Warnings');
+            }
+            $header[] = t('D/L');
+        }
+        if ($type == 'progress' || $type == 'locked' || $type == 'in_progress') {
+            $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
+            if ($type == 'progress') {
+                if (isset($group_id)) {
+                    $header[] = t('Early Warnings');
+                }
+                $header[] = t('D/L');
+            }
+            if ($type == 'locked') {
+                $header[] = t('Comment');
+            }
+        }
+        return $header;
     }
-    return $header;
-  }
 
   public function hzd_get_release_documentation_link($doc_link, $service_id, $release_id) {
     $group = \Drupal::routeMatch()->getParameter('group');
