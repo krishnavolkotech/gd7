@@ -79,19 +79,39 @@ class HzdNotifications extends ControllerBase {
     $interval = \Drupal::request()->get('interval');
     $uid = \Drupal::request()->get('uid');
     $rel_type = \Drupal::request()->get('rel_type');
-    $content_types =  array('1' => 'downtimes',  'problem', 'release', 'early_warnings');
-    db_delete('service_notifications_override')
-      ->condition('service_id', $service)
-      ->condition('type', $content_types[$type])
-      ->condition('uid', $uid)
-      ->condition('send_interval', $interval)
-      ->execute();
-    error_log($type);
-    // get user default interval of a particlural type
+    $content_types =  array(1 => 'downtimes',2=>  'problem',3=> 'release',4=> 'early_warnings');
+    $action = \Drupal::request()->get('type');
+    if($action == 'Delete'){
+        \Drupal::database()->delete('service_notifications_override')
+          ->condition('service_id', $service)
+          ->condition('type', $content_types[$type])
+          ->condition('uid', $uid)
+          ->condition('send_interval', $interval)
+          ->execute();
+      // get user default interval of a particlural type
     $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $content_types[$type], $rel_type);
     
     // remove the default interval of particular service and update the overrided interval
-    HzdNotificationsHelper::hzd_update_content_type_intval($service, $default_intval, $uid, $content_types[$type], $interval);
+      HzdNotificationsHelper::hzd_update_content_type_intval($service, $default_intval, $uid, $content_types[$type], $interval);
+    }else{
+      $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $content_types[$type], $rel_type);
+      HzdNotificationsHelper::hzd_update_content_type_intval($service, $interval, $uid, $content_types[$type], $default_intval);
+      /*$sid = \Drupal::database()->select('service_notifications_override','sno')
+        ->fields('sno',['sid'])
+        ->condition('service_id', $service)
+        ->condition('type', $content_types[$type])
+        ->condition('uid', $uid)->execute()->fetchField();
+        //echo $interval;
+        //$qfd = \Drupal::database()
+        //->query("UPDATE service_notifications_override SET send_interval = $interval WHERE sid=$qu;")
+        //->execute();
+      $qfd = \Drupal::database()->update('service_notifications_override')
+        ->fields(['send_interval'=>$interval])
+        ->condition('sid', $sid)
+        ->execute();*/
+//echo $qfd->__toString();
+    }
+    
     
     
     $output[] = array(

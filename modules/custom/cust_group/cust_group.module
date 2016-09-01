@@ -11,6 +11,64 @@ define('RELEASE_MANAGEMENT', 32);
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
 
+
+
+function cust_group_node_update($entity){
+/*    $group = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+    if(!empty($group) && $group['gid']){
+        $getUserList = getGroupMemberList($group['gid']);
+        pr($getUserList);exit;
+        send_notifications($group);
+    }
+    pr($group);exit;*/
+}
+
+function getGroupMemberList($gid){
+    $group = \Drupal\group\Entity\Group::load($gid)->getMembers();
+    $usrs = [];
+    foreach($group as $x){
+        $usrs[] = $x->getGroupContent()->getEntity()->id();
+    }
+    $uids = \Drupal::database()->select('group_notifications_user_default_interval','gnudi')
+        ->fields('gnudi',['uid'])
+        ->condition('gnudi.group_id',$gid,'=')
+        ->condition('gnudi.default_send_interval','0','=')
+        ->execute()->fetchAssoc();
+    $uids = array_values($uids);
+    return array_intersect($uids,$usrs);
+}
+
+function send_notifications($data){
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'cust_group';
+    $key = 'immediate_notifications';
+    $to = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
+    $params['message'] = '/group/'.$data['gid'].'/node/'.$data['id'];
+    $langcode = \Drupal::currentUser()->getPreferredLangcode();
+    $send = true;
+    $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+    if ($result['result'] !== true) {
+      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    }
+    else {
+      drupal_set_message(t('Your message has been sent.'));
+    }
+    
+}
+
+function cust_group_mail($key, &$message, $params) {
+ $options = array(
+   'langcode' => $message['langcode'],
+ );
+ switch ($key) {
+   case 'immediate_notifications':
+     $message['from'] = \Drupal::config('system.site')->get('mail');
+     $message['subject'] = t('Content Updated', $options);
+     $message['body'][] = $params['message'];
+     break;
+ }
+}
+
 /**
  * Function cust_og_init() {
  * check_group_pages();
