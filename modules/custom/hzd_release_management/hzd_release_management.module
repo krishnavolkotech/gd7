@@ -485,7 +485,9 @@ function send_immediate_notifications($subject, $message_text, $to, $preference)
   $params['preference'] = $preference ? $preference : 'html';
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = true;
-  $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+  foreach(explode(',',trim($to,',')) as $userMail){
+      $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);      
+  }
   if($result['result'] !== true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }
