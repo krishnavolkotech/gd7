@@ -57,6 +57,18 @@ class HzdStorage {
             HzdStorage::insert_import_status($status, $msg);
             return FALSE;
         }
+        if ((is_int($values['sno'])) ) {
+            $message = t(' sno must be integer');
+            \Drupal::logger('problem_management')->error($message);
+            $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+            $subject = 'Error while import';
+            $body = t("There is an issue while importing of the file. sno must be integer.");
+            HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+            $status = t('Error');
+            $msg = t('sno must be integer.');
+            HzdStorage::insert_import_status($status, $msg);
+            return FALSE;
+        }
         $query = \Drupal::database()->select('groups_field_data', 'gfd');
         $query->Fields('gfd', array('id'));
         $query->condition('label', 'problem management', '=');
