@@ -57,6 +57,7 @@ class HzdStorage {
             HzdStorage::insert_import_status($status, $msg);
             return FALSE;
         }
+        /**
         if (!is_int($values['sno'])) {
             $message = t(' sno must be integer');
             \Drupal::logger('problem_management')->error($message);
@@ -69,6 +70,8 @@ class HzdStorage {
             HzdStorage::insert_import_status($status, $msg);
             return FALSE;
         }
+        */
+        $values['sno'] = (int) $values['sno'];
         $query = \Drupal::database()->select('groups_field_data', 'gfd');
         $query->Fields('gfd', array('id'));
         $query->condition('label', 'problem management', '=');
