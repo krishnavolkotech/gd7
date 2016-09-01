@@ -11,9 +11,9 @@ entity_type: node
 type: file
 settings:
   display_field: true
-  target_type: file
   display_default: false
   uri_scheme: public
+  target_type: file
 module: file
 locked: false
 cardinality: -1
