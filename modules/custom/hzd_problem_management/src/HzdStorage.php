@@ -57,6 +57,21 @@ class HzdStorage {
             HzdStorage::insert_import_status($status, $msg);
             return FALSE;
         }
+        /**
+        if (!is_int($values['sno'])) {
+            $message = t(' sno must be integer');
+            \Drupal::logger('problem_management')->error($message);
+            $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+            $subject = 'Error while import';
+            $body = t("There is an issue while importing of the file. sno must be integer.");
+            HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+            $status = t('Error');
+            $msg = t('sno must be integer.');
+            HzdStorage::insert_import_status($status, $msg);
+            return FALSE;
+        }
+        */
+        $values['sno'] = (int) $values['sno'];
         $query = \Drupal::database()->select('groups_field_data', 'gfd');
         $query->Fields('gfd', array('id'));
         $query->condition('label', 'problem management', '=');
@@ -722,7 +737,7 @@ class HzdStorage {
                         
             if ($string == 'archived_problems') {
                 $elements['field_version'] = $problems_node->field_version->value;
-                $elements['closed'] = $problems_node->field_processing->value;        
+                $elements['closed'] = $problems_node->field_closed->value;       
             }
             $elements['actions'] = $link_path;
             
@@ -741,7 +756,7 @@ class HzdStorage {
         );
 
         if ($string == 'archived_problems') {
-            dpm($string);
+            
             $header[] = array(
                 'data' => t('Fixed With Release'),
                 'class' => 'field_version'
