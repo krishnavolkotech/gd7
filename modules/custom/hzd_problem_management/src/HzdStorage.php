@@ -722,7 +722,7 @@ class HzdStorage {
                         
             if ($string == 'archived_problems') {
                 $elements['field_version'] = $problems_node->field_version->value;
-                $elements['closed'] = $problems_node->field_closed->value;        
+                $elements['closed'] = $problems_node->field_closed->value;       
             }
             $elements['actions'] = $link_path;
             
