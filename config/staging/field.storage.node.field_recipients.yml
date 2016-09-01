@@ -10,7 +10,25 @@ field_name: field_recipients
 entity_type: node
 type: list_string
 settings:
-  allowed_values: {  }
+  allowed_values:
+    -
+      value: Bibliotheksverwaltung
+      label: Bibliotheksverwaltung
+    -
+      value: Betrieb
+      label: Betrieb
+    -
+      value: Entwicklung
+      label: Entwicklung
+    -
+      value: Fachverantwortliche
+      label: Fachverantwortliche
+    -
+      value: Testverantwortliche
+      label: Testverantwortliche
+    -
+      value: Systemverwaltung
+      label: Systemverwaltung
   allowed_values_function: ''
 module: options
 locked: false

@@ -5,7 +5,6 @@ dependencies:
   module:
     - block_class
     - cust_group
-    - group
     - system
   theme:
     - hzd
@@ -24,22 +23,6 @@ settings:
   provider: cust_group
   label_display: visible
 visibility:
-  group_type:
-    id: group_type
-    group_types:
-      closed: closed
-      closed_private: closed_private
-      downtimes: downtimes
-      incident_managent: incident_managent
-      moderate: moderate
-      moderate_private: moderate_private
-      open: open
-      quick_info: quick_info
-      realease_management: realease_management
-      zentrale_release_manag: zentrale_release_manag
-    negate: false
-    context_mapping:
-      group: '@group.group_route_context:group'
   request_path:
     id: request_path
     pages: '/group/*'
