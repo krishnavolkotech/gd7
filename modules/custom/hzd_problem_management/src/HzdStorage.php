@@ -57,7 +57,7 @@ class HzdStorage {
             HzdStorage::insert_import_status($status, $msg);
             return FALSE;
         }
-        if ((is_int($values['sno'])) ) {
+        if (!is_int($values['sno'])) {
             $message = t(' sno must be integer');
             \Drupal::logger('problem_management')->error($message);
             $mail = \Drupal::config('problem_management.settings')->get('import_mail');
