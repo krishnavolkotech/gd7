@@ -29,10 +29,6 @@ if (!defined('MAINTENANCE_GROUP_ID')) {
   define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
 }
 
-if (!defined('SITE_ADMIN')) {
-  define('SITE_ADMIN', 'site_administrator');
-}
-
 if (!defined('PAGE_LIMIT')) {
   define('PAGE_LIMIT', 20);
 }
@@ -601,7 +597,7 @@ class HzdcustomisationStorage {
     }
     $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
     array_push($content_state_id, $owner_state_id);
-    if (array_key_exists(SITE_ADMIN, $user->getRoles())) {
+    if (in_array(SITE_ADMIN_ROLE, $user->getRoles())) {
       return TRUE;
     }
     elseif ($is_group_admin) {
@@ -759,7 +755,7 @@ class HzdcustomisationStorage {
     array_push($header, array('data' => t('Reported By')->__toString(), 'class' => 'reported_by'));
     array_push($header, array('data' => t('Action')->__toString(), 'class' => 'action'));
 
-    $master_group = db_query("SELECT nid FROM {node_field_data} WHERE title = 'Incident Management'")->fetchField();
+    $master_group = db_query("SELECT id FROM {groups_field_data} WHERE label = 'Incident Management'")->fetchField();
 
     $output = "<br>";
 
@@ -888,7 +884,8 @@ class HzdcustomisationStorage {
         if ($maintenance_edit && ($master_group == $group_id) && $string != 'archived') {
           $resolve_url = Url::fromUserInput('/node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
           $cancel_url = Url::fromUserInput('/node/' . $group_id . '/cancel' . '/' . $client->downtime_id);
-          $links .= "<br>" . l(t('Update'), 'node/' . $client->downtime_id . '/edit') . " <br>";
+          $edit_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
+          $links .= "<br>" . \Drupal::l(t('Update'), $edit_url) . " <br>";
           //l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);
           if ($client->startdate_planned > time()) {
             $links .= \Drupal::l(t('Cancel Maintenance'), $cancel_url);
