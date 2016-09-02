@@ -88,9 +88,9 @@ class HzdproblemmanagementHelper {
         $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
         $sql_where = !empty($_SESSION['sql_where']) ? $_SESSION['sql_where'] : NULL;
         $limit = !empty($_SESSION['limit']) ? $_SESSION['limit'] : NULL;
-        $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';
+        // $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';
         $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $type, $limit);
-        $result['content']['problems_default_display']['#suffix'] = '</div>';
+        // $result['content']['problems_default_display']['#suffix'] = '</div>';
         $result['content']['#suffix'] = "</div>";
 
         return $result;
