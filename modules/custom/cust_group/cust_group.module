@@ -57,7 +57,7 @@ function send_notifications($data,$mails){
     //$mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
     $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
     $params['subject'] = "Aktualisiert - Seite: ".$groupContent->label();
-    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert.Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
+    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
     global $base_url;
     $url = $base_url.'/group/'.$data['gid'].'/node/'.$data['id'];
     $params['message'] .= '<br><br>'.$url;
