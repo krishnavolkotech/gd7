@@ -2,12 +2,11 @@
 
 namespace Drupal\problem_management;
 
-use Drupal\node\Entity\Node;
-use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Url;
-use Drupal\Core\Database\Query\Condition;
 use Drupal\group\Entity\GroupContent;
 use Drupal\hzd_services\HzdservicesHelper;
+use Drupal\node\Entity\Node;
+use Drupal\user\PrivateTempStoreFactory;
 
 class HzdStorage {
 
@@ -261,7 +260,6 @@ class HzdStorage {
                 // $group_id = \Drupal::routeMatch()->getParameter('group');
                 $group = \Drupal\group\Entity\Group::load($group_id['0']);
                 //Adding node to group
-                // dpm($group->getGroupType());
 
                 $group_content = GroupContent::create([
                             'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
@@ -271,8 +269,7 @@ class HzdStorage {
                             'label' => $values['title'],
                             'uid' => 1,
                 ]);
-                $group_content->save();
-                // dpm($group_content->id());       
+                $group_content->save();  
             }
             return TRUE;
         }
@@ -411,7 +408,6 @@ class HzdStorage {
                         ),
                     )
                 );
-
                 $query->leftJoin('node_revision', 'nr', 'nfd.nid = nr.nid');
                 $query->leftJoin('node__body', 'nb', 'nfd.nid = nb.entity_id');
                 $query->leftJoin('node__field_s_no', 'nfsn', 'nb.entity_id = nfsn.entity_id');
@@ -420,12 +416,11 @@ class HzdStorage {
                 $query->leftJoin('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
                 $query->leftJoin('node__field_work_around', 'nfwa', 'nff.entity_id = nfwa.entity_id');
 
+        
                 $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
                 $group_problems_view_service_id_query->addField('gpv', 'service_id');
                 $group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id : self::PROBLEM_MANAGEMENT, '=');
                 $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
-
-
 
                 $group_problems_view = array();
                 if (!empty($group_problems_view_service)) {
@@ -594,7 +589,6 @@ class HzdStorage {
         } else {
             $group_id = $group;
         }
-        // dpm($group_id);
 
         $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
         $sql_select->Fields('nfd', array('nid'));
@@ -616,12 +610,12 @@ class HzdStorage {
             // $filter_where = " and nfps.field_problem_status_value != 'geschlossen' ";
             $sql_select->condition('nfps.field_problem_status_value', 'geschlossen', 'not like');
         }
+        
         // $sql_select = " SELECT n.nid ";
-
         $sql_select->leftJoin('node_revision', 'nr', 'nfd.nid = nr.nid');
         $sql_select->leftJoin('node__body', 'nb', 'nfd.nid = nb.entity_id');
-        $sql_select->leftJoin('node__field_processing', 'nfp', 'nfd.nid = nfp.entity_id');
-        $sql_select->leftJoin('node__field_problem_status', 'nfps', 'nfp.entity_id = nfps.entity_id');
+     //   $sql_select->leftJoin('node__field_processing', 'nfp', 'nb.entity_id = nfp.entity_id');
+        $sql_select->leftJoin('node__field_problem_status', 'nfps', 'nb.entity_id = nfps.entity_id');
         $sql_select->leftJoin('node__field_services', 'nfs', 'nfps.entity_id = nfs.entity_id');
         // $sql_select->join('node__field_problem_eroffnet', 'nfpe', 'nfsn.entity_id = nfpe.entity_id');
         $sql_select->leftJoin('node__field_function', 'nff', 'nfs.entity_id = nff.entity_id');
@@ -785,7 +779,11 @@ class HzdStorage {
             );
             return $build;
         }
-        return $build = array('#markup' => t("No Data Created Yet"));
+        return $build = array(
+            '#prefix' => '<div id="no-result">',
+            '#markup' => t("No Data Created Yet"),
+            '#suffix' => '</div>',
+            );
     }
 
     static function delete_group_problems_view($group_id = null) {
