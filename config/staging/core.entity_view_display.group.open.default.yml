@@ -45,6 +45,6 @@ content:
 hidden:
   changed: true
   created: true
+  field_old_reference: true
   langcode: true
   uid: true
-  field_old_reference: true
