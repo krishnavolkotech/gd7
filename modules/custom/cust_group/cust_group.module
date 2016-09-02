@@ -18,6 +18,7 @@ function cust_group_node_update($entity){
 }
 
 function cust_group_node_insert($entity){
+    pr($entity->id());exit;
     sendGroupUpdateMail($entity);
 }
 
@@ -40,12 +41,15 @@ function getGroupMemberList($gid){
     foreach($uids as $uid){
         $users[] = $uid->uid;
     }
-    $emails = \Drupal::database()->select('users_field_data','ufd')
-        ->fields('ufd',['uid','mail'])
-        ->condition('uid',$users,'IN')
-        ->execute()->fetchAll();
-    foreach($emails as $mail){
-        $userMails[$mail->uid] = $mail->mail;
+    $userMails = [];
+    if(!empty($users)){
+        $emails = \Drupal::database()->select('users_field_data','ufd')
+            ->fields('ufd',['uid','mail'])
+            ->condition('uid',$users,'IN')
+            ->execute()->fetchAll();
+        foreach($emails as $mail){
+            $userMails[$mail->uid] = $mail->mail;
+        }
     }
     return $userMails;
 }
