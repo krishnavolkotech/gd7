@@ -191,9 +191,3 @@ AddEncoding gzip svgz
   # Disable content sniffing, since it's an attack vector.
   Header always set X-Content-Type-Options nosniff
 </IfModule>
-
-# Require popup dialog for access 
-AuthType Basic 
-AuthName "You must give a password" 
-AuthUserFile /var/www/.hzdevpwd 
-Require valid-user
