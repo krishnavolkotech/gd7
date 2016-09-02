@@ -54,7 +54,7 @@ function send_notifications($data,$mails){
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
     $key = 'immediate_notifications';
-    $mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
+    //$mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
     $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
     $params['subject'] = "Aktualisiert - Seite: ".$groupContent->label();
     $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert.Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
@@ -63,7 +63,7 @@ function send_notifications($data,$mails){
     $params['message'] .= '<br><br>'.$url;
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
     $send = true;
-    foreach((array)explode(',',trim($mails,',')) as $to){
+    foreach($mails as $to){
         $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
     }
     if ($result['result'] !== true) {
