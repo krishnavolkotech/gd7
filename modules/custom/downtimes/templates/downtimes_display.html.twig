@@ -112,7 +112,7 @@
                     {{- row.cells.reason.content|raw -}}
                     </{{ row.cells.reason.tag }}>
                     <{{ row.cells.content.tag }}{{ row.cells.content.attributes }}>
-                    {{- row.cells.content.content -}}
+                    {{- row.cells.content.content|raw -}}
                     </{{ row.cells.content.tag }}>
                 </tr>
             {% endfor %}
