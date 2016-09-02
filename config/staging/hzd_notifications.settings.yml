@@ -10,3 +10,7 @@ quickinfo_subject: 'Quickinfo Subject: [node:field_custom_title]'
 quickinfo_body:
   value: "<p>test test</p>\r\n\r\n<p>[node:field_custom_title]</p>\r\n\r\n<p>[node:field_related_transfer_number]</p>\r\n"
   format: basic_html
+group_content_notification_subject: 'Group Content Updated'
+group_content_notification_body:
+  value: "<p>Group Name:[group:title]</p>\r\n\r\n<p>Content Title:[node:title]</p>\r\n\r\n<p>URL: {GROUP_NODE_URL}</p>"
+  format: basic_html

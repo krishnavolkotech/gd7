@@ -116,7 +116,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_recipients:
-    label: inline
+    label: above
     weight: 4
     type: list_default
     settings: {  }
