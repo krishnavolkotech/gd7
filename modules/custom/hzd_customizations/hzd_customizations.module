@@ -105,6 +105,8 @@ function get_related_files($planning_filename) {
 function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form') {
     $form['actions']['publish']['#value'] = t('Publish');
+    $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
+    $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
     $form['actions']['unpublish']['#value'] = t('Save');
     $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
@@ -169,22 +171,9 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
                     $result->fields('gcfd', array('gid'))
                         ->condition('gcfd.entity_id', \Drupal::currentUser()->id());
                     $val = $result->execute()->fetchCol();
-		    //		    pr($val);exit;
                     $condition['value'][':groups_field_data_id[]'] = $val;
                 }
             }
         }
     }
-}
-
-use Zend\Diactoros\Response\RedirectResponse;
-function hzd_customizations_node_view($node, $view_mode, $langcode){
-  global $base_url;
-  if($node['#node']->getType() == 'group' && !\Drupal::currentUser()->id()){
-    $currentPath = \Drupal::service('path.current')->getPath();
-    $loginPath = '/user/login?destination='.$currentPath;
-    header('Location: '.$base_url.$loginPath);
-    exit();
-    //    return new RedirectResponse($loginPath);///this doesn't do a server redirect instead it sends a redirect request to browser
-  }
 }

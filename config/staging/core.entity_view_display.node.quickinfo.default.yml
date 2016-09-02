@@ -45,7 +45,7 @@ content:
       pager_id: 0
     third_party_settings: {  }
   field_additional_email_recipient:
-    label: inline
+    label: above
     weight: 2
     type: basic_string
     settings: {  }
@@ -87,7 +87,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_custom_title:
-    label: inline
+    label: above
     weight: 0
     type: basic_string
     settings: {  }
@@ -111,9 +111,9 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_other_services:
-    label: inline
+    label: above
     weight: 3
-    type: list_key
+    type: list_default
     settings: {  }
     third_party_settings: {  }
   field_professional_conditions:
@@ -123,13 +123,13 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_recipients:
-    label: inline
+    label: above
     weight: 4
-    type: list_key
+    type: list_default
     settings: {  }
     third_party_settings: {  }
   field_related_transfer_number:
-    label: inline
+    label: above
     weight: 1
     type: basic_string
     settings: {  }
@@ -158,14 +158,6 @@ content:
     type: text_default
     settings: {  }
     third_party_settings: {  }
-  field_unique_id:
-    label: inline
-    weight: 5
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
   links:
     weight: 22
     settings: {  }
@@ -178,4 +170,5 @@ content:
     third_party_settings: {  }
 hidden:
   entity_print_view: true
+  field_unique_id: true
   langcode: true

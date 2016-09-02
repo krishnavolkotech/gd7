@@ -313,6 +313,28 @@ function send_release_notifications($entity) {
   }
 }
 
+function send_downtime_notifications($entity) {
+  $service_field = $entity->get('field_services')->getValue();
+  $service_id = $service_field[0]['target_id'];
+  
+  // get immediate notifications user mails
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
+  if(is_array($result) && count($result) > 0) {
+    foreach($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      // trigger mail functionality to send immediate notifications of quickinfo
+      $token_service = \Drupal::token();
+      $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
+      $subject = $token_service->replace($token_sub, array('node' => $entity));
+      $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
+      // Replace the token for subject.
+      $message_text = $token_service->replace($token_body, array('node' => $entity));
+      send_immediate_notifications($subject, $message_text, $mail, $preference);
+    }
+  }
+}
+
 // send immediate release notifications.
 function send_problem_notifications($entity) {
   $service_field = $entity->get('field_services')->getValue();
@@ -388,7 +410,7 @@ function hzd_release_management_node_insert($entity) {
     send_problem_notifications($entity);
   }
   if($entity->getType() == 'downtimes') {
-    
+    send_downtime_notifications($entity);
   }
   if($entity->getType() == 'planning_files') {
     send_pf_notifications($entity);
@@ -401,9 +423,9 @@ function hzd_release_management_node_insert($entity) {
   if($entity->getType() == 'services') {
     $nid = $entity->id();
     $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-    $downtime = $entity->get('field_enable_downtime')->getValue()[0]['value'];
-    $problem = $entity->get('field_problem_name')->getValue()[0]['value'];
-    $release = $entity->get('field_release_name')->getValue()[0]['value'];
+    $downtime = $entity->get('field_enable_downtime')->value;
+    $problem = $entity->get('field_problem_name')->value;
+    $release = $entity->get('field_release_name')->value;
 
     if($downtime && $rel_type == KONSONS) {
       insert_new_service_notifications('downtimes', $nid);
@@ -485,7 +507,11 @@ function send_immediate_notifications($subject, $message_text, $to, $preference)
   $params['preference'] = $preference ? $preference : 'html';
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = true;
-  $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+  $i = 0;
+  foreach(explode(',',trim($to,',')) as $userMail){
+      if($i++ < 5)
+            $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);      
+  }
   if($result['result'] !== true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }
@@ -504,7 +530,7 @@ function hzd_release_management_mail($key, &$message, $params) {
       $message['subject'] = $params['subject'];
       $message['body'][] = SafeMarkup::checkPlain($params['message']);
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
+      $message['headers']['Bcc'] = 'sandeep@azrisolutions.com';
       break;
   }
 }
@@ -524,12 +550,8 @@ function hzd_release_management_node_delete($entity) {
  */
 function hzd_release_management_node_update($entity) {
   if($entity->getType() == 'services') {
-    $nid = $entity->id();
-    $diff = $entity->get('field_diff')->getValue()[0]['value'];
-    if($nid) {
-      update_service_notifications($entity);
-      //update_service_notifications('downtimes', $nid);
-    }
+    update_service_notifications($entity);
+    //update_service_notifications('downtimes', $nid);
   }
   if($entity->getType() == 'release') {
     send_release_notifications($entity);
@@ -543,13 +565,16 @@ function hzd_release_management_node_update($entity) {
   if($entity->getType() == 'quickinfo') {
     send_qi_notifications($entity);
   }
+  if($entity->getType() == 'downtimes') {
+    send_downtime_notifications($entity);
+  }
 }
 
 function update_service_notifications($entity) {
   $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-  $downtime = $entity->get('field_enable_downtime')->getValue()[0]['value'];
-  $problem = $entity->get('field_problem_name')->getValue()[0]['value'];
-  $release = $entity->get('field_release_name')->getValue()[0]['value'];
+  $downtime = $entity->get('field_enable_downtime')->value;
+  $problem = $entity->get('field_problem_name')->value;
+  $release = $entity->get('field_release_name')->value;
   if($downtime) {
     hzd_notifications_delete_subscriptions('downtime', $entity->id());
     if ($rel_type == KONSONS) {
@@ -583,7 +608,7 @@ function update_service_notifications($entity) {
 
 function hzd_service_update_notifications($type, $nid) {
   $default_interval = array('-1', 0, 86400, 604800);
-  $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
+  $service_notifications = \Drupal::database()->query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
   $result = array();
   foreach($service_notifications as $vals) {
     $result[$vals->uid] = $vals->default_send_interval;

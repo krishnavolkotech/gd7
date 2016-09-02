@@ -22,9 +22,11 @@ class GroupMenuBlock extends BlockBase {
   public function build() {
     $menu_tree = \Drupal::menuTree();
     $group = \Drupal::routeMatch()->getParameter('group');
+    if(!is_object($group)){
+      $group = \Drupal\group\Entity\Group::load($group);
+    }
     $oldId = $group->get('field_old_reference')->value;
     $menu_name = 'menu-'.$oldId;
-
     // Build the typical default set of menu tree parameters.
     $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
 

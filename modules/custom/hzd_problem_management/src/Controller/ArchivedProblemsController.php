@@ -77,8 +77,9 @@ class ArchivedProblemsController extends ControllerBase {
     } else {
       $limit = NULL;
     }
-
-    $result['content']['problems_default_display'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
+   // $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';
+    $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
+   // $result['content']['problems_default_display']['#suffix'] = '</div>';
     $result['content']['#suffix'] = "</div>";
     return $result;
   }

@@ -49,7 +49,7 @@ class DowntimesFilter extends FormBase {
       $wrapper = 'incidents_search_results_wrapper';
       $form_prefix = 'curr_incidents_form';
       $form['#prefix'] = "<div class =$form_prefix>";
-      $type_header = "<h3 class = 'current_incidents_title'>" . t('Current Incidents') . "</h3><br>";
+      $type_header = "<h3 class = 'current_incidents_title'>" . t('Current Incidents') . "</h3>";
       $form['incidents_header_notes'] = [
         '#type' => 'markup',
         '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('current_downtimes') . "</div>"
@@ -59,7 +59,7 @@ class DowntimesFilter extends FormBase {
       $wrapper = 'maintenance_search_results_wrapper';
       $form_prefix = 'curr_incidents_form maintenance_filters';
       $form['#prefix'] = "<div class =$form_prefix>";
-      $type_header = "<h3 class = 'current_maintainance_title'>" . t('Planned Maintenances') . "</h3><br>";
+      $type_header = "<h3 class = 'current_maintainance_title'>" . t('Planned Maintenances') . "</h3>";
     }
     else if ($type == 'archived') {
       $wrapper = 'archived_search_results_wrapper';
@@ -122,7 +122,7 @@ class DowntimesFilter extends FormBase {
       );
       $form['group'] = array(
         '#type' => 'hidden',
-        '#valye' => $group_id,
+        '#value' => $group_id,
       );
       $form['string'] = array(
         '#type' => 'textfield',
@@ -157,7 +157,7 @@ class DowntimesFilter extends FormBase {
 
     $form[$type . '_header'] = [
       '#type' => 'markup',
-      '#markup' => $type_header,
+      '#markup' => '<div class="filter_title_header">' . $type_header . '</div>',
     ];
 
     $form['states'] = [
@@ -267,8 +267,8 @@ class DowntimesFilter extends FormBase {
       ]; */
     $form['#suffix'] = "</div>";
     $form['#attached']['library'] = array(
-      'downtimes.newdowntimes',
-      'downtimes.currentincidents',
+      'downtimes/downtimes.newdowntimes',
+      'downtimes/downtimes.currentincidents',
       'downtimes/downtimes',
     );
     $form['#attached']['drupalSettings'] = array('search_string' => t('Search Reason'), 'group_id' => $group_id);

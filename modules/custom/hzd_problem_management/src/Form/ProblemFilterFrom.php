@@ -304,7 +304,9 @@ class ProblemFilterFrom extends FormBase {
     $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
     $result['content']['problems_reset_element']['form'] = HzdproblemmanagementHelper::problem_reset_element();
     $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
-    $result['content']['problems_default_display'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
+   // $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';
+    $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
+   // $result['content']['problems_default_display']['#suffix'] = '</div>';
     $result['content']['#suffix'] = "</div>";
     return $result;
   }

@@ -199,14 +199,14 @@ class HzdcustomisationStorage {
 //pr($group_link);echo $counter;exit;
     if ($counter > 0) {
       if (empty($group_link)) {
-	$menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::create([
-            'title' => t($link_title),
-	    'link' => ['uri' => 'internal:/group/' . $group.'/problems'],
-	    'menu_name' => $menu_name,
-	    'expanded' => FALSE,
+        $menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::create([
+              'title' => t($link_title),
+              'link' => ['uri' => 'internal:/group/' . $group . '/problems'],
+              'menu_name' => $menu_name,
+              'expanded' => FALSE,
         ]);
-  	$menu_link->save();
-	
+        $menu_link->save();
+
         //menu_link_save($flink);
         // Need to clear the menu cache to get the new menu item affected.
         menu_cache_clear_all();
@@ -323,6 +323,7 @@ class HzdcustomisationStorage {
       $query->condition('active', 1);
     }
     $states = $query->execute()->fetchAll();
+    //$data[0] = 'Bundesland';
     foreach ($states as $state) {
       if ($state->state == NULL) {
         $data[$state->id] = 'Bundesland';
@@ -572,9 +573,16 @@ class HzdcustomisationStorage {
   }
 
   static function downtime_services_names($service) {
-    $position = strripos($service, ',');
+    $query = db_select('node_field_data', 'n');
+    $query->addExpression("Group_concat(DISTINCT n.title SEPARATOR', ')", 'service');
+    $query->where('n.nid IN (' . $service . ')');
+    $service_name = $query->execute()->fetchField();
+    $position = strripos($service_name, ',');
     if ($position) {
-      $service = substr_replace($service, ', ', strripos($service, ','), 1);
+      $service = substr_replace($service_name, ', ', strripos($service_name, ','), 1);
+    }
+    else {
+      $service = $service_name;
     }
     return $service;
   }
@@ -621,7 +629,7 @@ class HzdcustomisationStorage {
     $user = \Drupal::currentUser();
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
-    
+
     $reasons = array(
       t('Please select a reason here'),
       t('Urgency of the maintenance'),
@@ -706,16 +714,16 @@ class HzdcustomisationStorage {
     }
     else {
       $sql_where .= " and sd.cancelled = 0";
-      $select = "select sd.startdate_reported, sd.enddate_reported, sd.downtime_id,n.uid,sd.downtime_id, sd.description, sd.startdate_planned, sd.enddate_planned,group_concat(distinct n.title separator'<br>') as service,
+      $select = "select distinct(sd.downtime_id),sd.startdate_reported, sd.enddate_reported, sd.downtime_id,n.uid,sd.downtime_id, sd.description, sd.startdate_planned, sd.enddate_planned, sd.service_id,
         if(sd.scheduled_p = 1, 'MAINTENANCE', 'INCIDENT') as type,
-        group_concat(distinct s.abbr separator', ') as abbr";
+        sd.state_id";
 
       if (isset($group_id)) {
         $inner_where = " where $service and $state and group_id =  " . $group_id;
         $inner_select = "select distinct(ds.service_id) as state_service_id from {group_downtimes_view} gdv, {downtimes} ds $inner_where ";
         $sql_select = "$select from {downtimes} sd, {node_field_data} n, {group_content_field_data} oa,  {states} s
                  where sd.service_id = n.nid and
-                       sd.downtime_id = oa.entity_id and s.id=sd.state_id and
+                       sd.downtime_id = oa.entity_id and
                        sd.service_id in
                              ($inner_select) ";
       }
@@ -728,7 +736,7 @@ class HzdcustomisationStorage {
                              ($inner_select) ";
       }
     }
-    $sql_group_by = " group by sd.downtime_id,n.uid,sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p,sd.cancelled order by sd.startdate_planned $sort_order";
+    $sql_group_by = " group by sd.downtime_id,sd.service_id,sd.state_id,n.uid,sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p,sd.cancelled order by sd.startdate_planned $sort_order";
 
     $sql = $sql_select . $sql_where . $sql_group_by;
 
@@ -758,21 +766,15 @@ class HzdcustomisationStorage {
     if ($string == 'archived') {
       $limit = ($limit ? $limit : PAGE_LIMIT);
       if ($limit != 'all') {
-        //$result = db_query_range($sql, 0, $limit, array())->fetchAll();
-        //$page = pager_default_initialize($total, $limit);
-        /* print $sql; die();
-          $query = db_query($sql);
-          $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
-          $result = $pager->execute(); */
         $query = db_select('downtimes', 'sd');
-        $query->Fields('sd', array('startdate_reported', 'enddate_reported', 'downtime_id', 'description', 'startdate_planned', 'enddate_planned'));
-        $query->addExpression("Group_concat(DISTINCT s.abbr SEPARATOR', ')", 'abbr');
-        $query->addExpression("Group_concat(DISTINCT title SEPARATOR' ')", 'service');
+        $query->Fields('sd', array('state_id', 'service_id', 'startdate_reported', 'enddate_reported', 'downtime_id', 'description', 'startdate_planned', 'enddate_planned'));
+        //$query->addExpression("Group_concat(DISTINCT s.abbr SEPARATOR', ')", 'abbr');
+        //$query->addExpression("Group_concat(DISTINCT title SEPARATOR' ')", 'service');
         $query->addExpression("IF(scheduled_p = 1, 'MAINTENANCE', 'INCIDENT')", 'type');
         $query->join('node_field_data', 'n', 'sd.service_id = n.nid');
         $query->join('group_content_field_data', 'oa', 'sd.downtime_id = oa.entity_id');
-        $query->join('states', 's', 's.id=sd.state_id');
-        $query->groupBy('sd.downtime_id, n.uid, sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
+        //$query->join('states', 's', 's.id=sd.state_id');
+        $query->groupBy('sd.service_id, sd.state_id, sd.downtime_id, n.uid, sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
         $query->where('sd.service_id = n.nid AND (sd.resolved = 1 OR sd.cancelled = 1) AND sd.service_id IN (SELECT gdv.service_id AS state_service_id FROM   {group_downtimes_view} gdv,  {downtimes} ds WHERE  ' . $service . ' AND ' . $state . ' AND group_id = ' . $group_id . ' ) ' . $sql_where);
         $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
         $result = $pager->execute();
@@ -791,9 +793,9 @@ class HzdcustomisationStorage {
     }
     $rows = array();
     foreach ($result as $client) {
-      $services = self::downtime_services_names($client->service);
+      $services = self::downtime_services_names($client->service_id);
       //$user_state = display_update($states[$client->state_id]);
-      $user_state = $client->abbr;
+      $user_state = db_query("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
       $startdate = ($client->startdate_planned ? date('d-m-Y', $client->startdate_planned) . " " . date('H:i', $client->startdate_planned) : "unbekannt");
       if ($string == 'archived') {
         if (isset($client->cancelled) && $client->cancelled == 1) {
@@ -812,10 +814,7 @@ class HzdcustomisationStorage {
       $user_name = ($user->id() ? \Drupal::l($name, $user_url) : $name);
 
       $downtime_ids = array();
-      $get_downtimes_states = db_query("SELECT state_id FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchAll();
-      foreach ($get_downtimes_states as $downtime_node_state_ids) {
-        $downtime_ids[] = $downtime_node_state_ids->state_id;
-      }
+      $downtime_ids = explode(',', $client->state_id);
       $show_resolve = self::resolve_link_display($downtime_ids, $client->uid);
       //$maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
       $maintenance_edit = TRUE;
@@ -832,7 +831,7 @@ class HzdcustomisationStorage {
         'service' => $services,
         'start_date' => $startdate,
         'end_date' => $enddate,
-        'reason' => !empty($client->description)? $client->description : '',
+        'reason' => !empty($client->description) ? $client->description : '',
         'name' => $user_name
       );
 

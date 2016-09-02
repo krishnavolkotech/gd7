@@ -11,6 +11,83 @@ define('RELEASE_MANAGEMENT', 32);
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
 
+
+
+function cust_group_node_update($entity){
+    sendGroupUpdateMail($entity);
+}
+
+function cust_group_node_insert($entity){
+    sendGroupUpdateMail($entity);
+}
+
+function sendGroupUpdateMail($entity){
+    $group = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+//    pr($group);exit;
+    if(!empty($group) && $group['gid']){
+        $getUserMailList = getGroupMemberList($group['gid']);
+        send_notifications($group,$getUserMailList);
+    }
+}
+
+function getGroupMemberList($gid){
+    $uids = \Drupal::database()->select('group_notifications_user_default_interval','gnudi')
+        ->fields('gnudi',['uid'])
+        ->condition('gnudi.group_id',$gid,'=')
+        ->condition('gnudi.default_send_interval','0','=')
+        ->execute()->fetchAll();
+        $users = [];
+    foreach($uids as $uid){
+        $users[] = $uid->uid;
+    }
+    $emails = \Drupal::database()->select('users_field_data','ufd')
+        ->fields('ufd',['uid','mail'])
+        ->condition('uid',$users,'IN')
+        ->execute()->fetchAll();
+    foreach($emails as $mail){
+        $userMails[$mail->uid] = $mail->mail;
+    }
+    return $userMails;
+}
+
+function send_notifications($data,$mails){
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'cust_group';
+    $key = 'immediate_notifications';
+    //$mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
+    $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
+    $params['subject'] = "Aktualisiert - Seite: ".$groupContent->label();
+    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
+    global $base_url;
+    $url = $base_url.'/group/'.$data['gid'].'/node/'.$data['id'];
+    $params['message'] .= '<br><br>'.$url;
+    $langcode = \Drupal::currentUser()->getPreferredLangcode();
+    $send = true;
+    foreach($mails as $to){
+        $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+    }
+    if ($result['result'] !== true) {
+      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    }
+    else {
+      drupal_set_message(t('Your message has been sent.'));
+    }
+    
+}
+
+function cust_group_mail($key, &$message, $params) {
+ $options = array(
+   'langcode' => $message['langcode'],
+ );
+ switch ($key) {
+   case 'immediate_notifications':
+     $message['from'] = \Drupal::config('system.site')->get('mail');
+     $message['subject'] = t($params['subject'], $options);
+     $message['body'][] = $params['message'];
+     break;
+ }
+}
+
 /**
  * Function cust_og_init() {
  * check_group_pages();

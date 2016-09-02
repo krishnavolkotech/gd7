@@ -80,12 +80,12 @@ function hzd_preprocess_node(&$variables) {
     $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
     $get_maintain_window->where('downtime_id=' . $id);
     $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
-    $get_maintain_window->join('node_field_data', 'n', 'd.service_id = n.nid');
+    $get_maintain_window->join('node_field_data', 'n', "FIND_IN_SET(n.nid, d.service_id)");
     $result = $get_maintain_window->execute()->fetchObject();
-    
+
     $incident_data = new stdClass();
     $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
-    $incident_data->service_name = \Drupal\hzd_customizations\HzdcustomisationStorage::downtime_services_names($result->service);
+    $incident_data->service_name = $result->service;
     //$incident_data->state = $states[$result->state_id];
     $incident_data->state_id = $result->state_id;
     $incident_data->description = $result->description;
@@ -98,12 +98,8 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) : '') . " " . t('Uhr');
     $resolved = $result->resolved;
     $cancelled = $result->cancelled;
-    $state_ids = db_query("SELECT state FROM {states} WHERE entity=?", array($result->downtime_id))->fetchAll();
-    $downtime_states = array();
-    foreach ($state_ids as $state_id) {
-      $downtime_states[] = $states[$state_id->state];
-    }
-    $incident_data->state = implode(", ", $downtime_states);
+    $state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchField();
+    $incident_data->state = $state_ids;
     $variables['incident'] = $incident_data;
   }
 }

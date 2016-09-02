@@ -139,7 +139,7 @@ content:
     weight: 6
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+    type: options_buttons
   field_related_transfer_number:
     weight: 4
     type: string_textarea

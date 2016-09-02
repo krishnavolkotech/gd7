@@ -73,5 +73,6 @@ content:
     weight: 101
     third_party_settings: {  }
 hidden:
+  entity_print_view: true
   field_enable_downtime: true
   langcode: true
