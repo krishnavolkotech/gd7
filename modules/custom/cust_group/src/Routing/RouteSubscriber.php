@@ -32,13 +32,12 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
 		foreach($collection as $key=>$route){
-			if (strpos($route->getPath(),'/group/{') === 0 && $key !== 'entity.group.canonical'){
+			if (strpos($route->getPath(),'/group/{') === 0 && !in_array($key,['entity.group_content.group_membership.join_form','entity.group.canonical'		])){
 				if(in_array($key,['view.group_members_lists.page_1'])){
 					//as views from UI has path of kind /group/{arg_0}/address/{arg_1} 
 					$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
 				}else{
 					$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
-					$route->setDefault('_entity_view','group.default');
 				}
 			}
 		}

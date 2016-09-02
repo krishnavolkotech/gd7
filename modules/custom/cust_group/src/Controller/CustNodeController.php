@@ -86,4 +86,18 @@ class CustNodeController extends ControllerBase {
       ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
     return (bool)!empty($adminquery);
   }
+	
+	static function getNodeGroupId($node = null){
+		if(!$node){
+			return false;
+		}
+		$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
+          ->fields('gcfd',['gid','id'])
+          ->condition('gcfd.entity_id',$node->id())
+          ->execute()->fetchAssoc();
+		if(!empty($checkGroupNode)){
+			return $checkGroupNode;
+		}
+		return false;
+	}
 }

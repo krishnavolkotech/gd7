@@ -1,0 +1,17 @@
+uuid: 0e9c81a6-01f2-46b3-8e48-b88f7869c950
+langcode: en
+status: true
+dependencies:
+  module:
+    - problem_management
+title: 'Default cron handler'
+id: problem_management_cron
+weight: 0
+module: problem_management
+callback: problem_management_cron
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database

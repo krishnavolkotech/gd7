@@ -39,7 +39,7 @@ class HzdNotificationsHelper {
   }
 
   // insert default planning files notifications intervals of user
-  function insert_default_pf_user_intervel($pf_int_val, $uid) {
+  static function insert_default_pf_user_intervel($pf_int_val, $uid) {
     \Drupal::database()->merge('planning_files_notifications_default_interval')
       ->key(array(
         'uid' => $uid,
@@ -52,7 +52,7 @@ class HzdNotificationsHelper {
   }
 
   // get planning files default interval
-  function get_default_pf_timeintervals($uid) {
+  static function get_default_pf_timeintervals($uid) {
     $query = \Drupal::database()->select('planning_files_notifications_default_interval', 'pf');
     $query->condition('pf.uid', $uid, '=')
           ->fields('pf', array('default_send_interval'));
@@ -61,7 +61,7 @@ class HzdNotificationsHelper {
   }
 
   // update user planning files notifications
-  function hzd_modify_pf_notifications($uid, $pf_int_val, $default_pf_interval) {
+  static function hzd_modify_pf_notifications($uid, $pf_int_val, $default_pf_interval) {
     // get users list of previous default interval of user
     $uids = self::hzd_get_user_pf_interval($default_pf_interval);
     if(is_array($uids) && (count($uids) > 0)) {
@@ -165,7 +165,7 @@ class HzdNotificationsHelper {
   }
 
   // get default interval of a particular content type
-  function hzd_default_content_type_intval($uid, $type, $rel_type) {
+  static function hzd_default_content_type_intval($uid, $type, $rel_type) {
     $intval = \Drupal::database()->query("SELECT default_send_interval FROM {service_notifications_user_default_interval} 
               WHERE uid = :uid AND service_type = :type AND rel_type = :rel_type", 
               array(":uid" => $uid, ":type" => $type, ":rel_type" => $rel_type))->fetchField();
@@ -184,15 +184,14 @@ class HzdNotificationsHelper {
   }
 
   // update the overrided content type interval
-  function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
+  static function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
+
     // get uids list of default user interval of service
     $uids_list = self::hzd_get_user_service_interval($service, $type, $default_intval);
-
-    if(($key = array_search($uid, $uids_list)) !== false) {
+    if(($key = array_search($uid, (array)$uids_list)) !== false) {
       unset($uids_list[$key]);
     }
     $serialized_uid = serialize($uids_list);
-
     // update old default send interval of service id
     self::hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid);
 
@@ -211,15 +210,22 @@ class HzdNotificationsHelper {
   }
 
   // get uids list of default user interval of service
-  function hzd_get_user_service_interval($service, $type, $default_intval) {
-    $uids_query = \Drupal::database()->query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval", 
-                   array(":sid" => $service, ":type" => $type, ":intval" => $default_intval))->fetchField();
-    $uids_list = unserialize($uids_query);
+  static function hzd_get_user_service_interval($service, $type, $default_intval) {
+    $uids_query = \Drupal::database()->select('service_notifications','sn')
+      ->fields('sn',['uids'])
+      ->condition('service_id',$service)
+      ->condition('type',$type)
+      ->condition('send_interval',$default_intval)
+      ->execute()->fetchField();
+    $uids_list = [];
+    //pr($uids_query->__toString());exit;
+    if(!empty($uids_query))
+      $uids_list = unserialize($uids_query);
     return $uids_list;
   }
 
   // update user service notifications
-  function hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid) {
+  static function hzd_update_users_service_notifications($service, $type, $default_intval, $serialized_uid) {
     \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
 	    ->condition('service_id', $service)
 	    ->condition('type', $type)
@@ -269,7 +275,7 @@ class HzdNotificationsHelper {
   }
 
   // get users list from pf notifications table
-  function hzd_get_user_pf_interval($intval) {
+  static function hzd_get_user_pf_interval($intval) {
     $serialized_uids_query = \Drupal::database()->query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval",
                              array(":intval" => $intval))->fetchField();
     $uids = unserialize($serialized_uids_query);
@@ -277,7 +283,7 @@ class HzdNotificationsHelper {
   }
 
   // update pf notifications table
-  function hzd_update_pf_notifications($intval, $serialized_uid) {
+  static function hzd_update_pf_notifications($intval, $serialized_uid) {
     \Drupal::database()->update('planning_files_notifications')->fields(array('uids' => $serialized_uid))
      ->condition('send_interval', $intval)
      ->execute();
@@ -318,9 +324,9 @@ class HzdNotificationsHelper {
   }
 
   static function hzd_modify_services($user_notifications, $type, $uid, $int_val, $send_interval) {
-    //    pr($user_notifications);exit;
+        //pr($user_notifications);exit;
     foreach($user_notifications as $key => $vals) {
-      if($vals[$type]) {
+      if(isset($vals[$type])) {
         // get users list of previous default interval of user
         $uids = self::hzd_get_user_service_interval($key, $type, $int_val);
         if(is_array($uids) && (count($uids) > 0)) {
@@ -356,7 +362,7 @@ class HzdNotificationsHelper {
   }
 
   // update service notifications
-  function hzd_update_service_notifications($serialized_uid, $sid, $type, $int_val) {
+  static function hzd_update_service_notifications($serialized_uid, $sid, $type, $int_val) {
     \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
      ->condition('service_id', $sid)
      ->condition('type', $type)
