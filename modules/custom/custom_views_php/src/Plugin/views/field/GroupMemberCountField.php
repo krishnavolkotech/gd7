@@ -79,7 +79,7 @@ class GroupMemberCountField extends FieldPluginBase {
     $gid = $this->view->field['id']->original_value;
     $result = $this->groupMemberCount($gid);
     $doc_options['attributes'] = array('class' => 'member-link');
-    $url = Url::fromUserInput('/group-members/' . $gid .'/approved', $doc_options);
+    $url = Url::fromUserInput('/group/' . $gid .'/approved-members', $doc_options);
     $link = \Drupal::service('link_generator')->generate($result, $url);
     return $link;
   }
