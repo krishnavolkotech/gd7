@@ -35,7 +35,7 @@ class RouteSubscriber extends RouteSubscriberBase {
 			if (strpos($route->getPath(),'/group/{') === 0 && !in_array($key,['entity.group_content.group_membership.join_form','entity.group.canonical'		])){
 				if(in_array($key,$this->returnGroupViews())){
 				    $path = $route->getPath();
-                    $newPath = str_replace($path,'/{arg_0}/','/{group}/');
+                    $newPath = str_replace('/{arg_0}/','/{group}/',$path);
 					$route->setPath($newPath);
 					//as views from UI has path of kind /group/{arg_0}/address/{arg_1} 
 					//$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
