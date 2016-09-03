@@ -113,7 +113,9 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
                 ->condition('downtime_id', $node->id(), '=')
                 ->execute()->fetchObject();
         $downtime_services = explode(',', $downtime_data->service_id);
-        $type = 1;
+        if (!$downtime_data->scheduled_p) {
+          $type = 0;
+        }
       }
     }
     else {

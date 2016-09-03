@@ -26,37 +26,43 @@ downtimes.Downtimesnotes:
     _permission: 'administer messaging'
 
 downtimes.resolve:
-  path: 'resolve'
+  path: '/node/{group}/resolve/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\ResolveForm'
     _title: 'Resolve'
   requirements:
     _permission: 'administer messaging'
+    node: \d+
+    group: \d+
 
 downtimes.cancel:
-  path: 'cancel'
+  path: '/node/{group}/cancel/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\CancelForm'
     _title: 'Cancel'
   requirements:
     _permission: 'administer messaging'
+    node: \d+
+    group: \d+
 
 downtimes.confirm:
-  path: 'confirm'
+  path: '/confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Confirm'
     _title: 'Conform'
   requirements:
     _permission: 'administer messaging'
+    node: \d+
 
 downtimes.cancel_confirm:
-  path: 'cancel_confirm'
+  path: '/cancel_confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Cancelconfirm'
     _title: 'Cancel'
   requirements:
     _permission: 'administer messaging'
-
+    node: \d+
+    
 downtimes.service_profiles:
   path: '/group/{group}/downtimes/service-profiles'
   defaults:
