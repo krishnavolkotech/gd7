@@ -65,7 +65,7 @@ downtimes.service_profiles:
     _description: 'Service Profiles.'
   requirements:
      _permission: 'service profiles view/add'
-     node: \d+
+     group: \d+
 #    _permission: 'access content'
 #    node: \d+
 #    _permission: 'access content'
@@ -79,20 +79,19 @@ downtimes.create_downtimes:
 #  requirements:
 #    access arguments: 'master group'
   requirements:
-    _permission: 'service profiles view/add'
-    node: \d+
+   _permission: 'access content'
+   _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+   group: \d+
 
 downtimes.create_maintenance:
   path: '/group/{group}/downtimes/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Create Maintenance'
-    #_title_callback: '\Drupal\downtimes\Controller\DowntimeController::getTitle'
-#  requirements:
-#    access arguments: 'master group'
+    _entity_view: 'group.default'
   requirements:
-    _permission: 'service profiles view/add'
-    node: \d+
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::createMaintenanceAccess'
+    group: \d+
 
 downtimes.downtimes_maintenance_groupid_form:
   path: 'admin/config/downtimes/scheduled-maintenances/scheduled-maintenance-groupid'

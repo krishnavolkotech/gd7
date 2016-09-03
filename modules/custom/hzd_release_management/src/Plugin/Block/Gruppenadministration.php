@@ -33,10 +33,19 @@ class Gruppenadministration extends BlockBase {
   
   protected function blockAccess(AccountInterface $account) {
     if(\Drupal::currentUser()->id()) {
-      return AccessResult::allowed();
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if(is_object($group)){
+            $groupId = $group->id();
+        }else{
+            $groupId = $group;
+        }
+        if(\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($groupId)){
+            return AccessResult::allowed();
+        }
+        return AccessResult::neutral();
     }
     else {
-      return AccessResult::forbidden();
+      return AccessResult::neutral();
     }
   }
   
@@ -50,7 +59,7 @@ class Gruppenadministration extends BlockBase {
     $menuHtml = '<ul class="menu nav">
     <li><a href="/group/'.$groupId.'/node">Contents</a></li>
     <li><a href="/group/'.$groupId.'/node/create">Content</a></li>
-    <li><a href="/group/'.$groupId.'/members">Users</a></li>
+    <li><a href="/group/'.$groupId.'/approved-members">Users</a></li>
     <li><a href="/group/'.$groupId.'/downtime_settings">Disturbances and block times</a></li>
     <li><a href="/group/'.$groupId.'/problem_settings">Known Issues</a></li>
     <li><a href="/group/'.$groupId.'/release_settings">Releases</a></li>

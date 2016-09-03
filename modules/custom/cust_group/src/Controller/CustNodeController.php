@@ -81,10 +81,14 @@ class CustNodeController extends ControllerBase {
       return false;
     }
     $group = \Drupal\group\Entity\Group::load($group_id);
-    $contentId = $group->getMember(\Drupal::currentUser())->getGroupContent()->id();
-    $adminquery = \Drupal::database()->select('group_content__group_roles','gcgr')
-      ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
-    return (bool)!empty($adminquery);
+      $content = $group->getMember(\Drupal::currentUser());
+      if($content){
+          $contentId = $content->getGroupContent()->id();
+          $adminquery = \Drupal::database()->select('group_content__group_roles','gcgr')
+              ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
+          return (bool)!empty($adminquery);
+      }
+    return false;
   }
 	
 	static function getNodeGroupId($node = null){
