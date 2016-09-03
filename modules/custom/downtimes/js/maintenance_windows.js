@@ -1,5 +1,4 @@
 Drupal.behaviors.maintenance_windows = function(context) {
-  console.log(Drupal.settings.downtimes.service_maintenance_data);
   var service_maintenance_data = Drupal.settings.downtimes.service_maintenance_data;
   if(service_maintenance_data != '') {
      var d_items_count = Drupal.settings.downtimes.service_maintenance_data.howmany;
