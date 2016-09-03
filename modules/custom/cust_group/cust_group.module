@@ -18,7 +18,6 @@ function cust_group_node_update($entity){
 }
 
 function cust_group_node_insert($entity){
-    pr($entity->id());exit;
     sendGroupUpdateMail($entity);
 }
 

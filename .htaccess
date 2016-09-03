@@ -192,8 +192,8 @@ AddEncoding gzip svgz
   Header always set X-Content-Type-Options nosniff
 </IfModule>
 
-# Require popup dialog for access 
-AuthType Basic 
-AuthName "You must give a password" 
-AuthUserFile /var/www/.hzdevpwd 
+# Require popup dialog for access
+AuthType Basic
+AuthName "You must give a password"
+AuthUserFile /var/www/.hzdevpwd
 Require valid-user
