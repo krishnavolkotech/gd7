@@ -308,7 +308,6 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#default_value' => isset($serialized_data['service_time_' . $val]) ? $serialized_data['service_time_' . $val] : '',
         '#title' => Html::escape($key),
       );
-      // Echo '<pre>'; print_r($serialized_data);  exit;.
       append_hours_minutes($form, 'service_time_' . $val, $serialized_data);
     }
     $form['#tree'] = TRUE;
@@ -506,12 +505,18 @@ function append_hours_minutes(&$form, $name, $data) {
   //$date_format = 'H:i';
   //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
   if (!empty($data[$name . '_from'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data[$name . '_from'])) {
+      $data[$name . '_from'] .= ':00';
+    }
     $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_from']));
   }
   else {
     $fromTime = '';
   }
   if (!empty($data[$name . '_until'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data[$name . '_until'])) {
+      $data[$name . '_until'] .= ':00';
+    }
     $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_until']));
   }
   else {
