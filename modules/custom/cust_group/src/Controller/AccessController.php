@@ -30,4 +30,15 @@ class AccessController extends ControllerBase {
     }
     return AccessResult::neutral();
   }
+
+  function createMaintenanceAccess(){
+      if($group = \Drupal\group\Entity\group::load(19)){
+          if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+              return AccessResult::allowed();
+          }else{
+              return AccessResult::forbidden();
+          }
+      }
+      return AccessResult::forbidden();
+  }
 }
