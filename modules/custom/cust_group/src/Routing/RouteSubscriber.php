@@ -33,8 +33,10 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
 		foreach($collection as $key=>$route){
 			if (strpos($route->getPath(),'/group/{') === 0 && !in_array($key,['entity.group_content.group_membership.join_form','entity.group.canonical'		])){
-				if(in_array($key,['view.group_members_lists.page_1'])){
-					$route->setPath('/group/{group}/address/{arg_1}');
+				if(in_array($key,$this->returnGroupViews())){
+				    $path = $route->getPath();
+                    $newPath = str_replace('/{arg_0}/','/{group}/',$path);
+					$route->setPath($newPath);
 					//as views from UI has path of kind /group/{arg_0}/address/{arg_1} 
 					//$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
 				}else{
@@ -44,5 +46,13 @@ class RouteSubscriber extends RouteSubscriberBase {
 			}
 		}
 		
+  }
+
+   //retuns the views related to groups created from UI
+  function returnGroupViews(){
+      return [
+          'view.group_members.page_1',
+          'view.group_members_lists.page_1',
+      ];
   }
 }
