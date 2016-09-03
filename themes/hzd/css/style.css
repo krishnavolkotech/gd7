@@ -1290,4 +1290,19 @@ form#downtimes-filter .type_search_dropdown {
 form#downtimes-filter .string_search.hzd-form-element {
   margin-right: 0 !important;
 }
-.filter_title_header { clear: both; }
+body.path-manage-services input[type="checkbox"] {
+  margin-left: 0 !important;
+}
+.filter_title_header {
+  clear: both;
+}
+#no-result {
+  width: 99.5%;
+  border: 1px solid #e74040;
+  float: left;
+  background: #fce5e5;
+  font-size: 25px;
+  line-height: 50px;
+  text-align: center;
+  color: #e74040;
+}
