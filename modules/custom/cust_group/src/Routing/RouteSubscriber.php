@@ -42,8 +42,6 @@ class RouteSubscriber extends RouteSubscriberBase {
                 $route->setPath($newPath);
                 //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
                 //$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
-            }else{
-
             }
             $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
         }
