@@ -94,11 +94,11 @@ class CancelForm extends FormBase {
 
     if ($resolved_title == 0) {
       // drupal_set_title(t('Resolve Incident'));
-      $form['#title'] = t('Resolve Incident');
+      $form['#title'] = t('Cancel Incident');
     }
     else {
       // drupal_set_title(t('Resolve Maintenances'));
-      $form['#title'] = t('Resolve Maintenances');
+      $form['#title'] = t('Cancel Maintenances');
     }
     // drupal_set_breadcrumb($breadcrumb);
 
