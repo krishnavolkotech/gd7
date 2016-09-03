@@ -31,20 +31,23 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.node.edit_form')){
       $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
-		foreach($collection as $key=>$route){
-			if (strpos($route->getPath(),'/group/{') === 0 && !in_array($key,['entity.group_content.group_membership.join_form','entity.group.canonical'		])){
-				if(in_array($key,$this->returnGroupViews())){
-				    $path = $route->getPath();
-                    $newPath = str_replace('/{arg_0}/','/{group}/',$path);
-					$route->setPath($newPath);
-					//as views from UI has path of kind /group/{arg_0}/address/{arg_1} 
-					//$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
-				}else{
+    if ($route = $collection->get('entity.group_content.group_membership.collection')){
+        $route->setPath('/group/{group}/address');
+    }
+    foreach($collection as $key=>$route){
+        if (strpos($route->getPath(),'/group/{') === 0 && !in_array($key,['entity.group_content.group_membership.join_form','entity.group.canonical'		])){
+            if(in_array($key,$this->returnGroupViews())){
+                $path = $route->getPath();
+                $newPath = str_replace('/{arg_0}/','/{group}/',$path);
+                $route->setPath($newPath);
+                //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
+                //$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
+            }else{
 
-				}
-				$route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
-			}
-		}
+            }
+            $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
+        }
+    }
 		
   }
 
