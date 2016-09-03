@@ -681,8 +681,8 @@ function downtimes_node_insert($node) {
     $record['scheduled_p'] = $data['downtime_type'];
     db_insert('downtimes')->fields((array) $record)->execute();
 
-    $group_id = \Drupal::routeMatch()->getParameter('group');
-    $group = \Drupal\group\Entity\Group::load($group_id);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
     //Adding node to group
     $group_content = GroupContent::create([
           'type' => $group->getGroupType()->getContentPlugin('group_node:downtimes')->getContentTypeConfigId(),
