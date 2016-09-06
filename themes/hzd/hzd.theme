@@ -57,6 +57,7 @@ function hzd_preprocess_html(&$variables) {
 function hzd_preprocess_node(&$variables) {
   $config = \Drupal::config('planning.settings');
   $nid = $variables['node']->id();
+  $variables['changed'] = date('d m Y',$variables['node']->get('changed')->value);
   if ($nid == $config->get('mlrp')) {
     $files = get_related_files('mlrp');
     $variables['mlrp_files'] = $files;
