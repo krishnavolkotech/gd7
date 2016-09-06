@@ -93,6 +93,17 @@
     </footer>
   {% endif %}
   <div{{ content_attributes.addClass('content') }}>
+      {% if node.isPublished() %}
+          {{ content.field_unique_id }}
+          <div class="field field--label-inline">
+              <div class="field--label">Veröffentlicht von</div>
+              <div class="field--item">{{ author_name }}</div>
+          </div>
+          <div class="field field--label-inline">
+              <div class="field--label">Veröffentlicht am</div>
+              <div class="field--item">{{ date }}</div>
+          </div>
+      {% endif %}
     <h2>1 Meta-Daten</h2>
     {% if content.field_custom_title.0 %}
         {{ content.field_custom_title }}

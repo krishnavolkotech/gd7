@@ -1,13 +1,13 @@
 <table border="1" width="100%">
     <tr>
         <td><img alt="Home" src="/sites/default/files/hzb-logo.jpg"></td>
-        <td>RZ-Schnellinfo-Nr. {{ content.field_unique_id }}
+        <td>{{ content.field_unique_id }}
             {{ label }}</td>
         <td>Veröffentlicht am:
             {{ date }}
             <hr>
             Veröffentlicht von:
-            {{ content.field_author_name }}</td>
+            {{ author_name }}</td>
     </tr></table>
 <h2>1 Meta-Daten</h2>
 {% if content.field_custom_title.0 %}
