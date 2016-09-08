@@ -45,7 +45,7 @@ function hzd_preprocess_html(&$variables) {
   }
   $current_path = \Drupal::service('path.current')->getPath();
   $path_args = explode('/', $current_path);
-  if ($path_args[1] == 'user' && is_numeric($path_args[2]) && $path_args[3] == 'notifications') {
+  if (count($path_args) > 3 && $path_args[1] == 'user' && is_numeric($path_args[2]) && $path_args[3] == 'notifications') {
     $variables['attributes']['class'][] = 'hzd-secondary-tabs';
   }
 }
@@ -56,6 +56,7 @@ function hzd_preprocess_html(&$variables) {
 function hzd_preprocess_node(&$variables) {
   $config = \Drupal::config('planning.settings');
   $nid = $variables['node']->id();
+  $variables['changed'] = date('d m Y',$variables['node']->get('changed')->value);
   if ($nid == $config->get('mlrp')) {
     $files = get_related_files('mlrp');
     $variables['mlrp_files'] = $files;
