@@ -12,7 +12,7 @@ use Drupal\Core\Access\AccessResult;
 class FAQListController extends ControllerBase {
 
   function faqList(){
-    $faqTypes = ['closed-group_node-faq','moderate-group_node-faq','open-group_node-faq'];
+    $faqTypes = ['closed-group_node-faqs','moderate-group_node-faqs','open-group_node-faqs'];
     $group = \Drupal::routeMatch()->getParameter('group');
     $query = \Drupal::entityQuery('group_content')
       ->condition('type',$faqTypes,'IN')

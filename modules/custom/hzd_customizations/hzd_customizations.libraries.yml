@@ -9,5 +9,9 @@ hzd_customizations:
     - core/jquery
 
 hzd_node_quickinfo:
+  version: 1.x
+  css:
+    theme:
+      css/hzd-node-quickinfo.css: {}
   js:
     js/hzd-node-quickinfo.js: {}
