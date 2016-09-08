@@ -246,6 +246,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     $form['services_effected']['#description'] = $service_description;
     $form['#validate'][] = 'downtimes_validate';
+    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
   else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
@@ -994,34 +995,27 @@ function check_downtime_status(&$form, &$form_state) {
  * Custom validation handler for maintenance node.
  */
 
-function custom_maintenance_submit($form, &$form_state) {
+function custom_maintenance_submit($form, FormStateInterface $form_state) {
   $log = array();
+  $form_values = $form;
   //Startdate log.
-  $startdate_old = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
-  $startdate = new DateTime($form_state['values']['startdate_planned']);
-  $startdate_new = $startdate->format('d.m.Y - H:i');
-
+  $startdate_old = get_unix_timestamp($form_values['startdate_planned']['#default_value']);
+  $startdate_new = get_unix_timestamp($form_state->getValue('startdate_planned'));
   if ($startdate_old != $startdate_new) {
-    $log['start_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
+    $log['start_date']['old'] = $startdate_old;
     $log['start_date']['new'] = $startdate_new;
   }
-  /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->startdate_planned)), trim($form_state['values']['startdate_planned']))) {
-    $log['start_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->startdate_planned));
-    $log['start_date']['new'] = trim($form_state['values']['startdate_planned']);
-    } */
-
   // End date log.
-  $enddate_old = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));
-  if (!empty($form_state['values']['enddate_planned']['date'])) {
-    $enddate = new DateTime($form_state['values']['enddate_planned']);
-    $enddate_new = $enddate->format('d.m.Y - H:i');
+  $enddate_old = get_unix_timestamp($form_values['enddate_planned']['#default_value']);
+  if (!empty($form_state->getValue('enddate_planned'))) {
+    $enddate_new = get_unix_timestamp($form_state->getValue('enddate_planned'));
   }
   else {
     $enddate_new = "";
   }
 
   if ($enddate_old != $enddate_new) {
-    $log['end_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));
+    $log['end_date']['old'] = $enddate_old;
     $log['end_date']['new'] = $enddate_new;
   }
   /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->enddate_planned)), trim($form_state['values']['enddate_planned']))) {
@@ -1030,56 +1024,71 @@ function custom_maintenance_submit($form, &$form_state) {
     } */
 
   // Reason log.
-  if (strcmp($form['#node']->reason, $form_state['values']['reason'])) {
-    $log['reason']['old'] = $form['#node']->reason;
-    $log['reason']['new'] = $form_state['values']['reason'];
+  if (strcmp($form_values['body']['widget'][0]['#default_value'], $form_state->getValue('body')[0]['value'])) {
+    $log['reason']['old'] = $form_values['body']['widget'][0]['#default_value'];
+    $log['reason']['new'] = $form_state->getValue('body')[0]['value'];
   }
 
   // Reason for non compliance log.
-  if ($form['#node']->downtime_type == 1) {
-    $new_reason = $form['reason_for_noncompliance']['#options'][$form_state['values']['reason_for_noncompliance']];
-    if ($new_reason != $form['#node']->mreason) {
-      $log['non_compliance']['old'] = $form['#node']->mreason;
-      $log['non_compliance']['new'] = $form_state['values']['reason_for_noncompliance'] ? $form['reason_for_noncompliance']['#options'][$form_state['values']['reason_for_noncompliance']] : "";
+  if ($form_values['downtime_type']['#default_value'] == 1) {
+    $new_reason = $form_values['reason_for_noncompliance']['#options'][$form_state->getValue('reason_for_noncompliance')];
+    if ($new_reason != $form_values['reason_for_noncompliance']['#default_value']) {
+      $log['non_compliance']['old'] = $form_values['reason_for_noncompliance']['#default_value'];
+      $log['non_compliance']['new'] = $form_state->getValue('reason_for_noncompliance') ? $new_reason : "";
     }
   }
 
   // Services log.
-  foreach ($form_state['values']['service'] as $key => $value) {
+  foreach ($form_state->getValue('services_effected') as $key => $value) {
     if ($value) {
-      $query = "SELECT title FROM {node} WHERE nid = %d ORDER BY title DESC";
-      $result[] = db_result(db_query($query, $value));
+      $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
+      $result[] = db_query($query, array($value))->fetchField();
     }
   }
   asort($result);
-  $old_services = explode(", ", $form['#node']->service_name);
-  asort($old_services);
-  if (strcmp(implode(", ", $result), implode(", ", $old_services))) {
-    $log['services']['old'] = implode(", ", $old_services);
+  $old_services = $form_values['services_effected']['#default_value'];
+  foreach ($old_services as $key => $value) {
+    if ($value) {
+      $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
+      $old_result[] = db_query($query, array($value))->fetchField();
+    }
+  }
+  asort($old_result);
+  if (strcmp(implode(", ", $result), implode(", ", $old_result))) {
+    $log['services']['old'] = implode(", ", $old_result);
     $log['services']['new'] = implode(", ", $result);
   }
-
   // States log.
   $states_list = get_all_user_state();
-  foreach ($form_state['values']['state'] as $key => $value) {
+  foreach ($form_state->getValue('states') as $key => $value) {
     if ($value) {
       $new_states[] = $states_list[$value];
     }
   }
   asort($new_states);
-  $old_states = explode(", ", $form['#node']->state);
+  $old_states = array();
+  foreach ($form_values['states']['#default_value'] as $key => $value) {
+    if ($value) {
+      $old_states[] = $states_list[$value];
+    }
+  }
   asort($old_states);
 
   if (strcmp(implode(", ", $new_states), implode(", ", $old_states))) {
     $log['states']['old'] = implode(", ", $old_states);
     $log['states']['new'] = implode(", ", $new_states);
   }
-
   // Inserting values if any content has modified.
   if ($log) {
-    global $user;
-    $insert_query = "INSERT INTO {downtime_log} (downtime_id, uid, updated,  log) VALUES ( %d, %d, %d, '%s')";
-    db_query($insert_query, $form_state['values']['nid'], $user->uid, time(), serialize($log));
+    $conn = \Drupal::database();
+    $conn->insert('downtimes_logs')->fields(
+        array(
+          'downtime_id' => $form_state->getValue('nid'),
+          'uid' => \Drupal::currentUser()->id(),
+          'updated' => time(),
+          'log' => serialize($log),
+        )
+    )->execute();
   }
 }
 

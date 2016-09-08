@@ -164,7 +164,7 @@ class DowntimesFilter extends FormBase {
       '#type' => 'select',
       '#title' => t('States'),
       '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
-      '#options' => HzdcustomisationStorage::get_states(),
+      '#options' => get_all_user_state(),
       '#ajax' => array(
         'callback' => $path,
         'wrapper' => $wrapper,
@@ -191,7 +191,6 @@ class DowntimesFilter extends FormBase {
     }
 
     $sql = $select . $from . $where;
-
     $services_obj = db_query($sql)->fetchAll();
     foreach ($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
