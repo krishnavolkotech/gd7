@@ -22,6 +22,9 @@ class GroupMenuBlock extends BlockBase {
   public function build() {
     $menu_tree = \Drupal::menuTree();
     $group = \Drupal::routeMatch()->getParameter('group');
+    if(empty($group)){
+      $group = \Drupal::routeMatch()->getParameter('arg_0');
+    }
 		if(!empty($group)){
 		//pr($group);exit;
 			if(!is_object($group)){
