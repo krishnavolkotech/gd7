@@ -1,5 +1,5 @@
 downtimes.DowntimessettingForm:
- path: 'group/{group}/downtime_settings'
+ path: '/group/{group}/downtime_settings'
  defaults:
    _form: '\Drupal\downtimes\Form\DowntimessettingForm'
    _title: 'Downtimes'
