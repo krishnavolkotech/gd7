@@ -6,7 +6,6 @@
  *
  * Place your custom PHP code in this file.
  */
-
 use Drupal\Core\Url;
 
 function hzd_preprocess_page(&$variables) {
@@ -74,12 +73,23 @@ function hzd_preprocess_node(&$variables) {
     $variables['transkription_fmk_files'] = $files;
   }
   if ($variables['node']->getType() == 'quickinfo' && $variables['node']->isPublished()) {
-      $url = Url::fromUserInput('/entityprint/node/' . $nid);
-      $urldata = '<span class="user-group-list">'.\Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url).'</span>';
+    $url = Url::fromUserInput('/entityprint/node/' . $nid);
+    $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
     $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
   }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
+    $reasons = array(
+      t('Please select a reason here'),
+      t('Urgency of the maintenance'),
+      t('No staff available during maintenance hours'),
+      t('No service partner (State) available during maintenance hours'),
+      t('External service partner required'),
+      t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+      t('Public holiday or weekend'),
+      t('No service partner (KONSENS) available during maintenance hours'),
+      t('No service interruption planned')
+    );
     $get_maintain_window = \Drupal::database()->select('downtimes', 'd');
     $get_maintain_window->fields('d', ['downtime_id', 'description', 'startdate_reported', 'state_id', 'status', 'email_reminder_sent', 'comment', 'reason', 'service_id', 'resolved', 'enddate_reported', 'startdate_planned', 'enddate_planned', 'scheduled_p', 'cancelled']);
     $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
@@ -87,10 +97,16 @@ function hzd_preprocess_node(&$variables) {
     $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
     $get_maintain_window->join('node_field_data', 'n', "FIND_IN_SET(n.nid, d.service_id)");
     $result = $get_maintain_window->execute()->fetchObject();
-
+    
     $incident_data = new stdClass();
     $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
     $incident_data->service_name = $result->service;
+    if(!empty($result->reason)){
+      $incident_data->reason = $reasons[$result->reason];
+    }
+    else {
+      $incident_data->reason = '';
+    }
     //$incident_data->state = $states[$result->state_id];
     $incident_data->state_id = $result->state_id;
     $incident_data->description = $result->description;
@@ -101,12 +117,60 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) : '') . " " . t('Uhr');
     $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
     $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) : '') . " " . t('Uhr');
-    $resolved = $result->resolved;
-    $cancelled = $result->cancelled;
+    $resolved_data= db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
+    $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
+    $incident_data->resolved = $result->resolved;
+    $incident_data->resolved_data = $resolved_data;
+    $incident_data->resolved_data->name = $resolved_name;
+    $incident_data->cancelled = $result->cancelled;
     $state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchField();
     $incident_data->state = $state_ids;
+    $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
   }
+}
+
+function custom_user_fullname($uid) {
+  $query = "select concat(firstname, ' ', lastname) from {cust_profile} where uid = ?";
+  $user_fullname = db_query($query, array($uid))->fetchField();
+  return $user_fullname;
+}
+
+function downtimes_revisions($node) {
+  $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
+  if (empty($query)) {
+    return;
+  }
+  foreach ($query as $value) {
+    $value = (array) $value;
+    $output .= "<div class='changed-group'><u>Änderung - " . custom_user_fullname($value['uid']) . ' ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</u>';
+    $log_values = unserialize($value['log']);
+    foreach ($log_values as $name => $field_value) {
+      $output .= "<div class ='field-wrapper'>";
+      $name = str_replace("_", " ", $name);
+      if ($name == 'non compliance' || $name == 'end date') {
+        if ($field_value['old'] || $field_value['new']) {
+          $output .= t($name);
+        }
+        if ($field_value['old'] && $field_value['new']) {
+          # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
+          $output .= ' (alt): ' . t($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
+        }
+        else if ($field_value['old'] && !$field_value['new']) {
+          $output .= ' ' . t("(entfernt)");
+        }
+        else if (!$field_value['old'] && $field_value['new']) {
+          $output .= t(" (neu): ") . "</b>" . t($field_value['new']);
+        }
+      }
+      else {
+        $output .= t("$name") . ' (alt): ' . t($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
+      }
+      $output .= "</div>";
+    }
+    $output .= '</div>';
+  }
+  return $output;
 }
 
 /**
