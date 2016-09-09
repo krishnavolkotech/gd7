@@ -4,9 +4,11 @@ namespace Drupal\hzd_release_management;
 
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
+use Drupal\Core\Url;
 
-//if(!defined('RELEASE_MANAGEMENT'))
-//  define('RELEASE_MANAGEMENT', 339);
+if(!defined('RELEASE_MANAGEMENT')) {
+ define('RELEASE_MANAGEMENT', 32);
+}
 /**
  *
  */
@@ -479,6 +481,350 @@ class HzdreleasemanagementHelper {
       '#prefix' => "<div class = 'reset_all'>",
       '#suffix' => "</div>",
     );
+    
   }
+  /*
+     * returns the released releses for the deployment 
+     */
 
+static public function released_deployed_releases($service = NULL) {
+   
+   $query = \Drupal::database()->select('node_field_data', 'nfd');
+   $query->leftJoin('node__field_relese_services', 'nfrs', 'nfrs.entity_id = nfd.nid');
+   $query->leftJoin('group_releases_view', 'GRV', 'GRV.service_id = nfrs.field_relese_services_target_id');
+   $query->leftJoin('node__field_release_type', 'nfrt', 'nfrt.entity_id = nfrs.entity_id ');
+   $query->addExpression('nfd.nid', 'release_id');
+   $query->addExpression('nfrs.field_relese_services_target_id', 'service');
+   $query->fields('nfd', array('title'));
+   $query->condition('nfd.status', 1);
+   $query->condition('GRV.group_id', RELEASE_MANAGEMENT , '=');
+   $query->condition('field_release_type_value', array(1,2) , 'IN');
+   if ($service) {
+     $query->condition('field_relese_services_target_id', $service, '=');
+   } 
+   $query->orderBy('title');
+   $releases_infos = $query->execute()->fetchAll();
+   
+   foreach ($releases_infos as $releases_info) {
+     if (!in_array($releases_info->service, $services)) {
+       $services[] = $releases_info->service;
+     }
+     $releases[$releases_info->service] = $releases_info->title;
+   }
+        $deployed_services[] = t('Service');
+        if (!empty($services)) {
+            $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+            $query->fields('nfd', array('nid', 'title'));
+            $query->condition('nfd.nid', $services , 'IN');
+            $query->orderBy('title');
+            $services_infos = $query->execute()->fetchAll();
+   
+            foreach ($services_infos as $services_info) {
+             $deployed_services[$services_info->nid] = $services_info->title;
+            }
+            
+        }
+      // dpm($deployed_services);
+        return $service_releases = array(
+          'services' => $deployed_services, 
+          'releases' => $releases);
+        
+    }
+    /*
+     * @returns: table display of deployed and archived releases
+     * Deployed releases are edited by groupor site admin
+     * Onclicking the archive link deployed release status is changed to archived sing ajax
+     */
+
+  static public function deployed_releases_table() {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        } else {
+            $group_id = $group;
+        }
+
+        $user = \Drupal::currentUser();
+        
+        $query = \Drupal::database()->select('cust_profile', 'cp'); 
+        $query->addField('cp', 'state_id');
+        $query->condition('cp.uid', $user->id() , '=' );
+        $user_state = $query->execute()->fetchCol();
+        
+        $user_role = $user->getRoles(TRUE);
+        $output['#attachment']['library'] = array(
+          'hzd_release_management/hzd_release_management',
+          'hzd_release_management/deployed_releases'
+        );
+        $output[] = "<div class = 'currently_deployed_relesaes' >";
+        $output[] = '<div class = "deployed_release_title" ><strong>' . t("Currently Deployed Releases:") . '</strong></div>';
+        
+        $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
+        /**
+         *  TO do check group admin
+         */
+        if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_administrator'))) {
+            $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+            $query->fields('nfd', array('nid'));
+            $query->addField('nfrs', 'field_release_service_value', 'service');
+            $query->addField('nfer', 'field_earlywarning_release_value', 'release_id');
+            $query->addField('ndd', 'field_date_deployed_value', 'deployed_date');
+            $query->addField('nfe', 'field_environment_value', 'environment');
+            $query->addField('nar', 'field_archived_release_value', 'archived');
+            $query->leftJoin('node__field_earlywarning_release', 'nfer', 'nfer.entity_id = nfd.nid');
+            $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
+            $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
+            $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
+            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nar.entity_id');
+            $query->condition('nfd.type', 'deployed_releases');
+            $query->orderBy('ndd.field_date_deployed_value', 'DESC');
+            $query->range(0, 100);
+        //    $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
+            $result = $query->execute()->fetchAll();
+          //  dpm($result);
+        }
+        else {
+            $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+            $query->fields('nfd', array('nid'));
+            $query->addField('nfrs', 'field_release_service_value', 'service');
+            $query->addField('nfer', 'field_earlywarning_release_value', 'release_id');
+            $query->addField('ndd', 'field_date_deployed_value', 'deployed_date');
+            $query->addField('nfe', 'field_environment_value', 'environment');
+            $query->addField('nar', 'field_archived_release_value', 'archived');
+            $query->leftJoin('node__field_earlywarning_release', 'nfer', 'nfer.entity_id = nfd.nid');
+            $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
+            $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
+            $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
+            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nar.entity_id');
+            $query->leftJoin('node__field_user_state', 'nfus', 'nfus.entity_id = nfe.entity_id');
+            $query->condition('nfd.type', 'deployed_releases');
+            $query->condition('nfus.field_user_state_value', $user_state , '=' );
+            $query->orderBy('ndd.field_date_deployed_value', 'DESC');
+            // $query->range(0, 100);
+           // $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
+            $result = $query->execute()->fetchAll();
+
+        }
+        
+        foreach ($result as $deployed_release) {
+      //      dpm($deployed_release);
+            $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+            $query->fields('nfd', array('title'));
+            $query->condition('nfd.nid', $deployed_release->service , '=' );
+            $service = $query->execute()->fetchField();
+          
+            // $user->og_groups[$_SESSION['Group_id']]['is_admin']
+           // $query_sting = 'group/' . $group_id . '/deployed_releases' . '&ser=' . $deployed_release->service . '&rel= ' . $deployed_release->release_id . '&env= ' . $deployed_release->environment;
+            
+            if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
+                $url = Url::fromUserInput('/node/' . $deployed_release->nid . '/edit', array(
+                  'query' => array('destination' => 'group/' . $group_id . '/deployed_releases',
+                        'ser' => $deployed_release->service,
+                        'rel' => $deployed_release->release_id ,
+                        'env' => $deployed_release->environment,
+                    ),
+                  )
+                );
+             
+                $edit = \Drupal::l(t('Edit'), $url);
+            }
+            
+            $url = Url::fromUserInput('/archive/', array(
+                    'attributes' => array(
+                      'class' => 'archive_deployedRelease', 
+                        'nid' => $deployed_release->nid
+                      ),
+                    )
+
+                );
+            $action = \Drupal::l(t('Archive'), $url);
+
+            $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+            $query->fields('nfd', array('title'));
+            $query->condition('nfd.nid', $deployed_release->release_id , '=' );
+            $release = $query->execute()->fetchField();
+            
+            if ($deployed_release->environment == 1) {
+              //  $environment = t('Produktion');
+                /** 
+                 * to do translate
+                 */
+                $environment = 'Produktion';
+            }
+            else {
+                $query = \Drupal::database()->select('node_field_data', 'nfd'); 
+                $query->fields('nfd', array('title'));
+                $query->condition('nfd.nid', $deployed_release->environment , '=' );
+                $environment = $query->execute()->fetchField();
+            }
+         //   dpm($environment);
+            if (!$deployed_release->archived) {
+                if ($edit) {
+                    $action = $edit . ' | ' . $action;
+                }
+                else {
+                    $action = $action;
+                }
+                $actions = array();
+                $actions['#markup']  = $action . "<span class = 'loader'></span>";
+                $currently[] = array(
+                 $environment, 
+                 $service,
+                 $release,
+                 date("d.m.Y", $deployed_release->deployed_date),
+                 $actions
+                );
+            }
+            else {
+                $archived[] = array(
+                 $environment, 
+                  $service,
+                  $release,
+                  date("d.m.Y", $deployed_release->deployed_date),
+                  $edit
+                );
+            }
+        }
+      //  $currently = array();
+        $output[] = array(
+          '#theme' => 'table', 
+          '#header' => $header, 
+          '#rows' => $currently,
+          '#empty' => t('No Data Created Yet'),
+          '#attributes' => array(
+            'id' => 'current_deploysortable', 
+            'class' => 'tablesorter')
+          );
+        
+        $output['pager'] = array(
+                '#type' => 'pager',
+                '#prefix' => '<div id="pagination">',
+                '#suffix' => '</div>',
+            );
+        
+        $output[] = "</div>";
+        $output[] = "<div class = 'archived_deployed_relesaes' >";
+        $output[] = '<div class = "deployed_release_title" ><strong>' . t("Archived deployed releases:") . '</strong></div>';
+        $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
+        
+        $output[] = array(
+          '#theme' => 'table', 
+          '#header' => $header, 
+          '#rows' => $archived, 
+          '#attributes' => array(
+            'id' => 'archived_deploysortable', 
+            'class' => 'tablesorter')
+          );
+        
+        $output['pager'] = array(
+                '#type' => 'pager',
+                '#prefix' => '<div id="pagination">',
+                '#suffix' => '</div>',
+            );
+        
+        $output[] = "</div>";
+
+        return $output;
+    }
+    
+  static public function quickinfo_display_table($limit = NULL) {
+   $content_type = 'quickinfo';
+   $limit = 20;
+   $sql = \Drupal::database()->select('node_field_data', 'nfd');
+   $sql->Fields('nfd', array('nid', 'title', 'changed', 'uid'));
+   $sql->addField('s', 'state');
+   $sql->addField('nfui', 'field_unique_id_value');
+   $sql->addField('nfrtn', 'field_related_transfer_number_value');   
+   $sql->leftJoin('node__field_unique_id', 'nfui', 'nfui.entity_id = nfd.nid');
+   $sql->leftJoin('node__field_related_transfer_number', 'nfrtn', 'nfui.entity_id  = nfrtn.entity_id');
+   $sql->leftJoin('cust_profile', 'cp', 'cp.uid  = nfd.uid');   
+   $sql->leftJoin('states', 's', 's.id  = cp.state_id');
+   $sql->condition('nfd.type', $content_type, '=');
+   $sql->condition('nfd.status', 1, '=');
+ //  $sql->condition('nfui.revision_id', 'nfd.vid', '=');
+ //  $sql->condition('nfrtn.revision_id', 'nfd.vid', '=');
+   $sql->orderBy('nfui.field_unique_id_value', 'DESC');
+   $pager = $sql->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($limit);
+   $result = $pager->execute()->fetchAll();
+   
+   
+   $quickinfo_id = array('data' => t('Quickinfo Id'), 'class' => 'quickinfo-hdr');
+   $state_name = array('data' => t('State'), 'class' => 'state-hdr');
+   $title_name = array('data' => t('Title'), 'class' => 'title-hdr');
+   $service_id = array('data' => t('Service ID'), 'class' => 'service-id-hdr');
+   $transfer_num = array('data' => t('SW Transfer No.'), 'class' => 'related-transfer-num');
+   $published_date = array('data' => t('Published on'), 'class' => 'published-on-hdr');
+   $details_name = array('data' => t('Details'), 'class' => 'details-hdr');
+   
+   
+   $header = array($quickinfo_id, $state_name, $title_name, $service_id, $transfer_num, $published_date, $details_name);
+
+   $rows = array();
+   foreach ($result as $node ) {
+     $id  = $node->field_unique_id_value;
+     $state_name = $node->state;
+     $title  = $node->title;
+     
+     $output1 = \Drupal\node\Entity\Node::load($node->nid);
+     $other_services = '';
+   //  $other_services = array(); 
+     $content_field = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', 'field_other_services');
+    
+     $allowed_values = options_allowed_values($content_field);
+     
+     foreach($output1->field_other_services as $service_ids) {
+      // $other_services .= "<div>" . $allowed_values[$service_ids->value] . "</div>";
+       $other_services .= "<div>" . $allowed_values[$service_ids->value] . "</div>";
+     }
+     
+    // $other_services['#markup'] = (string) $other_service;
+     
+     $related_sw_transfer_num = $node->field_related_transfer_number_value;
+     $published = date('d.m.Y', $node->changed);
+     
+     $absolute_path = Url::fromUserInput('/group/' . RELEASE_MANAGEMENT . '/rz-schnellinfos/'. $node->nid);
+     
+     $split_title = str_split($node->title, 50);
+    // $quickinfo_title = strtolower(str_replace(" ","-", $split_title[0]));
+     # $alias_path = 'release-management/rz-schnellinfos/'. $quickinfo_title;
+    // $alias_path = 'release-management/rz-schnellinfos/'. $id;
+
+     // 20140224 droy
+     // This belongs to the publish function where the db queries are only executed once.
+     // $source = db_result(db_query("SELECT src FROM {url_alias} WHERE src = '%s'",$absolute_path));
+     // $destination = db_result(db_query("SELECT dst FROM {url_alias} WHERE dst = '%s'",$alias_path));
+     // if (!$source && !$destination) {
+     //    db_query("INSERT INTO {url_alias} (src,dst) VALUES ('%s', '%s')", $absolute_path, $alias_path);
+     // }
+     $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
+     $rows[] = array($id, $state_name, $title, $other_services, $related_sw_transfer_num, $published,  $details);
+  }
+        /**
+        if (!$rows) {
+          $rows[] = array(array('data' => t('No data created yet.'), 'colspan' => 7));
+        }
+         * 
+         */
+        if ($rows) {
+            $build['quickinfo_table'] = array(
+                '#theme' => 'table',
+                '#header' => $header,
+                '#rows' => $rows,
+                '#empty' => t('No Data Created Yet'),
+                '#attributes' => ['id' => "quickinfo-sortable", 'class' => "tablesorter"],
+            );
+
+            $build['pager'] = array(
+                '#type' => 'pager',
+                '#prefix' => '<div id="pagination">',
+                '#suffix' => '</div>',
+            );
+            return $build;
+        }
+        return $build = array(
+            '#prefix' => '<div id="no-result">',
+            '#markup' => t("No Data Created Yet"),
+            '#suffix' => '</div>',
+            );
+  }
 }

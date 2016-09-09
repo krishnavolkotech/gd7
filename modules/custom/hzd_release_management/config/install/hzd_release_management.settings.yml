@@ -25,3 +25,4 @@ release_not_import: NULL
 release_import_password: NULL
 release_import_username: NULL
 import_path_csv_ex_eoss: ''
+deployed_releses: 11220

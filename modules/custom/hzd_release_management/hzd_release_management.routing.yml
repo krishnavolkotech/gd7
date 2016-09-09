@@ -97,7 +97,7 @@ hzd_release_management.release_documentation_credentials:
 #     'access callback' => 'cust_og_is_member', 
 #     'access arguments' => array('access all views'),
 
-#  this is for initial release document download
+#  this is for initial release document download  (not needed)
 #hzd_release_management.read_import_release_csv:
 #  path: 'read_import_release_csv'
 #  defaults:
@@ -138,7 +138,7 @@ hzd_release_management.document_zip_link:
 
 
 hzd_release_management.release_settings:
-  path: 'group/{group}/release_settings'
+  path: '/group/{group}/release_settings'
   defaults:
     _form: '\Drupal\hzd_release_management\Form\ReleasesettingsForm'
     _title: 'Releases'
@@ -150,3 +150,179 @@ hzd_release_management.release_settings:
 #   cust_og_is_admin: 'TRUE' 
 
 
+hzd_release_management.deployed_releases:
+  path: '/group/{group}/deployed_releases'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
+    _title: 'Deployed Released'
+    _entity_view: group.default
+  requirements:
+    _permission: 'view releases'
+#   cust_og_is_admin: 'TRUE'     
+
+# do access check ( group id is releasemanagement)
+hzd_release_management.rz-schnellinfo-overview:
+  path: '/group/{group}/rz-schnellinfo-overview'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\DisplayquickinfoController::display_quick_info'
+    _title: 'Quick info (Overview)'
+    _entity_view: group.default    
+  requirements:
+    _permission: 'access content'
+#    'access callback' => 'cust_quickinfo_og_is_member', 
+
+hzd_release_management.deployedreleases_create_form:
+  path: '/group/{group}/deployedreleases_create_form'
+  defaults:
+    _form: '\Drupal\hzd_release_management\Form\Deployedreleasecreateform'
+    _title: 'Releases'
+    _description: 'View Setting for Releases.'
+    _weight: 10
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+#   cust_og_is_admin: 'TRUE' 
+
+hzd_release_management.display_planning_files:
+  path: '/group/{group}/planning-files'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\DisplayplanningfilesController::display_planning_files'
+    _title: 'Planning Files (Overview)'
+    _entity_view: group.default
+  requirements:
+    _permission: 'view releases'
+# cust_planning_files_admin    
+
+hzd_release_management.quickinfo_published_view:
+  path: '/group/{group}/rz-schnellinfos/{search}'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\QuickinfopublishedviewController::quickinfo_published_view'
+    _title: 'Quickinfo View'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+
+# 
+#    $items['documentation_link_zip/%/%'] = array(
+#     'title' =>  t('Download Documentation Zip File'),
+#     'page callback' => 'documentation_zip_file',
+#     'page arguments' => array(1,2),
+#     'access arguments' => array('access all views'),
+#     'type' => MENU_CALLBACK
+#     );
+
+
+#
+#  $items['deployed_environment_release'] = array(
+#    'page callback' => 'deployed_environment_service_dependent_releases',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+  
+#   $items['earlywarning_service_release'] = array(
+#    'page callback' => 'earlywarning_service_dependent_releases',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+#  
+#   $items['archive_deployedreleases'] = array(
+#    'page callback' => 'archive_deployed_releases',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+
+
+#
+#   $items['node/%node/releases_filter'] = array(
+#     'title' => t('Released'),
+#     'page callback' => 'releases_filter',
+#     'access arguments' => array('view releases'),
+#     'type' => MENU_CALLBACK, 
+#     'weight' => 1
+#   );
+# 
+
+#   $items['node/%node/deployed_releases_filter'] = array(
+#    'page callback' => 'deployed_dependent_releases',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+
+
+
+#   $items['node/%node/deployed_releases_filter_env'] = array(
+#    'page callback' => 'deployed_dependent_releases_env',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+#
+#   $items['releases_search_results/%'] = array(
+#    'page callback' => 'public_releases_search_results',
+#    'access callback' => TRUE,
+#    'type' => MENU_CALLBACK
+#    );
+
+# $items['node/%node/releases_search_results/%'] = array(
+#    'page callback' => 'releases_search_results',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+#   $items['node/%node/releases_type_search_results/%'] = array(
+#    'page callback' => 'releases_type_search_results',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+
+#   $items['node/%node/filter_deployed'] = array(
+#    'page callback' => 'filter_deployed_results',
+#    'access arguments' => array('access all views'),
+#    'type' => MENU_CALLBACK
+#    );
+
+# do access check ( group id is quickinfo)
+hzd_release_management.saved-rz-schnellinfo:
+  path: '/group/{group}/saved-rz-schnellinfo'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\DisplaysavedquickinfoController::display_saved_quick_info'
+    _title: 'Quick info (Overview)'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+#    'access callback' => 'saved_quickinfo_og_is_member',  
+
+hzd_release_management.releases_released:
+  path: '/releases/released'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
+    _title: 'Released'
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.releases_in_progress:
+  path: '/releases/in_progress'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
+    _title: 'In Progress'
+  requirements:
+    _permission: 'access content'
+     
+hzd_release_management.releases_locked:
+  path: '/releases/locked'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
+    _title: 'Locked'
+  requirements:
+    _permission: 'access content'
+    
+hzd_release_management.releases_deployed:
+  path: '/releases/deployed'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
+    _title: 'Deployed'
+  requirements:
+    _permission: 'access content'
