@@ -143,5 +143,6 @@ function hzd_group_list($uid){
       $groups .= '<div class="user-group-list">'.\Drupal::l($group->label, $url).'</div>';
   }
   $groups .= '</div>';
-  return array('#markup' => $groups);
+  return $groups;
+  return array('#markup' => $groups,'#cache'=>['max-age'=>0]);
 }

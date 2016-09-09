@@ -76,7 +76,7 @@
                 <tr{{ row.attributes }}>
                     {# for cell in row.cells #}
                     <{{ row.cells.flag.tag }}{{ row.cells.flag.attributes }}>
-                    {{- row.cells.flag.content -}}
+                    {{- row.cells.flag.content|raw -}}
                     </{{ row.cells.flag.tag }}>
 
                     {% if row.cells.table_type.content == "archived" %}

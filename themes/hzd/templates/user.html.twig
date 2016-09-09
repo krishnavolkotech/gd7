@@ -20,7 +20,7 @@
 #}
 
   {% if content %}
-    {{- content -}}
+    {{- content|without('group_list') -}}
   {% endif %}
   <div class="hzd-user-profile">
   <h2 class="title">Profile </h2>
@@ -69,10 +69,10 @@
   {% endif %}
  </div>
 
-  {% if group_list %}
+  {% if content.group_list %}
     <h2 class="title">Groups </h2>
 	<div class="hzd-groups-info">
-    {{ group_list }}
+    {{ content.group_list }}
 	</div>
   {% endif %}
   </div>

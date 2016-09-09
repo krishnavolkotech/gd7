@@ -57,7 +57,7 @@ class Gruppenadministration extends BlockBase {
       $groupId = $group;
     }
     $menuHtml = '<ul class="menu nav">
-    <li><a href="/group/'.$groupId.'/node">Contents</a></li>
+    <li><a href="/group/'.$groupId.'/content">Contents</a></li>
     <li><a href="/group/'.$groupId.'/node/create">Content</a></li>
     <li><a href="/group/'.$groupId.'/approved-members">Users</a></li>
     <li><a href="/group/'.$groupId.'/downtime_settings">Disturbances and block times</a></li>

@@ -12,6 +12,21 @@ define('RELEASE_MANAGEMENT', 32);
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
 
 
+function cust_group_user_view(&$build,\Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
+  // Only do the extra work if the component is configured to be displayed.
+  // This assumes a 'mymodule_addition' extra field has been defined for the
+  // user entity type in hook_field_extra_fields().
+   
+  //if (!$display->getComponent('group_list')) {
+    $build['group_list'] = array(
+      '#markup' => hzd_group_list($account->id()), 
+      '#cache'=>['max-age'=>0]
+//      '#theme' => 'mymodule_my_additional_field',
+    );
+//    pr(array_keys($build));exit;
+  //}
+}
+
 
 function cust_group_node_update($entity){
     sendGroupUpdateMail($entity);
