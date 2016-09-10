@@ -9,4 +9,6 @@ label: Member
 weight: -100
 internal: true
 group_type: moderate_private
-permissions: {  }
+permissions:
+  - 'view group'
+  - 'access group_membership overview'

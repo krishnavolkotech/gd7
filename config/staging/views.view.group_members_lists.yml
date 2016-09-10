@@ -212,7 +212,7 @@ display:
           click_sort_column: value
           type: user_name
           settings:
-            link_to_entity: false
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -786,6 +786,8 @@ display:
         arguments: false
         filters: false
         filter_groups: false
+        header: false
+        sorts: false
       use_more_always: false
       use_more_text: more
       pager:
@@ -986,6 +988,27 @@ display:
         operator: AND
         groups:
           1: AND
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          plugin_id: text
+      sorts:
+        name:
+          id: name
+          table: users_field_data
+          field: name
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: Name
+          entity_type: user
+          entity_field: name
+          plugin_id: standard
     cache_metadata:
       max-age: 0
       contexts:
