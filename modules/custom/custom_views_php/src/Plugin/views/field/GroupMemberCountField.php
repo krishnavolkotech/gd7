@@ -76,12 +76,15 @@ class GroupMemberCountField extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    $gid = $this->view->field['id']->original_value;
+    $gid = $values->_entity->id();
     $result = $this->groupMemberCount($gid);
-    $doc_options['attributes'] = array('class' => 'member-link');
-    $url = Url::fromUserInput('/group/' . $gid .'/approved-members', $doc_options);
-    $link = \Drupal::service('link_generator')->generate($result, $url);
-    return $link;
+    $res = $result;
+    if($values->_entity->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+      $doc_options['attributes'] = array('class' => 'member-link');
+      $url = Url::fromUserInput('/group/' . $gid .'/approved-members', $doc_options);
+      $res = \Drupal::service('link_generator')->generate($result, $url);
+    }
+    return $res;
   }
 
 }
