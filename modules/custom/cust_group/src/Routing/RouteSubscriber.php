@@ -47,6 +47,9 @@ class RouteSubscriber extends RouteSubscriberBase {
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
       }
     }
+    if ($route = $collection->get('view.group_members.page_1')) {
+      $route->setDefault('_title', '\Drupal\cust_group\Controller\AccessController::groupTitle');
+    }
   }
 
   //retuns the views related to groups created from UI

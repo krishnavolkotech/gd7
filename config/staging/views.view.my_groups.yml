@@ -467,7 +467,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: my-groups-old
+      path: my-groups
       menu:
         enabled: true
         expanded: false
