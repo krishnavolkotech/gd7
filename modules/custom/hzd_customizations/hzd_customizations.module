@@ -192,16 +192,15 @@ function hzd_customizations_node_presave(NodeInterface $node) {
  */
 function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view, Drupal\views\Plugin\views\query\Sql $query) {
     if ($view->id() == 'my_groups') {
+
         // Traverse through the 'where' part of the query.
         foreach ($query->where as &$condition_group) {
             foreach ($condition_group['conditions'] as &$condition) {
                 if (strpos($condition['field'], 'groups_field_data_id')) {
-                    $db = \Drupal::database();
-                    $result = $db->select('group_content_field_data', 'gcfd');
-                    $result->fields('gcfd', array('gid'))
-                        ->condition('gcfd.entity_id', \Drupal::currentUser()->id());
-                    $val = $result->execute()->fetchCol();
+                    $val = $condition['value'][':groups_field_data_id'];
                     $condition['value'][':groups_field_data_id[]'] = $val;
+                    unset($condition['value'][':groups_field_data_id']);
+                    $condition['field'] = 'groups_field_data.id IN (:groups_field_data_id[])';
                 }
             }
         }
