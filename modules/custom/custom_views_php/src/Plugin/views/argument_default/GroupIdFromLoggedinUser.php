@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Default argument plugin to extract a group ID.
  *
  * @ViewsArgumentDefault(
- *   id = "group_id_from_url",
+ *   id = "group_id_from_loggedin_user",
  *   title = @Translation("Group ID from Loggedin User")
  * )
  */
@@ -46,8 +46,8 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     /** @var \Drupal\Core\Plugin\Context\ContextInterface[] $contexts */
-    $contexts = $context_provider->getRuntimeContexts(['group']);
-    $this->group = $contexts['group']->getContextValue();
+    //$contexts = $context_provider->getRuntimeContexts(['group']);
+    //$this->group = $contexts['group']->getContextValue();
   }
 
   /**
@@ -78,15 +78,16 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
       'group_content_type_6693a40b54133',
       'group_content_type_c26112f8ad4cd',
     );
-
+    //$contents =
+    //pr($uid);exit;
     $gpc = \Drupal::database()->select('group_content_field_data', 'g')
         ->fields('g', array('gid'))
-        ->condition('uid', $uid)
+        ->condition('entity_id', $uid,'=')
         ->condition('type', $contents, 'IN')
         ->distinct()
         ->execute()
         ->fetchCol();
-    return implode('+', $gpc);
+    return $gpc;
   }
 
   /**
@@ -98,6 +99,7 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
 //    if (!empty($this->group) && $id = $this->group->id()) {
 //      return $id;
 //    }
+//echo $this->groupIdsByMember($uid);exit;
     return $this->groupIdsByMember($uid);
   }
 
