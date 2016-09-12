@@ -10,8 +10,7 @@ weight: -101
 internal: true
 group_type: closed
 permissions:
-  - 'view group'
-  - 'request group membership'
-  - 'access group_node overview'
-  - 'view group_node:forum content'
-  - 'view forum node'
+  0: 'view group'
+  2: 'access group_node overview'
+  3: 'view group_node:forum content'
+  4: 'view forum node'
