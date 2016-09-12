@@ -9,4 +9,6 @@ label: Outsider
 weight: -101
 internal: true
 group_type: moderate
-permissions: {  }
+permissions:
+  - 'view group'
+  - 'request group membership'

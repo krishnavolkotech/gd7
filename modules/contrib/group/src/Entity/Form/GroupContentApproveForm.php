@@ -40,7 +40,7 @@ class GroupContentApproveForm extends ContentEntityConfirmFormBase {
    */
   public function getCancelURL() {
     // @todo Read a redirect from the plugin?
-    return new Url('entity.group.pending_collection');
+    return new Url('entity.group_content.group_membership.pending_collection');
   }
 
   /**

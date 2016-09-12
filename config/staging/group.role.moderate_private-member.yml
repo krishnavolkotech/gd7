@@ -10,5 +10,8 @@ weight: -100
 internal: true
 group_type: moderate_private
 permissions:
-  - 'view group'
-  - 'access group_membership overview'
+  0: 'view group'
+  1: 'access group_membership overview'
+  4: 'view group_membership content'
+  5: 'edit own group_membership content'
+  6: 'leave group'

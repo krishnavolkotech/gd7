@@ -41,4 +41,16 @@ class AccessController extends ControllerBase {
       }
       return AccessResult::forbidden();
   }
+  
+  function groupTitle(){
+    $group = \Drupal::routeMatch()->getParameter('arg_0');
+    if(!is_object($group)){
+      $group = \Drupal\group\Entity\Group::load($group);
+    }
+    $request = \Drupal::request();
+    if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+        $route->setDefault('_title', $group->label());
+    }
+    return 'Members of ' . $this->t($group->label());
+  }
 }

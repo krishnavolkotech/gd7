@@ -25,21 +25,24 @@ class GroupMenuBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $menu_tree = \Drupal::menuTree();
+    
     $group = \Drupal::routeMatch()->getParameter('group');
     if (empty($group)) {
       $group = \Drupal::routeMatch()->getParameter('arg_0');
     }
+    //pr($group->id());exit;
     if (!empty($group)) {
       //pr($group);exit;
       if (!is_object($group)) {
         $group = \Drupal\group\Entity\Group::load($group);
       }
 
-      $groupMember = $group->getMember(\Drupal::currentUser());
+      $groupMember = (bool)$group->getMember(\Drupal::currentUser());
+      //pr((bool)$groupMember);exit;
       if ($groupMember) {
         $oldId = $group->get('field_old_reference')->value;
         $menu_name = 'menu-' . $oldId;
+        $menu_tree = \Drupal::menuTree();
         // Build the typical default set of menu tree parameters.
         $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
 
@@ -56,6 +59,7 @@ class GroupMenuBlock extends BlockBase {
         return ['#title' => $title, '#markup' => \Drupal::service('renderer')->render($menu), '#cache' => ['max-age' => 0]];
       }
     }
+    return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
   }
 
 }

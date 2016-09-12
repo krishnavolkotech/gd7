@@ -198,6 +198,9 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
             foreach ($condition_group['conditions'] as &$condition) {
                 if (strpos($condition['field'], 'groups_field_data_id')) {
                     $val = $condition['value'][':groups_field_data_id'];
+                    if(empty($val)){
+                        $val = [-1];
+                    }
                     $condition['value'][':groups_field_data_id[]'] = $val;
                     unset($condition['value'][':groups_field_data_id']);
                     $condition['field'] = 'groups_field_data.id IN (:groups_field_data_id[])';
