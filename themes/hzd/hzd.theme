@@ -165,7 +165,7 @@ function downtimes_revisions($node) {
         }
       }
       else {
-        $output .= t("$name") . ' (alt): ' . t($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
+        $output .= t("$name") . ' (alt): ' . t((string)$field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t((string)$field_value['new']);
       }
       $output .= "</div>";
     }
