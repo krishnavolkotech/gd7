@@ -155,13 +155,13 @@ function downtimes_revisions($node) {
         }
         if ($field_value['old'] && $field_value['new']) {
           # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
-          $output .= ' (alt): ' . t($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
+          $output .= ' (alt): ' . t((string)$field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t((string)$field_value['new']);
         }
         else if ($field_value['old'] && !$field_value['new']) {
           $output .= ' ' . t("(entfernt)");
         }
         else if (!$field_value['old'] && $field_value['new']) {
-          $output .= t(" (neu): ") . "</b>" . t($field_value['new']);
+          $output .= t(" (neu): ") . "</b>" . t((string)$field_value['new']);
         }
       }
       else {
