@@ -384,6 +384,7 @@ function send_pf_notifications($entity) {
 // send immediate Quickinfo Notifications
 // TODONOTIFICATIONS
 function send_qi_notifications($entity) {
+    return;
   $services = $entity->get('field_other_services')->getValue();
   $result = hzd_get_immediate_qi_notification_user_mails($services);
   if(is_array($result) && count($result) > 0) {
@@ -469,7 +470,7 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
     $affetced_services[] = $options[$val['value']];
   }
 
-  $query = \Drupal::database()->select('quickinfo_notifications','q')
+  $query = db_select('quickinfo_notifications','q')
          ->fields('q', array('uids'))
          ->condition('q.cck', $affetced_services,'IN')
          ->condition('q.send_interval', 0, '=');
@@ -667,3 +668,42 @@ function hzd_release_management_group_access(\Drupal\Core\Entity\EntityInterface
   //  pr($entity->toArray());
   //exit;
   }*/
+
+
+/**
+function release_management_init() {
+  if (arg(3) == 'documentation' && (arg(4) && is_numeric(arg(4))) && (arg(5) && is_numeric(arg(5))) ) {
+    $breadcrumb[] = l(t('Home'), '');
+    $breadcrumb[] = l(t('Release Management'), 'release-management');
+    $breadcrumb[] = l(t('Releases'), 'release-management/releases');
+    $breadcrumb[] = t('Documentation');
+    drupal_set_breadcrumb($breadcrumb);
+  }
+  if (arg(3) == 'view_deployed_releases') {
+    $breadcrumb[] = l(t('Home'), '');
+    if (isset($_SESSION['Group_name'])) {
+      $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
+      $breadcrumb[] = l(t('Releases'), 'node/' . $_SESSION['Group_id'] . '/releases');
+    }
+    //$breadcrumb[] = l(t('Release Management'), 'release-management');
+    //$breadcrumb[] = l(t('Releases'), 'release-management/releases');
+    $breadcrumb[] = t('Deployed Releases per state');
+    drupal_set_breadcrumb($breadcrumb);
+  }
+  if (arg(0) == 'node' && arg(2) == 'rz-schnellinfo-overview' && is_numeric(arg(1))) {
+    $breadcrumb[] = l(t('Home'), '');
+    $breadcrumb[] = l(t('Release Management'), 'release-management');
+    $breadcrumb[] = t('Table of RZ Accelerators');
+    drupal_set_breadcrumb($breadcrumb);
+  } 
+
+  if (arg(0) == 'node' && arg(2) == 'saved-rz-schnellinfo' && is_numeric(arg(1))) {
+    $breadcrumb[] = l(t('Home'), '');
+    $breadcrumb[] = l(t('Autoren RZ-Schnellinfo'), 'autoren-rz-schnellinfo');
+    $breadcrumb[] = t('Table of RZ Accelerators');
+    drupal_set_breadcrumb($breadcrumb);
+  }
+}
+ * 
+ * 
+ */
