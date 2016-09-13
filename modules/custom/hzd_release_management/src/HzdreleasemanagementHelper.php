@@ -660,7 +660,7 @@ class HzdreleasemanagementHelper {
                   $environment,
                   $service,
                   $release,
-                  date("d.m.Y", $deployed_release->deployed_date),
+                  date("d.m.Y", strtotime($deployed_release->deployed_date)),
                   $action
                 );
             }
@@ -678,7 +678,7 @@ class HzdreleasemanagementHelper {
                   $environment,
                   $service,
                   $release,
-                  date("d.m.Y", $deployed_release->deployed_date),
+                  date("d.m.Y", strtotime($deployed_release->deployed_date)),
                   $edit
                 );
             }
