@@ -64,11 +64,15 @@ class AccessController extends ControllerBase {
 			if(!is_object($group)){
 				$group = \Drupal\group\Entity\Group::load($group);
 			}
-			$roles = $group->getMember(\Drupal::currentUser())->getRoles();
+			$groupMember = $group->getMember(\Drupal::currentUser());
+      if($groupMember){
+        $roles = $groupMember->getRoles();
+        if(!empty($roles) && in_array($group->bundle().'-admin',array_keys($roles))){
+        	return AccessResult::allowed();
+        }
+      }
       //pr($roles);exit;
-			if(!empty($roles) && in_array($group->bundle().'-admin',array_keys($roles))){
-				return AccessResult::allowed();
-			}
+			
 			return AccessResult::forbidden();
     }
     return AccessResult::neutral();

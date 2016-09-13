@@ -84,6 +84,7 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
         ->fields('g', array('gid'))
         ->condition('entity_id', $uid,'=')
         ->condition('type', $contents, 'IN')
+        ->condition('request_status', '1', '=')
         ->distinct()
         ->execute()
         ->fetchCol();

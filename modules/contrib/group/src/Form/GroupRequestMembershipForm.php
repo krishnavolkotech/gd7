@@ -9,6 +9,7 @@ namespace Drupal\group\Form;
 
 use Drupal\group\Entity\Form\GroupContentForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Provides a Request form for joining a group.
@@ -35,7 +36,8 @@ class GroupRequestMembershipForm extends GroupContentForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    $subject = "Requested Membership for a Group";
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $subject = "Membership Request for a Group - ".$group->label();
     $message = $form_state->getValue('message');
     $to = $this->config('system.site')->get('mail');
     $mailManager = \Drupal::service('plugin.manager.mail');
