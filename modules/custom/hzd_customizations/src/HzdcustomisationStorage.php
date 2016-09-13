@@ -95,17 +95,17 @@ class HzdcustomisationStorage {
     $nid = db_result(db_query("SELECT nid FROM {node} where title = '%s' ", $values_title));
 
     // Create url alias.
-    $release_value_type = db_result(db_query("SELECT field_release_type_value 
+    $release_value_type = db_result(db_query("SELECT field_release_type_value
                                             FROM {content_type_release} WHERE nid = %d ", $nid));
     if ($release_value_type != 3) {
       $url_alias = create_url_alias($nid, $service, $values);
     }
 
-    $count_nid = db_result(db_query("SELECT count(*) 
-                                   FROM {release_doc_failed_download_info} 
+    $count_nid = db_result(db_query("SELECT count(*)
+                                   FROM {release_doc_failed_download_info}
                                    WHERE nid = %d", $nid));
-    $field_release_type_value = db_result(db_query("SELECT field_release_type_value 
-                                                  FROM {content_type_release} 
+    $field_release_type_value = db_result(db_query("SELECT field_release_type_value
+                                                  FROM {content_type_release}
                                                   WHERE nid=%d", $nid));
 
     // Checked documentation link empty or not.
@@ -169,7 +169,7 @@ class HzdcustomisationStorage {
             $username = variable_get('release_import_username', NULL);
             $password = variable_get('release_import_password', NULL);
             release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
-            $nid_count = db_result(db_query("SELECT count(*) 
+            $nid_count = db_result(db_query("SELECT count(*)
                                            FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));
             if ($nid_count == 3) {
               release_not_import_mail($nid);
@@ -840,7 +840,7 @@ class HzdcustomisationStorage {
 
       $downtime_ids = array();
       $downtime_ids = explode(',', $client->state_id);
-      $show_resolve = self::resolve_link_display($downtime_ids, $client->uid);
+      $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
       //$maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
         $maintenance_edit = TRUE;
