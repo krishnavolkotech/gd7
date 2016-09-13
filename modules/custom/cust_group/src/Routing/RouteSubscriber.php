@@ -29,7 +29,7 @@ class RouteSubscriber extends RouteSubscriberBase {
       }
     }
     if ($route = $collection->get('entity.node.edit_form')) {
-      //$route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
 //    if ($route = $collection->get('entity.group_content.group_membership.collection')){
 //        $route->setPath('/group/{group}/address');
