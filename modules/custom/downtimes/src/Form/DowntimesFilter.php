@@ -286,7 +286,7 @@ class DowntimesFilter extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    
+
   }
 
   public function current_arhive_incident_results(array &$form, FormStateInterface $form_state) {

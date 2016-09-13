@@ -60,7 +60,7 @@ class ResolveForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
     $user = \Drupal::currentUser();
     $user_role = $user->getRoles();
-    // User::getRoles($exclude_locked_roles = FALSE)    
+    // User::getRoles($exclude_locked_roles = FALSE)
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
     $node = \Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
@@ -162,13 +162,13 @@ class ResolveForm extends FormBase {
       );
     }
 
-    $first_month_first_day = date('Y-01-01 00:00');
+    $first_month_first_day = date('01.01.Y 00:00');
 
     $form['date_reported'] = array(
       '#title' => t('Actual End Date'),
       '#type' => 'textfield',
       '#default_value' => $first_month_first_day,
-      '#date_format' => 'd.m.Y H:i',
+      '#date_format' => $date_format,
       '#size' => 60,
       '#weight' => -3,
       '#required' => TRUE,
