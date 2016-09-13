@@ -9,9 +9,9 @@ label: 'anonymous user'
 weight: 0
 is_admin: false
 permissions:
-  - 'access ckeditor'
-  - 'access site-wide contact form'
-  - 'access frontpage'
-  - 'access content'
-  - 'use text format filtered_html'
-  - 'access user profiles'
+  0: 'access ckeditor'
+  1: 'access site-wide contact form'
+  2: 'access frontpage'
+  3: 'access content'
+  5: 'access user profiles'
+  6: 'use text format basic_html'

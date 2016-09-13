@@ -195,3 +195,4 @@ permissions:
   - 'use text format full_html1'
   - 'contribute translations to localization server'
   - 'use localization client ui'
+  - 'use text format basic_html'

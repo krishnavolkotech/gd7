@@ -31,3 +31,4 @@ permissions:
   - 'view uploaded files'
   - 'access user profiles'
   - 'access all views'
+  - 'use text format basic_html'
