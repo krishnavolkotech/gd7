@@ -49,3 +49,4 @@ permissions:
   37: 'access profile settings'
   39: 'manage favorites'
   40: 'use text format basic_html'
+  41: 'use text format filtered_html'
