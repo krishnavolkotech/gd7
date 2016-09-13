@@ -51,7 +51,7 @@ downtimes.confirm:
     _form: '\Drupal\downtimes\Form\Confirm'
     _title: 'Conform'
   requirements:
-    _permission: 'administer messaging'
+    _permission: 'access content'
     node: \d+
 
 downtimes.cancel_confirm:
@@ -60,7 +60,7 @@ downtimes.cancel_confirm:
     _form: '\Drupal\downtimes\Form\Cancelconfirm'
     _title: 'Cancel'
   requirements:
-    _permission: 'administer messaging'
+    _permission: 'access content'
     node: \d+
     
 downtimes.service_profiles:
