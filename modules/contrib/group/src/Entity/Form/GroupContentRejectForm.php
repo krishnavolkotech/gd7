@@ -41,7 +41,7 @@ class GroupContentRejectForm extends ContentEntityConfirmFormBase {
   public function getCancelURL() {
     // @todo Read a redirect from the plugin?
     $entity = $this->getEntity();
-    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity]);
+    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
   }
 
   /**
