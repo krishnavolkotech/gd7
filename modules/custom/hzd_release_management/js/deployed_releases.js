@@ -144,19 +144,19 @@
 jQuery('#edit-deployed-date').datepicker({ dateFormat: 'dd.mm.yy' });
 
 function reset_form_elements() {
-   // var type = drupalSettings.deploy_release.type;
-    $('#edit-deployed-services').val(0);
-    $('#edit-deployed-releases').val(0);
-    $('#edit-deployed-date').val('');
-    $('#edit-deployed-environment').val(0);
-    $('#edit-deployed-type').val('current')
+    var type = drupalSettings.deploy_release.type;
+    jQuery('#edit-deployed-services').val(0);
+    jQuery('#edit-deployed-releases').val(0);
+    jQuery('#edit-deployed-date').val('');
+    jQuery('#edit-deployed-environment').val(0);
+    jQuery('#edit-deployed-type').val('current')
     
-    $('.state_search_dropdown select').val(0);
-    $('.service_search_dropdown select').val(0);
-    $('.releases_search_dropdown select').val(0);
-    $('.filter_start_date input').val('');
-    $('.filter_end_date input').val('');
-    $('.limit_search_dropdown select').val(0);
+    jQuery('.state_search_dropdown select').val(0);
+    jQuery('.service_search_dropdown select').val(0);
+    jQuery('.releases_search_dropdown select').val(0);
+    jQuery('.filter_start_date input').val('');
+    jQuery('.filter_end_date input').val('');
+    jQuery('.limit_search_dropdown select').val(0);
     
     if (type !== undefined) {
         window.location = window.location;
