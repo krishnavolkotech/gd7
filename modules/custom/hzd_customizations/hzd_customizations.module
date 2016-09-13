@@ -13,172 +13,228 @@ if(SITE_ADMIN){
     define('SITE_ADMIN', 'site_administrator');
 }
 
-define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));	
+define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 define('RELEASE_MANAGEMENT', 32);
 
 /**
  * Implements hook_mail.
  */
 function hzd_customizations_mail($key, &$message, $params) {
-  $options = array(
-    'langcode' => $message['langcode'],
-  );
-  switch ($key) {
-    case 'immediate_notifications':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = $params['subject'];
-      $message['body'][] = Html::escape($params['message']);
-      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-//      $message['headers']['Bcc'] = 'shiva.chevva@gmail.com';
-      break;
+    $options = array(
+        'langcode' => $message['langcode'],
+    );
+    switch ($key) {
+        case 'immediate_notifications':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = $params['subject'];
+            $message['body'][] = Html::escape($params['message']);
+            $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+            break;
 
-    case 'custom_mails':
-      $message['subject'] = $params['subject'];
-      $message['body'][] = Html::escape($params['body']);
-      if ($params['Bcc']) {
-        $message['headers']['Bcc'] = $params['Bcc'];
-      }
-      break;
+        case 'custom_mails':
+            $message['subject'] = $params['subject'];
+            $message['body'][] = Html::escape($params['body']);
+            if ($params['Bcc']) {
+                $message['headers']['Bcc'] = $params['Bcc'];
+            }
+            break;
 
-    case 'inactive_user':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = $params['subject'];
-      $message['body'][] = Html::escape($params['message']);
-      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-      break;
-  }
+        case 'inactive_user':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = $params['subject'];
+            $message['body'][] = Html::escape($params['message']);
+            $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+            break;
+
+        case 'hzd_customizations_additional_email':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t($params['subject'], $options);
+            $message['body'][] = $params['message'];
+            $message['body'][] = $params['pdflink'];
+            break;
+    }
 }
 
 /**
  * Get downtime services in service profile dependent dropdown.
  */
 function get_related_downtime_services($type) {
-  // Global $user;.
-  $user = Drupal::currentUser();
-  $user_roles = $user->getRoles();
+    // Global $user;.
+    $user = Drupal::currentUser();
+    $user_roles = $user->getRoles();
 
-  if (in_array('site_administrator', $user_roles)) {
-    $dependent_Services = HzdservicesStorage::get_related_services($type);
-    $request = \Drupal::request()->getRequestUri();
-    unset($dependent_Services[$_REQUEST['service']]);
-    $current_path = Url::fromRoute('<current>');
-    $path = explode("/", $current_path->getInternalPath());
-    if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
-      $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
-      $query->addField('nfds', 'field_dependent_service_target_id');
-      $query->condition('nfds.entity_id', '1', '=');
-      $service_id = $query->execute()->fetchField();
-      unset($dependent_Services[$service_id]);
+    if (in_array('site_administrator', $user_roles)) {
+        $dependent_Services = HzdservicesStorage::get_related_services($type);
+        $request = \Drupal::request()->getRequestUri();
+        unset($dependent_Services[$_REQUEST['service']]);
+        $current_path = Url::fromRoute('<current>');
+        $path = explode("/", $current_path->getInternalPath());
+        if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
+            $query = \Drupal::database()->select('node__field_dependent_service', 'nfds');
+            $query->addField('nfds', 'field_dependent_service_target_id');
+            $query->condition('nfds.entity_id', '1', '=');
+            $service_id = $query->execute()->fetchField();
+            unset($dependent_Services[$service_id]);
+        }
+        return $dependent_Services;
     }
-    return $dependent_Services;
-  }
-  else {
-    return array(0 => t("This list is only editable by site admins"));
-  }
+    else {
+        return array(0 => t("This list is only editable by site admins"));
+    }
 }
 
 /**
  * Get related file attachments of planning files.
  */
 function get_related_files($planning_filename) {
-  $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
+    $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
     $files_details = '';
-  foreach ($fids as $fid) {
-    $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
-    if ($fid->display == 1) {
-      // $icon = theme('filefield_icon', $fileObject);.
-      $files_heading = "<p><b>Dateien:</b></p>";
-      $files_details .= '<div class="filefield-file clear-block">';
-      // $files_details .= $icon . ' ' . l($fileObject['filename'], file_create_url($fileObject['filepath']), array('attributes' => array('target' => '_blank')));.
-      $files_details .= '<a target= "_blank" href="' . file_create_url($fileObject[0]->uri) . '">' . $fileObject[0]->filename;
-      $files_details .= " (" . date('d.m.Y H:i:s', $fileObject[0]->changed) . ")";
-      $files_details .= '</div>';
+    foreach ($fids as $fid) {
+        $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
+        if ($fid->display == 1) {
+            // $icon = theme('filefield_icon', $fileObject);.
+            $files_heading = "<p><b>Dateien:</b></p>";
+            $files_details .= '<div class="filefield-file clear-block">';
+            // $files_details .= $icon . ' ' . l($fileObject['filename'], file_create_url($fileObject['filepath']), array('attributes' => array('target' => '_blank')));.
+            $files_details .= '<a target= "_blank" href="' . file_create_url($fileObject[0]->uri) . '">' . $fileObject[0]->filename;
+            $files_details .= " (" . date('d.m.Y H:i:s', $fileObject[0]->changed) . ")";
+            $files_details .= '</div>';
+        }
     }
-  }
-  // Return $files;.
-  return array('#markup' => $files_heading . $files_details);
+    // Return $files;.
+    return array('#markup' => $files_heading . $files_details);
 }
 
 /**
  * implements hook_form_alter
  */
 function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form') {
-    $form['actions']['publish']['#value'] = t('Publish');
-    $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
-    $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
-    $form['actions']['unpublish']['#value'] = t('Save');
-    $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
-    $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
-  }
-  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
+    $user = Drupal::currentUser();
+    if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form') {
+        $form['actions']['publish']['#value'] = t('Publish');
+        $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
+        $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
+        $form['actions']['unpublish']['#value'] = t('Save');
+        $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
+        $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
+        $form['field_author_name']['widget'][0]['value']['#value'] = $user->getAccountName();
+        $db = \Drupal::database();
+        $result = $db->select('cust_profile', 'cp');
+        $result->join('states', 's', 'cp.state_id = s.id');
+        $result->fields('s', array('state'))
+            ->condition('cp.uid', $user->getAccount()->id());
+        $state_name = $result->execute()->fetchField();
+        $form['field_author_state']['widget'][0]['value']['#value'] = $state_name;
+    }
+    if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
 
-      $db = \Drupal::database();
-      $result = $db->select('states', 's')
-          ->fields('s', array('abbr', 'state'))
-          ->condition('s.entity', 1, '!=');
-      $val = $result->execute()->fetchAll();
-      $states = array();
-      foreach($val as $user_states_list) {
-          $states[$user_states_list->abbr] = $user_states_list->state;
-      }
-      $form['abbr'] = array(
-          '#type' => 'select',
-          '#options' => $states,
-          '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
-      );
-  }
-  if ($form_id == 'views_exposed_form' && ($form['#id'] == 'views-exposed-form-user-admin-people-page-1' || $form['#id'] == 'views-exposed-form-user-admin-people-page-2')) {
-      $db = \Drupal::database();
-      $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
-      $glossarydata = array();
-      foreach ($result as $gloss) {
-          $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
-          $glossarydata[] = '<span class="user-group-list">'.\Drupal::l($gloss->lname, $url).'</span>';
-      }
-      $glossary = implode(' | ', $glossarydata);
-      $form['glossarylist'] = array('#markup' => $glossary, '#theme_wrappers' => array('form_element'));
-  }
+        $db = \Drupal::database();
+        $result = $db->select('states', 's')
+            ->fields('s', array('abbr', 'state'))
+            ->condition('s.entity', 1, '!=');
+        $val = $result->execute()->fetchAll();
+        $states = array();
+        foreach($val as $user_states_list) {
+            $states[$user_states_list->abbr] = $user_states_list->state;
+        }
+        $form['abbr'] = array(
+            '#type' => 'select',
+            '#options' => $states,
+            '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
+        );
+    }
+    if ($form_id == 'views_exposed_form' && ($form['#id'] == 'views-exposed-form-user-admin-people-page-1' || $form['#id'] == 'views-exposed-form-user-admin-people-page-2')) {
+        $db = \Drupal::database();
+        $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
+        $glossarydata = array();
+        foreach ($result as $gloss) {
+            $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
+            $glossarydata[] = '<span class="user-group-list">'.\Drupal::l($gloss->lname, $url).'</span>';
+        }
+        $glossary = implode(' | ', $glossarydata);
+        $form['glossarylist'] = array('#markup' => $glossary, '#theme_wrappers' => array('form_element'));
+    }
   if ($form_id == 'node_deployed_releases_edit_form') {
     $rel = \Drupal::request()->query->get('rel');
     $form['field_earlywarning_release']['widget']['#default_value'] = 13052;
    //  rel
   }
-  return $form;
+
+    return $form;
+
 }
 
 /**
  * Implements hook_ENTITY_TYPE_presave() for node entities.
  */
 function hzd_customizations_node_presave(NodeInterface $node) {
+    $user = Drupal::currentUser();
     if ($node->getType() == 'quickinfo' && $node->isPublished()) {
         //$node->upload[] = array('target_id' => 1640, 'display' => 1, ); //for add file
-      if (!$node->field_unique_id->value) {
-          $quick_info_id = db_query("SELECT max(field_unique_id_value) FROM {node__field_unique_id}")->fetchField();
-          $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id', NULL);
-          $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
-          $node->set('field_unique_id', $quick_info_val);
-      }
+        if (!$node->field_unique_id->value) {
+            $quick_info_id = db_query("SELECT max(field_unique_id_value) FROM {node__field_unique_id}")->fetchField();
+            $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id', NULL);
+            $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
+            $node->set('field_unique_id', $quick_info_val);
+        }
+        if ($node->field_additional_email_recipient->value) {
+            $pdfurl = Url::fromUserInput('/entityprint/node/' . $node->id());
+            $pdflink = \Drupal::l("RZ-Schnellinfo-Nr-" . $node->field_unique_id->value . ".pdf", $pdfurl);
+            $nodeurl = Url::fromUserInput('/node/' . $node->id());
+            $nodelink = \Drupal::l($node->getTitle() , $nodeurl);
+            $token = Drupal::token();
+            $quickinfo_subject = \Drupal::config('hzd_customizations.settings')->get('quick_info_subject', NULL);
+            $quickinfo_body = \Drupal::config('hzd_customizations.settings')->get('quick_info_content', NULL). "<br/><b style='margin-bottom: 1em;'>" . t("2.13 File attachments ") . "</b><br'/>" . $pdflink . "<br/><hr><b style='text-align: left;'>" .  t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $nodelink;
+            $header = quickinfo_mail_header($node,1);
+            $qbody = $token->replace($quickinfo_body, ['node'=>$node], $options = array());
+            $params['subject'] = $token->replace($quickinfo_subject, ['node'=>$node], $options = array());
+            $params['message'] = "<div style='font-family: Arial;'>" . $header . "<br>" . $qbody . "</div>";
+            $mailManager = \Drupal::service('plugin.manager.mail')->mail('hzd_customizations', 'hzd_customizations_additional_email', $node->field_additional_email_recipient->value, $langcode, $params, NULL, $send = TRUE);
+        }
     }
 }
 
 /**
- * Implements hook__views_query_alter().
+ * Implements hook_views_query_alter().
  */
 function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view, Drupal\views\Plugin\views\query\Sql $query) {
     if ($view->id() == 'my_groups') {
+
         // Traverse through the 'where' part of the query.
         foreach ($query->where as &$condition_group) {
             foreach ($condition_group['conditions'] as &$condition) {
                 if (strpos($condition['field'], 'groups_field_data_id')) {
-                    $db = \Drupal::database();
-                    $result = $db->select('group_content_field_data', 'gcfd');
-                    $result->fields('gcfd', array('gid'))
-                        ->condition('gcfd.entity_id', \Drupal::currentUser()->id());
-                    $val = $result->execute()->fetchCol();
+                    $val = $condition['value'][':groups_field_data_id'];
+                    if(empty($val)){
+                        $val = [-1];
+                    }
                     $condition['value'][':groups_field_data_id[]'] = $val;
+                    unset($condition['value'][':groups_field_data_id']);
+                    $condition['field'] = 'groups_field_data.id IN (:groups_field_data_id[])';
                 }
             }
         }
     }
+}
+
+/*
+ * function for get quickinfo header
+ * need to differentiate between immediate creation for additional recipients since
+ * revision has not been created at the time nodeapi is called.
+ */
+function quickinfo_mail_header($node, $additional_recipients = 0) {
+    global $base_url;
+    $user = Drupal::currentUser();
+    if (!$additional_recipients) {
+        $published_by = db_query("SELECT CONCAT(firstname, ' ', lastname) FROM {cust_profile} WHERE uid = " . $node->getRevisionUserId())->fetchField();
+    } else {
+        $published_by = db_query("SELECT CONCAT(firstname, ' ', lastname) FROM {cust_profile} WHERE uid = " . $user->id())->fetchField();
+    }
+    $output = "<table class='q-header' style='margin-bottom: 10px; border-collapse: collapse; line-height: 20px;' cellpadding='0' cellspacing='0'  border='1' width='100%'>";
+    $output .= '<tr><td rowspan="2" style="padding:0px 20px;"><img src= "' . $base_url . '/' . drupal_get_path('module', 'hzd_customizations') . '/hzd_logo.gif" alt ="Logo"></td>';
+    $output .= '<td  rowspan="2" style="text-align: center; color: #000 !important; font-size: 16px; font-family: arial,sans-serif;"><b>' . t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id->value) . '</b><br>' . t($node->getTitle()) . '</td>';
+    $output .= '<td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published on") . ':<br>' . date('d.m.Y', $node->get('changed')->value) . '</td></tr>';
+    $output .= '<tr><td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published by") . ':<br>' . $published_by . '</td></tr>';
+    $output .= "</table>";
+    return $output;
 }

@@ -9,4 +9,23 @@ label: Member
 weight: -100
 internal: true
 group_type: moderate_private
-permissions: {  }
+permissions:
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'edit own group_membership content'
+  4: 'leave group'
+  10: 'access group_node overview'
+  11: 'view group_node:event content'
+  12: 'view event node'
+  13: 'view group_node:faq content'
+  14: 'view faq node'
+  15: 'view group_node:faqs content'
+  16: 'view faqs node'
+  17: 'view group_node:newsletter content'
+  18: 'view newsletter node'
+  19: 'view group_node:page content'
+  20: 'view page node'
+  21: 'view group_node:quickinfo content'
+  22: 'view group_node:service_profile content'
+  23: 'view service_profile node'

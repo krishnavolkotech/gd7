@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/faq/faq.module b/modules/contrib/faq/faq.module
+index d5682f0..b87e28b 100644
+--- a/modules/contrib/faq/faq.module
++++ b/modules/contrib/faq/faq.module
+@@ -29,7 +29,7 @@ function faq_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_m
+ /**
+  * Implements hook_node_access().
+  */
+-function faq_node_access(\Drupal\node\NodeInterface $node, $op, $account, $langcode) {
++function faq_node_access(\Drupal\node\NodeInterface $node, $op, $account) {
+   // Ignore non-FAQ node.
+   if ($node->getType() !== 'faq') {
+     return AccessResult::neutral();

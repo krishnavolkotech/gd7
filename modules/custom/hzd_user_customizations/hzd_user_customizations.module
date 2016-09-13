@@ -30,6 +30,7 @@ function pr($data) {
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
 
   if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+    $val = [];
     $user_states = hzd_states();
     if($form_id == 'user_form') {
       $account = $form_state->getFormObject()->getEntity();
@@ -47,28 +48,28 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
     $form['profile']['user_firstname'] = array(
       '#type' => 'textfield',
       '#title' => 'First Name',
-      '#default_value' => $val['firstname'] ? $val['firstname'] : '',
+      '#default_value' => isset($val['firstname']) ? $val['firstname'] : '',
       '#size' => 60,
       '#maxlength' => 128,
     );
     $form['profile']['user_lastname'] = array(
       '#type' => 'textfield',
       '#title' => 'Last Name',
-      '#default_value' => $val['lastname'] ? $val['lastname'] : '',
+      '#default_value' => isset($val['lastname']) ? $val['lastname'] : '',
       '#size' => 60,
       '#maxlength' => 128,
     );
     $form['profile']['user_position'] = array(
       '#type' => 'textfield',
       '#title' => 'Position',
-      '#default_value' => $val['position'] ? $val['position'] : '',
+      '#default_value' => isset($val['position']) ? $val['position'] : '',
       '#size' => 60,
       '#maxlength' => 128,
     );
     $form['profile']['user_phone'] = array(
       '#type' => 'textfield',
       '#title' => 'Phone',
-      '#default_value' => $val['phone'] ? $val['phone'] : '',
+      '#default_value' => isset($val['phone']) ? $val['phone'] : '',
       '#size' => 60,
       '#maxlength' => 128,
     );
@@ -76,8 +77,29 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
       '#type' => 'select',
       '#title' => 'State',
       '#options' => $user_states,
-      '#default_value' => $val['state_id'] ? $val['state_id'] : '',
+      '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
     );
+    
+    if($form_id == 'user_register_form') {
+      $gids = \Drupal::entityQuery('group')->condition('type', ['open','moderate'],'IN')->execute();
+      sort($gids);
+      $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
+      $groups = [];
+      foreach($groupsList as $group){
+        $groupName = $group->label();
+        if($group->bundle() == 'moderate'){
+          $groupName .= " <span style='color:red'>(validation by admin is required)</span>";
+        }
+        $groups[$group->id()] = t($groupName);
+      }
+      //pr($groups);exit;
+      $form['groups'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Grups'),
+        '#options' => $groups,
+        '#required'=>false
+      );
+    }
     $form['#validate'][] = 'hzd_user_register_form_validate';
     $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
   }
@@ -108,8 +130,26 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
   db_merge('cust_profile')
           ->key(array('uid' => $userid))
           ->fields(array('firstname' => $firstname, 'lastname' => $lastname, 'phone' => $phone, 'position' => $position, 'state_id' => $state))
-          ->execute(); 
+          ->execute();
+  
 }
+
+/**
+ * hook implementing hook_user_insert()
+ */
+
+function hzd_user_customizations_user_insert($user){
+  $groupData = $_POST['groups'];
+  foreach($groupData as $gid){
+    $group = \Drupal\group\Entity\Group::load($gid);
+    if($group->bundle() == 'open'){
+      $group->addMember($user);
+    }elseif($group->bundle() == 'moderate'){
+      $group->requestMembership($user);
+    }
+  }
+}
+
 
 /**
  * get list of hzd states
@@ -143,5 +183,6 @@ function hzd_group_list($uid){
       $groups .= '<div class="user-group-list">'.\Drupal::l($group->label, $url).'</div>';
   }
   $groups .= '</div>';
-  return array('#markup' => $groups);
+  return $groups;
+  return array('#markup' => $groups,'#cache'=>['max-age'=>0]);
 }

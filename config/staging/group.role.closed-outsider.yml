@@ -11,7 +11,6 @@ internal: true
 group_type: closed
 permissions:
   0: 'view group'
-  3: 'request group membership'
-  4: 'access group_node overview'
-  5: 'view group_node:forum content'
-  6: 'view forum node'
+  2: 'access group_node overview'
+  3: 'view group_node:forum content'
+  4: 'view forum node'

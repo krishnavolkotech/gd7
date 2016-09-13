@@ -9,5 +9,4 @@ label: Anonymous
 weight: -102
 internal: true
 group_type: closed
-permissions:
-  - 'view group'
+permissions: {  }

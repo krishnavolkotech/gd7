@@ -96,6 +96,7 @@
     <div{{ content_attributes.addClass('content') }}>
         {{ content }}
     </div>#}
+
     <div class = "Incident">
         <div class = 'downtimes_title'>{{ 'Services'|trans }}</div>
         <div class = 'downtimes_content'> {{ incident.service_name }}</div>
@@ -131,4 +132,35 @@
         <div class = 'downtimes_content'>{{ incident.reported_by }}</div>
     </div>
     <div style = "clear:both" ></div>
+    {% if incident.reason %}
+        <div class = "Incident">
+            <div class = 'downtime_reason'>{{ 'Reason for Non Compliance'|trans }}</div>
+            <div class = 'downtimes_content'>{{ incident.reason }}</div>
+        </div>
+        <div style = "clear:both" ></div>
+    {% endif %}
+    
+    {% if revisions %}
+        {{ revisions|raw }}
+        <div style = "clear:both" ></div>
+    {% endif %}
+    
+    {% if incident.resolved and incident.resolved_data.date_repoted %}
+        <div class = "resolved_details">
+            <div class = 'downtime_reason'>{{ 'Resolved'|trans }}</div>
+            <div class = 'downtimes_content'>{{ incident.resolved_data.date_repoted }}
+                {{ incident.resolved_data.name }} {{ incident.resolved_data.comment }}
+            </div>
+        </div>
+        <div style = "clear:both" ></div>
+    {% endif %}
+    {% if incident.cancelled and incident.resolved_data.date_repoted %}
+        <div class = "cancelled_details">
+            <div class = 'downtime_reason'>{{ 'Cancelled'|trans }}</div>
+            <div class = 'downtimes_content'>{{ incident.resolved_data.date_repoted }}
+                {{ incident.resolved_data.name }} {{ incident.resolved_data.comment }}
+            </div>
+        </div>
+        <div style = "clear:both" ></div>
+    {% endif %}
 </article>

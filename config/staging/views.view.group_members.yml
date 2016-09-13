@@ -73,7 +73,10 @@ display:
           description: ''
           columns:
             id: id
+            id_2: id_2
             label: label
+            operations: operations
+            id_1: id_1
           info:
             id:
               sortable: false
@@ -82,14 +85,35 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            label:
+            id_2:
               sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-          default: '-1'
+            label:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            operations:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            id_1:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+          default: label
           empty_table: false
       row:
         type: fields
@@ -394,7 +418,20 @@ display:
           plugin_id: bundle
       sorts: {  }
       title: ''
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: true
+          content:
+            value: '<a href="/group/{{ raw_arguments.gid }}/members/add?destination=/group/{{ raw_arguments.gid }}/pending-members" class="btn btn-xs btn-success">Add member</a>'
+            format: basic_html
+          plugin_id: text
       footer: {  }
       empty: {  }
       relationships: {  }
@@ -448,6 +485,7 @@ display:
         - 'languages:language_interface'
         - route
         - url
+        - url.query_args
       tags: {  }
   block_1:
     display_plugin: block
@@ -477,6 +515,7 @@ display:
         - 'languages:language_interface'
         - route
         - url
+        - url.query_args
       tags: {  }
   page_1:
     display_plugin: page
@@ -518,7 +557,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-      title: 'Members of Betriebsportal KONSENS'
+      title: ''
       menu:
         enabled: true
         expanded: false
@@ -706,7 +745,7 @@ display:
           click_sort_column: value
           type: user_name
           settings:
-            link_to_entity: false
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -779,11 +818,11 @@ display:
           group_type: group
           admin_label: ''
           label: 'Manage Admin'
-          exclude: false
+          exclude: true
           alter:
             alter_text: true
-            text: 'Admin: Add/Remove'
-            make_link: true
+            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
+            make_link: false
             path: 'group/{{ id_2 }}/members/{{ id }}/edit'
             absolute: false
             external: false
@@ -820,10 +859,8 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: number_integer
-          settings:
-            thousand_separator: ''
-            prefix_suffix: false
+          type: number_unformatted
+          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true

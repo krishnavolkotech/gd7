@@ -101,3 +101,4 @@ permissions:
   - 'edit any service_profile node'
   - 'delete own service_profile node'
   - 'delete any service_profile node'
+  - 'edit own group_membership content'

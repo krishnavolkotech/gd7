@@ -1,0 +1,41 @@
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php b/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
+index de32640..864e2a5 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
+@@ -40,7 +40,8 @@ public function getQuestion() {
+    */
+   public function getCancelURL() {
+     // @todo Read a redirect from the plugin?
+-    return new Url('entity.group.pending_collection');
++    $entity = $this->getEntity();
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
+   }
+ 
+   /**
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php b/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
+index 91154b8..dab0f84 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
+@@ -40,7 +40,8 @@ public function getQuestion() {
+    */
+   public function getCancelURL() {
+     // @todo Read a redirect from the plugin?
+-    return new Url('entity.group.pending_collection');
++    $entity = $this->getEntity();
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
+   }
+ 
+   /**
+diff --git a/modules/contrib/group/src/GroupMembershipLoader.php b/modules/contrib/group/src/GroupMembershipLoader.php
+index ef2a73f..df1a22a 100644
+--- a/modules/contrib/group/src/GroupMembershipLoader.php
++++ b/modules/contrib/group/src/GroupMembershipLoader.php
+@@ -73,7 +73,7 @@ protected function wrapGroupContentEntities($entities) {
+    * {@inheritdoc}
+    */
+   public function load(GroupInterface $group, AccountInterface $account) {
+-    $filters = ['entity_id' => $account->id()];
++    $filters = ['entity_id' => $account->id(),'request_status'=>1];
+     $group_contents = $this->groupContentStorage()->loadByGroup($group, 'group_membership', $filters);
+     $group_memberships = $this->wrapGroupContentEntities($group_contents);
+     return $group_memberships ? reset($group_memberships) : FALSE;
