@@ -312,7 +312,7 @@ class HzdReleases extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load(zrml);
      
        // $member = $group->getMember($user);
-          if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_administrator'))) {
+          if ( $group->getMember(\Drupal::currentUser()) || in_array($user_role, array('site_administrator'))) {
             $breadcrumb = array();
             $url = Url::fromRoute('/');
             $link = \Drupal\Core\Link::fromTextAndUrl(t('Home'), $url);
@@ -333,7 +333,7 @@ class HzdReleases extends ControllerBase {
             $user_state = $query->execute()->fetchCol();
 
             //  $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));
-            if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_administrator'))) {
+            if ( (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) == true) || in_array($user_role, array('site_administrator'))) {
                 $output['#title'] = "Deployed Releases";
             }
             else {
