@@ -916,8 +916,8 @@ class HzdcustomisationStorage {
       $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
       if ($downtime_type == 1) {
         if ($maintenance_edit && ($master_group == $group_id) && $string != 'archived') {
-          $resolve_url = Url::fromUserInput('/node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
-          $cancel_url = Url::fromUserInput('/node/' . $group_id . '/cancel' . '/' . $client->downtime_id);
+          $resolve_url = Url::fromUserInput('/group/' . $group_id . '/resolve' . '/' . $client->downtime_id);
+          $cancel_url = Url::fromUserInput('/group/' . $group_id . '/cancel' . '/' . $client->downtime_id);
           $edit_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
           $links .= "<br>" . \Drupal::l(t('Update'), $edit_url) . " <br>";
           //l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);
@@ -933,7 +933,7 @@ class HzdcustomisationStorage {
         if ($show_resolve && ($master_group == $group_id)) {
           if ($string != 'archived') {
             $update_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
-            $resolve_url = Url::fromUserInput('/node/' . $group_id . '/resolve' . '/' . $client->downtime_id);
+            $resolve_url = Url::fromUserInput('/group/' . $group_id . '/resolve' . '/' . $client->downtime_id);
             $links .= "<br>" . \Drupal::l(t('Update'), $update_url) . " <br>" . \Drupal::l(t('Resolve'), $resolve_url);
             //array_push($elements, \Drupal::l(t('Update'), $group->label() . '/downtimes/' . $client->downtime_id . '/edit') . "<br>" . l(t('Resolve'), $_SESSION['Group_name'] . '/resolve' . '/' . $client->downtime_id));
           }
