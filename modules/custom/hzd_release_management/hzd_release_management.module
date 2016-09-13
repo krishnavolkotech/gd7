@@ -116,13 +116,10 @@ function hzd_earlywarning_release() {
     $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
   }
   if (isset($type) && $type == 'deployed_releases') {
+      
     $service = Drupal::request()->get('ser');
-    $env = Drupal::request()->get('env');
     $release = Drupal::request()->get('rel');
-    dpm($service);
-    dpm($env);
-    dpm($release);
-    return get_undeployed_dependent_release($service, $env, $release);
+    return get_undeployed_dependent_release($service, NULL, $release);
   }
   $options = get_earlywarning_release();
   return $options['releases'];
