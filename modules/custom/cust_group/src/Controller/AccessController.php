@@ -18,9 +18,6 @@ class AccessController extends ControllerBase {
       if ($node->getType() == 'quickinfo' && $node->isPublished()) {
         return AccessResult::forbidden();
       }
-      if ($node->getType() == 'downtimes') {
-        return AccessResult::allowed();
-      }
       //$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
       //    ->fields('gcfd',['gid'])
       //    ->condition('gcfd.entity_id',$node->id())
