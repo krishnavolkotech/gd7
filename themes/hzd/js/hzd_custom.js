@@ -12,6 +12,14 @@
         if ( jQuery('.end_date').length>0) {
 	   jQuery('.end_date').datepicker({ dateFormat: 'dd.mm.yy' });
 	}
+        
+        if ( jQuery('.filter_startdate').length>0) {
+           jQuery('.filter_startdate').datepicker({ dateFormat: 'dd.mm.yy' });
+        }
+
+        if ( jQuery('.filter_enddate').length>0) {
+	   jQuery('.filter_enddate').datepicker({ dateFormat: 'dd.mm.yy' });
+	}
     }
   }
 })(jQuery);

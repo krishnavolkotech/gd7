@@ -1,5 +1,0 @@
-services:
-  problem_management.breadcrumb:
-    class: Drupal\problem_management\ProblemmanagementBreadcrumbBuilder
-    tags:
-      - { name: breadcrumb_builder, priority: 100 }

@@ -1003,9 +1003,10 @@ static public function get_release_details_from_title($values_title, $link) {
       '#suffix' => '</div>',
     );
 
-    $output['#attached']['library'] = array('hzd_release_management/hzd_release_management', 
-    'hzd_customizations/hzd_customizations', 'downtimes/downtimes');
-
+    $output['#attached']['library'] = array('hzd_release_management/hzd_release_management', 'downtimes/downtimes');
+    $output['#attached']['drupalSettings']['release_management'] = array(
+              'group_id' => $group_id,
+            );  
     return $output;
   } else {
     $output[]['#markup'] = t('results not found');
@@ -1015,8 +1016,11 @@ static public function get_release_details_from_title($values_title, $link) {
 
   // deployed release tab default text
   static function deployed_releases_text() {
+    $url = Url::fromRoute('hzd_release_management.deployed_releases', array('group' => 39));
+    $link = \Drupal::l(t('hier'), $url);
+   // dpm($link);
     $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
-Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte <a href=\"/zrml/eingesetzte-releases\">hier</a>.</p><p>
+Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
 F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
     $build['#markup'] = $output;
     return $build;
@@ -1139,7 +1143,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         '#prefix' => '<div id="pagination">',
         '#suffix' => '</div>',
       );
-
+      $output['#attached']['drupalSettings']['release_management'] = array(
+              'group_id' => $group_id,
+            );
       return $output;
     }    
     else {

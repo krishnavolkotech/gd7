@@ -4,11 +4,19 @@ hzd_release_management:
     theme:
       css/release_management.css: {}
   js:
+    js/jquery.datePicker.js: {}
+    js/jquery.tablesorter.min.js: {}
     js/release_management.js: {}
-#    js/jquery.datePicker.js: {}
+    js/jquery.ui.datepicker-de.js: {}
+#
   dependencies:
     - core/jquery
-
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
 
 hzd_release_management_sticky_header:
   version: 1.x
@@ -18,4 +26,7 @@ hzd_release_management_sticky_header:
   dependencies:
     - core/jquery
 
-
+deployed_releases:
+  version: 1.x
+  js:
+    js/deployed_releases: {}
