@@ -139,6 +139,11 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
       $glossary = implode(' | ', $glossarydata);
       $form['glossarylist'] = array('#markup' => $glossary, '#theme_wrappers' => array('form_element'));
   }
+  if ($form_id == 'node_deployed_releases_edit_form') {
+    $rel = \Drupal::request()->query->get('rel');
+    $form['field_earlywarning_release']['widget']['#default_value'] = 13052;
+   //  rel
+  }
   return $form;
 }
 

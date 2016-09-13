@@ -607,48 +607,30 @@ static public function released_deployed_releases($service = NULL) {
         }
         
         foreach ($result as $deployed_release) {
-      //      dpm($deployed_release);
             $query = \Drupal::database()->select('node_field_data', 'nfd'); 
             $query->fields('nfd', array('title'));
             $query->condition('nfd.nid', $deployed_release->service , '=' );
             $service = $query->execute()->fetchField();
-          
-            // $user->og_groups[$_SESSION['Group_id']]['is_admin']
-           // $query_sting = 'group/' . $group_id . '/deployed_releases' . '&ser=' . $deployed_release->service . '&rel= ' . $deployed_release->release_id . '&env= ' . $deployed_release->environment;
-            
-            if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
-                $url = Url::fromUserInput('/node/' . $deployed_release->nid . '/edit', array(
-                  'query' => array('destination' => 'group/' . $group_id . '/deployed_releases',
+
+            if ( \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {  
+                $edit_url = Url::fromUserInput('/node/' . $deployed_release->nid . '/edit', array(
+                  'query' => array(
                         'ser' => $deployed_release->service,
                         'rel' => $deployed_release->release_id ,
                         'env' => $deployed_release->environment,
+                        'destination' => 'group/' . $group_id . '/deployed_releases',
                     ),
                   )
                 );
-             
-                $edit = \Drupal::l(t('Edit'), $url);
             }
             
-            $url = Url::fromUserInput('/archive/', array(
-                    'attributes' => array(
-                      'class' => 'archive_deployedRelease', 
-                        'nid' => $deployed_release->nid
-                      ),
-                    )
-
-                );
-            $action = \Drupal::l(t('Archive'), $url);
-
+            $archive_url = Url::fromUserInput('/archive/');
             $query = \Drupal::database()->select('node_field_data', 'nfd'); 
             $query->fields('nfd', array('title'));
             $query->condition('nfd.nid', $deployed_release->release_id , '=' );
             $release = $query->execute()->fetchField();
             
             if ($deployed_release->environment == 1) {
-              //  $environment = t('Produktion');
-                /** 
-                 * to do translate
-                 */
                 $environment = 'Produktion';
             }
             else {
@@ -657,25 +639,36 @@ static public function released_deployed_releases($service = NULL) {
                 $query->condition('nfd.nid', $deployed_release->environment , '=' );
                 $environment = $query->execute()->fetchField();
             }
-         //   dpm($environment);
             if (!$deployed_release->archived) {
-                if ($edit) {
-                    $action = $edit . ' | ' . $action;
+                if ($edit_url) {                          
+                    $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
+                      >Archive</a>  <span class = "loader"></span>', array(
+                            '@edit_url' => $edit_url->toString(),
+                            '@archive_url' => $archive_url->toString(),
+                            '@nid' => $deployed_release->nid  
+                        )
+                      );
                 }
                 else {
-                    $action = $action;
+                    $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >Archive</a> <span class = "loader"></span>', array(
+                            '@archive_url' => $archive_url->toString(),
+                            '@nid' => $deployed_release->nid  
+                        )
+                     );
                 }
-                $actions = array();
-                $actions['#markup']  = $action . "<span class = 'loader'></span>";
                 $currently[] = array(
                  $environment, 
                  $service,
                  $release,
                  date("d.m.Y", $deployed_release->deployed_date),
-                 $actions
+                 $action 
                 );
             }
             else {
+                  $edit = t('<a href="@edit_url">Edit</a>', array(
+                          '@edit_url' => $edit_url->toString()
+                        )
+                     );
                 $archived[] = array(
                  $environment, 
                   $service,
@@ -685,7 +678,7 @@ static public function released_deployed_releases($service = NULL) {
                 );
             }
         }
-      //  $currently = array();
+
         $output[] = array(
           '#theme' => 'table', 
           '#header' => $header, 
@@ -799,12 +792,6 @@ static public function released_deployed_releases($service = NULL) {
      $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
      $rows[] = array($id, $state_name, $title, $other_services, $related_sw_transfer_num, $published,  $details);
   }
-        /**
-        if (!$rows) {
-          $rows[] = array(array('data' => t('No data created yet.'), 'colspan' => 7));
-        }
-         * 
-         */
         if ($rows) {
             $build['quickinfo_table'] = array(
                 '#theme' => 'table',

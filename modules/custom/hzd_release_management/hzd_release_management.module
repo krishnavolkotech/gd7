@@ -110,17 +110,18 @@ function hzd_user_state($uid = NULL) {
  * get early warning releases
  */
 function hzd_earlywarning_release() {
-  $current_url = Url::fromRoute('<current>');
-  $path = $current_url->toString();
-  $current_path = explode("/", $path);
-
-  if(isset($current_path[2]) && is_numeric($current_path[2])) {
-    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+  $node = \Drupal::routeMatch()->getParameter('node');
+  $nid = $node->id();
+  if(isset($nid) && is_numeric($nid)) {
+    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
   }
   if (isset($type) && $type == 'deployed_releases') {
     $service = Drupal::request()->get('ser');
     $env = Drupal::request()->get('env');
     $release = Drupal::request()->get('rel');
+    dpm($service);
+    dpm($env);
+    dpm($release);
     return get_undeployed_dependent_release($service, $env, $release);
   }
   $options = get_earlywarning_release();
@@ -177,7 +178,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
     $query->condition('nfe.field_environment_value', $environment);
   }
   $result = $query->execute()->fetchAll();
-
+  
   $deployed_releases = array();
   foreach($result as $vals) {
     $deployed_releases[$vals->dep_release] =  $vals->dep_release;
@@ -189,6 +190,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$key] = $value; 
     }
   }
+
   if($release) {
     $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(":env" => $environment, ":eid" => $release))->fetchField();
     if ($deployed_nid) {
@@ -196,6 +198,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$deployed_nid] = $title;
     }
   }
+//  dpm($release);
   return $undeployed_releases;
 }
 
@@ -214,6 +217,7 @@ function get_release($string = NULL, $service = NULL) {
   foreach($query as $function) {
     $default_release[$function->title] = $function->title;
   }
+  
   return array('releases' => $default_release);
 }
 

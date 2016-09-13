@@ -283,6 +283,15 @@ class HzdReleases extends ControllerBase {
      */
 
     function deployed_releases() {
+        global $base_url;
+
+        $output['#attached']['drupalSettings']['deploy_release'] = array(
+          'type' => 'deployed_releases',
+          'base_path' => $base_url,
+          'basePath' => $base_url,
+        );
+        
+        
         $group = \Drupal::routeMatch()->getParameter('group');
         
         if (is_object($group)) {
@@ -340,7 +349,9 @@ class HzdReleases extends ControllerBase {
             $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
             $output['newdeployrelease']['#suffix'] = "</strong></div>";
             $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
-            $output['deploy_release_form']['form'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
+            $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
+            $output['deploy_release_form']['form']['render'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
+            $output['deploy_release_form']['form']['#suffix'] = '</div>';            
             $output['deploy_release_form']['reset']['#prefix'] = "<div class = 'reset_form'>" .
             $output['deploy_release_form']['reset'] = HzdreleasemanagementHelper::releases_reset_element();
             $output['deploy_release_form']['reset']['#suffix'] = "</div>";
