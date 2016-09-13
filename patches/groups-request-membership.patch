@@ -2,12 +2,13 @@ diff --git a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php b
 index de32640..864e2a5 100644
 --- a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
 +++ b/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
-@@ -40,7 +40,7 @@ public function getQuestion() {
+@@ -40,7 +40,8 @@ public function getQuestion() {
     */
    public function getCancelURL() {
      // @todo Read a redirect from the plugin?
 -    return new Url('entity.group.pending_collection');
-+    return new Url('entity.group_content.group_membership.pending_collection');
++    $entity = $this->getEntity();
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
    }
  
    /**
@@ -15,12 +16,13 @@ diff --git a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php b/
 index 91154b8..dab0f84 100644
 --- a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
 +++ b/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
-@@ -40,7 +40,7 @@ public function getQuestion() {
+@@ -40,7 +40,8 @@ public function getQuestion() {
     */
    public function getCancelURL() {
      // @todo Read a redirect from the plugin?
 -    return new Url('entity.group.pending_collection');
-+    return new Url('entity.group_content.group_membership.pending_collection');
++    $entity = $this->getEntity();
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
    }
  
    /**
