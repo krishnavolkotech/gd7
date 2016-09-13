@@ -14,19 +14,24 @@ class AccessController extends ControllerBase {
 //this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
     $node = \Drupal::routeMatch()->getParameter('node');
     if(is_object($node)){
+      
       if ($node->getType() == 'quickinfo' && $node->isPublished()) {
-        return \Drupal\Core\Access\AccessResult::forbidden();
+        return AccessResult::forbidden();
       }
-      $checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
-          ->fields('gcfd',['gid'])
-          ->condition('gcfd.entity_id',$node->id())
-          ->execute()->fetchField();
-      if(\Drupal::currentUser()->id() == 1){
+      if ($node->getType() == 'downtimes') {
         return AccessResult::allowed();
       }
-      if($checkGroupNode || \Drupal::currentUser()->id() == 1){
-        return \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
-      }
+      //$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
+      //    ->fields('gcfd',['gid'])
+      //    ->condition('gcfd.entity_id',$node->id())
+      //    ->execute()->fetchField();
+      //if(\Drupal::currentUser()->id() == 1){
+      //  return AccessResult::allowed();
+      //}
+      //if($checkGroupNode || \Drupal::currentUser()->id() == 1){
+      //  return \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
+      //}
+      //pr($node->id());exit;
     }
     return AccessResult::neutral();
   }
