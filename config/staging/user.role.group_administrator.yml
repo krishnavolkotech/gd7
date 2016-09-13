@@ -88,3 +88,4 @@ permissions:
   - 'administer views'
   - 'use text format full_html1'
   - 'use text format basic_html'
+  - 'use text format filtered_html'

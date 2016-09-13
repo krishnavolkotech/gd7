@@ -196,3 +196,4 @@ permissions:
   - 'contribute translations to localization server'
   - 'use localization client ui'
   - 'use text format basic_html'
+  - 'use text format filtered_html'

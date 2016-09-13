@@ -32,3 +32,4 @@ permissions:
   - 'access user profiles'
   - 'access all views'
   - 'use text format basic_html'
+  - 'use text format filtered_html'

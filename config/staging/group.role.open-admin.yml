@@ -137,4 +137,3 @@ permissions:
   - 'edit any release node'
   - 'delete own release node'
   - 'delete any release node'
-  - 'administer group'

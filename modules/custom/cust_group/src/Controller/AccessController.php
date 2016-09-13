@@ -58,4 +58,23 @@ class AccessController extends ControllerBase {
     }
     return 'Members of ' . $this->t($group->label());
   }
+  
+  function groupAdminAccess(){
+		if($group = \Drupal::routeMatch()->getParameter('group')){
+			if(!is_object($group)){
+				$group = \Drupal\group\Entity\Group::load($group);
+			}
+			$groupMember = $group->getMember(\Drupal::currentUser());
+      if($groupMember){
+        $roles = $groupMember->getRoles();
+        if(!empty($roles) && in_array($group->bundle().'-admin',array_keys($roles))){
+        	return AccessResult::allowed();
+        }
+      }
+      //pr($roles);exit;
+			
+			return AccessResult::forbidden();
+    }
+    return AccessResult::neutral();
+	}
 }

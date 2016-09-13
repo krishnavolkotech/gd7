@@ -24,4 +24,3 @@ permissions:
   - 'create forum node'
   - 'edit own forum node'
   - 'delete own forum node'
-  - 'edit group'
