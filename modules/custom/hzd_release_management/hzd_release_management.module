@@ -243,12 +243,9 @@ function get_release_type($type) {
 /**
  * Implementation of hook_cron()
  */
-function release_management_cron() {
-  $set_time = trim(variable_get('import_time_releases','03:00'));
-  $time = date("H:i", time());
-  if ($set_time == $time) {
-    read_release_csv();
-  }
+function hzd_release_management_cron() {
+  $readExcel = new Drupal\hzd_release_management\Controller\ReadexcelController();
+  $readExcel->read_problem_csv();
 }
 
 /*
