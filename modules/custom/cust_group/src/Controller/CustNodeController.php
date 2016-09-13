@@ -91,6 +91,8 @@ class CustNodeController extends ControllerBase {
     return false;
   }
 	
+	
+	
 	static function getNodeGroupId($node = null){
 		if(!$node){
 			return false;

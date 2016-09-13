@@ -31,9 +31,15 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.node.edit_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
-//    if ($route = $collection->get('entity.group_content.group_membership.collection')){
-//        $route->setPath('/group/{group}/address');
-//    }
+    if ($route = $collection->get('entity.group_content.group_membership.collection')){
+        $route->setRequirement('_access','FALSE');
+    }
+    if ($route = $collection->get('entity.group_content.group_node.collection')){
+        $route->setRequirement('_access','FALSE');
+    }
+    if ($route = $collection->get('entity.group_content.group_membership.pending_collection')){
+        $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
+    }
     foreach ($collection as $key => $route) {
       if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical','entity.group_content.group_membership.request_membership_form'])) {
         if (in_array($key, $this->returnGroupViews())) {
