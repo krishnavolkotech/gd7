@@ -314,10 +314,8 @@ class Deployedreleasecreateform extends FormBase {
       
         $node = Node::create($node_array);
         $node->save();
-        // echo '<pre>';  print_r($node);
-        // print_r($node);
+
         $nid = $node->id();
-                    echo $nid;
        if ($nid) {
             $group = \Drupal\group\Entity\Group::load(32);
             
