@@ -7,7 +7,7 @@ class HzdservicesHelper {
  /*
   *Returns TRUE if the service exists
  */
- function service_exist($service, $type) {
+ static public function service_exist($service, $type) {
    $services = HzdservicesStorage::get_related_services($type);
    // echo $service;
    // echo '<pre>';  print_r($services);  exit;
@@ -32,7 +32,8 @@ class HzdservicesHelper {
 /**
  *  Message Mail Functionality
  */
-function send_problems_notification($key, $to, $subject, $message_text) {
+static public function send_problems_notification($key, $to, $subject, $message_text) {
+    
   $mailManager = \Drupal::service('plugin.manager.mail');
   $module  = 'problem_management';
   $params['message'] = $message_text;
