@@ -742,6 +742,7 @@ static public function get_release_details_from_title($values_title, $link) {
    * @returns: table display of deployed releases
    */
   function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
+    $type = 'deployed_releases';
     $group = \Drupal::routeMatch()->getParameter('group');
     if(is_object($group)){
       $group_id = $group->id();
