@@ -6,16 +6,15 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 use Drupal\Core\Url;
-use Drupal\group\Entity\Group;
 
 /**
  * A handler to provide a field that is completely custom by the administrator.
  *
  * @ingroup views_field_handler
  *
- * @ViewsField("group_type_value")
+ * @ViewsField("group_actions_field")
  */
-class GroupTypeValue extends FieldPluginBase {
+class GroupActions extends FieldPluginBase {
 
   /**
    * {@inheritdoc}
@@ -52,7 +51,21 @@ class GroupTypeValue extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    return $values->_entity->type->entity->label();
+    $group = $values->_entity;
+    $link = '';
+    if($group->getMember(\Drupal::currentUser())){
+      $url = Url::fromRoute('entity.group_content.group_membership.leave_form',['group'=>$group->id()]);
+      $link = \Drupal::service('link_generator')->generate('Leave Group', $url);
+    }elseif($group->bundle() == 'open'){
+      $url = Url::fromRoute('entity.group_content.group_membership.join_form',['group'=>$group->id()]);
+      $link = \Drupal::service('link_generator')->generate('Join Group', $url);
+    }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
+      $url = Url::fromRoute('entity.group_content.group_membership.request_membership_form',['group'=>$group->id()]);
+      $link = \Drupal::service('link_generator')->generate('Request Membership', $url);
+    }elseif(\Drupal::currentUser()->id() == 1){
+      $link == 'admin';
+    }
+    return $link;
   }
 
 }

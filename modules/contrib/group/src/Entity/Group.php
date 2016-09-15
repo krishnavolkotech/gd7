@@ -187,9 +187,12 @@ class Group extends ContentEntityBase implements GroupInterface {
    * {@inheritdoc}
    */
   public function getMemberRequestStatus(AccountInterface $account) {
-    $group_content = $this->membershipLoader()->load($this, $account);
-    $data = $group_content->getGroupContent();
-    return $data->values['request_status']['x-default'];
+    $filters = ['entity_id' => $account->id()];
+    $group_content = $this->groupContentStorage()->loadByGroup($this, 'group_membership', $filters);
+    if($group_content){
+      return (int)array_values($group_content)[0]->get('request_status')->value;
+    }
+    return false;
   }
 
   /**
