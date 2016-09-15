@@ -479,7 +479,7 @@ class HzdreleasemanagementHelper {
           '#type' => 'button',
           '#value' => t('Reset'),
           '#attributes' => array('onclick' => "reset_form_elements()"),
-          '#prefix' => "<div class = 'reset_all'>",
+          '#prefix' => "<div class = 'reset_form'>",
           '#suffix' => "</div>",
         );
     }
