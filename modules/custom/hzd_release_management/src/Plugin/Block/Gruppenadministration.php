@@ -62,8 +62,11 @@ class Gruppenadministration extends BlockBase {
     <li><a href="/group/'.$groupId.'/approved-members">Users</a></li>
     <li><a href="/group/'.$groupId.'/downtime_settings">Disturbances and block times</a></li>
     <li><a href="/group/'.$groupId.'/problem_settings">Known Issues</a></li>
-    <li><a href="/group/'.$groupId.'/release_settings">Releases</a></li>
-    </ul>';
+    <li><a href="/group/'.$groupId.'/release_settings">Releases</a></li>';
+    if($groupId == 32){
+      $menuHtml .= '<li><a href="/group/'.$groupId.'/planning-files">Planning Files</a></li>';
+    }
+    $menuHtml .= '</ul>';
 
     return $this->t($menuHtml);
   }
