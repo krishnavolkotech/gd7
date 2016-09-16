@@ -60,7 +60,8 @@ class RouteSubscriber extends RouteSubscriberBase {
     return [
       'view.group_members.page_1',
       'view.group_members_lists.page_1',
-      'view.group_content.page_1'
+      'view.group_content.page_1',
+      'view.group_faqs.page_1',
     ];
   }
 

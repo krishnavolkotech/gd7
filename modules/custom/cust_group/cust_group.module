@@ -111,6 +111,55 @@ function cust_group_mail($key, &$message, $params) {
  }
 }
 
+function cust_group_form_alter(&$form, $form_state,$form_id){
+    if(in_array($form_id,['node_faqs_gnode-form_form','node_faqs_edit_form'])){
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if(empty($group)){
+            $node = \Drupal::routeMatch()->getParameter('node');
+            $groupId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($node);
+            $group = \Drupal\group\Entity\Group::load($groupId['gid']);
+        }
+        $categoryQuery = \Drupal::entityQuery('taxonomy_term')
+            ->condition('name',$group->label())
+            ->condition('vid','faq_kategorie')
+            ->execute();
+        $parentId = array_values($categoryQuery)[0];
+        $categoryTerms = \Drupal::entityTypeManager()
+            ->getStorage('taxonomy_term')
+            ->loadTree('faq_kategorie', $parentId, 1);
+        $categoryOptions['_none'] = t('Select Kategorie');
+        foreach($categoryTerms as $term){
+            $categoryOptions[$term->tid] = $term->name;
+        }
+        $form['faq_kategorie']['widget']['#options'] = $categoryOptions;
+        $pageQuery = \Drupal::entityQuery('taxonomy_term')
+            ->condition('name',$group->label())
+            ->condition('vid','faq_seite')
+            ->execute();
+        $parentId = array_values($pageQuery)[0];
+        $pageTerms = \Drupal::entityTypeManager()
+            ->getStorage('taxonomy_term')
+            ->loadTree('faq_seite', $parentId, 1);
+        $pageOptions['_none'] = t('Select Seite');
+        foreach($pageTerms as $pageTerm){
+            $pageOptions[$pageTerm->tid] = $pageTerm->name;
+        }
+        $form['faq_seite']['widget']['#options'] = $pageOptions;
+            //pr($terms);exit;
+        //$term = \Drupal\term\Entity\Term::load();
+        //pr($form['faq_kategorie']);exit;
+    }
+}
+
+function cust_group_views_pre_render($view) {
+    //exit;
+  if ($view->id() == 'group_faqs') {
+    $groupId = \Drupal::routeMatch()->getParameter('arg_0');
+    $group = \Drupal\group\Entity\Group::load($groupId);
+    $view->build_info['title'] = $group->label()." - ".$view->build_info['title'];
+  }
+}
+
 /**
  * Function cust_og_init() {
  * check_group_pages();
