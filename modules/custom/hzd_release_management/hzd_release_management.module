@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 define('RELEASE_MANAGEMENT', 32);
 define('SITE_ADMIN', 5);
@@ -110,13 +110,15 @@ function hzd_user_state($uid = NULL) {
  * get early warning releases
  */
 function hzd_earlywarning_release() {
-  $node = \Drupal::routeMatch()->getParameter('node');
-  $nid = $node->id();
-  if(isset($nid) && is_numeric($nid)) {
-    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
-  }
-  if (isset($type) && $type == 'deployed_releases') {
-      
+  $type = Drupal::request()->get('type');
+//  $nid = $node->id();
+//  if(isset($nid) && is_numeric($nid)) {
+//    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
+//  }
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+
+  if ((isset($type) && $type == 'deployed_releases') ||  (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) { 
     $service = Drupal::request()->get('ser');
     $release = Drupal::request()->get('rel');
     return get_undeployed_dependent_release($service, NULL, $release);
@@ -139,17 +141,24 @@ function get_earlywarning_release($service = NULL) {
   } 
   
   $group = ($group_id ? $group_id: RELEASE_MANAGEMENT);
+  /**
+   *  select * from node_field_data nfd    join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id join group_releases_view  grv on grv.service_id   = nfrs.field_relese_services_target_id  where group_id = 32 ;
+   * 
+   */
   $query = db_select('node_field_data', 'nfd');
   $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
   $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
-  $query->fields('nfd', array('nid', 'title'))
-     ->condition('grv.group_id', $group_id);
+  $query->fields('nfd', array('nid', 'title'));
+  if ($group) {
+    $query->condition('grv.group_id', $group);
+  }
+//     ->condition('grv.group_id', $group_id);
   if($service) {
     $query->condition('nfrs.field_relese_services_target_id', $service);
   }
   $query->orderBy('nfd.title', 'ASC');
   $result = $query->execute()->fetchAll();
-
+  
   $default_release[] =  t("Release");
   foreach($result as $vals) {
     $default_release[$vals->nid] = $vals->title;
@@ -187,7 +196,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$key] = $value; 
     }
   }
-
+ // print_r($undeployed_releases); exit;
   if($release) {
     $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(":env" => $environment, ":eid" => $release))->fetchField();
     if ($deployed_nid) {
@@ -704,3 +713,250 @@ function release_management_init() {
  * 
  * 
  */
+
+
+
+/*
+ *implementing hook_form_alter 
+*/
+//function hzd_release_management_form_alter(&$form, $form_state, $form_id) {
+//  if ($form_id == 'node_release_form') {
+//    $nid = $form['nid']['#value'];
+//    $node = \Drupal\node\Entity\Node::load($nid);
+//    $type = $node->field_release_type->value;
+//    $path = \Drupal::request()->getpathInfo();   
+//    dpm($type);
+//    $arg  = explode('/',$path);
+//    if ((is_numeric($arg['1'])) && ($arg['2'] == 'edit')) {
+//      //drupal_set_message("<pre>".print_r($form['field_release_update_status'][0]['#default_value']['value'],1));
+//      $form['field_release_update_status'][0]['#default_value']['value'] = 1;
+//    }
+//    
+//  }
+//  if ($form_id == 'node_deployed_releases_form') {
+//    $form['#cache'] = TRUE;
+//    $form['field_release_service']['#suffix'] = "<div style = 'clear:both'></div>";
+//    $form['field_earlywarning_release']['#suffix'] = "</div><div style = 'clear:both'></div>";        
+//    $form['field_earlywarning_release']['#prefix'] = "<div id = 'earlywarning_field_release_wrapper'>";        
+//    $form['field_user_state']['#prefix'] = "<div class = 'hide_content'>";        
+//    $form['field_user_state']['#suffix'] = "</div>";        
+//    $form['#after_build'][] = 'earlywarnings_get_servicereleted_releases';
+//    $form['#validate'][] = 'deployedreleses_node_validate';
+//    $form['notifications']['#weight'] = 100;
+//  }
+//
+//  if ($form_id == 'early_warnings_node_form') {
+//    $form['#cache'] = TRUE;
+//    $form['notifications']['#weight'] = 100;
+//    $form['#validate'][] = 'earlywarnings_node_validate';
+//    $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'rejected' => 4);
+//    
+//    $form['field_release_service']['#suffix'] = "<div style = 'clear:both'></div>";
+//
+//    if ($_GET['ser'] && !$form_state['submitted']) {
+//      $form['field_release_service']['#default_value'][0]['value'] = trim($_GET['ser']);
+//    }
+//  
+//    if ($_GET['rel'] && !$form_state['submitted']) {
+//      $form['field_earlywarning_release']['#default_value'][0]['value'] = trim($_GET['rel']);
+//    }
+//
+//    $form['field_earlywarning_release']['#suffix'] = "</div><div style = 'clear:both'></div>";        
+//    $form['field_earlywarning_release']['#prefix'] = "<div id = 'earlywarning_field_release_wrapper'>";        
+//    
+//    $form['#after_build'][] = 'earlywarnings_get_servicereleted_releases';
+//    //    $form['field_release_service']['#after_build'][] = '';
+//
+//    $form['#redirect'] = array('node/' . RELEASE_MANAGEMENT . '/early-warnings');
+//   
+//  }
+//  
+//}
+
+
+
+/*
+ * Validation function added for early warnings content type 
+*/
+function earlywarnings_node_validate(&$form, &$form_state) {
+  $service = $form_state['values']['field_release_service'][0]['value'];
+  $release =  $form_state['values']['field_earlywarning_release'][0]['value'];
+  if ($service == 'none') {
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
+  }
+  if ($release == 0 ) {
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
+  }
+}
+
+
+/*
+ *Validation function added for deployed content type 
+ * After ahah filtering the releases, validations for the form done here
+*/
+function deployedreleses_node_validate(&$form, &$form_state) {
+  $service = $form_state->getValue('field_release_service');
+  $release =  $form_state->getValue('field_earlywarning_release');
+  
+  $environment = $form_state->getValue('field_environment');
+  $entered_date = $form_state->getValue('field_date_deployed');
+  $today_date = mktime(23, 59, 59, date('m', time()), date('d', time()), date('y', time()));
+
+  if ($service == 'none') {
+    
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
+  }
+  if ($release == 0 ) {
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
+  }
+  if ($environment == 0 ) {
+    $form_state->setErrorByName('field_environment', t('Please Select Environment.'));
+  }
+
+  if ($entered_date > $today_date) {
+    $form_state->setErrorByName('field_date_deployed', t('Deployed date should not be greater than present date.'));
+  }
+}
+
+
+/*
+ * Earlywarnings node form serive filed ajax callback
+ * Replaces the releases according to service selected 
+*/
+
+function earlywarning_service_dependent_releases() {
+  include_once 'modules/node/node.pages.inc';
+  $form_state = array('storage' =>  NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  
+  $form = form_get_cache($form_build_id, $form_state);
+  $service = $_POST['field_release_service']['value'];
+  $release = $_POST['field_earlywarning_release']['value'];
+
+  //Geting  release data
+  $default_releases = get_dependent_release($service);
+  
+
+  $form += array(
+    '#post' => $_POST,
+    '#programmed' => FALSE,
+  );
+
+  $type = $form['type']['#value'] ;
+  if ($type != 'deployed_releases') {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value'];\$default_releases = get_earlywarning_release(\$service); return \$default_releases['releases'];";
+  }
+  else {
+    $environment = $_POST['field_environment']['value'];
+    if ($service != 0 && $environment != 0) {
+      $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release(\$service, \$environment, \$release);";
+    }
+    else {
+      $default_release = array(0 => t('Release'));
+      $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
+    }
+    
+  }
+  
+  form_set_cache($form_build_id, $form, $form_state); 
+  $form = form_builder($_POST['form_id'], $form, $form_state);
+
+  $output .= drupal_render($form['field_earlywarning_release']);
+
+  print drupal_to_js(array('data' => $output, 'status' => TRUE));
+  exit();
+}
+
+/*
+ * Earlywarnings node form environment filed ajax callback
+ * Replaces the releases according to environment selected 
+*/
+
+function deployed_environment_service_dependent_releases() {
+  include_once 'modules/node/node.pages.inc';
+  $form_state = array('storage' =>  NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  
+  $form = form_get_cache($form_build_id, $form_state);
+  $service = $_POST['field_release_service']['value'];
+  $release = $_POST['field_earlywarning_release']['value'];
+
+  $form += array(
+    '#post' => $_POST,
+    '#programmed' => FALSE,
+  );
+  $deployed_release_nid = $form['nid']['#value'] ? $form['nid']['#value'] : '';
+  $environment = $_POST['field_environment']['value'];
+  if ($service != 0 && $environment != 0) {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release('$service', '$environment', '$deployed_release_nid');";
+  }
+  else {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
+  }
+  
+  form_set_cache($form_build_id, $form, $form_state); 
+  $form = form_builder($_POST['form_id'], $form, $form_state);
+
+  $output .= drupal_render($form['field_earlywarning_release']);
+  print drupal_to_js(array('data' => $output, 'status' => TRUE));
+  exit();
+}
+
+/**
+ *form_after_build call back to add AHAH to state field
+ */
+function earlywarnings_get_servicereleted_releases($form_element, &$form_state) {
+  add_ajax_service_filter($form_element);
+  return $form_element;
+}
+
+
+function add_ajax_service_filter(&$form) {
+  $path = 'earlywarning_service_release';
+  $non_production_env_path = 'deployed_environment_release';
+
+  $form['field_release_service']['#ajax'] = array(
+        'callback' => $path,
+        'event' => 'change',
+    );
+  
+  $type = $form['type']['#value'] ;
+  if ($type == 'deployed_releases') {
+    $form['field_environment']['#ajax'] = array(
+        'callback' => $non_production_env_path,
+        'event' => 'change',
+    );
+    $ahah_binding_state = array(
+        "button" => FALSE,
+        "keypress" => NULL,
+        'url'   => \Drupal\Core\Url::fromRoute($non_production_env_path),
+        'event' => 'change',
+        'wrapper' => 'earlywarning_field_release_wrapper',
+        'selector' => '#edit-field-environment-value',
+        'effect'   => 'fade',
+        'method'   => 'replace',
+        'progress' => array('type' => 'throbber'),
+    );
+
+      $form['#attached']['drupalSettings']['ajax'] = array(
+      'edit-field-environment-value' => $ahah_binding_state
+      );
+  }
+
+  $ahah_binding_state = array(
+    "button" => FALSE,
+    "keypress" => NULL,
+    'url'   => \Drupal\Core\Url::fromRoute($path),
+    'event' => 'change',
+    'wrapper' => 'earlywarning_field_release_wrapper',
+    'selector' => '#edit-field-release-service-value',
+    'effect'   => 'fade',
+    'method'   => 'replace',
+    'progress' => array('type' => 'throbber'),
+    );
+  
+  $form['#attached']['drupalSettings']['ajax'] = array(
+      'edit-field-release-service-value' => $ahah_binding_state
+      );
+}
+

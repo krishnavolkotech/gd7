@@ -742,6 +742,7 @@ static public function get_release_details_from_title($values_title, $link) {
    * @returns: table display of deployed releases
    */
   function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
+    $type = 'deployed_releases';
     $group = \Drupal::routeMatch()->getParameter('group');
     if(is_object($group)){
       $group_id = $group->id();
@@ -845,7 +846,9 @@ static public function get_release_details_from_title($values_title, $link) {
     $query->condition('nfd.type', 'deployed_releases', '=')
           ->condition('grv.group_id', $gid, '=')
           ->condition('nrt.release_type_target_id', $service_release_type, '=');
-
+   
+    
+    
     $count_query = clone $query;
     $count_query->addExpression('Count(nfd.nid)');
 
@@ -858,8 +861,9 @@ static public function get_release_details_from_title($values_title, $link) {
     $paged_query->addField('nfe', 'field_environment_value', 'environment');
     $paged_query->addField('nfrs', 'field_release_service_value', 'service');
     $paged_query->addField('nfar', 'field_archived_release_value', 'archived');
+    $paged_query->addField('nfdd', 'field_date_deployed_value', 'deployed_date');
     $paged_query->fields('nfd', array('nid'));
-
+   
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $paged_query->limit($page_limit);
@@ -878,11 +882,12 @@ static public function get_release_details_from_title($values_title, $link) {
       else {
         $environment_val = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(':nid' => $releases->environment))->fetchField();
       }
-    
-      $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", 1900000));      
+    // date("d.m.Y", 1900000)  
+      $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", strtotime($releases->deployed_date)));      
       if ($filter_options['state'] > 1 ) {
+          // date("d.m.Y", 1900000)
         if ($filter_options['state'] == $releases->state_id) {
-          $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", 1900000));
+          $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", strtotime($releases->deployed_date)));
         }
         else {
           $elements = array();

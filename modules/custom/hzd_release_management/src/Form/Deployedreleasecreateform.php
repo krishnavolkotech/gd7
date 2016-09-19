@@ -258,11 +258,14 @@ class Deployedreleasecreateform extends FormBase {
         $query->condition('cp.uid', $user->id() , '=' );
         $user_state = $query->execute()->fetchField();
         
-        $date_array = explode('.', $form_state->getValue('deployed_date'));
-        $deployed_date = mktime(0, 0, 0, $date_array[1], $date_array[0], $date_array[2]);
+     //   $date_array = explode('.', $form_state->getValue('deployed_date'));
+    //    $deployed_date = mktime(0, 0, 0, $date_array[1], $date_array[0], $date_array[2]);
       // print_r($form_state->getValue());
       // echo '<pre>'; print_r($_POST);   exit;
-      
+     // dpm($deployed_date);
+        $deployed_date = $form_state->getValue('deployed_date');
+        $deployed_date = date("Y-m-d", strtotime($deployed_date));
+     //   echo $deployed_date; exit;  
         $node_array = array(
           'type' => 'deployed_releases',
           'title' => array(

@@ -351,8 +351,8 @@ class HzdReleases extends ControllerBase {
             $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
             $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
             $output['deploy_release_form']['form']['render'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
-            $output['deploy_release_form']['form']['#suffix'] = '</div>';            
-            $output['deploy_release_form']['reset']['#prefix'] = "<div class = 'reset_form'>" .
+          //  $output['deploy_release_form']['form']['#suffix'] = '</div>';            
+          //  $output['deploy_release_form']['reset']['#prefix'] = "<div class = 'reset_form'>" .
             $output['deploy_release_form']['reset'] = HzdreleasemanagementHelper::releases_reset_element();
             $output['deploy_release_form']['reset']['#suffix'] = "</div>";
             $output['deploy_release_form']['clear_div']['#markup'] = "<div style = 'clear:both'></div>";
