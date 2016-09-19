@@ -160,6 +160,18 @@ function cust_group_views_pre_render($view) {
   }
 }
 
+function cust_group_file_validate(Drupal\file\FileInterface $file){
+    $errors = [];
+    $fileName = $file->getFilename();
+    $check = \Drupal::entityQuery('file')
+        ->condition('filename',$fileName)
+        ->execute();
+    if(count($check) > 1){
+        $errors[] = t("The file's name already exists in database.");
+    }
+    return $errors;
+}
+
 /**
  * Function cust_og_init() {
  * check_group_pages();

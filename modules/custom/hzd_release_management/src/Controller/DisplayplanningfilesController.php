@@ -52,7 +52,7 @@ class DisplayplanningfilesController extends ControllerBase {
             $query->condition('nfupf.entity_id', $list_files->nid, '=');
             $filename = $query->execute()->fetchField();*/
             $filename = null;
-            if($files[0]){
+            if(!empty($files[0])){
                 $fileUrl = $files[0]->url();
                 $filename = Link::fromTextAndUrl($files[0]->getFilename(),  Url::fromUri($fileUrl));
             }

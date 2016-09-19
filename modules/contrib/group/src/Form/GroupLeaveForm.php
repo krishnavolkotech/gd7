@@ -8,6 +8,7 @@
 namespace Drupal\group\Form;
 
 use Drupal\group\Entity\Form\GroupContentDeleteForm;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides a form for leaving a group.
@@ -28,6 +29,12 @@ class GroupLeaveForm extends GroupContentDeleteForm {
    */
   public function getConfirmText() {
     return $this->t('Leave group');
+  }
+  
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $groupId = $this->getEntity()->getGroup()->id();
+    $form_state->setRedirect('entity.group.canonical',['group'=>$groupId]);
+    return parent::submitForm($form, $form_state);
   }
 
 }
