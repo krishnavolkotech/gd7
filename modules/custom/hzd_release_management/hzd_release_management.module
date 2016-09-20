@@ -115,7 +115,10 @@ function hzd_earlywarning_release() {
 //  if(isset($nid) && is_numeric($nid)) {
 //    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
 //  }
-  if (isset($type) && $type == 'deployed_releases') { 
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+
+  if ((isset($type) && $type == 'deployed_releases') ||  (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) { 
     $service = Drupal::request()->get('ser');
     $release = Drupal::request()->get('rel');
     return get_undeployed_dependent_release($service, NULL, $release);
@@ -138,17 +141,24 @@ function get_earlywarning_release($service = NULL) {
   } 
   
   $group = ($group_id ? $group_id: RELEASE_MANAGEMENT);
+  /**
+   *  select * from node_field_data nfd    join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id join group_releases_view  grv on grv.service_id   = nfrs.field_relese_services_target_id  where group_id = 32 ;
+   * 
+   */
   $query = db_select('node_field_data', 'nfd');
   $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
   $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
-  $query->fields('nfd', array('nid', 'title'))
-     ->condition('grv.group_id', $group_id);
+  $query->fields('nfd', array('nid', 'title'));
+  if ($group) {
+    $query->condition('grv.group_id', $group);
+  }
+//     ->condition('grv.group_id', $group_id);
   if($service) {
     $query->condition('nfrs.field_relese_services_target_id', $service);
   }
   $query->orderBy('nfd.title', 'ASC');
   $result = $query->execute()->fetchAll();
-
+  
   $default_release[] =  t("Release");
   foreach($result as $vals) {
     $default_release[$vals->nid] = $vals->title;
@@ -186,7 +196,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$key] = $value; 
     }
   }
-
+ // print_r($undeployed_releases); exit;
   if($release) {
     $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(":env" => $environment, ":eid" => $release))->fetchField();
     if ($deployed_nid) {
@@ -709,14 +719,13 @@ function release_management_init() {
 /*
  *implementing hook_form_alter 
 */
-// After PHP upgrade frm, 5.2 to 5.3, after attachings files raise an error and complain about parameter 2 expected to be a reference, value given
-//function release_management_form_alter(&$form, &$form_state, $form_id) {
 //function hzd_release_management_form_alter(&$form, $form_state, $form_id) {
-//  if ($form_id == 'release_node_form') {
+//  if ($form_id == 'node_release_form') {
 //    $nid = $form['nid']['#value'];
 //    $node = \Drupal\node\Entity\Node::load($nid);
 //    $type = $node->field_release_type->value;
-//    $path = \Drupal::request()->getpathInfo();
+//    $path = \Drupal::request()->getpathInfo();   
+//    dpm($type);
 //    $arg  = explode('/',$path);
 //    if ((is_numeric($arg['1'])) && ($arg['2'] == 'edit')) {
 //      //drupal_set_message("<pre>".print_r($form['field_release_update_status'][0]['#default_value']['value'],1));
@@ -724,7 +733,7 @@ function release_management_init() {
 //    }
 //    
 //  }
-//  if ($form_id == 'deployed_releases_node_form') {
+//  if ($form_id == 'node_deployed_releases_form') {
 //    $form['#cache'] = TRUE;
 //    $form['field_release_service']['#suffix'] = "<div style = 'clear:both'></div>";
 //    $form['field_earlywarning_release']['#suffix'] = "</div><div style = 'clear:both'></div>";        
@@ -773,10 +782,10 @@ function earlywarnings_node_validate(&$form, &$form_state) {
   $service = $form_state['values']['field_release_service'][0]['value'];
   $release =  $form_state['values']['field_earlywarning_release'][0]['value'];
   if ($service == 'none') {
-    form_set_error('field_release_service', t('Please Select Service.'));
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
   }
   if ($release == 0 ) {
-    form_set_error('field_earlywarning_release', t('Please Select Release.'));
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
   }
 }
 
@@ -786,24 +795,26 @@ function earlywarnings_node_validate(&$form, &$form_state) {
  * After ahah filtering the releases, validations for the form done here
 */
 function deployedreleses_node_validate(&$form, &$form_state) {
-  $service = $form_state['values']['field_release_service'][0]['value'];
-  $release =  $form_state['values']['field_earlywarning_release'][0]['value'];
-  $environment =  $form_state['values']['field_environment'][0]['value'];
-  $entered_date = $form_state['values']['field_date_deployed'][0]['value'];
+  $service = $form_state->getValue('field_release_service');
+  $release =  $form_state->getValue('field_earlywarning_release');
+  
+  $environment = $form_state->getValue('field_environment');
+  $entered_date = $form_state->getValue('field_date_deployed');
   $today_date = mktime(23, 59, 59, date('m', time()), date('d', time()), date('y', time()));
 
   if ($service == 'none') {
-    form_set_error('field_release_service', t('Please Select Service.'));
+    
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
   }
   if ($release == 0 ) {
-    form_set_error('field_earlywarning_release', t('Please Select Release.'));
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
   }
   if ($environment == 0 ) {
-    form_set_error('field_environment', t('Please Select Environment.'));
+    $form_state->setErrorByName('field_environment', t('Please Select Environment.'));
   }
 
   if ($entered_date > $today_date) {
-    form_set_error('field_date_deployed', t('Deployed date should not be greater than present date.'));
+    $form_state->setErrorByName('field_date_deployed', t('Deployed date should not be greater than present date.'));
   }
 }
 
@@ -908,9 +919,6 @@ function add_ajax_service_filter(&$form) {
         'callback' => $path,
         'event' => 'change',
     );
-  drupal_add_js('misc/jquery.form.js');
-  drupal_add_js('misc/ahah.js');
-  
   
   $type = $form['type']['#value'] ;
   if ($type == 'deployed_releases') {
@@ -930,7 +938,9 @@ function add_ajax_service_filter(&$form) {
         'progress' => array('type' => 'throbber'),
     );
 
-    $form(array('ahah' => array('edit-field-environment-value' => $ahah_binding_state)), 'setting');
+      $form['#attached']['drupalSettings']['ajax'] = array(
+      'edit-field-environment-value' => $ahah_binding_state
+      );
   }
 
   $ahah_binding_state = array(
@@ -945,9 +955,8 @@ function add_ajax_service_filter(&$form) {
     'progress' => array('type' => 'throbber'),
     );
   
-  $form[''](array(
-    'ahah' => array(
+  $form['#attached']['drupalSettings']['ajax'] = array(
       'edit-field-release-service-value' => $ahah_binding_state
-      )
-    ), 'setting');
+      );
 }
+
