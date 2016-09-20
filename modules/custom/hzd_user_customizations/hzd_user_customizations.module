@@ -175,7 +175,9 @@ function hzd_group_list($uid){
   $result = $db->select('groups_field_data', 'gfd');
     $result->join('group_content_field_data', 'gcfd', 'gfd.id = gcfd.gid');
     $result->fields('gfd', array('id', 'label'))
-        ->condition('gcfd.entity_id', $uid)->orderBy('label', 'ASC');
+        ->condition('gcfd.entity_id', $uid)
+        ->condition('request_status', 1)
+        ->orderBy('label', 'ASC');
   $val = $result->execute()->fetchAll();
   $groups = '<div class="user-groups">';
   foreach ($val as $group) {

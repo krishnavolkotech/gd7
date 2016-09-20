@@ -33,7 +33,7 @@ class AccessController extends ControllerBase {
       //}
       //pr($node->id());exit;
     }
-    return AccessResult::neutral();
+    return AccessResult::allowed();
   }
 
   function createMaintenanceAccess(){

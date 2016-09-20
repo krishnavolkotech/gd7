@@ -62,7 +62,8 @@ class GroupContentDeleteForm extends ContentEntityConfirmFormBase {
       '%title' => $this->entity->label(),
     ]);
     // @todo Read a redirect from the plugin?
-    $form_state->setRedirect('entity.group.collection');
+    if(!$form_state->getRedirect())
+      $form_state->setRedirect('entity.group.collection');
   }
 
 }

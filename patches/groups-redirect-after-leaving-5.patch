@@ -1,0 +1,38 @@
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentDeleteForm.php b/modules/contrib/group/src/Entity/Form/GroupContentDeleteForm.php
+index ca5d7fd..4f77947 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentDeleteForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentDeleteForm.php
+@@ -62,7 +62,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+       '%title' => $this->entity->label(),
+     ]);
+     // @todo Read a redirect from the plugin?
+-    $form_state->setRedirect('entity.group.collection');
++    if(!$form_state->getRedirect())
++      $form_state->setRedirect('entity.group.collection');
+   }
+ 
+ }
+diff --git a/modules/contrib/group/src/Form/GroupLeaveForm.php b/modules/contrib/group/src/Form/GroupLeaveForm.php
+index 76d6471..6f12f03 100644
+--- a/modules/contrib/group/src/Form/GroupLeaveForm.php
++++ b/modules/contrib/group/src/Form/GroupLeaveForm.php
+@@ -8,6 +8,7 @@
+ namespace Drupal\group\Form;
+ 
+ use Drupal\group\Entity\Form\GroupContentDeleteForm;
++use Drupal\Core\Form\FormStateInterface;
+ 
+ /**
+  * Provides a form for leaving a group.
+@@ -29,5 +30,11 @@ public function getQuestion() {
+   public function getConfirmText() {
+     return $this->t('Leave group');
+   }
++  
++  public function submitForm(array &$form, FormStateInterface $form_state) {
++    $groupId = $this->getEntity()->getGroup()->id();
++    $form_state->setRedirect('entity.group.canonical',['group'=>$groupId]);
++    return parent::submitForm($form, $form_state);
++  }
+ 
+ }

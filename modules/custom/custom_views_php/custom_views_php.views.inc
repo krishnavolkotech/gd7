@@ -47,6 +47,14 @@ function custom_views_php_views_data() {
             'id' => 'group_type_value',
         ),
     );
+    
+    $data['views']['group_actions_field'] = array(
+        'title' => t('Group Actions'),
+        'help' => t('Enable to include and Group Actions link in your modules as part of a view'),
+        'field' => array(
+            'id' => 'group_actions_field',
+        ),
+    );
 
 
     return $data;

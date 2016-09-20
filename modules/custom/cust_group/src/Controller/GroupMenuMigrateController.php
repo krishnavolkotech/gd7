@@ -31,6 +31,14 @@ class GroupMenuMigrateController extends ControllerBase{
                 if(strpos($uri,'/group/'.$new.'/members')){
                     $menu->set('link',['uri'=>'internal:'.'/group/'.$new.'/address'])->save();
                 }
+                if(strpos($uri,'/group/'.$new.'/faq')){
+                    $newFaqPath = $this->migrateFaqPath($uri);
+                    if($newFaqPath){
+                        $menu->set('link',['uri'=>'internal:'.$newFaqPath])->save();
+                    }
+//                    echo 'migrate faq'; pr($uri);pr($newFaqPath);
+//                    exit;
+                }
             }elseif(count(explode('/',trim(str_replace('internal:/','',$uri),'/'))) == 2){
                 $newUri = $this->getGroupNodeUri($uri);
                 if($newUri){
@@ -60,5 +68,38 @@ class GroupMenuMigrateController extends ControllerBase{
         }
         return false;
         //pr($groupData);exit;
+    }
+    
+    function migrateFaqPath($oldUri){
+        $oldTerms = explode('/',trim(str_replace('internal:/','',$oldUri),'/'));
+        if(empty($oldTerms[3])){
+            $oldTerms[3] = 'Allgemein';
+        }
+        $group = \Drupal\group\Entity\Group::load($oldTerms[1]);
+        
+        $parentTermQuery = \Drupal::entityQuery('taxonomy_term')
+            ->condition('name',$group->label())
+            ->condition('vid','faq_seite')
+            ->execute();
+        $termQuery = \Drupal::entityQuery('taxonomy_term')
+            ->condition('name',$oldTerms[3])
+            ->condition('vid','faq_seite')
+            ->execute();
+        $tid = null;
+        if(empty($parentTermQuery)){
+            $tid = array_values($termQuery)[0];
+        }
+        if($termQuery && $parentTermQuery){
+            $tid = \Drupal::database()->select('taxonomy_term_hierarchy','t')
+            ->fields('t',['tid'])
+            ->condition('parent',$parentTermQuery,'IN')
+            ->condition('tid',$termQuery,'IN')
+            ->execute()->fetchCol();
+        }
+        if($tid){
+            return "/group/".$oldTerms[1]."/faqs/".$tid[0];
+        }
+        echo 'migrate faq'; pr($oldUri);
+        return false;
     }
 }
