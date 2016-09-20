@@ -10,39 +10,45 @@
  */
 function get_user_role($value = NULL) {
   $user = \Drupal::currentUser();
-
-  if ($user->uid == 1) {
-    return 'site_admin';
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if (is_object($group)) {
+    $group_id = $group->id();
   }
-   // The user is site administrator ? site-administrator's rid = 5
-  if (in_array(5 , array_keys($user->roles))) {
-      return 'site_admin';
-  } 
-  elseif (isset($_SESSION['Group_id'])) {
-    if(!isset($user->og_groups)){
-      $user->og_groups = og_get_subscriptions($user->uid);
+  else {
+    $group_id = $group;
+  }
+
+  if ($user->id() == 1) {
+    return 'site_administrator';
+  }
+  // The user is site administrator ? site-administrator's rid = 5
+  if (in_array(1, array_keys($user->getRoles()))) {
+    return 'site_administrator';
+  }
+  elseif (isset($group_id)) {
+    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+    if ($is_group_admin) {
+      return 'group_admin';
     }
-    if (is_array($user->og_groups[$_SESSION['Group_id']])) {
-      return ((int)$user->og_groups[$_SESSION['Group_id']]['is_admin'] == 1) ? 'group_admin' : 'group_member' ;	  
+    else {
+      return 'group_member';
     }
-    
   }
   return FALSE;
 }
-
 
 function cust_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if ($form_id == 'user_form') {
     $user = \Drupal::currentUser();
     $user_role = $user->getRoles();
     if (in_array_r('site_administrator', $user_role)) {
-       nsm_user_form($form,  $form_state);
-       inactive_users_flag($form, $form_state);
+      nsm_user_form($form, $form_state);
+      inactive_users_flag($form, $form_state);
     }
   }
 }
 
-function  nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state){
+function nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   $current_path = \Drupal::service('path.current')->getPath();
   // Retrieve an array which contains the path pieces.
   $path_args = explode('/', $current_path);
@@ -52,15 +58,15 @@ function  nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state
 
   $query = \Drupal::database()->select('nsm_user_role', 'nur');
   $query->addField('nur', 'nsm_role_id');
-  $query->condition('nur.user_id', $user_id , '=');
+  $query->condition('nur.user_id', $user_id, '=');
   $user_nsm_role = $query->execute()->fetchField();
 
-  $n_role = $user_nsm_role ? $user_nsm_role:1;
+  $n_role = $user_nsm_role ? $user_nsm_role : 1;
 
   $form['nsm'] = array(
     '#type' => 'fieldset',
     '#title' => t('NSM Roles'),
-    '#weight'=>2
+    '#weight' => 2
   );
 
   $form['nsm']['name_nsm'] = array(
@@ -69,16 +75,16 @@ function  nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state
     '#default_value' => $n_role,
     '#options' => $nsm_roles,
     '#required' => TRUE,
-    '#description' => t('Member should have only one NSM role'),	
-   );
+    '#description' => t('Member should have only one NSM role'),
+  );
   $form['actions']['submit']['#submit'][] = 'nsm_user_role_update';
 
- // return $form;   
+  // return $form;   
 }
 
 function nsm_roles() {
   $roles = array();
-  
+
   $query = \Drupal::database()->select('nsm_role', 'nr');
   $query->fields('nr');
   $result = $query->execute()->fetchAll();
@@ -93,6 +99,7 @@ function nsm_roles() {
 /*
  * adding checkbox to a user edit form
  */
+
 function inactive_users_flag(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   $current_path = \Drupal::service('path.current')->getPath();
   // Retrieve an array which contains the path pieces.
@@ -101,15 +108,15 @@ function inactive_users_flag(&$form, \Drupal\Core\Form\FormStateInterface $form_
 
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
-  $query->condition('iuf.user_id', $user_id , '=');
-  $user_flag =  $query->execute()->fetchField();
+  $query->condition('iuf.user_id', $user_id, '=');
+  $user_flag = $query->execute()->fetchField();
 
-  $user_flag_val = $user_flag ? $user_flag:0;
+  $user_flag_val = $user_flag ? $user_flag : 0;
 
   $form['inactive_users'] = array(
     '#type' => 'fieldset',
     '#title' => t('Inactive Users'),
-    '#weight'=>2
+    '#weight' => 2
   );
   $form['inactive_users']['inactive_user_flag'] = array(
     '#type' => 'checkbox',
@@ -122,107 +129,104 @@ function inactive_users_flag(&$form, \Drupal\Core\Form\FormStateInterface $form_
 }
 
 //updating NSM role of the user
-function nsm_user_role_update($form, $form_state){
+function nsm_user_role_update($form, $form_state) {
   $current_path = \Drupal::service('path.current')->getPath();
   // Retrieve an array which contains the path pieces.
   $path_args = explode('/', $current_path);
   $user_id = $path_args[2];
 
-  if($form_state->getValue('name_nsm')){
+  if ($form_state->getValue('name_nsm')) {
     $role = $form_state->getValue('name_nsm');
-  }else{
+  }
+  else {
     $query = \Drupal::database()->select('nsm_role_id', 'nri');
     $query->addField('nri', 'value');
-    $query->condition('nri.user_id', $user_id , '=');
+    $query->condition('nri.user_id', $user_id, '=');
     $role = $query->execute()->fetchField();
   }
-  
+
   $query = \Drupal::database()->update('nsm_user_role');
   $query->fields([
     'nsm_role_id' => $role
   ]);
   $query->condition('user_id', $user_id);
   $affected_rows = $query->execute();
-  if (!$affected_rows) { 
-   \Drupal::database()->insert('nsm_user_role')
-			  ->fields(array(
-			    'user_id' => $form_state->getValue('uid'),
-			    'nsm_role_id' => 1,
-			  ))->execute();
+  if (!$affected_rows) {
+    \Drupal::database()->insert('nsm_user_role')
+        ->fields(array(
+          'user_id' => $form_state->getValue('uid'),
+          'nsm_role_id' => 1,
+        ))->execute();
   }
 }
 
 //updating value for do not automatically block or delete the users.
-function inactive_users_flag_update($form, $form_state){
- 
+function inactive_users_flag_update($form, $form_state) {
+
   $current_path = \Drupal::service('path.current')->getPath();
-    // Retrieve an array which contains the path pieces.
-    $path_args = explode('/', $current_path);
-    $user_id = $path_args[2];
- 
-    
-    $query = \Drupal::database()->update('inactive_users');
-			$query->fields([
-			  'notified_user' => 1
-			]);
-    $query->condition('uid', $user->uid);
-    $query->execute();
+  // Retrieve an array which contains the path pieces.
+  $path_args = explode('/', $current_path);
+  $user_id = $path_args[2];
+
+
+  $query = \Drupal::database()->update('inactive_users');
+  $query->fields([
+    'notified_user' => 1
+  ]);
+  $query->condition('uid', $user->uid);
+  $query->execute();
 
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
-  $query->condition('iuf.user_id', $user_id , '=');
-  $count =  $query->countQuery()->execute()->fetchField();
-     
+  $query->condition('iuf.user_id', $user_id, '=');
+  $count = $query->countQuery()->execute()->fetchField();
+
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
-  $query->condition('iuf.user_id', $user_id , '=');
-  $val =  $query->execute()->fetchField();
+  $query->condition('iuf.user_id', $user_id, '=');
+  $val = $query->execute()->fetchField();
 
   if ($count > 0) {
     if ($val != $form_state->getValue('inactive_user_flag')) {
-	$query = \Drupal::database()->update('inactive_user_flag');
-			$query->fields([
-			  'value' => $form_state->getValue('inactive_user_flag')
-
-			]);
-			$query->condition('user_id', $user_id);
-			$query->execute();
+      $query = \Drupal::database()->update('inactive_user_flag');
+      $query->fields([
+        'value' => $form_state->getValue('inactive_user_flag')
+      ]);
+      $query->condition('user_id', $user_id);
+      $query->execute();
     }
   }
   else {
-     \Drupal::database()->insert('inactive_user_flag')
-			  ->fields(array(
-			    'user_id' => $user_id,
-			    'value' => $form_state->getValue('inactive_user_flag'),
-			  ))->execute();
+    \Drupal::database()->insert('inactive_user_flag')
+        ->fields(array(
+          'user_id' => $user_id,
+          'value' => $form_state->getValue('inactive_user_flag'),
+        ))->execute();
   }
-
 }
 
 /**
  *  search in multidementisonal array
  */
-
 function in_array_r($needle, $haystack, $strict = false) {
   foreach ($haystack as $item) {
-    if (($strict   ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
+    if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
       return true;
     }
   }
   return false;
 }
 
-
 function cust_user_node_access($node, $op, $account) {
-  if($node->bundle() === 'problem' && $op == 'update'){
+  if ($node->bundle() === 'problem' && $op == 'update') {
     return Drupal\Core\Access\AccessResult::forbidden();
   }
 }
 
-function __gm($object) {                                                                                                                                                
-    if (empty($object)) {                                                                                                                                               
-        $object = new stdClass();                                                                                                                                       
-    }                                                                                                                                                                   
-    pr(get_class_methods(get_class($object)));
-    exit;                                                                                                                                                               
-}            
+function __gm($object) {
+  if (empty($object)) {
+    $object = new stdClass();
+  }
+  pr(get_class_methods(get_class($object)));
+  exit;
+}
