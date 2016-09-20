@@ -53,8 +53,9 @@ class DisplayplanningfilesController extends ControllerBase {
             $filename = $query->execute()->fetchField();*/
             $filename = null;
             if(!empty($files[0])){
-                $fileUrl = $files[0]->url();
-                $filename = Link::fromTextAndUrl($files[0]->getFilename(),  Url::fromUri($fileUrl));
+                //$fileUrl = $files[0]->url();
+                //$filename = Link::fromTextAndUrl($files[0]->getFilename(),  Url::fromUri($fileUrl));
+                $filename = $files[0]->getFilename();
             }
             //$url = Url::fromUserInput('/node/' . $node->id() . '/edit');
             //$edit = \Drupal::service('link_generator')->generate('Edit', $url);
