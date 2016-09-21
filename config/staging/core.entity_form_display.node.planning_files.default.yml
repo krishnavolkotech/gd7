@@ -38,6 +38,11 @@ content:
     settings:
       progress_indicator: bar
     third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
   path:
     type: path
     weight: 30
@@ -70,10 +75,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 31
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  upload: true

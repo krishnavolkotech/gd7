@@ -1,0 +1,22 @@
+printable_entities:
+  - node
+  - comment
+  - user
+open_target_blank: true
+css_include: ''
+extract_links: ''
+save_pdf: false
+pdf_tool: wkhtmltopdf
+paper_size: A4
+page_orientation: portrait
+path_to_binary: /usr/local/bin/wkhtmltopdf
+pdf_location: ''
+send_to_printer: false
+close_window: false
+list_attribute: false
+printable_print_link_locations:
+  - node
+printable_pdf_link_locations:
+  - ''
+_core:
+  default_config_hash: 1Zx0Kjl4zSJQScIJ6Nv5z_DDYfYKiEzS-LRnLBoKZS8
