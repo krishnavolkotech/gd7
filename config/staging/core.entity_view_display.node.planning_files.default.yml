@@ -11,7 +11,7 @@ dependencies:
   module:
     - comment
     - file
-    - text
+    - options
     - user
 id: node.planning_files.default
 targetEntityType: node
@@ -28,7 +28,7 @@ content:
   field_planning_file_type:
     label: above
     weight: -4
-    type: text_default
+    type: list_key
     settings: {  }
     third_party_settings: {  }
   field_upload_planning_file:
@@ -39,10 +39,14 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
+    settings: {  }
+    third_party_settings: {  }
   upload:
-    label: hidden
+    label: above
     settings: {  }
     type: file_default
     weight: 101
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  entity_print_view: true
+  langcode: true

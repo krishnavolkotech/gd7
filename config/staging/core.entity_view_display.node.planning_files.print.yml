@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.print
+    - field.field.node.planning_files.comment
     - field.field.node.planning_files.field_planning_file_type
     - field.field.node.planning_files.field_upload_planning_file
+    - field.field.node.planning_files.upload
     - node.type.planning_files
   module:
     - file
@@ -30,4 +32,8 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true
