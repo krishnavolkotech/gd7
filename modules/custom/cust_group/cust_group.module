@@ -13,15 +13,9 @@ define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maint
 
 
 function cust_group_user_view(&$build,\Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
-  // Only do the extra work if the component is configured to be displayed.
-  // This assumes a 'mymodule_addition' extra field has been defined for the
-  // user entity type in hook_field_extra_fields().
-   
-  //if (!$display->getComponent('group_list')) {
     $build['group_list'] = array(
       '#markup' => hzd_group_list($account->id()), 
       '#cache'=>['max-age'=>0]
-//      '#theme' => 'mymodule_my_additional_field',
     );
 //    pr(array_keys($build));exit;
   //}
@@ -170,6 +164,43 @@ function cust_group_file_validate(Drupal\file\FileInterface $file){
         $errors[] = t("The file's name already exists in database.");
     }
     return $errors;
+}
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode){
+    $plannigFileRef = array(1048=>"mlrp",658=>"test calendar",1049=>"transcription pp",785=>"transcription fmk");
+    if(in_array($entity->id(),array_keys($plannigFileRef))){
+        //pr(get_planning_file_data($plannigFileRef[$entity->id()]));exit;
+        $items = get_planning_file_data($plannigFileRef[$entity->id()]);
+        $build['planning_file_data'] = ['#prefix'=>'<strong>Dataen</strong>:',
+                                        '#items'=>$items,
+                                        '#theme'=>'item_list',
+                                        '#type'=>'ul',
+                                        '#weight'=>100,
+                                        ];
+    }
+    //pr($plannigFileRef);exit;
+}
+
+function get_planning_file_data($type){
+    $plannigFileNodeIds = \Drupal::entityQuery('node')
+            ->condition('field_planning_file_type',$type)
+            ->execute();
+    $planningFileNodes = \Drupal\node\Entity\Node::loadMultiple(array_values($plannigFileNodeIds));
+    $filenames = [];
+    foreach($planningFileNodes as $node){
+        $file = $node->get('field_upload_planning_file')->referencedEntities();
+        if(!empty($file[0])){
+            $fileUrl = $file[0]->url();
+            $date = \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'short');
+            $filenames[] = ['#markup'=>\Drupal::service('link_generator')->generate($file[0]->getFilename(), Url::fromUri($fileUrl))->__toString().' ('.$date.')','#type'=>'markup'];
+            //$filenames[] = ['file'=>Link::fromTextAndUrl($file[0]->getFilename(),  Url::fromUri($fileUrl)),
+                            //'text'=>'sjdbd'];
+        }
+    }
+    //pr($filenames);exit;
+    return $filenames;
+    //$filesData = 
 }
 
 /**
