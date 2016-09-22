@@ -101,6 +101,7 @@ class DisplayplanningfilesController extends ControllerBase {
           '#theme' => 'table',
           '#header' => $header,
           '#rows' => $rows,
+          '#cache'=>['max-age'=>0]
         );
         return $output;
     }
