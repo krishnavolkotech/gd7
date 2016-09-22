@@ -22,19 +22,11 @@ content:
     third_party_settings: {  }
     type: string
   field_group_body:
+    type: text_default
     weight: 2
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
-  field_old_reference:
-    weight: 4
-    label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    type: number_integer
   label:
     label: hidden
     type: string
