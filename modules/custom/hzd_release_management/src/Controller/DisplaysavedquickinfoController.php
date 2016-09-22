@@ -78,8 +78,9 @@ class DisplaysavedquickinfoController extends ControllerBase {
           $alias_path = \Drupal::service('path.alias_manager')->getAliasByPath('/node/' . $node->nid);
           $absolute_path = Url::fromUserInput($alias_path);
           $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
- 
-          $rows[] = array($state_name, $title, (string)$other_services, $related_sw_transfer_num, $published,  $details);
+          // $data = \Drupal\Component\Utility\Html::load($other_services);
+
+          $rows[] = array($state_name, $title, htmlspecialchars($other_services), $related_sw_transfer_num, $published,  $details);
        }
 
        if ($rows) {

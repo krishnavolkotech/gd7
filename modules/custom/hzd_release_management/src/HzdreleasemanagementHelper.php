@@ -794,7 +794,9 @@ class HzdreleasemanagementHelper {
             //    db_query("INSERT INTO {url_alias} (src,dst) VALUES ('%s', '%s')", $absolute_path, $alias_path);
             // }
             $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
-            $rows[] = array($id, $state_name, $title, $other_services, $related_sw_transfer_num, $published, $details);
+          //  $data = \Drupal\Component\Utility\Html::load($other_services);
+
+            $rows[] = array($id, $state_name, $title, htmlspecialchars($other_services), $related_sw_transfer_num, $published, $details);
         }
         if ($rows) {
             $build['quickinfo_table'] = array(
