@@ -41,12 +41,7 @@ content:
     weight: 100
     settings: {  }
     third_party_settings: {  }
-  upload:
-    label: above
-    settings: {  }
-    type: file_default
-    weight: 101
-    third_party_settings: {  }
 hidden:
   entity_print_view: true
   langcode: true
+  upload: true
