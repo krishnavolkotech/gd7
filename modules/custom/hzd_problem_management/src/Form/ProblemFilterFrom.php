@@ -14,6 +14,7 @@ use Drupal\problem_management\HzdStorage;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 use Drupal\Core\Form\FormCache;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 class ProblemFilterFrom extends FormBase {
@@ -39,6 +40,7 @@ class ProblemFilterFrom extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $string = NULL) {
+    global  $base_url;
     if (isset($_SESSION['problems_query'])) {
       $serialized_data = unserialize($_SESSION['problems_query']);
       $default_value_service = $serialized_data['service'];
@@ -206,6 +208,13 @@ class ProblemFilterFrom extends FormBase {
       '#suffix' => '</div>',
     );
 
+    // Add Some extra "settings" to use in JS.
+    $form['#attached']['drupalSettings']['problem_management'] = array(
+      'group_id' => $group_id,
+      'type' => $string,
+      'basePath' => $base_url,
+    );
+  
   //  $form['#action'] = '/' .$path;
   
   return $form;
@@ -252,21 +261,37 @@ class ProblemFilterFrom extends FormBase {
      } else {
        $limit = $values['values']['limit'];
      }
-     
+    // var_dump($form_state->getValue('string'));
      $current_path = \Drupal::service('path.current')->getPath();
      $get_uri = explode('/', $current_path);
      $string = $get_uri['4'];
      $result = self::ahah_problems_display($form, $form_state, $sql_where['query'], $string, $limit);
+   // $sql_where['0']['or']['0']['field'] == 'nfsn.field_s_no_value'
+     
+     dpm($sql_where);
+  //    $this->redirect('user.page');
      if (array_key_exists("sid",$sql_where)) {
-         $result['#attached']['drupalSettings']['nid'] = $sql_where['sid'];
-         $result['#attached']['drupalSettings']['status'] = TRUE;
+         $output = array();
+         $output['#attached']['drupalSettings']['problem_management']['nid'] = $sql_where['sid'];
+         $output['#attached']['drupalSettings']['problem_management']['status'] = TRUE;
+         return $output;
      }
      else {
-         $result['#attached']['drupalSettings']['data'] = $output;
-         $result['#attached']['drupalSettings']['status'] = TRUE;
+         $result['#attached']['drupalSettings']['problem_management']['data'] = $output;
+         $result['#attached']['drupalSettings']['problem_management']['status'] = TRUE;
+             
+         return $result;
        // exit();
      }
-    return $result;
+//        $form_state->setRedirect('entity.node.canonical', array('node' => 123),
+//           array(
+//             'query' => array(
+//               'foo' => 'bar',
+//             ),
+//             'fragment' => 'baz',
+//           )
+//        );
+
   }
 
   function ahah_problems_display($form, $form_state, $sql_where = NULL, $string = NULL, $limit = NULL) {
@@ -294,11 +319,17 @@ class ProblemFilterFrom extends FormBase {
       $default_release[] = t("Select Release");
       $form['release']['#options'] = $default_release;
     }
-
+    
+    $form['#attached']['drupalSettings']['problem_management'] = array(
+      'search_string' =>  $form_state->getValue('string'),
+    );
+    
     // FormCache::setCache($form_build_id, $form, $form_state);
     $_SESSION['sql_where'] = $sql_where;
     $_SESSION['limit'] = $limit;
     $form_state->setRebuild(TRUE);
+ //        dpm($sql_where);
+  //   $this->redirect('user.page');
     $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>" ;
     $result['content']['problems_filter_element'] = $form;
     $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
@@ -308,6 +339,17 @@ class ProblemFilterFrom extends FormBase {
     $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
    // $result['content']['problems_default_display']['#suffix'] = '</div>';
     $result['content']['#suffix'] = "</div>";
+    
+//       $form_state->setRedirect('entity.node.canonical',
+//                         array('node' => 123),
+//                                    array(
+//                                      'query' => array(
+//                                        'foo' => 'bar',
+//                                      ),
+//                                      'fragment' => 'baz',
+//                                    )
+//                          );
+
     return $result;
   }
 }

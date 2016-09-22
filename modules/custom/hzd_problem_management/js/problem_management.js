@@ -59,16 +59,16 @@
         });
         var options = {
           beforeSubmit: function(formData, jqForm, options) {
-            $('<div class="ahah-progress ahah-progress-throbber"><div class="throbber">&nbsp;</div></div>').prependTo($('.search_string_submit'));
+            $('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>').prependTo($('.search_string_submit'));
 	          return true;
           },
           success: function (data) {
           if (data.nid) {
-            window.location.href = Drupal.settings.basePath + 'node/' + data.nid;
+            window.location.href = drupalSettings.problem_management.basePath + 'node/' + data.nid;
           }
           if (data.status == true) {
             $('#problem_search_results_wrapper').html(data.data);
-            $('.ahah-progress').remove();
+            $('.ajax-progress').remove();
             Drupal.attachBehaviors('.content ');
           }
         },
@@ -92,9 +92,9 @@
 	      var ele = $(this);
 	      var url = ele.attr('href');
 	      var params = url.split('?')[1];
-	      var group_id = Drupal.settings.group_id;
-	      var type = Drupal.settings.type;
-	      var base_path = Drupal.settings.basePath;
+	      var group_id = drupalSettings.problem_management.group_id;
+	      var type = drupalSettings.problem_management.type;
+	      var base_path = drupalSettings.problem_management.basePath;
 	      url = base_path + 'group/' + group_id + '/problem_search_results/' + type + '?' + params;
 	      $.post(url, {}, function(data) {
 		if (data.status == true) {
@@ -109,10 +109,10 @@
 	    $('.problems_details_link').click(function(){
 	      var query = $(this).attr('query');
 	      var nid = $(this).attr('nid');
-	      var url = Drupal.settings.basePath + 'back_to_search';
+	      var url = drupalSettings.problem_management.basePath + 'back_to_search';
 	      $.post(url, {'from':'problems','query':query}, function(data) {
 		if (data.status == true) {
-		  window.location.href = Drupal.settings.basePath + 'node/' + nid;
+		  window.location.href = drupalSettings.problem_management.basePath + 'node/' + nid;
 		}
 	      }, 'json');
 	      return false;
@@ -122,9 +122,9 @@
           var ele = $(this);
           var url = ele.attr('href');
           var params = url.split('?')[1];
-          var group_id = Drupal.settings.group_id;
-          var type = Drupal.settings.type;
-          var base_path = Drupal.settings.basePath;
+          var group_id = drupalSettings.problem_management.group_id;
+          var type = drupalSettings.problem_management.type;
+          var base_path = drupalSettings.problem_management.basePath;
           url = base_path + 'import_search_results' +  '?' + params;
           $.post(url, {}, function(data) {
             if (data.status == true) {
@@ -136,6 +136,10 @@
           return false;
         });
       });
+      var nid = drupalSettings.problem_management.nid;
+      if (typeof nid !== "undefined") {
+        window.location.href = drupalSettings.problem_management.basePath + '/node/' + nid;
+      } 
     }
   };
 })(jQuery);
@@ -151,8 +155,8 @@ function clear_textfield(){
   this.value = '';
 }
 
-function text_textfield(){
-  var string = Drupal.settings.search_string;
+function text_textfield() {
+  var string = drupalSettings.problem_management.search_string;
   if(this.value == '') {
     this.value = string;
   }
