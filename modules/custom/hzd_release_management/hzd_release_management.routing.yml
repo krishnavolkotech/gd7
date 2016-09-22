@@ -191,6 +191,7 @@ hzd_release_management.display_planning_files:
     _entity_view: group.default
   requirements:
     _permission: 'view releases'
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupAdminAccess'
 # cust_planning_files_admin    
 
 hzd_release_management.quickinfo_published_view:
