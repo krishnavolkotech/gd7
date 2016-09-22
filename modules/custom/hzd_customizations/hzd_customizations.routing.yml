@@ -46,10 +46,32 @@ hzd_customizations.quickinfo_uniqueid:
   options:
     _admin_route: TRUE
     
-#hzd_customizations.inactive_users:
+# hzd_customizations.inactive_users:
 #  path: ''
 #  defaults:
 #    _controller: '\Drupal\hzd_customizations\Controller\Inactiveusers::inactive_users'
 #    _title: 'Inactive Users'
 #  requirements:
 #    _permission: 'access content'
+
+hzd_customizations.manage_non_production_environment:
+  path: 'admin/config/manage-non-production-environment'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\Managenonproductionenvironment'
+    _title: 'Manage Non-Production Environment'
+  requirements:
+    _permission: 'access all views'
+  options:
+    _admin_route: TRUE
+
+#hzd_customizations.quickinfo_uniqueid:
+#  path: 'admin/messaging/quickinfo-template/quickinfo-unique-id'
+#  defaults:
+#    _form: '\Drupal\hzd_customizations\Form\QuickinfoUniqueID'
+#    _title: 'Default Unqiue Id'
+#  requirements:
+#    _permission: 'access administration pages'
+#  options:
+#    _admin_route: TRUE
+    
+

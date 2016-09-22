@@ -5,3 +5,9 @@ hzd_customizations.planning_files_form:
   parent: system.admin_config_system
   weight: 99
 
+hzd_customizations.manage_non_production_environment:
+  title: 'Manage Non-Production Environment'
+  route_name: hzd_customizations.manage_non_production_environment
+  parent: system.admin_config
+  description: 'Manage Non-Production Environment'
+  weight: 100
