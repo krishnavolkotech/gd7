@@ -254,6 +254,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         }
       }
     }
+    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
   else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
@@ -364,7 +365,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 
         $form['maintenance_windows'][$delta] = [
           '#type' => 'fieldset',
-          '#title' => 'value ' . $delta,
+          '#title' => '',
           '#prefix' => '<div id="downtimes-fieldset-wrapper">',
           '#suffix' => '</div>',
         ];
@@ -663,7 +664,7 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
     //$args = $form['#parameters'];
     // $form_build_id = $_POST['form_build_id'];
     // //drupal_process_form($form_id, $form, $form_state);
-    // $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+    // $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id); 
   }
 }
 
@@ -689,15 +690,8 @@ function downtimes_node_insert($node) {
     $record['scheduled_p'] = $data['downtime_type'];
     db_insert('downtimes')->fields((array) $record)->execute();
 
-    $gid = \Drupal::routeMatch()->getParameter('group');
-    if(!is_object($gid)) {
-      $group = \Drupal\group\Entity\Group::load($gid);
-    }
-    else {
-      $group = $gid;
-    }
+    $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
-
     //Adding node to group
     $group_content = GroupContent::create([
           'type' => $group->getGroupType()->getContentPlugin('group_node:downtimes')->getContentTypeConfigId(),

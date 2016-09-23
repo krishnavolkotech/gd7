@@ -90,7 +90,7 @@ class ScheduledmaintenanceForm extends ConfigFormBase {
         
         $form['sitewide_maintenance_windows'][$delta] = [
           '#type' => 'fieldset',
-          '#title'=>'value '.$delta,
+          '#title'=>'',
           '#prefix' => '<div id="downtimes-fieldset-wrapper">',
           '#suffix' => '</div>',
         ];
