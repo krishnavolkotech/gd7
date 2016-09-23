@@ -1,0 +1,8 @@
+
+mass_contact.bulk_mail_group_members_form:
+  path: '/admin/group/mass_contact'
+  defaults:
+    _form: '\Drupal\mass_contact\Form\BulkMailGroupMembersForm'
+    _title: 'Mass Mail to group members'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::isGroupAdminAccess'
