@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Contains mass_contact.module..
+ */
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function mass_contact_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the mass_contact module.
+    case 'help.page.mass_contact':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Sending bulk mails to group members') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+function mass_contact_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+
+  $message['from'] = \Drupal::config('system.site')->get('mail');
+  //$message['subject'] = t('Article created: @title', array('@title' => $params['node_title']), $options);
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['message'];
+}

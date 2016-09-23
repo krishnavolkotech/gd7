@@ -1,0 +1,5 @@
+mass_contact.bulk_mail_group_members_form:
+  title: 'Mass Contact Group'
+  description: 'Find and manage groups, group types and group settings.'
+  route_name: 'mass_contact.bulk_mail_group_members_form'
+  parent: 'system.admin_group'

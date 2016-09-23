@@ -1,0 +1,5 @@
+name: Mass Contact
+type: module
+description: Sending bulk mails to group members
+core: 8.x
+package: Custom
