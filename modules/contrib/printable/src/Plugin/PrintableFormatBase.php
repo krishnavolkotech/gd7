@@ -17,7 +17,6 @@ use Drupal\printable\PrintableCssIncludeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Wa72\HtmlPageDom\HtmlPage;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
-
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,10 +82,7 @@ abstract class PrintableFormatBase extends PluginBase implements PrintableFormat
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration, $plugin_id, $plugin_definition,
-      $container->get('config.factory'),
-      $container->get('printable.css_include'),
-      $container->get('printable.link_extractor')
+        $configuration, $plugin_id, $plugin_definition, $container->get('config.factory'), $container->get('printable.css_include'), $container->get('printable.link_extractor')
     );
   }
 
@@ -129,7 +125,9 @@ abstract class PrintableFormatBase extends PluginBase implements PrintableFormat
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {}
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    
+  }
 
   /**
    * {@inheritdoc}
@@ -156,11 +154,33 @@ abstract class PrintableFormatBase extends PluginBase implements PrintableFormat
    *   A render array representing the themed output of the content.
    */
   protected function buildContent() {
+    global $base_url;
+    $quickinfo_node = \Drupal::routeMatch()->getParameter('entity');
+    $base_path = $base_url;
+    if (!empty($quickinfo_node)) {
+      $changed = date('d.m.Y', $quickinfo_node->get('changed')->value);
+      if ($quickinfo_node->isPublished()) {
+        $unique_id = $quickinfo_node->get('field_unique_id')->value;
+        $author_name = $quickinfo_node->get('field_author_name')->value;
+      }
+      else {
+        $author_name = $unique_id = '';
+      }
+      $title = $quickinfo_node->get('title')->value;
+    }
+    else {
+      $author_name = $unique_id = $title = $changed = '';
+    }
     $build = array(
       '#theme' => array('printable__' . $this->getPluginId(), 'printable'),
       '#header' => array(
         '#theme' => array('printable_header__' . $this->getPluginId(), 'printable_header'),
         '#logo_url' => theme_get_setting('logo.url'),
+        '#base_path' => $base_path,
+        '#title' => $title,
+        '#changed' => $changed,
+        '#author_name' => $author_name,
+        '#unique_id' => $unique_id,
       ),
       '#content' => $this->content,
       '#footer' => array(
