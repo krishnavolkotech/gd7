@@ -318,7 +318,7 @@ class DowntimesFilter extends FormBase {
     return $result;
   }
 
-  function current_incidents_search($options) {
+  function current_incidents_search($options, $type = '') {
     $state_id = $options['state_id'];
     $service_id = $options['service_id'];
     $start_date = $options['start_date'];
@@ -352,26 +352,26 @@ class DowntimesFilter extends FormBase {
         break;
     }
     if ($time_period) {
-      /* if (arg(0) == 'node' && arg(2) == 'downtimes_search_results' && arg(3) == 'archived') {
+      if ($type == 'archived') {
         $to_date = time();
         $sql .= " and if (startdate_planned >= $from_date , startdate_planned >= $from_date, end_date >= $from_date) ";
-        }
-        else { */
-      $to_date = time();
-      $sql .= " and if (startdate_planned >= $from_date , startdate_planned >= $from_date, enddate_planned >= $from_date) ";
-      //}
+      }
+      else {
+        $to_date = time();
+        $sql .= " and if (startdate_planned >= $from_date , startdate_planned >= $from_date, enddate_planned >= $from_date) ";
+      }
     }
     else {
       if ($start_date) {
         $sql .= " and sd.startdate_planned >= $start_date";
       }
       if ($end_date) {
-        /* if (arg(0) == 'node' && arg(2) == 'downtimes_search_results' && arg(3) == 'archived') {
-          //$sql .= " and (ri.end_date <= $end_date or ci.end_date <= $end_date)";
-          }
-          else { */
-        $sql .= " and sd.enddate_planned <= $end_date";
-        //}
+        if ($type == 'archived') {
+          $sql .= " and (ri.end_date <= $end_date)";
+        }
+        else {
+          $sql .= " and sd.enddate_planned <= $end_date";
+        }
       }
     }
 
@@ -427,7 +427,7 @@ class DowntimesFilter extends FormBase {
           $sql_where .= " and scheduled_p = $type_filter ";
         }
 
-        $incidents_parameters = self::current_incidents_search($options);
+        $incidents_parameters = self::current_incidents_search($options, 'archived');
         $sql_where .= $incidents_parameters['sql_where'];
         $service = $incidents_parameters['service'];
         $state = $incidents_parameters['state'];
