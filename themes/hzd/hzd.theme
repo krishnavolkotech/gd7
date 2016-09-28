@@ -78,6 +78,16 @@ function hzd_preprocess_node(&$variables) {
     $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
     $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
   }
+  if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished()) {
+      
+    $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
+    $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
+    $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
+    
+    $url = Url::fromUserInput('/entityprint/node/' . $nid);
+    $urldata = \Drupal::l("PDF preview", $url);
+    $variables['pdf_priview'] = array('#markup' => $urldata);    
+  }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
     $reasons = array(

@@ -74,7 +74,7 @@
   ]
 %}
 <article{{ attributes.addClass(classes) }}>
-
+           
   {{ title_prefix }}
   {% if not page %}
     <h2{{ title_attributes }}>
@@ -83,6 +83,17 @@
   {% endif %}
   {{ title_suffix }}
 
+      {% if not node.isPublished() %}
+          <div class="unpublished-quickinfo-edit-link" >
+          {{ quickinfo_unpublished_edit_link }}
+          </div>
+          <div class="unpublished-quickinfo-pdf-preview">
+          {{ pdf_priview }}
+          </div>
+      {% endif %}
+
+      
+      
   {% if display_submitted %}
     <footer>
       {{ author_picture }}
