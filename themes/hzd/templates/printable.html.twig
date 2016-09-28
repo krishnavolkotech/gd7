@@ -1,0 +1,42 @@
+{#
+/**
+ * @file
+ * Default theme implementation for printer friendly version of entities.
+ *
+ * Available variables:
+ * - title: Top level node title.
+ * - base_url: URL to the home page.
+ *
+ * @see template_preprocess_printable()
+ *
+ * @ingroup themeable
+ */
+#}
+<!DOCTYPE html>
+<html{{ html_attributes }}>
+    <head>
+        <style>
+            .node_view ul li{
+                display:none;
+            }
+            .quickinfo-pdf-body {
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link type="text/css" rel="stylesheet" href="{{ base_url }}/css/drupal-printable.css" />
+        {% if include_css %}
+            <link type="text/css" rel="stylesheet" href="{{ base_path }}/{{ include_css }}" />
+        {% endif %}
+        {% if close_script %}
+            <script type="text/javascript" src="{{ close_script }}"></script>
+        {% else %}
+            <script type="text/javascript" src="{{ send_script }}"></script>
+        {% endif %}
+    </head>
+    <body>
+        {# {{ header }} #}
+        {{ content }}
+        {{ footer }}
+    </body>
+</html>

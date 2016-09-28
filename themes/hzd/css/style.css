@@ -81,6 +81,14 @@ p {
 #block-primarylinks ul li a:hover {
   background: #0c4f6d;
 }
+#block-primarylinks ul li.active {
+  width: auto;
+  display: inline-block;
+}
+#block-primarylinks ul li.active a {
+  background: #0c4f6d;
+  color: #ffffff;
+}
 footer h2,
 a.name.navbar-brand,
 #block-customtable h2.block-title,
@@ -1236,7 +1244,16 @@ form.problem-filter-form .string_search.hzd-form-element {
   color: #3370b7;
 }
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li:hover {
-  background: #0c4f6d;
+  background: rgba(20, 117, 160, 0.8);
+}
+.region-sidebar-first section.blue ul.menu.nav li.active.open {
+  background: rgba(20, 117, 160, 0.8);
+}
+.region-sidebar-first section.blue ul.menu.nav li.active.open ul li:hover {
+  background: rgba(20, 117, 160, 0.8);
+}
+.region-sidebar-first section.blue ul.menu.nav li.active.open ul li:hover a {
+  color: #fff;
 }
 #edit-services-effected .form-checkbox {
   width: 100%;
@@ -1248,10 +1265,6 @@ form.problem-filter-form .string_search.hzd-form-element {
 }
 #edit-services-effected .form-checkbox .published-services {
   position: relative;
-  float: left;
-}
-#edit-services-effected .form-checkbox .published-services .service-tooltip {
-  float: left;
 }
 #edit-services-effected .form-checkbox .published-services label {
   float: left;
@@ -1294,9 +1307,6 @@ form#downtimes-filter .type_search_dropdown {
 form#downtimes-filter .string_search.hzd-form-element {
   margin-right: 0 !important;
 }
-body.path-manage-services input[type="checkbox"] {
-  margin-left: 0 !important;
-}
 .filter_title_header {
   clear: both;
 }
@@ -1309,4 +1319,49 @@ body.path-manage-services input[type="checkbox"] {
   line-height: 50px;
   text-align: center;
   color: #e74040;
+}
+.region-sidebar-first section.blue ul.menu.nav .dropdown-menu {
+  position: inherit;
+  box-shadow: none !important;
+}
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu {
+  border-radius: 0;
+  margin: 10px 0 8px -10px;
+  padding: 0 !important;
+  width: 108%;
+  border-bottom: 1px solid rgba(20, 117, 160, 0.2);
+}
+.view-group-faqs .view-content .views-row {
+  margin: 0 0 15px 0;
+  padding: 0 0 15px 0;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  width: 100%;
+  float: left;
+}
+.view-group-faqs .view-content .views-row .faq-title {
+  width: 88%;
+  float: left;
+  margin-bottom: 5px;
+  background: #1475a0;
+  padding: 5px;
+}
+.view-group-faqs .view-content .views-row .faq-title .field-content {
+  width: 100%;
+  float: left;
+  color: #fff;
+  line-height: 22px;
+  font-size: 17px;
+}
+.view-group-faqs .view-content .views-row .views-field-body {
+  width: 100%;
+  float: left;
+}
+.view-group-faqs .view-content .views-row .btn-group {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.view-group-faqs .view-content .views-row p {
+  margin-bottom: 0 !important;
 }

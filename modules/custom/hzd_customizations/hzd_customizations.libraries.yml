@@ -15,3 +15,10 @@ hzd_node_quickinfo:
       css/hzd-node-quickinfo.css: {}
   js:
     js/hzd-node-quickinfo.js: {}
+    
+hzd_customizations_js:
+  version: 1.x
+  js:
+    js/hzd_customizations.js: {}
+  dependencies:
+    - core/jquery

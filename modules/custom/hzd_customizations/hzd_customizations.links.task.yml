@@ -1,0 +1,33 @@
+hzd_customizations.quickinfo_template:
+  title: Quickinfo template
+  route_name: hzd_customizations.quickinfo_templat
+  base_route: hzd_customizations.quickinfo_templat
+  weight: 2
+
+#add another tab next to the home tab
+hzd_customizations.quickinfo_groupid:
+  title: Autoren RZ-Schnellinfo Group Id
+  #route defined in .routing.yml
+  route_name: hzd_customizations.quickinfo_groupid
+  #route defined in .routing.yml
+  base_route: hzd_customizations.quickinfo_templat
+  weight: 1
+
+#add another tab next to the home tab
+hzd_customizations.quickinfo_uniqueid:
+  title: Default Unqiue Id
+  #route defined in .routing.yml
+  route_name: hzd_customizations.quickinfo_uniqueid
+  #route defined in .routing.yml
+  base_route: hzd_customizations.quickinfo_templat
+  weight: 1
+
+#add another tab next to the home tab
+hzd_customizations.quickinfo_template_groups:
+  title: Group names
+  #route defined in .routing.yml
+  route_name: hzd_customizations.quickinfo_template_groups
+  #route defined in .routing.yml
+  base_route: hzd_customizations.quickinfo_templat
+  weight: 1
+

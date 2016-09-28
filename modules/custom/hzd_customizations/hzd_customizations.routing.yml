@@ -26,6 +26,16 @@ hzd_customizations.quickinfo_templat:
   options:
     _admin_route: TRUE
 
+hzd_customizations.quickinfo_template_mail_template:
+  path: 'admin/messaging/quickinfo-template/mail-template'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\QuickinfoTemplat'
+    _title: 'Message template for Quick info'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
 hzd_customizations.quickinfo_groupid:
   path: 'admin/messaging/quickinfo-template/quickinfo-groupid'
   defaults:
@@ -64,6 +74,14 @@ hzd_customizations.manage_non_production_environment:
   options:
     _admin_route: TRUE
 
+hzd_customizations.quickinfo_template_groups:
+  path: 'admin/messaging/quickinfo-template/groups'
+  defaults:
+    _controller: '\Drupal\hzd_customizations\Controller\Getgroupids::get_group_ids'
+    _title: 'Group names'
+  requirements:
+    _permission: 'access all views'
+
 #hzd_customizations.quickinfo_uniqueid:
 #  path: 'admin/messaging/quickinfo-template/quickinfo-unique-id'
 #  defaults:
@@ -73,5 +91,24 @@ hzd_customizations.manage_non_production_environment:
 #    _permission: 'access administration pages'
 #  options:
 #    _admin_route: TRUE
-    
 
+#hzd_customizations.pdfpreview:
+#  path: 'group/{group}/pdfpreview/{nid}'
+#  defaults:
+#    _controller: '\Drupal\hzd_customizations\Controller\PdfpreviewController::quickinfo_pdf_preview'
+#    _title: 'PDF preview'
+#  requirements:
+## 'access arguments' => array(1),
+## 'access callback' => 'saved_quickinfo_og_is_member'
+#    _permission: 'access content'
+#    
+#hzd_customizations.:
+#  path: 'quickinfo_pdf/{nid}'
+#  defaults:
+#    _controller: '\Drupal\hzd_customizations\Controller\QuickinfopdfController::custom_quickinfo_pdf'
+#    _title: 'Quick info node PDF'
+#  requirements:
+## 'access arguments' => array(1),
+## 'access callback' => 'saved_quickinfo_og_is_member'
+#    _permission: 'access content'
+#

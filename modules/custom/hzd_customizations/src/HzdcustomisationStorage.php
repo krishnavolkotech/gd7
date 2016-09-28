@@ -643,6 +643,12 @@ class HzdcustomisationStorage {
       t('No service partner (KONSENS) available during maintenance hours'),
       t('No service interruption planned')
     );
+    if (!empty($_REQUEST['services_effected'])) {
+      $service_id = $_REQUEST['services_effected'];
+    }
+    if (!empty($_REQUEST['states'])) {
+      $states = $_REQUEST['states'];
+    }
     /* $serialized_data = unserialize($_SESSION['downtimes_query']);
       if ($string == $serialized_data['downtime_type']) {
       $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
@@ -662,7 +668,7 @@ class HzdcustomisationStorage {
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
 
     if (isset($service_id) && $service_id != 1) {
-      $service = " gdv.service_id = $service_id";
+      $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
     }
     else {
       $service = " gdv.service_id != 0";
@@ -1131,57 +1137,57 @@ class HzdcustomisationStorage {
   }
 
   /**
- *  display all non production lists
- */
-static public function get_non_productions_list() {
+   *  display all non production lists
+   */
+  static public function get_non_productions_list() {
 //  $non_productions_lists = db_query("SELECT n.nid, n.title, 
 //  ctn.field_non_production_state_value "
 //      . "FROM {node} n, {content_type_non_production_environment} ctn "
 //      . "WHERE n.nid = ctn.nid and type = '%s'", 'non_production_environment');
 //  
-  $query = \Drupal::database()->select('node_field_data','nfd');
-  $query->leftJoin('node__field_non_production_state', 'nfnpsv', 'nfd.nid = nfnpsv.entity_id');
-  $query->fields('nfd',['nid', 'title']);
-  $query->fields('nfnpsv',['field_non_production_state_value']);
-  $query->condition('nfd.type','non_production_environment');
-  $non_productions_lists = $query->execute()->fetchAll();
-  
-  $header = array(t('State'), t('Environment'), t('Operation'));
-  foreach ($non_productions_lists as $row) {
-     $query = \Drupal::database()->select('states', 's');
-     $query->Fields('s', array('state'));
-     $query->condition('s.id', $row->field_non_production_state_value);
-     $state =  $query->execute()->fetchField();
-     
-     $route_name = 'entity.node.edit_form';
-        $url = Url::fromRoute($route_name, array(
-          'node' => $row->nid,
-          )
-        );
-        
-     $edit = Link::fromTextAndUrl('Edit', $url);
-        
-     $elements = array('state' => $state, 'environment' => $row->title, 
-      'edit' => $edit);
-    $rows[] = $elements;
-  }
-  if (!isset($elements)) {
-    $output[] = t('No Data to be displayed');
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->leftJoin('node__field_non_production_state', 'nfnpsv', 'nfd.nid = nfnpsv.entity_id');
+    $query->fields('nfd', ['nid', 'title']);
+    $query->fields('nfnpsv', ['field_non_production_state_value']);
+    $query->condition('nfd.type', 'non_production_environment');
+    $non_productions_lists = $query->execute()->fetchAll();
+
+    $header = array(t('State'), t('Environment'), t('Operation'));
+    foreach ($non_productions_lists as $row) {
+      $query = \Drupal::database()->select('states', 's');
+      $query->Fields('s', array('state'));
+      $query->condition('s.id', $row->field_non_production_state_value);
+      $state = $query->execute()->fetchField();
+
+      $route_name = 'entity.node.edit_form';
+      $url = Url::fromRoute($route_name, array(
+            'node' => $row->nid,
+              )
+      );
+
+      $edit = Link::fromTextAndUrl('Edit', $url);
+
+      $elements = array('state' => $state, 'environment' => $row->title,
+        'edit' => $edit);
+      $rows[] = $elements;
+    }
+    if (!isset($elements)) {
+      $output[] = t('No Data to be displayed');
+      return $output;
+    }
+    $output = array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+      '#attributes' => array(
+        'id' => 'non-production-env',
+        'class' => 'non-production-env'
+      ),
+      '#prefix' => '<div id="non_production_state_wrapper">',
+      '#suffix' => '</div>',
+    );
+
     return $output;
   }
-  $output = array(
-          '#theme' => 'table',
-          '#header' => $header,
-          '#rows' => $rows,
-          '#attributes' => array(
-              'id' => 'non-production-env', 
-              'class' => 'non-production-env'
-              ),
-          '#prefix' => '<div id="non_production_state_wrapper">',
-          '#suffix' => '</div>',
-        );
-  
-  return $output;
-}
 
 }
