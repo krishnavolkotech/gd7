@@ -1,14 +1,3 @@
-<table border="1" width="100%">
-    <tr>
-        <td><img alt="Home" src="/sites/default/files/hzb-logo.jpg"></td>
-        <td>{{ content.field_unique_id }}
-            {{ label }}</td>
-        <td>Veröffentlicht am:
-            {{ changed }}
-            <hr>
-            Veröffentlicht von:
-            {{ author_name }}</td>
-    </tr></table>
 <h2>1 Meta-Daten</h2>
 {% if content.field_custom_title.0 %}
     {{ content.field_custom_title }}
@@ -18,30 +7,30 @@
         <div class="field--item"> Keine Angabe</div>
     </div>
 {% endif %}
-    {% if content.field_related_transfer_number.0 %}
-        {{ content.field_related_transfer_number }}
-    {% else %}
-        <div class="field field--name-field-related-transfer-number field--label-above">
-            <div class="field--label">1.2 Related to software transfer no.</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_other_services.0 %}
-        {{ content.field_other_services }}
-    {% else %}
-        <div class="field field--name-field-other-services field--label-above">
-            <div class="field--label">1.3 Affected service ids (according Progdok)</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_recipients.0 %}
-        {{ content.field_recipients }}
-    {% else %}
-        <div class="field field--name-field-recipients field--label-above">
-            <div class="field--label">1.4 Recipients</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
+{% if content.field_related_transfer_number.0 %}
+    {{ content.field_related_transfer_number }}
+{% else %}
+    <div class="field field--name-field-related-transfer-number field--label-above">
+        <div class="field--label">1.2 Related to software transfer no.</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_other_services.0 %}
+    {{ content.field_other_services }}
+{% else %}
+    <div class="field field--name-field-other-services field--label-above">
+        <div class="field--label">1.3 Affected service ids (according Progdok)</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_recipients.0 %}
+    {{ content.field_recipients }}
+{% else %}
+    <div class="field field--name-field-recipients field--label-above">
+        <div class="field--label">1.4 Recipients</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
 <h2>2 Fachlich-inhaltliche Angaben</h2>
 {% if content.field_intial_situation.0 %}
     {{ content.field_intial_situation }}
@@ -51,99 +40,99 @@
         <div class="field--item"> Keine Angabe</div>
     </div>
 {% endif %}
-    {% if content.field_professional_conditions.0 %}
-        {{ content.field_professional_conditions }}
-    {% else %}
-        <div class="field field--name-field-professional-conditions field--label-above">
-            <div class="field--label">2.2 Professional / organizational conditions for employment</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_tech_requirements.0 %}
-        {{ content.field_tech_requirements }}
-    {% else %}
-        <div class="field field--name-field-tech-requirements field--label-above">
-            <div class="field--label">2.3 Technical Requirements for use</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_depend_other_services.0 %}
-        {{ content.field_depend_other_services }}
-    {% else %}
-        <div class="field field--name-field-depend-other-services field--label-above">
-            <div class="field--label">2.4 Depending on the use of other services</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_business_impact.0 %}
-        {{ content.field_business_impact }}
-    {% else %}
-        <div class="field field--name-field-business-impact field--label-above">
-            <div class="field--label">2.5 Business impact</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_technical_impact.0 %}
-        {{ content.field_technical_impact }}
-    {% else %}
-        <div class="field field--name-field-technical-impact field--label-above">
-            <div class="field--label">2.6 Technical impact</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_business_impact_services.0 %}
-        {{ content.field_business_impact_services }}
-    {% else %}
-        <div class="field field--name-field-business-impact-services field--label-above">
-            <div class="field--label">2.7 Business impact on other (business) services</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_technical_impact_services.0 %}
-        {{ content.field_technical_impact_services }}
-    {% else %}
-        <div class="field field--name-field-technical-impact-services field--label-above">
-            <div class="field--label">2.8 Technical impact on other (business) services</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_special_notes.0 %}
-        {{ content.field_special_notes }}
-    {% else %}
-        <div class="field field--name-field-special-notes field--label-above">
-            <div class="field--label">2.9 Special notes</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_dates.0 %}
-        {{ content.field_dates }}
-    {% else %}
-        <div class="field field--name-field-dates field--label-above">
-            <div class="field--label">2.10 Dates</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_creators.0 %}
-        {{ content.field_creators }}
-    {% else %}
-        <div class="field field--name-field-creators field--label-above">
-            <div class="field--label">2.11 Creators</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.field_contact.0 %}
-        {{ content.field_contact }}
-    {% else %}
-        <div class="field field--name-field-contact field--label-above">
-            <div class="field--label">2.12 Contact</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
-    {% if content.upload.0 %}
-        {{ content.upload }}
-    {% else %}
-        <div class="field field--name-field-contact field--label-above">
-            <div class="field--label">2.13 Dateianhänge</div>
-            <div class="field--item"> Keine Angabe</div>
-        </div>
-    {% endif %}
+{% if content.field_professional_conditions.0 %}
+    {{ content.field_professional_conditions }}
+{% else %}
+    <div class="field field--name-field-professional-conditions field--label-above">
+        <div class="field--label">2.2 Professional / organizational conditions for employment</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_tech_requirements.0 %}
+    {{ content.field_tech_requirements }}
+{% else %}
+    <div class="field field--name-field-tech-requirements field--label-above">
+        <div class="field--label">2.3 Technical Requirements for use</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_depend_other_services.0 %}
+    {{ content.field_depend_other_services }}
+{% else %}
+    <div class="field field--name-field-depend-other-services field--label-above">
+        <div class="field--label">2.4 Depending on the use of other services</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_business_impact.0 %}
+    {{ content.field_business_impact }}
+{% else %}
+    <div class="field field--name-field-business-impact field--label-above">
+        <div class="field--label">2.5 Business impact</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_technical_impact.0 %}
+    {{ content.field_technical_impact }}
+{% else %}
+    <div class="field field--name-field-technical-impact field--label-above">
+        <div class="field--label">2.6 Technical impact</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_business_impact_services.0 %}
+    {{ content.field_business_impact_services }}
+{% else %}
+    <div class="field field--name-field-business-impact-services field--label-above">
+        <div class="field--label">2.7 Business impact on other (business) services</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_technical_impact_services.0 %}
+    {{ content.field_technical_impact_services }}
+{% else %}
+    <div class="field field--name-field-technical-impact-services field--label-above">
+        <div class="field--label">2.8 Technical impact on other (business) services</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_special_notes.0 %}
+    {{ content.field_special_notes }}
+{% else %}
+    <div class="field field--name-field-special-notes field--label-above">
+        <div class="field--label">2.9 Special notes</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_dates.0 %}
+    {{ content.field_dates }}
+{% else %}
+    <div class="field field--name-field-dates field--label-above">
+        <div class="field--label">2.10 Dates</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_creators.0 %}
+    {{ content.field_creators }}
+{% else %}
+    <div class="field field--name-field-creators field--label-above">
+        <div class="field--label">2.11 Creators</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.field_contact.0 %}
+    {{ content.field_contact }}
+{% else %}
+    <div class="field field--name-field-contact field--label-above">
+        <div class="field--label">2.12 Contact</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
+{% if content.upload.0 %}
+    {{ content.upload }}
+{% else %}
+    <div class="field field--name-field-contact field--label-above">
+        <div class="field--label">2.13 Dateianhänge</div>
+        <div class="field--item"> Keine Angabe</div>
+    </div>
+{% endif %}
