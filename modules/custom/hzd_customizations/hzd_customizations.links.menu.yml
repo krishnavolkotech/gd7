@@ -11,3 +11,34 @@ hzd_customizations.manage_non_production_environment:
   parent: system.admin_config
   description: 'Manage Non-Production Environment'
   weight: 100
+
+hzd_customizations.notification:
+  title: 'Notification'
+  route_name: system.admin
+  parent: system.admin
+  description: 'Manage Non-Production Environment'
+  weight: 50
+
+hzd_customizations.quickinfo_templat:
+  title: 'Quickinfo template'
+  route_name: hzd_customizations.quickinfo_templat
+  parent: hzd_customizations.notification
+  description: 'Quickinfo template'
+
+hzd_customizations.quickinfo_groupid:
+  title: 'Autoren RZ-Schnellinfo Group Id'
+  route_name: hzd_customizations.quickinfo_groupid
+  parent: hzd_customizations.notification
+  description: 'Autoren RZ-Schnellinfo Group Id'
+
+hzd_customizations.quickinfo_uniqueid:
+  title: 'Default Unqiue Id'
+  route_name: hzd_customizations.quickinfo_uniqueid
+  parent: hzd_customizations.notification
+  description: 'Default Unqiue Id'
+
+hzd_customizations.quickinfo_template_groups:
+  title: 'Group names'
+  route_name: hzd_customizations.quickinfo_template_groups
+  parent: hzd_customizations.notification
+  description: 'Group names'
