@@ -69,7 +69,7 @@ class AccessController extends ControllerBase {
       $groupMember = $group->getMember(\Drupal::currentUser());
       if ($groupMember) {
         $roles = $groupMember->getRoles();
-        if (!empty($roles) && in_array($group->bundle() . '-admin', array_keys($roles))) {
+        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator',\Drupal::currentUser()->getRoles()))) {
           return AccessResult::allowed();
         }
       }

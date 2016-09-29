@@ -5,6 +5,7 @@ namespace Drupal\cust_group\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
+use Drupal\node\Entity\Node;
 
 /**
  * Returns responses for Node routes.
@@ -45,14 +46,14 @@ class CustNodeController extends ControllerBase {
     $member = \Drupal::routeMatch()->getParameter('group_content');
     $user = \Drupal\user\Entity\User::load($member->get('entity_id')->referencedEntities()[0]->id());
     $view_builder = \Drupal::entityManager()->getViewBuilder('user');
-    return $view_builder->view($user);;
+    return $view_builder->view($user);
   }
 
   static function hzdGroupAccess(){
     if($group = \Drupal::routeMatch()->getParameter('group')){
 			if(!is_object($group))
 				$group = \Drupal\group\Entity\Group::load($group);
-      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator',\Drupal::currentUser()->getRoles())){
 				return AccessResult::allowed();
       }else{
         return AccessResult::forbidden();
@@ -80,6 +81,9 @@ class CustNodeController extends ControllerBase {
     if(!$group_id){
       return false;
     }
+		if(in_array('site_administrator',\Drupal::currentUser()->getRoles())){
+			return true;
+		}
     $group = \Drupal\group\Entity\Group::load($group_id);
       $content = $group->getMember(\Drupal::currentUser());
       if($content){
@@ -88,6 +92,7 @@ class CustNodeController extends ControllerBase {
               ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
           return (bool)!empty($adminquery);
       }
+			
     return false;
   }
 	
@@ -105,5 +110,17 @@ class CustNodeController extends ControllerBase {
 			return $checkGroupNode;
 		}
 		return false;
+	}
+	
+	function groupNodeEdit(){
+		//pr(\Drupal::routeMatch()->getParameter('group_content'));exit;
+		$group_content = \Drupal::routeMatch()->getParameter('group_content');
+		$group = \Drupal::routeMatch()->getParameter('group');
+		$node = $group_content->get('entity_id')->referencedEntities()[0];
+		$form = \Drupal::entityTypeManager()
+			->getFormObject('node', 'default')
+			->setEntity($node);
+		$url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical',['group'=>$group->id(),'group_content'=>$group_content->id()]);
+		return \Drupal::formBuilder()->getForm($form,['redirect'=>$url]);
 	}
 }
