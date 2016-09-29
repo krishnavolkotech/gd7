@@ -39,12 +39,11 @@ class DowntimessettingForm extends FormBase {
     $type = 'downtimes';
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
-
     $group_downtimes_view_service_query = \Drupal::database()->select('group_downtimes_view', 'gdv');
     $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
-    $group_downtimes_view_service_query->conditions('group_id', $group_id, '=');
+    $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
     $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchAll();
-
+    
     foreach ($group_downtimes_view_service as $service) {
       $default_services[$service->service_id] = $service->service_id;
     }
