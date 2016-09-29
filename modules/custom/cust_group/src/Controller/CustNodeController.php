@@ -81,7 +81,7 @@ class CustNodeController extends ControllerBase {
     if(!$group_id){
       return false;
     }
-		if(in_array('site_administrator',\Drupal::currentUser()->getRoles())){
+		if(in_array('site_administrator',\Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1){
 			return true;
 		}
     $group = \Drupal\group\Entity\Group::load($group_id);
