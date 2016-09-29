@@ -5,6 +5,7 @@ namespace Drupal\hzd_release_management;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\Core\Url;
+// use Drupal\Core\Render;
 
 if (!defined('RELEASE_MANAGEMENT')) {
     define('RELEASE_MANAGEMENT', 32);
@@ -795,8 +796,8 @@ class HzdreleasemanagementHelper {
             // }
             $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
           //  $data = \Drupal\Component\Utility\Html::load($other_services);
-
-            $rows[] = array($id, $state_name, $title, htmlspecialchars($other_services), $related_sw_transfer_num, $published, $details);
+            
+            $rows[] = array($id, $state_name, $title, t($other_services), $related_sw_transfer_num, $published, $details);
         }
         if ($rows) {
             $build['quickinfo_table'] = array(

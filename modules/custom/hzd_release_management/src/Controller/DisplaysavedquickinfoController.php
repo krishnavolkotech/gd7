@@ -80,7 +80,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
           $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
           // $data = \Drupal\Component\Utility\Html::load($other_services);
 
-          $rows[] = array($state_name, $title, htmlspecialchars($other_services), $related_sw_transfer_num, $published,  $details);
+          $rows[] = array($state_name, $title, t($other_services), $related_sw_transfer_num, $published,  $details);
        }
 
        if ($rows) {
