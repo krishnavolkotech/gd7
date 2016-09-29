@@ -106,17 +106,17 @@
 	      return false;
 	    });
 
-	    $('.problems_details_link').click(function(){
-	      var query = $(this).attr('query');
-	      var nid = $(this).attr('nid');
-	      var url = drupalSettings.problem_management.basePath + 'back_to_search';
-	      $.post(url, {'from':'problems','query':query}, function(data) {
-		if (data.status == true) {
-		  window.location.href = drupalSettings.problem_management.basePath + 'node/' + nid;
-		}
-	      }, 'json');
-	      return false;
-	    });
+//	    $('.problems_details_link').click(function(){
+//	      var query = $(this).attr('query');
+//	      var nid = $(this).attr('nid');
+//	   //   var url = drupalSettings.problem_management.basePath + 'back_to_search';
+//	      $.post(url, {'from':'problems','query':query}, function(data) {
+//		if (data.status == true) {
+//		  window.location.href = drupalSettings.problem_management.basePath + 'node/' + nid;
+//		}
+//	      }, 'json');
+//	      return false;
+//	    });
 
         $('#import_search_results_wrapper .pager li a').click(function() {
           var ele = $(this);

@@ -703,9 +703,9 @@ class HzdStorage {
             $_SESSION['problems_query'] = $query_seralized;
             $url = Url::fromUserInput('/node/' . $problems_node->nid->value, array(
                         'attributes' => array(
-                            'class' => 'problems_details_link',
+                 //           'class' => 'problems_details_link',
                             'nid' => $problems_node->nid->value,
-                            'query' => $query_seralized,
+                //            'query' => $query_seralized,
             )));
 
             $download_link = array('#title' => array(

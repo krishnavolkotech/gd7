@@ -268,7 +268,7 @@ class ProblemFilterFrom extends FormBase {
      $result = self::ahah_problems_display($form, $form_state, $sql_where['query'], $string, $limit);
    // $sql_where['0']['or']['0']['field'] == 'nfsn.field_s_no_value'
      
-     dpm($sql_where);
+     
   //    $this->redirect('user.page');
      if (array_key_exists("sid",$sql_where)) {
          $output = array();
@@ -328,8 +328,6 @@ class ProblemFilterFrom extends FormBase {
     $_SESSION['sql_where'] = $sql_where;
     $_SESSION['limit'] = $limit;
     $form_state->setRebuild(TRUE);
- //        dpm($sql_where);
-  //   $this->redirect('user.page');
     $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>" ;
     $result['content']['problems_filter_element'] = $form;
     $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
@@ -339,17 +337,6 @@ class ProblemFilterFrom extends FormBase {
     $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
    // $result['content']['problems_default_display']['#suffix'] = '</div>';
     $result['content']['#suffix'] = "</div>";
-    
-//       $form_state->setRedirect('entity.node.canonical',
-//                         array('node' => 123),
-//                                    array(
-//                                      'query' => array(
-//                                        'foo' => 'bar',
-//                                      ),
-//                                      'fragment' => 'baz',
-//                                    )
-//                          );
-
     return $result;
   }
 }
