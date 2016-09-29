@@ -49,16 +49,18 @@ function hzd_preprocess_html(&$variables) {
     $variables['attributes']['class'][] = 'hzd-secondary-tabs';
   }
 }
+
 /*
-function hzd_preprocess_printable_header(&$variables) {
+  function hzd_preprocess_printable_header(&$variables) {
   global $base_url;
   $quickinfo_node = \Drupal::routeMatch()->getParameter('entity');
   $variables['unique_id'] = $quickinfo_node->get('field_unique_id')->value;
   $variables['base_path'] = $base_url;
   $variables['changed'] = date('d.m.Y', $quickinfo_node->get('changed')->value);
   $variables['author_name'] = $quickinfo_node->get('field_author_name')->value;
-}
-*/
+  }
+ */
+
 function hzd_preprocess_printable(&$variables) {
   global $base_url;
   $variables['unique_id'] = $variables['content']['#node']->get('field_unique_id')->value;
@@ -79,7 +81,7 @@ function hzd_preprocess_printable(&$variables) {
  */
 function hzd_preprocess_node(&$variables) {
   $config = \Drupal::config('planning.settings');
-  $nid = $variables['node']->id();  
+  $nid = $variables['node']->id();
   if ($nid == $config->get('mlrp')) {
     $files = get_related_files('mlrp');
     $variables['mlrp_files'] = $files;
@@ -101,16 +103,19 @@ function hzd_preprocess_node(&$variables) {
     $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
     $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
     $variables['changed'] = date('d.m.Y', $variables['node']->get('changed')->value);
+    if (isset($variables['elements']['#revisions_table_print'])) {
+      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
+    }
   }
   if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished()) {
-      
+
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
     $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
-    
+
     $url = Url::fromUserInput('/entityprint/node/' . $nid);
     $urldata = \Drupal::l("PDF preview", $url);
-    $variables['pdf_priview'] = array('#markup' => $urldata);    
+    $variables['pdf_priview'] = array('#markup' => $urldata);
   }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
