@@ -144,11 +144,19 @@ class LocaleLookup extends CacheCollector {
     else {
       // We don't have the source string, update the {locales_source} table to
       // indicate the string is not translated.
+      // Check if we know something about the current request, or if someone is
+      // calling the t() function way too early, for example in a global context
+      // when defining a global constant.
+      $request = $this->requestStack->getCurrentRequest();
+      if (!$request) {
+        throw new \Exception('t() function called without request context. Possibly cause: use of t() in a global context.');
+      }
       $this->stringStorage->createString(array(
         'source' => $offset,
         'context' => $this->context,
         'version' => \Drupal::VERSION,
-      ))->addLocation('path', $this->requestStack->getCurrentRequest()->getRequestUri())->save();
+//      ))->addLocation('path', $this->requestStack->getCurrentRequest()->getRequestUri())->save();
+))->addLocation('path', $request->getRequestUri())->save();
       $value = TRUE;
     }
 

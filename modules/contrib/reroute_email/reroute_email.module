@@ -6,7 +6,7 @@
  */
 
 define('REROUTE_EMAIL_ADDRESS', 'reroute_email_address');
-define('REROUTE_EMAIL_ADDRESS_EMPTY_PLACEHOLDER', t('[No reroute email address configured]'));
+define('REROUTE_EMAIL_ADDRESS_EMPTY_PLACEHOLDER', '[No reroute email address configured]');
 define('REROUTE_EMAIL_ENABLE_MESSAGE', 'reroute_email_enable_message');
 define('REROUTE_EMAIL_ENABLE', 'reroute_email_enable');
 
