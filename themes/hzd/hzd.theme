@@ -113,7 +113,9 @@ function hzd_preprocess_node(&$variables) {
     $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
 
-    $url = Url::fromUserInput('/entityprint/node/' . $nid);
+    //$url = Url::fromUserInput('/entityprint/node/' . $nid);
+    
+    $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
     $urldata = \Drupal::l("PDF preview", $url);
     $variables['pdf_priview'] = array('#markup' => $urldata);
   }
