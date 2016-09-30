@@ -42,11 +42,10 @@ class Inactiveuserhelper {
 /**
  * Wrapper for user_mail.
  */
-function inactive_user_mail($subject, $message, $period, $user = NULL, $user_list = NULL) {
+  static public function inactive_user_mail($subject, $message, $period, $user = NULL, $user_list = NULL) {
   global $base_url;
-
   if ($user_list) {
-    $to = _inactive_user_admin_mail();
+    $to = InactiveuserStorage::inactive_user_admin_mail();
     $variables = array(
       '%period' => \Drupal::service('date.formatter')->formatInterval($period),
       '%sitename' => \Drupal::config('system.site')->get('site_name'),

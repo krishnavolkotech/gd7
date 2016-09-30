@@ -34,10 +34,21 @@ class InactiveuserStorage {
    * The settings of inactive_user.module allow to protect such
    * users from deletion.
    */
-  function _inactive_user_with_content($uid) {
-    $user_has_nodes = db_select('node', 'n')->fields('n', array('uid'))->condition('n.uid', $uid)->execute()->rowcount();
-
-    $user_has_comments = db_select('comment', 'c')->fields('c', array('uid'))->condition('c.uid', $uid)->execute()->rowcount();
+  static public function _inactive_user_with_content($uid) {
+    $query = \Drupal::database()->select('node_field_data', 'n');
+    $query->Fields('n', array('nid', 'title'));
+    $query->condition('type', 'group', '=');
+    $group = $query->execute()->fetchObject();
+    
+    $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->addExpression('count(*)');
+    $query->condition('nfd.uid', $uid);
+     $user_has_nodes = $query->execute()->fetchField();
+    
+    $query = \Drupal::database()->select('comment_field_data', 'cfd');
+    $query->addExpression('count(*)');
+    $query->condition('cfd.uid', $uid);
+    $user_has_comments = $query->execute()->fetchField();
 
     return (($user_has_nodes + $user_has_comments) > 0) ? 1 : 0;
   }

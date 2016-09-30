@@ -266,26 +266,30 @@ class InactiveuserSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
-  /**
-   * Verifies the admin email submission is a properly formatted address.
+ /**
+   * {@inheritdoc}
    */
-  function inactive_user_validate($form, &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+          
     $valid_email = $form_state->getValue('inactive_user_admin_email');
     $mails = explode(',', $valid_email);
     $count = 0;
     foreach ($mails as $mail) {
-      if ($mail && !valid_email_address(trim($mail))) {
+      $valid = \Drupal::service('email.validator')->isValid(trim($mail));
+      if ($mail && !$valid) {
         $invalid[] = $mail;
         $count++;
       }
     }
+
     if ($count == 1) {
-      form_set_error('inactive_user_admin_email', $form_state, t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));
+      $form_state->setErrorByName('inactive_user_admin_email', t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));
       // form_set_error('inactive_user_admin_email', t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));.
     }
     elseif ($count > 1) {
-      form_set_error('inactive_user_admin_email', $form_state, t('The following e-mail addresses are invalid: %mail', array('%mail' => implode(', ', $invalid))));
+      $form_state->setErrorByName('inactive_user_admin_email',  t('The following e-mail addresses are invalid: %mail', array('%mail' => implode(', ', $invalid))));
     }
+    parent::validateForm($form, $form_state);
   }
 
   /**
