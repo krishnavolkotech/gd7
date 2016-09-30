@@ -1265,6 +1265,7 @@ form.problem-filter-form .string_search.hzd-form-element {
 }
 #edit-services-effected .form-checkbox .published-services {
   position: relative;
+  margin-left: 21px;
 }
 #edit-services-effected .form-checkbox .published-services label {
   float: left;
