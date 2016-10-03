@@ -20,14 +20,7 @@ class Getgroupids  extends ControllerBase {
      * Menu callback; presents the node editing form, or redirects to delete confirmation.
      */
     function get_group_ids() {
-//        $group_names = db_query("SELECT n.nid,n.title FROM {node} n,{og} og
-//                           WHERE n.nid=og.nid ORDER BY title ASC");
-//        $table = "<table border='1'><tr><th>" . t("Group Name") . "</th><th>" . t("Group Id") . "</th></tr>";
-//        while ($row = db_fetch_array($group_names)) {
-//          $table .= "<tr><td>" . $row['title'] . "</td>";
-//          $table .= "<td>" . $row['nid'] . "</td></tr>";
-//        }
-      $query = \Drupal::entityQuery('group')->sort('id', 'ASC')->execute();
+     $query = \Drupal::entityQuery('group')->sort('id', 'ASC')->execute();
       // $query = [31=>31,32=>32];  
       $header = array(t('Group Name'), t('Group Id'));
       foreach ($query as $row) {
