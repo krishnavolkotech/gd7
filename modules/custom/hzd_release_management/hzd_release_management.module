@@ -254,7 +254,7 @@ function get_release_type($type) {
  */
 function hzd_release_management_cron() {
   $readExcel = new Drupal\hzd_release_management\Controller\ReadexcelController();
-  $readExcel->read_problem_csv();
+  $readExcel->read_release_csv();
 }
 
 /*
