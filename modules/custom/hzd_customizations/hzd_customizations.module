@@ -142,10 +142,13 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
         $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
         $form['field_author_name']['#suffix'] = '</div>';
 
-
+        $userState = \Drupal::database()->select('cust_profile', 'cp')
+            ->fields('cp',['state_id'])
+            ->condition('uid',$user->id())
+            ->execute()->fetchField();
         $query = \Drupal::database()->select('states', 's');
         $query->Fields('s', array('state'));
-        $query->condition('s.id', $user->user_state);
+        $query->condition('s.id', $userState);
         $state = $query->execute()->fetchField();
 
 //        $form['quick_info_confirm_message'] = array(

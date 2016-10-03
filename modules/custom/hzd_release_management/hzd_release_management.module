@@ -390,7 +390,7 @@ function send_pf_notifications($entity) {
 // send immediate Quickinfo Notifications
 // TODONOTIFICATIONS
 function send_qi_notifications($entity) {
-    return;
+      global $base_url;
   $services = $entity->get('field_other_services')->getValue();
   $result = hzd_get_immediate_qi_notification_user_mails($services);
   if(is_array($result) && count($result) > 0) {
@@ -398,12 +398,11 @@ function send_qi_notifications($entity) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
       // trigger mail functionality to send immediate notifications of quickinfo
-      $token_service = \Drupal::token();
-      $q_sub = \Drupal::config('hzd_notifications.settings')->get('quickinfo_subject');
-      $subject = $token_service->replace($q_sub, array('node' => $entity));
-      $q_body = \Drupal::config('hzd_notifications.settings')->get('quickinfo_body')['value'];
+      $markup = ['#theme'=>'node__quickinfo__pdf','#node'=>$entity];
+      $style = \Drupal::service('printable.css_include')->getCssIncludePath();
       // Replace the token for subject.
-      $message_text = $token_service->replace($q_body, array('node' => $entity));
+      $subject = $entity->label() . " has been updated.";
+      $message_text = \Drupal::service('renderer')->render($markup).'<link rel="stylesheet" href="'.$base_url.'/'.$style.'" media="all" />';
       send_immediate_notifications($subject, $message_text, $mail, $preference);
     }
   }
