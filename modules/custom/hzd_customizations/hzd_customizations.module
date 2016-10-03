@@ -8,6 +8,7 @@ use Drupal\node\NodeInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\node\Entity\Node;
 use Drupal\hzd_services\HzdservicesStorage;
+use Drupal\hzd_notifications;
 
 if (SITE_ADMIN) {
     define('SITE_ADMIN', 'site_administrator');
@@ -43,7 +44,7 @@ function hzd_customizations_mail($key, &$message, $params) {
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = $params['subject'];
             $message['body'][] = Html::escape($params['message']);
-            $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+            $message['headers']['Content-Type'] = (isset($params['preference']) == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
             break;
 
         case 'hzd_customizations_additional_email':
@@ -109,7 +110,7 @@ function get_related_files($planning_filename) {
  * implements hook_form_alter
  */
 function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  
+
   $user = \Drupal::service('current_user');
   $uid = $user->id();
   $formatted_name = $user->getDisplayName();
@@ -354,7 +355,7 @@ function custom_quickinfo(&$form, \Drupal\Core\Form\FormStateInterface $form_sta
     if (!empty($additional_email_recipients)) {
         $email_recipients = str_replace(",", " ", $additional_email_recipients[0]['value']);
         foreach (explode(" ", $email_recipients) as $email) {
-            if (!valid_email_address(trim($email)) && trim($email)) {
+            if (!\Drupal::service('email.validator')->isValid(trim($email)) && trim($email)) {
                 // form_set_error('',t('Invalid mail id'));
                 $form_state->setErrorByName('field_additional_email_recipient', t("Enter valid email"));
             }
@@ -400,189 +401,6 @@ function hzd_customizations_views_query_alter(Drupal\views\ViewExecutable $view,
     }
 }
 
-function hzd_customizations_node_quickinfo_presave(Drupal\Core\Entity\EntityInterface $entity) {
-//    if ($node->type == 'quickinfo') {
-//        $node->field_unique_id[0]['value'] = '';
-//        $document_root = \Drupal::request()->server->get('DOCUMENT_ROOT');
-//        $path = $document_root . "/files";
-//        if ($node->isPublished()) {
-//            $query = \Drupal::database()->select('node__field_unique_id', 'nfui');
-//            $query->addExpression('max(field_unique_id_value)');
-//            $quick_info_id = $query->execute()->fetchField();
-//
-//            $default_unique_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_default_unique_id');
-//
-//            $quick_info_val = empty($quick_info_id) ? $default_unique_id : ($quick_info_id + 1);
-//
-//            $node->field_unique_id[0]['value'] = $quick_info_val;
-//            $id = $node->field_unique_id[0]['value'];
-//            $file_directory_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-//            $quickinfo_dir = $file_directory_path . "/rz-schnellinfos/" . $id . "/";
-//
-//            if (!is_dir($quickinfo_dir)) {
-//                shell_exec("mkdir -p " . $quickinfo_dir);
-//            }
-//
-//            if (!empty($node->files) && $node->nid == '') {
-//                foreach ($node->files as $attachments) {
-//                    $quickinfo_filename = array_pop(explode("/", $attachments['filepath']));
-//                    $quickinfo_attach_filepath = $quickinfo_dir . $quickinfo_filename;
-//                    $quickinfo_fid = $attachments['fid'];
-//                    shell_exec("cp -a " . $file_directory_path . "/'" . $quickinfo_filename . "' " . $quickinfo_dir);
-//                    // do entity query 
-//
-//                    $query = \Drupal::entityQuery('files')
-//                        ->condition('fid', $quickinfo_fid);
-//                    $fid = $query->execute();
-//
-//                    $file = \Drupal\file\Entity\File::load();
-//                    $file->set('filepath', $quickinfo_attach_filepath);
-//                    $file->save();
-//                    // db_query("UPDATE {files} SET filepath = '%s' WHERE fid = %d", $quickinfo_attach_filepath, $quickinfo_fid);
-//                }
-//            }
-//            elseif (!empty($node->files) && $node->nid != '') {
-//                foreach ($node->files as $attachments) {
-//                    $quickinfo_filename = array_pop(explode("/", $attachments['filepath']));
-//                    $quickinfo_attach_filepath = $quickinfo_dir . $quickinfo_filename;
-//                    $quickinfo_fid = $attachments['fid'];
-//
-//                    $attach_filename = $file_directory_path . "/" . $quickinfo_filename;
-//
-//                    $filemime = db_result(db_query("SELECT filemime FROM {files} WHERE fid = %d", $quickinfo_fid));
-//
-//                    $filemime_type = explode("/", $filemime);
-//                    if ($filemime_type[0] == 'image') {
-//                        shell_exec("cp -a '" . $attach_filename . "' " . $quickinfo_dir);
-//                    }
-//                    else {
-//                        shell_exec("cp -a '" . $attach_filename . "' " . $quickinfo_dir);
-//                    }
-//                    $query = \Drupal::entityQuery('files')
-//                        ->condition('fid', $quickinfo_fid);
-//                    $fid = $query->execute();
-//
-//                    $file = \Drupal\file\Entity\File::load();
-//                    $file->set('filepath', $quickinfo_attach_filepath);
-//                    $file->save();
-//                }
-//            }
-//            /**
-//             * to do 
-//             */
-////    module_load_include('inc','pathauto','pathauto');
-////    
-////    $source_og =  token_replace("[ogname-raw]", $type = 'node', $node, $leading = '[', $trailing = ']', $options = array());
-////    $source_og =  pathauto_cleanstring(strtolower($source_og));
-////    $source_type = "rz-schnellinfo";
-////    $source_title = pathauto_cleanstring(strtolower($node->title));
-////    $source_url = substr($source_og . "/" .  $source_type . "/" .  $source_title,0, variable_get('pathauto_max_length',100));
-//
-//        $quickinfo_url_alias = Url::fromUserInput(
-//            "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
-//            );
-//
-//          if ($node->files) {
-//            $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
-//                $pdf_attachment = \Drupal::config('hzd_customizations.settings')->get('quick_info_content');
-//                $pdf_attachment . "<br/><b>" . t("2.13 File attachments") . "</b><br/>" . $files_attachments . "<br/><b><hr>" .  t('Link zur RZ-Schnellinfo im BpK: ') 
-//                    . "</b><br>" . $link;
-//          }
-//          else {
-//            $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
-//            $pdf_attachment = \Drupal::config('hzd_customizations.settings')->get('quick_info_content');
-//             $pdf_attachment . "<br/><p><hr><b>" .  t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $link;
-//          }
-//          
-//           $token_service = \Drupal::token();
-//           /*
-//            * to do 
-//            */
-//            // Replace the token for subject.
-//        $quick_info_attachments = $token_service->replace($config['recipient'], array('comment' => $entity));
-//  
-//        $quick_info_attachments = token_replace($pdf_attachment, $type = 'node', $node, $leading = '[', $trailing = ']', $options = array());
-//        $quick_info_attachments = theme('custom_print_page', $quick_info_attachments, 'html');
-//
-//          $print_pdf_pdf_tool = variable_get('print_pdf_pdf_tool', PRINT_PDF_PDF_TOOL_DEFAULT);
-//          $print_pdf_paper_size = variable_get('print_pdf_paper_size', PRINT_PDF_PAPER_SIZE_DEFAULT);
-//          $print_pdf_page_orientation = variable_get('print_pdf_page_orientation', PRINT_PDF_PAGE_ORIENTATION_DEFAULT);
-//          $print_pdf_content_disposition = variable_get('print_pdf_content_disposition', PRINT_PDF_CONTENT_DISPOSITION_DEFAULT);
-//          $print_pdf_wkhtmltopdf_options = variable_get('print_pdf_wkhtmltopdf_options', PRINT_PDF_WKHTMLTOPDF_OPTIONS);
-//
-//          $dpi = 96;
-//
-//          if (function_exists('token_replace') && !empty($print_pdf_wkhtmltopdf_options)) {
-//            $print_pdf_wkhtmltopdf_options = token_replace($print_pdf_wkhtmltopdf_options, 'node', $print['node']);
-//          }
-//
-//          $version = custom_print_pdf_wkhtmltopdf_version();
-//          $print_pdf_pdf_tool = 'sites/all/modules/community/print/wkhtmltopdf/wkhtmltopdf-i386';
-//          $print_pdf_wkhtmltopdf_options = '--disallow-local-file-access ' . $print_pdf_wkhtmltopdf_options;
-//          $descriptor = array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w'));
-//          
-//          
-//          global $base_url;
-//          $header_html = $base_url . '/generate_pdf/' . $id . '/' . $user->uid . '/' . $node->changed . '/' . drupal_urlencode(str_replace(" ", "-", $node->title));
-//          $cmd = realpath($print_pdf_pdf_tool) . "  -T 50mm -B 21mm -L 21mm -R 21mm --encoding utf-8 --header-html \"$header_html\" --header-line --header-spacing 10  --page-size $print_pdf_paper_size --orientation $print_pdf_page_orientation --dpi $dpi  --disable-smart-shrinking $print_pdf_wkhtmltopdf_options - -";
-//          $process = proc_open($cmd, $descriptor, $pipes, NULL, NULL);
-//          if (is_resource($process)) {
-//            fwrite($pipes[0], $quick_info_attachments);
-//            fclose($pipes[0]);
-//            $pdf = stream_get_contents($pipes[1]);
-//            fclose($pipes[1]);
-//            stream_set_blocking($pipes[2], 0);
-//            $error = stream_get_contents($pipes[2]);
-//            if (!empty($error)) {
-//              watchdog('print_pdf', 'wkhtmltopdf: ' . $error);
-//            }
-//            fclose($pipes[2]);
-//            $retval = proc_terminate($process);
-//          }
-//          if (!empty($pdf)) {
-//            if (headers_sent()) {
-//              die("Unable to stream pdf: headers already sent");
-//            }
-//            header("Cache-Control: private");
-//            header("Content-Type: application/pdf");
-//            $attachment = ($print_pdf_content_disposition == 2) ? "attachment" : "inline";
-//            header("Content-Disposition: $attachment; filename=\"$filename\"");
-//          }
-//          else {
-//            drupal_goto("<front>");
-//            exit;
-//          }
-//
-//          $title = "RZ-Schnellinfo-Nr-" . $id . ".pdf";
-//          $quickinfo_dir = file_directory_path() . "/rz-schnellinfos/" . $id . "/";
-//          file_put_contents($quickinfo_dir . $title, $pdf);
-//          $filesize = filesize($quickinfo_dir . $title);
-//
-//          $pdf_filepath = $quickinfo_dir . $title;
-//          $file_obj = new stdClass();
-//          $file_obj->filename = $title;
-//          $file_obj->filepath = $pdf_filepath;
-//          $file_obj->filemime = 'application/pdf';
-//          $file_obj->filesource = $title;
-//          $file_obj->filesize = $filesize;
-//
-//          $file_obj->uid = $user->uid;
-//          $file_obj->status = FILE_STATUS_TEMPORARY;
-//          $file_obj->timestamp = time();
-//          $file_obj->list = 1;
-//          $file_obj->new = true;
-//
-//          //Save file to files table
-//          drupal_write_record('files', $file_obj);
-//
-//          // change file status to permanent
-//          file_set_status($file_obj, 1);
-//
-//          // Attach the file object to your node
-//          $node->files[$file_obj->fid] = $file_obj;
-//        }
-//    }
-}
 
 function hzd_customizations_node_quickinfo_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
 //     if ($node->type == 'page') {
@@ -660,118 +478,122 @@ function hzd_customizations_node_quickinfo_view(array &$build, \Drupal\Core\Enti
  * hook_node_search_result(\Drupal\node\NodeInterface $node)
  */
 
-//function hzd_customizations_node_search_result(\Drupal\node\NodeInterface $node) {
-//    global $base_path;
-//    $files = array();
-//    if (isset($node->files)) {
-//        foreach ($node->files as $file) {
-//            $replace_chars = array('_', '-', '.');
-//            $url = Url::fromUserInput('/' . $file['filepath']);
-//            $link = Link::fromTextAndUrl(str_replace($replace_chars, ' ', $file->filename), $file->filepath);
-//            $files[] = $link;
-//        }
-//    }
-//    if (isset($node->field_page_files)) {
-//        foreach ($node->field_page_files as $file) {
-//            $replace_chars = array('_', '-', '.');
-//
-//            $url = Url::fromUserInput('/' . $file['filepath']);
-//            $link = Link::fromTextAndUrl(str_replace($replace_chars, ' ', $file['filename']), $url);
-//            $files[] = $link;
-//        }
-//    }
-//    if (count($files)) {
-//        $output = "<br><br>" . t('Attachments') . ": <br>" . implode('<br> ', $files);
-//    }
-//    $files = $output;
-//    return array('Attachments' => $files);
-//}
+function hzd_customizations_node_search_result(\Drupal\node\NodeInterface $node) {
+    global $base_path;
+    $files = array();
+    if (isset($node->files)) {
+        foreach ($node->files as $file) {
+            $replace_chars = array('_', '-', '.');
+            $url = Url::fromUserInput('/' . $file['filepath']);
+            $link = Link::fromTextAndUrl(str_replace($replace_chars, ' ', $file->filename), $file->filepath);
+            $files[] = $link;
+        }
+    }
+    if (isset($node->field_page_files)) {
+        foreach ($node->field_page_files as $file) {
+            $replace_chars = array('_', '-', '.');
+
+            $url = Url::fromUserInput('/' . $file['filepath']);
+            $link = Link::fromTextAndUrl(str_replace($replace_chars, ' ', $file['filename']), $url);
+            $files[] = $link;
+        }
+    }
+    if (count($files)) {
+        $output = "<br><br>" . t('Attachments') . ": <br>" . implode('<br> ', $files);
+    }
+    $files = $output;
+    return array('Attachments' => $files);
+}
 
 /*
  * hook_node_update_index(\Drupal\node\NodeInterface $node)
  */
 
-//function hzd_customizations_node_update_index(\Drupal\node\NodeInterface $node) {
-//    global $base_path;
-//    $files = array();
-//    if (isset($node->files)) {
-//        foreach ($node->files as $file) {
-//            $replace_chars = array('_', '-', '.');
-//            $files[] = str_replace($replace_chars, ' ', $file->filename);
-//        }
-//    }
-//    if (isset($node->field_page_files)) {
-//        foreach ($node->field_page_files as $file) {
-//            $replace_chars = array('_', '-', '.');
-//            $files[] = "<a href = " . $base_path . '/' . $file['filepath'] . ">" . str_replace($replace_chars, ' ', $file['filename']) . "</a>";
-//        }
-//    }
-//    if (count($files)) {
-//        return '<a>(' . implode(', ', $files) . ')</a>';
-//    }
-//}
+function hzd_customizations_node_update_index(\Drupal\node\NodeInterface $node) {
+    
+    
+    global $base_path;
+    $files = array();
+    dpm('hzd_customizations_node_update_index');
+    dpm($node->files);
+    if (isset($node->files)) {
+        foreach ($node->files as $file) {
+            $replace_chars = array('_', '-', '.');
+            $files[] = str_replace($replace_chars, ' ', $file->filename);
+        }
+    }
+    if (isset($node->field_page_files)) {
+        foreach ($node->field_page_files as $file) {
+            $replace_chars = array('_', '-', '.');
+            $files[] = "<a href = " . $base_path . '/' . $file['filepath'] . ">" . str_replace($replace_chars, ' ', $file['filename']) . "</a>";
+        }
+    }
+    if (count($files)) {
+        return '<a>(' . implode(', ', $files) . ')</a>';
+    }
+}
 
 
 /*
  *  Quickinfo fileattachments table
  */
 //
-//function quickinfo_file_attachments($files) {
-////    
-////  $output = '<table cellspacing="1" cellpadding="2" style="font-size:11px;  width:100%; margin:0em 0em 0em 1.364em;">';
-////  $output .= '<thead><tr>'
-////      . '<th style=" border-left:1px solid #d4e7f5; background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">'. t("Attachment") . 
-////      '</th><'. 'th style="background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">' . t("Size") . '</th> </tr></thead>';
-////  $output .= '<tbody style="border-top:1px solid #ccc;">';
-////  $count = 0;
-////  foreach ($files as $file) {
-////    $file = (object) $file;
-////    if ($file->list && empty($file->remove)) {
-////      $href = file_create_url($file->filepath);
-////    //  $text = $file->description ? $file->description : $file->filename;
-////   //   $zebra = ($count % 2) ? 'background: #fff; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;' : 'background: #edf4fa; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;';
-////      
-////  //    $output .= '<tr style="background-color:#eee;border-bottom:1px solid #ccc;padding:0.1em 0.6em;line-height:150%;">
-////  //    <td style="' . $zebra  . '">' . l($text, $href, array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))) . '</td>';
-////  //    $output .= '<td style="' . $zebra  . '">' . format_size($file->filesize) . '</td></tr>';
-////    }
-//// //   $count++;
-////  }
-////  // $output .= '</tbody></table>';
-//
-//    $header = array(t("Attachment"), t("Size"));
-//
-//    foreach ($files as $file) {
-//        if ($file->list && empty($file->remove)) {
-//            $href = file_create_url($file->filepath);
-//            $text = $file->description ? $file->description : $file->filename;
-//            $url = Url::fromUserInput(
-//                    '/' . $href
-//            );
-//// array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))
-//            $file_attachement = Link::fromTextAndUrl($text, $url);
-//
-//            $size = format_size($file->filesize);
-//            $elements = array(
-//              'file_attachement' => $file_attachement,
-//              'size' => $size
-//            );
-//            $rows[] = $elements;
-//        }
+function quickinfo_file_attachments($files) {
+//    
+//  $output = '<table cellspacing="1" cellpadding="2" style="font-size:11px;  width:100%; margin:0em 0em 0em 1.364em;">';
+//  $output .= '<thead><tr>'
+//      . '<th style=" border-left:1px solid #d4e7f5; background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">'. t("Attachment") . 
+//      '</th><'. 'th style="background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">' . t("Size") . '</th> </tr></thead>';
+//  $output .= '<tbody style="border-top:1px solid #ccc;">';
+//  $count = 0;
+//  foreach ($files as $file) {
+//    $file = (object) $file;
+//    if ($file->list && empty($file->remove)) {
+//      $href = file_create_url($file->filepath);
+//    //  $text = $file->description ? $file->description : $file->filename;
+//   //   $zebra = ($count % 2) ? 'background: #fff; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;' : 'background: #edf4fa; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;';
+//      
+//  //    $output .= '<tr style="background-color:#eee;border-bottom:1px solid #ccc;padding:0.1em 0.6em;line-height:150%;">
+//  //    <td style="' . $zebra  . '">' . l($text, $href, array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))) . '</td>';
+//  //    $output .= '<td style="' . $zebra  . '">' . format_size($file->filesize) . '</td></tr>';
 //    }
-//    if (!isset($elements)) {
-//        $output[] = t('No Data to be displayed') . "<br/>";
-//    }
-//    else {
-//        $output[] = array(
-//          '#theme' => 'table',
-//          '#header' => $header,
-//          '#rows' => $rows,
-//        );
-//    }
-//
-//    return $output;
-//}
+// //   $count++;
+//  }
+//  // $output .= '</tbody></table>';
+
+    $header = array(t("Attachment"), t("Size"));
+
+    foreach ($files as $file) {
+        if ($file->list && empty($file->remove)) {
+            $href = file_create_url($file->filepath);
+            $text = $file->description ? $file->description : $file->filename;
+            $url = Url::fromUserInput(
+                    '/' . $href
+            );
+// array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))
+            $file_attachement = Link::fromTextAndUrl($text, $url);
+
+            $size = format_size($file->filesize);
+            $elements = array(
+              'file_attachement' => $file_attachement,
+              'size' => $size
+            );
+            $rows[] = $elements;
+        }
+    }
+    if (!isset($elements)) {
+        $output[] = t('No Data to be displayed') . "<br/>";
+    }
+    else {
+        $output[] = array(
+          '#theme' => 'table',
+          '#header' => $header,
+          '#rows' => $rows,
+        );
+    }
+
+    return $output;
+}
 
 
 /*
@@ -779,58 +601,58 @@ function hzd_customizations_node_quickinfo_view(array &$build, \Drupal\Core\Enti
  * need to differentiate between immediate creation for additional recipients since
  * revision has not been created at the time nodeapi is called.
  */
-//function quickinfo_mail_header($node, $additional_recipients = 0) {
-//  global $base_url;
-//  $user = Drupal::currentUser();
-//  if (!$additional_recipients) {
-//    $query = \Drupal::database()->select('cust_profile', 'cp');
-//    $query->addExpression("CONCAT(firstname, ' ', lastname)");
-//    $query->condition('uid', $node->revision_uid);
-//    $published_by = $query->execute()->fetchField();
-//  } else {
-//    $query = \Drupal::database()->select('cust_profile', 'cp');
-//    $query->addExpression("CONCAT(firstname, ' ', lastname)");
-//    $query->condition('uid', $user->uid);
-//    $published_by = $query->execute()->fetchField();
-//  }
-//
-//  $logo_uri = $base_url . '/' . drupal_get_path('module', 'hzd_customizations') 
-//      . '/hzd_logo.gif';
-//   
-//$logo_render_array = [
-//  '#theme' => 'image_style',
-////  '#width' => $variables['width'],
-////  '#height' => $variables['height'],
-////  '#style_name' => $variables['style_name'],
-//  '#uri' => $variables['uri'],
-//];
-//   $rows[] = array(
-//     'logo_render_array' => $logo_render_array,
-//     'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title) ,
-//     'date' => t("Published on :") . date('d.m.Y', $node->changed),
-//   );
-//   $rows[] = array(
-//     'pb' => t("Published by :") . $published_by
-//   );
-////  $output .= "<table class='q-header' style='margin-bottom: 10px; border-collapse: collapse; line-height: 20px;' cellpadding='0' cellspacing='0'  border='1' width='100%'>";
-////  
-////  $output .= '<tr>'
-////      . '<td rowspan="2" style="padding:0px 20px;">'
-////      . '<img src= "' . $base_url . '/' . drupal_get_path('module', 'hzd_customizations') . '/hzd_logo.gif" alt ="Logo">'
-////      . '</td>';
-////  $output .= '<td  rowspan="2" style="text-align: center; color: #000 !important; font-size: 16px; font-family: arial,sans-serif;"><b>' . t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . '</b><br>' . t($node->title) . '</td>';
-////  $output .= '<td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published on") . ':<br>' . date('d.m.Y', $node->changed) . '</td></tr>';
-////  
-////  $output .= '<tr><td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published by") . ':<br>' . $published_by . '</td></tr>';
-////  $output .= "</table>";
+function quickinfo_mail_header($node, $additional_recipients = 0) {
+  global $base_url;
+  $user = Drupal::currentUser();
+  if (!$additional_recipients) {
+    $query = \Drupal::database()->select('cust_profile', 'cp');
+    $query->addExpression("CONCAT(firstname, ' ', lastname)");
+    $query->condition('uid', $node->revision_uid);
+    $published_by = $query->execute()->fetchField();
+  } else {
+    $query = \Drupal::database()->select('cust_profile', 'cp');
+    $query->addExpression("CONCAT(firstname, ' ', lastname)");
+    $query->condition('uid', $user->uid);
+    $published_by = $query->execute()->fetchField();
+  }
+
+  $logo_uri = $base_url . '/' . drupal_get_path('module', 'hzd_customizations') 
+      . '/hzd_logo.gif';
+   
+$logo_render_array = [
+  '#theme' => 'image_style',
+//  '#width' => $variables['width'],
+//  '#height' => $variables['height'],
+//  '#style_name' => $variables['style_name'],
+  '#uri' => $variables['uri'],
+];
+   $rows[] = array(
+     'logo_render_array' => $logo_render_array,
+     'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title) ,
+     'date' => t("Published on :") . date('d.m.Y', $node->changed),
+   );
+   $rows[] = array(
+     'pb' => t("Published by :") . $published_by
+   );
+//  $output .= "<table class='q-header' style='margin-bottom: 10px; border-collapse: collapse; line-height: 20px;' cellpadding='0' cellspacing='0'  border='1' width='100%'>";
 //  
-//    $output = array(
-//          '#theme' => 'table',
-//          '#rows' => $rows,
-//        );
-//    
-//  return $output;
-//}
+//  $output .= '<tr>'
+//      . '<td rowspan="2" style="padding:0px 20px;">'
+//      . '<img src= "' . $base_url . '/' . drupal_get_path('module', 'hzd_customizations') . '/hzd_logo.gif" alt ="Logo">'
+//      . '</td>';
+//  $output .= '<td  rowspan="2" style="text-align: center; color: #000 !important; font-size: 16px; font-family: arial,sans-serif;"><b>' . t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . '</b><br>' . t($node->title) . '</td>';
+//  $output .= '<td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published on") . ':<br>' . date('d.m.Y', $node->changed) . '</td></tr>';
+//  
+//  $output .= '<tr><td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published by") . ':<br>' . $published_by . '</td></tr>';
+//  $output .= "</table>";
+  
+    $output = array(
+          '#theme' => 'table',
+          '#rows' => $rows,
+        );
+    
+  return $output;
+}
 
 
 /*
@@ -855,3 +677,201 @@ function hzd_customizations_node_quickinfo_view(array &$build, \Drupal\Core\Enti
 //   }
 //  
 //}
+
+/*
+ * Quickinfo notification message body
+ */
+
+function quickinfo_custom_body($action, $node) {
+  global $base_url;
+  
+  $quickinfo_url_alias = Url::fromUserInput(
+            "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
+            );
+  $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
+  $files_attachments = quickinfo_file_attachments($node->files);
+  
+  $original = \Drupal::config('hzd_customizations.settings')->get('quick_info_content') . 
+      "<p><b>" . t("2.13 File attachments") . "</b></p><p>" . $files_attachments . "</p><p style='text-align: left;'><hr><b style='text-align: left;'>" .  t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $link . "</p>";
+
+  $token_service = \Drupal::token();
+    /*
+     * to do 
+     */
+    // Replace the token for subject.
+  $body = $token_service->replace($original, $type = 'global', $object = NULL, $leading = '[', $trailing = ']', $options = array());
+  $header = quickinfo_mail_header($node); 
+  return "<div style='font-family: Arial; line-height: 120%;'>" . $header . "<br>" . $body . "</div>";
+}
+
+/*
+ * Quickinfo notification message subject
+ */
+
+function quickinfo_custom_footer($action, $node) {
+  $original_footer = \Drupal::config('hzd_customizations.settings')->get('quick_info_footer');
+  $token_service = \Drupal::token();
+    /*
+     * to do 
+     */
+    // Replace the token for subject.
+  $footer = $token_service->replace($original_footer, $type = 'global', $object = NULL, $leading = '[', $trailing = ']', $options = array());
+  return $footer;
+}
+/*
+ * hook_queue_info
+ */
+
+function hzd_customizations_queue_info() {
+  $queues['notifications'] = array(
+    'worker callback' => 'insert_notifications_after_login',
+  );
+  return $queues;
+}
+ 
+
+function insert_notifications_after_login($userid) {
+  dpm('i am from insert_notifications_after_login' . $userid);
+  //  insert_user_default_notifications($userid);
+  $data = array();
+  $data['uid'] = $userid;
+  default_notification_insert($data);
+}
+
+function default_notification_insert($edit) {
+
+  $konsons = \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id');
+  $excoss = \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id');
+  
+  $release_type = array("konsons" => $konsons, "excoss" => $excoss);
+  foreach ($release_type as $rel_val) {
+      /*
+       * to do sandeep 
+       */
+    $content_types = _service_notifications_content_type($rel_val);
+    foreach ($content_types as $content_key => $content) {
+          /**
+           * to do 
+           */
+      $default_time = default_sent_interval($content);
+
+      switch ($content_types[$content_key]) {
+          /**
+           * to do 
+           */
+        case t('Current Incidents and Planned Maintenances'):
+          $release_type = 'downtimes';
+          break;
+        case t('Problems'):
+          $release_type = 'problem';
+          break;
+        case t('Releases'):
+          $release_type = 'release';
+          break;
+        case t('Early Warnings'):
+          $release_type = 'early_warnings';
+          break;
+      }
+         /**
+           * to do 
+           */
+
+      $services = _get_type_relatedServices($release_type, $rel_val);
+
+      foreach ($services as $services_id) {
+        $subscription_fields = array('service' => $services_id, 'type' => $release_type);
+        $subscription = $defaults;
+        $subscription['send_interval'] = $default_time;
+        $subscription['send_method'] = 'phpmailer';
+        $subscription['status'] = 1;
+        $subscription['type'] = 'service';
+        $subscription['cron'] = 1;
+        $subscription['uid'] = $edit['uid'];
+        $subscription['event_type'] = 'node';
+        $subscription['fields'] = $subscription_fields;
+        //if ($default_time != -1) {
+        /**
+         * to do 
+         */
+        $return = notifications_save_subscription($subscription);
+        //}
+      }
+        /**
+         * to do 
+         */
+      insert_default_user_intervel($release_type, $default_time, $edit['uid'], $rel_val);
+    }
+  }
+
+  insert_quickinfo_default_notification($edit);
+}
+
+/**
+ * function for insert default quickinfo notifications.
+ */
+function insert_quickinfo_default_notification($edit) {
+  $gid = \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id');
+  $intval = \Drupal::config('hzd_customizations.settings')->get('service_interval_quickinfo', -1);
+
+  $allowed_values = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', 'field_other_services')->getSetting('allowed_values');
+
+  foreach ($allowed_values as $key => $val) {
+    $subscription = array();
+    $subscription['send_interval'] = $intval;
+    $subscription['send_method'] = 'phpmailer';
+    $subscription_fields = array('qservice' => $key, 'type' => $val);
+    $subscription['type'] = 'qservice';
+    $subscription['uid'] = $edit['uid'];
+    $subscription['module'] = 'notifications';
+    $subscription['status'] = 1;
+    $subscription['cron'] = 1;
+    $subscription['event_type'] = 'node';
+    $subscription['fields'] = $subscription_fields;
+   /// notifications_save_subscription($subscription);
+    HzdNotificationsHelper::insert_default_quickinfo_user_intervel($val, $intval, $edit['uid']);
+  }
+}
+
+/*
+ * hook_user_login($account)
+ */
+
+function hzd_customizations_user_login($account) {
+  $uid = $account->Id();
+  
+  $query = \Drupal::database()->select('inactive_users', 'iu');
+  $query->fields('iu' , array('uid'));
+  $query->condition('uid', $uid);
+  $check_inactive_user = $query->execute()->fetchAssoc();
+
+  if (!empty($check_inactive_user)) {
+        $query = \Drupal::database()->update('inactive_users');
+        $query->fields([
+          'inactive_user_notification_flag' => 0
+          ]);
+        $query->condition('uid', $uid);
+        $query->execute();
+  }
+}
+
+/*
+ *  Implements hook_entity_update(Drupal\Core\Entity\EntityInterface $entity)
+ */
+
+function hzd_customizations_user_presave(Drupal\Core\Entity\EntityInterface $entity) {
+ // dpm($entity->original->getStatus());
+    if (($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value']) && ($entity->status->getValue()['0']['value'] == 1)) {
+        $query = \Drupal::database()->select('inactive_users', 'iu');
+        $query->fields('iu' , array('uid'));
+        $query->condition('uid', $entity->id());
+        $check_inactive_user =  $query->execute();
+        if (!empty($check_inactive_user)) {
+              $query = \Drupal::database()->update('inactive_users');
+              $query->fields([
+                'inactive_user_notification_flag' => 0
+                ]);
+              $query->condition('uid', $entity->id());
+              $query->execute();
+        }
+   }
+}
