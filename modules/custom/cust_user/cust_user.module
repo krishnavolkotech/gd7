@@ -160,20 +160,21 @@ function nsm_user_role_update($form, $form_state) {
   }
 }
 
-//updating value for do not automatically block or delete the users.
+// updating value for do not automatically block or delete the users.
 function inactive_users_flag_update($form, $form_state) {
+  $user = \Drupal::routeMatch()->getParameter('user');
 
-  $current_path = \Drupal::service('path.current')->getPath();
-  // Retrieve an array which contains the path pieces.
-  $path_args = explode('/', $current_path);
-  $user_id = $path_args[2];
-
+    if(is_object($user)){
+      $user_id = $user->Id();
+    }else{
+      $user_id  = $user;
+    } 
 
   $query = \Drupal::database()->update('inactive_users');
   $query->fields([
     'notified_user' => 1
   ]);
-  $query->condition('uid', $user->uid);
+  $query->condition('uid', $user_id);
   $query->execute();
 
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');

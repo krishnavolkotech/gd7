@@ -66,6 +66,7 @@ class Inactiveuserhelper {
   }
   if (isset($to)) {
     $recipients = explode(',', $to);
+
     foreach ($recipients as $recipient) {
          $recipient = trim($recipient);
 	 $mailManager = \Drupal::service('plugin.manager.mail');
@@ -75,9 +76,11 @@ class Inactiveuserhelper {
 	 $params['subject'] = $subject;
 	 $params['message'] = strtr($message, $variables);
          $user = user_load_by_mail($recipient);
-	 $langcode = isset($user->uid) ? $user->getPreferredLangcode() : language_default();
+         $language = \Drupal::service('language.default')->get();
+         $langcode = isset($user->uid) ? $user->getPreferredLangcode() : $language->getId();
 	 $send = true;
 	 $mailManager->mail($module, $key, $recipient, $langcode, $params, NULL, $send);
+         
     }
   }
 }
