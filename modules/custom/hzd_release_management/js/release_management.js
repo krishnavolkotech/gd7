@@ -8,7 +8,7 @@
                $( this ).attr('href', new_href);
              });
             // $("#quickinfo-sortable").tablesorter({widgets: ['zebra']});
-          /*$.tablesorter.addParser({
+            $.tablesorter.addParser({
                   // set a unique id
                   id: 'release_datesortable',
                   is: function(s) {
@@ -19,7 +19,7 @@
                   // format your data for normalization 
                      if (s) {
                      
-                 	     var mydatetime = s.split(' ');
+                       var mydatetime = s.split(' ');
           	       if (mydatetime[0] && mydatetime[1]) {	         
           		 var dateele = mydatetime[0].split('.');
           		 var timeele = mydatetime[1].split(':');
@@ -37,7 +37,7 @@
                   },
                   // set type, either numeric or text
                   type: 'numeric'
-              });*/
+              });
 
 
             $.tablesorter.addParser({
@@ -91,17 +91,11 @@
 
             if (drupalSettings.release_management.type != 'released' && drupalSettings.release_management.type != "deployed") {
             // jQuery("#sortable").tablesorter();
-             /**
+             
               $("#sortable").tablesorter({
-                headers: {
-                  5: {
-            	  sorter: false
-            	      },
-          	  3: {sorter: 'release_date'}
-          	},
           	widgets: ['zebra']
               }); 
-            */
+            
             }
             else if (drupalSettings.release_management.type == "deployed") {
                 $.tablesorter.addParser({ 
@@ -119,7 +113,15 @@
                
                 $("#sortable").tablesorter({
                 dateFormat: 'dd.mm.yyyy',
-                headers: {4:{sorter:'deployed_date'}},
+                headers: {
+                    4:{sorter:'deployed_date'},
+                    5: {
+                        sorter: false
+                            },
+                    6: {
+                        sorter: false
+                            },
+                  },
 
               sortList: [[0,0],[1,0],[2,0],[4,0],[5,0]],
               widgets: ['zebra']
@@ -128,20 +130,15 @@
             }
             else {
                 jQuery("#sortable").tablesorter();
-                console.log('lalalal');
-             /**
-                 // console.log('ksdhf ksdjhflk');
                 $("#sortable").tablesorter({
-                
                     headers: {
-                        5: {
-                        sorter: false
-                            },
-                      // 3: {sorter: 'release_date'}
+                        4: { sorter:'release_datesortable' },
+                        5: { sorter: false },
+                        6: { sorter: false },
                     },
                        widgets: ['zebra']
                     });  
-                    */
+             
             }
 
             $('.filter_submit', context).hide();

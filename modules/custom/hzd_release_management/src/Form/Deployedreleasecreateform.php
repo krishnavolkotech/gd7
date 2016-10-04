@@ -324,7 +324,7 @@ class Deployedreleasecreateform extends FormBase {
             
             $group_content = GroupContent::create([
                       'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
-                      'gid' => group_id,
+                      'gid' => 32,
                       'entity_id' => $node->id(), 
                       'request_status' => 1,
                       'label' => $form_state->getValue('deployed_services') . '_service_' . $form_state->getValue('deployed_releases'),

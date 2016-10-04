@@ -856,8 +856,9 @@ function hzd_customizations_user_login($account) {
  */
 
 function hzd_customizations_user_presave(Drupal\Core\Entity\EntityInterface $entity) {
- // dpm($entity->original->getStatus());
-    if (($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value']) && ($entity->status->getValue()['0']['value'] == 1)) {
+    
+    if (is_object($entity->original) && ($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value']) 
+        && ($entity->status->getValue()['0']['value'] == 1)) {
         $query = \Drupal::database()->select('inactive_users', 'iu');
         $query->fields('iu' , array('uid'));
         $query->condition('uid', $entity->id());

@@ -170,6 +170,29 @@ function hzd_preprocess_node(&$variables) {
     $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
   }
+  if ($variables['node']->getType() == 'problem') {
+     $variables['problem_text'] = $variables['node']->body->value;
+
+    $variables['ticketstore_count'] = $variables['node']->get('field_ticketstore_count')->value;
+    $variables['ticketstore_link'] = $variables['node']->get('field_ticketstore_link')->value;
+    if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
+       $variables['ticketstore_html'] = t('No attachments available');
+    } else {
+       $att_html = $ticketstore_count>1?"attachments":"attachment"; 
+       $variables['ticketstore_html'] = t("<a href=$ticketstore_link>" . t("Link to Ticketstore") . " ($ticketstore_count ". t("$att_html available") . ")</a>");
+    }
+    dpm($variables['node']->get('field_problem_eroffnet'));
+    $variables['erroffnet_value'] = date('d.m.Y', $variables['node']->get('field_problem_eroffnet')->value);
+    $serialized_data = unserialize($_SESSION['problems_query']);
+    dpm($serialized_data);
+    $serialized_params = unserialize($_SESSION['params_seralized']);
+    if ($serialized_data['nid']) {
+      // $variables['back_to_search'] =   l(t('Back To Search'), $serialized_data['url']);
+     }
+    else if ($serialized_params['url']) {
+      // $variables['back_to_search'] = l(t('Back To Search'), $serialized_params['url']);
+    }
+  }
 }
 
 function custom_user_fullname($uid) {
@@ -256,3 +279,13 @@ function hzd_preprocess_user(&$variables) {
   $variables['state'] = $state_name;
   $variables['group_list'] = hzd_group_list($variables['user']->id());
 }
+
+
+
+
+
+
+
+
+
+

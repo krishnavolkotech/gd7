@@ -808,7 +808,15 @@ class Inactiveusers extends ControllerBase {
                         // delete the user
                         // not using user_delete() so we can send custom emails and watchdog
                         $array = (array) $user;
+                        $groupContent = \Drupal::entityQuery('group_content')
+                               ->condition('entity_id',$user->uid)
+                               ->execute();
+                               //pr($groupContent);exit;
 
+                           foreach($groupContent as $groupUser){
+                             $gUser = \Drupal\group\Entity\GroupContent::load($groupUser);
+                               $gUser->delete();
+                           }
                         //  sess_destroy_uid($user->uid);  
                         /*
                          * to do 
@@ -824,7 +832,6 @@ class Inactiveusers extends ControllerBase {
                         $query->execute();
                         
                         $user_delete = \Drupal\user\Entity\User::load($user->uid);
-                        dpm($user_delete);
                         if (is_object($user_delete)) {
                           if ($inactive_user_preserve_content) {
                             $user_delete->set('user_cancel_method', 'user_cancel_reassign');
