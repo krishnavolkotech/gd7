@@ -65,7 +65,7 @@ class DisplayquickinfoController extends ControllerBase {
             $group_id = $group;
         }
 
-        $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
+        $allowed_group = array(3, RELEASE_MANAGEMENT);
         if (!$group_id && !in_array($group_id, $allowed_group)) {
             return false;
         }

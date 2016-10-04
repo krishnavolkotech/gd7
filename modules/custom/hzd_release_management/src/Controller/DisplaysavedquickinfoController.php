@@ -148,7 +148,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
             $group_id = $group;
         }
 
-        if (!$group_id && $group_id != QUICKINFO) {
+        if (!$group_id && $group_id != 3) {
             return false;
         }
         if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
