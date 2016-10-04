@@ -4,7 +4,7 @@ namespace Drupal\search_api\Plugin\search_api\tracker;
 
 use Drupal\Core\Database\Connection;
 use Drupal\search_api\Tracker\TrackerPluginBase;
-use Drupal\search_api\Utility;
+use Drupal\search_api\Utility\Utility;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -150,8 +150,20 @@ class Basic extends TrackerPluginBase {
       // Process the IDs in chunks so we don't create an overly large INSERT
       // statement.
       foreach (array_chunk($ids, 1000) as $ids_chunk) {
+        // We have to make sure we don't try to insert duplicate items.
+        $select = $this->createSelectStatement()
+          ->fields('sai', array('item_id'));
+        $select->condition('item_id', $ids_chunk, 'IN');
+        $existing = $select
+          ->execute()
+          ->fetchCol();
+        $existing = array_flip($existing);
+
         $insert = $this->createInsertStatement();
         foreach ($ids_chunk as $item_id) {
+          if (isset($existing[$item_id])) {
+            continue;
+          }
           list($datasource_id) = Utility::splitCombinedId($item_id);
           $insert->values(array(
             'index_id' => $index_id,
@@ -161,7 +173,9 @@ class Basic extends TrackerPluginBase {
             'status' => $this::STATUS_NOT_INDEXED,
           ));
         }
-        $insert->execute();
+        if ($insert->count()) {
+          $insert->execute();
+        }
       }
     }
     catch (\Exception $e) {

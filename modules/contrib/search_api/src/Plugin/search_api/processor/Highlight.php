@@ -5,26 +5,32 @@ namespace Drupal\search_api\Plugin\search_api\processor;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Core\Render\Element;
-use Drupal\search_api\SearchApiException;
+use Drupal\search_api\Plugin\PluginFormTrait;
 use Drupal\search_api\Processor\ProcessorPluginBase;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSetInterface;
-use Drupal\search_api\Utility;
+use Drupal\search_api\Utility\Utility;
 
 /**
  * Adds a highlighted excerpt to results and highlights returned fields.
+ *
+ * This processor won't run for queries with the "basic" processing level set.
  *
  * @SearchApiProcessor(
  *   id = "highlight",
  *   label = @Translation("Highlight"),
  *   description = @Translation("Adds a highlighted excerpt to results and highlights returned fields."),
  *   stages = {
- *     "postprocess_query" = 0
+ *     "pre_index_save" = 0,
+ *     "postprocess_query" = 0,
  *   }
  * )
  */
-class Highlight extends ProcessorPluginBase {
+class Highlight extends ProcessorPluginBase implements PluginFormInterface {
+
+  use PluginFormTrait;
 
   /**
    * PCRE regular expression for a word boundary.
@@ -64,6 +70,27 @@ class Highlight extends ProcessorPluginBase {
   /**
    * {@inheritdoc}
    */
+  public function preIndexSave() {
+    parent::preIndexSave();
+
+    if (empty($this->configuration['exclude_fields'])) {
+      return;
+    }
+
+    $renames = $this->index->getFieldRenames();
+
+    $selected_fields = array_flip($this->configuration['exclude_fields']);
+    $renames = array_intersect_key($renames, $selected_fields);
+    if ($renames) {
+      $new_fields = array_keys(array_diff_key($selected_fields, $renames));
+      $new_fields = array_merge($new_fields, array_values($renames));
+      $this->configuration['exclude_fields'] = $new_fields;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
     return array(
       'prefix' => '<strong>',
@@ -71,6 +98,7 @@ class Highlight extends ProcessorPluginBase {
       'excerpt' => TRUE,
       'excerpt_length' => 256,
       'highlight' => 'always',
+      'exclude_fields' => array(),
     );
   }
 
@@ -78,8 +106,6 @@ class Highlight extends ProcessorPluginBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form = parent::buildConfigurationForm($form, $form_state);
-
     $form['highlight'] = array(
       '#type' => 'select',
       '#title' => $this->t('Highlight returned field data'),
@@ -107,7 +133,30 @@ class Highlight extends ProcessorPluginBase {
         'visible' => array(
           // @todo This shouldn't be dependent on the form array structure.
           //   Use the '#process' trick instead.
-          '#edit-processors-search-api-highlighting-settings-excerpt' => array(
+          ':input[name="processors[highlight][settings][excerpt]"]' => array(
+            'checked' => TRUE,
+          ),
+        ),
+      ),
+    );
+    // Exclude certain fulltext fields.
+    $fields = $this->index->getFields();
+    $fulltext_fields = array();
+    foreach ($this->index->getFulltextFields() as $field_id) {
+      $fulltext_fields[$field_id] = $fields[$field_id]->getLabel() . ' (' . $field_id . ')';
+    }
+    $form['exclude_fields'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Exclude fields from excerpt'),
+      '#description' => t('Exclude certain fulltext fields from being included in the excerpt.'),
+      '#options' => $fulltext_fields,
+      '#default_value' => $this->configuration['exclude_fields'],
+      '#attributes' => array('class' => array('search-api-checkboxes-list')),
+      '#states' => array(
+        'visible' => array(
+          // @todo This shouldn't be dependent on the form array structure.
+          //   Use the '#process' trick instead.
+          ':input[name="processors[highlight][settings][excerpt]"]' => array(
             'checked' => TRUE,
           ),
         ),
@@ -132,14 +181,35 @@ class Highlight extends ProcessorPluginBase {
   /**
    * {@inheritdoc}
    */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    // Sanitize the storage for the "exclude_fields" setting.
+    $excluded = &$form_state->getValue('exclude_fields');
+    $excluded = array_keys(array_filter($excluded));
+    $this->setConfiguration($form_state->getValues());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function postprocessSearchResults(ResultSetInterface $results) {
-    if (!$results->getResultCount() || !($keys = $this->getKeywords($results->getQuery()))) {
+    $query = $results->getQuery();
+    if (!$results->getResultCount()
+      || $query->getProcessingLevel() != QueryInterface::PROCESSING_FULL
+      || !($keys = $this->getKeywords($query))) {
       return;
+    }
+
+    $excerpt_fulltext_fields = $this->index->getFulltextFields();
+    if (!empty($this->configuration['exclude_fields'])) {
+      $excerpt_fulltext_fields = array_combine($excerpt_fulltext_fields, $excerpt_fulltext_fields);
+      foreach ($this->configuration['exclude_fields'] as $field) {
+        unset($excerpt_fulltext_fields[$field]);
+      }
     }
 
     $result_items = $results->getResultItems();
     if ($this->configuration['excerpt']) {
-      $this->addExcerpts($result_items, $keys);
+      $this->addExcerpts($result_items, $excerpt_fulltext_fields, $keys);
     }
     if ($this->configuration['highlight'] != 'never') {
       $highlighted_fields = $this->highlightFields($result_items, $keys);
@@ -160,16 +230,17 @@ class Highlight extends ProcessorPluginBase {
    *
    * @param \Drupal\search_api\Item\ItemInterface[] $results
    *   The result items to which excerpts should be added.
+   * @param string[] $fulltext_fields
+   *   The fulltext fields from which the excerpt should be created.
    * @param array $keys
    *   The search keys to use for highlighting.
    */
-  protected function addExcerpts(array $results, array $keys) {
-    $items = $this->getFulltextFields($results);
+  protected function addExcerpts(array $results, array $fulltext_fields, array $keys) {
+    $items = $this->getFulltextFields($results, $fulltext_fields);
     foreach ($items as $item_id => $item) {
       $text = array();
-      /** @var \Drupal\search_api\Item\FieldInterface $field */
-      foreach ($item as $field) {
-        $text = array_merge($text, $field->getValues());
+      foreach ($item as $values) {
+        $text = array_merge($text, $values);
       }
       // @todo This is pretty poor handling for the borders between different
       //   values/fields. Better would be to pass an array and have proper
@@ -192,12 +263,11 @@ class Highlight extends ProcessorPluginBase {
    *   highlighted versions of the values for that field.
    */
   protected function highlightFields(array $results, array $keys) {
-    $item_fields = $this->getFulltextFields($results, $this->configuration['highlight'] == 'always');
+    $item_fields = $this->getFulltextFields($results, NULL, $this->configuration['highlight'] == 'always');
     $highlighted_fields = array();
     foreach ($item_fields as $item_id => $fields) {
       /** @var \Drupal\search_api\Item\FieldInterface $field */
-      foreach ($fields as $field_id => $field) {
-        $values = $field->getValues();
+      foreach ($fields as $field_id => $values) {
         $change = FALSE;
         foreach ($values as $i => $value) {
           $values[$i] = $this->highlightField($value, $keys);
@@ -219,6 +289,9 @@ class Highlight extends ProcessorPluginBase {
    * @param \Drupal\search_api\Item\ItemInterface[] $result_items
    *   The results for which fulltext data should be extracted, keyed by item
    *   ID.
+   * @param string[]|null $fulltext_fields
+   *   (optional) The fulltext fields to highlight, or NULL to highlight all
+   *   fulltext fields.
    * @param bool $load
    *   (optional) If FALSE, only field values already present will be returned.
    *   Otherwise, fields will be loaded if necessary.
@@ -227,72 +300,19 @@ class Highlight extends ProcessorPluginBase {
    *   An two-dimensional array of fulltext fields, keyed first by item ID and
    *   then field ID.
    */
-  protected function getFulltextFields(array $result_items, $load = TRUE) {
-    // @todo Add some caching, since this will sometimes be called twice for the
-    //   same result set.
-    $items = array();
-
+  protected function getFulltextFields(array $result_items, array $fulltext_fields = NULL, $load = TRUE) {
     // All the index's fulltext fields, grouped by datasource.
-    $fulltext_fields = array();
+    $fields_by_datasource = array();
     foreach ($this->index->getFields() as $field_id => $field) {
-      if (Utility::isTextType($field->getType())) {
-        $fulltext_fields[$field->getDatasourceId()][$field_id] = $field;
-      }
-    }
-
-    $needs_extraction = array();
-    foreach ($result_items as $item_id => $result_item) {
-      $datasource_id = $result_item->getDatasourceId();
-      // Make sure this datasource even has any indexed fulltext fields.
-      if (empty($fulltext_fields[$datasource_id])) {
+      if (isset($fulltext_fields) && !in_array($field_id, $fulltext_fields)) {
         continue;
       }
-      /** @var \Drupal\search_api\Item\FieldInterface $field */
-      foreach ($fulltext_fields[$datasource_id] as $field_id => $field) {
-        if ($result_item->getField($field_id, FALSE)) {
-          $items[$item_id][$field_id] = $result_item->getField($field_id, FALSE);
-        }
-        elseif ($load) {
-          $needs_extraction[$item_id][$field->getPropertyPath()][] = clone $field;
-        }
+      if (Utility::isTextType($field->getType())) {
+        $fields_by_datasource[$field->getDatasourceId()][$field->getPropertyPath()] = $field_id;
       }
     }
 
-    $needs_load = array();
-    foreach ($needs_extraction as $item_id => $fields) {
-      if (!$result_items[$item_id]->getOriginalObject(FALSE)) {
-        $needs_load[$item_id] = $item_id;
-      }
-    }
-
-    if ($needs_load) {
-      foreach ($this->index->loadItemsMultiple($needs_load) as $item_id => $object) {
-        $result_items[$item_id]->setOriginalObject($object);
-        unset($needs_load[$item_id]);
-      }
-    }
-
-    // Remove the fields for all items that couldn't be loaded.
-    $needs_extraction = array_diff_key($needs_extraction, $needs_load);
-
-    foreach ($needs_extraction as $item_id => $fields) {
-      try {
-        Utility::extractFields($result_items[$item_id]->getOriginalObject(), $fields);
-        foreach ($fields as $property_fields) {
-          foreach ($property_fields as $field) {
-            $field_id = $field->getFieldIdentifier();
-            $result_items[$item_id]->setField($field_id, $field);
-            $items[$item_id][$field_id] = $field;
-          }
-        }
-      }
-      catch (SearchApiException $e) {
-        // Missing highlighting will be the least problem in this case – just
-        // ignore it.
-      }
-    }
-
-    return $items;
+    return $this->extractItemValues($result_items, $fields_by_datasource, $load);
   }
 
   /**
@@ -331,7 +351,7 @@ class Highlight extends ProcessorPluginBase {
    *
    * @param array $keys
    *   A search keys array, as specified by
-   *   \Drupal\search_api\Query\QueryInterface::getKeys().
+   *   \Drupal\search_api\ParseMode\ParseModeInterface::parseInput().
    *
    * @return string[]
    *   An array of all unique positive keywords contained in the keys array.
@@ -512,7 +532,7 @@ class Highlight extends ProcessorPluginBase {
    *   The search keywords entered by the user.
    * @param bool $html
    *   (optional) Whether the text can contain HTML tags or not. In the former
-   *   case, text inside tags (i.e., tag names and attributes) won't be
+   *   case, text inside tags (that is, tag names and attributes) won't be
    *   highlighted.
    *
    * @return string

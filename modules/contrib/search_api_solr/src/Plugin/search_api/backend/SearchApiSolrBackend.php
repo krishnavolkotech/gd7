@@ -4,11 +4,18 @@ namespace Drupal\search_api_solr\Plugin\search_api\backend;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
+use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\Item\ItemInterface;
+use Drupal\search_api\Plugin\PluginFormTrait;
+use Drupal\search_api\Plugin\search_api\data_type\value\TextValue;
+use Drupal\search_api\Plugin\search_api\data_type\value\TextValueInterface;
 use Drupal\search_api\Query\ConditionInterface;
 use Drupal\search_api\SearchApiException;
 use Drupal\search_api\IndexInterface;
@@ -16,13 +23,14 @@ use Drupal\search_api\Query\ConditionGroupInterface;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Backend\BackendPluginBase;
 use Drupal\search_api\Query\ResultSetInterface;
-use Drupal\search_api\Utility as SearchApiUtility;
+use Drupal\search_api\Utility\Utility as SearchApiUtility;
 use Drupal\search_api_solr\SearchApiSolrException;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\search_api_solr\Utility\Utility as SearchApiSolrUtility;
 use Drupal\search_api_solr\Solr\SolrHelper;
 use Solarium\Client;
 use Solarium\Core\Client\Request;
+use Solarium\Core\Client\Response;
 use Solarium\Core\Query\Helper;
 use Solarium\Core\Query\Result\ResultInterface;
 use Solarium\QueryType\Select\Query\Query;
@@ -33,6 +41,13 @@ use Solarium\QueryType\Update\Query\Document\Document;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * The minimum required Solr schema version.
+ */
+define('SEARCH_API_SOLR_MIN_SCHEMA_VERSION', 4);
+
+define('SEARCH_API_ID_FIELD_NAME', 'ss_search_api_id');
+
+/**
  * Apache Solr backend for search api.
  *
  * @SearchApiBackend(
@@ -41,7 +56,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Index items using an Apache Solr search server.")
  * )
  */
-class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInterface {
+class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInterface, PluginFormInterface {
+
+  use PluginFormTrait {
+    submitConfigurationForm as traitSubmitConfigurationForm;
+  }
 
   /**
    * The date format that Solr uses, in PHP date() syntax.
@@ -155,8 +174,11 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       'port' => '8983',
       'path' => '/solr',
       'core' => '',
-      'http_user' => '',
-      'http_pass' => '',
+      'timeout' => 5,
+      'index_timeout' => 5,
+      'optimize_timeout' => 10,
+      'username' => '',
+      'password' => '',
       'excerpt' => FALSE,
       'retrieve_data' => FALSE,
       'highlight_data' => FALSE,
@@ -219,20 +241,47 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       '#description' => $this->t('The name that identifies the Solr core to use on the server.'),
       '#default_value' => $this->configuration['core'],
     );
+    $form['timeout'] = array(
+      '#type' => 'number',
+      '#min' => 1,
+      '#max' => 180,
+      '#title' => $this->t('Query timeout'),
+      '#description' => $this->t('The timeout in seconds for search queries sent to the Solr server.'),
+      '#default_value' => $this->configuration['timeout'],
+      '#required' => TRUE,
+    );
+    $form['index_timeout'] = array(
+      '#type' => 'number',
+      '#min' => 1,
+      '#max' => 180,
+      '#title' => $this->t('Index timeout'),
+      '#description' => $this->t('The timeout in seconds for indexing requests to the Solr server.'),
+      '#default_value' => $this->configuration['index_timeout'],
+      '#required' => TRUE,
+    );
+    $form['optimize_timeout'] = array(
+      '#type' => 'number',
+      '#min' => 1,
+      '#max' => 180,
+      '#title' => $this->t('Optimize timeout'),
+      '#description' => $this->t('The timeout in seconds for background index optimization queries on a Solr server.'),
+      '#default_value' => $this->configuration['optimize_timeout'],
+      '#required' => TRUE,
+    );
 
     $form['http'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Basic HTTP authentication'),
       '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here.'),
       '#collapsible' => TRUE,
-      '#collapsed' => empty($this->configuration['http_user']),
+      '#collapsed' => empty($this->configuration['username']),
     );
-    $form['http']['http_user'] = array(
+    $form['http']['username'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
-      '#default_value' => $this->configuration['http_user'],
+      '#default_value' => $this->configuration['username'],
     );
-    $form['http']['http_pass'] = array(
+    $form['http']['password'] = array(
       '#type' => 'password',
       '#title' => $this->t('Password'),
       '#description' => $this->t('If this field is left blank and the HTTP username is filled out, the current password will not be changed.'),
@@ -243,12 +292,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       '#title' => $this->t('Advanced'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-    );
-    $form['advanced']['excerpt'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t('Return an excerpt for all results'),
-      '#description' => $this->t("If search keywords are given, use Solr's capabilities to create a highlighted search excerpt for each result. Whether the excerpts will actually be displayed depends on the settings of the search, though."),
-      '#default_value' => $this->configuration['excerpt'],
     );
     $form['advanced']['retrieve_data'] = array(
       '#type' => 'checkbox',
@@ -261,6 +304,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       '#title' => $this->t('Highlight retrieved data'),
       '#description' => $this->t('When retrieving result data from the Solr server, try to highlight the search terms in the returned fulltext fields.'),
       '#default_value' => $this->configuration['highlight_data'],
+    );
+    $form['advanced']['excerpt'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Return an excerpt for all results'),
+      '#description' => $this->t("If search keywords are given, use Solr's capabilities to create a highlighted search excerpt for each result. Whether the excerpts will actually be displayed depends on the settings of the search, though."),
+      '#default_value' => $this->configuration['excerpt'],
     );
     $form['advanced']['skip_schema_check'] = array(
       '#type' => 'checkbox',
@@ -280,10 +329,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       ),
       '#default_value' => $this->configuration['solr_version'],
     );
-    // Highlighting retrieved data only makes sense when we retrieve data.
-    // (Actually, internally it doesn't really matter. However, from a user's
-    // perspective, having to check both probably makes sense.)
-    $form['advanced']['highlight_data']['#states']['invisible'][':input[name="options[form][advanced][retrieve_data]"]']['checked'] = FALSE;
+    // Highlighting retrieved data and getting an excerpt only makes sense when
+    // we retrieve data. (Actually, internally it doesn't really matter.
+    // However, from a user's perspective, having to check both probably makes
+    // sense.)
+    $form['advanced']['highlight_data']['#states']['invisible'][':input[name="backend_config[advanced][retrieve_data]"]']['checked'] = FALSE;
+    $form['advanced']['excerpt']['#states']['invisible'][':input[name="backend_config[advanced][retrieve_data]"]']['checked'] = FALSE;
 
     $form['advanced']['http_method'] = array(
       '#type' => 'select',
@@ -378,15 +429,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     $values += $values['multisite'];
     $values += !empty($values['autocomplete']) ? $values['autocomplete'] : array();
 
-    // Highlighting retrieved data only makes sense when we retrieve data.
+    // Highlighting retrieved data and getting an excerpt only makes sense when
+    // we retrieve data from the Solr backend.
     $values['highlight_data'] &= $values['retrieve_data'];
+    $values['excerpt'] &= $values['retrieve_data'];
 
     // For password fields, there is no default value, they're empty by default.
     // Therefore we ignore empty submissions if the user didn't change either.
-    if ($values['http_pass'] === ''
-        && isset($this->configuration['http_user'])
-        && $values['http_user'] === $this->configuration['http_user']) {
-      $values['http_pass'] = $this->configuration['http_pass'];
+    if ($values['password'] === ''
+      && isset($this->configuration['username'])
+      && $values['username'] === $this->configuration['username']) {
+      $values['password'] = $this->configuration['password'];
     }
 
     foreach ($values as $key => $value) {
@@ -402,18 +455,20 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     // value, do not save it.
     $form_state->unsetValue('server_description');
 
-    parent::submitConfigurationForm($form, $form_state);
+    $this->traitSubmitConfigurationForm($form, $form_state);
+
+    // Delete cached endpoint data.
+    \Drupal::state()->delete('search_api_solr.endpoint.data');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function supportsFeature($feature) {
-    // First, check the features we always support.
-    $supported = array(
+  public function getSupportedFeatures() {
+    return array(
       //'search_api_autocomplete',
-      //'search_api_facets',
-      //'search_api_facets_operator_or',
+      'search_api_facets',
+      'search_api_facets_operator_or',
       //'search_api_grouping',
       'search_api_mlt',
       'search_api_random_sort',
@@ -421,20 +476,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       //'search_api_data_type_location',
       //'search_api_data_type_geohash',
     );
-    $supported = array_combine($supported, $supported);
-    if (isset($supported[$feature])) {
-      return TRUE;
-    }
-
-    // If it is a custom data type, maybe we support it automatically via
-    // search_api_solr_hook_search_api_data_type_info().
-    if (substr($feature, 0, 21) != 'search_api_data_type_') {
-      return FALSE;
-    }
-    $type = substr($feature, 21);
-    $type = SearchApiSolrUtility::getDataTypeInfo($type);
-    // We only support it if the "prefix" key is set.
-    return $type && !empty($type['prefix']);
   }
 
   /**
@@ -453,10 +494,10 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       'info' => $this->getSolrHelper()->getCoreLink(),
     );
 
-    if ($this->configuration['http_user']) {
+    if ($this->configuration['username']) {
       $vars = array(
-        '@user' => $this->configuration['http_user'],
-        '@pass' => str_repeat('*', strlen($this->configuration['http_pass'])),
+        '@user' => $this->configuration['username'],
+        '@pass' => str_repeat('*', strlen($this->configuration['password'])),
       );
       $http = $this->t('Username: @user; Password: @pass', $vars);
       $info[] = array(
@@ -547,7 +588,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
                 drupal_set_message($this->t('Your schema.xml version is too old. Please replace all configuration files with the ones packaged with this module and re-index you data.'), 'error');
                 $status = 'error';
               }
-              elseif (substr($stats_summary['@schema_version'], 0, 9) != 'drupal-4.') {
+              elseif (!preg_match('/drupal-[' . SEARCH_API_SOLR_MIN_SCHEMA_VERSION . '-9]\./', $stats_summary['@schema_version'])) {
                 $variables['@url'] = Url::fromUri('internal:/' . drupal_get_path('module', 'search_api_solr') . '/INSTALL.txt')
                   ->toString();
                 $message = $this->t('You are using an incompatible schema.xml configuration file. Please follow the instructions in the <a href="@url">INSTALL.txt</a> file for setting up Solr.', $variables);
@@ -617,8 +658,8 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     if (array_diff_key($old_fields, $new_fields) || array_diff_key($new_fields, $old_fields)) {
       return TRUE;
     }
-    $old_field_names = $this->getSolrFieldNames($original, FALSE, TRUE);
-    $new_field_names = $this->getSolrFieldNames($index, FALSE, TRUE);
+    $old_field_names = $this->getSolrFieldNames($original, TRUE);
+    $new_field_names = $this->getSolrFieldNames($index, TRUE);
     return $old_field_names != $new_field_names;
   }
 
@@ -638,7 +679,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   public function indexItems(IndexInterface $index, array $items) {
     $documents = $this->getDocuments($index, $items);
     if (!$documents) {
-      return array();
+      return [];
     }
     try {
       $this->getUpdateQuery()->addDocuments($documents);
@@ -655,21 +696,32 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         ->setName('commitWithin')
         ->setValue('1000');
 
-      $this->solr->execute($this->getUpdateQuery());
+      // The default timeout is set for search queries. The configured timeout
+      // might differ and needs to be set now because solarium doesn't
+      // distinguish between these types.
+      $endpoint = $this->solr->getEndpoint('core');
+      $timeout = $endpoint->getTimeout();
+      $endpoint->setTimeout($this->configuration['index_timeout']);
+
+      $this->solr->execute($this->getUpdateQuery(), $endpoint);
+
+      // Reset the timeout setting to the default value for search queries.
+      $endpoint->setTimeout($timeout);
 
       // Reset the Update query for further calls.
       static::$updateQuery = NULL;
 
       $ret = [];
       foreach ($documents as $document) {
-        $ret[] = $document->getFields()['item_id'];
+        $ret[] = $document->getFields()[SEARCH_API_ID_FIELD_NAME];
       }
       return $ret;
     }
     catch (\Exception $e) {
       watchdog_exception('search_api_solr', $e, "%type while indexing: @message in %function (line %line of %file).");
+      throw new SearchApiException($e->getMessage(), $e->getCode(), $e);
     }
-    return array();
+    return [];
   }
 
   /**
@@ -684,10 +736,12 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * {@inheritdoc}
    */
   public function getDocuments(IndexInterface $index, array $items) {
+    $this->connect();
+    $schema_version = $this->solrHelper->getSchemaVersion();
+
     $documents = array();
     $index_id = $this->getIndexId($index->id());
     $field_names = $this->getSolrFieldNames($index);
-    $field_names_single_value = $this->getSolrFieldNames($index, TRUE);
     $languages = $this->languageManager->getLanguages();
     $base_urls = array();
 
@@ -700,7 +754,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       $doc = $this->getUpdateQuery()->createDocument();
       $doc->setField('id', $this->createId($index_id, $id));
       $doc->setField('index_id', $index_id);
-      $doc->setField('item_id', $id);
 
       // Add the site hash and language-specific base URL.
       $doc->setField('hash', SearchApiSolrUtility::getSiteHash());
@@ -718,7 +771,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       }
       $doc->setField('site', $base_urls[$lang]);
       $item_fields = $item->getFields();
-      $item_fields += $this->getSpecialFields($index, $item);
+      $item_fields += $special_fields = $this->getSpecialFields($index, $item);
       /** @var \Drupal\search_api\Item\FieldInterface $field */
       foreach ($item_fields as $name => $field) {
         // If the field is not known for the index, something weird has
@@ -733,7 +786,25 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           $doc = NULL;
           break;
         }
-        $this->addIndexField($doc, $field_names[$name], $field_names_single_value[$name], $field->getValues(), $field->getType());
+        $this->addIndexField($doc, $field_names[$name], $field->getValues(), $field->getType());
+        if (!array_key_exists($name, $special_fields) && version_compare($schema_version, '4.4', '>=')) {
+          $values = $field->getValues();
+          $first_value = reset($values);
+          if ($first_value) {
+            if (strpos($field_names[$name], 't') === 0 || strpos($field_names[$name], 's') === 0) {
+              // Always copy fulltext fields to a dedicated field for faster
+              // alpha sorts. Copy strings as well to normalize them.
+              $this->addIndexField($doc, 'sort_' . $name, [$first_value], $field->getType());
+            }
+            elseif (preg_match('/^([a-z]+)m(_.*)/', $field_names[$name], $matches)) {
+              // For multi-valued fields (which aren't sortable by nature) we use
+              // the same hackish workaround like the DB backend: just copy the
+              // first value in a single value field for sorting.
+              $values = $field->getValues();
+              $this->addIndexField($doc, $matches[1] . 's' . $matches[2], [$first_value], $field->getType());
+            }
+          }
+        }
       }
 
       if ($doc) {
@@ -784,21 +855,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   /**
    * {@inheritdoc}
    */
-  public function deleteAllIndexItems(IndexInterface $index = NULL) {
+  public function deleteAllIndexItems(IndexInterface $index, $datasource_id = NULL) {
     $this->connect();
-    if ($index) {
-      // Since the index ID we use for indexing can contain arbitrary
-      // prefixes, we have to escape it for use in the query.
-      $index_id = $this->getQueryHelper()->escapePhrase($index->id());
-      $index_id = $this->getIndexId($index_id);
-      $query = '(index_id:' . $index_id . ')';
-      $site_hash = $this->getQueryHelper()->escapePhrase(SearchApiSolrUtility::getSiteHash());
-      $query .= ' AND (hash:' . $site_hash . ')';
-      $this->getUpdateQuery()->addDeleteQuery($query);
+
+    // Since the index ID we use for indexing can contain arbitrary
+    // prefixes, we have to escape it for use in the query.
+    $query = '+index_id:' . $this->getIndexId($this->getQueryHelper()->escapePhrase($index->id()));
+    $query .= ' +hash:' . $this->getQueryHelper()->escapePhrase(SearchApiSolrUtility::getSiteHash());
+    if ($datasource_id) {
+      $query .= ' +' .$this->getSolrFieldNames($index)['search_api_datasource'] . ':' . $this->getQueryHelper()->escapePhrase($datasource_id);
     }
-    else {
-      $this->getUpdateQuery()->addDeleteQuery('*:*');
-    }
+    $this->getUpdateQuery()->addDeleteQuery($query);
 
     // Do a commitWithin since that is automatically a softCommit with Solr 4
     // and a delayed hard commit with Solr 3.4+.
@@ -810,6 +877,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     $customizer = $this->solr->getPlugin('customizerequest');
     $customizer->createCustomization('id')
       ->setType('param')
+      // @todo commitWithin should be configurable or removed for Solr > 4.0.x.
       ->setName('commitWithin')
       ->setValue('1000');
 
@@ -836,7 +904,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     $index = $query->getIndex();
     $index_id = $this->getIndexId($index->id());
     $field_names = $this->getSolrFieldNames($index);
-    $field_names_single_value = $this->getSolrFieldNames($index, TRUE);
 
     // Get Solr connection.
     $this->connect();
@@ -847,7 +914,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     // Extract keys.
     $keys = $query->getKeys();
     if (is_array($keys)) {
-      $keys = $this->getSolrHelper()->flattenKeys($keys);
+      $keys = $this->solrHelper->flattenKeys($keys);
     }
     // Set them.
     $solarium_query->setQuery($keys);
@@ -871,7 +938,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     // Handle More Like This requests.
     $mlt_options = $query->getOption('search_api_mlt');
     if ($mlt_options) {
-      $this->getSolrHelper()->setMoreLikeThis($solarium_query, $query, $mlt_options, $index_fields, $field_names);
+      $this->solrHelper->setMoreLikeThis($solarium_query, $query, $mlt_options, $index_fields, $field_names);
 
       // Override the search key by setting it to the solr document id
       // we want to compare it with.
@@ -883,9 +950,11 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     }
 
     // Set basic filters.
-    $conditions_queries = $this->getFilterQueries($query, $field_names, $index_fields);
-    foreach ($conditions_queries as $id => $conditions_query) {
-      $solarium_query->createFilterQuery('filters_' . $id)->setQuery($conditions_query);
+    $filter_queries = $this->getFilterQueries($query, $field_names, $index_fields);
+    foreach ($filter_queries as $id => $filter_query) {
+      $solarium_query->createFilterQuery('filters_' . $id)
+        ->setQuery($filter_query['query'])
+        ->addTags($filter_query['tags']);
     }
 
     // Set the Index filter.
@@ -898,16 +967,15 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     }
 
     // Set sorts.
-    $this->solrHelper->setSorts($solarium_query, $query, $field_names_single_value);
+    $this->solrHelper->setSorts($solarium_query, $query, $field_names);
 
     // Set facet fields.
-    $facets = $query->getOption('search_api_facets', array());
-    $this->setFacets($facets, $field_names, $solarium_query);
+    $this->setFacets($query, $solarium_query, $field_names);
 
-    // Set highlighting.
-    $excerpt = !empty($this->configuration['excerpt']) ? TRUE : FALSE;
-    $highlight_data = !empty($this->configuration['highlight_data']) ? TRUE : FALSE;
-    $this->getSolrHelper()->setHighlighting($solarium_query, $query, $excerpt, $highlight_data);
+    if (!empty($this->configuration['retrieve_data'])) {
+      // Set highlighting.
+      $this->solrHelper->setHighlighting($solarium_query, $query);
+    }
 
     // Handle spatial filters.
     $spatial_options = $query->getOption('search_api_location');
@@ -945,7 +1013,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       $solarium_query->setFields(['*', 'score']);
     }
     else {
-      $returned_fields = ['item_id', 'score'];
+      $returned_fields = [SEARCH_API_ID_FIELD_NAME, 'score'];
       if (!$this->configuration['site_hash']) {
         $returned_fields[] = 'hash';
       }
@@ -979,12 +1047,16 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       }
 
       // Set HTTP Basic Authentication parameter, if login data was set.
-      if (strlen($this->configuration['http_user']) && strlen($this->configuration['http_pass'])) {
-        $request->setAuthentication($this->configuration['http_user'], $this->configuration['http_pass']);
+      if (strlen($this->configuration['username']) && strlen($this->configuration['password'])) {
+        $request->setAuthentication($this->configuration['username'], $this->configuration['password']);
       }
 
       // Send search request.
       $response = $this->solr->executeRequest($request);
+      $body = $response->getBody();
+      $this->alterSolrResponseBody($body, $query);
+      $response = new Response($body, $response->getHeaders());
+
       $resultset = $this->solr->createResult($solarium_query, $response);
 
       // Extract results.
@@ -999,15 +1071,13 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
       // Extract facets.
       if ($resultset instanceof Result) {
-        if ($facets = $this->extractFacets($query, $resultset)) {
+        if ($facets = $this->extractFacets($query, $resultset, $field_names)) {
           $results->setExtraData('search_api_facets', $facets);
         }
       }
 
       $this->moduleHandler->alter('search_api_solr_search_results', $results, $query, $resultset);
       $this->postQuery($results, $query, $resultset);
-
-      return $results;
     }
     catch (\Exception $e) {
       throw new SearchApiSolrException($this->t('An error occurred while trying to search with Solr: @msg.', array('@msg' => $e->getMessage())), $e->getCode(), $e);
@@ -1096,14 +1166,13 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   /**
    * {@inheritdoc}
    */
-  public function getSolrFieldNames(IndexInterface $index, $single_value_name = FALSE, $reset = FALSE) {
+  public function getSolrFieldNames(IndexInterface $index, $reset = FALSE) {
     // @todo The field name mapping should be cached per index because custom
-    // queries needs to access it on every query.
-    $subkey = (int) $single_value_name;
-    if (!isset($this->fieldNames[$index->id()][$subkey]) || $reset) {
+    //   queries needs to access it on every query. But we need to be aware of
+    //   datasource additions and deletions.
+    if (!isset($this->fieldNames[$index->id()]) || $reset) {
       // This array maps "local property name" => "solr doc property name".
       $ret = array(
-        'search_api_id' => 'item_id',
         'search_api_relevance' => 'score',
         'search_api_random' => 'random',
       );
@@ -1112,24 +1181,86 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       $fields = $index->getFields();
       $fields += $this->getSpecialFields($index);
       foreach ($fields as $key => $field) {
-        // Generate a field name; this corresponds with naming conventions in
-        // our schema.xml.
-        $type = $field->getType();
-        $type_info = SearchApiSolrUtility::getDataTypeInfo($type);
-        $pref = isset($type_info['prefix']) ? $type_info['prefix'] : '';
-        $pref .= ($single_value_name) ? 's' : 'm';
-        $name = $pref . '_' . $key;
-        $ret[$key] = SearchApiSolrUtility::encodeSolrDynamicFieldName($name);
+        if (empty($ret[$key])) {
+          // Generate a field name; this corresponds with naming conventions in
+          // our schema.xml.
+          $type = $field->getType();
+          $type_info = SearchApiSolrUtility::getDataTypeInfo($type);
+          $pref = isset($type_info['prefix']) ? $type_info['prefix'] : '';
+          if (SearchApiUtility::isFieldIdReserved($key)) {
+            $pref .= 's';
+          }
+          else {
+            if ($field->getDataDefinition()->isList()) {
+              $pref .= 'm';
+            }
+            else {
+              try {
+                $datasource = $field->getDatasource();
+                if (!$datasource) {
+                  throw new SearchApiException();
+                }
+                else {
+                  $pref .= $this->getPropertyPathCardinality($field->getPropertyPath(), $datasource->getPropertyDefinitions()) != 1 ? 'm' : 's';
+                }
+              }
+              catch (SearchApiException $e) {
+                // Thrown by $field->getDatasource(). Assume multi value to be
+                // safe.
+                $pref .= 'm';
+              }
+            }
+          }
+          $name = $pref . '_' . $key;
+          $ret[$key] = SearchApiSolrUtility::encodeSolrName($name);
+        }
       }
 
       // Let modules adjust the field mappings.
-      $hook_name = $single_value_name ? 'search_api_solr_single_value_field_mapping' : 'search_api_solr_field_mapping';
-      $this->moduleHandler->alter($hook_name, $index, $ret);
+      $this->moduleHandler->alter('search_api_solr_field_mapping', $index, $ret);
 
-      $this->fieldNames[$index->id()][$subkey] = $ret;
+      $this->fieldNames[$index->id()] = $ret;
     }
 
-    return $this->fieldNames[$index->id()][$subkey];
+    return $this->fieldNames[$index->id()];
+  }
+
+  /**
+   * Computes the cardinality of a complete property path.
+   *
+   * @param string $property_path
+   *   The property path of the property.
+   * @param \Drupal\Core\TypedData\DataDefinitionInterface[] $properties
+   *   The properties which form the basis for the property path.
+   * @param integer $cardinality
+   *   The cardinality of the property path so far (for recursion).
+   *
+   * @return integer
+   *   The cardinality.
+   */
+  protected function getPropertyPathCardinality($property_path, array $properties, $cardinality = 1) {
+    list($key, $nested_path) = SearchApiUtility::splitPropertyPath($property_path, FALSE);
+    if (isset($properties[$key])) {
+      $property = $properties[$key];
+      if ($property instanceof FieldDefinitionInterface) {
+        $storage = $property->getFieldStorageDefinition();
+        if ($storage instanceof FieldStorageDefinitionInterface) {
+          if ($storage->getCardinality() == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) {
+            // Shortcut. We reached the maximum.
+            return FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
+          }
+          $cardinality *= $storage->getCardinality();
+        }
+      }
+
+      if (isset($nested_path)) {
+        $property = SearchApiUtility::getInnerProperty($property);
+        if ($property instanceof ComplexDataDefinitionInterface) {
+          $cardinality = $this->getPropertyPathCardinality($nested_path, SearchApiUtility::getNestedProperties($property), $cardinality);
+        }
+      }
+    }
+    return $cardinality;
   }
 
   /**
@@ -1139,7 +1270,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * is the same as specified in
    * \Drupal\search_api\Backend\BackendSpecificInterface::indexItems().
    */
-  protected function addIndexField(Document $doc, $key, $key_single, $values, $type) {
+  protected function addIndexField(Document $doc, $key, array $values, $type) {
     // Don't index empty values (i.e., when field is missing).
     if (!isset($values)) {
       return;
@@ -1157,7 +1288,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           if ($value === FALSE) {
             return;
           }
-          $value = format_date($value, 'custom', self::SOLR_DATE_FORMAT, 'UTC');
+          $value = \Drupal::service('date.formatter')->format($value, 'custom', self::SOLR_DATE_FORMAT, 'UTC');
           break;
 
         case 'integer':
@@ -1167,27 +1298,31 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         case 'decimal':
           $value = (float) $value;
           break;
+
+        case 'text':
+          /** @var TextValueInterface $value */
+          /*
+          $tokens = $value->getTokens();
+          if (is_array($tokens)) {
+            foreach ($tokens as $token) {
+              // @todo handle token boosts
+              // @see https://www.drupal.org/node/2746263
+              #$doc->addField($boost_key, $tokenized_value['value'], $tokenized_value['score']);
+              $token->getText();
+              $token->getBoost();
+            }
+          }
+          */
+          $value = $value->toText();
+          break;
+
+        case 'string':
+        default:
+          // Keep $value as it is.
       }
 
-      // For tokenized text, add each word separately.
-      if ($type == 'tokenized_text' && is_array($value)) {
-        foreach ($value as $tokenizd_value) {
-          // @todo Score is tracked by key, not for each value, how to handle
-          //   this?
-          $doc->addField($key, $tokenizd_value['value'], $tokenizd_value['score']);
-        }
-      }
-      else {
-        $doc->addField($key, $value);
-      }
+      $doc->addField($key, $value);
     }
-
-    $field_value = $doc->{$key};
-    $first_value = (is_array($field_value)) ? reset($field_value) : $field_value;
-    if ($type == 'tokenized_text' && is_array($first_value) && isset($first_value['value'])) {
-      $first_value = $first_value['value'];
-    }
-    $doc->setField($key_single, $first_value);
   }
 
   /**
@@ -1222,9 +1357,9 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    */
   protected function extractResults(QueryInterface $query, ResultInterface $result) {
     $index = $query->getIndex();
+    $backend_config = $index->getServerInstance()->getBackendConfig();
     $field_names = $this->getSolrFieldNames($index);
     $fields = $index->getFields();
-    $fields += $this->getSpecialFields($index);
     $site_hash = SearchApiSolrUtility::getSiteHash();
     // We can find the item ID and the score in the special 'search_api_*'
     // properties. Mappings are provided for these properties in
@@ -1233,7 +1368,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     $score_field = $field_names['search_api_relevance'];
 
     // Set up the results array.
-    $result_set = SearchApiUtility::createSearchResultSet($query);
+    $result_set = $query->getResults();
     $result_set->setExtraData('search_api_solr_response', $result->getData());
 
     // In some rare cases (e.g., MLT query with nonexistent ID) the response
@@ -1271,7 +1406,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     /** @var \Solarium\QueryType\Select\Result\Document $doc */
     foreach ($docs as $doc) {
       $doc_fields = $doc->getFields();
-
       $item_id = $doc_fields[$id_field];
       // For items coming from a different site, we need to adapt the item ID.
       if (!$this->configuration['site_hash'] && $doc_fields['hash'] != $site_hash) {
@@ -1286,26 +1420,34 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       // SearchApiSolrBackend::getFieldNames().
       foreach ($field_names as $search_api_property => $solr_property) {
         if (isset($doc_fields[$solr_property]) && isset($fields[$search_api_property])) {
+          $doc_field = is_array($doc_fields[$solr_property]) ? $doc_fields[$solr_property] : [$doc_fields[$solr_property]];
           $field = clone $fields[$search_api_property];
+          foreach ($doc_field as &$value) {
+            switch ($field->getType()) {
+              case 'date':
+                // field type convertions
+                // Date fields need some special treatment to become valid date values
+                // (i.e., timestamps) again.
+                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $value)) {
+                  $value = strtotime($value);
+                }
+                break;
 
-          // Date fields need some special treatment to become valid date values
-          // (i.e., timestamps) again.
-          if ($field->getType() == 'date'
-              && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $doc_fields[$solr_property][0])) {
-            $doc_fields[$solr_property][0] = strtotime($doc_fields[$solr_property][0]);
+              case 'text':
+                $value = new TextValue($value);
+            }
           }
-
-          $field->setValues($doc_fields[$solr_property]);
+          $field->setValues($doc_field);
           $result_item->setField($search_api_property, $field);
         }
       }
 
-      $index_id = $this->getIndexId($index->id());
-      $solr_id = $this->createId($index_id, $result_item->getId());
-      $item_fields = $result_item->getFields();
-      $excerpt = $this->getSolrHelper()->getExcerpt($result->getData(), $solr_id, $item_fields, $field_names);
-      if ($excerpt) {
-        $result_item->setExcerpt($excerpt);
+      if (!empty($backend_config['retrieve_data'])) {
+        $solr_id = $this->createId($index->id(), $result_item->getId());
+        $excerpt = $this->getSolrHelper()->getExcerpt($result->getData(), $solr_id, $result_item, $field_names);
+        if ($excerpt) {
+          $result_item->setExcerpt($excerpt);
+        }
       }
 
       $result_set->addResultItem($result_item);
@@ -1330,18 +1472,16 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * @return array
    *   An array describing facets that apply to the current results.
    */
-  protected function extractFacets(QueryInterface $query, Result $resultset) {
+  protected function extractFacets(QueryInterface $query, Result $resultset, array $field_names) {
     if (!$resultset->getFacetSet()) {
-      return array();
+      return [];
     }
 
-    $facets = array();
+    $facets = [];
     $index = $query->getIndex();
-    $field_names = $this->getSolrFieldNames($index);
     $fields = $index->getFields();
-    $fields += $this->getSpecialFields($index);
 
-    $extract_facets = $query->getOption('search_api_facets', array());
+    $extract_facets = $query->getOption('search_api_facets', []);
 
     if ($facet_fields = $resultset->getFacetSet()->getFacets()) {
       foreach ($extract_facets as $delta => $info) {
@@ -1468,7 +1608,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
   /**
    * Recursively transforms conditions into a flat array of Solr filter queries.
    *
-   * @param \Drupal\search_api\Query\ConditionGroupInterface $conditions
+   * @param \Drupal\search_api\Query\ConditionGroupInterface $condition_group
    *   The group of conditions.
    * @param array $solr_fields
    *   The mapping from Drupal to Solr field names.
@@ -1493,37 +1633,60 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         }
         $value = $condition->getValue();
         if ($value !== '') {
-          $fq[] = $this->createFilterQuery($solr_fields[$field], $value, $condition->getOperator(), $index_fields[$field]);
+          $fq[] = [
+            'query' => $this->createFilterQuery($solr_fields[$field], $value, $condition->getOperator(), $index_fields[$field]),
+            'tags' => $condition_group->getTags(),
+          ];
         }
       }
       else {
         // Nested condition group.
-        $nested_fq = $this->createFilterQueries($condition, $solr_fields, $index_fields);
-        if (count($nested_fq) > 1) {
-          array_walk_recursive($nested_fq, function (&$query, $key, $pre) {
-            if (strpos($query, '-') !== 0) {
-              $query = $pre . $query;
-            }
-            elseif (!$pre) {
-              $query = '(' . $query . ')';
-            }
-          }, $condition->getConjunction() == 'OR' ? '' : '+');
-          $fq[] = '(' . implode(' ', $nested_fq) . ')';
-        }
-        else {
-          $fq[] = $nested_fq[0];
-        }
+        $nested_fqs = $this->createFilterQueries($condition, $solr_fields, $index_fields);
+        $fq = array_merge($fq, $this->reduceFilterQueries($nested_fqs, $condition));
       }
     }
 
-    // @todo The tagging needs a complete review.
-    foreach ($condition_group->getTags() as $tag) {
-      array_walk($fq, function(&$value, $key, $prefix) {
-        $value = $prefix . $value;
-      }, "{!tag=$tag}");
+    return $fq;
+  }
 
-      // We can only apply one tag per filter.
-      break;
+  /**
+   * Reduces an array of filter queries to an array containing one filter query.
+   *
+   * The the queries will be logically combined and their tags will be merged.
+   *
+   * @param array $filter_queries
+   * @param \Drupal\search_api\Query\ConditionGroupInterface $condition_group
+   * @param bool $last
+   * @return array
+   */
+  protected function reduceFilterQueries(array $filter_queries, ConditionGroupInterface $condition_group, $last = FALSE) {
+    $fq = [];
+    if (count($filter_queries) > 1) {
+      $queries = [];
+      $tags = [];
+      $pre = $condition_group->getConjunction() == 'OR' ? '' : '+';
+      foreach ($filter_queries as $nested_fq) {
+        if (strpos($nested_fq['query'], '-') !== 0) {
+          $queries[] = $pre . $nested_fq['query'];
+        }
+        elseif (!$pre) {
+          $queries[] = '(' . $nested_fq['query'] . ')';
+        }
+        else {
+          $queries[] = $nested_fq['query'];
+        }
+        $tags += $nested_fq['tags'];
+      }
+      $fq[] =  [
+        'query' => (!$last ? '(' : '') . implode(' ', $queries) . (!$last ? ')' : ''),
+        'tags' => array_unique($tags + $condition_group->getTags()),
+      ];
+    }
+    elseif (!empty($filter_queries)) {
+      $fq[] = [
+        'query' => $filter_queries[0]['query'],
+        'tags' => array_unique($filter_queries[0]['tags'] + $condition_group->getTags()),
+      ];
     }
 
     return $fq;
@@ -1533,7 +1696,6 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * Create a single search query string.
    */
   protected function createFilterQuery($field, $value, $operator, FieldInterface $index_field) {
-    $field = SearchApiSolrUtility::escapeFieldName($field);
     if ($value === NULL) {
       return ($operator == '=' ? '-' : '') . "$field:[* TO *]";
     }
@@ -1565,17 +1727,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         return "$field:{{$value} TO *}";
 
       case 'BETWEEN':
-        return "$field:[" . $value[0] . ' TO ' . $value[1] . ']';
+        return "$field:[" . array_shift($value) . ' TO ' . array_shift($value) . ']';
 
       case 'NOT BETWEEN':
-        return "-$field:[" . $value[0] . ' TO ' . $value[1] . ']';
+        return "-$field:[" . array_shift($value) . ' TO ' . array_shift($value) . ']';
 
       case 'IN':
         if (count($value) > 1) {
           return "($field:" . implode(" $field:", $value) . ')';
         }
         else {
-          return "$field:". $value[0];
+          return "$field:". array_shift($value);
         }
 
       case 'NOT IN':
@@ -1583,7 +1745,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           return "(*:* -$field:" . implode(" -$field:", $value) . ')';
         }
         else {
-          return "-$field:". $value[0];
+          return "-$field:". array_shift($value);
         }
 
       default:
@@ -1605,7 +1767,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         if ($value === FALSE) {
           return 0;
         }
-        $value = format_date($value, 'custom', self::SOLR_DATE_FORMAT, 'UTC');
+        $value = \Drupal::service('date.formatter')->format($value, 'custom', self::SOLR_DATE_FORMAT, 'UTC');
         break;
     }
     return $this->getQueryHelper()->escapePhrase($value);
@@ -1613,8 +1775,14 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
   /**
    * Helper method for creating the facet field parameters.
+   *
+   * @param \Drupal\search_api\Query\QueryInterface $query
+   * @param \Solarium\QueryType\Select\Query\Query $solarium_query
+   * @param array $field_names
    */
-  protected function setFacets(array $facets, array $field_names, Query $solarium_query) {
+  protected function setFacets(QueryInterface $query, Query $solarium_query, array $field_names) {
+    $facets = $query->getOption('search_api_facets', []);
+
     if (empty($facets)) {
       return;
     }
@@ -1729,6 +1897,15 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    *   The response object returned by Solr.
    */
   protected function postQuery(ResultSetInterface $results, QueryInterface $query, $response) {
+  }
+
+  /**
+   * Allow custom changes to the response body before extracting values.
+   *
+   * @param string $body
+   * @param \Drupal\search_api\Query\QueryInterface $query
+   */
+  protected function alterSolrResponseBody(&$body, QueryInterface $query) {
   }
 
   /**
@@ -1912,7 +2089,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         }
       }
       catch (SearchApiException $e) {
-        watchdog_exception('search_api_solr', $e, "%type during autocomplete Solr query: !message in %function (line %line of %file).", array(), WATCHDOG_WARNING);
+        watchdog_exception('search_api_solr', $e, "%type during autocomplete Solr query: @message in %function (line %line of %file).", array(), WATCHDOG_WARNING);
       }
 
       if (count($suggestions) >= $limit) {
@@ -1953,6 +2130,17 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
     catch (HttpException $e) {
       throw new SearchApiSolrException($this->t('Solr server core @core not found.', ['@core' => $this->solr->getEndpoint()->getBaseUri()]), $e->getCode(), $e);
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfiguration(array $configuration) {
+    parent::setConfiguration($configuration);
+    // Update the configuration of the solrHelper as well by replacing it by a
+    // new instance.
+    $solr_helper = new SolrHelper($this->configuration);
+    $this->setSolrHelper($solr_helper);
   }
 
   /**

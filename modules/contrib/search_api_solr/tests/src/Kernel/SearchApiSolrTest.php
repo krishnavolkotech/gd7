@@ -6,10 +6,11 @@ use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSetInterface;
-use Drupal\search_api\Utility;
+use Drupal\search_api\Utility\Utility;
 use Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\Tests\search_api\Kernel\BackendTestBase;
+use Drupal\user\Entity\User;
 
 /**
  * Tests index and search capabilities using the Solr search backend.
@@ -17,6 +18,8 @@ use Drupal\Tests\search_api\Kernel\BackendTestBase;
  * @group search_api_solr
  */
 class SearchApiSolrTest extends BackendTestBase {
+
+  use InvokeMethodTrait;
 
   /**
    * Modules to enable for this test.
@@ -26,6 +29,7 @@ class SearchApiSolrTest extends BackendTestBase {
   public static $modules = array(
     'search_api_solr',
     'search_api_solr_test',
+    'user',
   );
 
   /**
@@ -58,7 +62,8 @@ class SearchApiSolrTest extends BackendTestBase {
   public function setUp() {
     parent::setUp();
 
-    $this->installConfig(array('search_api_solr_test'));
+    $this->installEntitySchema('user');
+    $this->installConfig(['search_api_solr', 'search_api_solr_test']);
 
     $this->detectSolrAvailability();
   }
@@ -113,10 +118,10 @@ class SearchApiSolrTest extends BackendTestBase {
   /**
    * Tests various indexing scenarios for the Solr search backend.
    */
-  public function testFramework() {
+  public function testBackend() {
     // Only run the tests if we have a Solr core available.
     if ($this->solrAvailable) {
-      parent::testFramework();
+      parent::testBackend();
     }
     else {
       $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
@@ -140,9 +145,9 @@ class SearchApiSolrTest extends BackendTestBase {
       /** @var \Drupal\search_api\IndexInterface $index */
       $index = Index::load($this->indexId);
       $index->clear();
-      // Deleting items take at least 1 second for Solr to parse it so that drupal
-      // doesn't get timeouts while waiting for Solr. Lets give it 2 seconds to
-      // make sure we are in bounds.
+      // Deleting items take at least 1 second for Solr to parse it so that
+      // drupal doesn't get timeouts while waiting for Solr. Lets give it 2
+      // seconds to make sure we are in bounds.
       sleep(2);
     }
   }
@@ -184,17 +189,28 @@ class SearchApiSolrTest extends BackendTestBase {
     $query->addCondition('id', 5, '<>');
     $query->range(0, 0);
     $results = $query->execute();
-    $expected = array(
-      array('count' => 4, 'filter' => '"test"'),
-      array('count' => 3, 'filter' => '"case"'),
-      array('count' => 1, 'filter' => '"bar"'),
-      array('count' => 1, 'filter' => '"foobar"'),
-    );
+    $expected = $this->getExpectedFacetsOfRegressionTest2469547();
     // We can't guarantee the order of returned facets, since "bar" and "foobar"
     // both occur once, so we have to manually sort the returned facets first.
     $facets = $results->getExtraData('search_api_facets', array())['body'];
     usort($facets, array($this, 'facetCompare'));
     $this->assertEquals($expected, $facets, 'Correct facets were returned for a fulltext field.');
+  }
+
+  /**
+   * Return the expected facets for regression test 2469547.
+   *
+   * The facets differ for Solr backends because of case-insensitive filters.
+   *
+   * @return array
+   */
+  protected function getExpectedFacetsOfRegressionTest2469547() {
+    return [
+      ['count' => 4, 'filter' => '"test"'],
+      ['count' => 3, 'filter' => '"case"'],
+      ['count' => 1, 'filter' => '"bar"'],
+      ['count' => 1, 'filter' => '"foobar"'],
+    ];
   }
 
   /**
@@ -223,27 +239,6 @@ class SearchApiSolrTest extends BackendTestBase {
   protected function assertIgnored(ResultSetInterface $results, array $ignored = array(), $message = 'No keys were ignored.') {
     // Nothing to do here since the Solr backend doesn't keep a list of ignored
     // fields.
-  }
-
-  /**
-   * Calls protected/private method of a class.
-   *
-   * @param object &$object
-   *   Instantiated object that we will run method on.
-   * @param string
-   *  Method name to call.
-   * @param array $parameters
-   *   Array of parameters to pass into method.
-   *
-   * @return mixed
-   *   Method return.
-   */
-  protected function invokeMethod(&$object, $methodName, array $parameters = []) {
-    $reflection = new \ReflectionClass(get_class($object));
-    $method = $reflection->getMethod($methodName);
-    $method->setAccessible(true);
-
-    return $method->invokeArgs($object, $parameters);
   }
 
   /**
@@ -288,21 +283,21 @@ class SearchApiSolrTest extends BackendTestBase {
     $query = $this->buildSearch();
     $query->addCondition('x', 5, '=');
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('solr_x:"5"', $fq[0]);
+    $this->assertEquals('solr_x:"5"', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
     $query->addCondition('x', 5, '<>');
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('-solr_x:"5"', $fq[0]);
+    $this->assertEquals('-solr_x:"5"', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
     $query->addCondition('x', 3, '<>');
     $query->addCondition('x', 5, '<>');
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('-solr_x:"3"', $fq[0]);
-    $this->assertEquals('-solr_x:"5"', $fq[1]);
+    $this->assertEquals('-solr_x:"3"', $fq[0]['query']);
+    $this->assertEquals('-solr_x:"5"', $fq[1]['query']);
 
     $query = $this->buildSearch();
     $condition_group = $query->createConditionGroup();
@@ -310,7 +305,7 @@ class SearchApiSolrTest extends BackendTestBase {
     $condition_group->addCondition('x', 5, '<>');
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(-solr_x:"3" -solr_x:"5")', $fq[0]);
+    $this->assertEquals('(-solr_x:"3" -solr_x:"5")', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
@@ -320,7 +315,7 @@ class SearchApiSolrTest extends BackendTestBase {
     $condition_group->addCondition('z', 7);
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(-solr_x:"5" +solr_y:"3" +solr_z:"7")', $fq[0]);
+    $this->assertEquals('(-solr_x:"5" +solr_y:"3" +solr_z:"7")', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
@@ -332,7 +327,7 @@ class SearchApiSolrTest extends BackendTestBase {
     $condition_group->addConditionGroup($inner_condition_group);
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(-solr_x:"5" +(solr_y:"3" solr_z:"7"))', $fq[0]);
+    $this->assertEquals('(-solr_x:"5" +(solr_y:"3" solr_z:"7"))', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
@@ -348,28 +343,71 @@ class SearchApiSolrTest extends BackendTestBase {
     $condition_group->addConditionGroup($inner_condition_group_and);
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(+(solr_x:"3" (-solr_y:"7")) +(+solr_x:"1" -solr_y:"2" +solr_z:{* TO "5"}))', $fq[0]);
+    $this->assertEquals('(+(solr_x:"3" (-solr_y:"7")) +(+solr_x:"1" -solr_y:"2" +solr_z:{* TO "5"}))', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
     $condition_group = $query->createConditionGroup();
     $condition_group->addCondition('x', 5);
-    $condition_group->addCondition('y', [1, 2 ,3], 'NOT IN');
+    $condition_group->addCondition('y', [1, 2, 3], 'NOT IN');
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]);
+    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
 
     $query = $this->buildSearch();
     $condition_group = $query->createConditionGroup();
     $condition_group->addCondition('x', 5);
     $inner_condition_group = $query->createConditionGroup();
-    $inner_condition_group->addCondition('y', [1, 2 ,3], 'NOT IN');
+    $inner_condition_group->addCondition('y', [1, 2, 3], 'NOT IN');
     $condition_group->addConditionGroup($inner_condition_group);
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]);
+    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]['query']);
     $this->assertFalse(isset($fq[1]));
+
+    // test tagging of a single filter query of a facet query
+    $query = $this->buildSearch();
+    $conditions = $query->createConditionGroup('OR', array('facet:' . 'tagtosearchfor'));
+    $conditions->addCondition('category', 'article_category');
+    $query->addConditionGroup($conditions);
+    $conditions = $query->createConditionGroup('AND');
+    $conditions->addCondition('category', NULL, '<>');
+    $query->addConditionGroup($conditions);
+    $facets['category'] = array(
+      'field' => 'category',
+      'limit' => 0,
+      'min_count' => 1,
+      'missing' => TRUE,
+      'operator' => 'or',
+    );
+    $query->setOption('search_api_facets', $facets);
+    $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
+    $this->assertEquals('ss_category:"article_category"', $fq[0]['query'], 'Condition found in tagged first filter query');
+    $this->assertEquals(['facet:tagtosearchfor' => 'facet:tagtosearchfor'], $fq[0]['tags'], 'Tag found in tagged first filter query');
+    $this->assertEquals('ss_category:[* TO *]', $fq[1]['query'], 'Condition found in unrelated second filter query');
+    $this->assertEquals([], $fq[1]['tags'], 'No tag found in second filter query');
+
+    // @see https://www.drupal.org/node/2753917
+    $query = $this->buildSearch();
+    $conditions = $query->createConditionGroup('OR', array('facet:x'));
+    $conditions->addCondition('x', 'A');
+    $conditions->addCondition('x', 'B');
+    $query->addConditionGroup($conditions);
+    $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
+    $this->assertEquals(1, count($fq));
+    $this->assertEquals(['facet:x' => 'facet:x'], $fq[0]['tags']);
+    $this->assertEquals('(solr_x:"A" solr_x:"B")', $fq[0]['query']);
+
+    $query = $this->buildSearch();
+    $conditions = $query->createConditionGroup('AND', array('facet:x'));
+    $conditions->addCondition('x', 'A');
+    $conditions->addCondition('x', 'B');
+    $query->addConditionGroup($conditions);
+    $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
+    $this->assertEquals(1, count($fq));
+    $this->assertEquals(['facet:x' => 'facet:x'], $fq[0]['tags']);
+    $this->assertEquals('(+solr_x:"A" +solr_x:"B")', $fq[0]['query']);
   }
 
   /**
@@ -384,8 +422,8 @@ class SearchApiSolrTest extends BackendTestBase {
     $query->setLanguages(['en']);
     $query->addCondition('x', 5, '=');
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('solr_x:"5"', $fq[0]);
-    $this->assertEquals('sm_search_api_language:"en"', $fq[1]);
+    $this->assertEquals('solr_x:"5"', $fq[0]['query']);
+    $this->assertEquals('ss_search_api_language:"en"', $fq[1]['query']);
 
     $query = $this->buildSearch();
     $query->setLanguages(['en', 'de']);
@@ -396,8 +434,223 @@ class SearchApiSolrTest extends BackendTestBase {
     $condition_group->addConditionGroup($inner_condition_group);
     $query->addConditionGroup($condition_group);
     $fq = $this->invokeMethod($backend, 'getFilterQueries', [$query, $mapping, $fields]);
-    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]);
-    $this->assertEquals('(sm_search_api_language:"en" sm_search_api_language:"de")', $fq[1]);
+    $this->assertEquals('(+solr_x:"5" +(*:* -solr_y:"1" -solr_y:"2" -solr_y:"3"))', $fq[0]['query']);
+    $this->assertEquals('(ss_search_api_language:"en" ss_search_api_language:"de")', $fq[1]['query']);
+  }
+
+  /**
+   * Tests highlight and excerpt options.
+   */
+  public function testHighlightAndExcerpt() {
+    // Only run the tests if we have a Solr core available.
+    if ($this->solrAvailable) {
+      $config = $this->getIndex()->getServerInstance()->getBackendConfig();
+
+      $this->insertExampleContent();
+      $this->indexItems($this->indexId);
+
+      $config['retrieve_data'] = TRUE;
+      $config['highlight_data'] = TRUE;
+      $config['excerpt'] = FALSE;
+      $query = $this->buildSearch('foobar');
+      $query->getIndex()->getServerInstance()->setBackendConfig($config);
+      $results = $query->execute();
+      $this->assertEquals(1, $results->getResultCount(), 'Search for »foobar« returned correct number of results.');
+      /** @var \Drupal\search_api\Item\ItemInterface $result */
+      foreach ($results as $result) {
+        $this->assertContains('<strong>foobar</strong>', (string) $result->getField('body')->getValues()[0]);
+        $this->assertNull($result->getExcerpt());
+      }
+
+      $config['highlight_data'] = FALSE;
+      $config['excerpt'] = TRUE;
+      $query = $this->buildSearch('foobar');
+      $query->getIndex()->getServerInstance()->setBackendConfig($config);
+      $results = $query->execute();
+      $this->assertEquals(1, $results->getResultCount(), 'Search for »foobar« returned correct number of results.');
+      /** @var \Drupal\search_api\Item\ItemInterface $result */
+      foreach ($results as $result) {
+        $this->assertNotContains('<strong>foobar</strong>', (string) $result->getField('body')->getValues()[0]);
+        $this->assertContains('<strong>foobar</strong>', $result->getExcerpt());
+      }
+
+      $config['highlight_data'] = TRUE;
+      $config['excerpt'] = TRUE;
+      $query = $this->buildSearch('foobar');
+      $query->getIndex()->getServerInstance()->setBackendConfig($config);
+      $results = $query->execute();
+      $this->assertEquals(1, $results->getResultCount(), 'Search for »foobar« returned correct number of results.');
+      /** @var \Drupal\search_api\Item\ItemInterface $result */
+      foreach ($results as $result) {
+        $this->assertContains('<strong>foobar</strong>', (string) $result->getField('body')->getValues()[0]);
+        $this->assertContains('<strong>foobar</strong>', $result->getExcerpt());
+      }
+
+    }
+    else {
+      $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
+    }
+  }
+
+  /**
+   * Test that basic auth config gets passed to Solarium.
+   */
+  public function testBasicAuth() {
+    $server = $this->getServer();
+    $config = $server->getBackendConfig();
+    $config['username'] = 'foo';
+    $config['password'] = 'bar';
+    $server->setBackendConfig($config);
+    $auth = $server->getBackend()->getSolrConnection()->getEndpoint()->getAuthentication();
+    $this->assertEquals(['username' => 'foo', 'password' => 'bar'], $auth);
+  }
+
+  /**
+   * Tests addition and deletion of a data source.
+   */
+  public function testDatasourceAdditionAndDeletion() {
+    // Only run the tests if we have a Solr core available.
+    if ($this->solrAvailable) {
+      $this->insertExampleContent();
+      $this->indexItems($this->indexId);
+
+      $results = $this->buildSearch()->execute();
+      $this->assertEquals(5, $results->getResultCount(), 'Number of indexed entities is correct.');
+
+      try {
+        $results = $this->buildSearch()->addCondition('uid', 0, '>')->execute();
+        $this->fail('Field uid must not yet exists in this index.');
+      }
+      catch (\Exception $e) {
+        $this->assertEquals('Filter term on unknown or unindexed field uid.', $e->getMessage());
+      }
+
+      $index = $this->getIndex();
+      $index->set('datasource_settings', $index->get('datasource_settings') + [
+        'entity:user' => [
+          'plugin_id' => 'entity:user',
+          'settings' => [],
+        ],
+      ]);
+      $info = [
+        'label' => 'uid',
+        'type' => 'integer',
+        'datasource_id' => 'entity:user',
+        'property_path' => 'uid',
+      ];
+      $index->addField(Utility::createField($index, 'uid', $info));
+      $index->save();
+
+      User::create([
+        'uid' => 1,
+        'name' => 'root',
+        'langcode' => 'en',
+      ])->save();
+
+      $this->indexItems($this->indexId);
+
+      $results = $this->buildSearch()->execute();
+      $this->assertEquals(6, $results->getResultCount(), 'Number of indexed entities in multi datasource index is correct.');
+
+      $results = $this->buildSearch()->addCondition('uid', 0, '>')->execute();
+      $this->assertEquals(1, $results->getResultCount(), 'Search for users returned correct number of results.');
+
+      $this->getIndex()->removeDatasource('entity:user')->save();
+
+      // Wait for the commitWithin 1 second to complete the deletion.
+      sleep(2);
+
+      $results = $this->buildSearch()->execute();
+      $this->assertEquals(5, $results->getResultCount(), 'Number of indexed entities is correct.');
+
+      try {
+        $results = $this->buildSearch()->addCondition('uid', 0, '>')->execute();
+        $this->fail('Field uid must not yet exists in this index.');
+      }
+      catch (\Exception $e) {
+        $this->assertEquals('Filter term on unknown or unindexed field uid.', $e->getMessage());
+      }
+    }
+    else {
+      $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
+    }
+  }
+
+  /**
+   * Tests search result sorts.
+   */
+  public function testSearchResultSorts() {
+    // Only run the tests if we have a Solr core available.
+    if ($this->solrAvailable) {
+      $this->insertExampleContent();
+      $this->indexItems($this->indexId);
+
+      // Type text.
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('name')
+        // Force an expected order for identical names.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([3, 5, 1, 4, 2], $results, 'Sort by name.');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('name', QueryInterface::SORT_DESC)
+        // Force an expected order for identical names.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([2, 4, 1, 5, 3], $results, 'Sort by name descending.');
+
+      // Type string.
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('type')
+        // Force an expected order for identical types.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([4, 5, 1, 2, 3], $results, 'Sort by type.');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('type', QueryInterface::SORT_DESC)
+        // Force an expected order for identical types.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([1, 2, 3, 4, 5], $results, 'Sort by type descending.');
+
+      // Type multi-value string. Uses first value.
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('keywords')
+        // Force an expected order for identical keywords.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([4, 1, 2, 5, 3], $results, 'Sort by keywords.');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('keywords', QueryInterface::SORT_DESC)
+        // Force an expected order for identical keywords.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([1, 2, 5, 4, 3], $results, 'Sort by keywords descending.');
+
+      // Type decimal.
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('width')
+        // Force an expected order for identical width.
+        ->sort('search_api_id')
+        ->execute();
+      // @todo if width is midding it seems to be treated like 0 because
+      //   sortMissingLast="true" doesn't fix it.
+      // $this->assertResults([4, 5, 1, 2, 3], $results, 'Sort by width.');
+      $this->assertResults([1, 2, 3, 4, 5], $results, 'Sort by width.');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('width', QueryInterface::SORT_DESC)
+        // Force an expected order for identical width.
+        ->sort('search_api_id')
+        ->execute();
+      $this->assertResults([5, 4, 1, 2, 3], $results, 'Sort by width descending.');
+    }
+    else {
+      $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
+    }
   }
 
 }

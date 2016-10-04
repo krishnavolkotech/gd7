@@ -9,8 +9,11 @@ backend_config:
   port: '8983'
   path: /solr
   core: d8
-  http_user: ''
-  http_pass: ''
+  timeout: 5
+  index_timeout: 5
+  optimize_timeout: 5
+  username: ''
+  password: ''
   excerpt: false
   retrieve_data: false
   highlight_data: false

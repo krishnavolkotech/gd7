@@ -13,7 +13,7 @@ use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\SearchApiException;
-use Drupal\search_api\Utility;
+use Drupal\search_api\Utility\Utility;
 
 /**
  * Implements hook_views_data().
@@ -51,17 +51,19 @@ function search_api_views_data() {
       );
 
       // Add suitable handlers for all indexed fields.
-      foreach ($index->getFields() as $field_id => $field) {
+      foreach ($index->getFields(TRUE) as $field_id => $field) {
         $field_alias = _search_api_views_find_field_alias($field_id, $table);
         $field_definition = _search_api_views_get_handlers($field);
         // The field handler has to be extra, since it is a) determined by the
         // field's underlying property and b) needs a different "real field"
         // set.
-        $field_handler = _search_api_views_get_field_handler_for_property($field->getDataDefinition(), $field->getPropertyPath());
-        if ($field_handler) {
-          $field_definition['field'] = $field_handler;
-          $field_definition['field']['real field'] = $field->getCombinedPropertyPath();
-          $field_definition['field']['click sortable'] = TRUE;
+        if ($field->getPropertyPath()) {
+          $field_handler = _search_api_views_get_field_handler_for_property($field->getDataDefinition(), $field->getPropertyPath());
+          if ($field_handler) {
+            $field_definition['field'] = $field_handler;
+            $field_definition['field']['real field'] = $field->getCombinedPropertyPath();
+            $field_definition['field']['click sortable'] = TRUE;
+          }
         }
         if ($field_definition) {
           $field_label = $field->getLabel();
@@ -290,11 +292,11 @@ function _search_api_views_handler_mapping() {
       ),
       'entity:taxonomy_term' => array(
         'argument' => array(
-          'id' => 'search_api_taxonomy_term',
+          'id' => 'search_api',
           'filter' => 'intval',
         ),
         'filter' => array(
-          'id' => 'search_api_term',
+          'id' => 'search_api',
         ),
         'sort' => array(
           'id' => 'search_api',

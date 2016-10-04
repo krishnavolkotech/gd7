@@ -43,7 +43,7 @@ class EntityStringIdTest extends KernelTestBase {
    */
   public static $modules = array(
     'search_api',
-    'search_api_test_backend',
+    'search_api_test',
     'language',
     'user',
     'system',
@@ -65,21 +65,29 @@ class EntityStringIdTest extends KernelTestBase {
 
     $this->installSchema('search_api', array(
       'search_api_item',
-      'search_api_task',
     ));
     $this->installEntitySchema('entity_test_string_id');
+    $this->installEntitySchema('search_api_task');
 
     // Do not use a batch for tracking the initial items after creating an
     // index when running the tests via the GUI. Otherwise, it seems Drupal's
     // Batch API gets confused and the test fails.
-    \Drupal::state()->set('search_api_use_tracking_batch', FALSE);
+    if (php_sapi_name() != 'cli') {
+      \Drupal::state()->set('search_api_use_tracking_batch', FALSE);
+    }
+
+    // Set tracking page size so tracking will work properly.
+    \Drupal::configFactory()
+      ->getEditable('search_api.settings')
+      ->set('tracking_page_size', 100)
+      ->save();
 
     // Create a test server.
     $this->server = Server::create(array(
       'name' => 'Test Server',
       'id' => 'test_server',
       'status' => 1,
-      'backend' => 'search_api_test_backend',
+      'backend' => 'search_api_test',
     ));
     $this->server->save();
 

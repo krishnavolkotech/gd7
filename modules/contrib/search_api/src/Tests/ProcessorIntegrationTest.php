@@ -2,17 +2,22 @@
 
 namespace Drupal\search_api\Tests;
 
+use Drupal\Component\Utility\Html;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Entity\Server;
+use Drupal\search_api_test\PluginTestTrait;
 
 /**
  * Tests the admin UI for processors.
  *
+ * @todo Move this whole class into a single IntegrationTest check*() method?
+ * @todo Add tests for the "Aggregated fields" and "Role filter" processors.
+ *
  * @group search_api
  */
-// @todo Move this whole class into a single IntegrationTest check*() method?
-// @todo Add tests for the "Aggregated fields" and "Role filter" processors.
 class ProcessorIntegrationTest extends WebTestBase {
+
+  use PluginTestTrait;
 
   /**
    * {@inheritdoc}
@@ -42,12 +47,20 @@ class ProcessorIntegrationTest extends WebTestBase {
    * avoid the overhead of having one test per processor.
    */
   public function testProcessorIntegration() {
-    // The add_url processor is always enabled.
-    $enabled = array('add_url');
-    sort($enabled);
+    // Some processors are always enabled.
+    $enabled = array('add_url', 'aggregated_field', 'rendered_item');
     $actual_processors = array_keys($this->loadIndex()->getProcessors());
     sort($actual_processors);
     $this->assertEqual($enabled, $actual_processors);
+
+    // Ensure the hidden processors aren't displayed in the UI.
+    $this->loadProcessorsTab();
+    $hidden = $enabled;
+    foreach ($hidden as $processor_id) {
+      $this->assertNoRaw(Html::escape($processor_id), "The \"$processor_id\" processor is not displayed in the UI.");
+    }
+
+    $this->checkAggregatedFieldsIntegration();
 
     $this->checkContentAccessIntegration();
     $enabled[] = 'content_access';
@@ -92,11 +105,6 @@ class ProcessorIntegrationTest extends WebTestBase {
     $this->assertEqual($enabled, $actual_processors);
 
     $this->checkRenderedItemIntegration();
-    $enabled[] = 'rendered_item';
-    sort($enabled);
-    $actual_processors = array_keys($this->loadIndex()->getProcessors());
-    sort($actual_processors);
-    $this->assertEqual($enabled, $actual_processors);
 
     $this->checkStopWordsIntegration();
     $enabled[] = 'stopwords';
@@ -148,23 +156,22 @@ class ProcessorIntegrationTest extends WebTestBase {
     $this->assertText($this->t('Tokenizer'));
     $this->assertText($this->t('Stopwords'));
 
-    // Create a new server with the "search_api_test_backend" backend.
+    // Create a new server with the "search_api_test" backend.
     $server = Server::create(array(
       'id' => 'webtest_server',
       'name' => 'WebTest server',
       'description' => 'WebTest server',
-      'backend' => 'search_api_test_backend',
+      'backend' => 'search_api_test',
       'backend_config' => array(),
     ));
     $server->save();
-    $key = 'search_api_test_backend.return.getDiscouragedProcessors';
     $processors = array(
       'highlight',
       'ignore_character',
       'tokenizer',
       'stopwords',
     );
-    \Drupal::state()->set($key, $processors);
+    $this->setReturnValue('backend', 'getDiscouragedProcessors', $processors);
 
     // Use the newly created server.
     $settings_path = 'admin/config/search/search-api/index/' . $this->indexId . '/edit';
@@ -178,6 +185,38 @@ class ProcessorIntegrationTest extends WebTestBase {
     $this->assertNoText($this->t('Ignore character'));
     $this->assertNoText($this->t('Tokenizer'));
     $this->assertNoText($this->t('Stopwords'));
+  }
+
+  /**
+   * Tests the integration of the "Aggregated fields" processor.
+   */
+  public function checkAggregatedFieldsIntegration() {
+    $index = $this->loadIndex();
+    $index->removeProcessor('aggregated_field');
+    $index->save();
+
+    $this->assertTrue($this->loadIndex()->isValidProcessor('aggregated_field'), 'The "Aggregated fields" processor cannot be disabled.');
+
+    $options['query']['datasource'] = '';
+    $this->drupalGet($this->getIndexPath('fields/add'), $options);
+
+    // See \Drupal\search_api\Tests\IntegrationTest::addField().
+    $this->assertRaw('name="aggregated_field"');
+    $post = '&' . $this->serializePostValues(array('aggregated_field' => $this->t('Add')));
+    $this->drupalPostForm(NULL, array(), NULL, array(), array(), NULL, $post);
+    $args['%label'] = $this->t('Aggregated field');
+    $this->assertRaw($this->t('Field %label was added to the index.', $args));
+    $this->assertUrl($this->getIndexPath('fields/aggregated_field/edit'));
+    $edit = array(
+      'type' => 'first',
+      'fields[entity:node/title]' => 'title',
+      'fields[entity:node/type]' => 'type',
+      'fields[entity:node/uid]' => 'uid',
+    );
+    $this->drupalPostForm(NULL, $edit, $this->t('Save'));
+
+    $this->assertUrl($this->getIndexPath('fields'));
+    $this->assertRaw($this->t('The field configuration was successfully saved.'));
   }
 
   /**
@@ -205,6 +244,29 @@ class ProcessorIntegrationTest extends WebTestBase {
    * Tests the UI for the "HTML filter" processor.
    */
   public function checkHtmlFilterIntegration() {
+    $configuration = array(
+      'tags' => <<<TAGS
+h1: 4
+foo bar
+TAGS
+    );
+    $this->checkValidationError($configuration, 'html_filter', $this->t('Tags is not a valid YAML map.'));
+    $configuration = array(
+      'tags' => <<<TAGS
+h1:
+  - 1
+  - 2
+h2: foo
+h3: -1
+TAGS
+    );
+    $errors = array(
+      $this->t("Boost value for tag @tag can't be an array.", array('@tag' => '<h1>')),
+      $this->t('Boost value for tag @tag must be numeric.', array('@tag' => '<h2>')),
+      $this->t('Boost value for tag @tag must be non-negative.', array('@tag' => '<h3>')),
+    );
+    $this->checkValidationError($configuration, 'html_filter', $errors);
+
     $configuration = $form_values = array(
       'title' => FALSE,
       'alt' => FALSE,
@@ -227,6 +289,11 @@ class ProcessorIntegrationTest extends WebTestBase {
    * Tests the UI for the "Ignore characters" processor.
    */
   public function checkIgnoreCharactersIntegration() {
+    $configuration = array(
+      'ignorable' => ':)',
+    );
+    $this->checkValidationError($configuration, 'ignore_character', $this->t('The entered text is no valid regular expression.'));
+
     $configuration = $form_values = array(
       'ignorable' => '[¿¡!?,.]',
       'strip' => array(
@@ -265,22 +332,34 @@ class ProcessorIntegrationTest extends WebTestBase {
   }
 
   /**
-   * Tests the UI for the "Rendered item" processor.
+   * Tests the integration of the "Rendered item" processor.
    */
   public function checkRenderedItemIntegration() {
-    $configuration = $form_values = array(
-      'roles' => array(
-        'authenticated' => 'authenticated',
-      ),
-      'view_mode' => array(
-        'entity:node' => array(
-          'page' => 'default',
-          'article' => 'default',
-        ),
-      ),
+    $index = $this->loadIndex();
+    $index->removeProcessor('rendered_item');
+    $index->save();
+
+    $this->assertTrue($this->loadIndex()->isValidProcessor('rendered_item'), 'The "Rendered item" processor cannot be disabled.');
+
+    $options['query']['datasource'] = '';
+    $this->drupalGet($this->getIndexPath('fields/add'), $options);
+
+    // See \Drupal\search_api\Tests\IntegrationTest::addField().
+    $this->assertRaw('name="rendered_item"');
+    $post = '&' . $this->serializePostValues(array('rendered_item' => $this->t('Add')));
+    $this->drupalPostForm(NULL, array(), NULL, array(), array(), NULL, $post);
+    $args['%label'] = $this->t('Rendered HTML output');
+    $this->assertRaw($this->t('Field %label was added to the index.', $args));
+    $this->assertUrl($this->getIndexPath('fields/rendered_item/edit'));
+    $edit = array(
+      'roles[]' => array('authenticated'),
+      'view_mode[entity:node][article]' => 'default',
+      'view_mode[entity:node][page]' => 'teaser',
     );
-    $form_values['roles'] = array('authenticated');
-    $this->editSettingsForm($configuration, 'rendered_item', $form_values);
+    $this->drupalPostForm(NULL, $edit, $this->t('Save'));
+
+    $this->assertUrl($this->getIndexPath('fields'));
+    $this->assertRaw($this->t('The field configuration was successfully saved.'));
   }
 
   /**
@@ -301,6 +380,11 @@ class ProcessorIntegrationTest extends WebTestBase {
    */
   public function checkTokenizerIntegration() {
     $configuration = array(
+      'spaces' => ':)',
+    );
+    $this->checkValidationError($configuration, 'tokenizer', $this->t('The entered text is no valid regular expression.'));
+
+    $configuration = array(
       'spaces' => '',
       'overlap_cjk' => FALSE,
       'minimum_word_size' => 2,
@@ -316,17 +400,14 @@ class ProcessorIntegrationTest extends WebTestBase {
   }
 
   /**
-   * Tests the UI for the "URL field" processor.
+   * Tests the integration of the "URL field" processor.
    */
   public function checkUrlFieldIntegration() {
     $index = $this->loadIndex();
-    $processors = $index->getProcessors();
-    $this->assertTrue(!empty($processors['add_url']), 'The "Add URL" processor is enabled by default.');
     $index->removeProcessor('add_url');
     $index->save();
 
-    $processors = $this->loadIndex()->getProcessors();
-    $this->assertTrue(!empty($processors['add_url']), 'The "Add URL" processor cannot be disabled.');
+    $this->assertTrue($this->loadIndex()->isValidProcessor('add_url'), 'The "Add URL" processor cannot be disabled.');
   }
 
   /**
@@ -342,8 +423,7 @@ class ProcessorIntegrationTest extends WebTestBase {
       "status[$processor_id]" => 1,
     );
     $this->drupalPostForm(NULL, $edit, $this->t('Save'));
-    $processors = $this->loadIndex()->getProcessors();
-    $this->assertTrue(!empty($processors[$processor_id]), "Successfully enabled the '$processor_id' processor.'");
+    $this->assertTrue($this->loadIndex()->isValidProcessor($processor_id), "Successfully enabled the '$processor_id' processor.'");
   }
 
   /**
@@ -375,15 +455,43 @@ class ProcessorIntegrationTest extends WebTestBase {
     }
     $this->drupalPostForm(NULL, $edit, $this->t('Save'));
 
-    $processors = $this->loadIndex()->getProcessors();
-    $processor_present = !empty($processors[$processor_id]);
-    $this->assertTrue($processor_present, "Successfully enabled the '$processor_id' processor.'");
-    if ($processor_present) {
-      $actual_configuration = $processors[$processor_id]->getConfiguration();
+    $processor = $this->loadIndex()->getProcessor($processor_id);
+    $this->assertTrue($processor, "Successfully enabled the '$processor_id' processor.'");
+    if ($processor) {
+      $actual_configuration = $processor->getConfiguration();
       unset($actual_configuration['fields'], $actual_configuration['weights']);
-      $configuration += $processors[$processor_id]->defaultConfiguration();
+      $configuration += $processor->defaultConfiguration();
       $this->assertEqual($configuration, $actual_configuration, "Processor configuration for processor '$processor_id' was set correctly.");
     }
+  }
+
+  /**
+   * Makes sure that the given form values will fail when submitted.
+   *
+   * @param array $form_values
+   *   The form values, relative to the processor form.
+   * @param string $processor_id
+   *   The processor's ID.
+   * @param string[]|string $messages
+   *   Either the expected error message or an array of expected error messages.
+   */
+  protected function checkValidationError(array $form_values, $processor_id, $messages) {
+    $this->loadProcessorsTab();
+
+    $edit = $this->getFormValues($form_values, "processors[$processor_id][settings]");
+    $edit["status[$processor_id]"] = 1;
+    $this->drupalPostForm(NULL, $edit, $this->t('Save'));
+
+    if (!is_array($messages)) {
+      $messages = array($messages);
+    }
+    foreach ($messages as $message) {
+      $this->assertText($message);
+    }
+    $this->assertNoText($this->t('The indexing workflow was successfully edited.'));
+    $this->assertNoText($this->t('No values were changed.'));
+
+    $this->loadProcessorsTab(TRUE);
   }
 
   /**
@@ -423,10 +531,13 @@ class ProcessorIntegrationTest extends WebTestBase {
 
   /**
    * Loads the test index's "Processors" tab in the test browser, if necessary.
+   *
+   * @param bool $force
+   *   (optional) If TRUE, even load the tab if we are already on it.
    */
-  protected function loadProcessorsTab() {
+  protected function loadProcessorsTab($force = FALSE) {
     $settings_path = 'admin/config/search/search-api/index/' . $this->indexId . '/processors';
-    if ($this->getAbsoluteUrl($settings_path) != $this->getUrl()) {
+    if ($force || $this->getAbsoluteUrl($settings_path) != $this->getUrl()) {
       $this->drupalGet($settings_path);
     }
   }

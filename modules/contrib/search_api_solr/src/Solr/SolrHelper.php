@@ -5,11 +5,13 @@ namespace Drupal\search_api_solr\Solr;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\search_api\Item\ItemInterface;
 use Drupal\search_api\Query\QueryInterface;
-use Drupal\search_api\Utility as SearchApiUtility;
+use Drupal\search_api\Utility\Utility as SearchApiUtility;
 use Drupal\search_api_solr\SearchApiSolrException;
 use Drupal\search_api_solr\Utility\Utility as SearchApiSolrUtility;
 use Solarium\Client;
+use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
 use Solarium\Core\Query\Helper as SolariumHelper;
 use Solarium\Exception\HttpException;
@@ -111,15 +113,27 @@ class SolrHelper {
    *
    * Will also use highlighted fields to replace retrieved field data, if the
    * corresponding option is set.
+   *
+   * @param array $data
+   *   The data extracted from a Solr result.
+   * @param string $solr_id
+   *   The ID of the result item.
+   * @param \Drupal\search_api\Item\ItemInterface $item
+   *   The fields of the result item.
+   * @param array $field_mapping
+   *   Mapping from search_api field names to Solr field names.
+   *
+   * @return bool|string
+   *   FALSE if no excerpt is returned from Solr, the excerpt string otherwise.
    */
-  public function getExcerpt($response, $solr_id, array $fields, array $field_mapping) {
-    if (!isset($response['highlighting'][$solr_id])) {
+  public function getExcerpt($data, $solr_id, ItemInterface $item, array $field_mapping) {
+    if (!isset($data['highlighting'][$solr_id])) {
       return FALSE;
     }
     $output = '';
-
-    if (!empty($this->configuration['excerpt']) && !empty($response['highlighting'][$solr_id]->spell)) {
-      foreach ($response['highlighting'][$solr_id]->spell as $snippet) {
+    // @todo using the spell field is not the optimal solution.
+    if (!empty($this->configuration['excerpt']) && !empty($data['highlighting'][$solr_id]['spell'])) {
+      foreach ($data['highlighting'][$solr_id]['spell'] as $snippet) {
         $snippet = strip_tags($snippet);
         $snippet = preg_replace('/^.*>|<.*$/', '', $snippet);
         $snippet = SearchApiSolrUtility::formatHighlighting($snippet);
@@ -131,12 +145,29 @@ class SolrHelper {
       }
     }
     if (!empty($this->configuration['highlight_data'])) {
+      $item_fields = $item->getFields();
       foreach ($field_mapping as $search_api_property => $solr_property) {
-        if (substr($solr_property, 0, 3) == 'tm_' && !empty($response['highlighting'][$solr_id][$solr_property])) {
-          // Contrary to above, we here want to preserve HTML, so we just
-          // replace the [HIGHLIGHT] tags with the appropriate format.
-          $snippet = SearchApiSolrUtility::formatHighlighting($response['highlighting'][$solr_id][$solr_property]);
-          $fields[$search_api_property] = $snippet;
+        if ((strpos($solr_property, 'ts_') === 0 || strpos($solr_property, 'tm_') === 0) && !empty($data['highlighting'][$solr_id][$solr_property])) {
+          $snippets = [];
+          foreach ($data['highlighting'][$solr_id][$solr_property] as $value) {
+            // Contrary to above, we here want to preserve HTML, so we just
+            // replace the [HIGHLIGHT] tags with the appropriate format.
+            $snippets[] = [
+              'raw' => preg_replace('#\[(/?)HIGHLIGHT\]#', '', $value),
+              'replace' => SearchApiSolrUtility::formatHighlighting($value),
+            ];
+          }
+          if ($snippets) {
+            $values = $item_fields[$search_api_property]->getValues();
+            foreach ($values as $value) {
+              foreach ($snippets as $snippet) {
+                if ($value->getText() === $snippet['raw']) {
+                  $value->setText($snippet['replace']);
+                }
+              }
+            }
+            $item_fields[$search_api_property]->setValues($values);
+          }
         }
       }
     }
@@ -499,36 +530,59 @@ class SolrHelper {
    *   The Solarium select query object.
    * @param \Drupal\search_api\Query\QueryInterface $query
    *   The query object.
-   * @param bool $highlight
-   *   TRUE when highlighting is enabled.
-   * @param bool $excerpt
-   *   TRUE when a query should return an excerpt.
    */
-  public function setHighlighting(Query $solarium_query, QueryInterface $query, $highlight = TRUE, $excerpt = TRUE) {
-    if ($excerpt || $highlight) {
+  public function setHighlighting(Query $solarium_query, QueryInterface $query) {
+    $excerpt = !empty($this->configuration['excerpt']);
+    $highlight = !empty($this->configuration['highlight_data']);
+
+    if ($highlight || $excerpt) {
+      $highlighter = \Drupal::config('search_api_solr.standard_highlighter');
+
       $hl = $solarium_query->getHighlighting();
-      $hl->setFields('spell');
       $hl->setSimplePrefix('[HIGHLIGHT]');
       $hl->setSimplePostfix('[/HIGHLIGHT]');
-      $hl->setSnippets(3);
-      $hl->setFragSize(70);
-      $hl->setMergeContiguous(TRUE);
-    }
-
-    if ($highlight) {
-      $hl = $solarium_query->getHighlighting();
-      $hl->setFields('tm_*');
-      $hl->setSnippets(1);
-      $hl->setFragSize(0);
-      if (!empty($this->configuration['excerpt'])) {
-        // If we also generate a "normal" excerpt, set the settings for the
-        // "spell" field (which we use to generate the excerpt) back to the
-        // above values.
-        $hl->getField('spell')->setSnippets(3);
-        $hl->getField('spell')->setFragSize(70);
+      if ($highlighter->get('maxAnalyzedChars') != $highlighter->getOriginal('maxAnalyzedChars')) {
+        $hl->setMaxAnalyzedChars($highlighter->get('maxAnalyzedChars'));
+      }
+      if ($highlighter->get('fragmenter') != $highlighter->getOriginal('fragmenter')) {
+        $hl->setFragmenter($highlighter->get('fragmenter'));
+      }
+      if ($highlighter->get('usePhraseHighlighter') != $highlighter->getOriginal('usePhraseHighlighter')) {
+        $hl->setUsePhraseHighlighter($highlighter->get('usePhraseHighlighter'));
+      }
+      if ($highlighter->get('highlightMultiTerm') != $highlighter->getOriginal('highlightMultiTerm')) {
+        $hl->setHighlightMultiTerm($highlighter->get('highlightMultiTerm'));
+      }
+      if ($highlighter->get('preserveMulti') != $highlighter->getOriginal('preserveMulti')) {
+        $hl->setPreserveMulti($highlighter->get('preserveMulti'));
+      }
+      if ($highlighter->get('regex.slop') != $highlighter->getOriginal('regex.slop')) {
+        $hl->setRegexSlop($highlighter->get('regex.slop'));
+      }
+      if ($highlighter->get('regex.pattern') != $highlighter->getOriginal('regex.pattern')) {
+        $hl->setRegexPattern($highlighter->get('regex.pattern'));
+      }
+      if ($highlighter->get('regex.maxAnalyzedChars') != $highlighter->getOriginal('regex.maxAnalyzedChars')) {
+        $hl->setRegexMaxAnalyzedChars($highlighter->get('regex.maxAnalyzedChars'));
+      }
+      if ($excerpt) {
+        $excerpt_field = $hl->getField('spell');
+        $excerpt_field->setSnippets($highlighter->get('excerpt.snippets'));
+        $excerpt_field->setFragSize($highlighter->get('excerpt.fragsize'));
+        $excerpt_field->setMergeContiguous($highlighter->get('excerpt.mergeContiguous'));
+      }
+      if ($highlight) {
         // It regrettably doesn't seem to be possible to set hl.fl to several
-        // values, if one contains wild cards (i.e., "t_*,spell" wouldn't work).
+        // values, if one contains wild cards, i.e., "ts_*,tm_*,spell" wouldn't
+        // work.
         $hl->setFields('*');
+        // @todo the amount of snippets need to be increased to get highlighting
+        //   of multi value fields to work.
+        // @see hhtps://drupal.org/node/2753635
+        $hl->setSnippets(1);
+        $hl->setFragSize(0);
+        $hl->setMergeContiguous($highlighter->get('highlight.mergeContiguous'));
+        $hl->setRequireFieldMatch($highlighter->get('highlight.requireFieldMatch'));
       }
     }
   }
@@ -606,7 +660,6 @@ class SolrHelper {
       }
 
       $field = $field_names[$spatial['field']];
-      $escaped_field = SearchApiSolrUtility::escapeFieldName($field);
       $point = ((float) $spatial['lat']) . ',' . ((float) $spatial['lon']);
 
       // Prepare the filter settings.
@@ -624,7 +677,7 @@ class SolrHelper {
       foreach ($filter_queries as $key => $filter_query) {
         // If the fq consists only of a filter on this field, replace it with
         // a range.
-        $preg_field = preg_quote($escaped_field, '/');
+        $preg_field = preg_quote($field, '/');
         if (preg_match('/^' . $preg_field . ':\["?(\*|\d+(?:\.\d+)?)"? TO "?(\*|\d+(?:\.\d+)?)"?\]$/', $filter_query, $matches)) {
           unset($filter_queries[$key]);
           if ($matches[1] && is_numeric($matches[1])) {
@@ -693,23 +746,48 @@ class SolrHelper {
   /**
    * Sets sorting for the query.
    */
-  public function setSorts(Query $solarium_query, QueryInterface $query, $field_names_single_value = array()) {
+  public function setSorts(Query $solarium_query, QueryInterface $query, $field_names = []) {
+    $new_schema_version = version_compare($this->getSchemaVersion(), '4.4', '>=');
     foreach ($query->getSorts() as $field => $order) {
-      // The default Solr schema provides a virtual field named "random_SEED"
-      // that can be used to randomly sort the results; the field is available
-      // only at query-time.
-      if ($field == 'search_api_random') {
-        $params = $query->getOption('search_api_random_sort', array());
-        // Random seed: getting the value from parameters or computing a new
-        // one.
-        $seed = !empty($params['seed']) ? $params['seed'] : mt_rand();
-        $f = 'random_' . $seed;
-      }
-      else {
-        $f = $field_names_single_value[$field];
-        if (substr($f, 0, 3) == 'ss_') {
-          $f = 'sort_' . substr($f, 3);
+      $f = '';
+      // First wee need to handle special fields which are prefixed by
+      // 'search_api_'. Otherwise they will erroneously be treated as dynamic
+      // string fields by the next detection below because they start with an
+      // 's'. This way we for example ensure that search_api_relevance isn't
+      // modified at all.
+      if (strpos($field, 'search_api_') === 0) {
+        if ($field == 'search_api_random') {
+          // The default Solr schema provides a virtual field named "random_*"
+          // that can be used to randomly sort the results; the field is
+          // available only at query-time. See schema.xml for more details about
+          // how the "seed" works.
+          $params = $query->getOption('search_api_random_sort', []);
+          // Random seed: getting the value from parameters or computing a new
+          // one.
+          $seed = !empty($params['seed']) ? $params['seed'] : mt_rand();
+          $f = $field_names[$field] . '_' . $seed;
         }
+      }
+      elseif ($new_schema_version) {
+        // @todo Both detections are redundant to some parts of
+        //   SearchApiSolrBackend::getDocuments(). They should be combined in a
+        //   single place to avoid errors in the future.
+        if (strpos($field_names[$field], 't') === 0 || strpos($field_names[$field], 's') === 0) {
+          // For fulltext fields use the dedicated sort field for faster alpha
+          // sorts. Use the same field for strings to sort on a normalized
+          // value.
+          $f = 'sort_' . $field;
+        }
+        elseif (preg_match('/^([a-z]+)m(_.*)/', $field_names[$field], $matches)) {
+          // For other multi-valued fields (which aren't sortable by nature) we
+          // use the same hackish workaround like the DB backend: just copy the
+          // first value in a single value field for sorting.
+          $f = $matches[1] . 's' . $matches[2];
+        }
+      }
+
+      if (!$f) {
+        $f = $field_names[$field];
       }
 
       $solarium_query->addSort($f, strtolower($order));
@@ -827,7 +905,7 @@ class SolrHelper {
   /**
    * Sends a REST request to the Solr server endpoint and returns the result.
    *
-   * @param string $endpoint
+   * @param string $endpoint_key
    *   The endpoint that refelcts the base URI.
    * @param string $path
    *   The path to append to the base URI.
@@ -839,7 +917,7 @@ class SolrHelper {
    * @return string
    *   The decoded response.
    */
-  protected function restRequest($endpoint, $path, $method = Request::METHOD_GET, $command_json = '') {
+  protected function restRequest($endpoint_key, $path, $method = Request::METHOD_GET, $command_json = '') {
     $request = new Request();
     $request->setMethod($method);
     $request->addHeader('Accept: application/json');
@@ -848,7 +926,14 @@ class SolrHelper {
       $request->setRawData($command_json);
     }
     $request->setHandler($path);
+
+    $endpoint = $this->solr->getEndpoint($endpoint_key);
+    $timeout = $endpoint->getTimeout();
+    // @todo Destinguish between different flavors of REST requests and use
+    //   different timeout settings.
+    $endpoint->setTimeout($this->configuration['optimize_timeout']);
     $response = $this->solr->executeRequest($request, $endpoint);
+    $endpoint->setTimeout($timeout);
     $output = Json::decode($response->getBody());
     // \Drupal::logger('search_api_solr')->info(print_r($output, true));
     if (!empty($output['errors'])) {

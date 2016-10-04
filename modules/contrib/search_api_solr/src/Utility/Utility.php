@@ -55,25 +55,25 @@ class Utility {
           'prefix' => 's',
         ),
         'integer' => array(
-          'prefix' => 'i',
+          // Use trie field for better sorting.
+          'prefix' => 'it',
         ),
         'decimal' => array(
-          'prefix' => 'f',
+          // Use trie field for better sorting.
+          'prefix' => 'ft',
         ),
         'date' => array(
           'prefix' => 'd',
         ),
         'duration' => array(
-          'prefix' => 'i',
+          // Use trie field for better sorting.
+          'prefix' => 'it',
         ),
         'boolean' => array(
           'prefix' => 'b',
         ),
         'uri' => array(
           'prefix' => 's',
-        ),
-        'tokens' => array(
-          'prefix' => 't',
         ),
       ));
 
@@ -171,23 +171,6 @@ class Utility {
   }
 
   /**
-   * Escapes a Search API field name for passing to Solr.
-   *
-   * Since field names can only contain one special character, ":", there is no
-   * need to use the complete escape() method.
-   *
-   * @param string $value
-   *   The field name to escape.
-   *
-   * @return string
-   *   An escaped string suitable for passing to Solr.
-   */
-  public static function escapeFieldName($value) {
-    $value = str_replace(':', '\:', $value);
-    return $value;
-  }
-
-  /**
    * Changes highlighting tags from our custom, HTML-safe ones to HTML.
    *
    * @param string|array $snippet
@@ -215,7 +198,12 @@ class Utility {
    * "Field names should consist of alphanumeric or underscore characters only
    * and not start with a digit ... Names with both leading and trailing
    * underscores (e.g. _version_) are reserved." Field names starting with
-   * digits or underscores are already avoided by our schema.
+   * digits or underscores are already avoided by our schema. The same is true
+   * for the names of field types. See
+   * https://cwiki.apache.org/confluence/display/solr/Field+Type+Definitions+and+Properties
+   * "It is strongly recommended that names consist of alphanumeric or
+   * underscore characters only and not start with a digit. This is not
+   * currently strictly enforced."
    *
    * This function therefore encodes all forbidden characters in their
    * hexadecimal equivalent encapsulted by a leading sequence of '_X' and a
@@ -231,7 +219,7 @@ class Utility {
    * @return string
    *   The encoded field name.
    */
-  public static function encodeSolrDynamicFieldName($field_name) {
+  public static function encodeSolrName($field_name) {
     return preg_replace_callback('/([^\da-zA-Z_]|_X)/u',
       function ($matches) {
         return '_X' . bin2hex($matches[1]) . '_';
@@ -254,7 +242,7 @@ class Utility {
    * @return string
    *   The decoded field name
    */
-  public static function decodeSolrDynamicFieldName($field_name) {
+  public static function decodeSolrName($field_name) {
     return preg_replace_callback('/_X([\dabcdef]+?)_/',
       function ($matches) {
         return hex2bin($matches[1]);

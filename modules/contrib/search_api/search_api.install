@@ -52,58 +52,8 @@ function search_api_schema() {
     ),
     'primary key' => array('index_id', 'item_id'),
   );
-  $schema['search_api_task'] = array(
-    'description' => 'Stores pending tasks for servers.',
-    'fields' => array(
-      'id' => array(
-        'description' => 'An integer identifying this task',
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-      'server_id' => array(
-        'description' => 'The ID of the server for which this task should be executed',
-        'type' => 'varchar',
-        'length' => 50,
-        'not null' => TRUE,
-      ),
-      'type' => array(
-        'description' => 'A keyword identifying the type of task that should be executed',
-        'type' => 'varchar',
-        'length' => 50,
-        'not null' => TRUE,
-      ),
-      'index_id' => array(
-        'description' => 'The ID of the index to which this task pertains, if applicable for this type',
-        'type' => 'varchar',
-        'length' => 50,
-        'not null' => FALSE,
-      ),
-      'data' => array(
-        'description' => 'Some data needed for the task, might be optional depending on the type',
-        'type' => 'text',
-        'size' => 'medium',
-        'serialize' => TRUE,
-        'not null' => FALSE,
-      ),
-    ),
-    'indexes' => array(
-      'execution' => array('type', 'server_id', 'id'),
-    ),
-    'primary key' => array('id'),
-  );
 
   return $schema;
-}
-
-/**
- * Implements hook_install().
- */
-function search_api_install() {
-  $message = _search_api_search_module_warning();
-  if ($message) {
-    drupal_set_message($message, 'warning');
-  }
 }
 
 /**
@@ -147,11 +97,11 @@ function search_api_requirements($phase) {
     }
 
     $pending_tasks = \Drupal::getContainer()
-      ->get('search_api.server_task_manager')
-      ->getCount();
+      ->get('search_api.task_manager')
+      ->getTasksCount();
     if ($pending_tasks) {
       $args['@link'] = '';
-      $url = Url::fromRoute('entity.search_api_server.execute_tasks');
+      $url = Url::fromRoute('search_api.execute_tasks');
       if ($url->access()) {
         $link = new Link(t('Execute now'), $url);
         $link = $link->toString();
@@ -163,8 +113,8 @@ function search_api_requirements($phase) {
         'title' => t('Search API'),
         'value' => \Drupal::translation()->formatPlural(
           $pending_tasks,
-          'There is @count pending task for a Search API server. @link',
-          'There are @count pending tasks for Search API servers. @link',
+          'There is @count pending Search API task. @link',
+          'There are @count pending Search API tasks. @link',
           $args
         ),
         'severity' => REQUIREMENT_WARNING,
@@ -174,20 +124,4 @@ function search_api_requirements($phase) {
     return $requirements;
   }
   return array();
-}
-
-/**
- * Returns a warning message if the Core Search module is enabled.
- *
- * @return string|null
- *   A warning message if needed, NULL otherwise.
- *
- * @see search_api_install()
- * @see search_api_requirements()
- */
-function _search_api_search_module_warning() {
-  if (Drupal::moduleHandler()->moduleExists('search')) {
-    return t('The default Drupal Search module is still enabled. If you are using Search API, you probably want to <a href=":url">uninstall</a> the Search module for performance reasons.', array(':url' => Url::fromRoute('system.modules_uninstall')->toString()));
-  }
-  return NULL;
 }
