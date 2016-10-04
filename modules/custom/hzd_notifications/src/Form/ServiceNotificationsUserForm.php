@@ -109,6 +109,36 @@ class ServiceNotificationsUserForm extends FormBase {
         // get all services to update the interval
         HzdNotificationsHelper::hzd_modify_services($user_notifications, $types[$content_key], $uid, $default_interval[$types[$content_key]], $int_val);
       }
+      foreach($types as $type){
+        $data = \Drupal::database()->select('service_notifications','sn')
+          ->fields('sn')
+          ->condition('service_id',$content_key)
+          ->condition('type',$type)
+          ->execute()->fetchAllAssoc('send_interval');
+          //pr($data);exit;
+          $uids = null;
+        foreach([-1,0,86400,604800] as $interval){
+          if(isset($data[$interval])){
+            $uids = unserialize($data[$interval]->uids);
+            //pr($data[$interval]);exit;
+            if(($key = array_search($uid, $uids)) !== false) {
+              unset($uids[$key]);
+            }
+            if($int_val == $interval){
+              $uids[] = $uid;
+            }
+            \Drupal::database()
+              ->update('service_notifications')
+              ->fields(['uids'=>serialize($uids)])
+              ->condition('sid',$data[$interval]->sid)->execute();
+          }else{
+            $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'service_id'=>$content_key,'type'=>$type];
+            \Drupal::database()
+              ->insert('service_notifications')
+              ->fields($notifyData)->execute();
+          }
+        }
+      }
     }
     // planning files notifications
     if($rel_type == KONSONS) {
