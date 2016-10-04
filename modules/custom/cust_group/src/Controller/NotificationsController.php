@@ -34,7 +34,7 @@ class NotificationsController extends ControllerBase {
     }elseif($node->getType() == 'quickinfo'){
       $data = self::getQuickInfoNotificationData($node);
       self::insertNotification($data);
-    }elseif($action == 'update' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute())){
+    }elseif($action == 'update' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute()) && in_array($node->getType(),['event','faq','forum','page','newsletter'])){
       //get the group content id which is reffered to node->id();
       $data = self::getGroupNotificationData($groupContent);
       self::insertNotification($data);
@@ -42,7 +42,7 @@ class NotificationsController extends ControllerBase {
   }
   
   static function recordGroupContentInsert($node,$action){
-    if($action == 'insert' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute())){
+    if($action == 'insert' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute()) && in_array($node->getType(),['event','faq','forum','page','newsletter'])){
       //get the group content id which is reffered to node->id();
       $data = self::getGroupNotificationData($groupContent);
       self::insertNotification($data);
