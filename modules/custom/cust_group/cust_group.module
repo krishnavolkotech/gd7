@@ -25,6 +25,16 @@ function cust_group_user_view(&$build,\Drupal\user\Entity\User $account, Drupal\
 function cust_group_node_update($entity){
     if($entity instanceof \Drupal\node\Entity\Node){
       sendGroupUpdateMail($entity);
+      //exit;
+      //capture the notification for the users to send daily and weekly
+      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+    }
+}
+
+function cust_group_node_insert($entity){
+    if($entity instanceof \Drupal\node\Entity\Node){
+      //capture the notification for the users to send daily and weekly
+      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
     }
 }
 
@@ -92,17 +102,28 @@ function send_notifications($data,$mails){
     
 }
 
+use Drupal\Component\Utility\SafeMarkup;
 function cust_group_mail($key, &$message, $params) {
  $options = array(
    'langcode' => $message['langcode'],
  );
  switch ($key) {
-   case 'immediate_notifications':
-     $message['from'] = \Drupal::config('system.site')->get('mail');
-     $message['subject'] = t($params['subject'], $options);
-     $message['body'][] = $params['message'];
-     break;
+    case 'immediate_notifications':
+    case 'periodic_notifications':
+        $message['from'] = \Drupal::config('system.site')->get('mail');
+        $message['subject'] = t($params['subject'], $options);
+        $message['body'][] = SafeMarkup::checkPlain(t($params['message']));
+        break;
  }
+}
+
+function cust_group_mail_alter(&$message){
+    switch ($message['key']) {
+        case 'immediate_notifications':
+        case 'periodic_notifications':
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+            break;
+    }
 }
 
 function cust_group_form_alter(&$form, $form_state,$form_id){
@@ -183,12 +204,15 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
                                         '#type'=>'ul',
                                         '#weight'=>100,
                                         ];
-    }elseif('planning_files' == $entity->bundle()){
+    }elseif('planning_files' == $entity->bundle() && 0){
         global $base_url;
         header('Location: '.$base_url.\Drupal::url('hzd_release_management.display_planning_files',['group'=>32]));
         exit;
     }
-    //\Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+    if($entity->getType() == 'quickinfo'){
+        //\Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+    }
+    
     //exit;
 }
 
@@ -212,3 +236,20 @@ function get_planning_file_data($type){
     return $filenames;
     //$filesData = 
 }
+
+function cust_group_cron(){
+    //Weekly cron was registered in ./modules/custom/cust_user/cust_user.module
+    //Daily cron to send notifications
+    \Drupal\cust_group\Controller\NotificationsController::dailyCron();
+}
+
+
+
+function cust_group_cronapi() {
+  $items = array();
+  $items['daily_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','dailyCron']];
+  $items['weekly_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','weeklyCron']];
+  return $items;
+}
+
+

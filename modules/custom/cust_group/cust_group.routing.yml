@@ -38,3 +38,9 @@ cust_group.menu_migrate:
     _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::menuMigrate'
   requirements:
     _permission: 'access content'
+cust_group.daily_cron_notifications:
+  path: '/daily-cron'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\NotificationsController::dailyCron'
+  requirements:
+    _permission: 'access content'

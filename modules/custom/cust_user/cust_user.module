@@ -231,3 +231,7 @@ function __gm($object) {
   pr(get_class_methods(get_class($object)));
   exit;
 }
+
+function cust_user_cron(){
+    \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
+}

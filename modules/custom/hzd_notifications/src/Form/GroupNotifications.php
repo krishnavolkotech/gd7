@@ -72,14 +72,65 @@ class GroupNotifications extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $uid = $form_state->getValue('account');
-    db_delete('group_notifications_user_default_interval')->condition('uid', $uid)->execute();
+    //db_delete('group_notifications_user_default_interval')->condition('uid', $uid)->execute();
     $user_groups = HzdNotificationsHelper::hzd_user_groups_list($uid);
-    foreach($user_groups as $gid => $label) {
-      $subscriptions = $form_state->getValue('subscription');
-      $int_val = $subscriptions[$gid]['subscriptions_interval_' . $gid];
-      if(isset($int_val)) {
-        HzdNotificationsHelper::insert_default_group_user_intervel($gid, $label, $int_val, $uid);
+    $subscriptions = $form_state->getValue('subscription');
+    //foreach($user_groups as $gid => $label) {
+    //  $int_val = $subscriptions[$gid]['subscriptions_interval_' . $gid];
+    //  if(isset($int_val)) {
+    //    //HzdNotificationsHelper::insert_default_group_user_intervel($gid, $label, $int_val, $uid);
+    //  }
+    //}
+
+    $data = null;
+    foreach($user_groups as $gid => $label){
+      $defaultData = \Drupal::database()->select('group_notifications_user_default_interval','gnudi')
+        ->fields('gnudi',['id'])
+        ->condition('group_id',$gid)
+        ->condition('uid',$uid)
+        ->execute()->fetchField();
+      if(empty($defaultData)){
+        \Drupal::database()
+            ->insert('group_notifications_user_default_interval')
+            ->fields(['uid'=>$uid,'group_id'=>$gid,'group_name'=>$label,'default_send_interval'=>$subscriptions[$gid]['subscriptions_interval_' . $gid]])
+            ->execute();
+      }else{
+        \Drupal::database()
+            ->update('group_notifications_user_default_interval')
+            ->fields(['uid'=>$uid,'group_id'=>$gid,'group_name'=>$label,'default_send_interval'=>$subscriptions[$gid]['subscriptions_interval_' . $gid]])
+            ->condition('id',$defaultData)
+            ->execute();
       }
+      $data = \Drupal::database()->select('group_notifications','gn')
+        ->fields('gn',['id','uids','send_interval'])
+        ->condition('group_id',$gid)
+        ->execute()->fetchAllAssoc('send_interval');
+        $userChoiceInterval = $subscriptions[$gid]['subscriptions_interval_'.$gid];
+        $uids = null;
+        //pr($data);exit;
+      foreach([-1,0,86400,604800] as $interval){
+        if(isset($data[$interval])){
+          $uids = unserialize($data[$interval]->uids);
+          //pr($data[$interval]);exit;
+          if(($key = array_search($uid, $uids)) !== false) {
+            unset($uids[$key]);
+          }
+          if($userChoiceInterval == $interval){
+            $uids[] = $uid;
+          }
+          \Drupal::database()
+            ->update('group_notifications')
+            ->fields(['uids'=>serialize($uids)])
+            ->condition('id',$data[$interval]->id)->execute();
+        }else{
+          $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'group_name'=>$label,'group_id'=>$gid];
+          \Drupal::database()
+            ->insert('group_notifications')
+            ->fields($notifyData)->execute();
+        }
+      }
+        //pr($uids);exit;
+
     }
   }
 }
