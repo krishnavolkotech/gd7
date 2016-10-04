@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Controller to display an entity in a particular printable format.
@@ -43,7 +44,7 @@ class PrintableController extends ControllerBase implements ContainerInjectionIn
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('printable.format_plugin_manager')
+        $container->get('printable.format_plugin_manager')
     );
   }
 
@@ -59,6 +60,18 @@ class PrintableController extends ControllerBase implements ContainerInjectionIn
    *   The printable response.
    */
   public function showFormat(EntityInterface $entity, $printable_format) {
+    $node = \Drupal::routeMatch()->getParameter('entity');
+    if ($node->getType() == 'quickinfo') {
+      $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
+              ->fields('gcfd', ['gid'])
+              ->condition('gcfd.entity_id', $node->id())
+              ->execute()->fetchField();
+      $access_status = \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
+      if (!$access_status) {
+        throw new AccessDeniedHttpException();
+      }
+    }
+
     if ($this->printableFormatManager->getDefinition($printable_format)) {
       $format = $this->printableFormatManager->createInstance($printable_format);
       $content = $this->entityManager()->getViewBuilder($entity->getEntityTypeId())->view($entity, 'printable');
