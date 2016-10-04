@@ -24,7 +24,10 @@ class AccessController extends ControllerBase {
       }
       
       if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
-          $group = \Drupal\group\Entity\Group::load(QUICKINFO);
+          /**
+           * group id has to be dynamic 
+           */
+          $group = \Drupal\group\Entity\Group::load(3);
           $content = $group->getMember(\Drupal::currentUser());
           if($content){
             return AccessResult::allowed();
