@@ -27,13 +27,13 @@ function cust_group_node_update($entity){
       sendGroupUpdateMail($entity);
       //exit;
       //capture the notification for the users to send daily and weekly
-      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity,'update');
     }
 }
 
 function cust_group_node_insert($entity){
     //capture the notification for the users to send daily and weekly
-    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity,'insert');
 }
 
 
@@ -42,6 +42,7 @@ function cust_group_group_content_insert($entity){
     $node = $entity->getEntity();
     if($entity instanceof \Drupal\node\Entity\Node){
         sendGroupUpdateMail($node);
+        \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node,'insert');
     }
 }
 

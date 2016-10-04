@@ -20,10 +20,11 @@ class NotificationsController extends ControllerBase {
   }
   
   
-  static function recordContentAlter($node){
+  static function recordContentAlter($node,$action){
     if(empty($node)){
       return null;
     }
+    
     if(in_array($node->getType(),['downtimes','early_warnings','problem','release'])){
       $data = self::getServiceNotificationData($node);
       self::insertNotification($data);
@@ -33,12 +34,19 @@ class NotificationsController extends ControllerBase {
     }elseif($node->getType() == 'quickinfo'){
       $data = self::getQuickInfoNotificationData($node);
       self::insertNotification($data);
-    }elseif(!empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute())){
+    }elseif($action == 'update' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute())){
       //get the group content id which is reffered to node->id();
       $data = self::getGroupNotificationData($groupContent);
       self::insertNotification($data);
     }
-    return true;
+  }
+  
+  static function recordGroupContentInsert($node,$action){
+    if($action == 'insert' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$node->id())->execute())){
+      //get the group content id which is reffered to node->id();
+      $data = self::getGroupNotificationData($groupContent);
+      self::insertNotification($data);
+    }
   }
   
   static function getQuickInfoNotificationData($node){
