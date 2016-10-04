@@ -31,14 +31,17 @@ function cust_group_node_update($entity){
     }
 }
 
+function cust_group_node_insert($entity){
+    //capture the notification for the users to send daily and weekly
+    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
+}
+
 
 
 function cust_group_group_content_insert($entity){
     $node = $entity->getEntity();
-    if($node instanceof \Drupal\node\Entity\Node){
+    if($entity instanceof \Drupal\node\Entity\Node){
         sendGroupUpdateMail($node);
-        //capture the notification for the users to send daily and weekly
-        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($node);
     }
 }
 
