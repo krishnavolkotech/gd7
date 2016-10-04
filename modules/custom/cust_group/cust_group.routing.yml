@@ -44,3 +44,9 @@ cust_group.daily_cron_notifications:
     _controller: '\Drupal\cust_group\Controller\NotificationsController::dailyCron'
   requirements:
     _permission: 'access content'
+cust_group.group_cleanup:
+  path: '/group-membercleanup'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberCleanup'
+  requirements:
+    _permission: 'access content'    

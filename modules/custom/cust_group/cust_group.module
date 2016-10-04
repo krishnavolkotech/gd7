@@ -243,13 +243,25 @@ function cust_group_cron(){
     \Drupal\cust_group\Controller\NotificationsController::dailyCron();
 }
 
-
-
-function cust_group_cronapi() {
-  $items = array();
-  $items['daily_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','dailyCron']];
-  $items['weekly_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','weeklyCron']];
-  return $items;
+function cust_group_user_delete($user){
+    $groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$user->id())->execute();
+    $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
+    foreach($groupUsers as $gUser){
+        $gUser->delete();
+    }
 }
 
-
+function cust_group_init(){
+    exit;
+    $groupContent = \Drupal::entityQuery('group_content')
+        ->condition('type','%member%','LIKE')
+        ->execute();
+    $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
+    foreach($groupUsers as $gUser){
+        if(\Drupal\user\Entity\User::load($gUser->get('entity_id')->value)){
+            
+        }else{
+            
+        }
+    }
+}
