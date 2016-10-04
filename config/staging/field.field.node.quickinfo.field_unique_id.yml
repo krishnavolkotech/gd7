@@ -9,7 +9,7 @@ id: node.quickinfo.field_unique_id
 field_name: field_unique_id
 entity_type: node
 bundle: quickinfo
-label: 'uniquie id'
+label: RZ-Schnellinfo-Nr.
 description: ''
 required: false
 translatable: true

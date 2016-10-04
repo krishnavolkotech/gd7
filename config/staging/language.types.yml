@@ -25,6 +25,7 @@ negotiation:
       language-url-fallback: 1
   language_interface:
     enabled:
+      language-user-admin: -10
       language-url: -8
       language-selected: 12
     method_weights:
@@ -36,3 +37,4 @@ negotiation:
       language-selected: 12
 _core:
   default_config_hash: dqouFqVseNJNvEjsoYKxbinFOITuCxYhi4y2OTNQP_8
+langcode: de

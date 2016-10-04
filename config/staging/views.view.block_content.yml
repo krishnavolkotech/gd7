@@ -1,5 +1,5 @@
 uuid: 37268ff9-ca5e-49a1-80a7-ab73aa427bc2
-langcode: en
+langcode: de
 status: true
 dependencies:
   module:
@@ -476,7 +476,7 @@ display:
   page_1:
     display_plugin: page
     id: page_1
-    display_title: Page
+    display_title: Seite
     position: 1
     display_options:
       display_extenders: {  }

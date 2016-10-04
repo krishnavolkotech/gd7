@@ -16,7 +16,7 @@ third_party_settings:
 id: gruppenadministration
 theme: hzd
 region: '-1'
-weight: -14
+weight: -15
 provider: null
 plugin: 'block_content:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'
 settings:

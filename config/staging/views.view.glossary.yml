@@ -1,5 +1,5 @@
 uuid: b7661a8f-31e9-4ed8-8b08-4465044d71c6
-langcode: en
+langcode: de
 status: false
 dependencies:
   config:
@@ -432,7 +432,7 @@ display:
       tags: {  }
   page_1:
     id: page_1
-    display_title: Page
+    display_title: Seite
     display_plugin: page
     position: 1
     display_options:

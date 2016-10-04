@@ -1,5 +1,5 @@
 uuid: a763a333-99c5-4145-b795-5078347ec607
-langcode: en
+langcode: de
 status: true
 dependencies:
   module:
@@ -1190,7 +1190,7 @@ display:
   page_1:
     display_plugin: page
     id: page_1
-    display_title: Page
+    display_title: Seite
     position: 1
     display_options:
       path: admin/people/list

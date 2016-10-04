@@ -46,3 +46,4 @@ sitewide_maintenance_windows:
     day_to: Mon
     time_from: ''
     time_to: ''
+langcode: de

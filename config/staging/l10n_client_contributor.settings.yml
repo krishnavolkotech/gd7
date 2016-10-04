@@ -2,3 +2,4 @@ use_server: true
 server: 'https://localize.drupal.org/'
 _core:
   default_config_hash: pG9DWNfQxhvDwu29p43Vd0XxmFTxvDeUm7NAT2EptZ0
+langcode: de

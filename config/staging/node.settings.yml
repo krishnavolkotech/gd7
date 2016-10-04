@@ -5,3 +5,4 @@ notification_checkbox_article: 1
 notification_checkbox_test: 1
 notification_checkbox_quickinfo: 0
 notification_checkbox_page: 1
+langcode: de

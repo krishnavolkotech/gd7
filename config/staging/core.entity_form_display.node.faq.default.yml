@@ -1,5 +1,5 @@
 uuid: bb970fff-66df-412c-8a8d-c8e30a2a3f82
-langcode: en
+langcode: de
 status: true
 dependencies:
   config:
@@ -71,7 +71,7 @@ content:
     weight: 5
     settings:
       match_operator: CONTAINS
-      size: '60'
+      size: 60
       placeholder: ''
     third_party_settings: {  }
 hidden:

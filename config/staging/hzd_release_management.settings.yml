@@ -22,3 +22,4 @@ release_vocabulary_id: '8'
 konsens_service_term_id: '459'
 ex_eoss_service_term_id: '460'
 import_path_csv_ex_eoss: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/released_exeoss.csv
+langcode: de

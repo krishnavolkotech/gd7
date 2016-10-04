@@ -1,4 +1,4 @@
 message: "<div class=\"title\">\r\n\tWillkommen beim Betriebsportal KONSENS</div>\r\n<div class=\"portal_heading\">\r\n\tHinweis: Wir f&uuml;hren momentan Wartungsarbeiten durch. Das Betriebsportal ist sp&auml;testens um 18 Uhr wieder f&uuml;r Sie verf&uuml;gbar.<br />\r\n\t<br />\r\n\t<p>&nbsp;</p>\r\n</div>\r\n"
-langcode: en
+langcode: de
 _core:
   default_config_hash: Z5MXifrF77GEAgx0GQ6iWT8wStjFuY8BD9OruofWTJ8

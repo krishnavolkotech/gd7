@@ -1,0 +1,12 @@
+display:
+  default:
+    display_options:
+      fields:
+        filename:
+          label: Name
+        filemime:
+          label: 'Mime type'
+      filters:
+        filemime:
+          expose:
+            label: 'Mime type'
