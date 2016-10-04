@@ -24,7 +24,6 @@ class NotificationsController extends ControllerBase {
     if(empty($node)){
       return null;
     }
-    
     if(in_array($node->getType(),['downtimes','early_warnings','problem','release'])){
       $data = self::getServiceNotificationData($node);
       self::insertNotification($data);
@@ -39,6 +38,7 @@ class NotificationsController extends ControllerBase {
       $data = self::getGroupNotificationData($groupContent);
       self::insertNotification($data);
     }
+    return true;
   }
   
   static function getQuickInfoNotificationData($node){
