@@ -81,11 +81,11 @@ class Inactiveusers extends ControllerBase {
             }
         }
 
-        // notify administrator of inactive user accounts
-      //  $this->notify_admin_inactive_accounts();
+         // notify administrator of inactive user accounts
+        $this->notify_admin_inactive_accounts();
 
         // notify users that their account has been inactive
-       // $this->notify_user_inactive_accounts();
+        $this->notify_user_inactive_accounts();
 
         // warn users when they are about to be blocked
           $this->warn_to_block_inactive_accounts();
@@ -276,11 +276,26 @@ class Inactiveusers extends ControllerBase {
 
     // warn users when they are about to be blocked
     function warn_to_block_inactive_accounts() {
+     
         $warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block_warn');
         $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block');     
         if ($warn_time && $block_time) {
+            /**
+             * select users detail where uid not equal to 1 and status not blocked
+             * either ( access not 0 and login not 0 and access time is less than (current 
+             * time - block time)) 
+             * or 
+             * login 0 and created is lesss than  ( access not 0 and login not 0 
+             * and access time is less than (current 
+             * time - block time))
+             * 
+             */
             $query = \Drupal::database()->select('users_field_data', 'ufd');
             $query->fields('ufd');
+            // Mon, 05.10.2015 05:29
+//            $date_formatter = \Drupal::service('date.formatter')->format((time() - $block_time));
+//            echo $date_formatter;
+            // 
             $orandcond1 = db_and()->condition('ufd.access', 0, '!=')
                     ->condition('ufd.login', 0, '!=')
                     ->condition('ufd.access', (time() - $block_time), '<');
@@ -292,7 +307,7 @@ class Inactiveusers extends ControllerBase {
             $query->condition('ufd.status', 0, '!=');
             // $query->range(1);
             $result = $query->execute()->fetchAll();
-            
+
             foreach ($result as $user) {  
                 $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
                 $query->addField('iuf', 'value');
@@ -308,10 +323,15 @@ class Inactiveusers extends ControllerBase {
                 $query->range(0, 1);
                 $inactive_users_uid = $query->execute()->fetchField();
                 
-                if ($inactive_flag != 1 ) {
+                if ($inactive_flag != 1 && $user->uid &&  !$inactive_users_uid && ($user->created < (time() - $block_time))) {
                    /**
-                    * time + warn time = block time 
+                    * time + warn time = warned_user_block_timestamp block time 
                     */
+                    /*
+                     * 
+                     * time() + $warn_time
+                     * 
+                     */
                     $query = \Drupal::database()->update('inactive_users');
                     $query->fields([
                         'warned_user_block_timestamp' => time() + $warn_time,
@@ -339,7 +359,7 @@ class Inactiveusers extends ControllerBase {
                     if (!$inactive_user_block_warn_text) {
                         $inactive_user_block_warn_text = Inactiveuserhelper::inactive_user_mail_text('block_warn_text');
                     }
-                 dpm('i am blocked warning' . $user->uid);
+                   
                     Inactiveuserhelper::inactive_user_mail($inactive_user_block_warn_mail_subject, $inactive_user_block_warn_text, $warn_time, $user, NULL);
                  
                     $url = Url::fromRoute('entity.user.edit_form', array('user' => $user->uid));
@@ -350,6 +370,7 @@ class Inactiveusers extends ControllerBase {
     
                 }
             }
+            
         }
     }
 
@@ -375,6 +396,8 @@ class Inactiveusers extends ControllerBase {
 
             // $query->range(1, 0);
             $result = $query->execute()->fetchAll();
+            
+    
             foreach ($result as $user) {
                 $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
                 $query->addField('iuf', 'value');
@@ -391,27 +414,26 @@ class Inactiveusers extends ControllerBase {
                     $query->addField('iuf', 'uid');
                     $query->condition('iuf.uid', $user->uid, '=');
                     $query->condition('iuf.warned_user_block_timestamp', time(), '<');
-                    $query->range(0, 1);
+
                     $warned_user_block_timestamp_uid = $query->execute()->fetchField(); 
-                        
-                        
+                    
                     $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block_warn');
+                 
                     if ($user->uid && $block_time == '0') {
-                        
-                        $user = \Drupal\user\Entity\User::load($user->uid);
-                        $user->block();
-                        $user->save();
+                        $user_block = \Drupal\user\Entity\User::load($user->uid);
+                        $user_block->block();
+                        $user_block->save();
 //                        if ($user) {
 //                             $user->setStatus(0);
 //                             $user->save();
 //                             dpm('i am blocked' . $user->uid);
 //                        }
-                        
-                        \Drupal::database()->insert('blocked_users')
-                                ->fields(array(
-                                    'uid' => $user->uid,
-                                    'blocked_time' => time(),
-                                ))->execute();
+//                        format_date
+//                        \Drupal::database()->insert('blocked_users')
+//                                ->fields(array(
+//                                    'uid' => $user->uid,
+//                                    'blocked_time' => time(),
+//                                ))->execute();
 
 //                        $query = \Drupal::database()->update('notifications');
 //                        $query->fields([
@@ -425,7 +447,7 @@ class Inactiveusers extends ControllerBase {
                         // db_query('UPDATE {users} SET status = 0 WHERE uid = %d', $user->uid);
                         // Storing blocked user time into database.
                         // db_query('INSERT INTO {blocked_users} (uid, blocked_time) VALUES (%d, %d)', $user->uid, time());
-                        //update the notifications table that block notifications for this user 
+                        // update the notifications table that block notifications for this user 
                         // db_query('UPDATE {notifications} SET status = %d WHERE status = %d AND uid = %d', 0, 1, $user->uid);
                         // TO do
                         //  notifications_queue_clean(array('uid' => $user->uid)); 
@@ -512,22 +534,20 @@ class Inactiveusers extends ControllerBase {
                     }
                     // don't block user yet if we sent a warning and it hasn't expired
                     else if ($user->uid && $warned_user_block_timestamp_uid && ($user->created < (time() - $block_time))) {
-                        
-                        
-                         $user = \Drupal\user\Entity\User::load($user->uid);
-                         $user->block();
-                         $user->save();
+                         $user_block = \Drupal\user\Entity\User::load($user->uid);
+                         $user_block->block();
+                         $user_block->save();
 //                        if ($user) {
 //                             $user->setStatus(0);
 //                             $user->save();
 //                             dpm('i am blocked else' . $user->uid);
 //                        }
                         
-                        \Drupal::database()->insert('blocked_users')
-                                ->fields(array(
-                                    'uid' => $user->uid,
-                                    'blocked_time' => time(),
-                                ))->execute();
+//                        \Drupal::database()->insert('blocked_users')
+//                                ->fields(array(
+//                                    'uid' => $user->uid,
+//                                    'blocked_time' => time(),
+//                                ))->execute();
 
 //                        $query = \Drupal::database()->update('notifications');
 //                        $query->fields([
@@ -634,7 +654,7 @@ class Inactiveusers extends ControllerBase {
         }
     }
 
-    // warn users when they are about to be deleted
+   // warn users when they are about to be deleted
 //    function warn_to_delete_inactive_accounts() {
 //        $warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete_warn');
 //        $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete');
@@ -726,6 +746,7 @@ class Inactiveusers extends ControllerBase {
 
     // automatically delete users
     function delete_inactive_accounts() {
+
         $delete_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete');
         if ($delete_time) {
            $query = \Drupal::database()->select('users_field_data', 'ufd');
@@ -802,11 +823,15 @@ class Inactiveusers extends ControllerBase {
                         $query->condition('user_id', $user->uid, '=');
                         $query->execute();
                         
-                        $user = \Drupal\user\Entity\User::load($user->uid);
-                        if ($user) {
-                             $user->delete();
+                        $user_delete = \Drupal\user\Entity\User::load($user->uid);
+                        dpm($user_delete);
+                        if (is_object($user_delete)) {
+                          if ($inactive_user_preserve_content) {
+                            $user_delete->set('user_cancel_method', 'user_cancel_reassign');
+                          } else {
+                            $user_delete->set('user_cancel_method', 'user_cancel_delete');
+                          }
                         }
-                       
 //                        $query = \Drupal::database()->delete('users_roles');
 //                        $query->condition('uid', $user->uid, '=');
 //                        $query->execute();
@@ -834,12 +859,17 @@ class Inactiveusers extends ControllerBase {
                             Inactiveuserhelper::inactive_user_mail($inactive_user_delete_notify_mail_subject, $inactive_user_delete_notify_text, $delete_time, $user, NULL);
                         }
                         $inactive_user_notify_delete_admin = \Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete_admin');
+                       
                         if ($inactive_user_notify_delete_admin) {
                             // $user_list .= "$user->name ($user->mail) last active on ". format_date($user->access, 'large') .".\n";
                             $user_list = '';
                             $user_list .= "user $user->name last active on " . \Drupal::service('date.formatter')->format($user->access, 'long') . ".\n";
                         }
+                        
                         $message = "user $user->name deleted due to inactivity" . $user->name;
+                        if ($user_delete) {
+                             $user_delete->delete();
+                        }
                         \Drupal::logger('inactive_user')->notice($message);
                     }
                 }

@@ -143,13 +143,10 @@ function hzd_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterf
         $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
         $form['field_author_name']['#suffix'] = '</div>';
 
-        $userState = \Drupal::database()->select('cust_profile', 'cp')
-            ->fields('cp',['state_id'])
-            ->condition('uid',$user->id())
-            ->execute()->fetchField();
+
         $query = \Drupal::database()->select('states', 's');
         $query->Fields('s', array('state'));
-        $query->condition('s.id', $userState);
+        $query->condition('s.id', $user->user_state);
         $state = $query->execute()->fetchField();
 
 //        $form['quick_info_confirm_message'] = array(
@@ -874,4 +871,20 @@ function hzd_customizations_user_presave(Drupal\Core\Entity\EntityInterface $ent
               $query->execute();
         }
    }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function hzd_customizations_form_user_login_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  // Alter login form and add own custom submit handler.
+  $form['#submit'][] = '_hzd_customizations_user_login_form_submit';
+}
+
+function _hzd_customizations_user_login_form_submit() {
+//   $redirect_url = Url::fromRoute('user.page');
+//  if(!empty($user_status) && $user_status == "active") {
+//    $account->activate();
+//    $form_state->setRedirectUrl($redirect_url);
+//  }
 }
