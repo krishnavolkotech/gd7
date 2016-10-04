@@ -123,4 +123,23 @@ class CustNodeController extends ControllerBase {
 		$url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical',['group'=>$group->id(),'group_content'=>$group_content->id()]);
 		return \Drupal::formBuilder()->getForm($form,['redirect'=>$url]);
 	}
+	
+	function groupMemberCleanup(){
+    $groupContent = \Drupal::entityQuery('group_content')
+        ->condition('type','%member%','LIKE')
+        ->execute();
+        //pr($groupContent);exit;
+    
+    foreach($groupContent as $groupUser){
+      $gUser = \Drupal\group\Entity\GroupContent::load($groupUser);
+      
+        if($gUser && $gUser->entity_id->referencedEntities()){
+            
+        }elseif($gUser){
+          $gUser->delete();
+        }
+    }
+  }
+	
+	
 }

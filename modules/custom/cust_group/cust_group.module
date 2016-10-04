@@ -31,17 +31,14 @@ function cust_group_node_update($entity){
     }
 }
 
-function cust_group_node_insert($entity){
-    if($entity instanceof \Drupal\node\Entity\Node){
-      //capture the notification for the users to send daily and weekly
-      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
-    }
-}
+
 
 function cust_group_group_content_insert($entity){
     $node = $entity->getEntity();
     if($entity instanceof \Drupal\node\Entity\Node){
         sendGroupUpdateMail($node);
+        //capture the notification for the users to send daily and weekly
+        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
     }
 }
 
@@ -243,13 +240,15 @@ function cust_group_cron(){
     \Drupal\cust_group\Controller\NotificationsController::dailyCron();
 }
 
-
-
-function cust_group_cronapi() {
-  $items = array();
-  $items['daily_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','dailyCron']];
-  $items['weekly_notifications'] = ['callback' => ['Drupal\cust_group\Controller\NotificationsController','weeklyCron']];
-  return $items;
+function cust_group_user_delete($user){
+    $groupContent = \Drupal::entityQuery('group_content')->condition('entity_id',$user->id())->execute();
+    $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
+    foreach($groupUsers as $gUser){
+        $gUser->delete();
+    }
 }
 
-
+function cust_group_init(){
+    exit;
+    
+}
