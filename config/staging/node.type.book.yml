@@ -1,11 +1,18 @@
 uuid: 61dcfe5e-2ca7-4f92-94c1-c538bd3a832e
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
 name: 'Book page'
 type: book
 description: 'A <em>book page</em> is a page of content, organized into a collection of related entries collectively known as a <em>book</em>. A <em>book page</em> automatically displays links to adjacent pages, providing a simple navigation system for organizing and reviewing structured content.'
 help: ''
-new_revision: false
+new_revision: true
 preview_mode: 1
 display_submitted: false

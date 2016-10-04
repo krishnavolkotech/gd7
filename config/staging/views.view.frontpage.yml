@@ -295,7 +295,7 @@ display:
         enabled: true
         expanded: false
     display_plugin: page
-    display_title: Seite
+    display_title: Page
     id: page_1
     position: 1
     cache_metadata:

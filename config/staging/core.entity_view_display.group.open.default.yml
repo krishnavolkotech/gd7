@@ -16,7 +16,7 @@ mode: default
 content:
   field_description:
     weight: 1
-    label: above
+    label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
