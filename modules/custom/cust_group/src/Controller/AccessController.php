@@ -7,7 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 
 define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
-define('RELEASE_MANAGEMENT', 32);
+// define('RELEASE_MANAGEMENT', 32);
 
 /**
  * Returns Access grants for Node edit routes.
