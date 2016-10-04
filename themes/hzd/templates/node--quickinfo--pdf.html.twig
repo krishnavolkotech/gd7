@@ -1,3 +1,4 @@
+<div class="print-pdf">
 <h2>1 Meta-Daten</h2>
 {% if content.field_custom_title.0 %}
     {{ content.field_custom_title }}
@@ -33,11 +34,11 @@
 {% endif %}
 <h2>2 Fachlich-inhaltliche Angaben</h2>
 {% if content.field_intial_situation.0 %}
-    {{ content.field_intial_situation }}
+    <div class="intial-situation-info">{{ content.field_intial_situation }}</div>
 {% else %}
-    <div class="field field--name-field-intial-situation field--label-above">
-        <div class="field--label">2.1 Initial situation</div>
-        <div class="field--item"> Keine Angabe</div>
+	    <div class="field field--name-field-intial-situation field--label-above">
+	    <div class="field--label">2.1 Initial situation</div>
+        <div class="field--item">Keine Angabe</div>
     </div>
 {% endif %}
 {% if content.field_professional_conditions.0 %}
@@ -136,3 +137,4 @@
         <div class="field--item"> Keine Angabe</div>
     </div>
 {% endif %}
+</div>
