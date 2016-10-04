@@ -69,13 +69,38 @@ class AccessController extends ControllerBase {
       $groupMember = $group->getMember(\Drupal::currentUser());
       if ($groupMember) {
         $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator',\Drupal::currentUser()->getRoles()))) {
+        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles()))) {
           return AccessResult::allowed();
         }
       }
       //pr($roles);exit;
 
       return AccessResult::forbidden();
+    }
+    return AccessResult::neutral();
+  }
+
+  function quickinfoRevisionAccess() {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
+      $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
+              ->fields('gcfd', ['gid'])
+              ->condition('gcfd.entity_id', $node->id())
+              ->execute()->fetchField();
+      $access_status = \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
+      if (!$access_status) {
+        return AccessResult::forbidden();
+      }
+    }
+    else if ($node->getType() != 'quickinfo') {
+      $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
+              ->fields('gcfd', ['gid'])
+              ->condition('gcfd.entity_id', $node->id())
+              ->execute()->fetchField();
+      $access_status = \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
+      if (!$access_status) {
+        return AccessResult::forbidden();
+      }
     }
     return AccessResult::neutral();
   }

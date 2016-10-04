@@ -11,6 +11,10 @@ use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Core\Url;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\node\NodeInterface;
 
 define('INCEDENT_MANAGEMENT', 24);
 if (!defined('SITE_ADMIN_ROLE')) {
@@ -246,7 +250,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     $form['services_effected']['#description'] = $service_description;
     $form['#validate'][] = 'downtimes_validate';
-    if($form_id == 'node_downtimes_edit_form'){
+    if ($form_id == 'node_downtimes_edit_form') {
       //$form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
       foreach (array_keys($form['actions']) as $action) {
         if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
@@ -1199,4 +1203,18 @@ function archive_rows_per_page($form_state, $limit, $string) {
   );
 
   return $form;
+}
+
+function downtimes_node_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
+  /* $sample = new Drupal\node\Controller\NodeController($date_formatter, $renderer);
+    dsm($sample->revisionOverview($node)); */
+  //dsm(\Drupal::service('date.formatter'));
+  //dsm(\Drupal::service('renderer'));
+  //dsm($build['#node']->getType());
+  if ($build['#node']->getType() == 'quickinfo' && empty($build['#node']->in_preview) && !$build['#node']->isPublished()) {
+    $date_formatter = \Drupal::service('date.formatter');
+    $renderer = \Drupal::service('renderer');
+    $revisions_data = new Drupal\node\Controller\NodeController($date_formatter, $renderer);
+    $build['#revisions_table_print'] = $revisions_data->revisionOverview($entity);
+  }
 }

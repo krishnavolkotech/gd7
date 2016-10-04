@@ -15,12 +15,7 @@
                 width: 33%;
                 float: left;
             }
-            /*.header {
-                border-bottom: 1px solid #bbb;
-            }*/
-            hr {
-                border-color: #bbb;
-            }
+
             .header-image{
                 height: 100px;
             }
@@ -31,6 +26,10 @@
             .header-link {
                 color: black;
             }
+			table td{
+		         border:1px solid #424241;
+				 padding:7px;
+      		}
         </style>
         <script>
             function subst() {
@@ -49,26 +48,43 @@
             }
         </script>
     </head>
-    <body onload="subst()">
-        <table border="1" width="100%">
+    <body onload="subst()"></br>
+        <table border="1" width="100%" cellspacing="0" cellpadding="0">
             <tr>
-                <td><img alt="Home" src="{{ base_path }}/themes/hzd/images/hzd_pdf_logo.png"></td>
-                <td>
-                    {% if unique_id %}
+				{% if unique_id %}
+					<td rowspan="3">
+				{% else %}
+					<td rowspan="2">
+                {% endif %}
+				<img alt="Home" src="{{ base_path }}/themes/hzd/images/hzd_pdf_logo.png"></td>
+                {% if unique_id %}
+					<td rowspan="3">
                         <b>{{ 'RZ-Schnellinfo-Nr.'|trans }} {{ unique_id }}</b>
                         <br>
-                    {% endif %}
+				{% else %}
+					<td rowspan="2">
+                {% endif %}
                     {{ title }}
                 </td>
-                <td>{{ 'Veröffentlicht am'|trans }}:
+                <td> &nbsp;
+				{{ 'Veröffentlicht am'|trans }}:
                     {{ changed }}
-                    <hr>
-                    {% if author_name %}
-                        {{ 'Veröffentlicht von'|trans }}:
-                        {{ author_name }}
-                        <hr>
-                    {% endif %}
+            </tr>
+			{% if author_name %}
+				<tr>
+					<td> 		
+						
+						 {{ 'Veröffentlicht von'|trans }}:
+						 {{ author_name }}
+						
+					</td>	 
+				</tr>
+			{% endif %}
+			<tr>	
+                <td> &nbsp;			
+                    
                     Seite <span class="page"></span> von <span class="topage"></span></td>
+				</td>	
             </tr>
         </table>
     </body>
