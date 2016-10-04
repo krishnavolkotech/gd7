@@ -16,7 +16,7 @@ class NotificationsController extends ControllerBase {
   static $mailCount = 0;
   
   function __construct(){
-    self::$hzdMailManger = \Drupal::service('plugin.manager.mail');
+    
   }
   
   
@@ -150,7 +150,7 @@ class NotificationsController extends ControllerBase {
   }
   
   
-  function dailyCron(){
+  static function dailyCron(){
     self::processQuickInfoNotification('86400');
     self::processServiceNotification('86400');
     self::processGroupNotification('86400');
@@ -158,7 +158,7 @@ class NotificationsController extends ControllerBase {
     return true;
   }
   
-  function weeklyCron(){
+  static function weeklyCron(){
     self::processQuickInfoNotification('604800');
     self::processServiceNotification('604800');
     self::processGroupNotification('604800');
@@ -452,16 +452,19 @@ class NotificationsController extends ControllerBase {
   }
   
   function sendNotificationMail($to,$params){
+    if(!isset(self::$hzdMailManger)){
+      self::$hzdMailManger = \Drupal::service('plugin.manager.mail');
+    }
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
     $params['message'] = self::getBodyPreText().\Drupal::service('renderer')->render($params['message']);
     $send = true;
-    if(!isset(self::$mailCount)){
-      self::$mailCount = 0;
-    }
-    if(self::$mailCount < 5){
+    //if(!isset(self::$mailCount)){
+    //  self::$mailCount = 0;
+    //}
+    //if(self::$mailCount < 5){
       $result = self::$hzdMailManger->mail('cust_group', 'periodic_notifications', $to, $langcode, $params, NULL, $send);
-    }
-    self::$mailCount++; 
+    //}
+    //self::$mailCount++; 
   }
   
   function getUserEmails(array $uids = []){
