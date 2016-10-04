@@ -3,6 +3,9 @@
 namespace Drupal\hzd_release_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\hzd_release_management\Controller;
+define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+define('RELEASE_MANAGEMENT', 32);
 
 /**
  *
@@ -13,8 +16,8 @@ class QuickinfopublishedviewController extends ControllerBase {
    *  TO do : Check with shiva sir 
    */
   public function quickinfo_published_view() {
-      $is_group_admin = CustNodeController::isGroupAdmin();
-      $is_group_member = $this::CheckisGroupMember();
+      
+      $is_group_member = DisplaysavedquickinfoController::CheckuserisquickinfoGroupMember();
       if ($is_group_admin || $is_group_member) {
 //        $group = \Drupal::routeMatch()->getParameter('group');
 //        if(is_object($group)){
@@ -44,21 +47,27 @@ class QuickinfopublishedviewController extends ControllerBase {
       
     }
       
-   public function CheckisGroupMember($group_id = null){
-    $group = \Drupal::routeMatch()->getParameter('group');
-          if (is_object($group)) {
-              $group_id = $group->id();
-          } else {
-              $group_id = $group;
-          }
-    if(!$group_id){
-      return false;
+   public function CheckuserisquickinfoGroupMember($group_id = null) {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        }
+        else {
+            $group_id = $group;
+        }
+
+        $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
+        if (!$group_id && !in_array($group_id, $allowed_group)) {
+            return false;
+        }
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+            return true;
+        }
+        $group = \Drupal\group\Entity\Group::load($group_id);
+        $content = $group->getMember(\Drupal::currentUser());
+        if ($content) {
+            return true;
+        }
+        return false;
     }
-    $group = \Drupal\group\Entity\Group::load($group_id);
-      $content = $group->getMember(\Drupal::currentUser());
-      if($content){
-        return true;
-      }
-    return false;
-  }
 }

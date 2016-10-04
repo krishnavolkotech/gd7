@@ -31,21 +31,17 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.node.edit_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
-    //Node revisions for quickinfo
-    if ($route = $collection->get('entity.node.version_history')) {
-      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::quickinfoRevisionAccess');
+    if ($route = $collection->get('entity.group_content.group_membership.collection')){
+        $route->setRequirement('_access','FALSE');
     }
-    if ($route = $collection->get('entity.group_content.group_membership.collection')) {
-      $route->setRequirement('_access', 'FALSE');
+    if ($route = $collection->get('entity.group_content.group_node.collection')){
+        $route->setRequirement('_access','FALSE');
     }
-    if ($route = $collection->get('entity.group_content.group_node.collection')) {
-      $route->setRequirement('_access', 'FALSE');
-    }
-    if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
-      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
+    if ($route = $collection->get('entity.group_content.group_membership.pending_collection')){
+        $route->setRequirement('_custom_access','\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
     }
     foreach ($collection as $key => $route) {
-      if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical', 'entity.group_content.group_membership.request_membership_form'])) {
+      if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical','entity.group_content.group_membership.request_membership_form'])) {
         if (in_array($key, $this->returnGroupViews())) {
           //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
@@ -57,8 +53,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
     }
-    if ($route = $collection->get('entity.group_content.group_node__deployed_releases.edit_form')) {
-      $route->setDefault('_controller', "\Drupal\cust_group\Controller\CustNodeController::groupNodeEdit");
+    
+    if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
+      $route->setDefault('_custom_access', "Drupal\cust_group\Controller\AccessController::CheckQuickinfoviewAccess"); 
+    }
+    
+    if ($route = $collection->get('entity.node.canonical')) {
+       $route->setDefault('_custom_access', "Drupal\cust_group\Controller\AccessController::CheckQuickinfonodeviewAccess");
     }
   }
 
