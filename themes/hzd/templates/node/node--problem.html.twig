@@ -79,7 +79,8 @@
 
 <tr class = 'even'>
     <td class = 'problem_titles'> {{ 'Service'|trans }}</td>
-    <td class = 'problem_content' >{{ dump(node.field_services.value) }} {{ node.field_services.value }}</td>
+    <td class = 'problem_content' >
+      {{ node.field_services.0.entity.title.value }} </td>
 </tr>
  
 <tr class = 'odd'>
