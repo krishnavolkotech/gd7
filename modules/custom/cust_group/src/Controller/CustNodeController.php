@@ -135,7 +135,7 @@ class CustNodeController extends ControllerBase {
       
         if($gUser && $gUser->entity_id->referencedEntities()){
             
-        }else{
+        }elseif($gUser){
           $gUser->delete();
         }
     }

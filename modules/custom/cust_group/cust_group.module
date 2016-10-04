@@ -31,17 +31,14 @@ function cust_group_node_update($entity){
     }
 }
 
-function cust_group_node_insert($entity){
-    if($entity instanceof \Drupal\node\Entity\Node){
-      //capture the notification for the users to send daily and weekly
-      \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
-    }
-}
+
 
 function cust_group_group_content_insert($entity){
     $node = $entity->getEntity();
     if($entity instanceof \Drupal\node\Entity\Node){
         sendGroupUpdateMail($node);
+        //capture the notification for the users to send daily and weekly
+        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
     }
 }
 
@@ -253,15 +250,5 @@ function cust_group_user_delete($user){
 
 function cust_group_init(){
     exit;
-    $groupContent = \Drupal::entityQuery('group_content')
-        ->condition('type','%member%','LIKE')
-        ->execute();
-    $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
-    foreach($groupUsers as $gUser){
-        if(\Drupal\user\Entity\User::load($gUser->get('entity_id')->value)){
-            
-        }else{
-            
-        }
-    }
+    
 }
