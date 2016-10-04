@@ -26,3 +26,4 @@ show_term_page_children: false
 omit_vocabulary: {  }
 _core:
   default_config_hash: SQxxJIZXuKPvJBBY6_EQCM940iKYgW6QVES9iN4s5h4
+langcode: de

@@ -152,7 +152,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_unique_id:
-    label: hidden
+    label: inline
     weight: 5
     type: number_integer
     settings:
@@ -164,9 +164,9 @@ content:
     settings: {  }
     third_party_settings: {  }
   upload:
-    label: hidden
+    label: above
     settings: {  }
-    type: file_default
+    type: file_table
     weight: 21
     third_party_settings: {  }
 hidden:

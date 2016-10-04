@@ -57,6 +57,7 @@ module:
   link: 0
   locale: 0
   masquerade: 0
+  mass_contact: 0
   menu_ui: 0
   migrate: 0
   migrate_drupal: 0
@@ -69,12 +70,17 @@ module:
   options: 0
   page_cache: 0
   path: 0
+  pdf_api: 0
+  printable: 0
+  printable_pdf: 0
   problem_management: 0
   quickedit: 0
   rdf: 0
   reroute_email: 0
   rest: 0
   search_api: 0
+  search_api_page: 0
+  search_api_solr: 0
   serialization: 0
   shortcut: 0
   statistics: 0
@@ -88,14 +94,11 @@ module:
   update: 0
   user: 0
   views_ui: 0
-  webprofiler: 0
   xmlrpc: 0
   ctools: 1
   forum: 1
   menu_link_content: 1
   pathauto: 1
-  search: 1
-  search_api_solr: 1
   content_translation: 10
   views: 10
   standard: 1000
@@ -108,3 +111,4 @@ theme:
   hzd: 0
 _core:
   default_config_hash: m2GVq11UAOVuNgj8x0t5fMOPujpvQQ_zxLoaly1BMEU
+langcode: de

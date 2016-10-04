@@ -1,5 +1,5 @@
 uuid: 142f4f37-2d83-48c5-b5d3-740063bde9d9
-langcode: en
+langcode: de
 status: true
 dependencies:
   config:
@@ -295,7 +295,7 @@ display:
         enabled: true
         expanded: false
     display_plugin: page
-    display_title: Page
+    display_title: Seite
     id: page_1
     position: 1
     cache_metadata:

@@ -10,6 +10,7 @@ use Drupal\Core\Database\Database;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\Core\Access\AccessResult;
 
 //if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -166,6 +167,13 @@ class HzdNotifications extends ControllerBase {
           ->fields('nfed', array('field_enable_downtime_value'));
     $result = $query->execute()->fetchAll();
     return $result;
+  }
+  
+  function userAccess($user){
+    if($user == \Drupal::currentUser()->id()){
+      return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
   }
   
 }
