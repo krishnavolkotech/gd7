@@ -97,6 +97,7 @@ class ServiceNotificationsUserForm extends FormBase {
     $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $subscriptions = $form_state->getValue('subscriptions');
     $default_interval = hzd_get_default_interval($uid, $rel_type);
+    $types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
     // get all services
     $services = hzd_get_all_services($rel_type);
     //get default interval of each services and type
@@ -112,7 +113,7 @@ class ServiceNotificationsUserForm extends FormBase {
         $data = \Drupal::database()->select('service_notifications','sn')
           ->fields('sn')
           ->condition('service_id',$service->nid)
-          ->condition('type',$content)
+          ->condition('type',$types[$content_key])
           ->execute()->fetchAllAssoc('send_interval');
           //pr($data);exit;
           $uids = null;
@@ -131,7 +132,7 @@ class ServiceNotificationsUserForm extends FormBase {
               ->fields(['uids'=>serialize($uids)])
               ->condition('sid',$data[$interval]->sid)->execute();
           }else{
-            $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'service_id'=>$service->nid,'type'=>$content];
+            $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'service_id'=>$service->nid,'type'=>$types[$content_key]];
             \Drupal::database()
               ->insert('service_notifications')
               ->fields($notifyData)->execute();
