@@ -6,6 +6,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 
+define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+define('RELEASE_MANAGEMENT', 32);
+
 /**
  * Returns Access grants for Node edit routes.
  */
@@ -19,6 +22,17 @@ class AccessController extends ControllerBase {
       if ($node->getType() == 'quickinfo' && $node->isPublished()) {
         return AccessResult::forbidden();
       }
+      
+      if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
+          $group = \Drupal\group\Entity\Group::load(QUICKINFO);
+          $content = $group->getMember(\Drupal::currentUser());
+          if($content){
+            return AccessResult::allowed();
+          } else {
+            return AccessResult::forbidden();  
+          }
+      }
+      
       if ($node->getType() == 'downtimes') {
         return AccessResult::allowed();
       }
@@ -69,38 +83,13 @@ class AccessController extends ControllerBase {
       $groupMember = $group->getMember(\Drupal::currentUser());
       if ($groupMember) {
         $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles()))) {
+        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator',\Drupal::currentUser()->getRoles()))) {
           return AccessResult::allowed();
         }
       }
       //pr($roles);exit;
 
       return AccessResult::forbidden();
-    }
-    return AccessResult::neutral();
-  }
-
-  function quickinfoRevisionAccess() {
-    $node = \Drupal::routeMatch()->getParameter('node');
-    if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
-      $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
-              ->fields('gcfd', ['gid'])
-              ->condition('gcfd.entity_id', $node->id())
-              ->execute()->fetchField();
-      $access_status = \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
-      if (!$access_status) {
-        return AccessResult::forbidden();
-      }
-    }
-    else if ($node->getType() != 'quickinfo') {
-      $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
-              ->fields('gcfd', ['gid'])
-              ->condition('gcfd.entity_id', $node->id())
-              ->execute()->fetchField();
-      $access_status = \Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess($checkGroupNode);
-      if (!$access_status) {
-        return AccessResult::forbidden();
-      }
     }
     return AccessResult::neutral();
   }
@@ -118,4 +107,53 @@ class AccessController extends ControllerBase {
     return AccessResult::allowed();
   }
 
+  static public function CheckQuickinfoviewAccess() {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        }
+        else {
+            $group_id = $group;
+        }
+        $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+            return AccessResult::allowed();
+        }
+        if (!$group_id && !in_array($group_id, $allowed_group)) {
+            return AccessResult::forbidden();
+        }
+        $group = \Drupal\group\Entity\Group::load($group_id);
+        $content = $group->getMember(\Drupal::currentUser());
+        if ($content) {
+            return AccessResult::allowed();
+        }
+        return AccessResult::forbidden();
+    }
+
+    static public function CheckQuickinfonodeviewAccess() {
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if (is_object($node) && $node->getType() == 'quickinfo') {
+            $group = \Drupal::routeMatch()->getParameter('group');
+            if (is_object($group)) {
+                $group_id = $group->id();
+            }
+            else {
+                $group_id = $group;
+            }
+            $allowed_group = array(QUICKINFO);
+            if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+                return AccessResult::allowed();
+            }
+            if (!$group_id && !in_array($group_id, $allowed_group)) {
+                return AccessResult::forbidden();
+            }
+            $group = \Drupal\group\Entity\Group::load($group_id);
+            $content = $group->getMember(\Drupal::currentUser());
+            if ($content) {
+                return AccessResult::allowed();
+            }
+            return AccessResult::forbidden();
+        }
+    }
+    
 }
