@@ -27,6 +27,8 @@ class HzdReleases extends ControllerBase {
      *
      */
     public function released() {
+        ini_set('memory_limit', '1024M');
+        ini_set('max_execution_time', 0);
         global $base_url;
         $type = 'released';
         $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
