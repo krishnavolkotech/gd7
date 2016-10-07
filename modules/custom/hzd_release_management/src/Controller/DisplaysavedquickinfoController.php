@@ -6,7 +6,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\cust_group\Controller;
 
-define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+if (!defined('QUICKINFO')) {
+  define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+}
 /**
  *
  */
