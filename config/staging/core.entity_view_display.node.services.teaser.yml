@@ -51,6 +51,7 @@ content:
     weight: 100
 hidden:
   comment: true
+  entity_print_view: true
   field_enable_downtime: true
   langcode: true
   release_type: true

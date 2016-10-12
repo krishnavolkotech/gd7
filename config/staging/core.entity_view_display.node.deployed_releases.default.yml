@@ -16,10 +16,14 @@ dependencies:
   module:
     - comment
     - datetime
+    - entity_print
     - file
     - options
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.deployed_releases.default
 targetEntityType: node
 bundle: deployed_releases
@@ -28,24 +32,28 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 8
     settings: {  }
     third_party_settings: {  }
   comment:
     label: hidden
     type: comment_default
-    weight: 20
+    weight: 6
     settings:
       pager_id: 0
     third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
   field_archived_release:
     label: inline
-    weight: 16
+    weight: 4
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_date_deployed:
-    weight: 103
+    weight: 10
     label: above
     settings:
       format_type: medium
@@ -54,39 +62,39 @@ content:
     type: datetime_default
   field_earlywarning_release:
     label: inline
-    weight: 15
+    weight: 3
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_environment:
     label: inline
-    weight: 13
+    weight: 1
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_release_service:
     label: inline
-    weight: 14
+    weight: 2
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_user_state:
     label: inline
-    weight: 17
+    weight: 5
     type: number_integer
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
   links:
-    weight: 100
+    weight: 7
     settings: {  }
     third_party_settings: {  }
   upload:
     label: hidden
     settings: {  }
     type: file_default
-    weight: 102
+    weight: 9
     third_party_settings: {  }
 hidden:
   langcode: true

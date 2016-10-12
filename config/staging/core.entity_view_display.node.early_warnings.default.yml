@@ -10,10 +10,14 @@ dependencies:
     - field.field.node.early_warnings.upload
     - node.type.early_warnings
   module:
+    - entity_print
     - file
     - options
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.early_warnings.default
 targetEntityType: node
 bundle: early_warnings
@@ -22,7 +26,7 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 4
     settings: {  }
     third_party_settings: {  }
   comment:
@@ -31,27 +35,31 @@ content:
     weight: 20
     settings: {  }
     third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
   field_earlywarning_release:
     label: inline
-    weight: 8
+    weight: 2
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_release_service:
     label: inline
-    weight: 7
+    weight: 1
     type: list_default
     settings: {  }
     third_party_settings: {  }
   links:
-    weight: 100
+    weight: 3
     settings: {  }
     third_party_settings: {  }
   upload:
     label: hidden
     settings: {  }
     type: file_default
-    weight: 102
+    weight: 5
     third_party_settings: {  }
 hidden:
   comment_no_subject: true

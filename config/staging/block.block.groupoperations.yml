@@ -1,6 +1,6 @@
 uuid: d9118b9c-46ba-4e72-8977-6972dc522bb2
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - block_class
@@ -13,8 +13,8 @@ third_party_settings:
     classes: ''
 id: groupoperations
 theme: hzd
-region: sidebar_first
-weight: -18
+region: '-1'
+weight: 3
 provider: null
 plugin: group_operations
 settings:

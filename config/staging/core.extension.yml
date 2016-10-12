@@ -51,6 +51,7 @@ module:
   image: 0
   inactive_user: 0
   inline_entity_form: 0
+  kint: 0
   l10n_client_contributor: 0
   l10n_client_ui: 0
   language: 0

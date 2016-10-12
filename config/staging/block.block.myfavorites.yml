@@ -13,7 +13,7 @@ third_party_settings:
 id: myfavorites
 theme: hzd
 region: '-1'
-weight: -7
+weight: -5
 provider: null
 plugin: favorites_block
 settings:

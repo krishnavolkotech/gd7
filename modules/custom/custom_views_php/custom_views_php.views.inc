@@ -30,12 +30,21 @@ function custom_views_php_views_data() {
         'field' => array(
             'id' => 'group_post_count_field',
         ),
+        'sort' => array(
+            // ID of sort handler plugin to use.
+            'id' => 'group_post_count_field',
+        ),
+
     );
 
     $data['views']['group_member_count_field'] = array(
         'title' => t('Group Member Count'),
         'help' => t('Enable to include and Group Member Count code in your modules as part of a view'),
         'field' => array(
+            'id' => 'group_member_count_field',
+        ),
+        'sort' => array(
+            // ID of sort handler plugin to use.
             'id' => 'group_member_count_field',
         ),
     );
@@ -46,6 +55,10 @@ function custom_views_php_views_data() {
         'field' => array(
             'id' => 'group_type_value',
         ),
+        'sort' => array(
+            // ID of sort handler plugin to use.
+            'id' => 'group_type_value',
+        ),
     );
     
     $data['views']['group_actions_field'] = array(
@@ -53,6 +66,22 @@ function custom_views_php_views_data() {
         'help' => t('Enable to include and Group Actions link in your modules as part of a view'),
         'field' => array(
             'id' => 'group_actions_field',
+        ),
+        'sort' => array(
+            // ID of sort handler plugin to use.
+            'id' => 'group_actions_field',
+        ),
+    );
+    
+    $data['views']['group_member_name'] = array(
+        'title' => t('Group Members'),
+        'help' => t('Enable to include and Group members role with name as part of a view'),
+        'field' => array(
+            'id' => 'group_member_name',
+        ),
+        'sort' => array(
+            // ID of sort handler plugin to use.
+            'id' => 'group_member_name',
         ),
     );
 

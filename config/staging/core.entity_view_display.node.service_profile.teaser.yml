@@ -6,6 +6,7 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.service_profile.body
     - field.field.node.service_profile.comment
+    - field.field.node.service_profile.field_dependent_downtimeservices
     - field.field.node.service_profile.field_dependent_service
     - field.field.node.service_profile.field_impact
     - field.field.node.service_profile.field_maintenance_advance_time

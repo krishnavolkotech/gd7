@@ -5,7 +5,9 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.im_upload_page.body
+    - field.field.node.im_upload_page.comment
     - field.field.node.im_upload_page.field_im_upload_page_files
+    - field.field.node.im_upload_page.upload
     - node.type.im_upload_page
   module:
     - file
@@ -31,4 +33,8 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

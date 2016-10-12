@@ -13,5 +13,4 @@ permissions:
   1: 'access site-wide contact form'
   2: 'access frontpage'
   3: 'access content'
-  5: 'access user profiles'
   6: 'use text format basic_html'

@@ -254,7 +254,7 @@ function get_release_type($type) {
  */
 function hzd_release_management_cron() {
   $readExcel = new Drupal\hzd_release_management\Controller\ReadexcelController();
-  $readExcel->read_release_csv();
+  $readExcel->read_problem_csv();
 }
 
 /*
@@ -402,7 +402,7 @@ function send_qi_notifications($entity) {
       $style = \Drupal::service('printable.css_include')->getCssIncludePath();
       // Replace the token for subject.
       $subject = $entity->label() . " has been updated.";
-      $message_text = \Drupal::service('renderer')->render($markup).'<link rel="stylesheet" href="'.$base_url.'/'.$style.'" media="all" />';
+      $message_text = '<link rel="stylesheet" href="'.$base_url.'/'.$style.'" media="all" />'.\Drupal::service('renderer')->render($markup);
       send_immediate_notifications($subject, $message_text, $mail, $preference);
     }
   }

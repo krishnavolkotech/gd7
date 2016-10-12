@@ -5,6 +5,10 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.page.body
+    - field.field.node.page.comment
+    - field.field.node.page.field_page_files
+    - field.field.node.page.field_page_links
+    - field.field.node.page.upload
     - node.type.page
   module:
     - text
@@ -25,4 +29,10 @@ content:
     third_party_settings: {  }
   links:
     weight: 101
-hidden: {  }
+hidden:
+  comment: true
+  entity_print_view: true
+  field_page_files: true
+  field_page_links: true
+  langcode: true
+  upload: true
