@@ -12,7 +12,7 @@ class InactiveuserStorage {
   /**
    * Get administrator e-mail address(es).
    */
-  static function inactive_user_admin_mail() {
+  static public function inactive_user_admin_mail() {
     $admin_user = User::load(1);
     // $admin_mail	= db_query('SELECT mail FROM {users} WHERE uid = :uid', array(':uid' => 1))->fetchField();
     $mail = \Drupal::config('system.site')->get('mail');
@@ -39,12 +39,12 @@ class InactiveuserStorage {
     $query->Fields('n', array('nid', 'title'));
     $query->condition('type', 'group', '=');
     $group = $query->execute()->fetchObject();
-    
+
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->addExpression('count(*)');
     $query->condition('nfd.uid', $uid);
-     $user_has_nodes = $query->execute()->fetchField();
-    
+    $user_has_nodes = $query->execute()->fetchField();
+
     $query = \Drupal::database()->select('comment_field_data', 'cfd');
     $query->addExpression('count(*)');
     $query->condition('cfd.uid', $uid);

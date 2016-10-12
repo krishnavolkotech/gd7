@@ -69,6 +69,12 @@ function inactive_user_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0),
+      'inactive_user_notification_flag' => array(
+        'description' => 'Inactive user notification flag.',
+        'type' => 'bool',
+        'not null' => TRUE,
+        'default' => 1
+      ),
     ),
     'primary key' => array('uid'),
   );

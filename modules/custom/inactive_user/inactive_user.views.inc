@@ -8,7 +8,7 @@
 /**
  * Implements hook_views_data().
  */
-function inactive_user_views_data() {  
+function inactive_user_views_data() {
   $data = array();
 
   $data['cust_profile'] = array();
@@ -21,51 +21,50 @@ function inactive_user_views_data() {
     'weight' => -10,
   );
 
- $data['cust_profile']['table']['join'] = array(
+  $data['cust_profile']['table']['join'] = array(
     'users_field_data' => array(
       'left_field' => 'uid',
       'field' => 'uid',
-     ),
+    ),
     'states' => array(
       'left_field' => 'id',
       'field' => 'state_id',
-     ),
+    ),
     'group_content_field_data' => array(
       'left_field' => 'entity_id',
       'field' => 'uid',
-    )
+    ),
   );
 
-   $data['cust_profile']['uid'] = array(
+  $data['cust_profile']['uid'] = array(
     'title' => t('Uid'),
     'help' => t('The custom user profile  ID'),
-	'relationship' => array(
-	      // Views name of the table to join to for the relationship.
-	      'base' => 'users_field_data',
-	      // Database field name in the other table to join on.
-	      'base field' => 'uid',
-	      // ID of relationship handler plugin to use.
-	      'id' => 'standard',
-	      // Default label for relationship in the UI.
-	      'label' => t(' user profile uid'),
-	    ),
+    'relationship' => array(
+          // Views name of the table to join to for the relationship.
+      'base' => 'users_field_data',
+          // Database field name in the other table to join on.
+      'base field' => 'uid',
+          // ID of relationship handler plugin to use.
+      'id' => 'standard',
+          // Default label for relationship in the UI.
+      'label' => t(' user profile uid'),
+    ),
   );
 
-   $data['cust_profile']['uid'] = array(
+  $data['cust_profile']['uid'] = array(
     'title' => t('Uid'),
     'help' => t('The custom user profile  ID'),
-	'relationship' => array(
-	      // Views name of the table to join to for the relationship.
-	      'base' => 'users_field_data',
-	      // Database field name in the other table to join on.
-	      'base field' => 'uid',
-	      // ID of relationship handler plugin to use.
-	      'id' => 'standard',
-	      // Default label for relationship in the UI.
-	      'label' => t(' user profile uid'),
-	    ),
+    'relationship' => array(
+          // Views name of the table to join to for the relationship.
+      'base' => 'users_field_data',
+          // Database field name in the other table to join on.
+      'base field' => 'uid',
+          // ID of relationship handler plugin to use.
+      'id' => 'standard',
+          // Default label for relationship in the UI.
+      'label' => t(' user profile uid'),
+    ),
   );
-
 
   $data['cust_profile']['firstname'] = array(
     'title' => t('Firstname'),
@@ -92,8 +91,6 @@ function inactive_user_views_data() {
     ),
   );
 
-
-
   $data['cust_profile']['lastname'] = array(
     'title' => t('Lastname'),
     'help' => t('Lastname'),
@@ -119,13 +116,11 @@ function inactive_user_views_data() {
     ),
   );
 
-
-
   $data['cust_profile']['phone'] = array(
     'title' => t('Phone'),
     'help' => t('Phone'),
 
-   'field' => array(
+    'field' => array(
       'id' => 'standard',
     ),
     'argument' => array(
@@ -162,32 +157,29 @@ function inactive_user_views_data() {
     'title' => t('State id'),
     'help' => t('State id'),
 
-  	'relationship' => array(
-	      // Views name of the table to join to for the relationship.
-	      'base' => 'states',
-	      // Database field name in the other table to join on.
-	      'base field' => 'id',
-	      // ID of relationship handler plugin to use.
-	      'id' => 'standard',
-	      // Default label for relationship in the UI.
-	      'label' => t(' State id'),
-	    ),
+    'relationship' => array(
+          // Views name of the table to join to for the relationship.
+      'base' => 'states',
+          // Database field name in the other table to join on.
+      'base field' => 'id',
+          // ID of relationship handler plugin to use.
+      'id' => 'standard',
+          // Default label for relationship in the UI.
+      'label' => t(' State id'),
+    ),
   );
 
-
-
- /**
-
-   'field' => array(
-      'handler' => 'views_handler_field_numeric',
-      'click sortable' => TRUE,
-     ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
+  /**
+  *   * 'field' => array(
+  * 'handler' => 'views_handler_field_numeric',
+  * 'click sortable' => TRUE,
+  * ),
+  * 'filter' => array(
+  * 'handler' => 'views_handler_filter_numeric',
+  * ),
+  * 'sort' => array(
+  * 'handler' => 'views_handler_sort',
+  * ),
 
 */
 
@@ -199,7 +191,7 @@ function inactive_user_views_data() {
     'weight' => -10,
   );
 
- $data['states']['abbr'] = array(
+  $data['states']['abbr'] = array(
     'title' => t('State abbr'),
     'help' => t('State abbr'),
 
@@ -224,12 +216,11 @@ function inactive_user_views_data() {
     ),
   );
 
-
- $data['states']['state'] = array(
+  $data['states']['state'] = array(
     'title' => t('State name'),
     'help' => t('State name'),
 
-   'field' => array(
+    'field' => array(
       'id' => 'standard',
     ),
     'argument' => array(
@@ -243,8 +234,7 @@ function inactive_user_views_data() {
     ),
   );
 
-
- $data['states']['active'] = array(
+  $data['states']['active'] = array(
     'title' => t('active'),
     'help' => t('State active'),
 
@@ -272,8 +262,6 @@ function inactive_user_views_data() {
       'use_equal' => TRUE,
     ),
   );
-
-
 
   return $data;
 
