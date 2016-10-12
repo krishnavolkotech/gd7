@@ -13,11 +13,9 @@
  */
 function inactive_user_user_cancel($edit, $account, $method) {
   \Drupal::database()->delete('inactive_users')
-      ->condition('uid', $account->uid)
-      ->execute();
+    ->condition('uid', $account->uid)
+    ->execute();
 }
-
-
 
 /**
  * Implements hook_mail().
@@ -103,14 +101,13 @@ function inactive_user_schema() {
         'description' => 'Inactive user notification flag.',
         'type' => 'bool',
         'not null' => TRUE,
-        'default' => 1
+        'default' => 1,
       ),
     ),
     'primary key' => array('uid'),
   );
   return $schema;
 }
-
 
 /**
  * Returns 1 if the user has ever created a node or a comment.
@@ -121,13 +118,13 @@ function inactive_user_schema() {
 function _inactive_user_with_content($uid) {
 
   $query = \Drupal::database()->select('node_field_data', 'nfd');
-		$query->addField('nfd', 'uid');
-                $query->condition('nfd.uid', $uid , '=');
+  $query->addField('nfd', 'uid');
+  $query->condition('nfd.uid', $uid, '=');
   $node_field_data_uid = $query->execute()->fetchField();
 
   $query = \Drupal::database()->select('comment_field_data', 'cfd');
-		$query->addField('cfd', 'uid');
-                $query->condition('nfd.uid', $uid , '=');
+  $query->addField('cfd', 'uid');
+  $query->condition('nfd.uid', $uid, '=');
   $comment_field_data_uid = $query->execute()->fetchField();
 
   return ($node_field_data_uid || $comment_field_data_uid);

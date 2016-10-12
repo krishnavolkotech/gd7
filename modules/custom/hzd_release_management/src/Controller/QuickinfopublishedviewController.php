@@ -4,8 +4,14 @@ namespace Drupal\hzd_release_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\hzd_release_management\Controller;
-define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
-define('RELEASE_MANAGEMENT', 32);
+
+if (!defined('QUICKINFO')) {
+  define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+}
+if (!defined('RELEASE_MANAGEMENT')) {
+  define('RELEASE_MANAGEMENT', 32);
+}
+
 
 /**
  *

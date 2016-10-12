@@ -46,7 +46,8 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_released'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
-    '#suffix' => '</div>'
+    '#suffix' => '</div>',
+    '#maxlength' => 255,
     );
   $form['import_path_csv_locked'] = array(
     '#type' => 'textfield',
@@ -55,7 +56,8 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_locked'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
-    '#suffix' => '</div>'
+    '#suffix' => '</div>',
+    '#maxlength' => 255,
     );
   $form['import_path_csv_progress'] = array(
     '#type' => 'textfield',
@@ -64,7 +66,8 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_progress'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
-    '#suffix' => '</div>'
+    '#suffix' => '</div>',
+    '#maxlength' => 255,
     );
 /**
   $form['import_path_csv_rejected'] = array(
@@ -84,7 +87,8 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_ex_eoss'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
-    '#suffix' => '</div>'
+    '#suffix' => '</div>',
+    '#maxlength' => 255,
     );
 
 /**
@@ -149,16 +153,16 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
 
   $ptn = "/^([0-1]\d|2[0-3]):([0-5]\d)$/";
   
-  preg_match($ptn, trim($import_time), $matches);
+   //  preg_match($ptn, trim($import_time), $matches);
   
   if (!valid_email_address($import_mail)) {
     $form_state->setErrorByName('import_mail', $this->t('Invalid mail'));
   }
-/**
-  if (!$matches) {
-    $form_state->setErrorByName('import_time', $this->t('Invalid time'));
-  }
-*/
+    /**
+      if (!$matches) {
+        $form_state->setErrorByName('import_time', $this->t('Invalid time'));
+      }
+    */
   }
   
   /** 

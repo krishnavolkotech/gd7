@@ -1,7 +1,12 @@
 <?php 
 
-define('RELEASE_MANAGEMENT', 32);
-define('SITE_ADMIN', 5);
+if (! defined('RELEASE_MANAGEMENT')) {
+  define('RELEASE_MANAGEMENT', 32);
+}
+if (! defined('SITE_ADMIN')) {
+  define('SITE_ADMIN', 5);
+}
+
 use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
 

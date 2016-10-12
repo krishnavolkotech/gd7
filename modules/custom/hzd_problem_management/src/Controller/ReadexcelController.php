@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Contains \Drupal\problem_management\Controller\ReadexcelController.
- */
+
 namespace Drupal\problem_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -14,66 +11,68 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 
 /**
- * Class ReadexcelController
+ * Class ReadexcelController.
+ *
  * @package Drupal\problem_management\Controller
  */
 class ReadexcelController extends ControllerBase {
-/*
- * Callback for the read excel file
- * Use the function for the cron run
- */
-  function read_problem_csv() {
-   /**
-   $header_values = array(
-		  'sno', 'status', 'service', 'function', 'release', 'title' ,
-		  'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
-		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 
-                  'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
-		  );
+
+  /**
+   * Callback for the read excel file
+   * Use the function for the cron run.
    */
-   $header_values = array(
-		  'sno', 'status', 'service', 'function', 'release', 'title' ,
-		  'body', 'diagnose', 'solution', 'workaround', 'version', 'priority', 
-		  'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 'timezone',
-                  'closed'
-		  );
-      
-   $path = \Drupal::config('problem_management.settings')->get('import_path');
+  public function read_problem_csv() {
+    /**
+    * $header_values = array(
+     * 'sno', 'status', 'service', 'function', 'release', 'title' ,
+     * 'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority',
+     * 'taskforce', 'comment', 'processing', 'attachment', 'eroffnet',
+    * 'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
+     * );
+   */
+    $header_values = array(
+      'sno', 'status', 'service', 'function', 'release', 'title',
+      'body', 'diagnose', 'solution', 'workaround', 'version', 'priority',
+      'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 'timezone',
+      'closed',
+    );
 
-   if ($path) {
-     if(file_exists($path)) {
-      $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
-     }
-     else {
-       $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-       $subject = $this->t('Error while import');
-       $body = $this->t("There is an issue while importing of the file " . $path . ". The  import file not found or it could have been corrupted.");
-       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-       $status = $this->t('Error');
-       $msg = $this->t('Import File Not Found');
-       HzdStorage::insert_import_status($status, $msg);
-       $output = $this->t('Import File Not Found');
-     }
-   }
-   else {
-     $output = $this->t('File Path Not Specified');
-     $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-     $subject = 'Error while import';
-     $body = $this->t("There is an issue while importing of the problems from file " . $path . "Check whether the format of problems is in proper CSV format or not.");
+    $path = \Drupal::config('problem_management.settings')->get('import_path');
 
-     HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-   
-     
-     $url = Url::fromUserInput('/admin/settings/problem');
-      // $link = Link::fromTextAndUrl($text, $url);
-     $text = 'Set the import path at';
-     $path = Link::fromTextAndUrl($text, $url); 
-       
-     $output .=  t('Set the import path at') . $path;  
+    if ($path) {
+      if (file_exists($path)) {
+        $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
+      }
+      else {
+        $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+        $subject = $this->t('Error while import');
+        $body = $this->t("There is an issue while importing of the file " . $path . ". The  import file not found or it could have been corrupted.");
+        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+        $status = $this->t('Error');
+        $msg = $this->t('Import File Not Found');
+        HzdStorage::insert_import_status($status, $msg);
+        $output = $this->t('Import File Not Found');
+      }
+    }
+    else {
+      $output = $this->t('File Path Not Specified');
+      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+      $subject = 'Error while import';
+      $body = $this->t("There is an issue while importing of the problems from file " . $path . "Check whether the format of problems is in proper CSV format or not.");
+
+      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+
+      $url = Url::fromUserInput('/admin/settings/problem');
+      // $link = Link::fromTextAndUrl($text, $url);.
+      $text = 'Set the import path at';
+      $path = Link::fromTextAndUrl($text, $url);
+
+      $output .= t('Set the import path at') . $path;
     }
     $response = array(
-      '#markup' => $output
-     );
+      '#markup' => $output,
+    );
     return $response;
   }
+
 }

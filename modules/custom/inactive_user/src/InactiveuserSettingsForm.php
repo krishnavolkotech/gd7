@@ -1,15 +1,10 @@
 <?php
 
-// \Drupal::config('hello.settings')->get('things');
-// https://www.commercialprogression.com/post/drupal-8-oop-part-2-creating-admin-form
-// https://www.drupal.org/node/2206607
-// http://drupal8cmi.org/drupal-8-hello-configuration-management
 namespace Drupal\inactive_user;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-// Use Drupal\Core\Datetime\DateFormatter;.
 /**
  * Configure inactive_user settings for this site.
  */
@@ -192,85 +187,70 @@ class InactiveuserSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Generate an email to notify the site administrator when a user is automatically blocked.'),
     );
 
-    // Automatically delete inactive users.
-    $form['delete_inactive_user'] = array(
-      '#type' => 'fieldset',
-      '#title' => $this->t('Automatically delete inactive users'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    );
-    $form['delete_inactive_user']['inactive_user_auto_delete_warn'] = array(
-      '#type' => 'select',
-      '#title' => $this->t('Warn users before they are deleted'),
-    // '#default_value' => variable_get('inactive_user_auto_delete_warn', 0),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete_warn'),
-      '#options' => $warn_period,
-      '#description' => $this->t('Generate an email to notify a user that his/her account is about to be deleted.'),
-    );
+//    // Automatically delete inactive users.
+//    $form['delete_inactive_user'] = array(
+//      '#type' => 'fieldset',
+//      '#title' => $this->t('Automatically delete inactive users'),
+//      // '#collapsible' => TRUE,
+//      // '#collapsed' => TRUE,
+//    );
+//          
+//    $form['delete_inactive_user']['inactive_user_auto_delete'] = array(
+//      '#type' => 'select',
+//    // For visual clarity.
+//      '#prefix' => '<div><hr></div>',
+//      '#title' => $this->t("Delete users who haven't logged in for more than"),
+//    // '#default_value' => variable_get('inactive_user_auto_delete', 0),.
+//      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete'),
+//      '#options' => $period,
+//      '#description' => $this->t("Automatically delete user accounts that haven't been used in the specified amount of time.  Warning, user accounts are permanently deleted, with no ability to undo the action!  Requires crontab."),
+//    );
+//
+//    $form['delete_inactive_user']['inactive_user_preserve_content'] = array(
+//      '#type' => 'checkbox',
+//      '#title' => $this->t('Preserve users that own site content'),
+//    // '#default_value' => variable_get('inactive_user_preserve_content', 1),.
+//      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_preserve_content'),
+//      '#description' => $this->t('Select this option to never delete users that own site content.  If you delete a user that owns content on the site, such as a user that created a node or left a comment, the content will no longer be available via the normal Drupal user interface.  That is, if a user creates a node or leaves a comment, then the user is deleted, the node and/or comment will no longer be accesible even though it will still be in the database.'),
+//    );
+//    $form['delete_inactive_user']['inactive_user_notify_delete'] = array(
+//      '#type' => 'checkbox',
+//      '#title' => $this->t('Notify user'),
+//    // '#default_value' => variable_get('inactive_user_notify_delete', 0),.
+//      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete'),
+//      '#description' => $this->t('Generate an email to notify a user that his/her account has been automatically deleted.'),
+//    );
+//
+//    $form['delete_inactive_user']['inactive_user_delete_notify_text'] = array(
+//      '#type' => 'textarea',
+//      '#title' => $this->t('Body of deleted user account e-mail'),
+//    // '#default_value' => variable_get('inactive_user_delete_notify_text', _inactive_user_mail_text('delete_notify_text')),.
+//      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_delete_notify_text'),
+//      '#cols' => 70,
+//      '#rows' => 10,
+//      '#description' => $this->t('Customize the body of the notification e-mail sent to the user when their account has been deleted.') . ' ' . t('Available variables are:') . $mail_variables,
+//      '#required' => TRUE,
+//    );
+//
+//    $form['delete_inactive_user']['inactive_user_notify_delete_admin'] = array(
+//      '#type' => 'checkbox',
+//      '#title' => $this->t('Notify administrator'),
+//    // '#default_value' => variable_get('inactive_user_notify_delete_admin', 0),.
+//      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete_admin'),
+//      '#description' => $this->t('Generate an email to notify the site administrator when a user is automatically deleted.'),
+//    );
 
-    $form['delete_inactive_user']['inactive_user_delete_warn_text'] = array(
-      '#type' => 'textarea',
-      '#title' => $this->t('Body of user warning e-mail'),
-    // '#default_value' => variable_get('inactive_user_delete_warn_text', _inactive_user_mail_text('delete_warn_text')),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_delete_warn_text'),
-      '#cols' => 70,
-      '#rows' => 10,
-      '#description' => $this->t('Customize the body of the notification e-mail sent to the user when their account is about to be deleted.') . ' ' . t('Available variables are:') . $mail_variables,
-      '#required' => TRUE,
-    );
-    $form['delete_inactive_user']['inactive_user_auto_delete'] = array(
-      '#type' => 'select',
-    // For visual clarity.
-      '#prefix' => '<div><hr></div>',
-      '#title' => $this->t("Delete users who haven't logged in for more than"),
-    // '#default_value' => variable_get('inactive_user_auto_delete', 0),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_auto_delete'),
-      '#options' => $period,
-      '#description' => $this->t("Automatically delete user accounts that haven't been used in the specified amount of time.  Warning, user accounts are permanently deleted, with no ability to undo the action!  Requires crontab."),
-    );
-
-    $form['delete_inactive_user']['inactive_user_preserve_content'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t('Preserve users that own site content'),
-    // '#default_value' => variable_get('inactive_user_preserve_content', 1),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_preserve_content'),
-      '#description' => $this->t('Select this option to never delete users that own site content.  If you delete a user that owns content on the site, such as a user that created a node or left a comment, the content will no longer be available via the normal Drupal user interface.  That is, if a user creates a node or leaves a comment, then the user is deleted, the node and/or comment will no longer be accesible even though it will still be in the database.'),
-    );
-    $form['delete_inactive_user']['inactive_user_notify_delete'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t('Notify user'),
-    // '#default_value' => variable_get('inactive_user_notify_delete', 0),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete'),
-      '#description' => $this->t('Generate an email to notify a user that his/her account has been automatically deleted.'),
-    );
-
-    $form['delete_inactive_user']['inactive_user_delete_notify_text'] = array(
-      '#type' => 'textarea',
-      '#title' => $this->t('Body of deleted user account e-mail'),
-    // '#default_value' => variable_get('inactive_user_delete_notify_text', _inactive_user_mail_text('delete_notify_text')),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_delete_notify_text'),
-      '#cols' => 70,
-      '#rows' => 10,
-      '#description' => $this->t('Customize the body of the notification e-mail sent to the user when their account has been deleted.') . ' ' . t('Available variables are:') . $mail_variables,
-      '#required' => TRUE,
-    );
-
-    $form['delete_inactive_user']['inactive_user_notify_delete_admin'] = array(
-      '#type' => 'checkbox',
-      '#title' => $this->t('Notify administrator'),
-    // '#default_value' => variable_get('inactive_user_notify_delete_admin', 0),.
-      '#default_value' => \Drupal::config('inactive_user.settings')->get('inactive_user_notify_delete_admin'),
-      '#description' => $this->t('Generate an email to notify the site administrator when a user is automatically deleted.'),
-    );
-
+    
+    
+    
     return parent::buildForm($form, $form_state);
   }
 
- /**
-   * {@inheritdoc}
+  /**
+   * validate handler 
+   * validate emails separeted by , and valid email address
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-          
     $valid_email = $form_state->getValue('inactive_user_admin_email');
     $mails = explode(',', $valid_email);
     $count = 0;
@@ -283,17 +263,17 @@ class InactiveuserSettingsForm extends ConfigFormBase {
     }
 
     if ($count == 1) {
-      $form_state->setErrorByName('inactive_user_admin_email', t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));
-      // form_set_error('inactive_user_admin_email', t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));.
+      $form_state->setErrorByName('inactive_user_admin_email', 
+        t('%mail is not a valid e-mail address', array('%mail' => $invalid[0])));         
     }
     elseif ($count > 1) {
-      $form_state->setErrorByName('inactive_user_admin_email',  t('The following e-mail addresses are invalid: %mail', array('%mail' => implode(', ', $invalid))));
+      $form_state->setErrorByName('inactive_user_admin_email', t('The following e-mail addresses are invalid: %mail', array('%mail' => implode(', ', $invalid))));
     }
     parent::validateForm($form, $form_state);
   }
 
   /**
-   * {@inheritdoc}
+   * submit handler for inactive user form
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     \Drupal::configFactory()->getEditable('inactive_user.settings')
@@ -307,16 +287,15 @@ class InactiveuserSettingsForm extends ConfigFormBase {
       ->set('inactive_user_block_notify_text', $form_state->getValue('inactive_user_block_notify_text'))
       ->set('inactive_user_notify_block', $form_state->getValue('inactive_user_notify_block'))
       ->set('inactive_user_notify_block_admin', $form_state->getValue('inactive_user_notify_block_admin'))
-      ->set('inactive_user_delete_warn_text', $form_state->getValue('inactive_user_delete_warn_text'))
-      ->set('inactive_user_auto_delete', $form_state->getValue('inactive_user_auto_delete'))
-      ->set('inactive_user_preserve_content', $form_state->getValue('inactive_user_preserve_content'))
-      ->set('inactive_user_notify_delete', $form_state->getValue('inactive_user_notify_delete'))
-      ->set('inactive_user_delete_notify_text', $form_state->getValue('inactive_user_delete_notify_text'))
-      ->set('inactive_user_notify_delete_admin', $form_state->getValue('inactive_user_notify_delete_admin'))
-      ->set('inactive_user_auto_delete_warn', $form_state->getValue('inactive_user_auto_delete_warn'))
+////      ->set('inactive_user_delete_warn_text', $form_state->getValue('inactive_user_delete_warn_text'))
+//      ->set('inactive_user_auto_delete', $form_state->getValue('inactive_user_auto_delete'))
+//      ->set('inactive_user_preserve_content', $form_state->getValue('inactive_user_preserve_content'))
+//      ->set('inactive_user_notify_delete', $form_state->getValue('inactive_user_notify_delete'))
+//      ->set('inactive_user_delete_notify_text', $form_state->getValue('inactive_user_delete_notify_text'))
+//      ->set('inactive_user_notify_delete_admin', $form_state->getValue('inactive_user_notify_delete_admin'))
+////      ->set('inactive_user_auto_delete_warn', $form_state->getValue('inactive_user_auto_delete_warn'))
       ->save();
 
     parent::submitForm($form, $form_state);
   }
-
 }

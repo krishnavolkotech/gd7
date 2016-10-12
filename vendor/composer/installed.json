@@ -4472,128 +4472,122 @@
         ]
     },
     {
-        "name": "drupal/search_api",
-        "version": "1.0.0-beta2",
-        "version_normalized": "1.0.0.0-beta2",
+        "name": "squizlabs/php_codesniffer",
+        "version": "2.7.0",
+        "version_normalized": "2.7.0.0",
         "source": {
             "type": "git",
-            "url": "https://git.drupal.org/project/search_api",
-            "reference": "8.x-1.0-beta2"
+            "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+            "reference": "571e27b6348e5b3a637b2abc82ac0d01e6d7bbed"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/search_api-8.x-1.0-beta2.zip",
-            "reference": "8.x-1.0-beta2",
-            "shasum": "1f4fe5a2b9b278a36a3b79898f424ad75a218293"
+            "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/571e27b6348e5b3a637b2abc82ac0d01e6d7bbed",
+            "reference": "571e27b6348e5b3a637b2abc82ac0d01e6d7bbed",
+            "shasum": ""
         },
         "require": {
-            "drupal/core": "^8.1"
+            "ext-simplexml": "*",
+            "ext-tokenizer": "*",
+            "ext-xmlwriter": "*",
+            "php": ">=5.1.2"
         },
-        "suggest": {
-            "drupal/core": "Required by drupal/search_api_views_taxonomy",
-            "drupal/search_api_db": "Required by drupal/search_api_db_defaults"
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
         },
-        "type": "drupal-module",
+        "time": "2016-09-01 23:53:02",
+        "bin": [
+            "scripts/phpcs",
+            "scripts/phpcbf"
+        ],
+        "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-1.x": "1.x-dev"
-            },
-            "drupal": {
-                "version": "8.x-1.0-beta2",
-                "datestamp": "1475059139"
+                "dev-master": "2.x-dev"
             }
         },
         "installation-source": "dist",
-        "notification-url": "https://packages.drupal.org/8/downloads",
+        "autoload": {
+            "classmap": [
+                "CodeSniffer.php",
+                "CodeSniffer/CLI.php",
+                "CodeSniffer/Exception.php",
+                "CodeSniffer/File.php",
+                "CodeSniffer/Fixer.php",
+                "CodeSniffer/Report.php",
+                "CodeSniffer/Reporting.php",
+                "CodeSniffer/Sniff.php",
+                "CodeSniffer/Tokens.php",
+                "CodeSniffer/Reports/",
+                "CodeSniffer/Tokenizers/",
+                "CodeSniffer/DocGenerators/",
+                "CodeSniffer/Standards/AbstractPatternSniff.php",
+                "CodeSniffer/Standards/AbstractScopeSniff.php",
+                "CodeSniffer/Standards/AbstractVariableSniff.php",
+                "CodeSniffer/Standards/IncorrectPatternException.php",
+                "CodeSniffer/Standards/Generic/Sniffs/",
+                "CodeSniffer/Standards/MySource/Sniffs/",
+                "CodeSniffer/Standards/PEAR/Sniffs/",
+                "CodeSniffer/Standards/PSR1/Sniffs/",
+                "CodeSniffer/Standards/PSR2/Sniffs/",
+                "CodeSniffer/Standards/Squiz/Sniffs/",
+                "CodeSniffer/Standards/Zend/Sniffs/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "GPL-2.0+"
+            "BSD-3-Clause"
         ],
         "authors": [
             {
-                "name": "Thomas Seidl",
-                "homepage": "https://www.drupal.org/u/drunken-monkey"
-            },
-            {
-                "name": "Nick Veenhof",
-                "homepage": "https://www.drupal.org/u/nick_vh"
-            },
-            {
-                "name": "See other contributors",
-                "homepage": "https://www.drupal.org/node/790418/committers"
+                "name": "Greg Sherwood",
+                "role": "lead"
             }
         ],
-        "description": "Provides a generic framework for modules offering search capabilities.",
-        "homepage": "https://www.drupal.org/project/search_api",
-        "support": {
-            "source": "http://git.drupal.org/project/search_api.git",
-            "issues": "https://www.drupal.org/project/issues/search_api",
-            "irc": "irc://irc.freenode.org/drupal-search-api"
-        }
+        "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+        "homepage": "http://www.squizlabs.com/php-codesniffer",
+        "keywords": [
+            "phpcs",
+            "standards"
+        ]
     },
     {
-        "name": "drupal/search_api_solr",
-        "version": "dev-1.x",
-        "version_normalized": "dev-1.x",
+        "name": "drupal/coder",
+        "version": "8.2.9",
+        "version_normalized": "8.2.9.0",
         "source": {
             "type": "git",
-            "url": "https://git.drupal.org/project/search_api_solr",
-            "reference": "69010c8ee0b2712becaa7b7ef406acd32593a110"
+            "url": "https://github.com/klausi/coder.git",
+            "reference": "b08682bd939cf7d3ac7034bee792aa17f80e19d7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/klausi/coder/zipball/b08682bd939cf7d3ac7034bee792aa17f80e19d7",
+            "reference": "b08682bd939cf7d3ac7034bee792aa17f80e19d7",
+            "shasum": ""
         },
         "require": {
-            "drupal/core": "~8.0",
-            "drupal/search_api": "*",
-            "solarium/solarium": "3.6.*"
+            "ext-mbstring": "*",
+            "php": ">=5.4.0",
+            "squizlabs/php_codesniffer": ">=2.7.0",
+            "symfony/yaml": ">=2.0.0"
         },
-        "suggest": {
-            "drupal/core": "Required by drupal/search_api_solr_defaults"
+        "require-dev": {
+            "phpunit/phpunit": ">=3.7"
         },
-        "type": "drupal-module",
-        "extra": {
-            "branch-alias": {
-                "dev-1.x": "1.x-dev"
-            },
-            "drupal": {
-                "version": "8.x-1.0-alpha6+15-dev",
-                "datestamp": "1475145539"
-            }
-        },
-        "installation-source": "source",
-        "notification-url": "https://packages.drupal.org/8/downloads",
+        "time": "2016-09-17 16:49:15",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "GPL-2.0+"
         ],
-        "authors": [
-            {
-                "name": "Berdir",
-                "homepage": "https://www.drupal.org/user/214652"
-            },
-            {
-                "name": "Nick_vh",
-                "homepage": "https://www.drupal.org/user/122682"
-            },
-            {
-                "name": "amateescu",
-                "homepage": "https://www.drupal.org/user/729614"
-            },
-            {
-                "name": "cspitzlay",
-                "homepage": "https://www.drupal.org/user/419305"
-            },
-            {
-                "name": "drunken monkey",
-                "homepage": "https://www.drupal.org/user/205582"
-            },
-            {
-                "name": "mkalkbrenner",
-                "homepage": "https://www.drupal.org/user/124705"
-            }
-        ],
-        "description": "Offers an implementation of the Search API that uses an Apache Solr server for indexing content.",
-        "homepage": "https://www.drupal.org/project/search_api_solr",
-        "support": {
-            "source": "http://cgit.drupalcode.org/search_api_solr",
-            "issues": "https://www.drupal.org/project/issues/search_api_solr",
-            "irc": "irc://irc.freenode.org/drupal-search-api"
-        }
+        "description": "Coder is a library to review Drupal code.",
+        "homepage": "https://www.drupal.org/project/coder",
+        "keywords": [
+            "code review",
+            "phpcs",
+            "standards"
+        ]
     }
 ]
