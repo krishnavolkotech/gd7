@@ -77,55 +77,55 @@ function hzd_customizations_token_info() {
  */
 function hzd_customizations_tokens_alter(array &$replacements, array $context, BubbleableMetadata $bubbleable_metadata) {
   if ($context['type'] == 'node' && !empty($context['data']['node'])) {
-    if (!$replacements[$context['tokens']['field_author_state']]) {
+    if (isset($context['tokens']['field_author_state']) && !$replacements[$context['tokens']['field_author_state']]) {
       $replacements[$context['tokens']['field_author_state']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_unique_id']]) {
+    if (isset($context['tokens']['field_unique_id']) && !$replacements[$context['tokens']['field_unique_id']]) {
       $replacements[$context['tokens']['field_unique_id']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_custom_title']]) {
+    if (isset($context['tokens']['field_custom_title']) && !$replacements[$context['tokens']['field_custom_title']]) {
       $replacements[$context['tokens']['field_custom_title']] = 'Keine Angabe';
     }
-    if (!$replacements[['tokens']['field_related_transfer_number']]) {
+    if (isset($context['tokens']['field_related_transfer_number']) && !$replacements[$context['tokens']['field_related_transfer_number']]) {
       $replacements[$context['tokens']['field_related_transfer_number']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_other_services']]) {
+    if (isset($context['tokens']['field_other_services']) && !$replacements[$context['tokens']['field_other_services']]) {
       $replacements[$context['tokens']['field_other_services']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_intial_situation']]) {
+    if (isset($context['tokens']['field_intial_situation']) && !$replacements[$context['tokens']['field_intial_situation']]) {
       $replacements[$context['tokens']['field_intial_situation']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_professional_conditions']]) {
+    if (isset($context['tokens']['field_professional_conditions']) && !$replacements[$context['tokens']['field_professional_conditions']]) {
       $replacements[$context['tokens']['field_professional_conditions']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_tech_requirements']]) {
+    if (isset($context['tokens']['field_tech_requirements']) && !$replacements[$context['tokens']['field_tech_requirements']]) {
       $replacements[$context['tokens']['field_tech_requirements']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_depend_other_services']]) {
+    if (isset($context['tokens']['field_depend_other_services']) && !$replacements[$context['tokens']['field_depend_other_services']]) {
       $replacements[$context['tokens']['field_depend_other_services']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_business_impact']]) {
+    if (isset($context['tokens']['field_business_impact']) && !$replacements[$context['tokens']['field_business_impact']]) {
       $replacements[$context['tokens']['field_business_impact']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_technical_impact']]) {
+    if (isset($context['tokens']['field_technical_impact']) && !$replacements[$context['tokens']['field_technical_impact']]) {
       $replacements[$context['tokens']['field_technical_impact']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_business_impact_services']]) {
+    if (isset($context['tokens']['field_business_impact_services']) && !$replacements[$context['tokens']['field_business_impact_services']]) {
       $replacements[$context['tokens']['field_business_impact_services']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_technical_impact_services']]) {
+    if (isset($context['tokens']['field_technical_impact_services']) && !$replacements[$context['tokens']['field_technical_impact_services']]) {
       $replacements[$context['tokens']['field_technical_impact_services']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_special_notes']]) {
+    if (isset($context['tokens']['field_special_notes']) && !$replacements[$context['tokens']['field_special_notes']]) {
       $replacements[$context['tokens']['field_special_notes']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_dates']]) {
+    if (isset($context['tokens']['field_dates']) && !$replacements[$context['tokens']['field_dates']]) {
       $replacements[$context['tokens']['field_dates']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_creators']]) {
+    if (isset($context['tokens']['field_creators']) && !$replacements[$context['tokens']['field_creators']]) {
       $replacements[$context['tokens']['field_creators']] = 'Keine Angabe';
     }
-    if (!$replacements[$context['tokens']['field_contact']]) {
+    if (isset($context['tokens']['field_contact']) && !$replacements[$context['tokens']['field_contact']]) {
       $replacements[$context['tokens']['field_contact']] = 'Keine Angabe';
     }
   }
