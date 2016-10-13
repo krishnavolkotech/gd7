@@ -37,6 +37,7 @@ hzd_notifications.group_notifications:
     _title: 'Add Group subscription'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.update_notifications:
   path: '/migrate_service_notifications'

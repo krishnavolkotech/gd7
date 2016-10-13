@@ -36,7 +36,7 @@ display:
         type: none
         options: {  }
       cache:
-        type: tag
+        type: none
         options: {  }
       query:
         type: views_query
@@ -75,7 +75,8 @@ display:
           columns:
             id: id
             id_2: id_2
-            label: label
+            group_member_name: group_member_name
+            label: group_member_name
             operations: operations
             id_1: id_1
           info:
@@ -87,6 +88,13 @@ display:
               empty_column: false
               responsive: ''
             id_2:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            group_member_name:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -665,6 +673,55 @@ display:
           entity_type: group
           entity_field: id
           plugin_id: field
+        group_member_name:
+          id: group_member_name
+          table: views
+          field: group_member_name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Group Members'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: group_member_name
         label:
           id: label
           table: group_content_field_data
@@ -673,7 +730,7 @@ display:
           group_type: group
           admin_label: ''
           label: Name
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -845,55 +902,6 @@ display:
           entity_type: group_content
           entity_field: id
           plugin_id: field
-        group_member_name:
-          id: group_member_name
-          table: views
-          field: group_member_name
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: 'Group Members'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
-          plugin_id: group_member_name
       relationships:
         gid:
           id: gid

@@ -5,6 +5,8 @@ cust_user.nsm_portal:
     _title: 'NSM Portal settings'
   requirements:
     _permission: "administer users"
+  options:
+    _admin_route: FALSE
 cust_user.nsm_auth:
   path: '/auth_bp'
   defaults: 

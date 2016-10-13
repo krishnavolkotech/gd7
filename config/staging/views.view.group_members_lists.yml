@@ -73,10 +73,16 @@ display:
           summary: ''
           description: ''
           columns:
-            id: id
+            uid: uid
             label: label
+            firstname: firstname
+            lastname: lastname
+            phone: phone
+            position: position
+            abbr: abbr
+            mail: mail
           info:
-            id:
+            uid:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -84,6 +90,48 @@ display:
               empty_column: false
               responsive: ''
             label:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            firstname:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            lastname:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            phone:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            position:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            abbr:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            mail:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -745,6 +793,7 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - url.query_args
       tags: {  }
   attachment_1:
     display_plugin: attachment
@@ -767,6 +816,7 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - url.query_args
       tags: {  }
   page_1:
     display_plugin: page
@@ -894,6 +944,52 @@ display:
         enabled: true
         expanded: false
       filters:
+        label:
+          id: label
+          table: group_content_field_data
+          field: label
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: label_op
+            label: Name
+            description: ''
+            use_operator: false
+            operator: label_op
+            identifier: name
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+          is_grouped: false
+          group_info:
+            label: Title
+            description: null
+            identifier: label
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
+          entity_type: group_content
+          entity_field: label
+          plugin_id: string
         type:
           id: type
           table: group_content_field_data
@@ -989,11 +1085,16 @@ display:
         groups:
           1: AND
       header:
-        area:
-          id: area
+        result:
+          id: result
           table: views
-          field: area
-          plugin_id: text
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: '@total Mitglieder insgesamt'
+          plugin_id: result
       sorts:
         name:
           id: name
