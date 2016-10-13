@@ -5,6 +5,7 @@
  * Builds placeholder replacement tokens for group-related data.
  */
 
+use Drupal\group\Entity\Group;
 use Drupal\Core\Render\BubbleableMetadata;
 
 /**
@@ -25,18 +26,18 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
 
   if ($type == 'group') {
 
-    // Getting required values for group title
+    // Getting required values for group title.
     $group = \Drupal::routeMatch()->getParameter('group');
 
-    if(!isset($group)){
+    if (!isset($group)) {
       $node = \Drupal::routeMatch()->getParameter('node');
 
-      $groupId = \Drupal::database()->select('group_content_field_data','gcfd')
-       ->fields('gcfd',['gid'])
-       ->condition('gcfd.entity_id',$node->id())
-       ->execute()->fetchField();
+      $groupId = \Drupal::database()->select('group_content_field_data', 'gcfd')
+        ->fields('gcfd', ['gid'])
+        ->condition('gcfd.entity_id', $node->id())
+        ->execute()->fetchField();
 
-       $group = \Drupal\group\Entity\Group::load($groupId);
+      $group = Group::load($groupId);
     }
 
     foreach ($tokens as $name => $original) {
@@ -74,58 +75,58 @@ function hzd_customizations_token_info() {
 /**
  * Implements hook_tokens_alter().
  */
-function hzd_customizations_tokens_alter(array &$replacements, array $context, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata){
-    if ($context['type'] == 'node' && !empty($context['data']['node'])) {
-        if (!$replacements[$context['tokens']['field_author_state']]) {
-            $replacements[$context['tokens']['field_author_state']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_unique_id']]) {
-            $replacements[$context['tokens']['field_unique_id']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_custom_title']]) {
-            $replacements[$context['tokens']['field_custom_title']] = 'Keine Angabe';
-        }
-        if (!$replacements[['tokens']['field_related_transfer_number']]) {
-            $replacements[$context['tokens']['field_related_transfer_number']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_other_services']]) {
-            $replacements[$context['tokens']['field_other_services']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_intial_situation']]) {
-            $replacements[$context['tokens']['field_intial_situation']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_professional_conditions']]) {
-            $replacements[$context['tokens']['field_professional_conditions']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_tech_requirements']]) {
-            $replacements[$context['tokens']['field_tech_requirements']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_depend_other_services']]) {
-            $replacements[$context['tokens']['field_depend_other_services']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_business_impact']]) {
-            $replacements[$context['tokens']['field_business_impact']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_technical_impact']]) {
-            $replacements[$context['tokens']['field_technical_impact']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_business_impact_services']]) {
-            $replacements[$context['tokens']['field_business_impact_services']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_technical_impact_services']]) {
-            $replacements[$context['tokens']['field_technical_impact_services']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_special_notes']]) {
-            $replacements[$context['tokens']['field_special_notes']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_dates']]) {
-            $replacements[$context['tokens']['field_dates']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_creators']]) {
-            $replacements[$context['tokens']['field_creators']] = 'Keine Angabe';
-        }
-        if (!$replacements[$context['tokens']['field_contact']]) {
-            $replacements[$context['tokens']['field_contact']] = 'Keine Angabe';
-        }
+function hzd_customizations_tokens_alter(array &$replacements, array $context, BubbleableMetadata $bubbleable_metadata) {
+  if ($context['type'] == 'node' && !empty($context['data']['node'])) {
+    if (!$replacements[$context['tokens']['field_author_state']]) {
+      $replacements[$context['tokens']['field_author_state']] = 'Keine Angabe';
     }
+    if (!$replacements[$context['tokens']['field_unique_id']]) {
+      $replacements[$context['tokens']['field_unique_id']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_custom_title']]) {
+      $replacements[$context['tokens']['field_custom_title']] = 'Keine Angabe';
+    }
+    if (!$replacements[['tokens']['field_related_transfer_number']]) {
+      $replacements[$context['tokens']['field_related_transfer_number']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_other_services']]) {
+      $replacements[$context['tokens']['field_other_services']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_intial_situation']]) {
+      $replacements[$context['tokens']['field_intial_situation']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_professional_conditions']]) {
+      $replacements[$context['tokens']['field_professional_conditions']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_tech_requirements']]) {
+      $replacements[$context['tokens']['field_tech_requirements']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_depend_other_services']]) {
+      $replacements[$context['tokens']['field_depend_other_services']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_business_impact']]) {
+      $replacements[$context['tokens']['field_business_impact']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_technical_impact']]) {
+      $replacements[$context['tokens']['field_technical_impact']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_business_impact_services']]) {
+      $replacements[$context['tokens']['field_business_impact_services']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_technical_impact_services']]) {
+      $replacements[$context['tokens']['field_technical_impact_services']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_special_notes']]) {
+      $replacements[$context['tokens']['field_special_notes']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_dates']]) {
+      $replacements[$context['tokens']['field_dates']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_creators']]) {
+      $replacements[$context['tokens']['field_creators']] = 'Keine Angabe';
+    }
+    if (!$replacements[$context['tokens']['field_contact']]) {
+      $replacements[$context['tokens']['field_contact']] = 'Keine Angabe';
+    }
+  }
 }
