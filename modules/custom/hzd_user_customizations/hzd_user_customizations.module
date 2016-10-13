@@ -143,7 +143,14 @@ function hzd_user_customizations_user_insert($user) {
       $group->addMember($user);
     }
     elseif ($group->bundle() == 'moderate') {
-      $group->requestMembership($user);
+      $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+      $group_content = \Drupal\group\Entity\GroupContent::create([
+        'type' => $plugin->getContentTypeConfigId(),
+        'gid' => $group->id(),
+        'entity_id' => $user->id(),
+        'request_status' => 0,
+      ])->save();
+      
     }
   }
 }
