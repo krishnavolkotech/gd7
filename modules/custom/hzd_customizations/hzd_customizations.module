@@ -342,18 +342,17 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
   // $file_upload_name = $file_info->getFilename();
   // display error message when same file upload in the attachemnts.
   $all_files = $form_state->getValue('upload');
-dpm($all_files['0']['fids']);
-  if (isset($all_files['0']['fids'])) {
-    foreach ($all_files['0']['fids'] as $key => $fid) {
-      $file = File::load($fid);
-      $file_directory_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-      $file_upload_name = $file->getFilename();
-      $path = $file_directory_path . "/" . $file_upload_name;
-      if (file_exists($path)) {
-        $form_state->setError($form, t("The selected file could not be uploaded as a file with same name already exists."));
-      }
-    }
-  }
+//  if (isset($all_files['0']['fids'])) {
+//    foreach ($all_files['0']['fids'] as $key => $fid) {
+//      $file = File::load($fid);
+//      $file_directory_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+//      $file_upload_name = $file->getFilename();
+//      $path = $file_directory_path . "/" . $file_upload_name;
+//      if (file_exists($path)) {
+//        $form_state->setError($form, t("The selected file could not be uploaded as a file with same name already exists."));
+//      }
+//    }
+//  }
 }
 
 /**
