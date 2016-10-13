@@ -7,7 +7,7 @@ use Drupal\Core\Url;
 use Drupal\cust_group\Controller;
 
 if (!defined('QUICKINFO')) {
-  define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+  define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
 /**
  *
@@ -19,18 +19,22 @@ class DisplaysavedquickinfoController extends ControllerBase {
      // $is_group_admin = CustNodeController::isGroupAdmin();
       $is_group_member = $this::CheckuserisquickinfoGroupMember();
       
-      if ($is_group_admin || $is_group_member) {
+      if ($is_group_member) {
         $group = \Drupal::routeMatch()->getParameter('group');
           if (is_object($group)) {
               $group_id = $group->id();
           } else {
               $group_id = $group;
           }
-          $output['#attachment']['library'] = array(
-                'hzd_release_management/hzd_release_management',
-                );
-
-          $output['#attached']['drupalSettings']['release_management'] = array(
+          $output[]['#attached']['library'] = array(
+        //    'locale.libraries/translations',
+        //    'locale.libraries/drupal.locale.datepicker',
+            'hzd_release_management/hzd_release_management',
+            'hzd_customizations/hzd_customizations',
+           // 'hzd_release_management/hzd_release_management_sort',
+          //  'downtimes/downtimes',
+          );
+          $output['#attached']['drupalSettings'] = array(
             'group_id' => $group_id,
           );
           $output['#title'] = t("Table of Draft RZ Accelerators");
@@ -150,7 +154,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
             $group_id = $group;
         }
 
-        if (!$group_id && $group_id != 3) {
+        if (!$group_id && $group_id != QUICKINFO) {
             return false;
         }
         if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {

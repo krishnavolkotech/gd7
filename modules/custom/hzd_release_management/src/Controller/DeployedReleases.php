@@ -23,16 +23,17 @@ class DeployedReleases extends ControllerBase {
   /**
    *
    */
-  function display_deployed_release_table() {
+  public function display_deployed_release_table() {
     // Need to create configuration form for release type.
     // for now giving static relese type.
-    $release_type = 459;
-
+    
+   // $release_type = 459;
+    $release_type = \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id');
     $db = \Drupal::database();
     $states = $db->select('states', 's')
-            ->condition('s.id', 1, '!=')
-            ->fields('s', array('abbr', 'id'))
-            ->orderBy('s.abbr');
+      ->condition('s.id', 1, '!=')
+      ->fields('s', array('abbr', 'id'))
+      ->orderBy('s.abbr');
     $states = $states->execute()->fetchAll();
 
     $services = db_query("SELECT nfd.title FROM node_field_data nfd
@@ -86,9 +87,9 @@ class DeployedReleases extends ControllerBase {
       // $services_query->join('group_releases_view', 'grv', 'grv.service_id = n.nid');.
       $services_query->isNotNull('nfrn.field_release_name_value');
       $services_query->condition('n.type', 'services', '=')
-                  ->condition('n.status', 1, '=')
+        ->condition('n.status', 1, '=')
                   // ->condition('grv.group_id', $group_id, '=')
-                  ->condition('nrt.release_type_target_id', $release_type, '=');
+        ->condition('nrt.release_type_target_id', $release_type, '=');
       $services_query->fields('n', array('title'));
       $services_query->orderBy('n.title', 'ASC');
       $result = $services_query->execute()->fetchAll();
@@ -162,12 +163,13 @@ function get_deployed_releases_list($values, $service_id, $release_type = KONSON
  */
 function get_releases_per_state($service_id, $deployed_services, $release_type) {
   $group = \Drupal::routeMatch()->getParameter('group');
-  if(is_object($group)){
+  if (is_object($group)) {
     $group_id = $group->id();
-  } else {
+  }
+  else {
     $group_id = $group;
-  }  
-    
+  }
+
   $group_id = ($group_id ? $group_id : 32);
   $deployed_query = db_select('node_field_data', 'n');
   $deployed_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
@@ -178,12 +180,12 @@ function get_releases_per_state($service_id, $deployed_services, $release_type) 
   $deployed_query->join('node__field_environment', 'nfe', 'n.nid = nfe.entity_id');
   $deployed_query->join('node__field_user_state', 'nfus', 'n.nid = nfus.entity_id');
   $deployed_query->condition('n.type', 'deployed_releases', '=')
-        ->condition('nfrs.field_release_service_value', $service_id, '=')
-        ->condition('nfus.field_user_state_value', $deployed_services, '=')
-        ->condition('grv.group_id', $group_id, '=')
-        ->condition('nrt.release_type_target_id', $release_type, '=')
-        ->condition('nfe.field_environment_value', 1, '=')
-        ->condition('nfar.field_archived_release_value', 0);
+    ->condition('nfrs.field_release_service_value', $service_id, '=')
+    ->condition('nfus.field_user_state_value', $deployed_services, '=')
+    ->condition('grv.group_id', $group_id, '=')
+    ->condition('nrt.release_type_target_id', $release_type, '=')
+    ->condition('nfe.field_environment_value', 1, '=')
+    ->condition('nfar.field_archived_release_value', 0);
   // ->condition(db_or()->isNotNull('nfar.field_archived_release_value')->condition('nfar.field_archived_release_value', 0));.
   $deployed_query->fields('nfer', array('field_earlywarning_release_value'));
   $result = $deployed_query->execute()->fetchAll();

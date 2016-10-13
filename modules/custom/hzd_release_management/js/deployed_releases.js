@@ -1,6 +1,17 @@
-(function ($) {
-    Drupal.behaviors.deployedrelease = {
-        attach: function (context, settings) {
+(function ($, Drupal) {
+
+  'use strict';
+
+  /**
+   * Adds summaries to the book outline form.
+   *
+   * @type {Drupal~behavior}
+   *#quickinfo-sortable
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attaches summary behavior to book outline forms.
+   */
+  Drupal.behaviors.release_management_sticky_header = {
+    attach: function (context) {
             if ( ie && ie === 7) {
                 $('#edit-deployed-date-wrapper').css("width", "110px");
                 $('#edit-deployed-date-wrapper').css("border", "none");
@@ -40,15 +51,15 @@
                 type: 'numeric'
             });
 
-            $("#current_deploysortable").tablesorter({
+            $(context).find("#current_deploysortable").tablesorter({
                 headers: {
-                    4: {sorter: false},
-                    3: {sorter: 'deployed_date'}
+                    3: {sorter: 'deployed_date'},
+                    4: {sorter: false}
                 },
                 widgets: ['zebra']
             });
 
-            $("#archived_deploysortable").tablesorter({
+            $(context).find("#archived_deploysortable").tablesorter({
                 headers: {
                     4: {sorter: false},
                     3: {sorter: 'deployed_date'}
@@ -61,7 +72,7 @@
              * archive deployed releases	
              */
 
-            $('.archive_deployedRelease').click(function () {
+            $(context).find('.archive_deployedRelease').click(function () {
                 var is_archive = confirm("Do you really want to archive?");
                 if (is_archive == true) {
                     var nid = $(this).attr('nid');
@@ -78,7 +89,7 @@
             });
 
 
-            $('.public_deployed_releses_output .pager li a').click(function () {
+            $(context).find('.public_deployed_releses_output .pager li a').click(function () {
                 var ele = $(this);
                 var url = ele.attr('href');
 
@@ -115,7 +126,7 @@
 
 
 
-            $('.deployed_releses_output .pager li a').click(function () {
+            $(context).find('.deployed_releses_output .pager li a').click(function () {
                 var ele = $(this);
                 var url = ele.attr('href');
 
@@ -137,9 +148,11 @@
                 return false;
             });
 
-        }
-    };
-})(jQuery);
+    }
+  };
+
+})(jQuery, Drupal);
+
 
 jQuery('#edit-deployed-date').datepicker({ dateFormat: 'dd.mm.yy' });
 

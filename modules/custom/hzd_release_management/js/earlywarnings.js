@@ -1,4 +1,17 @@
-Drupal.behaviors.earlywarnings = function (context) {
+(function ($, Drupal) {
+
+  'use strict';
+
+  /**
+   * Adds summaries to the book outline form.
+   *
+   * @type {Drupal~behavior}
+   *#quickinfo-sortable
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attaches summary behavior to book outline forms.
+   */
+  Drupal.behaviors.release_management_sticky_header = {
+    attach: function (context) {
   /*	
    * early warnings releases	
    */	
@@ -23,4 +36,7 @@ Drupal.behaviors.earlywarnings = function (context) {
 	return false;
     });
 
-}
+     }
+  };
+
+})(jQuery, Drupal);

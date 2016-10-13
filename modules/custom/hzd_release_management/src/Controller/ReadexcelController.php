@@ -27,16 +27,17 @@ class ReadexcelController extends ControllerBase {
    * Saves the releases node after validation status is TRUE.
    * Sends out emails if the file reading contains any error or if the path does not exist.
    */
-  function read_release_csv() {
+  public function read_release_csv() {
+    ini_set('memory_limit', '3G');
+    ini_set('max_execution_time', 0);
 
-    global $user;
     $response = '';
 
     $path_header = HzdreleasemanagementHelper::_csv_headers();
 
     if ($path_header['path']) {
       $path = $path_header['path'];
- 
+
       foreach ($path as $type => $file_path) {
         if (file_exists($file_path)) {
           $header = $path_header['headers'][$type];
@@ -64,7 +65,7 @@ class ReadexcelController extends ControllerBase {
             $subject = 'Error while import';
             $body = t("There is an issue while reading the file" . $file_path . ".");
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-            $response .= $type . t(' ERROR WHILE READING'). "<br>";
+            $response .= $type . t(' ERROR WHILE READING') . "<br>";
           }
         }
         else {
@@ -76,7 +77,7 @@ class ReadexcelController extends ControllerBase {
           $status = t('Error');
           $msg = t('No import file found <br>');
           // insert_import_status($status, $msg);.
-          $response .= $type . t(' NO import file found<br>'). "<br>";
+          $response .= $type . t(' NO import file found<br>') . "<br>";
         }
       }
 
@@ -84,4 +85,5 @@ class ReadexcelController extends ControllerBase {
 
     return $output = array('#markup' => $response);
   }
+
 }

@@ -15,7 +15,7 @@ class ReadimportreleasecsvController extends ControllerBase {
    * Callback for the read excel file
    * Use the function for the cron run.
    */
-  function read_import_release_csv() {
+  public function read_import_release_csv() {
     setlocale(LC_ALL, 'de_DE.UTF-8');
     $batch['title'] = t('Import intial release documents');
     $file_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_initial_released');
