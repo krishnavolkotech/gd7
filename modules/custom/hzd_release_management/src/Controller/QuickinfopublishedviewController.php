@@ -2,11 +2,12 @@
 
 namespace Drupal\hzd_release_management\Controller;
 
+use Drupal\group\Entity\Group;
+use Drupal\node\Entity\Node;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\hzd_release_management\Controller;
 
 if (!defined('QUICKINFO')) {
-  define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+  define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
 if (!defined('RELEASE_MANAGEMENT')) {
   define('RELEASE_MANAGEMENT', 32);
@@ -19,61 +20,76 @@ if (!defined('RELEASE_MANAGEMENT')) {
 class QuickinfopublishedviewController extends ControllerBase {
 
   /**
-   *  TO do : Check with shiva sir 
+   * TO do : Check with shiva sir .
    */
   public function quickinfo_published_view() {
-      
-      $is_group_member = DisplaysavedquickinfoController::CheckuserisquickinfoGroupMember();
-      if ($is_group_admin || $is_group_member) {
-//        $group = \Drupal::routeMatch()->getParameter('group');
-//        if(is_object($group)){
-//          $group_id = $group->id();
-//        } else {
-//          $group_id = $group;
-//        } 
-//      node/id/
+    $quickinfo_group_id = \Drupal::config('quickinfo.settings')->get('quickinfo_group_id');
+    dpm($quickinfo_group_id);
+    $is_group_member = DisplaysavedquickinfoController::CheckuserisquickinfoGroupMember();
+    if ($is_group_member) {
+                     $output[]['#attached']['library'] = array(
+        //    'locale.libraries/translations',
+        //    'locale.libraries/drupal.locale.datepicker',
+            'hzd_release_management/hzd_release_management',
+            'hzd_customizations/hzd_customizations',
+           // 'hzd_release_management/hzd_release_management_sort',
+          //  'downtimes/downtimes',
+          );
+
+      // $group = \Drupal::routeMatch()->getParameter('group');
+      //        if(is_object($group)){
+      //          $group_id = $group->id();
+      //        } else {
+      //          $group_id = $group;
+      //        }
+      //      node/id/.
       $current_path = \Drupal::service('path.current')->getPath();
       $arg = explode('/', $current_path);
-//      $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
+      // $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
       $nid = $arg['4'];
-      $node = \Drupal\node\Entity\Node::load($nid);
+      $node = Node::load($nid);
       $output = array();
       if ($node) {
         $output['#title'] = $node->title;
-        $output = node_view($node, $view_mode = 'full', $langcode = NULL);          
+        $output = node_view($node, $view_mode = 'full', $langcode = NULL);
       }
       return $output;
-       } else {
-          return $build = array(
-              '#prefix' => '<div id="no-result">',
-              '#markup' => t("You are not authorized to view this page"),
-              '#suffix' => '</div>',
-              );
-      }
-      
     }
-      
-   public function CheckuserisquickinfoGroupMember($group_id = null) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+    else {
+      return $build = array(
+        '#prefix' => '<div id="no-result">',
+        '#markup' => t("You are not authorized to view this page"),
+        '#suffix' => '</div>',
+      );
+    }
 
-        $allowed_group = array(3, RELEASE_MANAGEMENT);
-        if (!$group_id && !in_array($group_id, $allowed_group)) {
-            return false;
-        }
-        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-            return true;
-        }
-        $group = \Drupal\group\Entity\Group::load($group_id);
-        $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
-            return true;
-        }
-        return false;
+  }
+
+  /**
+   *
+   */
+  public function CheckuserisquickinfoGroupMember($group_id = NULL) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
     }
+    else {
+      $group_id = $group;
+    }
+
+    $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
+    if (!$group_id && !in_array($group_id, $allowed_group)) {
+      return FALSE;
+    }
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return TRUE;
+    }
+    $group = Group::load($group_id);
+    $content = $group->getMember(\Drupal::currentUser());
+    if ($content) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
 }

@@ -7,13 +7,15 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 
-if(!defined('KONSONS'))
+if (!defined('KONSONS')) {
   define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
-if(!defined('RELEASE_MANAGEMENT'))
+}
+if (!defined('RELEASE_MANAGEMENT')) {
   define('RELEASE_MANAGEMENT', 32);
+}
 
 // TODO.
-// $_SESSION['Group_id'] = 339;
+// $_SESSION['Group_id'] = 339;.
 /**
  *
  */
@@ -31,12 +33,13 @@ class EarlyWarningsFilterForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
     $group = \Drupal::routeMatch()->getParameter('group');
-    if(is_object($group)){
+    if (is_object($group)) {
       $group_id = $group->id();
-    } else {
+    }
+    else {
       $group_id = $group;
-    }  
-  
+    }
+
     $wrapper = 'earlywarnings_results_wrapper';
     $services[] = 'Service';
 
@@ -212,7 +215,7 @@ class EarlyWarningsFilterForm extends FormBase {
   /**
    * Ajax call back for search early warnings filters.
    */
-  function search_type_earlywarning(array $form, FormStateInterface $form_state) {
+  public function search_type_earlywarning(array $form, FormStateInterface $form_state) {
     $form_state->setValue('submitted', FALSE);
     $form_build_id = $_POST['form_build_id'];
     $request = \Drupal::request();
@@ -271,7 +274,7 @@ class EarlyWarningsFilterForm extends FormBase {
   /**
    * Ajax call back for search early warnings filters.
    */
-  function search_earlywarning(array $form, FormStateInterface $form_state) {
+  public function search_earlywarning(array $form, FormStateInterface $form_state) {
     $form_state->setValue('submitted', FALSE);
     $form_build_id = $_POST['form_build_id'];
 

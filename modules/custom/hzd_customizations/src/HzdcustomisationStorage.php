@@ -2,22 +2,10 @@
 
 namespace Drupal\hzd_customizations;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Render\MarkupInterface;
-use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Cache\CacheableDependencyInterface;
+use Drupal\cust_group\Controller\CustNodeController;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\Core\Config\Config;
-use Drupal\Core\Config\StorageException;
-use Drupal\Core\Render\AttachmentsInterface;
-use Drupal\Core\Render\BubbleableMetadata;
-use Drupal\Core\Render\RenderableInterface;
 use Drupal\Core\Template\Attribute;
-use Drupal\Core\Theme\ThemeSettings;
-use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Render\Element;
-use Drupal\Core\Render\Markup;
 // Use Drupal\node\Entity\Node;
 // use Drupal\user\PrivateTempStoreFactory;.
 use Drupal\Core\Path\Path;
@@ -41,7 +29,7 @@ class HzdcustomisationStorage {
   /**
    * Change url alias when the path to problems or releases is changed.
    */
-  static function change_url_alias($dst_path = NULL, $src_path = NULL) {
+  static public function change_url_alias($dst_path = NULL, $src_path = NULL) {
     // $result = db_query("SELECT nid,title FROM {node} where type = '%s'", 'group');.
     $query = \Drupal::database()->select('node_field_data', 'n');
     $query->Fields('n', array('nid', 'title'));
@@ -60,17 +48,17 @@ class HzdcustomisationStorage {
       if (!isset($url_alias['0'])) {
         // Populate the node access table.
         \Drupal::database()->insert('url_alias')
-            ->fields(array(
-              'source' => $src,
-              'alias' => $dst,
-            ))->execute();
+          ->fields(array(
+            'source' => $src,
+            'alias' => $dst,
+          ))->execute();
       }
       else {
         \Drupal::database()->update('url_alias')
-            ->fields(array(
-              'source' => $src,
-              'alias' => $dst,
-            ))->condition('pid', $url_alias['0'], '=')->execute();
+          ->fields(array(
+            'source' => $src,
+            'alias' => $dst,
+          ))->condition('pid', $url_alias['0'], '=')->execute();
       }
     }
     // Need to clear the menu cache to get the new menu item affected.
@@ -80,7 +68,7 @@ class HzdcustomisationStorage {
   /**
    * Function for documentation link.
    */
-  function documentation_link_download($params, $values) {
+  public function documentation_link_download($params, $values) {
 
     $title = $params['title'];
     $field_release_value = $params['release_value'];
@@ -184,26 +172,26 @@ class HzdcustomisationStorage {
    * When atleast one service is selected, then the menu should be created.
    * When all services are deselected then the menu should be hidden.
    */
-  static function reset_menu_link($counter = 0, $link_title = NULL, $link_path = NULL, $menu_name = NULL, $gid = NULL) {
+  static public function reset_menu_link($counter = 0, $link_title = NULL, $link_path = NULL, $menu_name = NULL, $gid = NULL) {
     // droy: Replaced unique identifier link_title by link_path because of issues with German special characters in link_title which result in no sql query results found.
     $group = \Drupal::routeMatch()->getParameter('group')->id();
     $group_link = \Drupal::database()->select('menu_link_content_data', 'mlcd')
-            ->fields('mlcd', array('id'))
-            ->condition('link__uri', '%' . $link_path, 'LIKE')
-            ->condition('menu_name', $menu_name, 'LIKE')
-            ->execute()->fetchField();
-//pr($group_link);echo $counter;exit;
+      ->fields('mlcd', array('id'))
+      ->condition('link__uri', '%' . $link_path, 'LIKE')
+      ->condition('menu_name', $menu_name, 'LIKE')
+      ->execute()->fetchField();
+    // pr($group_link);echo $counter;exit;.
     if ($counter > 0) {
       if (empty($group_link)) {
-        $menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::create([
-              'title' => t($link_title),
-              'link' => ['uri' => 'internal:/group/' . $group . '/problems'],
-              'menu_name' => $menu_name,
-              'expanded' => FALSE,
+        $menu_link = MenuLinkContent::create([
+          'title' => t($link_title),
+          'link' => ['uri' => 'internal:/group/' . $group . '/problems'],
+          'menu_name' => $menu_name,
+          'expanded' => FALSE,
         ]);
         $menu_link->save();
 
-        //menu_link_save($flink);
+        // menu_link_save($flink);
         // Need to clear the menu cache to get the new menu item affected.
         menu_cache_clear_all();
         // Need to unset the array so that a new is built. otherwise it overwrites the array and only the last menu link gets created.
@@ -214,8 +202,8 @@ class HzdcustomisationStorage {
         if ($link_path == 'downtimes') {
           // $group_path = db_result(db_query("select dst from url_alias where src = '%s'", "node/$gid"));.
           $query = \Drupal::database()->select('url_alias', 'ua')
-              ->Fields('ua', array('dst'))
-              ->condition('source', "node/$gid", '=');
+            ->Fields('ua', array('dst'))
+            ->condition('source', "node/$gid", '=');
           $group_path = $query->execute()->fetchAssoc();
           // path_set_alias('node/' . $gid . '/' . $link_path, $group_path['dst'] . '/' . 'stoerungen');.
           Path::save('node/' . $gid . '/' . $link_path, $group_path['dst'] . '/' . 'stoerungen');
@@ -254,7 +242,7 @@ class HzdcustomisationStorage {
   /**
    * Display published services.
    */
-  static function service_profiles() {
+  static public function service_profiles() {
     // $servicesdata['#markup']['#title'] = Drupal::config()->get('system.site')->get('name');
     // $servicesdata['#markup']['#title'] = "<p>" . t("Please select a Service") . "</p>";.
     $query = \Drupal::database()->select('node_field_data', 'nfd');
@@ -287,7 +275,7 @@ class HzdcustomisationStorage {
       else {
         $text = $service->service;
         $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile?service=' . $service->nid);
-        // $link = Link::fromTextAndUrl($text, $url);
+        // $link = Link::fromTextAndUrl($text, $url);.
         $data[] = Link::fromTextAndUrl($text, $url);
         // Echo '<pre>';  print_r($check);  exit;.
       }
@@ -309,7 +297,7 @@ class HzdcustomisationStorage {
   /**
    * Get States.
    */
-  static function get_states($active = 0) {
+  static public function get_states($active = 0) {
     // $servicesdata['#markup']['#title'] = Drupal::config()->get('system.site')->get('name');
     // $servicesdata['#markup']['#title'] = "<p>" . t("Please select a Service") . "</p>";.
     $query = \Drupal::database()->select('states', 's');
@@ -319,7 +307,7 @@ class HzdcustomisationStorage {
       $query->condition('active', 1);
     }
     $states = $query->execute()->fetchAll();
-    //$data[0] = 'Bundesland';
+    // $data[0] = 'Bundesland';.
     foreach ($states as $state) {
       if ($state->state == NULL) {
         $data[$state->id] = 'Bundesland';
@@ -331,7 +319,10 @@ class HzdcustomisationStorage {
     return $data;
   }
 
-  static function get_all_user_state_abbr() {
+  /**
+   *
+   */
+  static public function get_all_user_state_abbr() {
     $user_states = \Drupal::database()->select("states", "s");
     $user_states->fields('s');
     $user_states->execute()->fetchAll();
@@ -345,7 +336,7 @@ class HzdcustomisationStorage {
   /**
    * Get Published Services.
    */
-  static function get_published_services() {
+  static public function get_published_services() {
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->fields('nfd', ['nid']);
     $query->addField('nfd', 'title', 'service');
@@ -370,11 +361,10 @@ class HzdcustomisationStorage {
     return $data;
   }
 
-  /*
-   *  display published and which are enabled for downtimes services.
+  /**
+   * Display published and which are enabled for downtimes services.
    */
-
-  static function get_maintenance_related_services($type, $nid = NULL, $downtime_services = NULL, $option_type = NULL) {
+  static public function get_maintenance_related_services($type, $nid = NULL, $downtime_services = NULL, $option_type = NULL) {
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->fields('nfd', ['nid']);
     $query->addField('nfd', 'title', 'service');
@@ -402,7 +392,7 @@ class HzdcustomisationStorage {
       }
     }
 
-    //  in maintenance edit form display unpublished services which were already selected
+    // In maintenance edit form display unpublished services which were already selected.
     if ($nid) {
       foreach ($downtime_services as $val) {
         if (!array_key_exists($val, $service_names)) {
@@ -416,11 +406,10 @@ class HzdcustomisationStorage {
     return $service_names;
   }
 
-  /*
-   *  get each service data, displayed in downtimes
+  /**
+   * Get each service data, displayed in downtimes.
    */
-
-  static function get_service_data($sid, $service_name) {
+  static public function get_service_data($sid, $service_name) {
     $states = self::get_states();
     $downtime_services = HzdservicesStorage::get_related_services('downtimes');
 
@@ -448,7 +437,7 @@ class HzdcustomisationStorage {
       }
     }
 
-    // get service operator data
+    // Get service operator data.
     $query = \Drupal::database()->select('node__field_service_operator', 'nfd');
     $query->fields('nfd', ['field_service_operator_value']);
     $query->condition('nfd.entity_id', $nid);
@@ -462,7 +451,7 @@ class HzdcustomisationStorage {
     }
     $data['service_operators'] = $service_operators;
 
-    // get service recipient data
+    // Get service recipient data.
     $query = \Drupal::database()->select('node__field_service_recipient', 'nfd');
     $query->fields('nfd', ['field_service_recipient_value']);
     $query->condition('nfd.entity_id', $nid);
@@ -475,7 +464,7 @@ class HzdcustomisationStorage {
     }
     $data['service_recipients'] = $service_recipients;
 
-    // get dependent services list
+    // Get dependent services list.
     $query = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfd');
     $query->fields('nfd', ['field_dependent_downtimeservices_target_id']);
     $query->condition('nfd.entity_id', $nid);
@@ -490,7 +479,7 @@ class HzdcustomisationStorage {
     }
     $data['service_depends'] = $service_depends;
 
-    // get service time
+    // Get service time.
     $query = \Drupal::database()->select('service_profile_maintenance_service_time', 'nfd');
     $query->fields('nfd', ['day_time']);
     $query->condition('nfd.nid', $nid);
@@ -518,8 +507,7 @@ class HzdcustomisationStorage {
       $data['service_time'] = $service_vals;
     }
 
-
-    // maintenance windows time
+    // Maintenance windows time.
     $query = \Drupal::database()->select('service_profile_maintenance_windows', 'nfd');
     $query->fields('nfd', ['day', 'day_until', 'from_time', 'to_time']);
     $query->condition('nfd.nid', $nid);
@@ -527,8 +515,9 @@ class HzdcustomisationStorage {
 
     $vals = '';
     foreach ($maintenance_windows_time as $maintenance_windows_time_vals) {
-      if ($maintenance_windows_time_vals->day_until == '' || $maintenance_windows_time_vals->day_until == NULL)
+      if ($maintenance_windows_time_vals->day_until == '' || $maintenance_windows_time_vals->day_until == NULL) {
         $maintenance_windows_time_vals->day_until = $maintenance_windows_time_vals->day;
+      }
       $vals .= "<tr><td>" . t($maintenance_windows_time_vals->day) . "</td><td>" . date('H:i', strtotime($maintenance_windows_time_vals->from_time)) . "</td><td>" . t($maintenance_windows_time_vals->day_until) . "</td><td>" . date('H:i', strtotime($maintenance_windows_time_vals->to_time)) . "</td></tr>";
     }
     $data['maintenance_windows_time'] = $vals;
@@ -537,7 +526,10 @@ class HzdcustomisationStorage {
     return self::get_theme_service_data($data);
   }
 
-  static function get_theme_service_data($data) {
+  /**
+   *
+   */
+  static public function get_theme_service_data($data) {
     $downtime_service_data = "<table>";
     $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Service Name:") . "</b></div></td><td class='right'><div>" . $data['service_name'] . "</div></td></tr>";
     if (isset($data['service_operators'])) {
@@ -550,8 +542,8 @@ class HzdcustomisationStorage {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Dependent Services:") . "</b></div></td><td class='right'><div>" . implode(', ', $data['service_depends']) . "</div></td></tr>";
     }
     /* else {
-      $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Dependent Services:") . "</b></div></td><td class='right'><div>" . t('NONE') . "</div></td></tr>";
-      } */
+    $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Dependent Services:") . "</b></div></td><td class='right'><div>" . t('NONE') . "</div></td></tr>";
+    } */
     if (isset($data['service_advance_time'])) {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Maintenance Advance Time:") . "</b></div></td><td class='right'><div>" . $data['service_advance_time'] . " Stunden</div></td></tr>";
     }
@@ -568,7 +560,10 @@ class HzdcustomisationStorage {
     return $downtime_service_data;
   }
 
-  static function downtime_services_names($service) {
+  /**
+   *
+   */
+  static public function downtime_services_names($service) {
     $query = db_select('node_field_data', 'n');
     $query->addExpression("Group_concat(DISTINCT n.title SEPARATOR', ')", 'service');
     $query->where('n.nid IN (' . $service . ')');
@@ -583,7 +578,10 @@ class HzdcustomisationStorage {
     return $service;
   }
 
-  static function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
+  /**
+   *
+   */
+  static public function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
     $group_id = \Drupal::routeMatch()->getParameter('group')->id();
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
@@ -593,7 +591,7 @@ class HzdcustomisationStorage {
     else {
       $current_user_state_id = '';
     }
-    //dsm(\Drupal\user\Entity\User::load($owner_id));
+    // dsm(\Drupal\user\Entity\User::load($owner_id));
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
     if ($owner_state) {
       $owner_state_id = $owner_state;
@@ -601,7 +599,7 @@ class HzdcustomisationStorage {
     else {
       $owner_state_id = '';
     }
-    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+    $is_group_admin = CustNodeController::isGroupAdmin($group_id);
     array_push($content_state_id, $owner_state_id);
     if (in_array(SITE_ADMIN_ROLE, $user->getRoles())) {
       return TRUE;
@@ -617,17 +615,23 @@ class HzdcustomisationStorage {
     }
   }
 
-  static function reset_form() {
+  /**
+   *
+   */
+  static public function reset_form() {
     return $form['reset'] = array(
       '#type' => 'button',
       '#value' => t('Reset'),
-      //'#attributes' => array('onclick' => "reset_form_elements()"),
+      // '#attributes' => array('onclick' => "reset_form_elements()"),
       '#prefix' => " <div class = 'reset_form'><div class = 'reset_all'>",
-      '#suffix' => '</div><div style = "clear:both"></div> </div>'
+      '#suffix' => '</div><div style = "clear:both"></div> </div>',
     );
   }
 
-  static function current_incidents($sql_where, $string = NULL, $service_id = NULL, $search_string = NULL, $limit = NULL, $state_id = NULL, $end_date = NULL) {
+  /**
+   *
+   */
+  static public function current_incidents($sql_where, $string = NULL, $service_id = NULL, $search_string = NULL, $limit = NULL, $state_id = NULL, $end_date = NULL) {
     $user = \Drupal::currentUser();
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
@@ -641,7 +645,7 @@ class HzdcustomisationStorage {
       t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
       t('Public holiday or weekend'),
       t('No service partner (KONSENS) available during maintenance hours'),
-      t('No service interruption planned')
+      t('No service interruption planned'),
     );
     if (!empty($_REQUEST['services_effected'])) {
       $service_id = $_REQUEST['services_effected'];
@@ -650,21 +654,21 @@ class HzdcustomisationStorage {
       $states = $_REQUEST['states'];
     }
     /* $serialized_data = unserialize($_SESSION['downtimes_query']);
-      if ($string == $serialized_data['downtime_type']) {
-      $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
-      $service_id = $serialized_data['service'] ? $serialized_data['service'] : $service_id;
-      $state_id = $serialized_data['state'] ? $serialized_data['state'] : $state_id;
-      $search_string = $serialized_data['search_string'] ? $serialized_data['search_string'] : $search_string;
-      $limit = $serialized_data['limit'];
-      unset($_SESSION['downtimes_query']);
-      } */
+    if ($string == $serialized_data['downtime_type']) {
+    $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
+    $service_id = $serialized_data['service'] ? $serialized_data['service'] : $service_id;
+    $state_id = $serialized_data['state'] ? $serialized_data['state'] : $state_id;
+    $search_string = $serialized_data['search_string'] ? $serialized_data['search_string'] : $search_string;
+    $limit = $serialized_data['limit'];
+    unset($_SESSION['downtimes_query']);
+    } */
 
-    //drupal_add_css(drupal_get_path('module', 'downtimes') . '/downtimes_tables.css');
+    // drupal_add_css(drupal_get_path('module', 'downtimes') . '/downtimes_tables.css');.
     $states = self::get_all_user_state_abbr();
 
     /* $pagination = $_GET['pagination'];
-      $pos_slash = strripos($_GET['q'], '/');
-      $url_flag = substr($_GET['q'], $pos_slash + 1); */
+    $pos_slash = strripos($_GET['q'], '/');
+    $url_flag = substr($_GET['q'], $pos_slash + 1); */
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
 
     if (isset($service_id) && $service_id != 1) {
@@ -748,13 +752,14 @@ class HzdcustomisationStorage {
 
     $sql = $sql_select . $sql_where . $sql_group_by;
 
-    //table header
+    // Table header.
     $header = array();
     array_push($header, array('data' => t('Service')->__toString(), 'class' => 'service'));
     $url = '';
-    if ($string == 'archived')
-    //array_push($header, array('data' => t('Flag'), 'class' => 'flag'));
+    if ($string == 'archived') {
+      // array_push($header, array('data' => t('Flag'), 'class' => 'flag'));.
       $url = 'node/' . $group_id . '/downtimes';
+    }
     if ($string == 'archived') {
       if ($group->label()) {
         $url = 'node/' . $group_id . '/downtimes/archived_downtimes';
@@ -776,12 +781,12 @@ class HzdcustomisationStorage {
       if ($limit != 'all') {
         $query = db_select('downtimes', 'sd');
         $query->Fields('sd', array('cancelled', 'state_id', 'service_id', 'startdate_reported', 'enddate_reported', 'downtime_id', 'description', 'startdate_planned', 'enddate_planned'));
-        //$query->addExpression("Group_concat(DISTINCT s.abbr SEPARATOR', ')", 'abbr');
-        //$query->addExpression("Group_concat(DISTINCT title SEPARATOR' ')", 'service');
+        // $query->addExpression("Group_concat(DISTINCT s.abbr SEPARATOR', ')", 'abbr');
+        // $query->addExpression("Group_concat(DISTINCT title SEPARATOR' ')", 'service');.
         $query->addExpression("IF(scheduled_p = 1, 'MAINTENANCE', 'INCIDENT')", 'type');
         $query->join('node_field_data', 'n', 'sd.service_id = n.nid');
         $query->join('group_content_field_data', 'oa', 'sd.downtime_id = oa.entity_id');
-        //$query->join('states', 's', 's.id=sd.state_id');
+        // $query->join('states', 's', 's.id=sd.state_id');.
         $query->groupBy('sd.service_id, sd.state_id, sd.downtime_id, n.uid, sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
         $query->orderBy('sd.id', 'desc');
         $query->where('sd.service_id = n.nid AND (sd.resolved = 1 OR sd.cancelled = 1) AND sd.service_id IN (SELECT gdv.service_id AS state_service_id FROM   {group_downtimes_view} gdv,  {downtimes} ds WHERE  ' . $service . ' AND ' . $state . ' AND group_id = ' . $group_id . ' ) ' . $sql_where);
@@ -803,7 +808,7 @@ class HzdcustomisationStorage {
     $rows = array();
     foreach ($result as $client) {
       $services = self::downtime_services_names($client->service_id);
-      //$user_state = display_update($states[$client->state_id]);
+      // $user_state = display_update($states[$client->state_id]);.
       $user_state = db_query("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
       $startdate = ($client->startdate_planned ? date('d-m-Y', $client->startdate_planned) . " " . date('H:i', $client->startdate_planned) : "unbekannt");
       if ($string == 'archived') {
@@ -847,7 +852,7 @@ class HzdcustomisationStorage {
       $downtime_ids = array();
       $downtime_ids = explode(',', $client->state_id);
       $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
-      //$maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
+      // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
         $maintenance_edit = TRUE;
       }
@@ -868,7 +873,7 @@ class HzdcustomisationStorage {
         'start_date' => $startdate,
         'end_date' => $enddate,
         'reason' => !empty($client->description) ? $client->description : '',
-        'name' => $user_name
+        'name' => $user_name,
       );
 
       $query_params = array(
@@ -908,15 +913,15 @@ class HzdcustomisationStorage {
         $query_params['time_period'] = "";
       }
       $query_seralized = serialize($query_params);
-      //$_SESSION['downtimes_query'] = $query_seralized;
+      // $_SESSION['downtimes_query'] = $query_seralized;.
       $downtime_url = Url::fromUserInput('/node/' . $client->downtime_id);
       $links = \Drupal::l(t('Details')->__toString(), $downtime_url, $params = array(
-            'attributes' => array(
-              'class' => 'downtimes_details_link',
-              'nid' => $client->downtime_id,
-              'query' => $query_seralized,
-            ),
-              )
+        'attributes' => array(
+          'class' => 'downtimes_details_link',
+          'nid' => $client->downtime_id,
+          'query' => $query_seralized,
+        ),
+      )
       );
 
       $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
@@ -926,7 +931,7 @@ class HzdcustomisationStorage {
           $cancel_url = Url::fromUserInput('/group/' . $group_id . '/cancel' . '/' . $client->downtime_id);
           $edit_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
           $links .= "<br>" . \Drupal::l(t('Update'), $edit_url) . " <br>";
-          //l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);
+          // l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);.
           if ($client->startdate_planned > time()) {
             $links .= \Drupal::l(t('Cancel Maintenance'), $cancel_url);
           }
@@ -941,7 +946,7 @@ class HzdcustomisationStorage {
             $update_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
             $resolve_url = Url::fromUserInput('/group/' . $group_id . '/resolve' . '/' . $client->downtime_id);
             $links .= "<br>" . \Drupal::l(t('Update'), $update_url) . " <br>" . \Drupal::l(t('Resolve'), $resolve_url);
-            //array_push($elements, \Drupal::l(t('Update'), $group->label() . '/downtimes/' . $client->downtime_id . '/edit') . "<br>" . l(t('Resolve'), $_SESSION['Group_name'] . '/resolve' . '/' . $client->downtime_id));
+            // array_push($elements, \Drupal::l(t('Update'), $group->label() . '/downtimes/' . $client->downtime_id . '/edit') . "<br>" . l(t('Resolve'), $_SESSION['Group_name'] . '/resolve' . '/' . $client->downtime_id));.
           }
         }
       }
@@ -950,13 +955,13 @@ class HzdcustomisationStorage {
       $rows[] = $elements;
     }
     /* if (!$rows) {
-      $rows['no_data'] = array(array('data' => t('No data created yet.'), 'colspan' => 3));
-      } */
-    //$output .= theme('downtimes_table', $header, $rows, array('id' => 'sortable', 'class' => "tablesorter downtimes_$string"), $string);
+    $rows['no_data'] = array(array('data' => t('No data created yet.'), 'colspan' => 3));
+    } */
+    // $output .= theme('downtimes_table', $header, $rows, array('id' => 'sortable', 'class' => "tablesorter downtimes_$string"), $string);
     /* if ($string == 'archived') {
-      $output .= theme('pager', NULL, $limit, 0);
-      $output .= \Drupal::formBuilder()->getForm('archive_rows_per_page', $limit, $string);
-      } */
+    $output .= theme('pager', NULL, $limit, 0);
+    $output .= \Drupal::formBuilder()->getForm('archive_rows_per_page', $limit, $string);
+    } */
     $variables = array('header' => $header, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => 'No data created yet.');
     self::downtimes_display_table($variables);
     $build['problem_table'] = array(
@@ -965,7 +970,7 @@ class HzdcustomisationStorage {
       '#attributes' => $variables['attributes'],
       '#empty' => $variables['empty'],
       '#header_columns' => $variables['header_columns'],
-      '#theme' => 'downtimes_table'
+      '#theme' => 'downtimes_table',
     );
     $build['pager'] = array(
       '#type' => 'pager',
@@ -975,11 +980,14 @@ class HzdcustomisationStorage {
     return $build;
   }
 
-  static function downtimes_display_table(&$variables) {
+  /**
+   *
+   */
+  static public function downtimes_display_table(&$variables) {
     // Format the table columns:
     if (!empty($variables['colgroups'])) {
       foreach ($variables['colgroups'] as &$colgroup) {
-        // Check if we're dealing with a simple or complex column
+        // Check if we're dealing with a simple or complex column.
         if (isset($colgroup['data'])) {
           $cols = $colgroup['data'];
           unset($colgroup['data']);
@@ -1074,7 +1082,7 @@ class HzdcustomisationStorage {
           $cells = $row;
           $row_attributes = array();
 
-          // Check if we're dealing with a simple or complex row
+          // Check if we're dealing with a simple or complex row.
           if (isset($row['data'])) {
             $cells = $row['data'];
             $variables['no_striping'] = isset($row['no_striping']) ? $row['no_striping'] : FALSE;
@@ -1137,14 +1145,14 @@ class HzdcustomisationStorage {
   }
 
   /**
-   *  display all non production lists
+   * Display all non production lists.
    */
   static public function get_non_productions_list() {
-//  $non_productions_lists = db_query("SELECT n.nid, n.title, 
-//  ctn.field_non_production_state_value "
-//      . "FROM {node} n, {content_type_non_production_environment} ctn "
-//      . "WHERE n.nid = ctn.nid and type = '%s'", 'non_production_environment');
-//  
+    // $non_productions_lists = db_query("SELECT n.nid, n.title,
+    //  ctn.field_non_production_state_value "
+    //      . "FROM {node} n, {content_type_non_production_environment} ctn "
+    //      . "WHERE n.nid = ctn.nid and type = '%s'", 'non_production_environment');
+    // .
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->leftJoin('node__field_non_production_state', 'nfnpsv', 'nfd.nid = nfnpsv.entity_id');
     $query->fields('nfd', ['nid', 'title']);
@@ -1161,14 +1169,17 @@ class HzdcustomisationStorage {
 
       $route_name = 'entity.node.edit_form';
       $url = Url::fromRoute($route_name, array(
-            'node' => $row->nid,
-              )
+        'node' => $row->nid,
+      )
       );
 
       $edit = Link::fromTextAndUrl('Edit', $url);
 
-      $elements = array('state' => $state, 'environment' => $row->title,
-        'edit' => $edit);
+      $elements = array(
+        'state' => $state,
+        'environment' => $row->title,
+        'edit' => $edit,
+      );
       $rows[] = $elements;
     }
     if (!isset($elements)) {
@@ -1181,7 +1192,7 @@ class HzdcustomisationStorage {
       '#rows' => $rows,
       '#attributes' => array(
         'id' => 'non-production-env',
-        'class' => 'non-production-env'
+        'class' => 'non-production-env',
       ),
       '#prefix' => '<div id="non_production_state_wrapper">',
       '#suffix' => '</div>',

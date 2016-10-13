@@ -2,12 +2,13 @@
 
 namespace Drupal\hzd_release_management\Controller;
 
+use Drupal\group\Entity\Group;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
 if (!defined('QUICKINFO')) {
-  define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+  define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
 if (!defined('RELEASE_MANAGEMENT')) {
   define('RELEASE_MANAGEMENT', 32);
@@ -16,71 +17,83 @@ if (!defined('RELEASE_MANAGEMENT')) {
  *
  */
 class DisplayquickinfoController extends ControllerBase {
-    /*
-     * menu callback to display Quick info content.
-     */
 
-    function display_quick_info() {
-    
-      $is_group_member = $this::CheckuserisquickinfoGroupMember();
-      if ($is_group_admin || $is_group_member) {
-            $group = \Drupal::routeMatch()->getParameter('group');
-            if (is_object($group)) {
-                $group_id = $group->id();
-            } else {
-                $group_id = $group;
-            }
+  /**
+   * Menu callback to display Quick info content.
+   */
+  public function display_quick_info() {
 
-            // drupal_add_js(drupal_get_path('module', 'release_management') . '/release_management.js');
-            // drupal_add_js(drupal_get_path('module', 'hzd_customizations') . '/jquery.tablesorter.min.js');
-            $output['#attachment']['library'] = array(
-                  'hzd_release_management/hzd_release_management',
-                  );
-
-            $output['#attached']['drupalSettings']['release_management'] = array(
-              'group_id' => $group_id,
-            );
-            $output['#title'] = t("Table of RZ Accelerators");
-
-            $url = Url::fromUserInput('/release-management/betriebsueberfuehrung/rz-schnellinfo');
-            $link = \Drupal::l($this->t('F&uuml;r &auml;ltere Ausgaben (03/2012-02/2014) bitte hier klicken.'), $url);
-
-            $output['#markup'] = '<p>In dieser Übersicht finden Sie RZ-Schnellinfos ab 03/2014. ' . $link . '</p>';
-            $output['quickinfo_display_table']['#prefix'] = "<div class = 'quickinfo_content_output'>";
-            $output['quickinfo_display_table'] = HzdreleasemanagementHelper::quickinfo_display_table();
-            $output['quickinfo_display_table']['#suffix'] = "</div>";
-            return $output;
-        } else {
-          return $build = array(
-              '#prefix' => '<div id="no-result">',
-              '#markup' => t("You are not authorized to view this page"),
-              '#suffix' => '</div>',
-              );
+    $is_group_member = $this::CheckuserisquickinfoGroupMember();
+    if ($is_group_member) {
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
       }
-      
-    } 
-    
-     public function CheckuserisquickinfoGroupMember($group_id = null) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+      else {
+        $group_id = $group;
+      }
 
-        $allowed_group = array(3, RELEASE_MANAGEMENT);
-        if (!$group_id && !in_array($group_id, $allowed_group)) {
-            return false;
-        }
-        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-            return true;
-        }
-        $group = \Drupal\group\Entity\Group::load($group_id);
-        $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
-            return true;
-        }
-        return false;
+      // drupal_add_js(drupal_get_path('module', 'release_management') . '/release_management.js');
+      // drupal_add_js(drupal_get_path('module', 'hzd_customizations') . '/jquery.tablesorter.min.js');.
+               $output[]['#attached']['library'] = array(
+        //    'locale.libraries/translations',
+        //    'locale.libraries/drupal.locale.datepicker',
+            'hzd_release_management/hzd_release_management',
+            'hzd_customizations/hzd_customizations',
+           // 'hzd_release_management/hzd_release_management_sort',
+          //  'downtimes/downtimes',
+          );
+
+          $output['#attached']['drupalSettings'] = array(
+            'group_id' => $group_id,
+          );
+
+      $output['#title'] = t("Table of RZ Accelerators");
+
+      $url = Url::fromUserInput('/release-management/betriebsueberfuehrung/rz-schnellinfo');
+      $link = \Drupal::l($this->t('F&uuml;r &auml;ltere Ausgaben (03/2012-02/2014) bitte hier klicken.'), $url);
+
+      $output['#markup'] = '<p>In dieser Übersicht finden Sie RZ-Schnellinfos ab 03/2014. ' . $link . '</p>';
+      $output['quickinfo_display_table']['#prefix'] = "<div class = 'quickinfo_content_output'>";
+      $output['quickinfo_display_table'] = HzdreleasemanagementHelper::quickinfo_display_table();
+      $output['quickinfo_display_table']['#suffix'] = "</div>";
+      return $output;
     }
+    else {
+      return $build = array(
+        '#prefix' => '<div id="no-result">',
+        '#markup' => t("You are not authorized to view this page"),
+        '#suffix' => '</div>',
+      );
+    }
+
+  }
+
+  /**
+   *
+   */
+  public function CheckuserisquickinfoGroupMember($group_id = NULL) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id = $group;
+    }
+
+    $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
+    if (!$group_id && !in_array($group_id, $allowed_group)) {
+      return FALSE;
+    }
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return TRUE;
+    }
+    $group = Group::load($group_id);
+    $content = $group->getMember(\Drupal::currentUser());
+    if ($content) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
 }

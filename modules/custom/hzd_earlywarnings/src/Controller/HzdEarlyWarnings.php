@@ -143,7 +143,7 @@ class HzdEarlyWarnings extends ControllerBase {
       if ($responses['last_posted']) {
         $user_query = db_select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $vals->uid, '=')
-                   ->fields('cp', array('firstname', 'lastname'));
+          ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAll();
         $response_lastposted = $responses['last_posted'] . ' ' . t('by') . ' ' . $author[0]->firstname . ' ' . $author[0]->lastname;
       }
@@ -154,9 +154,13 @@ class HzdEarlyWarnings extends ControllerBase {
     $response_info = array('total_responses' => $total_responses, 'response_lastposted' => $response_lastposted);
     return $response_info;
   }
-  
+
+  /**
+   *
+   */
   public function add_early_warnings() {
-    $type = node_type_load("early_warnings"); // replace this with the node type in which we need to display the form for
+    // Replace this with the node type in which we need to display the form for.
+    $type = node_type_load("early_warnings");
     $samplenode = $this->entityManager()->getStorage('node')->create(array(
       'type' => $type->id(),
     ));
@@ -167,4 +171,5 @@ class HzdEarlyWarnings extends ControllerBase {
       '#markup' => render($node_create_form),
     );
   }
+
 }

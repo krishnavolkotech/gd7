@@ -202,6 +202,8 @@ hzd_release_management.quickinfo_published_view:
     _entity_view: group.default
   requirements:
     _permission: 'access content'
+#  'access callback' => 'cust_quickinfo_og_is_member',
+
 
 hzd_release_management.saved-rz-schnellinfo:
   path: '/group/{group}/saved-rz-schnellinfo'
@@ -211,7 +213,7 @@ hzd_release_management.saved-rz-schnellinfo:
     _entity_view: group.default
   requirements:
     _permission: 'access content'
-    
+#  'access callback' => 'saved_quickinfo_og_is_member',      
     
 # 
 #    $items['documentation_link_zip/%/%'] = array(

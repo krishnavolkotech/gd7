@@ -1,13 +1,30 @@
-(function ($) {
+(function ($, Drupal) {
+
+  'use strict';
+
+  /**
+   * Adds summaries to the book outline form.
+   *
+   * @type {Drupal~behavior}
+   *#quickinfo-sortable
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attaches summary behavior to book outline forms.
+   */
   Drupal.behaviors.release_management = {
-    attach: function (context, settings) {
+    attach: function (context) {
+        
           var anchor = $("#released_results_wrapper #pagination > nav > ul > li > a");
              anchor.each(function( index ) {
                var links = $( this ).attr('href'); 
                var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
                $( this ).attr('href', new_href);
              });
-            // $("#quickinfo-sortable").tablesorter({widgets: ['zebra']});
+           
+            $(context).find("#quickinfo-sortable").tablesorter({
+                5:{sorter:'deployed_date'},
+                widgets: ['zebra']
+            });
+            
             $.tablesorter.addParser({
                   // set a unique id
                   id: 'release_datesortable',
@@ -18,7 +35,6 @@
                   format: function(s) {
                   // format your data for normalization 
                      if (s) {
-                     
                        var mydatetime = s.split(' ');
           	       if (mydatetime[0] && mydatetime[1]) {	         
           		 var dateele = mydatetime[0].split('.');
@@ -29,7 +45,6 @@
           		   dateele[2] = '20' + dateele[2];
           		 }
           		 var date = dateele[2] + dateele[1] + dateele[0] + timeele[0] + timeele[1] + timeele[2];
-          		 console.log(date);
           		 return parseInt(date,15);
           	       }
           	     
@@ -92,7 +107,7 @@
             if (drupalSettings.release_management.type != 'released' && drupalSettings.release_management.type != "deployed") {
             // jQuery("#sortable").tablesorter();
              
-              $("#sortable").tablesorter({
+              $(context).find("#sortable").tablesorter({
           	widgets: ['zebra']
               }); 
             
@@ -111,7 +126,7 @@
                   type: "numeric" 
                });
                
-                $("#sortable").tablesorter({
+                $(context).find("#sortable").tablesorter({
                 dateFormat: 'dd.mm.yyyy',
                 headers: {
                     4:{sorter:'deployed_date'},
@@ -129,16 +144,15 @@
                   
             }
             else {
-                jQuery("#sortable").tablesorter();
-                $("#sortable").tablesorter({
+               
+              $(context).find("#sortable").tablesorter({
                     headers: {
-                        4: { sorter:'release_datesortable' },
-                        5: { sorter: false },
-                        6: { sorter: false },
+                        2: { sorter:'release_datesortable' },
+                        3: { sorter: false },
+                        4: { sorter: false },
                     },
                        widgets: ['zebra']
-                    });  
-             
+                    });
             }
 
             $('.filter_submit', context).hide();
@@ -201,9 +215,11 @@
               });
 
          // };
-    }
+         
+     }
   };
-})(jQuery);
+
+})(jQuery, Drupal);
 
 /**
 function reset_form_elements(){ 

@@ -1,0 +1,131 @@
+<?php
+/**
+ * @file
+ * All the functions used to override the node core  module functions
+ */
+
+define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+
+/**
+* Alter the node form to set callbacks for preview action
+*/
+// 20131114 droy - changed function arguments according to https://api.drupal.org/api/drupal/developer!hooks!core.php/function/hook_form_alter/6
+// After PHP upgrade frp, 5.2 to 5.3, all pages would raise an error and complain about parameter 1 being an array, not string
+// function cust_node_form_alter($form_id, &$form) {
+function cust_node_form_alter(&$form, $form_state, $form_id) {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+            $group_name = $group->label();
+        } else {
+            $group_id = $group;
+            $load_group = \Drupal\group\Entity\Group::load($group_id);
+            $group_name = $load_group->label();
+        }
+        
+//  if($form_id=='og_email_form'){
+//    $form['body']['#id']='edit-email';
+//  } 
+
+//  if (strpos($form_id,'node_form') !== FALSE) {
+//      $form['#after_build'] = array('cust_node_form_add_preview');
+//  }
+  // specifying redirect after node revision revert form is submitted.
+  if ($form_id == 'node_revision_revert_confirm') {
+    $node = $form['node']['#value'];
+    if($group_name) {
+      if ($group_id == QUICKINFO) {
+        $path = 'node/' . $form['#node_revision']->nid;
+        $quickinfo_path = \Drupal::service('path.alias_manager')->getAliasByPath($path);
+        $form['#redirect'] = $quickinfo_path;
+      }
+      else {
+        $form['#redirect'] = $group_name.'/'.$node->type.'/'.$node->nid .'/revisions';
+      }
+    }
+    else {
+      $form['#redirect'] = 'node/'. $node->nid .'/revisions';
+    }
+  }
+
+  // specifying redirect after node revision delete confirm form is submitted.
+  if ($form_id == 'node_revision_delete_confirm') {
+    $node = $form['node']['#value'];
+
+    if ($group_id == QUICKINFO) {
+        $path = 'node/' . $form['#node_revision']->nid;
+        $quickinfo_path = drupal_get_path_alias($path, $path_language = '');
+        $form['#redirect'] = $quickinfo_path;
+    }
+    else {
+    if (db_result(db_query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d', $node->nid)) > 1) {
+      if($group_name) {
+         $form['#redirect'] = $group_name . '/' . $node->type . '/' . $node->nid . '/revisions';
+      }
+      else {
+          $form['#redirect'] = 'node/'. $node->nid .'/revisions';
+      }
+    }
+    else {
+      if($group_name) {
+        $form['#redirect'] = $group_name.'/'.$node->type.'/'. $node->nid;
+      } else {
+        $form['#redirect'] = 'node/'. $node->nid;
+      }
+    }
+    }
+  }
+
+  // specifying redirect after node delete form is submitted.
+  if ($form_id == 'node_delete_confirm') {
+    $form['#submit'][] = 'custom_redirect';
+  }
+
+
+}
+
+function custom_redirect($form, &$form_state){
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+            $group_name = $group->label();
+        } else {
+            $group_id = $group;
+            $load_group = \Drupal\group\Entity\Group::load($group_id);
+            $group_name = $load_group->label();
+        }
+        
+  $node = \Drupal\node\Entity\Node::load($form_state->getValue('nid'));
+  
+  if($group_name){
+      switch($node->type){
+      case 'event':
+        /**
+	 * need to check  
+         * drupal_goto($group_name . "/Kalender");
+           return new RedirectResponse(\Drupal::url('cust_group.faq_list'));
+         * 
+         */
+	break;
+      case 'faq':
+        return new RedirectResponse(\Drupal::url('cust_group.faq_list'));
+//	drupal_goto($group_name . "/faq");
+	break;    
+//      case 'downtimes':
+//      return new RedirectResponse(\Drupal::url('user.page'));
+//	drupal_goto($group_name . "/Serviceunterbrechungen");
+//	break;
+      }
+    }else{
+      switch($node->type){
+      case 'event':
+//    case 'downtimes':
+//      return new RedirectResponse(\Drupal::url(''));  
+//	drupal_goto("site_event");
+//	break;
+      case 'faq':
+	drupal_goto("Incident Management/FAQs");
+	break;
+      }
+    }
+}
