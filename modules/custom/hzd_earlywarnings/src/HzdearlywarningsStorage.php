@@ -16,14 +16,15 @@ class HzdearlywarningsStorage {
    * Display table for the relese overviw of early warnings
    * In the display the responses field contains the count of comments posted on the early warning.
    */
-  function release_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+  public function release_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
     $group = \Drupal::routeMatch()->getParameter('group');
-    if(is_object($group)){
+    if (is_object($group)) {
       $group_id = $group->id();
-    } else {
+    }
+    else {
       $group_id = $group;
-    } 
-    
+    }
+
     if (!$filter_options) {
       $filter_options = $_SESSION['earlywarning_filter_option'];
       $release_type = $_SESSION['earlywarning_filter_option']['release_type'];
@@ -166,7 +167,7 @@ class HzdearlywarningsStorage {
    * In the display the responses field contains the count of comments posted on the early warning.
    * Function for displaying the early warnings for a particular service and release
    */
-  function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+  public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
     $output = array();
     if ($filter_options['limit'] != 'all') {
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
@@ -215,15 +216,15 @@ class HzdearlywarningsStorage {
     }
     elseif ($service && $release) {
       $query->condition('nfrs.field_release_service_value', $service, '=')
-            ->condition('nfer.field_earlywarning_release_value', $release, '=')
-            ->condition('nrt.release_type_target_id', $release_type, '=');
+        ->condition('nfer.field_earlywarning_release_value', $release, '=')
+        ->condition('nrt.release_type_target_id', $release_type, '=');
     }
     $count_query = clone $query;
     $count_query->addExpression('COUNT(DISTINCT n.nid)');
     $paged_query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
     $paged_query->setCountQuery($count_query);
     $paged_query->fields('n', array('nid', 'title', 'created', 'uid'))
-                ->orderBy('n.created', 'DESC');
+      ->orderBy('n.created', 'DESC');
 
     // Echo '<pre>'; print_r($query->conditions()); exit;.
     if ($filter_options['limit'] != 'all') {
@@ -238,7 +239,7 @@ class HzdearlywarningsStorage {
     foreach ($result as $vals) {
       $user_query = db_select('cust_profile', 'cp');
       $user_query->condition('cp.uid', $vals->uid, '=')
-                 ->fields('cp', array('firstname', 'lastname'));
+        ->fields('cp', array('firstname', 'lastname'));
       $author = $user_query->execute()->fetchAll();
       $author_name = $author[0]->firstname . ' ' . $author[0]->lastname;
       $total_responses = self::get_earlywarning_responses_info($vals->nid);
@@ -277,7 +278,7 @@ class HzdearlywarningsStorage {
   /**
    * Get early warning responses info.
    */
-  function get_earlywarning_responses_info($earlywarnings_nid) {
+  public function get_earlywarning_responses_info($earlywarnings_nid) {
     $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid",
                        array(":nid" => $earlywarnings_nid))->fetchField();
     $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1",
@@ -288,7 +289,7 @@ class HzdearlywarningsStorage {
       if ($responses['last_posted']) {
         $user_query = db_select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $vals->uid, '=')
-                   ->fields('cp', array('firstname', 'lastname'));
+          ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAll();
         $response_lastposted = $responses['last_posted'] . ' ' . t('by') . ' ' . $author[0]->firstname . ' ' . $author[0]->lastname;
       }
@@ -303,7 +304,7 @@ class HzdearlywarningsStorage {
   /**
    * Returns last posting warnings count,responses.
    */
-  function get_early_warning_lastposting_count($release_id) {
+  public function get_early_warning_lastposting_count($release_id) {
 
     // $sql = db_query("SELECT n.nid, n.uid, n.created  FROM {node} n , {content_field_earlywarning_release} ctew   WHERE n.nid = ctew.nid and field_earlywarning_release_value = %d and n.type = '%s' order by created DESC", $release_id, 'early_warnings');.
     $sql_query = db_select('node', 'n');
@@ -338,7 +339,7 @@ class HzdearlywarningsStorage {
   /**
    *
    */
-  function earlywarnings_lastposting($earlywarnings_nid) {
+  public function earlywarnings_lastposting($earlywarnings_nid) {
     $nids = implode(',', $earlywarnings_nid);
 
     // $resonses_sql_query = db_query("select nid, uid, timestamp from {comments} WHERE nid in (%s) order by timestamp DESC limit 1", $nids);.
@@ -359,7 +360,7 @@ class HzdearlywarningsStorage {
   /**
    * Display early warning text on view warly warnings page.
    */
-  function early_warning_text() {
+  public function early_warning_text() {
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
