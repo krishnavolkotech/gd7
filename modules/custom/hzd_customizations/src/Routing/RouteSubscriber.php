@@ -14,21 +14,23 @@ use Drupal\Core\Routing\RoutingEvents;
  */
 class RouteSubscriber extends RouteSubscriberBase {
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents() {
-        $events[RoutingEvents::ALTER] = ['onAlterRoutes',-9999];  // negative Values means "late"
-        return $events;
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents() {
+    // Negative Values means "late".
+    $events[RoutingEvents::ALTER] = ['onAlterRoutes', -9999];
+    return $events;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function alterRoutes(RouteCollection $collection) {
+    if ($route = $collection->get('entity.node.edit_form')) {
+      // Added the below check in \Drupal\cust_group\Controller\AccessController::groupNodeEdit
+      //           $route->setRequirement('_custom_access','\Drupal\hzd_customizations\Controller\HZDCustomizations::access');.
     }
-    /**
-     * {@inheritdoc}
-    */
-    protected function alterRoutes(RouteCollection $collection) {
-        if ($route = $collection->get('entity.node.edit_form')) {
-	//added the below check in \Drupal\cust_group\Controller\AccessController::groupNodeEdit
- //           $route->setRequirement('_custom_access','\Drupal\hzd_customizations\Controller\HZDCustomizations::access');
-        }
-    }
+  }
 
 }
