@@ -50,6 +50,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
       '#default_value' => isset($val['firstname']) ? $val['firstname'] : '',
       '#size' => 60,
       '#maxlength' => 128,
+      '#required'=>TRUE,
     );
     $form['profile']['user_lastname'] = array(
       '#type' => 'textfield',
@@ -57,6 +58,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
       '#default_value' => isset($val['lastname']) ? $val['lastname'] : '',
       '#size' => 60,
       '#maxlength' => 128,
+      '#required'=>TRUE,
     );
     $form['profile']['user_position'] = array(
       '#type' => 'textfield',
@@ -64,6 +66,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
       '#default_value' => isset($val['position']) ? $val['position'] : '',
       '#size' => 60,
       '#maxlength' => 128,
+      '#required'=>TRUE,
     );
     $form['profile']['user_phone'] = array(
       '#type' => 'textfield',
@@ -71,12 +74,14 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
       '#default_value' => isset($val['phone']) ? $val['phone'] : '',
       '#size' => 60,
       '#maxlength' => 128,
+      '#required'=>TRUE,
     );
     $form['profile']['user_state'] = array(
       '#type' => 'select',
       '#title' => 'State',
       '#options' => $user_states,
       '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
+      '#required'=>TRUE,
     );
 
     if ($form_id == 'user_register_form') {
