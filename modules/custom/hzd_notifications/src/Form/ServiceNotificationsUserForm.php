@@ -97,7 +97,8 @@ class ServiceNotificationsUserForm extends FormBase {
     $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $subscriptions = $form_state->getValue('subscriptions');
     $default_interval = hzd_get_default_interval($uid, $rel_type);
-    $types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
+    //$types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
+    //pr($types);exit;
     // get all services
     $services = hzd_get_all_services($rel_type);
     //get default interval of each services and type
