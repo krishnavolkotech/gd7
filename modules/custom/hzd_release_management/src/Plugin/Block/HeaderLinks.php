@@ -23,6 +23,7 @@ class HeaderLinks extends BlockBase {
     return array(
       '#type' => 'markup',
       '#markup' => $this->hzd_headerlinks(),
+      '#cache'=>['max-age'=>0]
     );
   }
 
