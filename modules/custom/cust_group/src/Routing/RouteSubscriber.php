@@ -17,6 +17,19 @@ class RouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
+        
+    if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess"); 
+    }
+    
+    if ($route = $collection->get('entity.node.canonical') && $node_object = $collection->get('')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodeviewAccess");
+    }
+
+    if ($route = $collection->get('entity.group_content.group_node__quickinfo.create_form')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodecreateAccess");
+    }  
+    
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
     if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
       if ($route->getPath() == '/group/{group}/node/{group_content}') {
@@ -53,14 +66,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
     }
-    
-    if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
-      $route->setDefault('_custom_access', "Drupal\cust_group\Controller\AccessController::CheckQuickinfoviewAccess"); 
-    }
-    
-    if ($route = $collection->get('entity.node.canonical')) {
-       $route->setDefault('_custom_access', "Drupal\cust_group\Controller\AccessController::CheckQuickinfonodeviewAccess");
-    }
+  
   }
 
   //retuns the views related to groups created from UI
