@@ -38,5 +38,6 @@ content:
 hidden:
   body: true
   comment_no_subject: true
+  entity_print_view: true
   langcode: true
   upload: true

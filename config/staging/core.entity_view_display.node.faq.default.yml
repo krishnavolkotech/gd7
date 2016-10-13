@@ -3,10 +3,17 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.node.faq.body
+    - field.field.node.faq.field_detailed_question
     - field.field.node.faq.upload
     - node.type.faq
   module:
+    - entity_print
+    - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 _core:
   default_config_hash: Gg4W3beAUi1mVE6gXN7UVJZjKUQHEoXLnOOHeRmq7uo
 id: node.faq.default
@@ -15,24 +22,26 @@ bundle: faq
 mode: default
 content:
   body:
-    type: text_textarea_with_summary
-    weight: 3
+    type: text_summary_or_trimmed
+    weight: 2
     settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
+      trim_length: 600
     third_party_settings: {  }
     label: hidden
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
   field_detailed_question:
-    type: text_textarea
+    type: text_default
     weight: 1
     label: hidden
-    settings:
-      rows: 5
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
   links:
-    weight: 100
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
   path:
     type: path
     weight: 2

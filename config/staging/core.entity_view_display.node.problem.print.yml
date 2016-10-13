@@ -55,6 +55,7 @@ content:
 hidden:
   body: true
   comment: true
+  entity_print_view: true
   field_attachment: true
   field_closed: true
   field_comments: true

@@ -141,6 +141,7 @@ content:
 hidden:
   body: true
   comment: true
+  entity_print_view: true
   field_problem_status: true
   field_s_no: true
   field_sdcallid: true

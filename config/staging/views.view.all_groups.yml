@@ -74,7 +74,8 @@ display:
             uid: uid
             group_post_count_field: group_post_count_field
             group_member_count_field: group_member_count_field
-            type: type
+            group_type_value: group_type_value
+            group_actions_field: group_actions_field
           info:
             id:
               sortable: false
@@ -98,7 +99,7 @@ display:
               empty_column: false
               responsive: ''
             uid:
-              sortable: false
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
@@ -118,7 +119,14 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            type:
+            group_type_value:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            group_actions_field:
               sortable: false
               default_sort_order: asc
               align: ''

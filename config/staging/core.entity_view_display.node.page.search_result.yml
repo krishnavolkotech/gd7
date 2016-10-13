@@ -5,8 +5,10 @@ dependencies:
   config:
     - core.entity_view_mode.node.search_result
     - field.field.node.page.body
+    - field.field.node.page.comment
     - field.field.node.page.field_page_files
     - field.field.node.page.field_page_links
+    - field.field.node.page.upload
     - node.type.page
   module:
     - file
@@ -38,3 +40,7 @@ content:
     weight: 100
 hidden:
   body: true
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

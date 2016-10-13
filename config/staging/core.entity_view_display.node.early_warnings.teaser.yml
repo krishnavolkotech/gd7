@@ -45,5 +45,6 @@ content:
     weight: 100
 hidden:
   comment_no_subject: true
+  entity_print_view: true
   langcode: true
   upload: true

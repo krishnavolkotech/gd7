@@ -10,9 +10,13 @@ dependencies:
     - node.type.planning_files
   module:
     - comment
+    - entity_print
     - file
     - options
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.planning_files.default
 targetEntityType: node
 bundle: planning_files
@@ -24,6 +28,10 @@ content:
     weight: 20
     settings:
       pager_id: 0
+    third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
     third_party_settings: {  }
   field_planning_file_type:
     label: above
@@ -42,6 +50,5 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
-  entity_print_view: true
   langcode: true
   upload: true

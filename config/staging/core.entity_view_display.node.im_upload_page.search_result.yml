@@ -5,7 +5,9 @@ dependencies:
   config:
     - core.entity_view_mode.node.search_result
     - field.field.node.im_upload_page.body
+    - field.field.node.im_upload_page.comment
     - field.field.node.im_upload_page.field_im_upload_page_files
+    - field.field.node.im_upload_page.upload
     - node.type.im_upload_page
   module:
     - file
@@ -25,3 +27,7 @@ content:
     weight: 100
 hidden:
   body: true
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

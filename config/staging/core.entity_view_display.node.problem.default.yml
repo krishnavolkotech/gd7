@@ -29,9 +29,13 @@ dependencies:
     - node.type.problem
   module:
     - comment
+    - entity_print
     - file
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.problem.default
 targetEntityType: node
 bundle: problem
@@ -40,61 +44,65 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 21
+    weight: 22
     settings: {  }
     third_party_settings: {  }
   comment:
     label: hidden
     type: comment_default
-    weight: 18
+    weight: 19
     settings:
       pager_id: 0
     third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
   field_attachment:
     label: inline
-    weight: 13
+    weight: 14
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_closed:
     label: inline
-    weight: 16
+    weight: 17
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_comments:
     label: inline
-    weight: 10
+    weight: 11
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_diagnose:
     label: inline
-    weight: 5
+    weight: 6
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_eroffnet:
     label: inline
-    weight: 11
+    weight: 12
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_function:
     label: inline
-    weight: 4
+    weight: 5
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_priority:
     label: inline
-    weight: 8
+    weight: 9
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_problem_eroffnet:
     label: inline
-    weight: 17
+    weight: 18
     type: number_integer
     settings:
       thousand_separator: ''
@@ -102,31 +110,23 @@ content:
     third_party_settings: {  }
   field_problem_status:
     label: inline
-    weight: 2
+    weight: 3
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_processing:
     label: inline
-    weight: 12
+    weight: 13
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_release:
     label: inline
-    weight: 14
+    weight: 15
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_s_no:
-    label: inline
-    weight: 0
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-  field_sdcallid:
     label: inline
     weight: 1
     type: number_integer
@@ -134,28 +134,36 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+  field_sdcallid:
+    label: inline
+    weight: 2
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
   field_services:
     label: inline
-    weight: 3
+    weight: 4
     type: entity_reference_label
     settings:
       link: true
     third_party_settings: {  }
   field_solution:
     label: inline
-    weight: 6
+    weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_task_force:
     label: inline
-    weight: 9
+    weight: 10
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_ticketstore_count:
     label: inline
-    weight: 20
+    weight: 21
     type: number_integer
     settings:
       thousand_separator: ''
@@ -163,31 +171,31 @@ content:
     third_party_settings: {  }
   field_ticketstore_link:
     label: inline
-    weight: 19
+    weight: 20
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_version:
     label: inline
-    weight: 15
+    weight: 16
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_work_around:
     label: inline
-    weight: 7
+    weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
   links:
-    weight: 22
+    weight: 23
     settings: {  }
     third_party_settings: {  }
   upload:
     label: hidden
     settings: {  }
     type: file_default
-    weight: 23
+    weight: 24
     third_party_settings: {  }
 hidden:
   langcode: true

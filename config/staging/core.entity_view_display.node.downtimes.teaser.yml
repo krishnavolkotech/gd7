@@ -5,6 +5,8 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.downtimes.body
+    - field.field.node.downtimes.comment
+    - field.field.node.downtimes.upload
     - node.type.downtimes
   module:
     - text
@@ -23,4 +25,8 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

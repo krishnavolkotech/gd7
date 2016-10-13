@@ -4,7 +4,9 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.non_production_environment.comment
     - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.upload
     - node.type.non_production_environment
   module:
     - text
@@ -22,4 +24,8 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

@@ -9,9 +9,13 @@ dependencies:
     - node.type.non_production_environment
   module:
     - comment
+    - entity_print
     - file
-    - text
+    - options
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.non_production_environment.default
 targetEntityType: node
 bundle: non_production_environment
@@ -24,18 +28,25 @@ content:
     settings:
       pager_id: 0
     third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
   field_non_production_state:
     label: above
     weight: -4
-    type: text_default
+    type: list_key
     settings: {  }
     third_party_settings: {  }
   links:
     weight: 100
+    settings: {  }
+    third_party_settings: {  }
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 101
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  langcode: true

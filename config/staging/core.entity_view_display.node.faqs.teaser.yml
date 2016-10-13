@@ -29,6 +29,7 @@ content:
     weight: 100
 hidden:
   comment: true
+  entity_print_view: true
   faq_kategorie: true
   faq_seite: true
   langcode: true

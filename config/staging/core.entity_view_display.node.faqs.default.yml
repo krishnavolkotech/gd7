@@ -22,39 +22,39 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 5
     settings: {  }
     third_party_settings: {  }
   comment:
     label: hidden
     type: comment_default
-    weight: 20
+    weight: 3
     settings:
       pager_id: 0
     third_party_settings: {  }
   faq_kategorie:
     label: hidden
     type: entity_reference_label
-    weight: 20
+    weight: 2
     settings:
       link: true
     third_party_settings: {  }
   faq_seite:
     label: hidden
     type: entity_reference_label
-    weight: 20
+    weight: 1
     settings:
       link: true
     third_party_settings: {  }
   links:
-    weight: 100
+    weight: 4
     settings: {  }
     third_party_settings: {  }
   upload:
     label: hidden
     settings: {  }
     type: file_default
-    weight: 102
+    weight: 6
     third_party_settings: {  }
 hidden:
   entity_print_view: true

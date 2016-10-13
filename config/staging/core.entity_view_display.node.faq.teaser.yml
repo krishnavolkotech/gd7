@@ -5,6 +5,8 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.faq.body
+    - field.field.node.faq.field_detailed_question
+    - field.field.node.faq.upload
     - node.type.faq
   module:
     - text
@@ -23,4 +25,8 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  entity_print_view: true
+  field_detailed_question: true
+  langcode: true
+  upload: true
