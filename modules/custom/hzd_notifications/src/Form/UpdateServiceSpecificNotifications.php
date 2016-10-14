@@ -63,7 +63,10 @@ class UpdateServiceSpecificNotifications extends FormBase {
       '#suffix' => '</div>',
     );
 
-    $form['submit'] = array('#type' => 'submit', '#value' => t('update'));
+    $form['submit'] = array('#type' => 'submit',
+														'#value' => t('Update'),
+														'#attributes' =>  array('hzdAction'=>'update')
+														);
     $form['delete'] = array(
       '#attributes' =>  array('sid' => $service_id, 'uid' => $uid, 'rel_type' => $rel_type,'hzdAction'=>'delete'),
       '#type' => 'button',
@@ -82,7 +85,6 @@ class UpdateServiceSpecificNotifications extends FormBase {
     $rel_type = $form_state->getValue('rel_type');
     $uid = $form_state->getValue('account');
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
-
     $intval = db_query("SELECT send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type 
              AND uid = :uid AND rel_type = :rel_type", 
              array(":sid" => $service, ":type" => $types[$content_type], ":uid" => $uid, ":rel_type" => $rel_type))->fetchField();
