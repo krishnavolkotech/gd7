@@ -65,7 +65,7 @@ class UpdateServiceSpecificNotifications extends FormBase {
 
     $form['submit'] = array('#type' => 'submit', '#value' => t('update'));
     $form['delete'] = array(
-      '#attributes' =>  array('sid' => $service_id, 'uid' => $uid, 'rel_type' => $rel_type),
+      '#attributes' =>  array('sid' => $service_id, 'uid' => $uid, 'rel_type' => $rel_type,'hzdAction'=>'delete'),
       '#type' => 'button',
       '#value' => t('Delete')
     );
