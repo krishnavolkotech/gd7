@@ -114,9 +114,8 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     $rel_type = $form_state->getValue('rel_type');
     $uid = $form_state->getValue('account');
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
-
-    $service_override_record = array('service_id' => $service, 'type' => $types[$content_type], 'send_interval' => $send_interval, 
-                               'uid' => $uid, 'rel_type' => $rel_type );
+    
+    $service_override_record = array('service_id' => $service, 'type' => $types[$content_type], 'send_interval' => $send_interval,'uid' => $uid, 'rel_type' => $rel_type );
     db_insert('service_notifications_override')->fields($service_override_record)->execute();
 
     // get user default interval of a particlural type

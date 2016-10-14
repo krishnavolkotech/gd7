@@ -175,10 +175,10 @@ class HzdNotificationsHelper {
   // get content types list of release type
   static function hzd_get_content_type_name($rel_type = KONSONS) {
     if($rel_type == KONSONS) {
-      $types = array(1 => 'downtimes', 'problem', 'release', 'early_warnings');
+      $types = array(1 => 'downtimes', 2 => 'problem', 3 => 'release', 4 => 'early_warnings');
     }
     else {
-      $types = array(1 => 'release', 'early_warnings');
+      $types = array(3 => 'release', 4 => 'early_warnings');
     }
     return $types;
   }

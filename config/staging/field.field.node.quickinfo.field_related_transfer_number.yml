@@ -1,4 +1,4 @@
-uuid: 640a78bb-c2c7-4e91-aa98-00bd8c8122b5
+uuid: a5daa598-1fb6-4a09-aa07-5af4fb2fa202
 langcode: en
 status: true
 dependencies:
@@ -12,7 +12,7 @@ bundle: quickinfo
 label: '1.2 Related to software transfer no.'
 description: '(max. 254 Zeichen)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
