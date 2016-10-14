@@ -51,3 +51,4 @@ permissions:
   41: 'use text format filtered_html'
   42: 'view search api pages'
   43: 'access user profiles'
+  44: 'access devel information'
