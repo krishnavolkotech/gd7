@@ -182,7 +182,7 @@ class HzdearlywarningsStorage {
         $filter_options['release_type'] = $_SESSION['earlywarning_filter_option']['release_type'];
     }
     
-    if ($filter_options['limit'] != 'all') {
+    if (isset($filter_options['limit']) && $filter_options['limit'] != 'all') {
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
     }
 
@@ -242,7 +242,7 @@ class HzdearlywarningsStorage {
       ->orderBy('n.created', 'DESC');
 
     // Echo '<pre>'; print_r($query->conditions()); exit;.
-    if ($filter_options['limit'] != 'all') {
+    if (isset($filter_options['limit']) && $filter_options['limit'] != 'all') {
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
       $paged_query->limit($page_limit);
       $result = $paged_query->execute()->fetchAll();
