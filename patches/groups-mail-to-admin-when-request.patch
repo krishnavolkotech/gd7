@@ -24,7 +24,7 @@ index 180dc23..96e5d45 100644
 -    }else {
 -      drupal_set_message(t('Mail sent.'), 'status');
 -    }
-+    //parent::submitForm($form, $form_state);
++    parent::submitForm($form, $form_state);
 +    
    }
  
