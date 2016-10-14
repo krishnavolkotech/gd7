@@ -1,7 +1,8 @@
 <?php
 
 namespace Drupal\hzd_earlywarnings;
-
+use Drupal\Core\Url;
+  
 /**
  * Use Drupal\node\Entity\Node;
  * use Drupal\user\PrivateTempStoreFactory;
@@ -146,7 +147,6 @@ class HzdearlywarningsStorage {
       // return $output .= theme('pager', NULL, $page_limit, 0);.
       $output['pager'] = array(
         '#type' => 'pager',
-
       );
 
       $output['problem_table'] = array(
@@ -159,7 +159,7 @@ class HzdearlywarningsStorage {
       return $output;
     }
   }
-
+  
   /**
    * @filter_options:filtering options for filtering early warnings
    * @return:displays the early warnings in the table format.
@@ -167,8 +167,21 @@ class HzdearlywarningsStorage {
    * In the display the responses field contains the count of comments posted on the early warning.
    * Function for displaying the early warnings for a particular service and release
    */
-  public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+  static public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
     $output = array();
+   
+    if(empty($filter_options)) {
+      $filter_options['service'] = $_SESSION['earlywarning_filter_option']['service'];
+      $filter_options['release'] = $_SESSION['earlywarning_filter_option']['release'];
+      if (isset($_SESSION['earlywarning_filter_option']['startdate'])) {
+        $filter_options['startdate'] = $_SESSION['earlywarning_filter_option']['startdate'];
+      }
+      if (isset($_SESSION['earlywarning_filter_option']['enddate'])) {
+        $filter_options['enddate'] = $_SESSION['earlywarning_filter_option']['enddate'];
+      }
+        $filter_options['release_type'] = $_SESSION['earlywarning_filter_option']['release_type'];
+    }
+    
     if ($filter_options['limit'] != 'all') {
       $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
     }
@@ -190,6 +203,8 @@ class HzdearlywarningsStorage {
     // }.
     $service = $filter_options['service'];
     $release = $filter_options['release'];
+    
+    
     if (!empty($filter_options)) {
       $query->condition('nrt.release_type_target_id', $filter_options['release_type'], '=');
 
@@ -235,7 +250,6 @@ class HzdearlywarningsStorage {
     else {
       $result = $query->execute()->fetchAll();
     }
-
     foreach ($result as $vals) {
       $user_query = db_select('cust_profile', 'cp');
       $user_query->condition('cp.uid', $vals->uid, '=')
@@ -243,9 +257,11 @@ class HzdearlywarningsStorage {
       $author = $user_query->execute()->fetchAll();
       $author_name = $author[0]->firstname . ' ' . $author[0]->lastname;
       $total_responses = self::get_earlywarning_responses_info($vals->nid);
-
+      
+      $url = Url::fromRoute('entity.node.canonical', array('node' => $vals->nid)); 
+      $early_warning = \Drupal::service('link_generator')->generate($vals->title, $url);
       $elements = array(
-        array('data' => $vals->title, 'class' => 'earlywarningslink-cell'),
+        array('data' => $early_warning, 'class' => 'earlywarningslink-cell'),
         array('data' => date('d.m.Y', $vals->created) . ' ' . t('by') . ' ' . $author_name, 'class' => 'created-cell'),
         array('data' => $total_responses['total_responses'], 'class' => 'responses-cell'),
         array('data' => $total_responses['response_lastposted'], 'class' => 'lastpostdate-cell'),
@@ -278,11 +294,12 @@ class HzdearlywarningsStorage {
   /**
    * Get early warning responses info.
    */
-  public function get_earlywarning_responses_info($earlywarnings_nid) {
+  static public function get_earlywarning_responses_info($earlywarnings_nid) {
     $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid",
                        array(":nid" => $earlywarnings_nid))->fetchField();
     $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1",
                     array(":eid" => $earlywarnings_nid))->fetchAll();
+    
     foreach ($resonses_sql as $vals) {
       $responses['uid'] = $vals->uid;
       $responses['last_posted'] = date('d.m.Y', $vals->created);
@@ -297,6 +314,7 @@ class HzdearlywarningsStorage {
         $response_lastposted = '';
       }
     }
+    
     $response_info = array('total_responses' => $total_responses, 'response_lastposted' => $response_lastposted);
     return $response_info;
   }
@@ -360,7 +378,7 @@ class HzdearlywarningsStorage {
   /**
    * Display early warning text on view warly warnings page.
    */
-  public function early_warning_text() {
+  static public function early_warning_text() {
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();

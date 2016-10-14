@@ -107,7 +107,14 @@ class HzdreleasemanagementHelper {
    * Get list of services based on the release type.
    */
   public function get_release_type_services($string = NULL, $release_type = NULL) {
-    $group_id = ($_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id = $group;
+    }
+    $group_id = ( isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
     $query = db_select('node_field_data', 'n');
     $query->join('group_releases_view', 'grv', 'n.nid = grv.service_id');
     $query->join('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
@@ -132,9 +139,16 @@ class HzdreleasemanagementHelper {
    */
   static public function get_dependent_release($service = NULL) {
     // $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
-    // $id = $tempstore->get('Group_id');.
-    $id = $_SESSION['Group_id'];
-    $group_id = ($id ? $id : RELEASE_MANAGEMENT);
+    // $id = $tempstore->get('Group_id');
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id = $group;
+    }
+
+    $group_id = (isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
     $query = db_select('node_field_data', 'n');
     $query->join('node__field_relese_services', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
@@ -157,8 +171,15 @@ class HzdreleasemanagementHelper {
    *
    */
   public function get_release($string = NULL, $service = NULL) {
-    $id = $_SESSION['Group_id'];
-    $group_id = ($_SESSION['Group_id'] ? $_SESSION['Group_id'] : RELEASE_MANAGEMENT);
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id = $group;
+    }
+
+    $group_id = (isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
     $release_type = get_release_type($string);
     $query = db_select('node_field_data', 'n');
     $query->join('node__field_relese_services', 'nfrs', 'n.nid = nfrs.entity_id');
