@@ -54,7 +54,7 @@ downtimes.confirm:
     _title: 'Conform'
   requirements:
     _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdnodeConfirmAccess'
     node: \d+
 
 downtimes.cancel_confirm:
@@ -64,7 +64,7 @@ downtimes.cancel_confirm:
     _title: 'Cancel'
   requirements:
     _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdnodeConfirmAccess'
     node: \d+
 
 downtimes.service_profiles:

@@ -64,9 +64,19 @@ class AccessController extends ControllerBase {
 
     function createMaintenanceAccess() {
         if ($group = \Drupal\group\Entity\group::load(19)) {
-            if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+          $content = $group->getMember(\Drupal::currentUser());
+          if($content){
+              $contentId = $content->getGroupContent()->id();
+              $adminquery = \Drupal::database()->select('group_content__group_roles','gcgr')
+                  ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
+              if (!empty($adminquery) || \Drupal::currentUser()->id() == 1) {
                 return AccessResult::allowed();
             }
+            else {
+                return AccessResult::forbidden();
+            }
+          }
+            
             else {
                 return AccessResult::forbidden();
             }

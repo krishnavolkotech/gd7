@@ -33,116 +33,148 @@ class CustNodeController extends ControllerBase {
 
     return $form;
   }
-  
-  
-  function groupContentView(){
+
+  function groupContentView() {
     $parm = \Drupal::routeMatch()->getParameter('group_content');
     $node = \Drupal\node\Entity\Node::load($parm->get('entity_id')->referencedEntities()[0]->id());
     $view_builder = \Drupal::entityManager()->getViewBuilder('node');
     return $view_builder->view($node);
   }
 
-  function groupMemberView(){
+  function groupMemberView() {
     $member = \Drupal::routeMatch()->getParameter('group_content');
     $user = \Drupal\user\Entity\User::load($member->get('entity_id')->referencedEntities()[0]->id());
     $view_builder = \Drupal::entityManager()->getViewBuilder('user');
     return $view_builder->view($user);
   }
 
-  static function hzdGroupAccess(){
-    if($group = \Drupal::routeMatch()->getParameter('group')){
-			if(!is_object($group))
-				$group = \Drupal\group\Entity\Group::load($group);
-      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator',\Drupal::currentUser()->getRoles())){
-				return AccessResult::allowed();
-      }else{
+  static function hzdGroupAccess() {
+    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+      drupal_set_message("ASDFADSF");
+      if (!is_object($group))
+        $group = \Drupal\group\Entity\Group::load($group);
+      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+        return AccessResult::allowed();
+      }
+      else {
         return AccessResult::forbidden();
       }
     }
     return AccessResult::neutral();
   }
-	
-	
-	///added for drupal core views 
-	static function hzdGroupViewsAccess(){
-    if($group = \Drupal::routeMatch()->getParameter('arg_0')){
-			if(!is_object($group))
-				$group = \Drupal\group\Entity\Group::load($group);
-      if($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
-				return AccessResult::allowed();
-      }else{
+
+  static function hzdnodeConfirmAccess() {
+    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+      if (!is_object($group))
+        $group = \Drupal\group\Entity\Group::load($group);
+      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+        return AccessResult::allowed();
+      }
+      else {
+        return AccessResult::forbidden();
+      }
+    }
+    else if ($node = \Drupal::routeMatch()->getParameter('node')) {
+      $group_id = \Drupal::database()->select('group_content_field_data', 'gcfd')
+              ->fields('gcfd', ['gid', 'id'])
+              ->condition('gcfd.entity_id', $node)
+              ->execute()->fetchAssoc();
+      if ($group_id) {
+        $group = \Drupal\group\Entity\Group::load($group_id['gid']);
+        if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+          return AccessResult::allowed();
+        }
+        else {
+          return AccessResult::forbidden();
+        }
+      }
+      else {
         return AccessResult::forbidden();
       }
     }
     return AccessResult::neutral();
   }
-  
-  static function isGroupAdmin($group_id = null){
-    if(!$group_id){
+
+  ///added for drupal core views 
+  static function hzdGroupViewsAccess() {
+    if ($group = \Drupal::routeMatch()->getParameter('arg_0')) {
+      if (!is_object($group))
+        $group = \Drupal\group\Entity\Group::load($group);
+      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+        return AccessResult::allowed();
+      }
+      else {
+        return AccessResult::forbidden();
+      }
+    }
+    return AccessResult::neutral();
+  }
+
+  static function isGroupAdmin($group_id = null) {
+    if (!$group_id) {
       return false;
     }
-		if(in_array('site_administrator',\Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1){
-			return true;
-		}
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return true;
+    }
     $group = \Drupal\group\Entity\Group::load($group_id);
-      $content = $group->getMember(\Drupal::currentUser());
-      if($content){
-          $contentId = $content->getGroupContent()->id();
-          $adminquery = \Drupal::database()->select('group_content__group_roles','gcgr')
-              ->fields('gcgr',['group_roles_target_id'])->condition('entity_id',$contentId)->execute()->fetchAll();
-          return (bool)!empty($adminquery);
-      }
-			
+    $content = $group->getMember(\Drupal::currentUser());
+    if ($content) {
+      $contentId = $content->getGroupContent()->id();
+      $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
+              ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
+      return (bool) !empty($adminquery);
+    }
+
     return false;
   }
-	
-	
-	
-	static function getNodeGroupId($node = null){
-		if(!$node){
-			return false;
-		}
-		$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
-          ->fields('gcfd',['gid','id'])
-          ->condition('gcfd.entity_id',$node->id())
-          ->execute()->fetchAssoc();
-		if(!empty($checkGroupNode)){
-			return $checkGroupNode;
-		}
-		return false;
-	}
-	
-	function groupNodeEdit(){
-		//pr(\Drupal::routeMatch()->getParameter('group_content'));exit;
-		$group_content = \Drupal::routeMatch()->getParameter('group_content');
-		$group = \Drupal::routeMatch()->getParameter('group');
-		$node = $group_content->get('entity_id')->referencedEntities()[0];
-		$form = \Drupal::entityTypeManager()
-			->getFormObject('node', 'default')
-			->setEntity($node);
-		$url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical',['group'=>$group->id(),'group_content'=>$group_content->id()]);
-		return \Drupal::formBuilder()->getForm($form,['redirect'=>$url]);
-	}
-	
-	function groupMemberCleanup(){
+
+  static function getNodeGroupId($node = null) {
+    if (!$node) {
+      return false;
+    }
+    $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
+            ->fields('gcfd', ['gid', 'id'])
+            ->condition('gcfd.entity_id', $node->id())
+            ->execute()->fetchAssoc();
+    if (!empty($checkGroupNode)) {
+      return $checkGroupNode;
+    }
+    return false;
+  }
+
+  function groupNodeEdit() {
+    //pr(\Drupal::routeMatch()->getParameter('group_content'));exit;
+    $group_content = \Drupal::routeMatch()->getParameter('group_content');
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $node = $group_content->get('entity_id')->referencedEntities()[0];
+    $form = \Drupal::entityTypeManager()
+        ->getFormObject('node', 'default')
+        ->setEntity($node);
+    $url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group->id(), 'group_content' => $group_content->id()]);
+    return \Drupal::formBuilder()->getForm($form, ['redirect' => $url]);
+  }
+
+  function groupMemberCleanup() {
     $groupContent = \Drupal::entityQuery('group_content');
-		$orCondition = $groupContent->orConditionGroup()->condition('type','%member%','LIKE')
-				->condition('type',['group_content_type_b2ed3eb8d19c9','group_content_type_d4b06e2b6aad0','group_content_type_ecf0249297413'],'IN');
+    $orCondition = $groupContent->orConditionGroup()->condition('type', '%member%', 'LIKE')
+        ->condition('type', ['group_content_type_b2ed3eb8d19c9', 'group_content_type_d4b06e2b6aad0', 'group_content_type_ecf0249297413'], 'IN');
     $groupContent = $groupContent->condition($orCondition)
         ->execute();
-        //pr($groupContent);exit;
-    
-    foreach($groupContent as $groupUser){
+    //pr($groupContent);exit;
+
+    foreach ($groupContent as $groupUser) {
       $gUser = \Drupal\group\Entity\GroupContent::load($groupUser);
-      
-        if($gUser && $gUser->entity_id->referencedEntities()){
-            
-        }elseif($gUser){
-          $gUser->delete();
-        }
+
+      if ($gUser && $gUser->entity_id->referencedEntities()) {
+        
+      }
+      elseif ($gUser) {
+        $gUser->delete();
+      }
     }
-		echo 'completed';exit;
+    echo 'completed';
+    exit;
   }
-	
-	
+
 }
