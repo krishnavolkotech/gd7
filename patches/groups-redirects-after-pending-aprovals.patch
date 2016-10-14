@@ -1,0 +1,44 @@
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php b/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
+index a409bd8..0039434 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentApproveForm.php
+@@ -41,7 +41,7 @@ public function getQuestion() {
+   public function getCancelURL() {
+     // @todo Read a redirect from the plugin?
+     $entity = $this->getEntity();
+-    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+   }
+ 
+   /**
+@@ -64,7 +64,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+       '%title' => $this->entity->label(),
+     ]);
+     // @todo Read a redirect from the plugin?
+-    $form_state->setRedirect('entity.group.collection');
++    $form_state->setRedirect('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+   }
+ 
+ }
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php b/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
+index e103064..ee07f39 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentRejectForm.php
+@@ -41,7 +41,7 @@ public function getQuestion() {
+   public function getCancelURL() {
+     // @todo Read a redirect from the plugin?
+     $entity = $this->getEntity();
+-    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->id()]);
++    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+   }
+ 
+   /**
+@@ -63,7 +63,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+       '%title' => $this->entity->label(),
+     ]);
+     // @todo Read a redirect from the plugin?
+-    $form_state->setRedirect('entity.group.collection');
++    $form_state->setRedirect('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+   }
+ 
+ }
