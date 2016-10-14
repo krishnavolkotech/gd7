@@ -3,6 +3,10 @@
 /**
  * @file
  * Provides a printable format for generating PDFs.
+ * 
+ * Azri Comments
+ * Hacked the printable module because of template override issue
+ * To work the header and footer templates in pdf for everypage refer to printable_pdf/templates directory
  */
 
 /**

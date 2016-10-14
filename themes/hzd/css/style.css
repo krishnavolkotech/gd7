@@ -81,13 +81,16 @@ p {
 #block-primarylinks ul li a:hover {
   background: #0c4f6d;
 }
-#block-primarylinks ul li.active {
+#block-primarylinks ul li.open {
   width: auto;
   display: inline-block;
 }
-#block-primarylinks ul li.active a {
-  background: #0c4f6d;
+#block-primarylinks ul li.open a {
+  background: rgba(206, 240, 253, 0.3);
   color: #ffffff;
+}
+#block-primarylinks ul li.open a:hover {
+  color: #1475a0;
 }
 footer h2,
 a.name.navbar-brand,
@@ -600,8 +603,8 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   background-color: #5289a1;
   color: #ffffff !important;
 }
-.nav > li.active > a:hover,
-.nav > li.active > a {
+ul.tabs--primary > li.active > a:hover,
+ul.tabs--primary > li.active > a {
   color: #5289a1 !important;
 }
 .nav-tabs > li > a {
@@ -611,6 +614,11 @@ table tr th {
   background: #1475a0;
   color: #ffffff;
   border-bottom: 2px solid #0e658c !important;
+}
+table tr th a,
+table tr th a:hover {
+  color: #ffffff;
+  text-decoration: none;
 }
 table tr.odd {
   background: #edf4fa !important;
@@ -844,7 +852,8 @@ input[type="button"]:hover,
   background: #0c4f6d !important;
 }
 .btn-default,
-.views-exposed-form button {
+.views-exposed-form button,
+button.btn-info {
   background: #1475a0 !important;
   font-size: 14px;
   color: #ffffff !important;
@@ -1029,7 +1038,8 @@ table.view-deployed-releases {
 }
 .nav .open > a,
 .nav .open > a:hover,
-.nav .open > a:focus {
+.nav .open > a:focus,
+#block-primarylinks .nav .active {
   background-color: #0c4f6d !important;
 }
 #block-primarylinks ul ul.dropdown-menu {
@@ -1057,6 +1067,7 @@ table.view-deployed-releases {
 }
 #block-primarylinks ul ul.dropdown-menu li a:hover {
   color: #ffffff;
+  background: #1475a0;
 }
 #block-primarylinks ul ul.dropdown-menu li:last-child a {
   border-bottom: none !important;
@@ -1365,4 +1376,62 @@ form#downtimes-filter .string_search.hzd-form-element {
 }
 .view-group-faqs .view-content .views-row p {
   margin-bottom: 0 !important;
+}
+ul.admin-list {
+  padding: 0;
+  margin: 0;
+}
+ul.admin-list li {
+  list-style-type: none;
+  padding-bottom: 10px;
+}
+ul.admin-list li a .label {
+  color: #424241;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 0 0 4px 0 !important;
+  cursor: text;
+  white-space: normal !important;
+}
+ul.admin-list li a:hover {
+  text-decoration: none;
+}
+table .radio input[type="radio"],
+table .radio-inline input[type="radio"],
+table .checkbox input[type="checkbox"],
+table .checkbox-inline input[type="checkbox"] {
+  margin-left: 0 !important;
+}
+table td.views-field-label a {
+  width: 150px;
+  float: left;
+}
+/* Table sorter css */
+#tablesorter .header {
+  background-image: url(../../modules/custom/downtimes/images/bg.gif);
+  background-position: right center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+#tablesorter .headerSortDown {
+  background-image: url(../../modules/custom/downtimes/images/desc.gif);
+}
+#tablesorter .headerSortUp {
+  background-image: url(../../modules/custom/downtimes/images/asc.gif);
+}
+aside.col-sm-3 .input-group-addon {
+  border-radius: 0 !important;
+}
+/*.form-required{
+  font-size:0px;
+}*/
+form.user-login-form .form-required + .form-required,
+form.user-register-form .form-required + .form-required,
+form.user-pass .form-required + .form-required {
+  display: none;
+}
+form.user-login-form .form-required,
+form.user-register-form .form-required,
+form.user-pass .form-required {
+  font-size: 12px !important;
 }

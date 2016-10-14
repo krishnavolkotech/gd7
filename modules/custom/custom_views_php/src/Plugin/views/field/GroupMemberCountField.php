@@ -81,7 +81,7 @@ class GroupMemberCountField extends FieldPluginBase {
     $res = $result;
     if($values->_entity->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
       $doc_options['attributes'] = array('class' => 'member-link');
-      $url = Url::fromUserInput('/group/' . $gid .'/approved-members', $doc_options);
+      $url = Url::fromUserInput('/group/' . $gid .'/address', $doc_options);
       $res = \Drupal::service('link_generator')->generate($result, $url);
     }
     return $res;

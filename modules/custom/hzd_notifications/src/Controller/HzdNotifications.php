@@ -82,7 +82,8 @@ class HzdNotifications extends ControllerBase {
     $rel_type = \Drupal::request()->get('rel_type');
     $content_types =  array(1 => 'downtimes',2=>  'problem',3=> 'release',4=> 'early_warnings');
     $action = \Drupal::request()->get('type');
-    if($action == 'Delete'){
+    //pr($action);exit;
+    if($action == 'delete'){
         \Drupal::database()->delete('service_notifications_override')
           ->condition('service_id', $service)
           ->condition('type', $content_types[$type])
@@ -113,7 +114,9 @@ class HzdNotifications extends ControllerBase {
 //echo $qfd->__toString();
     }
     
-    
+    $resp = new \Drupal\Core\Ajax\AjaxResponse();
+    $resp->setData(['success'=>TRUE,'data'=>'success']);
+    return $resp;
     
     $output[] = array(
       '#attached' => array(
@@ -133,6 +136,7 @@ class HzdNotifications extends ControllerBase {
           )
         )
       );
+    pr($output);exit;
     return $output;
   }
 

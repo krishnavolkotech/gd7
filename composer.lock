@@ -4,8 +4,13 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
+    "hash": "a88f9476bd1bb89d7d2d1d59be2c5a10",
+    "content-hash": "f8e034ec4ec8663a71cd645b5b244cea",
+=======
     "hash": "57e3ad1dcf8af862f5b89cd6b8637aa0",
     "content-hash": "1ea975d2643fc2f27ba93cd3159e4671",
+>>>>>>> 4624d08c1253e912940938b62185d213938db6b9
     "packages": [
         {
             "name": "composer/installers",
@@ -575,6 +580,128 @@
             "time": "2014-09-09 13:34:57"
         },
         {
+<<<<<<< HEAD
+            "name": "drupal/search_api",
+            "version": "1.0.0-beta2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/search_api",
+                "reference": "8.x-1.0-beta2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/search_api-8.x-1.0-beta2.zip",
+                "reference": "8.x-1.0-beta2",
+                "shasum": "1f4fe5a2b9b278a36a3b79898f424ad75a218293"
+            },
+            "require": {
+                "drupal/core": "^8.1"
+            },
+            "suggest": {
+                "drupal/core": "Required by drupal/search_api_views_taxonomy",
+                "drupal/search_api_db": "Required by drupal/search_api_db_defaults"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0-beta2",
+                    "datestamp": "1475059139"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Seidl",
+                    "homepage": "https://www.drupal.org/u/drunken-monkey"
+                },
+                {
+                    "name": "Nick Veenhof",
+                    "homepage": "https://www.drupal.org/u/nick_vh"
+                },
+                {
+                    "name": "See other contributors",
+                    "homepage": "https://www.drupal.org/node/790418/committers"
+                }
+            ],
+            "description": "Provides a generic framework for modules offering search capabilities.",
+            "homepage": "https://www.drupal.org/project/search_api",
+            "support": {
+                "source": "http://git.drupal.org/project/search_api.git",
+                "issues": "https://www.drupal.org/project/issues/search_api",
+                "irc": "irc://irc.freenode.org/drupal-search-api"
+            }
+        },
+        {
+            "name": "drupal/search_api_solr",
+            "version": "dev-1.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/search_api_solr",
+                "reference": "69010c8ee0b2712becaa7b7ef406acd32593a110"
+            },
+            "require": {
+                "drupal/core": "~8.0",
+                "drupal/search_api": "*",
+                "solarium/solarium": "3.6.*"
+            },
+            "suggest": {
+                "drupal/core": "Required by drupal/search_api_solr_defaults"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0-alpha6+15-dev",
+                    "datestamp": "1475145539"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Berdir",
+                    "homepage": "https://www.drupal.org/user/214652"
+                },
+                {
+                    "name": "Nick_vh",
+                    "homepage": "https://www.drupal.org/user/122682"
+                },
+                {
+                    "name": "amateescu",
+                    "homepage": "https://www.drupal.org/user/729614"
+                },
+                {
+                    "name": "cspitzlay",
+                    "homepage": "https://www.drupal.org/user/419305"
+                },
+                {
+                    "name": "drunken monkey",
+                    "homepage": "https://www.drupal.org/user/205582"
+                },
+                {
+                    "name": "mkalkbrenner",
+                    "homepage": "https://www.drupal.org/user/124705"
+                }
+            ],
+            "description": "Offers an implementation of the Search API that uses an Apache Solr server for indexing content.",
+            "homepage": "https://www.drupal.org/project/search_api_solr",
+            "support": {
+                "source": "http://cgit.drupalcode.org/search_api_solr",
+                "issues": "https://www.drupal.org/project/issues/search_api_solr",
+                "irc": "irc://irc.freenode.org/drupal-search-api"
+            },
+            "time": "2016-09-29 10:42:19"
+=======
             "name": "drupal/coder",
             "version": "8.2.9",
             "source": {
@@ -610,6 +737,7 @@
                 "standards"
             ],
             "time": "2016-09-17 16:49:15"
+>>>>>>> 4624d08c1253e912940938b62185d213938db6b9
         },
         {
             "name": "easyrdf/easyrdf",
@@ -4447,7 +4575,13 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
+<<<<<<< HEAD
+    "stability-flags": {
+        "drupal/search_api_solr": 20
+    },
+=======
     "stability-flags": [],
+>>>>>>> 4624d08c1253e912940938b62185d213938db6b9
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

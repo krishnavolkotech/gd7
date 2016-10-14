@@ -125,8 +125,10 @@ class CustNodeController extends ControllerBase {
 	}
 	
 	function groupMemberCleanup(){
-    $groupContent = \Drupal::entityQuery('group_content')
-        ->condition('type','%member%','LIKE')
+    $groupContent = \Drupal::entityQuery('group_content');
+		$orCondition = $groupContent->orConditionGroup()->condition('type','%member%','LIKE')
+				->condition('type',['group_content_type_b2ed3eb8d19c9','group_content_type_d4b06e2b6aad0','group_content_type_ecf0249297413'],'IN');
+    $groupContent = $groupContent->condition($orCondition)
         ->execute();
         //pr($groupContent);exit;
     
@@ -139,6 +141,7 @@ class CustNodeController extends ControllerBase {
           $gUser->delete();
         }
     }
+		echo 'completed';exit;
   }
 	
 	
