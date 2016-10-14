@@ -852,8 +852,9 @@ class HzdcustomisationStorage {
       $downtime_ids = array();
       $downtime_ids = explode(',', $client->state_id);
       $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
+      $maintenance_group =  \Drupal\group\Entity\Group::load(MAINTENANCE_GROUP_ID);
       // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
-      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+      if ($maintenance_group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
         $maintenance_edit = TRUE;
       }
       else {
