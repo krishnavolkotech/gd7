@@ -178,6 +178,40 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
             }
             $form['state'] = ['#type'=>'select','#options' => $stateOptions];
             break;
+        case 'group_content_moderate-group_membership_group-request_form':
+            $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
+            break;
+    }
+}
+
+function requst_submit_handler(&$form, $form_state){
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $subject = t("Membership Request for a Group - ".$group->label());
+    $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
+        ->loadByGroup($group, 'group_membership', ['group_roles'=>['moderate-admin']]);
+    $users = [];
+    foreach($groupAdmins as $admin){
+        $userEntity = $admin->entity_id->entity;
+        $userId = $userEntity->id();
+        $users[$userId]['email'] = $userEntity->getEmail();
+        $users[$userId]['name'] = $userEntity->label();
+    }
+    $message = $form_state->getValue('message');
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'group';
+    $key = 'immediate_notifications';
+    $params['subject'] = $subject;
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $send = true;
+    $link = \Drupal\Core\Link::createFromRoute('View Pending Requests','entity.group_content.group_membership.pending_collection',['group'=>$group->id()],['absolute'=>TRUE])->toString();
+    foreach($users as $user){
+        $params['message'] = t('Dear '.$user['name'].',<br><br>There is a new Membership Request for Group '.$group->toLink()->toString().'<br><br>'.$message.'<br><br>'.$link);
+        $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, NULL, $send);
+    }
+    if ($result['result'] !== true) {
+      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    }else {
+      drupal_set_message(t('Mail sent.'), 'status');
     }
 }
 
