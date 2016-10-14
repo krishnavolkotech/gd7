@@ -110,6 +110,7 @@ static function get_related_services($type = NULL) {
 
   // display list of all services
   function service_list() {
+    global $base_url;
     $header = array(
 		  0 => array('data' => t('Service Name'), 'class' => 'service_name'),
 		  1 => array('data' => t('Name in problem database'), 'class' => 'problem_name'),
@@ -118,7 +119,7 @@ static function get_related_services($type = NULL) {
 		  4 => array('data' => t('Action'), 'class' => 'downtime_action'),
 		);
 		$services_query = self::services_query();
-		$loader_path = drupal_get_path('module', 'hzd_services') . '/images/status-active.gif';
+		$loader_path = $base_url . '/modules/custom/hzd_services/images/status-active.gif';
 		foreach($services_query as $service_info) {
 		  $value = TRUE; 
       if(!$service_info->field_enable_downtime_value) {
