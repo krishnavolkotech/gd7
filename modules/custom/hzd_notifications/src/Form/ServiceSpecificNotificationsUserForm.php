@@ -116,7 +116,25 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
     
     $service_override_record = array('service_id' => $service, 'type' => $types[$content_type], 'send_interval' => $send_interval,'uid' => $uid, 'rel_type' => $rel_type );
-    db_insert('service_notifications_override')->fields($service_override_record)->execute();
+    $db = \Drupal::database();
+    $checkId = $db->select('service_notifications_override','sno')
+      ->fields('sno',['sid'])
+      ->condition('service_id',$service)
+      ->condition('type',$types[$content_type])
+      ->condition('rel_type',$rel_type)
+      ->execute()
+      ->fetchField();
+    if(!empty($checkId)){
+      $update = $db->update('service_notifications_override')
+        ->fields($service_override_record)
+        ->condition('sid',$checkId)
+        ->execute();
+    }else{
+      $insert = $db->insert('service_notifications_override')
+        ->fields($service_override_record)
+        ->execute();
+    }
+    //db_insert('service_notifications_override')->fields($service_override_record)->execute();
 
     // get user default interval of a particlural type
     $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $types[$content_type], $rel_type);

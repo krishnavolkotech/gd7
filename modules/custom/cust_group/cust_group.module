@@ -166,6 +166,17 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
             }
             $form['faq_seite']['widget']['#options'] = $pageOptions;
             break;
+        case 'views_exposed_form':
+            $states = \Drupal::database()->select('states','s')
+                ->fields('s',['abbr','state'])
+                ->condition('active',1)
+                ->execute()
+                ->fetchAllAssoc('abbr');
+            foreach($states as $key=>$val){
+                $stateOptions[$key] = $val->state;
+            }
+            $form['state'] = ['#type'=>'select','#options' => $stateOptions];
+            break;
     }
 }
 
