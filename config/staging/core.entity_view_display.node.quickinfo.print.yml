@@ -12,14 +12,12 @@ dependencies:
     - field.field.node.quickinfo.field_business_impact_services
     - field.field.node.quickinfo.field_contact
     - field.field.node.quickinfo.field_creators
-    - field.field.node.quickinfo.field_custom_title
     - field.field.node.quickinfo.field_dates
     - field.field.node.quickinfo.field_depend_other_services
     - field.field.node.quickinfo.field_intial_situation
     - field.field.node.quickinfo.field_other_services
     - field.field.node.quickinfo.field_professional_conditions
     - field.field.node.quickinfo.field_recipients
-    - field.field.node.quickinfo.field_related_transfer_number
     - field.field.node.quickinfo.field_special_notes
     - field.field.node.quickinfo.field_tech_requirements
     - field.field.node.quickinfo.field_technical_impact
@@ -77,12 +75,6 @@ content:
     type: text_default
     settings: {  }
     third_party_settings: {  }
-  field_custom_title:
-    label: above
-    weight: 6
-    type: text_default
-    settings: {  }
-    third_party_settings: {  }
   field_dates:
     label: above
     weight: 27
@@ -116,12 +108,6 @@ content:
   field_recipients:
     label: above
     weight: 9
-    type: text_default
-    settings: {  }
-    third_party_settings: {  }
-  field_related_transfer_number:
-    label: above
-    weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }

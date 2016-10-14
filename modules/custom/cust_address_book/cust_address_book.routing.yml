@@ -1,10 +1,10 @@
-cust_address_book.address:
-  path: '/address'
-  defaults:
-    _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book'
-    _title: 'Members'
-  requirements:
-    _permission: 'administer search'
+#cust_address_book.address:
+#  path: '/address-old'
+#  defaults:
+#    _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book'
+#    _title: 'Members'
+#  requirements:
+#    _permission: 'administer search'
 #cust_address_book.group_address:
 #  path: '/group/{group}/address_1'
 #  defaults:

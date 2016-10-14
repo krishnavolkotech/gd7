@@ -87,11 +87,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_custom_title:
+    weight: 23
     label: above
-    weight: 0
-    type: basic_string
     settings: {  }
     third_party_settings: {  }
+    type: basic_string
   field_dates:
     label: above
     weight: 18
@@ -129,11 +129,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_related_transfer_number:
+    weight: 25
     label: above
-    weight: 1
-    type: basic_string
     settings: {  }
     third_party_settings: {  }
+    type: basic_string
   field_special_notes:
     label: above
     weight: 17
