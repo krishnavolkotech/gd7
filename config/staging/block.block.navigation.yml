@@ -1,0 +1,36 @@
+uuid: ac06bdad-ffc8-47d5-bc04-a3b5a139ae0d
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.navigation
+  module:
+    - block_class
+    - system
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: navigation
+theme: hzd
+region: '-1'
+weight: 4
+provider: null
+plugin: 'system_menu_block:navigation'
+settings:
+  id: 'system_menu_block:navigation'
+  label: Optionen
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      site_administrator: site_administrator
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

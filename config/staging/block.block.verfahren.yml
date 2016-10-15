@@ -17,7 +17,7 @@ third_party_settings:
 id: verfahren
 theme: hzd
 region: sidebar_first
-weight: -13
+weight: -18
 provider: null
 plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
 settings:

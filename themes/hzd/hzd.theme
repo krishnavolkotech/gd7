@@ -98,21 +98,24 @@ function hzd_preprocess_node(&$variables) {
     $files = get_related_files('transcription fmk');
     $variables['transkription_fmk_files'] = $files;
   }
-  if ($variables['node']->getType() == 'quickinfo' && $variables['node']->isPublished()) {
-    $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-    $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
-    $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
-    $variables['changed'] = date('d.m.Y', $variables['node']->get('changed')->value);
-    if (isset($variables['elements']['#revisions_table_print'])) {
-      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
+  if ($variables['node']->getType() == 'quickinfo') {
+    if ($variables['node']->isPublished()) {
+      $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
+      $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
+      $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
     }
+    $variables['changed'] = date('d.m.Y', $variables['node']->get('changed')->value);
+    $variables['field_custom_title'] = $variables['node']->get('field_custom_title')->value;
+    $variables['field_related_transfer_number'] = $variables['node']->get('field_related_transfer_number')->value;
   }
   if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished()) {
 
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
     $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
-
+    if (isset($variables['elements']['#revisions_table_print'])) {
+      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
+    }
     //$url = Url::fromUserInput('/entityprint/node/' . $nid);
 
     $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
@@ -169,6 +172,9 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->state = $state_ids;
     $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
+    $url = URL::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => 24));
+    $urldata = '<span class="back-to-search">' . \Drupal::l("Back to Search", $url) . '</span>';
+    $variables['back_to_search'] = array('#markup' => '<div class="back-to-search-wrapper">' . $urldata . '</div>');
   }
   if ($variables['node']->getType() == 'problem') {
     $variables['problem_text'] = $variables['node']->body->value;
