@@ -98,7 +98,7 @@ function hzd_preprocess_node(&$variables) {
     $files = get_related_files('transcription fmk');
     $variables['transkription_fmk_files'] = $files;
   }
-  if ($variables['node']->getType() == 'quickinfo') {
+  if ($variables['node']->getType() == 'quickinfo' && $variables['node']->isPublished()) {
     $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
     $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
     $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
@@ -114,7 +114,7 @@ function hzd_preprocess_node(&$variables) {
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
 
     //$url = Url::fromUserInput('/entityprint/node/' . $nid);
-    
+
     $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
     $urldata = \Drupal::l("PDF preview", $url);
     $variables['pdf_priview'] = array('#markup' => $urldata);
@@ -171,15 +171,16 @@ function hzd_preprocess_node(&$variables) {
     $variables['incident'] = $incident_data;
   }
   if ($variables['node']->getType() == 'problem') {
-     $variables['problem_text'] = $variables['node']->body->value;
+    $variables['problem_text'] = $variables['node']->body->value;
 
     $variables['ticketstore_count'] = $variables['node']->get('field_ticketstore_count')->value;
     $variables['ticketstore_link'] = $variables['node']->get('field_ticketstore_link')->value;
     if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
-       $variables['ticketstore_html'] = t('No attachments available');
-    } else {
-       $att_html = $ticketstore_count>1?"attachments":"attachment"; 
-       $variables['ticketstore_html'] = t("<a href=$ticketstore_link>" . t("Link to Ticketstore") . " ($ticketstore_count ". t("$att_html available") . ")</a>");
+      $variables['ticketstore_html'] = t('No attachments available');
+    }
+    else {
+      $att_html = $ticketstore_count > 1 ? "attachments" : "attachment";
+      $variables['ticketstore_html'] = t("<a href=$ticketstore_link>" . t("Link to Ticketstore") . " ($ticketstore_count " . t("$att_html available") . ")</a>");
     }
     dpm($variables['node']->get('field_problem_eroffnet'));
     $variables['erroffnet_value'] = date('d.m.Y', $variables['node']->get('field_problem_eroffnet')->value);
@@ -188,7 +189,7 @@ function hzd_preprocess_node(&$variables) {
     $serialized_params = unserialize($_SESSION['params_seralized']);
     if ($serialized_data['nid']) {
       // $variables['back_to_search'] =   l(t('Back To Search'), $serialized_data['url']);
-     }
+    }
     else if ($serialized_params['url']) {
       // $variables['back_to_search'] = l(t('Back To Search'), $serialized_params['url']);
     }
@@ -199,6 +200,10 @@ function custom_user_fullname($uid) {
   $query = "select concat(firstname, ' ', lastname) from {cust_profile} where uid = ?";
   $user_fullname = db_query($query, array($uid))->fetchField();
   return $user_fullname;
+}
+
+function is_unix_timestamp($timestamp) {
+  return preg_match('/^\d+$/', $timestamp);
 }
 
 function downtimes_revisions($node) {
@@ -219,13 +224,63 @@ function downtimes_revisions($node) {
         }
         if ($field_value['old'] && $field_value['new']) {
           # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
-          $output .= ' (alt): ' . t($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
+          $output .= ' (alt): ';
+          if (is_numeric($field_value['old'])) {
+            if (is_unix_timestamp($field_value['old'])) {
+              $output .= date('d.m.Y-H:i:s', $field_value['old']);
+            }
+            else {
+              if ($field_value['old'] < 0) {
+                $output .= '-';
+              }
+              else {
+                $output .= $field_value['old'];
+              }
+            }
+          }
+          else {
+            $output .= t($field_value['old']);
+          }
+          $output .= '<br>' . t("$name") . ' (neu): ';
+          if (is_numeric($field_value['new'])) {
+            if (is_unix_timestamp($field_value['new'])) {
+              $output .= date('d.m.Y-H:i:s', $field_value['new']);
+            }
+            else {
+              if ($field_value['new'] < 0) {
+                $output .= 'NA';
+              }
+              else {
+                $output .= $field_value['new'];
+              }
+            }
+          }
+          else {
+            $output .= t($field_value['new']);
+          }
+          //$output .= '<br>' . t("$name") . ' (neu): ' . t($field_value['new']);
         }
         else if ($field_value['old'] && !$field_value['new']) {
           $output .= ' ' . t("(entfernt)");
         }
         else if (!$field_value['old'] && $field_value['new']) {
-          $output .= t(" (neu): ") . "</b>" . t($field_value['new']);
+          $output .= t(" (neu): ") . "</b>";
+          if (is_numeric($field_value['new'])) {
+            if (is_unix_timestamp($field_value['new'])) {
+              $output .= date('d.m.Y-H:i:s', $field_value['new']);
+            }
+            else {
+              if ($field_value['new'] < 0) {
+                $output .= 'NA';
+              }
+              else {
+                $output .= $field_value['new'];
+              }
+            }
+          }
+          else {
+            $output .= t($field_value['new']);
+          }
         }
       }
       else {
@@ -279,13 +334,3 @@ function hzd_preprocess_user(&$variables) {
   $variables['state'] = $state_name;
   $variables['group_list'] = hzd_group_list($variables['user']->id());
 }
-
-
-
-
-
-
-
-
-
-
