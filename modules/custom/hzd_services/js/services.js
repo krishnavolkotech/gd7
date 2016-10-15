@@ -17,7 +17,7 @@
       });
 
       function update_service(id, status) {
-        window.location.href = drupalSettings.path.baseUrl + 'service_notifications_update/' + id + '/' + status;
+        window.location.href = drupalSettings.path.baseUrl + 'service_notifications_update/nid/' + id + '/' + status;
       }
 
     }

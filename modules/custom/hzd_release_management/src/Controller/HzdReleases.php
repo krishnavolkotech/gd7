@@ -309,7 +309,7 @@ class HzdReleases extends ControllerBase {
     $query = \Drupal::database()->select('cust_profile', 'cp');
     $query->addField('cp', 'state_id');
     $query->condition('cp.uid', $user->id(), '=');
-    $user_state = $query->execute()->fetchCol();
+    $user_state = $query->execute()->fetchField();
 
     $user_role = $user->getRoles(TRUE);
     $group = Group::load(zrml);
@@ -332,20 +332,21 @@ class HzdReleases extends ControllerBase {
       );
       $query = \Drupal::database()->select('states', 's');
       $query->Fields('s', array('state'));
-      $query->condition('id', $user_state['0'], '=');
-      $user_state = $query->execute()->fetchCol();
+      $query->condition('id', $user_state, '=');
+      $state = $query->execute()->fetchField();
 
       // $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));.
       if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator'))) {
         $output['#title'] = "Deployed Releases";
       }
       else {
-        $output['#title'] = t("Deployed Releases") . " in " . $user_state['0'];
+        $output['#title'] = t("Deployed Releases") . " in " . $state;
       }
 
       // DEPLOYED_RELESES_HEADING = if (DEPLOYED_RELESES_HEADING) ? DEPLOYED_RELESES_HEADING : 11220;.
       $node = Node::load(\Drupal::config('hzd_release_management.settings')
         ->get('deployed_releses') ? DEPLOYED_RELESES_HEADING : 11220);
+      
       $output['node_body']['#markup'] = $node->body->value;
       $output['newdeployrelease']['#prefix'] = "<div class = 'deployedReleases'><strong>";
       $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");

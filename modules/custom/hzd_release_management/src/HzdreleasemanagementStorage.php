@@ -384,7 +384,6 @@ class HzdreleasemanagementStorage {
    * Function for documentation link.
    */
   static public function documentation_link_download($params, $values) {
-dpm('documentation_link_download');
     $title = $params['title'];
     $field_release_value = $params['release_value'];
     $field_date_value = $params['date_value'];
@@ -515,7 +514,7 @@ dpm('documentation_link_download');
 
             $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
             $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
-dpm('release_documentation_link_download calling');
+
             self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
             // $nid_count = db_result(db_query("SELECT count(*)
             //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
@@ -747,7 +746,7 @@ dpm('release_documentation_link_download calling');
    * @limit:page limit
    * @returns: table display of deployed releases
    */
-  public function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
+  static public function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
     $type = 'deployed_releases';
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
@@ -1041,7 +1040,7 @@ dpm('release_documentation_link_download calling');
   static public function deployed_releases_text() {
     $url = Url::fromRoute('hzd_release_management.deployed_releases', array('group' => 39));
     $link = \Drupal::l(t('hier'), $url);
-    // dpm($link);
+ 
     $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
 Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
 F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
@@ -1083,7 +1082,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
  static public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL, $service_release_type = KONSONS) {
-    $group = \Drupal::routeMatch()->getParameter('group');
+   $tid = $service_release_type;
+   $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
       $group_id = $group->id();
     }
@@ -1389,7 +1389,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
     $query = db_select('group_releases_view', 'grv');
     $query->Fields('grv', array('service_id'));
-    $query->conditions('group_id', $group_id, '=');
+    $query->condition('group_id', $group_id, '=');
     $result = $query->execute()->fetchAll();
     return $result;
   }

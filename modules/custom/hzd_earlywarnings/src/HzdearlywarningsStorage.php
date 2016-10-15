@@ -170,7 +170,7 @@ class HzdearlywarningsStorage {
   static public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
     $output = array();
    
-    if(empty($filter_options)) {
+    if(empty($filter_options)&& isset($_SESSION['earlywarning_filter_option'])  && !empty($_SESSION['earlywarning_filter_option'])) {
       $filter_options['service'] = $_SESSION['earlywarning_filter_option']['service'];
       $filter_options['release'] = $_SESSION['earlywarning_filter_option']['release'];
       if (isset($_SESSION['earlywarning_filter_option']['startdate'])) {
@@ -295,6 +295,8 @@ class HzdearlywarningsStorage {
    * Get early warning responses info.
    */
   static public function get_earlywarning_responses_info($earlywarnings_nid) {
+    $total_responses = array();
+    $response_lastposted = '';
     $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid",
                        array(":nid" => $earlywarnings_nid))->fetchField();
     $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1",

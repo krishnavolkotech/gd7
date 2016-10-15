@@ -23,3 +23,32 @@ function hzd_services_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $f
   }
 
 }
+
+//function notifications_insert($node_id, $service_name, $rel_type, &$context) {
+//    if (!isset($context['sandbox']['progress'])) {
+//      $context['sandbox']['progress'] = 0;
+//      $context['sandbox']['current_uid'] = 0;
+//      $context['sandbox']['count'] = 0;
+//      $context['sandbox']['max'] =  db_result(db_query("SELECT COUNT(DISTINCT uid) FROM {service_notifications_user_default_interval} WHERE rel_type = %d and service_type='%s'", $rel_type, $service_name));
+//    }
+//
+//    $limit = 5;
+//
+//    $result = db_query_range("SELECT DISTINCT uid FROM {service_notifications_user_default_interval} WHERE  rel_type = $rel_type and service_type='$service_name' and uid > %d ORDER BY uid ASC", $context['sandbox']['current_uid'], 0, $limit);
+//
+//  print_r($context); exit;
+//  
+//  
+//    foreach ($row = db_fetch_array($result)) {
+//      $context['sandbox']['current_uid'] = $row['uid'];
+//      $context['message'] = t("Inserting default notifications of User with ID ") . $row['uid'];
+//      service_subscriptions_insertions($row['uid'], $node_id, $service_name, $rel_type);    
+//    }
+//    $context['sandbox']['count'] = $context['sandbox']['count'] + 1;
+//    $context['sandbox']['progress']++;
+//
+//    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+//      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+//    }
+//    
+//  }

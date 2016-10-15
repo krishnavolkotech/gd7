@@ -149,6 +149,17 @@ class ProblemsettingsForm extends FormBase {
 
     // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
     HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
+
+//    $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
+//  $front_page_link = $menu_link_manager->getDefinition($menu_id);
+//  $front_page_link['enabled'] = $enabled ? 1 : 0; 
+//  $menu_link_manager->updateDefinition($menu_id, $front_page_link);
+//  $cache = \Drupal::cache('menu');
+//  $cache->deleteAll();
+//  
+  
+    \Drupal::service("router.builder")->rebuild();
+    
     drupal_set_message(t('Problem Settings Updated'), 'status');
   }
 

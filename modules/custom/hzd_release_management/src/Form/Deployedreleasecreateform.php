@@ -9,6 +9,12 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContent;
 
+
+if (!defined('RELEASE_MANAGEMENT')) {
+  define('RELEASE_MANAGEMENT', 32);
+}
+
+
 /**
  *
  */
@@ -27,7 +33,6 @@ class Deployedreleasecreateform extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     $form['#attached']['library'] = array(
-      'hzd_release_management/hzd_release_management',
       'hzd_release_management/deployed_releases',
     );
     $group = \Drupal::routeMatch()->getParameter('group');
@@ -40,8 +45,6 @@ class Deployedreleasecreateform extends FormBase {
 
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
     $services_data = $services_releases['services'];
-
-    $releases = array('0' => t('Release'));
 
     $wrapper = 'earlywarnings_posting';
 
@@ -77,6 +80,21 @@ class Deployedreleasecreateform extends FormBase {
         ),
       ),
     );
+    
+    $service = $form_state->getValue('deployed_services');
+    $environment = $form_state->getValue('deployed_environment');
+    // $form_state->setValue('submitted', FALSE);
+    // Geting  release data.
+    if ($service != 0 && $environment != 0) {
+      $releases = get_undeployed_dependent_release($service, $environment);
+    }
+    else {
+      $releases = array(
+        '0' => t('Release')
+        );
+    }
+    
+    
     $form['deployed_releases'] = array(
       '#type' => 'select',
       '#default_value' => $form_state->getValue('rel'),
@@ -211,6 +229,9 @@ class Deployedreleasecreateform extends FormBase {
     $today_date = mktime(23, 59, 59, date('m', time()), date('d', time()), date('y', time()));
     if ($deployed_date) {
       $date = explode('.', $deployed_date);
+      if (!empty($date) && count($date) !== 3) {
+        $form_state->setErrorByName('deployed_date', t("Enter correct date."));
+      }
       $entered_date = mktime(0, 0, 0, $date[1], $date[0], $date[2]);
     }
 
@@ -316,11 +337,11 @@ class Deployedreleasecreateform extends FormBase {
 
     $nid = $node->id();
     if ($nid) {
-      $group = Group::load(32);
+      $group = Group::load(RELEASE_MANAGEMENT);
 
       $group_content = GroupContent::create([
         'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
-        'gid' => 32,
+        'gid' => RELEASE_MANAGEMENT,
         'entity_id' => $node->id(),
         'request_status' => 1,
         'label' => $form_state->getValue('deployed_services') . '_service_' . $form_state->getValue('deployed_releases'),

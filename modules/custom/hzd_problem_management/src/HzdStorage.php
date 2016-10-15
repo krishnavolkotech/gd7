@@ -10,6 +10,13 @@ use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\node\Entity\Node;
 use Drupal\user\PrivateTempStoreFactory;
 
+if (!defined('DISPLAY_LIMIT')) {
+  define('DISPLAY_LIMIT', 20);
+}
+if (!defined('PROBLEM_MANAGEMENT')) {
+  define('PROBLEM_MANAGEMENT', 31);
+}
+
 /**
  *
  */
@@ -97,13 +104,22 @@ class HzdStorage {
     $formatted_date = strtr($values['eroffnet'], $replace);
 
     $date_time = explode(" ", $formatted_date);
-    $date_format = explode(".", $date_time[0]);
-    $time_format = explode(":", $date_time[1]);
-
-    if ($date_format[1] && $date_format[0] && $date_format[2]) {
-      $date = mktime((int) $time_format[0], (int) $time_format[1], (int) $time_format[2], (int) $date_format[1], (int) $date_format[0], (int) $date_format[2]);
+    
+    if (isset($date_time['0'])) {
+      $date_format = explode(".", $date_time['0']);
+    }    
+    if (isset($date_time['1'])) {
+      $time_format = explode(":", $date_time['1']);      
+    }    
+    
+    if (isset($date_format['1']) && isset($date_format['0']) && isset($date_format['2'])) {
+      if (isset($time_format['0']) && isset($time_format['1']) && isset($time_format['2'])) {
+        $date = mktime((int) $time_format['0'], (int) $time_format['1'], (int) $time_format['2'], (int) $date_format['1'], (int) $date_format['0'], (int) $date_format['2']);
+      }
     }
-    $eroffnet = ($date ? $date : time());
+    
+    
+    $eroffnet = ( isset($date) ? $date : time());
     // Generate notifications for updated problems.
     if (isset($nid)) {
       unset($values['sno']);
@@ -430,7 +446,7 @@ class HzdStorage {
 
         $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
         $group_problems_view_service_id_query->addField('gpv', 'service_id');
-        $group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id : self::PROBLEM_MANAGEMENT, '=');
+        $group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id : PROBLEM_MANAGEMENT, '=');
         $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
 
         $group_problems_view = array();
@@ -641,9 +657,10 @@ class HzdStorage {
     $sql_select->leftJoin('node__field_work_around', 'nfwa', 'nfr.entity_id = nfwa.entity_id');
     $sql_select->leftJoin('node__field_s_no', 'nfsn', 'nfwa.entity_id = nfsn.entity_id');
 
+    
     $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
     $group_problems_view_service_id_query->addField('gpv', 'service_id');
-    $group_problems_view_service_id_query->conditions('group_id', $group_id ? : self::PROBLEM_MANAGEMENT, '=');
+    $group_problems_view_service_id_query->condition('group_id', isset($group_id) ? $group_id : PROBLEM_MANAGEMENT, '=');
     $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
     $group_problems_view = array();
 
@@ -670,7 +687,6 @@ class HzdStorage {
         }
       }
     }
-
     if (!empty($group_problems_view)) {
       $sql_select->condition('nfs.field_services_target_id', $group_problems_view, 'IN');
     }
@@ -679,7 +695,7 @@ class HzdStorage {
       $result = $sql_select->execute()->fetchAll();
     }
     else {
-      $page_limit = ($limit ? $limit : self::DISPLAY_LIMIT);
+      $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
       $pager = $sql_select->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
       $result = $pager->execute()->fetchAll();
     }

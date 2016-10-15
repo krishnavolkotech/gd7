@@ -7,7 +7,7 @@ hzd_services.manage_services:
     _permission: 'manage services'
 
 hzd_services.service_notifications_update:
-  path: '/service_notifications_update/{nid}/{status}'
+  path: '/service_notifications_update/nid/{nid}/{status}'
   defaults:
     _controller: '\Drupal\hzd_services\Controller\HzdServices::service_notifications_update_downtime'
     _title: 'update service notifications'

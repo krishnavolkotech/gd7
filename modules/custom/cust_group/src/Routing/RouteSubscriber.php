@@ -13,11 +13,8 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class RouteSubscriber extends RouteSubscriberBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function alterRoutes(RouteCollection $collection) {
-        
+    
     if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess"); 
     }
@@ -30,6 +27,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodecreateAccess");
     }  
     
+    if ($route = $collection->get('entity.node.delete_form')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodedeleteAccess");
+    }  
+
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
     if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
       if ($route->getPath() == '/group/{group}/node/{group_content}') {
