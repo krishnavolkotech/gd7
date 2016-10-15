@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 // Use Drupal\Core\Menu\MenuLinkInterface;.
 use Drupal\problem_management\HzdStorage;
-
+use Drupal\Core\Url;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 
 if (!defined('PROBLEM_MANAGEMENT')) {
@@ -80,10 +80,14 @@ class ProblemsettingsForm extends FormBase {
     // Url::fromInternalUri('node/' . add)
     // $path = Url::fromInternalUri(array('node', $group_id ,$view_path));
     //  echo '<pre>';  print_r($path);  exit;
-    // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));.
+    // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));
+    
+    $url = Url::fromUserInput('/group/31/problems', array('absolute' => true));
+    $problems_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
+  
     $prefix = '';
     $prefix .= "<div class = 'problem_settings'> ";
-    $prefix .= t("The problems group view will be available at ");
+    $prefix .= t("The problems group view will be available at $problems_view ");
     // $prefix .= Drupal::url($path, $path);
     // $prefix .= Drupal::url($path, $path);.
     $prefix .= "<div> ";

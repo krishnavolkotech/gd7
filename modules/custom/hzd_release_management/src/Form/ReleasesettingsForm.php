@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
-
+use Drupal\Core\Url;
 /**
  * If(!defined('KONSONS'))
  * define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -47,8 +47,12 @@ class ReleasesettingsForm extends FormBase {
     $options = HzdservicesStorage::get_related_services($type);
     $view_path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
 
+    $url = Url::fromUserInput('/group/32/releases', array('absolute' => true));
+    $release_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
+  
+    
     // l($path, $path) .
-    $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at ") . "<p>" .
+    $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at $release_view") . "<p>" .
         "<p><div> " . t("Please specify the services of which you would like to display the Releases in this group") . "</div></p>";
     $form['#suffix'] = "</div>";
     $form['services'] = array(
