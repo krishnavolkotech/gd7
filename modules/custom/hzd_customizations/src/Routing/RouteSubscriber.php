@@ -5,6 +5,7 @@ namespace Drupal\hzd_customizations\Routing;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
 use Drupal\Core\Routing\RoutingEvents;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class RouteSubscriber.
@@ -20,8 +21,21 @@ class RouteSubscriber extends RouteSubscriberBase {
   public static function getSubscribedEvents() {
     // Negative Values means "late".
     $events[RoutingEvents::ALTER] = ['onAlterRoutes', -9999];
+    $events[KernelEvents::REQUEST][] = array('showCurrentRoute');
     return $events;
   }
+  
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function showCurrentRoute(){
+      if(isset($_GET['route'])){
+      $route = \Drupal::routeMatch()->getRouteName();
+      echo $route;exit;
+      }
+  }
+
 
   /**
    * {@inheritdoc}
