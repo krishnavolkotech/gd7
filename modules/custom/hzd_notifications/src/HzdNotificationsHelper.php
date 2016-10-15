@@ -17,10 +17,10 @@ class HzdNotificationsHelper {
    */
   static function service_notifications_content_type($rel_type = KONSONS) {
     if($rel_type == KONSONS) {
-      return array('1' => 'Current Incidents and Planned Maintenances', 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
+      return array(1 => 'Current Incidents and Planned Maintenances', 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
     }
     else {
-      return array('1' => 'Releases', 'Early Warnings');
+      return array(3 => 'Releases', 4 => 'Early Warnings');
     }
   }
 
