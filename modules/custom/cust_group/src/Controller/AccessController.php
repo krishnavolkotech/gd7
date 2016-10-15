@@ -7,7 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 
-define('QUICKINFO', \Drupal::config('quickinfo.settings')->get('quickinfo_group_id'));
+define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 // define('RELEASE_MANAGEMENT', 32);
 
 /**
@@ -34,8 +34,12 @@ class AccessController extends ControllerBase {
                 /**
                  * group id has to be dynamic 
                  */
+                $currentUser = \Drupal::currentUser();
                 $group = \Drupal\group\Entity\Group::load(QUICKINFO);
-                $content = $group->getMember(\Drupal::currentUser());
+                $content = $group->getMember($currentUser);
+                if(array_intersect($currentUser->getRoles(),['site_administrator','administrator'])){
+                    return AccessResult::allowed();
+                }
                 if ($content) {
                     return AccessResult::allowed();
                 }
