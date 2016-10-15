@@ -1409,8 +1409,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
-    $release_type = $release_type_query->execute()->fetchCol();
-    return $release_type['0'];
+    $release_type = $release_type_query->execute()->fetchField();
+  //  dpm($release_type);
+    return $release_type;
   }
 
   /**
@@ -1428,19 +1429,19 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
-    $release_type = $release_type_query->execute()->fetchCol();
+    $release_type = $release_type_query->execute()->fetchField();
     if ($release_type) {
       db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $group_id, '=')->execute();
     }
     else {
-      db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type));
+      
+      db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type))->execute();
     }
     // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';.
     $counter = 0;
     if (sizeof($selected_services) > 0) {
       foreach ($selected_services as $service) {
         if ($service != 0) {
-          echo $count;
           $counter++;
           // db_query($sql, $group_id, $service);.
           db_insert('group_releases_view')->fields(array(
