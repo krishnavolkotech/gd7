@@ -2,6 +2,7 @@ global-styling:
   css:
     theme:
       css/style.css: {}
+      css/3.3.5/overrides.min.css: {}
 
 quickinfo:
   css:

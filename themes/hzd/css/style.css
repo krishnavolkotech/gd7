@@ -81,16 +81,13 @@ p {
 #block-primarylinks ul li a:hover {
   background: #0c4f6d;
 }
-#block-primarylinks ul li.open {
+#block-primarylinks ul li.active {
   width: auto;
   display: inline-block;
 }
-#block-primarylinks ul li.open a {
-  background: rgba(206, 240, 253, 0.3);
+#block-primarylinks ul li.active a {
+  background: #0c4f6d;
   color: #ffffff;
-}
-#block-primarylinks ul li.open a:hover {
-  color: #1475a0;
 }
 footer h2,
 a.name.navbar-brand,
@@ -424,7 +421,10 @@ body.not-loggedin.path-user .region-content {
 .user-pass button:focus,
 .user-login-form .btn-success:hover,
 .user-register-form .btn-success:hover,
-.user-pass .btn-success:hover {
+.user-pass .btn-success:hover,
+.user-login-form button:hover,
+.user-register-form button:hover,
+.user-pass button:hover {
   background: #0c4f6d !important;
   color: #ffffff !important;
 }
@@ -603,8 +603,8 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   background-color: #5289a1;
   color: #ffffff !important;
 }
-ul.tabs--primary > li.active > a:hover,
-ul.tabs--primary > li.active > a {
+.nav > li.active > a:hover,
+.nav > li.active > a {
   color: #5289a1 !important;
 }
 .nav-tabs > li > a {
@@ -614,11 +614,6 @@ table tr th {
   background: #1475a0;
   color: #ffffff;
   border-bottom: 2px solid #0e658c !important;
-}
-table tr th a,
-table tr th a:hover {
-  color: #ffffff;
-  text-decoration: none;
 }
 table tr.odd {
   background: #edf4fa !important;
@@ -639,13 +634,18 @@ table tr.even:hover {
   text-align: center;
   font-size: 11px;
 }
-aside section.blue {
+aside section.blue,
+.region-sidebar-first .block-hzd-release-management,
+nav#block-optionen {
   margin-bottom: 20px;
   width: 100%;
   background: rgba(206, 240, 253, 0.3);
   padding-bottom: 5px;
+  display: inline-block;
 }
-aside section.blue h2 {
+aside section.blue h2,
+.region-sidebar-first .block-hzd-release-management h2,
+nav#block-optionen h2 {
   font-size: 15px;
   font-weight: normal;
   background: #1475a0;
@@ -654,31 +654,45 @@ aside section.blue h2 {
   padding: 5px 10px;
   line-height: 20px;
 }
-aside section.blue .field--name-body {
+aside section.blue .field--name-body,
+.region-sidebar-first .block-hzd-release-management .field--name-body,
+nav#block-optionen .field--name-body {
   padding: 0px;
 }
-aside section.blue .field--name-body ul {
+aside section.blue .field--name-body ul,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul,
+nav#block-optionen .field--name-body ul {
   width: 100%;
   float: left;
   margin: 0;
   padding: 0;
 }
-aside section.blue .field--name-body ul li {
+aside section.blue .field--name-body ul li,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul li,
+nav#block-optionen .field--name-body ul li {
   list-style-type: none;
   padding: 6px 10px 8px 10px;
   border-bottom: 1px solid rgba(20, 117, 160, 0.2);
 }
-aside section.blue .field--name-body ul li a {
+aside section.blue .field--name-body ul li a,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul li a,
+nav#block-optionen .field--name-body ul li a {
   width: 100%;
   display: block;
 }
-aside section.blue .field--name-body ul li:last-child {
+aside section.blue .field--name-body ul li:last-child,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul li:last-child,
+nav#block-optionen .field--name-body ul li:last-child {
   border: none;
 }
-aside section.blue .field--name-body ul li:hover {
+aside section.blue .field--name-body ul li:hover,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul li:hover,
+nav#block-optionen .field--name-body ul li:hover {
   background: rgba(20, 117, 160, 0.8);
 }
-aside section.blue .field--name-body ul li:hover a {
+aside section.blue .field--name-body ul li:hover a,
+.region-sidebar-first .block-hzd-release-management .field--name-body ul li:hover a,
+nav#block-optionen .field--name-body ul li:hover a {
   color: #ffffff;
   text-decoration: none;
 }
@@ -852,8 +866,7 @@ input[type="button"]:hover,
   background: #0c4f6d !important;
 }
 .btn-default,
-.views-exposed-form button,
-button.btn-info {
+.views-exposed-form button {
   background: #1475a0 !important;
   font-size: 14px;
   color: #ffffff !important;
@@ -1038,8 +1051,7 @@ table.view-deployed-releases {
 }
 .nav .open > a,
 .nav .open > a:hover,
-.nav .open > a:focus,
-#block-primarylinks .nav .active {
+.nav .open > a:focus {
   background-color: #0c4f6d !important;
 }
 #block-primarylinks ul ul.dropdown-menu {
@@ -1067,7 +1079,6 @@ table.view-deployed-releases {
 }
 #block-primarylinks ul ul.dropdown-menu li a:hover {
   color: #ffffff;
-  background: #1475a0;
 }
 #block-primarylinks ul ul.dropdown-menu li:last-child a {
   border-bottom: none !important;
@@ -1192,79 +1203,177 @@ form.contact-message-form label {
 form.problem-filter-form .string_search.hzd-form-element {
   margin-right: -2px !important;
 }
-.region-sidebar-first section.blue {
+.region-sidebar-first section.blue,
+.block-hzd-release-management,
+nav#block-optionen {
   padding: 0px;
 }
-.region-sidebar-first section.blue ul.menu.nav {
+.region-sidebar-first section.blue ul.menu.nav,
+.block-hzd-release-management ul.menu.nav,
+nav#block-optionen ul.menu.nav,
+.region-sidebar-first section.blue ul,
+.block-hzd-release-management ul,
+nav#block-optionen ul {
   width: 100%;
   float: left;
   margin: 0;
   padding: 0;
 }
-.region-sidebar-first section.blue ul.menu.nav li {
+.region-sidebar-first section.blue ul.menu.nav li,
+.block-hzd-release-management ul.menu.nav li,
+nav#block-optionen ul.menu.nav li,
+.region-sidebar-first section.blue ul li,
+.block-hzd-release-management ul li,
+nav#block-optionen ul li {
   list-style-type: none;
   padding: 6px 10px 8px 10px;
   border-bottom: 1px solid rgba(20, 117, 160, 0.2);
 }
-.region-sidebar-first section.blue ul.menu.nav li a {
+.region-sidebar-first section.blue ul.menu.nav li a,
+.block-hzd-release-management ul.menu.nav li a,
+nav#block-optionen ul.menu.nav li a,
+.region-sidebar-first section.blue ul li a,
+.block-hzd-release-management ul li a,
+nav#block-optionen ul li a {
   width: 100%;
   display: block;
   padding: 0;
 }
-.region-sidebar-first section.blue ul.menu.nav li a:hover {
+.region-sidebar-first section.blue ul.menu.nav li a:hover,
+.block-hzd-release-management ul.menu.nav li a:hover,
+nav#block-optionen ul.menu.nav li a:hover,
+.region-sidebar-first section.blue ul li a:hover,
+.block-hzd-release-management ul li a:hover,
+nav#block-optionen ul li a:hover {
   background: transparent;
 }
-.region-sidebar-first section.blue ul.menu.nav li a:focus {
+.region-sidebar-first section.blue ul.menu.nav li a:focus,
+.block-hzd-release-management ul.menu.nav li a:focus,
+nav#block-optionen ul.menu.nav li a:focus,
+.region-sidebar-first section.blue ul li a:focus,
+.block-hzd-release-management ul li a:focus,
+nav#block-optionen ul li a:focus {
   background: transparent;
 }
-.region-sidebar-first section.blue ul.menu.nav li:last-child {
+.region-sidebar-first section.blue ul.menu.nav li:last-child,
+.block-hzd-release-management ul.menu.nav li:last-child,
+nav#block-optionen ul.menu.nav li:last-child,
+.region-sidebar-first section.blue ul li:last-child,
+.block-hzd-release-management ul li:last-child,
+nav#block-optionen ul li:last-child {
   border: none;
 }
-.region-sidebar-first section.blue ul.menu.nav li:hover {
+.region-sidebar-first section.blue ul.menu.nav li:hover,
+.block-hzd-release-management ul.menu.nav li:hover,
+nav#block-optionen ul.menu.nav li:hover,
+.region-sidebar-first section.blue ul li:hover,
+.block-hzd-release-management ul li:hover,
+nav#block-optionen ul li:hover {
   background: rgba(20, 117, 160, 0.8);
 }
-.region-sidebar-first section.blue ul.menu.nav li:hover a {
+.region-sidebar-first section.blue ul.menu.nav li:hover a,
+.block-hzd-release-management ul.menu.nav li:hover a,
+nav#block-optionen ul.menu.nav li:hover a,
+.region-sidebar-first section.blue ul li:hover a,
+.block-hzd-release-management ul li:hover a,
+nav#block-optionen ul li:hover a {
   color: #ffffff;
   text-decoration: none;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active a {
+.region-sidebar-first section.blue ul.menu.nav li.active a,
+.block-hzd-release-management ul.menu.nav li.active a,
+nav#block-optionen ul.menu.nav li.active a,
+.region-sidebar-first section.blue ul li.active a,
+.block-hzd-release-management ul li.active a,
+nav#block-optionen ul li.active a {
   background: transparent !important;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active a:hover {
+.region-sidebar-first section.blue ul.menu.nav li.active a:hover,
+.block-hzd-release-management ul.menu.nav li.active a:hover,
+nav#block-optionen ul.menu.nav li.active a:hover,
+.region-sidebar-first section.blue ul li.active a:hover,
+.block-hzd-release-management ul li.active a:hover,
+nav#block-optionen ul li.active a:hover {
   color: #fff !important;
   background: transparent !important;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active a:focus {
+.region-sidebar-first section.blue ul.menu.nav li.active a:focus,
+.block-hzd-release-management ul.menu.nav li.active a:focus,
+nav#block-optionen ul.menu.nav li.active a:focus,
+.region-sidebar-first section.blue ul li.active a:focus,
+.block-hzd-release-management ul li.active a:focus,
+nav#block-optionen ul li.active a:focus {
   background: transparent !important;
   color: #fff !important;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
+.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu,
+nav#block-optionen ul.menu.nav li.active ul.dropdown-menu,
+.region-sidebar-first section.blue ul li.active ul.dropdown-menu,
+.block-hzd-release-management ul li.active ul.dropdown-menu,
+nav#block-optionen ul li.active ul.dropdown-menu {
   padding: 0 !important;
   border: none;
   border-radius: none;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li,
+.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li,
+nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li,
+.region-sidebar-first section.blue ul li.active ul.dropdown-menu li,
+.block-hzd-release-management ul li.active ul.dropdown-menu li,
+nav#block-optionen ul li.active ul.dropdown-menu li {
   background: rgba(206, 240, 253, 0.4);
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a,
+.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li a,
+nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li a,
+.region-sidebar-first section.blue ul li.active ul.dropdown-menu li a,
+.block-hzd-release-management ul li.active ul.dropdown-menu li a,
+nav#block-optionen ul li.active ul.dropdown-menu li a {
   font-size: 11px;
   color: #3370b7;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a:hover {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a:hover,
+.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li a:hover,
+nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li a:hover,
+.region-sidebar-first section.blue ul li.active ul.dropdown-menu li a:hover,
+.block-hzd-release-management ul li.active ul.dropdown-menu li a:hover,
+nav#block-optionen ul li.active ul.dropdown-menu li a:hover {
   font-size: 11px;
   color: #3370b7;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li:hover {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li:hover,
+.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li:hover,
+nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li:hover,
+.region-sidebar-first section.blue ul li.active ul.dropdown-menu li:hover,
+.block-hzd-release-management ul li.active ul.dropdown-menu li:hover,
+nav#block-optionen ul li.active ul.dropdown-menu li:hover {
   background: rgba(20, 117, 160, 0.8);
 }
-.region-sidebar-first section.blue ul.menu.nav li.active.open {
+.region-sidebar-first section.blue ul.menu.nav li.open,
+.block-hzd-release-management ul.menu.nav li.open,
+nav#block-optionen ul.menu.nav li.open,
+.region-sidebar-first section.blue ul li.open,
+.block-hzd-release-management ul li.open,
+nav#block-optionen ul li.open {
   background: rgba(20, 117, 160, 0.8);
 }
-.region-sidebar-first section.blue ul.menu.nav li.active.open ul li:hover {
+.region-sidebar-first section.blue ul.menu.nav li.open ul li:hover,
+.block-hzd-release-management ul.menu.nav li.open ul li:hover,
+nav#block-optionen ul.menu.nav li.open ul li:hover,
+.region-sidebar-first section.blue ul li.open ul li:hover,
+.block-hzd-release-management ul li.open ul li:hover,
+nav#block-optionen ul li.open ul li:hover {
   background: rgba(20, 117, 160, 0.8);
 }
-.region-sidebar-first section.blue ul.menu.nav li.active.open ul li:hover a {
+.region-sidebar-first section.blue ul.menu.nav li.open ul li:hover a,
+.block-hzd-release-management ul.menu.nav li.open ul li:hover a,
+nav#block-optionen ul.menu.nav li.open ul li:hover a,
+.region-sidebar-first section.blue ul li.open ul li:hover a,
+.block-hzd-release-management ul li.open ul li:hover a,
+nav#block-optionen ul li.open ul li:hover a {
   color: #fff;
+  background: transparent !important;
 }
 #edit-services-effected .form-checkbox {
   width: 100%;
@@ -1332,16 +1441,24 @@ form#downtimes-filter .string_search.hzd-form-element {
   text-align: center;
   color: #e74040;
 }
-.region-sidebar-first section.blue ul.menu.nav .dropdown-menu {
+.region-sidebar-first section.blue ul.menu.nav .dropdown-menu,
+.region-sidebar-first nav#block-optionen ul.menu.nav .dropdown-menu {
   position: inherit;
   box-shadow: none !important;
 }
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu {
+.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
+.region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu {
   border-radius: 0;
   margin: 10px 0 8px -10px;
   padding: 0 !important;
   width: 108%;
-  border-bottom: 1px solid rgba(20, 117, 160, 0.2);
+  border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
+  background: transparent;
+  border: none;
+}
+.region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a {
+  color: #337ab7;
+  font-size: 12px;
 }
 .view-group-faqs .view-content .views-row {
   margin: 0 0 15px 0;
@@ -1352,7 +1469,7 @@ form#downtimes-filter .string_search.hzd-form-element {
   float: left;
 }
 .view-group-faqs .view-content .views-row .faq-title {
-  width: 88%;
+  width: 85%;
   float: left;
   margin-bottom: 5px;
   background: #1475a0;
@@ -1362,8 +1479,8 @@ form#downtimes-filter .string_search.hzd-form-element {
   width: 100%;
   float: left;
   color: #fff;
-  line-height: 22px;
-  font-size: 17px;
+  line-height: 19px;
+  font-size: 13px;
 }
 .view-group-faqs .view-content .views-row .views-field-body {
   width: 100%;
@@ -1377,61 +1494,107 @@ form#downtimes-filter .string_search.hzd-form-element {
 .view-group-faqs .view-content .views-row p {
   margin-bottom: 0 !important;
 }
-ul.admin-list {
-  padding: 0;
-  margin: 0;
+#sortable .downtime_enable .form-type-checkbox {
+  text-align: center;
 }
-ul.admin-list li {
-  list-style-type: none;
-  padding-bottom: 10px;
-}
-ul.admin-list li a .label {
-  color: #424241;
-  font-size: 14px;
-  font-weight: normal;
-  padding: 0 0 4px 0 !important;
-  cursor: text;
-  white-space: normal !important;
-}
-ul.admin-list li a:hover {
-  text-decoration: none;
-}
-table .radio input[type="radio"],
-table .radio-inline input[type="radio"],
-table .checkbox input[type="checkbox"],
-table .checkbox-inline input[type="checkbox"] {
+#sortable .downtime_enable .form-type-checkbox input {
   margin-left: 0 !important;
 }
-table td.views-field-label a {
-  width: 150px;
+ul.list-inline {
+  width: 100%;
+  float: left;
+  padding-left: 5px;
+}
+ul.list-inline li {
+  margn-top: 10px !important;
+}
+.js-comment p {
+  width: 100%;
+  float: left;
+  padding-top: 5px;
+}
+.js-comment h3 {
+  margin-bottom: 0px !important;
+}
+.form-actions #save_content,
+.form-actions #publish_content,
+.form-actions button {
+  width: auto;
+  display: inline-block;
+}
+.form-actions #save_content,
+.form-actions #publish_content {
   float: left;
 }
-/* Table sorter css */
-#tablesorter .header {
-  background-image: url(../../modules/custom/downtimes/images/bg.gif);
-  background-position: right center;
-  background-repeat: no-repeat;
-  cursor: pointer;
+.form-actions #save_content button {
+  padding: 4.5px 10px !important;
 }
-#tablesorter .headerSortDown {
-  background-image: url(../../modules/custom/downtimes/images/desc.gif);
+ul.nav-tabs li:hover a .summary {
+  color: #fff;
 }
-#tablesorter .headerSortUp {
-  background-image: url(../../modules/custom/downtimes/images/asc.gif);
+.unpublished-quickinfo-pdf-preview a,
+.unpublished-quickinfo-edit-link a {
+  padding-left: 25px;
+  line-height: 24px;
+  display: inline-block;
 }
-aside.col-sm-3 .input-group-addon {
-  border-radius: 0 !important;
+.unpublished-quickinfo-edit-link a {
+  background: url(../images/edit-icon.png) left top no-repeat !important;
+  padding-left: 25px;
 }
-/*.form-required{
-  font-size:0px;
-}*/
-form.user-login-form .form-required + .form-required,
-form.user-register-form .form-required + .form-required,
-form.user-pass .form-required + .form-required {
-  display: none;
+.unpublished-quickinfo-pdf-preview a {
+  background: url(../images/view-pdf-icon.png) left top no-repeat !important;
 }
-form.user-login-form .form-required,
-form.user-register-form .form-required,
-form.user-pass .form-required {
-  font-size: 12px !important;
+article.downtimes .Incident {
+  width: 100%;
+  float: left;
+  padding-bottom: 2px;
+}
+article.downtimes .Incident .downtimes_title {
+  font-weight: 600;
+  display: inline-block;
+  width: 100px;
+  letter-spacing: 0.5px;
+}
+article.downtimes .Incident .downtimes_title:after {
+  content: ": ";
+}
+article.downtimes .Incident .downtimes_content {
+  width: auto;
+  display: inline-block;
+}
+form.incidents .incident_states_filter_form_wrapper,
+form.maintenance .incident_states_filter_form_wrapper {
+  width: 100%;
+  float: left;
+  padding-top: 10px;
+}
+form.incidents .downtimes_states_filter_form_wrapper,
+form.maintenance .downtimes_states_filter_form_wrapper {
+  width: 100%;
+  float: left;
+}
+.curr_incidents_form + .reset_form {
+  float: left !important;
+  margin: 23px 0 0 0 !important;
+}
+form .label {
+  letter-spacing: 0.5px;
+}
+nav#block-optionen ul.menu.nav li.expanded.dropdown.open a.dropdown-toggle {
+  background: transparent !important;
+}
+form#downtimes-filter .archive_other_states_filter_form_wrapper,
+form#downtimes-filter .archive_downtimes_states_filter_form_wrapper,
+form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper,
+form#downtimes-filter .archived_maintenance_search_results_wrapper {
+  width: 100%;
+  float: left;
+}
+form#downtimes-filter .string_search.hzd-form-element {
+  width: 25% !important;
+  margin-top: 20px;
+}
+form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
+  margin-top: 20px;
 }
