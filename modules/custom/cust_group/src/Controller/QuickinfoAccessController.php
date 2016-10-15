@@ -112,4 +112,15 @@ class QuickinfoAccessController {
         }
         return \Drupal\Core\Access\AccessResult::forbidden();
     }
+    
+     static public function CheckQuickinfonodedeleteAccess(AccountInterface $account) {
+      // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if (is_object($node)) {
+            if ($node->getType() == 'quickinfo' && $node->isPublished()) {
+                return AccessResult::forbidden();
+            }
+        }
+        return AccessResult::allowed();
+     }
 }

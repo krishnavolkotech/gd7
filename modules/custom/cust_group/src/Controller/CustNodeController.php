@@ -7,6 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
 
+
 /**
  * Returns responses for Node routes.
  */

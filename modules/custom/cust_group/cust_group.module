@@ -80,6 +80,7 @@ function getGroupMemberList($gid){
 }
 
 function send_notifications($data,$mails){
+    $result = array();
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
     $key = 'immediate_notifications';
@@ -95,7 +96,8 @@ function send_notifications($data,$mails){
     foreach($mails as $to){
         $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
     }
-    if ($result['result'] !== true) {
+
+    if (isset($result['result']) && $result['result'] !== true) {
       drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
     }
     else {
