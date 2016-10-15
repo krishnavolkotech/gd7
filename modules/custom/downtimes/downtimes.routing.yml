@@ -85,6 +85,7 @@ downtimes.create_downtimes:
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report an Incident'
+    _entity_view: 'group.default'
     #_title_callback: '\Drupal\downtimes\Controller\DowntimeController::getTitle'
 #  requirements:
 #    access arguments: 'master group'
