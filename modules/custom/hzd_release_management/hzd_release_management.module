@@ -614,7 +614,9 @@ function hzd_release_management_node_update($entity) {
     send_pf_notifications($entity);
   }
   if ($entity->getType() == 'quickinfo') {
-    send_qi_notifications($entity);
+    if($entity->get('status')->value) {
+      send_qi_notifications($entity);
+    }
   }
   if ($entity->getType() == 'downtimes') {
     send_downtime_notifications($entity);
