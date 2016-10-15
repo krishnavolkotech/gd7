@@ -114,7 +114,7 @@ class NotificationsController extends ControllerBase {
 	return $data;
     }
   
-    function getGroupNotificationData($groupContent){
+    static function getGroupNotificationData($groupContent){
 	$groupNode = \Drupal\group\Entity\GroupContent::load(reset($groupContent));
 	$group = $groupNode->getGroup()->id();
 	//echo $group;exit;
@@ -176,7 +176,7 @@ class NotificationsController extends ControllerBase {
   
   
   
-    function processQuickInfoNotification($interval = null){
+    static function processQuickInfoNotification($interval = null){
 	if(is_null($interval) || !in_array($interval,[-1,0,86400,604800])){
 	    return false;
 	}
@@ -209,7 +209,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function prepareQuickInfoMailData($userData){
+    static function prepareQuickInfoMailData($userData){
 	if(empty($userData)){
 	    return false;
 	}
@@ -243,7 +243,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function processServiceNotification($interval = null){
+    static function processServiceNotification($interval = null){
 	if(is_null($interval) || !in_array($interval,[-1,0,86400,604800])){
 	    return false;
 	}
@@ -278,7 +278,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function prepareServiceMailData($userData){
+    static function prepareServiceMailData($userData){
 	if(empty($userData)){
 	    return false;
 	}
@@ -316,7 +316,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function processGroupNotification($interval = null){
+    static function processGroupNotification($interval = null){
 	if(is_null($interval) || !in_array($interval,[-1,0,86400,604800])){
 	    return false;
 	}    
@@ -349,7 +349,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function prepareGroupsMailData($userData){
+    static function prepareGroupsMailData($userData){
 	if(empty($userData)){
 	    return false;
 	}
@@ -390,7 +390,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function processPlanningFileNotification($interval = null){
+    static function processPlanningFileNotification($interval = null){
 	if(is_null($interval) || !in_array($interval,[-1,0,86400,604800])){
 	    return false;
 	}
@@ -425,7 +425,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function preparePlanningFileMailData($userData){
+    static function preparePlanningFileMailData($userData){
 	if(empty($userData)){
 	    return false;
 	}
@@ -459,7 +459,7 @@ class NotificationsController extends ControllerBase {
 	}
     }
   
-    function sendNotificationMail($to,$params){
+    static function sendNotificationMail($to,$params){
 	if(!isset(self::$hzdMailManger)){
 	    self::$hzdMailManger = \Drupal::service('plugin.manager.mail');
 	}
@@ -475,7 +475,7 @@ class NotificationsController extends ControllerBase {
 	//self::$mailCount++; 
     }
   
-    function getUserEmails(array $uids = []){
+    static function getUserEmails(array $uids = []){
 	$userEmails = \Drupal::database()->select('users_field_data','ufd')
 	    ->fields('ufd',['uid','mail'])
 	    ->condition('ufd.uid',$uids,'IN')
@@ -491,7 +491,7 @@ class NotificationsController extends ControllerBase {
 	return $userData;
     }
   
-    function getBodyPreText(){
+    static function getBodyPreText(){
 	return "Lieber Benutzer,<br><br>Der folgende Inhalt wurde auf dem Portal aktualisiert.<br><br>";
     }
   

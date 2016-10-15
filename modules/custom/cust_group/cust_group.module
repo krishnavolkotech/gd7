@@ -44,6 +44,9 @@ function cust_group_group_content_insert($entity){
     if($node instanceof \Drupal\node\Entity\Node){
         sendGroupUpdateMail($node);
         \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node,'insert');
+        if($node->getType() == 'page'){
+            \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
+        }
     }
 }
 

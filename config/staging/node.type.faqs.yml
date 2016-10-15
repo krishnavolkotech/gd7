@@ -1,8 +1,15 @@
 uuid: 078efa47-9ca3-476b-8a31-cd8946846080
 langcode: en
 status: true
-dependencies: {  }
-name: FAQs
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: FAQ
 type: faqs
 description: 'Eine häufig gestellte Frage und deren Antwort erstellen.'
 help: ''
