@@ -58,15 +58,15 @@ class Gruppenadministration extends BlockBase {
     else {
       $groupId = $group;
     }
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Contents'),'view.group_content.page_1',['arg_0'=>$groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Content'),'entity.group_content.group_node.create_page',['group'=>$groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Users'),'view.group_members.page_1',['arg_0'=>$groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Disturbances and Block times'),'downtimes.DowntimessettingForm',['group'=>$groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Known Issues'),'problem_management.problem_settings',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'),'view.group_content.page_1',['arg_0'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'),'entity.group_content.group_node.create_page',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'),'view.group_members.page_1',['arg_0'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Störungen und Blockzeiten'),'downtimes.DowntimessettingForm',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Bekannte Fehler und Probleme'),'problem_management.problem_settings',['group'=>$groupId]);
     $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Releases'),'hzd_release_management.release_settings',['group'=>$groupId]);
     $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Mass Contact'),'mass_contact.bulk_mail_group_members_form');
     if ($groupId == 32) {
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Mass Contact'),'hzd_release_management.display_planning_files',['group'=>$groupId]);
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Planungsdateien'),'hzd_release_management.display_planning_files',['group'=>$groupId]);
     }
     
 /*    $menuHtml = '<ul class="menu nav">
