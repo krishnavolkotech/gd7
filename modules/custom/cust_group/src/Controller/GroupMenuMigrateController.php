@@ -49,11 +49,11 @@ class GroupMenuMigrateController extends ControllerBase{
             
           }
           
-            $menuLink = MenuLinkContent::create([
+            /*$menuLink = MenuLinkContent::create([
                 'title'      => 'My internal link from a route name',
                 'link'       => ['uri' => 'route:myroute'],
                 'menu_name'  => 'my-menu',
-            ])->save();
+            ])->save();*/
         }
         pr($data);exit;
     }
