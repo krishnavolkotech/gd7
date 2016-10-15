@@ -116,16 +116,22 @@
             </div>
         {% endif %}
         <h2>1 Meta-Daten</h2>
-        {% if content.field_custom_title.0 %}
-            {{ content.field_custom_title }}
+        {% if field_custom_title %}
+             <div class="field field--name-field-custom-title field--label-above">
+                <div class="field--label">1.1 Title</div>
+                <div class="field--item"> {{ field_custom_title }}</div>
+            </div>
         {% else %}
             <div class="field field--name-field-custom-title field--label-above">
                 <div class="field--label">1.1 Title</div>
                 <div class="field--item"> Keine Angabe</div>
             </div>
         {% endif %}
-        {% if content.field_related_transfer_number.0 %}
-            {{ content.field_related_transfer_number }}
+        {% if field_related_transfer_number %}
+            <div class="field field--name-field-related-transfer-number field--label-above">
+                <div class="field--label">1.2 Related to software transfer no.</div>
+                <div class="field--item">{{ field_related_transfer_number }}</div>
+            </div>
         {% else %}
             <div class="field field--name-field-related-transfer-number field--label-above">
                 <div class="field--label">1.2 Related to software transfer no.</div>

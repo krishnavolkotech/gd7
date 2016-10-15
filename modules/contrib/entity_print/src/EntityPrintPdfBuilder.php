@@ -209,6 +209,7 @@ class EntityPrintPdfBuilder implements PdfBuilderInterface {
    *   The HTML rendered string.
    */
   protected function generateHtml(array $render, array $entities, $use_default_css, $optimize_css) {
+    global $base_url;
     // Inject some generic CSS across all templates.
     if ($use_default_css) {
       $render['#attached']['library'][] = 'entity_print/default';
@@ -217,7 +218,14 @@ class EntityPrintPdfBuilder implements PdfBuilderInterface {
     foreach ($entities as $entity) {
       // Allow other modules to add their own CSS.
       $this->moduleHandler->alter('entity_print_css', $render, $entity);
-
+      $current_entity = $entity->toUrl();
+      $result = '';
+      if(!empty($current_entity)) {
+        $entity_path = $current_entity->toString();
+        if($entity_path) {
+          $result = \Drupal::service('path.alias_manager')->getAliasByPath($entity_path);
+        } 
+      }
       // Inject CSS from the theme info files and then render the CSS.
       $render = $this->addCss($render, $entity);
     }
@@ -225,6 +233,7 @@ class EntityPrintPdfBuilder implements PdfBuilderInterface {
     $css_assets = $this->assetResolver->getCssAssets(AttachedAssets::createFromRenderArray($render), $optimize_css);
     $rendered_css = $this->cssRenderer->render($css_assets);
     $render['#entity_print_css'] = $this->renderer->render($rendered_css);
+    $render['#footer'] = $base_url . $result;
 
     $html = (string) $this->renderer->render($render);
 

@@ -13,7 +13,7 @@ third_party_settings:
 id: masquerade
 theme: hzd
 region: sidebar_first
-weight: -10
+weight: -14
 provider: null
 plugin: masquerade
 settings:

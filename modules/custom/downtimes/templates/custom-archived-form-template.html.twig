@@ -1,0 +1,18 @@
+{# empty Twig template #}
+{{ form.incidents_header_notes }}
+{{ form.archived_header }}
+<div class="archive_other_states_filter_form_wrapper">
+    {{ form.type }}
+    {{ form.time_period }}
+</div>
+<div class="archive_downtimes_states_filter_form_wrapper">
+    {{ form.states }}
+    {{ form.services_effected }}
+</div>
+<div class="archive_downtimes_dates_filter_form_wrapper">
+    {{ form.filter_startdate }}
+    {{ form.filter_enddate }}
+    {{ form.string }}
+    {{ form.submit }}
+</div>
+{{ form|without('string', 'type', 'time_period', 'submit', 'filter_startdate', 'filter_enddate', 'services_effected', 'states', 'archived_header', 'incidents_header_notes') }}

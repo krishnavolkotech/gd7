@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.early_warnings.upload
     - node.type.early_warnings
   module:
+    - comment
     - entity_print
     - file
     - options
@@ -34,6 +35,13 @@ content:
     type: comment_default
     weight: 20
     settings: {  }
+    third_party_settings: {  }
+  comment_no_subject:
+    type: comment_default
+    weight: 6
+    label: above
+    settings:
+      pager_id: 0
     third_party_settings: {  }
   entity_print_view:
     weight: 0
@@ -62,5 +70,4 @@ content:
     weight: 5
     third_party_settings: {  }
 hidden:
-  comment_no_subject: true
   langcode: true

@@ -194,7 +194,7 @@ downtimes.new_downtimes_controller_newDowntimes:
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archived_downtimes_controller:
   path: '/group/{group}/downtimes/archive'
@@ -204,7 +204,7 @@ downtimes.archived_downtimes_controller:
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archive_data_export:
   path: '/group/{group}/data-export'

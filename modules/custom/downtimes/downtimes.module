@@ -24,6 +24,7 @@ if (!defined('SITE_ADMIN_ROLE')) {
 /*
  * get available token lists
  */
+
 /**
  * Function get_available_tokens() {
  * $token = \Drupal::token()->getInfo();
@@ -43,7 +44,20 @@ if (!defined('SITE_ADMIN_ROLE')) {
  * return $return;
  * }.
  */
-
+/*function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+  //print_r($items); die();
+  $user = \Drupal::currentUser();
+  if ($user) {
+    $groups_list = hzd_group_list($user->id(), TRUE);
+    foreach ($groups_list as $group) {
+      $group_ids[] = $group->id;
+    }
+    if (!empty($group_ids)) {
+      $query->addCondition('gid', $group_ids, 'IN');
+    }
+  }
+}
+*/
 /**
  * Implements hook_form_alter().
  */
@@ -817,16 +831,18 @@ function get_unix_timestamp($date, $format = '%d.%m.%Y - %H:%M') {
 
 function downtimes_theme() {
   return array(
-    /* 'Incidents_maintenances_view' => array(
-      'arguments' => array('node' => NULL),
-      ),
-      'block_downtime' => array(
-      'arguments' => array('items' => NULL, 'delta' => NULL),
-      ),
-      'current' => array(
-      'arguments' => array('data' => NULL, 'string' => NULL),
-      'template' => 'current_downtimes',
-      ), */
+    'maintenance' => [
+      'template' => 'custom-maintenance-form-template',
+      'render element' => 'form',
+    ],
+    'incident' => [
+      'template' => 'custom-incident-form-template',
+      'render element' => 'form',
+    ],
+    'downtimes_filter' => [
+      'template' => 'custom-archived-form-template',
+      'render element' => 'form',
+    ],
     'downtimes_table' => array(
       'variables' => array(
         'header' => array(),
@@ -837,31 +853,11 @@ function downtimes_theme() {
       ),
       'template' => 'downtimes_display',
     ),
-    /* 'service_checkbox' => array(
-      'file' => 'includes/downtimes.theme.inc',
-      'variables' => array('element' => NULL),
-      ), */
     'service_checkboxes' => array(
       'render element' => 'element',
       'function' => 'theme_service_checkboxes',
       'file' => 'downtimes.theme.inc',
     ),
-      /* 'noncompliance_reason_select' => array(
-        'file' => 'includes/downtimes.theme.inc',
-        'variables' => array('element' => NULL),
-        ),
-        'published_downtime_services' => array(
-        'file' => 'includes/downtimes.theme.inc',
-        'arguments' => array('service' => NULL, 'nid' => NULL, 'img' => NULL, 'sdata' => NULL),
-        ),
-        'service_data' => array(
-        'file' => 'includes/downtimes.theme.inc',
-        'arguments' => array('data' => NULL),
-        ),
-        'downtimes_log' => array(
-        'file' => 'includes/downtimes.theme.inc',
-        'arguments' => array('result' => NULL, 'type' => 'html'),
-        ), */
   );
 }
 
@@ -1027,7 +1023,7 @@ function custom_maintenance_submit($form, FormStateInterface $form_state) {
   }
 
   if ($enddate_old != $enddate_new) {
-    $log['end_date']['old'] = $enddate_old;
+    $log['end_date']['old'] = !empty($enddate_old) ? $enddate_old : 0;
     $log['end_date']['new'] = $enddate_new;
   }
   /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->enddate_planned)), trim($form_state['values']['enddate_planned']))) {
