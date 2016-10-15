@@ -1,0 +1,11 @@
+{# empty Twig template #}
+{{ form.maintenance_header }}
+<div class="downtimes_states_filter_form_wrapper">
+{{ form.states }}
+{{ form.services_effected }}
+</div>
+<div class="downtimes_dates_filter_form_wrapper">
+{{ form.filter_startdate }}
+{{ form.filter_enddate }}
+</div>
+{{ form|without('filter_startdate','filter_enddate','services_effected','states', 'maintenance_header') }}
