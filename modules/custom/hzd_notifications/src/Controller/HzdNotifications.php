@@ -117,27 +117,6 @@ class HzdNotifications extends ControllerBase {
     $resp = new \Drupal\Core\Ajax\AjaxResponse();
     $resp->setData(['success'=>TRUE,'data'=>'success']);
     return $resp;
-    
-    $output[] = array(
-      '#attached' => array(
-        'library' => array(
-          'drupalSettings'=> array(
-            'data' => 'sucess'
-            )
-          )
-        )
-      );
-    $output[] = array(
-      '#attached' => array(
-        'library' => array(
-          'drupalSettings' => array(
-            'status' =>  TRUE
-            )
-          )
-        )
-      );
-    pr($output);exit;
-    return $output;
   }
 
   public function notification_templates() {

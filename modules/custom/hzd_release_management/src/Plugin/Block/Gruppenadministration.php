@@ -22,11 +22,7 @@ class Gruppenadministration extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return array(
-      '#type' => 'markup',
-      '#markup' => $this->hzdGroupAdminLinks(),
-      '#cache' => ['max-age' => 0],
-    );
+    return $this->hzdGroupAdminLinks();
   }
 
   /**
@@ -62,7 +58,18 @@ class Gruppenadministration extends BlockBase {
     else {
       $groupId = $group;
     }
-    $menuHtml = '<ul class="menu nav">
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Contents'),'view.group_content.page_1',['arg_0'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Content'),'entity.group_content.group_node.create_page',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Users'),'view.group_members.page_1',['arg_0'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Disturbances and Block times'),'downtimes.DowntimessettingForm',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Known Issues'),'problem_management.problem_settings',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Releases'),'hzd_release_management.release_settings',['group'=>$groupId]);
+    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Mass Contact'),'mass_contact.bulk_mail_group_members_form');
+    if ($groupId == 32) {
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Mass Contact'),'hzd_release_management.display_planning_files',['group'=>$groupId]);
+    }
+    
+/*    $menuHtml = '<ul class="menu nav">
     <li><a href="/group/' . $groupId . '/content">Contents</a></li>
     <li><a href="/group/' . $groupId . '/node/create">Content</a></li>
     <li><a href="/group/' . $groupId . '/approved-members">Users</a></li>
@@ -73,9 +80,14 @@ class Gruppenadministration extends BlockBase {
     if ($groupId == 32) {
       $menuHtml .= '<li><a href="/group/' . $groupId . '/planning-files">Planning Files</a></li>';
     }
-    $menuHtml .= '</ul>';
-
-    return $this->t($menuHtml);
+    $menuHtml .= '</ul>';*/
+    $menuHtml = [
+                 '#items'=>$menuItems,
+                 '#theme'=>'item_list',
+                 '#list_type'=>'ul',
+                 '#attributes'=>['class'=>['menu nav']],
+                 ];
+    return $menuHtml;
   }
 
 }
