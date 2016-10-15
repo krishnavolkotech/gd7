@@ -1,0 +1,39 @@
+diff --git a/printable.module b/printable.module
+index 356b055..cabdc71 100644
+--- a/printable.module
++++ b/printable.module
+@@ -76,7 +76,7 @@ function printable_theme() {
+  * @param array $variables
+  *   An associative array containing:
+  *   - elements: Array of participant names.
+- *     Array keys: #base_url, #title, #html_attributes, #send_script.
++ *     Array keys: #base_url, #title, #html_attributes, #send_script, #include_css.
+  */
+ function template_preprocess_printable(&$variables) {
+   global $base_url;
+@@ -101,6 +101,11 @@ function template_preprocess_printable(&$variables) {
+       $variables['close_script'] = $variables['base_url'] . '/js/close.js';
+     }
+   }
++
++  if($include_path = \Drupal::service('printable.css_include')->getCssIncludePath()){
++    $variables['include_css'] = $include_path;
++  }
++
+ }
+ 
+ /**
+diff --git a/templates/printable.html.twig b/templates/printable.html.twig
+index 07ec451..0a8c3ec 100644
+--- a/templates/printable.html.twig
++++ b/templates/printable.html.twig
+@@ -22,6 +22,9 @@
+     }
+     </style>
+     <link type="text/css" rel="stylesheet" href="{{ base_url }}/css/drupal-printable.css" />
++      {% if include_css %}
++        <link type="text/css" rel="stylesheet" href="/{{ include_css }}" />
++      {% endif %}
+       {% if close_script %}
+         <script type="text/javascript" src="{{ close_script }}"></script>
+       {% else %}

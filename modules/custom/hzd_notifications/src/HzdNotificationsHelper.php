@@ -185,7 +185,37 @@ class HzdNotificationsHelper {
 
   // update the overrided content type interval
   static function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
-
+    
+    $data = \Drupal::database()->select('service_notifications','sn')
+        ->fields('sn')
+        ->condition('service_id',$service)
+        ->condition('type',$type)
+        ->execute()->fetchAllAssoc('send_interval');
+        $uids = null;
+        //pr($data);exit;
+      foreach([-1,0,86400,604800] as $interval){
+        if(isset($data[$interval])){
+          $uids = unserialize($data[$interval]->uids);
+          //pr($data[$interval]);exit;
+          if(($key = array_search($uid, $uids)) !== false) {
+            unset($uids[$key]);
+          }
+          if($send_interval == $interval){
+            $uids[] = $uid;
+          }
+          \Drupal::database()
+            ->update('service_notifications')
+            ->fields(['uids'=>serialize($uids)])
+            ->condition('sid',$data[$interval]->sid)->execute();
+        }else{
+          $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'type'=>$type,''];
+          \Drupal::database()
+            ->insert('service_notifications')
+            ->fields($notifyData)->execute();
+        }
+      }
+    
+/*
     // get uids list of default user interval of service
     $uids_list = self::hzd_get_user_service_interval($service, $type, $default_intval);
     if(($key = array_search($uid, (array)$uids_list)) !== false) {
@@ -207,6 +237,7 @@ class HzdNotificationsHelper {
       // update old default send interval of service id
       self::hzd_update_users_service_notifications($service, $type, $send_interval, $new_serialized_uid);
     }
+    */
   }
 
   // get uids list of default user interval of service

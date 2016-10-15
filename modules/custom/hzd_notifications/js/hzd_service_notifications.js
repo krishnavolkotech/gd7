@@ -27,6 +27,7 @@
         $.post( url, {'uid': uid, 'type': type, 'service': service_id, 'content_type': content_type, 'interval' :interval, 'rel_type': rel_type}, function() {
 	        window.location = window.location.href;
 	      }, 'json');
+        return false;
       });
 
     }

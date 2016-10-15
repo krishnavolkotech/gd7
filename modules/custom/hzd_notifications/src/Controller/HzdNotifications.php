@@ -98,7 +98,7 @@ class HzdNotifications extends ControllerBase {
     }else{
       $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $content_types[$type], $rel_type);
       HzdNotificationsHelper::hzd_update_content_type_intval($service, $interval, $uid, $content_types[$type], $default_intval);
-      /*$sid = \Drupal::database()->select('service_notifications_override','sno')
+      $sid = \Drupal::database()->select('service_notifications_override','sno')
         ->fields('sno',['sid'])
         ->condition('service_id', $service)
         ->condition('type', $content_types[$type])
@@ -110,7 +110,7 @@ class HzdNotifications extends ControllerBase {
       $qfd = \Drupal::database()->update('service_notifications_override')
         ->fields(['send_interval'=>$interval])
         ->condition('sid', $sid)
-        ->execute();*/
+        ->execute();
 //echo $qfd->__toString();
     }
     
