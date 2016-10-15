@@ -50,7 +50,6 @@ class CustNodeController extends ControllerBase {
 
   static function hzdGroupAccess() {
     if ($group = \Drupal::routeMatch()->getParameter('group')) {
-      drupal_set_message("ASDFADSF");
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
@@ -62,7 +61,25 @@ class CustNodeController extends ControllerBase {
     }
     return AccessResult::neutral();
   }
-
+  
+  static function hzdIncidentGroupAccess() {
+    $uid = \Drupal::currentUser()->id();
+    if($uid == 0) {
+      return AccessResult::allowed();
+    }
+    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+      if (!is_object($group))
+        $group = \Drupal\group\Entity\Group::load($group);
+      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+        return AccessResult::allowed();
+      }
+      else {
+        return AccessResult::forbidden();
+      }
+    }
+    return AccessResult::neutral();
+  }
+  
   static function hzdnodeConfirmAccess() {
     if ($group = \Drupal::routeMatch()->getParameter('group')) {
       if (!is_object($group))
