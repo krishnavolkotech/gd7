@@ -86,6 +86,7 @@ class Gruppenadministration extends BlockBase {
                  '#theme'=>'item_list',
                  '#list_type'=>'ul',
                  '#attributes'=>['class'=>['menu nav']],
+                 '#cache'=>['max-age'=>0]
                  ];
     return $menuHtml;
   }
