@@ -74,6 +74,8 @@ class ReleasetypesettingForm extends ConfigFormBase {
       ->set('konsens_service_term_id', $konsens_service_term_id)
       ->set('ex_eoss_service_term_id', $ex_eoss_service_term_id)
       ->save();
+    
+   \Drupal::service("router.builder")->rebuild();
     parent::submitForm($form, $form_state);
   }
 

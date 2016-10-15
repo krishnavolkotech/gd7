@@ -88,23 +88,23 @@
 	    $('.search_string').blur(text_textfield);
 	    $('.search_string').focus(function() { $(this).val('') });  
 
-	    $('#problem_search_results_wrapper #pagination > nav > ul > li > a').click(function() {
-	      var ele = $(this);
-	      var url = ele.attr('href');
-	      var params = url.split('?')[1];
-	      var group_id = drupalSettings.problem_management.group_id;
-	      var type = drupalSettings.problem_management.type;
-	      var base_path = drupalSettings.problem_management.basePath;
-	      url = base_path + 'group/' + group_id + '/problem_search_results/' + type + '?' + params;
-	      $.post(url, {}, function(data) {
-		if (data.status == true) {
-		  $('#problem_search_results_wrapper').html(data.data);
-		  $(window).scrollTop(0);
-		  Drupal.attachBehaviors('#problem_search_results_wrapper');
-		}
-	      }, 'json');
-	      return false;
-	    });
+//	    $('#problem_search_results_wrapper #pagination > nav > ul > li > a').click(function() {
+//	      var ele = $(this);
+//	      var url = ele.attr('href');
+//	      var params = url.split('?')[1];
+//	      var group_id = drupalSettings.problem_management.group_id;
+//	      var type = drupalSettings.problem_management.type;
+//	      var base_path = drupalSettings.problem_management.basePath;
+//	      url = base_path + '/group/' + group_id + '/problem_search_results/' + type + '?' + params;
+//	      $.post(url, {}, function(data) {
+//		if (data.status == true) {
+//		  $('#problem_search_results_wrapper').html(data.data);
+//		  $(window).scrollTop(0);
+//		  Drupal.attachBehaviors('#problem_search_results_wrapper');
+//		}
+//	      }, 'json');
+//	      return false;
+//	    });
 
 //	    $('.problems_details_link').click(function(){
 //	      var query = $(this).attr('query');

@@ -73,7 +73,7 @@ static function get_related_services($type = NULL) {
   
   $query = db_select('group_problems_view', 'gpv');
   $query->Fields('gpv', array('service_id'));
-  $query->conditions('group_id', $group_id, '=');
+  $query->condition('group_id', $group_id, '=');
 
   $result = $query->execute()->fetchAssoc();
   return $result['service_id'];
@@ -91,14 +91,14 @@ static function get_related_services($type = NULL) {
     
   $query = db_select('group_downtimes_view', 'gdv');
   $query->Fields('gdv', array('service_id'));
-  $query->conditions('group_id', $group_id, '=');
+  $query->condition('group_id', $group_id, '=');
 
   $result = $query->execute()->fetchAssoc();
   return $result['service_id'];
   }
 
   // display service info in manage services page
-  function service_info() {
+  static public function service_info() {
     $options['query']['destinations'] = 'manage_services';
     $url = Url::fromUserInput('/node/add/services', $options);
     $link = array('#title' => array('#markup' => t('Create Services')), '#type' => 'link', '#url' => $url);
@@ -109,7 +109,7 @@ static function get_related_services($type = NULL) {
   }
 
   // display list of all services
-  function service_list() {
+  static public function service_list() {
     global $base_url;
     $header = array(
 		  0 => array('data' => t('Service Name'), 'class' => 'service_name'),
@@ -125,15 +125,30 @@ static function get_related_services($type = NULL) {
       if(!$service_info->field_enable_downtime_value) {
         $value = FALSE;
       }
+
       $form['downtime_checkbox'] = array(
-        '#type' => 'checkbox', 
-				'#attributes' => array('node_id' => $service_info->nid, 'class' => 'enable_downtimes'),
-				'#value' => $value,
+       //  '#title' => t(''),
+        '#type' => 'checkbox',
+        '#checked' => $value,
+		  	'#attributes' => array(
+          'node_id' => $service_info->nid, 
+          'class' => array(
+              'enable_downtimes',
+            ),
+          ),
 				'#prefix' => "<div class = 'downtime_enable'><div class = 'downtime_check_form'>",
 				'#suffix' => "<div style = 'display:none' class = 'loader " . $service_info->nid . "'><img src =" . $loader_path . "  / ><div></div></div>",
       );
       $downtimes = \Drupal::service('renderer')->render($form['downtime_checkbox']);
-      $downtime_checkbox = array('#title' => array('#markup' => $downtime_enable));
+      
+//      
+//      $downtime_checkbox = array(
+//        '#title' => array(
+//          '#markup' => $downtime_enable
+//          )
+//        );
+//     
+      
 		  $url = Url::fromUserInput('/node/' . $service_info->nid . '/edit');
       $link = array('#title' => array('#markup' => t('Edit')), '#type' => 'link', '#url' => $url);
       $edit_link = \Drupal::service('renderer')->renderRoot($link);
@@ -156,7 +171,7 @@ static function get_related_services($type = NULL) {
     return $output;
   }
 
-  function services_query() {
+  static public function services_query() {
     $query = db_select('node_field_data', 'n');
     $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
     $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
@@ -204,7 +219,8 @@ static function get_related_services($type = NULL) {
     }
   }
 
-  function update_downtime_notifications($node, $rel_type) {
+  static public function update_downtime_notifications($node, $rel_type) {
+    
     $batch = array(
       'operations' => array(),
       'title' => t('Updating Downtimes Notifications'),
@@ -223,6 +239,7 @@ static function get_related_services($type = NULL) {
     }
     $url = array('manage_services');
     batch_set($batch);
+
     return batch_process($url);
   }
 
