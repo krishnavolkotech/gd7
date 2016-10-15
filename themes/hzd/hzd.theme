@@ -105,9 +105,6 @@ function hzd_preprocess_node(&$variables) {
       $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
     }
     $variables['changed'] = date('d.m.Y', $variables['node']->get('changed')->value);
-    if (isset($variables['elements']['#revisions_table_print'])) {
-      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
-    }
     $variables['field_custom_title'] = $variables['node']->get('field_custom_title')->value;
     $variables['field_related_transfer_number'] = $variables['node']->get('field_related_transfer_number')->value;
   }
@@ -116,7 +113,9 @@ function hzd_preprocess_node(&$variables) {
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
     $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
-
+    if (isset($variables['elements']['#revisions_table_print'])) {
+      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
+    }
     //$url = Url::fromUserInput('/entityprint/node/' . $nid);
 
     $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
