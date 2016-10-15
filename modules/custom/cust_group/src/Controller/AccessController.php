@@ -34,7 +34,7 @@ class AccessController extends ControllerBase {
                 /**
                  * group id has to be dynamic 
                  */
-                $group = \Drupal\group\Entity\Group::load(3);
+                $group = \Drupal\group\Entity\Group::load(QUICKINFO);
                 $content = $group->getMember(\Drupal::currentUser());
                 if ($content) {
                     return AccessResult::allowed();

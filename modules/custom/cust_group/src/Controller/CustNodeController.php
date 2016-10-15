@@ -7,6 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
 
+
 /**
  * Returns responses for Node routes.
  */
@@ -50,7 +51,7 @@ class CustNodeController extends ControllerBase {
 
   static function hzdGroupAccess() {
     if ($group = \Drupal::routeMatch()->getParameter('group')) {
-      drupal_set_message("ASDFADSF");
+   
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
