@@ -764,7 +764,7 @@ class HzdreleasemanagementStorage {
       $default_type = KONSONS;
     }
 
-    if (!$filter_options) {
+    if (!$filter_options && isset($_SESSION['deploy_filter_options'])) {
       $filter_options = $_SESSION['deploy_filter_options'];
     }
 
@@ -933,7 +933,7 @@ class HzdreleasemanagementStorage {
 
         }
         else {
-          $view_earlywarning = '<span class="no-warnigs"></span>';
+          $view_warning = t('<span class="no-warnigs"></span>');
         }
 
         // Early Warning create icon.
@@ -946,6 +946,7 @@ class HzdreleasemanagementStorage {
         $create_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/add/early-warnings', $options);
         $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
+        
         $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
 
         $elements[] = $earlywarnings_cell;
@@ -1235,7 +1236,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $result = $paged_query->execute()->fetchAll();
     }
     else {
-      $result = $query->execute()->fetchAll();
+      $result = $release_query->execute()->fetchAll();
     }
     // pr($result);exit;
     return $result;

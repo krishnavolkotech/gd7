@@ -7,6 +7,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\Core\Url;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+
+
 /**
  * If(!defined('KONSONS'))
  * define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -28,7 +31,7 @@ class ReleasesettingsForm extends FormBase {
    * {@inheritDoc}.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-
+    $default_services = array();
     global $base_url;
     $breadcrumb = array();
     // $breadcrumb[] = l(t('Home'), NULL);.
@@ -123,9 +126,45 @@ class ReleasesettingsForm extends FormBase {
     $counter = HzdreleasemanagementStorage::insert_group_release_view($default_release_type, $selected_services);
     $gid = $group_id;
     $menu_name = 'menu-' . $gid;
+    
     $path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
     // $path = variable_get('import_alias_releases', 'releases');
     // HzdcustomisationStorage::reset_menu_link($counter, t('Releases'), 'releases', $menu_name, $gid);.
+ 
+    switch ($group_id) {
+      case '31':
+        $menuId = 'menu-825';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menuId)
+            ->execute();
+        break;
+
+      case '32':
+        $menuId = 'menu-339';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menuId)
+            ->execute();
+        break;
+    }
+    foreach ($menuItems as $menu_link => $menu_link_id) {
+      
+      $menu = MenuLinkContent::load($menu_link_id);
+     
+      if ($menu->getTitle() == 'Releases') {
+        if ($counter == 0) {
+          $menu->set('enabled', 0);
+        }
+        else {
+          $menu->set('enabled', 1);
+        }
+        $menu->save();
+        break;
+      }
+    }
+    \Drupal::service("router.builder")->rebuild();
+//    7932
+    $menu->save();
+    \Drupal::service("router.builder")->rebuild(); 
     drupal_set_message(t('Releases Settings Updated'), 'status');
   }
 

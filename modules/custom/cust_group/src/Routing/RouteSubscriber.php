@@ -19,6 +19,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess"); 
     }
     
+    if ($route = $collection->get('view.rz_schnellinfo.page_1')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewonlyAccess"); 
+    }    
+    
     if ($route = $collection->get('entity.node.canonical') && $node_object = $collection->get('')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodeviewAccess");
     }

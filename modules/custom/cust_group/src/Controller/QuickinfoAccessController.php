@@ -57,6 +57,35 @@ class QuickinfoAccessController {
         return \Drupal\Core\Access\AccessResult::forbidden();
     }
 
+  static public function CheckQuickinfoviewonlyAccess(AccountInterface $account) {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        }
+        else {
+            $group_id = $group;
+        }
+
+        $allowed_group = array(QUICKINFO);
+        
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+            return AccessResult::allowed();
+        }
+        if (!$group_id || !in_array($group_id, $allowed_group)) {
+            return \Drupal\Core\Access\AccessResultInterface::forbidden();
+        }
+        
+        $group = \Drupal\group\Entity\Group::load($group_id);
+        $content = $group->getMember(\Drupal::currentUser());
+        if ($content) {
+            return AccessResult::allowed();
+        }
+        
+        return \Drupal\Core\Access\AccessResult::forbidden();
+    }
+    
+    
+    
     static public function CheckQuickinfonodeviewAccess(AccountInterface $account) {
         $node = \Drupal::routeMatch()->getParameter('node');
         if (is_object($node) && $node->getType() == 'quickinfo') {
