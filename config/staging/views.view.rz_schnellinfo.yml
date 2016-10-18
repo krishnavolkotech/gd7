@@ -714,7 +714,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: autoren-rz-schnellinfo/rz-schnellinfos/entwuerfe
+      path: group/%/rz-schnellinfos/entwuerfe
       filters:
         status:
           id: status
@@ -1298,7 +1298,7 @@ display:
     position: 2
     display_options:
       display_extenders: {  }
-      path: release-management/rz-schnellinfos
+      path: group/%/rz-schnellinfos
       menu:
         enabled: true
         expanded: false
