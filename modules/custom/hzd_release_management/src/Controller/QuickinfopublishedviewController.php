@@ -23,9 +23,8 @@ class QuickinfopublishedviewController extends ControllerBase {
    * TO do : Check with shiva sir .
    */
   public function quickinfo_published_view() {
-    $quickinfo_group_id = \Drupal::config('quickinfo.settings')->get('quickinfo_group_id');
-    dpm($quickinfo_group_id);
-    $is_group_member = DisplaysavedquickinfoController::CheckuserisquickinfoGroupMember();
+    $quickinfo_group_id = \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id');
+    $is_group_member = $this->CheckuserisquickinfoGroupMember();
     if ($is_group_member) {
                      $output[]['#attached']['library'] = array(
         //    'locale.libraries/translations',
@@ -68,28 +67,26 @@ class QuickinfopublishedviewController extends ControllerBase {
   /**
    *
    */
-  public function CheckuserisquickinfoGroupMember($group_id = NULL) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id = $group;
-    }
+   public function CheckuserisquickinfoGroupMember($group_id = null) {
+        $group = \Drupal::routeMatch()->getParameter('group');
+        if (is_object($group)) {
+            $group_id = $group->id();
+        }
+        else {
+            $group_id = $group;
+        }
 
-    $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
-    if (!$group_id && !in_array($group_id, $allowed_group)) {
-      return FALSE;
+        if (!$group_id && $group_id != QUICKINFO) {
+            return false;
+        }
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+            return true;
+        }
+        $group = \Drupal\group\Entity\Group::load($group_id);
+        $content = $group->getMember(\Drupal::currentUser());
+        if ($content) {
+            return true;
+        }
+        return false;
     }
-    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-      return TRUE;
-    }
-    $group = Group::load($group_id);
-    $content = $group->getMember(\Drupal::currentUser());
-    if ($content) {
-      return TRUE;
-    }
-    return FALSE;
-  }
-
 }

@@ -127,8 +127,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
   if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form') {
     $form['actions']['publish']['#value'] = t('Publish');
-    $form['field_custom_title']['widget'][0]['value']['#attributes']['maxlength'] = '254';
-    $form['field_related_transfer_number']['widget'][0]['value']['#attributes']['maxlength'] = '254';
     $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
     $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
     $form['actions']['unpublish']['#value'] = t('Save');
@@ -144,6 +142,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $uniue_id_val = $query->execute()->fetchField();
     }
     $form['#validate'][] = 'custom_quickinfo';
+
     $form['attachments']['#title'] = t('2.13 File attachments');
     $form['attachments']['#prefix'] = '<div class="attachments quickinfo-attachments">';
     $form['field_unique_id']['#prefix'] = '<div class="uniq_id">';

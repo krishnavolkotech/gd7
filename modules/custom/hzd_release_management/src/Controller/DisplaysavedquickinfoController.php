@@ -145,7 +145,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
 //    return false;
 //  }
   
-   public function CheckuserisquickinfoGroupMember($group_id = null) {
+   static public function CheckuserisquickinfoGroupMember($group_id = null) {
         $group = \Drupal::routeMatch()->getParameter('group');
         if (is_object($group)) {
             $group_id = $group->id();

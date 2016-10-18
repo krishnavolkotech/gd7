@@ -26,14 +26,19 @@ class ReleaseFilterForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
-
-    $deploy_filter_options = $_SESSION['deploy_filter_options'];
+    
+    if (!empty($_SESSION['deploy_filter_options'])) {
+       $deploy_filter_options = $_SESSION['deploy_filter_options'];
+    } else {
+      $deploy_filter_options = array();
+    }
+   
     $request = \Drupal::request();
     $page = $request->get('page');
     $default_release_type_value = '';
     $default_service_value = '';
     $default_release_value = '';
-    if (isset($page) && $type == 'deployed') {
+    if (isset($page) && $type == 'deployed' && !empty($deploy_filter_options)) {
       $default_state_value = $deploy_filter_options['state'];
       $default_service_value = $deploy_filter_options['service'];
       $default_release_value = $deploy_filter_options['release'];

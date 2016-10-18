@@ -764,7 +764,7 @@ class HzdreleasemanagementStorage {
       $default_type = KONSONS;
     }
 
-    if (!$filter_options) {
+    if (!$filter_options && isset($_SESSION['deploy_filter_options'])) {
       $filter_options = $_SESSION['deploy_filter_options'];
     }
 
@@ -933,7 +933,7 @@ class HzdreleasemanagementStorage {
 
         }
         else {
-          $view_earlywarning = '<span class="no-warnigs"></span>';
+          $view_warning = t('<span class="no-warnigs"></span>');
         }
 
         // Early Warning create icon.
@@ -946,6 +946,7 @@ class HzdreleasemanagementStorage {
         $create_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/add/early-warnings', $options);
         $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
+        
         $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
 
         $elements[] = $earlywarnings_cell;
@@ -1235,7 +1236,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $result = $paged_query->execute()->fetchAll();
     }
     else {
-      $result = $query->execute()->fetchAll();
+      $result = $release_query->execute()->fetchAll();
     }
     // pr($result);exit;
     return $result;
@@ -1409,8 +1410,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
-    $release_type = $release_type_query->execute()->fetchCol();
-    return $release_type['0'];
+    $release_type = $release_type_query->execute()->fetchField();
+  //  dpm($release_type);
+    return $release_type;
   }
 
   /**
@@ -1428,19 +1430,19 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $release_type_query = db_select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
-    $release_type = $release_type_query->execute()->fetchCol();
+    $release_type = $release_type_query->execute()->fetchField();
     if ($release_type) {
       db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $group_id, '=')->execute();
     }
     else {
-      db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type));
+      
+      db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type))->execute();
     }
     // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';.
     $counter = 0;
     if (sizeof($selected_services) > 0) {
       foreach ($selected_services as $service) {
         if ($service != 0) {
-          echo $count;
           $counter++;
           // db_query($sql, $group_id, $service);.
           db_insert('group_releases_view')->fields(array(

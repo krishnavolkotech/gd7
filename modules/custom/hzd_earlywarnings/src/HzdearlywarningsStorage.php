@@ -153,7 +153,7 @@ class HzdearlywarningsStorage {
         '#theme' => 'table',
         '#header' => $header,
         '#rows' => $rows,
-        '#empty' => t('No Data Created Yet'),
+        '#empty' => t('<div id="no-result"> No Data Created Yet </div>'),
         '#attributes' => ['id' => "earlywarnings_release_sortable", 'class' => "tablesorter"],
       );
       return $output;
@@ -270,7 +270,7 @@ class HzdearlywarningsStorage {
     }
 
     if (count($rows) == 0) {
-      $output[]['#markup'] = t('No Data to be displayed');
+      $output[]['#markup'] = t('<div id="no-result"> No Data to be displayed </div>');
       return $output;
     }
 
@@ -278,7 +278,7 @@ class HzdearlywarningsStorage {
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
-      '#empty' => t('No Data Created Yet'),
+      '#empty' => t('<div id="no-result"> No Data Created Yet </div>'),
       '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
     );
 

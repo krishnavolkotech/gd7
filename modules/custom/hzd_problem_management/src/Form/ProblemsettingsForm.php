@@ -8,8 +8,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 // Use Drupal\Core\Menu\MenuLinkInterface;.
 use Drupal\problem_management\HzdStorage;
-
+use Drupal\Core\Url;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 if (!defined('PROBLEM_MANAGEMENT')) {
   define('PROBLEM_MANAGEMENT', 31);
@@ -80,10 +81,14 @@ class ProblemsettingsForm extends FormBase {
     // Url::fromInternalUri('node/' . add)
     // $path = Url::fromInternalUri(array('node', $group_id ,$view_path));
     //  echo '<pre>';  print_r($path);  exit;
-    // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));.
+    // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));
+    
+    $url = Url::fromUserInput('/group/31/problems', array('absolute' => true));
+    $problems_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
+  
     $prefix = '';
     $prefix .= "<div class = 'problem_settings'> ";
-    $prefix .= t("The problems group view will be available at ");
+    $prefix .= t("The problems group view will be available at $problems_view ");
     // $prefix .= Drupal::url($path, $path);
     // $prefix .= Drupal::url($path, $path);.
     $prefix .= "<div> ";
@@ -139,7 +144,7 @@ class ProblemsettingsForm extends FormBase {
 
     $selected_services = $form_state->getValue('services');
     $counter = HzdStorage::insert_group_problems_view($group->id(), $selected_services);
-
+  
     // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
     // $gid = $tempstore->get('Group_id');
     // $gid = $_SESSION['Group_id'];
@@ -147,20 +152,36 @@ class ProblemsettingsForm extends FormBase {
     $menu_name = 'menu-' . $group->get('field_old_reference')->value;
     $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
 
-    // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
-    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
+//    // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
+//    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
+    switch ($group_id) {
+      case '31': 
+        $menuId = 'menu-825';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+                ->condition('menu_name',$menuId)
+                    ->execute();
+        break;
 
-//    $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
-//  $front_page_link = $menu_link_manager->getDefinition($menu_id);
-//  $front_page_link['enabled'] = $enabled ? 1 : 0; 
-//  $menu_link_manager->updateDefinition($menu_id, $front_page_link);
-//  $cache = \Drupal::cache('menu');
-//  $cache->deleteAll();
-//  
-  
-    \Drupal::service("router.builder")->rebuild();
-    
+      case '32': 
+        $menuId = 'menu-339';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+                ->condition('menu_name',$menuId)
+                    ->execute(); 
+        break;  
+    }
+    foreach ($menuItems as $menu_link => $menu_link_id) {
+      $menu = MenuLinkContent::load($menu_link_id);
+      if ($menu->getTitle() == 'Problem-Datenbank') { 
+        if ( $counter == 0) {
+          $menu->set('enabled', 0);
+        } else {
+          $menu->set('enabled', 1);
+        }
+            $menu->save();
+            break;
+      }
+    }
+    \Drupal::service("router.builder")->rebuild(); 
     drupal_set_message(t('Problem Settings Updated'), 'status');
   }
-
 }

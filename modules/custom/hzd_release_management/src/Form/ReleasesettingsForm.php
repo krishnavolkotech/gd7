@@ -6,6 +6,9 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
+use Drupal\Core\Url;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+
 
 /**
  * If(!defined('KONSONS'))
@@ -28,7 +31,7 @@ class ReleasesettingsForm extends FormBase {
    * {@inheritDoc}.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-
+    $default_services = array();
     global $base_url;
     $breadcrumb = array();
     // $breadcrumb[] = l(t('Home'), NULL);.
@@ -47,8 +50,12 @@ class ReleasesettingsForm extends FormBase {
     $options = HzdservicesStorage::get_related_services($type);
     $view_path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
 
+    $url = Url::fromUserInput('/group/32/releases', array('absolute' => true));
+    $release_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
+  
+    
     // l($path, $path) .
-    $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at ") . "<p>" .
+    $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at $release_view") . "<p>" .
         "<p><div> " . t("Please specify the services of which you would like to display the Releases in this group") . "</div></p>";
     $form['#suffix'] = "</div>";
     $form['services'] = array(
@@ -119,9 +126,45 @@ class ReleasesettingsForm extends FormBase {
     $counter = HzdreleasemanagementStorage::insert_group_release_view($default_release_type, $selected_services);
     $gid = $group_id;
     $menu_name = 'menu-' . $gid;
+    
     $path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
     // $path = variable_get('import_alias_releases', 'releases');
     // HzdcustomisationStorage::reset_menu_link($counter, t('Releases'), 'releases', $menu_name, $gid);.
+ 
+    switch ($group_id) {
+      case '31':
+        $menuId = 'menu-825';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menuId)
+            ->execute();
+        break;
+
+      case '32':
+        $menuId = 'menu-339';
+        $menuItems = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menuId)
+            ->execute();
+        break;
+    }
+    foreach ($menuItems as $menu_link => $menu_link_id) {
+      
+      $menu = MenuLinkContent::load($menu_link_id);
+     
+      if ($menu->getTitle() == 'Releases') {
+        if ($counter == 0) {
+          $menu->set('enabled', 0);
+        }
+        else {
+          $menu->set('enabled', 1);
+        }
+        $menu->save();
+        break;
+      }
+    }
+    \Drupal::service("router.builder")->rebuild();
+//    7932
+    $menu->save();
+    \Drupal::service("router.builder")->rebuild(); 
     drupal_set_message(t('Releases Settings Updated'), 'status');
   }
 

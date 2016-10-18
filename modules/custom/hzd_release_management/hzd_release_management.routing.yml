@@ -161,14 +161,14 @@ hzd_release_management.deployed_releases:
 #   cust_og_is_admin: 'TRUE'     
 
 # to do access check ( group id is releasemanagement)
-hzd_release_management.rz-schnellinfo-overview:
-  path: '/group/{group}/rz-schnellinfo-overview'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\DisplayquickinfoController::display_quick_info'
-    _title: 'Quick info (Overview)'
-    _entity_view: group.default    
-  requirements:
-    _permission: 'access content'
+#hzd_release_management.rz-schnellinfo-overview:
+#  path: '/group/{group}/rz-schnellinfo-overview'
+#  defaults:
+#    _controller: '\Drupal\hzd_release_management\Controller\DisplayquickinfoController::display_quick_info'
+#    _title: 'Quick info (Overview)'
+#    _entity_view: group.default    
+#  requirements:
+#    _permission: 'access content'
 #    'access callback' => 'cust_quickinfo_og_is_member', 
 
 hzd_release_management.deployedreleases_create_form:
@@ -205,14 +205,14 @@ hzd_release_management.quickinfo_published_view:
 #  'access callback' => 'cust_quickinfo_og_is_member',
 
 
-hzd_release_management.saved-rz-schnellinfo:
-  path: '/group/{group}/saved-rz-schnellinfo'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\DisplaysavedquickinfoController::display_saved_quick_info'
-    _title: 'Quickinfo View'
-    _entity_view: group.default
-  requirements:
-    _permission: 'access content'
+#hzd_release_management.saved-rz-schnellinfo:
+#  path: '/group/{group}/saved-rz-schnellinfo'
+#  defaults:
+#    _controller: '\Drupal\hzd_release_management\Controller\DisplaysavedquickinfoController::display_saved_quick_info'
+#    _title: 'Quickinfo View'
+#    _entity_view: group.default
+#  requirements:
+#    _permission: 'access content'
 #  'access callback' => 'saved_quickinfo_og_is_member',      
     
 # 
