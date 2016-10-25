@@ -46,18 +46,19 @@ button {
   outline: none !important;
 }
 body {
-  font-family: 'roboto_condensedregular';
+  font-family: 'robotoregular';
   padding: 0;
   margin: 0;
-  color: #424241;
-  font-size: 12px;
-}
-p {
-  font-size: 12px;
+  color: #222222;
+  font-size: 16px;
   line-height: 1.6;
 }
+p {
+  margin-bottom: 15px;
+}
 #block-primarylinks {
-  background-color: #1475a0;
+  background-color: #04425f;
+  /* background-color: #064771; */
   width: 100%;
   float: left;
 }
@@ -74,9 +75,9 @@ p {
 }
 #block-primarylinks ul li a {
   color: #ffffff;
-  font-size: 14px;
   text-decoration: none;
-  line-height: 22px;
+  font-family: roboto_condensedregular;
+  /* text-transform: uppercase; */
 }
 #block-primarylinks ul li a:hover {
   background: #0c4f6d;
@@ -88,6 +89,9 @@ p {
 #block-primarylinks ul li.active a {
   background: #0c4f6d;
   color: #ffffff;
+}
+a, a.hover {
+  color: #31708f;
 }
 footer h2,
 a.name.navbar-brand,
@@ -166,9 +170,9 @@ h3,
 h4,
 h5,
 h6 {
-  color: #1475a0;
+  color: #31708f;
   font-family: 'roboto_condensedregular';
-  margin: 15px 0 10px 0 !important;
+  margin: 15px 0 15px 0 !important;
 }
 h1 {
   font-size: 25px;
@@ -646,7 +650,7 @@ nav#block-optionen {
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: normal;
   background: #1475a0;
   color: #ffffff;
@@ -698,7 +702,6 @@ nav#block-optionen .field--name-body ul li:hover a {
 }
 h1.page-header {
   margin: 0 0 20px 0 !important;
-  font-weight: bold;
   font-size: 25px;
 }
 .col-sm-9 .field--name-body.field--type-text-with-summary ul {
@@ -714,9 +717,6 @@ h1.page-header {
   padding-left: 16px;
   width: 100%;
   float: left;
-}
-p {
-  line-height: 21px;
 }
 /* problem management table sort css */
 table.tablesorter thead tr .header {
@@ -830,6 +830,7 @@ input.end_date {
   font-size: 12px;
 }
 #header-right {
+  font-family: 'roboto_condensedregular';
   width: 65%;
   float: right;
 }
@@ -1098,9 +1099,15 @@ article .quickedit-field .field__items .field--item {
   display: none;
 }
 .breadcrumb {
+  font-family: 'roboto_condensedregular';
   width: 100%;
   float: left;
   margin-bottom: 0 !important;
+  border-radius: 0px;
+  border: 1px solid #dddddd;
+}
+.breadcrumb > .active {
+  color: #555;
 }
 #header-right a {
   padding: 0 2px;
@@ -1206,6 +1213,7 @@ form.problem-filter-form .string_search.hzd-form-element {
 .region-sidebar-first section.blue,
 .block-hzd-release-management,
 nav#block-optionen {
+  font-family: 'roboto_condensedregular';
   padding: 0px;
 }
 .region-sidebar-first section.blue ul.menu.nav,
@@ -1597,4 +1605,7 @@ form#downtimes-filter .string_search.hzd-form-element {
 }
 form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
   margin-top: 20px;
+}
+strong {
+  font-weight: normal;
 }
