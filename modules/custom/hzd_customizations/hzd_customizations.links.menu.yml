@@ -13,10 +13,10 @@ hzd_customizations.manage_non_production_environment:
   weight: 100
 
 hzd_customizations.notification:
-  title: 'Notification'
-  route_name: system.admin
-  parent: system.admin
-  description: 'Manage Non-Production Environment'
+  title: 'Notifications'
+  route_name: system.admin_config
+  parent: system.admin_config
+  description: 'Manage notifications'
   weight: 50
 
 hzd_customizations.quickinfo_templat:
