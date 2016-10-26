@@ -55,7 +55,7 @@ class DowntimessettingForm extends FormBase {
     $form['services'] = array(
       '#type' => 'checkboxes',
       '#options' => $options,
-      '#default_value' => ($default_services ? $default_services : array('')),
+      '#default_value' => (isset($default_services) ? $default_services : array('')),
       '#weight' => -6
     );
 
@@ -82,8 +82,9 @@ class DowntimessettingForm extends FormBase {
     $counter = HzdDowntimeStorage::insert_group_downtimes_view($selected_services);
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
+    $groupOldRef = $group->get('field_old_reference')->value;
     $gid = $group_id;
-    $menu_name = 'menu-' . $gid;
+    $menu_name = 'menu-' . $groupOldRef;
     // TO DO:
     // reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);
 
