@@ -173,6 +173,7 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
             $form['faq_seite']['widget']['#options'] = $pageOptions;
             break;
         case 'views_exposed_form':
+          if(isset($form['state'])){
             $states = \Drupal::database()->select('states','s')
                 ->fields('s',['abbr','state'])
                 ->condition('active',1)
@@ -182,6 +183,7 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
                 $stateOptions[$key] = $val->state;
             }
             $form['state'] = ['#type'=>'select','#options' => $stateOptions];
+          }
             break;
         case 'group_content_moderate-group_membership_group-request_form':
             $form['actions']['submit']['#submit'][] = 'requst_submit_handler';

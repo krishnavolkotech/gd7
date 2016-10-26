@@ -143,13 +143,9 @@ class ProblemsettingsForm extends FormBase {
 
     $selected_services = $form_state->getValue('services');
     $counter = HzdStorage::insert_group_problems_view($group->id(), $selected_services);
-
-    // $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
-    // $gid = $tempstore->get('Group_id');
-    // $gid = $_SESSION['Group_id'];
     // menu names are the combination of groups field_old_referrence as these are the machine name so cannot be updated to new entity id.
     $menu_name = 'menu-' . $group->get('field_old_reference')->value;
-    $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
+//    $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
 
 //    // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
 //    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
@@ -157,8 +153,10 @@ class ProblemsettingsForm extends FormBase {
             ->condition('menu_name', $menu_name)
             ->execute();
     $menuItems = MenuLinkContent::loadMultiple($menuItemIds);
+    $noLinkAvailable = true;
     foreach ($menuItems as $menu) {
-      if ($menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_newDowntimes') {
+      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'problem_management.problems') {
+        $noLinkAvailable = false;
         if ($counter == 0) {
           $menu->set('enabled', 0);
         } else {
@@ -168,7 +166,18 @@ class ProblemsettingsForm extends FormBase {
         break;
       }
     }
+    if ($noLinkAvailable && $counter != 0) {
+      $menu_link = MenuLinkContent::create([
+                'title' => $this->t('Problem-Datenbank'),
+                'link' => ['uri' => 'internal:/group/' . $group->id() . '/problems'],
+                'menu_name' => $menu_name,
+                'expanded' => TRUE,
+                'enabled' => 1,
+      ]);
+      $menu_link->save();
+    }
     \Drupal::service("router.builder")->rebuild();
     drupal_set_message(t('Problem Settings Updated'), 'status');
   }
+
 }

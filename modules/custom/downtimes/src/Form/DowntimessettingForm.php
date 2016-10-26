@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\downtimes\HzdDowntimeStorage;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 // use Drupal\hzd_customizations\HzdDowntimeStorage;
 
@@ -43,7 +44,7 @@ class DowntimessettingForm extends FormBase {
     $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
     $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
     $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchAll();
-    
+
     foreach ($group_downtimes_view_service as $service) {
       $default_services[$service->service_id] = $service->service_id;
     }
@@ -82,12 +83,38 @@ class DowntimessettingForm extends FormBase {
     $counter = HzdDowntimeStorage::insert_group_downtimes_view($selected_services);
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
-    $groupOldRef = $group->get('field_old_reference')->value;
-    $gid = $group_id;
-    $menu_name = 'menu-' . $groupOldRef;
-    // TO DO:
-    // reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);
-
+    $menu_name = 'menu-' . $group->get('field_old_reference')->value;
+//    $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
+//    // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
+//    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
+    $menuItemIds = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menu_name)
+            ->execute();
+    $menuItems = MenuLinkContent::loadMultiple($menuItemIds);
+    $noLinkAvailable = true;
+    foreach ($menuItems as $menu) {
+      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_newDowntimes') {
+        $noLinkAvailable = false;
+        if ($counter == 0) {
+          $menu->set('enabled', 0);
+        } else {
+          $menu->set('enabled', 1);
+        }
+        $menu->save();
+        break;
+      }
+    }
+    if ($noLinkAvailable && $counter != 0) {
+      $menu_link = MenuLinkContent::create([
+                'title' => $this->t('Störungen und Blockzeiten'),
+                'link' => ['uri' => 'internal:/group/' . $group->id() . '/downtimes'],
+                'menu_name' => $menu_name,
+                'expanded' => TRUE,
+                'enabled' => 1,
+      ]);
+      $menu_link->save();
+    }
+    \Drupal::service("router.builder")->rebuild();
     drupal_set_message($this->t('Downtime Settings Updated'));
   }
 
