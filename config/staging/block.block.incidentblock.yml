@@ -1,30 +1,31 @@
-uuid: 935b888e-e784-4c8d-b6d0-a10abbfc1759
+uuid: 59a15467-938a-4d6d-8d49-59001b2e12d4
 langcode: en
 status: true
 dependencies:
   module:
     - block_class
-    - cust_group
+    - downtimes
     - system
   theme:
     - hzd
 third_party_settings:
   block_class:
-    classes: blue
-id: customgroupmenublock
+    classes: ''
+id: incidentblock
 theme: hzd
-region: sidebar_first
-weight: -21
+region: sidebar_second
+weight: -22
 provider: null
-plugin: cust_group_menu_block
+plugin: incidents_block
 settings:
-  id: cust_group_menu_block
-  label: 'Custom Group Menu block'
-  provider: cust_group
+  id: incidents_block
+  label: 'Incident Block'
+  provider: downtimes
   label_display: visible
+  number_of_posts: ''
 visibility:
   request_path:
     id: request_path
-    pages: '/group/*'
+    pages: '<front>'
     negate: false
     context_mapping: {  }

@@ -19,7 +19,7 @@ class GroupTriggerController extends ControllerBase {
     $menuId = $group->get('field_old_reference')->value;
     $menuLink = MenuLinkContent::create([
                 'title'      => $groupContent->label(),
-                'link'       => 'internal:/group/'.$group->id().'/node/'.$groupContent->id(),
+                'link'       => ['uri'=>'internal:/group/'.$group->id().'/node/'.$groupContent->id()],
                 'menu_name'  => 'menu-'.$menuId,
             ])->save();
     

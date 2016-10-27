@@ -36,10 +36,10 @@ class GroupMenuBlock extends BlockBase {
       if (!is_object($group)) {
         $group = \Drupal\group\Entity\Group::load($group);
       }
-
-      $groupMember = (bool)$group->getMember(\Drupal::currentUser());
+      $user = \Drupal::currentUser();
+      $groupMember = (bool)$group->getMember($user);
       //pr((bool)$groupMember);exit;
-      if ($groupMember) {
+      if ($groupMember || array_intersect($user->getRoles(), ['admininstrator','site_administrator'])) {
         $oldId = $group->get('field_old_reference')->value;
         $menu_name = 'menu-' . $oldId;
         $menu_tree = \Drupal::menuTree();
