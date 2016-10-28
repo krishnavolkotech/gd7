@@ -7,7 +7,6 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
 
-
 /**
  * Returns responses for Node routes.
  */
@@ -37,14 +36,14 @@ class CustNodeController extends ControllerBase {
 
   function groupContentView() {
     $parm = \Drupal::routeMatch()->getParameter('group_content');
-    $node = \Drupal\node\Entity\Node::load($parm->get('entity_id')->referencedEntities()[0]->id());
+    $node = $parm->get('entity_id')->referencedEntities()[0];
     $view_builder = \Drupal::entityManager()->getViewBuilder('node');
     return $view_builder->view($node);
   }
 
   function groupMemberView() {
     $member = \Drupal::routeMatch()->getParameter('group_content');
-    $user = \Drupal\user\Entity\User::load($member->get('entity_id')->referencedEntities()[0]->id());
+    $user = $member->get('entity_id')->referencedEntities()[0];
     $view_builder = \Drupal::entityManager()->getViewBuilder('user');
     return $view_builder->view($user);
   }
@@ -55,17 +54,30 @@ class CustNodeController extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
         return AccessResult::allowed();
-      }
-      else {
+      } else {
         return AccessResult::forbidden();
       }
     }
     return AccessResult::neutral();
   }
-  
+
+  static function hzdCreateDowntimesAccess() {
+    $user = \Drupal::currentUser();
+    if ($user) {
+      $groupId = \Drupal::routeMatch()->getRawParameter('group');
+      $group = \Drupal\group\Entity\Group::load($groupId);
+      if ($group->id() == 24 && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
+        return AccessResult::allowed();
+      } else {
+        return AccessResult::forbidden();
+      }
+    }
+    return AccessResult::neutral();
+  }
+
   static function hzdIncidentGroupAccess() {
     $uid = \Drupal::currentUser()->id();
-    if($uid == 0) {
+    if ($uid == 0) {
       return AccessResult::allowed();
     }
     if ($group = \Drupal::routeMatch()->getParameter('group')) {
@@ -73,40 +85,35 @@ class CustNodeController extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
         return AccessResult::allowed();
-      }
-      else {
+      } else {
         return AccessResult::forbidden();
       }
     }
     return AccessResult::neutral();
   }
-  
+
   static function hzdnodeConfirmAccess() {
     if ($group = \Drupal::routeMatch()->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
         return AccessResult::allowed();
-      }
-      else {
+      } else {
         return AccessResult::forbidden();
       }
-    }
-    else if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    } else if ($node = \Drupal::routeMatch()->getParameter('node')) {
       $group_id = \Drupal::database()->select('group_content_field_data', 'gcfd')
-              ->fields('gcfd', ['gid', 'id'])
-              ->condition('gcfd.entity_id', $node)
-              ->execute()->fetchAssoc();
+                      ->fields('gcfd', ['gid', 'id'])
+                      ->condition('gcfd.entity_id', $node)
+                      ->execute()->fetchAssoc();
       if ($group_id) {
         $group = \Drupal\group\Entity\Group::load($group_id['gid']);
         if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
           return AccessResult::allowed();
-        }
-        else {
+        } else {
           return AccessResult::forbidden();
         }
-      }
-      else {
+      } else {
         return AccessResult::forbidden();
       }
     }
@@ -120,8 +127,7 @@ class CustNodeController extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load($group);
       if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
         return AccessResult::allowed();
-      }
-      else {
+      } else {
         return AccessResult::forbidden();
       }
     }
@@ -140,7 +146,7 @@ class CustNodeController extends ControllerBase {
     if ($content) {
       $contentId = $content->getGroupContent()->id();
       $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
-              ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
+                      ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
       return (bool) !empty($adminquery);
     }
 
@@ -152,9 +158,9 @@ class CustNodeController extends ControllerBase {
       return false;
     }
     $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
-            ->fields('gcfd', ['gid', 'id'])
-            ->condition('gcfd.entity_id', $node->id())
-            ->execute()->fetchAssoc();
+                    ->fields('gcfd', ['gid', 'id'])
+                    ->condition('gcfd.entity_id', $node->id())
+                    ->execute()->fetchAssoc();
     if (!empty($checkGroupNode)) {
       return $checkGroupNode;
     }
@@ -167,8 +173,8 @@ class CustNodeController extends ControllerBase {
     $group = \Drupal::routeMatch()->getParameter('group');
     $node = $group_content->get('entity_id')->referencedEntities()[0];
     $form = \Drupal::entityTypeManager()
-        ->getFormObject('node', 'default')
-        ->setEntity($node);
+            ->getFormObject('node', 'default')
+            ->setEntity($node);
     $url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group->id(), 'group_content' => $group_content->id()]);
     return \Drupal::formBuilder()->getForm($form, ['redirect' => $url]);
   }
@@ -176,9 +182,9 @@ class CustNodeController extends ControllerBase {
   function groupMemberCleanup() {
     $groupContent = \Drupal::entityQuery('group_content');
     $orCondition = $groupContent->orConditionGroup()->condition('type', '%member%', 'LIKE')
-        ->condition('type', ['group_content_type_b2ed3eb8d19c9', 'group_content_type_d4b06e2b6aad0', 'group_content_type_ecf0249297413'], 'IN');
+            ->condition('type', ['group_content_type_b2ed3eb8d19c9', 'group_content_type_d4b06e2b6aad0', 'group_content_type_ecf0249297413'], 'IN');
     $groupContent = $groupContent->condition($orCondition)
-        ->execute();
+            ->execute();
     //pr($groupContent);exit;
 
     foreach ($groupContent as $groupUser) {
@@ -186,8 +192,7 @@ class CustNodeController extends ControllerBase {
 
       if ($gUser && $gUser->entity_id->referencedEntities()) {
         
-      }
-      elseif ($gUser) {
+      } elseif ($gUser) {
         $gUser->delete();
       }
     }
