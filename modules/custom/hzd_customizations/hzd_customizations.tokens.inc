@@ -13,7 +13,7 @@ use Drupal\Core\Render\BubbleableMetadata;
  */
 function hzd_customizations_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $token_service = \Drupal::token();
-
+  $group = $data['group'];
   $url_options = array('absolute' => TRUE);
   if (isset($options['langcode'])) {
     $url_options['language'] = \Drupal::languageManager()->getLanguage($options['langcode']);
@@ -27,23 +27,24 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
   if ($type == 'group') {
 
     // Getting required values for group title.
-    $group = \Drupal::routeMatch()->getParameter('group');
-
-    if (!isset($group)) {
-      $node = \Drupal::routeMatch()->getParameter('node');
-
-      $groupId = \Drupal::database()->select('group_content_field_data', 'gcfd')
-        ->fields('gcfd', ['gid'])
-        ->condition('gcfd.entity_id', $node->id())
-        ->execute()->fetchField();
-
-      $group = Group::load($groupId);
-    }
+//    $group = \Drupal::routeMatch()->getParameter('group');
+//
+//    if (!isset($group)) {
+//      $node = \Drupal::routeMatch()->getParameter('node');
+//
+//      $groupId = \Drupal::database()->select('group_content_field_data', 'gcfd')
+//        ->fields('gcfd', ['gid'])
+//        ->condition('gcfd.entity_id', $node->id())
+//        ->execute()->fetchField();
+//
+//      $group = Group::load($groupId);
+//    }
 
     foreach ($tokens as $name => $original) {
       switch ($name) {
         case 'title':
-          $replacements[$original] = isset($group) ? str_replace(' ', '', $group->label()) : '';
+          $label = \Drupal::service('pathauto.alias_cleaner')->cleanString($group->label());
+          $replacements[$original] = isset($group) ? $label : '';
           break;
       }
     }

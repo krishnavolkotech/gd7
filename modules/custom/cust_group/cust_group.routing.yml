@@ -50,3 +50,9 @@ cust_group.group_cleanup:
     _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberCleanup'
   requirements:
     _permission: 'access content'    
+cust_group.path_alias_update:
+  path: '/group-content-path-alias'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\PathAlias::bulkUpdate'
+  requirements:
+    _permission: 'access content'

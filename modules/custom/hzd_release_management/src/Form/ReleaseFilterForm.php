@@ -32,6 +32,14 @@ class ReleaseFilterForm extends FormBase {
     } else {
       $deploy_filter_options = array();
     }
+    $group = \Drupal::routeMatch()->getParameter('group');
+
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id  = $group;
+    }
    
     $request = \Drupal::request();
     $page = $request->get('page');
@@ -77,7 +85,7 @@ class ReleaseFilterForm extends FormBase {
     $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
-                     ORDER BY n.title asc", array(":gid" => 32, ":tid" => $default_type))->fetchAll();
+                     ORDER BY n.title asc", array(":gid" => $group_id, ":tid" => $default_type))->fetchAll();
 
     foreach ($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
@@ -87,14 +95,7 @@ class ReleaseFilterForm extends FormBase {
     $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
     // $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
     // $group_id = $tempstore->get('Group_id');.
-    $group = \Drupal::routeMatch()->getParameter('group');
-
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id  = $group;
-    }
+    
 
     foreach ($terms as $key => $value) {
       $release_type_list[$value->tid] = $value->name;
