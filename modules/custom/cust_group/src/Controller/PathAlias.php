@@ -41,12 +41,16 @@ class PathAlias extends ControllerBase {
   static function batchProcess($id) {
     $entity = \Drupal\group\Entity\GroupContent::load($id);
     if ($entity instanceof \Drupal\group\Entity\GroupContent) {
-      $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-      $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
-      $groupTitle = $entity->getGroup()->label();
-      $contentLabel = $entity->getEntity()->label();
-      $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
-      \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+      try {
+        $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
+        $groupTitle = $entity->getGroup()->label();
+        $contentLabel = $entity->getEntity()->label();
+        $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
+        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+      } catch (Exception $excp) {
+        error_log($entity->id());
+      }
     }
   }
 
