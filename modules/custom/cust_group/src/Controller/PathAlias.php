@@ -15,10 +15,11 @@ use Drupal\Core\Controller\ControllerBase;
  *
  * @author sandeep
  */
-class PathAlias extends ControllerBase{
+class PathAlias extends ControllerBase {
+
   //put your code here
-  static function bulkUpdate(){
-    $groupContentIds = \Drupal::entityQuery('group_content')->condition('type','%group_node%','LIKE')->execute();
+  static function bulkUpdate() {
+    $groupContentIds = \Drupal::entityQuery('group_content')->condition('type', '%group_node%', 'LIKE')->execute();
     //pr($groupContentIds);exit;
     //$groupContent = \Drupal\group\Entity\GroupContent::loadMultiple($groupContentIds);
     $batch = array(
@@ -36,23 +37,25 @@ class PathAlias extends ControllerBase{
     batch_set($batch);
     return batch_process('user');
   }
-  
-  static function batchProcess($id){
+
+  static function batchProcess($id) {
     $entity = \Drupal\group\Entity\GroupContent::load($id);
-    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-    $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
-    $groupTitle = $entity->getGroup()->label();
-    $contentLabel = $entity->getEntity()->label();
-    $path_alias = '/'.$aliasCleaner->cleanString($groupTitle).'/'.$aliasCleaner->cleanString($contentLabel);
-    \Drupal::service('path.alias_storage')->save('/'.$entity->toUrl()->getInternalPath(), $path_alias, 'de');
+    if ($entity instanceof \Drupal\group\Entity\GroupContent) {
+      $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+      $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
+      $groupTitle = $entity->getGroup()->label();
+      $contentLabel = $entity->getEntity()->label();
+      $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
+      \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+    }
   }
-  
-  static function batchStart(&$context){
+
+  static function batchStart(&$context) {
     
   }
-  
-  static function batchFinished($success, $results, $operations){
+
+  static function batchFinished($success, $results, $operations) {
     drupal_set_message(t('Done.'));
   }
-  
+
 }
