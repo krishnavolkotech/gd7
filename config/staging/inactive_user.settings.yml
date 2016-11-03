@@ -17,5 +17,5 @@ inactive_user_auto_delete_warn: null
 _core:
   default_config_hash: tk7Ljnk3c1LFBgG3JuMZw_ifzsgUCLlhZtxU-co0vvI
 inactive_user_admin_email: 'aditya@azrisolutions.com, sureshkumara+inactive_user@azrisolutions.com'
-inactive_user_timestamp: 1478076402
+inactive_user_timestamp: 1478153988
 langcode: de
