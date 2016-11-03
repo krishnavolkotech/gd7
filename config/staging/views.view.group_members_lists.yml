@@ -69,13 +69,15 @@ display:
           row_class: ''
           default_row_class: true
           override: true
-          sticky: false
+          sticky: true
           caption: ''
           summary: ''
           description: ''
           columns:
             uid: uid
+            group_admin_check: group_admin_check
             label: label
+            group_member_name: group_member_name
             firstname: firstname
             lastname: lastname
             phone: phone
@@ -90,8 +92,22 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
+            group_admin_check:
+              sortable: false
+              default_sort_order: desc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             label:
               sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            group_member_name:
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -139,7 +155,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-          default: '-1'
+          default: label
           empty_table: false
       row:
         type: fields

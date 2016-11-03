@@ -161,10 +161,13 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
     $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) : '') . " " . t('Uhr');
     $resolved_data = db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
-    $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
+    
+    if(!empty($resolved_data)){
+      $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
+      $incident_data->resolved_data = $resolved_data;
+      $incident_data->resolved_data->name = $resolved_name;
+    }
     $incident_data->resolved = $result->resolved;
-    $incident_data->resolved_data = $resolved_data;
-    $incident_data->resolved_data->name = $resolved_name;
     $incident_data->cancelled = $result->cancelled;
     $state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchField();
     $incident_data->state = $state_ids;
@@ -210,6 +213,7 @@ function downtimes_revisions($node) {
   if (empty($query)) {
     return;
   }
+  $output = null;
   foreach ($query as $value) {
     $value = (array) $value;
     $output .= "<div class='changed-group'><u>Änderung - " . custom_user_fullname($value['uid']) . ' ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</u>';
@@ -282,4 +286,14 @@ function hzd_preprocess_user(&$variables) {
 //  $variables['email'] = $variables['user']->getEmail();
 //  $variables['state'] = $state_name;
 //  $variables['group_list'] = hzd_group_list($variables['user']->id());
+}
+
+function hzd_preprocess_menu_local_tasks(&$vars){
+  
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if(!empty($node) && $node->getType() == 'downtimes'){
+      unset($vars['primary']['entity.node.edit_form']);
+      unset($vars['primary']['entity.node.delete_form']);
+  }
+
 }
