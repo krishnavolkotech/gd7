@@ -13,7 +13,7 @@ use Drupal\Core\Render\BubbleableMetadata;
  */
 function hzd_customizations_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $token_service = \Drupal::token();
-  $group = $data['group'];
+  
   $url_options = array('absolute' => TRUE);
   if (isset($options['langcode'])) {
     $url_options['language'] = \Drupal::languageManager()->getLanguage($options['langcode']);
@@ -25,6 +25,7 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
   $replacements = array();
 
   if ($type == 'group') {
+    $group = $data['group'];
 
     // Getting required values for group title.
 //    $group = \Drupal::routeMatch()->getParameter('group');

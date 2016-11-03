@@ -45,9 +45,11 @@ class PathAlias extends ControllerBase {
         $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
         $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
         $groupTitle = $entity->getGroup()->label();
-        $contentLabel = $entity->getEntity()->label();
-        $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
-        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+        if ($entity->getEntity()) {
+          $contentLabel = $entity->getEntity()->label();
+          $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
+          \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+        }
       } catch (Exception $excp) {
         error_log($entity->id());
       }

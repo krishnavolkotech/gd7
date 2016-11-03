@@ -6,6 +6,8 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Routing\RouteMatch;
+use Symfony\Component\Routing\Route;
 
 define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 // define('RELEASE_MANAGEMENT', 32);
@@ -65,14 +67,15 @@ class AccessController extends ControllerBase {
     return AccessResult::allowed();
   }
 
-  function createMaintenanceAccess() {
+  function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    $loadedGroup = $route_match->getParameter('group');
     if ($group = \Drupal\group\Entity\group::load(19)) {
-      $content = $group->getMember(\Drupal::currentUser());
+      $content = $group->getMember($user);
       if ($content) {
         $contentId = $content->getGroupContent()->id();
         $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
                         ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-        if (!empty($adminquery) || \Drupal::currentUser()->id() == 1) {
+        if ((!empty($adminquery) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()) )&& $loadedGroup->id() == 24) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();

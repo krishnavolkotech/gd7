@@ -192,7 +192,7 @@ function hzd_group_list($uid, $no_html = false) {
     $groups = '<div class="user-groups">';
     foreach ($val as $group) {
       $url = Url::fromUserInput('/group/' . $group->id);
-      $groups .= '<div class="user-group-list">' . \Drupal::l($group->label, $url) . '</div>';
+      $groups .= '<div class="user-group-list">' . \Drupal::l(t($group->label), $url) . '</div>';
     }
     $groups .= '</div>';
     return $groups;

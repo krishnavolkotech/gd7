@@ -6,6 +6,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Routing\RouteMatch;
+use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * Returns responses for Node routes.
@@ -61,11 +64,9 @@ class CustNodeController extends ControllerBase {
     return AccessResult::neutral();
   }
 
-  static function hzdCreateDowntimesAccess() {
-    $user = \Drupal::currentUser();
+  static function hzdCreateDowntimesAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($user) {
-      $groupId = \Drupal::routeMatch()->getRawParameter('group');
-      $group = \Drupal\group\Entity\Group::load($groupId);
+      $group = $route_match->getParameter('group');
       if ($group->id() == 24 && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
         return AccessResult::allowed();
       } else {
