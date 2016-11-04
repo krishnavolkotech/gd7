@@ -16,7 +16,7 @@ third_party_settings:
 id: optionen
 theme: hzd
 region: sidebar_first
-weight: -16
+weight: -17
 provider: null
 plugin: 'system_menu_block:optionen'
 settings:
