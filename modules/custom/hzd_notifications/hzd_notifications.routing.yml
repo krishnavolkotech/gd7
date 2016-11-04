@@ -2,7 +2,7 @@ hzd_notifications.notifications:
   path: '/user/{user}/notifications'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::notifications'
-    _title: 'My account'
+    _title: 'My Notifications'
   requirements:
     _permission: 'access content'
 

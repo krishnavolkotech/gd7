@@ -342,3 +342,8 @@ function cust_group_init(){
     exit;
     
 }
+
+function cust_group_user_login($account){
+(new \Symfony\Component\HttpFoundation\RedirectResponse('/'))->send();
+return true;
+}
