@@ -1,5 +1,5 @@
 /* TABLE CSS FOR DOWNTIMES */
-
+/*
 font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
         font-size: .8em; } .dpDiv { } .dpTable { font-family: Tahoma,
         Arial, Helvetica, sans-serif; font-size: 12px; text-align:
@@ -19,7 +19,7 @@ font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
         .dpTodayButton { font-family: Verdana, Tahoma, Arial,
         Helvetica, sans-serif; font-size: 10px; color: gray;
         background: #d8e8ff; font-weight: bold;
-}
+}*/
 
 table.downtimes_incidents {
         font-family:arial;
@@ -39,7 +39,7 @@ table.downtimes_incidents thead tr th, table.downtimes_incidents tfoot tr th {
 		}
 
 
-. tr.even td {background-color:#d9e8fb;}
+.tr.even td {background-color:#d9e8fb;}
 .downtimes_incidents tr.odd td {background-color:#f8f8f8;}
 
 .downtimes_incidents .reason {text-align:left;}
@@ -154,7 +154,6 @@ float:left;
 float:left;
 margin-top:5px;
 width:75px;
-//display:none;
 }
 
 .downtime_reason {
@@ -206,7 +205,7 @@ table.downtimes_maintenance thead tr th, table.downtimes_maintenance tfoot tr th
 		}
 
 
-. tr.even td {background-color:#d9e8fb;}
+.tr.even td {background-color:#d9e8fb;}
 .downtimes_maintenance tr.odd td {background-color:#f8f8f8;}
 
 .downtimes_maintenance .reason {text-align:left;}
