@@ -227,13 +227,13 @@ function downtimes_revisions($node) {
         }
         if ($field_value['old'] && $field_value['new']) {
           # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
-          $output .= ' (alt): ' . DateTimePlus::createFromTimestamp($field_value['old'])->format('d.m.Y-H:i') . '<br>' . t("$name") . ' (neu): ' . DateTimePlus::createFromTimestamp($field_value['new'])->format('d.m.Y-H:i');
+          $output .= ' (alt): ' . DateTimePlus::createFromTimestamp((integer)$field_value['old'])->format('d.m.Y-H:i') . '<br>' . t("$name") . ' (neu): ' . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y-H:i');
         }
         else if ($field_value['old'] && !$field_value['new']) {
           $output .= ' ' . t("(entfernt)");
         }
         else if (!$field_value['old'] && $field_value['new']) {
-          $output .= t(" (neu): ") . "</b>" . DateTimePlus::createFromTimestamp($field_value['new'])->format('d.m.Y-H:i');
+          $output .= t(" (neu): ") . "</b>" . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y-H:i');
         }
       }
       else {
