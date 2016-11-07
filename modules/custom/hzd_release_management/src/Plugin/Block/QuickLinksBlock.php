@@ -21,7 +21,7 @@ class QuickLinksBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    if (\Drupal::currentUser()) {
+    if (\Drupal::currentUser()->id()) {
       $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => 24]);
       $markup[] = Link::createFromRoute($this->t('Störung melden'), 'downtimes.create_downtimes', ['group' => 24]);
       $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => 24]);
@@ -40,7 +40,7 @@ class QuickLinksBlock extends BlockBase {
       '#theme' => 'item_list',
       '#list_type' => 'ul',
       '#attributes' => ['class' => ['menu nav']],
-//      '#cache' => ['max-age' => 0]
+      '#cache' => ['max-age' => 0]
     ];
   }
 

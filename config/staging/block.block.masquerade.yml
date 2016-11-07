@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - masquerade
+    - user
   theme:
     - hzd
 third_party_settings:
@@ -21,4 +22,12 @@ settings:
   label: Masquerade
   provider: masquerade
   label_display: visible
-visibility: {  }
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      administrator: administrator
+      site_administrator: site_administrator
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

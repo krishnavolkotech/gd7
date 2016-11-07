@@ -9,4 +9,6 @@ label: Anonymous
 weight: -102
 internal: true
 group_type: open
-permissions: {  }
+permissions:
+  - 'view group_node:downtimes content'
+  - 'view downtimes node'
