@@ -1075,7 +1075,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     }
 
     if (!$release_type) {
-      $release_type = sset($_SESSION['release_type']) ? $_SESSION['release_type'] : '';
+      $release_type = isset($_SESSION['release_type']) ? $_SESSION['release_type'] : '';
     }
 
     if (!$service_release_type) {

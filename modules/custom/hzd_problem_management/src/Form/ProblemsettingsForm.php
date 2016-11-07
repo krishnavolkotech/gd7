@@ -102,7 +102,7 @@ class ProblemsettingsForm extends FormBase {
       $form['services'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
-        '#default_value' => ($default_services ? $default_services : array('')),
+        '#default_value' => (!empty($default_services) ? $default_services : array('')),
         '#weight' => -6,
       );
 
