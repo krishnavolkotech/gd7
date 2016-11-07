@@ -17,8 +17,8 @@ class HzdDowntimeStorage {
     if (!empty($selected_services)) {
 
       foreach ($selected_services as $service => $service_enabled) {
-        $counter++;
         if (!empty($service_enabled)) {
+          $counter++;
           $query = \Drupal::database()->insert('group_downtimes_view')->fields(array(
                 'group_id' => $group_id,
                 'service_id' => $service
