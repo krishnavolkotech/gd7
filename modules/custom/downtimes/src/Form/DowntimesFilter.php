@@ -517,8 +517,6 @@ class DowntimesFilter extends FormBase {
     $search_string = $form_state->getValue('search_string');
     $filter_startdate = $form_state->getValue('filter_startdate');
     $filter_enddate = $form_state->getValue('filter_enddate');
-    dpm($state);
-    dpm($service);
     $current_time = time();
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $type, $service, '', '', $state);
