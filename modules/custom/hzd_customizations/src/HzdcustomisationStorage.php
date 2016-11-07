@@ -649,6 +649,14 @@ class HzdcustomisationStorage {
     );
     if (!empty($_REQUEST['services_effected'])) {
       $service_id = $_REQUEST['services_effected'];
+    } else {
+        $group_downtimes_view_service_query = db_select('group_downtimes_view', 'gdv');
+        $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
+        $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
+        $group_downtimes_view_service_query->condition('service_id', 0, '!=');
+        $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchCol();
+        $group_downtimes_view_services_ids = implode(",", $group_downtimes_view_service);
+        
     }
     if (!empty($_REQUEST['states'])) {
       $states = $_REQUEST['states'];
@@ -670,12 +678,11 @@ class HzdcustomisationStorage {
     $pos_slash = strripos($_GET['q'], '/');
     $url_flag = substr($_GET['q'], $pos_slash + 1); */
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
-
     if (isset($service_id) && $service_id != 1) {
       $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
     }
     else {
-      $service = " gdv.service_id != 0";
+      $service = " gdv.service_id = ds.service_id and  gdv.service_id  in ($group_downtimes_view_services_ids)";
     }
 
     if (isset($state_id) && $state_id != 1) {
