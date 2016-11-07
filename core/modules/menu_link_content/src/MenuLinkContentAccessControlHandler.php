@@ -65,7 +65,9 @@ class MenuLinkContentAccessControlHandler extends EntityAccessControlHandler imp
           // We allow access, but only if the link is accessible as well.
           if (($url_object = $entity->getUrlObject()) && $url_object->isRouted()) {
             $link_access = $this->accessManager->checkNamedRoute($url_object->getRouteName(), $url_object->getRouteParameters(), $account, TRUE);
-            $access = $access->andIf($link_access);
+ 	    if (!$account->hasPermission('link to any page')) {
+              $access = $access->andIf($link_access);
+            }
           }
           return $access;
         }

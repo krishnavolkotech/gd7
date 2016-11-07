@@ -11,6 +11,9 @@ use Drupal\group\Entity\GroupContent;
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 // if(!defined('RELEASE_MANAGEMENT'))
 //  define('RELEASE_MANAGEMENT', 32);.
+if(!defined('KONSONS'))
+  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+
 define('DISPLAY_LIMIT', 20);
 define('DEFAULT_PAGELIMIT', 20);
 
@@ -1053,8 +1056,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL, $service_release_type = null) {
-
-    $tid = $service_release_type;
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
       $group_id = $group->id();
@@ -1064,10 +1065,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $header = self::hzd_get_release_tab_headers($type);
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
     if (is_null($service_release_type)) {
-      $service_release_type = \Drupal::database()->select('default_release_type', 'ds')
-                      ->fields('ds', ['release_type'])
-                      ->condition('group_id', $gid)
-                      ->execute()->fetchField();
+      if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {  
+        $service_release_type = \Drupal::database()->select('default_release_type', 'ds')
+                        ->fields('ds', ['release_type'])
+                        ->condition('group_id', $gid)
+                        ->execute()->fetchField();
+      } else {
+        $service_release_type = KONSONS;       
+      }
     }
     $release_type = get_release_type($type);
     if (!$filter_where) {
@@ -1075,7 +1080,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     }
 
     if (!$release_type) {
-      $release_type = sset($_SESSION['release_type']) ? $_SESSION['release_type'] : '';
+      $release_type = isset($_SESSION['release_type']) ? $_SESSION['release_type'] : '';
     }
 
     if (!$service_release_type) {
@@ -1117,7 +1122,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
       if ($type == 'released' || $type == 'progress') {
         if (isset($group_id)) {
-          $early_warnings = self::hzd_release_early_warnings($releases->service, $releases->release_id, $type, $tid);
+          $early_warnings = self::hzd_release_early_warnings($releases->service, $releases->release_id, $type, $service_release_type);
           $earlywarnings_cell = array('data' => $early_warnings, 'class' => 'earlywarnings-cell');
           $row[] = $earlywarnings_cell;
         }

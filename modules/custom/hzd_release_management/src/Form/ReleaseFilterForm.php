@@ -8,11 +8,15 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 
 /**
- * If(!defined('KONSONS'))
- * define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
- * if(!defined('RELEASE_MANAGEMENT'))
+
+ *  * if(!defined('RELEASE_MANAGEMENT'))
  * define('RELEASE_MANAGEMENT', 339);.
  */
+
+ if(!defined('KONSONS'))
+  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
+
+ 
 class ReleaseFilterForm extends FormBase {
 
   /**
@@ -697,7 +701,7 @@ class ReleaseFilterForm extends FormBase {
     else {
       $filter_options = array(
         'service' => $service,
-        'release' => $release,
+        'release' => $release, 
         'state' => $state,
         'startdate' => $start_date,
         'enddate' => $end_date,
