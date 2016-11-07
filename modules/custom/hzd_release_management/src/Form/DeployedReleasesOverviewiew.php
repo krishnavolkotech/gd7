@@ -150,11 +150,12 @@ class DeployedReleasesOverviewiew extends FormBase {
       $services_query = db_select('node_field_data', 'n');
       $services_query->join('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
       $services_query->join('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
-      // $services_query->join('group_releases_view', 'grv', 'grv.service_id = n.nid');.
+      $services_query->join('group_releases_view', 'grv', 'grv.service_id = n.nid');
       $services_query->isNotNull('nfrn.field_release_name_value');
+      
       $services_query->condition('n.type', 'services', '=')
         ->condition('n.status', 1, '=')
-                  // ->condition('grv.group_id', $group_id, '=')
+         ->condition('grv.group_id', $group_id, '=')
         ->condition('nrt.release_type_target_id', $release_type, '=');
       $services_query->fields('n', array('title'));
       $services_query->orderBy('n.title', 'ASC');
@@ -200,9 +201,10 @@ class DeployedReleasesOverviewiew extends FormBase {
    *   deployed releases per state table.
    */
   public function get_deployed_releases_list($values, $service_id, $release_type = KONSONS) {
-
+    $releases_table = '';
     foreach ($values as $deployed_services) {
       $deployed_releases = $this->get_releases_per_state($service_id, $deployed_services, $release_type);
+
       $releases_table .= "<td style = 'min-width:170px;'>";
 
       foreach ($deployed_releases as $vals) {
