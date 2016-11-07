@@ -17,7 +17,7 @@ hzd_customizations.notification:
   route_name: system.admin
   parent: system.admin
   description: 'Manage Non-Production Environment'
-  weight: 50
+  weight: 2
 
 hzd_customizations.quickinfo_templat:
   title: 'Quickinfo template'
