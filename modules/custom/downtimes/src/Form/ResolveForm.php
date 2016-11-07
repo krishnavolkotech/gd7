@@ -210,6 +210,7 @@ class ResolveForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     //Todo pass form state values to confirm form
+    $group = \Drupal::routeMatch()->getParameter('group');
     $user = \Drupal::currentUser();
     $comment = $form_state->getValue('comment');
     $nid = $form_state->getValue('nid');
@@ -219,7 +220,8 @@ class ResolveForm extends FormBase {
       'comment' => $comment,
       'nid' => $nid,
       'date_reported' => $date_reported,
-      'uid' => $uid
+      'uid' => $uid,
+      'gid'=>$group,
     );
     //Todo if more than one user access this might get issue
     $this->keyValueExpirable->setWithExpire("downtimes_resolve_" . $nid, $downtime_resolve, 6 * 60 * 60);
