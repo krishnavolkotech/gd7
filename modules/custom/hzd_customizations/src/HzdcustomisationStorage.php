@@ -649,14 +649,6 @@ class HzdcustomisationStorage {
     );
     if (!empty($_REQUEST['services_effected'])) {
       $service_id = $_REQUEST['services_effected'];
-    } else {
-        $group_downtimes_view_service_query = db_select('group_downtimes_view', 'gdv');
-        $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
-        $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
-        $group_downtimes_view_service_query->condition('service_id', 0, '!=');
-        $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchCol();
-        $group_downtimes_view_services_ids = implode(",", $group_downtimes_view_service);
-        
     }
     if (!empty($_REQUEST['states'])) {
       $states = $_REQUEST['states'];
@@ -678,11 +670,12 @@ class HzdcustomisationStorage {
     $pos_slash = strripos($_GET['q'], '/');
     $url_flag = substr($_GET['q'], $pos_slash + 1); */
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
+
     if (isset($service_id) && $service_id != 1) {
       $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
     }
     else {
-      $service = " gdv.service_id = ds.service_id and  gdv.service_id  in ($group_downtimes_view_services_ids)";
+      $service = " gdv.service_id != 0";
     }
 
     if (isset($state_id) && $state_id != 1) {
@@ -714,7 +707,7 @@ class HzdcustomisationStorage {
                        sd.downtime_id = oa.entity_id and s.id=sd.state_id and
                        sd.service_id in
                              ($inner_select) ";
-        if ($filter_end_date) {
+        if (!empty($filter_end_date)) {
           $sql_select .= " and (ri.end_date <= $filter_end_date) ";
         }
       }
@@ -726,7 +719,7 @@ class HzdcustomisationStorage {
                        where sd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and s.id=sd.state_id and
                        sd.service_id in
                              ($inner_select) ";
-        if ($filter_end_date) {
+        if (!empty($filter_end_date)) {
           $sql_select .= " and (ri.end_date <= $filter_end_date) ";
         }
       }

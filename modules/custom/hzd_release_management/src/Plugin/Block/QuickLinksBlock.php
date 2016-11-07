@@ -22,9 +22,9 @@ class QuickLinksBlock extends BlockBase {
    */
   public function build() {
     if (\Drupal::currentUser()->id()) {
-      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => 24]);
-      $markup[] = Link::createFromRoute($this->t('Störung melden'), 'downtimes.create_downtimes', ['group' => 24]);
-      $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => 24]);
+      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
+      $markup[] = Link::createFromRoute($this->t('Störung melden'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT]);
+      $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Bekannte Fehler und Probleme'), 'problem_management.problems', ['group' => 31]);
       $markup[] = Link::createFromRoute($this->t('Bereitgestellte Releases'), 'hzd_release_management.released', ['group' => 32]);
       $markup[] = Link::createFromRoute($this->t('RZ-Schnellinfos'), 'view.rz_schnellinfo.page_1', ['arg_0' => 3]);
@@ -32,7 +32,7 @@ class QuickLinksBlock extends BlockBase {
       $markup[] = Link::createFromRoute($this->t('Service Monitoring'), 'cust_user.nsm_login');
       $markup[] = Link::createFromRoute($this->t('Architektursteuerung'), 'entity.node.canonical', ['node' => 49812]);
     } else {
-      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => 24]);
+      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
     }
 
     return [

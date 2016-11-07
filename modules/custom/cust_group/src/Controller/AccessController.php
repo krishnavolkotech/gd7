@@ -85,7 +85,7 @@ class AccessController extends ControllerBase {
         $contentId = $content->getGroupContent()->id();
         $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
                         ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-        if (!empty($adminquery) && $loadedGroup->id() == 24) {
+        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();

@@ -67,13 +67,13 @@ class CustNodeController extends ControllerBase {
   static function hzdCreateDowntimesAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($user) {
       $group = $route_match->getParameter('group');
-      if ($group->id() == 24 && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
+      if ($group->id() == INCEDENT_MANAGEMENT && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
       }
     }
-    return AccessResult::neutral();
+    return AccessResult::forbidden();
   }
 
   static function hzdIncidentGroupAccess() {

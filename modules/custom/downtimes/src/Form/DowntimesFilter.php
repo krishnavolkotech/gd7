@@ -37,7 +37,7 @@ class DowntimesFilter extends FormBase {
       $group_id = $group;
     }
 
-    $form['#attributes'] = array('class' => $type);
+    $form['#attributes'] = array('class' => [$type]);
     if (isset($group_id)) {
       $path = "::downtimes_search_results";
     }
@@ -107,7 +107,7 @@ class DowntimesFilter extends FormBase {
         '#options' => $period,
         '#title' => 'Period',
         '#weight' => 5,
-        '#attributes' => array("class" => "time_period_date"),
+        '#attributes' => array("class" => ["time_period_date"]),
         '#ajax' => array(
           'callback' => $path,
           'wrapper' => $wrapper,
@@ -129,7 +129,7 @@ class DowntimesFilter extends FormBase {
         '#type' => 'textfield',
         '#weight' => 6,
         '#size' => 45,
-        '#attributes' => array("class" => "search_string"),
+        '#attributes' => array("class" => ['search_string']),
         '#prefix' => '<div class = "string_search hzd-form-element">',
         '#suffix' => '</div>',
       );
@@ -517,6 +517,8 @@ class DowntimesFilter extends FormBase {
     $search_string = $form_state->getValue('search_string');
     $filter_startdate = $form_state->getValue('filter_startdate');
     $filter_enddate = $form_state->getValue('filter_enddate');
+    dpm($state);
+    dpm($service);
     $current_time = time();
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $type, $service, '', '', $state);
