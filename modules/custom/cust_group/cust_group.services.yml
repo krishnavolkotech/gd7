@@ -1,9 +1,14 @@
 services:
-  cust_group.route_subscriber:
+  cust_group.cust_group:
     class: Drupal\cust_group\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
-
+  cust_group.subscriber:
+    class: Drupal\cust_group\EventSubscriber\RedirectToLoginSubscriber
+    arguments: ['@config.factory', '@current_user', '@redirect.destination']
+    tags:
+      - { name: event_subscriber }
+  #  arguments: ['@config.factory']
   #cust_group.default:
   #  class: Drupal\cust_group\EventSubscriber\DefaultSubscriber
   #  arguments: []

@@ -67,6 +67,13 @@ class AccessController extends ControllerBase {
     return AccessResult::allowed();
   }
 
+  function downtimeAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if ($route_match->getParameter('node')->getType() == 'downtimes') {
+      return AccessResult::allowed();
+    }
+    return AccessResult::neutral();
+  }
+
   function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
       return AccessResult::allowed();
