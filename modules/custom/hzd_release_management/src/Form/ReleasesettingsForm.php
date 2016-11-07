@@ -9,7 +9,6 @@ use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\Core\Url;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 
-
 /**
  * If(!defined('KONSONS'))
  * define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -52,11 +51,11 @@ class ReleasesettingsForm extends FormBase {
 
     $url = Url::fromUserInput('/group/32/releases', array('absolute' => true));
     $release_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
-  
-    
+
+
     // l($path, $path) .
     $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at $release_view") . "<p>" .
-        "<p><div> " . t("Please specify the services of which you would like to display the Releases in this group") . "</div></p>";
+            "<p><div> " . t("Please specify the services of which you would like to display the Releases in this group") . "</div></p>";
     $form['#suffix'] = "</div>";
     $form['services'] = array(
       '#type' => 'checkboxes',
@@ -101,7 +100,7 @@ class ReleasesettingsForm extends FormBase {
    * {@inheritDoc}.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-
+    
   }
 
   /**
@@ -116,55 +115,46 @@ class ReleasesettingsForm extends FormBase {
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
       $group_id = $group->id();
-    }
-    else {
+    } else {
       $group_id = $group;
     }
     HzdreleasemanagementStorage::delete_group_release_view();
     $default_release_type = $form_state->getValue('default_release_type');
     $selected_services = $form_state->getValue('services');
     $counter = HzdreleasemanagementStorage::insert_group_release_view($default_release_type, $selected_services);
-    $gid = $group_id;
-    $menu_name = 'menu-' . $gid;
-    
-    $path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
-    // $path = variable_get('import_alias_releases', 'releases');
-    // HzdcustomisationStorage::reset_menu_link($counter, t('Releases'), 'releases', $menu_name, $gid);.
- 
-    switch ($group_id) {
-      case '31':
-        $menuId = 'menu-825';
-        $menuItems = \Drupal::entityQuery('menu_link_content')
-            ->condition('menu_name', $menuId)
-            ->execute();
-        break;
 
-      case '32':
-        $menuId = 'menu-339';
-        $menuItems = \Drupal::entityQuery('menu_link_content')
-            ->condition('menu_name', $menuId)
+    $menu_name = 'menu-' . $group->get('field_old_reference')->value;
+//    $problem_path = \Drupal::config('problem_management.settings')->get('import_alias');
+//    // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
+//    HzdcustomisationStorage::reset_menu_link($counter, 'Problems', 'problems', $menu_name, $group->id());
+    $menuItemIds = \Drupal::entityQuery('menu_link_content')
+            ->condition('menu_name', $menu_name)
             ->execute();
-        break;
-    }
-    foreach ($menuItems as $menu_link => $menu_link_id) {
-      
-      $menu = MenuLinkContent::load($menu_link_id);
-     
-      if ($menu->getTitle() == 'Releases') {
+    $menuItems = MenuLinkContent::loadMultiple($menuItemIds);
+    $noLinkAvailable = true;
+    foreach ($menuItems as $menu) {
+      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'hzd_release_management.released') {
+        $noLinkAvailable = false;
         if ($counter == 0) {
           $menu->set('enabled', 0);
-        }
-        else {
+        } else {
           $menu->set('enabled', 1);
         }
         $menu->save();
         break;
       }
     }
+    if ($noLinkAvailable && $counter != 0) {
+      $menu_link = MenuLinkContent::create([
+                'title' => $this->t('Releases'),
+                'link' => ['uri' => 'internal:/group/' . $group->id() . '/releases'],
+                'menu_name' => $menu_name,
+                'expanded' => TRUE,
+                'enabled' => 1,
+      ]);
+      $menu_link->save();
+    }
     \Drupal::service("router.builder")->rebuild();
-//    7932
-    $menu->save();
-    \Drupal::service("router.builder")->rebuild(); 
     drupal_set_message(t('Releases Settings Updated'), 'status');
   }
 

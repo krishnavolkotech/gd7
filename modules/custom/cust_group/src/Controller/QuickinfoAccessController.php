@@ -45,7 +45,7 @@ class QuickinfoAccessController {
             return AccessResult::allowed();
         }
         if (!$group_id || !in_array($group_id, $allowed_group)) {
-            return \Drupal\Core\Access\AccessResultInterface::forbidden();
+            return AccessResult::forbidden();
         }
         
         $group = \Drupal\group\Entity\Group::load($group_id);
@@ -54,7 +54,7 @@ class QuickinfoAccessController {
             return AccessResult::allowed();
         }
         
-        return \Drupal\Core\Access\AccessResult::forbidden();
+        return AccessResult::forbidden();
     }
 
   static public function CheckQuickinfoviewonlyAccess(AccountInterface $account) {
@@ -72,7 +72,7 @@ class QuickinfoAccessController {
             return AccessResult::allowed();
         }
         if (!$group_id || !in_array($group_id, $allowed_group)) {
-            return \Drupal\Core\Access\AccessResultInterface::forbidden();
+            return AccessResult::forbidden();
         }
         
         $group = \Drupal\group\Entity\Group::load($group_id);
@@ -81,7 +81,7 @@ class QuickinfoAccessController {
             return AccessResult::allowed();
         }
         
-        return \Drupal\Core\Access\AccessResult::forbidden();
+        return AccessResult::forbidden();
     }
     
     
@@ -103,14 +103,14 @@ class QuickinfoAccessController {
                 return AccessResult::allowed();
             }
             if (!$group_id || !in_array($group_id, $allowed_group)) {
-                return \Drupal\Core\Access\AccessResultInterface::forbidden();
+                return AccessResult::forbidden();
             }
             $group = \Drupal\group\Entity\Group::load($group_id);
             $content = $group->getMember(\Drupal::currentUser());
             if ($content) {
               return AccessResult::allowed();
             }
-            return \Drupal\Core\Access\AccessResult::forbidden();
+            return AccessResult::forbidden();
         }
     }
 
@@ -139,7 +139,7 @@ class QuickinfoAccessController {
         } else {
             return AccessResult::forbidden();
         }
-        return \Drupal\Core\Access\AccessResult::forbidden();
+        return AccessResult::forbidden();
     }
     
      static public function CheckQuickinfonodedeleteAccess(AccountInterface $account) {

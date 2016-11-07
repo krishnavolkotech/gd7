@@ -5,6 +5,6 @@ dependencies: {  }
 _core:
   default_config_hash: Oe-hUZWKhrDlkhNaPdZx5srE63OeNZBa2YgAW0IctCg
 id: devel
-label: Development
+label: Entwicklung
 description: 'Links related to Devel module.'
 locked: true

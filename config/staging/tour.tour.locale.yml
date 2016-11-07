@@ -7,7 +7,7 @@ dependencies:
 _core:
   default_config_hash: 2RuPjrDfA8rPp1mcEzIYMz7RRJQLfovwJuJnuosFu2Y
 id: locale
-label: Translation
+label: Übersetzung
 module: locale
 routes:
   -
@@ -22,8 +22,8 @@ tips:
   locale-language:
     id: locale-language
     plugin: text
-    label: 'Translation language'
-    body: 'Choose the language you want to translate.'
+    label: Übersetzungssprache
+    body: 'Wählen Sie die Sprache, die Sie übersetzen wollen.'
     weight: 2
     attributes:
       data-id: edit-langcode
@@ -46,7 +46,7 @@ tips:
   locale-submit:
     id: locale-submit
     plugin: text
-    label: 'Apply your search criteria'
+    label: 'Ihre Suchkriterien anwenden'
     body: 'To apply your search criteria, click on the <em>Filter</em> button.'
     weight: 5
     attributes:
@@ -54,7 +54,7 @@ tips:
   locale-translate:
     id: locale-translate
     plugin: text
-    label: Translate
+    label: Übersetzen
     body: 'You can write your own translation in the text fields of the right column. Try to figure out in which context the text will be used in order to translate it in the appropriate way.'
     weight: 6
     attributes:
@@ -70,6 +70,6 @@ tips:
   locale-continue:
     id: locale-continue
     plugin: text
-    label: 'Continuing on'
+    label: 'Fortsetzen auf'
     body: 'The translations you have made here will be used on your site''s user interface. If you want to use them on another site or modify them on an external translation editor, you can <a href="[site:url]/admin/config/regional/translate/export">export them</a> to a .po file and <a href="[site:url]/admin/config/regional/translate/import">import them</a> later.'
     weight: 8

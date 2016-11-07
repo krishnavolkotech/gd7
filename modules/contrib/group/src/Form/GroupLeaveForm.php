@@ -33,7 +33,7 @@ class GroupLeaveForm extends GroupContentDeleteForm {
   
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $groupId = $this->getEntity()->getGroup()->id();
-    $form_state->setRedirect('entity.group.canonical',['group'=>$groupId]);
+    $form_state->setRedirect('view.my_groups.page_1');
     return parent::submitForm($form, $form_state);
   }
 

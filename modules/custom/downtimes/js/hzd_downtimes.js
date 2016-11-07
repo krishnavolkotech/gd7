@@ -59,13 +59,13 @@
                                 max_adv_time.push(a.advance_time[service_id].adv_time * 60);
                         }
                     });
-                    
+
                     if (max_adv_time.length) {
                         max_adv_time = Math.max.apply(Math, max_adv_time);
                     } else {
                         max_adv_time = a.sitewide_adv;
                     }
-                    
+
                     $("#edit-services-effected input:checkbox:checked").each(function () {
                         var service_id = $(this).val();
                         if (a.advance_time[service_id].adv_time) {
@@ -127,7 +127,7 @@
                     $('input#edit-startdate-planned').addClass('error');
                 }
             });
-            
+
             // Maintenance window validations.
             $('input#edit-enddate-planned').blur(function () {
                 if ($(this).val()) {
@@ -149,11 +149,11 @@
                         var start_day = $('input#edit-startdate-planned').val();
                         start_day = new Date(convert_to_valid_format(start_day));
                         start_day = weekday[start_day.getDay()];
-                        
+
                         var end_day = $(this).val();
                         end_day = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day.getDay()];
-                       
+
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
                             $('.reason-for-noncompliance').show();
@@ -292,10 +292,12 @@
                 if (check_with_sitewide_maintenance(start_date, end_date, weekday)) {
                     return 1;
                 }
-
                 $("#edit-services-effected input:checkbox:checked").each(function () {
                     passed = 0;
                     var service_id = $(this).val();
+                    /*if(a.maintenance[service_id].length == 0) {
+                        return false;
+                    }*/
                     $.each(a.maintenance[service_id], function (key, value) {
                         var day_from_index = jQuery.inArray(key, weekday);
                         var day_until_index = jQuery.inArray(value.day_until, weekday);
@@ -334,11 +336,23 @@
                 start_day = start_day.getDay();
                 var end_day = new Date(convert_to_valid_format(end_date));
                 end_day = end_day.getDay();
+                /*console.log("--------");
+                console.log(start_date);
+                console.log(start_day);
+                console.log(end_date);
+                console.log(end_day);
+                console.log("----- END ---");
+                console.log(weekday);
+                console.log(a.sitewide_maintain);*/
                 $.each(a.sitewide_maintain, function (key, value) {
                     var check_day = 0;
                     var day_from_index = jQuery.inArray(key, weekday);
                     var day_until_index = jQuery.inArray(value.day_until, weekday);
                     var valid_week_days = new Array();
+                    /*console.log('from');
+                    console.log(day_from_index);
+                    console.log('until');
+                    console.log(day_until_index);*/
                     if (day_from_index > day_until_index) {
                         for (var inc = day_from_index; inc <= 6; inc++) {
                             valid_week_days.push(inc);
@@ -346,10 +360,16 @@
                         for (inc = 0; inc <= day_until_index; inc++) {
                             valid_week_days.push(inc);
                         }
+                        /*console.log(valid_week_days);
+                        console.log('Startday array');
+                        console.log(jQuery.inArray(start_day, valid_week_days));
+                        console.log('Endday array');
+                        console.log(jQuery.inArray(end_day, valid_week_days));*/
                         if (jQuery.inArray(start_day, valid_week_days) != -1 && jQuery.inArray(end_day, valid_week_days) != -1) {
                             check_day = 1;
                         }
                     } else if (start_day >= day_from_index && end_day <= day_until_index) {
+                        //console.log(start_day + ">=" + day_from_index + "&&" + end_day + "<=" + day_until_index);
                         check_day = 1;
                     }
                     if (check_day == 1) {
@@ -359,6 +379,7 @@
                         }
                     }
                 });
+                //console.log(passed_flag);
                 return passed_flag;
             }
             function check_conditions(start_day, end_day, day_from_index, day_until_index, service_from_time, service_to_time) {

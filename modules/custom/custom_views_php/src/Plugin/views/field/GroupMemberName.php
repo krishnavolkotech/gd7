@@ -62,7 +62,7 @@ class GroupMemberName extends FieldPluginBase {
         $suffix = ' (admin)';
       }
     }
-    return $this->t($user->toLink()->toString().$suffix);
+    return $this->t($values->_entity->toLink()->toString().$suffix);
   }
 
 }

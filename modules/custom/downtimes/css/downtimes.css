@@ -1,4 +1,4 @@
-
+/*
 font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
         font-size: .8em; } .dpDiv { } .dpTable { font-family: Tahoma,
         Arial, Helvetica, sans-serif; font-size: 12px; text-align:
@@ -18,7 +18,7 @@ font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
         .dpTodayButton { font-family: Verdana, Tahoma, Arial,
         Helvetica, sans-serif; font-size: 10px; color: gray;
         background: #d8e8ff; font-weight: bold;
-}
+}*/
 
 /*
 table.tablesorter {
@@ -154,7 +154,6 @@ display:inline;
 float:left;
 margin-top:5px;
 width:75px;
-//display:none;
 }
 
 .downtime_reason {

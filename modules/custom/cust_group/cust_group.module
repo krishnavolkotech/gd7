@@ -15,10 +15,43 @@ define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maint
 function cust_group_user_view(&$build,\Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
     $build['group_list'] = array(
       '#markup' => hzd_group_list($account->id()), 
-      '#cache'=>['max-age'=>0]
+      '#cache'=>['max-age'=>0],
+      '#weight'=>-10
     );
-//    pr(array_keys($build));exit;
+    $userData = get_user_fields($account);
+    foreach($userData as $key=>$val){
+      $build[$key] = ['#theme'=>'usercustomfield','#label'=>t($val['label']),'#value'=>t($val['value'])];
+    }
+    
   //}
+}
+
+function get_user_fields($user){
+    $db = \Drupal::database();
+  $result = $db->select('cust_profile', 'cp')
+      ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+      ->condition('cp.uid', $user->id());
+  $val = $result->execute()->fetchAssoc();
+  $state = $db->select('states', 's')
+      ->fields('s', array('state'))
+      ->condition('s.id', $val['state_id'], '=');
+  $state_name = $state->execute()->fetchField();
+  $variables['name'] = ['label'=>'User Name','value'=>$user->getDisplayName()];
+  $variables['firstname'] = ['label'=>'First Name','value'=>$val['firstname']];
+  $variables['lastname'] = ['label'=>'Last Name','value'=>$val['lastname']];
+  $variables['phone'] = ['label'=>'Phone','value'=>$val['phone']];
+  $variables['position'] = ['label'=>'Position','value'=>$val['position']];
+  $variables['email'] = ['label'=>'Email','value'=>$user->getEmail()];
+  $variables['state'] = ['label'=>'State','value'=>$state_name];
+  return $variables;
+}
+
+function cust_group_theme(){
+  return array(
+    'usercustomfield' => array(
+      'variables' => array('label' => NULL, 'value' => NULL),
+    ),
+  );
 }
 
 
@@ -173,6 +206,7 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
             $form['faq_seite']['widget']['#options'] = $pageOptions;
             break;
         case 'views_exposed_form':
+          if(isset($form['state'])){
             $states = \Drupal::database()->select('states','s')
                 ->fields('s',['abbr','state'])
                 ->condition('active',1)
@@ -182,6 +216,7 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
                 $stateOptions[$key] = $val->state;
             }
             $form['state'] = ['#type'=>'select','#options' => $stateOptions];
+          }
             break;
         case 'group_content_moderate-group_membership_group-request_form':
             $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
@@ -303,7 +338,8 @@ function cust_group_user_delete($user){
     }
 }
 
-function cust_group_init(){
-    exit;
-    
+
+function cust_group_user_login($account){
+(new \Symfony\Component\HttpFoundation\RedirectResponse('/'))->send();
+return true;
 }

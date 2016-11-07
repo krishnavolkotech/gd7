@@ -1,6 +1,6 @@
 uuid: 0630d0d3-5cd0-4529-9f98-4f5769517be4
 langcode: en
-status: true
+status: false
 dependencies:
   content:
     - 'block_content:basic:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
@@ -16,8 +16,8 @@ third_party_settings:
     classes: blue
 id: verfahren
 theme: hzd
-region: sidebar_first
-weight: -18
+region: '-1'
+weight: -19
 provider: null
 plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
 settings:
@@ -32,13 +32,13 @@ visibility:
   language:
     id: language
     langcodes:
-      en: en
       de: de
+      en: en
     negate: false
     context_mapping:
       language: '@language.current_language_context:language_interface'
   request_path:
     id: request_path
-    pages: "*Manageme<>nt*\r\n*managem<>ent*\r\n*Betriebsp<>ortal*\r\n*betrieb<>sportal*"
+    pages: "*Manageme<>nt*\r\n*managem<>ent*\r\n*Betriebsp<>ortal*\r\n*betrieb<>sportal*\r\n/group/*"
     negate: true
     context_mapping: {  }

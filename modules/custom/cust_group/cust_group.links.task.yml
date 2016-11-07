@@ -1,0 +1,5 @@
+cust_group.path_alias_update: #give it the same name as the route to make it clear
+  title: 'Group Content'
+  route_name: cust_group.path_alias_update
+  base_route: path.admin_overview
+  weight: 10

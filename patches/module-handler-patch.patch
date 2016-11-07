@@ -1,0 +1,13 @@
+diff --git a/core/lib/Drupal/Core/Extension/ModuleHandler.php b/core/lib/Drupal/Core/Extension/ModuleHandler.php
+index 8ea10ad..02ebc53 100755
+--- a/core/lib/Drupal/Core/Extension/ModuleHandler.php
++++ b/core/lib/Drupal/Core/Extension/ModuleHandler.php
+@@ -403,7 +403,7 @@ public function invokeAll($hook, array $args = array()) {
+       if (isset($result) && is_array($result)) {
+         $return = NestedArray::mergeDeep($return, $result);
+       }
+-      elseif (isset($result)) {
++      elseif (isset($result) && $result !== FALSE) {
+         $return[] = $result;
+       }
+     }

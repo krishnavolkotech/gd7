@@ -46,18 +46,19 @@ button {
   outline: none !important;
 }
 body {
-  font-family: 'roboto_condensedregular';
+  font-family: 'robotoregular';
   padding: 0;
   margin: 0;
-  color: #424241;
-  font-size: 12px;
-}
-p {
-  font-size: 12px;
+  color: #222222;
+  font-size: 15px;
   line-height: 1.6;
 }
+p {
+  margin-bottom: 15px;
+}
 #block-primarylinks {
-  background-color: #1475a0;
+  background-color: #04425f;
+  /* background-color: #064771; */
   width: 100%;
   float: left;
 }
@@ -74,20 +75,29 @@ p {
 }
 #block-primarylinks ul li a {
   color: #ffffff;
-  font-size: 14px;
   text-decoration: none;
-  line-height: 22px;
+  /* text-transform: uppercase; */
 }
-#block-primarylinks ul li a:hover {
-  background: #0c4f6d;
+#block-primarylinks ul li a.hover {
+  text-decoration: underline;
 }
 #block-primarylinks ul li.active {
   width: auto;
   display: inline-block;
 }
-#block-primarylinks ul li.active a {
+/* #block-primarylinks ul li.active a {
   background: #0c4f6d;
-  color: #ffffff;
+  color: #04425f;
+} */
+/*
+#block-primarylinks ul li.active a:hover {
+  color: #04425f;
+}*/
+a, a.hover {
+  color: #31708f;
+}
+a.hover { 
+  text-decoration: underline;
 }
 footer h2,
 a.name.navbar-brand,
@@ -128,7 +138,7 @@ a.name.navbar-brand ul li a:focus,
   background: #ffffff;
 }
 footer .region-footer {
-  background-color: #1475a0;
+  background-color: #04425f;
   padding: 8px !important;
   margin: 20px auto 0 auto ;
   color: #ffffff;
@@ -136,7 +146,6 @@ footer .region-footer {
 footer .region-footer .cp,
 footer .region-footer .footer-links a {
   color: #ffffff;
-  font-size: 12px;
 }
 footer .region-footer a:hover {
   text-decoration: none;
@@ -166,9 +175,8 @@ h3,
 h4,
 h5,
 h6 {
-  color: #1475a0;
-  font-family: 'roboto_condensedregular';
-  margin: 15px 0 10px 0 !important;
+  color: #31708f;
+  margin: 25px 0 15px 0 !important;
 }
 h1 {
   font-size: 25px;
@@ -181,16 +189,11 @@ h2 a {
   width: 100%;
 }
 h3 {
-  font-size: 20px;
-}
-h4 {
   font-size: 18px;
 }
-h5 {
+h4 {
   font-size: 16px;
 }
-h6 {
-  font-size: 16px;
 }
 .cus-table {
   width: 100%;
@@ -233,7 +236,7 @@ h6 {
     margin-left: 15px;
     margin-bottom: 0 !important;
     border-radius: 0 !important;
-    background: #1475a0;
+    background: #04425f;
     border: none !important;
   }
   button.navbar-toggle:hover,
@@ -333,7 +336,7 @@ header .navbar-collapse.collapse {
 #block-general {
   width: 100%;
   float: left;
-  border: 1px solid #1475a0;
+  border: 1px solid #04425f;
   background: #eaeff5;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -344,7 +347,7 @@ header .navbar-collapse.collapse {
   color: #424241;
 }
 #block-general li a:hover {
-  color: #1475a0;
+  color: #04425f;
   background: #eaeff5;
 }
 #block-general h2 {
@@ -353,7 +356,7 @@ header .navbar-collapse.collapse {
   font-size: 15px;
   font-weight: bold;
   padding: 10px 15px;
-  background: #1475a0;
+  background: #04425f;
 }
 .navbar-toggle {
   margin-top: 20px !important;
@@ -409,7 +412,7 @@ body.not-loggedin.path-user .region-content {
 .user-pass button {
   float: right;
   margin-bottom: 25px;
-  background: #1475a0;
+  background: #04425f;
   color: #ffffff;
   border: none !important;
 }
@@ -431,9 +434,9 @@ body.not-loggedin.path-user .region-content {
 .path-user .region-content nav.tabs {
   padding: 0 !important;
   width: 100%;
-  border-top: 1px solid #1475a0;
+  border-top: 1px solid #04425f;
   border-bottom: 0 !important;
-  background: #1475a0;
+  background: #04425f;
 }
 .path-user .region-content nav.tabs .nav-tabs {
   border: none !important;
@@ -446,9 +449,8 @@ body.not-loggedin.path-user .region-content {
   border-radius: 0 !important;
   color: #ffffff !important;
   margin-right: 0 !important;
-  background: #1475a0;
+  background: #04425f;
   font-size: 15px;
-  font-family: 'roboto_condensedregular';
   text-transform: capitalize;
   margin-top: -1px;
 }
@@ -458,11 +460,11 @@ body.not-loggedin.path-user .region-content {
   background: #0c4f6d !important;
 }
 .path-user .region-content nav.tabs li.active a {
-  color: #1475a0 !important;
+  color: #04425f !important;
   background: #fafafa !important;
 }
 .path-user .region-content .tabs--primary.nav-tabs li {
-  border: 3px solid #1475a0;
+  border: 3px solid #04425f;
 }
 .region-content .field--label-inline,
 .user-groups .user-group-list {
@@ -579,12 +581,12 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  border-top: 1px solid #1475a0 !important;
-  border-left: 1px solid #1475a0 !important;
-  border-right: 1px solid #1475a0 !important;
+  border-top: 1px solid #04425f !important;
+  border-left: 1px solid #04425f !important;
+  border-right: 1px solid #04425f !important;
 }
 .nav-tabs {
-  border-bottom: 1px solid #1475a0 !important;
+  border-bottom: 1px solid #04425f !important;
   margin-bottom: 25px !important;
 }
 .nav-tabs li {
@@ -597,21 +599,27 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
 .nav-tabs > li > a:hover {
   border-color: #5289a1;
 }
+.nav > li > a {
+  color: #222222;
+}
+
+/* Primary menu */
 .nav > li > a:hover,
 .nav > li > a:focus {
-  text-decoration: none;
-  background-color: #5289a1;
-  color: #ffffff !important;
+  text-decoration: underline;
+  background-color: #04425f;
 }
+/*
 .nav > li.active > a:hover,
 .nav > li.active > a {
   color: #5289a1 !important;
 }
+*/
 .nav-tabs > li > a {
   color: #555555 !important;
 }
 table tr th {
-  background: #1475a0;
+  background: #04425f;
   color: #ffffff;
   border-bottom: 2px solid #0e658c !important;
 }
@@ -639,19 +647,17 @@ aside section.blue,
 nav#block-optionen {
   margin-bottom: 20px;
   width: 100%;
-  background: rgba(206, 240, 253, 0.3);
   padding-bottom: 5px;
   display: inline-block;
 }
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 15px;
-  font-weight: normal;
-  background: #1475a0;
-  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  color: #04425f;
   margin: 0 !important;
-  padding: 5px 10px;
+  padding: 10px 10px;
   line-height: 20px;
 }
 aside section.blue .field--name-body,
@@ -672,7 +678,7 @@ aside section.blue .field--name-body ul li,
 nav#block-optionen .field--name-body ul li {
   list-style-type: none;
   padding: 6px 10px 8px 10px;
-  border-bottom: 1px solid rgba(20, 117, 160, 0.2);
+  /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
 aside section.blue .field--name-body ul li a,
 .region-sidebar-first .block-hzd-release-management .field--name-body ul li a,
@@ -685,20 +691,13 @@ aside section.blue .field--name-body ul li:last-child,
 nav#block-optionen .field--name-body ul li:last-child {
   border: none;
 }
-aside section.blue .field--name-body ul li:hover,
-.region-sidebar-first .block-hzd-release-management .field--name-body ul li:hover,
-nav#block-optionen .field--name-body ul li:hover {
-  background: rgba(20, 117, 160, 0.8);
-}
 aside section.blue .field--name-body ul li:hover a,
 .region-sidebar-first .block-hzd-release-management .field--name-body ul li:hover a,
 nav#block-optionen .field--name-body ul li:hover a {
-  color: #ffffff;
-  text-decoration: none;
+  /* text-decoration: ; */
 }
 h1.page-header {
   margin: 0 0 20px 0 !important;
-  font-weight: bold;
   font-size: 25px;
 }
 .col-sm-9 .field--name-body.field--type-text-with-summary ul {
@@ -715,9 +714,6 @@ h1.page-header {
   width: 100%;
   float: left;
 }
-p {
-  line-height: 21px;
-}
 /* problem management table sort css */
 table.tablesorter thead tr .header {
   background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
@@ -733,7 +729,7 @@ table {
   margin: 10px 0 !important;
 }
 table th {
-  background: #1475a0;
+  background: #04425f;
   color: #ffffff;
   /*text-transform:uppercase;*/
   vertical-align: middle !important;
@@ -785,7 +781,7 @@ input.end_date {
   color: #ffffff !important;
   padding: 4px 8px !important;
   float: left;
-  background: #1475a0;
+  background: #04425f;
   border: none;
 }
 #pagination ul li.pager__item--ellipsis {
@@ -847,13 +843,13 @@ input.end_date {
   float: right;
 }
 #header-right form#search-block-form button {
-  background: #1475a0 !important;
+  background: #04425f !important;
 }
 button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
-  background: #1475a0;
+  background: #04425f;
   font-size: 12px;
   color: #ffffff;
   padding: 4px 10px;
@@ -867,7 +863,7 @@ input[type="button"]:hover,
 }
 .btn-default,
 .views-exposed-form button {
-  background: #1475a0 !important;
+  background: #04425f !important;
   font-size: 14px;
   color: #ffffff !important;
   padding: 4px 10px;
@@ -924,12 +920,11 @@ p {
 .alert a,
 .field--label,
 .file {
-  font-family: 'roboto_condensedregular';
   letter-spacing: 0.5px;
 }
 li.comment-add {
-  border-top: 1px solid #1475a0;
-  border-bottom: 1px solid #1475a0;
+  border-top: 1px solid #04425f;
+  border-bottom: 1px solid #04425f;
   list-style-type: none;
   text-align: right;
   float: left;
@@ -953,7 +948,7 @@ li.comment-edit a,
 li.comment-reply a {
   color: #ffffff;
   font-size: 12px;
-  background: #1475a0;
+  background: #04425f;
   line-height: 25px;
   float: left;
   padding: 0 10px;
@@ -988,7 +983,7 @@ body.not-loggedin.path-user .region-content h1 {
 .hzd-secondary-tabs.path-user ul.tabs--secondary {
   width: 100%;
   float: left;
-  border-bottom: 1px solid #1475a0;
+  border-bottom: 1px solid #04425f;
   padding-bottom: 5px;
   margin-bottom: 20px;
   border-radius: 0 !important;
@@ -1004,7 +999,7 @@ body.not-loggedin.path-user .region-content h1 {
   background: transparent !important;
   margin: 0;
   padding: 0px 15px !important;
-  border-right: 1px solid #1475a0 !important;
+  border-right: 1px solid #04425f !important;
   color: #424241 !important;
   font-size: 13px;
 }
@@ -1012,7 +1007,7 @@ body.not-loggedin.path-user .region-content h1 {
 .hzd-secondary-tabs.path-user ul.tabs--secondary li active.a,
 .hzd-secondary-tabs.path-user ul.tabs--secondary li a:focus {
   background: transparent !important;
-  color: #1475a0 !important;
+  color: #04425f !important;
 }
 .hzd-secondary-tabs.path-user ul.tabs--secondary li:last-child a {
   border: none !important;
@@ -1042,43 +1037,55 @@ button[value="Delete"] {
 }
 .hzd-secondary-tabs .notifications_title {
   font-size: 15px;
-  color: #1475a0;
+  color: #04425f;
   padding-bottom: 5px;
   font-weight: bold;
 }
 table.view-deployed-releases {
   position: relative;
 }
+
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
-  background-color: #0c4f6d !important;
+  background-color: #04425f;
+}
+.dropdown-menu {
+  border: 0;
+}
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+  background-color: #ffffff;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+  background-color: #ffffff;
+  text-decoration: underline;
 }
 #block-primarylinks ul ul.dropdown-menu {
   background: #ffffff !important;
-  border-radius: 0 !important;
-  border: none;
+  border-radius: 0px 0px 3px 3px;
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  border-color: #aaa;
   margin: 0;
-  padding: 0;
-  -webkit-box-shadow: -1px 2px 5px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: -1px 2px 5px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: -1px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
 }
 #block-primarylinks ul ul.dropdown-menu li {
   width: 100%;
   float: left;
-  background: rgba(206, 240, 253, 0.3) !important;
+  /* background: rgba(206, 240, 253, 0.3) !important; */
 }
 #block-primarylinks ul ul.dropdown-menu li a {
   width: 100%;
   float: left;
-  border-bottom: 1px solid #1475a0;
+  /* border-bottom: 1px solid #04425f; */
   padding-bottom: 5px;
   padding-top: 5px;
-  color: #1475a0;
+  color: #04425f;
 }
 #block-primarylinks ul ul.dropdown-menu li a:hover {
-  color: #ffffff;
+  text-decoration:underline;
 }
 #block-primarylinks ul ul.dropdown-menu li:last-child a {
   border-bottom: none !important;
@@ -1101,9 +1108,16 @@ article .quickedit-field .field__items .field--item {
   width: 100%;
   float: left;
   margin-bottom: 0 !important;
+  border-radius: 0px;
+  border: 1px solid #dddddd;
+}
+.breadcrumb > .active {
+  color: #555;
 }
 #header-right a {
   padding: 0 2px;
+  font-size: 14px;
+  color: #04425f;
 }
 .table-responsive ul.dropdown-menu {
   padding: 0 !important;
@@ -1163,7 +1177,7 @@ article .quickedit-field .field__items .field--item {
 }
 .node-preview-container {
   width: 250px;
-  background: #1475a0;
+  background: #04425f;
   top: 95px;
   left: 10px;
 }
@@ -1193,7 +1207,7 @@ article .quickedit-field .field__items .field--item {
   padding: 0 !important;
 }
 .btn-primary {
-  background: #1475a0 !important;
+  background: #04425f !important;
   padding: 3px 10px !important;
 }
 form.contact-message-form label {
@@ -1226,8 +1240,8 @@ nav#block-optionen ul.menu.nav li,
 .block-hzd-release-management ul li,
 nav#block-optionen ul li {
   list-style-type: none;
-  padding: 6px 10px 8px 10px;
-  border-bottom: 1px solid rgba(20, 117, 160, 0.2);
+  padding: 5px 10px 5px 10px;
+  /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
 .region-sidebar-first section.blue ul.menu.nav li a,
 .block-hzd-release-management ul.menu.nav li a,
@@ -1238,73 +1252,9 @@ nav#block-optionen ul li a {
   width: 100%;
   display: block;
   padding: 0;
-}
-.region-sidebar-first section.blue ul.menu.nav li a:hover,
-.block-hzd-release-management ul.menu.nav li a:hover,
-nav#block-optionen ul.menu.nav li a:hover,
-.region-sidebar-first section.blue ul li a:hover,
-.block-hzd-release-management ul li a:hover,
-nav#block-optionen ul li a:hover {
-  background: transparent;
-}
-.region-sidebar-first section.blue ul.menu.nav li a:focus,
-.block-hzd-release-management ul.menu.nav li a:focus,
-nav#block-optionen ul.menu.nav li a:focus,
-.region-sidebar-first section.blue ul li a:focus,
-.block-hzd-release-management ul li a:focus,
-nav#block-optionen ul li a:focus {
-  background: transparent;
-}
-.region-sidebar-first section.blue ul.menu.nav li:last-child,
-.block-hzd-release-management ul.menu.nav li:last-child,
-nav#block-optionen ul.menu.nav li:last-child,
-.region-sidebar-first section.blue ul li:last-child,
-.block-hzd-release-management ul li:last-child,
-nav#block-optionen ul li:last-child {
-  border: none;
-}
-.region-sidebar-first section.blue ul.menu.nav li:hover,
-.block-hzd-release-management ul.menu.nav li:hover,
-nav#block-optionen ul.menu.nav li:hover,
-.region-sidebar-first section.blue ul li:hover,
-.block-hzd-release-management ul li:hover,
-nav#block-optionen ul li:hover {
-  background: rgba(20, 117, 160, 0.8);
-}
-.region-sidebar-first section.blue ul.menu.nav li:hover a,
-.block-hzd-release-management ul.menu.nav li:hover a,
-nav#block-optionen ul.menu.nav li:hover a,
-.region-sidebar-first section.blue ul li:hover a,
-.block-hzd-release-management ul li:hover a,
-nav#block-optionen ul li:hover a {
-  color: #ffffff;
-  text-decoration: none;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active a,
-.block-hzd-release-management ul.menu.nav li.active a,
-nav#block-optionen ul.menu.nav li.active a,
-.region-sidebar-first section.blue ul li.active a,
-.block-hzd-release-management ul li.active a,
-nav#block-optionen ul li.active a {
-  background: transparent !important;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active a:hover,
-.block-hzd-release-management ul.menu.nav li.active a:hover,
-nav#block-optionen ul.menu.nav li.active a:hover,
-.region-sidebar-first section.blue ul li.active a:hover,
-.block-hzd-release-management ul li.active a:hover,
-nav#block-optionen ul li.active a:hover {
-  color: #fff !important;
-  background: transparent !important;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active a:focus,
-.block-hzd-release-management ul.menu.nav li.active a:focus,
-nav#block-optionen ul.menu.nav li.active a:focus,
-.region-sidebar-first section.blue ul li.active a:focus,
-.block-hzd-release-management ul li.active a:focus,
-nav#block-optionen ul li.active a:focus {
-  background: transparent !important;
-  color: #fff !important;
+  color: #222222;
+  background-color: #ffffff;
+  line-height: 20px;
 }
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
 .block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu,
@@ -1315,65 +1265,7 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   padding: 0 !important;
   border: none;
   border-radius: none;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li,
-.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li,
-nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li,
-.region-sidebar-first section.blue ul li.active ul.dropdown-menu li,
-.block-hzd-release-management ul li.active ul.dropdown-menu li,
-nav#block-optionen ul li.active ul.dropdown-menu li {
-  background: rgba(206, 240, 253, 0.4);
-}
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a,
-.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li a,
-nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li a,
-.region-sidebar-first section.blue ul li.active ul.dropdown-menu li a,
-.block-hzd-release-management ul li.active ul.dropdown-menu li a,
-nav#block-optionen ul li.active ul.dropdown-menu li a {
-  font-size: 11px;
-  color: #3370b7;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li a:hover,
-.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li a:hover,
-nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li a:hover,
-.region-sidebar-first section.blue ul li.active ul.dropdown-menu li a:hover,
-.block-hzd-release-management ul li.active ul.dropdown-menu li a:hover,
-nav#block-optionen ul li.active ul.dropdown-menu li a:hover {
-  font-size: 11px;
-  color: #3370b7;
-}
-.region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu li:hover,
-.block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu li:hover,
-nav#block-optionen ul.menu.nav li.active ul.dropdown-menu li:hover,
-.region-sidebar-first section.blue ul li.active ul.dropdown-menu li:hover,
-.block-hzd-release-management ul li.active ul.dropdown-menu li:hover,
-nav#block-optionen ul li.active ul.dropdown-menu li:hover {
-  background: rgba(20, 117, 160, 0.8);
-}
-.region-sidebar-first section.blue ul.menu.nav li.open,
-.block-hzd-release-management ul.menu.nav li.open,
-nav#block-optionen ul.menu.nav li.open,
-.region-sidebar-first section.blue ul li.open,
-.block-hzd-release-management ul li.open,
-nav#block-optionen ul li.open {
-  background: rgba(20, 117, 160, 0.8);
-}
-.region-sidebar-first section.blue ul.menu.nav li.open ul li:hover,
-.block-hzd-release-management ul.menu.nav li.open ul li:hover,
-nav#block-optionen ul.menu.nav li.open ul li:hover,
-.region-sidebar-first section.blue ul li.open ul li:hover,
-.block-hzd-release-management ul li.open ul li:hover,
-nav#block-optionen ul li.open ul li:hover {
-  background: rgba(20, 117, 160, 0.8);
-}
-.region-sidebar-first section.blue ul.menu.nav li.open ul li:hover a,
-.block-hzd-release-management ul.menu.nav li.open ul li:hover a,
-nav#block-optionen ul.menu.nav li.open ul li:hover a,
-.region-sidebar-first section.blue ul li.open ul li:hover a,
-.block-hzd-release-management ul li.open ul li:hover a,
-nav#block-optionen ul li.open ul li:hover a {
-  color: #fff;
-  background: transparent !important;
+  background-color: #ffffff;
 }
 #edit-services-effected .form-checkbox {
   width: 100%;
@@ -1472,7 +1364,7 @@ form#downtimes-filter .string_search.hzd-form-element {
   width: 85%;
   float: left;
   margin-bottom: 5px;
-  background: #1475a0;
+  background: #04425f;
   padding: 5px;
 }
 .view-group-faqs .view-content .views-row .faq-title .field-content {
@@ -1597,4 +1489,7 @@ form#downtimes-filter .string_search.hzd-form-element {
 }
 form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
   margin-top: 20px;
+}
+strong {
+  font-weight: normal;
 }

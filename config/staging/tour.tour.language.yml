@@ -7,7 +7,7 @@ dependencies:
 _core:
   default_config_hash: LlLH_HQYhZxal4iB88sQSB45acF-8GJH0PJcvziEmqg
 id: language
-label: Language
+label: Sprache
 module: language
 routes:
   -
@@ -16,7 +16,7 @@ tips:
   language-overview:
     id: language-overview
     plugin: text
-    label: Languages
+    label: Sprachen
     body: '<p>The "Languages" page allows you to add, edit, delete, and reorder languages for the site.</p>'
     weight: 1
   language-add:
@@ -38,7 +38,7 @@ tips:
   language-default:
     id: language-default
     plugin: text
-    label: 'Set a language as default'
+    label: 'Eine Sprache als Standard setzen'
     body: '<p>You can change the default language of the site by choosing one of your configured languages as default. The site will use the default language in situations where no choice is made but a language should be set, for example as the language of the displayed interface.</p>'
     weight: 4
     attributes:
@@ -54,6 +54,6 @@ tips:
   language-continue:
     id: language-continue
     plugin: text
-    label: 'Continuing on'
+    label: 'Fortsetzen auf'
     body: '<p>Now that you have an overview of the "Languages" page, you can continue by:<ul><li><a href="[site:url]/admin/config/regional/language/add">Adding a language</a></li><li>Reordering languages</li><li>Editing a language</li><li>Deleting a language</li></ul></p>'
     weight: 6
