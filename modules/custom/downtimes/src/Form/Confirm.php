@@ -36,12 +36,11 @@ class Confirm extends ConfirmFormBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
-    }
-    else {
+    } else {
       $nid = $node;
     }
     return new static(
-        $container->get('keyvalue.expirable')->get('downtimes_resolve_' . $nid)
+            $container->get('keyvalue.expirable')->get('downtimes_resolve_' . $nid)
     );
   }
 
@@ -74,7 +73,14 @@ class Confirm extends ConfirmFormBase {
    */
   public function getCancelUrl() {
     //this needs to be a valid route otherwise the cancel link won't appear
-    //   return new Url('mymodule.home');
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if (is_object($node)) {
+      $nid = $node->id();
+    } else {
+      $nid = $node;
+    }
+    $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
+    return new Url('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
   }
 
   /**
@@ -96,7 +102,7 @@ class Confirm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelText() {
-    //  return $this->t('Nevermind');
+    return $this->t('Cancel');
   }
 
   /**
@@ -113,8 +119,7 @@ class Confirm extends ConfirmFormBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
-    }
-    else {
+    } else {
       $nid = $node;
     }
     $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
@@ -143,8 +148,7 @@ class Confirm extends ConfirmFormBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
-    }
-    else {
+    } else {
       $nid = $node;
     }
     $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
@@ -171,7 +175,7 @@ class Confirm extends ConfirmFormBase {
     $query->execute();
     $this->keyValueExpirable->delete("downtimes_resolve_" . $nid);
     drupal_set_message(t($message));
-    $form_state->setRedirect('<front>');
+    $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
     /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
       $query = \Drupal::database()->select('downtimes', 'd');
       $query->fields('d', ['state_id']);

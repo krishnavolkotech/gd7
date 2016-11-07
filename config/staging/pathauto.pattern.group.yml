@@ -11,7 +11,7 @@ label: 'group title '
 type: 'canonical_entities:group'
 pattern: '[group:title]'
 selection_criteria:
-  dccf048f-a781-4804-ba2d-ba84578be380:
+  4c84fdb5-d1f6-4491-ada0-36a719449601:
     id: 'entity_bundle:group'
     bundles:
       closed: closed
@@ -22,15 +22,16 @@ selection_criteria:
     negate: false
     context_mapping:
       group: group
-    uuid: dccf048f-a781-4804-ba2d-ba84578be380
-  2812b474-e408-4317-aeb5-8b4315f14250:
+    uuid: 4c84fdb5-d1f6-4491-ada0-36a719449601
+  9f4ed1fe-0909-406f-8365-7741f325b56b:
     id: language
     langcodes:
       de: de
+      en: en
     negate: false
     context_mapping:
       language: 'group:langcode:language'
-    uuid: 2812b474-e408-4317-aeb5-8b4315f14250
+    uuid: 9f4ed1fe-0909-406f-8365-7741f325b56b
 selection_logic: and
 weight: -10
 relationships:

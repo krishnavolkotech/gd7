@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: menu-31826
 label: 'Autoren RZ-Schnellinfo'
-description: null
+description: ''
 locked: false

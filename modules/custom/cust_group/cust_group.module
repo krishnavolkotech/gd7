@@ -291,14 +291,14 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
                                         '#type'=>'ul',
                                         '#weight'=>100,
                                         ];
-    }elseif('planning_files' == $entity->bundle() && 0){
+    }elseif('planning_files' == $entity->bundle()){
         global $base_url;
-        header('Location: '.$base_url.\Drupal::url('hzd_release_management.display_planning_files',['group'=>32]));
+        header('Location: '.$base_url.\Drupal::url('hzd_release_management.display_planning_files',['group'=>RELEASE_MANAGEMENT]));
         exit;
     }
-    if($entity->getType() == 'quickinfo'){
+//    if($entity->getType() == 'quickinfo'){
         //\Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
-    }
+//    }
     
     //exit;
 }
