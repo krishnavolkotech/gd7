@@ -81,15 +81,17 @@ class AccessController extends ControllerBase {
     $loadedGroup = $route_match->getParameter('group');
     if ($group = \Drupal\group\Entity\group::load(19)) {
       $content = $group->getMember($user);
-      if ($content) {
-        $contentId = $content->getGroupContent()->id();
-        $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
-                        ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
-          return AccessResult::allowed();
-        } else {
-          return AccessResult::forbidden();
-        }
+      if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+        //Members of the group 19 should have access to create maintenance
+        return AccessResult::allowed();
+//        $contentId = $content->getGroupContent()->id();
+//        $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
+//                        ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
+//        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+//          return AccessResult::allowed();
+//        } else {
+//          return AccessResult::forbidden();
+//        }
       } else {
         return AccessResult::forbidden();
       }

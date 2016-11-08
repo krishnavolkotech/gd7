@@ -5,6 +5,8 @@ dependencies:
   module:
     - block_class
     - cust_group
+    - system
+    - user
   theme:
     - hzd
 third_party_settings:
@@ -21,4 +23,16 @@ settings:
   label: ITSM-Prozesse
   provider: cust_group
   label_display: visible
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
