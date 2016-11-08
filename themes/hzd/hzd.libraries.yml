@@ -12,3 +12,5 @@ quickinfo:
 bootstrap-scripts:
   js:
     js/hzd_custom.js : {}
+  dependencies:
+      - core/drupal.tableheader
