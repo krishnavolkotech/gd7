@@ -41,7 +41,11 @@
  * @ingroup themeable
  */
 #}
-<table{{ attributes }}>
+{% set classes = [
+  'table',
+  'sticky-enabled',
+] %}
+<table{{ attributes.addClass(classes) }}>
     {% if caption %}
         <caption>{{ caption }}</caption>
     {% endif %}
