@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - user.role.administrator
+    - user.role.authenticated
     - user.role.site_administrator
   module:
     - inactive_user
@@ -688,8 +689,10 @@ display:
             offset_label: Offset
           quantity: 9
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            authenticated: authenticated
       empty:
         area:
           id: area
@@ -722,6 +725,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags: {  }
   entity_reference_1:
     display_plugin: entity_reference
