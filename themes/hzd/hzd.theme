@@ -206,6 +206,10 @@ function hzd_preprocess_node(&$variables) {
       $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
     }
   }
+  if(isset($variables['content']['entity_print_view'])){
+    $variables['content']['entity_print_view']['#attributes'] = ['class'=>['entity_print_view']];
+    //pr($variables['content']['entity_print_view']);exit;
+  }
 }
 
 function custom_user_fullname($uid) {
