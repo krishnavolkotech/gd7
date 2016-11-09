@@ -6,14 +6,6 @@ favorites.add:
   requirements:
     _permission: 'manage favorites'
 
-favorites.list:
-  path: '/my-favorites'
-  defaults:
-    _controller: '\Drupal\favorites\Controller\MyFavController::myFavorites'
-    _title: 'My Favorites'
-  requirements:
-    _permission: 'manage favorites'
-
 favorites.remove:
   path: '/favorites/remove/{fid}'
   defaults:

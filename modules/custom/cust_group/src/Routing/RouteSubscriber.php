@@ -72,6 +72,12 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
     }
+    
+    // Overriding the controller for front page contrib module
+    if ($route = $collection->get('front_page.front')) {
+      $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
+    }
+    
   }
 
   //retuns the views related to groups created from UI

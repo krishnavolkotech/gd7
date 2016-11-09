@@ -82,6 +82,16 @@ hzd_customizations.quickinfo_template_groups:
   requirements:
     _permission: 'access all views'
 
+hzd_customizations.front_page_blocks_settings:
+  path: 'admin/config/front-page-blocks'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\FrontPageBlocksForm'
+    _title: 'Settings for front page blocks'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
 #hzd_customizations.quickinfo_uniqueid:
 #  path: 'admin/messaging/quickinfo-template/quickinfo-unique-id'
 #  defaults:

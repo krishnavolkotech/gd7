@@ -3,7 +3,6 @@
 /**
  * @file
  */
-
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
@@ -14,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
+use Drupal\Component\Datetime\DateTimePlus;
 
 if (SITE_ADMIN) {
   define('SITE_ADMIN', 'site_administrator');
@@ -162,7 +162,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $query->Fields('s', array('state'));
     $query->condition('s.id', $user_state);
     $state = $query->execute()->fetchField();
-    
+
     $form['field_author_state']['#prefix'] = '<div class="uniq_id">';
     $form['field_author_state']['#suffix'] = '</div>';
     $form['attachments']['#collapsed'] = FALSE;
@@ -173,7 +173,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['actions']['submit']['#value'] = t('Publish');
     $form['actions']['submit']['#prefix'] = '<div id="publish_content">';
     $form['actions']['submit']['#suffix'] = '</div>';
-
   }
 
   // Button button--primary js-form-submit form-submit btn-primary.
@@ -197,8 +196,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
     $db = \Drupal::database();
     $result = $db->select('states', 's')
-      ->fields('s', array('abbr', 'state'))
-      ->condition('s.entity', 1, '!=');
+        ->fields('s', array('abbr', 'state'))
+        ->condition('s.entity', 1, '!=');
     $val = $result->execute()->fetchAll();
     $states = array();
     foreach ($val as $user_states_list) {
@@ -261,8 +260,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
     $account_inactivity = t('[@sitename] Account inactivity', array(
       '@sitename' => $site_name,
-    )
-      );
+        )
+    );
     $inactive_user_notify_mail_subject = \Drupal::config('inactive_user.settings')->get('inactive_user_notify_mail_subject');
     $inactive_user_notify_mail_subject = $inactive_user_notify_mail_subject ? $inactive_user_notify_mail_subject : $account_inactivity;
 
@@ -316,7 +315,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_text']);
   }
-
 }
 
 /**
@@ -374,6 +372,75 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
           $condition['field'] = 'groups_field_data.id IN (:groups_field_data_id[])';
         }
       }
+    }
+  }
+
+  // Altering the problems block on front page
+  if ($view->id() == 'problems_front_page' && $view->current_display == 'block_1') {
+    $last_unix_time = get_last_unix_time('last_n_days_problems');
+
+    // Traverse through the 'where' part of the query.
+    foreach ($query->where as &$condition_group) {
+      foreach ($condition_group['conditions'] as &$condition) {
+        if (strpos($condition['field'], 'field_problem_eroffnet_value')) {
+          $condition['value'] = $last_unix_time;
+        }
+      }
+    }
+  }
+
+  // Altering the releases block on front page
+  if ($view->id() == 'release_list' && $view->current_display == 'block_1') {
+    $last_unix_time = get_last_unix_time('last_n_days_releases');
+
+    // Traverse through the 'where' part of the query.
+    foreach ($query->where as &$condition_group) {
+      foreach ($condition_group['conditions'] as &$condition) {
+        if (strpos($condition['field'], 'field_date_value')) {
+          $condition['value'] = $last_unix_time;
+        }
+      }
+    }
+  }
+  
+}
+
+/**
+ * Returns last unix time to show records from
+ * @param type $block_name name of config 
+ * @return type unix timestamp
+ */
+function get_last_unix_time($block_name) {
+  $config_object = \Drupal::config('hzd_customizations.settings');
+  $num_of_days = $config_object->get($block_name);
+  // 86400 is total seconds for a day
+  $last_unix_time = time() - ($num_of_days * 86400);
+
+  return $last_unix_time;
+}
+
+/**
+ * Implements hook_views_pre_render
+ * 
+ */
+function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view) {
+
+  // converting the unix timestamp to date just before render for our front page blocks
+  if ($view->id() == 'problems_front_page') {
+
+    foreach ($view->result as $value) {
+      $start_date = $value->_entity->get('field_problem_eroffnet')->value;
+      $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)->format('d.m.Y');
+      $value->_entity->set('field_problem_eroffnet', (string) $start_date);
+    }
+  }
+
+  if ($view->id() == 'release_list') {
+
+    foreach ($view->result as $value) {
+      $start_date = $value->_entity->get('field_date')->value;
+      $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)->format('d.m.Y');
+      $value->_entity->set('field_date', (string) $start_date);
     }
   }
 }
@@ -545,7 +612,7 @@ function quickinfo_file_attachments($files) {
       $href = file_create_url($file->filepath);
       $text = $file->description ? $file->description : $file->filename;
       $url = Url::fromUserInput(
-            '/' . $href
+              '/' . $href
       );
       // array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))
       $file_attachement = Link::fromTextAndUrl($text, $url);
@@ -598,14 +665,14 @@ function quickinfo_mail_header($node, $additional_recipients = 0) {
 
   $logo_render_array = [
     '#theme' => 'image_style',
-  // '#width' => $variables['width'],
-  //  '#height' => $variables['height'],
-  //  '#style_name' => $variables['style_name'],.
+    // '#width' => $variables['width'],
+    //  '#height' => $variables['height'],
+    //  '#style_name' => $variables['style_name'],.
     '#uri' => $variables['uri'],
   ];
   $rows[] = array(
     'logo_render_array' => $logo_render_array,
-    'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title) ,
+    'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title),
     'date' => t("Published on :") . date('d.m.Y', $node->changed),
   );
   $rows[] = array(
@@ -655,13 +722,12 @@ function quickinfo_mail_header($node, $additional_recipients = 0) {
 /**
  * Quickinfo notification message body.
  */
-
 function quickinfo_custom_body($action, $node) {
   global $base_url;
 
   $quickinfo_url_alias = Url::fromUserInput(
-            "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
-            );
+          "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
+  );
   $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
   $files_attachments = quickinfo_file_attachments($node->files);
 
@@ -729,14 +795,14 @@ function default_notification_insert($edit) {
     $content_types = _service_notifications_content_type($rel_val);
     foreach ($content_types as $content_key => $content) {
       /**
-           * to do
-           */
+       * to do
+       */
       $default_time = default_sent_interval($content);
 
       switch ($content_types[$content_key]) {
         /**
-           * to do
-           */
+         * to do
+         */
         case t('Current Incidents and Planned Maintenances'):
           $release_type = 'downtimes';
           break;
@@ -754,9 +820,8 @@ function default_notification_insert($edit) {
           break;
       }
       /**
-           * to do
-           */
-
+       * to do
+       */
       $services = _get_type_relatedServices($release_type, $rel_val);
 
       foreach ($services as $services_id) {
@@ -778,8 +843,8 @@ function default_notification_insert($edit) {
         // }.
       }
       /**
-         * to do
-         */
+       * to do
+       */
       insert_default_user_intervel($release_type, $default_time, $edit['uid'], $rel_val);
     }
   }
@@ -839,8 +904,7 @@ function hzd_customizations_user_login($account) {
  */
 function hzd_customizations_user_presave(EntityInterface $entity) {
 
-  if (is_object($entity->original) && ($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value'])
-        && ($entity->status->getValue()['0']['value'] == 1)) {
+  if (is_object($entity->original) && ($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value']) && ($entity->status->getValue()['0']['value'] == 1)) {
     $query = \Drupal::database()->select('inactive_users', 'iu');
     $query->fields('iu', array('uid'));
     $query->condition('uid', $entity->id());
@@ -877,7 +941,7 @@ function _hzd_customizations_user_login_form_submit() {
 
 /*
  * hook_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account)
- */    
+ */
 //function hzd_customizations_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
 //
 //    if (is_object($group)) {
@@ -903,7 +967,6 @@ function _hzd_customizations_user_login_form_submit() {
 //    }
 //  }
 
-
 /**
  * Implementation of hook_cron()
  */
@@ -912,4 +975,3 @@ function hzd_customizations_cron() {
   $inactive_user = new \Drupal\hzd_customizations\Controller\Inactiveusers();
   $inactive_user->inactive_users();
 }
-
