@@ -40,11 +40,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
       if ($route->getPath() == '/group/{group}/node/{group_content}') {
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupContentView');
+        $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupContentTitle");
       }
     }
     if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
       if ($route->getPath() == '/group/{group}/members/{group_content}') {
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
+        $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupMemberTitle");
       }
     }
     if ($route = $collection->get('entity.node.edit_form')) {

@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
+use Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings;
 
 if (!defined('KONSONS')) {
   define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -258,7 +259,7 @@ class EarlyWarningsFilterForm extends FormBase {
 
     if ($type == 'releaseWarnings') {
       $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table'] = HzdearlywarningsStorage::release_earlywarnings_display_table($filter_options, $release_type);
+      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
       $output['content']['result_table']['#suffix'] = '</div></div>';
     }
     else {
@@ -322,7 +323,7 @@ class EarlyWarningsFilterForm extends FormBase {
     $output['content']['reset_form']['#suffix'] = '</div><div style = "clear:both" ></div>';
     if ($type == 'releaseWarnings') {
       $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table'] = HzdearlywarningsStorage::release_earlywarnings_display_table($filter_options, $release_type);
+      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
       $output['content']['result_table']['#suffix'] = '</div></div>';
     }
     else {
