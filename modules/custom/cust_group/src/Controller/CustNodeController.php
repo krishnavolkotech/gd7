@@ -9,6 +9,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\Routing\Route;
+use Drupal\group\Entity\GroupContentInterface;
 
 /**
  * Returns responses for Node routes.
@@ -43,12 +44,22 @@ class CustNodeController extends ControllerBase {
     $view_builder = \Drupal::entityManager()->getViewBuilder('node');
     return $view_builder->view($node);
   }
+  
+  function groupContentTitle(){
+    $parm = \Drupal::routeMatch()->getParameter('group_content');
+    return $parm->get('entity_id')->referencedEntities()[0]->label();
+  }
 
   function groupMemberView() {
     $member = \Drupal::routeMatch()->getParameter('group_content');
     $user = $member->get('entity_id')->referencedEntities()[0];
     $view_builder = \Drupal::entityManager()->getViewBuilder('user');
     return $view_builder->view($user);
+  }
+  
+  function groupMemberTitle(){
+    $parm = \Drupal::routeMatch()->getParameter('group_content');
+    return $parm->get('entity_id')->referencedEntities()[0]->label();
   }
 
   static function hzdGroupAccess() {
