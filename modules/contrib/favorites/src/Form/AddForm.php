@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\favorites\FavoriteStorage;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 
 /**
  * Class AddForm.
@@ -19,8 +19,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  * @package Drupal\favorites\Form\AddForm
  */
 class AddForm extends FormBase {
-
-  use StringTranslationTrait;
 
   protected $account;
 

@@ -8,12 +8,11 @@ namespace Drupal\favorites\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\HtmlCommand;;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\favorites\FavoriteStorage;
 use Drupal\Core\Url;
 use Drupal\Core\Render\Element\Link;
-
 
 
 /**
@@ -67,44 +66,6 @@ class MyFavController extends ControllerBase {
             $response = new AjaxResponse();
             $response->addCommand(new HtmlCommand('#myfavlist', $message));
             return $response;
-        }
-        
-        /**
-        * My favorite.
-        */
-        public function myFavorites(){
-            global $base_url;
-            $items = array();
-            $account = \Drupal::currentUser(); 
-            $uid = $account->id();
-            if ($uid) {
-                $result = FavoriteStorage::getFavorites($uid);
-                $i = 0;
-                foreach ($result as $favorite) {
-                    $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/'.trim($favorite->path,'/'));
-                    if($favorite->query != ''){
-                        $url = $base_url.$favorite->path.'?'.$favorite->query;    
-                    }
-                    else{
-                        $url = $base_url.$favorite->path;    
-                    }                
-                    $url = Url::fromUri($url);
-                    $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
-                    $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
-                    $items[$i]['remove_link'] = \Drupal::l('Delete', $url_delete);
-                    $items[$i]['id'] = $favorite->fid;
-                    $i++;
-                }
-            }
-            return array(     
-              '#attached' => array(
-                  'library' => array('favorites/favorites.custom'),
-              ),  
-              'fav_lists' => array(  
-                '#theme' => 'favlist_item_list',       
-                'items' => $items,  
-              ),
-            );   	          
         }
         
         /**

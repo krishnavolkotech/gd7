@@ -55,32 +55,50 @@ class IncidentsBlock extends BlockBase {
     $build = [];
     $maintenance_list = \Drupal::database()->query("select service_id, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 ", array())->fetchAll();
     $result = $serviceids_list = array();
+
+    // Get the service id's list and get respective details from service id.
     foreach ($maintenance_list as $key => $vals) {
       //$item = '<div '
       $serviceid = explode(',', $vals->service_id);
       $stateids = explode(',', $vals->state_id);
-      /*dsm($key);
-      dsm($serviceid);*/
+      /* dsm($key);
+        dsm($serviceid); */
       foreach ($serviceid as $ids) {
+        // Loops for all services
         $service_name = \Drupal::database()->query('SELECT title FROM {node_field_data} WHERE nid=:sid', array(':sid' => $ids))->fetchField();
-        foreach ($stateids as $sids) {
+
+        $statesArray = \Drupal::database()->select('states', 's')->distinct()
+            ->fields('s', ['abbr'])
+            ->condition('s.id', $stateids, 'IN')            
+            ->execute()
+            ->fetchCol();
+        
+        $statesArray = implode('][ ',$statesArray);
+        $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><span class='state-item'>[$statesArray]</span>");
+       
+       /* foreach ($stateids as $sids) {
+          // Loops for all states
           $state_name = \Drupal::database()->query('SELECT abbr FROM {states} WHERE id=:sid', array(':sid' => $sids))->fetchField();
+
+          $states_array[$state_name] = $state_name;
           if (!empty($serviceids_list[$ids])) {
-            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');
+            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='state-item'>[$state_name]</span>");
+            // $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');              
           }
           else {
             if (empty($state_name)) {
               continue;
             }
-            $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');
+            $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name]</span>");
+            //$serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');
           }
-        }
+        }*/
       }
-    }    
-    /*$item_listnew = array();
-    foreach ($serviceids_list as $value) {
+    }
+    /* $item_listnew = array();
+      foreach ($serviceids_list as $value) {
       $item_listnew[] = t(implode('', $value));
-    }*/
+      } */
     $markup = [
       '#items' => $serviceids_list,
       '#theme' => 'item_list',

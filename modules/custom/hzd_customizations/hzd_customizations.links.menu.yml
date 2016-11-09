@@ -42,3 +42,9 @@ hzd_customizations.quickinfo_template_groups:
   route_name: hzd_customizations.quickinfo_template_groups
   parent: hzd_customizations.notification
   description: 'Group names'
+  
+hzd_customizations.front_page_blocks_settings:
+  title: 'Settings for front page blocks'
+  route_name: hzd_customizations.front_page_blocks_settings
+  description: 'Settings for front page blocks'
+  parent: system.admin_config
