@@ -1,0 +1,32 @@
+uuid: 0d44f662-d96c-493f-b77a-4866f18a819a
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - favorites
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: myfavorites
+theme: hzd
+region: sidebar_first
+weight: -23
+provider: null
+plugin: favorites_block
+settings:
+  id: favorites_block
+  label: 'My Favorites'
+  provider: favorites
+  label_display: visible
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
