@@ -902,7 +902,7 @@ class HzdreleasemanagementStorage {
           $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
           $view_options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
           $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-          $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);
+          $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);
           $view_earlywarning = array(
             '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
             '#type' => 'link',
@@ -1318,7 +1318,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
       $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/early-warnings', $view_options);
+      $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);
       $view_earlywarning = array(
         '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
         '#type' => 'link',
