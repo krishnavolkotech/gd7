@@ -9,9 +9,11 @@ dependencies:
     - group.type.moderate
     - group.type.moderate_private
     - group.type.open
+    - user.role.authenticated
   module:
     - custom_views_php
     - group
+    - user
 id: all_groups
 label: 'All Groups'
 module: views
@@ -28,8 +30,10 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            authenticated: authenticated
       cache:
         type: none
         options: {  }
@@ -710,6 +714,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.group.field_description'
   page_1:
@@ -730,5 +735,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.group.field_description'

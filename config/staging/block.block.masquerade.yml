@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - masquerade
+    - system
     - user
   theme:
     - hzd
@@ -31,3 +32,8 @@ visibility:
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }

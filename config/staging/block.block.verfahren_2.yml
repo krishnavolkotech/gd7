@@ -13,7 +13,7 @@ third_party_settings:
     classes: blue
 id: verfahren_2
 theme: hzd
-region: sidebar_first
+region: '-1'
 weight: -18
 provider: null
 plugin: verfahren_menu_side
