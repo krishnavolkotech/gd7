@@ -55,7 +55,7 @@ class IncidentsBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 and startdate_planned <= :current_date", array(':current_date' => REQUEST_TIME))->fetchAll();
+    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 0 and d.resolved = 0 and d.cancelled = 0 and startdate_planned <= :current_date", array(':current_date' => REQUEST_TIME))->fetchAll();
     $result = $serviceids_list = array();
 
     // Get the service id's list and get respective details from service id.

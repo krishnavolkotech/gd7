@@ -275,7 +275,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 //    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
-  else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
+  else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') { 
     //$form['actions']['submit']['#submit'][] = 'downtimes_serviceProfileSubmit';
     $form['notifications']['#weight'] = 4;
     // drupal_add_js(drupal_get_path('module', 'downtimes') . '/maintenance_windows.js');
@@ -329,15 +329,21 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       "Sat" => "Sat",
       "Sun" => "Sun",
     );
-
+    $form['service_time'] = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'class' => ['service-time'],
+      ),
+    );
     foreach ($arr as $key => $val) {
-      $form['service_time_' . $val] = array(
+      
+      $form['service_time'][$val]['day'] = array(
+        '#title'=>t($val),
         '#type' => 'checkbox',
-        '#prefix' => ($key == 'Mon') ? "<div class='service-time'><b>" . t('Service Time:') . "</b>" : '<div class="service-time">',
         '#default_value' => isset($serialized_data['service_time_' . $val]) ? $serialized_data['service_time_' . $val] : '',
         '#title' => Html::escape($key),
       );
-      append_hours_minutes($form, 'service_time_' . $val, $serialized_data);
+      append_hours_minutes($form, $val, $serialized_data);
     }
     $form['#tree'] = TRUE;
     $max = count($mwData);
@@ -451,7 +457,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#title' => t('Dependant Services'),
       '#type' => 'checkboxes',
       '#multiple' => true,
-      '#options' => $dependent_service_options
+      '#options' => $dependent_service_options,
+      '#required'=>FALSE,
     );
     if ($form_id == 'node_service_profile_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
@@ -533,26 +540,27 @@ function downtimes_set_default_values(&$form, $nid) {
 function append_hours_minutes(&$form, $name, $data) {
   //$date_format = 'H:i';
   //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
-  if (!empty($data[$name . '_from'])) {
-    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data[$name . '_from'])) {
-      $data[$name . '_from'] .= ':00';
+  if (!empty($data['service_time_'.$name . '_from'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_'.$name . '_from'])) {
+      //$data[$name . '_from'] .= ':00';
     }
-    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_from']));
+    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_'.$name . '_from']));
   }
   else {
     $fromTime = '';
   }
-  if (!empty($data[$name . '_until'])) {
-    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data[$name . '_until'])) {
-      $data[$name . '_until'] .= ':00';
+  if (!empty($data['service_time_'.$name . '_until'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_'.$name . '_until'])) {
+      //$data[$name . '_until'] .= ':00';
     }
-    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data[$name . '_until']));
+    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_'.$name . '_until']));
   }
   else {
     $untilTime = '';
   }
+  //pr($fromTime);exit;
 
-  $form[$name . '_from'] = array(
+  $form['service_time'][$name]['from'] = array(
     '#title' => t('From'),
     '#type' => 'datetime',
     '#date_time_element' => 'time',
@@ -562,7 +570,7 @@ function append_hours_minutes(&$form, $name, $data) {
     '#default_value' => $fromTime,
   );
 
-  $form[$name . '_until'] = array(
+  $form['service_time'][$name]['until'] = array(
     '#title' => t('Until'),
     '#type' => 'datetime',
     '#date_time_element' => 'time',
@@ -642,19 +650,19 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
     "Sat" => "Sat",
     "Sun" => "Sun",
   );
-
+  $service_time = $form_state->getValue('service_time');
   foreach ($arr as $vals) {
-    if ($form_state->getValue('service_time_' . $vals)) {
-      if ($form_state->getValue('service_time_' . $vals . '_from') >= $form_state->getValue('service_time_' . $vals . '_until')) {
-        $form_state->setErrorByName('service_time_' . $vals . '_until', t("End Date must be greater than Start Date."));
+    if ($service_time[$vals]['day']) {
+      if ($service_time[$vals]['from'] >= $service_time[$vals]['until']) {
+        $form_state->setErrorByName('service_time', t("End Date must be greater than Start Date."));
       }
     }
 
-    if (($form_state->getValue('service_time_' . $vals . '_from') > $form_state->getValue('service_time_' . $vals . '_until')) ||
-        ($form_state->getValue('service_time_' . $vals . '_from') < $form_state->getValue('service_time_' . $vals . '_until'))) {
-      if (!$form_state->getValue('service_time_' . $vals)) {
+    if (($service_time[$vals]['from'] > $service_time[$vals]['until']) ||
+        ($service_time[$vals]['from'] < $service_time[$vals]['until'])) {
+      if (!$service_time[$vals]) {
         // form_set_error($form_state['values']['service_time_' . $vals], t("Select day"));.
-        $form_state->setErrorByName('service_time_' . $vals, t("Select day"));
+        $form_state->setErrorByName('service_time', t("Select day"));
       }
     }
 
@@ -783,6 +791,7 @@ function saveMaintenanceWindows($node, $data) {
 }
 
 function saveSeviceTime($node, $data) {
+//  pr($data);exit;
   $arr = array(
     "Mon" => "Mon",
     "Tue" => "Tue",
@@ -794,10 +803,10 @@ function saveSeviceTime($node, $data) {
   );
   $serviceData = [];
   foreach ($arr as $val) {
-    if ($data['service_time_' . $val]) {
-      $serviceData['service_time_' . $val] = $data['service_time_' . $val];
-      $serviceData['service_time_' . $val . '_from'] = $data['service_time_' . $val . '_from']['time'];
-      $serviceData['service_time_' . $val . '_until'] = $data['service_time_' . $val . '_until']['time'];
+    if ($data['service_time'][$val]) {
+      $serviceData['service_time_' . $val] = $data['service_time'][$val]['day'];
+      $serviceData['service_time_' . $val . '_from'] = $data['service_time'][$val]['from']['time'];
+      $serviceData['service_time_' . $val . '_until'] = $data['service_time'][$val]['until']['time'];
     }
   }
   $query = \Drupal::database()->select('service_profile_maintenance_service_time', 'spm')
