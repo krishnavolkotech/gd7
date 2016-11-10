@@ -226,6 +226,7 @@ function cust_group_form_alter(&$form, $form_state,$form_id){
 
 function requst_submit_handler(&$form, $form_state){
     $group = \Drupal::routeMatch()->getParameter('group');
+    $form_state->setRedirect('view.all_groups.page_1');
     $subject = t("Membership Request for a Group - ".$group->label());
     $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
         ->loadByGroup($group, 'group_membership', ['group_roles'=>['moderate-admin']]);

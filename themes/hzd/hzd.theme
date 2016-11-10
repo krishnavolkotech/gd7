@@ -14,7 +14,7 @@ function hzd_preprocess_page(&$variables) {
   $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);
 
   if ($user->id()) {
-    $searchform = \Drupal\block\Entity\Block::load('searchform');
+//    $searchform = \Drupal\block\Entity\Block::load('searchform');
 //    $variables['content']['block_searchform'] = \Drupal::entityManager()->getViewBuilder('block')->view($searchform);
   }
 }

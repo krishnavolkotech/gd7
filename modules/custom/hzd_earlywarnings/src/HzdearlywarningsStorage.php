@@ -384,8 +384,8 @@ class HzdearlywarningsStorage {
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
-    $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group'=>32]);
-    $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query'=>['destination'=>'group/32/early-warnings']]));
+    $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group'=>RELEASE_MANAGEMENT]);
+    $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query'=>['destination'=>'group/'.RELEASE_MANAGEMENT.'/early-warnings']]));
     $output = "<div class = 'earlywarnings_text'>" . $body . $link;
     //$output = "<div class = 'earlywarnings_text'>" . $body . "<a href='/release-management/add/early-warnings?\ destination=group/32/early-warnings&amp;ser=0&amp;rel=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     $build['#markup'] = $output;
