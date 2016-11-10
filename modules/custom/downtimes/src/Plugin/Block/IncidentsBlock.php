@@ -4,6 +4,8 @@ namespace Drupal\downtimes\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Datetime\DateTimePlus;
+use Drupal\Core\Link;
 
 /**
  * Provides a 'IncidentsBlock' block.
@@ -53,11 +55,12 @@ class IncidentsBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-    $maintenance_list = \Drupal::database()->query("select service_id, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 ", array())->fetchAll();
+    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 and startdate_planned <= :current_date", array(':current_date' => REQUEST_TIME))->fetchAll();
     $result = $serviceids_list = array();
 
     // Get the service id's list and get respective details from service id.
     foreach ($maintenance_list as $key => $vals) {
+      
       //$item = '<div '
       $serviceid = explode(',', $vals->service_id);
       $stateids = explode(',', $vals->state_id);
@@ -75,6 +78,9 @@ class IncidentsBlock extends BlockBase {
         
         $statesArray = implode('][ ',$statesArray);
         $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><span class='state-item'>[$statesArray]</span>");
+                   
+        // Uncomment this to get hover details for incident block
+        // $serviceids_list[$ids] = t($serviceids_list[$ids].$this->get_hover_markup($vals->startdate_planned,$vals->description));
        
        /* foreach ($stateids as $sids) {
           // Loops for all states
@@ -99,15 +105,38 @@ class IncidentsBlock extends BlockBase {
       foreach ($serviceids_list as $value) {
       $item_listnew[] = t(implode('', $value));
       } */
-    $markup = [
+    
+    $link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
+                     
+    $markup['incident_list'] = [
       '#items' => $serviceids_list,
       '#theme' => 'item_list',
       '#type' => 'ul',
       '#weight' => 100,
     ];
-    $build['incidents_block_number_of_posts']['#markup'] = render($markup);
-
+    $markup['report_link'] = $link->toString();
+    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']).render($markup['report_link']);
+   
     return $build;
+  }
+  
+  public function get_hover_markup($start_date_planned,$description) {
+
+    $html = "<ul class='downtime-hover' style='display:none;'>";
+    // Getting the below start date. end date and description for hover.
+    if (!empty($start_date_planned)) {
+      $start_date_planned = DateTimePlus::createFromTimestamp((integer) $start_date_planned)->format('d.m.Y');
+      $html .= "<li>$start_date_planned</li>";
+    }
+
+    if (!empty($description)) {
+      $description = strip_tags($description);
+      $html .= "<li>$description</li>";
+    }
+
+    $html .= "</ul>";
+    
+    return $html;
   }
 
 }
