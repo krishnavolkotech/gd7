@@ -3,6 +3,12 @@ global-styling:
     theme:
       css/style.css: {}
       css/3.3.5/overrides.min.css: {}
+      css/3.3.5/bootstrap.css: {}
+      css/3.3.5/bootstrap.min.css: {}
+  js:
+    theme:
+      js/3.3.5/bootstrap.js: {}
+      js/3.3.5/bootstrap.min.js: {}
 
 quickinfo:
   css:

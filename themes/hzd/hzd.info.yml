@@ -26,3 +26,4 @@ libraries:
 entity_print:
  node:
    quickinfo: hzd/quickinfo
+   
