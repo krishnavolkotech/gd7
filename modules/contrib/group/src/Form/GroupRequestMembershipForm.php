@@ -43,8 +43,6 @@ class GroupRequestMembershipForm extends ContentEntityForm {
     $group = \Drupal::routeMatch()->getParameter('group');
     if($group->getMemberRequestStatus(\Drupal::currentUser()) === 0){
       $form_state->setErrorByName('message','You already have a pending request.');
-    }else{
-      $form_state->setRedirect('entity.group.canonical', ['group'=>$group->id()]);
     }
     return parent::validateForm($form, $form_state);
   }
