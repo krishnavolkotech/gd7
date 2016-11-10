@@ -21,8 +21,8 @@ class QuickLinksBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
+    $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
     if (\Drupal::currentUser()->id()) {
-      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Störung melden'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Bekannte Fehler und Probleme'), 'problem_management.problems', ['group' => 31]);
@@ -31,8 +31,6 @@ class QuickLinksBlock extends BlockBase {
       $markup[] = Link::fromTextAndUrl($this->t('KONSENS-Glossar'),  Url::fromUri('http://glossar.konsens.ktz.testa-de.net',['attributes'=>['target'=>'_blank']]));
       $markup[] = Link::createFromRoute($this->t('Service Monitoring'), 'cust_user.nsm_login');
       $markup[] = Link::createFromRoute($this->t('Architektursteuerung'), 'entity.node.canonical', ['node' => 49812]);
-    } else {
-      $markup[] = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
     }
 
     return [
