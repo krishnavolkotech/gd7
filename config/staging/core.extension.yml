@@ -28,6 +28,7 @@ module:
   editor: 0
   entity_print: 0
   faq: 0
+  favorites: 1
   faqfield: 0
   field: 0
   field_group: 0
