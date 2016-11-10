@@ -5,6 +5,7 @@ hzd_earlywarnings.view_early_warnings:
     _title: 'Early Warnings'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 hzd_earlywarnings.early-warnings:
   path: 'group/{group}/early-warnings'
@@ -13,7 +14,7 @@ hzd_earlywarnings.early-warnings:
     _title: 'Early Warnings'
   requirements:
     _permission: 'access content'
-
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 hzd_earlywarnings.add_early_warnings:
   path: 'group/{group}/add/early-warnings'
