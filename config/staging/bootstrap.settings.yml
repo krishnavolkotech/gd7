@@ -4,6 +4,15 @@ favicon:
   url: 'http://hzdupgrd-dev2.azri.de/themes/bootstrap/favicon.ico'
   use_default: true
 schema: 8000
+schemas:
+  bootstrap: 8000
+table_responsive: '-1'
+table: ''
+cdn_provider: jsdelivr
+cdn_custom_css: ''
+cdn_custom_css_min: ''
+cdn_custom_js: ''
+cdn_custom_js_min: ''
 features:
   comment_user_picture: true
   comment_user_verification: true
@@ -13,6 +22,3 @@ logo:
   path: ''
   url: ''
   use_default: true
-schemas:
-  bootstrap: 8000
-langcode: de

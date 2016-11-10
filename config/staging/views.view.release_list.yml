@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_date
     - node.type.release
+    - user.role.authenticated
   module:
     - node
     - user
@@ -259,7 +260,7 @@ display:
     position: 2
     display_options:
       display_extenders: {  }
-      use_more: true
+      use_more: false
       defaults:
         use_more: false
         use_more_always: false
@@ -267,12 +268,13 @@ display:
         pager: false
         filters: false
         filter_groups: false
+        access: false
+        footer: false
       use_more_always: true
       use_more_text: 'All Releases'
       pager:
-        type: some
+        type: none
         options:
-          items_per_page: 3
           offset: 0
       filters:
         status:
@@ -338,13 +340,30 @@ display:
         operator: AND
         groups:
           1: AND
+      access:
+        type: role
+        options:
+          role:
+            authenticated: authenticated
+      footer:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content: '<a class="all-releases" href="/all-releases">All Releases</a>'
+          plugin_id: text_custom
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:field.storage.node.field_date'
   page_1:

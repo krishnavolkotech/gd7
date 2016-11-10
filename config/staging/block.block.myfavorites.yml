@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - favorites
+    - system
     - user
   theme:
     - hzd
@@ -14,7 +15,7 @@ third_party_settings:
 id: myfavorites
 theme: hzd
 region: sidebar_first
-weight: -23
+weight: -17
 provider: null
 plugin: favorites_block
 settings:
@@ -30,3 +31,8 @@ visibility:
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }

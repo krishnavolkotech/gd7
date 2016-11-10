@@ -5,10 +5,15 @@ dependencies:
   config:
     - system.menu.primary-links
   module:
+    - block_class
     - language
     - system
+    - user
   theme:
     - hzd
+third_party_settings:
+  block_class:
+    classes: ''
 id: primarylinks
 theme: hzd
 region: navigation_collapsible
@@ -26,8 +31,15 @@ visibility:
   language:
     id: language
     langcodes:
-      en: en
       de: de
+      en: en
     negate: false
     context_mapping:
       language: '@language.current_language_context:language_interface'
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

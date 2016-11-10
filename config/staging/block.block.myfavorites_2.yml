@@ -1,11 +1,10 @@
-uuid: 5f30af68-a148-4d9d-9afa-41f6928b6484
+uuid: 170de915-ceec-4a44-bc5b-bbffb98de4a2
 langcode: en
 status: true
 dependencies:
-  config:
-    - system.menu.optionen
   module:
     - block_class
+    - favorites
     - system
     - user
   theme:
@@ -13,29 +12,27 @@ dependencies:
 third_party_settings:
   block_class:
     classes: ''
-id: optionen
+id: myfavorites_2
 theme: hzd
 region: sidebar_first
-weight: -18
+weight: -24
 provider: null
-plugin: 'system_menu_block:optionen'
+plugin: favorites_block
 settings:
-  id: 'system_menu_block:optionen'
-  label: Optionen
-  provider: system
+  id: favorites_block
+  label: 'My Favorites'
+  provider: favorites
   label_display: visible
-  level: 1
-  depth: 0
 visibility:
-  user_role:
-    id: user_role
-    roles:
-      site_administrator: site_administrator
-    negate: false
-    context_mapping:
-      user: '@user.current_user_context:current_user'
   request_path:
     id: request_path
     pages: '<front>'
-    negate: true
+    negate: false
     context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

@@ -22,10 +22,10 @@ provider: null
 plugin: 'views_block:release_list-block_1'
 settings:
   id: 'views_block:release_list-block_1'
-  label: ''
+  label: 'New Releases'
   provider: views
-  label_display: '0'
-  views_label: ''
+  label_display: visible
+  views_label: 'New Releases'
   items_per_page: none
 visibility:
   request_path:

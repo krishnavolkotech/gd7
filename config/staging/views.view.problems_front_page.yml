@@ -260,9 +260,8 @@ display:
     display_options:
       display_extenders: {  }
       pager:
-        type: some
+        type: none
         options:
-          items_per_page: 3
           offset: 0
       defaults:
         pager: false
@@ -271,7 +270,8 @@ display:
         use_more_text: false
         filters: false
         filter_groups: false
-      use_more: true
+        footer: false
+      use_more: false
       use_more_always: true
       use_more_text: 'All Problems'
       filters:
@@ -338,6 +338,18 @@ display:
         operator: AND
         groups:
           1: AND
+      footer:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content: '<a class="all-problems" href="/all-problems">All Problems</a>'
+          plugin_id: text_custom
     cache_metadata:
       max-age: -1
       contexts:
