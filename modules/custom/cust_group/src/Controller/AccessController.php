@@ -9,7 +9,9 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
 use Symfony\Component\Routing\Route;
 
-define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
+if (!defined('QUICKINFO')) {
+  define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
+}  
 // define('RELEASE_MANAGEMENT', 32);
 
 /**
@@ -66,12 +68,40 @@ class AccessController extends ControllerBase {
     }
     return AccessResult::allowed();
   }
-
+/**
+ * By default all user can access all node view page
+ * quickinfo group member of rz-schnellinfos and administrator can only access the quickinfo node view pages
+ * @param Route $route
+ * @param RouteMatch $route_match
+ * @param AccountInterface $user
+ * @return type AccountInterface object returns allowed or forbidden
+ */
   function downtimeAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    if ($route_match->getParameter('node')->getType() == 'downtimes') {
-      return AccessResult::allowed();
+//    if ($route_match->getParameter('node')->getType() == 'downtimes') {
+//      return AccessResult::allowed();
+//    }
+    if ($route_match->getParameter('node')->getType() == 'quickinfo') {
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+      }
+      $allowed_group = array(QUICKINFO);
+//      if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+//        return AccessResult::allowed();
+//      }
+      if (!$group_id || !in_array($group_id, $allowed_group)) {
+        return AccessResult::forbidden();
+      }
+      $group = \Drupal\group\Entity\Group::load($group_id);
+      $content = $group->getMember(\Drupal::currentUser());
+      if (!$content) {
+        return AccessResult::forbidden();
+      }
     }
-    return AccessResult::neutral();
+    return AccessResult::allowed();
   }
 
   function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
@@ -81,17 +111,15 @@ class AccessController extends ControllerBase {
     $loadedGroup = $route_match->getParameter('group');
     if ($group = \Drupal\group\Entity\group::load(19)) {
       $content = $group->getMember($user);
-      if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
-        //Members of the group 19 should have access to create maintenance
-        return AccessResult::allowed();
-//        $contentId = $content->getGroupContent()->id();
-//        $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
-//                        ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-//        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
-//          return AccessResult::allowed();
-//        } else {
-//          return AccessResult::forbidden();
-//        }
+      if ($content) {
+        $contentId = $content->getGroupContent()->id();
+        $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
+                        ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
+        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+          return AccessResult::allowed();
+        } else {
+          return AccessResult::forbidden();
+        }
       } else {
         return AccessResult::forbidden();
       }
