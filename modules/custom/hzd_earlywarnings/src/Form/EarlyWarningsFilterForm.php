@@ -138,8 +138,13 @@ class EarlyWarningsFilterForm extends FormBase {
 
     $form['filter_startdate'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Start Date'),
-      '#attributes' => array('class' => array("start_date")),
+      //    '#title' => $this->t('Start Date'),
+      '#attributes' => array(
+        'class' => array("start_date"),
+        'placeholder' => array(
+          $this->t('Start Date')
+        ),
+      ),
       '#default_value' => $earlywarning_filter_option['startdate'] ? $earlywarning_filter_option['startdate'] : $form_state->getValue('filter_startdate'),
       '#size' => 15,
       '#weight' => 3,
@@ -158,11 +163,16 @@ class EarlyWarningsFilterForm extends FormBase {
 
     $form['filter_enddate'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('End Date'),
+//      '#title' => $this->t('End Date'),
       '#size' => 15,
       '#weight' => 4,
-      '#attributes' => array('class' => array("end_date")),
-    // '#attributes' => array("class" => "end_date"),.
+      '#attributes' => array(
+        'class' => array("end_date"),
+        'placeholder' => array(
+          $this->t('End Date')
+        ),
+      ),
+      // '#attributes' => array("class" => "end_date"),.
       '#default_value' => $earlywarning_filter_option['enddate'] ? $earlywarning_filter_option['enddate'] : $form_state->getValue('filter_enddate'),
       '#ajax' => array(
         'callback' => $path,
@@ -203,14 +213,13 @@ class EarlyWarningsFilterForm extends FormBase {
     );
 
     return $form;
-
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
+    
   }
 
   /**
