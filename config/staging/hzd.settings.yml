@@ -1,7 +1,7 @@
 favicon:
   mimetype: image/vnd.microsoft.icon
   path: ''
-  url: 'http://hzd.dev/themes/hzd/favicon.ico'
+  url: 'http://hzdupgrd-dev2.azri.de/themes/hzd/favicon.ico'
   use_default: 1
 schema: '8000'
 features:
@@ -18,5 +18,5 @@ breadcrumb_home: 1
 schemas:
   bootstrap: 8000
   hzd: 8000
-table_responsive: '-1'
+cdn_provider: jsdelivr
 table: ''

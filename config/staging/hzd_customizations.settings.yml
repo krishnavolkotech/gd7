@@ -3,3 +3,5 @@ quick_info_content: "1 Meta-Daten\r\n\r\n<b>1.1 Title</b>\r\n\r\n[node:field_cus
 quick_info_footer: ''
 quickinfo_group_id: '3'
 quickinfo_default_unique_id: '2589'
+last_n_days_problems: '2'
+last_n_days_releases: '2'
