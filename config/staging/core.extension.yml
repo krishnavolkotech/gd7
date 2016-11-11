@@ -28,11 +28,11 @@ module:
   editor: 0
   entity_print: 0
   faq: 0
-  favorites: 1
   faqfield: 0
   field: 0
   field_group: 0
   field_group_migrate: 0
+  field_permissions: 0
   field_ui: 0
   file: 0
   filefield_paths: 0
@@ -95,6 +95,7 @@ module:
   views_ui: 0
   xmlrpc: 0
   ctools: 1
+  favorites: 1
   forum: 1
   menu_link_content: 1
   pathauto: 1

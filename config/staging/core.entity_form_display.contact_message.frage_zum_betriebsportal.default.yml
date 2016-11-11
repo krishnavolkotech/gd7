@@ -1,0 +1,60 @@
+uuid: d59b965d-1172-4213-bb82-52558c361371
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.frage_zum_betriebsportal
+    - field.field.contact_message.frage_zum_betriebsportal.field_category
+    - field.field.contact_message.frage_zum_betriebsportal.field_contact_from_pretext
+  module:
+    - text
+id: contact_message.frage_zum_betriebsportal.default
+targetEntityType: contact_message
+bundle: frage_zum_betriebsportal
+mode: default
+content:
+  copy:
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+  field_category:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+  field_contact_from_pretext:
+    weight: 0
+    settings:
+      rows: 9
+      placeholder: ''
+      summary_rows: 3
+    third_party_settings: {  }
+    type: text_textarea_with_summary
+  langcode:
+    type: language_select
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+  mail:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+  message:
+    type: string_textarea
+    weight: 4
+    settings:
+      rows: 12
+      placeholder: ''
+    third_party_settings: {  }
+  name:
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+  subject:
+    type: string_textfield
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden: {  }

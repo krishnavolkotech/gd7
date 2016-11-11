@@ -30,6 +30,7 @@ visibility:
   user_role:
     id: user_role
     roles:
+      administrator: administrator
       site_administrator: site_administrator
     negate: false
     context_mapping:
