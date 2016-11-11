@@ -1271,6 +1271,12 @@ nav#block-optionen ul li a {
   background-color: #ffffff;
   line-height: 20px;
 }
+.block-hzd-release-management ul li a:hover,
+.region-sidebar-first section.blue ul li a:hover,
+.block-hzd-release-management ul.menu.nav li a:hover,
+.block-hzd-release-management ul.menu.nav li a:hover{
+  text-decoration:none !important;
+}
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
 .block-hzd-release-management ul.menu.nav li.active ul.dropdown-menu,
 nav#block-optionen ul.menu.nav li.active ul.dropdown-menu,
@@ -1812,7 +1818,6 @@ section ul.admin-list li{
  width:100%;
   padding:0;
   margin:0;
-  background:url(../images/grey-list-arrow.png)left 7px no-repeat;
 }
 /*section ul.admin-list{
   margin:0;
@@ -1835,5 +1840,11 @@ section ul.admin-list li a .label{
 }
 section ul.admin-list li a .description{
     font-size: 14px;
+    padding-left:20px;
 }
-
+.ui-datepicker{
+  z-index:10 !important;
+}
+.table-responsive input.form-checkbox{
+  margin-left:0 !important;
+}
