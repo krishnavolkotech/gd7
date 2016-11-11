@@ -76,6 +76,7 @@ p {
 #block-primarylinks ul li a {
   color: #ffffff;
   text-decoration: none;
+  background-color:transparent;
   /* text-transform: uppercase; */
 }
 #block-primarylinks ul li a.hover {
@@ -576,7 +577,7 @@ form.release-filter-form .hzd-form-element,
   margin: 0 2% 1% 0;
 }
 form.release-filter-form .limit_search_dropdown.hzd-form-element {
-  margin-top: 24px;
+  margin-top: 28px;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -598,6 +599,11 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
 }
 .nav-tabs > li > a:hover {
   border-color: #5289a1;
+  color:#fff !important;
+  text-decoration:none !important;
+}
+.region-content ul.nav-tabs li.active a:hover{
+  color:#555555 !important;
 }
 .nav > li > a {
   color: #222222;
@@ -622,6 +628,12 @@ table tr th {
   background: #04425f;
   color: #ffffff;
   border-bottom: 2px solid #0e658c !important;
+}
+table tr th a,
+table tr th a:hover {
+  color:#fff;
+  text-decoration:none;
+  pointer-events: none;
 }
 table tr.odd {
   background: #edf4fa !important;
@@ -726,7 +738,7 @@ table {
   width: 100% !important;
   float: left;
   border: 1px solid #d9e4ee;
-  margin: 10px 0 !important;
+  margin: 10px 0 50px 0 !important;
 }
 table th {
   background: #04425f;
@@ -871,6 +883,9 @@ input[type="button"]:hover,
   float: right;
   border: none !important;
 }
+.btn-default {
+  margin:7px 28px 0 0;
+}
 .hzd-form-element {
   width: 31%;
   float: left;
@@ -900,7 +915,7 @@ select {
 }
 .reset_form {
   float: right !important;
-  margin-right: 27px;
+  margin-right: 12px;
 }
 .filter_end_date {
   padding-left: 0 !important;
@@ -1485,11 +1500,340 @@ form#downtimes-filter .archived_maintenance_search_results_wrapper {
 }
 form#downtimes-filter .string_search.hzd-form-element {
   width: 25% !important;
-  margin-top: 20px;
+  margin-top: 27px;
 }
 form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
-  margin-top: 20px;
+  margin-top: 27px;
 }
 strong {
   font-weight: normal;
 }
+/*-----New styles----*/
+aside #block-incidentblock h2.block-title{
+  margin:0 !important;
+  color:#d45750;
+  padding:0 0 4px 0;
+  font-size:16px;
+  font-weight:bold;
+  /*letter-spacing:2px;*/
+  line-height:30px;
+  font-family:"robotoregular";
+  text-transform:uppercase;
+}
+section h2.block-title,
+aside .region-sidebar-first .block-favorites h2.block-title,
+aside #block-maintenance h2.block-title{
+  margin:0!important;
+  color:#04425f;
+  padding:0 0 4px 0;
+  font-size:16px;
+  font-weight:bold;
+  line-height:30px;
+  font-family:"robotoregular";
+  text-transform:uppercase;
+}
+aside #block-incidentblock,
+aside #block-maintenance{
+ margin-bottom:20px;
+ float:left;
+ background:#fff;
+ width:100%;
+}
+aside #block-incidentblock ul,
+aside #block-maintenance ul{
+  margin:0;
+  padding:0;
+  float:left;
+  width:100%;
+}
+section .form-group .view-content .item-list ul,
+aside .region-sidebar-first .block-favorites .item-list ul{
+  margin:0;
+  padding:0;
+  float:left;
+  width:100%;
+  /*background:#fff;*/
+}
+aside #block-incidentblock ul li{
+  list-style-type:none;
+  float:left;
+  padding:0;
+  width:45%;
+  margin-right:5%;
+  
+}
+aside #block-maintenance ul li{
+  list-style-type:none;
+  float:left;
+  padding-bottom:20px;
+  width:45%;
+  margin-right:5%;
+}
+aside #block-incidentblock ul li span{
+  font-size:13px;
+  font-family:"robotoregular";
+  line-height: 20px;
+  float:left;
+}
+aside #block-maintenance ul li span{
+  font-size:13px;
+  font-family:"robotoregular";
+  line-height: 20px;
+  width:100%;
+  float:left;
+}
+aside #block-maintenance ul li span.downtime-hover-wrapper{
+  display:inline-block;
+  width:100%;
+  position:relative;
+}
+aside #block-maintenance ul li span.service-item{
+  color:#31708f;
+  width:100%;
+  margin:0 0 7px 0;
+  text-transform:uppercase;
+  font-size:13px;
+  font-weight:bold;
+  text-indent: 2px;
+}
+aside #block-incidentblock ul li span.service-item{
+  color:#d45750;
+  width:auto;
+  margin:0 0 7px 0;
+  font-size:13px;
+  font-weight:bold;
+  text-indent: 2px;
+  padding-right:4px;
+}
+
+.user-logged-in ul.contextual-links li a{
+  color:#04425f !important;
+}
+aside .region-sidebar-first .block-favorites h2.block-title{
+  margin:0 !important;
+}
+aside .region-sidebar-first .block-favorites,
+aside section,
+section form{
+  width:100%;
+  float:left;
+  margin-bottom:15px;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li{
+  display:inline-block;
+  padding:0;
+  margin:0;
+  width:100%;
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li span{
+  float:left;
+  width:auto;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li a:hover,
+aside .region-sidebar-first .block-favorites .item-list ul li span a:hover,
+section .form-group .view-content .views-field-title span a:hover{
+  text-decoration:none;
+  opacity:0.7;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li span a{
+  float:right;
+  width:auto;
+  color:#222222;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li > a{
+  width:93%;
+  float:left;
+  text-decoration:none;
+  color:#222222;
+  font-family:"robotoregular";
+  font-size:13px;
+  font-weight:bold;
+  padding-left:15px;
+}
+aside section .form-group,
+aside section .form-group .item-list,
+aside section .form-group .view-footer{
+ float:left;
+ margin:0;
+ padding:0;
+}
+aside section .form-group .view-footer a.all-releases,
+aside section .form-group .view-footer a.all-problems,
+section .form-group .more-link a,
+aside #block-maintenance a,
+aside #block-incidentblock a{
+  background:url(../images/blue-list-arrow.png)left 8px no-repeat;
+  float:left;
+  padding-left:14px;
+}
+section .form-group .more-link a:hover,
+aside section .form-group .view-footer a:hover,
+aside section .form-group .more-link a:hover,
+aside #block-maintenance a:hover,
+aside #block-incidentblock a:hover{
+  text-decoration:none;
+  opacity:0.7;
+}
+aside section .form-group .item-list ul li{
+  display:inline-block;
+  padding:0;
+  margin:0;
+  width:100%
+}
+aside section .form-group .item-list ul li .field-content{
+  color:#222222;
+  font-family:"robotoregular";
+  font-size:13px;
+}
+section .form-group .views-field-field-news-date{
+ float:left;
+ width:100%;
+}
+section .form-group .views-field-title span a{
+  font-family: "robotoregular";
+  font-size: 14px;
+  font-weight: bold;
+  color:#222222;
+  line-height:20px;
+  float:left;
+  width:100%;
+  padding:3px 0 15px 0;
+}
+section .form-group .views-field-body p{
+  font-family: "robotoregular";
+  font-size: 14px;
+  line-height:25px;
+  float:left;
+  width:100%;
+}
+section .form-group .views-row{
+  width:100%;
+  float:;left;
+  margin-bottom:15px;
+  float:left;
+}
+aside .well{
+  border:none;
+  padding:0;
+  margin:0;
+}
+section form#favorites-add .form-wrapper.panel-default{
+  border:none !important;
+}
+section form#favorites-add .form-wrapper .panel-body{
+  margin:0;
+  padding:0;
+  width:86%;
+}
+section form#favorites-add .form-wrapper .panel-heading{
+  width:75%;
+  float:left;
+  margin:0 0 0 15px;
+  padding:0;
+}
+section form#favorites-add .panel-default .panel-heading a.panel-title{
+  background:#04425f;
+  color:#fff;
+  font-family: "robotoregular";
+  font-size: 14px;
+  line-height:25px;
+  font-weight:bold;
+}
+section form#favorites-add .panel-default .panel-body .form-type-textfield,
+section form#favorites-add .panel-default .panel-body .form-type-textfield input{
+  width:100% !important;
+  float:left;
+}
+section form#favorites-add .panel-default .panel-body button{
+  float:right;
+  width:auto;
+  margin:4px 0 0 0;
+}
+form.node-service-profile-edit-form .service-time b{
+  width:100%;
+  float:left;
+  margin-bottom:25px;
+}
+form.node-service-profile-edit-form .service-time .form-type-checkbox,
+form.node-service-profile-edit-form .service-time .control-label,
+form.node-service-profile-edit-form .service-time .container-inline{
+  display:inline-block;
+}
+form.node-service-profile-edit-form .service-time .control-label{
+  position:relative;
+  bottom:5px;
+  font-size:13px;
+  font-weight:normal;
+}
+form.node-service-profile-edit-form .service-time .form-type-checkbox{
+ margin:0 0 25px 0!important;
+ width:100px;
+}
+form.node-service-profile-edit-form .service-time .container-inline{
+  margin-right:20px;
+}
+form.node-service-profile-edit-form .service-time .container-inline input.form-control{
+  height:30px !important;
+}
+section.block-maintenance-block ul.downtime-hover{
+  margin:0;
+  padding:0;
+  display:inline-block;
+  border:1px solid #222222;
+  width:60% !important;
+  position:absolute;
+  top:5px;
+  left:200px;
+  z-index:10;
+  background-color:#fff;
+}
+section.block-maintenance-block ul.downtime-hover:hover{
+  z-index:10;
+  display:block;
+}
+section.block-maintenance-block ul.downtime-hover li{
+  width:100% !important;
+  display:inline-block;
+  margin:0;
+  padding:0 !important;
+  line-height:25px;
+  border-bottom:1px solid #222222;
+  text-indent:5px;
+}
+section.block-maintenance-block ul.downtime-hover li:last-child{
+  border-bottom:none;
+}
+body.not-loggedin #block-primarylinks {
+  height:44px;
+}
+section ul.admin-list li{
+ display:inline-block;
+ width:100%;
+  padding:0;
+  margin:0;
+  background:url(../images/grey-list-arrow.png)left 7px no-repeat;
+}
+/*section ul.admin-list{
+  margin:0;
+  padding:0;
+}*/
+section ul.admin-list li a{
+  font-family: "robotoregular";
+  color:#222222;
+  line-height:20px;
+  float:left;
+  width:100%;
+  padding:3px 0 15px 15px;
+  text-decoration:none;
+}
+section ul.admin-list li a .label{
+  color:#04425f;
+  font-weight: bold;
+  padding:0;
+  font-size: 14px;
+}
+section ul.admin-list li a .description{
+    font-size: 14px;
+}
+
