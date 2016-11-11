@@ -1,0 +1,26 @@
+uuid: 63f6112d-0886-48b8-9263-3decf349ef87
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.frage_zum_betriebsportal
+    - field.storage.contact_message.field_contact_from_pretext
+  module:
+    - text
+id: contact_message.frage_zum_betriebsportal.field_contact_from_pretext
+field_name: field_contact_from_pretext
+entity_type: contact_message
+bundle: frage_zum_betriebsportal
+label: 'Contact from Pretext'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    summary: ''
+    value: "<p>Technisch-funktionale Störungen sowie unkorrekte Einträge im Betriebsportal KONSENS melden Sie&nbsp;bitte über Ihr Landes-Helpdesksystem per Trouble-Ticket.&nbsp;Zur Spezifizierung steht Ihnen in der ersten Stufe&nbsp;die Kategorie&nbsp;\"Betriebsportal KONSENS\" mit verschiedenen Unterkategorien zur Verfügung.<br />\r\n<br />\r\nFür andere Anfragen können Sie dem BpK-Team über dieses Kontaktformular eine Nachricht zukommen lassen. Bitte wählen Sie hierzu im Pulldown-Menü eine Kategorie aus und geben Sie einen aussagekräftigen Betreff an.</p>\r\n"
+    format: basic_html
+default_value_callback: ''
+settings:
+  display_summary: false
+field_type: text_with_summary

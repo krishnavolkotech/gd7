@@ -1,0 +1,25 @@
+uuid: 06673077-57e7-41cb-8d3e-ad5a61e5351f
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.frage_zum_betriebsportal
+    - field.storage.contact_message.field_category
+id: contact_message.frage_zum_betriebsportal.field_category
+field_name: field_category
+entity_type: contact_message
+bundle: frage_zum_betriebsportal
+label: Category
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    target_uuid: 3b8ee76f-8f0d-4dc3-89b2-a41ef110e872
+default_value_callback: ''
+settings:
+  handler: 'default:contact_form'
+  handler_settings:
+    target_bundles: null
+    auto_create: false
+field_type: entity_reference
