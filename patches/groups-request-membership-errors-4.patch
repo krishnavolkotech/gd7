@@ -49,7 +49,7 @@ index b5fc4bc..180dc23 100644
      $form['entity_id']['#access'] = FALSE;
      $form['group_roles']['#access'] = FALSE;
      $form['message'] = [
-@@ -30,6 +38,16 @@ public function form(array $form, FormStateInterface $form_state) {
+@@ -30,6 +38,14 @@ public function form(array $form, FormStateInterface $form_state) {
      ];
      return $form;
    }
@@ -58,8 +58,6 @@ index b5fc4bc..180dc23 100644
 +    $group = \Drupal::routeMatch()->getParameter('group');
 +    if($group->getMemberRequestStatus(\Drupal::currentUser()) === 0){
 +      $form_state->setErrorByName('message','You already have a pending request.');
-+    }else{
-+      $form_state->setRedirect('entity.group.canonical', ['group'=>$group->id()]);
 +    }
 +    return parent::validateForm($form, $form_state);
 +  }
