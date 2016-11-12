@@ -57,8 +57,9 @@ cust_group.path_alias_update:
   requirements:
     _permission: 'access content'
     cust_group.path_alias_update:
-path: '/group/{group}/forum'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
-  requirements:
-    _access: 'FALSE'
+cust_group.forums:
+  path: '/group/{group}/forum'
+    defaults:
+      _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
+    requirements:
+      _access: 'FALSE'
