@@ -44,20 +44,21 @@ if (!defined('SITE_ADMIN_ROLE')) {
  * return $return;
  * }.
  */
-/*function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+/* function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
   //print_r($items); die();
   $user = \Drupal::currentUser();
   if ($user) {
-    $groups_list = hzd_group_list($user->id(), TRUE);
-    foreach ($groups_list as $group) {
-      $group_ids[] = $group->id;
-    }
-    if (!empty($group_ids)) {
-      $query->addCondition('gid', $group_ids, 'IN');
-    }
+  $groups_list = hzd_group_list($user->id(), TRUE);
+  foreach ($groups_list as $group) {
+  $group_ids[] = $group->id;
   }
-}
-*/
+  if (!empty($group_ids)) {
+  $query->addCondition('gid', $group_ids, 'IN');
+  }
+  }
+  }
+ */
+
 /**
  * Implements hook_form_alter().
  */
@@ -80,6 +81,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = trim(pathinfo($current_path, PATHINFO_BASENAME));
     if ($form_id == 'node_downtimes_form') {
+
       if ($downtime_type != 'create_maintenance') {
         $help_markup = t('Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden
                             <em>(Beschluss AutomSt III/2011 TOP K9).</em>
@@ -275,7 +277,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 //    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
-  else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') { 
+  else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
+
     //$form['actions']['submit']['#submit'][] = 'downtimes_serviceProfileSubmit';
     $form['notifications']['#weight'] = 4;
     // drupal_add_js(drupal_get_path('module', 'downtimes') . '/maintenance_windows.js');
@@ -336,15 +339,26 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       ),
     );
     foreach ($arr as $key => $val) {
-      
+
+      // This adds wrapper around the single day , from , to time.  
+      $form['service_time'][$val] = array(
+        '#type' => 'container',
+        '#attributes' => array(
+          'class' => ['service--profile-field'],
+        ),
+      );
+
       $form['service_time'][$val]['day'] = array(
-        '#title'=>t($val),
+        '#title' => t($val),
         '#type' => 'checkbox',
         '#default_value' => isset($serialized_data['service_time_' . $val]) ? $serialized_data['service_time_' . $val] : '',
         '#title' => Html::escape($key),
       );
+
+      // The below function adds the from and until fields to service profile form.
       append_hours_minutes($form, $val, $serialized_data);
     }
+
     $form['#tree'] = TRUE;
     $max = count($mwData);
     if (empty($max)) {
@@ -354,6 +368,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $max = $form_state->get('fields_count');
     }
     $form_state->set('fields_count', $max);
+
+    // This is for wrapper around the add more fields field.
     $form['maintenance_windows'] = [
       '#type' => 'details',
       '#open' => TRUE,
@@ -369,6 +385,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       "Sat" => t("Sat"),
       "Sun" => t("Sun")
     );
+
+    // These are fields for add more button at end of normal days fields. The for loop and the add form element after that.
     for ($delta = 0; $delta < $max; $delta++) {
       if (!isset($form['maintenance_windows'][$delta])) {
         if (!empty($mwData[$delta]['from_time'])) {
@@ -458,7 +476,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#type' => 'checkboxes',
       '#multiple' => true,
       '#options' => $dependent_service_options,
-      '#required'=>FALSE,
+      '#required' => FALSE,
     );
     if ($form_id == 'node_service_profile_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
@@ -540,20 +558,20 @@ function downtimes_set_default_values(&$form, $nid) {
 function append_hours_minutes(&$form, $name, $data) {
   //$date_format = 'H:i';
   //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
-  if (!empty($data['service_time_'.$name . '_from'])) {
-    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_'.$name . '_from'])) {
+  if (!empty($data['service_time_' . $name . '_from'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_' . $name . '_from'])) {
       //$data[$name . '_from'] .= ':00';
     }
-    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_'.$name . '_from']));
+    $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_' . $name . '_from']));
   }
   else {
     $fromTime = '';
   }
-  if (!empty($data['service_time_'.$name . '_until'])) {
-    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_'.$name . '_until'])) {
+  if (!empty($data['service_time_' . $name . '_until'])) {
+    if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_' . $name . '_until'])) {
       //$data[$name . '_until'] .= ':00';
     }
-    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_'.$name . '_until']));
+    $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_' . $name . '_until']));
   }
   else {
     $untilTime = '';
@@ -577,7 +595,7 @@ function append_hours_minutes(&$form, $name, $data) {
     '#date_date_element' => 'none',
     '#date_format' => 'H:i',
     '#date_label_position' => 'within',
-    '#default_value' => $untilTime
+    '#default_value' => $untilTime,
       // '#suffix' => '</div>',.
   );
 }

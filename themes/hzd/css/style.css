@@ -205,7 +205,7 @@ h4 {
     width: auto !important;
   }
   .path-user .region-content nav.tabs li a {
-    padding: 8px 33px !important;
+    padding: 8px !important;
   }
   body.not-loggedin.path-user .region-content {
     width: 506px;
@@ -399,6 +399,9 @@ footer h2 {
 body.not-loggedin.path-user .region-content {
   background: #fafafa;
   border: 3px solid #f4f4f4;
+  width:50%;
+  margin-left:25%;
+  display:inline-block;
 }
 .user-login-form,
 .user-register-form,
@@ -601,9 +604,10 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   border-color: #5289a1;
   color:#fff !important;
   text-decoration:none !important;
+  background: #04425f !important;
 }
 .region-content ul.nav-tabs li.active a:hover{
-  color:#555555 !important;
+  color:#555555;
 }
 .nav > li > a {
   color: #222222;
@@ -735,7 +739,7 @@ table.tablesorter thead tr .header {
   padding-right: 24px;
 }
 table {
-  width: 100% !important;
+  width: 100%;
   float: left;
   border: 1px solid #d9e4ee;
   margin: 10px 0 50px 0 !important;
@@ -983,9 +987,9 @@ li.comment-reply a {
 li.comment-reply {
   border-right: 0 !important;
 }
-body.not-loggedin.path-user .region-content {
+/*body.not-loggedin.path-user .region-content {
   margin: 50px auto 0 auto;
-}
+}*/
 body.not-loggedin.path-user .region-content h1 {
   border-bottom: none !important;
   width: 100%;
@@ -1363,7 +1367,7 @@ form#downtimes-filter .string_search.hzd-form-element {
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu {
   border-radius: 0;
   margin: 10px 0 8px -10px;
-  padding: 0 !important;
+  padding: 0 0 7px 0!important;
   width: 108%;
   border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
   background: transparent;
@@ -1847,4 +1851,23 @@ section ul.admin-list li a .description{
 }
 .table-responsive input.form-checkbox{
   margin-left:0 !important;
+}
+.entity_print_view{
+  float:right;
+  margin-top:-50px;
+  background:url(../images/pdf-icon.png)left top no-repeat;
+  padding-left:20px;
+}
+.input-sm.editor{
+  line-height:20px;
+}
+#released_results_wrapper .reset_form .reset_form button.btn-default{
+  margin-right:0 !important;
+  border:1px solid #ffcc00;
+}
+aside ul.menu li.dropdown.active .dropdown-menu{
+  display:block !important;
+}
+table.sticky-header{
+  margin-top:0 !important;
 }

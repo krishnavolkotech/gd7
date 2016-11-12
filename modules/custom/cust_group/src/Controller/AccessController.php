@@ -109,17 +109,10 @@ class AccessController extends ControllerBase {
       return AccessResult::allowed();
     }
     $loadedGroup = $route_match->getParameter('group');
-    if ($group = \Drupal\group\Entity\group::load(19)) {
+    if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
       $content = $group->getMember($user);
-      if ($content) {
-        $contentId = $content->getGroupContent()->id();
-        $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
-                        ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-        if (!empty($adminquery) && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
-          return AccessResult::allowed();
-        } else {
-          return AccessResult::forbidden();
-        }
+      if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+        return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
       }
