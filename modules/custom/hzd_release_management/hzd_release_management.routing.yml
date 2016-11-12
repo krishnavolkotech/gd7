@@ -35,7 +35,16 @@ hzd_release_management.locked:
   requirements:
     _permission: 'access content'
     
-hzd_release_management.eingesetzte_releases:
+hzd_release_management.deployed:
+  path: 'group/{group}/eingesetzte-releases'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
+    _title: 'Deployed'
+    _entity_view: group.default    
+  requirements:
+    _permission: 'access content'
+
+hzd_release_management.eingesetzte:
   path: 'group/{group}/eingesetzte-releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
@@ -43,16 +52,8 @@ hzd_release_management.eingesetzte_releases:
     _entity_view: group.default
   requirements:
     _permission: 'view releases'
-#   cust_og_is_admin: 'TRUE'
-
-hzd_release_management.eingesetzte:
-  path: 'group/{group}/releases/eingesetzt'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
-    _title: 'Deployed'
-    _entity_view: group.default    
-  requirements:
-    _permission: 'access content'
+    
+    
     
 hzd_release_management.release_management_settings:
   path: 'admin/config/releases'
