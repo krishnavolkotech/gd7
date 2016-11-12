@@ -14,7 +14,9 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteSubscriber extends RouteSubscriberBase {
 
   protected function alterRoutes(RouteCollection $collection) {
-
+    if ($route = $collection->get('contact.site_page')) {
+      $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::ContactformTitle");
+    }
     if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess");
     }
@@ -56,7 +58,7 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
-      $route->setRequirement('_access', 'FALSE');
+      //     $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
@@ -74,12 +76,11 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
     }
-    
+
     // Overriding the controller for front page contrib module
     if ($route = $collection->get('front_page.front')) {
       $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
     }
-    
   }
 
   //retuns the views related to groups created from UI
