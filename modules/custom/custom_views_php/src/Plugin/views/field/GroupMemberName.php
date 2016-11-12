@@ -56,14 +56,16 @@ class GroupMemberName extends FieldPluginBase {
     $type = $values->_entity->getGroup()->bundle();
     $user = $values->_entity->get('entity_id')->referencedEntities()[0];
     if($user){
-      $roles = $values->_entity->getGroup()->getMember($user)->getRoles();
+      $getGroupMember = $values->_entity->getGroup()->getMember($user);
       $suffix = null;
-      if(in_array($type.'-admin',array_keys($roles))){
-        if(is_null($suffix)){
-          $suffix = ' (admin)';
+      if($getGroupMember->getRoles()){
+        if(in_array($type.'-admin',array_keys($roles))){
+          if(is_null($suffix)){
+            $suffix = ' (admin)';
+          }
         }
+        return $this->t($values->_entity->toLink()->toString().$suffix);
       }
-      return $this->t($values->_entity->toLink()->toString().$suffix);
     }
     return '';    
   }
