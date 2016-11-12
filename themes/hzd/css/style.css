@@ -588,6 +588,8 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   border-top: 1px solid #04425f !important;
   border-left: 1px solid #04425f !important;
   border-right: 1px solid #04425f !important;
+  background:transparent;
+  color:#555555;
 }
 .nav-tabs {
   border-bottom: 1px solid #04425f !important;
@@ -715,6 +717,7 @@ nav#block-optionen .field--name-body ul li:hover a {
 h1.page-header {
   margin: 0 0 20px 0 !important;
   font-size: 25px;
+  color:rgb(4, 66, 95);
 }
 .col-sm-9 .field--name-body.field--type-text-with-summary ul {
   width: 100%;
@@ -1262,6 +1265,7 @@ nav#block-optionen ul li {
   padding: 5px 10px 5px 10px;
   /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
+.region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a,
 .region-sidebar-first section.blue ul.menu.nav li a,
 .block-hzd-release-management ul.menu.nav li a,
 nav#block-optionen ul.menu.nav li a,
@@ -1372,10 +1376,6 @@ form#downtimes-filter .string_search.hzd-form-element {
   border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
   background: transparent;
   border: none;
-}
-.region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a {
-  color: #337ab7;
-  font-size: 12px;
 }
 .view-group-faqs .view-content .views-row {
   margin: 0 0 15px 0;
@@ -1493,10 +1493,14 @@ form.maintenance .downtimes_states_filter_form_wrapper {
 }
 .curr_incidents_form + .reset_form {
   float: left !important;
-  margin: 23px 0 0 0 !important;
+  margin: 15px 0 20px 0 !important;
+  width:100%;
 }
 form .label {
   letter-spacing: 0.5px;
+}
+.curr_incidents_form + .reset_form button{
+  margin-right:0;
 }
 nav#block-optionen ul.menu.nav li.expanded.dropdown.open a.dropdown-toggle {
   background: transparent !important;
@@ -1852,11 +1856,12 @@ section ul.admin-list li a .description{
 .table-responsive input.form-checkbox{
   margin-left:0 !important;
 }
-.entity_print_view{
+a.entity_print_view{
   float:right;
   margin-top:-50px;
   background:url(../images/pdf-icon.png)left top no-repeat;
-  padding-left:20px;
+  padding-left:23px;
+  font-size:14px;
 }
 .input-sm.editor{
   line-height:20px;
@@ -1870,4 +1875,15 @@ aside ul.menu li.dropdown.active .dropdown-menu{
 }
 table.sticky-header{
   margin-top:0 !important;
+}
+.curr_incidents_form .filter_title_header h3{
+  background:#d7655a;
+  font-size:16px;
+  text-align:center;
+  line-height:35px;
+  float:left;
+  width:100%;
+  color:#fff;
+  letter-spacing:0.1px;
+  margin-top:10px !important;
 }

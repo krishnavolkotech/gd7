@@ -42,9 +42,9 @@ class Gruppenadministration extends BlockBase {
       if (CustNodeController::isGroupAdmin($groupId)) {
         return AccessResult::allowed();
       }
-      return AccessResult::neutral();
+      return AccessResult::forbidden();
     } else {
-      return AccessResult::neutral();
+      return AccessResult::forbidden();
     }
   }
 
