@@ -205,7 +205,7 @@ h4 {
     width: auto !important;
   }
   .path-user .region-content nav.tabs li a {
-    padding: 8px 33px !important;
+    padding: 8px !important;
   }
   body.not-loggedin.path-user .region-content {
     width: 506px;
@@ -399,6 +399,9 @@ footer h2 {
 body.not-loggedin.path-user .region-content {
   background: #fafafa;
   border: 3px solid #f4f4f4;
+  width:50%;
+  margin-left:25%;
+  display:inline-block;
 }
 .user-login-form,
 .user-register-form,
@@ -601,6 +604,7 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   border-color: #5289a1;
   color:#fff !important;
   text-decoration:none !important;
+  background: #04425f !important;
 }
 .region-content ul.nav-tabs li.active a:hover{
   color:#555555 !important;
@@ -983,9 +987,9 @@ li.comment-reply a {
 li.comment-reply {
   border-right: 0 !important;
 }
-body.not-loggedin.path-user .region-content {
+/*body.not-loggedin.path-user .region-content {
   margin: 50px auto 0 auto;
-}
+}*/
 body.not-loggedin.path-user .region-content h1 {
   border-bottom: none !important;
   width: 100%;
@@ -1847,4 +1851,11 @@ section ul.admin-list li a .description{
 }
 .table-responsive input.form-checkbox{
   margin-left:0 !important;
+}
+.entity_print_view{
+  float:right;
+  margin-top:-50px;
+}
+.input-sm.editor{
+  line-height:20px;
 }
