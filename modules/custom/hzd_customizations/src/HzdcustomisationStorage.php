@@ -682,6 +682,9 @@ class HzdcustomisationStorage {
       $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
     }
     else {
+      if(empty($group_downtimes_view_services_ids)){
+        $group_downtimes_view_services_ids = '-1';
+      }
       $service = " gdv.service_id = ds.service_id and  gdv.service_id  in ($group_downtimes_view_services_ids)";
     }
 
