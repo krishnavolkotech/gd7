@@ -754,8 +754,8 @@ class HzdreleasemanagementStorage {
     }
 
     $query = db_select('node_field_data', 'nfd');
-
-    $service_release_type = $_SESSION['release_type'] ? $_SESSION['release_type'] : $default_type;
+  
+    $service_release_type = isset($_SESSION['release_type']) ? $_SESSION['release_type'] : $default_type;
     if (isset($filter_options)) {
       foreach ($filter_options as $filter => $filter_value) {
         switch ($filter) {
@@ -828,7 +828,6 @@ class HzdreleasemanagementStorage {
     }
 
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
-
     // $limit = 20;
     // need to migrate date deployed cck field.
     $query->leftJoin('node__field_user_state', 'nfus', 'nfd.nid = nfus.entity_id');
