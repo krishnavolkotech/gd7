@@ -169,7 +169,7 @@ function hzd_preprocess_node(&$variables) {
     }
     $incident_data->resolved = $result->resolved;
     $incident_data->cancelled = $result->cancelled;
-    $incident_data->reason = t($result->description);
+    $incident_data->reason = !is_null($result->description)?t($result->description):'';
     $statesArray = \Drupal::database()->select('states','s')
       ->fields('s',['state'])
       ->condition('s.id',explode(',',$result->state_id),'IN')
