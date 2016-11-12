@@ -636,7 +636,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: release-management/rz-schnellinfos/entwuerfe
+      path: group/%/rz-schnellinfos/entwuerfe
     cache_metadata:
       max-age: 0
       contexts:
@@ -655,7 +655,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: release-management/rz-schnellinfos
+      path: group/%/rz-schnellinfos
       filters:
         type:
           id: type
