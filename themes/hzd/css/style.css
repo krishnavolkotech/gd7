@@ -601,6 +601,7 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   width: auto !important;
   background: transparent !important;
 }
+.nav-tabs > li > a:focus,
 .nav-tabs > li > a:hover {
   border-color: #5289a1;
   color:#fff !important;
@@ -767,7 +768,7 @@ table td {
 input.hasDatepicker,
 input.start_date,
 input.end_date {
-  height: 32px !important;
+  height: 34px !important;
   border-radius: 4px 0px 0px 4px !important;
 }
 /*.form-control{
@@ -1281,6 +1282,7 @@ nav#block-optionen ul li a {
   color: #222222;
   background-color: #ffffff;
   line-height: 20px;
+  white-space:pre-wrap !important;
 }
 .block-hzd-release-management ul li a:hover,
 .region-sidebar-first section.blue ul li a:hover,
@@ -1517,10 +1519,10 @@ form#downtimes-filter .archived_maintenance_search_results_wrapper {
 }
 form#downtimes-filter .string_search.hzd-form-element {
   width: 25% !important;
-  margin-top: 27px;
+  margin-top: 24px;
 }
 form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
-  margin-top: 27px;
+  margin-top: 24px;
 }
 strong {
   font-weight: normal;
