@@ -53,3 +53,5 @@ permissions:
   43: 'access user profiles'
   44: 'access devel information'
   45: 'view downtimes revisions'
+  46: 'view own field_contact_from_pretext'
+  47: 'view field_contact_from_pretext'

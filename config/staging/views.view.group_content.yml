@@ -1055,7 +1055,7 @@ display:
           empty: false
           tokenize: true
           content:
-            value: '<a href="/group/{{ arguments.gid }}/members/add?destination=/group/{{ arguments.gid }}/address" class="btn btn-xs btn-success">Add member</a>'
+            value: '<!-- <a href="/group/{{ arguments.gid }}/members/add?destination=/group/{{ arguments.gid }}/address" class="btn btn-xs btn-success">Add member</a> -->'
             format: full_html
           plugin_id: text
     cache_metadata:
