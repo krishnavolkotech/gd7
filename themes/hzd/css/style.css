@@ -890,10 +890,6 @@ input[type="button"]:hover,
 .btn-default {
   margin:7px 28px 0 0;
 }
-.reset_form button{
-  margin-right:0 !important;
-  border:1px solid #ffcc00;
-}
 .hzd-form-element {
   width: 31%;
   float: left;
@@ -1371,7 +1367,7 @@ form#downtimes-filter .string_search.hzd-form-element {
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu {
   border-radius: 0;
   margin: 10px 0 8px -10px;
-  padding: 0 !important;
+  padding: 0 0 7px 0!important;
   width: 108%;
   border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
   background: transparent;
@@ -1859,8 +1855,19 @@ section ul.admin-list li a .description{
 .entity_print_view{
   float:right;
   margin-top:-50px;
+  background:url(../images/pdf-icon.png)left top no-repeat;
+  padding-left:20px;
 }
 .input-sm.editor{
   line-height:20px;
 }
-
+#released_results_wrapper .reset_form .reset_form button.btn-default{
+  margin-right:0 !important;
+  border:1px solid #ffcc00;
+}
+aside ul.menu li.dropdown.active .dropdown-menu{
+  display:block !important;
+}
+table.sticky-header{
+  margin-top:0 !important;
+}
