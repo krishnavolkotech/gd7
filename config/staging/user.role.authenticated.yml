@@ -55,3 +55,6 @@ permissions:
   45: 'view downtimes revisions'
   46: 'view own field_contact_from_pretext'
   47: 'view field_contact_from_pretext'
+  48: 'view own unpublished content'
+  49: 'edit any deployed_releases content'
+  50: 'edit own deployed_releases content'

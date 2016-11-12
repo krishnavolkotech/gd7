@@ -7,10 +7,14 @@ dependencies:
     - field.storage.node.field_other_services
     - field.storage.node.field_related_transfer_number
     - group.content_type.moderate-group_node-quickinfo
+    - user.role.administrator
+    - user.role.authenticated
+    - user.role.site_administrator
   module:
     - group
     - node
     - options
+    - user
 id: rz_schnellinfo
 label: 'Rz Schnellinfo'
 module: views
@@ -27,8 +31,12 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            authenticated: authenticated
+            administrator: administrator
+            site_administrator: site_administrator
       cache:
         type: tag
         options: {  }
@@ -625,6 +633,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -644,6 +653,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -802,6 +812,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'

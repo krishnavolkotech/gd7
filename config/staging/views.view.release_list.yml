@@ -355,7 +355,7 @@ display:
           admin_label: ''
           empty: false
           tokenize: false
-          content: '<a class="all-releases" href="/all-releases">All Releases</a>'
+          content: '<a class="all-releases" href="/group/32/releases">All Releases</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1

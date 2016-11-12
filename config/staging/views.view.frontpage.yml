@@ -294,6 +294,7 @@ display:
       menu:
         enabled: true
         expanded: false
+      enabled: false
     display_plugin: page
     display_title: Page
     id: page_1

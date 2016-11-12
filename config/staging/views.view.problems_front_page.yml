@@ -348,7 +348,7 @@ display:
           admin_label: ''
           empty: false
           tokenize: false
-          content: '<a class="all-problems" href="/all-problems">All Problems</a>'
+          content: '<a class="all-problems" href="/group/31/problems">All Problems</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1

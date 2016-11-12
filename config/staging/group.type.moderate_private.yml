@@ -12,45 +12,70 @@ content:
     data:
       group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>'
   'group_node:faq':
     id: 'group_node:faq'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:faqs':
     id: 'group_node:faqs'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:page':
     id: 'group_node:page'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:quickinfo':
     id: 'group_node:quickinfo'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:newsletter':
     id: 'group_node:newsletter'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:service_profile':
     id: 'group_node:service_profile'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
   'group_node:event':
     id: 'group_node:event'
     group_type: moderate_private
     data:
-      group_cardinality: '0'
+      group_cardinality: 0
       entity_cardinality: 1
+      info_text:
+        value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'
+  'group_node:deployed_releases':
+    id: 'group_node:deployed_releases'
+    group_type: moderate_private
+    data:
+      group_cardinality: 0
+      entity_cardinality: 1
+      info_text:
+        value: "<p>By submitting this form you will add this content to the group.<br />\r\nIt will then be subject to the access control settings that were configured for the group.<br />\r\nPlease fill out any available fields to describe the relation between the content and the group.</p>\r\n"
+        format: basic_html
