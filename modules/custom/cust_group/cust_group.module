@@ -7,6 +7,7 @@
 
 define('SITE_ADMIN', 5);
 define('RELEASE_MANAGEMENT', 32);
+define('GEPLANTE_BLOCKZEITEN', 19);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
