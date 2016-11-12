@@ -58,7 +58,8 @@ class GroupMemberName extends FieldPluginBase {
     if($user){
       $getGroupMember = $values->_entity->getGroup()->getMember($user);
       $suffix = null;
-      if($getGroupMember->getRoles()){
+      if($getGroupMember){
+        $roles = $getGroupMember->getRoles();
         if(in_array($type.'-admin',array_keys($roles))){
           if(is_null($suffix)){
             $suffix = ' (admin)';
