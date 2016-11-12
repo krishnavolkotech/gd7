@@ -90,6 +90,7 @@ class RouteSubscriber extends RouteSubscriberBase {
       'view.group_content.page_1',
       'view.group_faqs.page_1',
       'view.rz_schnellinfo.page_1',
+      'view.rz_schnellinfo.page_2',
     ];
   }
 
