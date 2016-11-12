@@ -607,7 +607,7 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   background: #04425f !important;
 }
 .region-content ul.nav-tabs li.active a:hover{
-  color:#555555 !important;
+  color:#555555;
 }
 .nav > li > a {
   color: #222222;
@@ -739,7 +739,7 @@ table.tablesorter thead tr .header {
   padding-right: 24px;
 }
 table {
-  width: 100% !important;
+  width: 100%;
   float: left;
   border: 1px solid #d9e4ee;
   margin: 10px 0 50px 0 !important;
@@ -889,6 +889,10 @@ input[type="button"]:hover,
 }
 .btn-default {
   margin:7px 28px 0 0;
+}
+.reset_form button{
+  margin-right:0 !important;
+  border:1px solid #ffcc00;
 }
 .hzd-form-element {
   width: 31%;
@@ -1859,3 +1863,4 @@ section ul.admin-list li a .description{
 .input-sm.editor{
   line-height:20px;
 }
+
