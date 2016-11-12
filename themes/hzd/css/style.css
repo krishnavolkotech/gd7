@@ -580,7 +580,7 @@ form.release-filter-form .hzd-form-element,
   margin: 0 2% 1% 0;
 }
 form.release-filter-form .limit_search_dropdown.hzd-form-element {
-  margin-top: 28px;
+  margin-top: 24px;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -588,8 +588,7 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   border-top: 1px solid #04425f !important;
   border-left: 1px solid #04425f !important;
   border-right: 1px solid #04425f !important;
-  background:transparent;
-  color:#555555;
+
 }
 .nav-tabs {
   border-bottom: 1px solid #04425f !important;
@@ -621,12 +620,13 @@ form.release-filter-form .limit_search_dropdown.hzd-form-element {
   text-decoration: underline;
   background-color: #04425f;
 }
-/*
-.nav > li.active > a:hover,
-.nav > li.active > a {
-  color: #5289a1 !important;
+
+.region-content .nav > li.active > a:hover,
+.region-content .nav > li.active > a{
+  color: #555555 !important;
+  background:#fff !important;
 }
-*/
+
 .nav-tabs > li > a {
   color: #555555 !important;
 }
@@ -891,7 +891,7 @@ input[type="button"]:hover,
   border: none !important;
 }
 .btn-default {
-  margin:7px 28px 0 0;
+  margin:0 28px 0 0;
 }
 .hzd-form-element {
   width: 31%;
@@ -1092,6 +1092,7 @@ table.view-deployed-releases {
   -webkit-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
   box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
+  z-index:10000;
 }
 #block-primarylinks ul ul.dropdown-menu li {
   width: 100%;
@@ -1263,6 +1264,8 @@ nav#block-optionen ul.menu.nav li,
 nav#block-optionen ul li {
   list-style-type: none;
   padding: 5px 10px 5px 10px;
+  width:100%;
+  float:left;
   /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a,
