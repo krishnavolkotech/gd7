@@ -56,3 +56,9 @@ cust_group.path_alias_update:
     _controller: '\Drupal\cust_group\Controller\PathAlias::bulkUpdate'
   requirements:
     _permission: 'access content'
+    cust_group.path_alias_update:
+path: '/group/{group}/forum'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
+  requirements:
+    _access: 'FALSE'
