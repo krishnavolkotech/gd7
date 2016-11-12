@@ -27,7 +27,7 @@ class QuickLinksBlock extends BlockBase {
       $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Bekannte Fehler und Probleme'), 'problem_management.problems', ['group' => 31]);
       $markup[] = Link::createFromRoute($this->t('Bereitgestellte Releases'), 'hzd_release_management.released', ['group' => 32]);
-      $markup[] = Link::createFromRoute($this->t('RZ-Schnellinfos'), 'view.rz_schnellinfo.page_1', ['arg_0' => 3]);
+      $markup[] = Link::createFromRoute($this->t('RZ-Schnellinfos'), 'view.rz_schnellinfo.page_2', ['arg_0' => 32]);
       $markup[] = Link::fromTextAndUrl($this->t('KONSENS-Glossar'),  Url::fromUri('http://glossar.konsens.ktz.testa-de.net',['attributes'=>['target'=>'_blank']]));
       $markup[] = Link::createFromRoute($this->t('Service Monitoring'), 'cust_user.nsm_login');
       $markup[] = Link::createFromRoute($this->t('Architektursteuerung'), 'entity.node.canonical', ['node' => 49812]);

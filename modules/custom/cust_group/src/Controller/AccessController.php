@@ -8,6 +8,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
 use Symfony\Component\Routing\Route;
+use Drupal\group\Entity\GroupContent;
 
 if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
@@ -66,7 +67,7 @@ class AccessController extends ControllerBase {
       //}
       //pr($node->id());exit;
     }
-    return AccessResult::allowed();
+      return AccessResult::allowed();
   }
 /**
  * By default all user can access all node view page
@@ -77,28 +78,31 @@ class AccessController extends ControllerBase {
  * @return type AccountInterface object returns allowed or forbidden
  */
   function downtimeAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
+      if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+        return AccessResult::allowed();
+      }
 //    if ($route_match->getParameter('node')->getType() == 'downtimes') {
 //      return AccessResult::allowed();
 //    }
-    if ($route_match->getParameter('node')->getType() == 'quickinfo') {
-      $group = \Drupal::routeMatch()->getParameter('group');
-      if (is_object($group)) {
-        $group_id = $group->id();
-      }
-      else {
-        $group_id = $group;
-      }
-      $allowed_group = array(QUICKINFO);
-//      if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-//        return AccessResult::allowed();
-//      }
-      if (!$group_id || !in_array($group_id, $allowed_group)) {
-        return AccessResult::forbidden();
-      }
-      $group = \Drupal\group\Entity\Group::load($group_id);
-      $content = $group->getMember(\Drupal::currentUser());
-      if (!$content) {
-        return AccessResult::forbidden();
+    $node = $route_match->getParameter('node');
+    if ($node->getType() == 'quickinfo') {
+      $node = $route_match->getParameter('node');
+      $groupQuickInfoContent = \Drupal::entityQuery('group_content')
+        ->condition('type','moderate-group_node-quickinfo')
+        ->condition('entity_id',$node->id())
+        ->execute();
+        //pr($groupQuickInfoContent);exit;
+      if($groupQuickInfoContent){
+        $groupQuickInfoContentEntity = GroupContent::load(reset($groupQuickInfoContent));
+        $group = $groupQuickInfoContentEntity->getGroup();
+        $content = $group->getMember($user);
+        if(!$content){
+          return AccessResult::forbidden();
+        }else{
+          if(!$node->isPublished()){
+            AccessResult::allowed();
+          }
+        }
       }
     }
     return AccessResult::allowed();

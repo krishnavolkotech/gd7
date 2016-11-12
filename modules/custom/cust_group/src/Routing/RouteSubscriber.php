@@ -58,7 +58,8 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
-      //     $route->setRequirement('_access', 'FALSE');
+      // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
+      $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');

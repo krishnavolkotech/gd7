@@ -641,7 +641,7 @@ class HzdreleasemanagementHelper {
       $service = $query->execute()->fetchField();
 
       if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
-        $edit_url = Url::fromUserInput('/node/' . $deployed_release->nid . '/edit', array(
+        $edit_url = Url::fromRoute('entity.node.edit_form', ['node'=>$deployed_release->nid],array(
           'query' => array(
             'ser' => $deployed_release->service,
             'rel' => $deployed_release->release_id,
