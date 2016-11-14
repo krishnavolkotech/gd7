@@ -29,8 +29,7 @@ class FrontPageController extends ControllerBase {
         '#markup' => '',
         '#title' => '',
       ];
-    }
-    
+    }    
   }
 
 }
