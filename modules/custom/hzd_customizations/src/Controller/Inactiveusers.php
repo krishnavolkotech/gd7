@@ -83,7 +83,7 @@ class Inactiveusers extends ControllerBase {
     $this->block_inactive_accounts();
 
     // Warn users when they are about to be deleted
-    $this->warn_to_delete_inactive_accounts();
+//    $this->warn_to_delete_inactive_accounts();
     // Automatically delete users.
     $this->delete_inactive_accounts();
     $result['#markup'] = $this->t("Checked inactive users");
