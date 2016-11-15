@@ -55,7 +55,7 @@ class IncidentsBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-    $maintenance_list = \Drupal::database()->query("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll();
+    $maintenance_list = \Drupal::database()->query("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll();
     $result = $serviceids_list = array();
 
     // Get the service id's list and get respective details from service id.
@@ -76,7 +76,7 @@ class IncidentsBlock extends BlockBase {
           if (!empty($serviceids_list[$ids])) {
             $serviceids_list[$ids] = t($serviceids_list[$ids] . "<span class='state-item'>[$state_name] " . '</span>');
            
-            $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description);
+            $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description,$vals->scheduled_p);
             $serviceids_list[$ids] = t($serviceids_list[$ids].$hover_markup);              
           }
           else {
@@ -84,7 +84,7 @@ class IncidentsBlock extends BlockBase {
               continue;
             }
             $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name] " . '</span>');
-            $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description);
+            $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description,$vals->scheduled_p);
             $serviceids_list[$ids] = t($serviceids_list[$ids].$hover_markup);
           }
         }
