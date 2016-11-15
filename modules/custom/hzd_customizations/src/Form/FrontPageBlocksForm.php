@@ -33,13 +33,17 @@ class FrontPageBlocksForm extends ConfigFormBase{
     $form['last_n_days_problems'] = array(
       '#type' => 'number',
       '#title' => t('Number of days'),
-      '#default_value' => $config->get('last_n_days_problems') ?: NULL,
+      '#maxlength' => 3,
+      '#min' => 0,
+      '#default_value' => $config->get('last_n_days_problems') ?: 0,
       '#description' => t('Enter number of days to show problems from'),
     );
     $form['last_n_days_releases'] = array(
       '#type' => 'number',
       '#title' => t('Number of days'),
-      '#default_value' => $config->get('last_n_days_releases') ?: NULl,
+      '#maxlength' => 3,
+      '#min' => 0,
+      '#default_value' => $config->get('last_n_days_releases') ?: 0,
       '#description' => t('Enter number of days to show releases from'),
     );
 
@@ -49,7 +53,7 @@ class FrontPageBlocksForm extends ConfigFormBase{
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {  
     parent::validateForm($form, $form_state);
   }
 

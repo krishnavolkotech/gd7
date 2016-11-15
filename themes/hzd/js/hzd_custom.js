@@ -29,11 +29,11 @@
 
 
     $('document').ready(function () {
-        
+
         $("#block-maintenance .downtime-hover").css('display', 'none');
-        
+
         // Control hover on front page downtimes blocks
-        //$("#block-incidentblock .state-item").hover(handlerInIncident, handlerOutIncident);
+        $("#block-incidentblock .state-item").hover(handlerInIncident, handlerOutIncident);
         $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
 
         function handlerInMaintenance() {
@@ -46,13 +46,15 @@
         }
 
         function handlerInIncident() {
-            $(this).siblings('.downtime-hover').css('display', 'block');
+            $(this).next('.downtime-hover').css('display', 'block');
         }
 
         function handlerOutIncident() {
-            $(this).siblings('.downtime-hover').css('display', 'none');
+            $(this).next('.downtime-hover').css('display', 'none');
 
         }
+
+
     });
 
 

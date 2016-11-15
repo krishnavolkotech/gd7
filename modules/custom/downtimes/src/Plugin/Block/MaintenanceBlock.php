@@ -55,7 +55,7 @@ class MaintenanceBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 and startdate_planned > :current_date ", array(':current_date' => REQUEST_TIME))->fetchAll();
+    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 1 and d.resolved = 0 and d.cancelled = 0 and startdate_planned > :current_date ", array(':current_date' => 0))->fetchAll();
     $result = $serviceids_list = array();
     foreach ($maintenance_list as $vals) {
       //$item = '<div '
@@ -88,8 +88,8 @@ class MaintenanceBlock extends BlockBase {
       $item_listnew += $value;
       } */
          
-    $link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
-    
+    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);  
+            
     $markup['maintenance_list'] = [
       '#items' => $serviceids_list,
       '#theme' => 'item_list',
@@ -97,28 +97,30 @@ class MaintenanceBlock extends BlockBase {
       '#weight' => 100,
     ];
     
-    $markup['report_link'] = $link->toString();
-    $build['maintenance_block_number_of_posts']['#markup'] = render($markup['maintenance_list']).render($markup['report_link']);
+    $markup['all_link'] = $all_link->toString();
+    $build['maintenance_block_number_of_posts']['#markup'] = render($markup['maintenance_list']).render($markup['all_link']);
     //$build['maintenance_block_number_of_posts']['#markup'] = "ASDFDSF";
     return $build;
   }
 
-  public function get_hover_markup($start_date_planned,$end_date_planned,$description) {
+  public static function get_hover_markup($start_date_planned,$end_date_planned,$description) {
 
     $html = "<ul class='downtime-hover' style='display:none;'>";
     // Getting the below start date. end date and description for hover.
     if (!empty($start_date_planned)) {
       $start_date_planned = DateTimePlus::createFromTimestamp((integer) $start_date_planned)->format('d.m.Y');
-      $html .= "<li>$start_date_planned</li>";
+      $html .= "<li>Start: $start_date_planned</li>";
     }
 
     if (!empty($end_date_planned)) {
       $end_date_planned = DateTimePlus::createFromTimestamp((integer) $end_date_planned)->format('d.m.Y');
-      $html .= "<li>$end_date_planned</li>";
+      $html .= "<li>End: $end_date_planned</li>";
     }
 
     if (!empty($description)) {
       $description = strip_tags($description);
+      $description = text_summary($description, NULL, 100);
+      $description .= '...';
       $html .= "<li>$description</li>";
     }
 
