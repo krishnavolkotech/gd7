@@ -46,7 +46,7 @@ class HeaderLinks extends BlockBase {
       $output .= \Drupal::l('Anmelden', Url::fromUserInput('/user')) . ' | ';
       $output .= \Drupal::l('Registrieren', Url::fromUserInput('/user/register')) . ' | ';
     }
-    $output .= \Drupal::l('Kontakt', Url::fromUserInput('/contact')) . ' | ';
+    $output .= \Drupal::l(t('Contact'), Url::fromRoute('contact.site_page')) . ' | ';
     $output .= \Drupal::l('Hilfe', Url::fromUserInput('/hilfe'));
     $output .= "</div>";
     return $output;
