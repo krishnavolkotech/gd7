@@ -299,7 +299,7 @@ display:
             label: ''
           granularity: second
           plugin_id: datetime
-      title: News
+      title: 'AKTUELLES IM BPK'
       header: {  }
       footer: {  }
       empty: {  }
@@ -326,7 +326,7 @@ display:
       pager:
         type: some
         options:
-          items_per_page: 3
+          items_per_page: 2
           offset: 0
       defaults:
         pager: false
