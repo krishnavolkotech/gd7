@@ -377,7 +377,7 @@ footer h2 {
   padding-top:0 !important;
 }
 .main-container {
-  min-height: 400px;
+  min-height: 600px;
 }
 .form-control {
   border-radius: 2px !important;
@@ -1568,7 +1568,7 @@ aside #block-maintenance h2.block-title{
   margin:0!important;
   color:#04425f;
   padding:0 0 4px 0;
-  font-size:14px;
+  font-size:14px !important;
   font-weight:bold;
   line-height:30px;
   text-transform:uppercase;
@@ -1682,8 +1682,8 @@ aside .region-sidebar-first .block-favorites .item-list ul li span a{
   color:#222222;
   text-indent:-9999px;
   background:url(../images/trash-icon.png)right center no-repeat;
-  width:16px;
-  height:16px;
+  width:14px;
+  height:18px;
  
 }
 aside .region-sidebar-first .block-favorites .item-list ul li > a{
@@ -1712,12 +1712,18 @@ section .form-group .more-link a{
   padding-left:14px;
   color:#04425f;
 }
-aside #block-maintenance a,
+aside #block-maintenance a{
+  width:50%;
+  display:inline-block;
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  padding-left:14px;
+}
 aside #block-incidentblock a{
   width:50%;
   display:inline-block;
   background:url(../images/grey-list-arrow.png)left 5px no-repeat;
   padding-left:14px;
+  /*color:#d45750;*/
 }
 aside #block-maintenance a.state-link,
 aside #block-incidentblock a.state-link{
