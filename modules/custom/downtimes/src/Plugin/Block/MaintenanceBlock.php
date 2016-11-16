@@ -67,7 +67,7 @@ class MaintenanceBlock extends BlockBase {
         foreach ($stateids as $sids) {
           $state_name = \Drupal::database()->query('SELECT abbr FROM {states} WHERE id=:sid', array(':sid' => $sids))->fetchField();
           if (!empty($serviceids_list[$ids])) {
-            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='downtime-hover-wrapper'><a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . $vals->downtime_id . '</span></a>');
+            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='downtime-hover-wrapper'><a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t(" Uhr") . '</span></a>');
 
             $serviceids_list[$ids] = t($serviceids_list[$ids] . $this->get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p));
             $serviceids_list[$ids] = t($serviceids_list[$ids] . '</span>');
@@ -76,7 +76,7 @@ class MaintenanceBlock extends BlockBase {
             if (empty($state_name)) {
               continue;
             }
-            $serviceids_list[$ids] = "<span class='service-item'>$service_name</span><br><span class='downtime-hover-wrapper'><a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . $vals->downtime_id . '</span></a>';
+            $serviceids_list[$ids] = "<span class='service-item'>$service_name</span><br><span class='downtime-hover-wrapper'><a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t(" Uhr") .  '</span></a>';
 
             $serviceids_list[$ids] = t($serviceids_list[$ids] . $this->get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p));
             $serviceids_list[$ids] = t($serviceids_list[$ids] . '</span>');
