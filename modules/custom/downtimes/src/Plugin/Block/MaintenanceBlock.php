@@ -6,6 +6,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Link;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Provides a 'MaintenanceBlock' block.
@@ -128,8 +129,7 @@ class MaintenanceBlock extends BlockBase {
     
     if (!empty($description)) {
       $description = strip_tags($description);
-      $description = text_summary($description, NULL, 100);
-      $description .= '...';
+      $description = Unicode::Truncate($description, 100, TRUE, TRUE);
       $html .= "<li>$description</li>";
     }
 
