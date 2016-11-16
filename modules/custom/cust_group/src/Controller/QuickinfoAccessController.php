@@ -31,13 +31,16 @@ class QuickinfoAccessController {
    */
 
     static public function CheckQuickinfoviewAccess(AccountInterface $account) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+//        $group = \Drupal::routeMatch()->getParameter('group');
+//        if (is_object($group)) {
+//            $group_id = $group->id();
+//        }
+//        else {
+//            $group_id = $group;
+//        }
+        $current_path = \Drupal::service('path.current')->getPath();
+        $path_args = explode('/', $current_path);
+        $group_id = $path_args['2'];
 
         $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
         
@@ -58,13 +61,9 @@ class QuickinfoAccessController {
     }
 
   static public function CheckQuickinfoviewonlyAccess(AccountInterface $account) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+        $current_path = \Drupal::service('path.current')->getPath();
+        $path_args = explode('/', $current_path);
+        $group_id = $path_args['2'];
 
         $allowed_group = array(QUICKINFO);
         
@@ -131,13 +130,13 @@ class QuickinfoAccessController {
         if (!$group_id || !in_array($group_id, $allowed_group)) {
            return AccessResult::forbidden();
         }
-      
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
+        
         if ($content) {
-            return AccessResult::allowed();
+          return AccessResult::allowed();
         } else {
-            return AccessResult::forbidden();
+          return AccessResult::forbidden();
         }
         return AccessResult::forbidden();
     }
