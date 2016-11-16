@@ -37,20 +37,20 @@
         $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
 
         function handlerInMaintenance() {
-            $(this).next('.downtime-hover').css('display', 'block');
+            $(this).parent().next('.downtime-hover').css('display', 'block');
         }
 
         function handlerOutMaintenance() {
-            $(this).next('.downtime-hover').css('display', 'none');
+            $(this).parent().next('.downtime-hover').css('display', 'none');
 
         }
 
         function handlerInIncident() {
-            $(this).next('.downtime-hover').css('display', 'block');
+            $(this).parent().next('.downtime-hover').css('display', 'block');
         }
 
         function handlerOutIncident() {
-            $(this).next('.downtime-hover').css('display', 'none');
+            $(this).parent().next('.downtime-hover').css('display', 'none');
 
         }
 
