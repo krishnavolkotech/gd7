@@ -123,3 +123,5 @@ permissions:
   - 'edit any release node'
   - 'delete own release node'
   - 'delete any release node'
+  - 'create group_node:deployed_releases content'
+  - 'create deployed_releases node'

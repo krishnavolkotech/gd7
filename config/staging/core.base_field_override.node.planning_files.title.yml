@@ -1,0 +1,18 @@
+uuid: e43cdf56-15a1-4a87-9994-6519205ee442
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.planning_files
+id: node.planning_files.title
+field_name: title
+entity_type: node
+bundle: planning_files
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

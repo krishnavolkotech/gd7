@@ -1,0 +1,16 @@
+uuid: b83f3125-6b4e-4f9e-8cd8-035df306de1a
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.im_upload_page
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: node.im_upload_page
+target_entity_type_id: node
+target_bundle: im_upload_page
+default_langcode: site_default
+language_alterable: false

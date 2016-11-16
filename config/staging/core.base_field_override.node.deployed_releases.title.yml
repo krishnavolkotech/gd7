@@ -1,0 +1,18 @@
+uuid: 659c4e3a-d651-47c7-950f-2fa5d5f95efb
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.deployed_releases
+id: node.deployed_releases.title
+field_name: title
+entity_type: node
+bundle: deployed_releases
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

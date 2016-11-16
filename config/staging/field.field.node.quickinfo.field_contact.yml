@@ -14,7 +14,7 @@ bundle: quickinfo
 label: '2.12 Contact'
 description: '(für Rückfragen, falls abweichend vom Ersteller in 2.11)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

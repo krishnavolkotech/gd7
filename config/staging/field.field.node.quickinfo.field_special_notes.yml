@@ -14,7 +14,7 @@ bundle: quickinfo
 label: '2.9 Special notes'
 description: '(z.B. auch planerische Hinweise)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

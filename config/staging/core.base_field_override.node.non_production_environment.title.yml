@@ -1,0 +1,18 @@
+uuid: fef4ba84-ed7b-4512-8390-71ae4bfdc441
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.non_production_environment
+id: node.non_production_environment.title
+field_name: title
+entity_type: node
+bundle: non_production_environment
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

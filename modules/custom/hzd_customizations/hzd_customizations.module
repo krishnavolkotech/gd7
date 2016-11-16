@@ -174,9 +174,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['actions']['submit']['#prefix'] = '<div id="publish_content">';
     $form['actions']['submit']['#suffix'] = '</div>';
   }
-
   // Button button--primary js-form-submit form-submit btn-primary.
-  if ($form_id == 'node_quickinfo_gnode-form_form') {
+  if ($form_id == 'node_quickinfo_gnode-form_form' || $form_id == 'node_quickinfo_edit_form') {
 
     $form['actions']['custom_unpublish'] = array(
       '#type' => 'submit',

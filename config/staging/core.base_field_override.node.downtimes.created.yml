@@ -1,0 +1,18 @@
+uuid: 6988a78f-ce78-41e7-9770-f27696177b21
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.created
+field_name: created
+entity_type: node
+bundle: downtimes
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

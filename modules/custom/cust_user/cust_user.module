@@ -38,6 +38,7 @@ function get_user_role($value = NULL) {
 }
 
 function cust_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//  dpm($form_id);
 //  if ( $form_id == 'contact_message_frage_zum_betriebsportal_form' ) {
 //    dpm($form['#process']['1']['0']);
 //  }
@@ -239,12 +240,11 @@ function cust_user_cron(){
     \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
 }
 
-function cust_user_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
-  // Add a css class to widget form elements for all fields of type mytype.
-  $field_definition = $context['items']->getFieldDefinition();  
-  if ($field_definition->getName() == 'field_contact_from_pretext') {
-    dpm($field_definition->getName());
-    // Be sure not to overwrite existing attributes.
-    $element['#attributes']['disabled'] = 'disabled';
-  }
-}
+//function cust_user_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
+//  // Add a css class to widget form elements for all fields of type mytype.
+//  $field_definition = $context['items']->getFieldDefinition();  
+//  if ($field_definition->getName() == 'field_contact_from_pretext') {
+//    // Be sure not to overwrite existing attributes.
+//    $element['#attributes']['disabled'] = 'disabled';
+//  }
+//}

@@ -1,0 +1,16 @@
+uuid: baa19e3c-734e-48c8-b725-e395666911c3
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.faq_seite
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: taxonomy_term.faq_seite
+target_entity_type_id: taxonomy_term
+target_bundle: faq_seite
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,16 @@
+uuid: f9840e38-aa0e-4ff5-9abd-6a2c40d77e59
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.planning_files
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: node.planning_files
+target_entity_type_id: node
+target_bundle: planning_files
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,16 @@
+uuid: 225ddf58-bcce-4f11-ab61-00095a21f4b1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group.zentrale_release_manag
+target_entity_type_id: group
+target_bundle: zentrale_release_manag
+default_langcode: site_default
+language_alterable: false

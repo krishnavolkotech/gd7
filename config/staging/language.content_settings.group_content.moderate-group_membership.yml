@@ -1,0 +1,11 @@
+uuid: 90e86804-8182-4b1f-b142-541626933f39
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate-group_membership
+id: group_content.moderate-group_membership
+target_entity_type_id: group_content
+target_bundle: moderate-group_membership
+default_langcode: site_default
+language_alterable: false

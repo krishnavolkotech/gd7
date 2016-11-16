@@ -12,7 +12,7 @@ bundle: quickinfo
 label: '2.14 Additional email recipients'
 description: '(Sendet Emails zusätzlich zu Benachrichtigungen an die durch Komma getrennten Emailadressen. Email-Empfänger werden nicht in der RZ-Schnellinfo veröffentlicht.)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
