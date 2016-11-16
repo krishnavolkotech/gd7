@@ -100,6 +100,11 @@ a, a.hover {
 a.hover { 
   text-decoration: underline;
 }
+.fooeter{
+  margin-top:0;
+  padding-top:0;
+  border:none;
+}
 footer h2,
 a.name.navbar-brand,
 #block-customtable h2.block-title,
@@ -354,7 +359,7 @@ header .navbar-collapse.collapse {
 #block-general h2 {
   margin: 0 !important;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px 15px;
   background: #04425f;
@@ -367,7 +372,9 @@ footer h2 {
   display: none;
 }
 .footer {
-  border: none;
+  border: none !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
 }
 .main-container {
   min-height: 400px;
@@ -454,7 +461,7 @@ body.not-loggedin.path-user .region-content {
   color: #ffffff !important;
   margin-right: 0 !important;
   background: #04425f;
-  font-size: 15px;
+  font-size: 14px;
   text-transform: capitalize;
   margin-top: -1px;
 }
@@ -498,16 +505,18 @@ body.not-loggedin.path-user .region-content {
 .alert-danger {
   background-color: #fcf4f2;
   color: #a51b00;
-  background: rgba(199, 3, 3, 0.05) url(../images/error.svg) 10px 12px no-repeat;
+  background: rgba(199, 3, 3, 0.05) url(../images/error.svg) 10px 16px no-repeat;
   border-color: #f9c9bf #f9c9bf #f9c9bf transparent;
+  text-indent:23px;
   /* LTR */
   box-shadow: -8px 0 0 #e62600;
   /* LTR */
 }
 .alert-warning {
   background-color: #fdf8ed;
-  background: rgba(244, 218, 166, 0.05) url(../images/warning.svg) 10px 12px no-repeat;
+  background: rgba(244, 218, 166, 0.05) url(../images/warning.svg) 10px 16px no-repeat;
   border-color: #f4daa6 #f4daa6 #f4daa6 transparent;
+  text-indent:23px;
   /* LTR */
   color: #734c00;
   box-shadow: -8px 0 0 #e09600;
@@ -515,10 +524,11 @@ body.not-loggedin.path-user .region-content {
 }
 .alert-success {
   color: #325e1c;
+  text-indent:23px;
   background-color: #f3faef;
   border-color: #c9e1bd #c9e1bd #c9e1bd transparent;
   /* LTR */
-  background: rgba(201, 225, 189, 0.05) url(../images/check.svg) 10px 12px no-repeat;
+  background: rgba(201, 225, 189, 0.05) url(../images/check.svg) 10px 17px no-repeat;
   box-shadow: -8px 0 0 #77b259;
   /* LTR */
 }
@@ -659,7 +669,7 @@ table tr.even:hover {
   float: left;
   line-height: 29px;
   text-align: center;
-  font-size: 11px;
+  font-size: 14px;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -672,7 +682,7 @@ nav#block-optionen {
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   color: #04425f;
   margin: 0 !important;
@@ -819,13 +829,9 @@ input.end_date {
   width: 100%;
   overflow: auto;
 }
-#block-hzdheaderlinks {
+#header-right #block-hzdheaderlinks {
   float: right;
-  padding-top: 25px;
-}
-.user-logged-in #block-hzdheaderlinks {
-  float: right;
-  padding-top: 5px !important;
+  padding-top: 30px;
 }
 .navbar-header {
   width: 100%;
@@ -842,11 +848,8 @@ input.end_date {
 .rteindent1 {
   margin: 0 8%;
 }
-.testing {
-  font-size: 12px;
-}
 #header-right {
-  width: 65%;
+  width: 45%;
   float: right;
 }
 #header-right #block-hzdheaderlinks {
@@ -970,7 +973,7 @@ li.comment-delete a,
 li.comment-edit a,
 li.comment-reply a {
   color: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   background: #04425f;
   line-height: 25px;
   float: left;
@@ -1024,7 +1027,7 @@ body.not-loggedin.path-user .region-content h1 {
   padding: 0px 15px !important;
   border-right: 1px solid #04425f !important;
   color: #424241 !important;
-  font-size: 13px;
+  font-size: 14px;
 }
 .hzd-secondary-tabs.path-user ul.tabs--secondary li a:hover,
 .hzd-secondary-tabs.path-user ul.tabs--secondary li active.a,
@@ -1046,7 +1049,7 @@ button[value="update"],
 button[value="Delete"] {
   margin: 0 5px 10px 0 !important;
   padding: 3px 8px !important;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: capitalize;
 }
 .hzd-secondary-tabs .hzd-form-element .js-form-item {
@@ -1059,7 +1062,7 @@ button[value="Delete"] {
   padding-bottom: 15px;
 }
 .hzd-secondary-tabs .notifications_title {
-  font-size: 15px;
+  font-size: 14px;
   color: #04425f;
   padding-bottom: 5px;
   font-weight: bold;
@@ -1269,6 +1272,26 @@ nav#block-optionen ul li {
   float:left;
   /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active{
+  background:rgb(245, 245, 245);
+  padding-top:10px;
+  margin:5px 0;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li{
+  padding-left:0;
+  width:100%;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a{
+  background:transparent;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle{
+  font-weight:600;
+  color:rgb(4, 66, 95);
+  margin-bottom:5px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a:hover{
+  color:rgb(4, 66, 95);
+}
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a,
 .region-sidebar-first section.blue ul.menu.nav li a,
 .block-hzd-release-management ul.menu.nav li a,
@@ -1375,10 +1398,11 @@ form#downtimes-filter .string_search.hzd-form-element {
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu {
   border-radius: 0;
-  margin: 10px 0 8px -10px;
+  /*margin: 10px 0 8px -10px;*/
+  margin:0;
   padding: 0 0 7px 0!important;
-  width: 108%;
-  border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
+  width: 100%;
+  /*border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;*/
   background: transparent;
   border: none;
 }
@@ -1532,11 +1556,10 @@ aside #block-incidentblock h2.block-title{
   margin:0 !important;
   color:#d45750;
   padding:0 0 4px 0;
-  font-size:16px;
+  font-size:14px;
   font-weight:bold;
   /*letter-spacing:2px;*/
   line-height:30px;
-  font-family:"robotoregular";
   text-transform:uppercase;
 }
 section h2.block-title,
@@ -1545,10 +1568,9 @@ aside #block-maintenance h2.block-title{
   margin:0!important;
   color:#04425f;
   padding:0 0 4px 0;
-  font-size:16px;
+  font-size:14px;
   font-weight:bold;
   line-height:30px;
-  font-family:"robotoregular";
   text-transform:uppercase;
 }
 aside #block-incidentblock,
@@ -1573,13 +1595,19 @@ aside .region-sidebar-first .block-favorites .item-list ul{
   width:100%;
   /*background:#fff;*/
 }
+section .form-group .view-content .item-list ul li{
+  list-style-type:none;
+}
 aside #block-incidentblock ul li{
   list-style-type:none;
   float:left;
   padding:0;
   width:45%;
   margin-right:5%;
-  
+  position:relative;
+}
+aside #block-incidentblock ul li br{
+  display:none;
 }
 aside #block-maintenance ul li{
   list-style-type:none;
@@ -1588,18 +1616,17 @@ aside #block-maintenance ul li{
   width:45%;
   margin-right:5%;
 }
-aside #block-incidentblock ul li span{
-  font-size:13px;
-  font-family:"robotoregular";
-  line-height: 20px;
-  float:left;
+aside #block-incidentblock ul li a.state-link span{
+  width:auto;
+  display:inline-block;
+  line-height:24px;
+  padding-right:5px;
+  text-decoration:none;
 }
 aside #block-maintenance ul li span{
-  font-size:13px;
-  font-family:"robotoregular";
   line-height: 20px;
-  width:100%;
   float:left;
+  width:100%;
 }
 aside #block-maintenance ul li span.downtime-hover-wrapper{
   display:inline-block;
@@ -1618,11 +1645,12 @@ aside #block-maintenance ul li span.service-item{
 aside #block-incidentblock ul li span.service-item{
   color:#d45750;
   width:auto;
-  margin:0 0 7px 0;
+  margin:0;
   font-size:13px;
   font-weight:bold;
   text-indent: 2px;
-  padding-right:4px;
+  padding:1px 6px 0 0;
+  line-height:23px;
 }
 
 .user-logged-in ul.contextual-links li a{
@@ -1649,26 +1677,25 @@ aside .region-sidebar-first .block-favorites .item-list ul li span{
   float:left;
   width:auto;
 }
-aside .region-sidebar-first .block-favorites .item-list ul li a:hover,
-aside .region-sidebar-first .block-favorites .item-list ul li span a:hover,
-section .form-group .view-content .views-field-title span a:hover{
-  text-decoration:none;
-  opacity:0.7;
-}
 aside .region-sidebar-first .block-favorites .item-list ul li span a{
-  float:right;
-  width:auto;
+  display:inline-block;
   color:#222222;
+  text-indent:-9999px;
+  background:url(../images/trash-icon.png)right center no-repeat;
+  width:16px;
+  height:16px;
+ 
 }
 aside .region-sidebar-first .block-favorites .item-list ul li > a{
   width:93%;
   float:left;
   text-decoration:none;
-  color:#222222;
-  font-family:"robotoregular";
-  font-size:13px;
-  font-weight:bold;
+  color:#04425f;
+  font-size:14px;
   padding-left:15px;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li > a:hover{
+  text-decoration:underline;
 }
 aside section .form-group,
 aside section .form-group .item-list,
@@ -1679,20 +1706,25 @@ aside section .form-group .view-footer{
 }
 aside section .form-group .view-footer a.all-releases,
 aside section .form-group .view-footer a.all-problems,
-section .form-group .more-link a,
-aside #block-maintenance a,
-aside #block-incidentblock a{
-  background:url(../images/blue-list-arrow.png)left 8px no-repeat;
+section .form-group .more-link a{
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
   float:left;
   padding-left:14px;
+  color:#04425f;
 }
-section .form-group .more-link a:hover,
-aside section .form-group .view-footer a:hover,
-aside section .form-group .more-link a:hover,
-aside #block-maintenance a:hover,
-aside #block-incidentblock a:hover{
-  text-decoration:none;
-  opacity:0.7;
+aside #block-maintenance a,
+aside #block-incidentblock a{
+  width:50%;
+  display:inline-block;
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  padding-left:14px;
+}
+aside #block-maintenance a.state-link,
+aside #block-incidentblock a.state-link{
+  width:auto;
+  display:inline-block;
+  background:none;
+  padding:0;
 }
 aside section .form-group .item-list ul li{
   display:inline-block;
@@ -1702,25 +1734,21 @@ aside section .form-group .item-list ul li{
 }
 aside section .form-group .item-list ul li .field-content{
   color:#222222;
-  font-family:"robotoregular";
-  font-size:13px;
+  font-size:14px;
 }
 section .form-group .views-field-field-news-date{
  float:left;
  width:100%;
 }
 section .form-group .views-field-title span a{
-  font-family: "robotoregular";
   font-size: 14px;
-  font-weight: bold;
-  color:#222222;
+  color:#04425f;
   line-height:20px;
   float:left;
   width:100%;
   padding:3px 0 15px 0;
 }
 section .form-group .views-field-body p{
-  font-family: "robotoregular";
   font-size: 14px;
   line-height:25px;
   float:left;
@@ -1782,7 +1810,7 @@ form.node-service-profile-edit-form .service-time .container-inline{
 form.node-service-profile-edit-form .service-time .control-label{
   position:relative;
   bottom:5px;
-  font-size:13px;
+  font-size:14px;
   font-weight:normal;
 }
 form.node-service-profile-edit-form .service-time .form-type-checkbox{
@@ -1795,6 +1823,21 @@ form.node-service-profile-edit-form .service-time .container-inline{
 form.node-service-profile-edit-form .service-time .container-inline input.form-control{
   height:30px !important;
 }
+section.block-incidents-block ul.downtime-hover{
+  margin:0;
+  padding:0;
+  display:inline-block;
+  border:1px solid #222222;
+  width:60% !important;
+  position:absolute;
+  top:5px;
+  left:230px;
+  z-index:10;
+  background-color:#fff;
+  display:none;
+  border-bottom:none;
+
+}
 section.block-maintenance-block ul.downtime-hover{
   margin:0;
   padding:0;
@@ -1803,25 +1846,25 @@ section.block-maintenance-block ul.downtime-hover{
   width:60% !important;
   position:absolute;
   top:5px;
-  left:200px;
+  left:215px;
   z-index:10;
   background-color:#fff;
+  display:none;
+  border-bottom:none;
 }
+section.block-incidents-block ul.downtime-hover:hover,
 section.block-maintenance-block ul.downtime-hover:hover{
   z-index:10;
   display:block;
 }
+section.block-incidents-block ul.downtime-hover li,
 section.block-maintenance-block ul.downtime-hover li{
   width:100% !important;
   display:inline-block;
-  margin:0;
-  padding:0 !important;
+  margin:0 !important;
   line-height:25px;
   border-bottom:1px solid #222222;
-  text-indent:5px;
-}
-section.block-maintenance-block ul.downtime-hover li:last-child{
-  border-bottom:none;
+  padding:0 6px !important;
 }
 body.not-loggedin #block-primarylinks {
   height:44px;
@@ -1832,12 +1875,7 @@ section ul.admin-list li{
   padding:0;
   margin:0;
 }
-/*section ul.admin-list{
-  margin:0;
-  padding:0;
-}*/
 section ul.admin-list li a{
-  font-family: "robotoregular";
   color:#222222;
   line-height:20px;
   float:left;
@@ -1866,7 +1904,9 @@ a.entity_print_view{
   margin-top:-50px;
   background:url(../images/pdf-icon.png)left top no-repeat;
   padding-left:23px;
-  font-size:14px;
+  font-size:0;
+  width:16px;
+  height:16px;
 }
 .input-sm.editor{
   line-height:20px;
@@ -1881,14 +1921,29 @@ aside ul.menu li.dropdown.active .dropdown-menu{
 table.sticky-header{
   margin-top:0 !important;
 }
-.curr_incidents_form .filter_title_header h3{
-  background:#d7655a;
-  font-size:16px;
+form.incidents .filter_title_header h3,
+form.maintenance .filter_title_header h3{
+  font-size:15px;
   text-align:center;
-  line-height:35px;
+  line-height:26px;
   float:left;
   width:100%;
   color:#fff;
   letter-spacing:0.1px;
   margin-top:10px !important;
+}
+form.maintenance .filter_title_header h3{
+    background:#f1894b; 
+} 
+form.incidents .filter_title_header h3{
+   background:#d7655a; 
+}
+a{
+  color:rgba(4, 66, 95, 1);
+}
+h2{
+  font-size:22px !important;
+}
+section form#favorites-add .form-wrapper form#masquerade-block-form button{
+  margin-top:5px;
 }
