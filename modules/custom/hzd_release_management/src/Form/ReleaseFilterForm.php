@@ -264,9 +264,14 @@ class ReleaseFilterForm extends FormBase {
 
     $form['filter_startdate'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Start Date'),
+    //  '#title' => $this->t('Start Date'),
     // '#attributes' => array("class" => "start_date"),.
-      '#attributes' => array('class' => array("start_date")),
+      '#attributes' => array(
+        'class' => array("start_date"), 
+        'placeholder' => array(
+          $this->t('Start Date')
+	 ),
+      ),
       '#default_value' => isset($default_startdate_value) ? $default_startdate_value : $form_state->getValue('filter_startdate'),
     // '#size' => 15,.
       '#weight' => -4,
@@ -286,10 +291,15 @@ class ReleaseFilterForm extends FormBase {
 
     $form['filter_enddate'] = array(
       '#type' => 'textfield',
-      '#title' => t('End Date'),
+    //  '#title' => t('End Date'),
     // '#size' => 15,.
       '#weight' => -3,
-      '#attributes' => array('class' => array("end_date")),
+      '#attributes' => array(
+        'class' => array("end_date"),
+	'placeholder' => array(
+	  $this->t('End Date')
+	),
+      ),
     // '#attributes' => array("class" => "end_date"),.
       '#default_value' => isset($default_enddate_value) ? $default_enddate_value : $form_state->getValue('filter_enddate'),
       '#ajax' => array(
