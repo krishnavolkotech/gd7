@@ -74,7 +74,7 @@ class IncidentsBlock extends BlockBase {
 
           $states_array[$state_name] = $state_name;
           if (!empty($serviceids_list[$ids])) {
-            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<span class='state-item'>[$state_name] " . '</span>');
+            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . '</span></a>');
            
             $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description,$vals->scheduled_p);
             $serviceids_list[$ids] = t($serviceids_list[$ids].$hover_markup);              
@@ -83,7 +83,7 @@ class IncidentsBlock extends BlockBase {
             if (empty($state_name)) {
               continue;
             }
-            $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name] " . '</span>');
+            $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><a class='state-link' href='node/$vals->downtime_id'><span class='state-item'>[$state_name] " . '</span></a>');
             $hover_markup  = MaintenanceBlock::get_hover_markup($vals->startdate_planned,$vals->enddate_planned,$vals->description,$vals->scheduled_p);
             $serviceids_list[$ids] = t($serviceids_list[$ids].$hover_markup);
           }
