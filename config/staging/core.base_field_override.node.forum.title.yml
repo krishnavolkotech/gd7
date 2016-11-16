@@ -10,10 +10,10 @@ id: node.forum.title
 field_name: title
 entity_type: node
 bundle: forum
-label: Betreff
+label: Subject
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

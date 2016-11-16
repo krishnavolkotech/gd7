@@ -1,0 +1,18 @@
+uuid: 30de6dac-fde5-4166-a761-745c1f196c40
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: group.downtimes.label
+field_name: label
+entity_type: group
+bundle: downtimes
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

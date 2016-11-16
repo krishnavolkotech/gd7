@@ -1,0 +1,18 @@
+uuid: 6db24d9b-a2c6-4bb2-a7d2-09e5f77c9c8f
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.thema
+id: taxonomy_term.thema.changed
+field_name: changed
+entity_type: taxonomy_term
+bundle: thema
+label: Changed
+description: 'The time that the term was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

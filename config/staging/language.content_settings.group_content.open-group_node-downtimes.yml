@@ -1,0 +1,11 @@
+uuid: 4b115cfe-37f9-4de8-8572-b05a4291e3f1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-downtimes
+id: group_content.open-group_node-downtimes
+target_entity_type_id: group_content
+target_bundle: open-group_node-downtimes
+default_langcode: site_default
+language_alterable: false

@@ -10,7 +10,7 @@ dependencies:
     - hzd
 third_party_settings:
   block_class:
-    classes: blue
+    classes: 'blue incident-menu'
 id: customgroupmenublock
 theme: hzd
 region: sidebar_first

@@ -13,10 +13,10 @@ id: node.forum.comment_forum
 field_name: comment_forum
 entity_type: node
 bundle: forum
-label: Kommentare
+label: Comments
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value:
   -
     status: 2

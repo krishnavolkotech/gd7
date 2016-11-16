@@ -1,0 +1,11 @@
+uuid: 80b60f76-38fe-438d-957f-533eeb653b95
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.group_content_type_b2ed3eb8d19c9
+id: group_content.group_content_type_b2ed3eb8d19c9
+target_entity_type_id: group_content
+target_bundle: group_content_type_b2ed3eb8d19c9
+default_langcode: site_default
+language_alterable: false

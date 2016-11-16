@@ -1,0 +1,18 @@
+uuid: 3f0f5ae6-e232-4cff-805b-cb881dfccf51
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.non_production_environment
+id: node.non_production_environment.created
+field_name: created
+entity_type: node
+bundle: non_production_environment
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

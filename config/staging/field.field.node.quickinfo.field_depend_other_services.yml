@@ -14,7 +14,7 @@ bundle: quickinfo
 label: '2.4 Depending on the use of other services'
 description: '(zu anderen Verfahren, z.B. Releases oder Datenbearbeitungsstände)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

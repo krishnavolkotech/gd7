@@ -1,0 +1,18 @@
+uuid: e863a591-cd32-485d-9136-751c3084a8b5
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.grouppost
+id: node.grouppost.changed
+field_name: changed
+entity_type: node
+bundle: grouppost
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

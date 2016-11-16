@@ -12,10 +12,10 @@ id: node.forum.taxonomy_forums
 field_name: taxonomy_forums
 entity_type: node
 bundle: forum
-label: Foren
+label: Forums
 description: ''
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
