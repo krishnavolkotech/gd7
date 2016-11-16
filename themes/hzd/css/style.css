@@ -589,9 +589,9 @@ form.release-filter-form .hzd-form-element,
   float: left;
   margin: 0 2% 1% 0;
 }
-form.release-filter-form .limit_search_dropdown.hzd-form-element {
+/*form.release-filter-form .limit_search_dropdown.hzd-form-element {
   margin-top: 24px;
-}
+}*/
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
@@ -682,12 +682,14 @@ nav#block-optionen {
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 14px;
+  font-size: 14px !important;
   font-weight: bold;
   color: #04425f;
   margin: 0 !important;
   padding: 10px 10px;
   line-height: 20px;
+  word-wrap:break-word;
+  text-transform:uppercase;
 }
 aside section.blue .field--name-body,
 .region-sidebar-first .block-hzd-release-management .field--name-body,
@@ -1612,7 +1614,7 @@ aside #block-incidentblock ul li br{
 aside #block-maintenance ul li{
   list-style-type:none;
   float:left;
-  padding-bottom:20px;
+  padding-bottom:15px;
   width:45%;
   margin-right:5%;
 }
@@ -1705,25 +1707,34 @@ aside section .form-group .view-footer{
  padding:0;
 }
 aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems,
+aside section .form-group .view-footer a.all-problems{
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  float:left;
+  padding-left:14px;
+  color:#04425f;
+  margin-top:15px;
+}
 section .form-group .more-link a{
   background:url(../images/grey-list-arrow.png)left 5px no-repeat;
   float:left;
   padding-left:14px;
   color:#04425f;
+  margin:0;
 }
-aside #block-maintenance a{
+aside #block-maintenance a.front-page-link{
   width:50%;
   display:inline-block;
-  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  background:url(../images/grey-list-arrow.png)left 6px no-repeat;
   padding-left:14px;
+  color:#04425f;
 }
-aside #block-incidentblock a{
+aside #block-incidentblock a.front-page-link{
   width:50%;
   display:inline-block;
-  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  background:url(../images/red-list-arrow.png)left 6px no-repeat;
   padding-left:14px;
-  /*color:#d45750;*/
+  color:#d45750;
+  margin-top:15px;
 }
 aside #block-maintenance a.state-link,
 aside #block-incidentblock a.state-link{
@@ -1752,7 +1763,7 @@ section .form-group .views-field-title span a{
   line-height:20px;
   float:left;
   width:100%;
-  padding:3px 0 15px 0;
+  padding:3px 0 8px 0;
 }
 section .form-group .views-field-body p{
   font-size: 14px;
@@ -1765,6 +1776,9 @@ section .form-group .views-row{
   float:;left;
   margin-bottom:15px;
   float:left;
+}
+section .form-group .views-row:last-child{
+  margin:0;
 }
 aside .well{
   border:none;
@@ -1952,4 +1966,11 @@ h2{
 }
 section form#favorites-add .form-wrapper form#masquerade-block-form button{
   margin-top:5px;
+}
+section.masquerade-block-form form .button{
+  margin-top:5px;
+}
+.region.region-content ul{
+  width:100%;
+  float:left;
 }
