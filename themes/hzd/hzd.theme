@@ -222,7 +222,11 @@ function hzd_preprocess_breadcrumb(&$variables) {
   $route = \Drupal::routeMatch()->getRouteName();  
   if($route == 'view.group_members_lists.page_1'){
     // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
-    unset($variables['breadcrumb'][3]);
+    /**
+     * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail.
+     * Help Link: https://www.previousnext.com.au/blog/making-drupal-8s-menu-active-trail-consider-query-arguments
+     */
+    unset($variables['breadcrumb'][2]);
   }
   
   
