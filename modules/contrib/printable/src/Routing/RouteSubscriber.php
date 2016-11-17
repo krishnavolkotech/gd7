@@ -60,8 +60,8 @@ class RouteSubscriber implements EventSubscriberInterface {
           '_title' => 'Printable',
         ),
         array(
-          // '_entity_access' => 'entity.view',
-          '_permission' => 'view printer friendly versions',
+	     '_entity_access' => 'entity.view',
+//          '_permission' => 'view printer friendly versions',
         ),
         array(
           'parameters' => array(

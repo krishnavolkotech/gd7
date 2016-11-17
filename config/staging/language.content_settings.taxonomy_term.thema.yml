@@ -1,0 +1,16 @@
+uuid: e3cec029-97fc-42b2-87a8-695bb992535f
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.thema
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: taxonomy_term.thema
+target_entity_type_id: taxonomy_term
+target_bundle: thema
+default_langcode: site_default
+language_alterable: false

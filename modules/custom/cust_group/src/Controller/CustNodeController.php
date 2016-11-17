@@ -212,4 +212,7 @@ class CustNodeController extends ControllerBase {
     exit;
   }
 
+  static public function ContactformTitle() {
+    return t('Contact');
+  }
 }

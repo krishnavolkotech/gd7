@@ -1,0 +1,20 @@
+uuid: 20b96009-a667-4b0c-9e4b-90df4806dda3
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.forums
+  module:
+    - text
+id: taxonomy_term.forums.description
+field_name: description
+entity_type: taxonomy_term
+bundle: forums
+label: Description
+description: 'A description of the term.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

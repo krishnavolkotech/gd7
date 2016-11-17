@@ -1,0 +1,18 @@
+uuid: 496f8386-59b1-45aa-903d-380c2b6b19e3
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: group.downtimes.created
+field_name: created
+entity_type: group
+bundle: downtimes
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

@@ -1,0 +1,16 @@
+uuid: a1356ed1-22c6-4835-9bca-2a2281a33d8b
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group.closed_private
+target_entity_type_id: group
+target_bundle: closed_private
+default_langcode: site_default
+language_alterable: false

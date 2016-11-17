@@ -1,0 +1,20 @@
+uuid: d82daf25-a9c8-4a3a-8035-87fa00fda94f
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.grouppost
+id: node.grouppost.uid
+field_name: uid
+entity_type: node
+bundle: grouppost
+label: 'Authored by'
+description: 'The username of the content author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

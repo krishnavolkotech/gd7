@@ -1,0 +1,11 @@
+uuid: 2f68da95-d343-4ccb-9993-0fb4c46a7586
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate_private-group_node-page
+id: group_content.moderate_private-group_node-page
+target_entity_type_id: group_content
+target_bundle: moderate_private-group_node-page
+default_langcode: site_default
+language_alterable: false

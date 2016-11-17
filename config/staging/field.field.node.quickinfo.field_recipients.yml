@@ -14,7 +14,7 @@ bundle: quickinfo
 label: '1.4 Recipients'
 description: '(Mehrfachnennung möglich)'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

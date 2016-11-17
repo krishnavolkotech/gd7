@@ -10,6 +10,10 @@ namespace Drupal\cust_group\Controller;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Routing\RouteMatch;
+use Symfony\Component\Routing\Route;
+
+
 
 if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
@@ -31,13 +35,16 @@ class QuickinfoAccessController {
    */
 
     static public function CheckQuickinfoviewAccess(AccountInterface $account) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+//        $group = \Drupal::routeMatch()->getParameter('group');
+//        if (is_object($group)) {
+//            $group_id = $group->id();
+//        }
+//        else {
+//            $group_id = $group;
+//        }
+        $current_path = \Drupal::service('path.current')->getPath();
+        $path_args = explode('/', $current_path);
+        $group_id = $path_args['2'];
 
         $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
         
@@ -58,13 +65,9 @@ class QuickinfoAccessController {
     }
 
   static public function CheckQuickinfoviewonlyAccess(AccountInterface $account) {
-        $group = \Drupal::routeMatch()->getParameter('group');
-        if (is_object($group)) {
-            $group_id = $group->id();
-        }
-        else {
-            $group_id = $group;
-        }
+        $current_path = \Drupal::service('path.current')->getPath();
+        $path_args = explode('/', $current_path);
+        $group_id = $path_args['2'];
 
         $allowed_group = array(QUICKINFO);
         
@@ -86,8 +89,8 @@ class QuickinfoAccessController {
     
     
     
-    static public function CheckQuickinfonodeviewAccess(AccountInterface $account) {
-        $node = \Drupal::routeMatch()->getParameter('node');
+    static public function CheckQuickinfonodeviewAccess(RouteMatch $route_match, AccountInterface $account) {
+        $node = $route_match->getParameter('node');
         if (is_object($node) && $node->getType() == 'quickinfo') {
             $group = \Drupal::routeMatch()->getParameter('group');
             if (is_object($group)) {
@@ -114,8 +117,8 @@ class QuickinfoAccessController {
         }
     }
 
-    static public function CheckQuickinfonodecreateAccess(AccountInterface $account) {
-        $group = \Drupal::routeMatch()->getParameter('group');
+    static public function CheckQuickinfonodecreateAccess(RouteMatch $route_match, AccountInterface $account) {
+        $group = $route_match->getParameter('group');
         if (is_object($group)) {
             $group_id = $group->id();
         }
@@ -131,25 +134,25 @@ class QuickinfoAccessController {
         if (!$group_id || !in_array($group_id, $allowed_group)) {
            return AccessResult::forbidden();
         }
-      
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
+        
         if ($content) {
-            return AccessResult::allowed();
+          return AccessResult::allowed();
         } else {
-            return AccessResult::forbidden();
+          return AccessResult::forbidden();
         }
         return AccessResult::forbidden();
     }
     
-     static public function CheckQuickinfonodedeleteAccess(AccountInterface $account) {
+     static public function CheckQuickinfonodedeleteAccess(RouteMatch $route_match, AccountInterface $account) {
       // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
-        $node = \Drupal::routeMatch()->getParameter('node');
+        $node = $route_match->getParameter('node');
         if (is_object($node)) {
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
                 return AccessResult::forbidden();
             }
         }
-        return AccessResult::allowed();
+        return AccessResult::neutral();
      }
 }

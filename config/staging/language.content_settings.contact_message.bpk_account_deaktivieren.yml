@@ -1,0 +1,11 @@
+uuid: 7e71dea8-d016-4361-b4dc-1770c726d21f
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.bpk_account_deaktivieren
+id: contact_message.bpk_account_deaktivieren
+target_entity_type_id: contact_message
+target_bundle: bpk_account_deaktivieren
+default_langcode: de
+language_alterable: false

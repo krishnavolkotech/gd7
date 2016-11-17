@@ -1,0 +1,18 @@
+uuid: 3454e59a-6d6a-43c3-ab2d-422c719442db
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.group
+id: node.group.changed
+field_name: changed
+entity_type: node
+bundle: group
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

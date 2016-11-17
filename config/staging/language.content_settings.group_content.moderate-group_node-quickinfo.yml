@@ -1,0 +1,11 @@
+uuid: 7ba9d0bf-1a9f-42a6-a124-2e4976a3b947
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate-group_node-quickinfo
+id: group_content.moderate-group_node-quickinfo
+target_entity_type_id: group_content
+target_bundle: moderate-group_node-quickinfo
+default_langcode: site_default
+language_alterable: false
