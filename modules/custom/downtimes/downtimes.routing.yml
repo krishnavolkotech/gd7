@@ -187,7 +187,7 @@ downtimes.new_downtimes_controller_newDowntimes:
   path: '/group/{group}/downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
-    _title: 'Disturbances and block times'
+    _title: 'Downtimes'
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
@@ -197,7 +197,7 @@ downtimes.archived_downtimes_controller:
   path: '/group/{group}/downtimes/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
-    _title: 'Disturbances and block times'
+    _title: 'Downtimes'
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'

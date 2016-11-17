@@ -77,7 +77,7 @@ class Gruppenadministration extends BlockBase {
         <li><a href="/group/' . $groupId . '/content">Contents</a></li>
         <li><a href="/group/' . $groupId . '/node/create">Content</a></li>
         <li><a href="/group/' . $groupId . '/approved-members">Users</a></li>
-        <li><a href="/group/' . $groupId . '/downtime_settings">Disturbances and block times</a></li>
+        <li><a href="/group/' . $groupId . '/downtime_settings">Downtimes</a></li>
         <li><a href="/group/' . $groupId . '/problem_settings">Known Issues</a></li>
         <li><a href="/group/' . $groupId . '/release_settings">Releases</a></li>
         <li><a href="/admin/group/mass_contact">Mass Contact</a></li>';
