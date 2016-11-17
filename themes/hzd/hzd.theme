@@ -218,6 +218,13 @@ function hzd_preprocess_node(&$variables) {
 }
 
 function hzd_preprocess_breadcrumb(&$variables) {
+  // This breadcrumb will apply only for our view at /group/24/address
+  $route = \Drupal::routeMatch()->getRouteName();  
+  if($route == 'view.group_members_lists.page_1'){
+    // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
+    unset($variables['breadcrumb'][3]);
+  }
+  
   
   $block = \Drupal\block\Entity\Block::load('printlinks');
   $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
