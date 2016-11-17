@@ -1974,3 +1974,6 @@ section.masquerade-block-form form .button{
   width:100%;
   float:left;
 }
+.reset_form{
+  margin-left:0;
+}
