@@ -334,14 +334,16 @@ class HzdStorage {
 
     $query = \Drupal::database()->select('problem_import_history', 'pmh');
     $query->Fields('pmh', array('problem_date', 'import_status', 'error_message'));
+    
     // $table_sort = $query->extend('Drupal\Core\Database\Query\TableSortExtender');.
     if ($limit != 'all') {
       $page_limit = ($limit ? $limit : 20);
-      $query->orderBy('id');
+      $query->orderBy('problem_date', 'desc');
       $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
       $result = $pager->execute();
     }
     else {
+      $query->orderBy('problem_date', 'desc');
       $result = $query->execute()->fetchAll();
     }
 
