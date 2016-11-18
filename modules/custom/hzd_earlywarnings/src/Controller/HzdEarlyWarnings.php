@@ -188,6 +188,11 @@ class HzdEarlyWarnings extends ControllerBase {
   }
 
   function release_early_warnings_display() {
+    
+    if (!isset($page)) {
+      unset($_SESSION['earlywarning_filter_option']);
+    }
+    
     $type = 'releaseWarnings';
     $user_role = get_user_role();
     $group = \Drupal::routeMatch()->getParameter('group');
@@ -226,7 +231,21 @@ class HzdEarlyWarnings extends ControllerBase {
     $output['content']['table_header']['#markup'] = '<h2>' . t('Current Early Warnings') . '</h2>';
     $output['content']['filter_form']['#prefix'] = "<div class = 'specific_earlywarnings'>";
     $output['content']['filter_form']['filter_form_wrapper']['#markup'] = "<div id = 'earlywarnings_results_wrapper'>";
-    $output['content']['filter_form']['form'] = \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm', $type);
+    
+
+    if (isset($service) && isset($release) && isset($type)) {
+      $_SESSION['earlywarning_filter_option']['service'] = $service;
+      $_SESSION['earlywarning_filter_option']['release'] = $release;
+      $_SESSION['earlywarning_filter_option']['type'] = $type;
+      $_SESSION['earlywarning_filter_option']['release_type'] = $rel_type;
+      $_SESSION['earlywarning_filter_option']['startdate'] = '';
+      $_SESSION['earlywarning_filter_option']['enddate'] = '';
+      $_SESSION['earlywarning_filter_option']['limit'] = 20;
+      $output['content']['earlywarnings_filter_form'] = \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm', $type);
+    }
+    else {
+      $output['content']['earlywarnings_filter_form'] = \Drupal::formBuilder()->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm', $type);
+    }
 
     $output['content']['filter_form']['reset_form']['#prefix'] = "<div class = 'reset_form'>";
     $output['content']['filter_form']['reset_form']['reset_button'] = HzdreleasemanagementHelper::releases_reset_element();
@@ -250,10 +269,22 @@ class HzdEarlyWarnings extends ControllerBase {
     if ($filter_options['limit'] != 'all') {
       $page_limit = isset($filter_options['limit']) ? $filter_options['limit'] : DISPLAY_LIMIT;
     }
-    $release = array('data' => t('Release'), 'class' => 'release-hdr');
-    $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warnings-hdr');
-    $responses = array('data' => t('Responses'), 'class' => 'responses-hdr');
-    $lastposting = array('data' => t('Last Posting'), 'class' => 'last-posting-hdr');
+    $release = array(
+      'data' => t('Release'), 
+      'class' => 'release-hdr'
+      );
+    $earlywarnings = array(
+      'data' => t('Early Warnings'), 
+      'class' => 'early-warnings-hdr'
+      );
+    $responses = array(
+      'data' => t('Responses'), 
+      'class' => 'responses-hdr'
+      );
+    $lastposting = array(
+      'data' => t('Last Posting'), 
+      'class' => 'last-posting-hdr'
+      );
     $header = array($release, $earlywarnings, $responses, $lastposting);
 
     $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
@@ -286,7 +317,7 @@ class HzdEarlyWarnings extends ControllerBase {
     }
      $sql_select->groupBy('release_id');
     $sql_select->orderBy('nfd.created', 'DESC');
-    if ($page_limit == 'all') {
+    if (!$page_limit) {
       $result = $sql_select->execute()->fetchAll();
     }
     else {
@@ -302,7 +333,7 @@ class HzdEarlyWarnings extends ControllerBase {
         $sql_select = \Drupal::database()->select('node_field_data', 'nfd');
         $sql_select->addfield('nfd', 'title');
         $sql_select->condition('nfd.nid', $earlywarning->release_id, '=');
-        $early_warning_title = $sql_select->execute()->fetchField();
+        $relase_title = $sql_select->execute()->fetchField();
 
         $sql_select = \Drupal::database()->select('comment_field_data', 'cfd');
         $sql_select->addfield('cfd', 'cid');
@@ -343,7 +374,7 @@ class HzdEarlyWarnings extends ControllerBase {
         $earlywarining_link = \Drupal::service('link_generator')
             ->generate(t($earlywarining_view_link), $url);
         $elements = array(
-          array('data' => $early_warning_title, 'class' => 'releases-cell'),
+          array('data' => $relase_title, 'class' => 'releases-cell'),
           array('data' => isset($warnings_lastpost['warnings']) ? $earlywarining_link : '', 'class' => 'earlywarnings-cell'),
           array('data' => $comments_count, 'class' => 'responses-cell'),
           array('data' => $warnings_lastpost['lastpost'], 'class' => 'lastpostdate-cell'),
