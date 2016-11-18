@@ -13,3 +13,12 @@ favorites.remove:
     _title: 'Remove Favorite'
   requirements:
     _permission: 'manage favorites'
+    
+favorites.removeAjax:
+  path: '/favorites/removeajax/{fid}'
+  defaults:
+    _controller: '\Drupal\favorites\Controller\MyFavController::removeAjax'
+    _title: 'Remove Favorite'
+  requirements:
+    _permission: 'manage favorites'    
+    

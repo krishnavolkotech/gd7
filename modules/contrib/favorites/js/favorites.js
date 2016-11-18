@@ -16,4 +16,8 @@
     });
     e.preventDefault();
   });
+  
+  $.fn.remove_ajax_callback =function(arg){
+     $('span#del-' + arg).closest('li').remove();  
+  }
 })(jQuery);
