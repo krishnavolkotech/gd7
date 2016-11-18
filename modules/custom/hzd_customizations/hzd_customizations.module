@@ -556,8 +556,8 @@ function hzd_customizations_node_update_index(NodeInterface $node) {
 
   global $base_path;
   $files = array();
-  dpm('hzd_customizations_node_update_index');
-  dpm($node->files);
+ // dpm('hzd_customizations_node_update_index');
+//  dpm($node->files);
   if (isset($node->files)) {
     foreach ($node->files as $file) {
       $replace_chars = array('_', '-', '.');
@@ -771,7 +771,7 @@ function hzd_customizations_queue_info() {
  *
  */
 function insert_notifications_after_login($userid) {
-  dpm('i am from insert_notifications_after_login' . $userid);
+ //  dpm('i am from insert_notifications_after_login' . $userid);
   // insert_user_default_notifications($userid);
   $data = array();
   $data['uid'] = $userid;
