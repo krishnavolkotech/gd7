@@ -223,16 +223,29 @@ function hzd_preprocess_breadcrumb(&$variables) {
   if($route == 'view.group_members_lists.page_1'){
     // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
     /**
-     * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail.
+     * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail in breadcrumb.
      * Help Link: https://www.previousnext.com.au/blog/making-drupal-8s-menu-active-trail-consider-query-arguments
      */
-    unset($variables['breadcrumb'][2]);
+    if(count($variables['breadcrumb']) == 4){     
+     unset($variables['breadcrumb'][2]);  
+    }
+    
   }
   
   
-  $block = \Drupal\block\Entity\Block::load('printlinks');
-  $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
- // $variables['breadcrumb']['entity_print_block'] = $block_view;
+//  $block = \Drupal\block\Entity\Block::load('printlinks');
+//  if(isset($block)){
+//    $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
+//    $variables['breadcrumb']['entity_print_block'] = $block_view;
+//  }
+  
+  // Embedding the add to favorites block in breadcrumb.
+  $block = \Drupal\block\Entity\Block::load('addtofavorites');
+  if(isset($block)){
+    $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
+    $variables['breadcrumb']['add_fav_form'] = $block_view;
+  }
+  
   
 }
 
