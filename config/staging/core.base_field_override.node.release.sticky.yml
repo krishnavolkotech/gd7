@@ -11,7 +11,7 @@ bundle: release
 label: 'Sticky at the top of lists'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0

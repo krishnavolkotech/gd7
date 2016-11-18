@@ -14,7 +14,7 @@ _core:
 id: hzd_user_2
 theme: hzd
 region: '-1'
-weight: -4
+weight: -8
 provider: null
 plugin: 'system_menu_block:tools'
 settings:

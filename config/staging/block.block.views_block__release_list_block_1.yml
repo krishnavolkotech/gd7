@@ -17,15 +17,15 @@ third_party_settings:
 id: views_block__release_list_block_1
 theme: hzd
 region: sidebar_first
-weight: -21
+weight: -20
 provider: null
 plugin: 'views_block:release_list-block_1'
 settings:
   id: 'views_block:release_list-block_1'
-  label: 'New Releases'
+  label: 'Neue Releases'
   provider: views
   label_display: visible
-  views_label: 'New Releases'
+  views_label: 'Neue Releases'
   items_per_page: none
 visibility:
   request_path:

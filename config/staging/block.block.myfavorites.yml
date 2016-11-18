@@ -15,7 +15,7 @@ third_party_settings:
 id: myfavorites
 theme: hzd
 region: sidebar_first
-weight: -17
+weight: -18
 provider: null
 plugin: favorites_block
 settings:
@@ -33,6 +33,6 @@ visibility:
       user: '@user.current_user_context:current_user'
   request_path:
     id: request_path
-    pages: '<front>'
+    pages: "<front>\r\n*-groups"
     negate: true
     context_mapping: {  }

@@ -33,7 +33,7 @@ bundle: im_upload_page
 label: Dateien
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

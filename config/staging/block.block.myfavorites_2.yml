@@ -15,12 +15,12 @@ third_party_settings:
 id: myfavorites_2
 theme: hzd
 region: sidebar_first
-weight: -24
+weight: -22
 provider: null
 plugin: favorites_block
 settings:
   id: favorites_block
-  label: 'My Favorites'
+  label: 'Meine Favoriten'
   provider: favorites
   label_display: visible
 visibility:

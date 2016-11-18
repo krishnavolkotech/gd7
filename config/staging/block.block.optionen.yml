@@ -16,7 +16,7 @@ third_party_settings:
 id: optionen
 theme: hzd
 region: sidebar_first
-weight: -18
+weight: -19
 provider: null
 plugin: 'system_menu_block:optionen'
 settings:
@@ -37,6 +37,6 @@ visibility:
       user: '@user.current_user_context:current_user'
   request_path:
     id: request_path
-    pages: '<front>'
+    pages: "<front>\r\n*-groups"
     negate: true
     context_mapping: {  }

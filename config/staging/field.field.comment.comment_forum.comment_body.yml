@@ -13,10 +13,10 @@ id: comment.comment_forum.comment_body
 field_name: comment_body
 entity_type: comment
 bundle: comment_forum
-label: Comment
+label: Kommentar
 description: ''
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

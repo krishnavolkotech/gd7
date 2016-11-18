@@ -12,7 +12,7 @@ bundle: quickinfo
 label: '2.10 Dates'
 description: '(z.B. gesetzlich vorgegebene Ersatztermine)'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
