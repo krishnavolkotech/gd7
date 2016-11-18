@@ -782,6 +782,7 @@ input.start_date,
 input.end_date {
   height: 34px !important;
   border-radius: 4px 0px 0px 4px !important;
+  font-size:14px;
 }
 /*.form-control{
   border-radius: 4px 0px 0px 4px !important;
@@ -1649,7 +1650,6 @@ aside #block-incidentblock ul li span.service-item{
   width:auto;
   margin:0;
   font-size:13px;
-  font-weight:bold;
   text-indent: 2px;
   padding:1px 6px 0 0;
   line-height:23px;
@@ -1976,4 +1976,25 @@ section.masquerade-block-form form .button{
 }
 .reset_form{
   margin-left:0;
+}
+section.block-star-favorites-block{
+  float:right;
+}
+section.block-star-favorites-block button{
+  display:none;
+}
+section.block-star-favorites-block .form-type-checkbox{
+ float:right;
+}
+section.block-star-favorites-block .form-type-checkbox input.add-fav{
+  background: url(../images/ic_star_black_18dp_1x.png) left top no-repeat;
+  width:18px;
+  height:18px;
+  float:left;
+}
+section.block-star-favorites-block .form-type-checkbox input.del-fav{
+  background: url(../images/ic_star_border_black_18dp_1x.png) left top no-repeat; 
+  width:18px;
+  height:18px;
+  float:left;
 }
