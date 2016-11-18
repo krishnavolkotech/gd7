@@ -1,0 +1,11 @@
+uuid: 2d55b498-5940-4f1c-9c4f-cee883e49814
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.verbesserungsvorschlag
+id: contact_message.verbesserungsvorschlag
+target_entity_type_id: contact_message
+target_bundle: verbesserungsvorschlag
+default_langcode: de
+language_alterable: false

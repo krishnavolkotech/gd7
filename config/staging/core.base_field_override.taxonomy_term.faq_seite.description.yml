@@ -1,0 +1,20 @@
+uuid: c90da288-e346-40c9-b5db-0a945654a6c9
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.faq_seite
+  module:
+    - text
+id: taxonomy_term.faq_seite.description
+field_name: description
+entity_type: taxonomy_term
+bundle: faq_seite
+label: Description
+description: 'A description of the term.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

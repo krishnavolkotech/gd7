@@ -14,6 +14,7 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
+use Drupal\node\Entity\Node;
 
 if (SITE_ADMIN) {
   define('SITE_ADMIN', 'site_administrator');
@@ -124,8 +125,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $uid = $user->id();
   $formatted_name = $user->getDisplayName();
   $raw_name = $user->getAccountName();
-
-  if ($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form') {
+//pr(array_keys($form['actions']));exit;
+  if (($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form')) {
     $form['actions']['publish']['#value'] = t('Publish');
     $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
     $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
@@ -171,6 +172,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     unset($form['notifications']);
 
     $form['actions']['submit']['#value'] = t('Publish');
+    
+    
     $form['actions']['submit']['#prefix'] = '<div id="publish_content">';
     $form['actions']['submit']['#suffix'] = '</div>';
   }
@@ -188,6 +191,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       ),
     );
     $form['actions']['custom_unpublish']['#submit'] = array_merge($form['actions']['custom_unpublish']['#submit'], $form['actions']['submit']['#submit']);
+    $form['actions']['submit']['#submit'][] = 'cust_quick_info_node_form_publish';
     // dpm($form['actions']['custom_unpublish']['#submit']);.
   }
 
@@ -321,6 +325,17 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
  */
 function cust_quick_info_node_form_submit(&$form, FormStateInterface $form_state) {
   $form_state->setValue('status', 0);
+}
+
+function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_state){
+  $form_state->setValue('status', 1);
+  if($nodeId = $form_state->getValue('nid')){
+    $node = Node::load($nodeId);
+    $node->set('status',1);
+    $node->validate();
+    $node->save();
+  }
+  
 }
 
 /**

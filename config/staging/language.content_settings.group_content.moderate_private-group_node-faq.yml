@@ -1,0 +1,11 @@
+uuid: 87fcdbc4-2edd-495a-abdf-7e05949d6809
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate_private-group_node-faq
+id: group_content.moderate_private-group_node-faq
+target_entity_type_id: group_content
+target_bundle: moderate_private-group_node-faq
+default_langcode: site_default
+language_alterable: false

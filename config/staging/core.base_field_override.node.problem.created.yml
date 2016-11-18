@@ -1,0 +1,18 @@
+uuid: c74f5e97-17f1-4aa3-b466-b9a882c7eb65
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.problem
+id: node.problem.created
+field_name: created
+entity_type: node
+bundle: problem
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

@@ -7,6 +7,7 @@
 
 use Drupal\group\Entity\Group;
 use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\group\Entity\GroupContent;
 
 /**
  * Implements hook_tokens().
@@ -26,7 +27,15 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
 
   if ($type == 'group') {
     $group = $data['group'];
-
+    if(empty($group)){
+      $node = $data['node'];
+      $groupContentId = \Drupal::entityQuery('group_content')
+        ->condition('type','%group_node%','LIKE')
+        ->condition('entity_id',$node->id())
+        ->execute();
+      $groupContent = GroupContent::load(reset($groupContentId));
+      $group = $groupContent->getGroup();
+    }
     // Getting required values for group title.
 //    $group = \Drupal::routeMatch()->getParameter('group');
 //

@@ -1,0 +1,13 @@
+uuid: 3fe4800b-305e-4916-aa07-be6b7b80ddae
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  module:
+    - gnode
+id: group_content_type_71a6b6a92fefd
+label: 'Moderate Private: Group node (Eingesetzte Releases)'
+description: 'Adds <em class="placeholder">Eingesetzte Releases</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:deployed_releases'

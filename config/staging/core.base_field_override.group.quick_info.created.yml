@@ -1,0 +1,18 @@
+uuid: 8d28e13c-3f59-4e47-b316-92e8fa3d8e86
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+id: group.quick_info.created
+field_name: created
+entity_type: group
+bundle: quick_info
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

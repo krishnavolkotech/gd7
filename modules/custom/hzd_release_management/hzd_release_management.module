@@ -427,12 +427,15 @@ function send_qi_notifications($entity) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
       // Trigger mail functionality to send immediate notifications of quickinfo.
-      $markup = ['#theme' => 'node__quickinfo__pdf', '#node' => $entity];
+      //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
+      $markup = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId())->view($entity, 'print');
+      $files = $entity->get('upload')->referencedEntities();
+      //unset($markup['printfile']);
       $style = \Drupal::service('printable.css_include')->getCssIncludePath();
       // Replace the token for subject.
       $subject = $entity->label() . " has been updated.";
       $message_text = \Drupal::service('renderer')->render($markup) . '<link rel="stylesheet" href="' . $base_url . '/' . $style . '" media="all" />';
-      send_immediate_notifications($subject, $message_text, $mail, $preference);
+      send_immediate_notifications($subject, $message_text, $mail, $preference,$files);
     }
   }
 }
@@ -506,6 +509,7 @@ function hzd_get_immediate_pf_notification_user_mails() {
  *
  */
 function hzd_get_immediate_qi_notification_user_mails($services) {
+  
   $options = FieldStorageConfig::loadByName('node', 'field_other_services')->getSetting('allowed_values');
   $affetced_services = array();
   foreach ($services as $val) {
@@ -518,6 +522,7 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
     ->condition('q.send_interval', 0, '=');
 
   $results = $query->execute()->fetchCol();
+
   $uids_list = array();
   foreach ($results as $serialized_uids) {
     $uids = unserialize($serialized_uids);
@@ -548,7 +553,7 @@ function hzd_user_mails($uids) {
 /**
  * Send immediate notifications.
  */
-function send_immediate_notifications($subject, $message_text, $to, $preference) {
+function send_immediate_notifications($subject, $message_text, $to, $preference,$attachment = null) {
   $mailManager = \Drupal::service('plugin.manager.mail');
   $module = 'hzd_release_management';
   $key = 'immediate_notifications';

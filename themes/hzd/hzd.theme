@@ -7,6 +7,9 @@
  * Place your custom PHP code in this file.
  */
 use Drupal\Core\Url;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Template\Attribute;
 
 function hzd_preprocess_page(&$variables) {
   $user = \Drupal::currentUser();
@@ -206,10 +209,31 @@ function hzd_preprocess_node(&$variables) {
       $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
     }
   }
+  
+  // Adds class to view pdf link.
   if(isset($variables['content']['entity_print_view'])){
     $variables['content']['entity_print_view']['#attributes'] = ['class'=>['entity_print_view']];
     //pr($variables['content']['entity_print_view']);exit;
   }
+}
+
+function hzd_preprocess_breadcrumb(&$variables) {
+  // This breadcrumb will apply only for our view at /group/24/address
+  $route = \Drupal::routeMatch()->getRouteName();  
+  if($route == 'view.group_members_lists.page_1'){
+    // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
+    /**
+     * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail.
+     * Help Link: https://www.previousnext.com.au/blog/making-drupal-8s-menu-active-trail-consider-query-arguments
+     */
+    unset($variables['breadcrumb'][2]);
+  }
+  
+  
+  $block = \Drupal\block\Entity\Block::load('printlinks');
+  $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
+ // $variables['breadcrumb']['entity_print_block'] = $block_view;
+  
 }
 
 function custom_user_fullname($uid) {
@@ -305,6 +329,38 @@ function hzd_preprocess_menu_local_tasks(&$vars){
   if(!empty($node) && $node->getType() == 'downtimes'){
       unset($vars['primary']['entity.node.edit_form']);
       unset($vars['primary']['entity.node.delete_form']);
+  }
+
+}
+
+function hzd_preprocess_views_view_summary_unformatted(&$variables){
+  $view = $variables['view'];
+  if($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1'){
+    // Adding the all link to glossary
+    
+      $active_urls = array(
+        // Force system path.
+        \Drupal::url('<current>', [], ['alias' => TRUE]),
+        // Could be an alias.
+        \Drupal::url('<current>'),
+      );
+      $active_urls = array_combine($active_urls, $active_urls);
+      
+      $url_options = array();
+      $args = $view->args;
+      if (!empty($view->exposed_raw_input)) {
+        $url_options['query'] = $view->exposed_raw_input;
+      }
+      $view_url = $view->getUrl($args)->setOptions($url_options);
+      
+      $all_terms = new stdClass();
+      $all_terms->url = $view_url->toString();
+      $all_terms->separator = Xss::filterAdmin($variables['options']['separator']);
+      $all_terms->active = isset($active_urls[$all_terms->url]);
+      $all_terms->link = t('All');
+      $all_terms->attributes = new Attribute(array());
+        
+      $variables['rows'][] = $all_terms;
   }
 
 }

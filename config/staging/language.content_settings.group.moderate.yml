@@ -1,0 +1,16 @@
+uuid: 5678152a-22fc-4a52-b6bc-cbd699436dfd
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group.moderate
+target_entity_type_id: group
+target_bundle: moderate
+default_langcode: site_default
+language_alterable: false

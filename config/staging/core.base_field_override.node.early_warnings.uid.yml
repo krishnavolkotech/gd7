@@ -1,0 +1,20 @@
+uuid: ef621ab5-3b63-48b3-a1e1-6c4d3189d27b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.early_warnings
+id: node.early_warnings.uid
+field_name: uid
+entity_type: node
+bundle: early_warnings
+label: 'Authored by'
+description: 'The username of the content author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference
