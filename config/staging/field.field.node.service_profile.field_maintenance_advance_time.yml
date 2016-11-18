@@ -12,7 +12,7 @@ bundle: service_profile
 label: 'Minimum time to schedule a maintenance in advance (in Hours)'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

@@ -10,7 +10,7 @@ weight: -101
 internal: true
 group_type: open
 permissions:
-  - 'view group'
-  - 'join group'
-  - 'view group_node:downtimes content'
-  - 'view downtimes node'
+  0: 'view group'
+  1: 'join group'
+  4: 'view group_node:downtimes content'
+  5: 'view downtimes node'

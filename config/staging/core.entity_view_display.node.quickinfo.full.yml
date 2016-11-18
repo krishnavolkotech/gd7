@@ -165,4 +165,6 @@ content:
     third_party_settings: {  }
 hidden:
   entity_print_view: true
+  field_custom_title: true
+  field_related_transfer_number: true
   langcode: true

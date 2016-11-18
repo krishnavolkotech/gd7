@@ -1,6 +1,6 @@
 uuid: 2a9e5086-6daa-4e37-a5b3-a0797676daca
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - block_class
@@ -14,8 +14,8 @@ third_party_settings:
     classes: blue
 id: itsmprozessemenublock
 theme: hzd
-region: sidebar_first
-weight: -20
+region: '-1'
+weight: 3
 provider: null
 plugin: itsmprozesse_menu_block
 settings:

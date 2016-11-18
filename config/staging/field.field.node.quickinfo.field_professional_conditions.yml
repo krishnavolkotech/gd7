@@ -14,7 +14,7 @@ bundle: quickinfo
 label: '2.2 Professional / organizational conditions for employment'
 description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

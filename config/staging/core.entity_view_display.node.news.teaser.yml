@@ -25,4 +25,5 @@ content:
     weight: 100
 hidden:
   entity_print_view: true
+  field_news_date: true
   langcode: true

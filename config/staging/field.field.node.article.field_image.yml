@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_image
     - node.type.article
   module:
+    - content_translation
     - filefield_paths
     - image
 third_party_settings:
@@ -26,16 +27,21 @@ third_party_settings:
         slashes: false
         pathauto: false
         transliterate: false
+  content_translation:
+    translation_sync:
+      alt: alt
+      title: title
+      file: '0'
 _core:
   default_config_hash: tgJzhA7Swh4M_gWU5FwFe5lPxPj5rebpMbvhpdNrERs
 id: node.article.field_image
 field_name: field_image
 entity_type: node
 bundle: article
-label: Image
+label: Bild
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

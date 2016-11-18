@@ -23,4 +23,5 @@ content:
   links:
     weight: 100
 hidden:
+  entity_print_view: true
   langcode: true

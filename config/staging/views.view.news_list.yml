@@ -299,7 +299,7 @@ display:
             label: ''
           granularity: second
           plugin_id: datetime
-      title: 'AKTUELLES IM BPK'
+      title: 'Aktuelles im BpK'
       header: {  }
       footer: {  }
       empty: {  }

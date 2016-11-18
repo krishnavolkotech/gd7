@@ -22,4 +22,6 @@ content:
     third_party_settings: {  }
   links:
     weight: 100
-hidden: {  }
+hidden:
+  entity_print_view: true
+  langcode: true

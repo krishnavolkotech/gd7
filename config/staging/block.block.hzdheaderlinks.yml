@@ -14,7 +14,7 @@ third_party_settings:
 id: hzdheaderlinks
 theme: hzd
 region: '-1'
-weight: -13
+weight: -17
 provider: null
 plugin: hzd_header_links
 settings:

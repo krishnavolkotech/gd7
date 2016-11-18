@@ -13,10 +13,10 @@ id: node.page.body
 field_name: body
 entity_type: node
 bundle: page
-label: Body
+label: Textkörper
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

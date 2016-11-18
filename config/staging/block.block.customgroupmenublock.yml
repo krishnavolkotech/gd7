@@ -14,7 +14,7 @@ third_party_settings:
 id: customgroupmenublock
 theme: hzd
 region: sidebar_first
-weight: -22
+weight: -24
 provider: null
 plugin: cust_group_menu_block
 settings:
