@@ -405,6 +405,20 @@ class HzdcustomisationStorage {
     }
     return $service_names;
   }
+  
+  
+  static function getDependantServices($serviceId) {
+    
+    $services = \Drupal::entityQuery('node')->condition('field_dependent_downtimeservices',$serviceId)->execute();
+    $service = \Drupal\node\Entity\Node::loadMultiple($services);
+//    $dependantServicesList = $service->get('field_dependent_services')->getValue();
+    $dependantServices = [];
+    foreach($service as $val){
+      $dependantServices[] = $val->get('field_dependent_service')->referencedEntities()[0]->id();
+//      pr($dependantServices);exit;
+    }
+    return $dependantServices;
+  }
 
   /**
    * Get each service data, displayed in downtimes.

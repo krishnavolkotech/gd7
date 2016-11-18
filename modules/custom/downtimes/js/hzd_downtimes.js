@@ -417,3 +417,20 @@
         }
     };
 })(jQuery, Drupal);
+var data;
+jQuery(document).ready(function(){
+    jQuery('.form-checkboxes#edit-services-effected input[type="checkbox"]').change(function(){
+        if(jQuery(this).is(':checked')){
+            var serviceId = jQuery(this).val();
+            jQuery.post('/get_dependent_services/'+serviceId,function(data1){
+//                console.log(data1);
+                data = jQuery.parseJSON(data1);
+                
+                jQuery.each(data,function(key,val){
+                    console.log(val);
+                    jQuery('.form-checkboxes#edit-services-effected #edit-services-effected-'+val).prop( "checked", true );
+                });
+            });
+        }
+    });
+});

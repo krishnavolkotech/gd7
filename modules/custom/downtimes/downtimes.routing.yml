@@ -211,4 +211,11 @@ downtimes.archive_data_export:
   requirements:
     _access: 'TRUE'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+downtimes.get_dependent_services:
+  path: '/get_dependent_services/{service}'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\NewDowntimesController::getDependentServices'
+    _title: 'Data Export'
+  requirements:
+    _access: 'TRUE'
 

@@ -556,11 +556,12 @@ function downtimes_set_default_values(&$form, $nid) {
  * Append hours and minutes to day form.
  */
 function append_hours_minutes(&$form, $name, $data) {
+//  pr($data);exit;
   //$date_format = 'H:i';
   //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
   if (!empty($data['service_time_' . $name . '_from'])) {
     if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_' . $name . '_from'])) {
-      //$data[$name . '_from'] .= ':00';
+      $data['service_time_' . $name . '_from'] .= ':00';
     }
     $fromTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_' . $name . '_from']));
   }
@@ -569,7 +570,7 @@ function append_hours_minutes(&$form, $name, $data) {
   }
   if (!empty($data['service_time_' . $name . '_until'])) {
     if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_' . $name . '_until'])) {
-      //$data[$name . '_until'] .= ':00';
+      $data['service_time_' . $name . '_until'] .= ':00';
     }
     $untilTime = Drupal\Core\Datetime\DrupalDateTime::createFromDateTime(DateTime::createFromFormat('H:i:s', $data['service_time_' . $name . '_until']));
   }

@@ -55,5 +55,11 @@ class NewDowntimesController extends ControllerBase {
     $response = $result;
     return $response;
   }
+  
+  function getDependentServices($service = null){
+    $data = HzdcustomisationStorage::getDependantServices($service);
+    echo json_encode($data);exit;
+//    return new \Symfony\Component\HttpFoundation\JsonResponse((array)$data);
+  }
 
 }
