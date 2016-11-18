@@ -1952,11 +1952,12 @@ form.maintenance .filter_title_header h3{
   letter-spacing:0.1px;
   margin-top:10px !important;
 }
+
 form.maintenance .filter_title_header h3{
-    background:#f1894b; 
-} 
+    background:#f1894b;
+}
 form.incidents .filter_title_header h3{
-   background:#d7655a; 
+   background:#d7655a;
 }
 a{
   color:rgba(4, 66, 95, 1);
@@ -1976,4 +1977,57 @@ section.masquerade-block-form form .button{
 }
 .reset_form{
   margin-left:0;
+}
+
+
+/* 20161114 r2.5.2 droy */
+
+aside section .form-group .item-list ul li .field-content {
+  line-height: 1.75;
+  font-size: 13px;
+}
+
+aside .region-sidebar-first .block-favorites .item-list ul li > a {
+  font-size: 14px;
+  color: #04425f;
+  font-weight: normal;
+}
+
+aside section .form-group .view-footer a.all-releases, aside section .form-group .view-footer a.all-problems, section .form-group .more-link a, aside #block-maintenance a, aside #block-incidentblock a {
+  color: #04425f;
+  line-height: 1.75;
+}
+
+section .form-group .more-link a:hover, aside section .form-group .view-footer a:hover, aside section .form-group .more-link a:hover, aside #block-maintenance a:hover, aside #block-incidentblock a:hover {
+  text-decoration: underline;
+  color: #04425f;
+}
+
+aside #block-incidentblock ul li span {
+  font-size: 14px;
+}
+
+aside #block-incidentblock h2.block-title {
+  color: #cc0000;
+}
+
+aside #block-incidentblock ul li span.service-item {
+  /* font-weight: normal; */
+  font-size: 14px;
+  color: #cc0000;
+}
+
+aside #block-maintenance ul li span.service-item {
+  font-size: 14px;
+  margin: 0;
+  text-transform: none;
+}
+
+aside #block-maintenance ul li span {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+section h2.block-title, aside .region-sidebar-first .block-favorites h2.block-title, aside #block-maintenance h2.block-title {
+  text-transform: none;
 }
