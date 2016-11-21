@@ -82,20 +82,20 @@ class StarFavAddForm extends FormBase {
       $fav_class = 'add-fav';
     }
     
-    $form['add_to_favorites'] = array(
+/*    $form['add_to_favorites'] = array(
       '#type' => 'checkbox',
       '#default_value' => !empty($fid),
       '#attributes' => array(
         'class' => array('add-fav-checkbox',$fav_class),
         'onclick' => 'this.form.submit()',
         ),
-//      '#ajax' => array(        
-//        'wrapper' => 'add-to-faborites-checkbox',
-//        //'url' => $submit_url,
-//      '#prefix' => '<div id="add-to-faborites-checkbox">',
-//      '#suffix' => '</div>',        
-//     ),
-    );        
+      '#ajax' => array(        
+        'wrapper' => 'add-to-faborites-checkbox',
+        //'url' => $submit_url,
+      '#prefix' => '<div id="add-to-faborites-checkbox">',
+      '#suffix' => '</div>',        
+     ),
+    );    */    
     
     /**
      * todo:  uncheck the ajax property and check for ajax submission
@@ -106,6 +106,9 @@ class StarFavAddForm extends FormBase {
   //    '#ajax' => array(
   //     'url' => $submit_url,
   //    ),
+      '#attributes' => array(
+        'class' => array('add-fav-submit',$fav_class),
+        ),
     );
     return $form;
   }
