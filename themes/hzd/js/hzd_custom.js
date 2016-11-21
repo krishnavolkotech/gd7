@@ -36,6 +36,7 @@
         $("#block-incidentblock .state-item").hover(handlerInIncident, handlerOutIncident);
         $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
 
+        // Handlers for front page tool tips.
         function handlerInMaintenance() {
             $(this).parent().next('.downtime-hover').css('display', 'block');
         }
@@ -53,7 +54,12 @@
             $(this).parent().next('.downtime-hover').css('display', 'none');
 
         }
-
+        
+        //Clears from jquery indternal data cache
+        $('.block-cust-group-menu-block .dropdown-toggle').removeData('toggle');
+        // Removes the data-toggle atribute entirely from the parent anchor link.
+        $('.block-cust-group-menu-block .dropdown-toggle').removeAttr('data-toggle');
+        
 
     });
 
