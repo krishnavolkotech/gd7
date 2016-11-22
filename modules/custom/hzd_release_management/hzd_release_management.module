@@ -341,7 +341,7 @@ function send_release_notifications($entity) {
 /**
  *
  */
-function send_downtime_notifications($entity) {
+function send_downtime_notifications($entity, $action = 'update') {
   $service_id = \Drupal::database()->select('downtimes', 'd')
       ->fields('d', ['service_id'])
       ->condition('d.downtime_id', $entity->id(), '=')
@@ -350,6 +350,13 @@ function send_downtime_notifications($entity) {
   $view_builder = \Drupal::entityManager()->getViewBuilder('node');
   // Get immediate notifications user mails.
   $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
+  if ($action == 'insert') {
+    $text = 'Inhalt erstellt';
+  }
+  else {
+    $text = 'Inhalt aktualisiert';
+  }
+  $subject = t($text . ' : ' . $entity->label());
   if (is_array($result) && count($result) > 0) {
     foreach ($result as $values) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
@@ -361,7 +368,7 @@ function send_downtime_notifications($entity) {
 //      $token_body = \Drupal::config('hzd_customizations.settings')->get('downtimes_mail_template')['mail_content'];
 //      // Replace the token for subject.
 //      $message_text = $token_service->replace($token_body, array('node' => $entity));
-      $node = $view_builder->view($entity,'full','de');
+      $node = $view_builder->view($entity, 'full', 'de');
       $message_text = \Drupal::service('renderer')->render($node);
       send_immediate_notifications($subject, $message_text, $mail, $preference);
     }
@@ -451,7 +458,7 @@ function hzd_release_management_node_insert($entity) {
     send_problem_notifications($entity);
   }
   if ($entity->getType() == 'downtimes') {
-    send_downtime_notifications($entity);
+    send_downtime_notifications($entity, 'insert');
   }
   if ($entity->getType() == 'planning_files') {
     send_pf_notifications($entity);
