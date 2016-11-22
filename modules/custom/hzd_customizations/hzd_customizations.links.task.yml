@@ -31,3 +31,8 @@ hzd_customizations.quickinfo_template_groups:
   base_route: hzd_customizations.quickinfo_templat
   weight: 1
 
+hzd_customizations.downtimes_mail_template:
+  title: Downtimes Template
+  route_name: hzd_customizations.downtimes_mail_template
+  base_route: hzd_customizations.quickinfo_templat
+  weight: 3

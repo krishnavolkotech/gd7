@@ -76,7 +76,7 @@
 <article{{ attributes.addClass(classes) }}>
 
     {{ title_prefix }}
-    {% if not page %}
+    {% if not page and 0 %}
         <h2{{ title_attributes }}>
             <a href="{{ url }}" rel="bookmark">{{ label }}</a>
         </h2>
@@ -134,7 +134,7 @@
     <div style = "clear:both" ></div>
     {% if incident.reason %}
         <div class = "Incident">
-            <div class = 'downtimes_title'>{{ 'Reason for Non Compliance'|trans }}</div>
+            <div class = 'downtimes_title'>{{ 'Reason'|trans }}</div>
             <div class = 'downtimes_content'>{{ incident.reason }}</div>
         </div>
         <div style = "clear:both" ></div>
