@@ -1,7 +1,14 @@
 uuid: e2bcfc58-492a-40f5-bce5-1793b8aa67cc
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
 name: downtimes
 type: downtimes
 description: 'Eine Störung oder Blockzeit melden.'

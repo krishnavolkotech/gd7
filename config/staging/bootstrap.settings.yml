@@ -1,17 +1,18 @@
 favicon:
   mimetype: image/vnd.microsoft.icon
   path: ''
-  url: 'http://hzdupgrd-test.azri.de/themes/bootstrap/favicon.ico'
+  url: 'http://hzdupgrd-dev2.azri.de/themes/bootstrap/favicon.ico'
   use_default: true
 schema: 8000
 schemas:
   bootstrap: 8000
 table_responsive: '-1'
 table: ''
-cdn_custom_css: ''
-cdn_custom_css_min: ''
-cdn_custom_js: ''
-cdn_custom_js_min: ''
+cdn_custom_css: /themes/hzd/css/3.3.5/bootstrap.css
+cdn_custom_css_min: /themes/hzd/css/3.3.5/bootstrap.min.css
+cdn_custom_js: /themes/hzd/js/3.3.5/bootstrap.js
+cdn_custom_js_min: /themes/hzd/js/3.3.5/bootstrap.min.js
+cdn_provider: custom
 features:
   comment_user_picture: true
   comment_user_verification: true
@@ -21,4 +22,4 @@ logo:
   path: ''
   url: ''
   use_default: true
-cdn_provider: ''
+langcode: de
