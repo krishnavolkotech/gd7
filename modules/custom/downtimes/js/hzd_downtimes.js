@@ -295,9 +295,9 @@
                 $("#edit-services-effected input:checkbox:checked").each(function () {
                     passed = 0;
                     var service_id = $(this).val();
-                    /*if(a.maintenance[service_id].length == 0) {
+                    if(a.maintenance[service_id].length == 0) {
                         return false;
-                    }*/
+                    }
                     $.each(a.maintenance[service_id], function (key, value) {
                         var day_from_index = jQuery.inArray(key, weekday);
                         var day_until_index = jQuery.inArray(value.day_until, weekday);
