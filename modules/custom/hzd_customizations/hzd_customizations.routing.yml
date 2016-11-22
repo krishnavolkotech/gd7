@@ -122,3 +122,12 @@ hzd_customizations.front_page_blocks_settings:
 ## 'access callback' => 'saved_quickinfo_og_is_member'
 #    _permission: 'access content'
 #
+hzd_customizations.downtimes_mail_template:
+  path: '/admin/messaging/templates/downtimes'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\DowntimesMailTemplate'
+    _title: 'Mail Template for Downtimes'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
