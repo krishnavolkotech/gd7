@@ -87,7 +87,7 @@ function cust_group_group_content_insert($entity){
 function sendGroupUpdateMail($entity){
     $group = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
 //    pr($group);exit;
-    if(!empty($group) && $group['gid']){
+    if(!empty($group) && $group['gid'] && in_array($entity->getType(),['event','faqs','forum','page','newsletter'])){
         $getUserMailList = getGroupMemberList($group['gid']);
         send_notifications($group,$getUserMailList);
     }
