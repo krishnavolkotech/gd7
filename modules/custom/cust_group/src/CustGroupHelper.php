@@ -8,6 +8,8 @@
 
 namespace Drupal\cust_group;
 
+<<<<<<< HEAD
+use Drupal\group\Entity\GroupContent;
 /**
  * Description of CustGroupHelper
  *
@@ -21,8 +23,9 @@ class CustGroupHelper {
         ->condition('type', '%group_node%', 'LIKE')
         ->condition('entity_id', $nodeId)
         ->execute();
+    
     if (!empty($groupContentIds))
-      return reset($groupContentIds);
+      return GroupContent::load(reset($groupContentIds));
     return null;
   }
 
