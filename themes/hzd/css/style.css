@@ -1343,6 +1343,7 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   float: left;
   width: auto;
   padding-right: 5px;
+  margin:0;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
   position: absolute;
@@ -1555,6 +1556,7 @@ strong {
   font-weight: normal;
 }
 /*-----New styles----*/
+
 aside #block-incidentblock h2.block-title{
   margin:0 !important;
   color:#d45750;
@@ -2064,10 +2066,66 @@ form.node-downtimes-form #edit-services-effected .form-checkbox .published-servi
   width:auto;
   float:left;
 }
+form.node-downtimes-edit-form #edit-services-effected--wrapper .panel-title,
+form.node-downtimes-edit-form #edit-states--wrapper .panel-title,
 form.node-downtimes-form #edit-services-effected--wrapper .panel-title,
 form.node-downtimes-form #edit-states--wrapper .panel-title{
-  padding:0 10px !important;
+  padding:0;
 }
 ol.breadcrumb form{
   margin-bottom:0;
+}
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-edit-form .form-wrapper .form-type-checkbox,
+form.downtimes-setting-form #edit-services .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-form .form-wrapper .form-type-checkbox{
+  width:33.33%;
+  float:left;
+  margin:0 0 7px 0;
+  padding:0;
+}
+form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox{
+  margin-top:0;
+}
+form.downtimes-setting-form button#edit-downtimes-settings-submit {
+ /* float:right;*/
+}
+form.downtimes-setting-form #edit-services{
+  width:100%;
+  float:left;
+  margin:20px 0;
+}
+form.node-downtimes-edit-form .panel,
+form.node-downtimes-form .panel{
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: none;
+    box-shadow:none;
+}
+form.node-downtimes-edit-form .panel .panel-body,
+form.node-downtimes-form .panel .panel-body{
+  padding:0;
+}
+form.node-downtimes-edit-form .panel .panel-heading,
+form.node-downtimes-form .panel .panel-heading {
+    color: #333;
+    background:transparent;
+    border:none;
+}
+form.node-downtimes-edit-form .form-item-startdate-planned,
+form.node-downtimes-edit-form .form-item-enddate-planned,
+form.node-downtimes-form .form-item-startdate-planned,
+form.node-downtimes-form .form-item-enddate-planned{
+  width:49% !important;
+  float:left;
+  margin-bottom:20px;
+}
+form.node-downtimes-edit-form .form-item-startdate-planned,
+form.node-downtimes-form .form-item-startdate-planned{
+  margin-right:1%;
+}
+form.node-downtimes-edit-form .form-item-enddate-planned,
+form.node-downtimes-form .form-item-enddate-planned{
+  margin-left:1%;
 }
