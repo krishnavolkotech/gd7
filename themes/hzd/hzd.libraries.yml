@@ -5,6 +5,7 @@ global-styling:
       css/3.3.5/overrides.min.css: {}
       css/3.3.5/bootstrap.css: {}
       css/3.3.5/bootstrap.min.css: {}
+      css/bootstrap-datetimepicker-standalone.css : {}
   js:
     theme:
       js/3.3.5/bootstrap.js: {}
@@ -18,5 +19,9 @@ quickinfo:
 bootstrap-scripts:
   js:
     js/hzd_custom.js : {}
+    js/libraries/moment.js : {}
+    js/libraries/collapse.js : {}
+    js/libraries/transition.js : {}
+    js/libraries/bootstrap-datetimepicker.min.js : {}
   dependencies:
       - core/drupal.tableheader
