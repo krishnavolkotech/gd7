@@ -278,7 +278,7 @@ function hzd_release_management_cron() {
  * @return:returns abbreviations of states from states table
  */
 function get_all_user_state($active = 0) {
-  if ($active) {
+  if ($active === 1) {
     $sql_active = "where active = 1";
   }
   else {

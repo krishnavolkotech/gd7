@@ -372,6 +372,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 
     // This is for wrapper around the add more fields field.
     $form['maintenance_windows'] = [
+      '#title'=>t('Maintenance Windows'),
       '#type' => 'details',
       '#open' => TRUE,
       '#prefix' => '<div id="names-fieldset-wrapper">',
