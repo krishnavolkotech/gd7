@@ -8,7 +8,6 @@
 
 namespace Drupal\cust_group;
 
-<<<<<<< HEAD
 use Drupal\group\Entity\GroupContent;
 /**
  * Description of CustGroupHelper
