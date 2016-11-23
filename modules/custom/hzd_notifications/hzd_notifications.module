@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\cust_group\Controller\CustNodeController;
+use Drupal\cust_group\CustGroupHelper;
+
 /**
  * Implements callback_batch_operation().
  */
@@ -171,23 +174,81 @@ function custom_date_deployed_batch_finished($success, $results, $operations) {
  * implements hook_form_alter
  */
 function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  if($form_id == 'node_type_add_form' || $form_id == 'node_type_edit_form') {
-    $form['notification'] = array(
-      '#type' => 'details',
-      '#title' => t('Notifications settings'),
-      '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-      '#group' => 'additional_settings',
-    );
-    $form['notification']['notification_checkbox'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Notifications'),
-      '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_'.$form['type']['#default_value']) ?: 0,
-    );
-    $form['actions']['submit']['#submit'][]  = 'hzd_notifications_form_submit';
-    $form['actions']['save_continue']['#submit'][]  = 'hzd_notifications_form_submit';
+  $type = $form['type']['#default_value'];
+//  if($form_id == 'node_type_add_form' || $form_id == 'node_type_edit_form') {
+//    $form = $form + notifiction_field_render($type);
+//  }
+  $current_user = \Drupal::service('current_user');
+  $current_user_roles = $current_user->getRoles();
+  $group = \Drupal::routeMatch()->getParameter('group');
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!isset($group) && isset($node)) {
+    if (is_object($node)) {
+      $node_id = $node->id();
+    }
+    else {
+      $node_id = $node;
+    }
+    $group_content = CustGroupHelper::getGroupNodeFromNodeId($node_id);
+    if ($group_content) {
+      $group = $group_content->getgroup();
+      $group_id = $group->id();
+      $group = \Drupal\group\Entity\Group::load($group_id);      
+    }
+  } else {
+    if (is_object($group)) {
+      $group_id = $group->id();
+    }
+    else {
+      $group_id = $group;
+      $group = \Drupal\group\Entity\Group::load($group_id);
+    }
   }
+  if (isset($group_id)) {
+    $for_admin_formids = array(
+      'node_downtimes_form', 
+      'node_downtimes_edit_form',
+      'resolve_form',
+      'node_deployed_releases_edit_form',
+      'node_type_edit_form'
+    );
+    $for_groupadmin_formids = array(
+      'node_downtimes_edit_form',
+      'node_deployed_releases_edit_form'
+    );  
+    $for_groupmemeber_formids = array(
+      'node_downtimes_edit_form',
+    );
+    if( in_array($current_user_roles, array('site_administrator', 'admin'))  && in_array($form_id, $for_admin_formids)) {
+      $form = $form + notifiction_field_render($type);
+    } else if ( (CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
+      $form = $form + notifiction_field_render($type);
+    } else if ($group->getMember($current_user) && in_array($form_id, $for_groupmemeber_formids)) {
+      $form = $form + notifiction_field_render($type);
+    }
+  }  
 }
 
+/**
+ *  Render notification settings form field in node create form
+ */
+function notifiction_field_render($type) {
+  $form = array();
+  $form['notification'] = array(
+    '#type' => 'details',
+    '#title' => t('Notifications settings'),
+    '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+    '#group' => 'additional_settings',
+  );
+  $form['notification']['notification_checkbox'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Notifications'),
+    '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_' . $type) ? : 0,
+  );
+  $form['actions']['submit']['#submit'][]  = 'hzd_notifications_form_submit';
+  $form['actions']['save_continue']['#submit'][]  = 'hzd_notifications_form_submit';
+  return $form;
+}
 /**
  * implements custom form submit
  */
