@@ -451,15 +451,22 @@ function send_qi_notifications($entity) {
  * Implements hook_ENTITY_TYPE_insert()
  */
 function hzd_release_management_node_insert($entity) {
-  if ($entity->getType() == 'release') {
-    send_release_notifications($entity);
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getType() == 'deployed_releases') {
+      send_release_notifications($entity);
+    }
+    if ($entity->getType() == 'release') {
+      send_release_notifications($entity);
+    }
+    if ($entity->getType() == 'downtimes') {
+      send_downtime_notifications($entity, 'insert');
+    }
   }
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity);
   }
-  if ($entity->getType() == 'downtimes') {
-    send_downtime_notifications($entity, 'insert');
-  }
+
   if ($entity->getType() == 'planning_files') {
     send_pf_notifications($entity);
   }
@@ -474,7 +481,7 @@ function hzd_release_management_node_insert($entity) {
     $downtime = $entity->get('field_enable_downtime')->value;
     $problem = $entity->get('field_problem_name')->value;
     $release = $entity->get('field_release_name')->value;
-
+    
     if ($downtime && $rel_type == KONSONS) {
       insert_new_service_notifications('downtimes', $nid);
     }
