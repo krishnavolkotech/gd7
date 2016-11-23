@@ -39,9 +39,9 @@ function theme_service_checkbox($element) {
     if (isset($service_names[1])) {
       $checkbox .= $service_names[1] . '</div>';
     }
-    else {
-      $checkbox .= $service_names[0] . '</div>';
-    }
+//    else {
+//      $checkbox .= $service_names[0] . '</div>';
+//    }
   }
 
   unset($element['#title']);

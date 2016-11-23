@@ -144,13 +144,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['states'] = [
       '#type' => 'checkboxes',
       '#title' => t('States'),
-      '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
+      '#field_prefix' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
       '#options' => HzdcustomisationStorage::get_states(1),
       '#required' => TRUE
     ];
     $list_groups = !empty($node) ? HzdcustomisationStorage::get_maintenance_related_services('service_profile', $node->id(), $downtime_services) : HzdcustomisationStorage::get_maintenance_related_services('service_profile');
     $form['services_effected'] = [
       '#type' => 'checkboxes',
+      '#field_prefix' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Störung länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.<br>'),
       '#title' => t('Services Effected'),
       '#options' => $list_groups,
       '#theme' => 'service_checkboxes',
@@ -201,14 +202,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#title' => t('Start Date'),
       /* '#date_date_format' => $date_format,
         '#date_time_format' => $time_format, */
-      '#description' => date($date_format, $yesterday_date),
+      '#description' => "Format : " . date($date_format, $yesterday_date),
       '#default_value' => date($date_format, $yesterday_date),
       '#required' => TRUE,
     ];
     $form['enddate_planned'] = [
       '#type' => 'textfield',
       '#title' => t('End Date'),
-      '#description' => date($date_format, $yesterday_date),
+      '#description' => "Format : " . date($date_format, $yesterday_date),
       '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
     ];
     if ($form_id == 'node_downtimes_edit_form') {
