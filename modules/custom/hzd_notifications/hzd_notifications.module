@@ -208,7 +208,6 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
   //Validate content type.
   $type = $form_state->getFormObject()->getEntity()->getType();
   $form_id = $form_state->getBuildInfo()['form_id'];
-  dpm($form_id);
   if (\Drupal::config('node.settings')->get('notification_checkbox_' . $type)) {
     $current_user = \Drupal::service('current_user');
     $current_user_roles = $current_user->getRoles();
