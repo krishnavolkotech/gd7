@@ -335,6 +335,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     );
     $form['service_time'] = array(
       '#type' => 'container',
+      '#title'=>t('Service Time'),
       '#attributes' => array(
         'class' => ['service-time'],
       ),
