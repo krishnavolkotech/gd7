@@ -14,33 +14,12 @@ dependencies:
     - field.field.node.service_profile.upload
     - node.type.service_profile
   module:
-    - comment
-    - file
-    - path
     - text
 id: node.service_profile.default
 targetEntityType: node
 bundle: service_profile
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 13
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
-  comment:
-    type: comment_default
-    weight: 11
-    settings: {  }
-    third_party_settings: {  }
-  created:
-    type: datetime_timestamp
-    weight: 8
-    settings: {  }
-    third_party_settings: {  }
   field_dependent_downtimeservices:
     weight: 26
     settings:
@@ -82,42 +61,13 @@ content:
     weight: 6
     settings: {  }
     third_party_settings: {  }
-  path:
-    type: path
-    weight: 12
-    settings: {  }
-    third_party_settings: {  }
-  promote:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 9
-    third_party_settings: {  }
-  sticky:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 10
-    third_party_settings: {  }
-  title:
-    type: string_textfield
-    weight: 0
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  uid:
-    type: entity_reference_autocomplete
-    weight: 7
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 15
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  body: true
+  comment: true
+  created: true
+  path: true
+  promote: true
+  sticky: true
+  title: true
+  uid: true
+  upload: true
