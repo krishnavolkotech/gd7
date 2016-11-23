@@ -174,124 +174,153 @@ function custom_date_deployed_batch_finished($success, $results, $operations) {
  * implements hook_form_alter
  */
 function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  $type = $form['type']['#default_value'];
-//  if($form_id == 'node_type_add_form' || $form_id == 'node_type_edit_form') {
-//    $form = $form + notifiction_field_render($type);
-//  }
-  $current_user = \Drupal::service('current_user');
-  $current_user_roles = $current_user->getRoles();
-  $group = \Drupal::routeMatch()->getParameter('group');
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if (!isset($group) && isset($node)) {
-    if (is_object($node)) {
-      $node_id = $node->id();
-    }
-    else {
-      $node_id = $node;
-    }
-    $group_content = CustGroupHelper::getGroupNodeFromNodeId($node_id);
-    if ($group_content) {
-      $group = $group_content->getgroup();
-      $group_id = $group->id();
-      $group = \Drupal\group\Entity\Group::load($group_id);      
-    }
-  } else {
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id = $group;
-      $group = \Drupal\group\Entity\Group::load($group_id);
-    }
+  if ($form_id == 'node_type_add_form' || $form_id == 'node_type_edit_form') {
+    $form['notification'] = array(
+      '#type' => 'details',
+      '#title' => t('Notifications settings'),
+      '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+      '#group' => 'additional_settings',
+    );
+    $form['notification']['notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Notifications'),
+      '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_' . $form['type']['#default_value']) ?: 0,
+    );
+    $form['actions']['submit']['#submit'][] = 'hzd_notifications_form_submit';
+    $form['actions']['save_continue']['#submit'][] = 'hzd_notifications_form_submit';
   }
-  if (isset($group_id)) {
-    $for_admin_formids = array(
-      'node_downtimes_form', 
-      'node_downtimes_edit_form',
-      'resolve_form',
-      'node_deployed_releases_edit_form',
-      'node_type_edit_form'
-    );
-    $for_groupadmin_formids = array(
-      'node_downtimes_edit_form',
-      'node_deployed_releases_edit_form'
-    );  
-    $for_groupmemeber_formids = array(
-      'node_downtimes_edit_form',
-    );
-    if( in_array($current_user_roles, array('site_administrator', 'admin'))  && in_array($form_id, $for_admin_formids)) {
-      $form = $form + notifiction_field_render($type);
-    } else if ( (CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
-      $form = $form + notifiction_field_render($type);
-    } else if ($group->getMember($current_user) && in_array($form_id, $for_groupmemeber_formids)) {
-      $form = $form + notifiction_field_render($type);
-    }
-  }  
 }
 
-/**
- *  Render notification settings form field in node create form
- */
-function notifiction_field_render($type) {
-  $form = array();
-  $form['notification'] = array(
-    '#type' => 'details',
-    '#title' => t('Notifications settings'),
-    '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-    '#group' => 'additional_settings',
-  );
-  $form['notification']['notification_checkbox'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Notifications'),
-    '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_' . $type) ? : 0,
-  );
-  $form['actions']['submit']['#submit'][]  = 'hzd_notifications_form_submit';
-  $form['actions']['save_continue']['#submit'][]  = 'hzd_notifications_form_submit';
-  return $form;
-}
 /**
  * implements custom form submit
  */
 function hzd_notifications_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  dpm($form_state->getValue('type'), $form_state->getValue('notification_checkbox'));
   \Drupal::configFactory()->getEditable('node.settings')
-    ->set('notification_checkbox_' . $form_state->getValue('type'), $form_state->getValue('notification_checkbox'))
-    ->save();
+      ->set('notification_checkbox_' . $form_state->getValue('type'), $form_state->getValue('notification_checkbox'))
+      ->save();
 }
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-   //Validate content type.
-    $type = $form_state->getFormObject()->getEntity()->getType();
-    if (\Drupal::config('node.settings')->get('notification_checkbox_' . $type )) {
-        $getnode = \Drupal::routeMatch()->getParameter('node');
-        $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
-        );
-        $form['notification']['node_notification_checkbox'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Do not send notifications for this update.'),
-        );
-        if (isset($getnode) && $getnode->id()) {
-            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_update_node_form_submit';
-        }
-        else {
-            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_add_node_form_submit';
-        }
+  //Validate content type.
+  $type = $form_state->getFormObject()->getEntity()->getType();
+  $form_id = $form_state->getBuildInfo()['form_id'];
+  dpm($form_id);
+  if (\Drupal::config('node.settings')->get('notification_checkbox_' . $type)) {
+    $current_user = \Drupal::service('current_user');
+    $current_user_roles = $current_user->getRoles();
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if (!isset($group) && isset($node)) {
+      if (is_object($node)) {
+        $node_id = $node->id();
+      }
+      else {
+        $node_id = $node;
+      }
+      $group_content = CustGroupHelper::getGroupNodeFromNodeId($node_id);
+      if ($group_content) {
+        $group = $group_content->getgroup();
+        $group_id = $group->id();
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
     }
+    else {
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+    }
+    if (isset($group_id)) {
+
+      $for_admin_formids = array(
+        'node_downtimes_form',
+        'node_downtimes_edit_form',
+        'resolve_form',
+        'node_deployed_releases_edit_form',
+        'node_type_edit_form'
+      );
+      $for_groupadmin_formids = array(
+        'node_downtimes_edit_form',
+        'node_deployed_releases_edit_form'
+      );
+      $for_groupmemeber_formids = array(
+        'node_downtimes_edit_form',
+      );
+
+      if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $for_admin_formids)) {
+          $form['notification'] = array(
+            '#type' => 'details',
+            '#title' => t('Notifications settings'),
+            '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+            '#group' => 'advanced',
+          );
+          $form['notification']['node_notification_checkbox'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Do not send notifications for this update.'),
+          );
+      }
+      else if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
+          $form['notification'] = array(
+            '#type' => 'details',
+            '#title' => t('Notifications settings'),
+            '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+            '#group' => 'advanced',
+          );
+          $form['notification']['node_notification_checkbox'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Do not send notifications for this update.'),
+          );
+      }
+      else if ($group->getMember($current_user) && in_array($form_id, $for_groupmemeber_formids)) {
+          $form['notification'] = array(
+            '#type' => 'details',
+            '#title' => t('Notifications settings'),
+            '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+            '#group' => 'advanced',
+          );
+          $form['notification']['node_notification_checkbox'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Do not send notifications for this update.'),
+          );
+      }
+    }
+  }
 }
 
+//function notifiction_field_render_in_node_form() {
+//  $form = array();
+//  $form['notification'] = array(
+//    '#type' => 'details',
+//    '#title' => t('Notifications settings'),
+//    '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+//    '#group' => 'advanced',
+//  );
+//  $form['notification']['node_notification_checkbox'] = array(
+//    '#type' => 'checkbox',
+//    '#title' => t('Do not send notifications for this update.'),
+//  );
+//  return $form;
+////        if (isset($node) && $node->id()) {
+////            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_update_node_form_submit';
+////        }
+////        else {
+////            $form['actions']['publish']['#submit'][]  = 'hzd_notifications_form_add_node_form_submit';
+////        }
+//}      
 /**
  * implements custom form submit
  */
-function hzd_notifications_form_update_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-    dpm('update');
-}
-
-function hzd_notifications_form_add_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-    dpm('inset');
-}
+//function hzd_notifications_form_update_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//    dpm('update');
+//}
+//
+//function hzd_notifications_form_add_node_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+//    dpm('inset');
+//}
