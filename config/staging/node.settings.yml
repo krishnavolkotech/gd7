@@ -8,7 +8,7 @@ notification_checkbox_page: 1
 langcode: de
 notification_checkbox_book: 1
 notification_checkbox_early_warnings: 0
-notification_checkbox_deployed_releases: 1
+notification_checkbox_deployed_releases: 0
 notification_checkbox_event: 0
 notification_checkbox_forum: 0
 notification_checkbox_grouppost: 0
