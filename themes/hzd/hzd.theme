@@ -265,6 +265,8 @@ function custom_user_fullname($uid) {
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
+  $labels = ['non_compliance'=>t('Reason for Non Compliance'),'start_date'=>t('Start Date'),'end_date'=>t('End Date'),'services'=>t('Service(s)'),'states'=>t('State(s)')];
+  $renderService = \Drupal::service('renderer');
   $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
   if (empty($query)) {
     return;
@@ -274,29 +276,50 @@ function downtimes_revisions($node) {
     $value = (array) $value;
     $output .= "<div class='changed-group'><u>Änderung - " . custom_user_fullname($value['uid']) . ' ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</u>';
     $log_values = unserialize($value['log']);
+    $logData = [];
+    $reason = '';
     foreach ($log_values as $name => $field_value) {
+      if($name == 'reason'){
+        $reason = $field_value['new'];
+      }
+      if(in_array($name, ['non_compliance','services','states'])){
+        $logData[] = $labels[$name] . ' : ' . $field_value['new'];
+      }
+      if(in_array($name, ['start_date','end_date'])){
+        $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
+      }
+      $items = [
+        '#items'=>$logData,
+        '#theme'=>'item_list',
+        '#type'=>'ul',
+          ];
       $output .= "<div class ='field-wrapper'>";
-      $name = str_replace("_", " ", $name);
-      if ($name == 'non compliance' || $name == 'end date' || $name == 'start date') {
-        if ($field_value['old'] || $field_value['new']) {
-          $output .= t($name);
-        }
-        if ($field_value['old'] && $field_value['new']) {
-          # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
-          $output .= ' (alt): ' . DateTimePlus::createFromTimestamp((integer) $field_value['old'])->format('d.m.Y-H:i') . '<br>' . t("$name") . ' (neu): ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
-        }
-        else if ($field_value['old'] && !$field_value['new']) {
-          $output .= ' ' . t("(entfernt)");
-        }
-        else if (!$field_value['old'] && $field_value['new']) {
-          $output .= t(" (neu): ") . "</b>" . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
-        }
-      }
-      else {
-        $output .= t("$name") . ' (alt): ' . ($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . ($field_value['new']);
-      }
-      $output .= "</div>";
+      $markup = $renderService->render($items);
+      $output .= $markup.'</div>';
+
+//      $output .= "<div class ='field-wrapper'>";
+//      $name = str_replace("_", " ", $name);
+//      if ($name == 'non compliance' || $name == 'end date' || $name == 'start date') {
+//        if ($field_value['old'] || $field_value['new']) {
+//          $output .= t($name);
+//        }
+//        if ($field_value['old'] && $field_value['new']) {
+//          # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
+//          $output .= ' (alt): ' . DateTimePlus::createFromTimestamp((integer) $field_value['old'])->format('d.m.Y-H:i') . '<br>' . t("$name") . ' (neu): ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
+//        }
+//        else if ($field_value['old'] && !$field_value['new']) {
+//          $output .= ' ' . t("(entfernt)");
+//        }
+//        else if (!$field_value['old'] && $field_value['new']) {
+//          $output .= t(" (neu): ") . "</b>" . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
+//        }
+//      }
+//      else {
+//        $output .= t("$name") . ' (alt): ' . ($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . ($field_value['new']);
+//      }
+//      $output .= "</div>";
     }
+    $output .= '<div class="reason">'.$reason.'</div>';
     $output .= '</div>';
   }
   return $output;
