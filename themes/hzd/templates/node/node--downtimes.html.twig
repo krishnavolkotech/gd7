@@ -98,18 +98,18 @@ view_mode ? view_mode|clean_class,
     </div>#}
     {{ back_to_search }}
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Services'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Verfahren'|trans }}</div>
       <div class = 'downtimes_content'> {{ incident.service_name }}</div>
     </div>
     <div style = "clear:both" ></div>
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'States'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Land/System'|trans }}</div>
       <div class = 'downtimes_content'>{{ incident.state }}</div>
     </div>
     <div style = "clear:both" ></div>
     {% if incident.startdate_planned %}
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Begin'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Beginn'|trans }}</div>
       <div class = 'downtimes_content'> {{ incident.startdate_planned }} </div>
     </div>
     {% endif %}
@@ -117,38 +117,48 @@ view_mode ? view_mode|clean_class,
 
     {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'End'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
       <!--  resolved end date -->
       <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
     </div>
     <div style = "clear:both" ></div>
     {% elseif incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'End'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
       <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
     </div>
     <div style = "clear:both" ></div>
     {% endif %}
     
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Reported By'|trans }}</div>
+      <div class = 'downtimes_title'>{{ 'Gemeldet von'|trans }}</div>
       <div class = 'downtimes_content'>{{ incident.reported_by }}</div>
     </div>
     <div style = "clear:both" ></div>
+    <div class = "Incident">
+      <div class = 'downtimes_title'>{{ 'Gemeldet am'|trans }}</div>
+      <div class = 'downtimes_content'>{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr</div>
+    </div>
+    <div style = "clear:both" ></div>
 
-    <div class = "downtime_reason">
-      <!--  Creation  -->   
-      <u> {{ 'Creation'|trans }} {{ incident.reported_by }} 
+     <!-- <div class = "downtime_reason">
+      <u> {{ 'Erstellt von'|trans }} {{ incident.reported_by }} am 
 	{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr
       </u> 
 
-    </div>
+    </div>-->  
       {% if incident.reason %}
       <div class = "Incident">
-        <div class = 'downtimes_title'>{{ 'Reason'|trans }}</div>
+        <div class = 'downtimes_title'>{{ 'Grund für die Wartung der Wartungsfenster'|trans }}</div>
         <div class = 'downtimes_content'>{{ incident.reason }}</div>
       </div>
-      
+      <div style = "clear:both" ></div>
+      {% endif %}
+    {% if incident.description %}
+      <div class = "Incident">
+        <div class = 'downtimes_title'>{{ 'Ausfuhrliche beschreibung'|trans }}</div>
+        <div class = 'downtimes_content'>{{ incident.description }}</div>
+      </div>
       <div style = "clear:both" ></div>
       {% endif %}
 
@@ -157,7 +167,6 @@ view_mode ? view_mode|clean_class,
   {{ revisions|raw }}
   <div style = "clear:both" ></div>
   {% endif %}
-  
   
   {% if incident.resolved and incident.resolved_data.date_repoted %}
   <div class = "resolved_details">

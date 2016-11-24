@@ -2,6 +2,7 @@ global-styling:
   css:
     theme:
       css/style.css: {}
+      css/hzd-custom.css: {}
       css/3.3.5/overrides.min.css: {}
       css/3.3.5/bootstrap.css: {}
       css/3.3.5/bootstrap.min.css: {}

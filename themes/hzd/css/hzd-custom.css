@@ -1,0 +1,42 @@
+form.node-downtimes-form .panel-body .form-checkboxes{
+  padding-top:9px;
+  float:left;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data{
+  width:500px;
+  border:1px solid rgb(204, 204, 204);
+  padding:10px;
+  background:#fbfcfc !important;
+  z-index:10;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table,
+#edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper{
+    background:#fbfcfc;
+	width:100%;
+}
+#edit-services-effected .form-checkbox .published-services .data{
+  left: 0px;
+  position: absolute;
+  top: 20px;
+  width:500px;
+  background:#fbfcfc;
+  z-index:10;
+  border:1px solid rgb(204, 204, 204);
+  padding:10px;
+}
+#edit-services-effected .form-checkbox .published-services .data b{
+  font-weight:normal !important;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table,
+#edit-services-effected .form-checkbox .published-services .data table{
+  margin:0 !important;
+}
+#edit-services-effected .form-checkbox .published-services .data .service-profile-close a{
+  float:right;
+  background:url(../images/tip-close-btn.jpg) left top no-repeat;
+  width:15px;
+  height:15px;
+  font-size:0;
+  margin:0 0 11px 0;
+  cursor:pointer;
+}

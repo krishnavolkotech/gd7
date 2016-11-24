@@ -178,7 +178,8 @@ function hzd_preprocess_node(&$variables) {
     }
     $incident_data->resolved = $result->resolved;
     $incident_data->cancelled = $result->cancelled;
-    $incident_data->reason = !is_null($result->description) ? t($result->description) : '';
+    $incident_data->reason = !is_null($result->reason) ? $reasons[$result->reason] : '';
+    $incident_data->description = !is_null($result->description) ? t($result->description) : '';
     $statesArray = \Drupal::database()->select('states', 's')
         ->fields('s', ['state'])
         ->condition('s.id', explode(',', $result->state_id), 'IN')
@@ -265,16 +266,23 @@ function custom_user_fullname($uid) {
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
-  $labels = ['non_compliance'=>t('Reason for Non Compliance'),'start_date'=>t('Start Date'),'end_date'=>t('End Date'),'services'=>t('Service(s)'),'states'=>t('State(s)')];
+  $labels = ['non_compliance'=>t('Grund für die Wartung der Wartungsfenster'),'start_date'=>t('Beginn'),'end_date'=>t('Ende'),'services'=>t('Verfahren'),'states'=>t('Land/System')];
   $renderService = \Drupal::service('renderer');
   $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
   if (empty($query)) {
     return;
   }
   $output = null;
+  $itemCount = 1;
   foreach ($query as $value) {
+    if($itemCount == count($query)){
+      $text = 'Erstellt';
+    }else{
+      $text = 'Geändert';
+    }
+	$itemCount++;
     $value = (array) $value;
-    $output .= "<div class='changed-group'><u>Änderung - " . custom_user_fullname($value['uid']) . ' ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</u>';
+    $output .= "<div class='changed-group'><u>" . $text . " von " . custom_user_fullname($value['uid']) . ' am ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</u>';
     $log_values = unserialize($value['log']);
     $logData = [];
     $reason = '';
@@ -288,14 +296,7 @@ function downtimes_revisions($node) {
       if(in_array($name, ['start_date','end_date'])){
         $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
       }
-      $items = [
-        '#items'=>$logData,
-        '#theme'=>'item_list',
-        '#type'=>'ul',
-          ];
-      $output .= "<div class ='field-wrapper'>";
-      $markup = $renderService->render($items);
-      $output .= $markup.'</div>';
+      
 
 //      $output .= "<div class ='field-wrapper'>";
 //      $name = str_replace("_", " ", $name);
@@ -319,6 +320,14 @@ function downtimes_revisions($node) {
 //      }
 //      $output .= "</div>";
     }
+    $items = [
+        '#items'=>$logData,
+        '#theme'=>'item_list',
+        '#type'=>'ul',
+          ];
+    $output .= "<div class ='field-wrapper'>";
+    $markup = $renderService->render($items);
+    $output .= $markup.'</div>';
     $output .= '<div class="reason">'.$reason.'</div>';
     $output .= '</div>';
   }
