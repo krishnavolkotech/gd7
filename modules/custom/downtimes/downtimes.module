@@ -144,7 +144,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['states'] = [
       '#type' => 'checkboxes',
       '#title' => t('States'),
-      '#field_prefix' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.<br>'),
+      '#field_prefix' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.<br><br>'),
       '#options' => HzdcustomisationStorage::get_states(1),
       '#required' => true
     ];
@@ -152,7 +152,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['services_effected'] = [
       '#type' => 'checkboxes',
       '#title' => t('Services Effected'),
-      '#field_prefix' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Störung länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.<br>'),
+      '#field_prefix' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Störung länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.<br><br>'),
       '#options' => $list_groups,
       '#theme' => 'service_checkboxes',
       '#required' => TRUE
@@ -275,7 +275,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         }
       }
     }
-//    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
+    $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
   else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
@@ -377,6 +377,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#title'=>t('Maintenance Windows'),
       '#type' => 'details',
       '#open' => TRUE,
+      '#attributes' => ['class'=>['maintenance-window-field']],
       '#prefix' => '<div id="names-fieldset-wrapper">',
       '#suffix' => '</div>',
     ];
@@ -414,6 +415,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           '#title' => '',
           '#prefix' => '<div id="downtimes-fieldset-wrapper">',
           '#suffix' => '</div>',
+          
         ];
         $form['maintenance_windows'][$delta]['day'] = array(
           '#type' => 'select',

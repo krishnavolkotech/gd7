@@ -74,7 +74,7 @@ view_mode ? view_mode|clean_class,
 ]
 %}
 <article{{ attributes.addClass(classes) }}>
-  <div class="downtime-view-wrapper">
+
     {{ title_prefix }}
     {% if not page and 0 %}
     <h2{{ title_attributes }}>
@@ -97,6 +97,7 @@ view_mode ? view_mode|clean_class,
       {{ content }}
     </div>#}
     {{ back_to_search }}
+  <div class="downtime-view-wrapper">
     <div class = "Incident">
       <div class = 'downtimes_title'>{{ 'Verfahren'|trans }}</div>
       <div class = 'downtimes_content'> {{ incident.service_name }}</div>
@@ -164,6 +165,7 @@ view_mode ? view_mode|clean_class,
 
   </div>
   {% if revisions %}
+   <div class="downtime-view-history">Historie</div>
   {{ revisions|raw }}
   <div style = "clear:both" ></div>
   {% endif %}

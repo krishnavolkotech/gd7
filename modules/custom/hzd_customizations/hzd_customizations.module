@@ -77,7 +77,8 @@ function get_related_downtime_services($type) {
   if (in_array('site_administrator', $user_roles)) {
     $dependent_Services = HzdservicesStorage::get_related_services($type);
     $request = \Drupal::request()->getRequestUri();
-    unset($dependent_Services[$_REQUEST['service']]);
+      if(isset($_REQUEST['service']))
+        unset($dependent_Services[$_REQUEST['service']]);
     $current_path = Url::fromRoute('<current>');
     $path = explode("/", $current_path->getInternalPath());
     if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {

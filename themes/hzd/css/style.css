@@ -1502,7 +1502,7 @@ article.downtimes .Incident {
   margin-bottom: 10px;
 }
 article.downtimes .Incident .downtimes_title {
-  /*font-weight: 600;*/
+  font-weight: 600;
   float:left;
   width: 24%;
   letter-spacing: 0.5px;
@@ -1837,6 +1837,10 @@ form.node-service-profile-edit-form .service-time .control-label{
   font-size:14px;
   font-weight:normal;
 }
+form.node-service-profile-edit-form .maintenance-window-field{
+  width:100%;
+  float:left;
+}
 form.node-service-profile-edit-form .service-time .form-type-checkbox{
  margin:0 0 25px 0!important;
  width:100px;
@@ -1937,7 +1941,7 @@ a.entity_print_view{
 }
 #released_results_wrapper .reset_form .reset_form button.btn-default{
   margin-right:0 !important;
-  border:1px solid #ffcc00;
+
 }
 aside ul.menu li.dropdown.active .dropdown-menu{
   display:block !important;
@@ -2015,43 +2019,35 @@ aside section .form-group .item-list ul li .field-content {
   line-height: 1.75;
   font-size: 13px;
 }
-
 aside .region-sidebar-first .block-favorites .item-list ul li > a {
   font-size: 14px;
   color: #04425f;
   font-weight: normal;
 }
-
 aside section .form-group .view-footer a.all-releases, aside section .form-group .view-footer a.all-problems, section .form-group .more-link a, aside #block-maintenance a, aside #block-incidentblock a {
   color: #04425f;
   line-height: 1.75;
 }
-
 section .form-group .more-link a:hover, aside section .form-group .view-footer a:hover, aside section .form-group .more-link a:hover, aside #block-maintenance a:hover, aside #block-incidentblock a:hover {
   text-decoration: underline;
   color: #04425f;
 }
-
 aside #block-incidentblock ul li span {
   font-size: 14px;
 }
-
 aside #block-incidentblock h2.block-title {
   color: #cc0000;
 }
-
 aside #block-incidentblock ul li span.service-item {
   /* font-weight: normal; */
   font-size: 14px;
   color: #cc0000;
 }
-
 aside #block-maintenance ul li span.service-item {
   font-size: 14px;
   margin: 0;
   text-transform: none;
 }
-
 aside #block-maintenance ul li span {
   font-size: 14px;
   line-height: 1.6;
@@ -2073,6 +2069,7 @@ form.node-downtimes-edit-form #edit-states--wrapper .panel-title,
 form.node-downtimes-form #edit-services-effected--wrapper .panel-title,
 form.node-downtimes-form #edit-states--wrapper .panel-title{
   padding:0;
+  font-weight:bold;
 }
 ol.breadcrumb form{
   margin-bottom:0;
@@ -2143,6 +2140,35 @@ article.downtimes .Incident .downtimes_content{
   float:left;
   letter-spacing:0.5px;
 }
+article.downtimes .changed-group .field-wrapper,
+article.downtimes .changed-group .reason{
+  width:100%;
+  float:left;
+}
+article.downtimes .downtime-view-history{
+  width:100%;
+  float:left;
+  font-size:16px;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+article.downtimes .changed-group .reason p{
+  width:100%;
+  float:left;
+  margin:0 0 20px 0;
+}
+article.downtimes .changed-group .field-wrapper ul{
+  width:98%;
+  display:inline-block;
+  margin:0 0 0 2%;
+  padding:0;
+}
+article.downtimes .changed-group .field-wrapper ul li{
+  width:100%;
+  float:left;
+  margin:0 0 3px 0;
+  padding:0;
+}
 article.downtimes .Incident .downtimes_content ol,
 article.downtimes .Incident .downtimes_content ul{
   width:100%;
@@ -2164,7 +2190,19 @@ article.downtimes .changed-group{
   margin:0 0 20px 0;
   padding:0; 
 }
-article.downtimes .changed-group u,
+article.downtimes .changed-group span.downtimes-view-updated{
+  width:100%;
+  float:left;
+  margin:0 0 10px 0;
+  padding:0 0 2px 0;
+  border-bottom:1px solid #999999;
+}
+/*article.downtimes .changed-group u{
+  width:100%;
+  float:left;
+  margin:0;
+  padding:0 0 5px 0;
+}*/
 article.downtimes .downtime_reason u{
   width:100%;
   float:left;
@@ -2177,7 +2215,6 @@ form.node-downtimes-form .reason-for-noncompliance .select-wrapper:after{
 form.node-downtimes-form .reason-for-noncompliance{
     float: left;
     width: 100%;
-    border:1px solid #ffcc00;
 }
 form.node-downtimes-form .reason-for-noncompliance label.control-label{
   float: left;
@@ -2192,4 +2229,28 @@ form.node-downtimes-form > .form-item{
   width:100%;
   float:left;
   margin:20px 0;
+}
+.maintenance-window-field .form-type-select{
+  width:auto;
+  float:left;
+}
+.maintenance-window-field label{
+  width:auto;
+  float:left;
+  font-weight:normal;
+  margin-top:5px;
+}
+.maintenance-window-field .select-wrapper{
+  width: 100px;
+    float: left;
+    margin: 0 10px;
+}
+.maintenance-window-field .container-inline{
+    width: auto;
+    float: left;
+    margin: 0 20px 0 0;
+    padding: 0;
+}
+.maintenance-window-field button{
+  margin-top:2px;
 }
