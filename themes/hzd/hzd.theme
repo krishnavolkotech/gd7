@@ -166,9 +166,9 @@ function hzd_preprocess_node(&$variables) {
     $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
     $incident_data->reported_by = $name;
     $incident_data->downtimes_type = ($result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
-    $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) : '') . " " . t('Uhr');
+    $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
     $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
-    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) : '') . " " . t('Uhr');
+    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
     $resolved_data = db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
 
     if (!empty($resolved_data)) {
