@@ -503,20 +503,36 @@ class HzdcustomisationStorage {
     if ($unserialize_service_time) {
       $get_service_time = array_chunk($unserialize_service_time, 3, TRUE);
       $service_vals = '';
+      $flag = 0;
       foreach ($get_service_time as $time) {
-        $service_vals .= "<tr>";
+//        $service_vals .= "<tr>";
         $i = 1;
+        // dpm($time);
+        $service_vals_data = '';
         foreach ($time as $key => $val) {
+          if ($i ==1 && $val !=1 ) {
+              $i = 1;
+              $flag = 0;
+              break;
+          } else {
+            $flag = 1;
           if ($i == 1) {
-            $day = explode("_", $key);
-            $service_vals .= "<td>" . t($day[2]) . "</td>";
+            if ($val) {
+              $day = explode("_", $key);
+              $service_vals_data .= "<td>" . t($day[2]) . "</td>";
+            }
           }
           else {
-            $service_vals .= "<td>" . date('H:i', strtotime($val)) . "</td>";
+            if ($val != '') {
+              $service_vals_data .= "<td>" . date('H:i', strtotime($val)) . "</td>";
+              }
+            }
+            $i++;
           }
-          $i++;
         }
-        $service_vals .= "</tr>";
+        // If $flag == 1 Then one row 
+         if ($flag == 1)
+              $service_vals .= "<tr>". $service_vals_data . "</tr>";
       }
       $data['service_time'] = $service_vals;
     }
@@ -561,7 +577,7 @@ class HzdcustomisationStorage {
     if (isset($data['service_advance_time'])) {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Maintenance Advance Time:") . "</b></div></td><td class='right'><div>" . $data['service_advance_time'] . " Stunden</div></td></tr>";
     }
-    if (isset($data['service_time'])) {
+    if (isset($data['service_time']) && !empty(trim($data['service_time'])) ) {
       $downtime_service_data .= "<tr><td class='left'><div><b>" . t("Service Time:") . "</b></div></td><td class='right'><div><table><tr><th>" . t("Day") . "</th><th>" . t("Start Time") . "</th><th>" . t("End Time") . "</th></tr>" . $data['service_time'] . "</table></div></td></tr>";
     }
     if (isset($data['maintenance_windows_time']) && !empty($data['maintenance_windows_time'])) {
