@@ -61,6 +61,9 @@
             });
 
             $(".service-tooltip").unbind("click").click(function () {
+                // On click of service profile tool tip, close already open ones.
+                $('.service-profile-close a').click();
+                // Open the tool tip data
                 var id = $(this).attr('id');
                 $(".service-profile-data-" + id).css("display", "block");
                 $("#close-" + id).css("display", "block");
