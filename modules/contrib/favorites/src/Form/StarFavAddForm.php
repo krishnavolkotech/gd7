@@ -42,13 +42,15 @@ class StarFavAddForm extends FormBase {
     $request = \Drupal::request();
     $route_match = \Drupal::routeMatch();
     $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-    
+
     if (!isset($title)) {
       $title = \Drupal::config('core.site_information')->get('site_name');
     }
     if ($title == '') {
-      $title = $this->t('Home', array(), array('context' => 'Home page'));
+      $current_path = \Drupal::service('path.current')->getPath();
+      $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
     }
+    
     $title = strip_tags($title);
     
     $path = \Drupal::service('path.current')->getPath();
@@ -74,12 +76,12 @@ class StarFavAddForm extends FormBase {
     if($fid){
       $button_text = t('Delete', array(), array('context' => 'Add a favorite to the list'));
       $submit_url = Url::fromRoute('favorites.removeAjax',array('fid' => $fid));
-      $fav_class ='del-fav';
+      $fav_class ='add-fav';
     }
     else {
       $button_text = t('Add', array(), array('context' => 'Add a favorite to the list'));
       $submit_url = Url::fromRoute('favorites.add');
-      $fav_class = 'add-fav';
+      $fav_class = 'del-fav';
     }
     
 /*    $form['add_to_favorites'] = array(
