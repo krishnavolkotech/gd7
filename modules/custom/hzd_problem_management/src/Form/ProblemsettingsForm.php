@@ -83,7 +83,10 @@ class ProblemsettingsForm extends FormBase {
     //  echo '<pre>';  print_r($path);  exit;
     // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));
 
-    $url = Url::fromUserInput('/group/31/problems', array('absolute' => true));
+    $url = Url::fromRoute('problem_management.problems', array('group' => $group_id)); 
+    $url->setAbsolute();
+    
+    //    $url = Url::fromUserInput('/group/31/problems', array('absolute' => true));
     $problems_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
 
     $prefix = '';

@@ -30,6 +30,13 @@ class ReleasesettingsForm extends FormBase {
    * {@inheritDoc}.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $group_id = $group->id();
+    } else {
+      $group_id = $group;
+    }
+    
     $default_services = array();
     global $base_url;
     $breadcrumb = array();
@@ -49,8 +56,16 @@ class ReleasesettingsForm extends FormBase {
     $options = HzdservicesStorage::get_related_services($type);
     $view_path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
 
-    $url = Url::fromUserInput('/group/32/releases', array('absolute' => true));
-    $release_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
+    
+    $url = Url::fromRoute('hzd_release_management.released', array(
+      'group' => $group_id,
+        ), array(
+          'absolute' => TRUE
+        )
+      );
+
+    $release_view = \Drupal::service('link_generator')->generate(
+        $url->toString(), $url);
 
 
     // l($path, $path) .
