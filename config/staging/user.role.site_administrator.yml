@@ -416,3 +416,8 @@ permissions:
   - 'administer account settings'
   - 'cancel account'
   - 'select account cancellation method'
+  - 'create field_do_not_send_notifications'
+  - 'edit own field_do_not_send_notifications'
+  - 'edit field_do_not_send_notifications'
+  - 'view own field_do_not_send_notifications'
+  - 'view field_do_not_send_notifications'

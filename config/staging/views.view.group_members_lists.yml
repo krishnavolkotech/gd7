@@ -1010,10 +1010,10 @@ display:
         enabled: true
         expanded: false
       filters:
-        label:
-          id: label
-          table: group_content_field_data
-          field: label
+        combine:
+          id: combine
+          table: views
+          field: combine
           relationship: none
           group_type: group
           admin_label: ''
@@ -1022,12 +1022,12 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: label_op
-            label: Name
-            description: ''
+            operator_id: combine_op
+            label: Title
+            description: 'Name oder Email suchen'
             use_operator: false
-            operator: label_op
-            identifier: name
+            operator: combine_op
+            identifier: combine
             required: false
             remember: false
             multiple: false
@@ -1040,22 +1040,21 @@ display:
               site_administrator: '0'
           is_grouped: false
           group_info:
-            label: Title
-            description: null
-            identifier: label
+            label: ''
+            description: ''
+            identifier: ''
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items:
-              1: {  }
-              2: {  }
-              3: {  }
-          entity_type: group_content
-          entity_field: label
-          plugin_id: string
+            group_items: {  }
+          fields:
+            firstname: firstname
+            lastname: lastname
+            mail: mail
+          plugin_id: combine
         type:
           id: type
           table: group_content_field_data
