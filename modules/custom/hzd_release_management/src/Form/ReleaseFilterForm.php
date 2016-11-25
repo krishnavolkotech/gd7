@@ -280,6 +280,7 @@ class ReleaseFilterForm extends FormBase {
         'wrapper' => $wrapper,
         'event' => 'change',
         'method' => 'replace',
+        'disable-refocus' => true,
         'progress' => array(
           'type' => 'throbber',
         ),
@@ -307,6 +308,7 @@ class ReleaseFilterForm extends FormBase {
         'wrapper' => $wrapper,
         'event' => 'change',
         'method' => 'replace',
+        'disable-refocus' => true,
         'progress' => array(
           'type' => 'throbber',
         ),

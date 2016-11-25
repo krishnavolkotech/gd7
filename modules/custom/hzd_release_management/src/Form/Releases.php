@@ -113,6 +113,7 @@ class Releases extends FormBase {
       ),
       '#ajax' => array(
         'callback' => '::release_result',
+        'disable-refocus' => true,
         'event' => 'change',
         'wrapper' => $wrapper,
         'progress' => array(
@@ -137,6 +138,7 @@ class Releases extends FormBase {
       ),
       '#ajax' => array(
         'callback' => '::release_result',
+        'disable-refocus' => true,
         'event' => 'change',
         'wrapper' => $wrapper,
         'progress' => array(

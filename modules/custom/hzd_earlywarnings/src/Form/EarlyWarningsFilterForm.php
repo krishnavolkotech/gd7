@@ -153,6 +153,7 @@ class EarlyWarningsFilterForm extends FormBase {
         'wrapper' => $wrapper,
         'event' => 'change',
         'method' => 'replace',
+        'disable-refocus' => true,
         'progress' => array(
           'type' => 'throbber',
         ),
@@ -178,6 +179,7 @@ class EarlyWarningsFilterForm extends FormBase {
         'callback' => $path,
         'wrapper' => $wrapper,
         'event' => 'change',
+        'disable-refocus' => true,
         'method' => 'replace',
         'progress' => array(
           'type' => 'throbber',
