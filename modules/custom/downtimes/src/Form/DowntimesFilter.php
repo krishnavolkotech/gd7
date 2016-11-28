@@ -180,7 +180,7 @@ class DowntimesFilter extends FormBase {
       '#suffix' => '</div>',
     ];
 
-    $services[1] = '<' . t('Service') . '>';
+    $services['0'] = '<' . t('Service') . '>';
     $select = "SELECT title, n.nid ";
     $from = " FROM {node_field_data} n, {group_downtimes_view} GDV ";
 
@@ -343,13 +343,13 @@ class DowntimesFilter extends FormBase {
         break;
       case '4':
         //last 6 months
-        $last_day = lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
+        $last_day = $this->lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
         $from_date = mktime(0, 0, 0, date('m', $last_day) - 5, 01, date('y', $last_day));
         //$to_date = $last_day;
         break;
       case '5':
         //last 12 months
-        $last_day = lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
+        $last_day = $this->lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
         $from_date = mktime(0, 0, 0, date('m', $last_day) - 11, 01, date('y', $last_day));
         //$to_date = $last_day;
         break;
@@ -357,7 +357,7 @@ class DowntimesFilter extends FormBase {
     if ($time_period) {
       if ($type == 'archived') {
         $to_date = time();
-        $sql .= " and if (startdate_planned >= $from_date , startdate_planned >= $from_date, end_date >= $from_date) ";
+        $sql .= " and if (startdate_planned >= $from_date , startdate_planned >= $from_date, ri.end_date >= $from_date) ";
       }
       else {
         $to_date = time();
@@ -373,7 +373,8 @@ class DowntimesFilter extends FormBase {
           $sql .= " and (ri.end_date <= $end_date)";
         }
         else {
-          $sql .= " and sd.enddate_planned <= $end_date";
+          $sql .= " and sd.enddate_planned <= $end_date" ;
+          $sql .= " and sd.enddate_planned != 0 and sd.enddate_planned != '' ";
         }
       }
     }
@@ -382,10 +383,10 @@ class DowntimesFilter extends FormBase {
       $service = $service_id;
     }
     if ($state_id > 1) {
-      $sql .= " and sd.state_id = $state_id ";
+      $sql .= " and sd.state_id LIKE '%" . $state_id . "%' ";
     }
 
-    $incidents_parameters = array('sql_where' => $sql, 'service' => $service, 'state' => $sate_id);
+    $incidents_parameters = array('sql_where' => $sql, 'service' => $service, 'state' => $state_id);
     return $incidents_parameters;
   }
 
@@ -485,7 +486,6 @@ class DowntimesFilter extends FormBase {
     $options = self::get_form_options($form_state);
     $type = $form_state->getValue('downtime_type');
     $search_parameters = self::get_search_parameters($type, $options, $form_state);
-
     $sql_where = $search_parameters['sql_where'];
 
     $limit = $form_state->getValue('limit') ? $form_state->getValue('limit') : $this->PAGE_LIMIT;
@@ -498,6 +498,7 @@ class DowntimesFilter extends FormBase {
     $_SESSION['incident_state'] = $state;
     $_SESSION['incident_search_string'] = $search_string;
     $_SESSION['incident_limit'] = $limit;
+
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, $service, $search_string, $limit, $state, $form_state->getValue('filter_enddate'));
 
     $form_state->setRebuild(TRUE);
@@ -506,7 +507,6 @@ class DowntimesFilter extends FormBase {
     $result['incidents_table_render']['#prefix'] = "<div id = '" . $type . "_search_results_wrapper'>";
     $result['incidents_table_render']['incidents_table'] = $incident_downtimes;
     $result['incidents_table_render']['#suffix'] = "</div>";
-
     $response = $result;
     return $response;
   }
@@ -519,8 +519,6 @@ class DowntimesFilter extends FormBase {
     $search_string = $form_state->getValue('search_string');
     $filter_startdate = $form_state->getValue('filter_startdate');
     $filter_enddate = $form_state->getValue('filter_enddate');
-    dpm($state);
-    dpm($service);
     $current_time = time();
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $type, $service, '', '', $state);
@@ -535,5 +533,20 @@ class DowntimesFilter extends FormBase {
     $response = $result;
     return $response;
   }
+  
+/*
+ * Returns search query parametars for the incidents
+ */
 
+ public function lastDayOfMonth($month = '', $year = '') {
+   if (empty($month)) {
+     $month = date('m');
+   }
+   if (empty($year)) {
+     $year = date('Y');
+   }
+   $result = strtotime("{$year}-{$month}-01");
+   $result = strtotime('-1 second', strtotime('+1 month', $result));
+   return $result;
+ }
 }
