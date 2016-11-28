@@ -181,7 +181,7 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->reason = !is_null($result->reason) ? $reasons[$result->reason] : '';
     $incident_data->description = !is_null($result->description) ? t($result->description) : '';
     $statesArray = \Drupal::database()->select('states', 's');
-    $statesArray->addExpression("concat(s.state,'(',s.abbr,')')", "state");
+    $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
     $statesArray = $statesArray->condition('s.id', explode(',', $result->state_id), 'IN')
         ->execute()
         ->fetchCol();
