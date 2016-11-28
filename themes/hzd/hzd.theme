@@ -149,7 +149,7 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
 //    $incident_data->service_name = explode(',',$result->service);
     $incident_data->service_name = [
-      '#items' => explode(',',$result->service),
+      '#items' => explode(',', $result->service),
       '#theme' => 'item_list',
       '#type' => 'ul',
     ];
@@ -268,7 +268,7 @@ function custom_user_fullname($uid) {
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
-  $labels = ['non_compliance'=>t('Grund für die Wartung der Wartungsfenster'),'start_date'=>t('Beginn'),'end_date'=>t('Ende'),'services'=>t('Verfahren'),'states'=>t('Land/System')];
+  $labels = ['non_compliance' => t('Grund für die Wartung der Wartungsfenster'), 'start_date' => t('Beginn'), 'end_date' => t('Ende'), 'services' => t('Verfahren'), 'states' => t('Land/System')];
   $renderService = \Drupal::service('renderer');
   $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
   if (empty($query)) {
@@ -277,29 +277,30 @@ function downtimes_revisions($node) {
   $output = null;
   $itemCount = 1;
   foreach ($query as $value) {
-    if($itemCount == count($query)){
+    if ($itemCount == count($query)) {
       $text = 'Erstellt';
-    }else{
+    }
+    else {
       $text = 'Geändert';
     }
-	$itemCount++;
+    $itemCount++;
     $value = (array) $value;
     $output .= "<div class='changed-group'><span class='downtimes-view-updated'>" . $text . " von " . custom_user_fullname($value['uid']) . ' am ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</span>';
     $log_values = unserialize($value['log']);
     $logData = [];
     $reason = '';
     foreach ($log_values as $name => $field_value) {
-      if($name == 'reason'){
+      if ($name == 'reason') {
         $reason = $field_value['new'];
       }
-      if(in_array($name, ['non_compliance','services','states'])){
+      if (in_array($name, ['non_compliance', 'services', 'states'])) {
         $logData[] = $labels[$name] . ' : ' . $field_value['new'];
       }
-      if(in_array($name, ['start_date','end_date'])){
-        if(!empty($field_value['new']))
+      if (in_array($name, ['start_date', 'end_date'])) {
+        if (!empty($field_value['new']))
           $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y - H:i');
       }
-      
+
 
 //      $output .= "<div class ='field-wrapper'>";
 //      $name = str_replace("_", " ", $name);
@@ -324,14 +325,14 @@ function downtimes_revisions($node) {
 //      $output .= "</div>";
     }
     $items = [
-        '#items'=>$logData,
-        '#theme'=>'item_list',
-        '#type'=>'ul',
-          ];
+      '#items' => $logData,
+      '#theme' => 'item_list',
+      '#type' => 'ul',
+    ];
     $output .= "<div class ='field-wrapper'>";
     $markup = $renderService->render($items);
-    $output .= $markup.'</div>';
-    $output .= '<div class="reason">'.$reason.'</div>';
+    $output .= $markup . '</div>';
+    $output .= '<div class="reason">' . $reason . '</div>';
     $output .= '</div>';
   }
   return $output;
