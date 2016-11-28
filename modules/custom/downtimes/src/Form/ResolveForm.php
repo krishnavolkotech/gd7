@@ -7,11 +7,14 @@
 
 namespace Drupal\downtimes\Form;
 
+use DateTime;
+use Drupal;
+use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /*
  * Resolve Downtimes form
@@ -24,7 +27,7 @@ class ResolveForm extends FormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     }
@@ -58,11 +61,11 @@ class ResolveForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
-    $user = \Drupal::currentUser();
+    $user = Drupal::currentUser();
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     }
@@ -84,7 +87,7 @@ class ResolveForm extends FormBase {
      */
     // $resolved_title = db_result(db_query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
 
-    $query = \Drupal::database()->select('downtimes', 'd');
+    $query = Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['scheduled_p']);
     $query->condition('d.downtime_id', $nid, '=');
     $query->range(1);
@@ -136,7 +139,7 @@ class ResolveForm extends FormBase {
     $query->Fields("d");
     $query->where('d.downtime_id = ' . $nid);
     $nodeinfo = $query->execute()->fetchObject();
-    $date_format = 'd.m.Y H:i';
+    $date_format = 'd.m.Y - H:i';
 
     $start_date = date($date_format, str_replace(' Uhr', '', $nodeinfo->startdate_planned));
     if (!empty($nodeinfo->enddate_planned)) {
@@ -162,7 +165,7 @@ class ResolveForm extends FormBase {
       );
     }
 
-    $first_month_first_day = date('01.01.Y 00:00');
+    $first_month_first_day = date('01.01.Y - 00:00');
 
     $form['date_reported'] = array(
       '#title' => t('Actual End Date'),
@@ -172,6 +175,7 @@ class ResolveForm extends FormBase {
       '#size' => 60,
       '#weight' => -3,
       '#required' => TRUE,
+      '#description' => "Format : " . date($date_format, time()),
       '#suffix' => ($resolved_title == 1) ? t('Please enter the actual end date of the maintenance.') : t('Please enter the actual end date of the incident.'),
     );
 
@@ -190,15 +194,19 @@ class ResolveForm extends FormBase {
    */
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $query = \Drupal::database()->select('downtimes', 'd');
+    $query = Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['startdate_planned']);
     $query->condition('d.downtime_id', $form_state->getValue('nid'), '=');
     $sql = $query->execute()->fetchObject();
-
-    $startdate = $sql->startdate_planned;
-    $enddate = strtotime($form_state->getValue('date_reported'));
-
-    $currentdate = time();
+    $enddate = 0;
+    $startdate = DateTimePlus::createFromTimestamp($sql->startdate_planned)->getTimestamp();
+    if(DateTime::createFromFormat('d.m.Y - H:i', $form_state->getValue('date_reported') instanceof DateTime)){
+      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'))->getTimestamp();
+    }else{
+      $form_state->setErrorByName('date_reported', $this->t('Invalid date format'));
+    }
+    
+    $currentdate = REQUEST_TIME;
     if ($enddate <= $startdate) {
       $form_state->setErrorByName('date_reported', $this->t('Resolve End date should be after start date.'));
     }
@@ -210,8 +218,8 @@ class ResolveForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     //Todo pass form state values to confirm form
-    $group = \Drupal::routeMatch()->getParameter('group');
-    $user = \Drupal::currentUser();
+    $group = Drupal::routeMatch()->getParameter('group');
+    $user = Drupal::currentUser();
     $comment = $form_state->getValue('comment');
     $nid = $form_state->getValue('nid');
     $date_reported = $form_state->getValue('date_reported');

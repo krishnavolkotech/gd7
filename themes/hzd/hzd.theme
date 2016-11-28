@@ -178,7 +178,7 @@ function hzd_preprocess_node(&$variables) {
     }
     $incident_data->resolved = $result->resolved;
     $incident_data->cancelled = $result->cancelled;
-    $incident_data->reason = !is_null($result->reason) ? $reasons[$result->reason] : '';
+    $incident_data->reason = !empty($result->reason) ? $reasons[$result->reason] : '';
     $incident_data->description = !is_null($result->description) ? t($result->description) : '';
     $statesArray = \Drupal::database()->select('states', 's');
     $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
@@ -214,11 +214,11 @@ function hzd_preprocess_node(&$variables) {
     $serialized_data = unserialize($_SESSION['problems_query']);
 
     if ($serialized_data['nid']) {
-      $url = Url::fromRoute('problem_management.problems', array('group' => 31));
+      $url = Url::fromRoute('problem_management.problems', array('group' => PROBLEM_MANAGEMENT));
       $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
     }
     else {
-      $url = Url::fromRoute('problem_management.problems', array('group' => 31));
+      $url = Url::fromRoute('problem_management.problems', array('group' => PROBLEM_MANAGEMENT));
       $link = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
       $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
     }
@@ -296,7 +296,8 @@ function downtimes_revisions($node) {
         $logData[] = $labels[$name] . ' : ' . $field_value['new'];
       }
       if(in_array($name, ['start_date','end_date'])){
-        $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
+        if(!empty($field_value['new']))
+          $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y - H:i');
       }
       
 
