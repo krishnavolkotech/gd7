@@ -200,7 +200,7 @@ class ResolveForm extends FormBase {
     $sql = $query->execute()->fetchObject();
     $enddate = 0;
     $startdate = DateTimePlus::createFromTimestamp($sql->startdate_planned)->getTimestamp();
-    if(DateTime::createFromFormat('d.m.Y - H:i', $form_state->getValue('date_reported') instanceof DateTime)){
+    if(DateTime::createFromFormat('d.m.Y - H:i', $form_state->getValue('date_reported')) instanceof DateTime){
       $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'))->getTimestamp();
     }else{
       $form_state->setErrorByName('date_reported', $this->t('Invalid date format'));
