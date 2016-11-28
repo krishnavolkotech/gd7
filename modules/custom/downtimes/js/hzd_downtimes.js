@@ -45,7 +45,7 @@
                     var present = present_date();
                     var diff = toTimestamp(start_date) - toTimestamp(today);
                     var max_adv_time = new Array();
-                    if (toTimestamp(start_date) < toTimestamp(present)) {
+                    if (toTimestamp(start_date) < toTimestamp(today)) {
                         $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                         $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
                         $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
