@@ -1,0 +1,5 @@
+services:
+  downtimes.breadcrumb_test:
+    class: Drupal\downtimes\MyBreadcrumbBuilder
+    tags:
+      - { name: breadcrumb_builder, priority: 1010 }
