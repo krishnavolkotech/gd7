@@ -172,6 +172,7 @@ class Confirm extends ConfirmFormBase {
     $query = Drupal::database()->update('downtimes');
     $query->fields([
       'resolved' => 1,
+      'enddate_reported' => REQUEST_TIME,
     ]);
     $query->condition('downtime_id', $nid, '=');
     $query->execute();
