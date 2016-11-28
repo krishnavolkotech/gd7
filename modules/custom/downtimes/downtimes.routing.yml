@@ -48,7 +48,7 @@ downtimes.cancel:
     group: \d+
 
 downtimes.confirm:
-  path: '/confirm/{node}'
+  path: '/group/{group}/resolve_confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Confirm'
     _title: 'Conform'
@@ -58,7 +58,7 @@ downtimes.confirm:
     node: \d+
 
 downtimes.cancel_confirm:
-  path: '/cancel_confirm/{node}'
+  path: '/group/{group}/cancel_confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Cancelconfirm'
     _title: 'Cancel'

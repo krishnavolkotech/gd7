@@ -97,6 +97,9 @@ view_mode ? view_mode|clean_class,
       {{ content }}
     </div>#}
     {{ back_to_search }}
+{% if(incident.cancelled) %}
+<div class='cancelled-downtime-title'>Diese Blockzeit wurde vor Beginn storniert</div>
+{% endif %}
   <div class="downtime-view-wrapper">
     <div class = "Incident">
       <div class = 'downtimes_title'>{{ 'Verfahren'|trans }}</div>
@@ -162,32 +165,23 @@ view_mode ? view_mode|clean_class,
       </div>
       <div style = "clear:both" ></div>
       {% endif %}
-
   </div>
-  {% if revisions %}
+  {% if revisions or ((incident.resolved or incident.cancelled) and incident.resolved_data.date_reported) %}
    <div class="downtime-view-history">Historie</div>
-  {{ revisions|raw }}
-  <div style = "clear:both" ></div>
-  {% endif %}
-  
-  {% if incident.resolved and incident.resolved_data.date_repoted %}
-  <div class = "resolved_details">
-    <div class = 'downtime_reason'>{{ 'Resolved'|trans }}</div>
-    <div class = 'downtimes_content'>{{ incident.resolved_data.date_repoted }}
-      {{ incident.resolved_data.name }} {{ incident.resolved_data.comment }}
-    </div>
-  </div>
-  <div style = "clear:both" ></div>
-  {% endif %}
-  
-  
-  {% if incident.cancelled and incident.resolved_data.date_repoted %}
-  <div class = "cancelled_details">
-    <div class = 'downtime_reason'>{{ 'Cancelled'|trans }}</div>
-    <div class = 'downtimes_content'>{{ incident.resolved_data.date_repoted }}
-      {{ incident.resolved_data.name }} {{ incident.resolved_data.comment }}
-    </div>
-  </div>
-  <div style = "clear:both" ></div>
+   {% if (incident.resolved or incident.cancelled) and incident.resolved_data.date_reported %}
+   <div class="changed-group">
+   <span class="downtimes-view-updated">
+	{% if(incident.resolved) %} 
+	  Behoben 
+	{% else %}
+	  Abgebrochen
+	{% endif %}
+    von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_repoted|date('d.m.Y - H:i') }} Uhr</span>
+   <div class="field-wrapper">
+   </div><div class="reason">{{ incident.resolved_data.comment|raw }}</div></div>
+   <div style = "clear:both" ></div>
+   {% endif %}
+   {{ revisions|raw }}
+   <div style = "clear:both" ></div>
   {% endif %}
 </article>

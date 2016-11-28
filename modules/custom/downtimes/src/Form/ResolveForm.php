@@ -175,7 +175,7 @@ class ResolveForm extends FormBase {
       '#size' => 60,
       '#weight' => -3,
       '#required' => TRUE,
-      '#description' => "Format : " . date($date_format, time()),
+      '#description' => "Format : " . date($date_format, REQUEST_TIME),
       '#suffix' => ($resolved_title == 1) ? t('Please enter the actual end date of the maintenance.') : t('Please enter the actual end date of the incident.'),
     );
 
@@ -235,7 +235,7 @@ class ResolveForm extends FormBase {
     $this->keyValueExpirable->setWithExpire("downtimes_resolve_" . $nid, $downtime_resolve, 6 * 60 * 60);
 
     // Redirect to the confirm form.
-    $url = Url::fromUserInput('/confirm/' . $nid);
+    $url = Url::fromRoute('downtimes.confirm',['group'=>$group,'node'=>$nid]);
     $form_state->setRedirectUrl($url);
   }
 

@@ -271,7 +271,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       //$form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
       foreach (array_keys($form['actions']) as $action) {
         if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-          $form['actions'][$action]['#submit'][] = 'custom_maintenance_submit';
+          //$form['actions'][$action]['#submit'][] = 'custom_maintenance_submit';
         }
       }
     }

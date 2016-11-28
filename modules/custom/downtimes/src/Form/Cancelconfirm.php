@@ -65,18 +65,14 @@ class Cancelconfirm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    /* if (isset($_SESSION['Group_name'])) {
-      $path = 'node/' . $_SESSION['Group_id'] . '/' . $_SESSION['form_values']['type'];
-      }
-      else {
-      $path = 'downtimes';
-      }
-
-      $path = isset($_SESSION['Group_name']) ? 'node/' . $_SESSION['Group_id'] . '/' . 'downtimes' : 'downtimes'; */
-
-    // return confirm_form($form, t('Are you sure you want to confirm to cancel these items?'), $path, t('This action cannot be undone.'), t('Submit'), t('Cancel'));
-    // this needs to be a valid route otherwise the cancel link won't appear
-    //  return new Url('mymodule.home');
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if (is_object($node)) {
+      $nid = $node->id();
+    } else {
+      $nid = $node;
+    }
+    $downtimes_resolve = $this->keyValueExpirable->get("downtimes_cancel_" . $nid);
+    return new Url('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
   }
 
   /**
@@ -97,7 +93,7 @@ class Cancelconfirm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelText() {
-    //  return $this->t('Nevermind');
+      return $this->t('Cancel');
   }
 
   /**
@@ -145,7 +141,7 @@ class Cancelconfirm extends ConfirmFormBase {
 
     $record = array(
       //'end_date' => strtotime($date_report),
-      'date_reported' => time(),
+      'date_reported' => REQUEST_TIME,
       'comment' => $comment,
       'downtime_id' => $nid,
       'uid' => $user->id(),
@@ -161,7 +157,7 @@ class Cancelconfirm extends ConfirmFormBase {
     $query->execute();
     $this->keyValueExpirable->delete("downtimes_cancel_" . $nid);
     drupal_set_message(t($message));
-    $form_state->setRedirect('<front>');
+    $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
 
     /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
 
