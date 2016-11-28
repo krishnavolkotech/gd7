@@ -2,7 +2,8 @@
     Drupal.behaviors.hzd_downtimes = {
         attach: function (context, settings) {
             var a = settings.downtime;
-            $('.reason-for-noncompliance').hide();
+            if($('#edit-reason-for-noncompliance').val() == 0)
+                $('.reason-for-noncompliance').hide();
             function convert_to_valid_format(date) {
                 var temp = date.split('.');
                 var remove_white_space = temp['2'].replace(/-+/g, '');
@@ -147,13 +148,20 @@
                         weekday[6] = "Sat";
 
                         var start_day = $('input#edit-startdate-planned').val();
-                        start_day = new Date(convert_to_valid_format(start_day));
-                        start_day = weekday[start_day.getDay()];
+                        var start_day_obj = new Date(convert_to_valid_format(start_day));
+                        start_day = weekday[start_day_obj.getDay()];
 
                         var end_day = $(this).val();
-                        end_day = new Date(convert_to_valid_format(end_day));
-                        end_day = weekday[end_day.getDay()];
-
+                        var end_day_obj = new Date(convert_to_valid_format(end_day));
+                        end_day = weekday[end_day_obj.getDay()];
+                        if(start_day_obj.getTime() >= end_day_obj.getTime()){
+                            $(this).next('p.error').remove();
+                            $(this).after('<p class="error">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
+                            $(this).addClass('error');
+                        }else{
+                            $(this).next('p.error').remove();
+                            $(this).removeClass('error');
+                        }
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
                             $('.reason-for-noncompliance').show();
