@@ -275,7 +275,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         }
       }
     }
-    $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+    $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
   }
   else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
@@ -1010,8 +1010,9 @@ function check_downtime_status(&$form, &$form_state) {
           $form_state->set($form['maintenance_type'], 'I');
         }
         else {
-          $url = Url::fromUserInput('/incident-management/stoerungen/melden');
-          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minutes before the actual start. If you need to perform immediate maintenance work, please ') . \Drupal::l(t("report an Incident instead"), $url));
+          $url = Url::fromRoute('downtimes.create_downtimes',['group'=>INCIDENT_MANAGEMANT]);
+	  $link = $res = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please ') . $link);
         }
       }
       else {
@@ -1025,8 +1026,9 @@ function check_downtime_status(&$form, &$form_state) {
           $form_state->setErrorByName('current_date', t("start date must be in future"));
         }
         else {
-          $url = Url::fromUserInput('/incident-management/stoerungen/melden');
-          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minutes before the actual start. If you need to perform immediate maintenance work, please ') . \Drupal::l("report an Incident instead", $url));
+          $url = Url::fromRoute('downtimes.create_downtimes',['group'=>INCIDENT_MANAGEMANT]);
+	  $link = $res = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please ') . $link);
         }
       }
     }
