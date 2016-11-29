@@ -48,10 +48,13 @@ button[value="Save and publish"]{
   margin-right:0 !important;
 }
 .tabs-left>.nav-tabs{
-  width:45% !important;
+  width:35% !important;
   margin-right:5% !important;
   border:none !important;
 }
 .tabs-left>.nav-tabs .form-type-checkbox{
   width:100% !important;
+}
+.form-type-vertical-tabs .tabs-left{
+  margin-top:50px;
 }
