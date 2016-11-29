@@ -240,7 +240,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         ),
 //        '#size' => 5,
         '#prefix' => '<div class="reason-for-noncompliance">',
-        '#suffix' => '<p class="reason-error error" style="display:none;">This field is required</p></div>',
+        '#suffix' => '<p class="reason-error text-danger error" style="display:none;">This field is required</p></div>',
         '#label_suffix'=>'<span class="form-required"></span>'
       ];
     }
