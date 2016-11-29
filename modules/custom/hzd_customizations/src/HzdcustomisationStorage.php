@@ -677,7 +677,7 @@ class HzdcustomisationStorage {
       t('No service partner (KONSENS) available during maintenance hours'),
       t('No service interruption planned'),
     );
-    if (!empty($_REQUEST['services_effected'])) {
+    if (isset($_REQUEST['services_effected']) && !empty($_REQUEST['services_effected'])) {
       $service_id = $_REQUEST['services_effected'];
     } else {
       $group_downtimes_view_service_query = db_select('group_downtimes_view', 'gdv');
@@ -719,7 +719,7 @@ class HzdcustomisationStorage {
     }
 
     if (isset($state_id) && $state_id != 1) {
-      $state = " ds.state_id = $state_id";
+      $state = " ds.state_id LIKE '%" . $state_id . "%'"; 
     }
     else {
       $state = " ds.state_id != 0";
@@ -744,7 +744,7 @@ class HzdcustomisationStorage {
         $sql_select = "$select,sd.cancelled from {downtimes} sd,
                        {node_field_data} n, {group_content_field_data} oa,
                        {states} s where sd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and
-                       sd.downtime_id = oa.entity_id and oa.type like '%group_node%' and s.id=sd.state_id and
+                       sd.downtime_id = oa.entity_id and oa.type like '%group_node%' and s.id= $state_id  and
                        sd.service_id in
                              ($inner_select) ";
         if (!empty($filter_end_date)) {
@@ -756,7 +756,7 @@ class HzdcustomisationStorage {
         $inner_select = "select service_id as state_service_id from {group_downtimes_view} $inner_where ";
         $sql_select = "$select,sd.cancelled from {downtimes} sd,
                        {node_field_data} n,{states} s
-                       where sd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and s.id=sd.state_id and
+                       where sd.service_id = n.nid and (sd.resolved = 1 or sd.cancelled = 1) and s.id= $state_id  and
                        sd.service_id in
                              ($inner_select) ";
         if (!empty($filter_end_date)) {
@@ -783,7 +783,7 @@ class HzdcustomisationStorage {
         $inner_where = " where $service and $state";
         $inner_select = "select distinct(service_id) as state_service_id from {group_downtimes_view} gdv $inner_where ";
         $sql_select = "$select from {downtimes} sd, {node} n, {states} s
-                 where sd.service_id = n.nid and s.id=sd.state_id and
+                 where sd.service_id = n.nid and s.id= $state_id  and
                        sd.service_id in
                              ($inner_select) ";
       }
@@ -826,6 +826,7 @@ class HzdcustomisationStorage {
         $query->addExpression("oa.id", 'group_content_id');
         $query->join('node_field_data', 'n', 'sd.service_id = n.nid');
         $query->join('group_content_field_data', 'oa', 'sd.downtime_id = oa.entity_id');
+        $query->join('resolve_cancel_incident', 'ri', 'ri.downtime_id = sd.downtime_id'); 
         // $query->join('states', 's', 's.id=sd.state_id');.
         $query->groupBy('sd.service_id, sd.state_id, sd.downtime_id,oa.id, n.uid, sd.downtime_id, sd.description, sd.startdate_reported, sd.enddate_reported, sd.startdate_planned, sd.enddate_planned, sd.scheduled_p, sd.cancelled ');
         $query->orderBy('sd.downtime_id', 'desc');
@@ -838,6 +839,7 @@ class HzdcustomisationStorage {
       }
     }
     else {
+     
       if ($search_string) {
         $result = db_query($sql, $search_string)->fetchAll();
       }
