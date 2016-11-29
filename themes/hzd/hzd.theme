@@ -324,8 +324,9 @@ function downtimes_revisions($node) {
 //      }
 //      $output .= "</div>";
     }
+/////appending the reason as a seperate wrapper to preserve wyswyg styles
     if(!empty($reason))
-      $logData[] = $labels['reason'] . ' : ' . strip_tags($reason);
+      $logData[] = t("@label : ",['@label'=>$labels['reason']]);
     $items = [
       '#items' => $logData,
       '#theme' => 'item_list',
@@ -334,7 +335,8 @@ function downtimes_revisions($node) {
     $output .= "<div class ='field-wrapper'>";
     $markup = $renderService->render($items);
     $output .= $markup . '</div>';
-    //$output .= '<div class="reason">' . $reason . '</div>';
+    if(!empty($reason))
+      $output .= '<div class="reason">' . $reason . '</div>';
     $output .= '</div>';
   }
   return $output;

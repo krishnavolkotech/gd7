@@ -2,7 +2,6 @@
     Drupal.behaviors.hzd_downtimes = {
         attach: function (context, settings) {
             var a = settings.downtime;
-
             $('.reason-for-noncompliance').find('label').next('span.form-required').remove()
 	    $('.reason-for-noncompliance').find('label').after('<span class="form-required"></span>');
             if($('#edit-reason-for-noncompliance').val() == 0)
@@ -140,6 +139,7 @@
                     $('input#edit-startdate-planned').addClass('error');
                 }
             });
+	    
 
             // Maintenance window validations.
             $('input#edit-enddate-planned').blur(function () {
@@ -433,25 +433,10 @@
                 var datum = Date.parse(strDate);
                 return datum / 1000;
             }
+	    
         
 
         }
     };
 })(jQuery, Drupal);
-var data;
-jQuery(document).ready(function(){
-    jQuery('.form-checkboxes#edit-services-effected input[type="checkbox"]').change(function(){
-        if(jQuery(this).is(':checked')){
-            var serviceId = jQuery(this).val();
-            jQuery.post('/get_dependent_services/'+serviceId,function(data1){
-//                console.log(data1);
-                data = jQuery.parseJSON(data1);
-                
-                jQuery.each(data,function(key,val){
-                    console.log(val);
-                    jQuery('.form-checkboxes#edit-services-effected #edit-services-effected-'+val).prop( "checked", true );
-                });
-            });
-        }
-    });
-});
+

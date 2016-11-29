@@ -13,7 +13,7 @@ use Drupal\Core\Url;
 /**
  * {@inheritdoc}
  */
-class MyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
+class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface {
 
   /**
    * {@inheritdoc}
@@ -49,7 +49,7 @@ class MyBreadcrumbBuilder implements BreadcrumbBuilderInterface {
       $links[] =  Link::createFromRoute(t('Edit '.$node->getTitle()), 'entity.node.edit_form', array('node' => $node->id()));
     }
      
-    return $breadcrumb->setLinks($links);
+    return $breadcrumb->setLinks($links)->addCacheableDependency(0);
   }
 
 }

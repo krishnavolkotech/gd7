@@ -1,6 +1,16 @@
 (function ($, Drupal) {
     Drupal.behaviors.service_data = {
         attach: function (context, settings) {
+        var dependantServices = settings.dependantServices;
+        $('#edit-services-effected input[type="checkbox"]').change(function(){
+	  if($(this).is(':checked')){
+	    var serviceId = $(this).val();
+	    data = $.parseJSON(dependantServices);
+	    $.each(data,function(key,val){
+	       $('#edit-services-effected #edit-services-effected-'+val).prop( "checked", true );
+	    });
+	  }
+        });
             // script for check dependent services in maintenance form
             /*var services = Drupal.settings.dependent_service_string;
              if ($.browser.msie && $.browser.version <= 8) {
