@@ -275,6 +275,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         }
       }
     }
+    unset($form['actions']['unpublish']);
+//pr(array_keys($form['actions']));exit;
     if(isset($form['actions']['publish'])){
         $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
     }else{

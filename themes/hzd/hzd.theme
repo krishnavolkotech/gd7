@@ -268,7 +268,7 @@ function custom_user_fullname($uid) {
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
-  $labels = ['non_compliance' => t('Grund für die Wartung der Wartungsfenster'), 'start_date' => t('Beginn'), 'end_date' => t('Ende'), 'services' => t('Verfahren'), 'states' => t('Land/System')];
+  $labels = ['non_compliance' => t('Grund für die Wartung der Wartungsfenster'), 'start_date' => t('Beginn'), 'end_date' => t('Ende'), 'services' => t('Verfahren'), 'states' => t('Land/System'),'reason'=>t('Beschreibung')];
   $renderService = \Drupal::service('renderer');
   $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
   if (empty($query)) {
@@ -324,6 +324,8 @@ function downtimes_revisions($node) {
 //      }
 //      $output .= "</div>";
     }
+    if(!empty($reason))
+      $logData[] = $labels['reason'] . ' : ' . strip_tags($reason);
     $items = [
       '#items' => $logData,
       '#theme' => 'item_list',
@@ -332,7 +334,7 @@ function downtimes_revisions($node) {
     $output .= "<div class ='field-wrapper'>";
     $markup = $renderService->render($items);
     $output .= $markup . '</div>';
-    $output .= '<div class="reason">' . $reason . '</div>';
+    //$output .= '<div class="reason">' . $reason . '</div>';
     $output .= '</div>';
   }
   return $output;
