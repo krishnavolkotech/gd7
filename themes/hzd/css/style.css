@@ -2260,3 +2260,6 @@ form.node-downtimes-form > .form-item{
 .maintenance-window-field button{
   margin-top:2px;
 }
+.tabs-left .tab-content .form-type-checkbox{
+  width:100% !important;
+}
