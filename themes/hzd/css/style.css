@@ -1348,7 +1348,10 @@ nav#block-optionen ul li.active ul.dropdown-menu {
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
   position: absolute;
   top: 20px;
-  left: 0;
+  left: -21px;
+}
+#edit-services-effected .form-checkbox .published-services .data table tr th{
+  font-size:13px !important;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
   background: #fff !important;
@@ -2057,7 +2060,9 @@ section h2.block-title, aside .region-sidebar-first .block-favorites h2.block-ti
   text-transform: none;
 }
 form.node-downtimes-form #edit-services-effected .form-checkbox .published-services label.option,
-form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b{
+form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b,
+form.node-downtimes-edit-form #edit-services-effected .form-checkbox .published-services label.option,
+form.node-downtimes-edit-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b{
   font-weight:normal !important;
 }
 form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-tooltip{
@@ -2078,7 +2083,8 @@ form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkb
 form.node-downtimes-edit-form .form-wrapper .form-type-checkbox,
 form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-downtimes-form .form-wrapper .form-type-checkbox{
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox{
   width:31.33%;
   float:left;
   margin:0 2% 7px 0;
@@ -2253,4 +2259,7 @@ form.node-downtimes-form > .form-item{
 }
 .maintenance-window-field button{
   margin-top:2px;
+}
+.tabs-left .tab-content .form-type-checkbox{
+  width:100% !important;
 }
