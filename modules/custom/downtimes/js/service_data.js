@@ -85,7 +85,7 @@
 	    var count = 1;
 	    $('#edit-services-effected div.form-checkbox').each(function(){
 		if(count++%3 == 0){
-		    $(this).find('div.service-profile-data').css({ left: '-220px'});
+		    $(this).find('div.service-profile-data').css({ left: '-250px'});
 		}
 	    });
 	    
