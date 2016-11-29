@@ -2,6 +2,9 @@
     Drupal.behaviors.hzd_downtimes = {
         attach: function (context, settings) {
             var a = settings.downtime;
+
+            $('.reason-for-noncompliance').find('label').next('span.form-required').remove()
+	    $('.reason-for-noncompliance').find('label').after('<span class="form-required"></span>');
             if($('#edit-reason-for-noncompliance').val() == 0)
                 $('.reason-for-noncompliance').hide();
             function convert_to_valid_format(date) {
@@ -35,6 +38,15 @@
                 var present = present_month + "/" + present_day + "/" + present_year + " 23:59";
                 return present;
             }
+	    $('form.node-downtimes-form').submit(function(){
+		if($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0){
+		  $('.reason-for-noncompliance').find('.reason-error').show();
+		  $('#edit-reason-for-noncompliance').focus();
+                  return false;
+		}else{
+		  $('.reason-for-noncompliance').find('reason-error').hide();
+		}
+            });
 
             // Advance Time validations.
             $('input#edit-startdate-planned').blur(function () {
@@ -421,6 +433,7 @@
                 var datum = Date.parse(strDate);
                 return datum / 1000;
             }
+        
 
         }
     };
