@@ -6,7 +6,7 @@
 	  if($(this).is(':checked')){
 	    var serviceId = $(this).val();
 	    data = $.parseJSON(dependantServices);
-	    $.each(data,function(key,val){
+	    $.each(data[serviceId],function(key,val){
 	       $('#edit-services-effected #edit-services-effected-'+val).prop( "checked", true );
 	    });
 	  }
