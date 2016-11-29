@@ -1000,11 +1000,14 @@ function dependent_service_list(){
 	->condition('nfdd.field_dependent_downtimeservices_target_id',$service,'=');
     $dependantServicesList->join('node_field_data','nfd','nfd.nid = nfdd.entity_id');
     $dependantServicesList->join('node__field_dependent_service','nfds','nfd.nid = nfds.entity_id');
-    $dependantServicesArr[$service] = $dependantServicesList->execute()
+    $dependantServicesArr = $dependantServicesList->execute()
 	->fetchCol();
+    foreach($dependantServicesArr as $data){
+      $result[$data][] = $service;
+    }
   }
 
-  return $dependantServicesArr;
+  return $result;
 }
 
 /**
