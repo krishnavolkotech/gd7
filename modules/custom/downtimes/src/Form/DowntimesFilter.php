@@ -73,7 +73,16 @@ class DowntimesFilter extends FormBase {
         '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('archived_downtimes') . "</div>",
         '#prefix' => $form['#prefix']
       ];
-
+      $selected_type = $form_state->getValue('type');
+      if (!in_array($selected_type, array('0', '1'))) {
+        $selected_type =  \Drupal::request()->query->get('type'); ;
+      }
+      if (in_array($selected_type, array('0', '1'))) {
+        $form['#attached']['drupalSettings']['archived_downtimes'] = array(
+            'type' => $selected_type,
+        );
+    //    dpm($form['#attached']['drupalSettings']['archived_downtimes']);
+      }
       $form['type'] = array(
         '#type' => 'select',
         '#options' => $types,
@@ -89,10 +98,11 @@ class DowntimesFilter extends FormBase {
             'message' => NULL,
           ),
         ),
+        '#default_value' => isset($selected_type) ? $selected_type : 'select',
         '#prefix' => '<div class = "type_search_dropdown hzd-form-element">',
         '#suffix' => '</div><div style="clear:both"></div>',
       );
-
+      
       $period = array(
         "<" . t('Time Period') . ">",
         t('Last Week'),
@@ -256,6 +266,30 @@ class DowntimesFilter extends FormBase {
       '#suffix' => '</div>',
     ];
     $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
+////    dpm($_SESSION['downtime_type']);
+//    if (isset($_SESSION['downtime_type'])) {
+////      $form['states']['#attributes'][] = array(
+////         // 'class' => array($_SESSION['downtime_type']),
+////         // 'data-drupal-selector' => $_SESSION['downtime_type'],
+////          'id' => $_SESSION['downtime_type'] . '-states'
+////        );
+//        $form['states']['#attributes']['id'] = $_SESSION['downtime_type'] . '-states';
+////      $form['services_effected']['#attributes'] = array(
+////          'class' => array($_SESSION['downtime_type']),
+////          'data-drupal-selector' => $_SESSION['downtime_type'],
+////          'id' => $_SESSION['downtime_type'] . '-services_effected'
+////        );
+////      $form['filter_startdate']['#attributes'] = array(
+////          'class' => array($_SESSION['downtime_type']),
+////          'data-drupal-selector' => $_SESSION['downtime_type'],
+////          'id' => $_SESSION['downtime_type'] . '-filter_startdate'
+////        );
+////      $form['filter_enddate']['#attributes'] = array(
+////          'class' => array($_SESSION['downtime_type']),
+////          'data-drupal-selector' => $_SESSION['downtime_type'],
+////          'id' => $_SESSION['downtime_type'] . '-filter_enddate'
+////        );
+//    }
     /* $form['submit'] = [
       '#type' => 'submit',
       '#value' => t('Submit'),
@@ -273,7 +307,10 @@ class DowntimesFilter extends FormBase {
       'downtimes/downtimes.currentincidents',
       'downtimes/downtimes',
     );
-    $form['#attached']['drupalSettings'] = array('search_string' => t('Search Reason'), 'group_id' => $group_id);
+    $form['#attached']['drupalSettings'] = array(
+      'search_string' => t('Search Reason'), 
+      'group_id' => $group_id
+    );
 
     return $form;
   }
@@ -374,7 +411,9 @@ class DowntimesFilter extends FormBase {
         }
         else {
           $sql .= " and sd.enddate_planned <= $end_date" ;
-          $sql .= " and sd.enddate_planned != 0 and sd.enddate_planned != '' ";
+          if ($start_date) {
+            $sql .= " and sd.enddate_planned != 0 and sd.enddate_planned != '' ";
+          }
         }
       }
     }
