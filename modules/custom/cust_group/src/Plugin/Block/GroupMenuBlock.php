@@ -21,14 +21,40 @@ use Drupal\group\Entity\Group;
  */
 class GroupMenuBlock extends BlockBase {
 
+
+
+  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = false){
+    $routeMatch = \Drupal::routeMatch();
+    $group = $routeMatch->getParameter('group');
+    if (empty($group)) {
+      $group = $routeMatch->getParameter('arg_0');
+    }
+    if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
+      $node = $routeMatch->getParameter('node');
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+	if(!empty($groupContent))
+	  $group = $groupContent->getGroup();
+    }
+    if (!empty($group)) {
+      return \Drupal\Core\Access\AccessResult::allowed();
+    }
+    return \Drupal\Core\Access\AccessResult::neutral();
+  }
   /**
    * {@inheritdoc}
    */
   public function build() {
-    
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $routeMatch = \Drupal::routeMatch();
+    $group = $routeMatch->getParameter('group');
     if (empty($group)) {
-      $group = \Drupal::routeMatch()->getParameter('arg_0');
+      $group = $routeMatch->getParameter('arg_0');
+    }
+    if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
+      $node = $routeMatch->getParameter('node');
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+	if(!empty($groupContent))
+	  $group = $groupContent->getGroup();
+	
     }
     //pr($group->id());exit;
     if (!empty($group)) {
