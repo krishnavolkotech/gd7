@@ -194,7 +194,7 @@ function hzd_preprocess_node(&$variables) {
     //pr($result);
     $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
-    $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => INCIDENT_MANAGEMENT));
+    $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => INCIDENT_MANAGEMENT),['attributes'=>['class'=>['back-search']]]);
     $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
   }
   if ($variables['node']->getType() == 'problem') {
@@ -324,8 +324,9 @@ function downtimes_revisions($node) {
 //      }
 //      $output .= "</div>";
     }
+/////appending the reason as a seperate wrapper to preserve wyswyg styles
     if(!empty($reason))
-      $logData[] = $labels['reason'] . ' : ' . strip_tags($reason);
+      $logData[] = t("@label : ",['@label'=>$labels['reason']]);
     $items = [
       '#items' => $logData,
       '#theme' => 'item_list',
@@ -334,7 +335,8 @@ function downtimes_revisions($node) {
     $output .= "<div class ='field-wrapper'>";
     $markup = $renderService->render($items);
     $output .= $markup . '</div>';
-    //$output .= '<div class="reason">' . $reason . '</div>';
+    if(!empty($reason))
+      $output .= '<div class="reason">' . $reason . '</div>';
     $output .= '</div>';
   }
   return $output;

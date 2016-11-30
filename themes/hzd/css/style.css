@@ -2227,7 +2227,7 @@ form.node-downtimes-form .reason-for-noncompliance label.control-label{
   max-width: 100%;
   margin-bottom: 5px;
   font-weight: 700;
-  width:100%;
+  /*width:100%;*/
 }  
 form.node-downtimes-form > .form-group,
 form.node-downtimes-form > .form-wrapper,
@@ -2262,4 +2262,22 @@ form.node-downtimes-form > .form-item{
 }
 .tabs-left .tab-content .form-type-checkbox{
   width:100% !important;
+}
+.back-search{
+  margin:10px 0;
+  float:left;
+  width:100%;
+}
+.cancelled-downtime-title{
+  color:#ff0000;
+  font-size:16px;
+  width:100%;
+  margin:10px 0;
+  float:left;
+}
+.cancelled-downtime{
+    color:#ff0000 !important;
+}
+.reason-error{
+  display:none;
 }
