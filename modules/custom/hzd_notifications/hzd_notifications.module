@@ -249,9 +249,13 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
       $for_groupadmin_formids = array(
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
+        'resolve_form',
+        'cancel_form'
       );
       $for_groupmemeber_formids = array(
         'node_downtimes_edit_form',
+        'resolve_form',
+        'cancel_form'
       );
 
       if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $for_admin_formids)) {
