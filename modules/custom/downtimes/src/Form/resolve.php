@@ -9,6 +9,7 @@ namespace Drupal\downtimes\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\cust_group\Controller\CustNodeController;
 
 /**
  * Configure inactive_user settings for this site.
@@ -28,6 +29,18 @@ class resolve_form extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type) {
+    
+    $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+    $current_user = \Drupal::service('current_user');
+    
+    
     $user_role = get_user_role();
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
     $pos_slash = strripos($_GET['q'], '/');
@@ -57,7 +70,7 @@ class resolve_form extends FormBase {
       '#weight' => -2,
     );
 
-    if (in_array($user_role, array('site_admin'))) {
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || $group->getMember($current_user)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;

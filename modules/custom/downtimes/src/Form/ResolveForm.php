@@ -15,6 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\cust_group\Controller\CustNodeController;
 
 /*
  * Resolve Downtimes form
@@ -61,6 +62,16 @@ class ResolveForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
+    $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+
+
     $user = Drupal::currentUser();
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)
@@ -112,7 +123,7 @@ class ResolveForm extends FormBase {
       '#id' => 'reason',
       '#weight' => -2,
     );
-    if (in_array(SITE_ADMIN_ROLE, $user_role)) {
+   if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || $group->getMember($user)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
@@ -200,8 +211,9 @@ class ResolveForm extends FormBase {
     $sql = $query->execute()->fetchObject();
     $enddate = 0;
     $startdate = DateTimePlus::createFromTimestamp($sql->startdate_planned)->getTimestamp();
-    if(\Drupal\Core\Datetime\Element\Datetime::validateDatetime($form['date_reported'],$form_state,$form)){
-      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'))->getTimestamp();
+//echo $this->isValidDate($form_state->getValue('date_reported'));exit;
+    if($this->isValidDate($form_state->getValue('date_reported'))){
+      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'),null,['validate_format'=>false])->getTimestamp();
     }else{
       $form_state->setErrorByName('date_reported', $this->t('Invalid date format'));
     }
@@ -237,6 +249,13 @@ class ResolveForm extends FormBase {
     // Redirect to the confirm form.
     $url = Url::fromRoute('downtimes.confirm',['group'=>$group,'node'=>$nid]);
     $form_state->setRedirectUrl($url);
+  }
+
+function isValidDate($date,$format='d.m.Y - H:i')
+  {
+    $f = DateTime::createFromFormat($format, $date);
+    $valid = DateTime::getLastErrors();         
+    return ($valid['warning_count']==0 and $valid['error_count']==0);
   }
 
 }

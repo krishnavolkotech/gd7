@@ -15,7 +15,7 @@ use Drupal\Core\Url;
 use DateTime;
 use Drupal;
 use Drupal\Component\Datetime\DateTimePlus;
-
+use Drupal\cust_group\Controller\CustNodeController;
 
 /*
  * Cancel Downtimes form
@@ -62,6 +62,15 @@ class CancelForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+      
     $user = \Drupal::currentUser();
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)    
@@ -113,7 +122,7 @@ class CancelForm extends FormBase {
       '#id' => 'reason',
       '#weight' => -2,
     );
-    if (in_array(SITE_ADMIN_ROLE, $user_role)) {
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || $group->getMember($user)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
