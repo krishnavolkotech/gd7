@@ -202,6 +202,7 @@ class DowntimesFilter extends FormBase {
         'wrapper' => $wrapper,
         'method' => 'replace',
         'event' => 'change',
+        'disable-refocus' => true,
         'progress' => array(
           'type' => 'throbber',
           'message' => NULL,
@@ -238,6 +239,7 @@ class DowntimesFilter extends FormBase {
         'wrapper' => $wrapper,
         'method' => 'replace',
         'event' => 'change',
+        'disable-refocus' => true,
         'progress' => array(
           'type' => 'throbber',
           'message' => NULL,
