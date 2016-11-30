@@ -1,9 +1,6 @@
 (function ($, Drupal) {
     Drupal.behaviors.service_data = {
         attach: function (context, settings) {
-//            $('#archived_search_results_wrapper', context).once('testajaxload', function () {
-//              console.log('testajaxload');
-//            });
             $('.reset_all').click(function () {
                 /*var form_id = $(this).attr('reset_form_name');
                  $("." + form_id).resetForm();*/
@@ -14,7 +11,13 @@
                 jQuery('#edit-filter-enddate').val('');
                 jQuery('#edit-time-period').val(0);
                 jQuery('#edit-string').val('');*/
-                window.location.reload();
+                var current_page = window.location.href;
+                if ( (current_page.toLowerCase().indexOf("string=") >= 0 ) === true ) {  
+                  current_page =  current_page.substring(0, current_page.toLowerCase().indexOf("?"));
+                  window.location.href = current_page;
+                } else {
+                  window.location.reload();
+                }
             });
         var archived_filter = '';
         var anchor = $("#archived_search_results_wrapper #pagination > nav > ul > li > a");
