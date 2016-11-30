@@ -211,8 +211,9 @@ class ResolveForm extends FormBase {
     $sql = $query->execute()->fetchObject();
     $enddate = 0;
     $startdate = DateTimePlus::createFromTimestamp($sql->startdate_planned)->getTimestamp();
-    if(DateTime::createFromFormat('d.m.Y - H:i', $form_state->getValue('date_reported')) instanceof DateTime){
-      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'))->getTimestamp();
+//echo $this->isValidDate($form_state->getValue('date_reported'));exit;
+    if($this->isValidDate($form_state->getValue('date_reported'))){
+      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('date_reported'),null,['validate_format'=>false])->getTimestamp();
     }else{
       $form_state->setErrorByName('date_reported', $this->t('Invalid date format'));
     }
@@ -248,6 +249,13 @@ class ResolveForm extends FormBase {
     // Redirect to the confirm form.
     $url = Url::fromRoute('downtimes.confirm',['group'=>$group,'node'=>$nid]);
     $form_state->setRedirectUrl($url);
+  }
+
+function isValidDate($date,$format='d.m.Y - H:i')
+  {
+    $f = DateTime::createFromFormat($format, $date);
+    $valid = DateTime::getLastErrors();         
+    return ($valid['warning_count']==0 and $valid['error_count']==0);
   }
 
 }

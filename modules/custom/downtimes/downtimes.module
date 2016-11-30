@@ -238,6 +238,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           t('No service partner (KONSENS) available during maintenance hours'),
           t('No service interruption planned')
         ),
+	'#default_value'=>isset($downtime_data->reason)?$downtime_data->reason:0,
 //        '#size' => 5,
         '#prefix' => '<div class="reason-for-noncompliance">',
         '#suffix' => '<p class="reason-error text-danger error" style="display:none;">This field is required</p></div>',
