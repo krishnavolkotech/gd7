@@ -814,8 +814,8 @@ class HzdcustomisationStorage {
     $master_group = db_query("SELECT id FROM {groups_field_data} WHERE label = 'Incident Management'")->fetchField();
 
     $output = "<br>";
-
     if ($string == 'archived') {
+//      $limit = 1;
       $limit = ($limit ? $limit : PAGE_LIMIT);
       if ($limit != 'all') {
         $query = db_select('downtimes', 'sd');
