@@ -993,7 +993,7 @@ function dependent_service_list(){
 	->execute()
 	->fetchCol();
   foreach($services_list as $service){
-$serviceID = \Drupal::database()->select('node__field_dependent_service','nfds')
+    $serviceID = \Drupal::database()->select('node__field_dependent_service','nfds')
 	->fields('nfds',['field_dependent_service_target_id'])
 	->condition('nfds.entity_id',$service,'=')->execute()
 	->fetchField();
@@ -1002,8 +1002,6 @@ $serviceID = \Drupal::database()->select('node__field_dependent_service','nfds')
 	->distinct()
 	->condition('nfdd.field_dependent_downtimeservices_target_id','0','<>')
 	->condition('nfdd.entity_id',$service,'=');
-//    $dependantServicesList->join('node_field_data','nfd','nfd.nid = nfdd.entity_id');
-//    $dependantServicesList->join('node__field_dependent_service','nfds','nfd.nid = nfds.entity_id');
     $dependantServicesArr = $dependantServicesList->execute()
 	->fetchCol();
     foreach($dependantServicesArr as $data){
