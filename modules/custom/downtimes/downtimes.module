@@ -261,7 +261,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       pass_maitenance_value($form);
       $form['#attached']['library'][] = 'downtimes/downtimes.maintenancejs';
     }
-    if ($type == 1) {
+    if (isset($type) && $type == 1) {
       $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
     }
     else {
@@ -1042,10 +1042,12 @@ function check_downtime_status(&$form, &$form_state) {
       if ($adv_time) {
         $adv_in_seconds = $adv_time * 60 * 60;
         if ($diff >= $adv_in_seconds) {
-          $form_state->set($form['maintenance_type'], 'R');
+          $form_state->setValue('maintenance_type','R');
+          $_POST['maintenance_type'] = 'R';
         }
         else if (($diff <= $adv_in_seconds ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
-          $form_state->set($form['maintenance_type'], 'I');
+          $form_state->setValue('maintenance_type','I');
+          $_POST['maintenance_type'] = 'I';
         }
         else {
           $url = Url::fromRoute('downtimes.create_downtimes',['group'=>INCIDENT_MANAGEMENT]);
@@ -1055,10 +1057,12 @@ function check_downtime_status(&$form, &$form_state) {
       }
       else {
         if (($diff >= ($max_adv_time * 60))) {
-          $form_state->set($form['maintenance_type'], 'R');
+          $form_state->setValue('maintenance_type','R');
+          $_POST['maintenance_type'] = 'R';
         }
         else if (($diff <= ($max_adv_time * 60) ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
-          $form_state->set($form['maintenance_type'], 'I');
+          $form_state->setValue('maintenance_type','I');
+          $_POST['maintenance_type'] = 'I';
         }
         else if ($start_date < $present_time) {
           $form_state->setErrorByName('current_date', t("start date must be in future"));
