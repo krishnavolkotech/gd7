@@ -157,6 +157,7 @@ class Cancelconfirm extends ConfirmFormBase {
     $query->execute();
     $this->keyValueExpirable->delete("downtimes_cancel_" . $nid);
     drupal_set_message(t($message));
+    \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $nid));
     $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
 
     /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
