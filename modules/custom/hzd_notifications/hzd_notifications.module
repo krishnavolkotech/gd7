@@ -189,6 +189,61 @@ function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
     $form['actions']['submit']['#submit'][] = 'hzd_notifications_form_submit';
     $form['actions']['save_continue']['#submit'][] = 'hzd_notifications_form_submit';
   }
+  
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+      
+   if (isset($group_id))  {
+       $allowed_formids = array(
+      'resolve_form',
+      'cancel_form'
+    );
+    $current_user = \Drupal::service('current_user');
+    $current_user_roles = $current_user->getRoles();
+
+    if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $allowed_formids)) {
+      $form['notification'] = array(
+        '#type' => 'details',
+        '#title' => t('Notifications settings'),
+        '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+        '#group' => 'advanced',
+      );
+      $form['notification']['node_notification_checkbox'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Do not send notifications for this update.'),
+      );
+    }
+    else if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $allowed_formids)) {
+      $form['notification'] = array(
+        '#type' => 'details',
+        '#title' => t('Notifications settings'),
+        '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+        '#group' => 'advanced',
+      );
+      $form['notification']['node_notification_checkbox'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Do not send notifications for this update.'),
+      );
+    }
+    else if ($group->getMember($current_user) && in_array($form_id, $allowed_formids)) {
+      $form['notification'] = array(
+        '#type' => 'details',
+        '#title' => t('Notifications settings'),
+        '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+        '#group' => 'advanced',
+      );
+      $form['notification']['node_notification_checkbox'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Do not send notifications for this update.'),
+      );
+    }
+  }
 }
 
 /**
@@ -236,6 +291,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         $group = \Drupal\group\Entity\Group::load($group_id);
       }
     }
+
+    
     if (isset($group_id)) {
 
       $for_admin_formids = array(
