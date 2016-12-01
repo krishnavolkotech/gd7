@@ -1185,8 +1185,12 @@ article .quickedit-field .field__items .field--item {
   font-family: 'robotomedium';
   font-weight: 300 !important;
 }
-.views-exposed-form #edit-actions {
-  margin-bottom: 0 !important;
+.views-exposed-form .form-actions{
+  /*margin-bottom: 0 !important;*/
+  margin:0 !important ;
+}
+.views-exposed-form .form-actions button{
+  margin:0 5px 0 0;
 }
 .views-exposed-form input[type="text"] {
   height: 28px !important;
@@ -1220,7 +1224,7 @@ article .quickedit-field .field__items .field--item {
 }
 .node-preview-container a:hover {
   text-decoration: none;
-  opacity: 0.8;
+  opacity: 0.98;
 }
 .node-preview-container label.control-label {
   display: none;
@@ -2134,6 +2138,11 @@ form.node-downtimes-edit-form .form-item-enddate-planned,
 form.node-downtimes-form .form-item-enddate-planned{
   margin-left:1% !important;
 }
+form.resolve-form > .form-group,
+form.node-downtimes-edit-form > .form-group{
+  width:100%;
+  float:left;
+}
 article.downtimes .downtime-view-wrapper{
   border:1px solid #04425f;
   padding:10px;
@@ -2280,4 +2289,54 @@ form.node-downtimes-form > .form-item{
 }
 .reason-error{
   display:none;
+}
+form.archive-data-export .form-group:last-child{
+  margin-bottom: 0 !important;
+}
+form.archive-data-export .form-control{
+  line-height:20px;
+}
+form.archive-data-export label.control-label{
+  float:left;
+  line-height:30px;
+}
+form.archive-data-export .container-inline{
+  width: 30%;
+  float: left;
+  margin: 0 2% 0 1%;
+}
+.form-actions{
+  margin:10px 0 0 0;
+}
+.form-actions button,
+a.button--danger,
+a#edit-cancel{
+  background: #04425f !important;
+  font-size: 14px;
+  color: #ffffff !important;
+  padding: 6px 12px !important;
+  border-radius: 4px;
+  float: left;
+  border: none !important;
+  text-decoration:none;
+}
+.form-actions .btn-group{
+  float:left;
+}
+.form-actions button:hover,
+a.button--danger:hover,
+a#edit-cancel:hover,
+.btn:hover{
+  opacity: 0.98;
+  text-decoration:none;
+}
+/*a.button--danger,
+a#edit-cancel{
+ margin:0 0 0 10px !important;
+}*/
+.form-actions button{
+  margin:0 5px 0 0 ;
+}
+.form-actions button.dropdown-toggle{
+  margin-left:-5px !important;
 }
