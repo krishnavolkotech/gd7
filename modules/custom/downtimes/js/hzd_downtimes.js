@@ -167,11 +167,11 @@
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDay()];
                         if(start_day_obj.getTime() >= end_day_obj.getTime()){
-                            $(this).next('p.text-danger').remove();
-                            $(this).after('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
+                            $(this).parent('div').find('p.text-danger').remove();
+                            $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
                             $(this).addClass('text-danger');
                         }else{
-                            $(this).next('p.text-danger').remove();
+                            $(this).parent('div').find('p.text-danger').remove();
                             $(this).removeClass('text-danger');
                         }
                         var maintenance_exists = check_type();
