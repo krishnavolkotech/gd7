@@ -60,7 +60,7 @@
                     if (toTimestamp(start_date) < toTimestamp(today)) {
                         $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                         $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
-                        $('input#edit-startdate-planned').after('<p class="text-danger">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
+                        $('input#edit-startdate-planned').parent('div').append('<p class="text-danger">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
                         $('input#edit-startdate-planned').addClass('text-danger');
                         return;
                     }
