@@ -2336,6 +2336,7 @@ a#edit-cancel{
 }*/
 .form-actions button{
   margin:0 5px 0 0 ;
+  text-transform:capitalize;
 }
 .form-actions button.dropdown-toggle{
   margin-left:-5px !important;
