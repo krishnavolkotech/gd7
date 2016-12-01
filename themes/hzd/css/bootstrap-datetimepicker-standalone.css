@@ -101,3 +101,37 @@
     padding-left: 0;
     list-style: none;
 }
+.bootstrap-datetimepicker-widget table{
+  margin:0 !important;
+}
+.bootstrap-datetimepicker-widget{
+  padding:0;
+}
+.bootstrap-datetimepicker-widget td,
+.bootstrap-datetimepicker-widget th{
+  padding:9px !important;
+  cursor:pointer;
+}
+.bootstrap-datetimepicker-widget ul{
+  margin:0 !important;
+  background:#fff;
+  
+}
+.bootstrap-datetimepicker-widget table thead{
+  border:1px solid rgb(4, 66, 95);
+}
+.downtimes-date-wrapper .form-item-startdate-planned,
+.downtimes-date-wrapper .form-item-enddate-planned,
+.form-item-date-reported{
+  position:relative;
+}
+.downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget,
+.form-item-date-reported .bootstrap-datetimepicker-widget{
+  position:absolute;
+  top:-365px;
+  z-index:100;
+}
+.downtimes-date-wrapper{
+  width:100%;
+  float:left;
+}

@@ -61,13 +61,15 @@
         $('.block-cust-group-menu-block .dropdown-toggle').removeAttr('data-toggle');
         
         // Date time picker on service creation fields found at : /group/24/downtimes/create_downtimes
-/*        $('#edit-startdate-planned').datetimepicker({
+        $('#edit-startdate-planned, #edit-date-reported, #edit-enddate-planned').datetimepicker({
            format: 'D.MM.YYYY - HH:mm',
            useCurrent : false,
            showTodayButton : true
+		   
+		   
 
         });
-        $('#edit-enddate-planned').datetimepicker({
+        /*$('#edit-enddate-planned').datetimepicker({
            format: 'D.MM.YYYY - HH:mm',
            useCurrent : false,
            showTodayButton : true
