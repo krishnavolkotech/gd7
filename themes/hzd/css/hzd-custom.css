@@ -58,7 +58,8 @@ button[value="Save and publish"]{
 .form-type-vertical-tabs .tabs-left{
   margin-top:50px;
 }
-.form-actions button{
+.form-actions button,
+a.button--danger{
   background: #04425f !important;
   font-size: 14px;
   color: #ffffff !important;

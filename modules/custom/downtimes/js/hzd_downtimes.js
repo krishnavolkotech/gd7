@@ -59,9 +59,9 @@
                     var max_adv_time = new Array();
                     if (toTimestamp(start_date) < toTimestamp(today)) {
                         $('button.form-submit,button#edit-preview').attr('disabled', 'true');
-                        $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                        $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
-                        $('input#edit-startdate-planned').addClass('error');
+                        $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                        $('input#edit-startdate-planned').parent('div').append('<p class="text-danger">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
+                        $('input#edit-startdate-planned').addClass('text-danger');
                         return;
                     }
                     $("#edit-services-effected input:checkbox:checked").each(function () {
@@ -84,22 +84,22 @@
                             var adv_in_seconds = a.advance_time[service_id].adv_time * 60 * 60;
                             if (diff >= adv_in_seconds) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
-                                $('.form-item-startdate-planned p.error,.form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').removeClass('error');
+                                $('.form-item-startdate-planned p.text-danger,.form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').removeClass('text-danger');
                                 $('input#edit-maintenance-type').val("R");
-                                $('input#edit-startdate-planned').removeClass('warning');
+                                $('input#edit-startdate-planned').removeClass('text-warning');
                             } else if ((diff <= adv_in_seconds) && (diff >= (a.sitewide_adv * 60))) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
                                 $('input#edit-maintenance-type').val("I");
-                                $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').removeClass('error');
-                                $('input#edit-startdate-planned').addClass('warning');
-                                $('input#edit-startdate-planned').after('<p class="warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
+                                $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').removeClass('text-danger');
+                                $('input#edit-startdate-planned').addClass('text-warning');
+                                $('input#edit-startdate-planned').after('<p class="text-warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
-                                $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
-                                $('input#edit-startdate-planned').addClass('error');
+                                $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').after('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
+                                $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
 
@@ -107,22 +107,22 @@
                         else {
                             if ((diff >= (max_adv_time * 60))) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
-                                $('.form-item-startdate-planned p.error,.form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').removeClass('error');
+                                $('.form-item-startdate-planned p.text-danger,.form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').removeClass('text-danger');
                                 $('input#edit-maintenance-type').val("R");
-                                $('input#edit-startdate-planned').removeClass('warning');
+                                $('input#edit-startdate-planned').removeClass('text-warning');
                             } else if ((diff <= (max_adv_time * 60)) && (diff >= (a.sitewide_adv * 60))) {
                                 $('button.form-submit,button#edit-preview').removeAttr('disabled');
                                 $('input#edit-maintenance-type').val("I");
-                                $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').removeClass('error');
-                                $('input#edit-startdate-planned').addClass('warning');
-                                $('input#edit-startdate-planned').after('<p class="warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
+                                $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').removeClass('text-danger');
+                                $('input#edit-startdate-planned').addClass('text-warning');
+                                $('input#edit-startdate-planned').after('<p class="text-warning">' + Drupal.t('Please note: The proposed schedule violates the service-specific SLA according to which maintenances have to be scheduled at least ') + (max_adv_time / 60) + Drupal.t(' hours in advance.') + '</p>');
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
-                                $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                                $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
-                                $('input#edit-startdate-planned').addClass('error');
+                                $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                                $('input#edit-startdate-planned').after('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
+                                $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
                     });
@@ -132,11 +132,11 @@
                 else {
                     $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                     //$('button.form-submit,button#edit-preview').removeAttr('disabled');
-                    $('.form-item-startdate-planned p.error, .form-item-startdate-planned p.warning').remove();
-                    //$('input#edit-startdate-planned').removeClass('error');
+                    $('.form-item-startdate-planned p.text-danger, .form-item-startdate-planned p.text-warning').remove();
+                    //$('input#edit-startdate-planned').removeClass('text-danger');
                     //$('input#edit-startdate-planned').removeClass('warning');
-                    $('input#edit-startdate-planned').after('<p class="error">' + Drupal.t('Bitte wählen Sie zuerst betroffene Verfahren/Infrastruktur.') + '</p>');
-                    $('input#edit-startdate-planned').addClass('error');
+                    $('input#edit-startdate-planned').after('<p class="text-danger">' + Drupal.t('Bitte wählen Sie zuerst betroffene Verfahren/Infrastruktur.') + '</p>');
+                    $('input#edit-startdate-planned').addClass('text-danger');
                 }
             });
 	    
@@ -167,12 +167,12 @@
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDay()];
                         if(start_day_obj.getTime() >= end_day_obj.getTime()){
-                            $(this).next('p.error').remove();
-                            $(this).after('<p class="error">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
-                            $(this).addClass('error');
+                            $(this).parent('div').find('p.text-danger').remove();
+                            $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
+                            $(this).addClass('text-danger');
                         }else{
-                            $(this).next('p.error').remove();
-                            $(this).removeClass('error');
+                            $(this).parent('div').find('p.text-danger').remove();
+                            $(this).removeClass('text-danger');
                         }
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
