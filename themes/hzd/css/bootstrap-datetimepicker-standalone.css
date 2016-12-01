@@ -121,10 +121,12 @@
   border:1px solid rgb(4, 66, 95);
 }
 .downtimes-date-wrapper .form-item-startdate-planned,
-.downtimes-date-wrapper .form-item-enddate-planned{
+.downtimes-date-wrapper .form-item-enddate-planned,
+.form-item-date-reported{
   position:relative;
 }
-.downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget{
+.downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget,
+.form-item-date-reported .bootstrap-datetimepicker-widget{
   position:absolute;
   top:-365px;
   z-index:100;
