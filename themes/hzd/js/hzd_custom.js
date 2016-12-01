@@ -58,17 +58,19 @@
                 .prop('readonly', 'readonly')
                 .css('background-color', '#fff')
                 .datetimepicker({
-                    format: 'D.MM.YYYY - HH:mm',
+                    format: 'DD.MM.YYYY - HH:mm',
                     useCurrent: false,
                     showTodayButton: true,
                     ignoreReadonly: true,
 //                    sideBySide: true,
 //                    debug: true
-                }).on("dp.change", function (e) {
+                })
+                .on("dp.change", function (e) {
                     $(".day").on('click', function () {
                         $("a[data-action='togglePicker']").trigger('click');
                     });
-                }).on("dp.show", function (e) {
+                })
+                .on("dp.show", function (e) {
                     $(".day").on('click', function () {
                         $("a[data-action='togglePicker']").trigger('click');
                     });
