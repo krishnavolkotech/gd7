@@ -205,12 +205,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#default_value' => date($date_format, $yesterday_date),
       '#required' => TRUE,
+      '#prefix'=>'<div class="downtimes-date-wrapper">',
     ];
     $form['enddate_planned'] = [
       '#type' => 'textfield',
       '#title' => t('End Date'),
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
+      '#suffix'=>'</div>',
     ];
     if ($form_id == 'node_downtimes_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
