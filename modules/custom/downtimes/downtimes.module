@@ -205,14 +205,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#default_value' => date($date_format, $yesterday_date),
       '#required' => TRUE,
-      '#prefix'=>'<div class="downtimes-date-wrapper">',
+      '#prefix' => '<div class="downtimes-date-wrapper">',
     ];
     $form['enddate_planned'] = [
       '#type' => 'textfield',
       '#title' => t('End Date'),
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
-      '#suffix'=>'</div>',
+      '#suffix' => '</div>',
     ];
     if ($form_id == 'node_downtimes_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
@@ -240,11 +240,11 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           t('No service partner (KONSENS) available during maintenance hours'),
           t('No service interruption planned')
         ),
-	'#default_value'=>isset($downtime_data->reason)?$downtime_data->reason:0,
+        '#default_value' => isset($downtime_data->reason) ? $downtime_data->reason : 0,
 //        '#size' => 5,
         '#prefix' => '<div class="reason-for-noncompliance">',
         '#suffix' => '<p class="reason-error text-danger error" style="display:none;">This field is required</p></div>',
-        '#label_suffix'=>'<span class="form-required"></span>'
+        '#label_suffix' => '<span class="form-required"></span>'
       ];
     }
 
@@ -281,13 +281,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     unset($form['actions']['unpublish']);
 //pr(array_keys($form['actions']));exit;
-    if(isset($form['actions']['publish'])){
-        $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
-    }else{
-        $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+    if (isset($form['actions']['publish'])) {
+      $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
+    }
+    else {
+      $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
     }
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
-$form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependent_service_list());
+    $form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependent_service_list());
   }
   else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
 
@@ -347,7 +348,7 @@ $form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependen
     $form['service_time'] = array(
       '#type' => 'details',
       '#open' => 'true',
-      '#title'=>t('Service Time'),
+      '#title' => t('Service Time'),
       '#attributes' => array(
         'class' => ['service-time'],
       ),
@@ -385,10 +386,10 @@ $form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependen
 
     // This is for wrapper around the add more fields field.
     $form['maintenance_windows'] = [
-      '#title'=>t('Maintenance Windows'),
+      '#title' => t('Maintenance Windows'),
       '#type' => 'details',
       '#open' => TRUE,
-      '#attributes' => ['class'=>['maintenance-window-field']],
+      '#attributes' => ['class' => ['maintenance-window-field']],
       '#prefix' => '<div id="names-fieldset-wrapper">',
       '#suffix' => '</div>',
     ];
@@ -426,7 +427,6 @@ $form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependen
           '#title' => '',
           '#prefix' => '<div id="downtimes-fieldset-wrapper">',
           '#suffix' => '</div>',
-          
         ];
         $form['maintenance_windows'][$delta]['day'] = array(
           '#type' => 'select',
@@ -986,28 +986,27 @@ function pass_maitenance_value(&$form) {
   );
 }
 
-
-function dependent_service_list(){
-  $services_list = \Drupal::database()->select('node__field_dependent_downtimeservices','nfdd')
-	->fields('nfdd',['entity_id'])
-	->distinct()
-	->isNotNull('field_dependent_downtimeservices_target_id')
-	->condition('field_dependent_downtimeservices_target_id','0','<>')
-	->execute()
-	->fetchCol();
-  foreach($services_list as $service){
-    $serviceID = \Drupal::database()->select('node__field_dependent_service','nfds')
-	->fields('nfds',['field_dependent_service_target_id'])
-	->condition('nfds.entity_id',$service,'=')->execute()
-	->fetchField();
-    $dependantServicesList = \Drupal::database()->select('node__field_dependent_downtimeservices','nfdd')
-	->fields('nfdd',['field_dependent_downtimeservices_target_id'])
-	->distinct()
-	->condition('nfdd.field_dependent_downtimeservices_target_id','0','<>')
-	->condition('nfdd.entity_id',$service,'=');
+function dependent_service_list() {
+  $services_list = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfdd')
+      ->fields('nfdd', ['entity_id'])
+      ->distinct()
+      ->isNotNull('field_dependent_downtimeservices_target_id')
+      ->condition('field_dependent_downtimeservices_target_id', '0', '<>')
+      ->execute()
+      ->fetchCol();
+  foreach ($services_list as $service) {
+    $serviceID = \Drupal::database()->select('node__field_dependent_service', 'nfds')
+        ->fields('nfds', ['field_dependent_service_target_id'])
+        ->condition('nfds.entity_id', $service, '=')->execute()
+        ->fetchField();
+    $dependantServicesList = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfdd')
+        ->fields('nfdd', ['field_dependent_downtimeservices_target_id'])
+        ->distinct()
+        ->condition('nfdd.field_dependent_downtimeservices_target_id', '0', '<>')
+        ->condition('nfdd.entity_id', $service, '=');
     $dependantServicesArr = $dependantServicesList->execute()
-	->fetchCol();
-    foreach($dependantServicesArr as $data){
+        ->fetchCol();
+    foreach ($dependantServicesArr as $data) {
       $result[$data][] = $serviceID;
     }
   }
@@ -1044,35 +1043,35 @@ function check_downtime_status(&$form, &$form_state) {
       if ($adv_time) {
         $adv_in_seconds = $adv_time * 60 * 60;
         if ($diff >= $adv_in_seconds) {
-          $form_state->setValue('maintenance_type','R');
+          $form_state->setValue('maintenance_type', 'R');
           $_POST['maintenance_type'] = 'R';
         }
         else if (($diff <= $adv_in_seconds ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
-          $form_state->setValue('maintenance_type','I');
+          $form_state->setValue('maintenance_type', 'I');
           $_POST['maintenance_type'] = 'I';
         }
         else {
-          $url = Url::fromRoute('downtimes.create_downtimes',['group'=>INCIDENT_MANAGEMENT]);
-	  $link = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
-          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please '.$link));
+          $url = Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT]);
+          $link = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please ' . $link));
         }
       }
       else {
         if (($diff >= ($max_adv_time * 60))) {
-          $form_state->setValue('maintenance_type','R');
+          $form_state->setValue('maintenance_type', 'R');
           $_POST['maintenance_type'] = 'R';
         }
         else if (($diff <= ($max_adv_time * 60) ) && ($diff >= (\Drupal::config('downtimes.settings')->get("maintenance_advance_time") * 60))) {
-          $form_state->setValue('maintenance_type','I');
+          $form_state->setValue('maintenance_type', 'I');
           $_POST['maintenance_type'] = 'I';
         }
         else if ($start_date < $present_time) {
           $form_state->setErrorByName('current_date', t("start date must be in future"));
         }
         else {
-          $url = Url::fromRoute('downtimes.create_downtimes',['group'=>INCIDENT_MANAGEMENT]);
-	  $link = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
-          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please '.$link));
+          $url = Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT]);
+          $link = \Drupal::service('link_generator')->generate(t("report an Incident instead"), $url);
+          $form_state->setErrorByName('startdate_planned', t('Please note: Maintenances have to be scheduled at least ' . \Drupal::config('downtimes.settings')->get("maintenance_advance_time") . ' minute(s) before the actual start. If you need to perform immediate maintenance work, please ' . $link));
         }
       }
     }

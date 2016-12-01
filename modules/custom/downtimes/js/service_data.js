@@ -1,16 +1,16 @@
 (function ($, Drupal) {
     Drupal.behaviors.service_data = {
         attach: function (context, settings) {
-        var dependantServices = settings.dependantServices;
-        $('#edit-services-effected input[type="checkbox"]').change(function(){
-	  if($(this).is(':checked')){
-	    var serviceId = $(this).val();
-	    data = $.parseJSON(dependantServices);
-	    $.each(data[serviceId],function(key,val){
-	       $('#edit-services-effected #edit-services-effected-'+val).prop( "checked", true );
-	    });
-	  }
-        });
+            var dependantServices = $.parseJSON(settings.dependantServices);
+//            $('#edit-services-effected input[type="checkbox"]').change(function () {
+//                if ($(this).is(':checked')) {
+//                    var serviceId = $(this).val();
+//                    data = $.parseJSON(dependantServices);
+//                    $.each(data[serviceId], function (key, val) {
+//                        $('#edit-services-effected #edit-services-effected-' + val).prop("checked", true);
+//                    });
+//                }
+//            });
             // script for check dependent services in maintenance form
             /*var services = Drupal.settings.dependent_service_string;
              if ($.browser.msie && $.browser.version <= 8) {
@@ -25,37 +25,37 @@
              return $.inArray(v, arr) === i;
              });
              }*/
-            /*$(".maintenance_services input").unbind("click").bind("click", function () {
-             result = new Array();
-             var select_val = $(this).val();
-             var checked = $(this).attr("checked");
-             var a = arr[select_val];
-             if (a) {
-             result = dependent_values(select_val);
-             uniqueArray = result.unique();
-             /*uniqueArray = result.filter(function(elem, pos) {
-             return $.inArray(elem, result) == pos;
-             });*/
+            $('#edit-services-effected input[type="checkbox"]').unbind("change").bind("change", function () {
+                result = new Array();
+                var select_val = $(this).val();
+                var checked = $(this).is(":checked");
+                var a = dependantServices[select_val];
+                if (a) {
+                    result = dependent_values(select_val);
+                    uniqueArray = $.unique(result);
+                    /*uniqueArray = result.filter(function(elem, pos) {
+                     return $.inArray(elem, result) == pos;
+                     });*/
 
-            /* $.each(uniqueArray, function (index, value) {
-             if (checked) {
-             $('input[value="' + value + '"]').attr('checked', true);
-             }
-             });
-             }
-             });*/
+                    $.each(uniqueArray, function (index, value) {
+                        if (checked) {
+                            $('#edit-services-effected input[value="' + value + '"]').prop("checked", true);
+                        }
+                    });
+                }
+            });
 
             // Recursive function to get dependent services
             function dependent_values(select_val) {
                 if (select_val != null) {
                     result.push(select_val);
                 }
-                if (arr[select_val] == null) {
+                if (dependantServices[select_val] == null) {
                     return;
                 } else {
-                    for (var i = 0; i < arr[select_val].length; i++) {
-                        if ($.inArray(arr[select_val][i], result) < 0) {
-                            dependent_values(arr[select_val][i]);
+                    for (var i = 0; i < dependantServices[select_val].length; i++) {
+                        if ($.inArray(dependantServices[select_val][i], result) < 0) {
+                            dependent_values(dependantServices[select_val][i]);
                         }
                     }
                 }
@@ -91,14 +91,14 @@
                 $("#close-" + btn_id).css("display", "none");
                 //$("#close-"+btn_id).parent('label.option').find('.service-tooltip').bind('mouseenter mouseleave');
             });
-	    ///moving every third element to its left by 190 px for better visibility
-	    var count = 1;
-	    $('#edit-services-effected div.form-checkbox').each(function(){
-		if(count++%3 == 0){
-		    $(this).find('div.service-profile-data').css({ left: '-250px'});
-		}
-	    });
-	    
+            ///moving every third element to its left by 190 px for better visibility
+            var count = 1;
+            $('#edit-services-effected div.form-checkbox').each(function () {
+                if (count++ % 3 == 0) {
+                    $(this).find('div.service-profile-data').css({left: '-250px'});
+                }
+            });
+
         }
     };
 })(jQuery, Drupal);

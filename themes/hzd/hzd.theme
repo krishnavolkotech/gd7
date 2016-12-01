@@ -336,7 +336,7 @@ function downtimes_revisions($node) {
     $markup = $renderService->render($items);
     $output .= $markup . '</div>';
     if(!empty($reason))
-      $output .= '<div class="reason">' . $reason . '</div>';
+      $output .= '<div class="reason">' . trim($reason) . '</div>';
     $output .= '</div>';
   }
   return $output;
