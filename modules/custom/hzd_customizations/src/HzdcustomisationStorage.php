@@ -714,16 +714,18 @@ class HzdcustomisationStorage {
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
 
     if (isset($service_id) && $service_id != 0) {
-      $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
+      
+      $service = "  FIND_IN_SET(gdv.service_id, ds.service_id) and gdv.service_id = $service_id";
     }
     else {
       if(empty($group_downtimes_view_services_ids)){
         $group_downtimes_view_services_ids = '-1';
       }
-      $service = " gdv.service_id = ds.service_id and  gdv.service_id  in ($group_downtimes_view_services_ids)";
+      
+      $service = "  FIND_IN_SET(gdv.service_id, ds.service_id)  and  gdv.service_id  in ($group_downtimes_view_services_ids)";
     }
     if (isset($state_id) && $state_id != 1) {
-      $state = " ds.state_id LIKE '%" . $state_id . "%'"; 
+      $state = " ( ds.state_id LIKE '" . $state_id . ",%' or ds.state_id LIKE '%," . $state_id . ",%' or  ds.state_id LIKE '%," . $state_id . "' ) "; 
     }
     else {
       $state = " ds.state_id != 0";

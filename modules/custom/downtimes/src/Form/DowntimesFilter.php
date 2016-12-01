@@ -452,7 +452,7 @@ class DowntimesFilter extends FormBase {
       $service = $service_id;
     }
     if ($state_id > 1) {
-      $sql .= " and sd.state_id LIKE '%" . $state_id . "%' ";
+      $sql .= " and ( sd.state_id LIKE '" . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . "' )";
     }
     $incidents_parameters = array();
     if (isset($sql)) {
