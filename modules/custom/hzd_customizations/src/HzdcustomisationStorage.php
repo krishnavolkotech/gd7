@@ -662,6 +662,9 @@ class HzdcustomisationStorage {
    *
    */
   static public function current_incidents($sql_where, $string = NULL, $service_id = NULL, $search_string = NULL, $limit = NULL, $state_id = NULL, $end_date = NULL) {
+   /**
+    * to do need to clean up code 
+    */    
     $user = \Drupal::currentUser();
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = $group->id();
@@ -677,6 +680,7 @@ class HzdcustomisationStorage {
       t('No service partner (KONSENS) available during maintenance hours'),
       t('No service interruption planned'),
     );
+    
     if (isset($_REQUEST['services_effected']) && !empty($_REQUEST['services_effected'])) {
       $service_id = $_REQUEST['services_effected'];
     } else {
@@ -690,6 +694,7 @@ class HzdcustomisationStorage {
     if (!empty($_REQUEST['states'])) {
       $states = $_REQUEST['states'];
     }
+
     /* $serialized_data = unserialize($_SESSION['downtimes_query']);
     if ($string == $serialized_data['downtime_type']) {
     $sql_where = $serialized_data['sql'] ? $serialized_data['sql'] : $sql_where;
@@ -708,7 +713,7 @@ class HzdcustomisationStorage {
     $url_flag = substr($_GET['q'], $pos_slash + 1); */
     $sort_order = ($string == 'maintenance' ? 'asc' : 'desc');
 
-    if (isset($service_id) && $service_id != 1) {
+    if (isset($service_id) && $service_id != 0) {
       $service = " gdv.service_id = ds.service_id and gdv.service_id = $service_id";
     }
     else {
@@ -717,7 +722,6 @@ class HzdcustomisationStorage {
       }
       $service = " gdv.service_id = ds.service_id and  gdv.service_id  in ($group_downtimes_view_services_ids)";
     }
-
     if (isset($state_id) && $state_id != 1) {
       $state = " ds.state_id LIKE '%" . $state_id . "%'"; 
     }
@@ -815,7 +819,7 @@ class HzdcustomisationStorage {
 
     $output = "<br>";
     if ($string == 'archived') {
-//      $limit = 1;
+//     $limit = 5;
       $limit = ($limit ? $limit : PAGE_LIMIT);
       if ($limit != 'all') {
         $query = db_select('downtimes', 'sd');

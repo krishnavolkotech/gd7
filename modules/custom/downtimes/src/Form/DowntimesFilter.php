@@ -29,7 +29,7 @@ class DowntimesFilter extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
- //   $form['#method']  = 'get';
+    //   $form['#method']  = 'get';
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
       $group_id = $group->id();
@@ -76,32 +76,32 @@ class DowntimesFilter extends FormBase {
       ];
       $selected_type = $form_state->getValue('type');
       if (!in_array($selected_type, array('0', '1'))) {
-        $selected_type =  \Drupal::request()->query->get('downtimes_type');
+        $selected_type = \Drupal::request()->query->get('downtimes_type');
       }
       $time_period = $form_state->getValue('time_period');
       if (!$time_period) {
-        $time_period =  \Drupal::request()->query->get('time_period');
+        $time_period = \Drupal::request()->query->get('time_period');
       }
       $selected_state = $form_state->getValue('states');
       if (!isset($selected_state) || $selected_state != 1) {
-        $selected_state =  \Drupal::request()->query->get('states');
+        $selected_state = \Drupal::request()->query->get('states');
       }
       $services_effected = $form_state->getValue('services_effected');
       if (!$services_effected) {
-        $services_effected =  \Drupal::request()->query->get('services_effected');
+        $services_effected = \Drupal::request()->query->get('services_effected');
       }
       $filter_startdate = $form_state->getValue('filter_startdate');
       if (!$filter_startdate) {
-        $filter_startdate =  \Drupal::request()->query->get('filter_startdate');
+        $filter_startdate = \Drupal::request()->query->get('filter_startdate');
       }
       $filter_enddate = $form_state->getValue('filter_enddate');
       if (!$filter_enddate) {
-        $filter_enddate =  \Drupal::request()->query->get('filter_enddate'); 
+        $filter_enddate = \Drupal::request()->query->get('filter_enddate');
       }
       $search_string = $form_state->getValue('string');
       if (!$search_string) {
-        $search_string =  \Drupal::request()->query->get('search_string'); 
-      }      
+        $search_string = \Drupal::request()->query->get('search_string');
+      }
       $form['type'] = array(
         '#type' => 'select',
         '#options' => $types,
@@ -121,7 +121,7 @@ class DowntimesFilter extends FormBase {
         '#prefix' => '<div class = "type_search_dropdown hzd-form-element">',
         '#suffix' => '</div><div style="clear:both"></div>',
       );
-      
+
       $period = array(
         "<" . t('Time Period') . ">",
         t('Last Week'),
@@ -329,12 +329,12 @@ class DowntimesFilter extends FormBase {
       ]; */
     $form['#suffix'] = "</div>";
     $form['#attached']['library'] = array(
- //     'downtimes/downtimes.newdowntimes',
+      //     'downtimes/downtimes.newdowntimes',
       'downtimes/downtimes.currentincidents',
       'downtimes/downtimes',
     );
     $form['#attached']['drupalSettings'] = array(
-      'search_string' => t('Search Reason'), 
+      'search_string' => t('Search Reason'),
       'group_id' => $group_id,
     );
 
@@ -352,7 +352,7 @@ class DowntimesFilter extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
+    
   }
 
   public function current_arhive_incident_results(array &$form, FormStateInterface $form_state) {
@@ -384,11 +384,15 @@ class DowntimesFilter extends FormBase {
     return $result;
   }
 
-  function current_incidents_search($options, $type = '') {
+  static public function current_incidents_search($options, $type = '') {
     $state_id = $options['state_id'];
     $service_id = $options['service_id'];
-    $start_date = $options['start_date'];
-    $end_date = $options['end_date'];
+    if (isset($options['start_date'])) {
+      $start_date = $options['start_date'];
+    }
+    if (isset($options['end_date'])) {
+      $end_date = $options['end_date'];
+    }
     $time_period = $options['time_period'];
 
     switch ($time_period) {
@@ -406,13 +410,13 @@ class DowntimesFilter extends FormBase {
         break;
       case '4':
         //last 6 months
-        $last_day = $this->lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
+        $last_day = self::lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
         $from_date = mktime(0, 0, 0, date('m', $last_day) - 5, 01, date('y', $last_day));
         //$to_date = $last_day;
         break;
       case '5':
         //last 12 months
-        $last_day = $this->lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
+        $last_day = self::lastDayOfMonth(date('m', strtotime('last month')), date('y', strtotime('last month')));
         $from_date = mktime(0, 0, 0, date('m', $last_day) - 11, 01, date('y', $last_day));
         //$to_date = $last_day;
         break;
@@ -428,16 +432,16 @@ class DowntimesFilter extends FormBase {
       }
     }
     else {
-      if ($start_date) {
+      if (isset($start_date)) {
         $sql .= " and sd.startdate_planned >= $start_date";
       }
-      if ($end_date) {
+      if (isset($end_date)) {
         if ($type == 'archived') {
           $sql .= " and (ri.end_date <= $end_date)";
         }
         else {
-          $sql .= " and sd.enddate_planned <= $end_date" ;
-          if ($start_date) {
+          $sql .= " and sd.enddate_planned <= $end_date";
+          if (isset($start_date)) {
             $sql .= " and sd.enddate_planned != 0 and sd.enddate_planned != '' ";
           }
         }
@@ -450,8 +454,16 @@ class DowntimesFilter extends FormBase {
     if ($state_id > 1) {
       $sql .= " and sd.state_id LIKE '%" . $state_id . "%' ";
     }
-
-    $incidents_parameters = array('sql_where' => $sql, 'service' => $service, 'state' => $state_id);
+    $incidents_parameters = array();
+    if (isset($sql)) {
+      $incidents_parameters['sql_where'] = $sql;
+    }
+    if (isset($service)) {
+      $incidents_parameters['service'] = $service;
+    }
+    if (isset($state_id)) {
+      $incidents_parameters['state'] = $state_id;
+    }
     return $incidents_parameters;
   }
 
@@ -482,16 +494,16 @@ class DowntimesFilter extends FormBase {
         $search_parameters = array('sql_where' => $sql_where, 'service' => $service, 'string' => $string, 'state' => $state);
         break;
 
-      case 'archived':        
-      $selected_type =  \Drupal::request()->query->get('downtimes_type');
-      $time_period =  \Drupal::request()->query->get('time_period');
-      $selected_state =  \Drupal::request()->query->get('states');
-      $services_effected =  \Drupal::request()->query->get('services_effected');
-      $filter_startdate =  \Drupal::request()->query->get('filter_startdate');
-      $filter_enddate =  \Drupal::request()->query->get('filter_enddate'); 
-      $search_string =  \Drupal::request()->query->get('search_string'); 
-      $archived_type = \Drupal::request()->query->get('string');
-      
+      case 'archived':
+        $selected_type = \Drupal::request()->query->get('downtimes_type');
+        $time_period = \Drupal::request()->query->get('time_period');
+        $selected_state = \Drupal::request()->query->get('states');
+        $services_effected = \Drupal::request()->query->get('services_effected');
+        $filter_startdate = \Drupal::request()->query->get('filter_startdate');
+        $filter_enddate = \Drupal::request()->query->get('filter_enddate');
+        $search_string = \Drupal::request()->query->get('search_string');
+        $archived_type = \Drupal::request()->query->get('string');
+
         $string = 'archived';
         $sql_where = " and resolved = 1";
         if ($form_state->getValue('string')) {
@@ -499,22 +511,25 @@ class DowntimesFilter extends FormBase {
             $search_string = $form_state->getValue('string');
             $sql_where .= " and description like '%%$search_string%%' ";
           }
-        } else if (isset($search_string)) {
+        }
+        else if (isset($search_string)) {
           if ($search_string != t('Search Reason')) {
             $sql_where .= " and description like '%%$search_string%%' ";
-          }          
+          }
         }
         if ($form_state->getValue('time_period') && $form_state->getValue('time_period') != 6) {
           $options['time_period'] = $form_state->getValue('time_period');
-        } else if (isset ($time_period)){
+        }
+        else if (isset($time_period)) {
           $options['time_period'] = $time_period;
         }
         if ($form_state->getValue('type') != 'select' && ($form_state->getValue('type') != '')) {
           $type_filter = $form_state->getValue('type');
           $sql_where .= " and scheduled_p = $type_filter ";
-        } else if (isset($selected_type)) {
+        }
+        else if (isset($selected_type) && $selected_type != 'select' && $selected_type != '') {
           $type_filter = $selected_type;
-          $sql_where .= " and scheduled_p = $type_filter ";          
+          $sql_where .= " and scheduled_p = $type_filter ";
         }
 
         $incidents_parameters = self::current_incidents_search($options, 'archived');
@@ -537,24 +552,26 @@ class DowntimesFilter extends FormBase {
     /*
      * to do filters for all and code optimization 
      */
-      $selected_type =  \Drupal::request()->query->get('downtimes_type');
-      $time_period =  \Drupal::request()->query->get('time_period');
-      $selected_state =  \Drupal::request()->query->get('states');
-      $services_effected =  \Drupal::request()->query->get('services_effected');
-      $filter_startdate =  \Drupal::request()->query->get('filter_startdate');
-      $filter_enddate =  \Drupal::request()->query->get('filter_enddate'); 
-      $search_string =  \Drupal::request()->query->get('search_string'); 
-      $archived_type = \Drupal::request()->query->get('string');
-      
+    $selected_type = \Drupal::request()->query->get('downtimes_type');
+    $time_period = \Drupal::request()->query->get('time_period');
+    $selected_state = \Drupal::request()->query->get('states');
+    $services_effected = \Drupal::request()->query->get('services_effected');
+    $filter_startdate = \Drupal::request()->query->get('filter_startdate');
+    $filter_enddate = \Drupal::request()->query->get('filter_enddate');
+    $search_string = \Drupal::request()->query->get('search_string');
+    $archived_type = \Drupal::request()->query->get('string');
+
     if ($form_state->getValue('states')) {
       $options['state_id'] = $form_state->getValue('states');
-    } else if (!$form_state->getValue('states') && in_array($selected_state, array(0, 1 )) && isset($archived_type)) {
+    }
+    else if (!$form_state->getValue('states') && in_array($selected_state, array(0, 1)) && isset($archived_type)) {
       $options['state_id'] = $selected_state;
     }
 
     if ($form_state->getValue('services')) {
       $options['service_id'] = $form_state->getValue('services');
-    } else if (!$form_state->getValue('services') && isset($services_effected) && isset($archived_type)) {
+    }
+    else if (!$form_state->getValue('services') && isset($services_effected) && isset($archived_type)) {
       $options['service_id'] = $services_effected;
     }
     if ($form_state->getValue('filter_startdate')) {
@@ -567,7 +584,8 @@ class DowntimesFilter extends FormBase {
         $filter_start_date = mktime(0, 0, 0, $month, $day, $year);
         $options['start_date'] = $filter_start_date;
       }
-    } else if (!$form_state->getValue('filter_startdate') && isset($filter_startdate) && isset($archived_type)) {
+    }
+    else if (!$form_state->getValue('filter_startdate') && isset($filter_startdate) && isset($archived_type)) {
       $start_date = $filter_startdate;
       $date = explode('.', $start_date);
       $day = $date[0];
@@ -588,7 +606,8 @@ class DowntimesFilter extends FormBase {
         $filter_end_date = mktime(23, 59, 59, $month, $day, $year);
         $options['end_date'] = $filter_end_date;
       }
-    } else if (!$form_state->getValue('filter_enddate') && isset($filter_enddate) && isset($archived_type)) {
+    }
+    else if (!$form_state->getValue('filter_enddate') && isset($filter_enddate) && isset($archived_type)) {
       $end_date = $filter_enddate;
       $date = explode('.', $end_date);
       $day = $date[0];
@@ -623,9 +642,9 @@ class DowntimesFilter extends FormBase {
 
     if ($string == 'archived') {
       $downtimes_type = $form_state->getValue('type');
-      $time_period =  $form_state->getValue('time_period');
+      $time_period = $form_state->getValue('time_period');
       $states = $form_state->getValue('states');
-      $services_effected =  $form_state->getValue('services_effected');
+      $services_effected = $form_state->getValue('services_effected');
       $filter_startdate = $form_state->getValue('filter_startdate');
       $filter_enddate = $form_state->getValue('filter_enddate');
       $search_string = $form_state->getValue('string');
@@ -640,13 +659,13 @@ class DowntimesFilter extends FormBase {
         'string' => $string,
       );
     }
-   
+
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, $service, $search_string, $limit, $state, $form_state->getValue('filter_enddate'));
     $form_state->setRebuild(TRUE);
     $result['incidents_table_render']['#prefix'] = "<div id = '" . $type . "_search_results_wrapper'>";
     $result['incidents_table_render']['incidents_table'] = $incident_downtimes;
     $result['incidents_table_render']['#suffix'] = "</div>";
-   // dpm($result);
+    // dpm($result);
     $response = $result;
     return $response;
   }
@@ -673,20 +692,21 @@ class DowntimesFilter extends FormBase {
     $response = $result;
     return $response;
   }
-  
-/*
- * Returns search query parametars for the incidents
- */
 
- public function lastDayOfMonth($month = '', $year = '') {
-   if (empty($month)) {
-     $month = date('m');
-   }
-   if (empty($year)) {
-     $year = date('Y');
-   }
-   $result = strtotime("{$year}-{$month}-01");
-   $result = strtotime('-1 second', strtotime('+1 month', $result));
-   return $result;
- }
+  /*
+   * Returns search query parametars for the incidents
+   */
+
+  static public function lastDayOfMonth($month = '', $year = '') {
+    if (empty($month)) {
+      $month = date('m');
+    }
+    if (empty($year)) {
+      $year = date('Y');
+    }
+    $result = strtotime("{$year}-{$month}-01");
+    $result = strtotime('-1 second', strtotime('+1 month', $result));
+    return $result;
+  }
+
 }
