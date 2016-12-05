@@ -21,6 +21,7 @@ bootstrap-scripts:
   js:
     js/hzd_custom.js : {}
     js/libraries/moment.js : {}
+    js/libraries/locale/de.js : {}
     js/libraries/collapse.js : {}
     js/libraries/transition.js : {}
     js/libraries/bootstrap-datetimepicker.min.js : {}
