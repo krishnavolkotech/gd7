@@ -62,19 +62,19 @@
                     useCurrent: false,
                     showTodayButton: true,
                     ignoreReadonly: true,
-//                    sideBySide: true,
+                    sideBySide: true,
 //                    debug: true
                 })
-                .on("dp.change", function (e) {
-                    $(".day").on('click', function () {
-                        $("a[data-action='togglePicker']").trigger('click');
-                    });
-                })
-                .on("dp.show", function (e) {
-                    $(".day").on('click', function () {
-                        $("a[data-action='togglePicker']").trigger('click');
-                    });
-                })
+//                .on("dp.change", function (e) {
+//                    $(".day").on('click', function () {
+//                        $("a[data-action='togglePicker']").trigger('click');
+//                    });
+//                })
+//                .on("dp.show", function (e) {
+//                    $(".day").on('click', function () {
+//                        $("a[data-action='togglePicker']").trigger('click');
+//                    });
+//                })
                 .parent().css('position', 'relative');
     });
 })(jQuery);

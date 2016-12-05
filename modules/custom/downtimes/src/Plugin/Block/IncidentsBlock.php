@@ -63,6 +63,7 @@ class IncidentsBlock extends BlockBase {
         ->condition('cancelled', 0)
         ->condition('resolved', 0)
         ->condition('scheduled_p', 0);
+//        ->condition('startdate_planned', REQUEST_TIME, '<=');
     /*    $orGroup = $maintenance_list->orConditionGroup()
       ->condition('scheduled_p', 0);
       $andGroup = $maintenance_list->andConditionGroup()
