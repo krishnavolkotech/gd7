@@ -63,13 +63,13 @@ class IncidentsBlock extends BlockBase {
         ->condition('cancelled', 0)
         ->condition('resolved', 0)
         ->condition('scheduled_p', 0);
-//    $orGroup = $maintenance_list->orConditionGroup()
-//        ->condition('scheduled_p', 0);
-//    $andGroup = $maintenance_list->andConditionGroup()
-//        ->condition('scheduled_p', 1)
-//        ->condition('startdate_planned', REQUEST_TIME, '<=');
-//    $orGroup->condition($andGroup);
-//    $maintenance_list->condition($orGroup);
+    /*    $orGroup = $maintenance_list->orConditionGroup()
+      ->condition('scheduled_p', 0);
+      $andGroup = $maintenance_list->andConditionGroup()
+      ->condition('scheduled_p', 1)
+      ->condition('startdate_planned', REQUEST_TIME, '<=');
+      $orGroup->condition($andGroup);
+      $maintenance_list->condition($orGroup); */
     $maintenance_list = $maintenance_list->execute()->fetchAll();
     $states = \Drupal::database()->select('states', 's')
         ->fields('s', ['id', 'abbr'])
@@ -77,7 +77,7 @@ class IncidentsBlock extends BlockBase {
         ->orderBy('id', 'asc')
         ->execute()
         ->fetchAllKeyed();
-//    $maintenance_list = \Drupal::database()->select("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll();
+    /*    $maintenance_list = \Drupal::database()->select("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll(); */
     $result = $serviceids_list = array();
 
     // Get the service id's list and get respective details from service id.
@@ -88,22 +88,30 @@ class IncidentsBlock extends BlockBase {
         $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
         $serviceid = explode(',', $vals->service_id);
         $stateids = explode(',', $vals->state_id);
-
-        foreach ($serviceid as $ids) {
-          // Loops for all services
-          $service = Node::load($ids);
-          $service_name = $service->getTitle();
-          $stateText = '';
-          $serviceNames[$ids] = $service_name;
-          foreach ($stateids as $sids) {
-            // Loops for all states
-            if ($groupContent) {
-              $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-              $label = Markup::create('<span class="state-item">[' . $states[$sids] . ']</span>');
-              $data[$ids][$sids] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
-            }
-          }
+        $serviceEntities = Node::loadMultiple($serviceid);
+        $serviceTitles = $stateTitles = null;
+        foreach ($serviceEntities as $serviceItem) {
+          $serviceTitles .= $serviceItem->getTitle().', ';
         }
+        foreach ($stateids as $stateId) {
+          $stateTitles .= ' [' . $states[$stateId] . ']';
+        }
+        if ($groupContent) {
+          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+          $label = Markup::create(trim($serviceTitles,',') . $stateTitles);
+          $url = $groupContent->toUrl()->setOption('attributes',['class'=>['text-danger']]);
+          $data[] = Markup::create(Link::fromTextAndUrl($label,$url)->toString() . ' ' .date('d.m.Y H:i', $vals->startdate_planned) .' Uhr '. $hover_markup);
+        }
+//        foreach ($serviceid as $ids) {
+//          // Loops for all services
+//          $service = Node::load($ids);
+//          $service_name = $service->getTitle();
+//          $stateText = '';
+//          $serviceNames[$ids] = $service_name;
+//          foreach ($stateids as $sids) {
+//            // Loops for all states
+//          }
+//        }
       }
     }
 
@@ -120,10 +128,10 @@ class IncidentsBlock extends BlockBase {
     $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
     foreach ($data as $sid => $item) {
       $markup['incident_list'][] = [
-        '#title' => $serviceNames[$sid],
+//        '#title' => $serviceNames[$sid],
         '#prefix' => '<div>',
         '#suffix' => '</div>',
-        '#items' => $item,
+        '#items' => $data,
         '#theme' => 'item_list',
         '#type' => 'ul',
       ];
@@ -133,7 +141,7 @@ class IncidentsBlock extends BlockBase {
     $markup['all_link'] = $all_link->toString();
     $markup['report_link'] = $report_link->toString();
     $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
-
+    $build['#cache']['max-age'] = 0;
     return $build;
   }
 
