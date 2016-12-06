@@ -1,0 +1,18 @@
+uuid: dba863b9-d175-4ecb-8f36-96ff12b5a618
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: group.moderate.changed
+field_name: changed
+entity_type: group
+bundle: moderate
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

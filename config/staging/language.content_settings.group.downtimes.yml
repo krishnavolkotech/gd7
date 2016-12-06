@@ -1,0 +1,16 @@
+uuid: f53ea830-28b1-4ff7-892b-cca46f3e4b69
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group.downtimes
+target_entity_type_id: group
+target_bundle: downtimes
+default_langcode: site_default
+language_alterable: false

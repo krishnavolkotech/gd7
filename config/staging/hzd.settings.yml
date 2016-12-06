@@ -10,7 +10,7 @@ features:
   favicon: 1
   node_user_picture: 1
 logo:
-  path: sites/default/files/hzd_logo.gif
+  path: 'public://bpk.png'
   url: ''
   use_default: 0
 cdn_provider_import_data: ''

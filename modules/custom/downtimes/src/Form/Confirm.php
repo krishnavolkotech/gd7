@@ -2,11 +2,13 @@
 
 namespace Drupal\downtimes\Form;
 
+use Drupal;
+use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface;
 
 /**
  * Defines a confirmation form for deleting mymodule data.
@@ -22,7 +24,7 @@ class Confirm extends ConfirmFormBase {
   /**
    * Constructs a ModulesUninstallConfirmForm object.
    *
-   * @param \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $key_value_expirable
+   * @param KeyValueStoreExpirableInterface $key_value_expirable
    *   The key value expirable factory.
    */
   public function __construct(KeyValueStoreExpirableInterface $key_value_expirable) {
@@ -33,7 +35,7 @@ class Confirm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     } else {
@@ -73,7 +75,7 @@ class Confirm extends ConfirmFormBase {
    */
   public function getCancelUrl() {
     //this needs to be a valid route otherwise the cancel link won't appear
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     } else {
@@ -116,7 +118,7 @@ class Confirm extends ConfirmFormBase {
     //  return parent::buildForm($form, $form_state);
     /* $form['nodes'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
       $form['operation'] = array('#type' => 'hidden', '#value' => $edit); */
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     } else {
@@ -138,14 +140,14 @@ class Confirm extends ConfirmFormBase {
    */
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $user = \Drupal::currentUser();
+    $user = Drupal::currentUser();
     // $user_role = get_user_role();
     //extract($_SESSION['form_values']);
     $message = 'Downtime has been resolved ';
 
     /* $date_report = get_timestamp($resolved_end_date);
       $date_report = get_unix_timestamp($resolved_end_date); */
-    $node = \Drupal::routeMatch()->getParameter('node');
+    $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     } else {
@@ -156,10 +158,10 @@ class Confirm extends ConfirmFormBase {
     $comment = $downtimes_resolve['comment']['value'];
     $nid = $downtimes_resolve['nid'];
     $date_report = $downtimes_resolve['date_reported'];
-
+    $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$date_report)->getTimestamp();
     $record = array(
-      'end_date' => strtotime($date_report),
-      'date_reported' => time(),
+      'end_date' => $enddate,
+      'date_reported' => REQUEST_TIME,
       'comment' => $comment,
       'downtime_id' => $nid,
       'uid' => $user->id(),
@@ -167,14 +169,16 @@ class Confirm extends ConfirmFormBase {
     );
     db_insert('resolve_cancel_incident')->fields($record)->execute();
 
-    $query = \Drupal::database()->update('downtimes');
+    $query = Drupal::database()->update('downtimes');
     $query->fields([
       'resolved' => 1,
+      'enddate_reported' => REQUEST_TIME,
     ]);
     $query->condition('downtime_id', $nid, '=');
     $query->execute();
     $this->keyValueExpirable->delete("downtimes_resolve_" . $nid);
     drupal_set_message(t($message));
+    \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $nid));
     $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
     /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
       $query = \Drupal::database()->select('downtimes', 'd');

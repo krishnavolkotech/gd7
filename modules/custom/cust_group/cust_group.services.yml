@@ -8,6 +8,10 @@ services:
     arguments: ['@config.factory', '@current_user', '@redirect.destination']
     tags:
       - { name: event_subscriber }
+  cust_group.view_subscriber:
+    class: Drupal\cust_group\EventSubscriber\ContentView
+    tags:
+      - { name: event_subscriber }
   #  arguments: ['@config.factory']
   #cust_group.default:
   #  class: Drupal\cust_group\EventSubscriber\DefaultSubscriber

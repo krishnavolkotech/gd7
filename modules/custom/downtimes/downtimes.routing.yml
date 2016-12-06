@@ -48,7 +48,7 @@ downtimes.cancel:
     group: \d+
 
 downtimes.confirm:
-  path: '/confirm/{node}'
+  path: '/group/{group}/resolve_confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Confirm'
     _title: 'Conform'
@@ -58,7 +58,7 @@ downtimes.confirm:
     node: \d+
 
 downtimes.cancel_confirm:
-  path: '/cancel_confirm/{node}'
+  path: '/group/{group}/cancel_confirm/{node}'
   defaults:
     _form: '\Drupal\downtimes\Form\Cancelconfirm'
     _title: 'Cancel'
@@ -187,7 +187,7 @@ downtimes.new_downtimes_controller_newDowntimes:
   path: '/group/{group}/downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
-    _title: 'Disturbances and block times'
+    _title: 'Downtimes'
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
@@ -197,7 +197,7 @@ downtimes.archived_downtimes_controller:
   path: '/group/{group}/downtimes/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
-    _title: 'Disturbances and block times'
+    _title: 'Downtimes'
     _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
@@ -211,4 +211,11 @@ downtimes.archive_data_export:
   requirements:
     _access: 'TRUE'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+downtimes.get_dependent_services:
+  path: '/get_dependent_services/{service}'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\NewDowntimesController::getDependentServices'
+    _title: 'Data Export'
+  requirements:
+    _access: 'TRUE'
 

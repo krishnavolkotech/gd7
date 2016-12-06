@@ -1,0 +1,11 @@
+uuid: 07a56743-d0e1-4abb-8d61-6ed61b51af75
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.faq_seite_faq_kategorie_beantrag
+id: contact_message.faq_seite_faq_kategorie_beantrag
+target_entity_type_id: contact_message
+target_bundle: faq_seite_faq_kategorie_beantrag
+default_langcode: de
+language_alterable: false

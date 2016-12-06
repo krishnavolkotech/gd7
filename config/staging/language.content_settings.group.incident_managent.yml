@@ -1,0 +1,16 @@
+uuid: 4196e0b7-4356-4809-b76a-6b3e858bfdda
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group.incident_managent
+target_entity_type_id: group
+target_bundle: incident_managent
+default_langcode: site_default
+language_alterable: false

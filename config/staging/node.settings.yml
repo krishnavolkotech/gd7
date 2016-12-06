@@ -6,7 +6,7 @@ notification_checkbox_test: 1
 notification_checkbox_quickinfo: 0
 notification_checkbox_page: 1
 langcode: de
-notification_checkbox_book: 0
+notification_checkbox_book: 1
 notification_checkbox_early_warnings: 0
 notification_checkbox_deployed_releases: 0
 notification_checkbox_event: 0
@@ -21,3 +21,4 @@ notification_checkbox_service_profile: 0
 notification_checkbox_services: 0
 notification_checkbox_faqs: 0
 notification_checkbox_news: 0
+notification_checkbox_downtimes: 1

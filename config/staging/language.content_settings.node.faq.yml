@@ -1,0 +1,16 @@
+uuid: 9e2955b8-db67-467f-8840-e47312561773
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.faq
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: node.faq
+target_entity_type_id: node
+target_bundle: faq
+default_langcode: site_default
+language_alterable: false

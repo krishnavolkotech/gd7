@@ -100,6 +100,11 @@ a, a.hover {
 a.hover { 
   text-decoration: underline;
 }
+.fooeter{
+  margin-top:0;
+  padding-top:0;
+  border:none;
+}
 footer h2,
 a.name.navbar-brand,
 #block-customtable h2.block-title,
@@ -354,7 +359,7 @@ header .navbar-collapse.collapse {
 #block-general h2 {
   margin: 0 !important;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px 15px;
   background: #04425f;
@@ -367,10 +372,12 @@ footer h2 {
   display: none;
 }
 .footer {
-  border: none;
+  border: none !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
 }
 .main-container {
-  min-height: 400px;
+  min-height: 600px;
 }
 .form-control {
   border-radius: 2px !important;
@@ -454,7 +461,7 @@ body.not-loggedin.path-user .region-content {
   color: #ffffff !important;
   margin-right: 0 !important;
   background: #04425f;
-  font-size: 15px;
+  font-size: 14px;
   text-transform: capitalize;
   margin-top: -1px;
 }
@@ -498,16 +505,18 @@ body.not-loggedin.path-user .region-content {
 .alert-danger {
   background-color: #fcf4f2;
   color: #a51b00;
-  background: rgba(199, 3, 3, 0.05) url(../images/error.svg) 10px 12px no-repeat;
+  background: rgba(199, 3, 3, 0.05) url(../images/error.svg) 10px 16px no-repeat;
   border-color: #f9c9bf #f9c9bf #f9c9bf transparent;
+  text-indent:23px;
   /* LTR */
   box-shadow: -8px 0 0 #e62600;
   /* LTR */
 }
 .alert-warning {
   background-color: #fdf8ed;
-  background: rgba(244, 218, 166, 0.05) url(../images/warning.svg) 10px 12px no-repeat;
+  background: rgba(244, 218, 166, 0.05) url(../images/warning.svg) 10px 16px no-repeat;
   border-color: #f4daa6 #f4daa6 #f4daa6 transparent;
+  text-indent:23px;
   /* LTR */
   color: #734c00;
   box-shadow: -8px 0 0 #e09600;
@@ -515,10 +524,11 @@ body.not-loggedin.path-user .region-content {
 }
 .alert-success {
   color: #325e1c;
+  text-indent:23px;
   background-color: #f3faef;
   border-color: #c9e1bd #c9e1bd #c9e1bd transparent;
   /* LTR */
-  background: rgba(201, 225, 189, 0.05) url(../images/check.svg) 10px 12px no-repeat;
+  background: rgba(201, 225, 189, 0.05) url(../images/check.svg) 10px 17px no-repeat;
   box-shadow: -8px 0 0 #77b259;
   /* LTR */
 }
@@ -579,9 +589,9 @@ form.release-filter-form .hzd-form-element,
   float: left;
   margin: 0 2% 1% 0;
 }
-form.release-filter-form .limit_search_dropdown.hzd-form-element {
+/*form.release-filter-form .limit_search_dropdown.hzd-form-element {
   margin-top: 24px;
-}
+}*/
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
@@ -659,7 +669,7 @@ table tr.even:hover {
   float: left;
   line-height: 29px;
   text-align: center;
-  font-size: 11px;
+  font-size: 14px;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -672,12 +682,14 @@ nav#block-optionen {
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 20px;
+  font-size: 14px !important;
   font-weight: bold;
   color: #04425f;
   margin: 0 !important;
   padding: 10px 10px;
   line-height: 20px;
+  word-wrap:break-word;
+  text-transform:uppercase;
 }
 aside section.blue .field--name-body,
 .region-sidebar-first .block-hzd-release-management .field--name-body,
@@ -770,6 +782,7 @@ input.start_date,
 input.end_date {
   height: 34px !important;
   border-radius: 4px 0px 0px 4px !important;
+  font-size:14px;
 }
 /*.form-control{
   border-radius: 4px 0px 0px 4px !important;
@@ -819,13 +832,9 @@ input.end_date {
   width: 100%;
   overflow: auto;
 }
-#block-hzdheaderlinks {
+#header-right #block-hzdheaderlinks {
   float: right;
-  padding-top: 25px;
-}
-.user-logged-in #block-hzdheaderlinks {
-  float: right;
-  padding-top: 5px !important;
+  padding-top: 30px;
 }
 .navbar-header {
   width: 100%;
@@ -842,11 +851,8 @@ input.end_date {
 .rteindent1 {
   margin: 0 8%;
 }
-.testing {
-  font-size: 12px;
-}
 #header-right {
-  width: 65%;
+  width: 45%;
   float: right;
 }
 #header-right #block-hzdheaderlinks {
@@ -970,7 +976,7 @@ li.comment-delete a,
 li.comment-edit a,
 li.comment-reply a {
   color: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   background: #04425f;
   line-height: 25px;
   float: left;
@@ -1024,7 +1030,7 @@ body.not-loggedin.path-user .region-content h1 {
   padding: 0px 15px !important;
   border-right: 1px solid #04425f !important;
   color: #424241 !important;
-  font-size: 13px;
+  font-size: 14px;
 }
 .hzd-secondary-tabs.path-user ul.tabs--secondary li a:hover,
 .hzd-secondary-tabs.path-user ul.tabs--secondary li active.a,
@@ -1046,7 +1052,7 @@ button[value="update"],
 button[value="Delete"] {
   margin: 0 5px 10px 0 !important;
   padding: 3px 8px !important;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: capitalize;
 }
 .hzd-secondary-tabs .hzd-form-element .js-form-item {
@@ -1059,7 +1065,7 @@ button[value="Delete"] {
   padding-bottom: 15px;
 }
 .hzd-secondary-tabs .notifications_title {
-  font-size: 15px;
+  font-size: 14px;
   color: #04425f;
   padding-bottom: 5px;
   font-weight: bold;
@@ -1179,8 +1185,12 @@ article .quickedit-field .field__items .field--item {
   font-family: 'robotomedium';
   font-weight: 300 !important;
 }
-.views-exposed-form #edit-actions {
-  margin-bottom: 0 !important;
+.views-exposed-form .form-actions{
+  /*margin-bottom: 0 !important;*/
+  margin:0 !important ;
+}
+.views-exposed-form .form-actions button{
+  margin:0 5px 0 0;
 }
 .views-exposed-form input[type="text"] {
   height: 28px !important;
@@ -1214,7 +1224,7 @@ article .quickedit-field .field__items .field--item {
 }
 .node-preview-container a:hover {
   text-decoration: none;
-  opacity: 0.8;
+  opacity: 0.98;
 }
 .node-preview-container label.control-label {
   display: none;
@@ -1269,6 +1279,26 @@ nav#block-optionen ul li {
   float:left;
   /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
 }
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active{
+  background:rgb(245, 245, 245);
+  padding-top:10px;
+  margin:5px 0;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li{
+  padding-left:0;
+  width:100%;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a{
+  background:transparent;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle{
+  font-weight:600;
+  color:rgb(4, 66, 95);
+  margin-bottom:5px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a:hover{
+  color:rgb(4, 66, 95);
+}
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a,
 .region-sidebar-first section.blue ul.menu.nav li a,
 .block-hzd-release-management ul.menu.nav li a,
@@ -1317,11 +1347,15 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   float: left;
   width: auto;
   padding-right: 5px;
+  margin:0;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
   position: absolute;
-  top: 15px;
-  left: 100px;
+  top: 20px;
+  left: -21px;
+}
+#edit-services-effected .form-checkbox .published-services .data table tr th{
+  font-size:13px !important;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
   background: #fff !important;
@@ -1329,9 +1363,9 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   position: relative;
   z-index: 10;
 }
-#edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table {
+/*#edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table {
   border: 1px solid #3d95bc !important;
-}
+}*/
 .form-required:after {
   margin: 0 0 4px 4px;
 }
@@ -1375,10 +1409,11 @@ form#downtimes-filter .string_search.hzd-form-element {
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu {
   border-radius: 0;
-  margin: 10px 0 8px -10px;
+  /*margin: 10px 0 8px -10px;*/
+  margin:0;
   padding: 0 0 7px 0!important;
-  width: 108%;
-  border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;
+  width: 100%;
+  /*border-bottom: 1px solid rgba(20, 117, 160, 0.2) !important;*/
   background: transparent;
   border: none;
 }
@@ -1467,24 +1502,26 @@ ul.nav-tabs li:hover a .summary {
 .unpublished-quickinfo-pdf-preview a {
   background: url(../images/view-pdf-icon.png) left top no-repeat !important;
 }
+article.downtimes .downtime_reason,
 article.downtimes .Incident {
   width: 100%;
   float: left;
-  padding-bottom: 2px;
+  margin-bottom: 10px;
 }
 article.downtimes .Incident .downtimes_title {
   font-weight: 600;
-  display: inline-block;
-  width: 100px;
+  float:left;
+  width: 24%;
   letter-spacing: 0.5px;
+  margin:0 1% 3px 0;
 }
-article.downtimes .Incident .downtimes_title:after {
+/*article.downtimes .Incident .downtimes_title:after {
   content: ": ";
 }
 article.downtimes .Incident .downtimes_content {
   width: auto;
   display: inline-block;
-}
+}*/
 form.incidents .incident_states_filter_form_wrapper,
 form.maintenance .incident_states_filter_form_wrapper {
   width: 100%;
@@ -1528,15 +1565,15 @@ strong {
   font-weight: normal;
 }
 /*-----New styles----*/
+
 aside #block-incidentblock h2.block-title{
   margin:0 !important;
   color:#d45750;
   padding:0 0 4px 0;
-  font-size:16px;
+  font-size:14px;
   font-weight:bold;
   /*letter-spacing:2px;*/
   line-height:30px;
-  font-family:"robotoregular";
   text-transform:uppercase;
 }
 section h2.block-title,
@@ -1545,10 +1582,9 @@ aside #block-maintenance h2.block-title{
   margin:0!important;
   color:#04425f;
   padding:0 0 4px 0;
-  font-size:16px;
+  font-size:14px !important;
   font-weight:bold;
   line-height:30px;
-  font-family:"robotoregular";
   text-transform:uppercase;
 }
 aside #block-incidentblock,
@@ -1573,33 +1609,38 @@ aside .region-sidebar-first .block-favorites .item-list ul{
   width:100%;
   /*background:#fff;*/
 }
+section .form-group .view-content .item-list ul li{
+  list-style-type:none;
+}
 aside #block-incidentblock ul li{
   list-style-type:none;
   float:left;
   padding:0;
   width:45%;
   margin-right:5%;
-  
+  position:relative;
+}
+aside #block-incidentblock ul li br{
+  display:none;
 }
 aside #block-maintenance ul li{
   list-style-type:none;
   float:left;
-  padding-bottom:20px;
+  padding-bottom:15px;
   width:45%;
   margin-right:5%;
 }
-aside #block-incidentblock ul li span{
-  font-size:13px;
-  font-family:"robotoregular";
-  line-height: 20px;
-  float:left;
+aside #block-incidentblock ul li a.state-link span{
+  width:auto;
+  display:inline-block;
+  line-height:24px;
+  padding-right:5px;
+  text-decoration:none;
 }
 aside #block-maintenance ul li span{
-  font-size:13px;
-  font-family:"robotoregular";
   line-height: 20px;
-  width:100%;
   float:left;
+  width:100%;
 }
 aside #block-maintenance ul li span.downtime-hover-wrapper{
   display:inline-block;
@@ -1618,11 +1659,11 @@ aside #block-maintenance ul li span.service-item{
 aside #block-incidentblock ul li span.service-item{
   color:#d45750;
   width:auto;
-  margin:0 0 7px 0;
+  margin:0;
   font-size:13px;
-  font-weight:bold;
   text-indent: 2px;
-  padding-right:4px;
+  padding:1px 6px 0 0;
+  line-height:23px;
 }
 
 .user-logged-in ul.contextual-links li a{
@@ -1649,26 +1690,25 @@ aside .region-sidebar-first .block-favorites .item-list ul li span{
   float:left;
   width:auto;
 }
-aside .region-sidebar-first .block-favorites .item-list ul li a:hover,
-aside .region-sidebar-first .block-favorites .item-list ul li span a:hover,
-section .form-group .view-content .views-field-title span a:hover{
-  text-decoration:none;
-  opacity:0.7;
-}
 aside .region-sidebar-first .block-favorites .item-list ul li span a{
-  float:right;
-  width:auto;
+  display:inline-block;
   color:#222222;
+  text-indent:-9999px;
+  background:url(../images/trash-icon.png)right center no-repeat;
+  width:14px;
+  height:18px;
+ 
 }
 aside .region-sidebar-first .block-favorites .item-list ul li > a{
   width:93%;
   float:left;
   text-decoration:none;
-  color:#222222;
-  font-family:"robotoregular";
-  font-size:13px;
-  font-weight:bold;
+  color:#04425f;
+  font-size:14px;
   padding-left:15px;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li > a:hover{
+  text-decoration:underline;
 }
 aside section .form-group,
 aside section .form-group .item-list,
@@ -1678,21 +1718,41 @@ aside section .form-group .view-footer{
  padding:0;
 }
 aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems,
-section .form-group .more-link a,
-aside #block-maintenance a,
-aside #block-incidentblock a{
-  background:url(../images/blue-list-arrow.png)left 8px no-repeat;
+aside section .form-group .view-footer a.all-problems{
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
   float:left;
   padding-left:14px;
+  color:#04425f;
+  margin-top:15px;
 }
-section .form-group .more-link a:hover,
-aside section .form-group .view-footer a:hover,
-aside section .form-group .more-link a:hover,
-aside #block-maintenance a:hover,
-aside #block-incidentblock a:hover{
-  text-decoration:none;
-  opacity:0.7;
+section .form-group .more-link a{
+  background:url(../images/grey-list-arrow.png)left 5px no-repeat;
+  float:left;
+  padding-left:14px;
+  color:#04425f;
+  margin:0;
+}
+aside #block-maintenance a.front-page-link{
+  width:50%;
+  display:inline-block;
+  background:url(../images/grey-list-arrow.png)left 6px no-repeat;
+  padding-left:14px;
+  color:#04425f;
+}
+aside #block-incidentblock a.front-page-link{
+  width:50%;
+  display:inline-block;
+  background:url(../images/red-list-arrow.png)left 6px no-repeat;
+  padding-left:14px;
+  color:#d45750;
+  margin-top:15px;
+}
+aside #block-maintenance a.state-link,
+aside #block-incidentblock a.state-link{
+  width:auto;
+  display:inline-block;
+  background:none;
+  padding:0;
 }
 aside section .form-group .item-list ul li{
   display:inline-block;
@@ -1702,25 +1762,21 @@ aside section .form-group .item-list ul li{
 }
 aside section .form-group .item-list ul li .field-content{
   color:#222222;
-  font-family:"robotoregular";
-  font-size:13px;
+  font-size:14px;
 }
 section .form-group .views-field-field-news-date{
  float:left;
  width:100%;
 }
 section .form-group .views-field-title span a{
-  font-family: "robotoregular";
   font-size: 14px;
-  font-weight: bold;
-  color:#222222;
+  color:#04425f;
   line-height:20px;
   float:left;
   width:100%;
-  padding:3px 0 15px 0;
+  padding:3px 0 8px 0;
 }
 section .form-group .views-field-body p{
-  font-family: "robotoregular";
   font-size: 14px;
   line-height:25px;
   float:left;
@@ -1731,6 +1787,9 @@ section .form-group .views-row{
   float:;left;
   margin-bottom:15px;
   float:left;
+}
+section .form-group .views-row:last-child{
+  margin:0;
 }
 aside .well{
   border:none;
@@ -1782,8 +1841,12 @@ form.node-service-profile-edit-form .service-time .container-inline{
 form.node-service-profile-edit-form .service-time .control-label{
   position:relative;
   bottom:5px;
-  font-size:13px;
+  font-size:14px;
   font-weight:normal;
+}
+form.node-service-profile-edit-form .maintenance-window-field{
+  width:100%;
+  float:left;
 }
 form.node-service-profile-edit-form .service-time .form-type-checkbox{
  margin:0 0 25px 0!important;
@@ -1795,6 +1858,21 @@ form.node-service-profile-edit-form .service-time .container-inline{
 form.node-service-profile-edit-form .service-time .container-inline input.form-control{
   height:30px !important;
 }
+section.block-incidents-block ul.downtime-hover{
+  margin:0;
+  padding:0;
+  display:inline-block;
+  border:1px solid #222222;
+  width:60% !important;
+  position:absolute;
+  top:5px;
+  left:230px;
+  z-index:10;
+  background-color:#fff;
+  display:none;
+  border-bottom:none;
+
+}
 section.block-maintenance-block ul.downtime-hover{
   margin:0;
   padding:0;
@@ -1803,25 +1881,25 @@ section.block-maintenance-block ul.downtime-hover{
   width:60% !important;
   position:absolute;
   top:5px;
-  left:200px;
+  left:215px;
   z-index:10;
   background-color:#fff;
+  display:none;
+  border-bottom:none;
 }
+section.block-incidents-block ul.downtime-hover:hover,
 section.block-maintenance-block ul.downtime-hover:hover{
   z-index:10;
   display:block;
 }
+section.block-incidents-block ul.downtime-hover li,
 section.block-maintenance-block ul.downtime-hover li{
   width:100% !important;
   display:inline-block;
-  margin:0;
-  padding:0 !important;
+  margin:0 !important;
   line-height:25px;
   border-bottom:1px solid #222222;
-  text-indent:5px;
-}
-section.block-maintenance-block ul.downtime-hover li:last-child{
-  border-bottom:none;
+  padding:0 6px !important;
 }
 body.not-loggedin #block-primarylinks {
   height:44px;
@@ -1832,12 +1910,7 @@ section ul.admin-list li{
   padding:0;
   margin:0;
 }
-/*section ul.admin-list{
-  margin:0;
-  padding:0;
-}*/
 section ul.admin-list li a{
-  font-family: "robotoregular";
   color:#222222;
   line-height:20px;
   float:left;
@@ -1866,14 +1939,16 @@ a.entity_print_view{
   margin-top:-50px;
   background:url(../images/pdf-icon.png)left top no-repeat;
   padding-left:23px;
-  font-size:14px;
+  font-size:0;
+  width:16px;
+  height:16px;
 }
 .input-sm.editor{
   line-height:20px;
 }
 #released_results_wrapper .reset_form .reset_form button.btn-default{
   margin-right:0 !important;
-  border:1px solid #ffcc00;
+
 }
 aside ul.menu li.dropdown.active .dropdown-menu{
   display:block !important;
@@ -1881,14 +1956,388 @@ aside ul.menu li.dropdown.active .dropdown-menu{
 table.sticky-header{
   margin-top:0 !important;
 }
-.curr_incidents_form .filter_title_header h3{
-  background:#d7655a;
-  font-size:16px;
+form.incidents .filter_title_header h3,
+form.maintenance .filter_title_header h3{
+  font-size:15px;
   text-align:center;
-  line-height:35px;
+  line-height:26px;
   float:left;
   width:100%;
   color:#fff;
   letter-spacing:0.1px;
   margin-top:10px !important;
+}
+
+form.maintenance .filter_title_header h3{
+    background:#f1894b;
+}
+form.incidents .filter_title_header h3{
+   background:#d7655a;
+}
+a{
+  color:rgba(4, 66, 95, 1);
+}
+h2{
+  font-size:22px !important;
+}
+section form#favorites-add .form-wrapper form#masquerade-block-form button{
+  margin-top:5px;
+}
+section.masquerade-block-form form .button{
+  margin-top:5px;
+}
+.region.region-content ul{
+  width:100%;
+  float:left;
+}
+.reset_form{
+  margin-left:0;
+}
+
+section.block-star-favorites-block{
+  float:right;
+}
+section.block-star-favorites-block button{
+  display:block;
+  font-size:0;
+  background:transparent;
+  margin:0;
+}
+/*section.block-star-favorites-block .form-type-checkbox{
+ float:right;
+}*/
+section.block-star-favorites-block form button.add-fav,
+section.block-star-favorites-block form button.del-fav{
+  width:18px;
+  height:18px;
+  float:left;
+  margin:0 !important;
+  padding:0;
+}
+section.block-star-favorites-block form button.add-fav{
+  background: url(../images/ic_star_black.png) left 1px no-repeat !important;
+}
+section.block-star-favorites-block form button.del-fav{
+  background: url(../images/ic_star_border_black.png) left 1px no-repeat !important; 
+}
+/* 20161114 r2.5.2 droy */
+
+aside section .form-group .item-list ul li .field-content {
+  line-height: 1.75;
+  font-size: 13px;
+}
+aside .region-sidebar-first .block-favorites .item-list ul li > a {
+  font-size: 14px;
+  color: #04425f;
+  font-weight: normal;
+}
+aside section .form-group .view-footer a.all-releases, aside section .form-group .view-footer a.all-problems, section .form-group .more-link a, aside #block-maintenance a, aside #block-incidentblock a {
+  color: #04425f;
+  line-height: 1.75;
+}
+section .form-group .more-link a:hover, aside section .form-group .view-footer a:hover, aside section .form-group .more-link a:hover, aside #block-maintenance a:hover, aside #block-incidentblock a:hover {
+  text-decoration: underline;
+  color: #04425f;
+}
+aside #block-incidentblock ul li span {
+  font-size: 14px;
+}
+aside #block-incidentblock h2.block-title {
+  color: #cc0000;
+}
+aside #block-incidentblock ul li span.service-item {
+  /* font-weight: normal; */
+  font-size: 14px;
+  color: #cc0000;
+}
+aside #block-maintenance ul li span.service-item {
+  font-size: 14px;
+  margin: 0;
+  text-transform: none;
+}
+aside #block-maintenance ul li span {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+section h2.block-title, aside .region-sidebar-first .block-favorites h2.block-title, aside #block-maintenance h2.block-title {
+  text-transform: none;
+}
+form.node-downtimes-form #edit-services-effected .form-checkbox .published-services label.option,
+form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b,
+form.node-downtimes-edit-form #edit-services-effected .form-checkbox .published-services label.option,
+form.node-downtimes-edit-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b{
+  font-weight:normal !important;
+}
+form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-tooltip{
+  width:auto;
+  float:left;
+}
+form.node-downtimes-edit-form #edit-services-effected--wrapper .panel-title,
+form.node-downtimes-edit-form #edit-states--wrapper .panel-title,
+form.node-downtimes-form #edit-services-effected--wrapper .panel-title,
+form.node-downtimes-form #edit-states--wrapper .panel-title{
+  padding:0;
+  font-weight:bold;
+}
+ol.breadcrumb form{
+  margin-bottom:0;
+}
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-edit-form .form-wrapper .form-type-checkbox,
+form.downtimes-setting-form #edit-services .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox{
+  width:31.33%;
+  float:left;
+  margin:0 2% 7px 0;
+  padding:0;
+}
+form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox{
+  margin-top:0;
+}
+form.downtimes-setting-form button#edit-downtimes-settings-submit {
+ /* float:right;*/
+}
+form.downtimes-setting-form #edit-services{
+  width:100%;
+  float:left;
+  margin:20px 0;
+}
+form.node-downtimes-edit-form .panel,
+form.node-downtimes-form .panel{
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: none;
+    box-shadow:none;
+}
+form.node-downtimes-edit-form .panel .panel-body,
+form.node-downtimes-form .panel .panel-body{
+  padding:0;
+}
+form.node-downtimes-edit-form .panel .panel-heading,
+form.node-downtimes-form .panel .panel-heading {
+    color: #333;
+    background:transparent;
+    border:none;
+}
+form.node-downtimes-edit-form .form-item-startdate-planned,
+form.node-downtimes-edit-form .form-item-enddate-planned,
+form.node-downtimes-form .form-item-startdate-planned,
+form.node-downtimes-form .form-item-enddate-planned{
+  width:49% !important;
+  float:left;
+  margin-bottom:20px;
+}
+form.node-downtimes-edit-form .form-item-startdate-planned,
+form.node-downtimes-form .form-item-startdate-planned{
+  margin-right:1% !important;
+}
+form.node-downtimes-edit-form .form-item-enddate-planned,
+form.node-downtimes-form .form-item-enddate-planned{
+  margin-left:1% !important;
+}
+form.resolve-form > .form-group,
+form.node-downtimes-edit-form > .form-group{
+  width:100%;
+  float:left;
+}
+article.downtimes .downtime-view-wrapper{
+  border:1px solid #04425f;
+  padding:10px;
+  width:100%;
+  float:left;
+  margin:0 0 20px 0;
+}
+article.downtimes .Incident .downtimes_content{
+  width:75%;
+  float:left;
+  letter-spacing:0.5px;
+}
+article.downtimes .changed-group .field-wrapper,
+article.downtimes .changed-group .reason{
+  width:100%;
+  float:left;
+}
+article.downtimes .downtime-view-history{
+  width:100%;
+  float:left;
+  font-size:16px;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+article.downtimes .changed-group .reason p{
+  width:100%;
+  float:left;
+  margin:0 0 20px 0;
+}
+article.downtimes .changed-group .field-wrapper ul{
+  width:98%;
+  display:inline-block;
+  margin:0 0 0 2%;
+  padding:0;
+}
+article.downtimes .changed-group .field-wrapper ul li{
+  width:100%;
+  float:left;
+  margin:0 0 3px 0;
+  padding:0;
+}
+article.downtimes .Incident .downtimes_content ol,
+article.downtimes .Incident .downtimes_content ul{
+  width:100%;
+  display:inline-block;
+  margin:0;
+  padding:0;
+}
+article.downtimes .Incident .downtimes_content ol li,
+article.downtimes .Incident .downtimes_content ul li{
+  width:32.33%;
+  float:left;
+  margin:0 1% 3px 0;
+  padding:0;
+  list-style-type:none;
+}
+article.downtimes .changed-group{
+  width:100%;
+  float:left;
+  margin:0 0 20px 0;
+  padding:0; 
+}
+article.downtimes .changed-group span.downtimes-view-updated{
+  width:100%;
+  float:left;
+  margin:0 0 10px 0;
+  padding:0 0 2px 0;
+  border-bottom:1px solid #999999;
+}
+/*article.downtimes .changed-group u{
+  width:100%;
+  float:left;
+  margin:0;
+  padding:0 0 5px 0;
+}*/
+article.downtimes .downtime_reason u{
+  width:100%;
+  float:left;
+  margin:0;
+  padding:0 0 3px 0;
+}
+form.node-downtimes-form .reason-for-noncompliance .select-wrapper:after{
+  content: " ";
+}
+form.node-downtimes-form .reason-for-noncompliance{
+    float: left;
+    width: 100%;
+}
+form.node-downtimes-form .reason-for-noncompliance label.control-label{
+  float: left;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+  /*width:100%;*/
+}  
+form.node-downtimes-form > .form-group,
+form.node-downtimes-form > .form-wrapper,
+form.node-downtimes-form > .form-item{
+  width:100%;
+  float:left;
+  margin:20px 0;
+}
+.maintenance-window-field .form-type-select{
+  width:auto;
+  float:left;
+}
+.maintenance-window-field label{
+  width:auto;
+  float:left;
+  font-weight:normal;
+  margin-top:5px;
+}
+.maintenance-window-field .select-wrapper{
+  width: 100px;
+    float: left;
+    margin: 0 10px;
+}
+.maintenance-window-field .container-inline{
+    width: auto;
+    float: left;
+    margin: 0 20px 0 0;
+    padding: 0;
+}
+.maintenance-window-field button{
+  margin-top:2px;
+}
+.tabs-left .tab-content .form-type-checkbox{
+  width:100% !important;
+}
+.back-search{
+  margin:10px 0;
+  float:left;
+  width:100%;
+}
+.cancelled-downtime-title{
+  color:#ff0000;
+  font-size:16px;
+  width:100%;
+  margin:10px 0;
+  float:left;
+}
+.cancelled-downtime{
+    color:#ff0000 !important;
+}
+.reason-error{
+  display:none;
+}
+form.archive-data-export .form-group:last-child{
+  margin-bottom: 0 !important;
+}
+form.archive-data-export .form-control{
+  line-height:20px;
+}
+form.archive-data-export label.control-label{
+  float:left;
+  line-height:30px;
+}
+form.archive-data-export .container-inline{
+  width: 30%;
+  float: left;
+  margin: 0 2% 0 1%;
+}
+.form-actions{
+  margin:10px 0 0 0;
+}
+.form-actions button,
+a.button--danger,
+a#edit-cancel{
+  background: #04425f !important;
+  font-size: 14px;
+  color: #ffffff !important;
+  padding: 6px 12px !important;
+  border-radius: 4px;
+  float: left;
+  border: none !important;
+  text-decoration:none;
+}
+.form-actions .btn-group{
+  float:left;
+}
+.form-actions button:hover,
+a.button--danger:hover,
+a#edit-cancel:hover,
+.btn:hover{
+  opacity: 0.98;
+  text-decoration:none;
+}
+/*a.button--danger,
+a#edit-cancel{
+ margin:0 0 0 10px !important;
+}*/
+.form-actions button{
+  margin:0 5px 0 0 ;
+  text-transform:capitalize;
+}
+.form-actions button.dropdown-toggle{
+  margin-left:-5px !important;
 }

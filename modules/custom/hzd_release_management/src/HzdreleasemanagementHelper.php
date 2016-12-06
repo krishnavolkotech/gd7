@@ -582,8 +582,7 @@ class HzdreleasemanagementHelper {
       'hzd_release_management/hzd_release_management',
       'hzd_release_management/deployed_releases',
     );
-    $output[] = "<div class = 'currently_deployed_relesaes' >";
-    $output[] = '<div class = "deployed_release_title" ><strong>' . t("Currently Deployed Releases:") . '</strong></div>';
+    $output['current_deploy_table']['#markup'] = '<div class = "currently_deployed_relesaes" ><div class = "deployed_release_title" ><strong>' . t("Currently Deployed Releases:") . '</strong></div>';
 
     $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
     /**
@@ -641,17 +640,17 @@ class HzdreleasemanagementHelper {
       $service = $query->execute()->fetchField();
 
       if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
-        $edit_url = Url::fromRoute('entity.node.edit_form', ['node'=>$deployed_release->nid],array(
+        $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployed_release->nid], array(
           'query' => array(
-            'ser' => $deployed_release->service,
-            'rel' => $deployed_release->release_id,
-            'env' => $deployed_release->environment,
-            'destination' => 'group/' . $group_id . '/deployed_releases',
-          ),
-        )
+              'ser' => $deployed_release->service,
+              'rel' => $deployed_release->release_id,
+              'env' => $deployed_release->environment,
+              'destination' => 'group/' . $group_id . '/deployed_releases',
+            ),
+          )
         );
       }
-
+    
       $archive_url = Url::fromUserInput('/archive/');
       $query = \Drupal::database()->select('node_field_data', 'nfd');
       $query->fields('nfd', array('title'));
@@ -670,12 +669,12 @@ class HzdreleasemanagementHelper {
 
       if (!$deployed_release->archived) {
         if ($edit_url) {
-          $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
-                      >Archive</a>  <span class = "loader"></span>', array(
-                        '@edit_url' => $edit_url->toString(),
-                        '@archive_url' => $archive_url->toString(),
-                        '@nid' => $deployed_release->nid,
-                      )
+            $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
+                  >Archive</a>  <span class = "loader"></span>', array(
+            '@edit_url' => $edit_url->toString(),
+            '@archive_url' => $archive_url->toString(),
+            '@nid' => $deployed_release->nid,
+              )
           );
         }
         else {
@@ -713,7 +712,7 @@ class HzdreleasemanagementHelper {
       }
     }
 
-    $output['current_deploy_table'] = array(
+    $output['current_deploy_table']['table'] = array(
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $currently,
@@ -724,18 +723,17 @@ class HzdreleasemanagementHelper {
       ),
     );
  
-    $output['pager1'] = array(
+    $output['current_deploy_table']['pager1'] = array(
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
     );
 
-    $output[] = "</div>";
-    $output[] = "<div class = 'archived_deployed_relesaes' >";
-    $output[] = '<div class = "deployed_release_title" ><strong>' . t("Archived deployed releases:") . '</strong></div>';
+    $output['archived_deployed_relesaes_table']['#prefix'] = '</div><div class = "archived_deployed_relesaes" >'
+        . '<div class = "deployed_release_title" ><strong>' . t("Archived deployed releases:") . '</strong></div>';
     $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
 
-    $output[] = array(
+    $output['archived_deployed_relesaes_table']['table'] = array(
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $archived,
@@ -745,13 +743,13 @@ class HzdreleasemanagementHelper {
       ),
     );
 
-    $output['pager2'] = array(
+    $output['archived_deployed_relesaes_table']['pager2'] = array(
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
     );
 
-    $output[] = "</div>";
+    $output['archived_deployed_relesaes_table']['#suffix'] = "</div>";
 
     return $output;
   }

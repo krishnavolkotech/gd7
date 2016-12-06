@@ -1,0 +1,20 @@
+uuid: 64d311f0-b0da-4bc3-874f-ed79ea21681b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.uid
+field_name: uid
+entity_type: node
+bundle: downtimes
+label: 'Authored by'
+description: 'The username of the content author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

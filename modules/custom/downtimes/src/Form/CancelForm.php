@@ -12,6 +12,10 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Url;
+use DateTime;
+use Drupal;
+use Drupal\Component\Datetime\DateTimePlus;
+use Drupal\cust_group\Controller\CustNodeController;
 
 /*
  * Cancel Downtimes form
@@ -58,6 +62,15 @@ class CancelForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
+      $group = \Drupal::routeMatch()->getParameter('group');
+      if (is_object($group)) {
+        $group_id = $group->id();
+      }
+      else {
+        $group_id = $group;
+        $group = \Drupal\group\Entity\Group::load($group_id);
+      }
+      
     $user = \Drupal::currentUser();
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)    
@@ -109,7 +122,7 @@ class CancelForm extends FormBase {
       '#id' => 'reason',
       '#weight' => -2,
     );
-    if (in_array(SITE_ADMIN_ROLE, $user_role)) {
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || $group->getMember($user)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
@@ -136,7 +149,7 @@ class CancelForm extends FormBase {
     $query->Fields("d");
     $query->where('d.downtime_id = ' . $nid);
     $nodeinfo = $query->execute()->fetchObject();
-    $date_format = 'd.m.Y H:i';
+    $date_format = 'd.m.Y - H:i';
 
     $start_date = date($date_format, str_replace(' Uhr', '', $nodeinfo->startdate_planned));
     if (!empty($nodeinfo->enddate_planned)) {
@@ -159,9 +172,10 @@ class CancelForm extends FormBase {
         '#size' => 60,
         '#weight' => -4,
         '#disabled' => true,
+        '#description' => "Format : " . date($date_format, REQUEST_TIME),
       );
     }
-    $first_month_first_day = date('Y-01-01 00:00');
+    $first_month_first_day = date('Y-01-01 - 00:00');
     /* $form['date_reported'] = array(
       '#title' => t('Actual End Date'),
       '#type' => 'date_text',
@@ -187,16 +201,22 @@ class CancelForm extends FormBase {
    */
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $query = \Drupal::database()->select('downtimes', 'd');
+    /*$query = \Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['startdate_planned']);
     $query->condition('d.downtime_id', $form_state->getValue('nid'), '=');
     $sql = $query->execute()->fetchObject();
-    $startdate = $sql->startdate_planned;
+    //$startdate = $sql->startdate_planned;
     //$enddate = get_unix_timestamp($_POST['date_reported']['date']);
-    $currentdate = time();
+    $startdate = DateTimePlus::createFromTimestamp($sql->startdate_planned)->getTimestamp();
+    if(DateTime::createFromFormat('d.m.Y - H:i', $form_state->getValue('enddate_planned')) instanceof DateTime){
+      $enddate = DateTimePlus::createFromFormat('d.m.Y - H:i',$form_state->getValue('enddate_planned'))->getTimestamp();
+    }else{
+      $form_state->setErrorByName('enddate_planned', $this->t('Invalid date format'));
+    }
+    $currentdate = REQUEST_TIME;
     if ($currentdate >= $startdate) {
       $form_state->setErrorByName('startdate_planned', $this->t('Cancel End date should not be after start date.'));
-    }
+    }*/
   }
 
   /*
@@ -207,20 +227,22 @@ class CancelForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     //Todo pass form state values to confirm form
     $user = \Drupal::currentUser();
+    $group = Drupal::routeMatch()->getParameter('group');
     $comment = $form_state->getValue('comment');
     $nid = $form_state->getValue('nid');
     $uid = $user->id();
     $downtime_resolve = array(
       'comment' => $comment,
       'nid' => $nid,
-      'cancelled_end_date' => time(),
-      'uid' => $uid
+      'cancelled_end_date' => REQUEST_TIME,
+      'uid' => $uid,
+      'gid'=>$group,
     );
     //Todo if more than one user access this might get issue
     $this->keyValueExpirable->setWithExpire("downtimes_cancel_" . $nid, $downtime_resolve, 6 * 60 * 60);
 
     // Redirect to the confirm form.
-    $url = Url::fromUserInput('/cancel_confirm/' . $nid);
+        $url = Url::fromRoute('downtimes.cancel_confirm',['group'=>$group,'node'=>$nid]);
     $form_state->setRedirectUrl($url);
   }
 

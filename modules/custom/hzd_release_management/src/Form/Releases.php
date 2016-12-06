@@ -101,13 +101,19 @@ class Releases extends FormBase {
 
     $form['filter_startdate'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Start Date'),
+      // '#title' => $this->t('Start Date'),
       '#default_value' => '',
       '#size' => 15,
       '#weight' => 3,
-      '#attributes' => array("class" => "start_date"),
+      '#attributes' => array(
+        "class" => array("start_date"),
+	'placeholder' => array(
+          $this->t('Start Date')
+        ),
+      ),
       '#ajax' => array(
         'callback' => '::release_result',
+        'disable-refocus' => true,
         'event' => 'change',
         'wrapper' => $wrapper,
         'progress' => array(
@@ -120,13 +126,19 @@ class Releases extends FormBase {
 
     $form['filter_enddate'] = array(
       '#type' => 'textfield',
-      '#title' => t('End Date'),
+      // '#title' => t('End Date'),
       '#size' => 15,
       '#weight' => 4,
       '#default_value' => '',
-      '#attributes' => array("class" => "end_date"),
+      '#attributes' => array(
+        "class" => array("end_date"),
+        'placeholder' => array(
+	  $this->t('End Date')
+	),
+      ),
       '#ajax' => array(
         'callback' => '::release_result',
+        'disable-refocus' => true,
         'event' => 'change',
         'wrapper' => $wrapper,
         'progress' => array(

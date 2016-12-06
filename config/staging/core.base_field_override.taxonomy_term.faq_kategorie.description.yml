@@ -1,0 +1,20 @@
+uuid: 60031df2-7c9d-4ada-96e4-d88d7fdd1561
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.faq_kategorie
+  module:
+    - text
+id: taxonomy_term.faq_kategorie.description
+field_name: description
+entity_type: taxonomy_term
+bundle: faq_kategorie
+label: Description
+description: 'A description of the term.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

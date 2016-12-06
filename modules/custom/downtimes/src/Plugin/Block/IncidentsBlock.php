@@ -6,6 +6,9 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Render\Markup;
 
 /**
  * Provides a 'IncidentsBlock' block.
@@ -55,88 +58,104 @@ class IncidentsBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-    $maintenance_list = \Drupal::database()->query("select service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned from {downtimes} d where d.service_id <> '' and d.scheduled_p = 0 and d.resolved = 0 and d.cancelled = 0 and startdate_planned <= :current_date", array(':current_date' => REQUEST_TIME))->fetchAll();
+    $maintenance_list = \Drupal::database()->select("downtimes", 'd')
+        ->fields('d', ['service_id', 'description', ' downtime_id', ' state_id', 'reason', 'startdate_planned', 'enddate_planned', 'scheduled_p'])
+        ->condition('service_id', '0', '<>')
+        ->condition('cancelled', 0)
+        ->condition('resolved', 0)
+        ->condition('scheduled_p', 0);
+//        ->condition('startdate_planned', REQUEST_TIME, '<=');
+    /*    $orGroup = $maintenance_list->orConditionGroup()
+      ->condition('scheduled_p', 0);
+      $andGroup = $maintenance_list->andConditionGroup()
+      ->condition('scheduled_p', 1)
+      ->condition('startdate_planned', REQUEST_TIME, '<=');
+      $orGroup->condition($andGroup);
+      $maintenance_list->condition($orGroup); */
+    $maintenance_list = $maintenance_list->execute()->fetchAll();
+    $states = \Drupal::database()->select('states', 's')
+        ->fields('s', ['id', 'abbr'])
+        ->condition('abbr', '', '<>')
+        ->orderBy('id', 'asc')
+        ->execute()
+        ->fetchAllKeyed();
+    /*    $maintenance_list = \Drupal::database()->select("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll(); */
     $result = $serviceids_list = array();
 
     // Get the service id's list and get respective details from service id.
     foreach ($maintenance_list as $key => $vals) {
-      
-      //$item = '<div '
-      $serviceid = explode(',', $vals->service_id);
-      $stateids = explode(',', $vals->state_id);
-      /* dsm($key);
-        dsm($serviceid); */
-      foreach ($serviceid as $ids) {
-        // Loops for all services
-        $service_name = \Drupal::database()->query('SELECT title FROM {node_field_data} WHERE nid=:sid', array(':sid' => $ids))->fetchField();
+      $incident = Node::load($vals->downtime_id);
 
-        $statesArray = \Drupal::database()->select('states', 's')->distinct()
-            ->fields('s', ['abbr'])
-            ->condition('s.id', $stateids, 'IN')            
-            ->execute()
-            ->fetchCol();
-        
-        $statesArray = implode('][ ',$statesArray);
-        $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><span class='state-item'>[$statesArray]</span>");
-                   
-        // Uncomment this to get hover details for incident block
-        // $serviceids_list[$ids] = t($serviceids_list[$ids].$this->get_hover_markup($vals->startdate_planned,$vals->description));
-       
-       /* foreach ($stateids as $sids) {
-          // Loops for all states
-          $state_name = \Drupal::database()->query('SELECT abbr FROM {states} WHERE id=:sid', array(':sid' => $sids))->fetchField();
-
-          $states_array[$state_name] = $state_name;
-          if (!empty($serviceids_list[$ids])) {
-            $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='state-item'>[$state_name]</span>");
-            // $serviceids_list[$ids] = t($serviceids_list[$ids] . "<br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');              
-          }
-          else {
-            if (empty($state_name)) {
-              continue;
-            }
-            $serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name]</span>");
-            //$serviceids_list[$ids] = t("<span class='service-item'>$service_name</span><br><span class='state-item'>[$state_name] " . date("d.m.Y H:i", $vals->startdate_planned) . t("Uhr") . '</span>');
-          }
-        }*/
+      if ($incident) {
+        $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
+        $serviceid = explode(',', $vals->service_id);
+        $stateids = explode(',', $vals->state_id);
+        $serviceEntities = Node::loadMultiple($serviceid);
+        $serviceTitles = $stateTitles = null;
+        foreach ($serviceEntities as $serviceItem) {
+          $serviceTitles .= $serviceItem->getTitle().', ';
+        }
+        foreach ($stateids as $stateId) {
+          $stateTitles .= ' [' . $states[$stateId] . ']';
+        }
+        if ($groupContent) {
+          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+          $label = Markup::create(trim($serviceTitles,',') . $stateTitles);
+          $url = $groupContent->toUrl()->setOption('attributes',['class'=>['text-danger']]);
+          $data[] = Markup::create(Link::fromTextAndUrl($label,$url)->toString() . ' ' .date('d.m.Y H:i', $vals->startdate_planned) .' Uhr '. $hover_markup);
+        }
+//        foreach ($serviceid as $ids) {
+//          // Loops for all services
+//          $service = Node::load($ids);
+//          $service_name = $service->getTitle();
+//          $stateText = '';
+//          $serviceNames[$ids] = $service_name;
+//          foreach ($stateids as $sids) {
+//            // Loops for all states
+//          }
+//        }
       }
     }
-    /* $item_listnew = array();
-      foreach ($serviceids_list as $value) {
-      $item_listnew[] = t(implode('', $value));
-      } */
+
+
+    $link_options = array(
+      'attributes' => array(
+        'class' => array(
+          'front-page-link',
+        ),
+      ),
+    );
     
-    $link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT]);
-                     
-    $markup['incident_list'] = [
-      '#items' => $serviceids_list,
-      '#theme' => 'item_list',
-      '#type' => 'ul',
-      '#weight' => 100,
+
+//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+    foreach ($data as $sid => $item) {
+      $markup['incident_list'][] = [
+//        '#title' => $serviceNames[$sid],
+        '#prefix' => '<div>',
+        '#suffix' => '</div>',
+        '#items' => $data,
+        '#theme' => 'item_list',
+        '#type' => 'ul',
+      ];
+    }
+
+
+//    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
+    $markup['downtimes'] = ['#type' => 'container', '#weight' => 100, '#attributes' => ['class' => ['link-wrapper-downtimes']]];
+    $markup['downtimes']['list'] = [
+      '#title' => $this->t('Störungen und Blockzeiten'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
     ];
-    $markup['report_link'] = $link->toString();
-    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']).render($markup['report_link']);
-   
-    return $build;
-  }
-  
-  public function get_hover_markup($start_date_planned,$description) {
 
-    $html = "<ul class='downtime-hover' style='display:none;'>";
-    // Getting the below start date. end date and description for hover.
-    if (!empty($start_date_planned)) {
-      $start_date_planned = DateTimePlus::createFromTimestamp((integer) $start_date_planned)->format('d.m.Y');
-      $html .= "<li>$start_date_planned</li>";
-    }
-
-    if (!empty($description)) {
-      $description = strip_tags($description);
-      $html .= "<li>$description</li>";
-    }
-
-    $html .= "</ul>";
-    
-    return $html;
+    $markup['downtimes']['create'] = [
+      '#title' => $this->t('Report Downtime'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+    ];
+    $markup['#cache']['max-age'] = 0;
+    return $markup;
   }
 
 }

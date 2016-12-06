@@ -5,16 +5,15 @@ dependencies:
   module:
     - block_class
     - cust_group
-    - system
   theme:
     - hzd
 third_party_settings:
   block_class:
-    classes: blue
+    classes: 'blue incident-menu'
 id: customgroupmenublock
 theme: hzd
 region: sidebar_first
-weight: -22
+weight: -24
 provider: null
 plugin: cust_group_menu_block
 settings:
@@ -22,9 +21,4 @@ settings:
   label: 'Custom Group Menu block'
   provider: cust_group
   label_display: visible
-visibility:
-  request_path:
-    id: request_path
-    pages: '/group/*'
-    negate: false
-    context_mapping: {  }
+visibility: {  }

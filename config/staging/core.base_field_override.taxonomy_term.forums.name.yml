@@ -1,0 +1,18 @@
+uuid: 434bf1c8-8910-42ca-b1c4-15068aa4624f
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.forums
+id: taxonomy_term.forums.name
+field_name: name
+entity_type: taxonomy_term
+bundle: forums
+label: Name
+description: 'The term name.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,11 @@
+uuid: e5d99b6c-03da-4b77-b376-7cb8f6ba823d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-planning_files
+id: group_content.open-group_node-planning_files
+target_entity_type_id: group_content
+target_bundle: open-group_node-planning_files
+default_langcode: site_default
+language_alterable: false

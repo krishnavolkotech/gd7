@@ -1,0 +1,18 @@
+uuid: 1376366f-b48b-4a4c-b22a-85b71f987d9b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.changed
+field_name: changed
+entity_type: node
+bundle: downtimes
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

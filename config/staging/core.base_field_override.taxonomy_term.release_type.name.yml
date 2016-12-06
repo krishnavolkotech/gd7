@@ -1,0 +1,18 @@
+uuid: f978d05a-346a-4399-998a-304a427753d4
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.release_type
+id: taxonomy_term.release_type.name
+field_name: name
+entity_type: taxonomy_term
+bundle: release_type
+label: Name
+description: 'The term name.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

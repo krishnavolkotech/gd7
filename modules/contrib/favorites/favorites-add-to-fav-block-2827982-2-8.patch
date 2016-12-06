@@ -1,0 +1,662 @@
+diff --git a/favorites.routing.yml b/favorites.routing.yml
+index 53074c0..5fb479d 100644
+--- a/favorites.routing.yml
++++ b/favorites.routing.yml
+@@ -12,4 +12,13 @@ favorites.remove:
+     _controller: '\Drupal\favorites\Controller\MyFavController::remove'
+     _title: 'Remove Favorite'
+   requirements:
+-    _permission: 'manage favorites'
+\ No newline at end of file
++    _permission: 'manage favorites'
++    
++favorites.removeAjax:
++  path: '/favorites/removeajax/{fid}'
++  defaults:
++    _controller: '\Drupal\favorites\Controller\MyFavController::removeAjax'
++    _title: 'Remove Favorite'
++  requirements:
++    _permission: 'manage favorites'    
++    
+\ No newline at end of file
+diff --git a/js/favorites.js b/js/favorites.js
+index f2e1722..cf34070 100644
+--- a/js/favorites.js
++++ b/js/favorites.js
+@@ -16,4 +16,8 @@
+     });
+     e.preventDefault();
+   });
++  
++  $.fn.remove_ajax_callback =function(arg){
++     $('span#del-' + arg).closest('li').remove();  
++  }
+ })(jQuery);
+diff --git a/src/Controller/MyFavController.php b/src/Controller/MyFavController.php
+index db54253..338c1cf 100644
+--- a/src/Controller/MyFavController.php
++++ b/src/Controller/MyFavController.php
+@@ -1,4 +1,5 @@
+ <?php
++
+ /**
+  * @file
+  * Contains Drupal\favorites\Controller\MyFavController.
+@@ -8,12 +9,13 @@ namespace Drupal\favorites\Controller;
+ 
+ use Symfony\Component\HttpFoundation\JsonResponse;
+ use Drupal\Core\Ajax\AjaxResponse;
+-use Drupal\Core\Ajax\HtmlCommand;;
++use Drupal\Core\Ajax\HtmlCommand;
++
+ use Drupal\Core\Controller\ControllerBase;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+ use Drupal\Core\Render\Element\Link;
+-
++use Drupal\Core\Ajax\InvokeCommand;
+ 
+ /**
+  * Class MyFavController.
+@@ -21,64 +23,80 @@ use Drupal\Core\Render\Element\Link;
+  * @package Drupal\favorites\Controller
+  */
+ class MyFavController extends ControllerBase {
+-	
+-	protected $account;
+-	
+-	public function __construct(){
+-            $this->account = \Drupal::currentUser();
+-	}
+-	
+-        /**
+-        * Add a favorite.
+-        */
+-	public function addFavJS(){
+-            global $base_url;
+-             if(empty($this->account->id())){
+-                    return;
+-            }
+-            else{
+-                $uid = $this->account->id();
+-            }
+-            
+-            $title = $_POST['title'];
+-            $path = $_POST['path'];
+-            $query = $_POST['query'];
+-            
+-            FavoriteStorage::deleteFav($this->account->id(), $path, $query);
+-            FavoriteStorage::addFav($this->account->id(), $path, $query, $title);
+-            
+-            $result = FavoriteStorage::getFavorites($uid);
+-            $message = '<ul>';
+-            foreach ($result as $favorite) {
+-                $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/'.trim($favorite->path,'/'));
+-                if($favorite->query != ''){
+-                    $url = $base_url.$favorite->path.'?'.$favorite->query;    
+-                }
+-                else{
+-                    $url = $base_url.$favorite->path;    
+-                }               
+-                $url = Url::fromUri($url);
+-                $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
+-                $message .= '<li>'.\Drupal::l($favorite->title, $url).' <span id="del-'.$favorite->fid.'">'.\Drupal::l('X', $url_delete).'</span></li>';                   
+-            }
+-            $message .= '</ul>';
+-            
+-            $response = new AjaxResponse();
+-            $response->addCommand(new HtmlCommand('#myfavlist', $message));
+-            return $response;
+-        }
+-        
+-        /**
+-        * Remove a favorite.
+-        */
+-        public function remove($fid){
+-            $favorite = FavoriteStorage::getFav($fid);            
+-            $access = (\Drupal::currentUser()->hasPermission('manage favorites') && $this->account->id() == $favorite->uid);
+-            if($access){
+-                FavoriteStorage::deleteFavorite($fid);
+-                $options = array('list' => 'del-'.$fid);
+-                return new JsonResponse($options);
+-            }            
+-        }
++
++  protected $account;
++
++  public function __construct() {
++    $this->account = \Drupal::currentUser();
++  }
++
++  /**
++   * Add a favorite.
++   */
++  public function addFavJS() {
++    global $base_url;
++    if (empty($this->account->id())) {
++      return;
++    }
++    else {
++      $uid = $this->account->id();
++    }
++
++    $title = $_POST['title'];
++    $path = $_POST['path'];
++    $query = $_POST['query'];
++
++    FavoriteStorage::deleteFav($this->account->id(), $path, $query);
++    FavoriteStorage::addFav($this->account->id(), $path, $query, $title);
++
++    $result = FavoriteStorage::getFavorites($uid);
++    $message = '<ul>';
++    foreach ($result as $favorite) {
++      $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/' . trim($favorite->path, '/'));
++      if ($favorite->query != '') {
++        $url = $base_url . $favorite->path . '?' . $favorite->query;
++      }
++      else {
++        $url = $base_url . $favorite->path;
++      }
++      $url = Url::fromUri($url);
++      $url_delete = Url::fromRoute('favorites.remove', ['fid' => $favorite->fid]);
++      $message .= '<li>' . \Drupal::l($favorite->title, $url) . ' <span id="del-' . $favorite->fid . '">' . \Drupal::l('X', $url_delete) . '</span></li>';
++    }
++    $message .= '</ul>';
++
++    $response = new AjaxResponse();
++    $response->addCommand(new HtmlCommand('#myfavlist', $message));
++    return $response;
++  }
++
++  /**
++   * Remove a favorite.
++   */
++  public function remove($fid) {
++    $favorite = FavoriteStorage::getFav($fid);
++    $access = (\Drupal::currentUser()->hasPermission('manage favorites') && $this->account->id() == $favorite->uid);
++    if ($access) {
++      FavoriteStorage::deleteFavorite($fid);
++      $options = array('list' => 'del-' . $fid);
++      return new JsonResponse($options);
++    }
++  }
++
++  /**
++   * Remove a favorite.
++   */
++  public function removeAjax($fid) {
++    $favorite = FavoriteStorage::getFav($fid);
++    $access = (\Drupal::currentUser()->hasPermission('manage favorites') && $this->account->id() == $favorite->uid);
++    if ($access) {
++      FavoriteStorage::deleteFavorite($fid);
++      $options = array('list' => 'del-' . $fid);
++      
++      $response = new AjaxResponse();
++      $response->addCommand(new InvokeCommand(NULL, 'remove_ajax_callback', [$fid]));
++      return $response;
++    }
++  }
++
+ }
+- 
+diff --git a/src/FavoriteStorage.php b/src/FavoriteStorage.php
+index 1ae3fe8..bd67b3f 100644
+--- a/src/FavoriteStorage.php
++++ b/src/FavoriteStorage.php
+@@ -5,66 +5,87 @@
+  * Contains \Drupal\favorites\FavoriteStorage.
+  */
+ 
+-namespace Drupal\favorites;	
+- 
+- class FavoriteStorage {	 
+-	
+-	/**
+-	* {@inheritdoc}
+-	*/
+-	static function delete($fid){
+-		db_delete('favorites')
+-		->condition('fid',$fid)
+-		->execute();
+-	}
+-	
+-	/**
+-	* {@inheritdoc}
+-	*/
+-	static function getFavorites($uid){		
+-                $result = db_query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip'=> $uid));
+-		return $result;
+-	}
+-	
+-        /**
+-	* {@inheritdoc}
+-	*/
+-        static function getFav($fid){
+-            return db_query('select * from {favorites} where fid=:fid', array(':fid'=>$fid))->fetchObject();
+-        }
+-        
+-        /**
+-	* {@inheritdoc}
+-	*/
+-	static function deleteFavorite($fid){
+-		db_delete('favorites')
+-			->condition('fid', $fid)			
+-			->execute();
+-	}
+-	/**
+-	* {@inheritdoc}
+-	*/
+-	static function deleteFav($uid, $path, $query){
+-		db_delete('favorites')
+-			->condition('uid', $uid)
+-			->condition('path', $path)
+-			->condition('query', $query)
+-			->execute();
+-	}
+-        
+-	/**
+-	* {@inheritdoc}
+-	*/
+-	static function addFav($uid, $path, $query, $title){
+-		db_insert('favorites')
+-			->fields(array(
+-			  'uid' => $uid,
+-			  'path' => $path,
+-			  'query' => $query,
+-			  'title' => $title,
+-			  'timestamp' => REQUEST_TIME,
+-			))
+-			->execute();
+-	}
+- }
+- 
++namespace Drupal\favorites;
++
++class FavoriteStorage {
++
++  /**
++   * {@inheritdoc}
++   */
++  static function delete($fid) {
++    db_delete('favorites')
++        ->condition('fid', $fid)
++        ->execute();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function getFavorites($uid) {
++    $result = db_query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip' => $uid));
++    return $result;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function getFav($fid) {
++    return db_query('select * from {favorites} where fid=:fid', array(':fid' => $fid))->fetchObject();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function deleteFavorite($fid) {
++    db_delete('favorites')
++        ->condition('fid', $fid)
++        ->execute();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function deleteFav($uid, $path, $query) {
++    db_delete('favorites')
++        ->condition('uid', $uid)
++        ->condition('path', $path)
++        ->condition('query', $query)
++        ->execute();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function addFav($uid, $path, $query, $title) {
++    db_insert('favorites')
++        ->fields(array(
++          'uid' => $uid,
++          'path' => $path,
++          'query' => $query,
++          'title' => $title,
++          'timestamp' => REQUEST_TIME,
++        ))
++        ->execute();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  static function favExists($uid, $path, $query) {
++    $fid = \Drupal::database()->select('favorites', 'fav')
++        ->fields('fav', array('fid'))
++        ->condition('uid', $uid, '=')
++        ->condition('path', $path, '=')
++        ->condition('query', $query, '=')
++        ->execute()
++        ->fetchAssoc();
++
++    if (isset($fid) && !empty($fid['fid'])) {
++      return $fid['fid'];
++    }
++    else {
++      return FALSE;
++    }
++  }
++
++}
+diff --git a/src/Form/AddForm.php b/src/Form/AddForm.php
+index 34db4b7..1750dc6 100644
+--- a/src/Form/AddForm.php
++++ b/src/Form/AddForm.php
+@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+ use Drupal\Component\Utility\UrlHelper;
+-use Drupal\Core\StringTranslation\StringTranslationTrait;
++
+ 
+ /**
+  * Class AddForm.
+@@ -20,8 +20,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
+  */
+ class AddForm extends FormBase {
+ 
+-  use StringTranslationTrait;
+-
+   protected $account;
+ 
+   public function __construct(){
+diff --git a/src/Form/StarFavAddForm.php b/src/Form/StarFavAddForm.php
+index 34db4b7..84dc38e 100644
+--- a/src/Form/StarFavAddForm.php
++++ b/src/Form/StarFavAddForm.php
+@@ -1,7 +1,8 @@
+ <?php
++
+ /**
+  * @file
+- * Contains Drupal\favorites\Form\AddForm
++ * Contains Drupal\favorites\Form\StarFavAddForm
+  */
+ 
+ namespace Drupal\favorites\Form;
+@@ -11,20 +12,18 @@ use Drupal\Core\Form\FormStateInterface;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+ use Drupal\Component\Utility\UrlHelper;
+-use Drupal\Core\StringTranslation\StringTranslationTrait;
++use Drupal\favorites\Controller\MyFavController;
+ 
+ /**
+- * Class AddForm.
++ * Class StarFavAddForm.
+  *
+- * @package Drupal\favorites\Form\AddForm
++ * @package Drupal\favorites\Form\StarFavAddForm
+  */
+-class AddForm extends FormBase {
+-
+-  use StringTranslationTrait;
++class StarFavAddForm extends FormBase {
+ 
+   protected $account;
+ 
+-  public function __construct(){
++  public function __construct() {
+     $this->account = \Drupal::currentUser();
+   }
+ 
+@@ -32,7 +31,7 @@ class AddForm extends FormBase {
+    * {@inheritdoc}
+    */
+   public function getFormId() {
+-    return 'favorites_add';
++    return 'star_favorites_add';
+   }
+ 
+   /**
+@@ -40,60 +39,77 @@ class AddForm extends FormBase {
+    */
+   public function buildForm(array $form, FormStateInterface $form_state) {
+ 
+-    // @todo necessary? D8 requires >=5.5.9 anyway?
+-    if(function_exists('version_compare') && version_compare(PHP_VERSION, '5.1.0', '>=')) {
+-      $request = \Drupal::request();
+-      $route_match = \Drupal::routeMatch();
+-      $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
+-    }
+-    if (!isset($title)) {
+-      $title = \Drupal::config('core.site_information')->get('site_name');
++    $title = 'test';
++    $path = \Drupal::service('path.current')->getPath();
++    $query = (isset($_GET['keys'])) ? UrlHelper::buildQuery($_GET) : '';
++    
++    $form['title'] = array(
++      '#type' => 'hidden',
++      '#value' => $title,
++    );
++    $form['path'] = array(
++      '#type' => 'hidden',
++      '#value' => $path,
++    );
++    $form['query'] = array(
++      '#type' => 'hidden',
++      '#value' => $query,
++    );
++    
++    
++    $uid = \Drupal::currentUser()->id();    
++    $fid = FavoriteStorage::favExists($uid,$path,$query);
++
++    if($fid){
++      $button_text = t('Delete', array(), array('context' => 'Add a favorite to the list'));
++      $submit_url = Url::fromRoute('favorites.removeAjax',array('fid' => $fid));
++      $fav_class ='del-fav';
+     }
+-    if ($title == '') {
+-      $title = $this->t('Home', array(), array('context' => 'Home page'));
++    else {
++      $button_text = t('Add', array(), array('context' => 'Add a favorite to the list'));
++      $submit_url = Url::fromRoute('favorites.add');
++      $fav_class = 'add-fav';
+     }
+-    $title = strip_tags($title);
+-    $path = \Drupal::service('path.current')->getPath();
+-    $query = (isset($_GET['keys']))?UrlHelper::buildQuery($_GET):'';
+-    $form = array(
+-      'add' => array(
+-        '#type' => 'details',
+-        '#title' => $this->t('Add this page'),
+-        'title' => array(
+-          '#type' => 'textfield',
+-          '#size' => 20,
+-          '#maxlength' => 255,
+-          '#default_value' => $title,
+-          '#attributes' => array(
+-            'style' => 'width: 90%',
+-            'class' => array('favorites-add-textfield'),
+-          ),
+-        ),
+-        'path' => array(
+-          '#type' => 'hidden',
+-          '#value' => $path,
+-        ),
+-        'query' => array(
+-          '#type' => 'hidden',
+-          '#value' => $query,
+-        ),
+-        'submit' => array(
+-          '#type' => 'submit',
+-          '#value' => $this->t('Add', array(), array('context' => 'Add a favorite to the list')),
+-          '#ajax'  => array(
+-            'url' => Url::fromRoute('favorites.add'),
+-          ),
++    
++    $form['add_to_favorites'] = array(
++      '#type' => 'checkbox',
++      '#default_value' => !empty($fid),
++      '#attributes' => array(
++        'class' => array('add-fav-checkbox',$fav_class),
++        'onclick' => 'this.form.submit()',
+         ),
+-      ),
++//      '#ajax' => array(        
++//        'wrapper' => 'add-to-faborites-checkbox',
++//        //'url' => $submit_url,
++//      '#prefix' => '<div id="add-to-faborites-checkbox">',
++//      '#suffix' => '</div>',        
++//     ),
++    );        
++    
++    /**
++     * todo:  uncheck the ajax property and check for ajax submission
++     */
++    $form['submit'] = array(
++      '#type' => 'submit',
++      '#value' => $button_text,
++  //    '#ajax' => array(
++  //     'url' => $submit_url,
++  //    ),
+     );
+     return $form;
+   }
++  
++  public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
++    $form_state->setRebuild(TRUE);
++    return $form;
++  }
+ 
+   /**
+    * {@inheritdoc}
+    * @todo obsolete?
+    */
+   public function validateForm(array &$form, FormStateInterface $form_state) {
++    
+   }
+ 
+   /**
+@@ -101,6 +117,21 @@ class AddForm extends FormBase {
+    * @todo obsolete?
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
++    
++    $path = $form_state->getValue('path');
++    $query = $form_state->getValue('query');
++    
++    $uid = \Drupal::currentUser()->id();    
++    $fid = FavoriteStorage::favExists($uid,$path,$query);
++    
++    $fav = new MyFavController();
++    if($fid){
++      $fav->remove($fid);
++    }
++    else{
++      $fav->addFavJS();
++    }
++    
+   }
+ 
+ }
+diff --git a/src/Plugin/Block/StarFavAddBlock.php b/src/Plugin/Block/StarFavAddBlock.php
+index b3bd55b..e13505f 100644
+--- a/src/Plugin/Block/StarFavAddBlock.php
++++ b/src/Plugin/Block/StarFavAddBlock.php
+@@ -1,8 +1,10 @@
+ <?php
++
+ /**
+  * @file
+- * Contains Drupal\favorites\Plugin\Block\FavBlock.
++ * Contains Drupal\favorites\Plugin\Block\StarFavAddBlock.
+  */
++
+ namespace Drupal\favorites\Plugin\Block;
+ 
+ use Drupal\Core\Access\AccessResult;
+@@ -15,61 +17,27 @@ use Drupal\Core\Url;
+  * Provides a 'favorites' block.
+  *
+  * @Block(
+- *   id = "favorites_block",
+- *   admin_label = @Translation("My Favorites"),
++ *   id = "star_favorites_block",
++ *   admin_label = @Translation("Add To Favorites"),
+  * )
+  */
++class StarFavAddBlock extends BlockBase {
+ 
+-class FavBlock extends BlockBase {
+-  
+   /**
+    * {@inheritdoc}
+    */
+-    protected function blockAccess(AccountInterface $account) {
+-        return AccessResult::allowedIfHasPermission($account, 'manage favorites');
+-    }
+-  
++  protected function blockAccess(AccountInterface $account) {
++    return AccessResult::allowedIfHasPermission($account, 'manage favorites');
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+-  public function build() {  
+-    global $base_url;
+-    $form = \Drupal::formBuilder()->getForm('Drupal\favorites\Form\AddForm');
+-    $items = array();
+-    $account = \Drupal::currentUser(); 
+-    $uid = $account->id();
+-    if ($uid) {
+-            $result = FavoriteStorage::getFavorites($uid);
+-            $i = 0;
+-            foreach ($result as $favorite) {
+-                    $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/'.trim($favorite->path,'/'));
+-                    if($favorite->query != ''){
+-                        $url = $base_url.$favorite->path.'?'.$favorite->query;    
+-                    }
+-                    else{
+-                        $url = $base_url.$favorite->path;    
+-                    }                
+-                    $url = Url::fromUri($url);
+-                    $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
+-                    $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
+-                    $items[$i]['remove_link'] = \Drupal::l('X', $url_delete);
+-                    $items[$i]['id'] = $favorite->fid;
+-                    $i++;
+-            }
+-    }
+-    return array(     
+-      '#attached' => array(
+-          'library' => array('favorites/favorites.custom'),
+-      ),  
+-      'fav_lists' => array(  
+-        '#theme' => 'favlist_item_list',       
+-        'items' => $items,  
+-      ),    
+-      'add_this_page' => $form,   
+-    );   	
+-	
++  public function build() {
++
++    $form = \Drupal::formBuilder()->getForm('Drupal\favorites\Form\StarFavAddForm');
++
++    return $form;
+   }
+-    
+-  
+-  
+-}
+\ No newline at end of file
++
++}

@@ -54,7 +54,7 @@ class HzdReleases extends ControllerBase {
       'hzd_release_management/hzd_release_management',
     //  'hzd_customizations/hzd_customizations',
      // 'hzd_release_management/hzd_release_management_sort',
-    //  'downtimes/downtimes',
+      'downtimes/downtimes',
     );
     // Add Some extra "settings" to use in JS.
     $output[]['#attached']['drupalSettings']['release_management'] = array(

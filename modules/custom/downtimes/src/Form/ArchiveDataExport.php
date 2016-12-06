@@ -200,6 +200,7 @@ class ArchiveDataExport extends FormBase {
       // Making individual array to single array.
       $result2[] = $result1;
     }
+
     $filename = "geplante_blockzeiten" . $filename_from . $filename_to . ".csv";
     self::array_to_csv_download($result2, $filename);
   }

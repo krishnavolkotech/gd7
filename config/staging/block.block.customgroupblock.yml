@@ -12,7 +12,7 @@ third_party_settings:
 id: customgroupblock
 theme: hzd
 region: '-1'
-weight: -16
+weight: -20
 provider: null
 plugin: cust_group_block
 settings:

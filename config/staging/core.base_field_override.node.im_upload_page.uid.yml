@@ -1,0 +1,20 @@
+uuid: 6378993d-f36b-4fdc-b54b-34837f563aaf
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.im_upload_page
+id: node.im_upload_page.uid
+field_name: uid
+entity_type: node
+bundle: im_upload_page
+label: 'Authored by'
+description: 'The username of the content author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

@@ -64,3 +64,52 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
 
   return $form;
 }
+
+
+function hzd_earlywarnings_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
+  $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+  if (!$do_not_send_notifications) {
+    send_earlywarning_notifications($entity);    
+  }
+  // Update the entity's entry in a fictional table of this type of entity.
+}
+
+function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+  if (!$do_not_send_notifications) {
+    send_earlywarning_notifications($entity);    
+  }
+  // Insert the new entity into a fictional table of all entities.
+}
+
+function send_earlywarning_notifications($entity) {
+  $commententity = \Drupal::entityTypeManager()->getStorage('comment')->load( $entity->id());
+  $service_id = $commententity->get('entity_id')->referencedEntities()['0']->get('field_release_service')->getvalue()['0']['value'];
+  $earlywarning_title = $commententity->get('entity_id')->referencedEntities()['0']->getTitle();
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+  $comment_author = $commententity->get('name')->value;
+  $comment_email = $commententity->get('mail')->value;
+  $comment_body = $commententity->get('comment_body')->value;
+  
+  if (is_array($result) && count($result) > 0) {
+    foreach ($result as $values) {
+        $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+        $mail = $values->mail;
+    // Trigger mail functionality to send immediate notifications of early warning comments.
+        $token_service = \Drupal::token();
+        $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
+ //      $subject = $token_service->replace($token_sub, array('node' => $entity));
+ //      $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
+ //      Replace the token for subject.
+ //      $message_text = $token_service->replace($token_body, array('node' => $entity));
+        $subject = t("Commented on $earlywarning_title");
+        
+        $message_text = "Author: $comment_author";
+        $message_text .= " Email: $comment_author";
+        $message_text .= "$comment_author";
+        $message_text = t($message_text);
+//        dpm($mail);
+        send_immediate_notifications($subject, $message_text, $mail, $preference);
+    }
+  }
+}

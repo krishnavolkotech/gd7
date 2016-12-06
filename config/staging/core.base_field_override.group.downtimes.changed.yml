@@ -1,0 +1,18 @@
+uuid: a450d38a-219a-40aa-9714-3db1de40a977
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: group.downtimes.changed
+field_name: changed
+entity_type: group
+bundle: downtimes
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

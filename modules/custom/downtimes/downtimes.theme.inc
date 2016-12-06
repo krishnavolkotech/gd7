@@ -40,7 +40,7 @@ function theme_service_checkbox($element) {
       $checkbox .= $service_names[1] . '</div>';
     }
     else {
-      $checkbox .= $service_names[0] . '</div>';
+      $checkbox .= '</div>';
     }
   }
 
