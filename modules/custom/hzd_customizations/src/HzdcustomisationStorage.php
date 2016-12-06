@@ -13,6 +13,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
 use Drupal\hzd_services\HzdservicesStorage;
+use Drupal\Component\Utility\Unicode;
 
 if (!defined('MAINTENANCE_GROUP_ID')) {
   define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
@@ -595,18 +596,15 @@ class HzdcustomisationStorage {
    *
    */
   static public function downtime_services_names($service) {
-    $query = db_select('node_field_data', 'n');
-    $query->addExpression("Group_concat(DISTINCT n.title SEPARATOR', ')", 'service');
-    $query->where('n.nid IN (' . $service . ')');
-    $service_name = $query->execute()->fetchField();
-    $position = strripos($service_name, ',');
-    if ($position) {
-      $service = substr_replace($service_name, ', ', strripos($service_name, ','), 1);
-    }
-    else {
-      $service = $service_name;
-    }
-    return $service;
+    $ids = explode(',',$service);
+    $query = \Drupal::database()->select('node_field_data', 'n');
+    $query->fields('n',['title']);
+    $query->condition('n.nid',$ids,'IN');
+//    echo $query->__toString();
+    return $query->execute()->fetchCol();
+//    $service_name = $query->execute()->fetchCol();
+//pr($service_name);exit;
+//    return $service;
   }
 
   /**
@@ -862,39 +860,39 @@ class HzdcustomisationStorage {
       $services = self::downtime_services_names($client->service_id);
       // $user_state = display_update($states[$client->state_id]);.
       $user_state = db_query("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
-      $startdate = ($client->startdate_planned ? date('d-m-Y', $client->startdate_planned) . " " . date('H:i', $client->startdate_planned) : "unbekannt");
+      $startdate = ($client->startdate_planned ? date('d-m-Y H:i', $client->startdate_planned) : "unbekannt");
       if ($string == 'archived') {
         if (isset($client->cancelled) && $client->cancelled == 1) {
           $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
           if (!empty($enddate_cancelled)) {
             if (!empty($enddate_cancelled->end_date)) {
-              $enddate = date("d-m-Y", $enddate_cancelled->end_date) . " " . date("H:i", $enddate_cancelled->end_date);
+              $enddate = date("d-m-Y H:i", $enddate_cancelled->end_date);
             }
             else {
-              $enddate = date("d-m-Y", $enddate_cancelled->date_reported) . " " . date("H:i", $enddate_cancelled->date_reported);
+              $enddate = date("d-m-Y H:i", $enddate_cancelled->date_reported);
             }
           }
           else {
-            $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . " " . date("H:i", $client->enddate_planned) : "");
+            $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
           }
         }
         else {
           $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
           if (!empty($enddate_resolved)) {
             if (!empty($enddate_resolved->end_date)) {
-              $enddate = date("d-m-Y", $enddate_resolved->end_date) . " " . date("H:i", $enddate_resolved->end_date);
+              $enddate = date("d-m-Y H:i", $enddate_resolved->end_date);
             }
             else {
-              $enddate = date("d-m-Y", $enddate_resolved->date_reported) . " " . date("H:i", $enddate_resolved->date_reported);
+              $enddate = date("d-m-Y H:i", $enddate_resolved->date_reported);
             }
           }
           else {
-            $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . " " . date("H:i", $client->enddate_planned) : "");
+            $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
           }
         }
       }
       else {
-        $enddate = ($client->enddate_planned ? date("d-m-Y", $client->enddate_planned) . " " . date("H:i", $client->enddate_planned) : "");
+        $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
       }
       $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = $client->downtime_id")->fetchField();
       $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = $reporter_uid")->fetchField();
@@ -918,11 +916,12 @@ class HzdcustomisationStorage {
       else {
         $flag = "";
       }
+      $serviceList = ['#items' => $services,'#theme' => 'item_list','#type' => 'ul'];
       $elements = array(
 //        'flag' => $flag,
 //        'type' => t($client->type)->__toString(),
-        'description' => !empty($client->description) ? Markup::create($client->description) : '',
-        'service' => $services,
+        'description' => Markup::create(Unicode::truncate($client->description, 100, TRUE, TRUE, 1)),
+        'service' => $renderer->render($serviceList),
         'state' => $user_state,
         'start_date' => $startdate,
         'end_date' => $enddate,
@@ -1039,7 +1038,11 @@ class HzdcustomisationStorage {
       }
       $elements['action'] = $renderer->render($links);
 //      $elements['table_type'] = $string;
-      $rows[] = $elements;
+      $rowClass = '';
+      if($client->startdate_planned > REQUEST_TIME || $client->type == 'INCIDENT'){
+        $rowClass = 'text-danger';
+      }
+      $rows[] = ['data' => $elements, 'class' => $rowClass];
     }
 //    pr($rows);exit;
     /* if (!$rows) {

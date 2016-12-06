@@ -22,7 +22,7 @@ class NewDowntimesController extends ControllerBase {
     //Current Incidents
     $_SESSION['downtime_type'] = 'incident';
     $incidents_data = \Drupal::formBuilder()->getForm('\Drupal\downtimes\Form\DowntimesFilter', 'incidents', $group);
-    $current_time = time();
+    $current_time = REQUEST_TIME;
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $string = 'incidents';
     $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string);
