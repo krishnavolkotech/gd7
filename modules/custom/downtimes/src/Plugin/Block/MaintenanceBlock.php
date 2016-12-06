@@ -6,6 +6,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\Component\Utility\Unicode;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Render\Markup;
@@ -59,7 +60,7 @@ class MaintenanceBlock extends BlockBase {
   public function build() {
     $build = [];
     $maintenance_list = \Drupal::database()->select("downtimes", 'd')
-        ->fields('d', ['service_id', 'description', ' downtime_id', ' state_id', 'reason', 'startdate_planned', 'enddate_planned', 'scheduled_p','resolved'])
+        ->fields('d', ['service_id', 'description', ' downtime_id', ' state_id', 'reason', 'startdate_planned', 'enddate_planned', 'scheduled_p', 'resolved'])
         ->condition('service_id', '0', '<>')
         ->condition('cancelled', 0)
         ->condition('resolved', 0)
@@ -103,11 +104,11 @@ class MaintenanceBlock extends BlockBase {
             if ($groupContent) {
               $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
               $class = '';
-              if($vals->startdate_planned > REQUEST_TIME && $vals->resolved == 0){
+              if ($vals->startdate_planned > REQUEST_TIME && $vals->resolved == 0) {
                 $class = 'text-danger';
                 $unResolvedServices[$ids] = $ids;
               }
-              $label = Markup::create('<span class="state-item '.$class.'">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
+              $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
               $data[$ids][$sids] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
             }
           }
@@ -123,15 +124,16 @@ class MaintenanceBlock extends BlockBase {
         ),
       ),
     );
-    
-    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
-    $report_link = Link::createFromRoute($this->t('Report Maintenance'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options);
+
+
+//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $report_link = Link::createFromRoute($this->t('Report Maintenance'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options);
     foreach ($data as $sid => $item) {
       $class = '';
-      if(in_array($sid,$unResolvedServices)){
+      if (in_array($sid, $unResolvedServices)) {
         $class = 'text-danger';
       }
-      $title = Markup::create('<span class="'.$class.'">'.$serviceNames[$sid].'</span>');
+      $title = Markup::create('<span class="' . $class . '">' . $serviceNames[$sid] . '</span>');
       $markup['incident_list'][] = [
         '#title' => $title,
         '#prefix' => '<div>',
@@ -147,14 +149,25 @@ class MaintenanceBlock extends BlockBase {
       ];
 //      pr($markup);exit;
     }
+    $markup['downtimes'] = ['#type' => 'container', '#weight' => 100, '#attributes' => ['class' => ['link-wrapper-downtimes']]];
+    $markup['downtimes']['list'] = [
+      '#title' => $this->t('Störungen und Blockzeiten'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+    ];
 
+    $markup['downtimes']['create'] = [
+      '#title' => $this->t('Report Maintenance'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options)
+    ];
 
-    $markup['all_link'] = $all_link->toString();
-    $markup['report_link'] = $report_link->toString();
-    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
-    $build['#cache']['max-age'] = 0;
+//    $markup['all_link'] = $all_link->toString();
+//    $markup['report_link'] = $report_link->toString();
+//    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($links);
+    $markup['#cache']['max-age'] = 0;
 
-    return $build;
+    return $markup;
   }
 
   /**

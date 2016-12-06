@@ -6,6 +6,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Render\Markup;
 
@@ -124,9 +125,10 @@ class IncidentsBlock extends BlockBase {
         ),
       ),
     );
+    
 
-    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
-    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
     foreach ($data as $sid => $item) {
       $markup['incident_list'][] = [
 //        '#title' => $serviceNames[$sid],
@@ -139,11 +141,21 @@ class IncidentsBlock extends BlockBase {
     }
 
 
-    $markup['all_link'] = $all_link->toString();
-    $markup['report_link'] = $report_link->toString();
-    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
-    $build['#cache']['max-age'] = 0;
-    return $build;
+//    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
+    $markup['downtimes'] = ['#type' => 'container', '#weight' => 100, '#attributes' => ['class' => ['link-wrapper-downtimes']]];
+    $markup['downtimes']['list'] = [
+      '#title' => $this->t('Störungen und Blockzeiten'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+    ];
+
+    $markup['downtimes']['create'] = [
+      '#title' => $this->t('Report Downtime'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+    ];
+    $markup['#cache']['max-age'] = 0;
+    return $markup;
   }
 
 }
