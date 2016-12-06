@@ -118,15 +118,7 @@ view_mode ? view_mode|clean_class,
     </div>
     {% endif %}
     <div style = "clear:both" ></div>
-
-    {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
-      <!--  resolved end date -->
-      <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    {% elseif incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
+   {% if incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
     <div class = "Incident">
       <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
       <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
@@ -178,7 +170,13 @@ view_mode ? view_mode|clean_class,
 	{% endif %}
     von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_repoted|date('d.m.Y - H:i') }} Uhr</span>
    <div class="field-wrapper">
-   </div><div class="reason">{{ incident.resolved_data.comment|raw }}</div></div>
+   </div>
+    {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
+      <ul><li>{{ 'Ende'|trans }} : {{ incident.enddate_planned }}</li></ul>
+    <div style = "clear:both" ></div>
+        {% endif %}
+   <div class="reason">{{ incident.resolved_data.comment|raw }}</div>
+  </div>
    <div style = "clear:both" ></div>
    {% endif %}
    {{ revisions|raw }}
