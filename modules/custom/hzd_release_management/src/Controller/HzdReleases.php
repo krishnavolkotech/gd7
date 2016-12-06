@@ -217,7 +217,7 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-    dpm($_SESSION);
+    //  dpm($_SESSION);
     $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable(NULL ,$_SESSION['release_limit'] , $_SESSION['new_filter_options']['release_type']);
     $output[] = array('#markup' => '</div>');
     return $output;
