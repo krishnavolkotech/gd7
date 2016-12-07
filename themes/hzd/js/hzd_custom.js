@@ -30,7 +30,7 @@
 
         $("#block-maintenance .downtime-hover").css('display', 'none');
         // Control hover on front page downtimes blocks
-        $("#block-incidentblock a").hover(handlerInIncident, handlerOutIncident);
+        $("ul.incidents-home-block>li>a").hover(handlerInIncident, handlerOutIncident);
         $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
         // Handlers for front page tool tips.
         function handlerInMaintenance() {
@@ -42,11 +42,11 @@
         }
 
         function handlerInIncident() {
-            $(this).parent().next('.downtime-hover').css('display', 'block');
+            $(this).next('.downtime-hover').css('display', 'block');
         }
 
         function handlerOutIncident() {
-            $(this).parent().next('.downtime-hover').css('display', 'none');
+            $(this).next('.downtime-hover').css('display', 'none');
         }
 
         //Clears from jquery indternal data cache

@@ -137,6 +137,7 @@ class IncidentsBlock extends BlockBase {
       '#items' => $data,
       '#theme' => 'item_list',
       '#type' => 'ul',
+      '#attributes'=>['class'=>['incidents-home-block']]
     ];
 //    }
 //    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
