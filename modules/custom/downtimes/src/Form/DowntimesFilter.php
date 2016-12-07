@@ -252,7 +252,7 @@ class DowntimesFilter extends FormBase {
     $form['filter_startdate'] = [
       '#type' => 'textfield',
 //      '#title' => t('Start Date'),
-      '#placeholder'=>t('Start Date'),
+      '#placeholder' => t('Start Date'),
       /* '#date_date_format' => $date_format,
         '#date_time_format' => $time_format, */
       '#description' => date($date_format, time()),
@@ -328,6 +328,17 @@ class DowntimesFilter extends FormBase {
       '#type' => 'markup',
       '#markup' => "<div id = '" . $type . "_search_results_wrapper'>" . $default_downtimes . "</div>"
       ]; */
+    $form['actions']['reset'] = array(
+      '#type' => 'button',
+      '#button_type' => 'reset',
+      '#value' => t('Reset'),
+      '#prefix' => " <div class = 'reset_form'><div class = 'reset_all'>",
+      '#suffix' => '</div><div style = "clear:both"></div> </div>',
+      '#validate' => array(),
+      '#attributes' => array(
+        'onclick' => 'this.form.reset();',
+      ),
+    );
     $form['#suffix'] = "</div>";
     $form['#attached']['library'] = array(
       //     'downtimes/downtimes.newdowntimes',
