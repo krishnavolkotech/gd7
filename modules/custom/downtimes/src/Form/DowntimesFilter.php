@@ -194,7 +194,7 @@ class DowntimesFilter extends FormBase {
 
     $form['states'] = [
       '#type' => 'select',
-      '#title' => t('States'),
+//      '#title' => t('States'),
       '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
       '#options' => get_all_user_state(),
       '#ajax' => array(
@@ -232,7 +232,7 @@ class DowntimesFilter extends FormBase {
 
     $form['services_effected'] = [
       '#type' => 'select',
-      '#title' => t('Services Effected'),
+//      '#title' => t('Services Effected'),
       '#options' => $services,
       '#ajax' => array(
         'callback' => $path,
@@ -251,7 +251,8 @@ class DowntimesFilter extends FormBase {
     ];
     $form['filter_startdate'] = [
       '#type' => 'textfield',
-      '#title' => t('Start Date'),
+//      '#title' => t('Start Date'),
+      '#placeholder'=>t('Start Date'),
       /* '#date_date_format' => $date_format,
         '#date_time_format' => $time_format, */
       '#description' => date($date_format, time()),
@@ -273,7 +274,7 @@ class DowntimesFilter extends FormBase {
     ];
     $form['filter_enddate'] = [
       '#type' => 'textfield',
-      '#title' => t('End Date'),
+      '#placeholder' => t('End Date'),
       '#description' => date($date_format, time()),
       '#ajax' => array(
         'callback' => $path,
