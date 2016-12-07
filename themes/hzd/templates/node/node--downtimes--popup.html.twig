@@ -74,65 +74,65 @@ view_mode ? view_mode|clean_class,
 ]
 %}
 <article{{ attributes.addClass(classes) }}>
-  <div class="downtime-view-wrapper">
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Verfahren'|trans }}</div>
-      <div class = 'downtimes_content'> {{ incident.service_name }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Land/System'|trans }}</div>
-      <div class = 'downtimes_content'>{{ incident.state }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    {% if incident.startdate_planned %}
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Beginn'|trans }}</div>
-      <div class = 'downtimes_content'> {{ incident.startdate_planned }} </div>
-    </div>
-    {% endif %}
-    <div style = "clear:both" ></div>
+    <div class="downtime-view-wrapper">
+        <div class = "Incident">
+            <div class = 'downtimes_title'>{{ 'Verfahren'|trans }}</div>
+            <div class = 'downtimes_content'> {{ incident.service_name }}</div>
+        </div>
+        <div style = "clear:both" ></div>
+        <div class = "Incident">
+            <div class = 'downtimes_title'>{{ 'Land/System'|trans }}</div>
+            <div class = 'downtimes_content'>{{ incident.state }}</div>
+        </div>
+        <div style = "clear:both" ></div>
+        {% if incident.startdate_planned %}
+            <div class = "Incident">
+                <div class = 'downtimes_title'>{{ 'Beginn'|trans }}</div>
+                <div class = 'downtimes_content'> {{ incident.startdate_planned }} </div>
+            </div>
+        {% endif %}
+        <div style = "clear:both" ></div>
 
-    {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
-      <!--  resolved end date -->
-      <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    {% elseif incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
-      <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    {% endif %}
-    
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Gemeldet von'|trans }}</div>
-      <div class = 'downtimes_content'>{{ incident.reported_by }}</div>
-    </div>
-    <div style = "clear:both" ></div>
-    <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Gemeldet am'|trans }}</div>
-      <div class = 'downtimes_content'>{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr</div>
-    </div>
-    <div style = "clear:both" ></div>
+        {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
+            <div class = "Incident">
+                <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
+                <!--  resolved end date -->
+                <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
+            </div>
+            <div style = "clear:both" ></div>
+        {% elseif incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
+            <div class = "Incident">
+                <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
+                <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
+            </div>
+            <div style = "clear:both" ></div>
+        {% endif %}
 
-      {% if incident.reason %}
-      <div class = "Incident">
-        <div class = 'downtimes_title'>{{ 'Grund für die Wartung der Wartungsfenster'|trans }}</div>
-        <div class = 'downtimes_content'>{{ incident.reason }}</div>
-      </div>
-      <div style = "clear:both" ></div>
-      {% endif %}
-    {% if incident.description %}
-      <div class = "Incident">
-        <div class = 'downtimes_title'>{{ 'Ausfuhrliche beschreibung'|trans }}</div>
-        <div class = 'downtimes_content'>{{ incident.description }}</div>
-      </div>
-      <div style = "clear:both" ></div>
-      {% endif %}
-  </div>
-  <span class="read-mode-downtime"><a href="{{ url }}" rel="bookmark">Vollständige Blockzeit lesen</a></span>
+        <div class = "Incident">
+            <div class = 'downtimes_title'>{{ 'Gemeldet von'|trans }}</div>
+            <div class = 'downtimes_content'>{{ incident.reported_by }}</div>
+        </div>
+        <div style = "clear:both" ></div>
+        <div class = "Incident">
+            <div class = 'downtimes_title'>{{ 'Gemeldet am'|trans }}</div>
+            <div class = 'downtimes_content'>{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr</div>
+        </div>
+        <div style = "clear:both" ></div>
+
+        {% if incident.reason %}
+            <div class = "Incident">
+                <div class = 'downtimes_title'>{{ 'Grund für die Wartung der Wartungsfenster'|trans }}</div>
+                <div class = 'downtimes_content'>{{ incident.reason }}</div>
+            </div>
+            <div style = "clear:both" ></div>
+        {% endif %}
+        {% if incident.description %}
+            <div class = "Incident">
+                <div class = 'downtimes_title'>{{ 'Ausfuhrliche beschreibung'|trans }}</div>
+                <div class = 'downtimes_content'>{{ incident.description }}</div>
+            </div>
+            <div style = "clear:both" ></div>
+        {% endif %}
+        <span class="read-mode-downtime"><a href="{{ url }}" rel="bookmark">Vollständige Blockzeit lesen</a></span>
+    </div>
 </article>
