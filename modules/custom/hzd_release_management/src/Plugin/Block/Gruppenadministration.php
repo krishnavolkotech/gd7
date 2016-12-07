@@ -28,22 +28,25 @@ class Gruppenadministration extends BlockBase {
   /**
    *
    */
-  protected function blockAccess(AccountInterface $account) {
-    if (\Drupal::currentUser()->id()) {
+  public function access(AccountInterface $account, $return_as_object = false) {
+    $routeMatch = \Drupal::routeMatch();
+    if ($account->id()) {
       $group = \Drupal::routeMatch()->getParameter('group');
       if (empty($group)) {
         $group = \Drupal::routeMatch()->getParameter('arg_0');
       }
       if (is_object($group)) {
         $groupId = $group->id();
-      } else {
+      }
+      else {
         $groupId = $group;
       }
-      if (CustNodeController::isGroupAdmin($groupId)) {
+      if (CustNodeController::isGroupAdmin($groupId) && \Drupal\cust_group\Plugin\Block\GroupMenuBlock::showBlock($routeMatch->getRouteName())) {
         return AccessResult::allowed();
       }
       return AccessResult::forbidden();
-    } else {
+    }
+    else {
       return AccessResult::forbidden();
     }
   }
@@ -58,10 +61,11 @@ class Gruppenadministration extends BlockBase {
     }
     if (is_object($group)) {
       $groupId = $group->id();
-    } else {
+    }
+    else {
       $groupId = $group;
     }
-    if(CustNodeController::isGroupAdmin($groupId)){
+    if (CustNodeController::isGroupAdmin($groupId)) {
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_content.page_1', ['arg_0' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'entity.group_content.group_node.create_page', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'), 'view.group_members.page_1', ['arg_0' => $groupId]);
@@ -72,7 +76,7 @@ class Gruppenadministration extends BlockBase {
       if ($groupId == 32) {
         $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Planungsdateien'), 'hzd_release_management.display_planning_files', ['group' => $groupId]);
       }
-  
+
       /*    $menuHtml = '<ul class="menu nav">
         <li><a href="/group/' . $groupId . '/content">Contents</a></li>
         <li><a href="/group/' . $groupId . '/node/create">Content</a></li>
@@ -92,10 +96,11 @@ class Gruppenadministration extends BlockBase {
         '#attributes' => ['class' => ['menu nav']],
         '#cache' => ['max-age' => 0]
       ];
-    }else{
+    }
+    else {
       $menuHtml = [
         '#markup' => '',
-        '#title'=>'',
+        '#title' => '',
         '#cache' => ['max-age' => 0]
       ];
     }

@@ -21,9 +21,7 @@ use Drupal\group\Entity\Group;
  */
 class GroupMenuBlock extends BlockBase {
 
-
-
-  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = false){
+  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = false) {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
     if (empty($group)) {
@@ -32,14 +30,26 @@ class GroupMenuBlock extends BlockBase {
     if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
       $node = $routeMatch->getParameter('node');
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-	if(!empty($groupContent))
-	  $group = $groupContent->getGroup();
+      if (!empty($groupContent))
+        $group = $groupContent->getGroup();
     }
-    if (!empty($group)) {
+    if (!empty($group) && self::showBlock($routeMatch->getRouteName())) {
       return \Drupal\Core\Access\AccessResult::allowed();
     }
     return \Drupal\Core\Access\AccessResult::neutral();
   }
+
+  static function showBlock($route = null) {
+    $routeToHide = [
+      'downtimes.new_downtimes_controller_newDowntimes',
+      'downtimes.archived_downtimes_controller'
+    ];
+    if (in_array($route, $routeToHide)) {
+      return false;
+    }
+    return true;
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -52,9 +62,8 @@ class GroupMenuBlock extends BlockBase {
     if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
       $node = $routeMatch->getParameter('node');
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-	if(!empty($groupContent))
-	  $group = $groupContent->getGroup();
-	
+      if (!empty($groupContent))
+        $group = $groupContent->getGroup();
     }
     //pr($group->id());exit;
     if (!empty($group)) {
@@ -63,9 +72,9 @@ class GroupMenuBlock extends BlockBase {
         $group = \Drupal\group\Entity\Group::load($group);
       }
       $user = \Drupal::currentUser();
-      $groupMember = (bool)$group->getMember($user);
+      $groupMember = (bool) $group->getMember($user);
       //pr((bool)$groupMember);exit;
-      if ($groupMember || array_intersect($user->getRoles(), ['admininstrator','site_administrator'])) {
+      if ($groupMember || array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
         $oldId = $group->get('field_old_reference')->value;
         $menu_name = 'menu-' . $oldId;
         $menu_tree = \Drupal::menuTree();

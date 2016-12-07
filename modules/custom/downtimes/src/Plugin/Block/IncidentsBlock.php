@@ -93,16 +93,16 @@ class IncidentsBlock extends BlockBase {
         $serviceEntities = Node::loadMultiple($serviceid);
         $serviceTitles = $stateTitles = null;
         foreach ($serviceEntities as $serviceItem) {
-          $serviceTitles .= $serviceItem->getTitle().', ';
+          $serviceTitles .= $serviceItem->getTitle() . ', ';
         }
         foreach ($stateids as $stateId) {
           $stateTitles .= ' [' . $states[$stateId] . ']';
         }
         if ($groupContent) {
           $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-          $label = Markup::create(trim($serviceTitles,',') . $stateTitles);
-          $url = $groupContent->toUrl()->setOption('attributes',['class'=>['text-danger']]);
-          $data[] = Markup::create(Link::fromTextAndUrl($label,$url)->toString() . ' ' .date('d.m.Y H:i', $vals->startdate_planned) .' Uhr '. $hover_markup);
+          $label = Markup::create(trim($serviceTitles, ',') . $stateTitles);
+          $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
+          $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hover_markup);
         }
 //        foreach ($serviceid as $ids) {
 //          // Loops for all services
@@ -125,22 +125,21 @@ class IncidentsBlock extends BlockBase {
         ),
       ),
     );
-    
+
 
 //    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
 //    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
-    foreach ($data as $sid => $item) {
-      $markup['incident_list'][] = [
+//    foreach ($data as $sid => $item) {
+    $markup['incident_list'][] = [
 //        '#title' => $serviceNames[$sid],
-        '#prefix' => '<div>',
-        '#suffix' => '</div>',
-        '#items' => $data,
-        '#theme' => 'item_list',
-        '#type' => 'ul',
-      ];
-    }
-
-
+      '#prefix' => '<div>',
+      '#suffix' => '</div>',
+      '#items' => $data,
+      '#theme' => 'item_list',
+      '#type' => 'ul',
+      '#attributes'=>['class'=>['incidents-home-block']]
+    ];
+//    }
 //    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
     $markup['downtimes'] = ['#type' => 'container', '#weight' => 100, '#attributes' => ['class' => ['link-wrapper-downtimes']]];
     $markup['downtimes']['list'] = [

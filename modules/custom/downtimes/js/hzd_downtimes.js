@@ -3,8 +3,8 @@
         attach: function (context, settings) {
             var a = settings.downtime;
             $('.reason-for-noncompliance').find('label').next('span.form-required').remove()
-	    $('.reason-for-noncompliance').find('label').after('<span class="form-required"></span>');
-            if($('#edit-reason-for-noncompliance').val() == 0)
+            $('.reason-for-noncompliance').find('label').after('<span class="form-required"></span>');
+            if ($('#edit-reason-for-noncompliance').val() == 0)
                 $('.reason-for-noncompliance').hide();
             function convert_to_valid_format(date) {
                 var temp = date.split('.');
@@ -37,14 +37,14 @@
                 var present = present_month + "/" + present_day + "/" + present_year + " 23:59";
                 return present;
             }
-	    $('form.node-downtimes-form').submit(function(){
-		if($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0){
-		  $('.reason-for-noncompliance').find('.reason-error').show();
-		  $('#edit-reason-for-noncompliance').focus();
-                  return false;
-		}else{
-		  $('.reason-for-noncompliance').find('reason-error').hide();
-		}
+            $('form.node-downtimes-form').submit(function () {
+                if ($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0) {
+                    $('.reason-for-noncompliance').find('.reason-error').show();
+                    $('#edit-reason-for-noncompliance').focus();
+                    return false;
+                } else {
+                    $('.reason-for-noncompliance').find('reason-error').hide();
+                }
             });
 
             // Advance Time validations.
@@ -139,7 +139,12 @@
                     $('input#edit-startdate-planned').addClass('text-danger');
                 }
             });
-	    
+
+            $('input#edit-enddate-planned').focus(function () {
+                $(this).parent('div').find('p.text-danger').remove();
+                $(this).removeClass('text-danger');
+            });
+
 
             // Maintenance window validations.
             $('input#edit-enddate-planned').blur(function () {
@@ -166,13 +171,10 @@
                         var end_day = $(this).val();
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDay()];
-                        if(start_day_obj.getTime() >= end_day_obj.getTime()){
+                        if (start_day_obj.getTime() >= end_day_obj.getTime()) {
                             $(this).parent('div').find('p.text-danger').remove();
                             $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
                             $(this).addClass('text-danger');
-                        }else{
-                            $(this).parent('div').find('p.text-danger').remove();
-                            $(this).removeClass('text-danger');
                         }
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
@@ -315,7 +317,7 @@
                 $("#edit-services-effected input:checkbox:checked").each(function () {
                     passed = 0;
                     var service_id = $(this).val();
-                    if(a.maintenance[service_id].length == 0) {
+                    if (a.maintenance[service_id].length == 0) {
                         return false;
                     }
                     $.each(a.maintenance[service_id], function (key, value) {
@@ -357,22 +359,22 @@
                 var end_day = new Date(convert_to_valid_format(end_date));
                 end_day = end_day.getDay();
                 /*console.log("--------");
-                console.log(start_date);
-                console.log(start_day);
-                console.log(end_date);
-                console.log(end_day);
-                console.log("----- END ---");
-                console.log(weekday);
-                console.log(a.sitewide_maintain);*/
+                 console.log(start_date);
+                 console.log(start_day);
+                 console.log(end_date);
+                 console.log(end_day);
+                 console.log("----- END ---");
+                 console.log(weekday);
+                 console.log(a.sitewide_maintain);*/
                 $.each(a.sitewide_maintain, function (key, value) {
                     var check_day = 0;
                     var day_from_index = jQuery.inArray(key, weekday);
                     var day_until_index = jQuery.inArray(value.day_until, weekday);
                     var valid_week_days = new Array();
                     /*console.log('from');
-                    console.log(day_from_index);
-                    console.log('until');
-                    console.log(day_until_index);*/
+                     console.log(day_from_index);
+                     console.log('until');
+                     console.log(day_until_index);*/
                     if (day_from_index > day_until_index) {
                         for (var inc = day_from_index; inc <= 6; inc++) {
                             valid_week_days.push(inc);
@@ -381,10 +383,10 @@
                             valid_week_days.push(inc);
                         }
                         /*console.log(valid_week_days);
-                        console.log('Startday array');
-                        console.log(jQuery.inArray(start_day, valid_week_days));
-                        console.log('Endday array');
-                        console.log(jQuery.inArray(end_day, valid_week_days));*/
+                         console.log('Startday array');
+                         console.log(jQuery.inArray(start_day, valid_week_days));
+                         console.log('Endday array');
+                         console.log(jQuery.inArray(end_day, valid_week_days));*/
                         if (jQuery.inArray(start_day, valid_week_days) != -1 && jQuery.inArray(end_day, valid_week_days) != -1) {
                             check_day = 1;
                         }
@@ -433,8 +435,8 @@
                 var datum = Date.parse(strDate);
                 return datum / 1000;
             }
-	    
-        
+
+
 
         }
     };
