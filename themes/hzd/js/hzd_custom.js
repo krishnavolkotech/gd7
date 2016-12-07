@@ -30,7 +30,7 @@
 
         $("#block-maintenance .downtime-hover").css('display', 'none');
         // Control hover on front page downtimes blocks
-        $("#block-incidentblock .state-item").hover(handlerInIncident, handlerOutIncident);
+        $("#block-incidentblock a").hover(handlerInIncident, handlerOutIncident);
         $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
         // Handlers for front page tool tips.
         function handlerInMaintenance() {

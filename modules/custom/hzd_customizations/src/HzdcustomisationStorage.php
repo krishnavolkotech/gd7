@@ -917,7 +917,7 @@ class HzdcustomisationStorage {
         $flag = "";
       }
       $elements = $headersNew = [];
-      $downtimeTypes = [0 => 'Incident', 1 => 'Maintenance'];
+      $downtimeTypes = [0 => t('Störungen'), 1 => t('Blockzeiten')];
       if ($string == 'archived') {
         $headersNew = array_merge($headersNew, ['type' => 'Type']);
         $elements = array_merge($elements, ['type' => $downtimeTypes[$client->scheduled_p]]);
@@ -1006,17 +1006,7 @@ class HzdcustomisationStorage {
       if ($downtime_type == 1) {
         if ($maintenance_edit && ($master_group == $group_id) && $string != 'archived') {
 //          $resolve_url = Url::fromUserInput('/group/' . $group_id . '/resolve' . '/' . $client->downtime_id);
-          $links['action']['resolve'] = [
-            '#title' => t('Resolve'),
-            '#type' => 'link',
-            '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
-          ];
 //          $cancel_url = Url::fromUserInput('/group/' . $group_id . '/cancel' . '/' . $client->downtime_id);
-          $links['action']['cancel'] = [
-            '#title' => t('Cancel Maintenance'),
-            '#type' => 'link',
-            '#url' => Url::fromRoute('downtimes.cancel', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_cancel_link']]])
-          ];
 //          $edit_url = Url::fromUserInput('/node/' . $client->downtime_id . '/edit');
           $links['action']['edit'] = [
             '#title' => t('Update'),
@@ -1025,12 +1015,20 @@ class HzdcustomisationStorage {
           ];
 //          $links .= "<br>" . \Drupal::l(t('Update'), $edit_url) . " <br>";
           // l(t('Resolve'), 'node/' . $_SESSION['Group_id'] . '/resolve' . '/' . $client->downtime_id);.
-//          if ($client->startdate_planned > time()) {
-//            $links .= \Drupal::l(t('Cancel Maintenance'), $cancel_url);
-//          }
-//          else {
-//            $links .= \Drupal::l(t('Resolve'), $resolve_url);
-//          }
+          if ($client->startdate_planned > REQUEST_TIME) {
+            $links['action']['cancel'] = [
+              '#title' => t('Cancel Maintenance'),
+              '#type' => 'link',
+              '#url' => Url::fromRoute('downtimes.cancel', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_cancel_link']]])
+            ];
+          }
+          else {
+            $links['action']['resolve'] = [
+              '#title' => t('Resolve'),
+              '#type' => 'link',
+              '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+            ];
+          }
         }
       }
       else {
@@ -1058,7 +1056,7 @@ class HzdcustomisationStorage {
       $elements['action'] = $renderer->render($links);
 //      $elements['table_type'] = $string;
       $rowClass = '';
-      if ($client->startdate_planned > REQUEST_TIME || $client->type == 'INCIDENT') {
+      if ($string != 'archived' && ($client->startdate_planned > REQUEST_TIME || $client->type == 'INCIDENT')) {
         $rowClass = 'text-danger';
       }
       $rows[] = ['data' => $elements, 'class' => $rowClass];
@@ -1072,7 +1070,7 @@ class HzdcustomisationStorage {
       $output .= theme('pager', NULL, $limit, 0);
       $output .= \Drupal::formBuilder()->getForm('archive_rows_per_page', $limit, $string);
       } */
-    
+
     $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => 'No data created yet.');
 //    self::downtimes_display_table($variables);
     $build['problem_table'] = array(
