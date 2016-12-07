@@ -15,7 +15,7 @@ third_party_settings:
     classes: ''
 id: optionen
 theme: hzd
-region: sidebar_first
+region: '-1'
 weight: -19
 provider: null
 plugin: 'system_menu_block:optionen'

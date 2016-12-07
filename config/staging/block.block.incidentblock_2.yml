@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - downtimes
+    - system
   theme:
     - hzd
 third_party_settings:
@@ -22,4 +23,9 @@ settings:
   provider: downtimes
   label_display: '0'
   number_of_posts: ''
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }

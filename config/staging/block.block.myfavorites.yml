@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: myfavorites
 theme: hzd
-region: sidebar_first
+region: '-1'
 weight: -18
 provider: null
 plugin: favorites_block

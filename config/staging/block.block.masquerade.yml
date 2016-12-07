@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: masquerade
 theme: hzd
-region: sidebar_first
+region: '-1'
 weight: -17
 provider: null
 plugin: masquerade
