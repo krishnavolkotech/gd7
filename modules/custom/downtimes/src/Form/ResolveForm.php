@@ -236,12 +236,14 @@ class ResolveForm extends FormBase {
     $nid = $form_state->getValue('nid');
     $date_reported = $form_state->getValue('date_reported');
     $uid = $user->id();
+    $notifications_content_disable = $form_state->getValue('notifications_content_disable');
     $downtime_resolve = array(
       'comment' => $comment,
       'nid' => $nid,
       'date_reported' => $date_reported,
       'uid' => $uid,
       'gid'=>$group,
+      'notifications_content_disable' => $notifications_content_disable,
     );
     //Todo if more than one user access this might get issue
     $this->keyValueExpirable->setWithExpire("downtimes_resolve_" . $nid, $downtime_resolve, 6 * 60 * 60);
