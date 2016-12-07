@@ -10,6 +10,8 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\Unicode;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Provides a 'MaintenanceBlock' block.
@@ -54,10 +56,24 @@ class MaintenanceBlock extends BlockBase {
     $this->configuration['number_of_posts'] = $form_state->getValue('number_of_posts');
   }
 
+  function access(AccountInterface $account, $return_as_object = false) {
+    $routeMatch = \Drupal::routeMatch();
+    $parameters = $routeMatch->getParameters();
+    if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes') {
+      //exception for downtimes content type
+      return AccessResult::allowed();
+    }
+    if ($routeMatch->getRouteName() == 'front_page.front') {
+      return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
+  }
+
   /**
    * {@inheritdoc}
    */
   public function build() {
+    $routeMatch = \Drupal::routeMatch();
     $build = [];
     $maintenance_list = \Drupal::database()->select("downtimes", 'd')
         ->fields('d', ['service_id', 'description', ' downtime_id', ' state_id', 'reason', 'startdate_planned', 'enddate_planned', 'scheduled_p', 'resolved'])
@@ -155,13 +171,13 @@ class MaintenanceBlock extends BlockBase {
       '#type' => 'link',
       '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
     ];
-
-    $markup['downtimes']['create'] = [
-      '#title' => $this->t('Report Maintenance'),
-      '#type' => 'link',
-      '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options)
-    ];
-
+    if ($routeMatch->getRouteName() == 'front_page.front') {
+      $markup['downtimes']['create'] = [
+        '#title' => $this->t('Report Maintenance'),
+        '#type' => 'link',
+        '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options)
+      ];
+    }
 //    $markup['all_link'] = $all_link->toString();
 //    $markup['report_link'] = $report_link->toString();
 //    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($links);

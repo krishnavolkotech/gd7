@@ -41,7 +41,7 @@ class Gruppenadministration extends BlockBase {
       else {
         $groupId = $group;
       }
-      if (CustNodeController::isGroupAdmin($groupId) && \Drupal\cust_group\Plugin\Block\GroupMenuBlock::showBlock($routeMatch->getRouteName())) {
+      if (CustNodeController::isGroupAdmin($groupId) && \Drupal\cust_group\Plugin\Block\GroupMenuBlock::showBlock($routeMatch)) {
         return AccessResult::allowed();
       }
       return AccessResult::forbidden();
