@@ -33,18 +33,24 @@ class GroupMenuBlock extends BlockBase {
       if (!empty($groupContent))
         $group = $groupContent->getGroup();
     }
-    if (!empty($group) && self::showBlock($routeMatch->getRouteName())) {
+    if (!empty($group) && self::showBlock($routeMatch)) {
       return \Drupal\Core\Access\AccessResult::allowed();
     }
     return \Drupal\Core\Access\AccessResult::neutral();
   }
 
-  static function showBlock($route = null) {
+  static function showBlock($routeMatch = null) {
     $routeToHide = [
       'downtimes.new_downtimes_controller_newDowntimes',
-      'downtimes.archived_downtimes_controller'
+      'downtimes.archived_downtimes_controller',
     ];
-    if (in_array($route, $routeToHide)) {
+    $parameters = $routeMatch->getParameters();
+    if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical'
+        && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes') {
+      //exception for downtimes content type
+      return false;
+    }
+    if (in_array($routeMatch->getRouteName(), $routeToHide)) {
       return false;
     }
     return true;

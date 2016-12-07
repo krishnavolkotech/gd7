@@ -9,6 +9,8 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Provides a 'IncidentsBlock' block.
@@ -53,10 +55,24 @@ class IncidentsBlock extends BlockBase {
     $this->configuration['number_of_posts'] = $form_state->getValue('number_of_posts');
   }
 
+  function access(AccountInterface $account, $return_as_object = false) {
+    $routeMatch = \Drupal::routeMatch();
+    $parameters = $routeMatch->getParameters();
+    if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes') {
+      //exception for downtimes content type
+      return AccessResult::allowed();
+    }
+    if ($routeMatch->getRouteName() == 'front_page.front') {
+      return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
+  }
+
   /**
    * {@inheritdoc}
    */
   public function build() {
+    $routeMatch = \Drupal::routeMatch();
     $build = [];
     $maintenance_list = \Drupal::database()->select("downtimes", 'd')
         ->fields('d', ['service_id', 'description', ' downtime_id', ' state_id', 'reason', 'startdate_planned', 'enddate_planned', 'scheduled_p'])
@@ -137,7 +153,7 @@ class IncidentsBlock extends BlockBase {
       '#items' => $data,
       '#theme' => 'item_list',
       '#type' => 'ul',
-      '#attributes'=>['class'=>['incidents-home-block']]
+      '#attributes' => ['class' => ['incidents-home-block']]
     ];
 //    }
 //    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($markup['all_link']) . render($markup['report_link']);
@@ -147,12 +163,13 @@ class IncidentsBlock extends BlockBase {
       '#type' => 'link',
       '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
     ];
-
-    $markup['downtimes']['create'] = [
-      '#title' => $this->t('Report Downtime'),
-      '#type' => 'link',
-      '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
-    ];
+    if ($routeMatch->getRouteName() == 'front_page.front') {
+      $markup['downtimes']['create'] = [
+        '#title' => $this->t('Report Downtime'),
+        '#type' => 'link',
+        '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+      ];
+    }
     $markup['#cache']['max-age'] = 0;
     return $markup;
   }
