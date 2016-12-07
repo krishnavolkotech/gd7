@@ -76,5 +76,10 @@
 //                    });
 //                })
                 .parent().css('position', 'relative');
+        $('a.downtimes_details_link').hover(function () {
+            $(this).parent().find('article.popup').show();
+        },function(){
+            $(this).parent().find('article.popup').hide();
+        });
     });
 })(jQuery);
