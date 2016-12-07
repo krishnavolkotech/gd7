@@ -1074,10 +1074,10 @@ class HzdcustomisationStorage {
       } */
     
     $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => 'No data created yet.');
-    self::downtimes_display_table($variables);
+//    self::downtimes_display_table($variables);
     $build['problem_table'] = array(
       '#header' => $variables['header'],
-      '#rows' => $rows,
+      '#rows' => $variables['rows'],
       '#attributes' => $variables['attributes'],
       '#empty' => $variables['empty'],
 //      '#header_columns' => $variables['header_columns'],
