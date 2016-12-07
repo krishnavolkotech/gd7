@@ -14,6 +14,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Utility\Unicode;
+use Drupal\node\Entity\Node;
 
 if (!defined('MAINTENANCE_GROUP_ID')) {
   define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
@@ -1053,6 +1054,9 @@ class HzdcustomisationStorage {
         }
       }
       $headersNew = array_merge($headersNew, ['action' => 'Action']);
+      $entity = Node::load($client->downtime_id);
+      $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+      $links['node'] = $view_builder->view($entity, 'popup', 'de');
       $elements['action'] = $renderer->render($links);
 //      $elements['table_type'] = $string;
       $rowClass = '';
