@@ -169,6 +169,9 @@ class IncidentsBlock extends BlockBase {
         '#type' => 'link',
         '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
       ];
+        $markup['#attributes'] = ['class'=>['frontpage-downtime-block']];
+    }else{
+        $markup['#attributes'] = ['class'=>['view-downtime-block']];
     }
     $markup['#cache']['max-age'] = 0;
     return $markup;
