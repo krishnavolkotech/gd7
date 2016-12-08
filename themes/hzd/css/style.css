@@ -744,7 +744,7 @@ nav#block-optionen h2 {
   padding: 10px 10px;
   line-height: 20px;
   word-wrap:break-word;
-  text-transform:uppercase;
+  /*text-transform:uppercase;*/
 }
 aside section.blue .field--name-body,
 .region-sidebar-first .block-hzd-release-management .field--name-body,
@@ -840,7 +840,7 @@ input.hasDatepicker{
   height: 34px !important;
   border-radius: 0 !important;
   font-size:14px;
-  width:225px !important;
+  width:210px !important;
 }
 /*.form-control{
   border-radius: 4px 0px 0px 4px !important;
@@ -977,6 +977,10 @@ button.button--reset:hover{
   float: right;
   border: 1px solid #ddd !important;
   margin:0 !important;
+  height:34px;
+}
+button.button--reset{
+  margin-top:2px !important;	
 }
 .btn-default:hover,
 .views-exposed-form button:hover,
@@ -1368,33 +1372,34 @@ nav#block-optionen ul li {
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active{
   /*background:rgb(245, 245, 245);*/
-  padding-top:10px;
-  margin:5px 0;
-  blue-list-arrow
+  /*padding-top:10px;
+  margin:5px 0;*/
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li{
   padding-left:0;
   width:100%;
 }
-.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a{
-  /*background:transparent;
-  background: url("../images/blue-list-arrow.png") left 6px no-repeat;*/
+.caret{
+  display:none !important;	
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav > li.expanded.dropdown.active > a{
+  background: url("../images/blue-list-arrow.png") left 6px no-repeat;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle{
-  font-weight:600;
+  /*font-weight:600;*/
   color:rgb(4, 66, 95);
   margin-bottom:5px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a:hover{
   color:rgb(4, 66, 95);
 }
+.region-sidebar-first section.blue ul.menu.nav li  a
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu a,
-.region-sidebar-first section.blue ul.menu.nav li a,
 .block-hzd-release-management ul.menu.nav li a,
 nav#block-optionen ul.menu.nav li a,
-.region-sidebar-first section.blue ul li a,
+.region-sidebar-first section.blue ul li  a,
 .block-hzd-release-management ul li a,
-nav#block-optionen ul li a {
+nav#block-optionen ul li a{
   width: 100%;
   display: block;
   padding: 0 0 0 10px;
@@ -1403,9 +1408,17 @@ nav#block-optionen ul li a {
   line-height: 20px;
   white-space:pre-wrap !important;
   background: url("../images/grey-list-arrow.png") left 6px no-repeat;
-
 }
-
+.region-sidebar-first section ul.menu.nav li a{
+  padding-left:12px !important;	
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav  li.expanded.dropdown.active ul li a{
+  background:none !important;
+  padding-left:25px !important;  
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav  li.expanded.dropdown.active ul{
+  padding-bottom:0 !important;	
+}
 .block-hzd-release-management ul li a:hover,
 .region-sidebar-first section.blue ul li a:hover,
 .block-hzd-release-management ul.menu.nav li a:hover,
@@ -2201,9 +2214,13 @@ section.block-star-favorites-block form button.del-fav{
 }
 section.block-star-favorites-block form button.add-fav{
   background: url(../images/ic_star_black.png) left 1px no-repeat !important;
+  font-size:0;
+  border:none !important
 }
 section.block-star-favorites-block form button.del-fav{
   background: url(../images/ic_star_border_black.png) left 1px no-repeat !important; 
+  font-size:0;
+  border:none !important
 }
 /* 20161114 r2.5.2 droy */
 
@@ -2532,8 +2549,12 @@ section .form-group .views-field-field-news-date .field-content{
 }
 section.col-sm-9 .region-content{
   background:#fff;
-  padding:15px;
+  padding:2%;
   float:left;
+  width:100%;
+}
+form.cancel-form{
+  padding-bottom:10px;	
 }
 .navbar-collapse ol.breadcrumb{
  width:100%;
@@ -2627,12 +2648,28 @@ article.popup{
 article.popup .downtime-view-wrapper{
   background: rgb(255, 255, 255) none repeat scroll 0 0;
   min-height: 300px;
-  position: absolute;
-  right: 93px;
+  position: fixed;
+  top:200px;
   width: 750px;
   z-index: 1000;
   box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.3);;  
 }
 article.popup .read-mode-downtime{
   float:right;
+}
+
+@media screen and (min-width: 1601px) and (max-width: 1920px) {
+article.popup .downtime-view-wrapper{
+  right:27%;	
+}
+}
+@media screen and (min-width: 1301px) and (max-width: 1600px) {
+article.popup .downtime-view-wrapper{
+  right:17%;	
+}
+}
+@media screen and (min-width: 1024px) and (max-width: 1300px) {
+article.popup .downtime-view-wrapper{
+  right:13.5%;	
+}
 }
