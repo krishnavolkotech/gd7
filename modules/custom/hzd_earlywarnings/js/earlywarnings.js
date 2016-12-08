@@ -1,7 +1,14 @@
 (function ($) {
   Drupal.behaviors.earlywarnings = {
     attach: function (context, settings) {
-
+       
+           var anchor = $("#earlywarnings_results_wrapper #pagination > nav > ul > li > a");
+             anchor.each(function( index ) {
+               var links = $( this ).attr('href'); 
+               var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
+               $( this ).attr('href', new_href);
+             });
+             
        $(context).find('table#sortable').once('earlywarnings').each(function () {
 	   if ( jQuery('.end_date').length>0) {
 	     jQuery('.end_date').datepicker();
@@ -9,15 +16,7 @@
 	   if ( jQuery('.end_date').length>0) {
 	     jQuery('.start_date').datepicker();
 	   }
-
-           var anchor = $("#earlywarnings_results_wrapper #pagination > nav > ul > li > a");
-             anchor.each(function( index ) {
-               var links = $( this ).attr('href'); 
-               var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
-               $( this ).attr('href', new_href);
-             });
-
-
+           
 
 	  $.tablesorter.addParser({
 		// set a unique id
