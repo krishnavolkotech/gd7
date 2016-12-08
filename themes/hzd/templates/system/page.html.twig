@@ -73,6 +73,7 @@
       ]
     %}
     <header{{ navbar_attributes.addClass(navbar_classes) }} id="navbar" role="banner">
+	<div class="row">
       <div class="navbar-header">
         {{ page.navigation }}
         <div id="header-right">
@@ -98,6 +99,7 @@
           {{ page.navigation_collapsible }}
         </div>
       {% endif %}
+	  </div>
     </header>
   {% endblock %}
 {% endif %}
@@ -186,7 +188,7 @@
 {% if page.footer %}
   {% block footer %}
     <footer class="footer {{ container }}" role="contentinfo">
-      {{ page.footer }}
+  {{ page.footer }}
     </footer>
   {% endblock %}
 {% endif %}
