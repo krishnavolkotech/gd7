@@ -154,7 +154,17 @@ class Confirm extends ConfirmFormBase {
       $nid = $node;
     }
     $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
-
+ 
+    if(!isset($downtimes_resolve['notifications_content_disable']) ) {
+      $downtime_node =  \Drupal\node\Entity\Node::load($nid);
+      if ($downtime_node instanceof \Drupal\node\Entity\Node){
+        send_downtime_notifications($downtime_node);
+        //exit;
+        //capture the notification for the users to send daily and weekly
+        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
+      }
+    }
+    
     $comment = $downtimes_resolve['comment']['value'];
     $nid = $downtimes_resolve['nid'];
     $date_report = $downtimes_resolve['date_reported'];
