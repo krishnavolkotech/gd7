@@ -168,14 +168,26 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->downtimes_type = ($result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
     $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
     $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
-    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
-    $resolved_data = db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
+//    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 
+//   dpm( date('d.m.Y - H:i', $result->enddate_planned));
+//  dpm( date('d.m.Y - H:i', $result->enddate_reported));
+
+//    if (isset($result->enddate_reported) && $result->enddate_reported != '') {
+//      $incident_data->enddate_planned = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
+//    }
+    $resolved_data = db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
+// dpm($resolved_data->end_date);
     if (!empty($resolved_data)) {
       $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
       $incident_data->resolved_data = $resolved_data;
       $incident_data->resolved_data->name = $resolved_name;
     }
+
+    if (isset($resolved_data->end_date) && $resolved_data->end_date != '') {
+      $incident_data->enddate_planned = ($resolved_data->end_date ? date('d.m.Y - H:i', $resolved_data->end_date) . " " . t('Uhr') : '');
+    }
+
     $incident_data->resolved = $result->resolved;
     $incident_data->cancelled = $result->cancelled;
     $incident_data->reason = !empty($result->reason) ? $reasons[$result->reason] : '';
