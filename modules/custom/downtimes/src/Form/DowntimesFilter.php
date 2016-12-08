@@ -444,16 +444,23 @@ class DowntimesFilter extends FormBase {
       }
     }
     else {
-      if (isset($start_date)) {
-        $sql .= " and sd.startdate_planned >= $start_date";
-      }
-      if (isset($end_date)) {
-        if ($type == 'archived') {
-          $sql .= " and (ri.end_date <= $end_date OR ri.end_date = 0 OR ri.end_date = '' )";
+      if (isset($start_date)  && isset($end_date) && type != 'archived') {
+//        dpm($start_date);
+//        dpm($end_date);
+          $sql .= " and (( (sd.startdate_planned BETWEEN $start_date AND $end_date) "
+              . "OR (sd.enddate_planned BETWEEN $start_date AND $end_date) )"
+              . " OR ( sd.startdate_planned < $start_date AND sd.enddate_planned > $end_date ) )";
+      } else {
+        if (isset($start_date) && !isset($end_date)) {
+          $sql .= " and sd.startdate_planned >= $start_date";
         }
-        else {
-          $sql .= " and (sd.enddate_planned <= $end_date OR sd.enddate_planned = 0 OR sd.enddate_planned = '' )";
-          
+        if (isset($end_date) && !isset($start_date)) {
+          if ($type == 'archived') {
+            $sql .= " and (ri.end_date <= $end_date OR ri.end_date = 0 OR ri.end_date = '' )";
+          }
+          else {
+            $sql .= " and (sd.enddate_planned <= $end_date OR sd.enddate_planned = 0 OR sd.enddate_planned = '' )";
+          }
         }
       }
     }
