@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
     - field.field.node.early_warnings.field_release_service
-    - field.field.node.early_warnings.upload
     - node.type.early_warnings
   module:
     - text
@@ -46,5 +45,7 @@ content:
 hidden:
   comment_no_subject: true
   entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true
-  upload: true

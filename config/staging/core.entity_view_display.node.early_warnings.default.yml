@@ -7,12 +7,10 @@ dependencies:
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
     - field.field.node.early_warnings.field_release_service
-    - field.field.node.early_warnings.upload
     - node.type.early_warnings
   module:
     - comment
     - entity_print
-    - file
     - options
     - text
     - user
@@ -63,11 +61,8 @@ content:
     weight: 3
     settings: {  }
     third_party_settings: {  }
-  upload:
-    label: hidden
-    settings: {  }
-    type: file_default
-    weight: 5
-    third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true

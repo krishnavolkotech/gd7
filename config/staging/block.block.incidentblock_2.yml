@@ -19,9 +19,9 @@ provider: null
 plugin: incidents_block
 settings:
   id: incidents_block
-  label: 'Incident Block'
+  label: 'Aktuelle Störungen'
   provider: downtimes
-  label_display: '0'
+  label_display: visible
   number_of_posts: ''
 visibility:
   request_path:
