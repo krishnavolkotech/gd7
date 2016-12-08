@@ -46,7 +46,7 @@ button {
   outline: none !important;
 }
 body {
-  font-family: 'robotoregular';
+  font-family: 'robotoregular' !important;
   padding: 0;
   margin: 0;
   color: #222222;
@@ -741,7 +741,7 @@ nav#block-optionen h2 {
   /*font-weight: bold;*/
   color: #04425f;
   margin: 0 !important;
-  padding: 10px 10px;
+  padding: 10px 0;
   line-height: 20px;
   word-wrap:break-word;
   /*text-transform:uppercase;*/
@@ -1359,17 +1359,25 @@ nav#block-optionen ul {
   margin: 0;
   padding: 0;
 }
-.region-sidebar-first section.blue ul.menu.nav li,
-.block-hzd-release-management ul.menu.nav li,
+
 nav#block-optionen ul.menu.nav li,
 .region-sidebar-first section.blue ul li,
 .block-hzd-release-management ul li,
 nav#block-optionen ul li {
   list-style-type: none;
-  padding: 5px 10px 5px 10px;
+  padding: 5px 10px 5px 0px;
   width:100%;
   float:left;
-  /* border-bottom: 1px solid rgba(20, 117, 160, 0.2); */
+}
+.region-sidebar-first section.blue ul.menu.nav li,
+.block-hzd-release-management ul.menu.nav li{
+  list-style-type: none;
+  padding: 5px 0px;
+  width:100%;
+  float:left;
+}
+aside section{
+  padding:10px 15px 15px 15px !important;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active{
   /*background:rgb(245, 245, 245);*/
