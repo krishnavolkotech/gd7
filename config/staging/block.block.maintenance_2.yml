@@ -19,9 +19,9 @@ provider: null
 plugin: maintenance_block
 settings:
   id: maintenance_block
-  label: Maintenance
+  label: Blockzeiten
   provider: downtimes
-  label_display: '0'
+  label_display: visible
   number_of_posts: ''
 visibility:
   request_path:
