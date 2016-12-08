@@ -172,11 +172,14 @@ class MaintenanceBlock extends BlockBase {
       '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
     ];
     if ($routeMatch->getRouteName() == 'front_page.front') {
+        $markup['#attributes'] = ['class'=>['frontpage-downtime-block']];
       $markup['downtimes']['create'] = [
         '#title' => $this->t('Report Maintenance'),
         '#type' => 'link',
         '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options)
       ];
+    }else{
+        $markup['#attributes'] = ['class'=>['view-downtime-block']];
     }
 //    $markup['all_link'] = $all_link->toString();
 //    $markup['report_link'] = $report_link->toString();
