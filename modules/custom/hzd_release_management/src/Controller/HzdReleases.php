@@ -39,13 +39,14 @@ class HzdReleases extends ControllerBase {
 
     $request = \Drupal::request();
     $page = $request->get('page');
-
+   // dpm($page);
     if (!isset($page)) {
       unset($_SESSION['filter_where']);
       unset($_SESSION['new_filter_options']);
       unset($_SESSION['limit']);
       unset($_SESSION['release_type']);
       unset($_SESSION['service_release_type']);
+      unset($_SESSION['release_limit']);
     }
     $output[]['#attached']['library'] = array(
       'locale.libraries/translations',
@@ -64,7 +65,11 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-    $output[] = HzdreleasemanagementStorage::releases_display_table($type);
+   
+  //  dpm($_SESSION['new_filter_options']['release_type']);
+  //  dpm($_SESSION['new_filter_options']['service_release_type']);  
+
+    $output[] = HzdreleasemanagementStorage::releases_display_table($type,NULL ,$_SESSION['release_limit'] , $_SESSION['new_filter_options']['release_type']);
     $output[] = array('#markup' => '</div>');
     return $output;
   }
@@ -133,6 +138,7 @@ class HzdReleases extends ControllerBase {
       unset($_SESSION['limit']);
       unset($_SESSION['release_type']);
       unset($_SESSION['service_release_type']);
+      unset($_SESSION['release_limit']);
     }
     // Echo '<pre>';  print_r($_SESSION['limit']);
     // echo '<pre>';  print_r($_SESSION['release_type']);   exit;
@@ -142,7 +148,7 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-    $output[] = HzdreleasemanagementStorage::releases_display_table($type);
+    $output[] = HzdreleasemanagementStorage::releases_display_table($type,NULL ,$_SESSION['release_limit'] , $_SESSION['new_filter_options']['release_type']);
     $output[] = array('#markup' => '</div>');
     return $output;
   }
@@ -163,6 +169,7 @@ class HzdReleases extends ControllerBase {
       unset($_SESSION['limit']);
       unset($_SESSION['release_type']);
       unset($_SESSION['service_release_type']);
+      unset($_SESSION['release_limit']);
     }
     $output[]['#attached']['library'] = array('locale.libraries/translations',
       'locale.libraries/drupal.locale.datepicker',
@@ -179,7 +186,7 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-    $output[] = HzdreleasemanagementStorage::releases_display_table($type);
+    $output[] = HzdreleasemanagementStorage::releases_display_table($type,NULL ,$_SESSION['release_limit'] , $_SESSION['new_filter_options']['release_type']);
     $output[] = array('#markup' => '</div>');
     return $output;
   }
@@ -194,10 +201,13 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
     $request = \Drupal::request();
     $page = $request->get('page');
+    
     if (!isset($page)) {
       unset($_SESSION['deploy_filter_options']);
       unset($_SESSION['limit']);
       unset($_SESSION['release_type']);
+      unset($_SESSION['new_filter_options']);
+      unset($_SESSION['release_limit']);
     }
     $output[]['#attached']['drupalSettings']['release_management'] = array(
       'type' => $type,
@@ -207,7 +217,8 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'reset_form'>");
     $output[] = HzdreleasemanagementHelper::releases_reset_element();
     $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-    $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable();
+    //  dpm($_SESSION);
+    $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable(NULL ,$_SESSION['release_limit'] , $_SESSION['new_filter_options']['release_type']);
     $output[] = array('#markup' => '</div>');
     return $output;
   }

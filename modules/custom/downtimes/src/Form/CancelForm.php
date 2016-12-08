@@ -231,12 +231,14 @@ class CancelForm extends FormBase {
     $comment = $form_state->getValue('comment');
     $nid = $form_state->getValue('nid');
     $uid = $user->id();
+    $notifications_content_disable = $form_state->getValue('notifications_content_disable');
     $downtime_resolve = array(
       'comment' => $comment,
       'nid' => $nid,
       'cancelled_end_date' => REQUEST_TIME,
       'uid' => $uid,
       'gid'=>$group,
+      'notifications_content_disable' => $notifications_content_disable,
     );
     //Todo if more than one user access this might get issue
     $this->keyValueExpirable->setWithExpire("downtimes_cancel_" . $nid, $downtime_resolve, 6 * 60 * 60);

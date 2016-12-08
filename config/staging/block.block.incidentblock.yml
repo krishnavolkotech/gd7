@@ -19,7 +19,7 @@ provider: null
 plugin: incidents_block
 settings:
   id: incidents_block
-  label: 'Aktuelle Störungen und Blockzeiten'
+  label: 'Aktuelle Störungen'
   provider: downtimes
   label_display: visible
   number_of_posts: ''

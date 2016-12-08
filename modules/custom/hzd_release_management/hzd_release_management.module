@@ -170,7 +170,7 @@ function get_earlywarning_release($service = NULL) {
   $query->orderBy('nfd.title', 'ASC');
   $result = $query->execute()->fetchAll();
 
-  $default_release[] = t("Release");
+ // $default_release[] = t("Release");
   foreach ($result as $vals) {
     $default_release[$vals->nid] = $vals->title;
   }

@@ -20,6 +20,13 @@
             if (jQuery('.filter_enddate').length > 0) {
                 jQuery('.filter_enddate').datepicker({dateFormat: 'dd.mm.yy'});
             }
+            
+            jQuery('#block-primarylinks .dropdown a').each(function () {
+                jQuery(this).hover(function () {
+                    jQuery('#block-primarylinks li.dropdown').removeClass('open');
+                    jQuery(this).parent().addClass('open');
+                });
+            });
         }
     }
     jQuery('.dummy_selects input[type="radio"]').click(function () {

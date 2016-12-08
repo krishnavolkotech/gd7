@@ -309,7 +309,7 @@
                 end_day = end_day.getDay();
 
                 var passed = 0;
-                var final_check = 0;
+                var final_check = 1;
 
                 if (check_with_sitewide_maintenance(start_date, end_date, weekday)) {
                     return 1;
