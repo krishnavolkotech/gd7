@@ -135,3 +135,15 @@
   width:100%;
   float:left;
 }
+.downtimes-date-wrapper .bootstrap-datetimepicker-widget{
+  width:500px;
+  padding:5px;
+}
+.downtimes-date-wrapper .datepicker table tbody,
+.downtimes-date-wrapper .timepicker table tbody{
+  border:1px solid rgb(4, 66, 95);
+}
+.downtimes-date-wrapper .datepicker table thead tr th{
+  color:#fff !important;
+  background:rgb(4, 66, 95) !important;	
+}

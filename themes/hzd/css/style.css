@@ -471,6 +471,7 @@ body.not-loggedin.path-user .region-content {
 }
 .path-user .region-content nav.tabs .nav-tabs {
   border: none !important;
+  padding-left:0;
 }
 .path-user .region-content nav.tabs li {
   margin: 0 !important;
@@ -480,22 +481,29 @@ body.not-loggedin.path-user .region-content {
   border-radius: 0 !important;
   color: #ffffff !important;
   margin-right: 0 !important;
-  background: #04425f;
+  background: #04425f !important;
   font-size: 14px;
   text-transform: capitalize;
-  margin-top: -1px;
+  /*margin-top: -1px;*/
+}
+.path-user .form-actions button{
+  float:right;
+  border:1px solid #fff !important;
 }
 .path-user .region-content nav.tabs li a:hover,
 .path-user .region-content nav.tabs li a:focus {
-  color: #ffffff !important;
-  background: #0c4f6d !important;
+  color: #333333 !important;
+ /* background: #0c4f6d !important;*/
+ background:transparent !important;
 }
 .path-user .region-content nav.tabs li.active a {
   color: #04425f !important;
   background: #fafafa !important;
 }
 .path-user .region-content .tabs--primary.nav-tabs li {
-  border: 3px solid #04425f;
+ /* border: 3px solid #04425f;*/
+  background: #f5f5f5 !important;
+  border-color: #e6e9ed !important;
 }
 .region-content .field--label-inline,
 .user-groups .user-group-list {
@@ -807,7 +815,7 @@ table {
   width: 100%;
   float: left;
   /*border: 1px solid #d9e4ee;*/
-  margin: 10px 0 50px 0 !important;
+  margin: 10px 0 30px 0 !important;
 }
 table th {
  /*background: #04425f;
@@ -945,7 +953,7 @@ input[type="button"] {
   background: #f7f7f7;
   font-size: 12px;
   color: #333;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 0;
 }
 input[type="submit"]:hover,
@@ -964,7 +972,7 @@ button.button--reset:hover{
   background: #fff !important;
   font-size: 14px;
   color: #333 !important;
-  padding: 4px 10px !important;
+  padding: 6px 12px !important;
   border-radius: 0 !important;
   float: right;
   border: 1px solid #ddd !important;
@@ -1664,18 +1672,8 @@ strong {
   padding-left:0;
   font-weight:normal;
 }
-/*.block-incidents-block h2.block-title {
-   color:#d0021b;
-}*/
 .block-incidents-block h2.block-title{
- color:#d0021b;
-    /*margin:0 0 10px 0 !important;
-  padding:0 0 9px 0;
-  font-size:17px;
-  line-height:20px;
-   font-family:robotoregular;
- text-transform:uppercase;
-  color:#d45750;*/
+ color:#d0021b !important;
 }
 section h2.block-title,
 aside .block-favorites h2.block-title,
@@ -1686,12 +1684,12 @@ aside .block-favorites h2.block-title,
 section h2.block-title,
 aside .block-favorites h2.block-title,
 .block-maintenance-block h2.block-title{
-  margin:0 !important;
+  margin:0 0 10px 0!important;
   padding:0 0 9px 0;
   font-size:16px !important;
   line-height:20px;
-  /*border-bottom:2px solid #e6e9ed;*/
-  border-bottom:none !important;
+ border-bottom:2px solid #e6e9ed;
+  /*border-bottom:none !important;*/
   font-family:robotoregular;
   /*text-transform:uppercase;*/
 }
@@ -1753,10 +1751,13 @@ section .form-group .view-content .item-list ul li{
 .block-incidents-block ul li br{
   display:none;
 }
+.block-maintenance-block ul{
+  margin-bottom:20px;
+}
 .block-maintenance-block ul li{
   list-style-type:none;
   float:left;
-  padding-bottom:20px;
+  padding-bottom:2px;
   width:95%;
   margin-right:5%;
   position:relative;
@@ -1831,7 +1832,7 @@ aside .block-favorites,
 aside section{
   width:100% !important;
   float:left;
-  /*margin-bottom:20px;*/
+  margin-bottom:20px;
   padding:15px;
   background:#fff;
 }
@@ -1946,7 +1947,7 @@ section .form-group .views-field-field-news-date{
  width:100%;
 }
 section .form-group .views-field-title span a{
-  font-size: 14px;
+  font-size: 16px;
   color:#333333;
   line-height:20px;
   float:left;
@@ -2043,8 +2044,8 @@ section.block-incidents-block ul.downtime-hover{
   border:1px solid #222222;
   width:60% !important;
   position:absolute;
-  top:5px;
-  left:230px;
+  top:25px;
+  left:12px;
   z-index:10;
   background-color:#fff;
   display:none;
@@ -2078,6 +2079,9 @@ section.block-maintenance-block-block ul.downtime-hover li{
   line-height:25px;
   border-bottom:1px solid #222222;
   padding:0 6px !important;
+}
+section.block-incidents-block ul.downtime-hover li{
+  background:none;
 }
 body.not-loggedin #block-primarylinks {
   height:44px;
@@ -2318,7 +2322,7 @@ form.node-downtimes-edit-form > .form-group{
   float:left;
 }
 article.downtimes .downtime-view-wrapper{
-  border:1px solid #04425f;
+  border:1px solid #aaaaaa;
   padding:10px;
   width:100%;
   float:left;
@@ -2529,6 +2533,7 @@ section .form-group .views-field-field-news-date .field-content{
 section.col-sm-9 .region-content{
   background:#fff;
   padding:15px;
+  float:left;
 }
 .navbar-collapse ol.breadcrumb{
  width:100%;
@@ -2555,8 +2560,21 @@ a.downtimes_details_link{
   font-size:0;
   margin-right:10px;
 }
+.text-danger td a.downtimes_resolve_link,
+a.downtimes_resolve_link:hover{
+  background:url(../images/tick-red-icon.png)left top no-repeat;
+}
+.text-danger td a.downtimes_update_link,
+a.downtimes_update_link:hover{
+  background:url(../images/details-red-icon.png)left top no-repeat;
+}
+.text-danger td a.downtimes_details_link,
 a.downtimes_details_link:hover{
   background:url(../images/notification-red-icon.png)left top no-repeat;
+}
+.text-danger td a.downtimes_cancel_link,
+a.downtimes_cancel_link:hover{
+  background:url("../images/cancel-red-icon.png") left top no-repeat;
 }
 a.downtimes_update_link{
   background:url(../images/details-icon.png)left top no-repeat;
@@ -2574,9 +2592,9 @@ a.downtimes_resolve_link{
   font-size:0;
 }
 a.downtimes_cancel_link{
-  background:url(../images/tick-icon.png)left top no-repeat;
+  background:url("../images/cancel-icon.png") left top no-repeat;
   width:20px;
-  height:17px;
+  height:20px;
   float:left;
   font-size:0;
 }
@@ -2612,7 +2630,8 @@ article.popup .downtime-view-wrapper{
   position: absolute;
   right: 93px;
   width: 750px;
-  z-index: 1000;	
+  z-index: 1000;
+  box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.3);;  
 }
 article.popup .read-mode-downtime{
   float:right;
