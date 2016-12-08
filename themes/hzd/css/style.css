@@ -2178,9 +2178,13 @@ form.maintenance .filter_title_header h3{
   margin:10px 0 0 0 !important;
 }
 
-form.maintenance .filter_title_header h3{
+.path-frontpage form.maintenance .filter_title_header h3,
+h3.current_incidents_title{
    /* background:#f1894b;*/
-   color:#d0021b;
+   color:#d0021b !important;
+}
+.filter_title_header h3{
+  color:#04425f;	
 }
 form.incidents .filter_title_header h3{
    /*background:#d7655a;*/
