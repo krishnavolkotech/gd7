@@ -118,7 +118,6 @@ view_mode ? view_mode|clean_class,
             <div class = 'downtimes_content'>{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr</div>
         </div>
         <div style = "clear:both" ></div>
-
         {% if incident.reason %}
             <div class = "Incident">
                 <div class = 'downtimes_title'>{{ 'Grund für die Wartung der Wartungsfenster'|trans }}</div>
@@ -127,9 +126,9 @@ view_mode ? view_mode|clean_class,
             <div style = "clear:both" ></div>
         {% endif %}
         {% if incident.description %}
-            <div class="popup-downtimes-description"></div>>
+            <div class="popup-downtimes-description"></div>
             <div class = "Incident">
-                <div class = 'downtimes_content'>{{ incident.description }}</div>
+                <div class = 'downtimes_content_paragraph'>{{ incident.description }}</div>
             </div>
             <div style = "clear:both" ></div>
         {% endif %}
