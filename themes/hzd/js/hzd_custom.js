@@ -25,7 +25,11 @@
                 jQuery(this).hover(function () {
                     jQuery('#block-primarylinks li.dropdown').removeClass('open');
                     jQuery(this).parent().addClass('open');
+                    jQuery(this).next().mouseleave(function () {
+                        jQuery('#block-primarylinks li.dropdown').removeClass('open');
+                    });
                 });
+
             });
         }
     }
