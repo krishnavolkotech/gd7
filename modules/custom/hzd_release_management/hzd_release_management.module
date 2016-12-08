@@ -536,10 +536,22 @@ function hzd_release_management_node_update($entity) {
  * Get user mail ids.
  */
 function hzd_get_immediate_notification_user_mails($service_id, $type) {
-  $get_immediate_notifications_users = db_query("SELECT uids FROM {service_notifications} WHERE service_id IN (:sid) AND send_interval = :intval AND type = :type", array(":sid" => $service_id, ":intval" => 0, ":type" => $type))->fetchField();
-  $unserialized_user_array = unserialize($get_immediate_notifications_users);
-  if (is_array($unserialized_user_array) && count($unserialized_user_array) > 0) {
-    return hzd_user_mails($unserialized_user_array);
+  $service_id = explode(',', $service_id);
+  $query = \Drupal::database()->select('service_notifications', 'sn');
+  $query->addField('sn', 'uids');
+  $query->condition('sn.service_id', $service_id, 'IN');
+  $query->condition('sn.send_interval', 0, '=');
+  $query->condition('sn.type', $type, 'like');
+  $get_immediate_notifications_users = $query->execute()->fetchAll();
+  
+  $user_mails = array();
+  $user_ids = array();
+  foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
+    $unserialized_user_array = unserialize($serialized_uids->uids);
+    $user_ids = array_unique(array_merge($user_ids,$unserialized_user_array), SORT_REGULAR);
+  }
+  if (is_array($user_ids) && count($user_ids) > 0) {
+    return hzd_user_mails($user_ids);  
   }
   return '';
 }
