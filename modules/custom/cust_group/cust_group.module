@@ -10,6 +10,7 @@ define('RELEASE_MANAGEMENT', 32);
 define('GEPLANTE_BLOCKZEITEN', 19);
 define('INCIDENT_MANAGEMENT', 24);
 define('PROBLEM_MANAGEMENT', 31);
+define('QUICKINFO', 3);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
