@@ -21,32 +21,29 @@ use Drupal\favorites\Controller\MyFavController;
  */
 class StarFavAddForm extends FormBase
 {
-
+    
     protected $account;
-
-    public function __construct()
-    {
+    
+    public function __construct() {
         $this->account = \Drupal::currentUser();
     }
-
+    
     /**
      * {@inheritdoc}
      */
-    public function getFormId()
-    {
+    public function getFormId() {
         return 'star_favorites_add';
     }
-
+    
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $form, FormStateInterface $form_state)
-    {
-
+    public function buildForm(array $form, FormStateInterface $form_state) {
+        
         $request = \Drupal::request();
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-
+        
         if (!isset($title)) {
             $title = \Drupal::config('core.site_information')->get('site_name');
         }
@@ -54,12 +51,12 @@ class StarFavAddForm extends FormBase
             $current_path = \Drupal::service('path.current')->getPath();
             $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
         }
-
-        $title = strip_tags($title);
-
+        if (is_string($title))
+            $title = strip_tags($title);
+        
         $path = \Drupal::service('path.current')->getPath();
         $query = (isset($_GET['keys'])) ? UrlHelper::buildQuery($_GET) : '';
-
+        
         $form['title'] = array(
             '#type' => 'hidden',
             '#value' => $title,
@@ -72,11 +69,11 @@ class StarFavAddForm extends FormBase
             '#type' => 'hidden',
             '#value' => $query,
         );
-
-
+        
+        
         $uid = \Drupal::currentUser()->id();
         $fid = FavoriteStorage::favExists($uid, $path, $query);
-
+        
         if ($fid) {
             $button_text = t('Delete', array(), array('context' => 'Add a favorite to the list'));
             $submit_url = Url::fromRoute('favorites.removeAjax', array('fid' => $fid));
@@ -86,7 +83,7 @@ class StarFavAddForm extends FormBase
             $submit_url = Url::fromRoute('favorites.add');
             $fav_class = 'del-fav';
         }
-
+        
         /*    $form['add_to_favorites'] = array(
               '#type' => 'checkbox',
               '#default_value' => !empty($fid),
@@ -101,9 +98,9 @@ class StarFavAddForm extends FormBase
               '#suffix' => '</div>',
              ),
             );    */
-
+        
         /**
-         * todo:  uncheck the ajax property and check for ajax submission
+         * @todo:  uncheck the ajax property and check for ajax submission
          */
         $form['submit'] = array(
             '#type' => 'submit',
@@ -117,35 +114,32 @@ class StarFavAddForm extends FormBase
         );
         return $form;
     }
-
-    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state)
-    {
+    
+    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
         $form_state->setRebuild(TRUE);
         return $form;
     }
-
+    
     /**
      * {@inheritdoc}
      * @todo obsolete?
      */
-    public function validateForm(array &$form, FormStateInterface $form_state)
-    {
-
+    public function validateForm(array &$form, FormStateInterface $form_state) {
+        
     }
-
+    
     /**
      * {@inheritdoc}
      * @todo obsolete?
      */
-    public function submitForm(array &$form, FormStateInterface $form_state)
-    {
-
+    public function submitForm(array &$form, FormStateInterface $form_state) {
+        
         $path = $form_state->getValue('path');
         $query = $form_state->getValue('query');
-
+        
         $uid = \Drupal::currentUser()->id();
         $fid = FavoriteStorage::favExists($uid, $path, $query);
-
+        
         $fav = new MyFavController();
         if ($fid) {
             $fav->remove($fid);
@@ -154,5 +148,5 @@ class StarFavAddForm extends FormBase
         }
         \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.myfavorites_2']);
     }
-
+    
 }

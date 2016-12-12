@@ -3,3 +3,7 @@ services:
     class: Drupal\downtimes\HzdBreadcrumbBuilder
     tags:
       - { name: breadcrumb_builder, priority: 1010 }
+  downtimes.group_node_edit_form:
+    class: Drupal\downtimes\NodeEditBreadcrumbBuilder
+    tags:
+      - { name: breadcrumb_builder, priority: 1011 }
