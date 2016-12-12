@@ -13,26 +13,15 @@ use Drupal\Core\Access\AccessResult;
  */
 class ProblemsController extends ControllerBase {
 
-  /**
-   * Callback for problems display.
-   */
+ /**
+ * Return the problems listing view
+ *
+ * @return renderable array 
+ *   Filters form and table renders in a page
+ *   No records found message displayed
+ */
   public function problems_display() {
-    $current_path = \Drupal::service('path.current')->getPath();
-    $get_uri = explode('/', $current_path);
-    if ($get_uri['3'] == 'problems') {
-      unset($_SESSION['sql_where']);
-      unset($_SESSION['limit']);
-    }
     $string = 'current';
-
-    $request = \Drupal::request();
-    $page = $request->get('page');
-    if (!$page) {
-      unset($_SESSION['problems_query']);
-      unset($_SESSION['sql_where']);
-      unset($_SESSION['limit']);
-    }
-
     $response = HzdproblemmanagementHelper::problems_tabs_callback_data($string);
     return $response;
   }

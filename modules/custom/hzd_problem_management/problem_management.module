@@ -109,3 +109,18 @@ function default_problem_no($nid = NULL) {
 }
  * 
  */
+
+/**
+ * function get the 'group' parameter from url and if group value is object
+ * fetch id from group object else return group
+ * @return integer
+ *   current group id.
+ */
+function get_group_id() {
+  $group = \Drupal::routeMatch()->getParameter('group');
+    if (is_object($group)) {
+      $groupId = $group->id();
+      return $groupId;
+    }
+    return $group;
+}

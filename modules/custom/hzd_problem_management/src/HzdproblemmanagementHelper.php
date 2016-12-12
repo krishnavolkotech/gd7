@@ -6,102 +6,53 @@ use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\Core\Url;
 
+if (!defined('DISPLAY_LIMIT')) {
+  define('DISPLAY_LIMIT', 20);
+}
+
 /**
- *
+ * problem management common functions defined in this class
  */
 class HzdproblemmanagementHelper {
-
-  /**
-   *
-   */
-  public static function problem_reset_element() {
-    return $form['reset'] = array(
-      '#type' => 'button',
-      '#value' => t('Reset'),
-      '#attributes' => array('onclick' => "reset_form_elements()"),
-      '#prefix' => " <div class = 'reset_form'><div class = 'reset_all'>",
-      '#suffix' => '</div><div style = "clear:both"></div> </div>',
-    );
-  }
-
-  // Drupal::service('breadcrumb')->get()
-  // Drupal::service('breadcrumb')->set()
-  /**
-   * Drupal::service('breadcrumb')->append()
-   */
-  static public function set_breabcrumbs_problems($type) {
-    switch ($type) {
-      case 'current':
-        $page = t('Current Problems');
-        break;
-
-      case 'archived':
-        $page = t('Archived Problems');
-        break;
-
-      default:
-        $page = t('Archive');
-        break;
-    }
-    $breadcrumb = array();
-    $breadcrumb[] = \Drupal::l(t('Home'), Url::fromUserInput('/'));
-
-    $request = \Drupal::request();
-    $route_match = \Drupal::routeMatch();
-    $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-    $group = $route_match->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id = $group;
-    }
-
-    if (isset($group_name)) {
-      $breadcrumb[] = \Drupal::l(t($group_name), Url::fromEntityUri(array('group', $group_id)));
-      $breadcrumb[] = \Drupal::l($title, Url::fromEntityUri(array('group', $group_id, '/problems')));
-    }
-    $breadcrumb[] = $page;
-
-    // Breadcrumb::setLinks($breadcrumb);
-    //  drupal_set_breadcrumb($breadcrumb);
-  }
-
-  /**
-   * Function returns the data according to the tabs(type of release)
-   */
+  
+/**
+ * Return the problems listing view (ProblemFilterFrom and table).
+ * @param array $type
+ *   current or archive.
+ *
+ * @return array
+ *   The ProblemFilterFrom and table renderable array.
+ */
   static public function problems_tabs_callback_data($type) {
     $result = array();
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $groupId = $group->id();
-    }
-    else {
-      $groupId = $group;
-    }
-
-    $result['content']['#attached']['library'] = array('problem_management/problem_management',
+    $group = get_group_id();
+    global $base_url;
+    /**
+     * Attach javascript files to be rendered in problems listing view page
+     */
+    $result['#attached']['library'] = array(
+      'problem_management/problem_management',
       'hzd_customizations/hzd_customizations',
     );
-
-    // $result['content']['breadcrumb']['#breadcrumb'] =  $this->set_breabcrumbs_problems($string);
-    $result['content']['#attached']['drupalSettings']['search_string'] = t('Search Title, Description, cause, Workaround, solution');
-    $result['content']['#attached']['drupalSettings']['group_id'] = $groupId;
-    $result['content']['#attached']['drupalSettings']['type'] = $type;
-
-    $output = '';
-    $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>";
-    $result['content']['problems_filter_element'] = \Drupal::formBuilder()->getForm('\Drupal\problem_management\Form\ProblemFilterFrom', $type);
-    $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
-    $result['content']['problems_reset_element']['form'] = self::problem_reset_element();
-    $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
-    $sql_where = !empty($_SESSION['sql_where']) ? $_SESSION['sql_where'] : NULL;
-    $limit = !empty($_SESSION['limit']) ? $_SESSION['limit'] : NULL;
-    // $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';.
-    $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $type, $limit);
-    // $result['content']['problems_default_display']['#suffix'] = '</div>';.
-    $result['content']['#suffix'] = "</div>";
-
+    /**
+     * send php variables to javascript file
+     */    
+    $result['#attached']['drupalSettings']['search_string'] = t('Search Title, '
+        . 'Description, cause, Workaround, solution');
+    $result['#attached']['drupalSettings']['group_id'] = $group;
+    $result['#attached']['drupalSettings']['type'] = $type;
+    $result['#attached']['drupalSettings']['base_url'] = $base_url;
+    
+    /**
+     * add ProblemFilterFrom
+     */
+    $result['#prefix'] = "<div id = 'problem_search_results_wrapper'>";
+    $result['problems_filter_element'] = \Drupal::formBuilder()->getForm(
+        '\Drupal\problem_management\Form\ProblemFilterFrom', $type, DISPLAY_LIMIT);
+    $result['problems_default_display']['table'] = 
+        HzdStorage::problems_default_display( $type, DISPLAY_LIMIT);
+    $result['#suffix'] = "</div>";
+// sid load 
     return $result;
   }
 

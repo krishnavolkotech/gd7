@@ -8,18 +8,11 @@
 namespace Drupal\problem_management\Form;
 
 use Drupal\Core\Form\FormBase;
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\problem_management\HzdStorage;
-use Drupal\hzd_customizations\HzdcustomisationStorage;
-use Drupal\problem_management\HzdproblemmanagementHelper;
-use Drupal\Core\Form\FormCache;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
 
 class ProblemFilterFrom extends FormBase {
 
- //  protected $dateFormatter;
   /** 
    * {@inheritdoc}
    */
@@ -39,34 +32,16 @@ class ProblemFilterFrom extends FormBase {
   /** 
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $string = NULL) {
-    global  $base_url;
-    if (isset($_SESSION['problems_query'])) {
-      $serialized_data = unserialize($_SESSION['problems_query']);
-      $default_value_service = $serialized_data['service'];
-      $default_value_function = $serialized_data['function'];
-      $default_value_release = $serialized_data['release'];
-      $default_value_string = $serialized_data['string'];
-      $default_value_limit = $serialized_data['limit'];
-    }
-
-    $form['#attached'] = array('library' => array('problem_management/problem_management'));
-    
-    if ($string == 'archived') {
-      $filter_where = " and cfps.field_problem_status_value = 'geschlossen' ";
-    }
-    else {
-      $filter_where = " and cfps.field_problem_status_value <> 'geschlossen' ";
-    }
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if(is_object($group)){
-      $group_id = $group->id();
-    }else{
-      $group_id = $group;
-    }    
-    
-    
-    //DEFAULT SERVICES
+  // (array $form, FormStateInterface $form_state,$arg = NULL)
+  public function buildForm(array $form, FormStateInterface $form_state, $type = NULL, $default_limit = NULL) {
+    $filter_value = HzdStorage::get_problem_filters();
+    $group_id = get_group_id();
+    $form['#method'] = 'get';
+    /*
+     * In problems setting page user will select the services . Only those 
+     * service relalted problems is to be displayed in result and service 
+     * filter.
+     */
     $default_services[] = t("Select Service");
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
@@ -77,10 +52,10 @@ class ProblemFilterFrom extends FormBase {
       $default_services[$services->nid] = $services->title;
     }
     
-    //DEFAULT FUNCTIONS
+    // default functions
     $default_function[] = t("Select Function");
 
-    //DEFAULT RELEASES
+    // default releases
     $default_release[] = t("Select Release");
       
     $form['#prefix'] = "<div class = 'problem_filters'>";
@@ -89,136 +64,164 @@ class ProblemFilterFrom extends FormBase {
     $form['service'] = array(
       '#type' => 'select',
       '#options' => $default_services,
-      '#default_value' => isset($default_value_service) ? $default_value_service: $form_state->getValue('service'),
+//      '#default_value' => isset($default_value_service) ? 
+//      $default_value_service: $form_state->getValue('service'),
+      '#default_value' => isset($filter_value['service']) ? $filter_value['service'] : $form_state->getValue('service'),
       '#weight' => -1,
-      '#ajax' => array(
-        'callback' => '::problem_search_results',
-        'wrapper' => 'problem_search_results_wrapper',
-        'method' => 'replace',
-        'event' => 'change',
-        'progress' => array(
-          'type' => 'throbber', 
-          'message' => NULL,
-          ),
-        ),
-      "#prefix" => "<div class = 'service_search_dropdown hzd-form-element'>",
+//      '#ajax' => array(
+//        'callback' => '::problem_search_results',
+//        'wrapper' => 'problem_search_results_wrapper',
+//        'method' => 'replace',
+//        'event' => 'change',
+//        'progress' => array(
+//          'type' => 'throbber', 
+//          'message' => NULL,
+//          ),
+//        ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
+      ),
+      '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
-      '#validated' => TRUE,
+//      '#validated' => TRUE,
     );
 
 
     $form['function'] = array(
       '#type' => 'select',
       '#options' => $default_function,
-      // '#default_value' => isset($default_value_function) ? $default_value_function: $form_state->getValue('function'),
+      // '#default_value' => isset($default_value_function) ? 
+      // $default_value_function: $form_state->getValue('function'),
+      '#default_value' => isset($filter_value['function']) ? $filter_value['function'] : $form_state->getValue('function'),
       '#weight' => 0,
-      '#ajax' => array(
-        'callback' => '::problem_search_results',
-        'wrapper' => 'problem_search_results_wrapper',
-        'method' => 'replace',
-        'event' => 'change',
-        'progress' => array(
-            'type' => 'throbber', 
-            'message' => NULL,
-          ),
-        ),
+//      '#ajax' => array(
+//        'callback' => '::problem_search_results',
+//        'wrapper' => 'problem_search_results_wrapper',
+//        'method' => 'replace',
+//        'event' => 'change',
+//        'progress' => array(
+//            'type' => 'throbber', 
+//            'message' => NULL,
+//          ),
+//        ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
+      ),
       '#prefix'=> "<div class = 'function_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
-      '#validated' => TRUE,
+//      '#validated' => TRUE,
       );
 
     $form['release'] = array(
       '#type' => 'select',
       '#options' => $default_release,
-    // '#default_value' => isset($default_value_release) ? $default_value_release : $form_state->getValue('release'),
+    // '#default_value' => isset($default_value_release) ?
+    //  $default_value_release : $form_state->getValue('release'),
+      '#default_value' => isset($filter_value['release']) ? $filter_value['release'] : $form_state->getValue('release'),
       '#weight' => 1,
-      '#ajax' => array(
-        'callback' => '::problem_search_results',
-        'wrapper' => 'problem_search_results_wrapper',
-        'method' => 'replace',
-        'event' => 'change',
-        'progress' => array(
-          'type' => 'throbber',
-          'message' => NULL,
-          ),
-       ),
+//      '#ajax' => array(
+//        'callback' => '::problem_search_results',
+//        'wrapper' => 'problem_search_results_wrapper',
+//        'method' => 'replace',
+//        'event' => 'change',
+//        'progress' => array(
+//          'type' => 'throbber',
+//          'message' => NULL,
+//          ),
+//       ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
+      ),      
       '#prefix' => "<div class = 'release_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
-      '#validated' => TRUE,
+//      '#validated' => TRUE,
       );
-   
 
-    $service_id = isset($serialized_data['service']) ? $serialized_data['service']: $form_state->getValue('service');
-    if ($service_id) {
-      $service = $service_id;   
-      $default_function_releases = HzdStorage::get_functions_release($string, $service);
-      $form['function']['#options'] = !empty($default_function_releases['functions']) ?$default_function_releases['functions'] : $this->t("Select Service");
+//    $service_id = isset($filter_value['service']) ? $filter_value['service']
+//    ['service']: $form_state->getValue('service');
+    $service_id = $filter_value['service'];
+    if (isset($service_id)) {  
+      $default_function_releases = HzdStorage::get_functions_release($type, 
+          $service_id);
+      $form['function']['#options'] = !empty(
+          $default_function_releases['functions']) 
+          ? $default_function_releases['functions'] : $this->t("Select Service");
       // $form['function']['#options'] = $default_function_releases['functions'];
       $form['release']['#options'] = $default_function_releases['releases'];
     }
     
+    $search_string = $filter_value['string'];
     $form['string'] = array(
       '#type' => 'textfield',
       '#weight' => 6,
       '#size' => 42,
-      '#default_value' => !empty($default_value_string) ? $default_value_string : $this->t('Search Title, Description, cause, Workaround, solution'),
+   //   '#default_value' => !empty($default_value_string) ? 
+   //   $default_value_string : 
+   //   $this->t('Search Title, Description, Cause, Workaround, Solution'),
+      '#default_value' => isset($search_string) ? $search_string : 
+      $this->t('Search Title, Description, Cause, Workaround, Solution'),
       '#attributes' => array("class" => ["search_string"]),
       "#prefix" => "<div class = 'string_search hzd-form-element'>",
       '#suffix' => '</div>',
-      );
+    );
 
     $form['submit'] = array(
       '#type' => 'button',
       '#weight' => 7,
-      '#ajax' => array(
-        'callback' => '::problem_search_results',
-        'wrapper' => 'problem_search_results_wrapper',
-        'method' => 'replace',
-        'event' => 'click',
-        'progress' => array('type' => 'throbber'),
-        ),
+//      '#ajax' => array(
+//        'callback' => '::problem_search_results',
+//        'wrapper' => 'problem_search_results_wrapper',
+//        'method' => 'replace',
+//        'event' => 'click',
+//        'progress' => array('type' => 'throbber'),
+//        ),
       '#attributes' => array("class" => ["filter_submit"]),
       '#prefix' => '<div class = "search_string_submit  hzd-form-element-auto">',
       '#suffix' => '</div>',
-      );
+    );
 
     $default_limit = array(
-         20 => 20,   
-         50 => 50,
-         100 => 100,
-         'all' => t('All'),
-      );
-
+      20 => 20,   
+      50 => 50,
+      100 => 100,
+      'all' => t('All'),
+    );
+//    $limit = $form_state->getValue('limit');
     $form['limit'] = array(
       '#type' => 'select',
       '#options' => $default_limit,
-      '#default_value' => isset($default_value_limit) ?$default_value_limit : $form_state->getValue('limit'),
+      '#default_value' => isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT,
       '#weight' => 8,
-      '#ajax' => array(
-        'callback' => '::problem_search_results',
-        'wrapper' => 'problem_search_results_wrapper',
-        'method' => 'replace',
-        'event' => 'change',
-        'progress' => array(
-          'type' => 'throbber',
-          'message' => NULL,
-         ),
-      ),
+//      '#ajax' => array(
+//        'callback' => '::problem_search_results',
+//        'wrapper' => 'problem_search_results_wrapper',
+//        'method' => 'replace',
+//        'event' => 'change',
+//        'progress' => array(
+//          'type' => 'throbber',
+//          'message' => NULL,
+//         ),
+//      ),
+      '#attributes' => array(
+        'onchange' => 'this.form.submit()',
+      ),      
       "#prefix" => "<div class = 'limit_search_dropdown  hzd-form-element'>",
       '#suffix' => '</div>',
     );
-
-    // Add Some extra "settings" to use in JS.
-    $form['#attached']['drupalSettings']['problem_management'] = array(
-      'group_id' => $group_id,
-      'type' => $string,
-      'basePath' => $base_url,
+//  $form['#action'] = '/' .$path;
+ 
+    $form['actions']['reset'] = array(
+      '#type' => 'button',
+      '#value' => t('Reset'),
+      '#weight' => 100,
+      '#validate' => array(),
+      '#attributes' => array('onclick' => 'reset_form_elements();'),
     );
-  
-  //  $form['#action'] = '/' .$path;
-  
+
+    
+    
   return $form;
-}
+  }
 
   /**
    * {@inheritDoc}
@@ -230,113 +233,5 @@ class ProblemFilterFrom extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-  }
-
-  /**
-   * Implements callback for Ajax event on release type selection.
-   *z
-   * @param array $form
-   *   From render array.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Current state of form.
-   *
-   * @return array
-   *   service section of the form.
-   */
-  public function problem_search_results(array &$form, FormStateInterface $form_state) {
-     $result = array();
-     $form_state->setValue('submitted', FALSE);
-     $values['values']['service'] = $form_state->getValue('service');
-     $user_input = $form_state->getUserInput(); 
-     if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'service') {
-         $values['values']['function'] = $form_state->getValue('function');
-         $values['values']['release'] = $form_state->getValue('release'); 
-         $values['values']['string'] = $form_state->getValue('string'); 
-     }
-     $values['values']['limit'] = $form_state->getValue('limit'); 
-     $sql_where = HzdStorage::build_ahah_query($values);
-     $page_limit = $form_state->getValue('limit');
-     if (isset($page_limit)) { 
-       $limit = $page_limit;
-     } else {
-       $limit = $values['values']['limit'];
-     }
-    // var_dump($form_state->getValue('string'));
-     $current_path = \Drupal::service('path.current')->getPath();
-     $get_uri = explode('/', $current_path);
-     $string = $get_uri['4'];
-     $result = self::ahah_problems_display($form, $form_state, $sql_where['query'], $string, $limit);
-   // $sql_where['0']['or']['0']['field'] == 'nfsn.field_s_no_value'
-     
-     
-  //    $this->redirect('user.page');
-     if (array_key_exists("sid",$sql_where)) {
-         $output = array();
-         $output['#attached']['drupalSettings']['problem_management']['nid'] = $sql_where['sid'];
-         $output['#attached']['drupalSettings']['problem_management']['status'] = TRUE;
-         return $output;
-     }
-     else {
-         $result['#attached']['drupalSettings']['problem_management']['data'] = $output;
-         $result['#attached']['drupalSettings']['problem_management']['status'] = TRUE;
-             
-         return $result;
-       // exit();
-     }
-//        $form_state->setRedirect('entity.node.canonical', array('node' => 123),
-//           array(
-//             'query' => array(
-//               'foo' => 'bar',
-//             ),
-//             'fragment' => 'baz',
-//           )
-//        );
-
-  }
-
-  function ahah_problems_display($form, $form_state, $sql_where = NULL, $string = NULL, $limit = NULL) {
-    $user_input = $form_state->getUserInput(); 
-   //  if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'service') {
-      $values['values']['service'] = $form_state->getValue('service');
-      $values['values']['function'] = $form_state->getValue('function');
-      $values['values']['release'] = $form_state->getValue('release');
-   // }
-    $form_build_id = $this->getFormId();
-    // FormCache::getCache($form_build_id, $form_state); 
-    $service = $form_state->getValue('service'); 
-    //Geting functions and release data
-
-    $default_function_releases = HzdStorage::get_functions_release($string, $service);
-    $form['function']['#options'] = isset($default_function_releases['functions']) ? $default_function_releases['functions'] : $this->t("Select Service");
-//    $form['function']['#options'] = $default_function_releases['functions'];
-    $form['function']['#value'] = $values['values']['function'];
-
-    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'service') {
-      $form['release']['#options'] = $default_function_releases['releases'];
-
-      $form['release']['#value'] = $values['values']['release'];
-    } else {
-      $default_release[] = t("Select Release");
-      $form['release']['#options'] = $default_release;
-    }
-    
-    $form['#attached']['drupalSettings']['problem_management'] = array(
-      'search_string' =>  $form_state->getValue('string'),
-    );
-    
-    // FormCache::setCache($form_build_id, $form, $form_state);
-    $_SESSION['sql_where'] = $sql_where;
-    $_SESSION['limit'] = $limit;
-    $form_state->setRebuild(TRUE);
-    $result['content']['#prefix'] = "<div id = 'problem_search_results_wrapper'>" ;
-    $result['content']['problems_filter_element'] = $form;
-    $result['content']['problems_reset_element']['#prefix'] = "<div class = 'reset_form'>";
-    $result['content']['problems_reset_element']['form'] = HzdproblemmanagementHelper::problem_reset_element();
-    $result['content']['problems_reset_element']['#suffix'] = '</div><div style = "clear:both"></div>';
-   // $result['content']['problems_default_display']['#prefix'] = '<div class="no-result">';
-    $result['content']['problems_default_display']['table'] = HzdStorage::problems_default_display($sql_where, $string, $limit);
-   // $result['content']['problems_default_display']['#suffix'] = '</div>';
-    $result['content']['#suffix'] = "</div>";
-    return $result;
   }
 }
