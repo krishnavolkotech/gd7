@@ -818,8 +818,11 @@ table.tablesorter thead tr .header {
   cursor: pointer;
   padding-right: 24px;
 }
+table.sticky-header{
+  width:auto !important;
+}
 table {
-  width: 100% !important;
+  width: 100%;
   float: left;
   /*border: 1px solid #d9e4ee;*/
   margin: 10px 0 30px 0 !important;
