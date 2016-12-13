@@ -118,23 +118,23 @@
 //	      return false;
 //	    });
 
-        $('#import_search_results_wrapper .pager li a').click(function() {
-          var ele = $(this);
-          var url = ele.attr('href');
-          var params = url.split('?')[1];
-          var group_id = drupalSettings.problem_management.group_id;
-          var type = drupalSettings.problem_management.type;
-          var base_path = drupalSettings.problem_management.basePath;
-          url = base_path + 'import_search_results' +  '?' + params;
-          $.post(url, {}, function(data) {
-            if (data.status == true) {
-              $('#import_search_results_wrapper').html(data.data);
-              $(window).scrollTop(0);
-              Drupal.attachBehaviors('#import_search_results_wrapper');
-            }
-          }, 'json');
-          return false;
-        });
+//        $('#import_search_results_wrapper .pager li a').click(function() {
+//          var ele = $(this);
+//          var url = ele.attr('href');
+//          var params = url.split('?')[1];
+//          var group_id = drupalSettings.problem_management.group_id;
+//          var type = drupalSettings.problem_management.type;
+//          var base_path = drupalSettings.problem_management.basePath;
+//          url = base_path + 'import_search_results' +  '?' + params;
+//          $.post(url, {}, function(data) {
+//            if (data.status == true) {
+//              $('#import_search_results_wrapper').html(data.data);
+//              $(window).scrollTop(0);
+//              Drupal.attachBehaviors('#import_search_results_wrapper');
+//            }
+//          }, 'json');
+//          return false;
+//        });
       });
       var nid = drupalSettings.problem_management.nid;
       if (typeof nid !== "undefined") {
@@ -164,10 +164,10 @@ function text_textfield() {
 
 function reset_form_elements() {
   var res;
-  jQuery('.service_search_dropdown select').val(0);
-  jQuery('.release_search_dropdown select').val(0);
-  jQuery('.function_search_dropdown select').val(0);
-  jQuery('.limit_search_dropdown select').val(0);
+//  jQuery('.service_search_dropdown select').val(0);
+//  jQuery('.release_search_dropdown select').val(0);
+//  jQuery('.function_search_dropdown select').val(0);
+//  jQuery('.limit_search_dropdown select').val(0);
   url = window.location.href; 
   res = url.split('?');
   window.location.assign(res['0']);
