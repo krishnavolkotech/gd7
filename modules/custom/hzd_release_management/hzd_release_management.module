@@ -21,13 +21,7 @@ use Drupal\Component\Utility\SafeMarkup;
  * Get deployed services list.
  */
 function hzd_get_deployed_serivces_list() {
-  $group = \Drupal::routeMatch()->getParameter('group');
-  if (is_object($group)) {
-    $group_id = $group->id();
-  }
-  else {
-    $group_id = $group;
-  }
+  $group_id = get_group_id();
 
   $current_url = Url::fromRoute('<current>');
   $path = $current_url->toString();

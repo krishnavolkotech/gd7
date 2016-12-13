@@ -14,9 +14,6 @@ use Drupal\group\Entity\GroupContent;
 if(!defined('KONSONS'))
   define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 
-define('DISPLAY_LIMIT', 20);
-define('DEFAULT_PAGELIMIT', 20);
-
 /**
  * $_SESSION['Group_id'] = 339;.
  */
@@ -733,175 +730,145 @@ class HzdreleasemanagementStorage {
    * @limit:page limit
    * @returns: table display of deployed releases
    */
-  static public function deployed_releases_displaytable($filter_options = NULL, $limit = NULL, $service_release_type = KONSONS) {
+  static public function deployed_releases_displaytable($service_release_type = KONSONS) {
+    $deployed_releases_node_ids = \Drupal::entityQuery('node')
+     ->condition('type', 'deployed_releases', '=');
+    
+    $filter_value = HzdreleasemanagementStorage::get_release_filters();
     $type = 'deployed_releases';
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    } else {
-      $group_id = $group;
-    }
+    $group_id = get_group_id();
 
     if ($group_id != RELEASE_MANAGEMENT) {
-      $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
+      $default_type = db_query("SELECT release_type "
+          . "FROM {default_release_type} "
+          . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
       $default_type = $default_type ? $default_type : KONSONS;
     } else {
       $default_type = KONSONS;
     }
+    
+    if ($filter_value['services']) {
+      $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'] , '=');
+    }
+    if ($filter_value['states']) {
+      $deployed_releases_node_ids->condition('field_user_state', $filter_value['states'] , '=');
+    }
+    if ($filter_value['releases']) {
+      $deployed_releases_node_ids->condition('field_earlywarning_release', $filter_value['releases'] , '=');
+    }
+    if ($filter_value['filter_startdate']) {
+      $startdate = mktime(0, 0, 0, date('m', $filter_value['filter_startdate']), 
+          date('d', $filter_value['filter_startdate']), date('y', $filter_value['filter_startdate']));
+      $deployed_releases_node_ids->condition('field_date_deployed', $startdate , '>=');
+    }
+    if ($filter_value['filter_enddate']) {
+      $enddate = mktime(23, 59, 59, 
+          date('m', $filter_value['filter_enddate']), date('d', $filter_value['filter_enddate']), 
+          date('y', $filter_value['filter_enddate']));
+      $deployed_releases_node_ids->condition('field_date_deployed',
+          array($filter_value['filter_startdate'], $filter_value['filter_enddate']) , 'BETWEEN');
+    } 
 
-    if (!$filter_options && isset($_SESSION['deploy_filter_options'])) {
-      $filter_options = $_SESSION['deploy_filter_options'];
+    if ($filter_value['environment_type']) {
+      $deployed_releases_node_ids->condition('field_environment', $filter_value['environment_type'] , '=');
+    }   
+    
+    if ($filter_value['deployed_type']) {
+            if ($filter_value['deployed_type'] == 'current') {
+              $filter_type = $deployed_releases_node_ids->orConditionGroup();    
+              $filter_type->condition('field_archived_release', 0, '=');
+              $filter_type->condition('field_archived_release', NULL, 'IS');
+              $deployed_releases_node_ids->condition($filter_type);
+              
+            } elseif ($filter_value['deployed_type'] == 'archived') {
+              $deployed_releases_node_ids->condition('field_archived_release', 1, '=');
+            } elseif ($filter_value['deployed_type'] == 'all') {
+              
+              $archive =  $deployed_releases_node_ids->orConditionGroup(); 
+              $archive->condition('field_archived_release', array('0' => 0, '1' => 1), 'IN');
+              $archive->condition('field_archived_release', NULL, 'IS');
+              $deployed_releases_node_ids->condition($archive);
+            }
     }
 
-    $query = db_select('node_field_data', 'nfd');
-  
-    $service_release_type = isset($_SESSION['release_type']) ? $_SESSION['release_type'] : $default_type;
-    if (isset($filter_options)) {
-      foreach ($filter_options as $filter => $filter_value) {
-        switch ($filter) {
-          case 'service':
-            if ($filter_value > 0) {
-              $query->condition('field_release_service_value', $filter_value, '=');
-            }
-            // $filter_where .= ' and field_release_service_value = ' . $filter_value;.
-            break;
-
-          case 'state':
-            if ($filter_value > 1) {
-              $query->condition('field_user_state_value', $filter_value, '=');
-            }
-            // $filter_where .= ' and field_user_state_value = ' . $filter_value;.
-            break;
-
-          case 'release':
-            if ($filter_value > 0) {
-              $query->condition('field_earlywarning_release_value', $filter_value, '=');
-            }
-            // $filter_where .= ' and field_earlywarning_release_value = ' . $filter_value;.
-            break;
-
-          case 'startdate':
-            if ($filter_value) {
-              $startdate = mktime(0, 0, 0, date('m', $filter_value), date('d', $filter_value), date('y', $filter_value));
-              // $filter_where .= ' and field_date_deployed_value >= ' . $startdate;.
-              $query->condition('nfdd.field_date_deployed_value', $startdate, '>=');
-              $startdate = $filter_value;
-            }
-            break;
-
-          case 'enddate':
-            if ($filter_value) {
-              $enddate = mktime(23, 59, 59, date('m', $filter_value), date('d', $filter_value), date('y', $filter_value));
-              $query->condition('nfdd.field_date_deployed_value', array($startdate, $enddate), 'BETWEEN');
-              // $filter_where .= ' and field_date_deployed_value between  ' . ($startdate?$startdate:0) . " and " . $enddate;.
-            }
-            break;
-
-          case 'deployed_type':
-            if ($filter_value == 'current') {
-              // $filter_type = ' and (field_archived_release_value = 0 or field_archived_release_value IS NULL )';.
-              $filter_type = db_or();
-              $filter_type->condition('field_archived_release_value', 0, '=');
-              $filter_type->condition('field_archived_release_value', NULL, 'IS');
-              $query->condition($filter_type);
-            } elseif ($filter_value == 'archived') {
-              $query->condition('field_archived_release_value', 1, '=');
-              // $filter_type = ' and field_archived_release_value = 1';.
-            } elseif ($filter_value == 'all') {
-              $archive = db_or();
-              $archive->condition('field_archived_release_value', array('0' => 0, '1' => 1), 'IN');
-              $archive->condition('field_archived_release_value', NULL, 'IS');
-              $query->condition($archive);
-              // $filter_type = ' and (field_archived_release_value in (0,1) or field_archived_release_value IS NULL) ';.
-            }
-            break;
-
-          case 'env_type':
-            if ($filter_value > 0) {
-              $filter_env_type = $filter_value;
-            } else {
-              $filter_env_type = t('All');
-            }
-            break;
-        }
-      }
-    }
-
+//    $service_release_type = isset($filter_value['release_type']) 
+//        ? $filter_value['release_type'] : $default_type;
+//    $deployed_releases_node_ids->condition('grv.group_id', $gid, '=')
+//            ->condition('nrt.release_type_target_id', $service_release_type, '=');
+//    
+    
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
-    // $limit = 20;
-    // need to migrate date deployed cck field.
-    $query->leftJoin('node__field_user_state', 'nfus', 'nfd.nid = nfus.entity_id');
-    $query->leftJoin('node__field_earlywarning_release', 'nfer', 'nfd.nid = nfer.entity_id');
-    $query->leftJoin('node__field_environment', 'nfe', 'nfd.nid = nfe.entity_id');
-    $query->leftJoin('node__field_release_service', 'nfrs', 'nfd.nid = nfrs.entity_id');
-    $query->leftJoin('node__field_archived_release', 'nfar', 'nfd.nid = nfar.entity_id');
-    $query->leftJoin('node__field_date_deployed', 'nfdd', 'nfd.nid = nfdd.entity_id');
-    $query->join('group_releases_view', 'grv', 'nfrs.field_release_service_value = grv.service_id');
-    $query->join('node__release_type', 'nrt', 'grv.service_id = nrt.entity_id');
-    $query->condition('nfd.type', 'deployed_releases', '=')
-            ->condition('grv.group_id', $gid, '=')
-            ->condition('nrt.release_type_target_id', $service_release_type, '=');
 
-    $count_query = clone $query;
-    $count_query->addExpression('Count(nfd.nid)');
-
-    $paged_query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
-    $paged_query->setCountQuery($count_query);
-
-    $paged_query->addField('nfrs', 'field_release_service_value', 'service');
-    $paged_query->addField('nfus', 'field_user_state_value', 'state_id');
-    $paged_query->addField('nfer', 'field_earlywarning_release_value', 'release_id');
-    $paged_query->addField('nfe', 'field_environment_value', 'environment');
-    $paged_query->addField('nfrs', 'field_release_service_value', 'service');
-    $paged_query->addField('nfar', 'field_archived_release_value', 'archived');
-    $paged_query->addField('nfdd', 'field_date_deployed_value', 'deployed_date');
-    $paged_query->fields('nfd', array('nid'));
-
-    if ($limit != 'all') {
-      $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
-      $paged_query->limit($page_limit);
-      $result = $paged_query->execute()->fetchAll();
+    if ($filter_value['limit'] != 'all') {
+      $page_limit = (isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT);
+      $result = $deployed_releases_node_ids->pager($page_limit)->execute();
     } else {
-      $result = $query->execute()->fetchAll();
+      $result = $deployed_releases_node_ids->execute();
     }
+    foreach ($result as $deployed_releases_node_id) {
+      $deployed_release_node =  \Drupal\node\Entity\Node::load($deployed_releases_node_id);
+      $state = db_query("SELECT abbr FROM {states} where id = :id", array(
+        ":id" => $deployed_release_node->field_user_state->value
+        )
+      )->fetchField();
+      $service =  \Drupal\node\Entity\Node::load(
+          $deployed_release_node->field_release_service->value)->getTitle();
 
-    foreach ($result as $releases) {
-      $state = db_query("SELECT abbr FROM {states} where id = :id", array(":id" => $releases->state_id))->fetchField();
-      $service = db_query("SELECT title FROM {node_field_data} where type = :type and nid = :nid", array(':type' => 'services', ':nid' => $releases->service))->fetchField();
-      $release = db_query("SELECT title FROM {node_field_data} where type = :type and nid = :nid", array(':type' => 'release', ':nid' => $releases->release_id))->fetchField();
-      if ($releases->environment == 1) {
+      $release_node = \Drupal\node\Entity\Node::load(
+          $deployed_release_node->field_earlywarning_release->value);
+      $release = $release_node->getTitle();
+
+      if ($deployed_release_node->field_environment->value == 1) {
         $environment_val = t('Produktion');
       } else {
-        $environment_val = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(':nid' => $releases->environment))->fetchField();
+        $environment_val = \Drupal\node\Entity\Node::load(
+          $deployed_release_node->field_environment->value)->getTitle();
       }
-      // date("d.m.Y", 1900000)
-      $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", strtotime($releases->deployed_date)));
-      if ($filter_options['state'] > 1) {
+//      // date("d.m.Y", 1900000)
+      $elements = array(
+        'state' => $state, 
+        'environment' => $environment_val, 
+        'service' => $service, 
+        'release' => $release, 
+        'dateDeployed' => date("d.m.Y", 
+            strtotime($deployed_release_node->field_date_deployed->value)
+            )
+        );
+      if ($filter_value['states'] > 1) {
         // date("d.m.Y", 1900000)
-        if ($filter_options['state'] == $releases->state_id) {
-          $elements = array('state' => $state, 'environment' => $environment_val, 'service' => $service, 'release' => $release, 'dateDeployed' => date("d.m.Y", strtotime($releases->deployed_date)));
+        if ($filter_value['state'] == $deployed_release_node->field_user_state->value) {
+          $elements = array(
+            'state' => $state, 
+            'environment' => $environment_val, 
+            'service' => $service, 
+            'release' => $release, 
+            'dateDeployed' => date("d.m.Y", 
+                strtotime($deployed_release_node->field_date_deployed->value)
+            )
+          );
         } else {
           $elements = array();
         }
       }
-
-      $_SESSION['deploy_filter_options'] = $filter_options;
-
-      if (isset($group_id)) {
-        // Early Warnigs count for specific service and release.
-        $query = db_select('node_field_data', 'n');
-        $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
-        $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
-        $query->condition('n.type', 'early_warnings', '=')
-                ->condition('nfer.field_earlywarning_release_value', $releases->release_id, '=')
-                ->condition('nfrs.field_release_service_value', $releases->service, '=');
-        $earlywarnings_count = $query->countQuery()->execute()->fetchField();
-
+     if (isset($group_id)) {
+         $earlywarnings_nids = \Drupal::entityQuery('node')
+             ->condition('type', 'early_warnings', '=')
+             ->condition('field_earlywarning_release', 
+                 $deployed_release_node->field_earlywarning_release->value, '=')
+             ->condition('field_release_service', 
+                 $deployed_release_node->field_release_service->value, '=');
+        $earlywarnings_count = $earlywarnings_nids->count()->execute();
         if ($earlywarnings_count) {
           $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
-          $view_options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
+          $view_options['query'] = array(
+            'ser' => $deployed_release_node->field_release_service->value,  
+            'rel' => $deployed_release_node->field_earlywarning_release->value,  
+            'type' => $type
+          );
           $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
-          $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);
+          $view_earlywarning_url = Url::fromRoute('hzd_earlywarnings.view_early_warnings',
+              array('group' => $group_id), $view_options
+          );
           $view_earlywarning = array(
             '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
             '#type' => 'link',
@@ -916,11 +883,28 @@ class HzdreleasemanagementStorage {
         $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
         $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
 
-        $options['query'] = array('ser' => $releases->service, 'rel' => $releases->release_id, 'type' => $type);
+        $options['query'] = array(
+          'ser' => $deployed_release_node->field_release_service->value, 
+          'rel' => $deployed_release_node->field_earlywarning_release->value, 
+          'type' => $type
+        );
         $options['query']['destinations'] = 'group/' . $group_id . '/releases/deployed';
-        $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
-        $create_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/add/early-warnings', $options);
-        $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
+        $options['attributes'] = array(
+          'class' => 'create_earlywarning', 
+          'title' => t('Add an Early Warning for this release'
+              )
+          );
+        $create_earlywarning_url = Url::fromRoute('hzd_earlywarnings.add_early_warnings',
+            array('group' => $group_id), $options
+        );
+        
+        $create_earlywarning = array(
+          '#title' => array(
+            '#markup' => $create_icon
+            ), 
+          '#type' => 'link', 
+          '#url' => $create_earlywarning_url
+        );
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
 
         $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
@@ -930,11 +914,24 @@ class HzdreleasemanagementStorage {
 
       $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
       $download = "<img src = '/" . $download_imgpaths . "'>";
-      $link_info = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid", array(':eid' => $releases->release_id))->fetchField();
-      $link_info_path = db_query("SELECT field_link_value FROM {node__field_link} where entity_id = :eid", array(':eid' => $releases->release_id))->fetchField();
-      if ($link_info) {
-        $url = Url::fromUserInput('/group/' . $group_id . '/releases/documentation/' . $releases->service . '/' . $releases->release_id);
-        $doc_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
+      $link_info = $release_node->field_documentation_link->value;
+      $link_info_path = $release_node->field_link->value;
+      if ($link_info) {        
+        $url = Url::fromRoute(
+            'hzd_release_management.document_page_link',
+            array(
+              'group' => $group_id,
+              'service_id' => $deployed_release_node->field_release_service->value,
+              'release_id' => $deployed_release_node->field_earlywarning_release->value,
+              )   
+        );
+        $doc_link = array(
+          '#title' => array(
+            '#markup' => $download
+            ), 
+          '#type' => 'link', 
+          '#url' => $url
+        );
         $link = \Drupal::service('renderer')->renderRoot($doc_link);
       } else {
         $link = t('No Download link available');
@@ -953,7 +950,7 @@ class HzdreleasemanagementStorage {
       $release_download = t('@link_path @link', array('@link_path' => $link_path, '@link' => $link));
       array_push($elements, $release_download);
       $rows[] = $elements;
-    }
+     }
 
     if (count($rows) == 0) {
       $output[]['#markup'] = 'No Data to be displayed';
@@ -996,7 +993,10 @@ class HzdreleasemanagementStorage {
         '#suffix' => '</div>',
       );
 
-      $output['#attached']['library'] = array('hzd_release_management/hzd_release_management', 'downtimes/downtimes');
+      $output['#attached']['library'] = array(
+        'hzd_release_management/hzd_release_management', 
+        'downtimes/downtimes'
+      );
       $output['#attached']['drupalSettings']['release_management'] = array(
         'group_id' => $group_id,
       );
@@ -1055,14 +1055,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL, $service_release_type = null) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    } else {
-      $group_id = $group;
-    }
+    $group_id = get_group_id();
     $header = self::hzd_get_release_tab_headers($type);
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
+    $filter_value = HzdreleasemanagementStorage::get_release_filters();
+    $service_release_type = $filter_value['release_type'];
     if (is_null($service_release_type)) {
       if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {  
         $service_release_type = \Drupal::database()->select('default_release_type', 'ds')
@@ -1074,25 +1071,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       }
     }
     $release_type = get_release_type($type);
-    if (!$filter_where) {
-      $filter_where = isset($_SESSION['filter_where']) ? $_SESSION['filter_where'] : '';
-    }
-
-    if (!$release_type) {
-      $release_type = isset($_SESSION['release_type']) ? $_SESSION['release_type'] : '';
-    }
-
-    if (!$service_release_type) {
-      $service_release_type = $_SESSION['service_release_type'];
-    }
-
-    $release_query = self::hzd_release_query($release_type, $filter_where, $limit, $service_release_type, $gid);
-    $_SESSION['filter_where'] = $filter_where;
-    $_SESSION['release_type'] = $release_type;
-    $_SESSION['service_release_type'] = $service_release_type;
-    foreach ($release_query as $releases) {
-      if ($releases->documentation_link) {
-        $link = self::hzd_get_release_documentation_link($releases->documentation_link, $releases->service, $releases->release_id);
+    $release_node_ids = self::hzd_release_query($release_type, $gid);
+    
+    foreach ($release_node_ids as $release_node_id) {
+      $releases = \Drupal\node\Entity\Node::load($release_node_id);
+      if ($releases->field_documentation_link->value) {
+        $link = self::hzd_get_release_documentation_link(
+            $releases->field_documentation_link->value, 
+            $releases->field_relese_services->target_id, $releases->id());
       } else {
         if ($type == 'progress' || $type == 'released') {
           $link = t('No Download link available');
@@ -1100,9 +1086,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           $link = '';
         }
       }
-      if ($releases->link) {
+      if ($releases->field_link->value) {
         $options['attributes'] = array('class' => 'download_img_icon');
-        $url = Url::fromUri($releases->link, $options);
+        $url = Url::fromUri($releases->field_link->value, $options);
         $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
         $download = "<img src = '/" . $download_imgpath . "'>";
         $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
@@ -1110,25 +1096,39 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       } else {
         $link_path = '';
       }
-      $link = t('@link_path @link', array('@link_path' => $link_path, '@link' => $link));
+      $link = t('@link_path @link', array(
+        '@link_path' => $link_path, 
+        '@link' => $link
+        )
+      );
       $row = array();
-      $service_name = db_query("SELECT title FROM node_field_data WHERE nid = :nid", array(":nid" => $releases->service))->fetchField();
-      $row = array('service' => $service_name, 'release' => $releases->title);
+      $service = \Drupal\node\Entity\Node::load(
+          $releases->field_relese_services->target_id);
+      $row = array(
+        'service' => $service->getTitle(), 
+        'release' => $releases->getTitle()
+      );
       if ($type != 'released') {
-        $row[] = $releases->status;
+        $row[] = $releases->field_status->value;
       }
-      $row[] = $releases->date != NULL ? date('d.m.Y H:i:s', $releases->date) : '';
+      $row[] = $releases->field_date->value != NULL ? 
+          date('d.m.Y H:i:s', $releases->field_date->value) : '';
 
       if ($type == 'released' || $type == 'progress') {
         if (isset($group_id)) {
-          $early_warnings = self::hzd_release_early_warnings($releases->service, $releases->release_id, $type, $service_release_type);
-          $earlywarnings_cell = array('data' => $early_warnings, 'class' => 'earlywarnings-cell');
+          $early_warnings = self::hzd_release_early_warnings(
+              $releases->field_relese_services->target_id, $releases->id(), 
+              $type, $service_release_type);
+          $earlywarnings_cell = array(
+            'data' => $early_warnings, 
+            'class' => 'earlywarnings-cell'
+            );
           $row[] = $earlywarnings_cell;
         }
         $row[] = $link;
       }
       if ($type == 'locked') {
-        $row[] = $releases->comment;
+        $row[] = $releases->comment->value;
       }
       $rows[] = $row;
     }
@@ -1165,52 +1165,43 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   /**
    *
    */
-  static public function hzd_release_query($release_type, $filter_where, $limit = NULL, $tid, $gid) {
-    $release_query = db_select('node_field_data', 'n');
-    $release_query->leftJoin('node__field_release_comments', 'nfrc', 'n.nid = nfrc.entity_id');
-    $release_query->leftJoin('node__field_link', 'nfl', 'n.nid = nfl.entity_id');
-    // $release_query->leftjoin('node__field_services', 'nfser', 'n.nid = nfser.entity_id');.
-    $release_query->leftJoin('node__field_documentation_link', 'nfdl', 'n.nid = nfdl.entity_id');
-    $release_query->leftJoin('node__field_relese_services', 'nfrs', 'n.nid = nfrs.entity_id');
-    $release_query->leftJoin('node__field_status', 'nfs', 'n.nid = nfs.entity_id');
-    $release_query->leftJoin('node__field_date', 'nfd', 'n.nid = nfd.entity_id');
-    $release_query->join('node__field_release_type', 'nfrt', 'n.nid = nfrt.entity_id');
-    $release_query->join('group_releases_view', 'GRV', 'nfrs.field_relese_services_target_id = GRV.service_id');
-    $release_query->join('node__release_type', 'nrt', 'GRV.service_id = nrt.entity_id');
+  static public function hzd_release_query($release_type, $gid) {
+      $filter_value = self::get_release_filters();
+      $release_node_ids = \Drupal::entityQuery('node')
+      ->condition('type', 'release', '=');
 
-    $release_query->condition('GRV.group_id', $gid, '=');
-    $release_query->condition('nrt.release_type_target_id', $tid, '=');
-    if ($release_type) {
-      $release_query->condition('nfrt.field_release_type_value', $release_type, '=');
-    }
-    if ($filter_where) {
-      foreach ($filter_where as $condition) {
-        $release_query->condition($condition['field'], $condition['value'], $condition['operator']);
+//    $release_node_ids->condition('GRV.group_id', $gid, '=');
+    
+//    if (isset()) {
+//      $release_node_ids->condition('release_type_target_id', $tid, '=');
+//    }
+  
+      if ($filter_value['r_type'] ) {
+        $release_node_ids->condition('field_release_type', $filter_value['r_type'], '=');
       }
-    } else {
-      $filter_where = self::getSelectedServicesForReleases($gid, $tid);
-      $release_query->condition('nfrs.field_relese_services_target_id', $filter_where, 'IN');
-    }
+       if ($filter_value['services']) {
+        // $filter_where .= " and field_relese_services_nid = ". $service;.
+        $release_node_ids->condition('field_relese_services', $filter_value['services'], '=');
+      }
+      if ($filter_value['releases']) {
+        $release_node_ids->condition('entiy_id', $filter_value['releases'], '=');
+      }
+      if (isset($filter_value['filter_startdate']) && $filter_value['filter_enddate'] == '') {
+        $release_node_ids->condition('field_date', $filter_value['filter_startdate'], '>');
+        // $filter_where .= " and field_date_value > ". $start_date;.
+      }
+      if ($filter_value['filter_startdate'] && $filter_value['filter_enddate']) {
+        $release_node_ids->condition('field_date', 
+            array($filter_value['filter_startdate'], 
+              $filter_value['filter_enddate']), 'BETWEEN');
+      }
 
-    if ($limit == 'all') {
-      $result = $release_query->execute()->fetchAll();
+    if ($filter_value['limit'] == 'all') {
+      $result = $release_node_ids->execute();
     } else {
-      $count_query = clone $release_query;
-      $count_query->addExpression('Count(n.nid)');
-      $paged_query = $release_query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
-      $paged_query->setCountQuery($count_query);
-      $paged_query->addField('n', 'nid', 'release_id');
-      $paged_query->addField('nfrc', 'field_release_comments_value', 'comment');
-      $paged_query->addField('nfl', 'field_link_value', 'link');
-      $paged_query->addField('nfdl', 'field_documentation_link_value', 'documentation_link');
-      $paged_query->addField('nfrs', 'field_relese_services_target_id', 'service');
-      $paged_query->addField('nfs', 'field_status_value', 'status');
-      $paged_query->addField('nfd', 'field_date_value', 'date');
-      $paged_query->fields('n', array('title'))
-              ->orderBy('nfd.field_date_value', 'DESC');
-      $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
-      $paged_query->limit($page_limit);
-      $result = $paged_query->execute()->fetchAll();
+      $release_node_ids->sort('field_date', 'DESC');
+      $page_limit = (isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT);
+      $result = $release_node_ids->pager($page_limit)->execute();
     }
     return $result;
   }
@@ -1235,13 +1226,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function hzd_get_release_tab_headers($type) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    } else {
-      $group_id = $group;
-    }
-
+    $group_id = get_group_id();
     if ($type == 'released') {
       $header = array(t('Service'), t('Release'), t('Date'));
       if (isset($group_id)) {
@@ -1268,12 +1253,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function hzd_get_release_documentation_link($doc_link, $service_id, $release_id) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    } else {
-      $group_id = $group;
-    }
+    $group_id = get_group_id();
 
     $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
     $download = '<img src = "/' . $download_imgpaths . '">';
@@ -1293,12 +1273,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    } else {
-      $group_id = $group;
-    }
+    $group_id = get_group_id();
 
     // Early Warning create icon.
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
@@ -1434,5 +1409,19 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     // exit;.
     return $counter;
   }
-
+  static public function get_release_filters() {
+    $parameters = array();
+    $request = \Drupal::request()->query;
+    $parameters['release_type'] = $request->get('release_type');
+    $parameters['services'] = $request->get('services');
+    $parameters['releases'] = $request->get('releases');
+    $parameters['filter_startdate'] = $request->get('filter_startdate');
+    $parameters['filter_enddate'] = $request->get('filter_enddate');
+    $parameters['states'] = $request->get('states');
+    $parameters['environment_type'] = $request->get('environment_type');
+    $parameters['deployed_type'] = $request->get('deployed_type');
+    $parameters['r_type'] = $request->get('r_type');
+    $parameters['limit'] = $request->get('limit');
+    return $parameters;
+  }
 }
