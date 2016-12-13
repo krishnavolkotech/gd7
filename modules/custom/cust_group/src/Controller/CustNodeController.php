@@ -42,7 +42,7 @@ class CustNodeController extends ControllerBase {
     $parm = \Drupal::routeMatch()->getParameter('group_content');
     $node = $parm->get('entity_id')->referencedEntities()[0];
     $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-    return $view_builder->view($node);
+    return $view_builder->view($node,'full','de');
   }
   
   function groupContentTitle(){

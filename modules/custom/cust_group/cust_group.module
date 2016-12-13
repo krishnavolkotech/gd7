@@ -109,7 +109,9 @@ function getGroupMemberList($gid){
     $userMails = [];
     if(!empty($users)){
         $emails = \Drupal::database()->select('users_field_data','ufd')
-            ->fields('ufd',['uid','mail'])
+            ->fields('ufd',['uid','mail']);
+        $emails->leftJoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = ufd.uid');
+        $emails = $emails->condition('ufns.field_notifications_status_value',1)
             ->condition('uid',$users,'IN')
             ->execute()->fetchAll();
         foreach($emails as $mail){
