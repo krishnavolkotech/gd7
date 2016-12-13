@@ -840,34 +840,57 @@ class HzdcustomisationStorage
 //      pr($client);exit;
             $services = self::downtime_services_names($client->service_id);
             // $user_state = display_update($states[$client->state_id]);.
-            $user_state = db_query("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
-            $startdate = ($client->startdate_planned ? date('d-m-Y H:i', $client->startdate_planned) : "unbekannt");
+            $user_state_list = \Drupal::database()->select("states", 's')
+                ->fields('s', ['abbr'])
+                ->distinct()
+                ->condition('id', explode(',', $client->state_id), 'IN')
+                ->execute()
+                ->fetchCol();
+//            pr($user_state_list);exit;
+            $user_state = null;
+            $user_states = [];
+            $i = 1;
+            //// preparing an array with 2 states on each row for a clean display purpose.
+            foreach ($user_state_list as $stateAbbr) {
+                $user_state .= ' ' . $stateAbbr . ',';
+                if ($i % 2 == 0) {
+                    $user_states[] = $user_state;
+                    $user_state = null;
+                } elseif ($i == count($user_state_list)) {
+                    $user_states[] = $stateAbbr;
+                }
+                $i += 1;
+            }
+            $user_states[count($user_states) - 1] = trim($user_states[count($user_states) - 1], ',');
+//            $user_state = trim($user_state, ',');
+            //$user_state = \Drupal::database()->select("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
+            $startdate = ($client->startdate_planned ? date('d.m.Y H:i', $client->startdate_planned).' Uhr' : "unbekannt");
             if ($string == 'archived') {
                 if (isset($client->cancelled) && $client->cancelled == 1) {
                     $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
                     if (!empty($enddate_cancelled)) {
                         if (!empty($enddate_cancelled->end_date)) {
-                            $enddate = date("d-m-Y H:i", $enddate_cancelled->end_date);
+                            $enddate = date("d.m.Y H:i", $enddate_cancelled->end_date).' Uhr';
                         } else {
-                            $enddate = date("d-m-Y H:i", $enddate_cancelled->date_reported);
+                            $enddate = date("d.m.Y H:i", $enddate_cancelled->date_reported).' Uhr';
                         }
                     } else {
-                        $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
+                        $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned).' Uhr' : "");
                     }
                 } else {
                     $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
                     if (!empty($enddate_resolved)) {
                         if (!empty($enddate_resolved->end_date)) {
-                            $enddate = date("d-m-Y H:i", $enddate_resolved->end_date);
+                            $enddate = date("d.m.Y H:i", $enddate_resolved->end_date).' Uhr';
                         } else {
-                            $enddate = date("d-m-Y H:i", $enddate_resolved->date_reported);
+                            $enddate = date("d.m.Y H:i", $enddate_resolved->date_reported).' Uhr';
                         }
                     } else {
-                        $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
+                        $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned).' Uhr' : "");
                     }
                 }
             } else {
-                $enddate = ($client->enddate_planned ? date("d-m-Y H:i", $client->enddate_planned) : "");
+                $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned).' Uhr' : "");
             }
             $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = $client->downtime_id")->fetchField();
 //      $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = $reporter_uid")->fetchField();
@@ -895,11 +918,14 @@ class HzdcustomisationStorage
                 $headersNew = array_merge($headersNew, ['type' => 'Type']);
                 $elements = array_merge($elements, ['type' => $downtimeTypes[$client->scheduled_p]]);
             }
+            $user_states = ['#items' => $user_states, '#theme' => 'item_list', '#type' => 'ul'];
             $serviceList = ['#items' => $services, '#theme' => 'item_list', '#type' => 'ul'];
             $elements = array_merge($elements, array(
+                //// truncating description accordin to the display of services i.e. 50 char for 1 service and 100 char for 2 services
                 'description' => Markup::create(Unicode::truncate(strip_tags($client->description), count($services) * 50, TRUE, TRUE, 1)),
                 'service' => $renderer->render($serviceList),
-                'state' => $user_state));
+                'state' => $renderer->render($user_states)));
+//                'state' => $user_state));
             $headersNew = array_merge($headersNew, ['description' => 'Beschreibung', 'service' => 'Verfahren', 'state' => 'Land']);
             if ($string == 'archived') {
                 $headersNew = array_merge($headersNew, ['status' => 'Status']);
