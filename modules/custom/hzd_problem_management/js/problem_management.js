@@ -162,14 +162,14 @@ function text_textfield() {
   }
 }
 
-function reset_form_elements() {
-  var res;
-//  jQuery('.service_search_dropdown select').val(0);
-//  jQuery('.release_search_dropdown select').val(0);
-//  jQuery('.function_search_dropdown select').val(0);
-//  jQuery('.limit_search_dropdown select').val(0);
-  url = window.location.href; 
-  res = url.split('?');
-  window.location.assign(res['0']);
-  return false;
-}
+//function reset_form_elements() {
+//  var res;
+////  jQuery('.service_search_dropdown select').val(0);
+////  jQuery('.release_search_dropdown select').val(0);
+////  jQuery('.function_search_dropdown select').val(0);
+////  jQuery('.limit_search_dropdown select').val(0);
+//  url = window.location.href; 
+//  res = url.split('?');
+//  window.location.assign(res['0']);
+//  return false;
+//}

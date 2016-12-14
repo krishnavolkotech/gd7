@@ -4,7 +4,11 @@ namespace Drupal\downtimes\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
+use Drupal\downtimes\Form\DowntimesFilter;
 
+if (!defined('PAGE_LIMIT')) {
+  define('PAGE_LIMIT', 20);
+}
 /**
  * Class NewDowntimesController.
  *
@@ -20,21 +24,67 @@ class NewDowntimesController extends ControllerBase {
    */
   public function newDowntimes($group) {
     //Current Incidents
-    $_SESSION['downtime_type'] = 'incident';
-    $incidents_data = \Drupal::formBuilder()->getForm('\Drupal\downtimes\Form\DowntimesFilter', 'incidents', $group);
+//    $_SESSION['downtime_type'] = 'incident';
+    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
+    $type = $filter_value['downtime_type'];    
+    $incidents_data = \Drupal::formBuilder()->getForm(
+        '\Drupal\downtimes\Form\DowntimesFilter', 'incidents', $group);
     $current_time = REQUEST_TIME;
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $string = 'incidents';
-    $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string);
+    if (isset($type) && $type == 'incidents') {
+      $options = DowntimesFilter::get_form_options();
+      $search_parameters = DowntimesFilter::get_search_parameters(
+              $type, $options);
+      $sql_where = $search_parameters['sql_where'];
 
-    $_SESSION['downtime_type'] = 'maintenance';
+      $limit = $filter_value['limit'] ?
+          $filter_value['limit'] : PAGE_LIMIT;
+      $string = $search_parameters['string'];
+      if (isset($search_parameters['service'])) {
+        $service = $search_parameters['service'];
+      } else {
+        $service = NULL;
+      }
+      
+      $state = $search_parameters['state'];
+      
+      if (isset($search_parameters['search_string'])) {    
+        $search_string = $search_parameters['search_string'];
+      }  else {
+        $search_string = NULL; 
+      }
+      $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string,
+      $service,$search_string, $limit, $state, $filter_value['filter_enddate']);
+    } else {
+      $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string);
+    }
+    // $_SESSION['downtime_type'] = 'maintenance';
     //Planned Maintenence
     $maintenance_data = \Drupal::formBuilder()->getForm('Drupal\downtimes\Form\DowntimesFilter', 'maintenance', $group);
     $sql_where = "  and sd.scheduled_p = 1 and sd.resolved = 0 ";
     $string = 'maintenance';
-    unset($_SESSION['downtime_type']);
-    $maintenance_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string);
+//    unset($_SESSION['downtime_type']);
+    if (isset($type) && $type == 'maintenance') {
+      
+      $options = DowntimesFilter::get_form_options();
+      $search_parameters = DowntimesFilter::get_search_parameters(
+          $type, $options);
+      $sql_where = $search_parameters['sql_where'];
 
+      $limit = $filter_value['limit'] ? 
+          $filter_value['limit'] : $this->PAGE_LIMIT;
+      $string = $search_parameters['string'];
+      $service = $search_parameters['service'];
+      $state = $search_parameters['state'];
+      $search_string = $search_parameters['search_string'];
+      $maintenance_downtimes =  
+        HzdcustomisationStorage::current_incidents($sql_where, $string,
+      $service,$search_string, $limit, $state, $filter_value['filter_enddate']);
+    } else {
+      $maintenance_downtimes = HzdcustomisationStorage::current_incidents(
+        $sql_where, $string);
+    }
     $result = array();
 
     // $result['incidents_form_render']['#prefix'] = "<div class ='curr_incidents_form'>";
