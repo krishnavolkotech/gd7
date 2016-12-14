@@ -1269,4 +1269,20 @@ class HzdcustomisationStorage
         return $output;
     }
     
+  static public function get_downtimes_filters() {
+    $parameters = array();
+    $request = \Drupal::request()->query;
+    $parameters['downtime_type'] = $request->get('downtime_type');
+    $parameters['time_period'] = $request->get('time_period');
+    $parameters['states'] = $request->get('states');
+    $parameters['services_effected'] = $request->get('services_effected');
+    $parameters['filter_startdate'] = $request->get('filter_startdate');
+    $parameters['search_string'] = $request->get('search_string');
+    $parameters['filter_enddate'] = $request->get('filter_enddate');
+    $parameters['string'] = $request->get('string');
+    $parameters['type'] = $request->get('type');
+    $parameters['limit'] = $request->get('limit');    
+    return $parameters;
+  }
+    
 }

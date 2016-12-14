@@ -24,13 +24,7 @@ class ArchivedDowntimesController extends ControllerBase {
    *   Return Hello string.
    */
   public function archivedDowntimes($group) {
-    $selected_type = \Drupal::request()->query->get('downtimes_type');
-    $time_period = \Drupal::request()->query->get('time_period');
-    $selected_state = \Drupal::request()->query->get('states');
-    $services_effected = \Drupal::request()->query->get('services_effected');
-    $filter_startdate = \Drupal::request()->query->get('filter_startdate');
-    $search_string = \Drupal::request()->query->get('search_string');
-
+    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
     $string = 'archived';
     $filter_enddate = \Drupal::request()->query->get('filter_enddate');
     $archived_type = \Drupal::request()->query->get('string');
@@ -39,16 +33,18 @@ class ArchivedDowntimesController extends ControllerBase {
     if (isset($archived_type)) {
       $options = $this->get_form_options();
       $search_parameters = $this->get_search_parameters($options);
-
       $sql_where = $search_parameters['sql_where'];
       $limit = PAGE_LIMIT;
-      $service = $services_effected;
-      $state = $selected_state;
-      $search_string = $search_string;
-      $default_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, $service, $search_string, $limit, $state, $filter_enddate);
+      $service = $filter_value['services_effected'];
+      $state = $filter_value['states'];
+      $search_string = $filter_value['string'];
+      $default_downtimes = HzdcustomisationStorage::current_incidents(
+          $sql_where, $string, $service, $search_string, 
+          $limit, $state, $filter_value['filter_enddate']);
     }
     else {
-      $default_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string);
+      $default_downtimes = HzdcustomisationStorage::current_incidents(
+          $sql_where, $string);
     }
 
     $result = array();
@@ -61,50 +57,43 @@ class ArchivedDowntimesController extends ControllerBase {
     $result['archive_table_render']['#suffix'] = '</div>';
     $result['#title'] = t('Störungen und Blockzeiten');
     $response = $result;
-
     return $response;
   }
 
   static public function get_search_parameters($options) {
-    $selected_type = \Drupal::request()->query->get('downtimes_type');
-    $time_period = \Drupal::request()->query->get('time_period');
-    $selected_state = \Drupal::request()->query->get('states');
-    $services_effected = \Drupal::request()->query->get('services_effected');
-    $filter_startdate = \Drupal::request()->query->get('filter_startdate');
-    $filter_enddate = \Drupal::request()->query->get('filter_enddate');
-    $search_string = \Drupal::request()->query->get('search_string');
-    $archived_type = \Drupal::request()->query->get('string');
-
+    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
     $string = 'archived';
     $sql_where = " and resolved = 1";
 
-    if (isset($search_string) && $search_string != '') {
-      if ($search_string != t('Search Reason')) {
-        $sql_where .= " and description like '%$search_string%' ";
+    if (isset($filter_value['string']) && $filter_value['string'] != '') {
+      if ($filter_value['string'] != t('Search Reason')) {
+        $sql_where .= " and description like '%" . $filter_value['string'] . "%' ";
       }
     }
-    if (isset($time_period)) {
-      $options['time_period'] = $time_period;
+    if (isset($filter_value['time_period'])) {
+      $options['time_period'] = $filter_value['time_period'];
     }
 
-    if (isset($selected_type) && $selected_type != 'select' && $selected_type != '') {
-      $type_filter = $selected_type;
+    if (isset($filter_value['type']) && $filter_value['type'] != 'select'
+        && $filter_value['type'] != '') {
+      $type_filter = $filter_value['type'];
       $sql_where .= " and scheduled_p = $type_filter ";
     }
 
-    $incidents_parameters = DowntimesFilter::current_incidents_search($options, $string);
+    $incidents_parameters = DowntimesFilter::current_incidents_search(
+        $options, $string);
     if (isset($incidents_parameters['sql_where'])) {
       $sql_where .= $incidents_parameters['sql_where'];
     }
-    $service = $services_effected;
-    $state = $selected_state;
+    $service = $filter_value['services_effected'];
+    $state = $filter_value['states'];
 
     $search_parameters = array(
       'sql_where' => $sql_where,
       'service' => $service,
       'state' => $state,
       'string' => $string,
-      'search_string' => $search_string
+      'search_string' => $filter_value['string'],
     );
 
     return $search_parameters;
@@ -114,23 +103,16 @@ class ArchivedDowntimesController extends ControllerBase {
     /*
      * to do filters for all and code optimization 
      */
-    $selected_type = \Drupal::request()->query->get('downtimes_type');
-    $time_period = \Drupal::request()->query->get('time_period');
-    $selected_state = \Drupal::request()->query->get('states');
-    $services_effected = \Drupal::request()->query->get('services_effected');
-    $filter_startdate = \Drupal::request()->query->get('filter_startdate');
-    $filter_enddate = \Drupal::request()->query->get('filter_enddate');
-    $search_string = \Drupal::request()->query->get('search_string');
-    $archived_type = \Drupal::request()->query->get('string');
-
-    if (in_array($selected_state, array(0, 1))) {
-      $options['state_id'] = $selected_state;
+    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
+    if (in_array($filter_value['states'], array(0, 1))) {
+      $options['state_id'] = $filter_value['states'];
     }
-    if (isset($services_effected)) {
-      $options['service_id'] = $services_effected;
+    if (isset($filter_value['services_effected'])) {
+      $options['service_id'] = $filter_value['services_effected'];
     }
-    if (isset($filter_startdate) && $filter_startdate != '') {
-      $start_date = $filter_startdate;
+    if (isset($filter_value['filter_startdate']) && 
+        $filter_value['filter_startdate'] != '') {
+      $start_date = $filter_value['filter_startdate'];
       $date = explode('.', $start_date);
       $day = $date[0];
       $month = $date[1];
@@ -140,8 +122,9 @@ class ArchivedDowntimesController extends ControllerBase {
         $options['start_date'] = $filter_start_date;
       }
     }
-    if (isset($filter_enddate) && $filter_enddate != '') {
-      $end_date = $filter_enddate;
+    if (isset($filter_value['filter_enddate']) &&
+        $filter_value['filter_enddate'] != '') {
+      $end_date = $filter_value['filter_enddate'];
       $date = explode('.', $end_date);
       $day = $date[0];
       $month = $date[1];

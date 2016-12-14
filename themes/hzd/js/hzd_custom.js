@@ -94,3 +94,16 @@
         });
     });
 })(jQuery);
+
+
+function reset_form_elements() {
+//  alert('hi');
+  url = window.location.href;
+  res = url.split('?');
+//  window.location.assign(res['0']);
+// alert(res['0']);
+//  window.history.pushState( {}, null, res['0']);
+  window.location = res['0'];
+//  window.history.pushState( {}, null, res['0']);
+  return false;
+}
