@@ -21,27 +21,27 @@ use Drupal\Component\Utility\SafeMarkup;
  * Get deployed services list.
  */
 function hzd_get_deployed_serivces_list() {
-  $group_id = get_group_id();
-
-  $current_url = Url::fromRoute('<current>');
-  $path = $current_url->toString();
-  $current_path = explode("/", $path);
-
-  if (is_numeric($current_path[2])) {
-    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
-  }
-  if ($type == 'deployed_releases') {
-    $services_releases = released_deployed_releases();
-    return $services_data = $services_releases['services'];
-  }
-  $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
-  $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
-  $services['none'] = " < " . t('Service') . ' > ';
-
-  foreach ($services_obj as $services_data) {
-    $services[$services_data->nid] = $services_data->title;
-  }
-  return $services;
+    $group_id = get_group_id();
+    
+    $current_url = Url::fromRoute('<current>');
+    $path = $current_url->toString();
+    $current_path = explode("/", $path);
+    
+    if (is_numeric($current_path[2])) {
+        $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+    }
+    if ($type == 'deployed_releases') {
+        $services_releases = released_deployed_releases();
+        return $services_data = $services_releases['services'];
+    }
+    $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
+    $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
+    $services['none'] = " < " . t('Service') . ' > ';
+    
+    foreach ($services_obj as $services_data) {
+        $services[$services_data->nid] = $services_data->title;
+    }
+    return $services;
 }
 
 /**
@@ -665,12 +665,12 @@ function update_service_notifications($entity) {
     $problem = $entity->get('field_problem_name')->value;
     $release = $entity->get('field_release_name')->value;
     if ($downtime) {
-        hzd_notifications_delete_subscriptions('downtime', $entity->id());
+        hzd_notifications_delete_subscriptions('downtimes', $entity->id());
         if ($rel_type == KONSONS) {
             hzd_service_update_notifications('downtimes', $entity->id());
         }
     } else {
-        hzd_notifications_delete_subscriptions('downtime', $entity->id());
+        hzd_notifications_delete_subscriptions('downtimes', $entity->id());
     }
     
     // Problems insert or delete.
