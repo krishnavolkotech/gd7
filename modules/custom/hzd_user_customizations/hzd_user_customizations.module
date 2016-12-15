@@ -10,207 +10,205 @@ use Drupal\Core\Url;
 
 // development functions
 function __hzd($object) {
-  if (empty($object)) {
-    $object = new stdClass();
-  }
-  pr(get_class_methods(get_class($object)));
-  exit;
+    if (empty($object)) {
+        $object = new stdClass();
+    }
+    pr(get_class_methods(get_class($object)));
+    exit;
 }
 
 // development functions
 function pr($data) {
-  echo "<pre>";
-  print_r($data);
+    echo "<pre>";
+    print_r($data);
 }
 
 /**
  * implements hook_form_alter
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-
-  if ($form_id == 'user_register_form' || $form_id == 'user_form') {
-    $val = [];
-    $user_states = hzd_states();
-    if($form_id == 'user_register_form'){
-        $form['desc'] = [
-            '#weight'=>-100,
-            '#type'=>'markup',
-            '#markup'=>"Herzlich Willkommen beim Betriebsportal KONSENS. Es sind jetzt nur noch wenige Schritte bis zu Ihrer Freischaltung.<br><br><strong><span class='text-danger'>Bitte beachten Sie bei der Registrierung folgende Hinweise:</span></strong>
+    
+    if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+        $val = [];
+        $user_states = hzd_states();
+        if ($form_id == 'user_register_form') {
+            $form['desc'] = [
+                '#weight' => -100,
+                '#type' => 'markup',
+                '#markup' => "Herzlich Willkommen beim Betriebsportal KONSENS. Es sind jetzt nur noch wenige Schritte bis zu Ihrer Freischaltung.<br><br><strong><span class='text-danger'>Bitte beachten Sie bei der Registrierung folgende Hinweise:</span></strong>
 <p>	Das Betriebsportal dient als zentrale Anlaufstelle für betriebliche Fragen. Bitte geben Sie hierzu Ihre vollständigen dienstlichen Kontaktdaten an. Ihre Daten werden selbstverständlich nicht weitergegeben und sind nur für registrierte Benutzer des Betriebsportals sichtbar.<br>	<br>	Nach erfolgter Anmeldung ist Ihr Account aktiv.<br>
 	Wenn Sie sich länger als ein Jahr nicht&nbsp;am BpK anmelden wird Ihr Account nach vorheriger Ankündigung&nbsp;automatisch gesperrt.&nbsp;Sie erhalten danach&nbsp;keine Emailbenachrichtigungen mehr.&nbsp;Möchten Sie Ihren Account entsperren lassen können Sie dies mit dem Kontaktformular beantragen.</p>",
-        ];
-    }
-    if ($form_id == 'user_form') {
-      $account = $form_state->getFormObject()->getEntity();
-      $userid = $account->id();
-      $db = \Drupal::database();
-      $result = $db->select('cust_profile', 'cp')
-          ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
-          ->condition('cp.uid', $userid);
-      $val = $result->execute()->fetchAssoc();
-    }
-    $form['profile'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Personal Information'),
-    );
-    $form['profile']['user_firstname'] = array(
-      '#type' => 'textfield',
-      '#title' => t('First Name'),
-      '#default_value' => isset($val['firstname']) ? $val['firstname'] : '',
-      '#size' => 60,
-      '#maxlength' => 128,
-      '#required'=>TRUE,
-    );
-    $form['profile']['user_lastname'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Last Name'),
-      '#default_value' => isset($val['lastname']) ? $val['lastname'] : '',
-      '#size' => 60,
-      '#maxlength' => 128,
-      '#required'=>TRUE,
-    );
-    $form['profile']['user_position'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Position'),
-      '#default_value' => isset($val['position']) ? $val['position'] : '',
-      '#size' => 60,
-      '#maxlength' => 128,
-      '#required'=>TRUE,
-    );
-    $form['profile']['user_phone'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Phone'),
-      '#default_value' => isset($val['phone']) ? $val['phone'] : '',
-      '#size' => 60,
-      '#maxlength' => 128,
-      '#required'=>TRUE,
-    );
-    $form['profile']['user_state'] = array(
-      '#type' => 'select',
-      '#title' => t('State'),
-      '#options' => $user_states,
-      '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
-      '#required'=>TRUE,
-    );
-
-    if ($form_id == 'user_register_form') {
-      $gids = \Drupal::entityQuery('group')->condition('type', ['open', 'moderate'], 'IN')->execute();
-      sort($gids);
-      $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
-      $groups = [];
-      foreach ($groupsList as $group) {
-        $groupName = $group->label();
-        if ($group->bundle() == 'moderate') {
-          $groupName .= " <span style='color:red'>(Freischaltung durch Admin erforderlich)</span>";
+            ];
         }
-        $groups[$group->id()] = t($groupName);
-      }
-      //pr($groups);exit;
-      $form['groups'] = array(
-        '#type' => 'checkboxes',
-        '#title' => t('Groups'),
-        '#options' => $groups,
-        '#required' => true
-      );
+        if ($form_id == 'user_form') {
+            $account = $form_state->getFormObject()->getEntity();
+            $userid = $account->id();
+            $db = \Drupal::database();
+            $result = $db->select('cust_profile', 'cp')
+                ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+                ->condition('cp.uid', $userid);
+            $val = $result->execute()->fetchAssoc();
+        }
+        $form['profile'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Personal Information'),
+        );
+        $form['profile']['user_firstname'] = array(
+            '#type' => 'textfield',
+            '#title' => t('First Name'),
+            '#default_value' => isset($val['firstname']) ? $val['firstname'] : '',
+            '#size' => 60,
+            '#maxlength' => 128,
+            '#required' => TRUE,
+        );
+        $form['profile']['user_lastname'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Last Name'),
+            '#default_value' => isset($val['lastname']) ? $val['lastname'] : '',
+            '#size' => 60,
+            '#maxlength' => 128,
+            '#required' => TRUE,
+        );
+        $form['profile']['user_position'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Position'),
+            '#default_value' => isset($val['position']) ? $val['position'] : '',
+            '#size' => 60,
+            '#maxlength' => 128,
+            '#required' => TRUE,
+        );
+        $form['profile']['user_phone'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Phone'),
+            '#default_value' => isset($val['phone']) ? $val['phone'] : '',
+            '#size' => 60,
+            '#maxlength' => 128,
+            '#required' => TRUE,
+        );
+        $form['profile']['user_state'] = array(
+            '#type' => 'select',
+            '#title' => t('State'),
+            '#options' => $user_states,
+            '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
+            '#required' => TRUE,
+        );
+        
+        if ($form_id == 'user_register_form') {
+            $gids = \Drupal::entityQuery('group')->condition('type', ['open', 'moderate'], 'IN')->execute();
+            sort($gids);
+            $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
+            $groups = [];
+            foreach ($groupsList as $group) {
+                $groupName = $group->label();
+                if ($group->bundle() == 'moderate') {
+                    $groupName .= " <span style='color:red'>(Freischaltung durch Admin erforderlich)</span>";
+                }
+                $groups[$group->id()] = t($groupName);
+            }
+            //pr($groups);exit;
+            $form['groups'] = array(
+                '#type' => 'checkboxes',
+                '#title' => t('Groups'),
+                '#options' => $groups,
+                '#required' => true
+            );
+        }
+        $form['#validate'][] = 'hzd_user_register_form_validate';
+        $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
     }
-    $form['#validate'][] = 'hzd_user_register_form_validate';
-    $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
-  }
-  return $form;
+    return $form;
 }
 
 /**
- * custom validate function to validate user state 
+ * custom validate function to validate user state
  */
 function hzd_user_register_form_validate(array &$form, FormStateInterface $form_state) {
-  $state = $form_state->getValue('user_state');
-  if ($state == 1) {
-    $form_state->setErrorByName('user_state', 'select state');
-  }
-  if(!\Drupal::service('email.validator')->isValid($form_state->getValue('mail'))){
-      $form_state->setErrorByName('mail', t('Ungültige E-Mail'));
-  }
+    $state = $form_state->getValue('user_state');
+    if ($state == 1) {
+        $form_state->setErrorByName('user_state', 'select state');
+    }
+    if (!\Drupal::service('email.validator')->isValid($form_state->getValue('mail'))) {
+        $form_state->setErrorByName('mail', t('Ungültige E-Mail'));
+    }
 }
 
 /**
  * custom submit function to save user details
  */
 function hzd_user_register_form_submit(array &$form, FormStateInterface $form_state) {
-  $account = $form_state->getFormObject()->getEntity();
-  $userid = $account->id();
-  $firstname = $form_state->getValue('user_firstname');
-  $lastname = $form_state->getValue('user_lastname');
-  $position = $form_state->getValue('user_position');
-  $phone = $form_state->getValue('user_phone');
-  $state = $form_state->getValue('user_state');
-  db_merge('cust_profile')
-      ->key(array('uid' => $userid))
-      ->fields(array('firstname' => $firstname, 'lastname' => $lastname, 'phone' => $phone, 'position' => $position, 'state_id' => $state))
-      ->execute();
+    $account = $form_state->getFormObject()->getEntity();
+    $userid = $account->id();
+    $firstname = $form_state->getValue('user_firstname');
+    $lastname = $form_state->getValue('user_lastname');
+    $position = $form_state->getValue('user_position');
+    $phone = $form_state->getValue('user_phone');
+    $state = $form_state->getValue('user_state');
+    db_merge('cust_profile')
+        ->key(array('uid' => $userid))
+        ->fields(array('firstname' => $firstname, 'lastname' => $lastname, 'phone' => $phone, 'position' => $position, 'state_id' => $state))
+        ->execute();
 }
 
 /**
  * hook implementing hook_user_insert()
  */
 function hzd_user_customizations_user_insert($user) {
-  $groupData = $_POST['groups'];
-  foreach ($groupData as $gid) {
-    $group = \Drupal\group\Entity\Group::load($gid);
-    if ($group->bundle() == 'open') {
-      $group->addMember($user);
+    $groupData = $_POST['groups'];
+    foreach ($groupData as $gid) {
+        $group = \Drupal\group\Entity\Group::load($gid);
+        if ($group->bundle() == 'open') {
+            $group->addMember($user);
+        } elseif ($group->bundle() == 'moderate') {
+            $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+            $group_content = \Drupal\group\Entity\GroupContent::create([
+                'type' => $plugin->getContentTypeConfigId(),
+                'gid' => $group->id(),
+                'entity_id' => $user->id(),
+                'request_status' => 0,
+            ])->save();
+            
+        }
     }
-    elseif ($group->bundle() == 'moderate') {
-      $plugin = $group->getGroupType()->getContentPlugin('group_membership');
-      $group_content = \Drupal\group\Entity\GroupContent::create([
-        'type' => $plugin->getContentTypeConfigId(),
-        'gid' => $group->id(),
-        'entity_id' => $user->id(),
-        'request_status' => 0,
-      ])->save();
-      
-    }
-  }
 }
 
 /**
  * get list of hzd states
  */
 function hzd_states() {
-  $db = \Drupal::database();
-  $result = $db->select('states', 's')
-      ->fields('s', array('id', 'state'))
-      ->condition('s.entity', 1, '!=');
-  $val = $result->execute()->fetchAll();
-  $states = array();
-  foreach ($val as $user_states_list) {
-    $states[$user_states_list->id] = $user_states_list->state;
-  }
-  return $states;
+    $db = \Drupal::database();
+    $result = $db->select('states', 's')
+        ->fields('s', array('id', 'state'))
+        ->condition('s.entity', 1, '!=');
+    $val = $result->execute()->fetchAll();
+    $states = array();
+    foreach ($val as $user_states_list) {
+        $states[$user_states_list->id] = $user_states_list->state;
+    }
+    return $states;
 }
 
 /**
  * get list of hzd states
  */
 function hzd_group_list($uid, $no_html = false) {
-  $db = \Drupal::database();
-  $result = $db->select('groups_field_data', 'gfd');
-  $result->join('group_content_field_data', 'gcfd', 'gfd.id = gcfd.gid');
-  $result->fields('gfd', array('id', 'label'))
-      ->condition('gcfd.entity_id', $uid)
-      ->condition('request_status', 1)
-      ->orderBy('label', 'ASC');
-  $val = $result->execute()->fetchAll();
-  if (!$no_html) {
-    $groups = '<div class="user-groups">';
-    foreach ($val as $group) {
-      $url = Url::fromUserInput('/group/' . $group->id);
-      $groups .= '<div class="user-group-list">' . \Drupal::l(t($group->label), $url) . '</div>';
+    $db = \Drupal::database();
+    $result = $db->select('groups_field_data', 'gfd');
+    $result->join('group_content_field_data', 'gcfd', 'gfd.id = gcfd.gid');
+    $result->fields('gfd', array('id', 'label'))
+        ->condition('gcfd.entity_id', $uid)
+        ->condition('request_status', 1)
+        ->orderBy('label', 'ASC');
+    $val = $result->execute()->fetchAll();
+    if (!$no_html) {
+        $groups = '<div class="user-groups">';
+        foreach ($val as $group) {
+            $url = Url::fromUserInput('/group/' . $group->id);
+            $groups .= '<div class="user-group-list">' . \Drupal::l(t($group->label), $url) . '</div>';
+        }
+        $groups .= '</div>';
+        return $groups;
+        //return array('#markup' => $groups,'#cache'=>['max-age'=>0]);
+    } else {
+        return $val;
     }
-    $groups .= '</div>';
-    return $groups;
-    //return array('#markup' => $groups,'#cache'=>['max-age'=>0]);
-  }
-  else {
-    return $val;
-  }
 }

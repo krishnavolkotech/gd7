@@ -153,6 +153,6 @@ class QuickinfoAccessController {
                 return AccessResult::forbidden();
             }
         }
-        return AccessResult::neutral();
+        return AccessResult::allowed();
      }
 }
