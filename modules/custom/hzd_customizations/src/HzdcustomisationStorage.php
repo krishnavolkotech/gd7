@@ -782,6 +782,7 @@ class HzdcustomisationStorage
         }
         
         $pager->fields('d');
+        $pager->distinct();
 //        kint($pager->__toString());
         $result = $pager->execute()->fetchAll();
         $renderer = \Drupal::service('renderer');
