@@ -782,10 +782,10 @@ class HzdcustomisationStorage
         }
         
         $pager->fields('d');
-        kint($pager->__toString());
+//        kint($pager->__toString());
         $result = $pager->execute()->fetchAll();
         $renderer = \Drupal::service('renderer');
-        $headersNew = [];
+        $headersNew = $rows = [];
         if ($type == 'archived')
             $headersNew = array_merge($headersNew, ['type' => 'Type']);
         $headersNew = array_merge($headersNew, ['description' => 'Beschreibung', 'service' => 'Verfahren', 'state' => 'Land']);
