@@ -961,7 +961,9 @@ class HzdcustomisationStorage
             }
             $rows[] = ['data' => $elements, 'class' => $rowClass];
         }
-        $title = ['incident'=>t('Störungen'),'maintenance'=>t('Blockzeiten'),'all'=>t('Störungen und Blockzeiten')];
+        $title = ['incident'=>Markup::create('<strong class="text-danger">Aktuelle Störungen</strong>'),
+            'maintenance'=>Markup::create('<strong><h2>Blockzeiten</h2></strong>'),
+            'all'=>Markup::create('<strong><h2>Störungen und Blockzeiten</h2></strong>')];
         $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
 //    self::downtimes_display_table($variables);
         $build['problem_table'] = array(
