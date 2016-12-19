@@ -20,14 +20,15 @@
             if (jQuery('.filter_enddate').length > 0) {
                 jQuery('.filter_enddate').datepicker({dateFormat: 'dd.mm.yy'});
             }
-            
-            jQuery('#block-primarylinks > ul > li.dropdown > a').each(function () {
-                jQuery(this).hover(function () {
+
+            jQuery('#block-primarylinks > ul > li.dropdown').each(function () {
+                jQuery(this).mouseenter(function () {
                     jQuery('#block-primarylinks li.dropdown').removeClass('open');
-                    jQuery(this).parent().addClass('open');
-                    jQuery(this).next().mouseleave(function () {
-                        jQuery('#block-primarylinks li.dropdown').removeClass('open');
-                    });
+                    jQuery(this).addClass('open');
+
+                });
+                jQuery(this).mouseleave(function () {
+                    jQuery('#block-primarylinks li.dropdown').removeClass('open');
                 });
 
             });
@@ -66,30 +67,30 @@
         $('.block-cust-group-menu-block .dropdown-toggle').removeAttr('data-toggle');
         // Date time picker on service creation fields found at : /group/24/downtimes/create_downtimes
         $('#edit-startdate-planned, #edit-date-reported, #edit-enddate-planned')
-                .prop('readonly', 'readonly')
-                .css('background-color', '#fff')
-                .datetimepicker({
-                    format: 'DD.MM.YYYY - HH:mm',
-                    useCurrent: false,
-                    showTodayButton: true,
-                    ignoreReadonly: true,
-                    sideBySide: true,
+            .prop('readonly', 'readonly')
+            .css('background-color', '#fff')
+            .datetimepicker({
+                format: 'DD.MM.YYYY - HH:mm',
+                useCurrent: false,
+                showTodayButton: true,
+                ignoreReadonly: true,
+                sideBySide: true,
 //                    debug: true
-                })
-//                .on("dp.change", function (e) {
-//                    $(".day").on('click', function () {
-//                        $("a[data-action='togglePicker']").trigger('click');
-//                    });
-//                })
-//                .on("dp.show", function (e) {
-//                    $(".day").on('click', function () {
-//                        $("a[data-action='togglePicker']").trigger('click');
-//                    });
-//                })
-                .parent().css('position', 'relative');
+            })
+            //                .on("dp.change", function (e) {
+            //                    $(".day").on('click', function () {
+            //                        $("a[data-action='togglePicker']").trigger('click');
+            //                    });
+            //                })
+            //                .on("dp.show", function (e) {
+            //                    $(".day").on('click', function () {
+            //                        $("a[data-action='togglePicker']").trigger('click');
+            //                    });
+            //                })
+            .parent().css('position', 'relative');
         $('a.downtimes_details_link').hover(function () {
             $(this).parent().find('article.popup').show();
-        },function(){
+        }, function () {
             $(this).parent().find('article.popup').hide();
         });
     });
@@ -98,12 +99,12 @@
 
 function reset_form_elements() {
 //  alert('hi');
-  url = window.location.href;
-  res = url.split('?');
+    url = window.location.href;
+    res = url.split('?');
 //  window.location.assign(res['0']);
 // alert(res['0']);
 //  window.history.pushState( {}, null, res['0']);
-  window.location = res['0'];
+    window.location = res['0'];
 //  window.history.pushState( {}, null, res['0']);
-  return false;
+    return false;
 }

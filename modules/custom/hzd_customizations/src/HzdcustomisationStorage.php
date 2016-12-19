@@ -775,14 +775,16 @@ class HzdcustomisationStorage
         $pager = $downtimesQuery->extend('Drupal\Core\Database\Query\PagerSelectExtender');
         $pager->setCountQuery($count_query);
         $pager->limit(PAGE_LIMIT);
+        $pager->fields('d');
+        $pager->distinct();
         if($type == 'archived'){
+            $pager->addField('rci','end_date');
             $pager->orderby('rci.end_date', 'desc');
         }else{
             $pager->orderby('d.startdate_planned', 'desc');
         }
         
-        $pager->fields('d');
-        $pager->distinct();
+        
 //        kint($pager->__toString());
         $result = $pager->execute()->fetchAll();
         $renderer = \Drupal::service('renderer');
