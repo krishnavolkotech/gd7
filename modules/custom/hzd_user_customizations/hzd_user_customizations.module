@@ -108,7 +108,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             //pr($groups);exit;
             $form['groups'] = array(
                 '#type' => 'checkboxes',
-                '#title' => t('Groups'),
+                '#title' => t('@grp<span class="form-required"></span>',['@grp'=>'Groups']),
                 '#options' => $groups,
                 '#required' => true
             );

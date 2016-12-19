@@ -173,10 +173,10 @@ class DowntimesFilter extends FormBase {
 
     $date_format = 'd.m.Y - H:i';
 
-    $form[$type . '_header'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="filter_title_header">' . $type_header . '</div>',
-    ];
+//    $form[$type . '_header'] = [
+//      '#type' => 'markup',
+//      '#markup' => '<div class="filter_title_header">' . $type_header . '</div>',
+//    ];
     $form['states'] = [
       '#type' => 'select',
 //      '#title' => t('States'),
@@ -290,7 +290,7 @@ class DowntimesFilter extends FormBase {
       '#suffix' => '</div>',
       '#default_value' => isset($filter_enddate) ? $filter_enddate : '',
     ];
-    $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
+//    $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
 ////    dpm($_SESSION['downtime_type']);
 //    if (isset($_SESSION['downtime_type'])) {
 ////      $form['states']['#attributes'][] = array(
@@ -376,7 +376,7 @@ class DowntimesFilter extends FormBase {
     $current_time = time();
     $sql_where = " and sd.scheduled_p = 0 and sd.resolved = 0 and sd.startdate_planned <= $current_time";
     $string = 'incidents';
-    $incident_downtimes = HzdcustomisationStorage::current_incidents($sql_where, $string, '', $state_id);
+    $incident_downtimes = HzdcustomisationStorage::current_incidents('maintenance', $string, '', $state_id);
 
     $result = array();
     $result['incidents_form_render']['incidents_form'] = $incidents_data;

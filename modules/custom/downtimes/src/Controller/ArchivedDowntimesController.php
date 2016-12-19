@@ -38,13 +38,10 @@ class ArchivedDowntimesController extends ControllerBase {
       $service = $filter_value['services_effected'];
       $state = $filter_value['states'];
       $search_string = $filter_value['string'];
-      $default_downtimes = HzdcustomisationStorage::current_incidents(
-          $sql_where, $string, $service, $search_string, 
-          $limit, $state, $filter_value['filter_enddate']);
+      $default_downtimes = HzdcustomisationStorage::current_incidents('all',$string);
     }
     else {
-      $default_downtimes = HzdcustomisationStorage::current_incidents(
-          $sql_where, $string);
+        $default_downtimes = HzdcustomisationStorage::current_incidents('all',$string);
     }
 
     $result = array();
