@@ -660,9 +660,12 @@ class HzdcustomisationStorage
         $downtimesQuery = $db->select('downtimes', 'd');
         $downtimesQuery->addJoin('INNER','node_field_data','nfd','nfd.nid = d.downtime_id');
         $downtimesQuery->addJoin('INNER','group_content_field_data','gcfd','gcfd.entity_id = d.downtime_id');
+        if($type == 'archived'){
+            $downtimesQuery->addJoin('INNER','resolve_cancel_incident','rci','rci.downtime_id = d.downtime_id');
+        }
         $downtimesQuery = $downtimesQuery->condition('gcfd.type','%group_node%','LIKE');
         $filterData = \Drupal::request()->query;
-        if ($type != 'all') {
+        if ($type != 'archived') {
             $types = ['incident' => 0, 'maintenance' => 1];
             $downtimesQuery = $downtimesQuery->condition('d.scheduled_p', $types[$type]);
         }
@@ -704,7 +707,7 @@ class HzdcustomisationStorage
             $filterData->set('filter_startdate', $startDate->format('d.m.Y'));
 //            $downtimesQuery = $downtimesQuery->condition('d.scheduled_p',$filterData->get('type'));
         }
-        if ($string == 'archive') {
+        if ($type == 'archived') {
             $archiveCheckGroup = $downtimesQuery->orConditionGroup()
                 ->condition('d.resolved', 1)
                 ->condition('d.cancelled', 1);
@@ -719,8 +722,7 @@ class HzdcustomisationStorage
         if ($filterData->has('filter_startdate') && $filterData->has('filter_enddate') && $filterData->get('filter_startdate') != '' && $filterData->get('filter_enddate') != '') {
             $startDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_startdate'))->getTimestamp();
             $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp();
-            if ($string == 'archived') {
-                $downtimesQuery->addJoin('INNER','resolve_cancel_incident','rci','rci.downtime_id = d.downtime_id');
+            if ($type == 'archived') {
                 $andDateGrp = $downtimesQuery->andConditionGroup()
                     ->condition('d.startdate_planned', $startDate, '<')
                     ->condition('rci.end_date', $endDate, '>');
@@ -773,16 +775,21 @@ class HzdcustomisationStorage
         $pager = $downtimesQuery->extend('Drupal\Core\Database\Query\PagerSelectExtender');
         $pager->setCountQuery($count_query);
         $pager->limit(PAGE_LIMIT);
-        $pager->orderby('d.startdate_planned', 'desc');
+        if($type == 'archived'){
+            $pager->orderby('rci.end_date', 'desc');
+        }else{
+            $pager->orderby('d.startdate_planned', 'desc');
+        }
+        
         $pager->fields('d');
-//        kint($pager);
+        kint($pager->__toString());
         $result = $pager->execute()->fetchAll();
         $renderer = \Drupal::service('renderer');
         $headersNew = [];
-        if ($string == 'archived')
+        if ($type == 'archived')
             $headersNew = array_merge($headersNew, ['type' => 'Type']);
         $headersNew = array_merge($headersNew, ['description' => 'Beschreibung', 'service' => 'Verfahren', 'state' => 'Land']);
-        if ($string == 'archived')
+        if ($type == 'archived')
             $headersNew = array_merge($headersNew, ['status' => 'Status']);
         $headersNew = array_merge($headersNew, ['start_date' => 'Beginn', 'end_date' => 'Ende']);
         foreach ($result as $client) {
@@ -817,7 +824,7 @@ class HzdcustomisationStorage
 //            $user_state = trim($user_state, ',');
             //$user_state = \Drupal::database()->select("SELECT Group_concat(DISTINCT abbr SEPARATOR', ') FROM {states} WHERE id IN (" . $client->state_id . ")")->fetchField();
             $startdate = ($client->startdate_planned ? date('d.m.Y H:i', $client->startdate_planned) . ' Uhr' : "unbekannt");
-            if ($string == 'archived') {
+            if ($type == 'archived') {
                 if (isset($client->cancelled) && $client->cancelled == 1) {
                     $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
                     if (!empty($enddate_cancelled)) {
@@ -866,7 +873,7 @@ class HzdcustomisationStorage
 //            }
             $elements = [];
             $downtimeTypes = [0 => t('Störungen'), 1 => t('Blockzeiten')];
-            if ($string == 'archived') {
+            if ($type == 'archived') {
                 $elements = array_merge($elements, ['type' => $downtimeTypes[$client->scheduled_p]]);
             }
             $user_states = ['#items' => $user_states, '#theme' => 'item_list', '#type' => 'ul'];
@@ -878,7 +885,7 @@ class HzdcustomisationStorage
                 'state' => $renderer->render($user_states)));
 //                'state' => $user_state));
             
-            if ($string == 'archived') {
+            if ($type == 'archived') {
                 
                 $status = null;
                 if ($client->cancelled) {
@@ -909,7 +916,7 @@ class HzdcustomisationStorage
 //            $query_seralized = serialize($query_params)
             $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
             if ($downtime_type == 1) {
-                if ($maintenance_edit && (INCEDENT_MANAGEMENT == $group_id) && $string != 'archived') {
+                if ($maintenance_edit && (INCEDENT_MANAGEMENT == $group_id) && $type != 'archived') {
                     $links['action']['edit'] = [
                         '#title' => t('Update'),
                         '#type' => 'link',
@@ -931,7 +938,7 @@ class HzdcustomisationStorage
                 }
             } else {
                 if ($show_resolve && (INCEDENT_MANAGEMENT == $group_id)) {
-                    if ($string != 'archived') {
+                    if ($type != 'archived') {
                         $links['action']['edit'] = [
                             '#title' => t('Update'),
                             '#type' => 'link',
@@ -956,14 +963,14 @@ class HzdcustomisationStorage
 //            pr(count($links));
 //      $elements['table_type'] = $string;
             $rowClass = '';
-            if ($string != 'archived' && ($client->startdate_planned > REQUEST_TIME || $client->scheduled_p == 0)) {
+            if ($type != 'archived' && ($client->startdate_planned > REQUEST_TIME || $client->scheduled_p == 0)) {
                 $rowClass = 'text-danger';
             }
             $rows[] = ['data' => $elements, 'class' => $rowClass];
         }
         $title = ['incident'=>Markup::create('<strong class="text-danger">Aktuelle Störungen</strong>'),
             'maintenance'=>Markup::create('<strong><h2>Blockzeiten</h2></strong>'),
-            'all'=>Markup::create('<strong><h2>Störungen und Blockzeiten</h2></strong>')];
+            'archived'=>Markup::create('<strong><h2>Störungen und Blockzeiten</h2></strong>')];
         $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
 //    self::downtimes_display_table($variables);
         $build['problem_table'] = array(
