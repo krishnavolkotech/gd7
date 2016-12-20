@@ -151,7 +151,7 @@ class Cancelconfirm extends ConfirmFormBase {
     //$date_report = $downtimes_resolve['date_reported'];
 
     $record = array(
-      //'end_date' => strtotime($date_report),
+      'end_date' => REQUEST_TIME,
       'date_reported' => REQUEST_TIME,
       'comment' => $comment,
       'downtime_id' => $nid,

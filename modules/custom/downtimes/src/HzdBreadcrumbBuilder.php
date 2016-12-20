@@ -30,13 +30,14 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
      * {@inheritdoc}
      */
     public function build(RouteMatchInterface $route_match) {
-        $route_name = $route_match->getRouteName();
+//        $route_name = $route_match->getRouteName();
         $params = $route_match->getParameters()->all();
+        $type = $params['group_content']->entity_id->referencedEntities()[0]->getType();
         $breadcrumb = new Breadcrumb();
         $links = array();
         $links[] = Link::createFromRoute(t('Home'), '<front>');
         $group = $params['group'];
-        $listItems = self::getBreadcrumbConfigList($group->id());
+        $listItems = self::getBreadcrumbConfigList($type);
         $links[] = Link::createFromRoute($group->label(), 'entity.group.canonical', array('group' => $group->id()));
         if ($listItems)
             $links[] = Link::createFromRoute($listItems['title'], $listItems['route'], $listItems['params']);
@@ -47,20 +48,20 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
     /**
      * {@inheritdoc}
      */
-    static function getBreadcrumbConfigList($groupId) {
+    static function getBreadcrumbConfigList($type) {
         $listItems = [
-            INCIDENT_MANAGEMENT => [
+            'downtimes' => [
                 'route' => 'downtimes.new_downtimes_controller_newDowntimes',
                 'params' => ['group' => INCIDENT_MANAGEMENT],
                 'title' => t('Incidents and Maintenances'),
             ],
-            QUICKINFO => [
+            'quickinfo' => [
                 'route' => 'view.rz_schnellinfo.page_2',
                 'params' => ['arg_0' => QUICKINFO],
                 'title' => t('RZ-Schnellinfo'),
             ]
         ];
-        return $listItems[$groupId] ? $listItems[$groupId] : null;
+        return $listItems[$type] ? $listItems[$type] : null;
     }
     
 }

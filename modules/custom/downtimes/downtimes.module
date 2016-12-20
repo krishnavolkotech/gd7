@@ -221,7 +221,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
     else {
-      $title = ($downtime_type == 'create_downtimes') ? t('Incident') : t('Maintenance');
+      $title = ($downtime_type == 'create_downtimes') ? t('Störung') : t('Blockzeit');
       $form['title']['widget'][0]['value']['#default_value'] = $title;
     }
     if ((!empty($downtime_data->scheduled_p) && $downtime_data->scheduled_p == 1) || ($downtime_type == 'create_maintenance')) {

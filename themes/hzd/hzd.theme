@@ -207,7 +207,12 @@ function hzd_preprocess_node(&$variables) {
       $incident_data->state = trim(implode(', ',$statesArray),',');
     $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
-    $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => INCIDENT_MANAGEMENT),['attributes'=>['class'=>['back-search']]]);
+    $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
+      $groupId = INCIDENT_MANAGEMENT;
+    if($groupContent){
+        $groupId = $groupContent->getGroup()->id();
+    }
+    $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => $groupId),['attributes'=>['class'=>['back-search']],'query'=>\Drupal::request()->query->all()]);
     $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
   }
   if ($variables['node']->getType() == 'problem') {

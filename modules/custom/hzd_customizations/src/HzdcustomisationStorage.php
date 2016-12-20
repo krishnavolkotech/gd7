@@ -664,7 +664,11 @@ class HzdcustomisationStorage
             $downtimesQuery->addJoin('INNER','resolve_cancel_incident','rci','rci.downtime_id = d.downtime_id');
         }
         $downtimesQuery = $downtimesQuery->condition('gcfd.type','%group_node%','LIKE');
+        $downtimesQuery = $downtimesQuery->condition('gcfd.gid',$group_id);
         $filterData = \Drupal::request()->query;
+        $exposedFilterData = $filterData->all();
+        unset($exposedFilterData['form_build_id']);
+        unset($exposedFilterData['form_id']);
         if ($type != 'archived') {
             $types = ['incident' => 0, 'maintenance' => 1];
             $downtimesQuery = $downtimesQuery->condition('d.scheduled_p', $types[$type]);
@@ -912,7 +916,7 @@ class HzdcustomisationStorage
                 $links['action']['view'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']]])
+                    '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']],'query'=>$exposedFilterData])
                 ];
             }
 
