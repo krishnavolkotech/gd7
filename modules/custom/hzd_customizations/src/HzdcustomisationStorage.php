@@ -751,6 +751,7 @@ class HzdcustomisationStorage
                 $downtimesQuery = $downtimesQuery->condition('d.startdate_planned', $startDate, '>');
             } elseif ($filterData->has('filter_enddate') && $filterData->get('filter_enddate') != '') {
                 $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp();
+                $endDate += 86399;
                 if ($type == 'archived') {
                     $downtimesQuery = $downtimesQuery->condition('rci.end_date', $endDate, '<');
                 }else{
@@ -799,11 +800,11 @@ class HzdcustomisationStorage
         $renderer = \Drupal::service('renderer');
         $headersNew = $rows = [];
         if ($type == 'archived')
-            $headersNew = array_merge($headersNew, ['type' => 'Type']);
-        $headersNew = array_merge($headersNew, ['description' => 'Beschreibung', 'service' => 'Verfahren', 'state' => 'Land']);
+            $headersNew = array_merge($headersNew, ['type' => t('Type')]);
+        $headersNew = array_merge($headersNew, ['description' => t('Beschreibung'), 'service' => t('Verfahren'), 'state' => t('Land')]);
         if ($type == 'archived')
-            $headersNew = array_merge($headersNew, ['status' => 'Status']);
-        $headersNew = array_merge($headersNew, ['start_date' => 'Beginn', 'end_date' => 'Ende']);
+            $headersNew = array_merge($headersNew, ['status' => t('Status')]);
+        $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => t('Ende')]);
         foreach ($result as $client) {
 //            kint($client);
             $services = self::downtime_services_names($client->service_id);
