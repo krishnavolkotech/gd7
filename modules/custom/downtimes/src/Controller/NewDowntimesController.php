@@ -26,7 +26,7 @@ class NewDowntimesController extends ControllerBase {
       
     //Current Incidents
 //    $_SESSION['downtime_type'] = 'incident';
-    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
+//    $filter_value = HzdcustomisationStorage::get_downtimes_filters();
     $type = $filter_value['downtime_type'];    
     $incidents_data = \Drupal::formBuilder()->getForm(
         '\Drupal\downtimes\Form\DowntimesFilter', 'incidents', $group);

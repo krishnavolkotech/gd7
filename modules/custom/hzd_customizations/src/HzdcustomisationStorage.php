@@ -751,8 +751,13 @@ class HzdcustomisationStorage
                 $downtimesQuery = $downtimesQuery->condition('d.startdate_planned', $startDate, '>');
             } elseif ($filterData->has('filter_enddate') && $filterData->get('filter_enddate') != '') {
                 $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp();
-                $downtimesQuery = $downtimesQuery->condition('d.enddate_planned', $endDate, '<');
-                $downtimesQuery = $downtimesQuery->condition('d.enddate_planned', '', '<>');
+                if ($type == 'archived') {
+                    $downtimesQuery = $downtimesQuery->condition('rci.end_date', $endDate, '<');
+                }else{
+                    $downtimesQuery = $downtimesQuery->condition('d.enddate_planned', $endDate, '<');
+                    $downtimesQuery = $downtimesQuery->condition('d.enddate_planned', '', '<>');
+                }
+                
             }
         }
 //        pr($downtimesQuery->__toString());exit;
@@ -879,7 +884,7 @@ class HzdcustomisationStorage
 //                $flag = "";
 //            }
             $elements = [];
-            $downtimeTypes = [0 => t('Störungen'), 1 => t('Blockzeiten')];
+            $downtimeTypes = [0 => t('Störung'), 1 => t('Blockzeit')];
             if ($type == 'archived') {
                 $elements = array_merge($elements, ['type' => $downtimeTypes[$client->scheduled_p]]);
             }
