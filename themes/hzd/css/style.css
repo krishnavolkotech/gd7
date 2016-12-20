@@ -187,11 +187,11 @@ h6 {
   margin: 25px 0 15px 0 !important;
 }
 h1 {
-  font-size: 25px;
+  font-size: 22px;
 }
 h2,
 h2 a {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 29px;
   float: left;
   width: 100%;
@@ -750,10 +750,10 @@ nav#block-optionen {
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
 nav#block-optionen h2 {
-  font-size: 17px !important;
+  font-size: 16px !important;
   /*font-weight: bold;*/
   color: #04425f;
-  margin: 0 !important;
+  margin: 0 0 5px 0 !important;
   padding: 10px 0;
   line-height: 20px;
   word-wrap:break-word;
@@ -797,10 +797,9 @@ nav#block-optionen .field--name-body ul li:hover a {
 }
 h1.page-header {
   margin: 0 0 20px 0 !important;
-  /*font-size: 25px;*/
+  font-size: 24px;
   color:rgb(4, 66, 95);
   border-bottom: 2px solid #ddd;
-  font-size:17px;
 }
 .col-sm-9 .field--name-body.field--type-text-with-summary ul {
   width: 100%;
@@ -884,7 +883,6 @@ input.hasDatepicker{
   background: none !important;
 }
 #pagination ul li a {
-  font-size: 13px;
   color: #ffffff !important;
   padding: 4px 8px !important;
   float: left;
@@ -1054,11 +1052,6 @@ a,
 p {
   word-wrap: break-word;
 }
-.alert a,
-.field--label,
-.file {
-  letter-spacing: 0.5px;
-}
 li.comment-add {
   border-top: 1px solid #04425f;
   border-bottom: 1px solid #04425f;
@@ -1207,7 +1200,7 @@ table.view-deployed-releases {
   -webkit-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
   box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
-  z-index:10000;
+  z-index: 10000;
 }
 #block-primarylinks ul ul.dropdown-menu li {
   width: 100%;
@@ -1390,7 +1383,7 @@ nav#block-optionen ul li {
 .region-sidebar-first section.blue ul.menu.nav li,
 .block-hzd-release-management ul.menu.nav li{
   list-style-type: none;
-  padding: 3px 0px;
+  padding: 5px 10px 5px 0px;
   width:100%;
   float:left;
 }
@@ -1426,7 +1419,7 @@ nav#block-optionen ul.menu.nav li a,
 nav#block-optionen ul li a{
   width: 100%;
   display: block;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 12px;
   color: #222222;
   /*background-color: #ffffff;*/
   line-height: 20px;
@@ -1482,9 +1475,6 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   position: absolute;
   top: 20px;
   left: -21px;
-}
-#edit-services-effected .form-checkbox .published-services .data table tr th{
-  font-size:13px !important;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
   background: #fff !important;
@@ -1567,7 +1557,6 @@ form#downtimes-filter .string_search.hzd-form-element {
   float: left;
   color: #fff;
   line-height: 19px;
-  font-size: 13px;
 }
 .view-group-faqs .view-content .views-row .views-field-body {
   width: 100%;
@@ -1643,7 +1632,6 @@ article.downtimes .Incident .downtimes_title {
   font-weight: 600;
   float:left;
   width: 24%;
-  letter-spacing: 0.5px;
   margin:0 1% 3px 0;
 }
 /*article.downtimes .Incident .downtimes_title:after {
@@ -1669,9 +1657,6 @@ form.maintenance .downtimes_states_filter_form_wrapper {
  /* float: left !important;
   margin: 15px 0 20px 0 !important;
   width:100%;*/
-}
-form .label {
-  letter-spacing: 0.5px;
 }
 .curr_incidents_form + .reset_form button{
   margin-right:0;
@@ -1702,14 +1687,13 @@ strong {
   float:left;
   color:#04425f;
   margin:0 !important;
-  text-transform:uppercase;
   font-size:14px;
   text-indent: 2px;
   padding-right:7px;
   line-height:25px;
   /*background:url(../images/red-list-arrow.png)left 9px no-repeat;*/
   padding-left:0;
-  font-weight:normal;
+  font-weight:bold;
 }
 .block-incidents-block h2.block-title{
  color:#d0021b !important;
@@ -1725,12 +1709,11 @@ aside .block-favorites h2.block-title,
 .block-maintenance-block h2.block-title{
   margin:0 0 10px 0!important;
   padding:0 0 9px 0;
-  font-size:16px !important;
-  line-height:20px;
- border-bottom:2px solid #e6e9ed;
-  /*border-bottom:none !important;*/
-  font-family:robotoregular;
-  /*text-transform:uppercase;*/
+  font-size: 16px !important;
+  font-weight: bold;
+  line-height: 20px;
+  border-bottom: 2px solid #e6e9ed;
+  font-family: robotoregular;
 }
 aside .block-favorites h2.block-title{
   background: url("../images/ic_star_black.png") no-repeat scroll 130px top;
@@ -1836,14 +1819,12 @@ section .form-group .view-content .item-list ul li{
   width:100%;
   margin:0 0 7px 0;
   text-transform:uppercase;
-  font-size:13px;
   text-indent: 2px;
 }
 .block-incidents-block ul li a.text-danger{
   color:#d0021b;
   width:auto;
   margin:0;
-  font-size:13px;
   text-indent: 2px;
   padding:0 6px 0 0;
   line-height:20px;
@@ -1878,6 +1859,7 @@ aside section{
   margin-bottom:20px;
   padding:15px;
   background:#fff;
+  border: 1px solid #e6e9ed;
 }
 .block-maintenance-block{
   margin-bottom:10px;
@@ -1904,12 +1886,13 @@ section.star-favorites-add form{
   padding:0;
   background:transparent;
 }
+/*
 section.news-block,
 .block-incidents-block,
 .block-maintenance-block,
 .region-sidebar-first section{
   border:1px solid #e6e9ed;
-}
+} */
 aside .block-favorites .item-list ul li{
   float:left;
   padding:0;
@@ -1955,6 +1938,7 @@ aside section .form-group .view-footer{
  float:left;
  margin:0;
  padding:0;
+ border: none;
 }
 aside section .form-group .view-footer a.all-releases,
 aside section .form-group .view-footer a.all-problems,
@@ -2210,7 +2194,6 @@ form.maintenance .filter_title_header h3{
   line-height:26px;
   float:left;
   width:100%;
-  letter-spacing:0.1px;
   margin:10px 0 0 0 !important;
 }
 
@@ -2279,11 +2262,11 @@ section.block-star-favorites-block form button.del-fav{
   border:none !important
 }
 /* 20161114 r2.5.2 droy */
-
+/*
 aside section .form-group .item-list ul li .field-content {
   line-height: 1.75;
   font-size: 13px;
-}
+} */
 
 aside section .form-group .view-footer a.all-releases, aside section .form-group .view-footer a.all-problems, section .form-group .more-link a, .block-maintenance-block a, .block-incidents-block a {
   color: #333333;
@@ -2405,7 +2388,6 @@ article.downtimes .downtime-view-wrapper{
 article.downtimes .Incident .downtimes_content{
   width:75% !important;
   float:left;
-  letter-spacing:0.5px;
 }
 article.downtimes .downtimes_content_paragraph{
   width:100% !important;	
@@ -2465,7 +2447,7 @@ article.downtimes .changed-group span.downtimes-view-updated{
   float:left;
   margin:0 0 10px 0;
   padding:0 0 5px 0;
-  border-bottom:2px solid #e6e9ed;
+  border-bottom:1px solid #e6e9ed;
 }
 /*article.downtimes .changed-group u{
   width:100%;
