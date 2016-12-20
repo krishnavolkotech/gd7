@@ -203,7 +203,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       /* '#date_date_format' => $date_format,
         '#date_time_format' => $time_format, */
       '#description' => "Format : " . date($date_format, $yesterday_date),
-      '#default_value' => date($date_format, $yesterday_date),
+//      '#default_value' => date($date_format, $yesterday_date),
       '#required' => TRUE,
       '#prefix' => '<div class="downtimes-date-wrapper">',
     ];

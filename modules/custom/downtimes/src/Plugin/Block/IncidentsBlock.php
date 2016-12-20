@@ -79,7 +79,8 @@ class IncidentsBlock extends BlockBase {
         ->condition('service_id', '0', '<>')
         ->condition('cancelled', 0)
         ->condition('resolved', 0)
-        ->condition('scheduled_p', 0);
+        ->condition('scheduled_p', 0)
+        ->orderBy('startdate_planned', 'desc');
 //        ->condition('startdate_planned', REQUEST_TIME, '<=');
     /*    $orGroup = $maintenance_list->orConditionGroup()
       ->condition('scheduled_p', 0);
@@ -116,7 +117,7 @@ class IncidentsBlock extends BlockBase {
         }
         if ($groupContent) {
           $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-          $label = Markup::create(trim($serviceTitles, ',') . $stateTitles);
+          $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
           $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
           $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hover_markup);
         }

@@ -25,5 +25,7 @@ bootstrap-scripts:
     js/libraries/collapse.js : {}
     js/libraries/transition.js : {}
     js/libraries/bootstrap-datetimepicker.min.js : {}
+    https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js : {}
+    js/libraries/fit-columns.js : {}
   dependencies:
       - core/drupal.tableheader

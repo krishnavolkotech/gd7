@@ -71,29 +71,28 @@
             .css('background-color', '#fff')
             .datetimepicker({
                 format: 'DD.MM.YYYY - HH:mm',
-                useCurrent: false,
+                useCurrent: true,
                 showTodayButton: true,
                 ignoreReadonly: true,
                 sideBySide: true,
+                stepping:5,
 //                    debug: true
             })
-            //                .on("dp.change", function (e) {
-            //                    $(".day").on('click', function () {
-            //                        $("a[data-action='togglePicker']").trigger('click');
-            //                    });
-            //                })
-            //                .on("dp.show", function (e) {
-            //                    $(".day").on('click', function () {
-            //                        $("a[data-action='togglePicker']").trigger('click');
-            //                    });
-            //                })
             .parent().css('position', 'relative');
         $('a.downtimes_details_link').hover(function () {
             $(this).parent().find('article.popup').show();
         }, function () {
             $(this).parent().find('article.popup').hide();
         });
+        $('#block-maintenance').find('div').css('width','40%').css('float','none');
+        $('#block-maintenance').isotope({
+            layoutMode: 'masonry',
+            itemSelector: '#block-maintenance div'
+        });
+
     });
+
+
 })(jQuery);
 
 

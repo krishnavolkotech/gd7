@@ -81,7 +81,8 @@ class MaintenanceBlock extends BlockBase
             ->condition('service_id', '0', '<>')
             ->condition('cancelled', 0)
             ->condition('resolved', 0)
-            ->condition('scheduled_p', 1);
+            ->condition('scheduled_p', 1)
+            ->orderBy('startdate_planned', 'asc');
 //        ->condition('startdate_planned', REQUEST_TIME, '>=');
 //    $orGroup = $maintenance_list->orConditionGroup()
 //        ->condition('scheduled_p', 1)
@@ -126,7 +127,7 @@ class MaintenanceBlock extends BlockBase
                                 $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                            $data[$ids][$sids] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
+                            $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
                         }
                     }
                 }
@@ -155,7 +156,7 @@ class MaintenanceBlock extends BlockBase
                 '#title' => $title,
                 '#prefix' => '<div>',
                 '#suffix' => '</div>',
-                '#items' => $item,
+                '#items' => array_reverse($item),
                 '#theme' => 'item_list',
                 '#weight'=> ord($serviceNames[$sid]),
                 '#type' => 'ul',

@@ -147,12 +147,12 @@ function hzd_preprocess_node(&$variables) {
 
     $incident_data = new stdClass();
     $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
-//    $incident_data->service_name = explode(',',$result->service);
-    $incident_data->service_name = [
-      '#items' => explode(',', $result->service),
-      '#theme' => 'item_list',
-      '#type' => 'ul',
-    ];
+    $incident_data->service_name = $result->service;
+//    $incident_data->service_name = [
+//      '#items' => explode(',', $result->service),
+//      '#theme' => 'item_list',
+//      '#type' => 'ul',
+//    ];
     if (!empty($result->reason)) {
       $incident_data->reason = $reasons[$result->reason];
     }
@@ -198,12 +198,13 @@ function hzd_preprocess_node(&$variables) {
         ->execute()
         ->fetchCol();
     //$state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchAssoc();
-    $incident_data->state = [
-      '#items' => $statesArray,
-      '#theme' => 'item_list',
-      '#type' => 'ul',
-    ];
+//    $incident_data->state = [
+//      '#items' => $statesArray,
+//      '#theme' => 'item_list',
+//      '#type' => 'ul',
+//    ];
     //pr($result);
+      $incident_data->state = trim(implode(', ',$statesArray),',');
     $variables['revisions'] = downtimes_revisions($nid);
     $variables['incident'] = $incident_data;
     $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => INCIDENT_MANAGEMENT),['attributes'=>['class'=>['back-search']]]);
@@ -306,39 +307,16 @@ function downtimes_revisions($node) {
         $reason = $field_value['new'];
       }
       if (in_array($name, ['non_compliance', 'services', 'states'])) {
-        $logData[] = $labels[$name] . ' : ' . $field_value['new'];
+        $logData[] = $labels[$name] . ': ' . $field_value['new'];
       }
       if (in_array($name, ['start_date', 'end_date'])) {
         if (!empty($field_value['new']))
-          $logData[] = $labels[$name] . ' : ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y - H:i');
+          $logData[] = $labels[$name] . ': ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y - H:i') . ' Uhr';
       }
-
-
-//      $output .= "<div class ='field-wrapper'>";
-//      $name = str_replace("_", " ", $name);
-//      if ($name == 'non compliance' || $name == 'end date' || $name == 'start date') {
-//        if ($field_value['old'] || $field_value['new']) {
-//          $output .= t($name);
-//        }
-//        if ($field_value['old'] && $field_value['new']) {
-//          # $output .= 'geändert von' . " <b>" . t("from") . " </b>" . t($field_value['old']) . "<b> " . t("to") . " </b>" . t($field_value['new']);
-//          $output .= ' (alt): ' . DateTimePlus::createFromTimestamp((integer) $field_value['old'])->format('d.m.Y-H:i') . '<br>' . t("$name") . ' (neu): ' . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
-//        }
-//        else if ($field_value['old'] && !$field_value['new']) {
-//          $output .= ' ' . t("(entfernt)");
-//        }
-//        else if (!$field_value['old'] && $field_value['new']) {
-//          $output .= t(" (neu): ") . "</b>" . DateTimePlus::createFromTimestamp((integer) $field_value['new'])->format('d.m.Y-H:i');
-//        }
-//      }
-//      else {
-//        $output .= t("$name") . ' (alt): ' . ($field_value['old']) . '<br>' . t("$name") . ' (neu): ' . ($field_value['new']);
-//      }
-//      $output .= "</div>";
     }
 /////appending the reason as a seperate wrapper to preserve wyswyg styles
     if(!empty($reason))
-      $logData[] = t("@label : ",['@label'=>$labels['reason']]);
+      $logData[] = t("@label: ",['@label'=>$labels['reason']]);
     $items = [
       '#items' => $logData,
       '#theme' => 'item_list',
