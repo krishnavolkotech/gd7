@@ -166,11 +166,11 @@
 
                         var start_day = $('input#edit-startdate-planned').val();
                         var start_day_obj = new Date(convert_to_valid_format(start_day));
-                        start_day = weekday[start_day_obj.getDay()];
+                        start_day = weekday[start_day_obj.getDayOveridden()];
 
                         var end_day = $(this).val();
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
-                        end_day = weekday[end_day_obj.getDay()];
+                        end_day = weekday[end_day_obj.getDayOveridden()];
                         if (start_day_obj.getTime() >= end_day_obj.getTime()) {
                             $(this).parent('div').find('p.text-danger').remove();
                             $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
@@ -256,11 +256,11 @@
 
                 var start_day = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_day));
-                start_day = weekday[start_day.getDay()];
+                start_day = weekday[start_day.getDayOveridden()];
 
                 var end_day = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_day));
-                end_day = weekday[end_day.getDay()];
+                end_day = weekday[end_day.getDayOveridden()];
 
                 var start_day1 = $('input#edit-startdate-planned').val().split("-");
                 start_day1[0] = $.trim(start_day1[0]);
@@ -306,11 +306,11 @@
 
                 var start_date = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_date));
-                start_day = start_day.getDay();
+                start_day = start_day.getDayOveridden();
 
                 var end_date = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_date));
-                end_day = end_day.getDay();
+                end_day = end_day.getDayOveridden();
 
                 var passed = 0;
                 var final_check = 1;
@@ -359,9 +359,9 @@
             function check_with_sitewide_maintenance(start_date, end_date, weekday) {
                 var passed_flag = 0;
                 var start_day = new Date(convert_to_valid_format(start_date));
-                start_day = start_day.getDay();
+                start_day = start_day.getDayOveridden();
                 var end_day = new Date(convert_to_valid_format(end_date));
-                end_day = end_day.getDay();
+                end_day = end_day.getDayOveridden();
                 /*console.log("--------");
                  console.log(start_date);
                  console.log(start_day);
@@ -445,4 +445,15 @@
         }
     };
 })(jQuery, Drupal);
-
+//// overriding getday for german weekday format i.e. making mon as starting day
+Date.prototype.getDayOveridden = function() {
+    var weekday = new Array(7);
+    weekday[0] = 6;
+    weekday[1] = 0;
+    weekday[2] = 1;
+    weekday[3] = 2;
+    weekday[4] = 3;
+    weekday[5] = 4;
+    weekday[6] = 5;
+    return weekday[this.getDay()];
+};
