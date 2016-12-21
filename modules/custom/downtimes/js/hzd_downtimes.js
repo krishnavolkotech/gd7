@@ -156,13 +156,13 @@
                         var start_date_list = new Array();
                         var end_date_list = new Array();
                         var weekday = new Array(7);
-                        weekday[0] = "Sun";
-                        weekday[1] = "Mon";
-                        weekday[2] = "Tue";
-                        weekday[3] = "Wed";
-                        weekday[4] = "Thu";
-                        weekday[5] = "Fri";
-                        weekday[6] = "Sat";
+                        weekday[0] = "Mon";
+                        weekday[1] = "Tue";
+                        weekday[2] = "Wed";
+                        weekday[3] = "Thu";
+                        weekday[4] = "Fri";
+                        weekday[5] = "Sat";
+                        weekday[6] = "Sun";
 
                         var start_day = $('input#edit-startdate-planned').val();
                         var start_day_obj = new Date(convert_to_valid_format(start_day));
@@ -246,13 +246,13 @@
 
             function get_maintenance_window(end_date, start_date, max_start_date, min_end_date, start_date_list, end_date_list) {
                 var weekday = new Array(7);
-                weekday[0] = "Sun";
-                weekday[1] = "Mon";
-                weekday[2] = "Tue";
-                weekday[3] = "Wed";
-                weekday[4] = "Thu";
-                weekday[5] = "Fri";
-                weekday[6] = "Sat";
+                weekday[0] = "Mon";
+                weekday[1] = "Tue";
+                weekday[2] = "Wed";
+                weekday[3] = "Thu";
+                weekday[4] = "Fri";
+                weekday[5] = "Sat";
+                weekday[6] = "Sun";
 
                 var start_day = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_day));
@@ -295,13 +295,14 @@
             }
             function check_type() {
                 var weekday = new Array(7);
-                weekday[0] = "Sun";
-                weekday[1] = "Mon";
-                weekday[2] = "Tue";
-                weekday[3] = "Wed";
-                weekday[4] = "Thu";
-                weekday[5] = "Fri";
-                weekday[6] = "Sat";
+
+                weekday[0] = "Mon";
+                weekday[1] = "Tue";
+                weekday[2] = "Wed";
+                weekday[3] = "Thu";
+                weekday[4] = "Fri";
+                weekday[5] = "Sat";
+                weekday[6] = "Sun";
 
                 var start_date = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_date));
