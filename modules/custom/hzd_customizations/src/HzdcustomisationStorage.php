@@ -930,7 +930,8 @@ class HzdcustomisationStorage
             
             $links = [];
             if ($groupContent) {
-                $links['action']['view'] = [
+                $links['action']['popup'] = ['#type'=>'container','#attributes'=>['class'=>['popup-wrapper']]];
+                $links['action']['popup']['view'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
                     '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
@@ -978,12 +979,8 @@ class HzdcustomisationStorage
             }
             $headersNew = array_merge($headersNew, ['action' => 'Action']);
             $entity = Node::load($client->downtime_id);
-            if ($entity == null) {
-                pr($client->downtime_id);
-                exit;
-            }
             $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-            $links['node'] = $view_builder->view($entity, 'popup', 'de');
+            $links['action']['popup']['node'] = $view_builder->view($entity, 'popup', 'de');
             $elements['action'] = $renderer->render($links);
 //            pr(count($links));
 //      $elements['table_type'] = $string;
