@@ -84,8 +84,10 @@ class DowntimesFilter extends FormBase
                 '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('archived_downtimes') . "</div>",
                 '#prefix' => $form['#prefix']
             ];
+            $form['first_row'] = ['#type'=>'container','#attributes'=>['class'=>['downtimes_form_row first_row']]];
+            $form['second_row'] = ['#type'=>'container','#attributes'=>['class'=>['downtimes_form_row second_row']]];
             
-            $form['type'] = array(
+            $form['first_row']['type'] = array(
                 '#type' => 'select',
                 '#options' => $types,
                 '#title' => 'Type',
@@ -117,7 +119,7 @@ class DowntimesFilter extends FormBase
                 t('Last 12 Months'),
                 t('All'),
             );
-            $form['time_period'] = array(
+            $form['second_row']['time_period'] = array(
                 '#type' => 'select',
                 '#options' => $period,
                 '#title' => 'Period',
@@ -180,7 +182,7 @@ class DowntimesFilter extends FormBase
 //      '#type' => 'markup',
 //      '#markup' => '<div class="filter_title_header">' . $type_header . '</div>',
 //    ];
-        $form['states'] = [
+        $form['first_row']['states'] = [
             '#type' => 'select',
 //      '#title' => t('States'),
             '#description' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.'),
@@ -220,7 +222,7 @@ class DowntimesFilter extends FormBase
             $services[$services_data->nid] = $services_data->title;
         };
         
-        $form['services_effected'] = [
+        $form['first_row']['services_effected'] = [
             '#type' => 'select',
 //      '#title' => t('Services Effected'),
             '#options' => $services,
@@ -242,7 +244,7 @@ class DowntimesFilter extends FormBase
             '#suffix' => '</div>',
             '#default_value' => $filterData->get('services_effected',1),
         ];
-        $form['filter_startdate'] = [
+        $form['second_row']['filter_startdate'] = [
             '#type' => 'textfield',
 //      '#title' => t('Start Date'),
             '#placeholder' => t('Start Date'),
@@ -269,7 +271,7 @@ class DowntimesFilter extends FormBase
             '#suffix' => '</div>',
             '#default_value' => $filterData->get('filter_startdate',''),
         ];
-        $form['filter_enddate'] = [
+        $form['second_row']['filter_enddate'] = [
             '#type' => 'textfield',
             '#placeholder' => t('End Date'),
             '#description' => date($date_format, time()),
