@@ -87,6 +87,7 @@
 
         jQuery('div.popup-wrapper')
             .mouseover(function () {
+                $('article.popup').hide();
                 $(this).find('article.popup').show();
             });
 

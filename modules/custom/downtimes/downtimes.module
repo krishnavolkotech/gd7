@@ -556,9 +556,9 @@ function downtimes_set_default_values(&$form, $nid) {
     if (!empty($downtime_data)) {
         $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
         $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
-        $form['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
+        $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
         if (!empty($downtime_data->enddate_planned)) {
-            $form['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
+            $form['dates']['end']['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
         }
         $form['reason_for_noncompliance']['#default_value'] = $downtime_data->reason;
     }
