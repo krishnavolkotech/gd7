@@ -48,7 +48,7 @@
             });
 
             // Advance Time validations.
-            $('input#edit-startdate-planned').blur(function () {
+            $('input#edit-startdate-planned').focusout(function () {
                 var start_date = convert_to_valid_format($(this).val());
                 var checkbox_count = $("#edit-services-effected input:checked").length;
                 if (checkbox_count) {
@@ -172,11 +172,11 @@
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDayOveridden()];
                         if (start_day_obj.getTime() >= end_day_obj.getTime()) {
-                            $(this).parent('div').find('p.text-danger').remove();
-                            $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
+                            $(this).parents('div.end-date-wrapper').find('p.text-danger').remove();
+                            $(this).parents('div.end-date-wrapper').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
                             $(this).addClass('text-danger');
                         }else{
-                            $(this).parent('div').find('p.text-danger').remove();
+                            $(this).parents('div.end-date-wrapper').find('p.text-danger').remove();
                             $(this).removeClass('text-danger');
                         }
                         var maintenance_exists = check_type();
