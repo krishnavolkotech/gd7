@@ -147,34 +147,37 @@
 
 
             // Maintenance window validations.
-            $('input#edit-enddate-planned').blur(function () {
+            $('input#edit-enddate-planned').focusout(function () {
                 if ($(this).val()) {
                     var end_date = $(this).val().split('-');
                     end_date = end_date[1];
                     var checkbox_count = $("#edit-services-effected input:checked").length;
-                    if (checkbox_count) {
+                    if (checkbox_count > 0) {
                         var start_date_list = new Array();
                         var end_date_list = new Array();
                         var weekday = new Array(7);
-                        weekday[0] = "Sun";
-                        weekday[1] = "Mon";
-                        weekday[2] = "Tue";
-                        weekday[3] = "Wed";
-                        weekday[4] = "Thu";
-                        weekday[5] = "Fri";
-                        weekday[6] = "Sat";
+                        weekday[0] = "Mon";
+                        weekday[1] = "Tue";
+                        weekday[2] = "Wed";
+                        weekday[3] = "Thu";
+                        weekday[4] = "Fri";
+                        weekday[5] = "Sat";
+                        weekday[6] = "Sun";
 
                         var start_day = $('input#edit-startdate-planned').val();
                         var start_day_obj = new Date(convert_to_valid_format(start_day));
-                        start_day = weekday[start_day_obj.getDay()];
+                        start_day = weekday[start_day_obj.getDayOveridden()];
 
                         var end_day = $(this).val();
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
-                        end_day = weekday[end_day_obj.getDay()];
+                        end_day = weekday[end_day_obj.getDayOveridden()];
                         if (start_day_obj.getTime() >= end_day_obj.getTime()) {
                             $(this).parent('div').find('p.text-danger').remove();
                             $(this).parent('div').append('<p class="text-danger">' + Drupal.t('Das Enddatum sollte nach dem Startdatum liegen.') + '</p>');
                             $(this).addClass('text-danger');
+                        }else{
+                            $(this).parent('div').find('p.text-danger').remove();
+                            $(this).removeClass('text-danger');
                         }
                         var maintenance_exists = check_type();
                         if (!maintenance_exists) {
@@ -186,9 +189,9 @@
                             $('#edit-reason-for-noncompliance option').removeAttr('selected', 'selected');
                             $('#edit-reason-for-noncompliance option:[value = "0"]').attr('selected', 'selected');
                         }
-                        return true;
+                        // return true;
 
-                        $("#edit-services-effected input:checkbox:checked").each(function () {
+                        /*$("#edit-services-effected input:checkbox:checked").each(function () {
                             var service_id = $(this).val();
                             if ((a.maintenance[service_id][start_day] instanceof Object) && (a.maintenance[service_id][end_day] instanceof Object)) {
                                 start_date_list.push(get_time_in_seconds(a.maintenance[service_id][start_day].from_time));
@@ -196,11 +199,11 @@
                             } else {
                                 start_date_list.push("NoVal");
                                 end_date_list.push("NoVal");
-                                return;
+                                // return true;
                             }
-                        });
+                        });*/
 
-                        if ((jQuery.inArray("NoVal", start_date_list) == -1) || (jQuery.inArray("NoVal", end_date_list) == -1)) {
+                        /*if ((jQuery.inArray("NoVal", start_date_list) == -1) || (jQuery.inArray("NoVal", end_date_list) == -1)) {
                             if ((start_date_list.length) && (end_date_list.length)) {
                                 var max_start_date = Math.max.apply(Math, start_date_list);
                                 var min_end_date = Math.min.apply(Math, end_date_list);
@@ -211,9 +214,9 @@
                         } else {
                             var max_start_date = '';
                             var min_end_date = '';
-                        }
+                        }*/
 
-                        var start_date = $('input#edit-startdate-planned').val().split('-');
+                        /*var start_date = $('input#edit-startdate-planned').val().split('-');
                         start_date = start_date[1];
                         if (get_maintenance_window(get_time_in_seconds(end_date), get_time_in_seconds(start_date), max_start_date, min_end_date, start_date_list, end_date_list)) {
                             $('.reason-for-noncompliance').show();
@@ -223,7 +226,7 @@
                             $('#edit-maintenance-result').val(0);
                             $('#edit-reason-for-noncompliance option').removeAttr('selected', 'selected');
                             $('#edit-reason-for-noncompliance option:[value = "0"]').attr('selected', 'selected');
-                        }
+                        }*/
                     }
                 }
             });
@@ -243,21 +246,21 @@
 
             function get_maintenance_window(end_date, start_date, max_start_date, min_end_date, start_date_list, end_date_list) {
                 var weekday = new Array(7);
-                weekday[0] = "Sun";
-                weekday[1] = "Mon";
-                weekday[2] = "Tue";
-                weekday[3] = "Wed";
-                weekday[4] = "Thu";
-                weekday[5] = "Fri";
-                weekday[6] = "Sat";
+                weekday[0] = "Mon";
+                weekday[1] = "Tue";
+                weekday[2] = "Wed";
+                weekday[3] = "Thu";
+                weekday[4] = "Fri";
+                weekday[5] = "Sat";
+                weekday[6] = "Sun";
 
                 var start_day = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_day));
-                start_day = weekday[start_day.getDay()];
+                start_day = weekday[start_day.getDayOveridden()];
 
                 var end_day = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_day));
-                end_day = weekday[end_day.getDay()];
+                end_day = weekday[end_day.getDayOveridden()];
 
                 var start_day1 = $('input#edit-startdate-planned').val().split("-");
                 start_day1[0] = $.trim(start_day1[0]);
@@ -292,24 +295,25 @@
             }
             function check_type() {
                 var weekday = new Array(7);
-                weekday[0] = "Sun";
-                weekday[1] = "Mon";
-                weekday[2] = "Tue";
-                weekday[3] = "Wed";
-                weekday[4] = "Thu";
-                weekday[5] = "Fri";
-                weekday[6] = "Sat";
+
+                weekday[0] = "Mon";
+                weekday[1] = "Tue";
+                weekday[2] = "Wed";
+                weekday[3] = "Thu";
+                weekday[4] = "Fri";
+                weekday[5] = "Sat";
+                weekday[6] = "Sun";
 
                 var start_date = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_date));
-                start_day = start_day.getDay();
+                start_day = start_day.getDayOveridden();
 
                 var end_date = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_date));
-                end_day = end_day.getDay();
+                end_day = end_day.getDayOveridden();
 
                 var passed = 0;
-                var final_check = 1;
+                var final_check = 0;
 
                 if (check_with_sitewide_maintenance(start_date, end_date, weekday)) {
                     return 1;
@@ -348,6 +352,9 @@
                     if (passed == 0) {
                         final_check = 0;
                         return false;
+                    }else{
+                        final_check = 1;
+                        return false;
                     }
                 });
                 return final_check;
@@ -355,9 +362,9 @@
             function check_with_sitewide_maintenance(start_date, end_date, weekday) {
                 var passed_flag = 0;
                 var start_day = new Date(convert_to_valid_format(start_date));
-                start_day = start_day.getDay();
+                start_day = start_day.getDayOveridden();
                 var end_day = new Date(convert_to_valid_format(end_date));
-                end_day = end_day.getDay();
+                end_day = end_day.getDayOveridden();
                 /*console.log("--------");
                  console.log(start_date);
                  console.log(start_day);
@@ -441,4 +448,15 @@
         }
     };
 })(jQuery, Drupal);
-
+//// overriding getday for german weekday format i.e. making mon as starting day
+Date.prototype.getDayOveridden = function() {
+    var weekday = new Array(7);
+    weekday[0] = 6;
+    weekday[1] = 0;
+    weekday[2] = 1;
+    weekday[3] = 2;
+    weekday[4] = 3;
+    weekday[5] = 4;
+    weekday[6] = 5;
+    return weekday[this.getDay()];
+};

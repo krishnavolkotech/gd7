@@ -132,7 +132,7 @@ class CustNodeController extends ControllerBase {
     return AccessResult::neutral();
   }
 
-  ///added for drupal core views 
+  ///added for drupal core views
   static function hzdGroupViewsAccess() {
     if ($group = \Drupal::routeMatch()->getParameter('arg_0')) {
       if (!is_object($group))

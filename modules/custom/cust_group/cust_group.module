@@ -356,7 +356,7 @@ function cust_group_user_delete($user) {
 }
 
 
-function cust_group_user_login($account) {
-    (new \Symfony\Component\HttpFoundation\RedirectResponse('/'))->send();
-    return true;
+function cust_group_preprocess_node(&$variables){
+    $variables['page'] = 1;
+//    exit;
 }

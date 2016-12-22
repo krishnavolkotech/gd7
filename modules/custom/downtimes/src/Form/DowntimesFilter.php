@@ -37,6 +37,7 @@ class DowntimesFilter extends FormBase
 //        $filter_value = HzdcustomisationStorage::get_downtimes_filters();
         $form['#attributes'] = array('class' => [$type]);
         $form['#method'] = 'get';
+        $form['#token'] = FALSE;
         if (isset($filter_value['downtime_type']) &&
             $filter_value['downtime_type'] == $type
         ) {
@@ -355,6 +356,7 @@ class DowntimesFilter extends FormBase
      * {@inheritdoc}
      */
     public function validateForm(array &$form, FormStateInterface $form_state) {
+        $form_state->cleanValues();
         parent::validateForm($form, $form_state);
     }
     
