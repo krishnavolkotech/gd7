@@ -76,7 +76,7 @@
                 ignoreReadonly: true,
                 sideBySide: true,
                 stepping:5,
-//                    debug: true
+//                debug: true
             })
             .parent().css('position', 'relative');
         $('a.downtimes_details_link').hover(function () {

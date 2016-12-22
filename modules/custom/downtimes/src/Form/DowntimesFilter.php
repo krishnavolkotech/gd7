@@ -49,7 +49,8 @@ class DowntimesFilter extends FormBase
 //            $filter_enddate = $filter_value['filter_enddate'];
 //            $search_string = $filter_value['string'];
         }
-        
+        $form['first_row'] = ['#type' => 'container', '#attributes' => ['class' => ['downtimes_form_row first_row']]];
+        $form['second_row'] = ['#type' => 'container', '#attributes' => ['class' => ['downtimes_form_row second_row']]];
         if ($type == 'incidents') {
 //            $wrapper = 'incidents_search_results_wrapper';
             $form_prefix = 'curr_incidents_form';
@@ -72,7 +73,7 @@ class DowntimesFilter extends FormBase
 //            $filter_startdate = $filter_value['filter_startdate'];
 //            $filter_enddate = $filter_value['filter_enddate'];
 //            $search_string = $filter_value['string'];
-            
+
 //            $wrapper = 'archived_search_results_wrapper';
             $form_prefix = 'archived_maintenance_search_results_wrapper';
             $form['#prefix'] = "<div class =$form_prefix>";
@@ -84,8 +85,7 @@ class DowntimesFilter extends FormBase
                 '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('archived_downtimes') . "</div>",
                 '#prefix' => $form['#prefix']
             ];
-            $form['first_row'] = ['#type'=>'container','#attributes'=>['class'=>['downtimes_form_row first_row']]];
-            $form['second_row'] = ['#type'=>'container','#attributes'=>['class'=>['downtimes_form_row second_row']]];
+            
             
             $form['first_row']['type'] = array(
                 '#type' => 'select',
@@ -105,7 +105,7 @@ class DowntimesFilter extends FormBase
                 '#attributes' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                '#default_value' => $filterData->get('type','select'),
+                '#default_value' => $filterData->get('type', 'select'),
                 '#prefix' => '<div class = "type_search_dropdown hzd-form-element">',
                 '#suffix' => '</div><div style="clear:both"></div>',
             );
@@ -140,7 +140,7 @@ class DowntimesFilter extends FormBase
                 ),
                 '#prefix' => '<div class = "time_period_search_dropdown hzd-form-element">',
                 '#suffix' => '</div>',
-                '#default_value' => $filterData->get('time_period',0),
+                '#default_value' => $filterData->get('time_period', 0),
             );
             $form['group'] = array(
                 '#type' => 'hidden',
@@ -153,7 +153,7 @@ class DowntimesFilter extends FormBase
                 '#attributes' => array("class" => ['search_string']),
                 '#prefix' => '<div class = "string_search hzd-form-element">',
                 '#suffix' => '</div>',
-                '#default_value' => $filterData->get('string',''),
+                '#default_value' => $filterData->get('string', ''),
             );
             
             $form['submit'] = array(
@@ -203,7 +203,7 @@ class DowntimesFilter extends FormBase
             ),
             '#prefix' => '<div class = "hzd-form-element">',
             '#suffix' => '</div>',
-            '#default_value' => $filterData->get('states',0),
+            '#default_value' => $filterData->get('states', 0),
         ];
         
         $services['0'] = '<' . t('Service') . '>';
@@ -242,7 +242,7 @@ class DowntimesFilter extends FormBase
             ),
             '#prefix' => '<div class = "hzd-form-element">',
             '#suffix' => '</div>',
-            '#default_value' => $filterData->get('services_effected',1),
+            '#default_value' => $filterData->get('services_effected', 1),
         ];
         $form['second_row']['filter_startdate'] = [
             '#type' => 'textfield',
@@ -269,7 +269,7 @@ class DowntimesFilter extends FormBase
             ),
             '#prefix' => '<div class = "hzd-form-element">',
             '#suffix' => '</div>',
-            '#default_value' => $filterData->get('filter_startdate',''),
+            '#default_value' => $filterData->get('filter_startdate', ''),
         ];
         $form['second_row']['filter_enddate'] = [
             '#type' => 'textfield',
@@ -292,7 +292,7 @@ class DowntimesFilter extends FormBase
             ),
             '#prefix' => '<div class = "hzd-form-element">',
             '#suffix' => '</div>',
-            '#default_value' => $filterData->get('filter_enddate',''),
+            '#default_value' => $filterData->get('filter_enddate', ''),
         ];
 //    $form['downtime_type'] = ['#type' => 'hidden', '#value' => $type];
 ////    dpm($_SESSION['downtime_type']);
