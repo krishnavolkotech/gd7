@@ -128,7 +128,7 @@
 .downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget,
 .form-item-date-reported .bootstrap-datetimepicker-widget{
   position:absolute;
-  top:-365px;
+  top:-335px !important;
   z-index:100;
 }
 .downtimes-date-wrapper{

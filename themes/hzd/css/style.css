@@ -833,7 +833,7 @@ nav#block-optionen .field--name-body ul li:hover a {
 }
 h1.page-header {
   margin: 0 0 20px 0 !important;
-  font-size: 24px;
+  font-size: 22px;
   color:rgb(4, 66, 95);
   border-bottom: 2px solid #ddd;
 }
@@ -1013,9 +1013,9 @@ input[type="button"]:hover,
   background: #fff !important;
   color:#04425f;
 }
-.btn-default,
+/*.btn-default,*/
 .views-exposed-form button,
-.btn-default:hover,
+/*.btn-default:hover,*/
 .views-exposed-form button:hover,
 button.button--reset,
 button.button--reset:hover{
@@ -1025,6 +1025,18 @@ button.button--reset:hover{
   padding: 6px 12px !important;
   border-radius: 0 !important;
   float: right;
+  border: 1px solid #ddd !important;
+  margin:0 !important;
+  height:34px;
+}
+.btn-default,
+.btn-default:hover{
+  background: #fff !important;
+  font-size: 14px;
+  color: #333 !important;
+  padding: 6px 12px !important;
+  border-radius: 0 !important;
+  float: left;
   border: 1px solid #ddd !important;
   margin:0 !important;
   height:34px;
@@ -1045,7 +1057,7 @@ button.button--reset:hover{
 .hzd-form-element {
   /*width: 31%;*/
   float: left;
-  margin: 1% 2% 0 0;
+  margin: 0 2% 0 0;
 }
 .hzd-form-element-auto {
   width: auto;
@@ -1536,6 +1548,7 @@ nav#block-optionen ul li.active ul.dropdown-menu {
 }
 form#downtimes-filter .search_string_submit {
   padding: 0px !important;
+  margin-top:0;
 }
 form#downtimes-filter .search_string_submit button {
   margin: -1px 0 0 -1px !important;
@@ -1712,14 +1725,20 @@ nav#block-optionen ul.menu.nav li.expanded.dropdown.open a.dropdown-toggle {
 }
 form#downtimes-filter .archive_other_states_filter_form_wrapper,
 form#downtimes-filter .archive_downtimes_states_filter_form_wrapper,
-form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper,
-form#downtimes-filter .archived_maintenance_search_results_wrapper {
-  /*width: 100%;
-  float: left;*/
+form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper {
+  /*width: 100%;*/
+  float: left;
+}
+form#downtimes-filter .downtimes_form_row{
+  margin:0 !important;
+}
+form#downtimes-filter .archived_maintenance_search_results_wrapper{
+  width:100%;
+  float:left;
 }
 form#downtimes-filter .string_search.hzd-form-element {
   width: 25% !important;
-  margin-top: 12px;
+  margin-top: 0;
 }
 form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper .search_string_submit {
   margin-top: 12px;
@@ -1780,22 +1799,21 @@ aside .block-favorites h2.block-title{
 .block-maintenance-block ul.downtime-hover{
   display: inline-block;
   margin: 0;
-  padding: 0;
-  border: 1px solid #333333;
+  padding: 10px;
+  border:1px solid rgb(204, 204, 204);
   width: 60% !important;
   position: absolute;
   top: 8px;
   left: 180px;
   z-index: 10;
-  background: #fff;
-  border-bottom: none;
+  background: #fbfcfc;
 }
 .block-maintenance-block ul.downtime-hover li{
-  border-bottom: 1px solid #333333;
+  border-bottom:1px solid #dddddd;
   float: left;
   list-style-type: none;
   margin: 0;
-  padding: 5px 10px;
+  padding: 5px 0;
   width: 100%;
 }
 section .form-group .view-content .item-list ul,
@@ -2136,17 +2154,16 @@ form.node-service-profile-edit-form .service-time .container-inline input.form-c
 }
 section.block-incidents-block ul.downtime-hover{
   margin:0;
-  padding:0;
+  padding:10px;
   display:inline-block;
-  border:1px solid #222222;
+  border:1px solid rgb(204, 204, 204);
   width:60% !important;
   position:absolute;
   top:25px;
   left:12px;
   z-index:10;
-  background-color:#fff;
+  background-color:#fbfcfc;
   display:none;
-  border-bottom:none;
 
 }
 section.block-maintenance-block-block ul.downtime-hover{
@@ -2174,7 +2191,7 @@ section.block-maintenance-block-block ul.downtime-hover li{
   display:inline-block;
   margin:0 !important;
   line-height:25px;
-  border-bottom:1px solid #222222;
+  border-bottom:1px solid rgb(204, 204, 204);
   padding:0 6px !important;
 }
 section.block-incidents-block ul.downtime-hover li{
@@ -2376,6 +2393,12 @@ form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox{
   margin:0 2% 7px 0;
   padding:0;
 }
+/*form.node-downtimes-edit-form .form-wrapper .form-type-checkbox .control-label{
+  padding-left:30px;
+}
+form.node-downtimes-edit-form .form-wrapper .form-type-checkbox input.form-checkbox{
+  margin-left:-23px !important;
+}*/
 form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox{
   margin-top:0;
 }
@@ -2403,14 +2426,6 @@ form.node-downtimes-form .panel .panel-heading {
     color: #333;
     background:transparent;
     border:none;
-}
-form.node-downtimes-edit-form .form-item-startdate-planned,
-form.node-downtimes-edit-form .form-item-enddate-planned,
-form.node-downtimes-form .form-item-startdate-planned,
-form.node-downtimes-form .form-item-enddate-planned{
-  width:49% !important;
-  float:left;
-  margin-bottom:20px;
 }
 form.node-downtimes-edit-form .form-item-startdate-planned,
 form.node-downtimes-form .form-item-startdate-planned{
@@ -2734,7 +2749,7 @@ a.downtimes_cancel_link{
   float:left;
   font-size:0;
 }
-/*
+
 #incidents_search_results_wrapper table tr.odd td:last-child,
 #incidents_search_results_wrapper table tr.even td:last-child,
 #archived_search_results_wrapper table tr.odd td:first-child,
@@ -2744,19 +2759,19 @@ a.downtimes_cancel_link{
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(2),
 #archived_search_results_wrapper table tr.even td:nth-child(2){
-  width:24% !important;
+  width:22% !important;
   word-break:break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(3),
 #archived_search_results_wrapper table tr.even td:nth-child(3)
 {
-  width:10% !important;
+  width:14% !important;
   word-break:break-all;
 }
 
 #archived_search_results_wrapper table tr.odd td:nth-child(4),
 #archived_search_results_wrapper table tr.even td:nth-child(4){
-  width:10% !important;
+  width:8% !important;
   word-break:break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
@@ -2773,7 +2788,7 @@ a.downtimes_cancel_link{
   width:13.5% !important;
   word-break:break-all;
 }
-*/
+
 #incidents_search_results_wrapper table tr td:last-child,
 #maintenance_search_results_wrapper table tr td:last-child{
   width:100px;
@@ -2803,6 +2818,10 @@ a.downtimes_cancel_link{
 table tr td,
 table tr th{
   word-wrap:break-word;
+}
+#incidents_search_results_wrapper table tr td:last-child .popup-wrapper,
+#maintenance_search_results_wrapper table tr td:last-child .popup-wrapper{
+  float:left;
 }
 #incidents_search_results_wrapper table tr td p{
   /*width:70%;*/
@@ -2861,10 +2880,12 @@ article.popup .downtime-view-wrapper{
   float:left;
   padding:5px 0 !important;
 }
-form.form.node-service-profile-edit-form  label input.form-checkbox,
-.form-composite .form-checkboxes label input.form-checkbox,
-.vertical-tabs-panes label input.form-checkbox{
+/*form.form.node-service-profile-edit-form  label input.form-checkbox,
+.form-composite .form-checkboxes label input.form-checkbox{
  margin-top:0 ;
+}*/
+.vertical-tabs-panes label input.form-checkbox{
+ margin:4px 0px 0 -20px !important ;
 }
 .region.region-content .field--type-text-long ul{
    width:100%;
@@ -2886,6 +2907,7 @@ textarea.error,
 select.error{
   border:1px solid #d0021b !important;
 }
+
 .error-msg{
   font-size:12px;
   width:100%;
@@ -2902,4 +2924,38 @@ form.set-service-specific-notifications .btn-success{
 .bootstrap-datetimepicker-widget td .timepicker-hour,
 .bootstrap-datetimepicker-widget td .timepicker-minute{
   padding:0 11px;
+}
+form.node-downtimes-edit-form .form-item-startdate-planned,
+form.node-downtimes-edit-form .form-item-enddate-planned,
+form.node-downtimes-form .form-item-startdate-planned,
+form.node-downtimes-form .form-item-enddate-planned{
+  width:100% !important;
+  float:left;
+  margin-bottom:0;
+}
+form.node-downtimes-edit-form .start-date-wrapper p.text-danger,
+form.node-downtimes-edit-form .end-date-wrapper p.text-danger,
+form.node-downtimes-form .start-date-wrapper p.text-danger,
+form.node-downtimes-form .end-date-wrapper p.text-danger{
+  margin-top:10px;
+  float:left;
+}
+form.node-downtimes-edit-form .start-date-wrapper,
+form.node-downtimes-edit-form .end-date-wrapper,
+form.node-downtimes-form .start-date-wrapper,
+form.node-downtimes-form .end-date-wrapper{
+  width:50%;
+  float:left;
+}
+form.incidents .downtime_notes{
+  margin-bottom:20px;
+}
+.path-frontpage .block-maintenance-block .maintenance-home-info{
+  width:100% !important;
+  margin-top:16px !important;
+  left:0 !important;
+  float:left;  
+}
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn{
+  opacity:1 !important;	
 }
