@@ -37,3 +37,5 @@ sites/simpletest
 *~
 /nbproject/*
 .idea/
+config/dev/*
+config/dev-backup/*

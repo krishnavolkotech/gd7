@@ -48,3 +48,9 @@ hzd_customizations.front_page_blocks_settings:
   route_name: hzd_customizations.front_page_blocks_settings
   description: 'Settings for front page blocks'
   parent: system.admin_config
+
+hzd_customizations.mail_templates_menu:
+  title: 'Mail Templates'
+  route_name: hzd_customizations.mail_templates
+  description: 'Mail template contents'
+  parent: system.admin

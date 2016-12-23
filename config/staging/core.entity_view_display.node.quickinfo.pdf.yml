@@ -160,6 +160,9 @@ content:
 hidden:
   comment: true
   entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_custom_title: true
   field_related_transfer_number: true
   langcode: true
