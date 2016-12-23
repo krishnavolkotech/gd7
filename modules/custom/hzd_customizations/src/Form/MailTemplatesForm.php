@@ -42,14 +42,14 @@ class MailTemplatesForm extends ConfigFormBase
      * {@inheritdoc}
      */
     protected function getEditableConfigNames() {
-        return ['hzd_custom.mailtemplates'];
+        return ['hzd_customizations.mailtemplates'];
     }
     
     /**
      * {@inheritdoc}
      */
     public function buildForm(array $form, FormStateInterface $form_state) {
-        $config = $this->config('hzd_custom.mailtemplates');
+        $config = $this->config('hzd_customizations.mailtemplates');
         $data = $config->get($this->mailType);
         $nodeType = \Drupal\node\Entity\NodeType::load($this->mailType);
         $form['#title'] = t('Mail Template for @type',['@type'=>$nodeType->label()]);
@@ -87,7 +87,7 @@ class MailTemplatesForm extends ConfigFormBase
     public function submitForm(array &$form, FormStateInterface $form_state) {
         parent::submitForm($form, $form_state);
         $data = ['subject' => $form_state->getValue('subject'), 'mail_content' => $form_state->getValue('mail_content')];
-        $this->config('hzd_custom.mailtemplates')
+        $this->config('hzd_customizations.mailtemplates')
             ->set($this->mailType, $data)
             ->save();
     }
