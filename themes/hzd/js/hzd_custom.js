@@ -98,7 +98,7 @@
             $('article.popup').hide();
         });
 
-        $('#block-maintenance').find('div').css('width', '40%').css('float', 'none');
+        $('#block-maintenance').find('div').css('width', '47%').css('float', 'none');
         $('#block-maintenance').isotope({
             layoutMode: 'masonry',
             itemSelector: '#block-maintenance div'
