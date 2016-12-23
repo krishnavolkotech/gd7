@@ -1,0 +1,18 @@
+downtimes:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+problems:
+  subject: Hellooooooooooooo
+  mail_content: '[node:created][node:created]'
+quickinfo:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+planning_files:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+release:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+problem:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
