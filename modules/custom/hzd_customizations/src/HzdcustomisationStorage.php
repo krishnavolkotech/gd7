@@ -833,7 +833,7 @@ class HzdcustomisationStorage
             //// preparing an array with 2 states on each row for a clean display purpose.
             foreach ($user_state_list as $stateAbbr) {
                 $user_state .= ' ' . $stateAbbr . ',';
-                if ($i % 2 == 0) {
+                if ($i % 3 == 0) {
                     $user_states[] = $user_state;
                     $user_state = null;
                 } elseif ($i == count($user_state_list)) {
