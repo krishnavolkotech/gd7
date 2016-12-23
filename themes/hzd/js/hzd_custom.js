@@ -76,7 +76,9 @@
                 ignoreReadonly: true,
                 sideBySide: true,
                 stepping: 5,
-//                debug: true
+		toolbarPlacement: 'bottom',
+		showClear: true,
+        debug: true
             })
             .parent().css('position', 'relative');
         // $('popup-wrapper').hover(function () {
@@ -98,10 +100,10 @@
             $('article.popup').hide();
         });
 
-        $('#block-maintenance').find('div').css('width', '47%').css('float', 'none');
-        $('#block-maintenance').isotope({
+        $('.maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
+        $('.maintenance-home-info').isotope({
             layoutMode: 'masonry',
-            itemSelector: '#block-maintenance div'
+            itemSelector: '.maintenance-home-info div.maintenance-list'
         });
 
     });

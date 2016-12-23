@@ -156,7 +156,7 @@ class MaintenanceBlock extends BlockBase
             
             $markup['items']['incident_list'][] = [
                 '#title' => $title,
-                '#prefix' => '<div>',
+                '#prefix' => '<div class="maintenance-list">',
                 '#suffix' => '</div>',
                 '#items' => $item,
                 '#theme' => 'item_list',
