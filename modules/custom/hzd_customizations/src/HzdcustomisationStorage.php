@@ -813,9 +813,9 @@ class HzdcustomisationStorage
         if ($type == 'archived')
             $headersNew = array_merge($headersNew, ['type' => t('Type')]);
         $headersNew = array_merge($headersNew, ['description' => t('Beschreibung'), 'service' => t('Verfahren'), 'state' => t('Land')]);
+        $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => t('Ende')]);
         if ($type == 'archived')
             $headersNew = array_merge($headersNew, ['status' => t('Status')]);
-        $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => t('Ende')]);
         foreach ($result as $client) {
 //            kint($client);
             $services = self::downtime_services_names($client->service_id);
@@ -833,7 +833,7 @@ class HzdcustomisationStorage
             //// preparing an array with 2 states on each row for a clean display purpose.
             foreach ($user_state_list as $stateAbbr) {
                 $user_state .= ' ' . $stateAbbr . ',';
-                if ($i % 2 == 0) {
+                if ($i % 3 == 0) {
                     $user_states[] = $user_state;
                     $user_state = null;
                 } elseif ($i == count($user_state_list)) {
@@ -908,7 +908,11 @@ class HzdcustomisationStorage
                 'service' => $renderer->render($serviceList),
                 'state' => $renderer->render($user_states)));
 //                'state' => $user_state));
-            
+            $elements = array_merge($elements, array(
+                'start_date' => $startdate,
+                'end_date' => $enddate,
+//        'name' => $user_name,
+            ));
             if ($type == 'archived') {
                 
                 $status = null;
@@ -921,16 +925,12 @@ class HzdcustomisationStorage
                 $elements = array_merge($elements, ['status' => $status]);
             }
             
-            $elements = array_merge($elements, array(
-                'start_date' => $startdate,
-                'end_date' => $enddate,
-//        'name' => $user_name,
-            ));
+            
             $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($client->downtime_id);
             
             $links = [];
             if ($groupContent) {
-                $links['action']['popup'] = ['#type'=>'container','#attributes'=>['class'=>['popup-wrapper']]];
+                $links['action']['popup'] = ['#type' => 'container', '#attributes' => ['class' => ['popup-wrapper']]];
                 $links['action']['popup']['view'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
