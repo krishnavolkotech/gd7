@@ -127,7 +127,7 @@ hzd_customizations.mail_templates:
   defaults:
     _form: '\Drupal\hzd_customizations\Form\MailTemplatesForm'
     _title: 'Mail Template for Downtimes'
-    type: problems
+    type: problem
   requirements:
     _permission: 'access administration pages'
     type: problem|release|downtimes|planning_files|quickinfo
