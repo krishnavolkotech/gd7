@@ -122,12 +122,32 @@ hzd_customizations.front_page_blocks_settings:
 ## 'access callback' => 'saved_quickinfo_og_is_member'
 #    _permission: 'access content'
 #
-hzd_customizations.downtimes_mail_template:
-  path: '/admin/messaging/templates/downtimes'
+hzd_customizations.mail_templates:
+  path: '/admin/messaging/templates/{type}'
   defaults:
-    _form: '\Drupal\hzd_customizations\Form\DowntimesMailTemplate'
+    _form: '\Drupal\hzd_customizations\Form\MailTemplatesForm'
     _title: 'Mail Template for Downtimes'
+    type: problems
   requirements:
     _permission: 'access administration pages'
+    type: problem|release|downtimes|planning_files|quickinfo
   options:
     _admin_route: TRUE
+#hzd_customizations.problems_mail_template:
+#  path: '/admin/messaging/templates/problems'
+#  defaults:
+#    _form: '\Drupal\hzd_customizations\Form\ProblemsMailTemplate'
+#    _title: 'Mail Template for Problems'
+#  requirements:
+#    _permission: 'access administration pages'
+#  options:
+#    _admin_route: TRUE
+#hzd_customizations.problems_mail_template:
+#  path: '/admin/messaging/templates/releases'
+#  defaults:
+#    _form: '\Drupal\hzd_customizations\Form\ReleasesMailTemplate'
+#    _title: 'Mail Template for Releases'
+#  requirements:
+#    _permission: 'access administration pages'
+#  options:
+#    _admin_route: TRUE

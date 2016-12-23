@@ -318,9 +318,9 @@ function send_release_notifications($entity) {
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
             $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
+            $token_sub = \Drupal::config('hzd_custom.mailtemplates')->get('release')['subject'];
             $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
+            $token_body = \Drupal::config('hzd_custom.mailtemplates')->get('release')['mail_content'];
             // Replace the token for subject.
             $message_text = $token_service->replace($token_body, array('node' => $entity));
             send_immediate_notifications($subject, $message_text, $mail, $preference);
@@ -346,19 +346,21 @@ function send_downtime_notifications($entity, $action = 'update') {
         $text = 'Inhalt aktualisiert';
     }
     $subject = t($text . ' : ' . $entity->label());
+    
     if (is_array($result) && count($result) > 0) {
         foreach ($result as $values) {
             $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
-//      $token_service = \Drupal::token();
-//      $token_sub = \Drupal::config('hzd_customizations.settings')->get('downtimes_mail_template')['subject'];
-//      $subject = $token_service->replace($token_sub, array('node' => $entity));
-//      $token_body = \Drupal::config('hzd_customizations.settings')->get('downtimes_mail_template')['mail_content'];
-//      // Replace the token for subject.
-//      $message_text = $token_service->replace($token_body, array('node' => $entity));
-            $node = $view_builder->view($entity, 'full', 'de');
-            $message_text = \Drupal::service('renderer')->render($node);
+      $token_service = \Drupal::token();
+      $token_sub = \Drupal::config('hzd_custom.mailtemplates')->get('downtimes')['subject'];
+      $subject = $token_service->replace($token_sub, array('node' => $entity));
+      $token_body = \Drupal::config('hzd_custom.mailtemplates')->get('downtimes')['mail_content'];
+      // Replace the token for subject.
+      $message_text = $token_service->replace($token_body, array('node' => $entity));
+//      pr($message_text);exit;
+//            $node = $view_builder->view($entity, 'full', 'de');
+//            $message_text = \Drupal::service('renderer')->render($node);
             send_immediate_notifications($subject, $message_text, $mail, $preference);
         }
     }
@@ -379,9 +381,9 @@ function send_problem_notifications($entity) {
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
             $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
+            $token_sub = \Drupal::config('hzd_custom.mailtemplates')->get('problem')['subject'];
             $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
+            $token_body = \Drupal::config('hzd_custom.mailtemplates')->get('problem')['mail_content'];
             // Replace the token for subject.
             $message_text = $token_service->replace($token_body, array('node' => $entity));
             send_immediate_notifications($subject, $message_text, $mail, $preference);
@@ -400,9 +402,9 @@ function send_pf_notifications($entity) {
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
             $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
+            $token_sub = \Drupal::config('hzd_custom.mailtemplates')->get('planning_files')['subject'];
             $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
+            $token_body = \Drupal::config('hzd_custom.mailtemplates')->get('planning_files')['mail_content'];
             // Replace the token for subject.
             $message_text = $token_service->replace($token_body, array('node' => $entity));
             send_immediate_notifications($subject, $message_text, $mail, $preference);
@@ -489,6 +491,7 @@ function hzd_release_management_node_insert($entity) {
  */
 function hzd_release_management_node_update($entity) {
     $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+    
     if (!isset($dont_send_notification) || $dont_send_notification != 1) {
         if ($entity->getType() == 'deployed_releases') {
             send_release_notifications($entity);

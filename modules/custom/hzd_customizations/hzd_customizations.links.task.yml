@@ -31,8 +31,14 @@ hzd_customizations.quickinfo_template_groups:
   base_route: hzd_customizations.quickinfo_templat
   weight: 1
 
-hzd_customizations.downtimes_mail_template:
-  title: Downtimes Template
-  route_name: hzd_customizations.downtimes_mail_template
-  base_route: hzd_customizations.quickinfo_templat
-  weight: 3
+#hzd_customizations.mail_templates:
+#  title: Downtimes Template
+#  route_name: hzd_customizations.mail_templates
+#  base_route: hzd_customizations.quickinfo_templat
+#  weight: 3
+hzd_customizations.local_tasks:
+  class: \Drupal\Core\Menu\LocalTaskDefault
+  deriver: \Drupal\hzd_customizations\Plugin\Derivative\MailTemplatesLocalTasks
+#  derivative: 'Drupal\hzd_customizations\Plugin\Derivative\MailTemplatesLocalTasks'
+#  weight: 100
+#  route_name: hzd_customizations.mail_templates
