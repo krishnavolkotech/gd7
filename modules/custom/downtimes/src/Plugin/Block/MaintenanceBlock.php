@@ -124,7 +124,7 @@ class MaintenanceBlock extends BlockBase
                             $class = '';
                             if ($vals->startdate_planned > REQUEST_TIME && $vals->resolved == 0) {
                                 $class = 'text-danger';
-                                $unResolvedServices[$ids] = $ids;
+//                                $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
                             $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
@@ -146,17 +146,19 @@ class MaintenanceBlock extends BlockBase
 
 //    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
 //    $report_link = Link::createFromRoute($this->t('Report Maintenance'), 'downtimes.create_maintenance', ['group' => INCEDENT_MANAGEMENT], $link_options);
+        $markup['items'] = ['#type'=>'container','#attributes'=>['class'=>['maintenance-home-info']]];
         foreach ($data as $sid => $item) {
             $class = '';
-            if (in_array($sid, $unResolvedServices)) {
-                $class = 'text-danger';
-            }
+//            if (in_array($sid, $unResolvedServices)) {
+//                $class = 'text-danger';
+//            }
             $title = Markup::create('<span class="' . $class . '">' . $serviceNames[$sid] . '</span>');
-            $markup['incident_list'][] = [
+            
+            $markup['items']['incident_list'][] = [
                 '#title' => $title,
                 '#prefix' => '<div>',
                 '#suffix' => '</div>',
-                '#items' => array_reverse($item),
+                '#items' => $item,
                 '#theme' => 'item_list',
                 '#weight'=> ord($serviceNames[$sid]),
                 '#type' => 'ul',

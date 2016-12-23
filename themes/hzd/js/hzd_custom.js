@@ -75,16 +75,30 @@
                 showTodayButton: true,
                 ignoreReadonly: true,
                 sideBySide: true,
-                stepping:5,
-//                    debug: true
+                stepping: 5,
+//                debug: true
             })
             .parent().css('position', 'relative');
-        $('a.downtimes_details_link').hover(function () {
-            $(this).parent().find('article.popup').show();
-        }, function () {
-            $(this).parent().find('article.popup').hide();
+        // $('popup-wrapper').hover(function () {
+        //     $(this).parent().find('article.popup').show();
+        // }, function () {
+        //     $(this).parent().find('article.popup').hide();
+        // });
+
+        jQuery('div.popup-wrapper')
+            .mouseover(function () {
+                $('article.popup').hide();
+                $(this).find('article.popup').show();
+            });
+
+        $('article.popup').mouseout(function () {
+            $(this).hide();
         });
-        $('#block-maintenance').find('div').css('width','40%').css('float','none');
+        $(window).click(function () {
+            $('article.popup').hide();
+        });
+
+        $('#block-maintenance').find('div').css('width', '47%').css('float', 'none');
         $('#block-maintenance').isotope({
             layoutMode: 'masonry',
             itemSelector: '#block-maintenance div'
