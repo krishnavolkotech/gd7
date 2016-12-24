@@ -91,7 +91,7 @@ function sendGroupUpdateMail($entity) {
 //    pr($group);exit;
     if (!empty($group) && $group['gid'] && in_array($entity->getType(), ['event', 'faqs', 'forum', 'page', 'newsletter'])) {
         $getUserMailList = getGroupMemberList($group['gid']);
-        send_notifications($group, $getUserMailList);
+        send_notifications($entity, $getUserMailList);
     }
 }
 
@@ -120,18 +120,25 @@ function getGroupMemberList($gid) {
     return $userMails;
 }
 
-function send_notifications($data, $mails) {
+function send_notifications($entity, $mails) {
     $result = array();
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
     $key = 'immediate_notifications';
     //$mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
-    $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
-    $params['subject'] = "Aktualisiert - Seite: " . $groupContent->label();
-    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
-    global $base_url;
-    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
-    $params['message'] .= '<br><br>' . $url;
+//    $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
+//    $params['subject'] = "Aktualisiert - Seite: " . $groupContent->label();
+//    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
+    
+    $token_service = \Drupal::token();
+    $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content')['subject'];
+    $params['subject'] = $token_service->replace($token_sub, array('node' => $entity));
+    $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content')['mail_content'];
+    $params['message'] = $token_service->replace($token_body, array('node' => $entity));
+//    echo $params['message'];exit;
+//    global $base_url;
+//    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
+//    $params['message'] .= '<br><br>' . $url;
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
     $send = true;
     foreach ($mails as $to) {

@@ -30,6 +30,13 @@ hzd_customizations.quickinfo_template_groups:
   #route defined in .routing.yml
   base_route: hzd_customizations.quickinfo_templat
   weight: 1
+hzd_customizations.group_content_mail_templates_task:
+  title: Group content
+  #route defined in .routing.yml
+  route_name: hzd_customizations.group_content_mail_templates
+  #route defined in .routing.yml
+  base_route: hzd_customizations.mail_templates_menu
+  weight: 1
 
 #hzd_customizations.mail_templates:
 #  title: Downtimes Template
