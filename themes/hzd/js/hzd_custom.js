@@ -100,10 +100,10 @@
             $('article.popup').hide();
         });
 
-        $('.maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
-        $('.maintenance-home-info').isotope({
+        $('.frontpage-downtime-block .maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
+        $('.frontpage-downtime-block .maintenance-home-info').isotope({
             layoutMode: 'masonry',
-            itemSelector: '.maintenance-home-info div.maintenance-list'
+            itemSelector: '.frontpage-downtime-block .maintenance-home-info div.maintenance-list'
         });
 
     });
