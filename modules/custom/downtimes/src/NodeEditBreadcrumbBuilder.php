@@ -39,7 +39,7 @@ class NodeEditBreadcrumbBuilder implements BreadcrumbBuilderInterface
         $type = $groupContent->entity_id->referencedEntities()[0]->getType();
         $group = $groupContent->getGroup();
         
-        $listItems = \Drupal\downtimes\HzdBreadcrumbBuilder::getBreadcrumbConfigList($type);
+        $listItems = \Drupal\downtimes\HzdBreadcrumbBuilder::getBreadcrumbConfigList($type,$group);
         $links[] = Link::createFromRoute($group->label(), 'entity.group.canonical', array('group' => $group->id()));
         if ($listItems)
             $links[] = Link::createFromRoute($listItems['title'], $listItems['route'], $listItems['params']);

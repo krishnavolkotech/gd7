@@ -37,7 +37,7 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
         $links = array();
         $links[] = Link::createFromRoute(t('Home'), '<front>');
         $group = $params['group'];
-        $listItems = self::getBreadcrumbConfigList($type);
+        $listItems = self::getBreadcrumbConfigList($type,$group);
         $links[] = Link::createFromRoute($group->label(), 'entity.group.canonical', array('group' => $group->id()));
         if ($listItems)
             $links[] = Link::createFromRoute($listItems['title'], $listItems['route'], $listItems['params']);
@@ -48,11 +48,11 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
     /**
      * {@inheritdoc}
      */
-    static function getBreadcrumbConfigList($type) {
+    static function getBreadcrumbConfigList($type,$group) {
         $listItems = [
             'downtimes' => [
                 'route' => 'downtimes.new_downtimes_controller_newDowntimes',
-                'params' => ['group' => INCIDENT_MANAGEMENT],
+                'params' => ['group' => $group->id()],
                 'title' => t('Incidents and Maintenances'),
             ],
             'quickinfo' => [
