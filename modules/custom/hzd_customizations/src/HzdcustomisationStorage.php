@@ -985,7 +985,7 @@ class HzdcustomisationStorage
 //            pr(count($links));
 //      $elements['table_type'] = $string;
             $rowClass = '';
-            if ($type != 'archived' && ($client->startdate_planned > REQUEST_TIME || $client->scheduled_p == 0)) {
+            if ($type != 'archived' && ($client->startdate_planned < REQUEST_TIME || $client->scheduled_p == 0)) {
                 $rowClass = 'text-danger';
             }
             $rows[] = ['data' => $elements, 'class' => $rowClass];

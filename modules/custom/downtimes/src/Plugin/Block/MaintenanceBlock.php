@@ -122,7 +122,7 @@ class MaintenanceBlock extends BlockBase
                         if ($groupContent) {
                             $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
                             $class = '';
-                            if ($vals->startdate_planned > REQUEST_TIME && $vals->resolved == 0) {
+                            if ($vals->startdate_planned < REQUEST_TIME) {
                                 $class = 'text-danger';
 //                                $unResolvedServices[$ids] = $ids;
                             }

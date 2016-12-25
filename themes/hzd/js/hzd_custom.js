@@ -78,7 +78,7 @@
                 stepping: 5,
 		toolbarPlacement: 'bottom',
 		showClear: true,
-        debug: true
+        // debug: true
             })
             .parent().css('position', 'relative');
         // $('popup-wrapper').hover(function () {

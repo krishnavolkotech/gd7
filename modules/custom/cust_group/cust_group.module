@@ -367,3 +367,9 @@ function cust_group_preprocess_node(&$variables){
     $variables['page'] = 1;
 //    exit;
 }
+
+function cust_group_user_login(){
+    $response = new RedirectResponse("/");
+    $response->send();
+    return;
+}
