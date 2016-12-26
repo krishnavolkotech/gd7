@@ -850,16 +850,16 @@ class HzdcustomisationStorage
             $startdate = ($client->startdate_planned ? date('d.m.Y H:i', $client->startdate_planned) . ' Uhr' : "unbekannt");
             if ($type == 'archived') {
                 if (isset($client->cancelled) && $client->cancelled == 1) {
-                    $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
-                    if (!empty($enddate_cancelled)) {
-                        if (!empty($enddate_cancelled->end_date)) {
-                            $enddate = date("d.m.Y H:i", $enddate_cancelled->end_date) . ' Uhr';
-                        } else {
-                            $enddate = date("d.m.Y H:i", $enddate_cancelled->date_reported) . ' Uhr';
-                        }
-                    } else {
+//                    $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
+//                    if (!empty($enddate_cancelled)) {
+//                        if (!empty($enddate_cancelled->end_date)) {
+//                            $enddate = date("d.m.Y H:i", $enddate_cancelled->end_date) . ' Uhr';
+//                        } else {
+//                            $enddate = date("d.m.Y H:i", $enddate_cancelled->date_reported) . ' Uhr';
+//                        }
+//                    } else {
                         $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
-                    }
+//                    }
                 } else {
                     $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
                     if (!empty($enddate_resolved)) {

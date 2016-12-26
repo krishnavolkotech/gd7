@@ -116,7 +116,8 @@ class IncidentsBlock extends BlockBase {
           $stateTitles .= ' [' . $states[$stateId] . ']';
         }
         if ($groupContent) {
-          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+//          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+          $hover_markup = MaintenanceBlock::get_hover_markup($incident);
           $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
           $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
           $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hover_markup);

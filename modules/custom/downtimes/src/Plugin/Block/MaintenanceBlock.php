@@ -120,7 +120,8 @@ class MaintenanceBlock extends BlockBase
                     foreach ($stateids as $sids) {
                         // Loops for all states
                         if ($groupContent) {
-                            $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+//                            $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+                            $hover_markup = MaintenanceBlock::get_hover_markup($incident);
                             $class = '';
                             if ($vals->startdate_planned < REQUEST_TIME) {
                                 $class = 'text-danger';
@@ -203,9 +204,9 @@ class MaintenanceBlock extends BlockBase
      * @param boolean $scheduled_p
      * @return markup
      */
-    public static function get_hover_markup($start_date_planned, $end_date_planned, $description, $scheduled_p) {
+    public static function get_hover_markup($entity) {
         
-        $html = "<ul class='downtime-hover' style='display:none;'>";
+/*        $html = "<ul class='downtime-hover' style='display:none;'>";
         // Getting the below start date. end date and description for hover.
         if (!empty($start_date_planned)) {
             $start_date_planned = DateTimePlus::createFromTimestamp((integer)$start_date_planned)->format('d.m.Y');
@@ -224,9 +225,11 @@ class MaintenanceBlock extends BlockBase
             $html .= "<li>$description</li>";
         }
         
-        $html .= "</ul>";
+        $html .= "</ul>";*/
+        $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+        $markup = $view_builder->view($entity, 'popup', 'de');
         
-        return $html;
+        return \Drupal::service('renderer')->render($markup);
     }
     
 }
