@@ -467,22 +467,8 @@ class HzdStorage {
     if (isset($filter_parameter['limit'])) {
       $limit = $filter_parameter['limit'];
     }
-
-    $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
-    $group_problems_view_service_id_query->addField('gpv', 'service_id');
-    $group_problems_view_service_id_query->condition('group_id',
-        isset($group_id) ? $group_id : PROBLEM_MANAGEMENT, '=');
-    $group_problems_view_service_id_query->condition('service_id', 0, '!=');
-    $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
-    $group_problems_view = array();
-    if (!empty($group_problems_view_service)) {
-      foreach ($group_problems_view_service as $service) {
-        $group_problems_view[] = $service->service_id;
-      }
-    }
-//   dpm($group_problems_view);
+   
     $group_problems_view = self::get_problems_services($group_id);
-    
     if (!empty($group_problems_view)) {
       $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
     }
@@ -504,11 +490,16 @@ class HzdStorage {
       ->condition('type', 'open-group_node-problem', '=')
       ->condition('entity_id', $problems_node->id(), '=')          
       ->execute();
-      $groupContentEntity = \Drupal\group\Entity\GroupContent::load(current($node_problem_group_id));
+      $groupContentEntity = \Drupal\group\Entity\GroupContent::load(
+          current($node_problem_group_id));
       $groupContentItemUrl = $groupContentEntity->toLink(
-       $problems_node->field_s_no->value,'canonical', ['absolute'=>1]);
+      $problems_node->field_s_no->value,'canonical', ['absolute'=>1,
+           'query' => $filter_parameter,
+         ]
+        );
 
-      $service_query =  \Drupal\node\Entity\Node::load($problems_node->field_services->target_id);      
+      $service_query =  \Drupal\node\Entity\Node::load(
+          $problems_node->field_services->target_id);      
       $service = $service_query->getTitle();
       $last_update = $problems_node->field_processing->value;
       $user_input = '/node/' . $problems_node->nid->value;
@@ -606,11 +597,14 @@ class HzdStorage {
     return $parameters;
   }
   static public function get_problems_services($group_id) {
-    $group_problems_view_service_id_query = \Drupal::database()->select('group_problems_view', 'gpv');
+    $group_problems_view_service_id_query = \Drupal::database()->select(
+        'group_problems_view', 'gpv');
     $group_problems_view_service_id_query->addField('gpv', 'service_id');
-    $group_problems_view_service_id_query->conditions('group_id', $group_id ? $group_id : PROBLEM_MANAGEMENT, '=');
-    $group_problems_view_service = $group_problems_view_service_id_query->execute()->fetchAll();
-
+    $group_problems_view_service_id_query->condition('group_id',
+        isset($group_id) ? $group_id : PROBLEM_MANAGEMENT, '=');
+    $group_problems_view_service_id_query->condition('service_id', '0', '!=');
+    $group_problems_view_service = $group_problems_view_service_id_query
+        ->execute()->fetchAll();
     $group_problems_view = array();
     if (!empty($group_problems_view_service)) {
       foreach ($group_problems_view_service as $service) {

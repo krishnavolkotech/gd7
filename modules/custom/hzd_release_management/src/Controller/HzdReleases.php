@@ -54,13 +54,7 @@ class HzdReleases extends ControllerBase {
       'base_path' => $base_url,
     );
     $output[] = \Drupal::formBuilder()
-        ->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
-//    $output[] = array('#markup' => "<div class = 'reset_form'>");
-//    $output[] = HzdreleasemanagementHelper::releases_reset_element();
-//    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
-   
-  //  dpm($_SESSION['new_filter_options']['release_type']);
-  //  dpm($_SESSION['new_filter_options']['service_release_type']);  
+        ->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type); 
 
     $output[] = HzdreleasemanagementStorage::releases_display_table($type,NULL , DISPLAY_LIMIT );
 //    $output[] = array('#markup' => '</div>');
@@ -172,17 +166,7 @@ class HzdReleases extends ControllerBase {
     global $base_url;
     $type = 'deployed';
     $output[] = HzdreleasemanagementStorage::deployed_releases_text();
-  //  $output[] = array('#markup' => '<div id = "released_results_wrapper">');
-//    $request = \Drupal::request();
-//    $page = $request->get('page');
-//    
-//    if (!isset($page)) {
-//      unset($_SESSION['deploy_filter_options']);
-//      unset($_SESSION['limit']);
-//      unset($_SESSION['release_type']);
-//      unset($_SESSION['new_filter_options']);
-//      unset($_SESSION['release_limit']);
-//    }
+
     $output[]['#attached']['drupalSettings']['release_management'] = array(
       'type' => $type,
       'base_path' => $base_url,

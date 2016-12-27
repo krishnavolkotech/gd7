@@ -861,11 +861,13 @@ class HzdreleasemanagementStorage {
         if ($earlywarnings_count) {
           $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
           $view_options['query'] = array(
-            'ser' => $deployed_release_node->field_release_service->value,  
-            'rel' => $deployed_release_node->field_earlywarning_release->value,  
-            'type' => $type
+            'services' => $deployed_release_node->field_release_service->value,  
+            'releases' => $deployed_release_node->field_earlywarning_release->value,  
+            'release_type' => $type
           );
-          $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
+          $view_options['attributes'] = array(
+            'class' => 'view-earlywarning', 
+            'title' => t('Read Early Warnings for this release'));
           $view_earlywarning_url = Url::fromRoute('hzd_earlywarnings.view_early_warnings',
               array('group' => $group_id), $view_options
           );
@@ -884,9 +886,9 @@ class HzdreleasemanagementStorage {
         $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
 
         $options['query'] = array(
-          'ser' => $deployed_release_node->field_release_service->value, 
-          'rel' => $deployed_release_node->field_earlywarning_release->value, 
-          'type' => $type
+          'services' => $deployed_release_node->field_release_service->value, 
+          'releases' => $deployed_release_node->field_earlywarning_release->value, 
+          'release_type' => $type
         );
         $options['query']['destinations'] = 'group/' . $group_id . '/releases/deployed';
         $options['attributes'] = array(
@@ -1054,7 +1056,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   /**
    *
    */
-  static public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL, $service_release_type = null) {
+  static public function releases_display_table($type = NULL, $filter_where = NULL, 
+      $limit = NULL, $service_release_type = null) {
     $group_id = get_group_id();
     $header = self::hzd_get_release_tab_headers($type);
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
@@ -1071,6 +1074,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       }
     }
     $release_type = get_release_type($type);
+    dpm($release_type);
     $release_node_ids = self::hzd_release_query($release_type, $gid);
     
     foreach ($release_node_ids as $release_node_id) {
@@ -1127,8 +1131,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $row[] = $link;
       }
+
       if ($type == 'locked') {
-        $row[] = $releases->comment->value;
+        $row[] = $releases->field_release_comments->value;
       }
       $rows[] = $row;
     }
@@ -1166,19 +1171,51 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function hzd_release_query($release_type, $gid) {
-      $filter_value = self::get_release_filters();
+    $group_id = get_group_id();
+    $filter_value = self::get_release_filters();
       $release_node_ids = \Drupal::entityQuery('node')
-      ->condition('type', 'release', '=');
+      ->condition('type', 'release', '=')
+      ->condition('field_release_type', $release_type, '=');
 
-//    $release_node_ids->condition('GRV.group_id', $gid, '=');
-    
-//    if (isset()) {
-//      $release_node_ids->condition('release_type_target_id', $tid, '=');
-//    }
-  
-      if ($filter_value['r_type'] ) {
-        $release_node_ids->condition('field_release_type', $filter_value['r_type'], '=');
+    if (isset($filter_value['release_type'])) {
+      $default_type = $filter_value['release_type'];
+    } else {
+      if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
+          $default_type = db_query("SELECT release_type FROM "
+              . "{default_release_type} WHERE group_id = :gid", 
+              array(
+                ":gid" => $group_id
+              )
+            )->fetchField();
+          $default_type = isset($filter_value['release_type']) ? 
+              $filter_value['release_type'] : ($default_type ? 
+              $default_type : KONSONS);
+      } else {
+        $default_type = KONSONS;
       }
+    }
+    $group_release_view_service_id_query = \Drupal::database()
+        ->select('group_releases_view', 'grv');
+    $group_release_view_service_id_query->fields('grv', array('service_id'));
+    $group_release_view_service_id_query->condition('group_id', 
+        $group_id, '=');
+    $group_release_view_service = $group_release_view_service_id_query
+        ->execute()->fetchCol(); 
+
+    if (!empty($group_release_view_service)) {
+      $services = \Drupal::entityQuery('node')
+        ->condition('type', 'services', '=')
+        ->condition('release_type', $default_type, '=')
+        ->condition('nid', $group_release_view_service, 'IN')
+        ->execute();
+      }
+      if (isset($services) && !empty($services)) {
+        $release_node_ids->condition('field_relese_services', $services, 'IN');       
+      }
+//      if ($filter_value['r_type']) {
+//        $release_node_ids->condition('field_release_type', 
+//            $filter_value['r_type'], '=');
+//      }
        if ($filter_value['services']) {
         // $filter_where .= " and field_relese_services_nid = ". $service;.
         $release_node_ids->condition('field_relese_services', $filter_value['services'], '=');
@@ -1195,11 +1232,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             array($filter_value['filter_startdate'], 
               $filter_value['filter_enddate']), 'BETWEEN');
       }
-
+    
+    $release_node_ids->sort('field_date', 'DESC');
     if ($filter_value['limit'] == 'all') {
       $result = $release_node_ids->execute();
     } else {
-      $release_node_ids->sort('field_date', 'DESC');
       $page_limit = (isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT);
       $result = $release_node_ids->pager($page_limit)->execute();
     }
@@ -1290,8 +1327,15 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
     if ($earlywarnings_count > 0) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
-      $view_options['query'] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
-      $view_options['attributes'] = array('class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release'));
+      $view_options['query'] = array(
+        'services' => $service_id, 
+        'releases' => $release_id, 
+        'type' => $type, 
+        'release_type' => $tid
+      );
+      $view_options['attributes'] = array(
+        'class' => 'view-earlywarning', 
+        'title' => t('Read Early Warnings for this release'));
       $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);
       $view_earlywarning = array(
         '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
@@ -1306,7 +1350,12 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     // Redirection array after creation of early warnings.
     $redirect = array('released' => 'releases', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
     $options['query']['destinations'] = 'group/' . $group_id . '/' . $redirect[$type];
-    $options['query'][] = array('ser' => $service_id, 'rel' => $release_id, 'type' => $type, 'rel_type' => $tid);
+    $options['query'][] = array(
+      'services' => $service_id, 
+      'releases' => $release_id, 
+      'type' => $type, 
+      'release_type' => $tid
+    );
     $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
     $create_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/add/early-warnings', $options);
     $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);

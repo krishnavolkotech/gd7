@@ -127,7 +127,21 @@ class HzdearlywarningsStorage {
         $elements = array(
           // db_result(db_query("SELECT title FROM {node} where nid = %d", $earlywarnings->release_id))
           array('data' => $title_query['title'], 'class' => 'releases-cell'),
-          array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" . $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>", "group/" . $group_id . "/early-warnings", array('attributes' => array('alt' => t('Read Early Warnings for this release'), 'class' => 'view-earlywarning', 'title' => t('Read Early Warnings for this release')), 'html' => TRUE, 'query' => 'ser=' . $earlywarnings->service . '&type=released' . '&rel=' . $earlywarnings->release_id . '&rel_type=' . $release_type)) : ''), 'class' => 'earlywarnings-cell'),
+          array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" . 
+              $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>", 
+              "group/" . $group_id . "/early-warnings", array(
+                'attributes' => array(
+                  'alt' => t('Read Early Warnings for this release'), 
+                  'class' => 'view-earlywarning', 
+                  'title' => t('Read Early Warnings for this release')
+                  ), 
+                'html' => TRUE, 
+                'query' => 'services=' . $earlywarnings->service . 
+                '&type=released' .
+                '&releases=' . $earlywarnings->release_id . 
+                '&release_type=' . $release_type
+            )
+              ) : ''), 'class' => 'earlywarnings-cell'),
           array('data' => $comment_count_query, 'class' => 'responses-cell'),
           array('data' => $warnings_lastpost['lastpost'], 'class' => 'lastpostdate-cell'),
         );
@@ -167,102 +181,87 @@ class HzdearlywarningsStorage {
    * In the display the responses field contains the count of comments posted on the early warning.
    * Function for displaying the early warnings for a particular service and release
    */
-  static public function view_earlywarnings_display_table($filter_options = NULL, $release_type = KONSONS) {
+  static public function view_earlywarnings_display_table($release_type = KONSONS) {
     $output = array();
-   
-    if(empty($filter_options)&& isset($_SESSION['earlywarning_filter_option'])  && !empty($_SESSION['earlywarning_filter_option'])) {
-      $filter_options['service'] = $_SESSION['earlywarning_filter_option']['service'];
-      $filter_options['release'] = $_SESSION['earlywarning_filter_option']['release'];
-      if (isset($_SESSION['earlywarning_filter_option']['startdate'])) {
-        $filter_options['startdate'] = $_SESSION['earlywarning_filter_option']['startdate'];
-      }
-      if (isset($_SESSION['earlywarning_filter_option']['enddate'])) {
-        $filter_options['enddate'] = $_SESSION['earlywarning_filter_option']['enddate'];
-      }
-        $filter_options['release_type'] = $_SESSION['earlywarning_filter_option']['release_type'];
-    }
+    $filter_value = HzdearlywarningsStorage::get_earlywarning_filters();
     
-    if (isset($filter_options['limit']) && $filter_options['limit'] != 'all') {
-      $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
+    if (isset($filter_value['limit']) && $filter_value['limit'] != 'all') {
+      $page_limit = (isset($filter_value['limit']) ? $filter_value['limit'] : 20);
     }
 
-    $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warningslink-hdr');
+    $earlywarnings = array(
+      'data' => t('Early Warnings'), 
+      'class' => 'early-warningslink-hdr'
+      );
     $date = array('data' => t('Created On'), 'class' => 'date-hdr');
     $responses = array('data' => t('Responses'), 'class' => 'responses-hdr');
     $lastcomment = array('data' => t('Last Comment'), 'class' => 'last-comment-hdr');
     $header = array($earlywarnings, $date, $responses, $lastcomment);
+    $earlywarnings_nids = \Drupal::entityQuery('node')
+             ->condition('type', 'early_warnings', '=');
 
-    $query = db_select('node_field_data', 'n');
-    $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
-    $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
-    $query->join('node__release_type', 'nrt', 'nfrs.field_release_service_value = nrt.entity_id');
-    $query->condition('n.type', 'early_warnings', '=');
-
-    // if(\Drupal::request()->get('rel_type')) {.
-    $release_type = $filter_options['release_type'];
-    // }.
-    $service = $filter_options['service'];
-    $release = $filter_options['release'];
-    
-    
-    if (!empty($filter_options)) {
-      $query->condition('nrt.release_type_target_id', $filter_options['release_type'], '=');
-
-      if ($filter_options['service'] && $filter_options['service'] != 0) {
-        $query->condition('nfrs.field_release_service_value', $filter_options['service'], '=');
+    if (!empty($filter_value)) {
+//      $earlywarnings_nids->condition('release_type_target_id', 
+//          $filter_value['release_type'], '=');
+//
+      if ($filter_value['services'] && $filter_value['services'] != 0) {
+        $earlywarnings_nids->condition('field_release_service', 
+            $filter_value['services'], '=');
       }
 
-      if ($filter_options['release'] && $filter_options['release'] != 0) {
-        $query->condition('nfer.field_earlywarning_release_value', $filter_options['release'], '=');
+      if ($filter_value['releases'] && $filter_value['releases'] != 0) {
+        $earlywarnings_nids->condition('field_earlywarning_release',
+            $filter_value['releases'], '=');
       }
-
-      if ($filter_options['startdate']) {
+//  @to do 
+      if ($filter_value['filter_startdate']) {
         // $startdate_info = explode('.', $filter_options['startdate']);
         // $startdate = mktime(0, 0, 0, $startdate_info[1], $startdate_info[0], $startdate_info[2]);.
-        $startdate = strtotime($filter_options['startdate']);
-        $query->condition('n.created', $startdate, '>');
+        $startdate = strtotime($filter_value['filter_startdate']);
+        $earlywarnings_nids->condition('created', $startdate, '>');
       }
-      if ($filter_options['enddate']) {
+      if ($filter_value['filter_enddate']) {
         // $enddate_info = explode('.', $filter_options['enddate']);
         // $enddate = mktime(23, 59, 59, $enddate_info[1], $enddate_info[0], $enddate_info[2]);.
-        $startdate = strtotime($filter_options['enddate']);
-        $query->condition('n.created', array($startdate ? $startdate : 0, $enddate), 'between');
+        $enddate = strtotime($filter_value['filter_enddate']);
+        $earlywarnings_nids->condition('created', 
+            array($startdate ? $startdate : 0, $enddate), 'between');
       }
     }
-    elseif ($service && $release) {
-      $query->condition('nfrs.field_release_service_value', $service, '=')
-        ->condition('nfer.field_earlywarning_release_value', $release, '=')
-        ->condition('nrt.release_type_target_id', $release_type, '=');
-    }
-    $count_query = clone $query;
-    $count_query->addExpression('COUNT(DISTINCT n.nid)');
-    $paged_query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
-    $paged_query->setCountQuery($count_query);
-    $paged_query->fields('n', array('nid', 'title', 'created', 'uid'))
-      ->orderBy('n.created', 'DESC');
+      $earlywarnings_nids->sort('created', 'DESC');
 
     // Echo '<pre>'; print_r($query->conditions()); exit;.
-    if (isset($filter_options['limit']) && $filter_options['limit'] != 'all') {
-      $page_limit = ($filter_options['limit'] ? $filter_options['limit'] : 20);
-      $paged_query->limit($page_limit);
-      $result = $paged_query->execute()->fetchAll();
+    if (isset($page_limit)) {
+      $result = $earlywarnings_nids->pager($page_limit)->execute();
     }
     else {
-      $result = $query->execute()->fetchAll();
+      $result = $earlywarnings_nids->execute();
     }
-    foreach ($result as $vals) {
-      $user_query = db_select('cust_profile', 'cp');
-      $user_query->condition('cp.uid', $vals->uid, '=')
-        ->fields('cp', array('firstname', 'lastname'));
-      $author = $user_query->execute()->fetchAll();
-      $author_name = $author[0]->firstname . ' ' . $author[0]->lastname;
-      $total_responses = self::get_earlywarning_responses_info($vals->nid);
+    foreach ($result as $earlywarnings_nid) {
+      $earlywarning = \Drupal\node\Entity\Node::load($earlywarnings_nid);
       
-      $url = Url::fromRoute('entity.node.canonical', array('node' => $vals->nid)); 
-      $early_warning = \Drupal::service('link_generator')->generate($vals->title, $url);
+      $user_query = db_select('cust_profile', 'cp');
+      $user_query->condition('cp.uid', $earlywarning->uid->target_id, '=')
+        ->fields('cp', array('firstname', 'lastname'));
+      $author = $user_query->execute()->fetchAssoc();
+      if (isset($author)) {
+        $author_name = $author['firstname'] . ' ' . $author['lastname'];        
+      }
+      
+      $total_responses = self::get_earlywarning_responses_info($earlywarning->id());
+      
+      $url = Url::fromRoute(
+          'entity.node.canonical', 
+          array(
+            'node' => $earlywarning->id()
+          )
+      ); 
+      $early_warning = \Drupal::service('link_generator')->generate(
+          $earlywarning->getTitle(), $url);
       $elements = array(
         array('data' => $early_warning, 'class' => 'earlywarningslink-cell'),
-        array('data' => date('d.m.Y', $vals->created) . ' ' . t('by') . ' ' . $author_name, 'class' => 'created-cell'),
+        array('data' => date('d.m.Y', $earlywarning->created->value) . ' ' . 
+          t('by') . ' ' . $author_name, 'class' => 'created-cell'),
         array('data' => $total_responses['total_responses'], 'class' => 'responses-cell'),
         array('data' => $total_responses['response_lastposted'], 'class' => 'lastpostdate-cell'),
       );
@@ -297,27 +296,41 @@ class HzdearlywarningsStorage {
   static public function get_earlywarning_responses_info($earlywarnings_nid) {
     $total_responses = array();
     $response_lastposted = '';
-    $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid",
-                       array(":nid" => $earlywarnings_nid))->fetchField();
-    $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1",
-                    array(":eid" => $earlywarnings_nid))->fetchAll();
-    
-    foreach ($resonses_sql as $vals) {
-      $responses['uid'] = $vals->uid;
-      $responses['last_posted'] = date('d.m.Y', $vals->created);
+
+    $total_responses =  \Drupal::entityQuery('comment')
+        ->condition('entity_id', 32952, '=')
+        ->execute();
+     dpm($total_responses);
+    $resonses_cid = \Drupal::entityQuery('comment')
+        ->condition('entity_id', $earlywarnings_nid, '=')
+        ->condition('entity_type', 'node')
+        ->sort('cid', 'DESC')
+        ->range(0, 1)
+        ->execute();
+
+     $last_comment = \Drupal\comment\Entity\Comment::load($resonses_cid);
+
+//    foreach ($resonses_cids as $resonses_cid) {
+
+      $responses['uid'] = $last_comment->uid->value;
+      $responses['last_posted'] = date('d.m.Y', $last_comment->created->value['0']);
       if ($responses['last_posted']) {
         $user_query = db_select('cust_profile', 'cp');
-        $user_query->condition('cp.uid', $vals->uid, '=')
+        $user_query->condition('cp.uid', $last_comment->uid->value, '=')
           ->fields('cp', array('firstname', 'lastname'));
-        $author = $user_query->execute()->fetchAll();
-        $response_lastposted = $responses['last_posted'] . ' ' . t('by') . ' ' . $author[0]->firstname . ' ' . $author[0]->lastname;
+        $author = $user_query->execute()->fetchAssoc();
+        dpm($author);
+        $response_lastposted = $responses['last_posted'] . 
+            ' ' . t('by') . ' ' . $author['firstname'] . ' ' . $author['lastname'];
       }
       else {
         $response_lastposted = '';
       }
-    }
     
-    $response_info = array('total_responses' => $total_responses, 'response_lastposted' => $response_lastposted);
+    $response_info = array(
+      'total_responses' => $total_responses, 
+      'response_lastposted' => $response_lastposted
+    );
     return $response_info;
   }
 
@@ -387,9 +400,27 @@ class HzdearlywarningsStorage {
     $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group'=>RELEASE_MANAGEMENT]);
     $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query'=>['destination'=>'group/'.RELEASE_MANAGEMENT.'/early-warnings']]));
     $output = "<div class = 'earlywarnings_text'>" . $body . $link;
-    //$output = "<div class = 'earlywarnings_text'>" . $body . "<a href='/release-management/add/early-warnings?\ destination=group/32/early-warnings&amp;ser=0&amp;rel=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+    //$output = "<div class = 'earlywarnings_text'>" . $body . 
+    //"<a href='/release-management/add/early-warnings?\ 
+    //destination=group/32/early-warnings&amp;services=0&amp;releases=0' 
+    //title='" . t("Add an Early Warning for this release") . "'>" . 
+    //$create_icon . "</a></div>";
     $build['#markup'] = $output;
     return $build;
   }
-
+  /*
+   * @return array
+   * all parameters fetched from url 
+   */
+  static public function get_earlywarning_filters() {
+    $parameters = array();
+    $request = \Drupal::request()->query;
+    $parameters['release_type'] = $request->get('release_type');
+    $parameters['services'] = $request->get('services');
+    $parameters['releases'] = $request->get('releases');
+    $parameters['filter_startdate'] = $request->get('filter_startdate');
+    $parameters['filter_enddate'] = $request->get('filter_enddate');
+    $parameters['limit'] = $request->get('limit');
+    return $parameters;
+  }
 }
