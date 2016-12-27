@@ -233,11 +233,12 @@ function reset_form_elements(){
 */
 
 function reset_form_elements(){ 
-  jQuery('.service_search_dropdown select').val(0);
-  jQuery('.releases_search_dropdown select').val(0);
-  jQuery('.filter_start_date input').val('');
-  jQuery('.filter_end_date').val('');
-  jQuery('.limit_search_dropdown select').val(0);
+  jQuery('#edit-release-type').val();
+  jQuery('#edit-services').val(0);
+  jQuery('#edit-releases').val(0);
+  jQuery('#edit-filter-startdate').val('');
+  jQuery('#edit-filter-enddate').val(0);
+  jQuery('#edit-limit').val(0);
   url = window.location.href; 
   res = url.split('?');
   window.location.assign(res['0']);

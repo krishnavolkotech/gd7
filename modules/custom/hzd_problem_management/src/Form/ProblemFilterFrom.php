@@ -67,7 +67,7 @@ class ProblemFilterFrom extends FormBase {
 //      '#default_value' => isset($default_value_service) ? 
 //      $default_value_service: $form_state->getValue('service'),
       '#default_value' => isset($filter_value['service']) ? $filter_value['service'] : $form_state->getValue('service'),
-      '#weight' => -1,
+      '#weight' => -10,
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
@@ -93,7 +93,7 @@ class ProblemFilterFrom extends FormBase {
       // '#default_value' => isset($default_value_function) ? 
       // $default_value_function: $form_state->getValue('function'),
       '#default_value' => isset($filter_value['function']) ? $filter_value['function'] : $form_state->getValue('function'),
-      '#weight' => 0,
+      '#weight' => -9,
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
@@ -118,7 +118,7 @@ class ProblemFilterFrom extends FormBase {
     // '#default_value' => isset($default_value_release) ?
     //  $default_value_release : $form_state->getValue('release'),
       '#default_value' => isset($filter_value['release']) ? $filter_value['release'] : $form_state->getValue('release'),
-      '#weight' => 1,
+      '#weight' => -8,
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
@@ -153,7 +153,7 @@ class ProblemFilterFrom extends FormBase {
     $search_string = $filter_value['string'];
     $form['string'] = array(
       '#type' => 'textfield',
-      '#weight' => 6,
+      '#weight' => -7,
       '#size' => 42,
    //   '#default_value' => !empty($default_value_string) ? 
    //   $default_value_string : 
@@ -167,7 +167,7 @@ class ProblemFilterFrom extends FormBase {
 
     $form['submit'] = array(
       '#type' => 'button',
-      '#weight' => 7,
+      '#weight' => -6,
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
@@ -191,7 +191,7 @@ class ProblemFilterFrom extends FormBase {
       '#type' => 'select',
       '#options' => $default_limit,
       '#default_value' => isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT,
-      '#weight' => 8,
+      '#weight' => -8,
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
@@ -215,7 +215,9 @@ class ProblemFilterFrom extends FormBase {
       '#value' => t('Reset'),
       '#weight' => 100,
       '#validate' => array(),
-      '#attributes' => array('onclick' => 'reset_form_elements();'),
+      '#attributes' => array(
+        'onclick' => 'reset_form_elements();'
+        ),
     );
 
     

@@ -3,12 +3,7 @@ use Drupal\Core\Url;
 
 
 function getErlywarningServies() {
-  $group = \Drupal::routeMatch()->getParameter('group');
-  if(is_object($group)){
-    $group_id = $group->id();
-  } else {
-    $group_id = $group;
-  } 
+  $group_id = get_group_id();
   
   $current_url = Url::fromRoute('<current>');
   $path = $current_url->toString();
@@ -52,8 +47,8 @@ function getErlywarningServies() {
  */
 function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if ($form_id == 'node_early_warnings_form') {
-    $service = \Drupal::request()->query->get('ser');
-    $rel = \Drupal::request()->query->get('rel');
+    $service = \Drupal::request()->query->get('services');
+    $rel = \Drupal::request()->query->get('releases');
     $form['field_release_service']['widget']['#default_value'] = $service;
     $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
     $form['field_release_service']['#attributes']['readonly'] = 'readonly';
