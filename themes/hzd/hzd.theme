@@ -226,17 +226,23 @@ function hzd_preprocess_node(&$variables) {
             $variables['ticketstore_html'] = t("<a href=$ticketstore_link>" . t("Link to Ticketstore") . " ($ticketstore_count " . t("$att_html available") . ")</a>");
         }
         
-        $variables['erroffnet_value'] = date('d.m.Y', $variables['node']->get('field_problem_eroffnet')->value);
-        $serialized_data = unserialize($_SESSION['problems_query']);
+        $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
+            ->get('field_problem_eroffnet')->value);
         
-        if ($serialized_data['nid']) {
-            $url = Url::fromRoute('problem_management.problems', array('group' => PROBLEM_MANAGEMENT));
-            $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
-        } else {
-            $url = Url::fromRoute('problem_management.problems', array('group' => PROBLEM_MANAGEMENT));
-            $link = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
-            $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
-        }
+        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
+
+        $url = Url::fromRoute('problem_management.problems', array(
+              'group' => PROBLEM_MANAGEMENT
+              ), 
+              array(
+                'query' => array(
+                  $filter_parameter
+                )
+              )
+            );
+            $variables['back_to_search'] = \Drupal::service('link_generator')
+                ->generate(t('Back To Search'), $url);
+        
     }
     
     // Adds class to view pdf link.
