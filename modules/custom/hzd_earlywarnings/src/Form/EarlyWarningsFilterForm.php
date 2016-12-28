@@ -33,104 +33,126 @@ class EarlyWarningsFilterForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id = $group;
-    }
-
+    
+    $filter_value = HzdearlywarningsStorage::get_earlywarning_filters();
+    $group_id = get_group_id();
+    $form['#method'] = 'get';
+   
     $wrapper = 'earlywarnings_results_wrapper';
     $services[] = 'Service';
+//
+//    $path = '::search_earlywarning';
+//    $type_path = '::search_type_earlywarning';
+//
+//    $earlywarning_filter_option = $_SESSION['earlywarning_filter_option'];
+//    $request = \Drupal::request();
+//    $page = $request->get('page');
 
-    $path = '::search_earlywarning';
-    $type_path = '::search_type_earlywarning';
-
-    $earlywarning_filter_option = $_SESSION['earlywarning_filter_option'];
-    $request = \Drupal::request();
-    $page = $request->get('page');
-
-    $release_type = \Drupal::request()->get('release_type');
+    $release_type = $filter_value['release_type'];
     if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-      $default_type = db_query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
-      $default_type = ($release_type ? $release_type : ($default_type ? $default_type : KONSONS));
+      $default_type = db_query("SELECT release_type FROM "
+          . "{default_release_type} WHERE group_id = :gid", 
+          array(":gid" => $group_id))->fetchField();
+      $default_type = isset($release_type) ? $release_type : 
+          (isset($default_type) ? $default_type : KONSONS);
     }
     else {
       $default_type = $release_type ? $release_type : KONSONS;
     }
 
     $services_obj = db_query("SELECT n.title, n.nid 
-                     FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
-                     WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
-                     ORDER BY n.title asc", array(":gid" => $group_id, ":tid" => $default_type))->fetchAll();
+                     FROM {node_field_data} n, {group_releases_view} grv, 
+                     {node__release_type} nrt 
+                     WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
+                     and grv.group_id = :gid and nrt.release_type_target_id = :tid 
+                     ORDER BY n.title asc", array(
+                       ":gid" => $group_id, 
+                       ":tid" => $default_type
+                      )
+                    )->fetchAll();
 
     foreach ($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
     }
 
-    $form['type'] = array('#type' => 'hidden', '#default_value' => $type);
+    $form['type'] = array(
+      '#type' => 'hidden', 
+      '#default_value' => $type
+    );
     $form['#prefix'] = "<div class = 'releases_filters'>";
     $form['#suffix'] = "</div>";
 
     $container = \Drupal::getContainer();
-    $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
+    $terms = $container->get('entity.manager')
+        ->getStorage('taxonomy_term')->loadTree('release_type');
 
     foreach ($terms as $key => $value) {
       $release_type_list[$value->tid] = $value->name;
     }
     $form['release_type'] = array(
       '#type' => 'select',
-      '#default_value' => $earlywarning_filter_option['release_type'] ? $earlywarning_filter_option['release_type'] : $default_type,
+      '#default_value' => $filter_value['release_type'] ? 
+        $filter_value['release_type'] : $default_type,
       '#options' => $release_type_list,
       '#weight' => -9,
-      '#ajax' => array(
-        'callback' => $type_path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'method' => 'replace',
-        'progress' => array(
-          'type' => 'throbber',
-        ),
+//      '#ajax' => array(
+//        'callback' => $type_path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'method' => 'replace',
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
       ),
       '#prefix' => '<div class = "release_type_dropdown  hzd-form-element">',
       '#suffix' => '</div><div style="clear:both"></div>',
     );
 
-    $default_value_services = $form_state->getValue('service');
+    $default_value_services = $filter_value['services'];
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
-      '#default_value' => $earlywarning_filter_option['service'] ? $earlywarning_filter_option['service'] : $default_value_services,
+      '#default_value' => $filter_value['services'] ? 
+        $filter_value['services'] : $default_value_services,
       '#weight' => -7,
-      '#ajax' => array(
-        'callback' => $path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'method' => 'replace',
-        'progress' => array(
-          'type' => 'throbber',
-        ),
+//      '#ajax' => array(
+//        'callback' => $path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'method' => 'replace',
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
       ),
       '#prefix' => '<div class = "service_search_dropdown  hzd-form-element">',
       '#suffix' => '</div>',
     );
 
-    $default_value_releases = $form_state->getValue('release');
+    $default_value_releases = $filter_value['releases'];
     $options = HzdreleasemanagementHelper::get_dependent_release($default_value_services);
     $form['releases'] = array(
       '#type' => 'select',
       '#options' => $options['releases'],
-      '#default_value' => $earlywarning_filter_option['release'] ? $earlywarning_filter_option['release'] : $default_value_releases,
+      '#default_value' => $filter_value['releases'] ?
+        $filter_value['releases'] :  $form_state->getValue('releases'),
       '#weight' => -3,
-      '#ajax' => array(
-        'callback' => $path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'method' => 'replace',
-        'progress' => array(
-          'type' => 'throbber',
-        ),
+//      '#ajax' => array(
+//        'callback' => $path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'method' => 'replace',
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
       ),
       '#prefix' => '<div class = "releases_search_dropdown  hzd-form-element">',
       '#suffix' => '</div>',
@@ -144,20 +166,23 @@ class EarlyWarningsFilterForm extends FormBase {
         'placeholder' => array(
           $this->t('Start Date')
         ),
+        'onchange' =>  'this.form.submit()',         
       ),
-      '#default_value' => $earlywarning_filter_option['startdate'] ? $earlywarning_filter_option['startdate'] : $form_state->getValue('filter_startdate'),
+      '#default_value' => $filter_value['filter_startdate'] ? 
+        $filter_value['filter_startdate'] : 
+      $form_state->getValue('filter_startdate'),
       '#size' => 15,
       '#weight' => 3,
-      '#ajax' => array(
-        'callback' => $path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'method' => 'replace',
-        'disable-refocus' => true,
-        'progress' => array(
-          'type' => 'throbber',
-        ),
-      ),
+//      '#ajax' => array(
+//        'callback' => $path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'method' => 'replace',
+//        'disable-refocus' => true,
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
       '#prefix' => '<div class = "filter_start_date  hzd-form-element">',
       '#suffix' => '</div>',
     );
@@ -172,19 +197,21 @@ class EarlyWarningsFilterForm extends FormBase {
         'placeholder' => array(
           $this->t('End Date')
         ),
+      'onchange' =>  'this.form.submit()',         
       ),
       // '#attributes' => array("class" => "end_date"),.
-      '#default_value' => $earlywarning_filter_option['enddate'] ? $earlywarning_filter_option['enddate'] : $form_state->getValue('filter_enddate'),
-      '#ajax' => array(
-        'callback' => $path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'disable-refocus' => true,
-        'method' => 'replace',
-        'progress' => array(
-          'type' => 'throbber',
-        ),
-      ),
+      '#default_value' => $filter_value['filter_enddate'] ? $filter_value['filter_enddate'] :
+      $form_state->getValue('filter_enddate'),
+//      '#ajax' => array(
+//        'callback' => $path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'disable-refocus' => true,
+//        'method' => 'replace',
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
       '#prefix' => '<div class = "filter_end_date  hzd-form-element">',
       '#suffix' => '</div>',
     );
@@ -199,19 +226,33 @@ class EarlyWarningsFilterForm extends FormBase {
     $form['limit'] = array(
       '#type' => 'select',
       '#options' => $default_limit,
-      '#default_value' => $earlywarning_filter_option['limit'] ? $earlywarning_filter_option['limit'] : $form_state->getValue('limit'),
+      '#default_value' => $filter_value['limit'] ? $filter_value['limit'] 
+        : $form_state->getValue('limit'),
       '#weight' => 8,
-      '#ajax' => array(
-        'callback' => $path,
-        'wrapper' => $wrapper,
-        'event' => 'change',
-        'method' => 'replace',
-        'progress' => array(
-          'type' => 'throbber',
-        ),
-      ),
+//      '#ajax' => array(
+//        'callback' => $path,
+//        'wrapper' => $wrapper,
+//        'event' => 'change',
+//        'method' => 'replace',
+//        'progress' => array(
+//          'type' => 'throbber',
+//        ),
+//      ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
+      ),   
       '#prefix' => '<div class = "limit_search_dropdown  hzd-form-element">',
       '#suffix' => '</div>',
+    );
+ 
+    $form['actions']['reset'] = array(
+      '#type' => 'button',
+      '#value' => t('Reset'),
+      '#weight' => 100,
+      '#validate' => array(),
+      '#attributes' => array('onclick' => 'reset_form_elements();'),
+      '#prefix' => '<div class = "reset_form">',
+      '#suffix' => '</div><div style = "clear:both"></div>',
     );
 
     return $form;
@@ -227,124 +268,124 @@ class EarlyWarningsFilterForm extends FormBase {
   /**
    * Ajax call back for search early warnings filters.
    */
-  public function search_type_earlywarning(array $form, FormStateInterface $form_state) {
-    $form_state->setValue('submitted', FALSE);
-    $form_build_id = $_POST['form_build_id'];
-    $request = \Drupal::request();
-
-    $startdate = $form_state->getValue('filter_startdate');
-    $enddate = $form_state->getValue('filter_enddate');
-    $type = $form_state->getValue('type');
-    $limit = $form_state->getValue('limit');
-    $release_type = $form_state->getValue('release_type');
-    $user_input = $form_state->getUserInput();
-    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
-      $service = $form_state->getValue('services');
-      $release = $form_state->getValue('releases');
-    }
-
-    $filter_options = array(
-      'service' => $service,
-      'release' => $release,
-      'limit' => $limit,
-      'startdate' => $startdate,
-      'enddate' => $enddate,
-      'release_type' => $release_type,
-    );
-    $_SESSION['earlywarning_filter_option'] = $filter_options;
-    $string = '';
-    $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
-    $form['services']['#options'] = $default_services['services'];
-    $form['services']['#value'] = array();
-
-    // Geting  release data.
-    $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
-    $form['releases']['#options'] = $default_releases['releases'];
-    $form['releases']['#value'] = array();
-
-    $output['content']['#prefix'] = '<div id ="earlywarnings_results_wrapper">';
-    $output['content']['earlywarnings_filter_form'] = $form;
-    $output['content']['reset_form']['#prefix'] = '<div class = "reset_form">';
-    $output['content']['reset_form'] = HzdreleasemanagementHelper::releases_reset_element();
-    $output['content']['reset_form']['#suffix'] = '</div><div style ="clear:both" ></div>';
-
-    if ($type == 'releaseWarnings') {
-      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
-      $output['content']['result_table']['#suffix'] = '</div></div>';
-    }
-    else {
-      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table($filter_options, $release_type);
-      $output['content']['result_table']['#suffix'] = '</div></div>';
-    }
-    $output['content']['#attached']['drupalSettings']['data'] = $output;
-    $output['content']['#attached']['drupalSettings']['status'] = TRUE;
-    return $output;
-  }
-
-  /**
-   * Ajax call back for search early warnings filters.
-   */
-  public function search_earlywarning(array $form, FormStateInterface $form_state) {
-    $form_state->setValue('submitted', FALSE);
-    $form_build_id = $_POST['form_build_id'];
-
-    $type = $form_state->getValue('type');
-    $limit = $form_state->getValue('limit');
-    $startdate = $form_state->getValue('filter_startdate');
-    $enddate = $form_state->getValue('filter_enddate');
-    $release_type = $form_state->getValue('release_type');
-    $user_input = $form_state->getUserInput();
-    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
-      $service = $form_state->getValue('services');
-      $release = $form_state->getValue('releases');
-    }
-    $filter_options = array(
-      'service' => $service,
-      'release' => $release,
-      'limit' => $limit,
-      'startdate' => $startdate,
-      'enddate' => $enddate,
-      'release_type' => $release_type,
-    );
-    $_SESSION['earlywarning_filter_option'] = $filter_options;
-    $string = '';
-    $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
-    $form['services']['#options'] = $default_services['services'];
-    $form['services']['#value'] = $service;
-
-    // Geting  release data.
-    $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
-    $form['releases']['#options'] = $default_releases['releases'];
-    $form['releases']['#value'] = $release;
-
-    if (!array_key_exists($form_state->getValue('releases'), $default_releases['releases'])) {
-      $filter_options['release'] = 0;
-      $form['releases']['#value'] = 0;
-    }
-    else {
-      $form['releases']['#value'] = $form_state->getValue('releases');
-    }
-
-    $output['content']['#prefix'] = '<div id = "earlywarnings_results_wrapper">';
-    $output['content']['earlywarnings_filter_form'] = $form;
-    $output['content']['reset_form']['#prefix'] = '<div class = "reset_form">';
-    $output['content']['reset_form'] = HzdreleasemanagementHelper::releases_reset_element();
-    $output['content']['reset_form']['#suffix'] = '</div><div style = "clear:both" ></div>';
-    if ($type == 'releaseWarnings') {
-      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
-      $output['content']['result_table']['#suffix'] = '</div></div>';
-    }
-    else {
-      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
-      $output['content']['result_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table($filter_options, $release_type);
-      $output['content']['result_table']['#suffix'] = '</div></div>';
-    }
-    $output['content']['#attached']['drupalSettings']['data'] = $output;
-    $output['content']['#attached']['drupalSettings']['status'] = TRUE;
-    return $output;
-  }
+//  public function search_type_earlywarning(array $form, FormStateInterface $form_state) {
+//    $form_state->setValue('submitted', FALSE);
+//    $form_build_id = $_POST['form_build_id'];
+//    $request = \Drupal::request();
+//
+//    $startdate = $form_state->getValue('filter_startdate');
+//    $enddate = $form_state->getValue('filter_enddate');
+//    $type = $form_state->getValue('type');
+//    $limit = $form_state->getValue('limit');
+//    $release_type = $form_state->getValue('release_type');
+//    $user_input = $form_state->getUserInput();
+//    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
+//      $service = $form_state->getValue('services');
+//      $release = $form_state->getValue('releases');
+//    }
+//
+//    $filter_options = array(
+//      'service' => $service,
+//      'release' => $release,
+//      'limit' => $limit,
+//      'startdate' => $startdate,
+//      'enddate' => $enddate,
+//      'release_type' => $release_type,
+//    );
+//    $_SESSION['earlywarning_filter_option'] = $filter_options;
+//    $string = '';
+//    $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
+//    $form['services']['#options'] = $default_services['services'];
+//    $form['services']['#value'] = array();
+//
+//    // Geting  release data.
+//    $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
+//    $form['releases']['#options'] = $default_releases['releases'];
+//    $form['releases']['#value'] = array();
+//
+//    $output['content']['#prefix'] = '<div id ="earlywarnings_results_wrapper">';
+//    $output['content']['earlywarnings_filter_form'] = $form;
+//    $output['content']['reset_form']['#prefix'] = '<div class = "reset_form">';
+//    $output['content']['reset_form'] = HzdreleasemanagementHelper::releases_reset_element();
+//    $output['content']['reset_form']['#suffix'] = '</div><div style ="clear:both" ></div>';
+//
+//    if ($type == 'releaseWarnings') {
+//      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
+//      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
+//      $output['content']['result_table']['#suffix'] = '</div></div>';
+//    }
+//    else {
+//      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
+//      $output['content']['result_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table($filter_options, $release_type);
+//      $output['content']['result_table']['#suffix'] = '</div></div>';
+//    }
+//    $output['content']['#attached']['drupalSettings']['data'] = $output;
+//    $output['content']['#attached']['drupalSettings']['status'] = TRUE;
+//    return $output;
+//  }
+//
+//  /**
+//   * Ajax call back for search early warnings filters.
+//   */
+//  public function search_earlywarning(array $form, FormStateInterface $form_state) {
+//    $form_state->setValue('submitted', FALSE);
+//    $form_build_id = $_POST['form_build_id'];
+//
+//    $type = $form_state->getValue('type');
+//    $limit = $form_state->getValue('limit');
+//    $startdate = $form_state->getValue('filter_startdate');
+//    $enddate = $form_state->getValue('filter_enddate');
+//    $release_type = $form_state->getValue('release_type');
+//    $user_input = $form_state->getUserInput();
+//    if (isset($user_input['_triggering_element_name']) && $user_input['_triggering_element_name'] != 'release_type') {
+//      $service = $form_state->getValue('services');
+//      $release = $form_state->getValue('releases');
+//    }
+//    $filter_options = array(
+//      'service' => $service,
+//      'release' => $release,
+//      'limit' => $limit,
+//      'startdate' => $startdate,
+//      'enddate' => $enddate,
+//      'release_type' => $release_type,
+//    );
+//    $_SESSION['earlywarning_filter_option'] = $filter_options;
+//    $string = '';
+//    $default_services = HzdreleasemanagementHelper::get_release_type_services($string, $release_type);
+//    $form['services']['#options'] = $default_services['services'];
+//    $form['services']['#value'] = $service;
+//
+//    // Geting  release data.
+//    $default_releases = HzdreleasemanagementHelper::get_dependent_release($service);
+//    $form['releases']['#options'] = $default_releases['releases'];
+//    $form['releases']['#value'] = $release;
+//
+//    if (!array_key_exists($form_state->getValue('releases'), $default_releases['releases'])) {
+//      $filter_options['release'] = 0;
+//      $form['releases']['#value'] = 0;
+//    }
+//    else {
+//      $form['releases']['#value'] = $form_state->getValue('releases');
+//    }
+//
+//    $output['content']['#prefix'] = '<div id = "earlywarnings_results_wrapper">';
+//    $output['content']['earlywarnings_filter_form'] = $form;
+//    $output['content']['reset_form']['#prefix'] = '<div class = "reset_form">';
+//    $output['content']['reset_form'] = HzdreleasemanagementHelper::releases_reset_element();
+//    $output['content']['reset_form']['#suffix'] = '</div><div style = "clear:both" ></div>';
+//    if ($type == 'releaseWarnings') {
+//      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
+//      $output['content']['result_table']['early_warning_table'] = HzdEarlyWarnings::release_earlywarnings_display_table($filter_options, $release_type);
+//      $output['content']['result_table']['#suffix'] = '</div></div>';
+//    }
+//    else {
+//      $output['content']['result_table']['#prefix'] = '<div class = "view_earlywarnings_output">';
+//      $output['content']['result_table'] = HzdearlywarningsStorage::view_earlywarnings_display_table($filter_options, $release_type);
+//      $output['content']['result_table']['#suffix'] = '</div></div>';
+//    }
+//    $output['content']['#attached']['drupalSettings']['data'] = $output;
+//    $output['content']['#attached']['drupalSettings']['status'] = TRUE;
+//    return $output;
+//  }
 
 }

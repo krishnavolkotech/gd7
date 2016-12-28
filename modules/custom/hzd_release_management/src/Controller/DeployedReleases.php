@@ -28,7 +28,8 @@ class DeployedReleases extends ControllerBase {
     // for now giving static relese type.
     
    // $release_type = 459;
-    $release_type = \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id');
+    $release_type = \Drupal::config('hzd_release_management.settings')
+        ->get('konsens_service_term_id');
     $db = \Drupal::database();
     $states = $db->select('states', 's')
       ->condition('s.id', 1, '!=')
@@ -54,7 +55,9 @@ class DeployedReleases extends ControllerBase {
       }
 
       $table = "<div id = 'released_results_wrapper'>";
-      $table .= "<table border='1' cellpadding='0' cellspacing='0' class = 'view-deployed-releases'><thead><tr><th style = 'min-width:170px;'>" . $this->t('Service') . "</th>";
+      $table .= "<table border='1' cellpadding='0' cellspacing='0' class = "
+          . "'view-deployed-releases'><thead>"
+          . "<tr><th style = 'min-width:170px;'>" . $this->t('Service') . "</th>";
       unset($state[0]);
 
       // Get the empty states and unset the empty states.
@@ -162,14 +165,7 @@ function get_deployed_releases_list($values, $service_id, $release_type = KONSON
  * Get releases of particular service and state.
  */
 function get_releases_per_state($service_id, $deployed_services, $release_type) {
-  $group = \Drupal::routeMatch()->getParameter('group');
-  if (is_object($group)) {
-    $group_id = $group->id();
-  }
-  else {
-    $group_id = $group;
-  }
-
+  $group_id = get_group_id();
   $group_id = ($group_id ? $group_id : 32);
   $deployed_query = db_select('node_field_data', 'n');
   $deployed_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');

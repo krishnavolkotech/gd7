@@ -136,21 +136,20 @@ function hzd_earlywarning_release() {
  * @service is service id for which releses has to be returned
  */
 function get_earlywarning_release($service = NULL) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-        $group_id = $group->id();
-    } else {
-        $group_id = $group;
-    }
+    $group_id = get_group_id();
     
     $group = ($group_id ? $group_id : RELEASE_MANAGEMENT);
     /**
-     *  select * from node_field_data nfd    join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id join group_releases_view  grv on grv.service_id   = nfrs.field_relese_services_target_id  where group_id = 32 ;
+     *  select * from node_field_data nfd    
+     * join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id
+     *  join group_releases_view  grv on grv.service_id   = nfrs.
+     * field_relese_services_target_id  where group_id = 32 ;
      *
      */
     $query = db_select('node_field_data', 'nfd');
     $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
-    $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
+    $query->join('group_releases_view', 'grv', 
+        'nfrs.field_relese_services_target_id = grv.service_id');
     $query->fields('nfd', array('nid', 'title'));
     if ($group) {
         $query->condition('grv.group_id', $group);
@@ -166,7 +165,9 @@ function get_earlywarning_release($service = NULL) {
     foreach ($result as $vals) {
         $default_release[$vals->nid] = $vals->title;
     }
-    return array('releases' => $default_release);
+    return array(
+      'releases' => $default_release
+     );
 }
 
 /**
