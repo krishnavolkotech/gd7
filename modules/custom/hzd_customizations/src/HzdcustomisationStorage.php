@@ -858,7 +858,7 @@ class HzdcustomisationStorage
 //                            $enddate = date("d.m.Y H:i", $enddate_cancelled->date_reported) . ' Uhr';
 //                        }
 //                    } else {
-                        $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
+                    $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
 //                    }
                 } else {
                     $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
@@ -994,7 +994,7 @@ class HzdcustomisationStorage
         $title = ['incident' => Markup::create('<h2 class="text-danger">Aktuelle Störungen</h2>'),
             'maintenance' => Markup::create('<h2>Blockzeiten</h2>'),
             'archived' => Markup::create('<h2>Störungen und Blockzeiten</h2>')];
-        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class'=>[$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
+        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class' => [$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
 //    self::downtimes_display_table($variables);
         $build['problem_table'] = array(
             '#header' => $variables['header'],
@@ -1010,6 +1010,8 @@ class HzdcustomisationStorage
             '#prefix' => '<div id="pagination">',
             '#suffix' => '</div>',
         );
+        $
+        $build['#cache']['tags'][] = 'node_list';
         return $build;
     }
     

@@ -2783,7 +2783,7 @@ a.downtimes_cancel_link{
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
 #archived_search_results_wrapper table tr.even td:nth-child(5){
-  width:10% !important;
+  width:14% !important;
   word-break:break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(6),
@@ -3049,18 +3049,18 @@ a.back-search{
  width:24px;
 }
 
-form.node-downtimes-form .form-type-vertical-tabs .tabs-left .tab-content{
+.node-form .form-type-vertical-tabs .tabs-left .tab-content{
   overflow: initial;
  }
 
- form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
   border-radius:0;
 
 }
- form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
    border-bottom:1px solid #ddd !important;
  }
- form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
    border-right: none !important;
 }
 #edit-created-wrapper .form-inline .form-group:last-child{
