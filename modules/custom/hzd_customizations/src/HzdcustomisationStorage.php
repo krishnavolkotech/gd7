@@ -1011,7 +1011,7 @@ class HzdcustomisationStorage
             '#suffix' => '</div>',
         );
         $
-        $build['#cache']['tags'][] = 'node_list';
+        $build['#cache']['tags'] = ['node_list'];
         return $build;
     }
     
