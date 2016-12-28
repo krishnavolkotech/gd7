@@ -904,7 +904,7 @@ class HzdcustomisationStorage
             $serviceList = ['#items' => $services, '#theme' => 'item_list', '#type' => 'ul'];
             $elements = array_merge($elements, array(
                 //// truncating description accordin to the display of services i.e. 50 char for 1 service and 100 char for 2 services
-                'description' => Markup::create(Unicode::truncate(strip_tags($client->description), count($services) * 50, TRUE, TRUE, 1)),
+                'description' => Markup::create(Unicode::truncate(strip_tags($client->description), count($services) * 60, TRUE, TRUE, 1)),
                 'service' => $renderer->render($serviceList),
                 'state' => $renderer->render($user_states)));
 //                'state' => $user_state));
