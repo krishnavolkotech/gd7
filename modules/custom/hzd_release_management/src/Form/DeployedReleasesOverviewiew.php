@@ -26,10 +26,12 @@ class DeployedReleasesOverviewiew extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $default_type = \Drupal::request()->get('release_type') ? \Drupal::request()->get('release_type') : KONSONS;
-
+    $default_type = \Drupal::request()->get('release_type') ? 
+        \Drupal::request()->get('release_type') : KONSONS;
+    
     $container = \Drupal::getContainer();
-    $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
+    $terms = $container->get('entity.manager')
+        ->getStorage('taxonomy_term')->loadTree('release_type');
     foreach ($terms as $key => $value) {
       $release_type_list[$value->tid] = $value->name;
     }
@@ -86,13 +88,7 @@ class DeployedReleasesOverviewiew extends FormBase {
    *
    */
   public function display_deployed_release_table($release_type) {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if (is_object($group)) {
-      $group_id = $group->id();
-    }
-    else {
-      $group_id = $group;
-    }
+    $group_id = get_group_id();
 
     $db = \Drupal::database();
     $states = $db->select('states', 's')
@@ -107,7 +103,11 @@ class DeployedReleasesOverviewiew extends FormBase {
       INNER JOIN group_releases_view grv ON grv.service_id = nfd.nid
       WHERE grv.group_id = :gid AND nrt.release_type_target_id = :type 
       AND nfd.status = 1 AND nfd.type = 'services' AND nfrn.field_release_name_value 
-      IS NOT NULL ORDER BY nfd.title", array(':gid' => $group_id, ':type' => $release_type))->fetchCol();
+      IS NOT NULL ORDER BY nfd.title", array(
+        ':gid' => $group_id, 
+        ':type' => $release_type
+        )
+      )->fetchCol();
 
     if (count($services) > 0) {
       $state = array();
@@ -120,15 +120,22 @@ class DeployedReleasesOverviewiew extends FormBase {
       }
 
       $table = "<div id = 'released_results_wrapper'>";
-      $table .= "<table border='1' cellpadding='0' cellspacing='0' class = 'view-deployed-releases'><thead><tr><th style = 'min-width:170px;'>" . $this->t('Service') . "</th>";
+      $table .= "<table border='1' cellpadding='0' cellspacing='0' "
+          . "class = 'view-deployed-releases'><thead><tr><th style "
+          . "= 'min-width:170px;'>" . $this->t('Service') . "</th>";
       unset($state[0]);
 
       // Get the empty states and unset the empty states.
       foreach ($state as $key => $val) {
         $count = 0;
         foreach ($deployed_values as $values) {
-          $service_id = db_query("SELECT nid FROM node_field_data WHERE title = :title", array(":title" => $values['title']))->fetchField();
-          $release_per_state = $this->get_releases_per_state($service_id, $val, $release_type);
+          $service_id = db_query("SELECT nid FROM node_field_data "
+              . "WHERE title = :title", array(
+                ":title" => $values['title']
+              )
+            )->fetchField();
+          $release_per_state = $this->get_releases_per_state($service_id, 
+              $val, $release_type);
 
           if (count($release_per_state) == 0) {
             $count++;
@@ -162,7 +169,9 @@ class DeployedReleasesOverviewiew extends FormBase {
       $result = $services_query->execute()->fetchAll();
 
       foreach ($result as $key => $services_list) {
-        $deployed_release_name[] = array_merge(array('title' => $services_list->title), $state);
+        $deployed_release_name[] = array_merge(array(
+          'title' => $services_list->title
+        ), $state);
       }
 
       foreach ($state as $key => $val) {
@@ -171,11 +180,20 @@ class DeployedReleasesOverviewiew extends FormBase {
       $table .= "</tr></thead>";
 
       foreach ($deployed_release_name as $key => $values) {
-        $table .= "<tbody><tr><td style = 'min-width:170px;'>" . $values['title'] . "</td>";
-        $service_id = db_query("SELECT n.nid FROM node_field_data n, node__release_type nrt WHERE  n.nid = nrt.entity_id AND n.type = 'services' AND n.title = :title AND nrt.release_type_target_id = :release_type", array(":title" => $values['title'], ':release_type' => $release_type))->fetchField();
+        $table .= "<tbody><tr><td style = 'min-width:170px;'>" . 
+            $values['title'] . "</td>";
+        $service_id = db_query("SELECT n.nid FROM node_field_data n, "
+            . "node__release_type nrt WHERE  n.nid = nrt.entity_id AND "
+            . "n.type = 'services' AND n.title = :title AND "
+            . "nrt.release_type_target_id = :release_type", array(
+              ":title" => $values['title'], 
+              ':release_type' => $release_type
+            )
+          )->fetchField();
         unset($values['title']);
 
-        $deployed_release = $this->get_deployed_releases_list($values, $service_id, $release_type);
+        $deployed_release = $this->get_deployed_releases_list(
+            $values, $service_id, $release_type);
 
         $table .= $deployed_release . "</tr>";
       }

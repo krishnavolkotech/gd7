@@ -30,7 +30,6 @@ class ReleaseFilterForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $type = NULL) {
-    
     $filter_value = HzdreleasemanagementStorage::get_release_filters();
     $group_id = get_group_id();
     $form['#method'] = 'get';
@@ -344,6 +343,9 @@ class ReleaseFilterForm extends FormBase {
 //          'type' => 'throbber',
 //        ),
 //      ),
+      '#attributes' => array(
+        'onchange' =>  'this.form.submit()',
+      ),
       "#prefix" => "<div class = 'limit_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
     );

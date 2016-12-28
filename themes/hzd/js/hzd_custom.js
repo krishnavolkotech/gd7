@@ -40,12 +40,12 @@
     });
     $('document').ready(function () {
 
-        $("#block-maintenance .downtime-hover").css('display', 'none');
+        // $("#block-maintenance .downtime-hover").css('display', 'none');
         // Control hover on front page downtimes blocks
-        $("ul.incidents-home-block>li>a").hover(handlerInIncident, handlerOutIncident);
-        $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
+        // $("ul.incidents-home-block>li>a").hover(handlerInIncident, handlerOutIncident);
+        // $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
         // Handlers for front page tool tips.
-        function handlerInMaintenance() {
+        /*function handlerInMaintenance() {
             $(this).parent().next('.downtime-hover').css('display', 'block');
         }
 
@@ -59,7 +59,43 @@
 
         function handlerOutIncident() {
             $(this).next('.downtime-hover').css('display', 'none');
-        }
+        }*/
+
+        $("ul.incidents-home-block>li").hover(function () {
+            var offset = $(this).offset();
+            var popHeight = $(this).find('article.popup').height();
+            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+            var popWidth = $(this).find('article.popup').width();
+            var finalLeft = offset.left - popWidth - 10;
+            $(this).find('article.popup')
+                .css('position', 'fixed')
+                .css('top', finalTop)
+                .css('left', finalLeft)
+                .show();
+        }, function () {
+            $(this).find('article.popup')
+                .removeAttr('position')
+                .removeAttr('top')
+                .hide();
+        });
+
+        $(".maintenance-list ul li").hover(function () {
+            var offset = $(this).offset();
+            var popHeight = $(this).find('article.popup').height();
+            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+            var popWidth = $(this).find('article.popup').width();
+            var finalLeft = offset.left - popWidth - 10;
+            $(this).find('article.popup')
+                .css('position', 'fixed')
+                .css('top', finalTop)
+                .css('left', finalLeft)
+                .show();
+        }, function () {
+            $(this).find('article.popup')
+                .removeAttr('position')
+                .removeAttr('top')
+                .hide();
+        });
 
         //Clears from jquery indternal data cache
         $('.block-cust-group-menu-block .dropdown-toggle').removeData('toggle');
@@ -76,21 +112,21 @@
                 ignoreReadonly: true,
                 sideBySide: true,
                 stepping: 5,
-		toolbarPlacement: 'bottom',
-		showClear: true,
-        // debug: true
+                toolbarPlacement: 'bottom',
+                showClear: true,
+                // debug: true
             })
             .parent().css('position', 'relative');
         $('div.popup-wrapper').hover(function () {
             var offset = $(this).offset();
             var popHeight = $(this).find('article.popup').height();
-            var finalTop = offset.top - $(window).scrollTop() - popHeight/2;
+            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
             var popWidth = $(this).find('article.popup').width();
-            var finalLeft = offset.left - popWidth-10;
+            var finalLeft = offset.left - popWidth - 10;
             $(this).find('article.popup')
-                .css('position','fixed')
-                .css('top',finalTop)
-                .css('left',finalLeft)
+                .css('position', 'fixed')
+                .css('top', finalTop)
+                .css('left', finalLeft)
                 .show();
         }, function () {
             $(this).find('article.popup')
@@ -100,21 +136,19 @@
         });
 
         /*jQuery('div.popup-wrapper')
-            .mouseover(function () {
-                $('article.popup').hide();
-                $(this).find('article.popup').show();
-            });
+         .mouseover(function () {
+         $('article.popup').hide();
+         $(this).find('article.popup').show();
+         });
 
-        $('article.popup').mouseout(function () {
-            $(this).hide();
-        });
-        $(window).click(function () {
-            $('article.popup').hide();
-        });*/
+         $('article.popup').mouseout(function () {
+         $(this).hide();
+         });
+         $(window).click(function () {
+         $('article.popup').hide();
+         });*/
 
-        var options = {
-
-        };
+        var options = {};
         // $('div.popup-wrapper').popover(options);
         // $('div.popup-wrapper').each(function() {
         //     var $this = $(this);
