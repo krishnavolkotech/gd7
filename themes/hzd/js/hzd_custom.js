@@ -81,13 +81,25 @@
         // debug: true
             })
             .parent().css('position', 'relative');
-        // $('popup-wrapper').hover(function () {
-        //     $(this).parent().find('article.popup').show();
-        // }, function () {
-        //     $(this).parent().find('article.popup').hide();
-        // });
+        $('div.popup-wrapper').hover(function () {
+            var offset = $(this).offset();
+            var popHeight = $(this).find('article.popup').height();
+            var finalTop = offset.top - $(window).scrollTop() - popHeight/2;
+            var popWidth = $(this).find('article.popup').width();
+            var finalLeft = offset.left - popWidth-10;
+            $(this).find('article.popup')
+                .css('position','fixed')
+                .css('top',finalTop)
+                .css('left',finalLeft)
+                .show();
+        }, function () {
+            $(this).find('article.popup')
+                .removeAttr('position')
+                .removeAttr('top')
+                .hide();
+        });
 
-        jQuery('div.popup-wrapper')
+        /*jQuery('div.popup-wrapper')
             .mouseover(function () {
                 $('article.popup').hide();
                 $(this).find('article.popup').show();
@@ -98,7 +110,21 @@
         });
         $(window).click(function () {
             $('article.popup').hide();
-        });
+        });*/
+
+        var options = {
+
+        };
+        // $('div.popup-wrapper').popover(options);
+        // $('div.popup-wrapper').each(function() {
+        //     var $this = $(this);
+        //     $this.popover({
+        //         content: $(this).find('article.popup').html(),
+        //         trigger: 'hover',
+        //         placement: 'left',
+        //         html: true,
+        //     });
+        // });
 
         $('.frontpage-downtime-block .maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
         $('.frontpage-downtime-block .maintenance-home-info').isotope({

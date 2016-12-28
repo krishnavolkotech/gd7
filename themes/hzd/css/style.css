@@ -2835,13 +2835,14 @@ article.popup{
   position:relative;
   float:left;
   display:none;
+  /*visibility: hidden;*/
   color:#333333 !important;
 }
 article.popup .downtime-view-wrapper{
   background: rgb(255, 255, 255) none repeat scroll 0 0;
   min-height: 300px;
-  position: fixed;
-  top:125px;
+  /*position: fixed;*/
+  /*top:125px;*/
   width: 750px;
   z-index: 1000;
   box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.3);
