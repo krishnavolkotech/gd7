@@ -1729,12 +1729,18 @@ form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper {
   /*width: 100%;*/
   float: left;
 }
-form#downtimes-filter .downtimes_form_row{
+form.archived .downtimes_form_row{
+  margin:0 !important;
+  width:60%;
+  float:left;
+}
+form.incidents .downtimes_form_row{
   margin:0 !important;
 }
 form#downtimes-filter .archived_maintenance_search_results_wrapper{
   width:100%;
   float:left;
+  margin:0 !important;
 }
 form#downtimes-filter .string_search.hzd-form-element {
   width: 25% !important;
@@ -3027,4 +3033,40 @@ table.archived tr th:last-child{
 }
 .field--type-text-long h2, h3{
   font-size:14px !important;
+}
+/*----- 271216 -----*/
+table.incident caption h2,
+table.maintenance caption h2{
+  font-size:16px !important;
+}
+table.incident caption h2,
+table.maintenance caption h2{
+  font-size:16px !important;
+}
+a.back-search{
+ background:url(../images/ic_arrow_back_black_24dp_1x.png)left top no-repeat;
+ text-indent:-99999px;
+ width:24px;
+}
+
+form.node-downtimes-form .form-type-vertical-tabs .tabs-left .tab-content{
+  overflow: initial;
+ }
+
+ form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
+  border-radius:0;
+
+}
+ form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
+   border-bottom:1px solid #ddd !important;
+ }
+ form.node-downtimes-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+   border-right: none !important;
+}
+#edit-created-wrapper .form-inline .form-group:last-child{
+  margin-bottom:0 !important;
+} 
+.content-sec{
+  width:100%;
+  float:left;
 }
