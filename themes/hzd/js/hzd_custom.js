@@ -66,7 +66,12 @@
             var popHeight = $(this).find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
             var popWidth = $(this).find('article.popup').width();
-            var finalLeft = offset.left - popWidth - 10;
+            var finalLeft = offset.left - popWidth - 15;
+            if(finalLeft < 0){
+                var newWidth = popWidth*3/4;
+                $(this).find('article.popup').width(newWidth);
+                finalLeft = offset.left - newWidth - 15;
+            }
             $(this).find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
@@ -85,6 +90,11 @@
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
             var popWidth = $(this).find('article.popup').width();
             var finalLeft = offset.left - popWidth - 10;
+            if(finalLeft < 0){
+                var newWidth = popWidth*3/4;
+                $(this).find('article.popup').width(newWidth);
+                finalLeft = offset.left - newWidth - 10;
+            }
             $(this).find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
