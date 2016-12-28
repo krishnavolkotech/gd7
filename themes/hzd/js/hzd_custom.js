@@ -61,7 +61,7 @@
             $(this).next('.downtime-hover').css('display', 'none');
         }*/
 
-        $("ul.incidents-home-block>li").hover(function () {
+        $(".frontpage-downtime-block ul.incidents-home-block>li").hover(function () {
             var offset = $(this).offset();
             var popHeight = $(this).find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
@@ -84,7 +84,7 @@
                 .hide();
         });
 
-        $(".maintenance-list ul li").hover(function () {
+        $(".frontpage-downtime-block .maintenance-list ul li").hover(function () {
             var offset = $(this).offset();
             var popHeight = $(this).find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
