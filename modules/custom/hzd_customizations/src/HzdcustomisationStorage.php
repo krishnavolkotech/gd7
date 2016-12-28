@@ -931,7 +931,8 @@ class HzdcustomisationStorage
             $links = [];
             if ($groupContent) {
                 $links['action']['popup'] = ['#type' => 'container', '#attributes' => ['class' => ['popup-wrapper']]];
-                $links['action']['popup']['view'] = [
+                $links['action']['popup']['view'] = ['#type' => 'container', '#attributes' => ['class' => ['details-wrapper']]];
+                $links['action']['popup']['view']['details'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
                     '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])

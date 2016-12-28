@@ -2830,11 +2830,48 @@ table tr th{
 .form-control:-moz-placeholder{
   color:#333333 !important;	
 }
+
+
+/*article.popup:after, article.popup:before {*/
+/*article.popup:after {
+  left: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+*/
+article.popup:after {
+  background: url(../images/grey-list-arrow.png) right center no-repeat;
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  content: " ";
+  display: block;
+  margin-top: 2px;
+  background-size: 15px 15px;
+  width: 15px;
+  height: 15px;
+}
+/*article.popup:before {*/
+  /*border-color: rgba(194, 225, 245, 0);*/
+  /*border-left-color: #fff;*/
+  /*border-width: 36px;*/
+  /*margin-top: -36px;*/
+/*}*/
+
+
 article.popup{
-  position:relative;
+  position: relative;
+  /*background: #88b7d5;*/
+  /*border: 4px solid #c2e1f5;*/
   float:left;
   display:none;
   z-index: 999;
+  width: 750px;
   /*visibility: hidden;*/
   color:#333333 !important;
 }
@@ -2843,7 +2880,7 @@ article.popup .downtime-view-wrapper{
   min-height: 300px;
   /*position: fixed;*/
   /*top:125px;*/
-  width: 750px;
+  /*width: 750px;*/
   /*z-index: 1000000;*/
   box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.3);
   border:1px solid #aaaaaa;
@@ -2970,8 +3007,9 @@ form .type_search_dropdown{
 .downtimes-date-wrapper .timepicker{
   margin-top: 72px;
 }
-table.archived tr td:last-child .popup-wrapper{
+table.archived tr td:last-child .popup-wrapper .details-wrapper{
   text-align:center !important;
+  padding-top:0px;
 }
 #incidents_search_results_wrapper table.sticky-header tr th:last-child,
 #maintenance_search_results_wrapper table.sticky-header tr th:last-child{
