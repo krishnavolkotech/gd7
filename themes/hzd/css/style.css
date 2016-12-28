@@ -2840,17 +2840,15 @@ article.popup{
   position:relative;
   float:left;
   display:none;
-  z-index: 999;
-  /*visibility: hidden;*/
   color:#333333 !important;
 }
 article.popup .downtime-view-wrapper{
   background: rgb(255, 255, 255) none repeat scroll 0 0;
   min-height: 300px;
-  /*position: fixed;*/
-  /*top:125px;*/
+  position: fixed;
+  top:125px;
   width: 750px;
-  /*z-index: 1000000;*/
+  z-index: 1000;
   box-shadow: 10px 10px 8px 0 rgba(0, 0, 0, 0.3);
   border:1px solid #aaaaaa;
 }
@@ -3028,3 +3026,7 @@ form.node-downtimes-form .form-type-vertical-tabs .tabs-left .tab-content{
 #edit-created-wrapper .form-inline .form-group:last-child{
   margin-bottom:0 !important;
 } 
+.content-sec{
+  width:100%;
+  float:left;
+}
