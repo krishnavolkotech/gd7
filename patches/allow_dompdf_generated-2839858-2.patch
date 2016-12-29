@@ -1,0 +1,29 @@
+Index: src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Plugin/EntityPrint/PrintEngine/DomPdf.php	(revision c633d9674f697693215c3b9fdd1a8239a2e49c2b)
++++ src/Plugin/EntityPrint/PrintEngine/DomPdf.php	(revision )
+@@ -29,7 +29,7 @@
+   /**
+    * @var \Dompdf\Dompdf
+    */
+-  protected $dompdf;
++    protected $dompdf;
+ 
+   /**
+    * Keep track of HTML pages as they're added.
+@@ -215,5 +215,12 @@
+   protected function getPaperSizes() {
+     return array_combine(array_keys(CPDF::$PAPER_SIZES), array_map('ucfirst', array_keys(CPDF::$PAPER_SIZES)));
+   }
++  
++  /**
++   * {@inheritdoc}
++   */
++  public function getDomPdf(){
++    return $this->dompdf;
++  }
+ 
+ }
