@@ -1,140 +1,95 @@
-<div class="print-pdf">
-<h2>1 Meta-Daten</h2>
-{% if content.field_custom_title.0 %}
-    {{ content.field_custom_title }}
-{% else %}
-    <div class="field field--name-field-custom-title field--label-above">
-        <div class="field--label">1.1 Title</div>
-        <div class="field--item"> Keine Angabe</div>
+{#{{ dump(node|keys) }}#}
+{#{{ dump(label) }}#}
+
+{% set classes = [
+node.bundle|clean_class,
+node.isPromoted() ? 'is-promoted',
+node.isSticky() ? 'is-sticky',
+not node.isPublished() ? 'is-unpublished',
+view_mode ? view_mode|clean_class,
+'clearfix',
+] %}
+<article{{ attributes.addClass(classes) }}>
+    <div id="header">
+        <table border="1" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                {% if content.field_unique_id.0 %}
+                <td rowspan="3">
+            {% else %}
+                <td rowspan="2">
+                    {% endif %}
+                    <img alt="Home" src="{{ base_path }}/themes/hzd/images/hzd_pdf_logo.png"></td>
+                </td>
+                {% if content.field_unique_id.0 %}
+                <td rowspan="3">
+                {{ content.field_unique_id }}
+                <br>
+
+            {% else %}
+                <td rowspan="2">
+                    {% endif %}
+                    {{ label }}
+                </td>
+                {% if author_name %}
+
+                <td> &nbsp;
+                    {{ 'Veröffentlicht am'|trans }}:
+                    {{ changed }}
+                </td>
+            <tr>
+                <td>
+                    {{ 'Veröffentlicht von'|trans }}:
+                    {{ author_name }}
+
+                </td>
+            </tr>
+            {% endif %}
+            </tr>
+
+            <tr>
+                <td colspan="3"> &nbsp;
+                    Seite <span class="pageCounter"></span> von <span class="totalPageCounter"></span></td>
+                </td>
+            </tr>
+        </table>
     </div>
-{% endif %}
-{% if content.field_related_transfer_number.0 %}
-    {{ content.field_related_transfer_number }}
-{% else %}
-    <div class="field field--name-field-related-transfer-number field--label-above">
-        <div class="field--label">1.2 Related to software transfer no.</div>
-        <div class="field--item"> Keine Angabe</div>
+    {{ content }}
+    <div id="footer">
+        <p class="page">{{ 'Page'|trans }} </p>
     </div>
-{% endif %}
-{% if content.field_other_services.0 %}
-    {{ content.field_other_services }}
-{% else %}
-    <div class="field field--name-field-other-services field--label-above">
-        <div class="field--label">1.3 Affected service ids (according Progdok)</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_recipients.0 %}
-    {{ content.field_recipients }}
-{% else %}
-    <div class="field field--name-field-recipients field--label-above">
-        <div class="field--label">1.4 Recipients</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-<h2>2 Fachlich-inhaltliche Angaben</h2>
-{% if content.field_intial_situation.0 %}
-    <div class="intial-situation-info">{{ content.field_intial_situation }}</div>
-{% else %}
-	    <div class="field field--name-field-intial-situation field--label-above">
-	    <div class="field--label">2.1 Initial situation</div>
-        <div class="field--item">Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_professional_conditions.0 %}
-    {{ content.field_professional_conditions }}
-{% else %}
-    <div class="field field--name-field-professional-conditions field--label-above">
-        <div class="field--label">2.2 Professional / organizational conditions for employment</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_tech_requirements.0 %}
-    {{ content.field_tech_requirements }}
-{% else %}
-    <div class="field field--name-field-tech-requirements field--label-above">
-        <div class="field--label">2.3 Technical Requirements for use</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_depend_other_services.0 %}
-    {{ content.field_depend_other_services }}
-{% else %}
-    <div class="field field--name-field-depend-other-services field--label-above">
-        <div class="field--label">2.4 Depending on the use of other services</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_business_impact.0 %}
-    {{ content.field_business_impact }}
-{% else %}
-    <div class="field field--name-field-business-impact field--label-above">
-        <div class="field--label">2.5 Business impact</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_technical_impact.0 %}
-    {{ content.field_technical_impact }}
-{% else %}
-    <div class="field field--name-field-technical-impact field--label-above">
-        <div class="field--label">2.6 Technical impact</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_business_impact_services.0 %}
-    {{ content.field_business_impact_services }}
-{% else %}
-    <div class="field field--name-field-business-impact-services field--label-above">
-        <div class="field--label">2.7 Business impact on other (business) services</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_technical_impact_services.0 %}
-    {{ content.field_technical_impact_services }}
-{% else %}
-    <div class="field field--name-field-technical-impact-services field--label-above">
-        <div class="field--label">2.8 Technical impact on other (business) services</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_special_notes.0 %}
-    {{ content.field_special_notes }}
-{% else %}
-    <div class="field field--name-field-special-notes field--label-above">
-        <div class="field--label">2.9 Special notes</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_dates.0 %}
-    {{ content.field_dates }}
-{% else %}
-    <div class="field field--name-field-dates field--label-above">
-        <div class="field--label">2.10 Dates</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_creators.0 %}
-    {{ content.field_creators }}
-{% else %}
-    <div class="field field--name-field-creators field--label-above">
-        <div class="field--label">2.11 Creators</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.field_contact.0 %}
-    {{ content.field_contact }}
-{% else %}
-    <div class="field field--name-field-contact field--label-above">
-        <div class="field--label">2.12 Contact</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-{% if content.upload.0 %}
-    {{ content.upload }}
-{% else %}
-    <div class="field field--name-field-contact field--label-above">
-        <div class="field--label">2.13 Dateianhänge</div>
-        <div class="field--item"> Keine Angabe</div>
-    </div>
-{% endif %}
-</div>
+</article>
+<style>
+    @page {
+        /*margin: 180px 50px;*/
+    }
+
+    #header {
+        position: fixed;
+        left: 0px;
+        top: -20px;
+        right: 0px;
+        /*height: 150px;*/
+        /*background-color: orange;*/
+        text-align: center;
+    }
+
+    #footer {
+        position: fixed;
+        /*left: 0px;*/
+        bottom: 55px;
+        right: 0px;
+        /*height: 150px;*/
+        /*background-color: lightblue;*/
+    }
+
+    #footer .page:after {
+        content: counter(page);
+    }
+
+    .print-pdf {
+        padding-bottom: 50px;
+        padding-top: 50px;
+    }
+
+
+</style>

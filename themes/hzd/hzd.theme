@@ -230,18 +230,18 @@ function hzd_preprocess_node(&$variables) {
             ->get('field_problem_eroffnet')->value);
         
         $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
-
+        
         $url = Url::fromRoute('problem_management.problems', array(
-              'group' => PROBLEM_MANAGEMENT
-              ), 
-              array(
+            'group' => PROBLEM_MANAGEMENT
+        ),
+            array(
                 'query' => array(
-                  $filter_parameter
+                    $filter_parameter
                 )
-              )
-            );
-            $variables['back_to_search'] = \Drupal::service('link_generator')
-                ->generate(t('Back To Search'), $url);
+            )
+        );
+        $variables['back_to_search'] = \Drupal::service('link_generator')
+            ->generate(t('Back To Search'), $url);
         
     }
     
@@ -273,11 +273,21 @@ function hzd_preprocess_breadcrumb(&$variables) {
 //    $variables['breadcrumb']['entity_print_block'] = $block_view;
 //  }
     // Embedding the add to favorites block in breadcrumb.
+//    $rightData['extras'] = ['#type'=>'container','#attributes'=>['class'=>['test']]];
+    $variables['breadcrumb']['extras'] = ['#type'=>'container','#attributes'=>['class'=>['print-action-wrapper']]];
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
     if (isset($block)) {
         $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
-        $variables['breadcrumb']['add_fav_form'] = $block_view;
+        $variables['breadcrumb']['extras']['add_fav_form'] = $block_view;
     }
+    $groupContent = \Drupal::routeMatch()->getParameter('group_content');
+    if ($groupContent) {
+        $pdfLink = ['#type'=>'container','#attributes'=>['class'=>['unpublished-quickinfo-pdf-preview']]];
+        $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type'=>'node','entity_id'=>$groupContent->get('entity_id')->referencedEntities()[0]->id()]),'#title'=>'PDF'];
+        $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+    }
+//    $variables['breadcrumb'][] = $rightData;
+//    pr(($variables['breadcrumb']));exit;
 }
 
 function custom_user_fullname($uid) {
