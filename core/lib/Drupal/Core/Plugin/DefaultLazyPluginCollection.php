@@ -87,7 +87,7 @@ class DefaultLazyPluginCollection extends LazyPluginCollection {
    * @return $this
    */
   public function sort() {
-    @uasort($this->instanceIDs, array($this, 'sortHelper'));
+    uasort($this->instanceIDs, array($this, 'sortHelper'));
     return $this;
   }
 

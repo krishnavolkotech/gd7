@@ -4,6 +4,7 @@ namespace Drupal\search_api\Plugin\views\query;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Cache\UncacheableDependencyTrait;
 use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -13,7 +14,6 @@ use Drupal\search_api\ParseMode\ParseModeInterface;
 use Drupal\search_api\Query\ConditionGroupInterface;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSetInterface;
-use Drupal\search_api\UncacheableDependencyTrait;
 use Drupal\search_api\Utility\Utility;
 use Drupal\user\Entity\User;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -194,7 +194,11 @@ class SearchApiQuery extends QueryPluginBase {
       $this->query = $this->index->query();
       $this->query->addTag('views');
       $this->query->addTag('views_' . $view->id());
-      $this->query->setSearchId('views_page:' . $view->id() . '__' . $view->current_display);
+      $display_type = $display->getPluginId();
+      if ($display_type === 'rest_export') {
+        $display_type = 'rest';
+      }
+      $this->query->setSearchId("views_$display_type:" . $view->id() . '__' . $view->current_display);
       $this->query->setOption('search_api_view', $view);
     }
     catch (\Exception $e) {
@@ -373,6 +377,9 @@ class SearchApiQuery extends QueryPluginBase {
     if (($path = $this->view->getPath()) && strpos(Url::fromRoute('<current>')->toString(), $this->view->override_path) !== 0) {
       $this->query->setOption('search_api_base_path', $path);
     }
+
+    // Save query information for Views UI.
+    $view->build_info['query'] = (string) $this->query;
   }
 
   /**
@@ -530,6 +537,30 @@ class SearchApiQuery extends QueryPluginBase {
 
       $view->result[] = new ResultRow($values);
     }
+  }
+
+  /**
+   * Retrieves the conditions placed on this query.
+   *
+   * @return array
+   *   The conditions placed on this query, separated by groups, as an
+   *   associative array with a structure like this:
+   *   - GROUP_ID:
+   *     - type: "AND"/"OR"
+   *     - conditions:
+   *       - [FILTER, VALUE, OPERATOR]
+   *       - [FILTER, VALUE, OPERATOR]
+   *       …
+   *     - condition_groups:
+   *       - ConditionGroupInterface object
+   *       - ConditionGroupInterface object
+   *       …
+   *   - GROUP_ID:
+   *     …
+   *   Returned by reference.
+   */
+  public function &getWhere() {
+    return $this->where;
   }
 
   /**
@@ -989,6 +1020,9 @@ class SearchApiQuery extends QueryPluginBase {
   protected function sanitizeOperator($operator) {
     if ($operator === '!=') {
       $operator = '<>';
+    }
+    elseif (in_array($operator, array('in', 'not in', 'between', 'not between'))) {
+      $operator = strtoupper($operator);
     }
     return $operator;
   }

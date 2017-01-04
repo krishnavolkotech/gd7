@@ -8,3 +8,5 @@ recipients:
   - betriebsportal-konsens@hzd.hessen.de
 reply: ''
 weight: 3
+message: 'Your message has been sent.'
+redirect: ''

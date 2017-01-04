@@ -241,7 +241,7 @@ class RenderedItem extends ProcessorPluginBase {
 
     if (!$datasource) {
       $definition = array(
-        'type' => 'text',
+        'type' => 'field_item:text_long.string',
         'label' => $this->t('Rendered HTML output'),
         'description' => $this->t('The complete HTML which would be displayed when viewing the item'),
         'processor_id' => $this->getPluginId(),
@@ -270,7 +270,9 @@ class RenderedItem extends ProcessorPluginBase {
     // Count of items that don't have a view mode.
     $unset_view_modes = 0;
 
-    foreach ($this->filterForPropertyPath($item->getFields(), 'rendered_item') as $field) {
+    $fields = $this->getFieldsHelper()
+      ->filterForPropertyPath($item->getFields(), NULL, 'rendered_item');
+    foreach ($fields as $field) {
       $configuration = $field->getConfiguration();
 
       // Change the current user to our dummy implementation to ensure we are
@@ -321,8 +323,8 @@ class RenderedItem extends ProcessorPluginBase {
   public function calculateDependencies() {
     $this->dependencies = parent::calculateDependencies();
 
-    $fields = $this->index->getFieldsByDatasource(NULL);
-    $fields = $this->filterForPropertyPath($fields, 'rendered_item');
+    $fields = $this->getFieldsHelper()
+      ->filterForPropertyPath($this->index->getFields(), NULL, 'rendered_item');
     foreach ($fields as $field) {
       $view_modes = $field->getConfiguration()['view_mode'];
       foreach ($this->index->getDatasources() as $datasource_id => $datasource) {
@@ -354,8 +356,8 @@ class RenderedItem extends ProcessorPluginBase {
     // dependencies.
     // The code is highly similar to calculateDependencies(), only that we
     // remove the setting (if necessary) instead of adding a dependency.
-    $fields = $this->index->getFieldsByDatasource(NULL);
-    $fields = $this->filterForPropertyPath($fields, 'rendered_item');
+    $fields = $this->getFieldsHelper()
+      ->filterForPropertyPath($this->index->getFields(), NULL, 'rendered_item');
     foreach ($fields as $field) {
       $field_config = $field->getConfiguration();
       $view_modes = $field_config['view_mode'];
