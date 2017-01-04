@@ -128,7 +128,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
     /** @var \Drupal\Core\Entity\EntityInterface $entity */
     $entity = $context['entity'];
     
-    if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo') {
+    if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo' && in_array($context['view_mode'], ['full', 'pdf'])) {
         /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
         $display = $context['display'];
         $entityManager = Drupal::service('entity.manager');
@@ -186,6 +186,14 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //    exit;
 //    echo 1;
 }*/
+
+function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
+    if($entity->getType() == 'quickinfo'){
+        $build['field_custom_title']['#prefix'] = t('<h2>1 @data</h2>', ['@data' => 'Meta-Daten']);
+        $build['field_intial_situation']['#prefix'] = t('<h2>2 @data2</h2>', ['@data2' => 'Fachlich-inhaltliche Angaben']);
+    }
+//    pr($build['field_custom_title']);exit;
+}
 
 /**
  * Implements hook_form_alter.

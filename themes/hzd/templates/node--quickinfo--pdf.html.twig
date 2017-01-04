@@ -9,86 +9,89 @@ not node.isPublished() ? 'is-unpublished',
 view_mode ? view_mode|clean_class,
 'clearfix',
 ] %}
-<article{{ attributes.addClass(classes) }}>
-    <div id="header">
-        <table border="1" width="100%" cellspacing="0" cellpadding="0">
+
+
+<div id="header">
+    <table border="1" width="100%" cellspacing="0" cellpadding="0">
+        {% if node.isPublished() %}
             <tr>
-                {% if content.field_unique_id.0 %}
                 <td rowspan="3">
-            {% else %}
-                <td rowspan="2">
-                    {% endif %}
                     <img alt="Home" src="{{ base_path }}/themes/hzd/images/hzd_pdf_logo.png"></td>
                 </td>
-                {% if content.field_unique_id.0 %}
                 <td rowspan="3">
-                {{ content.field_unique_id }}
-                <br>
-
-            {% else %}
-                <td rowspan="2">
-                    {% endif %}
+                    {{ content.field_unique_id }}
+                    <br>
                     {{ label }}
                 </td>
-                {% if author_name %}
-
                 <td> &nbsp;
                     {{ 'Veröffentlicht am'|trans }}:
                     {{ changed }}
                 </td>
+            </tr>
             <tr>
                 <td>
                     {{ 'Veröffentlicht von'|trans }}:
                     {{ author_name }}
-
                 </td>
             </tr>
-            {% endif %}
-            </tr>
-
             <tr>
-                <td colspan="3"> &nbsp;
-                    Seite <span class="pageCounter"></span> von <span class="totalPageCounter"></span></td>
+                <td>
+                    Seite <span class="pageCounter"></span> {#von <span class="totalPageCounter"></span>#}</td>
                 </td>
             </tr>
-        </table>
-    </div>
-    {{ content }}
-    <div id="footer">
-        <p class="page">{{ 'Page'|trans }} </p>
-    </div>
-</article>
+        {% else %}
+            <tr>
+                <td>
+                    <img alt="Home" src="{{ base_path }}/themes/hzd/images/hzd_pdf_logo.png"></td>
+                </td>
+                <td>
+                    {{ label }}
+                </td>
+                <td>
+                    Seite <span class="pageCounter"></span> {#von <span class="totalPageCounter"></span>#}</td>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+{#<div id="footer">#}
+    {#<p class="page">Page </p>#}
+{#</div>#}
+<div id="content">
+    <article{{ attributes.addClass(classes) }}>
+
+        {{ content|without('field_unique_id') }}
+
+    </article>
+</div>
+
+
 <style>
     @page {
-        /*margin: 180px 50px;*/
+        margin: 150px 40px 40px 40px;
     }
 
     #header {
         position: fixed;
         left: 0px;
-        top: -20px;
-        right: 0px;
-        /*height: 150px;*/
+        top: -120px;
+        right: 20px;
+        height: 70px;
         /*background-color: orange;*/
         text-align: center;
     }
 
     #footer {
         position: fixed;
-        /*left: 0px;*/
-        bottom: 55px;
-        right: 0px;
-        /*height: 150px;*/
+        left: 10px;
+        bottom: 20px;
+        right: 10px;
+        height: 20px;
         /*background-color: lightblue;*/
     }
 
-    #footer .page:after {
+    .pageCounter:after {
         content: counter(page);
-    }
-
-    .print-pdf {
-        padding-bottom: 50px;
-        padding-top: 50px;
     }
 
 
