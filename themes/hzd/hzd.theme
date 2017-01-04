@@ -274,14 +274,16 @@ function hzd_preprocess_breadcrumb(&$variables) {
 //  }
     // Embedding the add to favorites block in breadcrumb.
 //    $rightData['extras'] = ['#type'=>'container','#attributes'=>['class'=>['test']]];
-    $variables['breadcrumb']['extras'] = ['#type'=>'container','#attributes'=>['class'=>['print-action-wrapper']]];
+    
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
     if (isset($block)) {
         $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
         $variables['breadcrumb']['extras']['add_fav_form'] = $block_view;
     }
     $groupContent = \Drupal::routeMatch()->getParameter('group_content');
-    if ($groupContent) {
+    // @todo remove while PDF functionality is done added in a wront commit
+    //$variables['breadcrumb']['extras'] = ['#type'=>'container','#attributes'=>['class'=>['print-action-wrapper']]];
+    if ($groupContent && 0) {
         $pdfLink = ['#type'=>'container','#attributes'=>['class'=>['unpublished-quickinfo-pdf-preview']]];
         $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type'=>'node','entity_id'=>$groupContent->get('entity_id')->referencedEntities()[0]->id()]),'#title'=>'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
