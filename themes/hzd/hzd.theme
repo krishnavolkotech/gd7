@@ -281,7 +281,8 @@ function hzd_preprocess_breadcrumb(&$variables) {
         $variables['breadcrumb']['extras']['add_fav_form'] = $block_view;
     }
     $groupContent = \Drupal::routeMatch()->getParameter('group_content');
-    if ($groupContent) {
+    // @todo remove while PDF functionality is done added in a wront commit
+    if ($groupContent && 0) {
         $pdfLink = ['#type'=>'container','#attributes'=>['class'=>['unpublished-quickinfo-pdf-preview']]];
         $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type'=>'node','entity_id'=>$groupContent->get('entity_id')->referencedEntities()[0]->id()]),'#title'=>'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
