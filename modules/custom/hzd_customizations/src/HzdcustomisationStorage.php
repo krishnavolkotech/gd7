@@ -802,7 +802,7 @@ class HzdcustomisationStorage
             $pager->addField('rci', 'end_date');
             $pager->orderby('rci.end_date', 'desc');
         } else {
-            $pager->orderby('d.startdate_planned', 'desc');
+            $pager->orderby('d.startdate_planned', 'asc');
         }
 
 
@@ -858,7 +858,7 @@ class HzdcustomisationStorage
 //                            $enddate = date("d.m.Y H:i", $enddate_cancelled->date_reported) . ' Uhr';
 //                        }
 //                    } else {
-                        $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
+                    $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
 //                    }
                 } else {
                     $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
@@ -885,7 +885,8 @@ class HzdcustomisationStorage
             $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
             $maintenance_group = \Drupal\group\Entity\Group::load(MAINTENANCE_GROUP_ID);
             // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
-            if ($maintenance_group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+            $currentUser = \Drupal::currentUser();
+            if ($maintenance_group->getMember($currentUser) || array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
                 $maintenance_edit = TRUE;
             } else {
                 $maintenance_edit = FALSE;
@@ -903,8 +904,8 @@ class HzdcustomisationStorage
             $user_states = ['#items' => $user_states, '#theme' => 'item_list', '#type' => 'ul'];
             $serviceList = ['#items' => $services, '#theme' => 'item_list', '#type' => 'ul'];
             $elements = array_merge($elements, array(
-                //// truncating description accordin to the display of services i.e. 50 char for 1 service and 100 char for 2 services
-                'description' => Markup::create(Unicode::truncate(strip_tags($client->description), count($services) * 60, TRUE, TRUE, 1)),
+                //// truncating description accordin to the display of services i.e. 60 char for 1 service and 120 char for 2 services
+                'description' => Markup::create(Unicode::truncate(strip_tags($client->description), count($services) * 60, FALSE, TRUE, 1)),
                 'service' => $renderer->render($serviceList),
                 'state' => $renderer->render($user_states)));
 //                'state' => $user_state));
@@ -931,7 +932,8 @@ class HzdcustomisationStorage
             $links = [];
             if ($groupContent) {
                 $links['action']['popup'] = ['#type' => 'container', '#attributes' => ['class' => ['popup-wrapper']]];
-                $links['action']['popup']['view'] = [
+                $links['action']['popup']['view'] = ['#type' => 'container', '#attributes' => ['class' => ['details-wrapper']]];
+                $links['action']['popup']['view']['details'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
                     '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
@@ -993,8 +995,12 @@ class HzdcustomisationStorage
         $title = ['incident' => Markup::create('<h2 class="text-danger">Aktuelle Störungen</h2>'),
             'maintenance' => Markup::create('<h2>Blockzeiten</h2>'),
             'archived' => Markup::create('<h2>Störungen und Blockzeiten</h2>')];
-        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class'=>[$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
+        $noDataText = ['incident' => t('No incidents available.'),
+            'maintenance' => t('No maintenances available.'),
+            'archived' => t('No downtimes available.')];
+        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class' => [$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => $noDataText[$type]);
 //    self::downtimes_display_table($variables);
+        $build = [];
         $build['problem_table'] = array(
             '#header' => $variables['header'],
             '#rows' => $variables['rows'],
@@ -1009,6 +1015,8 @@ class HzdcustomisationStorage
             '#prefix' => '<div id="pagination">',
             '#suffix' => '</div>',
         );
+        
+        
         return $build;
     }
     

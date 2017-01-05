@@ -2040,20 +2040,24 @@ section .form-group .more-link a{
   margin:0;
 }
 .block-maintenance-block a.front-page-link{
-  width:50%;
+  width:100%;
   display:inline-block;
   background:url(../images/grey-list-arrow.png)left 7px no-repeat;
   padding-left:14px;
   color:#333333;
 }
+
 .block-incidents-block a.front-page-link{
-  width:50%;
+  width:100%;
   display:inline-block;
   background:url(../images/grey-list-arrow.png)left 7px no-repeat;
   /*background:url(../images/red-list-arrow.png)left 8px no-repeat;*/
   padding-left:14px;
   color:#333333;
   margin-top:15px;
+}
+.frontpage-downtime-block a.front-page-link {
+  width:47%; !important;
 }
 .block-maintenance-block a.state-link,
 .block-incidents-block a.state-link{
@@ -2739,7 +2743,7 @@ table.archived tr td a.downtimes_details_link{
   font-size:0;
   margin-right:10px;
   float:none;
-  vertical-align:top;
+  padding-top: 18px;
 }
 .text-danger td a.downtimes_update_link,
 a.downtimes_update_link{
@@ -2791,7 +2795,7 @@ a.downtimes_cancel_link{
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
 #archived_search_results_wrapper table tr.even td:nth-child(5){
-  width:10% !important;
+  width:14% !important;
   word-break:break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(6),
@@ -2899,7 +2903,7 @@ article.popup .downtime-view-wrapper{
  margin-top:0 ;
 }*/
 .vertical-tabs-panes label input.form-checkbox{
- margin:4px 0px 0 -20px !important ;
+ margin:5px 0px 0 -20px !important ;
 }
 .region.region-content .field--type-text-long ul{
    width:100%;
@@ -2983,8 +2987,9 @@ form .type_search_dropdown{
 .downtimes-date-wrapper .timepicker{
   margin-top: 72px;
 }
-table.archived tr td:last-child .popup-wrapper{
+table.archived tr td:last-child .popup-wrapper .details-wrapper{
   text-align:center !important;
+  padding-top:0px;
 }
 #incidents_search_results_wrapper table.sticky-header tr th:last-child,
 #maintenance_search_results_wrapper table.sticky-header tr th:last-child{
@@ -3017,6 +3022,7 @@ a.back-search{
  text-indent:-99999px;
  width:24px;
 }
+<<<<<<< HEAD
 /* .node-downtimes-form */
 form .form-type-vertical-tabs{
   border:1px solid #ddd;
@@ -3028,12 +3034,27 @@ form .form-type-vertical-tabs .tabs-left .tab-content{
   box-shadow:none;
  }
 form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
+=======
+
+.node-form .form-type-vertical-tabs .tabs-left .tab-content{
+  overflow: initial;
+ }
+
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
+>>>>>>> 97f5b1f14bfb557b323b6dde3733b198c3c74c41
   border-radius:0;
 }
+<<<<<<< HEAD
 form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
    border-bottom:1px solid #ddd !important;
 }
 form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+=======
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
+   border-bottom:1px solid #ddd !important;
+ }
+.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+>>>>>>> 97f5b1f14bfb557b323b6dde3733b198c3c74c41
    border-right: none !important;
 }
 #edit-created-wrapper .form-inline .form-group:last-child{
