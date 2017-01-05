@@ -125,6 +125,12 @@ class DowntimesFilter extends FormBase
                 '#title' => 'Period',
                 '#weight' => 5,
                 '#attributes' => array("class" => ["time_period_date"]),
+                '#states' => [
+                    'enabled' => [
+                        ':input[name="filter_startdate"]' => array('filled' => FALSE),
+                        ':input[name="filter_enddate"]' => array('filled' => FALSE),
+                    ]
+                ],
 //        '#ajax' => array(
 //          'callback' => $path,
 //          'wrapper' => $wrapper,
@@ -146,7 +152,7 @@ class DowntimesFilter extends FormBase
                 '#type' => 'hidden',
                 '#value' => $group_id,
             );
-            $form['search_string'] =['#type' => 'container', '#attributes' => ['class' => ['search']], '#weight' => 1];
+            $form['search_string'] = ['#type' => 'container', '#attributes' => ['class' => ['search']], '#weight' => 1];
             $form['search_string']['string'] = array(
                 '#type' => 'textfield',
                 '#weight' => 6,
@@ -253,6 +259,11 @@ class DowntimesFilter extends FormBase
             /* '#date_date_format' => $date_format,
               '#date_time_format' => $time_format, */
             '#description' => date($date_format, time()),
+            '#states' => [
+                'enabled' => [
+                    ':input[name="time_period"]' => array('value' => 0),
+                ]
+            ],
 //      '#ajax' => array(
 //        'callback' => $path,
 //        'wrapper' => $wrapper,
@@ -277,6 +288,11 @@ class DowntimesFilter extends FormBase
             '#type' => 'textfield',
             '#placeholder' => '<' . t('End Date') . '>',
             '#description' => date($date_format, time()),
+            '#states' => [
+                'enabled' => [
+                    ':input[name="time_period"]' => array('value' => 0),
+                ]
+            ],
 //      '#ajax' => array(
 //        'callback' => $path,
 //        'wrapper' => $wrapper,
@@ -426,7 +442,7 @@ class DowntimesFilter extends FormBase
                 }
             }
         } else {
-            if (isset($start_date) && isset($end_date) && type != 'archived') {
+            if (isset($start_date) && isset($end_date) && $type != 'archived') {
 //        dpm($start_date);
 //        dpm($end_date);
                 $sql .= " and (( (sd.startdate_planned BETWEEN $start_date AND $end_date) "
