@@ -229,14 +229,14 @@ function hzd_preprocess_node(&$variables) {
         $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
             ->get('field_problem_eroffnet')->value);
         
-        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
+//        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
         
         $url = Url::fromRoute('problem_management.problems', array(
             'group' => PROBLEM_MANAGEMENT
         ),
             array(
                 'query' => array(
-                    $filter_parameter
+                    \Drupal::request()->query->all()
                 )
             )
         );
