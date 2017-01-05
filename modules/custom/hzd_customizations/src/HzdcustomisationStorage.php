@@ -802,7 +802,7 @@ class HzdcustomisationStorage
             $pager->addField('rci', 'end_date');
             $pager->orderby('rci.end_date', 'desc');
         } else {
-            $pager->orderby('d.startdate_planned', 'desc');
+            $pager->orderby('d.startdate_planned', 'asc');
         }
 
 
@@ -885,7 +885,8 @@ class HzdcustomisationStorage
             $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
             $maintenance_group = \Drupal\group\Entity\Group::load(MAINTENANCE_GROUP_ID);
             // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
-            if ($maintenance_group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+            $currentUser = \Drupal::currentUser();
+            if ($maintenance_group->getMember($currentUser) || array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
                 $maintenance_edit = TRUE;
             } else {
                 $maintenance_edit = FALSE;
@@ -994,8 +995,12 @@ class HzdcustomisationStorage
         $title = ['incident' => Markup::create('<h2 class="text-danger">Aktuelle Störungen</h2>'),
             'maintenance' => Markup::create('<h2>Blockzeiten</h2>'),
             'archived' => Markup::create('<h2>Störungen und Blockzeiten</h2>')];
-        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class' => [$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => 'No data created yet.');
+        $noDataText = ['incident' => t('No incidents available.'),
+            'maintenance' => t('No maintenances available.'),
+            'archived' => t('No downtimes available.')];
+        $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class' => [$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => $noDataText[$type]);
 //    self::downtimes_display_table($variables);
+        $build = [];
         $build['problem_table'] = array(
             '#header' => $variables['header'],
             '#rows' => $variables['rows'],
@@ -1010,8 +1015,8 @@ class HzdcustomisationStorage
             '#prefix' => '<div id="pagination">',
             '#suffix' => '</div>',
         );
-        $
-        $build['#cache']['tags'] = ['node_list'];
+        
+        
         return $build;
     }
     

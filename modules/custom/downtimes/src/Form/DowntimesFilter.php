@@ -249,7 +249,7 @@ class DowntimesFilter extends FormBase
         $form['second_row']['filter_startdate'] = [
             '#type' => 'textfield',
 //      '#title' => t('Start Date'),
-            '#placeholder' => t('Start Date'),
+            '#placeholder' => '<' . t('Start Date') . '>',
             /* '#date_date_format' => $date_format,
               '#date_time_format' => $time_format, */
             '#description' => date($date_format, time()),
@@ -275,7 +275,7 @@ class DowntimesFilter extends FormBase
         ];
         $form['second_row']['filter_enddate'] = [
             '#type' => 'textfield',
-            '#placeholder' => t('End Date'),
+            '#placeholder' => '<' . t('End Date') . '>',
             '#description' => date($date_format, time()),
 //      '#ajax' => array(
 //        'callback' => $path,

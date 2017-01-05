@@ -77,8 +77,8 @@ p {
   color: #ffffff;
   text-decoration: none;
   background-color:transparent;
-  padding:15px;
-  font-size:16px;
+  padding:10px 20px;
+  font-size:15px;
   /* text-transform: uppercase; */
 }
 #block-primarylinks ul li a.hover {
@@ -346,6 +346,8 @@ header {
 header .navbar-collapse.collapse {
   padding: 0 !important;
   border-top: 0 !important;
+  width:100%;
+  float:left;
 }
 #block-general {
   width: 100%;
@@ -677,7 +679,6 @@ form.release-filter-form .hzd-form-element,
   list-style-type: none !important;
   padding: 0!important;
   margin:0 10px 0 0 !important;
-  /*margin: 0 0 -1px 0 !important;*/
   width: auto !important;
   background: #fff !important;
 }
@@ -833,7 +834,8 @@ nav#block-optionen .field--name-body ul li:hover a {
 }
 h1.page-header {
   margin: 0 0 20px 0 !important;
-  font-size: 22px;
+  /*font-size: 22px;*/
+  font-size:17px;
   color:rgb(4, 66, 95);
   border-bottom: 2px solid #ddd;
 }
@@ -891,6 +893,7 @@ input.hasDatepicker{
   height: 34px !important;
   border-radius: 0 !important;
   font-size:14px;
+  color: #333;
   width:210px !important;
 }
 /*.form-control{
@@ -1095,6 +1098,10 @@ select {
 p:last-child {
   margin-bottom: 10px !important;
 }
+/*table.archived .form-group:last-child{
+    margin-bottom: 10px !important;
+    line-height:0;
+}*/
 .field--name-body,
 a,
 p {
@@ -1783,13 +1790,13 @@ aside .block-favorites h2.block-title,
   margin:0 0 10px 0!important;
   padding:0 0 9px 0;
   font-size: 17px !important;
-  /*font-weight: bold;*/
+  font-weight: bold;
   line-height: 20px;
   border-bottom: 2px solid #e6e9ed;
   font-family: robotoregular;
 }
 aside .block-favorites h2.block-title{
-  background: url("../images/ic_star_black.png") no-repeat scroll 130px top;
+  background: url("../images/ic_star_black.png") no-repeat scroll 220px top;
 }
 .block-incidents-block ul{
   margin:0;
@@ -1847,6 +1854,7 @@ section .form-group .view-content .item-list ul li{
 }
 .block-maintenance-block ul{
   margin-bottom:20px;
+  padding-left: 13px;
 }
 .block-maintenance-block ul li{
   list-style-type:none;
@@ -2024,7 +2032,7 @@ aside .view-release-list ul li{
 }
 aside .view-problems-front-page ul li,
 aside .view-release-list ul li{
-  background:url(../images/grey-list-arrow.png)left 5px no-repeat !important;
+  background:url(../images/grey-list-arrow.png)left 8px no-repeat !important;
 }
 section .form-group .more-link a{
   background:url(../images/grey-list-arrow.png)left 7px no-repeat;
@@ -2070,6 +2078,7 @@ aside section .form-group .item-list ul li .field-content{
   color:#333;
   font-size:14px;
   line-height:20px;
+  padding: 3px 3px 3px 0;
 }
 section .form-group .views-field-field-news-date{
  float:left;
@@ -2436,6 +2445,7 @@ form.node-downtimes-form .panel .panel-heading {
     color: #333;
     background:transparent;
     border:none;
+    padding:0;
 }
 form.node-downtimes-edit-form .form-item-startdate-planned,
 form.node-downtimes-form .form-item-startdate-planned{
@@ -2456,7 +2466,7 @@ article.downtimes .downtime-view-wrapper{
   padding:20px;
   width:100%;
   float:left;
-  margin:0 0 20px 0;
+  margin:10px 0 20px 0;
 }
 article.downtimes .Incident .downtimes_content{
   width:75% !important;
@@ -2473,9 +2483,10 @@ article.downtimes .changed-group .reason{
 article.downtimes .downtime-view-history{
   width:100%;
   float:left;
-  font-size:16px;
+  font-size:20px;
   margin-bottom:15px;
-  font-weight:bold;
+  /*font-weight:bold;*/
+  color: #04425f
 }
 article.downtimes .changed-group .reason p{
   width:100%;
@@ -2718,7 +2729,7 @@ body.path-group .main-container .region-content{
   height:22px;
   float:left;
   font-size:0;
-  margin-right:10px;
+  margin: 2px 10px 0 0;
 }
 a.downtimes_details_link{
   background:url(../images/notification-icon.png)left top no-repeat;
@@ -2745,8 +2756,8 @@ a.downtimes_update_link{
   height:20px;
   float:left;
   font-size:0;
-  margin-right:10px;
-}
+  margin: 2px 10px 0 0;
+  }
 .text-danger td a.downtimes_resolve_link,
 a.downtimes_resolve_link{
   background:url(../images/tick-icon.png)left top no-repeat;
@@ -2754,6 +2765,7 @@ a.downtimes_resolve_link{
   height:17px;
   float:left;
   font-size:0;
+  margin: 2px 0 0 0;
 }
 .text-danger td a.downtimes_cancel_link,
 a.downtimes_cancel_link{
@@ -2829,6 +2841,7 @@ table tr td,
 table tr th{
   word-wrap:break-word;
 }
+#archived_search_results_wrapper table tr td:last-child .popup-wrapper,
 #incidents_search_results_wrapper table tr td:last-child .popup-wrapper,
 #maintenance_search_results_wrapper table tr td:last-child .popup-wrapper{
   float:left;
@@ -3042,36 +3055,84 @@ table.archived tr th:last-child{
 /*----- 271216 -----*/
 table.incident caption h2,
 table.maintenance caption h2{
-  font-size:16px !important;
-}
-table.incident caption h2,
-table.maintenance caption h2{
-  font-size:16px !important;
+  font-size:20px !important;
 }
 a.back-search{
  background:url(../images/ic_arrow_back_black_24dp_1x.png)left top no-repeat;
  text-indent:-99999px;
  width:24px;
 }
-
-.node-form .form-type-vertical-tabs .tabs-left .tab-content{
-  overflow: initial;
- }
-
-.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
-  border-radius:0;
-
+/* .node-downtimes-form */
+form .form-type-vertical-tabs{
+  border:1px solid #ddd;
+  margin:20px 0 !important;
+  border-radius:4px;
 }
-.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
-   border-bottom:1px solid #ddd !important;
+form .form-type-vertical-tabs .tabs-left .tab-content{
+  border:none !important;
+  box-shadow:none;
  }
-.node-form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+form .form-type-vertical-tabs .tabs-left ul.nav-tabs li a{
+  border-radius:0;
+}
+form .form-type-vertical-tabs .tabs-left ul.nav-tabs li:last-child{
+   border-bottom:1px solid #ddd !important;
+}
+form .form-type-vertical-tabs .tabs-left ul.nav-tabs li.active a{
+
    border-right: none !important;
 }
 #edit-created-wrapper .form-inline .form-group:last-child{
   margin-bottom:0 !important;
-} 
+}
+form .form-type-vertical-tabs .tabs-left {
+  margin:0;
+}
+form .form-type-vertical-tabs .tabs-left ul{
+  margin-right:0 !important;
+}
+/*form .form-type-vertical-tabs .tabs-left .tab-content .tab-pane{
+  display:block;
+} */
+/*form .form-type-vertical-tabs .tabs-left .tab-content .tab-pane .collapse.in{
+  display:inline-block;
+}*/
 .content-sec{
   width:100%;
   float:left;
+}
+.primary-navigation{
+  background: #04425f none repeat scroll 0 0;
+  float: left;
+  width: 100%;
+}
+/*.block-incidents-block ul > li .popup-downtimes-description ul li{
+  list-style-type:disc;
+}*/
+/*article.downtimes .Incident ul li*/
+article.downtimes .Incident .downtimes_content_paragraph ol,
+article.downtimes .Incident .downtimes_content_paragraph ul{
+  margin:0;
+  padding:10px;
+  float:left;
+  width:100%;
+}
+article.downtimes .Incident .downtimes_content_paragraph ol li,
+article.downtimes .Incident .downtimes_content_paragraph ul li{
+  background: none;
+  padding: 0;
+  float: left;
+  width:100%;
+}
+article.downtimes .Incident .downtimes_content_paragraph ul li{
+  list-style-type: disc;
+}
+article.downtimes .Incident .downtimes_content_paragraph ol li{
+  list-style-type: decimal;
+  margin: 0;
+}
+#archived_search_results_wrapper table.archived tr td:last-child .popup-wrapper{
+  width:100%;
+  float:left;
+  vertical-align:top;
 }
