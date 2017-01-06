@@ -29,7 +29,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * @var \Dompdf\Dompdf
    */
-  protected $dompdf;
+    protected $dompdf;
 
   /**
    * Keep track of HTML pages as they're added.
@@ -214,6 +214,13 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
    */
   protected function getPaperSizes() {
     return array_combine(array_keys(CPDF::$PAPER_SIZES), array_map('ucfirst', array_keys(CPDF::$PAPER_SIZES)));
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function getDomPdf(){
+    return $this->dompdf;
   }
 
 }

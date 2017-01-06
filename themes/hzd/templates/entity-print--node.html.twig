@@ -1,15 +1,19 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <header>
-	  <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif"></td>
-	</header>
-  {{ entity_print_css }}
+    <meta charset="utf-8">
+    <header>
+
+        {#<img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif"></td>#}
+    </header>
+    {{ entity_print_css }}
+    {#<style>{{ source('themes/hzd/css/style.css') }}</style>#}
+    {#<link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>#}
 </head>
 <body>
-<div class="page">
-  {{ entity_array }}
-</div>
+
+{#{{ dump() }}#}
+
+{{ content }}
 </body>
-<footer>{{ 'Source URL' | trans }} {{ footer }}</footer>
 </html>

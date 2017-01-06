@@ -16,3 +16,6 @@ release:
 problem:
   subject: '[node:title] has been modified'
   mail_content: "\r\n[node:url:absolute]"
+group_content:
+  subject: '[node:title] has been modified'
+  mail_content: 'Group Content Updated again'
