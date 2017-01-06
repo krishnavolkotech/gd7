@@ -120,9 +120,9 @@ function hzd_preprocess_node(&$variables) {
         
         //$url = Url::fromUserInput('/entityprint/node/' . $nid);
         
-        $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
+       /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
         $urldata = \Drupal::l("PDF preview", $url);
-        $variables['pdf_priview'] = array('#markup' => $urldata);
+        $variables['pdf_priview'] = array('#markup' => $urldata);*/
     }
     if ($variables['node']->getType() == 'downtimes') {
         $id = $nid;
@@ -230,18 +230,18 @@ function hzd_preprocess_node(&$variables) {
             ->get('field_problem_eroffnet')->value);
         
         $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
-
+        
         $url = Url::fromRoute('problem_management.problems', array(
-              'group' => PROBLEM_MANAGEMENT
-              ),
-              array(
+            'group' => PROBLEM_MANAGEMENT
+        ),
+            array(
                 'query' => array(
-                  $filter_parameter
+                    $filter_parameter
                 )
-              )
-            );
-            $variables['back_to_search'] = \Drupal::service('link_generator')
-                ->generate(t('Back To Search'), $url);
+            )
+        );
+        $variables['back_to_search'] = \Drupal::service('link_generator')
+            ->generate(t('Back To Search'), $url);
         
     }
     
@@ -278,7 +278,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
     if (isset($block)) {
         $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
-        $variables['breadcrumb']['add_fav_form'] = $block_view;
+        $variables['breadcrumb']['extras']['add_fav_form'] = $block_view;
     }
     $groupContent = \Drupal::routeMatch()->getParameter('group_content');
     if ($groupContent) {
