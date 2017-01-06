@@ -488,11 +488,15 @@ class HzdStorage
                 ->execute();
             $groupContentEntity = \Drupal\group\Entity\GroupContent::load(
                 current($node_problem_group_id));
-            $groupContentItemUrl = $groupContentEntity->toLink(
-                $problems_node->field_s_no->value, 'canonical', ['absolute' => 1,
-                    'query' => $exposedFilterData,
-                ]
-            );
+            $groupContentItemUrl = null;
+            if($groupContentEntity instanceof \Drupal\group\Entity\GroupContent){
+                $groupContentItemUrl = $groupContentEntity->toLink(
+                    $problems_node->field_s_no->value, 'canonical', ['absolute' => 1,
+                        'query' => $exposedFilterData,
+                    ]
+                );
+            }
+
             
             $service_query = \Drupal\node\Entity\Node::load(
                 $problems_node->field_services->target_id);
