@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a5a0c40fa7e9fb4311f4dfa7e64952ad",
-    "content-hash": "854d66eab7eb2489237d046bf4ea65c4",
+    "hash": "564b944a8c1867117a83dec7187db13d",
+    "content-hash": "d1ec1c697a36f73ae571c870f1b6341a",
     "packages": [
         {
             "name": "composer/installers",
@@ -673,6 +673,49 @@
             "time": "2016-09-17 16:49:15"
         },
         {
+            "name": "drupal/config_direct_save",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/config_direct_save",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/config_direct_save-8.x-1.0.zip",
+                "reference": null,
+                "shasum": "dae776d96310aa01aa6e3c536821a1b496ffae1f"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1476108239"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "matio89",
+                    "homepage": "https://www.drupal.org/user/2320090"
+                }
+            ],
+            "description": "This module allow you to export configuration after changes",
+            "homepage": "https://www.drupal.org/project/config_direct_save",
+            "support": {
+                "source": "http://cgit.drupalcode.org/config_direct_save"
+            }
+        },
+        {
             "name": "drupal/search_api",
             "version": "1.0.0-beta3",
             "source": {
@@ -699,7 +742,7 @@
                 },
                 "drupal": {
                     "version": "8.x-1.0-beta3",
-                    "datestamp": "1477302541"
+                    "datestamp": "1483286941"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
