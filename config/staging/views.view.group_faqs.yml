@@ -698,7 +698,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%group/faqs/%taxonomy_term
+      path: group/%/faqs/%
     cache_metadata:
       max-age: -1
       contexts:

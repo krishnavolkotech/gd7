@@ -34,3 +34,4 @@ permissions:
   - 'use text format basic_html'
   - 'use text format filtered_html'
   - 'view printer friendly versions'
+  - 'create field_do_not_send_notifications'

@@ -71,4 +71,5 @@ content:
     type: image_image
     weight: 7
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  langcode: true

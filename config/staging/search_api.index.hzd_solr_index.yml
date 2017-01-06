@@ -1,0 +1,45 @@
+uuid: 47dc447f-6a42-40d0-a844-a73ba697bd87
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.hzd_solr
+  module:
+    - search_api
+    - node
+id: hzd_solr_index
+name: 'HZD Solr Index'
+description: ''
+read_only: false
+field_settings: {  }
+processor_settings:
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+options:
+  index_directly: false
+  cron_limit: 50
+datasource_settings:
+  'entity:node':
+    plugin_id: 'entity:node'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - downtimes
+      languages:
+        default: false
+        selected:
+          - de
+          - en
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {  }
+server: hzd_solr
