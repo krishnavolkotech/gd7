@@ -70,12 +70,13 @@
       set navbar_classes = [
         'navbar',
         theme.settings.navbar_inverse ? 'navbar-inverse' : 'navbar-default',
-        theme.settings.navbar_position ? 'navbar-' ~ theme.settings.navbar_position|clean_class : container,
+        theme.settings.navbar_position ? 'navbar-' ~ theme.settings.navbar_position|clean_class : '',
       ]
     %}
     <header{{ navbar_attributes.addClass(navbar_classes) }} id="navbar" role="banner">
-	<div class="row">
       <div class="navbar-header">
+       <div class="container">
+        <div class="row">
         {{ page.navigation }}
         <div id="header-right">
           {{ content.block_headerlinks }}
@@ -93,21 +94,28 @@
           </button>
         {% endif %}
       </div>
-
+     </div>
+    </div>
       {# Navigation (collapsible) #}
       {% if page.navigation_collapsible %}
-        <div class="navbar-collapse collapse">
-          {{ page.navigation_collapsible }}
-        </div>
+       <div class="navbar-collapse collapse">
+        <div class="primary-navigation">
+         <div class="container">
+           <div class="row">
+            {{ page.navigation_collapsible }}
+           </div>
+         </div>
+       </div>
+      </div>
       {% endif %}
-	  </div>
     </header>
   {% endblock %}
 {% endif %}
 
 {# Main #}
 {% block main %}
-  <div role="main" class="main-container {{ container }} js-quickedit-main-content">
+  <div role="main" class="main-container js-quickedit-main-content">
+   <div class="container">
     <div class="row">
 
       {# Header #}
@@ -184,12 +192,17 @@
       {% endif %}
     </div>
   </div>
+ </div> 
 {% endblock %}
 
 {% if page.footer %}
   {% block footer %}
     <footer class="footer {{ container }}" role="contentinfo">
+    <div class="conatiner">
+     <div class="row">
   {{ page.footer }}
+     </div>
+    </div>
     </footer>
   {% endblock %}
 {% endif %}

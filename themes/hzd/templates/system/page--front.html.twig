@@ -61,7 +61,7 @@
  * @ingroup templates
  */
 #}
-{% set container = theme.settings.fluid_container ? 'container-fluid' : 'container' %}
+{% set container = theme.settings.fluid_container ? 'container-fluid' : '' %}
 {# Navbar #}
 {% if page.navigation or page.navigation_collapsible %}
   {% block navbar %}
@@ -69,12 +69,14 @@
       set navbar_classes = [
         'navbar',
         theme.settings.navbar_inverse ? 'navbar-inverse' : 'navbar-default',
-        theme.settings.navbar_position ? 'navbar-' ~ theme.settings.navbar_position|clean_class : container,
+        theme.settings.navbar_position ? 'navbar-' ~ theme.settings.navbar_position|clean_class : '',
       ]
     %}
     <header{{ navbar_attributes.addClass(navbar_classes) }} id="navbar" role="banner">
-	 <div class="row">
+
       <div class="navbar-header">
+       <div class="container">
+	      <div class="row">
         {{ page.navigation }}
         <div id="header-right">
           {{ content.block_headerlinks }}
@@ -91,15 +93,23 @@
             <span class="icon-bar"></span>
           </button>
         {% endif %}
+	        </div>
+        </div>
       </div>
 
       {# Navigation (collapsible) #}
       {% if page.navigation_collapsible %}
         <div class="navbar-collapse collapse">
+        <div class="primary-navigation">
+        <div class="container">
+        <div class="row">
           {{ page.navigation_collapsible }}
+          </div>
+          </div>
+        </div>
         </div>
       {% endif %}
-	 </div>
+
     </header>
   {% endblock %}
 {% endif %}
@@ -107,6 +117,7 @@
 {# Main #}
 {% block main %}
   <div role="main" class="main-container {{ container }} js-quickedit-main-content">
+   <div class="container">
     <div class="row">
         
       {# Highlighted #}
@@ -182,15 +193,18 @@
         {% endblock %}
       {% endif %}
     </div>
+    </div>
   </div>
 {% endblock %}
 
 {% if page.footer %}
   {% block footer %}
  <footer class="footer {{ container }}" role="contentinfo">
+ <div class="container">
 	<div class="row">
       {{ page.footer }}
-    </div>	  
+    </div>	 
+    </div> 
  </footer>
   {% endblock %}
 {% endif %}
