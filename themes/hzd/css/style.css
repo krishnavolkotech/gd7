@@ -1299,7 +1299,11 @@ article .quickedit-field .field__items .field--item {
   float: left;
   margin-bottom: 0 !important;
   border-radius: 0px;
-  border: 1px solid #dddddd;
+  padding: 6px 15px 8px 9px !important;
+  /*border: 1px solid #dddddd;*/
+}
+.breadcrumb li a{
+  line-height:24px;
 }
 .breadcrumb > .active {
   color: #555;
@@ -1686,7 +1690,8 @@ ul.nav-tabs li:hover a .summary {
   padding-left: 25px;
 }
 .unpublished-quickinfo-pdf-preview a {
-  background: url(../images/view-pdf-icon.png) left top no-repeat !important;
+ /* background: url(../images/view-pdf-icon.png) left top no-repeat !important;*/
+  background: url(../images/pdf-icon-grey.jpg) left top no-repeat !important;
 }
 article.downtimes .downtime_reason,
 article.downtimes .Incident {
@@ -1965,6 +1970,7 @@ section form{
 section.star-favorites-add form{
   padding:0;
   background:transparent;
+  margin-top:1px;
 }
 /*
 section.news-block,
@@ -3135,4 +3141,21 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
   width:100%;
   float:left;
   vertical-align:top;
+}
+.print-action-wrapper{ 
+  padding:0;
+  float:right;
+  margin-top:0;
+}
+.print-action-wrapper:last-child{
+  margin-bottom:0!important;
+}
+.print-action-wrapper .unpublished-quickinfo-pdf-preview{
+  float:right;
+  margin:0 !important;
+  font-size:0;
+  padding-left:10px;
+}
+.print-action-wrapper section.block-star-favorites-block{
+  float:left;
 }
