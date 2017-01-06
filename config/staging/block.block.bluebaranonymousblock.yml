@@ -14,7 +14,7 @@ third_party_settings:
 id: bluebaranonymousblock
 theme: hzd
 region: navigation_collapsible
-weight: -25
+weight: -27
 provider: null
 plugin: blue_bar_anonymous_block
 settings:

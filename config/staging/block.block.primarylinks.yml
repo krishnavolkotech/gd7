@@ -17,7 +17,7 @@ third_party_settings:
 id: primarylinks
 theme: hzd
 region: navigation_collapsible
-weight: -16
+weight: -26
 provider: null
 plugin: 'system_menu_block:primary-links'
 settings:
