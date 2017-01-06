@@ -18,3 +18,4 @@ permissions:
   8: 'view field_contact_from_pretext'
   9: 'edit any deployed_releases content'
   10: 'edit own deployed_releases content'
+  11: 'entity print access type node'
