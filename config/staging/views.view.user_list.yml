@@ -268,7 +268,7 @@ display:
           plugin_id: standard
       filters:
         status:
-          value: true
+          value: '1'
           table: users_field_data
           field: status
           plugin_id: boolean
@@ -362,7 +362,7 @@ display:
             mail: mail
           plugin_id: combine
         status:
-          value: true
+          value: '1'
           table: users_field_data
           field: status
           plugin_id: boolean

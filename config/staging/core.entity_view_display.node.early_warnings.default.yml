@@ -32,7 +32,8 @@ content:
     label: hidden
     type: comment_default
     weight: 20
-    settings: {  }
+    settings:
+      view_mode: default
     third_party_settings: {  }
   comment_no_subject:
     type: comment_default
@@ -40,6 +41,7 @@ content:
     label: above
     settings:
       pager_id: 0
+      view_mode: default
     third_party_settings: {  }
   entity_print_view:
     weight: 0
