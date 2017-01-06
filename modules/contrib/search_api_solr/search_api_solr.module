@@ -59,23 +59,18 @@ function search_api_solr_cron() {
       try {
         /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
         $backend = $server->getBackend();
-        $solarium_client = $backend->getSolrConnection();
-        $backend_config = $backend->getConfiguration();
-        $endpoint = $solarium_client->getEndpoint('core');
-        $endpoint->setTimeout($backend_config['optimize_timeout']);
+        $connector = $backend->getSolrConnector();
         if ($action != 'spellcheck') {
-          $update = $solarium_client->createUpdate();
-          $update->addOptimize(TRUE, FALSE);
-          $solarium_client->update($update, $endpoint);
+          $connector->optimize();
         }
         else {
-          $solarium_query = $solarium_client->createSelect();
+          $solarium_query = $connector->getSelectQuery();
           $solarium_query->setRows(0);
 
           $spellcheck = $solarium_query->getSpellcheck();
           $spellcheck->setBuild(TRUE);
 
-          $solarium_client->select($solarium_query, $endpoint);
+          $connector->execute($solarium_query);
         }
         ++$count;
       }
@@ -117,6 +112,33 @@ function search_api_solr_entity_type_alter(array &$entity_types) {
     foreach ($entity_types as $entity_type_id => $entity_type) {
       if ($entity_type->hasViewBuilderClass() && $entity_type->hasLinkTemplate('canonical')) {
         $entity_type->setLinkTemplate('devel-solr', "/devel/$entity_type_id/{{$entity_type_id}}/solr");
+      }
+    }
+  }
+}
+
+function search_api_solr_form_search_api_index_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $form['server']['#element_validate'][] = 'search_api_solr_form_search_api_index_form_validate_server';
+}
+
+function search_api_solr_form_search_api_index_form_validate_server(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $form) {
+  if ($server = Server::load($form_state->getValue('server'))) {
+    if ($server->getBackend() instanceof \Drupal\search_api_solr\SolrBackendInterface) {
+      /** @var \Drupal\Core\Entity\EntityFormInterface $form_object */
+      $form_object = $form_state->getFormObject();
+      $this_index = $form_object->getEntity();
+      $indexes = $server->getIndexes();
+      $index_count = 0;
+      foreach ($indexes as $index) {
+        if ($index->status()) {
+          if (!$this_index->isNew() && ($this_index->id() == $index->id())) {
+            continue;
+          }
+          ++$index_count;
+        }
+      }
+      if ($index_count > 0 && $form_state->getValue('status')) {
+        $form_state->setError($element, t('The concept of storing multiple "virtual" Search API indexes in one Solr index (aka core) is bad practice and randomly breaks a lot of advanced features like spell checking, suggestions, automplete and others. Create a second core within your Solr server and assign this "index" to that core.'));
       }
     }
   }

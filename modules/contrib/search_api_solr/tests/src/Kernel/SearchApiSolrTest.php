@@ -2,11 +2,13 @@
 
 namespace Drupal\Tests\search_api_solr\Kernel;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSetInterface;
 use Drupal\search_api\Utility\Utility;
+use Drupal\search_api_autocomplete\Entity\SearchApiAutocompleteSearch;
 use Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\Tests\search_api\Kernel\BackendTestBase;
@@ -27,6 +29,7 @@ class SearchApiSolrTest extends BackendTestBase {
    * @var string[]
    */
   public static $modules = array(
+    'search_api_autocomplete',
     'search_api_solr',
     'search_api_solr_test',
     'user',
@@ -57,6 +60,13 @@ class SearchApiSolrTest extends BackendTestBase {
   protected $solrAvailable = FALSE;
 
   /**
+   * Seconds to wait for a soft commit on Solr.
+   *
+   * @var integer
+   */
+  protected $waitForCommit = 2;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp() {
@@ -78,7 +88,7 @@ class SearchApiSolrTest extends BackendTestBase {
 
     try {
       $backend = Server::load($this->serverId)->getBackend();
-      if ($backend instanceof SearchApiSolrBackend && $backend->getSolrHelper()->pingCore()) {
+      if ($backend->isAvailable()) {
         $this->solrAvailable = TRUE;
       }
     }
@@ -133,7 +143,7 @@ class SearchApiSolrTest extends BackendTestBase {
    */
   protected function indexItems($index_id) {
     $index_status = parent::indexItems($index_id);
-    sleep(2);
+    sleep($this->waitForCommit);
     return $index_status;
   }
 
@@ -171,6 +181,15 @@ class SearchApiSolrTest extends BackendTestBase {
    */
   protected function checkSecondServer() {
     // @todo
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function checkIndexWithoutFields() {
+    $index = parent::checkIndexWithoutFields();
+    $index->clear();
+    sleep(2);
   }
 
   /**
@@ -498,10 +517,12 @@ class SearchApiSolrTest extends BackendTestBase {
   public function testBasicAuth() {
     $server = $this->getServer();
     $config = $server->getBackendConfig();
-    $config['username'] = 'foo';
-    $config['password'] = 'bar';
+    $config['connector_config']['username'] = 'foo';
+    $config['connector_config']['password'] = 'bar';
     $server->setBackendConfig($config);
-    $auth = $server->getBackend()->getSolrConnection()->getEndpoint()->getAuthentication();
+    /** @var SolrBackendInterface $backend */
+    $backend = $server->getBackend();
+    $auth = $backend->getSolrConnector()->getEndpoint()->getAuthentication();
     $this->assertEquals(['username' => 'foo', 'password' => 'bar'], $auth);
   }
 
@@ -527,10 +548,7 @@ class SearchApiSolrTest extends BackendTestBase {
 
       $index = $this->getIndex();
       $index->set('datasource_settings', $index->get('datasource_settings') + [
-        'entity:user' => [
-          'plugin_id' => 'entity:user',
-          'settings' => [],
-        ],
+        'entity:user' => [],
       ]);
       $info = [
         'label' => 'uid',
@@ -577,12 +595,49 @@ class SearchApiSolrTest extends BackendTestBase {
   }
 
   /**
+   * Produces a string of given comprising diverse chars.
+   *
+   * @param int $length
+   *   Length of the string.
+   *
+   * @return string
+   */
+  protected function getLongText($length) {
+    $sequence = 'abcdefghijklmnopqrstuwxyz1234567890,./;\'[]\\<>?:"{}|~!@#$%^&*()_+`1234567890-=ööążźćęółńABCDEFGHIJKLMNOPQRSTUWXYZ';
+    $result = '';
+    $i = 0;
+
+    $sequenceLength = strlen($sequence);
+    while ($i++ != $length) {
+      $result .= $sequence[ $i % $sequenceLength ];
+    }
+
+    return $result;
+  }
+
+  /**
    * Tests search result sorts.
    */
   public function testSearchResultSorts() {
     // Only run the tests if we have a Solr core available.
     if ($this->solrAvailable) {
       $this->insertExampleContent();
+
+      // Add node with body length just above the solr limit for search fields.
+      // It's exceeded by just a single char to simulate an edge case.
+      $this->addTestEntity(6, [
+        'name' => 'Long text',
+        'body' => $this->getLongText(32767),
+        'type' => 'article',
+      ]);
+
+      // Add another node with body length equal to the limit.
+      $this->addTestEntity(7, [
+        'name' => 'Z long',
+        'body' => $this->getLongText(32766),
+        'type' => 'article',
+      ]);
+
       $this->indexItems($this->indexId);
 
       // Type text.
@@ -591,14 +646,14 @@ class SearchApiSolrTest extends BackendTestBase {
         // Force an expected order for identical names.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([3, 5, 1, 4, 2], $results, 'Sort by name.');
+      $this->assertResults([3, 5, 1, 4, 2, 6, 7], $results, 'Sort by name.');
 
       $results = $this->buildSearch(NULL, [], [], FALSE)
         ->sort('name', QueryInterface::SORT_DESC)
         // Force an expected order for identical names.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([2, 4, 1, 5, 3], $results, 'Sort by name descending.');
+      $this->assertResults([7, 6, 2, 4, 1, 5, 3], $results, 'Sort by name descending.');
 
       // Type string.
       $results = $this->buildSearch(NULL, [], [], FALSE)
@@ -606,14 +661,14 @@ class SearchApiSolrTest extends BackendTestBase {
         // Force an expected order for identical types.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([4, 5, 1, 2, 3], $results, 'Sort by type.');
+      $this->assertResults([4, 5, 6, 7, 1, 2, 3], $results, 'Sort by type.');
 
       $results = $this->buildSearch(NULL, [], [], FALSE)
         ->sort('type', QueryInterface::SORT_DESC)
         // Force an expected order for identical types.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([1, 2, 3, 4, 5], $results, 'Sort by type descending.');
+      $this->assertResults([1, 2, 3, 4, 5, 6, 7], $results, 'Sort by type descending.');
 
       // Type multi-value string. Uses first value.
       $results = $this->buildSearch(NULL, [], [], FALSE)
@@ -621,14 +676,14 @@ class SearchApiSolrTest extends BackendTestBase {
         // Force an expected order for identical keywords.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([4, 1, 2, 5, 3], $results, 'Sort by keywords.');
+      $this->assertResults([3, 6, 7, 4, 1, 2, 5], $results, 'Sort by keywords.');
 
       $results = $this->buildSearch(NULL, [], [], FALSE)
         ->sort('keywords', QueryInterface::SORT_DESC)
         // Force an expected order for identical keywords.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([1, 2, 5, 4, 3], $results, 'Sort by keywords descending.');
+      $this->assertResults([1, 2, 5, 4, 3, 6, 7], $results, 'Sort by keywords descending.');
 
       // Type decimal.
       $results = $this->buildSearch(NULL, [], [], FALSE)
@@ -636,17 +691,86 @@ class SearchApiSolrTest extends BackendTestBase {
         // Force an expected order for identical width.
         ->sort('search_api_id')
         ->execute();
-      // @todo if width is midding it seems to be treated like 0 because
-      //   sortMissingLast="true" doesn't fix it.
-      // $this->assertResults([4, 5, 1, 2, 3], $results, 'Sort by width.');
-      $this->assertResults([1, 2, 3, 4, 5], $results, 'Sort by width.');
+      $this->assertResults([1, 2, 3, 6, 7, 4, 5], $results, 'Sort by width.');
 
       $results = $this->buildSearch(NULL, [], [], FALSE)
         ->sort('width', QueryInterface::SORT_DESC)
         // Force an expected order for identical width.
         ->sort('search_api_id')
         ->execute();
-      $this->assertResults([5, 4, 1, 2, 3], $results, 'Sort by width descending.');
+      $this->assertResults([5, 4, 1, 2, 3, 6, 7], $results, 'Sort by width descending.');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('changed')
+        ->execute();
+      $this->assertResults([1, 2, 3, 4, 5, 6 ,7], $results, 'Sort by last update date');
+
+      $results = $this->buildSearch(NULL, [], [], FALSE)
+        ->sort('changed', QueryInterface::SORT_DESC)
+        ->execute();
+      $this->assertResults([7, 6, 5, 4, 3, 2, 1], $results, 'Sort by last update date descending');
+    }
+    else {
+      $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
+    }
+  }
+
+  /**
+   * Tests the autocomplete support.
+   */
+  public function testAutocomplete() {
+    // Only run the tests if we have a Solr core available.
+    if ($this->solrAvailable) {
+
+      $this->addTestEntity(1, [
+        'name' => 'Test Article 1',
+        'body' => 'The test article number 1 about cats, dogs and trees.',
+        'type' => 'article',
+      ]);
+
+      // Add another node with body length equal to the limit.
+      $this->addTestEntity(2, [
+        'name' => 'Test Article 1',
+        'body' => 'The test article number 2 about a tree.',
+        'type' => 'article',
+      ]);
+
+      $this->indexItems($this->indexId);
+
+      /** @var SearchApiSolrBackend $backend */
+      $backend = Server::load($this->serverId)->getBackend();
+      $autocompleteSearch = new SearchApiAutocompleteSearch([], 'search_api_autocomplete_search');
+
+      $query = $this->buildSearch(['artic'], [], ['body'], FALSE);
+      $suggestions = $backend->getAutocompleteSuggestions($query, $autocompleteSearch, 'artic', 'artic');
+      $this->assertEquals(1, count($suggestions));
+      $this->assertEquals('le', $suggestions[0]->getSuggestionSuffix());
+      $this->assertEquals(2, $suggestions[0]->getResults());
+
+      $query = $this->buildSearch(['articel'], [], ['body'], FALSE);
+      $suggestions = $backend->getAutocompleteSuggestions($query, $autocompleteSearch, 'articel', 'articel');
+      $this->assertEquals(1, count($suggestions));
+      $this->assertEquals('article', $suggestions[0]->getSuggestionSuffix());
+      $this->assertEquals(0, $suggestions[0]->getResults());
+
+      $query = $this->buildSearch(['articel doks'], [], ['body'], FALSE);
+      $suggestions = $backend->getAutocompleteSuggestions($query, $autocompleteSearch, 'doks', 'articel doks');
+      $this->assertEquals(1, count($suggestions));
+      $this->assertEquals('article dogs', $suggestions[0]->getSuggestionSuffix());
+
+      $query = $this->buildSearch(['articel tre'], [], ['body'], FALSE);
+      $suggestions = $backend->getAutocompleteSuggestions($query, $autocompleteSearch, 'tre', 'articel tre');
+      $this->assertEquals(5, count($suggestions));
+      $this->assertEquals('e', $suggestions[0]->getSuggestionSuffix());
+      $this->assertEquals(1, $suggestions[0]->getResults());
+      $this->assertEquals('es', $suggestions[1]->getSuggestionSuffix());
+      $this->assertEquals(1, $suggestions[1]->getResults());
+      $this->assertEquals('article tre', $suggestions[2]->getSuggestionSuffix());
+      $this->assertEquals(0, $suggestions[2]->getResults());
+      $this->assertEquals('article tree', $suggestions[3]->getSuggestionSuffix());
+      $this->assertEquals(0, $suggestions[3]->getResults());
+      $this->assertEquals('article trees', $suggestions[4]->getSuggestionSuffix());
+      $this->assertEquals(0, $suggestions[4]->getResults());
     }
     else {
       $this->assertTrue(TRUE, 'Error: The Solr instance could not be found. Please enable a multi-core one on http://localhost:8983/solr/d8');
