@@ -1,7 +1,7 @@
 hzd_release_management.release_management_settings:
   title: 'Release Database Configuration'
   route_name: hzd_release_management.release_management_settings
-  parent: system.admin_config
+  parent: hzd_customizations.custom_configurations
   description: 'Release Database Configuration'
   weight: -13
 
