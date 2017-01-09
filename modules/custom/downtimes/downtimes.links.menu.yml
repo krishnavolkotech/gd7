@@ -1,7 +1,7 @@
 downtimes.Downtimesnotesform:
   title: 'Downtimes and Maintainance'
   description: 'Downtimes and Maintainance'
-  parent: system.admin_config
+  parent: hzd_customizations.custom_configurations
   route_name: downtimes.Downtimesnotesform
   weight: 10 
 

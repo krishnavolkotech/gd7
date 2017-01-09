@@ -532,7 +532,10 @@ class HzdStorage
             6 => array('data' => t('Priority'), 'class' => 'priority'),
             7 => array('data' => t('Last Update'), 'class' => 'last_update'),
         );
-        
+        $header[] = array(
+            'data' => t('SDCallID'),
+            'class' => 'action',
+        );
         if ($string == 'archived_problems') {
             
             $header[] = array(
@@ -542,12 +545,9 @@ class HzdStorage
             
             $header[7] = array('data' => t('Closed On'), 'class' => 'closed');
         }
-        $header[] = array(
-            'data' => t('SDCallID'),
-            'class' => 'action',
-        );
+//        pr($header);exit;
         
-        if ($rows) {
+//        if ($rows) {
             $build['problem_table'] = array(
                 '#theme' => 'table',
                 '#header' => $header,
@@ -562,12 +562,12 @@ class HzdStorage
                 '#suffix' => '</div>',
             );
             return $build;
-        }
-        return $build = array(
+//        }
+/*        return $build = array(
             '#prefix' => '<div id="no-result">',
             '#markup' => t("No Data Created Yet"),
             '#suffix' => '</div>',
-        );
+        );*/
     }
     
     /**

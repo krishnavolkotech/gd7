@@ -1,21 +1,28 @@
-hzd_customizations.planning_files_form:
-  title: 'PlanningFilesForm'
-  route_name: hzd_customizations.planning_files_form
-  description: 'A description for the menu entry'
-  parent: system.admin_config_system
-  weight: 99
+hzd_customizations.custom_configurations:
+  title: 'Custom Configurations'
+  route_name: system.admin
+  parent: system.admin
+  description: 'Manage Custom Configurations'
+  weight: 3
 
 hzd_customizations.manage_non_production_environment:
   title: 'Manage Non-Production Environment'
   route_name: hzd_customizations.manage_non_production_environment
-  parent: system.admin_config
+  parent: hzd_customizations.custom_configurations
   description: 'Manage Non-Production Environment'
   weight: 100
+
+hzd_customizations.planning_files_form:
+  title: 'PlanningFilesForm'
+  route_name: hzd_customizations.planning_files_form
+  description: 'A description for the menu entry'
+  parent: hzd_customizations.custom_configurations
+  weight: 99
 
 hzd_customizations.notification:
   title: 'Notification'
   route_name: system.admin
-  parent: system.admin
+  parent: hzd_customizations.custom_configurations
   description: 'Manage Non-Production Environment'
   weight: 2
 
