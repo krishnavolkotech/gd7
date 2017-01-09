@@ -8,7 +8,7 @@ third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
-name: 'Störung und Blockzeit'
+name: 'Störung oder Blockzeit'
 type: downtimes
 description: 'Eine Störung oder Blockzeit melden.'
 help: ''
