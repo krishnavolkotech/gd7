@@ -349,13 +349,17 @@ class ReleaseFilterForm extends FormBase {
       "#prefix" => "<div class = 'limit_search_dropdown hzd-form-element'>",
       '#suffix' => '</div>',
     );
- 
+      //  $form['#action'] = '/' .$path;
+      /*$form['actions'] = array(
+          '#type' => 'actions',
+          '#weight' => 100,
+      );*/
     $form['actions']['reset'] = array(
       '#type' => 'button',
       '#value' => t('Reset'),
       '#weight' => 100,
       '#validate' => array(),
-      '#attributes' => array('onclick' => 'reset_form_elements();'),
+      '#attributes' => array('onclick' => 'reset_form_elements();return false;'),
       '#prefix' => '<div class = "reset_form">',
       '#suffix' => '</div><div style = "clear:both"></div>',
     );

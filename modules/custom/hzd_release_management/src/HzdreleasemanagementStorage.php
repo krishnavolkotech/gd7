@@ -1074,7 +1074,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       }
     }
     $release_type = get_release_type($type);
-    dpm($release_type);
     $release_node_ids = self::hzd_release_query($release_type, $gid);
     
     foreach ($release_node_ids as $release_node_id) {

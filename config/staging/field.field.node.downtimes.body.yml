@@ -11,7 +11,7 @@ id: node.downtimes.body
 field_name: body
 entity_type: node
 bundle: downtimes
-label: Reason
+label: Beschreibung
 description: ''
 required: true
 translatable: true
