@@ -8,10 +8,10 @@ function getErlywarningServies() {
   $current_url = Url::fromRoute('<current>');
   $path = $current_url->toString();
   $current_path = explode("/", $path);
-  
+  $nid = \Drupal::routeMatch()->getParameter('node')->id();
   $query = \Drupal::database()->select('node_field_data', 'nfd');
   $query->Fields('nfd', array('type'));
-  $query->condition('nfd.nid', $current_path[2], '=');         
+  $query->condition('nfd.nid', $nid, '=');
   $type = $query->execute()->fetchField();
 
     if ($type == 'deployed_releases') {
@@ -55,6 +55,7 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
     $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
     $form['field_release_service']['#disabled'] = TRUE;
     $form['field_earlywarning_release']['#disabled'] = TRUE;
+    
   }
 
   return $form;
