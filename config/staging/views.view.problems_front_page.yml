@@ -148,7 +148,7 @@ display:
           alter:
             alter_text: true
             text: '{{ field_problem_eroffnet__value }} {{ title }}'
-            make_link: false
+            make_link: true
             path: ''
             absolute: false
             external: false
@@ -348,7 +348,7 @@ display:
           admin_label: ''
           empty: false
           tokenize: false
-          content: '<a class="all-problems" href="/group/31/problems">All Problems</a>'
+          content: '<a class="all-problems" href="/group/31/problems">Alle bekannten Fehler und Probleme</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1
