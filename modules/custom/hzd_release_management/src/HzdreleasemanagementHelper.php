@@ -160,7 +160,7 @@ class HzdreleasemanagementHelper {
       $query->condition('nfrs.field_relese_services_target_id', $service);
     }
     $result = $query->execute()->fetchAll();
-    $default_release[] = "Release";
+    $default_release[] = t("@release",['@release'=>'<Release>']);
     foreach ($result as $vals) {
       $default_release[$vals->nid] = $vals->title;
     }
