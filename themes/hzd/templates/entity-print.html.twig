@@ -8,22 +8,26 @@
     <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
 </head>
 <body>
+{% if quickinfo %}
+{{ content }}
+{% else %}
+
 <div class="pdf-wrapper">
-  <header>
-   <div class="logo-sec-pdf">
-    <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
-   </div>
-  </header>
-<div class="pdf-content">
- {#{{ dump() }}#}
-
- {{ content }}
-
- </div>
-    {% if pdf_original_link %}
-        <hr>
-        <div class="footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a href="{{ pdf_original_link  }}">{{ pdf_original_link }}</a></div>
-    {% endif %}
+    <header>
+        <div class="logo-sec-pdf">
+            <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+        </div>
+    </header>
+    <span class="pdf-title">{{ pdftitle }}</span>
+    <div class="pdf-content">
+        {{ content }}
+    </div>
 </div>
+{% endif %}
+{% if pdf_original_link %}
+    <hr>
+    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a
+                href="{{ pdf_original_link }}">{{ pdf_original_link }}</a></div>
+{% endif %}
 </body>
 </html>
