@@ -85,6 +85,9 @@ function hzd_preprocess_printable(&$variables) {
 function hzd_preprocess_node(&$variables) {
     $config = \Drupal::config('planning.settings');
     $nid = $variables['node']->id();
+    if(\Drupal::routeMatch()->getRouteName() == 'entity_print.view'){
+      $variables['isPdf'] = 1;
+    }
     if ($nid == $config->get('mlrp')) {
         $files = get_related_files('mlrp');
         $variables['mlrp_files'] = $files;

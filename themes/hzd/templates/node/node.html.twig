@@ -96,5 +96,9 @@
   <div{{ content_attributes.addClass('content') }}>
     {{ content }}
   </div>
+{% if isPdf %}
+<hr>
+<div>Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a href="{{ url('entity.node.canonical', {'node': node.id })  }}">{{ url('entity.node.canonical', {'node': node.id }) }}</a></div>
+{% endif %}
 
 </article>
