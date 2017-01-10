@@ -82,7 +82,7 @@ class PrintBuilder implements PrintBuilderInterface {
     $content[] = $renderer->render($entity);
 
     $render = [
-      '#theme' => 'entity_print__' . $entity->getEntityTypeId() . '__' . $entity->bundle(),
+      '#theme' => 'entity_print',
       '#title' => $this->t('View'),
       '#content' => $content,
       '#attached' => [],

@@ -11,9 +11,10 @@
     {#<link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>#}
 </head>
 <body>
-
-{#{{ dump() }}#}
-
 {{ content }}
+{% if pdf_original_link %}
+    <hr>
+    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a href="{{ pdf_original_link  }}">{{ pdf_original_link }}</a></div>
+{% endif %}
 </body>
 </html>

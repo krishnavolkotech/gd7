@@ -79,15 +79,23 @@ function hzd_preprocess_printable(&$variables) {
     /* $variables['content'] = $variables['content']['#node']->toArray(); */
 }
 
+function hzd_preprocess_entity_print(&$vars) {
+    if (\Drupal::routeMatch()->getRouteName() == 'entity_print.view') {
+        $pdf_original_link = \Drupal::request()->query->get('original', null);
+        global $base_url;
+        $vars['pdf_original_link'] = $base_url . $pdf_original_link;
+    }
+//    echo $pdf_original_link;
+//    exit;
+}
+
 /**
  * Implements hook_preprocess_node().
  */
 function hzd_preprocess_node(&$variables) {
     $config = \Drupal::config('planning.settings');
     $nid = $variables['node']->id();
-    if(\Drupal::routeMatch()->getRouteName() == 'entity_print.view'){
-      $variables['isPdf'] = 1;
-    }
+    
     if ($nid == $config->get('mlrp')) {
         $files = get_related_files('mlrp');
         $variables['mlrp_files'] = $files;
@@ -123,9 +131,9 @@ function hzd_preprocess_node(&$variables) {
         
         //$url = Url::fromUserInput('/entityprint/node/' . $nid);
         
-       /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-        $urldata = \Drupal::l("PDF preview", $url);
-        $variables['pdf_priview'] = array('#markup' => $urldata);*/
+        /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
+         $urldata = \Drupal::l("PDF preview", $url);
+         $variables['pdf_priview'] = array('#markup' => $urldata);*/
     }
     if ($variables['node']->getType() == 'downtimes') {
         $id = $nid;
@@ -231,7 +239,7 @@ function hzd_preprocess_node(&$variables) {
         
         $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
             ->get('field_problem_eroffnet')->value);
-        
+
 //        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
         
         $url = Url::fromRoute('problem_management.problems', array(
@@ -277,7 +285,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
 //  }
     // Embedding the add to favorites block in breadcrumb.
 //    $rightData['extras'] = ['#type'=>'container','#attributes'=>['class'=>['test']]];
-    $variables['breadcrumb']['extras'] = ['#type'=>'container','#attributes'=>['class'=>['print-action-wrapper']]];
+    $variables['breadcrumb']['extras'] = ['#type' => 'container', '#attributes' => ['class' => ['print-action-wrapper']]];
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
     if (isset($block)) {
         $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
@@ -287,18 +295,19 @@ function hzd_preprocess_breadcrumb(&$variables) {
     $routeName = \Drupal::routeMatch()->getRouteName();
     $groupContent = \Drupal::routeMatch()->getParameter('group_content');
     if ($groupContent) {
-        $pdfLink = ['#type'=>'container','#attributes'=>['class'=>['unpublished-quickinfo-pdf-preview']],'#weight'=>2];
-        $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type'=>'node','entity_id'=>$groupContent->get('entity_id')->referencedEntities()[0]->id()]),'#title'=>'PDF'];
+        $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
+        $pdfLink['link'] = ['#type' => 'link',
+            '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $groupContent->get('entity_id')->referencedEntities()[0]->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => 'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
-    if($routeName == 'entity.group.canonical'){
+    if ($routeName == 'entity.group.canonical') {
         $group = \Drupal::routeMatch()->getParameter('group');
-        $pdfLink = ['#type'=>'container','#attributes'=>['class'=>['unpublished-quickinfo-pdf-preview']],'#weight'=>2];
-        $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type'=>$group->getEntityTypeId(),'entity_id'=>$group->id()]),'#title'=>'PDF'];
+        $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
+        $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => $group->getEntityTypeId(), 'entity_id' => $group->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => 'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
 //    $variables['breadcrumb'][] = $rightData;
-//    pr(($variables['breadcrumb']));exit;
+//    pr(($variables['breadcrumb']['extras']['pdf_print']));exit;
 }
 
 function custom_user_fullname($uid) {
