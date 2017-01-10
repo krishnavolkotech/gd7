@@ -10,6 +10,7 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Template\Attribute;
+use Drupal\node\Entity\Node;
 
 function hzd_preprocess_page(&$variables) {
     $user = \Drupal::currentUser();
@@ -80,12 +81,20 @@ function hzd_preprocess_printable(&$variables) {
 }
 
 function hzd_preprocess_entity_print(&$vars) {
+    $vars['quickinfo'] = false;
     if (\Drupal::routeMatch()->getRouteName() == 'entity_print.view') {
         $pdf_original_link = \Drupal::request()->query->get('original', null);
         global $base_url;
         $vars['pdf_original_link'] = $base_url . $pdf_original_link;
+        $params = \Drupal::routeMatch()->getParameters();
+        $entity = \Drupal::entityManager()->getStorage($params->get('entity_type'))->load($params->get('entity_id'));
+        if ($entity->bundle() == 'quickinfo') {
+            $vars['quickinfo'] = true;
+        }
+        $vars['pdftitle'] = $entity->label();
     }
-//    echo $pdf_original_link;
+//    pr(($entity->bundle()));
+//    pr(array_keys($entity));
 //    exit;
 }
 

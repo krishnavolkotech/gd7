@@ -2,19 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
-    <header>
-
-        <td><img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif"></td>
-    </header>
     {{ entity_print_css }}
     {#<style>{{ source('themes/hzd/css/style.css') }}</style>#}
     {#<link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>#}
+    <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
 </head>
 <body>
-{{ content }}
-{% if pdf_original_link %}
-    <hr>
-    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a href="{{ pdf_original_link  }}">{{ pdf_original_link }}</a></div>
-{% endif %}
+<div class="pdf-wrapper">
+  <header>
+   <div class="logo-sec-pdf">
+    <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+   </div>
+  </header>
+<div class="pdf-content">
+ {#{{ dump() }}#}
+
+ {{ content }}
+
+ </div>
+    {% if pdf_original_link %}
+        <hr>
+        <div class="footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a href="{{ pdf_original_link  }}">{{ pdf_original_link }}</a></div>
+    {% endif %}
+</div>
 </body>
 </html>
