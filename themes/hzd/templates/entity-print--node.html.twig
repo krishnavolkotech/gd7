@@ -2,18 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
-    <header>
-
-        <td><img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif"></td>
-    </header>
     {{ entity_print_css }}
     {#<style>{{ source('themes/hzd/css/style.css') }}</style>#}
     {#<link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>#}
+    <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
 </head>
 <body>
+<div class="pdf-wrapper">
+  <header>
+   <div class="logo-sec-pdf">
+    <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+   </div>
+  </header>
+<div class="pdf-content">
+ {#{{ dump() }}#}
 
-{#{{ dump() }}#}
+ {{ content }}
 
-{{ content }}
+ </div>
+  <div class="footer">,hfjhh</div>
+</div>
 </body>
 </html>
