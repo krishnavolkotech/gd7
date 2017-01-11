@@ -30,7 +30,7 @@ class PdfBeforeRenderSubscriber implements EventSubscriberInterface {
    * @param GetResponseEvent $event
    */
   public function pdfPreRender(Event $event) {
-      $printEngine = $event->getPrintEngine()->getDomPdf();
+      $printEngine = $event->getPrintEngine()->getPrintObject();
 //      $printEngine->configuration['default_paper_size'] = [200, 20, 595.28, 841.89];
       $printEngine->setPaper(200, 20, 595.28, 841.89);
       $printEngine->set_option('isPhpEnabled',1);
