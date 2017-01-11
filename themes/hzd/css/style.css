@@ -2749,7 +2749,7 @@ table.archived tr td a.downtimes_details_link{
   height:22px;
   float:left;
   font-size:0;
-  margin-right:10px;
+  margin:0;
   padding:0;
 }
 .text-danger td a.downtimes_update_link,
@@ -2848,9 +2848,6 @@ table tr th{
 #incidents_search_results_wrapper table tr td:last-child .popup-wrapper,
 #maintenance_search_results_wrapper table tr td:last-child .popup-wrapper{
   float:left;
-}
-#archived_search_results_wrapper table tr td:last-child .popup-wrapper,
-#incidents_search_results_wrapper table tr td:last-child .popup-wrapper{
   margin-bottom:0 !important;
 }
 #incidents_search_results_wrapper table tr td p{
@@ -3038,7 +3035,7 @@ form .type_search_dropdown{
   margin-top: 72px;
 }
 table.archived tr td:last-child .popup-wrapper .details-wrapper{
-  text-align:center !important;
+  display:inline-block;
   padding-top:0px;
   margin-bottom:0;
 }
@@ -3141,7 +3138,10 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
 #archived_search_results_wrapper table.archived tr td:last-child .popup-wrapper{
   width:100%;
   float:left;
-  vertical-align:top;
+  line-height:0;
+  margin:0;
+  padding:0;
+  text-align:center;
 }
 .print-action-wrapper{ 
   padding:0;
