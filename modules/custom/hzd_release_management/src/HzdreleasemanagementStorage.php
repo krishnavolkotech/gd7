@@ -1377,7 +1377,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         
         // Redirection array after creation of early warnings.
         $redirect = array('released' => 'releases', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
-        $options['query']['destinations'] = 'group/' . $group_id . '/' . $redirect[$type];
+        $options['query']['destination'] = 'group/' . $group_id . '/' . $redirect[$type];
         $options['query'][] = array(
             'services' => $service_id,
             'releases' => $release_id,
