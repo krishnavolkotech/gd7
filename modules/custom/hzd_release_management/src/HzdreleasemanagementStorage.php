@@ -814,6 +814,7 @@ class HzdreleasemanagementStorage
                 $deployed_releases_node_ids->condition($archive);
             }
         }
+        $deployed_releases_node_ids->sort('field_date_deployed','DESC');
 
 //    $service_release_type = isset($filter_value['release_type']) 
 //        ? $filter_value['release_type'] : $default_type;
