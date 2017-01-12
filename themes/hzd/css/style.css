@@ -949,7 +949,7 @@ button.button--reset:hover{
 .btn-default:hover{
   background: #fff !important;
   font-size: 14px;
-  color: #333 !important;
+  color: #555 !important;
   padding: 6px 12px !important;
   float: left;
   border: 1px solid #ddd !important;
@@ -1719,7 +1719,7 @@ section .form-group .view-content .item-list ul li{
   width:100%;
   margin-right:5px;
   position:relative;
-  background:url("../images/red-list-arrow.png") no-repeat scroll left 5px;
+  background:url("../images/red-list-arrow.png") no-repeat scroll left 6px;
 }
 .block-incidents-block ul li br{
   display:none;
@@ -1832,7 +1832,7 @@ aside .block-favorites .item-list ul li{
   padding:0;
   margin:0;
   width:100%;
-  background:url(../images/grey-list-arrow.png)left 8px no-repeat;
+  background:url(../images/grey-list-arrow.png)left 9px no-repeat;
   list-style-type:none;
 }
 aside .block-favorites .item-list ul li span{
@@ -1886,10 +1886,10 @@ aside .view-release-list ul li{
 }
 aside .view-problems-front-page ul li,
 aside .view-release-list ul li{
-  background:url(../images/grey-list-arrow.png)left 8px no-repeat !important;
+  background:url(../images/grey-list-arrow.png)left 9px no-repeat !important;
 }
 section .form-group .more-link a{
-  background:url(../images/grey-list-arrow.png)left 7px no-repeat;
+  background:url(../images/grey-list-arrow.png)left 8px no-repeat;
   float:left;
   padding-left:14px;
   color:#04425f;
@@ -1906,7 +1906,7 @@ section .form-group .more-link a{
 .block-incidents-block a.front-page-link{
   width:100%;
   display:inline-block;
-  background:url(../images/grey-list-arrow.png)left 7px no-repeat;
+  background:url(../images/grey-list-arrow.png)left 8px no-repeat;
   /*background:url(../images/red-list-arrow.png)left 8px no-repeat;*/
   padding-left:14px;
   color:#333333;
@@ -2318,6 +2318,7 @@ article.downtimes .downtime-view-wrapper{
   width:100%;
   float:left;
   margin:10px 0 20px 0;
+  text-align:left;
 }
 article.downtimes .Incident .downtimes_content{
   width:75% !important;
@@ -2773,11 +2774,6 @@ table.incident caption h2,
 table.maintenance caption h2{
   font-size:20px !important;
 }
-a.back-search{
- background:url(../images/ic_arrow_back_black_24dp_1x.png)left top no-repeat;
- text-indent:-99999px;
- width:24px;
-}
 /* .node-downtimes-form */
 form .form-type-vertical-tabs{
   border:1px solid #ddd;
@@ -2835,7 +2831,6 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
 #archived_search_results_wrapper table.archived tr td:last-child .popup-wrapper{
   width:100%;
   float:left;
-  line-height:0;
   margin:0;
   padding:0;
   text-align:center;
@@ -2857,12 +2852,6 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
 .print-action-wrapper section.block-star-favorites-block{
   float:left;
 }
-input[type="text"].hasDatepicker::-webkit-input-placeholder{
-  color:#555;
-}
-input[type="text"].hasDatepicker::-moz-placeholder{
-  color:#555;
-}
-input[type="text"].hasDatepicker:-ms-input-placeholder{
-    color: #555;
-}
+.popup-wrapper article .downtimes{
+  display:block !important;
+} 
