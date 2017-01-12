@@ -827,17 +827,17 @@ class HzdcustomisationStorage
                 ->execute()
                 ->fetchCol();
 //            pr($user_state_list);exit;
-            $user_state = null;
-            $user_states = [];
-            $i = 1;
-            //// preparing an array with 2 states on each row for a clean display purpose.
+//            $user_state = null;
+            $user_states = [0=>null];
+            $i = 1;$j=0;
+            //// preparing an array with 3 states on each row for a clean display purpose.
             foreach ($user_state_list as $stateAbbr) {
-                $user_state .= ' ' . $stateAbbr . ',';
+                if(!isset($user_states[$j])){
+                    $user_states[$j] = null;
+                }
+                $user_states[$j] .= ' ' . $stateAbbr . ',';
                 if ($i % 3 == 0) {
-                    $user_states[] = $user_state;
-                    $user_state = null;
-                } elseif ($i == count($user_state_list)) {
-                    $user_states[] = $stateAbbr;
+                    $j++;
                 }
                 $i += 1;
             }
