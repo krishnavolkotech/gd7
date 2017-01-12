@@ -162,6 +162,7 @@ class DowntimesFilter extends FormBase
                 '#suffix' => '</div>',
                 '#default_value' => $filterData->get('string', ''),
                 '#weight' => 1,
+                '#placeholder'=> t('Störungsmeldung durchsuchen'),
             );
             
             $form['search_string']['submit'] = array(
