@@ -2359,8 +2359,8 @@ article.downtimes .changed-group .field-wrapper ul li{
 }
 article.downtimes ol{
   width:100%;
-  margin:0 0 0 13px !important;
-  padding:0 !important;
+  padding:0 0 0 13px !important;
+  margin:0 !important;
 }
 article.downtimes ul{
   width:100%;
@@ -2839,6 +2839,9 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
   padding:0;
   text-align:center;
 }
+#problem_search_results_wrapper form.problem-filter-form button{
+  float:right;
+}
 .print-action-wrapper{ 
   padding:0;
   float:right;
@@ -2865,7 +2868,18 @@ form.deployedreleases-create-form .form-group{
   float:left;
   margin:2% 2% 0 0;
 }
+form.deployedreleases-create-form .form-group .input.hasDatepicker{
+  width:auto;
+}
 form.deployedreleases-create-form .form-item-deployed-date label{
   margin-bottom:3px;
 }
-
+.deployed_release_form_warapper,
+.currently_deployed_relesaes,
+.archived_deployed_relesaes{
+  width:100%;
+  float:left;
+}
+form.problem-filter-form .string_search.hzd-form-element input{
+  color:#555;
+}
