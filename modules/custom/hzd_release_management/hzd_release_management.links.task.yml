@@ -32,7 +32,7 @@ hzd_release_management.release_type_settings_tab: #name it same as route to avoi
   weight: 3
 
 hzd_release_management.release_management_release_tab:
-  title: Release
+  title: Released
   route_name: hzd_release_management.released
   base_route: hzd_release_management.released
   weight: 0
