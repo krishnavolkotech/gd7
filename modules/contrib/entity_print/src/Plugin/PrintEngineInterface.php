@@ -61,4 +61,12 @@ interface PrintEngineInterface extends PluginInspectionInterface, PluginFormInte
    */
   public static function getInstallationInstructions();
 
+  /**
+   * Gets the object for this Print engine.
+   *
+   * @return object
+   *   An object of this print engine.
+   */
+  public function getPrintObject();
+
 }

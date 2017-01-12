@@ -1,29 +1,129 @@
-Index: src/Plugin/EntityPrint/PrintEngine/DomPdf.php
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- src/Plugin/EntityPrint/PrintEngine/DomPdf.php	(revision c633d9674f697693215c3b9fdd1a8239a2e49c2b)
-+++ src/Plugin/EntityPrint/PrintEngine/DomPdf.php	(revision )
-@@ -29,7 +29,7 @@
-   /**
-    * @var \Dompdf\Dompdf
-    */
--  protected $dompdf;
-+    protected $dompdf;
- 
-   /**
-    * Keep track of HTML pages as they're added.
-@@ -215,5 +215,12 @@
-   protected function getPaperSizes() {
+diff --git a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+index 6c1fb9f..82f29c1 100644
+--- a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
++++ b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+@@ -218,4 +218,11 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
      return array_combine(array_keys(CPDF::$PAPER_SIZES), array_map('ucfirst', array_keys(CPDF::$PAPER_SIZES)));
    }
-+  
+ 
 +  /**
 +   * {@inheritdoc}
 +   */
-+  public function getDomPdf(){
++  public function getPrintObject(){
 +    return $this->dompdf;
 +  }
++
+ }
+diff --git a/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php b/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
+index edd5b1a..e16012b 100644
+--- a/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
++++ b/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
+@@ -168,4 +168,11 @@ class PhpWkhtmlToPdf extends PdfEngineBase implements AlignableHeaderFooterInter
+     return $this;
+   }
  
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject(){
++    return $this->pdf;
++  }
++
+ }
+diff --git a/src/Plugin/EntityPrint/PrintEngine/TcPdfv1.php b/src/Plugin/EntityPrint/PrintEngine/TcPdfv1.php
+index 5aa7001..28b457a 100644
+--- a/src/Plugin/EntityPrint/PrintEngine/TcPdfv1.php
++++ b/src/Plugin/EntityPrint/PrintEngine/TcPdfv1.php
+@@ -109,4 +109,11 @@ class TcPdfv1 extends PrintEngineBase {
+     return class_exists('\TCPDF') && !drupal_valid_test_ua();
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject(){
++    return $this->tcpdf;
++  }
++
+ }
+diff --git a/src/Plugin/PrintEngineInterface.php b/src/Plugin/PrintEngineInterface.php
+index 5395b89..4c61f36 100644
+--- a/src/Plugin/PrintEngineInterface.php
++++ b/src/Plugin/PrintEngineInterface.php
+@@ -61,4 +61,12 @@ interface PrintEngineInterface extends PluginInspectionInterface, PluginFormInte
+    */
+   public static function getInstallationInstructions();
+ 
++  /**
++   * Gets the object for this Print engine.
++   *
++   * @return object
++   *   An object of this print engine.
++   */
++  public function getPrintObject();
++
+ }
+diff --git a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/NotAvailablePrintEngine.php b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/NotAvailablePrintEngine.php
+index 7100d40..e9ae636 100644
+--- a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/NotAvailablePrintEngine.php
++++ b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/NotAvailablePrintEngine.php
+@@ -40,4 +40,9 @@ class NotAvailablePrintEngine extends PrintEngineBase {
+     return FALSE;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject() {}
++
+ }
+diff --git a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/PrintExceptionEngine.php b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/PrintExceptionEngine.php
+index 38f785c..e5a78fd 100644
+--- a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/PrintExceptionEngine.php
++++ b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/PrintExceptionEngine.php
+@@ -45,4 +45,9 @@ class PrintExceptionEngine extends PrintEngineBase {
+     return TRUE;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject() {}
++
+ }
+diff --git a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
+index 57e664e..26383eb 100644
+--- a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
++++ b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
+@@ -65,7 +65,6 @@ class TestPrintEngine extends PrintEngineBase {
+     $this->configuration['test_engine_suffix'] = $form_state->getValue(['testprintengine', 'test_engine_suffix']);
+   }
+ 
+-
+   /**
+    * {@inheritdoc}
+    */
+@@ -104,4 +103,9 @@ class TestPrintEngine extends PrintEngineBase {
+     return TRUE;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject() {}
++
+ }
+diff --git a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestWordPrintEngine.php b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestWordPrintEngine.php
+index bd225f5..1afa918 100644
+--- a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestWordPrintEngine.php
++++ b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestWordPrintEngine.php
+@@ -82,4 +82,9 @@ class TestWordPrintEngine extends PrintEngineBase {
+     return TRUE;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getPrintObject() {}
++
  }
