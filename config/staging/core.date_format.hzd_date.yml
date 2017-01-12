@@ -1,8 +1,0 @@
-uuid: 10e3505c-a3de-4b39-af09-862860b45647
-langcode: de
-status: true
-dependencies: {  }
-id: hzd_date
-label: 'HZD date'
-locked: false
-pattern: d.m.Y

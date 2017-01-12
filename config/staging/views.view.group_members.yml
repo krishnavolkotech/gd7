@@ -466,19 +466,7 @@ display:
           entity_type: group_content
           entity_field: request_status
           plugin_id: numeric
-      sorts:
-        group_roles_target_id:
-          id: group_roles_target_id
-          table: group_content__group_roles
-          field: group_roles_target_id
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: true
-          expose:
-            label: Admin
-          plugin_id: standard
+      sorts: {  }
       title: ''
       header:
         area:
@@ -548,8 +536,6 @@ display:
         - route
         - url
         - url.query_args
-        - 'url.query_args:sort_by'
-        - 'url.query_args:sort_order'
       tags: {  }
   page_1:
     display_plugin: page
@@ -977,6 +963,4 @@ display:
         - route
         - url
         - url.query_args
-        - 'url.query_args:sort_by'
-        - 'url.query_args:sort_order'
       tags: {  }
