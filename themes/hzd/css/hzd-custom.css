@@ -98,6 +98,12 @@ a.button--danger{
   width:25% !important;
   word-break:break-all;
 }
+#released_results_wrapper table tr.odd td:nth-child(4),
+#released_results_wrapper table tr.even td:nth-child(4){
+  width:10%;
+  text-align:right;
+  padding:5px 30px 5px 30px
+}
 #archived_search_results_wrapper table tr.odd td:nth-child(3),
 #archived_search_results_wrapper table tr.even td:nth-child(3)
 {
