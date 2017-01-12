@@ -306,12 +306,15 @@ aside section.blue h2,
 nav#block-optionen h2 { 
   word-wrap:break-word;
 }
+input[type="text"].form-control::-webkit-input-placeholder,
 input[type="text"].hasDatepicker::-webkit-input-placeholder{
   color:#555;
 }
+input[type="text"].form-control::-moz-placeholder,
 input[type="text"].hasDatepicker::-moz-placeholder{
   color:#555;
 }
+input[type="text"].form-control:-ms-input-placeholder,
 input[type="text"].hasDatepicker:-ms-input-placeholder{
     color: #555;
 }
