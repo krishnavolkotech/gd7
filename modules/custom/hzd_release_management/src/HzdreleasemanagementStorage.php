@@ -1026,7 +1026,7 @@ class HzdreleasemanagementStorage
         
         $output['#attached']['library'] = array(
             'hzd_release_management/hzd_release_management',
-            'downtimes/downtimes'
+//            'downtimes/downtimes'
         );
         $output['#attached']['drupalSettings']['release_management'] = array(
             'group_id' => $group_id,
