@@ -1026,7 +1026,7 @@ class HzdreleasemanagementStorage
         
         $output['#attached']['library'] = array(
             'hzd_release_management/hzd_release_management',
-            'downtimes/downtimes'
+//            'downtimes/downtimes'
         );
         $output['#attached']['drupalSettings']['release_management'] = array(
             'group_id' => $group_id,
@@ -1167,7 +1167,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         
         // pr($rows);exit;
-        if (!empty($rows)) {
+//        if (!empty($rows)) {
             $output['releases'] = array(
                 '#theme' => 'table',
                 '#rows' => $rows,
@@ -1186,13 +1186,13 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 'group_id' => $group_id,
             );
             return $output;
-        } else {
-            return $output[]['#markup'] = array(
-                '#prefix' => '<div id="no-result">',
-                '#markup' => t("results not found"),
-                '#suffix' => '</div>',
-            );
-        }
+//        } else {
+//            return $output[]['#markup'] = array(
+//                '#prefix' => '<div id="no-result">',
+//                '#markup' => t("results not found"),
+//                '#suffix' => '</div>',
+//            );
+//        }
     }
     
     /**

@@ -167,7 +167,7 @@ class HzdearlywarningsStorage
                 '#theme' => 'table',
                 '#header' => $header,
                 '#rows' => $rows,
-                '#empty' => t('<div id="no-result"> No Data Created Yet </div>'),
+                '#empty' => t('No Data Created Yet'),
                 '#attributes' => ['id' => "earlywarnings_release_sortable", 'class' => "tablesorter"],
             );
             return $output;
@@ -277,7 +277,7 @@ class HzdearlywarningsStorage
             '#theme' => 'table',
             '#header' => $header,
             '#rows' => $rows,
-            '#empty' => t('<div id="no-result"> No Data Created Yet </div>'),
+            '#empty' => t('No Data Created Yet'),
             '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
         );
         
