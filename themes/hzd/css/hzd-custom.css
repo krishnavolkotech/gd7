@@ -163,6 +163,10 @@ table tr th{
   word-wrap:break-word;
   float:left;
 }
+#problem_search_results_wrapper table th.status{
+  width:10% !important;
+  word-wrap:break-word;
+}
 .curr_incidents_form + .reset_form {
  /* float: left !important;
   margin: 15px 0 20px 0 !important;

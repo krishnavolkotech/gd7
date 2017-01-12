@@ -2357,7 +2357,11 @@ article.downtimes .changed-group .field-wrapper ul li{
   margin:0 0 3px 0;
   padding:0;
 }
-article.downtimes ol{}
+article.downtimes ol{
+  width:100%;
+  margin:0 0 0 13px !important;
+  padding:0 !important;
+}
 article.downtimes ul{
   width:100%;
   margin:0 0 0 13px !important;
@@ -2606,7 +2610,7 @@ a.downtimes_cancel_link{
 .form-control:-moz-placeholder{
   color:#333333 !important;	
 }
-article.popup:after {
+/*article.popup:after {
   background: url(../images/grey-list-arrow.png) right center no-repeat;
   position: absolute;
   right: -12px;
@@ -2616,7 +2620,7 @@ article.popup:after {
   margin-top: 2px;
   width: 15px;
   height: 15px;
-}
+}*/
 article.popup{
   position: relative;
   /*background: #88b7d5;*/
@@ -2854,4 +2858,14 @@ article.downtimes .Incident .downtimes_content_paragraph ol li{
 }
 .popup-wrapper article .downtimes{
   display:block !important;
-} 
+}
+form.deployedreleases-create-form .btn, 
+form.deployedreleases-create-form .form-group{
+  width:auto;
+  float:left;
+  margin:2% 2% 0 0;
+}
+form.deployedreleases-create-form .form-item-deployed-date label{
+  margin-bottom:3px;
+}
+
