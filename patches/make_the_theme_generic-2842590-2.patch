@@ -1,0 +1,16 @@
+Index: src/PrintBuilder.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/PrintBuilder.php	(revision 8ec836f25010f531f2b98c001b82cb3e119db4cb)
++++ src/PrintBuilder.php	(revision )
+@@ -82,7 +82,7 @@
+     $content[] = $renderer->render($entity);
+ 
+     $render = [
+-      '#theme' => 'entity_print__' . $entity->getEntityTypeId() . '__' . $entity->bundle(),
++      '#theme' => 'entity_print',
+       '#title' => $this->t('View'),
+       '#content' => $content,
+       '#attached' => [],

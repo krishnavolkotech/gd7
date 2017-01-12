@@ -103,7 +103,7 @@
             </div>
         </footer>
     {% endif %}
-    <div{{ content_attributes.addClass('content') }}>
+    {#<div{{ content_attributes.addClass('content') }}>
         {% if node.isPublished() %}
             {{ content.field_unique_id }}
             <div class="field field--label-inline">
@@ -130,7 +130,7 @@
         {% if content.field_related_transfer_number %}
             <div class="field field--name-field-related-transfer-number field--label-above">
                 <div class="field--label">{{ node.field_related_transfer_number.fieldDefinition.label }}</div>
-                <div class="field--item">{{ conten.field_related_transfer_number }}</div>
+                <div class="field--item">{{ content.field_related_transfer_number }}</div>
             </div>
         {% else %}
             <div class="field field--name-field-related-transfer-number field--label-above">
@@ -266,6 +266,7 @@
                 {% endif %}
             </div>
         {% endif %}
-    </div>
+    </div>#}
+    {{ content }}
     {{ revisions_table_print }}
 </article>

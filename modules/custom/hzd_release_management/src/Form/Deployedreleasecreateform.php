@@ -90,7 +90,7 @@ class Deployedreleasecreateform extends FormBase {
     }
     else {
       $releases = array(
-        '0' => t('Release')
+        '0' => t('< @release >',['@release'=>'Release'])
         );
     }
     
@@ -127,13 +127,14 @@ class Deployedreleasecreateform extends FormBase {
     // $date_format = 'd.m.Y';.
     $form['deployed_date'] = array(
       '#type' => 'textfield',
-      '#title' => t('Date'),
+//      '#title' => t('Date'),
       '#size' => 15,
      // '#date_date_format' => 'german_date',.
       '#required' => TRUE,
       '#maxlength' => '20',
-      '#attributes' => array("class" => "deployed_date"),
+      '#attributes' => array("class" => ["deployed_date"]),
       '#weight' => -3,
+        '#placeholder'=> t('< @date >',['@date'=>'Date']),
 
     );
 

@@ -72,107 +72,107 @@
         </h2>
     {% endif %}
     {{ title_suffix }}
-
     <div>{{ back_to_search }}</div>
-    <h4 class = 'problem_heading' >  {{ "Details"|trans }}</h4>
-<table class = 'problem_info' >
+    <h4 class='problem_heading'>  {{ "Details"|trans }}</h4>
+    <table class='problem_info'>
 
-<tr class = 'even'>
-    <td class = 'problem_titles'> {{ 'Service'|trans }}</td>
-    <td class = 'problem_content' >
-      {{ node.field_services.0.entity.title.value }} </td>
-</tr>
- 
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Function'|trans }}</td>
-    <td class = 'problem_content' >{{  node.field_function.value }}</td>
-</tr>
+        <tr class='even'>
+            <td class='problem_titles'> {{ 'Service'|trans }}</td>
+            <td class='problem_content'>
+                {{ node.field_services.0.entity.title.value }} </td>
+        </tr>
 
-
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Affected Release'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_release.value }}</td>
-</tr>
-
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Status'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_problem_status.value  }}</td>
-</tr>
-
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Priority'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_priority.value }}</td>
-</tr>
-
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Title'|trans }}</td>
-    <td class = 'problem_content' >{{ node.title.value|trans }}</td>
-</tr>
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Function'|trans }}</td>
+            <td class='problem_content'>{{ node.field_function.value }}</td>
+        </tr>
 
 
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Description'|trans }}</td>
-    <td class = 'problem_content' >{{ problem_text|raw  }}</td>
-</tr>
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Affected Release'|trans }}</td>
+            <td class='problem_content'>{{ node.field_release.value }}</td>
+        </tr>
 
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Diagnose'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_diagnose.value   }}</td>
-</tr>
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Status'|trans }}</td>
+            <td class='problem_content'>{{ node.field_problem_status.value }}</td>
+        </tr>
 
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Work Around'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_work_around.value|raw }}</td>
-</tr>
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Priority'|trans }}</td>
+            <td class='problem_content'>{{ node.field_priority.value }}</td>
+        </tr>
 
-
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Solution'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_solution.value|raw }}</td>
-</tr>
-
-
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Fixed with Release'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_version.value }}</td>
-</tr>
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Title'|trans }}</td>
+            <td class='problem_content'>{{ node.title.value|trans }}</td>
+        </tr>
 
 
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Annotations'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_comments.value|raw }}</td>
-</tr>
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Description'|trans }}</td>
+            <td class='problem_content'>{{ problem_text|raw }}</td>
+        </tr>
 
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Ticketstore Link'|trans }}</td>
-    <td class = 'problem_content' >{{ ticketstore_html }}</td> 
-</tr>
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Diagnose'|trans }}</td>
+            <td class='problem_content'>{{ node.field_diagnose.value }}</td>
+        </tr>
 
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Eroffnet'|trans }}</td>
-    <td class = 'problem_content' >{{ erroffnet_value }}</td>
-</tr>
-
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'Last Update'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_processing.value }}</td>
-</tr>
-
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Taskforce'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_task_force.value }}</td>
-</tr>
-
-<tr class = 'even'>
-    <td class = 'problem_titles'>{{ 'SDCallID'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_s_no.value }}</td>
-</tr>
-
-<tr class = 'odd'>
-    <td class = 'problem_titles'>{{ 'Attachments'|trans }}</td>
-    <td class = 'problem_content' >{{ node.field_attachment.value }}</td>
-</tr>
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Work Around'|trans }}</td>
+            <td class='problem_content'>{{ node.field_work_around.value|raw }}</td>
+        </tr>
 
 
-</table>
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Solution'|trans }}</td>
+            <td class='problem_content'>{{ node.field_solution.value|raw }}</td>
+        </tr>
+
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Fixed with Release'|trans }}</td>
+            <td class='problem_content'>{{ node.field_version.value }}</td>
+        </tr>
+
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Annotations'|trans }}</td>
+            <td class='problem_content'>{{ node.field_comments.value|raw }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Ticketstore Link'|trans }}</td>
+            <td class='problem_content'>{{ ticketstore_html }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Eroffnet'|trans }}</td>
+            <td class='problem_content'>{{ erroffnet_value }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Last Update'|trans }}</td>
+            <td class='problem_content'>{{ node.field_processing.value }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Taskforce'|trans }}</td>
+            <td class='problem_content'>{{ node.field_task_force.value }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'SDCallID'|trans }}</td>
+            <td class='problem_content'>{{ node.field_s_no.value }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Attachments'|trans }}</td>
+            <td class='problem_content'>{{ node.field_attachment.value }}</td>
+        </tr>
+
+
+    </table>
+
 </article>

@@ -62,11 +62,11 @@ class CustNodeController extends ControllerBase {
     return $parm->get('entity_id')->referencedEntities()[0]->label();
   }
 
-  static function hzdGroupAccess() {
-    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+  static function hzdGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -87,15 +87,15 @@ class CustNodeController extends ControllerBase {
     return AccessResult::forbidden();
   }
 
-  static function hzdIncidentGroupAccess() {
-    $uid = \Drupal::currentUser()->id();
+  static function hzdIncidentGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    $uid = $user->id();
     if ($uid == 0) {
       return AccessResult::allowed();
     }
-    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+    if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -104,23 +104,23 @@ class CustNodeController extends ControllerBase {
     return AccessResult::neutral();
   }
 
-  static function hzdnodeConfirmAccess() {
-    if ($group = \Drupal::routeMatch()->getParameter('group')) {
+  static function hzdnodeConfirmAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
       }
-    } else if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    } else if ($node = $route_match->getParameter('node')) {
       $group_id = \Drupal::database()->select('group_content_field_data', 'gcfd')
                       ->fields('gcfd', ['gid', 'id'])
                       ->condition('gcfd.entity_id', $node)
                       ->execute()->fetchAssoc();
       if ($group_id) {
         $group = \Drupal\group\Entity\Group::load($group_id['gid']);
-        if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1 || in_array('site_administrator', \Drupal::currentUser()->getRoles())) {
+        if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();
@@ -133,11 +133,11 @@ class CustNodeController extends ControllerBase {
   }
 
   ///added for drupal core views
-  static function hzdGroupViewsAccess() {
-    if ($group = \Drupal::routeMatch()->getParameter('arg_0')) {
+  static function hzdGroupViewsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if ($group = $route_match->getParameter('arg_0')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1) {
+      if ($group->getMember($user) || $user->id() == 1) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();

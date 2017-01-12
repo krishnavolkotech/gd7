@@ -8,3 +8,5 @@ recipients:
   - betriebsportal-konsens@hzd.hessen.de
 reply: "Vielen Dank für Ihre Nachricht. Wir bemühen uns um eine schnellstmögliche Bereitstellung.\r\n\r\n-- Team Betriebsportal KONSENS"
 weight: 5
+message: 'Your message has been sent.'
+redirect: ''

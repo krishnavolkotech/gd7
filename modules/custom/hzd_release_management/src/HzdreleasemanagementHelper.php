@@ -160,7 +160,7 @@ class HzdreleasemanagementHelper {
       $query->condition('nfrs.field_relese_services_target_id', $service);
     }
     $result = $query->execute()->fetchAll();
-    $default_release[] = "Release";
+    $default_release[] = t("@release",['@release'=>'<Release>']);
     foreach ($result as $vals) {
       $default_release[$vals->nid] = $vals->title;
     }
@@ -536,7 +536,7 @@ class HzdreleasemanagementHelper {
       }
       $releases[$releases_info->service] = $releases_info->title;
     }
-    $deployed_services[] = t('Service');
+    $deployed_services[] = t('< @service >',['@service'=>'Service']);
     if (!empty($services)) {
       $query = \Drupal::database()->select('node_field_data', 'nfd');
       $query->fields('nfd', array('nid', 'title'));

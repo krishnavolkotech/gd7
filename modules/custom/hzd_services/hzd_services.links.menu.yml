@@ -2,5 +2,5 @@ hzd_services.manage_services:
   title: 'Manage Services'
   route_name: hzd_services.manage_services
   description: 'A description for the menu entry fdsfdskfnsj'
-  parent: system.admin_config_system
+  parent: hzd_customizations.custom_configurations
   weight: 100

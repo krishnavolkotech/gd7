@@ -37,6 +37,7 @@ content:
     weight: 1
     settings:
       pager_id: 0
+      view_mode: default
     third_party_settings: {  }
   entity_print_view:
     weight: 0

@@ -1,6 +1,6 @@
 uuid: 3c74d833-6e0f-4f98-abb9-684742f17722
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - views.view.group_faqs
@@ -15,7 +15,7 @@ third_party_settings:
     classes: ''
 id: views_block__group_faqs_group_faq_block
 theme: hzd
-region: content
+region: '-1'
 weight: -17
 provider: null
 plugin: 'views_block:group_faqs-group_faq_block'

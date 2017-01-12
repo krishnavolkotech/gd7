@@ -280,7 +280,7 @@ function get_all_user_state($active = 0) {
     foreach ($user_states as $states_values) {
         // When we concat, when no abbr value is present, then it returns NULL. As of now it returns NULL for please select. so adding that value back to show in drop down.
         if ($states_values->state == NULL) {
-            $states[$states_values->id] = 'Bundesland';
+            $states[$states_values->id] = '<Bundesland>';
         } else {
             $states[$states_values->id] = $states_values->state;
         }
@@ -308,7 +308,7 @@ function get_environment_options($state = 1) {
  */
 function send_release_notifications($entity) {
     $nid = $entity->id();
-    $service_field = $entity->get('field_relese_services')->getValue();
+    $service_field = $entity->get('field_release_service')->getValue();
     $service_id = $service_field[0]['target_id'];
     
     // Get immediate notifications user mails.

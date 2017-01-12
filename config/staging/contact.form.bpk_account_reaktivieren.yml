@@ -8,3 +8,5 @@ recipients:
   - betriebsportal-konsens@hzd.hessen.de
 reply: "Vielen Dank für Ihre Nachricht. Ihr Benutzeraccount wird umgehend reaktiviert - Sie erhalten eine Bestätigungsemail.\r\n\r\n-- Team Betriebsportal KONSENS"
 weight: 3
+message: 'Your message has been sent.'
+redirect: ''

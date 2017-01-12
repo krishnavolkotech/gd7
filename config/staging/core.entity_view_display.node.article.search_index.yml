@@ -31,6 +31,7 @@ content:
     weight: 2
     settings:
       pager_id: 0
+      view_mode: default
     third_party_settings: {  }
     label: hidden
   field_tags:

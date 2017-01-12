@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains cust_pdf.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function cust_pdf_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cust_pdf module.
+    case 'help.page.cust_pdf':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Module to handle custom pdf generation functions') . '</p>';
+      return $output;
+
+    default:
+  }
+}

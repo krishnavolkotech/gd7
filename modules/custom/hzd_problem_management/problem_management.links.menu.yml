@@ -1,6 +1,6 @@
 problem_management.problem_management_settings:
   title: 'Problem Database Configuration'
   route_name: problem_management.problem_management_settings
-  parent: system.admin_config
+  parent: hzd_customizations.custom_configurations
   description: 'Configure csv import'
   weight: -10

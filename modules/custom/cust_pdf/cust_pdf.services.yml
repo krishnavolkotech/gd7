@@ -1,0 +1,7 @@
+services:
+  cust_pdf.default:
+    class: Drupal\cust_pdf\EventSubscriber\PdfBeforeRenderSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }
+
