@@ -46,20 +46,20 @@
         // $("#block-maintenance .state-item").hover(handlerInMaintenance, handlerOutMaintenance);
         // Handlers for front page tool tips.
         /*function handlerInMaintenance() {
-            $(this).parent().next('.downtime-hover').css('display', 'block');
-        }
+         $(this).parent().next('.downtime-hover').css('display', 'block');
+         }
 
-        function handlerOutMaintenance() {
-            $(this).parent().next('.downtime-hover').css('display', 'none');
-        }
+         function handlerOutMaintenance() {
+         $(this).parent().next('.downtime-hover').css('display', 'none');
+         }
 
-        function handlerInIncident() {
-            $(this).next('.downtime-hover').css('display', 'block');
-        }
+         function handlerInIncident() {
+         $(this).next('.downtime-hover').css('display', 'block');
+         }
 
-        function handlerOutIncident() {
-            $(this).next('.downtime-hover').css('display', 'none');
-        }*/
+         function handlerOutIncident() {
+         $(this).next('.downtime-hover').css('display', 'none');
+         }*/
 
         $(".frontpage-downtime-block ul.incidents-home-block>li").hover(function () {
             var offset = $(this).offset();
@@ -67,8 +67,13 @@
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
             var popWidth = $(this).find('article.popup').width();
             var finalLeft = offset.left - popWidth - 15;
-            if(finalLeft < 0){
-                var newWidth = popWidth*3/4;
+            if (finalTop < 78 && $('#toolbar-administration').length) {
+                finalTop = 88;
+            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+                finalTop = 10;
+            }
+            if (finalLeft < 0) {
+                var newWidth = popWidth * 3 / 4;
                 $(this).find('article.popup').width(newWidth);
                 finalLeft = offset.left - newWidth - 15;
             }
@@ -88,10 +93,16 @@
             var offset = $(this).offset();
             var popHeight = $(this).find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+            if (finalTop < 78 && $('#toolbar-administration').length) {
+                finalTop = 88;
+            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+                finalTop = 10;
+            }
             var popWidth = $(this).find('article.popup').width();
             var finalLeft = offset.left - popWidth - 10;
-            if(finalLeft < 0){
-                var newWidth = popWidth*3/4;
+
+            if (finalLeft < 0) {
+                var newWidth = popWidth * 3 / 4;
                 $(this).find('article.popup').width(newWidth);
                 finalLeft = offset.left - newWidth - 10;
             }
@@ -131,6 +142,11 @@
             var offset = $(this).offset();
             var popHeight = $(this).find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+            if (finalTop < 78 && $('#toolbar-administration').length) {
+                finalTop = 88;
+            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+                finalTop = 10;
+            }
             var popWidth = $(this).find('article.popup').width();
             var finalLeft = offset.left - popWidth - 10;
             $(this).find('article.popup')
@@ -179,7 +195,8 @@
     });
 
 
-})(jQuery);
+})
+(jQuery);
 
 
 function reset_form_elements() {
