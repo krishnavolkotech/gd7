@@ -132,7 +132,7 @@ class Deployedreleasecreateform extends FormBase {
      // '#date_date_format' => 'german_date',.
       '#required' => TRUE,
       '#maxlength' => '20',
-      '#attributes' => array("class" => "deployed_date"),
+      '#attributes' => array("class" => ["deployed_date"]),
       '#weight' => -3,
 
     );

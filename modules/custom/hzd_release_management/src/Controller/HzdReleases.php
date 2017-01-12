@@ -291,9 +291,9 @@ class HzdReleases extends ControllerBase
             $link = Link::fromTextAndUrl(t('Home'), $url);
             
             if ($group->label) {
-                $url = Url::fromUserInput('/group/' . $group_id);
-                $link = \Drupal::l($group->label, $url);
-                $breadcrumb[] = $link;
+//                $url = Url::fromUserInput('/group/' . $group_id);
+//                $link = \Drupal::l($group->label, $url);
+//                $breadcrumb[] = $link;
             }
             $breadcrumb[] = t('Deployed Releases');
             $output['#breadcrumb'] = $breadcrumb;

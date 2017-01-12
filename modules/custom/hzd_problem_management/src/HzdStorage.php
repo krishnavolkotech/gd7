@@ -426,8 +426,7 @@ class HzdStorage
      * While back from search same value need to be shown to user.
      * values are stored in session for showing the same results while back to search.
      */
-    static public function problems_default_display(
-        $string = NULL, $limit = NULL) {
+    static public function problems_default_display($string = NULL, $limit = NULL) {
         $group_id = get_group_id();
         $filter_parameter = self::get_problem_filters();
         $filterData = \Drupal::request()->query;
