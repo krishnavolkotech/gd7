@@ -61,6 +61,7 @@ class HzdReleases extends ControllerBase
 
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
+        $output['#cache'] = ['tags' => ['node_list']];
     return $output;
   }
     
@@ -133,6 +134,7 @@ class HzdReleases extends ControllerBase
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
         $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
+        $output['#cache'] = ['tags' => ['node_list']];
         return $output;
     }
     
@@ -161,6 +163,7 @@ class HzdReleases extends ControllerBase
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
         $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
+        $output['#cache'] = ['tags' => ['node_list']];
         return $output;
     }
     
@@ -184,6 +187,7 @@ class HzdReleases extends ControllerBase
         //  dpm($_SESSION);
         $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable();
 //    $output[] = array('#markup' => '</div>');
+        $output['#cache'] = ['tags' => ['node_list']];
         return $output;
     }
     
@@ -247,6 +251,7 @@ class HzdReleases extends ControllerBase
                 $string = t('Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)');
                 $output .= "<h4><a target = '_blank' href='$query'>" . t("Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
                 $build['#markup'] = $output;
+                $build['#cache'] = ['tags' => ['node_list']];
                 return $build;
             }
         }
@@ -333,6 +338,7 @@ class HzdReleases extends ControllerBase
         } else {
             $output['#markup'] = t('You are not authorized to access this page.');
         }
+        $output['#cache'] = ['tags' => ['node_list']];
         return $output;
     }
     
