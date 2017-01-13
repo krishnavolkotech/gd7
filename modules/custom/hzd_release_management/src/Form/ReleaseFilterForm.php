@@ -216,16 +216,14 @@ class ReleaseFilterForm extends FormBase
             ),
         );
         
-        $service = $form_state->getValue('services');
+        $service = $filter_value['services'];
         $options = array('<' . $this->t('Release') . '>');
-        /*if ($service) {
-        $release = \Drupal::request()->get('releases');
-        $def_releases = get_release($type, $service);
-        $options = $def_releases['releases'];
+        if ($service) {
+            $def_releases = get_release($type, $service);
+            $options = $def_releases['releases'];
+        } else {
+//            $options = array('Release');
         }
-        else {
-        $options = array('Release');
-        }*/
 //pr($options);exit;
         $form['r_type'] = array(
             '#type' => 'hidden',

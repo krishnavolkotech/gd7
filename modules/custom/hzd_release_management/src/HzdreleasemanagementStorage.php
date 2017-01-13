@@ -1104,8 +1104,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $release_type = get_release_type($type);
         $release_node_ids = self::hzd_release_query($release_type, $gid);
-        
+        $rows = [];
         foreach ($release_node_ids as $release_node_id) {
+            $link = null;
             $releases = \Drupal\node\Entity\Node::load($release_node_id);
             if ($releases->field_documentation_link->value) {
                 $link = self::hzd_get_release_documentation_link(
@@ -1249,16 +1250,22 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             $release_node_ids->condition('field_relese_services', $filter_value['services'], '=');
         }
         if ($filter_value['releases']) {
-            $release_node_ids->condition('entiy_id', $filter_value['releases'], '=');
+            $release_node_ids->condition('nid', $filter_value['releases'], '=');
         }
         if (isset($filter_value['filter_startdate']) && $filter_value['filter_enddate'] == '') {
             $release_node_ids->condition('field_date', $filter_value['filter_startdate'], '>');
             // $filter_where .= " and field_date_value > ". $start_date;.
         }
-        if ($filter_value['filter_startdate'] && $filter_value['filter_enddate']) {
-            $release_node_ids->condition('field_date',
+        if ($filter_value['filter_startdate']) {
+            $startDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_startdate'])->getTimestamp();
+            $release_node_ids->condition('field_date',$startDate,'>=');
+        }
+        if ($filter_value['filter_enddate']) {
+            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_enddate'])->getTimestamp() + 86399;
+            $release_node_ids->condition('field_date',$endDate,'<=');
+            /*$release_node_ids->condition('field_date',
                 array($filter_value['filter_startdate'],
-                    $filter_value['filter_enddate']), 'BETWEEN');
+                    $filter_value['filter_enddate']), 'BETWEEN');*/
         }
         
         $release_node_ids->sort('field_date', 'DESC');
