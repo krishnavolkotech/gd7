@@ -61,11 +61,12 @@
          $(this).next('.downtime-hover').css('display', 'none');
          }*/
 
-        $(".frontpage-downtime-block ul.incidents-home-block>li").hover(function () {
-            var offset = $(this).offset();
-            var popHeight = $(this).find('article.popup').height();
+        $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
+            var ele = $(this).parent('li');
+            var offset = ele.offset();
+            var popHeight = ele.find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            var popWidth = $(this).find('article.popup').width();
+            var popWidth = ele.find('article.popup').width();
             var finalLeft = offset.left - popWidth - 15;
             if (finalTop < 78 && $('#toolbar-administration').length) {
                 finalTop = 88;
@@ -74,45 +75,47 @@
             }
             if (finalLeft < 0) {
                 var newWidth = popWidth * 3 / 4;
-                $(this).find('article.popup').width(newWidth);
+                ele.find('article.popup').width(newWidth);
                 finalLeft = offset.left - newWidth - 15;
             }
-            $(this).find('article.popup')
+            ele.find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
                 .css('left', finalLeft)
                 .show();
         }, function () {
-            $(this).find('article.popup')
+            var ele = $(this).parent('li');
+            ele.find('article.popup')
                 .removeAttr('position')
                 .removeAttr('top')
                 .hide();
         });
 
-        $(".frontpage-downtime-block .maintenance-list ul li").hover(function () {
-            var offset = $(this).offset();
-            var popHeight = $(this).find('article.popup').height();
+        $(".frontpage-downtime-block .maintenance-list ul li .service-tooltip").hover(function () {
+            var ele = $(this).parent('li');
+            var offset = ele.offset();
+            var popHeight = ele.find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+            var popWidth = ele.find('article.popup').width();
+            var finalLeft = offset.left - popWidth - 15;
             if (finalTop < 78 && $('#toolbar-administration').length) {
                 finalTop = 88;
             } else if (finalTop < 0 && !$('#toolbar-administration').length) {
                 finalTop = 10;
             }
-            var popWidth = $(this).find('article.popup').width();
-            var finalLeft = offset.left - popWidth - 10;
-
             if (finalLeft < 0) {
                 var newWidth = popWidth * 3 / 4;
-                $(this).find('article.popup').width(newWidth);
-                finalLeft = offset.left - newWidth - 10;
+                ele.find('article.popup').width(newWidth);
+                finalLeft = offset.left - newWidth - 15;
             }
-            $(this).find('article.popup')
+            ele.find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
                 .css('left', finalLeft)
                 .show();
         }, function () {
-            $(this).find('article.popup')
+            var ele = $(this).parent('li');
+            ele.find('article.popup')
                 .removeAttr('position')
                 .removeAttr('top')
                 .hide();
