@@ -183,16 +183,13 @@ table tr th{
 }
 #released_results_wrapper table.view-deployed-releases tr td{
   white-space:pre;
+  vertical-align:top;
   /*text-align: left;
   word-wrap: normal;
   padding: 5px;
   vertical-align:top;*/
 }
-#released_results_wrapper table.view-deployed-releases tr td:first-child{
-/* min-width:150px;
-  word-wrap:normal;
-  width:auto;*/
-}
+
 .curr_incidents_form + .reset_form {
  /* float: left !important;
   margin: 15px 0 20px 0 !important;
