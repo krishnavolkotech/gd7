@@ -55,13 +55,13 @@ class GroupActions extends FieldPluginBase {
     $link = '';
     if($group->getMember(\Drupal::currentUser())){
       $url = Url::fromRoute('entity.group_content.group_membership.leave_form',['group'=>$group->id()]);
-      $link = \Drupal::service('link_generator')->generate('Leave Group', $url);
+      $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);
     }elseif($group->bundle() == 'open'){
       $url = Url::fromRoute('entity.group_content.group_membership.join_form',['group'=>$group->id()]);
-      $link = \Drupal::service('link_generator')->generate('Join Group', $url);
+      $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
     }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
       $url = Url::fromRoute('entity.group_content.group_membership.request_membership_form',['group'=>$group->id()]);
-      $link = \Drupal::service('link_generator')->generate('Request Membership', $url);
+      $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
     }elseif(\Drupal::currentUser()->id() == 1){
       $link == 'admin';
     }

@@ -344,7 +344,7 @@ display:
           group_type: group
           admin_label: ''
           label: Administrator
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: '{{ label }}'
@@ -409,7 +409,7 @@ display:
           group_type: group
           admin_label: ''
           label: 'Group Post Count'
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -724,7 +724,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: all-groups
+      path: groups
       menu:
         enabled: true
         expanded: false

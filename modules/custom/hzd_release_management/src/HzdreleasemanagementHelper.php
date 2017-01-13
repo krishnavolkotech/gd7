@@ -719,7 +719,7 @@ class HzdreleasemanagementHelper {
       '#empty' => t('No Data Created Yet'),
       '#attributes' => array(
         'id' => 'current_deploysortable',
-        'class' => 'tablesorter',
+        'class' => 'tablesorter releases deployed_overview',
       ),
     );
  

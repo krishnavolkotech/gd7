@@ -117,10 +117,11 @@ class IncidentsBlock extends BlockBase {
         }
         if ($groupContent) {
 //          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
+            $hoverIconHtml  = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
           $hover_markup = MaintenanceBlock::get_hover_markup($incident);
           $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
           $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
-          $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hover_markup);
+          $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
         }
 //        foreach ($serviceid as $ids) {
 //          // Loops for all services

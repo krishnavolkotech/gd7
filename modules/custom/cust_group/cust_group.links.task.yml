@@ -3,3 +3,13 @@ cust_group.path_alias_update: #give it the same name as the route to make it cle
   route_name: cust_group.path_alias_update
   base_route: path.admin_overview
   weight: 10
+cust_group.all_groups:
+  title: 'All Groups'
+  route_name: view.all_groups.page_1
+  base_route: view.all_groups.page_1
+  weight: 10
+cust_group.my_groups:
+  title: 'My Groups'
+  route_name: view.my_groups.page_1
+  base_route: view.all_groups.page_1
+  weight: 10
