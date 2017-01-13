@@ -85,8 +85,8 @@
 	      }
 	    });
 	    $('.filter_submit').hide();  
-	    $('.search_string').blur(text_textfield);
-	    $('.search_string').focus(function() { $(this).val('') });  
+	    // $('.search_string').blur(text_textfield);
+	    // $('.search_string').focus(function() { $(this).val('') });
 
 //	    $('#problem_search_results_wrapper #pagination > nav > ul > li > a').click(function() {
 //	      var ele = $(this);
