@@ -1719,7 +1719,7 @@ section .form-group .view-content .item-list ul li{
   width:100%;
   margin-right:5px;
   position:relative;
-  background:url("../images/red-list-arrow.png") no-repeat scroll left 5px;
+  background:url("../images/red-list-arrow.png") no-repeat scroll left 6px;
 }
 .block-maintenance-block ul li .service-tooltip,
 .block-incidents-block ul > li .service-tooltip{
@@ -1890,9 +1890,12 @@ aside .view-release-list ul li{
   color:#04425f;
   margin-top:15px;
 }
-aside .view-problems-front-page ul li,
-aside .view-release-list ul li{
+aside .view-problems-front-page ul li{
   background:url(../images/grey-list-arrow.png)left 6px no-repeat !important;
+  padding-bottom:3px;
+}
+aside .view-release-list ul li{
+  background:url(../images/grey-list-arrow.png)left 9px no-repeat !important;
   padding-bottom:3px;
 }
 section .form-group .more-link a{
