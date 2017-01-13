@@ -145,9 +145,9 @@ display:
           group_type: group
           admin_label: ''
           label: ''
-          exclude: true
+          exclude: false
           alter:
-            alter_text: false
+            alter_text: true
             text: '{{ field_date }} {{ title }}'
             make_link: false
             path: ''
@@ -207,7 +207,7 @@ display:
           group_type: group
           admin_label: ''
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: true
             text: '{{ field_date }} {{ title }}'
