@@ -308,7 +308,7 @@ function get_environment_options($state = 1) {
  */
 function send_release_notifications($entity) {
     $nid = $entity->id();
-    $service_field = $entity->get('field_release_service')->getValue();
+    $service_field = $entity->get('field_relese_services')->getValue();
     $service_id = $service_field[0]['target_id'];
     
     // Get immediate notifications user mails.
