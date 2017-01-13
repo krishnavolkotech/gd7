@@ -336,7 +336,7 @@ display:
         fields: false
       use_more: true
       use_more_always: true
-      use_more_text: 'All News'
+      use_more_text: 'Alle aktuellen Meldungen'
       fields:
         title:
           id: title
