@@ -1719,7 +1719,7 @@ section .form-group .view-content .item-list ul li{
   width:100%;
   margin-right:5px;
   position:relative;
-  background:url("../images/red-list-arrow.png") no-repeat scroll left 6px;
+  background:url("../images/red-list-arrow.png") no-repeat scroll left 5px;
 }
 .block-maintenance-block ul li .service-tooltip,
 .block-incidents-block ul > li .service-tooltip{
