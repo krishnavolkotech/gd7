@@ -128,7 +128,8 @@ class MaintenanceBlock extends BlockBase
 //                                $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                            $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hover_markup);
+                            $hoverIconHtml  = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
+                            $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hoverIconHtml . $hover_markup);
                         }
                     }
                 }
