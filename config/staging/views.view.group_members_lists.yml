@@ -891,7 +891,7 @@ display:
     position: 2
     display_options:
       display_extenders: {  }
-      path: group/%/address
+      path: group/%group/address
       use_more: false
       defaults:
         use_more: false

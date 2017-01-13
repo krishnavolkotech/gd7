@@ -88,7 +88,7 @@ class RouteSubscriber extends RouteSubscriberBase {
   function returnGroupViews() {
     return [
       'view.group_members.page_1',
-      'view.group_members_lists.page_1',
+//      'view.group_members_lists.page_1',
       'view.group_content.page_1',
 //      'view.group_faqs.page_1',
       'view.rz_schnellinfo.page_1',
