@@ -9,6 +9,7 @@ use Drupal\group\Entity\GroupContent;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\node\Entity\Node;
 use Drupal\user\PrivateTempStoreFactory;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 if (!defined('DISPLAY_LIMIT')) {
     define('DISPLAY_LIMIT', 20);
@@ -494,6 +495,11 @@ class HzdStorage
                         'query' => $exposedFilterData,
                     ]
                 );
+            }
+            // redirect to the node view if a specified SDCallID is searched for
+            if(is_numeric($filterData->get('string',null)) && count($result) == 1){
+                $response = new RedirectResponse($groupContentEntity->toUrl()->toString());
+                $response->send();
             }
 
             

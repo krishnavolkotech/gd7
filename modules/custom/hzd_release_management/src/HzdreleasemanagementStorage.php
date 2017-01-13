@@ -939,7 +939,7 @@ class HzdreleasemanagementStorage
                 
                 $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
                 
-                $elements[] = $earlywarnings_cell;
+                $elements[] = ['data'=>$earlywarnings_cell,'class'=>'earlywarnings-cell'];
             }
             
             $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
@@ -1013,7 +1013,7 @@ class HzdreleasemanagementStorage
             '#theme' => 'table',
             '#rows' => $rows,
             '#header' => $header,
-            '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+            '#attributes' => ['id' => "sortable", 'class' => "tablesorter releases deployed"],
             '#empty' => t('No data to be displayed'),
         );
         
@@ -1172,7 +1172,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 '#theme' => 'table',
                 '#rows' => $rows,
                 '#header' => $header,
-                '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+                '#attributes' => ['id' => "sortable", 'class' => ["tablesorter",'releases',$type]],
                 '#empty' => t('No records found'),
             );
             

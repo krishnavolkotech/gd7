@@ -233,7 +233,7 @@ class DeployedReleasesOverviewiew extends FormBase {
       }
       if (!empty($release_title_sort)) {
         foreach ($release_title_sort as $val) {
-          $releases_table .= "<div>" . $val . "</div>";
+          $releases_table .= "<div class='deployed-releases-data'>" . $val . "</div>";
         }
         unset($release_title_sort);
       }
