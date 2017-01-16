@@ -70,7 +70,7 @@ class HzdreleasemanagementHelper {
    */
   static public function validate_releases_csv(&$values) {
 
-    if ($values['datum']) {
+    if (isset($values['datum']) && $values['datum']) {
       $replace = array('/' => '.', '-' => '.');
       $formatted_date = strtr($values['datum'], $replace);
       if ($formatted_date) {
@@ -380,7 +380,7 @@ class HzdreleasemanagementHelper {
    *
    * @return count and release versions
    */
-  public function get_release_version_count($releasess, $arr) {
+  public static function get_release_version_count($releasess, $arr) {
 
     // Get the count and upto present release versions.
     $count_search = array_search($releasess, $arr);
@@ -412,7 +412,7 @@ class HzdreleasemanagementHelper {
    *
    * @return nothing
    */
-  public function display_doc_folders($args, $values) {
+  public static function display_doc_folders($args, $values) {
     $get_product = $args['get_product'];
     $count = $args['count'];
     $arr = $args['arr'];
@@ -421,7 +421,7 @@ class HzdreleasemanagementHelper {
     $product = $args['product'];
     $major_file = scandir($dir);
     $i = 1;
-
+      $output = null;
     while ($i <= $count) {
       $true = FALSE;
       $search_folder = array_search($values, $major_file);
@@ -467,7 +467,7 @@ class HzdreleasemanagementHelper {
   /**
    * Function to display folder names in release documentation table.
    */
-  public function display_folder_name($values) {
+  public static function display_folder_name($values) {
     switch ($values) {
       case "afb":
         return "Abnahme- und Freigabeberichte";
