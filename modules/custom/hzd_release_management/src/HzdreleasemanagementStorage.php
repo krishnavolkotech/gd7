@@ -82,14 +82,18 @@ class HzdreleasemanagementStorage
         }
         $count = 0;
         while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+            $explodedData = explode(',',$data[0]);
+//            pr($explodedData);exit;
             if ($count == 0) {
                 $heading = $data;
             } else {
-                foreach ($data as $key => $value) {
+                foreach ($explodedData as $key => $value) {
                     // droy: removed utf8_encode since it gives problems with data which is already utf8
                     // $values[$header_values[$key]] = utf8_encode($data[$key]);.
-                    $values[$header_values[$key]] = $data[$key];
+//                    pr($value);
+                    $values[$header_values[$key]] = $explodedData[$key];
                 }
+//                pr($values);exit;
                 // $values['type'] = SafeMarkup::checkPlain($type);
                 $values['type'] = $type;
                 if ($values['title']) {
