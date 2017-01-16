@@ -38,11 +38,11 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
    // $config = $this->config('release_management.settings');
   global $base_url;
   $form['#attached']['library'] = array('hzd_release_management/hzd_release_management'); 
-
+    global $base_root;
   $form['import_path_csv_released'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to import csv file (Released)'),
-    '#description' => t('/srv/www/betriebsportal/files/import/released.csv'),
+    '#description' => t('Path relative to @path',['@path'=>DRUPAL_ROOT.'/']),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_released'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
@@ -52,7 +52,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
   $form['import_path_csv_locked'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to import csv file (Locked)'),
-    '#description' => t('/srv/www/betriebsportal/files/import/locked.csv'),
+      '#description' => t('Path relative to @path',['@path'=>DRUPAL_ROOT.'/']),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_locked'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
@@ -62,7 +62,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
   $form['import_path_csv_progress'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to import csv file (In Progress)'),
-    '#description' => t('/srv/www/betriebsportal/files/import/progress.csv'),
+      '#description' => t('Path relative to @path',['@path'=>DRUPAL_ROOT.'/']),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_progress'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
@@ -83,7 +83,7 @@ class ReleasemanagementsettingsForm extends ConfigFormBase {
   $form['import_path_csv_ex_eoss'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to Ex-EOSS csv file (Released Exeoss)'),
-    '#description' => t('/srv/www/betriebsportal/files/import/ex_eoss.csv'),
+      '#description' => t('Path relative to @path',['@path'=>DRUPAL_ROOT.'/']),
     '#default_value' => \Drupal::config('hzd_release_management.settings')->get('import_path_csv_ex_eoss'),
     '#required' => TRUE,
     '#prefix' => '<div class = "url_alias_textfield">',
