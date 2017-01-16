@@ -209,7 +209,7 @@ class HzdReleases extends ControllerBase
             $arr = $doc_values['arr'];
             $files = $doc_values['files'];
             
-            $major_directory = $release_product . "_" . max($arr);
+//            $major_directory = $release_product . "_" . max($arr);
             unset($files[0]);
             unset($files[1]);
             // Check the documentation link download or not. if not failed download link will display.
