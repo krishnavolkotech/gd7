@@ -62,11 +62,11 @@
          }*/
 
         $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
-            var ele = $(this).parent('li');
+            var ele = $(this);
             var offset = ele.offset();
-            var popHeight = ele.find('article.popup').height();
+            var popHeight = ele.parents('li').find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            var popWidth = ele.find('article.popup').width();
+            var popWidth = ele.parents('li').find('article.popup').width();
             var finalLeft = offset.left - popWidth - 15;
             if (finalTop < 78 && $('#toolbar-administration').length) {
                 finalTop = 88;
@@ -75,10 +75,10 @@
             }
             if (finalLeft < 0) {
                 var newWidth = popWidth * 3 / 4;
-                ele.find('article.popup').width(newWidth);
+                ele.parents('li').find('article.popup').width(newWidth);
                 finalLeft = offset.left - newWidth - 15;
             }
-            ele.find('article.popup')
+            ele.parents('li').find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
                 .css('left', finalLeft)
@@ -92,11 +92,11 @@
         });
 
         $(".frontpage-downtime-block .maintenance-list ul li .service-tooltip").hover(function () {
-            var ele = $(this).parent('li');
+            var ele = $(this);
             var offset = ele.offset();
-            var popHeight = ele.find('article.popup').height();
+            var popHeight = ele.parents('li').find('article.popup').height();
             var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            var popWidth = ele.find('article.popup').width();
+            var popWidth = ele.parents('li').find('article.popup').width();
             var finalLeft = offset.left - popWidth - 15;
             if (finalTop < 78 && $('#toolbar-administration').length) {
                 finalTop = 88;
@@ -105,10 +105,10 @@
             }
             if (finalLeft < 0) {
                 var newWidth = popWidth * 3 / 4;
-                ele.find('article.popup').width(newWidth);
+                ele.parents('li').find('article.popup').width(newWidth);
                 finalLeft = offset.left - newWidth - 15;
             }
-            ele.find('article.popup')
+            ele.parents('li').find('article.popup')
                 .css('position', 'fixed')
                 .css('top', finalTop)
                 .css('left', finalLeft)
