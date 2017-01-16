@@ -1725,6 +1725,7 @@ section .form-group .view-content .item-list ul li{
 .block-incidents-block ul > li .service-tooltip{
   width:auto;
   display:inline-block;
+  cursor: pointer;
 }
 .block-incidents-block ul li br{
   display:none;
