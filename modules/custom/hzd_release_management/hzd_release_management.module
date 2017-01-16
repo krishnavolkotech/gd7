@@ -446,7 +446,7 @@ function hzd_release_management_node_insert($entity) {
     $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
     if (!isset($dont_send_notification) || $dont_send_notification != 1) {
         if ($entity->getType() == 'deployed_releases') {
-            send_release_notifications($entity);
+//            send_release_notifications($entity);
         }
         if ($entity->getType() == 'release') {
             send_release_notifications($entity);
@@ -495,7 +495,7 @@ function hzd_release_management_node_update($entity) {
     
     if (!isset($dont_send_notification) || $dont_send_notification != 1) {
         if ($entity->getType() == 'deployed_releases') {
-            send_release_notifications($entity);
+//            send_release_notifications($entity);
         }
         if ($entity->getType() == 'release') {
             send_release_notifications($entity);
