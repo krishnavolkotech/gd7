@@ -1891,8 +1891,12 @@ aside .view-release-list ul li{
   color:#04425f;
   margin-top:15px;
 }
+aside section .form-group .view-footer a.all-releases,
+aside section .form-group .view-footer a.all-problems{
+  margin-top:0 !important;	
+}
 aside .view-problems-front-page ul li{
-  background:url(../images/grey-list-arrow.png)left 6px no-repeat !important;
+  background:url(../images/grey-list-arrow.png)left 9px no-repeat !important;
   padding-bottom:3px;
 }
 aside .view-release-list ul li{
@@ -1944,7 +1948,9 @@ aside section .form-group .item-list ul li .field-content{
   font-size:14px;
   line-height:20px;
   padding: 3px 3px 3px 0;
+  float:left;
 }
+
 section .form-group .views-field-field-news-date{
  float:left;
  width:100%;
