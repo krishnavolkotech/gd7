@@ -7,14 +7,10 @@ dependencies:
     - field.storage.node.field_other_services
     - field.storage.node.field_related_transfer_number
     - group.content_type.moderate-group_node-quickinfo
-    - user.role.administrator
-    - user.role.authenticated
-    - user.role.site_administrator
   module:
     - group
     - node
     - options
-    - user
 id: rz_schnellinfo
 label: 'Rz Schnellinfo'
 module: views
@@ -31,12 +27,8 @@ display:
     position: 0
     display_options:
       access:
-        type: role
-        options:
-          role:
-            authenticated: authenticated
-            administrator: administrator
-            site_administrator: site_administrator
+        type: none
+        options: {  }
       cache:
         type: tag
         options: {  }
@@ -594,10 +586,23 @@ display:
           entity_type: node
           entity_field: created
           plugin_id: date
-      title: 'Table of Draft RZ Accelerators'
+      title: 'Table of Published RZ Accelerators'
       header: {  }
       footer: {  }
-      empty: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: 'No data created.'
+            format: basic_html
+          plugin_id: text
       relationships:
         gc__node:
           id: gc__node
@@ -633,7 +638,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -645,15 +649,155 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%/rz-schnellinfos/entwuerfe
+      path: group/%group/rz-schnellinfos/entwuerfe
+      rendering_language: de
+      title: 'Table of Draft RZ Accelerators'
+      defaults:
+        title: false
+        filters: false
+        filter_groups: false
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          value:
+            moderate-group_node-quickinfo: moderate-group_node-quickinfo
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+        label:
+          id: label
+          table: group_content_field_data
+          field: label
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: label_op
+            label: Title
+            description: ''
+            use_operator: false
+            operator: label_op
+            identifier: label
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: label
+          plugin_id: string
+        field_related_transfer_number_value:
+          id: field_related_transfer_number_value
+          table: node__field_related_transfer_number
+          field: field_related_transfer_number_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_related_transfer_number_value_op
+            label: 'SW Transfer No'
+            description: ''
+            use_operator: false
+            operator: field_related_transfer_number_value_op
+            identifier: field_related_transfer_number_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: string
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
     cache_metadata:
       max-age: 0
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -665,7 +809,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%/rz-schnellinfos
+      path: group/%group/rz-schnellinfos
       filters:
         type:
           id: type
@@ -812,7 +956,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
