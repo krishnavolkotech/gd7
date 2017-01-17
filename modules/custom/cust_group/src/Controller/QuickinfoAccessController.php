@@ -34,7 +34,7 @@ class QuickinfoAccessController {
    *   Run access checks for this account.
    */
 
-    static public function CheckQuickinfoviewAccess(AccountInterface $account) {
+    static public function CheckQuickinfoviewAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
 //        $group = \Drupal::routeMatch()->getParameter('group');
 //        if (is_object($group)) {
 //            $group_id = $group->id();
@@ -42,10 +42,10 @@ class QuickinfoAccessController {
 //        else {
 //            $group_id = $group;
 //        }
-        $current_path = \Drupal::service('path.current')->getPath();
+        /*$current_path = \Drupal::service('path.current')->getPath();
         $path_args = explode('/', $current_path);
-        $group_id = $path_args['2'];
-
+        $group_id = $path_args['2'];*/
+        $group_id = $route_match->getParameter('group');
         $allowed_group = array(QUICKINFO, RELEASE_MANAGEMENT);
         
         if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
