@@ -57,7 +57,7 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
             ],
             'quickinfo' => [
                 'route' => 'view.rz_schnellinfo.page_2',
-                'params' => ['arg_0' => QUICKINFO],
+                'params' => ['group' => RELEASE_MANAGEMENT],
                 'title' => t('RZ-Schnellinfo'),
             ]
         ];

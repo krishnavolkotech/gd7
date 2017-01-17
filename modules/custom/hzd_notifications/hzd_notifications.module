@@ -231,7 +231,7 @@ function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
  * implements custom form submit
  */
 function hzd_notifications_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-  dpm($form_state->getValue('type'), $form_state->getValue('notification_checkbox'));
+//  dpm($form_state->getValue('type'), $form_state->getValue('notification_checkbox'));
   \Drupal::configFactory()->getEditable('node.settings')
       ->set('notification_checkbox_' . $form_state->getValue('type'), $form_state->getValue('notification_checkbox'))
       ->save();
