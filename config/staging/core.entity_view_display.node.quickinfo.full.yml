@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - core.entity_view_mode.node.full
     - field.field.node.quickinfo.comment
     - field.field.node.quickinfo.field_additional_email_recipient
@@ -49,18 +50,6 @@ content:
   field_additional_email_recipient:
     label: above
     weight: 19
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-  field_author_name:
-    label: inline
-    weight: 0
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-  field_author_state:
-    label: inline
-    weight: 1
     type: basic_string
     settings: {  }
     third_party_settings: {  }
@@ -175,5 +164,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_author_name: true
+  field_author_state: true
   field_unique_id: true
   langcode: true
