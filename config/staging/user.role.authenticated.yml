@@ -58,3 +58,4 @@ permissions:
   48: 'view own unpublished content'
   49: 'edit any deployed_releases content'
   50: 'edit own deployed_releases content'
+  51: 'view any unpublished quickinfo content'
