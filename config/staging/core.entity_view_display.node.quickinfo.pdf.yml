@@ -1,6 +1,6 @@
 uuid: 263d7da4-bf98-411e-8a24-9dc7c623aa12
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - core.entity_view_mode.node.pdf
@@ -142,7 +142,7 @@ content:
   field_unique_id:
     type: number_unformatted
     weight: 19
-    label: above
+    label: inline
     settings: {  }
     third_party_settings: {  }
   links:

@@ -27,8 +27,12 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            authenticated: authenticated
+            administrator: administrator
+            site_administrator: site_administrator
       cache:
         type: tag
         options: {  }
@@ -638,6 +642,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -798,6 +803,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -956,6 +962,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
