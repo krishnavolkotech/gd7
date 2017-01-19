@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     {{ entity_print_css }}
-    <link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>
+
     <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
     {% if quickinfo %}
     <style>
@@ -36,9 +36,8 @@
 </head>
 <body>
 {% if quickinfo %}
-  <div class="pdf-quickinfo">
-    <div id="header">
-           <table border="1" width="100%" cellspacing="0" cellpadding="0">
+    <div id="header" class="pdf-quickinfo">
+        <table border="1" width="100%" cellspacing="0" cellpadding="0">
             {% if node.isPublished() %}
                 <tr>
                     <td rowspan="3">
@@ -79,13 +78,11 @@
                 </tr>
             {% endif %}
         </table>
-      </div>
     </div>
-    <div class="pdf-content">
+        <div class="pdf-content">
             <span class="pdf-title">{{ pdftitle }}</span>
             {{ content }}
         </div>
-       
 {% else %}
 
     <div class="pdf-wrapper">

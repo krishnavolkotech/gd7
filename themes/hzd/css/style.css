@@ -1166,7 +1166,7 @@ table.view-deployed-releases {
   border-bottom: none !important;
 }
 article .quickedit-field {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   width: 100%;
   float: left;
 }
@@ -2331,6 +2331,19 @@ form.node-downtimes-edit-form > .form-group{
   width:100%;
   float:left;
 }
+article.quickinfo .unpublished-quickinfo-pdf-preview,
+article.quickinfo .unpublished-quickinfo-edit-link{
+  width:100%;
+  float:left;
+}
+article.quickinfo{
+  background:transparent !important;
+  padding:0;
+  width:100%;
+  float:left;
+  margin:10px 0 20px 0;
+  text-align:left;
+}
 article.downtimes .downtime-view-wrapper{
   /*border:1px solid #aaaaaa;*/
   background:#f5f7fa;
@@ -2339,6 +2352,17 @@ article.downtimes .downtime-view-wrapper{
   float:left;
   margin:10px 0 20px 0;
   text-align:left;
+}
+article.quickinfo .field,
+article.quickinfo .field .field--label{
+  width:100%;
+  float:left;
+} 
+article.quickinfo .field .field--item,
+article.quickinfo .field .field--items{
+  width:97%;
+  float:left;
+  margin:0 0 3px 2%;
 }
 article.downtimes .Incident .downtimes_content{
   width:75% !important;
@@ -2352,13 +2376,23 @@ article.downtimes .changed-group .reason{
   width:100%;
   float:left;
 }
+article.quickinfo table{
+  width:100%;
+  margin:10px 0;
+}
+article.quickinfo h2{
+  width:100%;
+  float:left;
+  font-size:20px !important;
+  margin:10px 0 !important;
+  color: #04425f;
+}
 article.downtimes .downtime-view-history{
   width:100%;
   float:left;
   font-size:20px;
   margin-bottom:15px;
-  /*font-weight:bold;*/
-  color: #04425f
+  color: #04425f;
 }
 article.downtimes .changed-group .reason p{
   width:100%;
