@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment_no_subject.default
     - field.field.node.early_warnings.body
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
@@ -38,7 +39,7 @@ content:
   comment_no_subject:
     type: comment_default
     weight: 6
-    label: above
+    label: visually_hidden
     settings:
       pager_id: 0
       view_mode: default
