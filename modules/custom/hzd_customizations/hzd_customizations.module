@@ -136,9 +136,10 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
 //    kint($entity->get('upload'));
         foreach ($fields as $field_name => $definition) {
-//        kint($field_name,$entity->get($field_name)->value);
+//            $definition->setDefaultValue('Keine');
+//        kint($definition);
 //        kint($entity->get($field_name)->value);
-            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id'])) {
+            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
 //                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
 //                    kint($definition->get('fieldStorage'));
 //                }
