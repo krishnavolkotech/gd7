@@ -94,7 +94,7 @@ function hzd_preprocess_entity_print(&$vars,$hook,$x) {
             $vars['quickinfo'] = true;
             $node = $vars['content'][0]['#node'];
             $vars['node'] = $node;
-            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
         $vars['pdftitle'] = $entity->label();
@@ -104,7 +104,7 @@ function hzd_preprocess_entity_print(&$vars,$hook,$x) {
         if ($node->getType() == 'quickinfo') {
             $vars['quickinfo'] = true;
             $vars['node'] = $node;
-            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
     }
@@ -149,6 +149,11 @@ function hzd_preprocess_node(&$variables) {
         $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
         $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
         $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
+    
+        $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
+        $pdfLink['link'] = ['#type' => 'link',
+            '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $variables['node']->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => t('Pdf Preview')];
+        $variables['pdf_priview'] = $pdfLink;
         
         //$url = Url::fromUserInput('/entityprint/node/' . $nid);
         
