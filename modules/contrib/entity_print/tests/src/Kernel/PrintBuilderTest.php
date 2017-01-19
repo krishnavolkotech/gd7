@@ -17,7 +17,14 @@ class PrintBuilderTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system', 'user', 'node', 'filter', 'entity_print', 'entity_print_test'];
+  public static $modules = [
+    'system',
+    'user',
+    'node',
+    'filter',
+    'entity_print',
+    'entity_print_test',
+  ];
 
   /**
    * {@inheritdoc}
@@ -34,6 +41,8 @@ class PrintBuilderTest extends KernelTestBase {
   }
 
   /**
+   * Test the correct filename is generated.
+   *
    * @covers ::deliverPrintable
    * @dataProvider outputtedFileDataProvider
    */
@@ -77,6 +86,8 @@ class PrintBuilderTest extends KernelTestBase {
   }
 
   /**
+   * Test that you must pass at least 1 entity.
+   *
    * @covers ::deliverPrintable
    * @expectedException \InvalidArgumentException
    * @expectedExceptionMessage You must pass at least 1 entity
@@ -113,6 +124,26 @@ class PrintBuilderTest extends KernelTestBase {
     // Test that CSS was added from hook_entity_print_css(). See the
     // entity_print_test module for the implementation.
     $this->assertContains('entityprint-module.css', $html);
+  }
+
+  /**
+   * Test that a file blob is successfully saved.
+   */
+  public function testFileSaved() {
+    $builder = $this->container->get('entity_print.print_builder');
+    $print_engine = $this->container->get('plugin.manager.entity_print.print_engine')->createInstance('testprintengine');
+    $node = $this->createNode([]);
+
+    // Print builder generates a filename for us.
+    $uri = $builder->savePrintable([$node], $print_engine);
+    $this->assertRegExp('#public://(.*)\.pdf#', $uri);
+
+    $custom_uri = 'public://' . $this->randomMachineName() . 'pdf';
+    $uri = $builder->savePrintable([$node], $print_engine, $custom_uri);
+    $this->assertEquals($custom_uri, $uri);
+
+    // Test the file contents.
+    $this->assertEquals('Using testprintengine', file_get_contents($uri));
   }
 
 }
