@@ -17,13 +17,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('contact.site_page')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::ContactformTitle");
     }
-    if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
-      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess");
-    }
+    /*if ($route = $collection->get('view.rz_schnellinfo.page_2')) {
+//      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewAccess");
+    }*/
 
-    if ($route = $collection->get('view.rz_schnellinfo.page_1')) {
+    /*if ($route = $collection->get('view.rz_schnellinfo.page_1')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfoviewonlyAccess");
-    }
+    }*/
 
     if ($route = $collection->get('entity.node.canonical')) {
 //      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodeviewAccess");
@@ -66,10 +66,10 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
     foreach ($collection as $key => $route) {
       if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical', 'entity.group_content.group_membership.request_membership_form'])) {
-        if (in_array($key, $this->returnGroupViews())) {
+        /*if (in_array($key, $this->returnGroupViews())) {
           //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
-        }
+        }*/
         if (!$route->getRequirement('_custom_access'))
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
       }
@@ -87,12 +87,12 @@ class RouteSubscriber extends RouteSubscriberBase {
   //retuns the views related to groups created from UI
   function returnGroupViews() {
     return [
-      'view.group_members.page_1',
+//      'view.group_members.page_1',
 //      'view.group_members_lists.page_1',
-      'view.group_content.page_1',
+//      'view.group_content.page_1',
 //      'view.group_faqs.page_1',
-      'view.rz_schnellinfo.page_1',
-      'view.rz_schnellinfo.page_2',
+//      'view.rz_schnellinfo.page_1',
+//      'view.rz_schnellinfo.page_2',
     ];
   }
 

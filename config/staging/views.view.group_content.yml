@@ -423,7 +423,7 @@ display:
     position: 2
     display_options:
       display_extenders: {  }
-      path: group/%/content
+      path: group/%group/content
       use_more: false
       defaults:
         use_more: false

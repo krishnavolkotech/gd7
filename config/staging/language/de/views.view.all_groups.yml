@@ -1,0 +1,5 @@
+label: 'Alle Gruppen'
+display:
+  default:
+    display_options:
+      title: 'Alle Gruppen'

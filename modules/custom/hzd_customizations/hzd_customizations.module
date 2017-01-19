@@ -204,21 +204,31 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $uid = $user->id();
     $formatted_name = $user->getDisplayName();
     $raw_name = $user->getAccountName();
-//pr(array_keys($form['actions']));exit;
+
+//        pr($form['actions']['unpublish']);exit;
+//        pr(($form['actions']['submit']['#submit']));exit;
     if (($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form')) {
-        $form['actions']['publish']['#value'] = t('Publish');
+//        pr(array_keys($form['actions']));exit;
+//        $form['actions']['publish']['#value'] = t('Publish');
         $node = $form_state->getFormObject()->getEntity();
         $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
 //        pr($form_state->getFormObject()->getEntity());exit;
         if (empty($form['field_custom_title']['#default_value'])) {
             $form_state->setValue('field_custom_title', $node->label());
         }
+    
+        $form['actions']['unpublish']['#value'] = t('Save');
+        $form['actions']['publish'] = $form['actions']['submit'];
+        // If the "Publish" button is clicked, we want to update the status to "published".
+        $form['actions']['publish']['#published_status'] = TRUE;
+        $form['actions']['publish']['#value'] = t('Publish');
+        $form['actions']['publish']['#access'] = TRUE;
+        array_unshift($form['actions']['publish']['#submit'],'cust_quick_info_node_form_publish');
+        $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Sind Sie sicher zu veröffentlichen?")';
+        unset($form['actions']['unpublish']['#dropbutton']);
         
         
         $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
-        $form['actions']['unpublish']['#value'] = t('Save');
-        $form['actions']['publish']['#attributes'] = array('class' => array('node-quickinfo-publish'));
-        $form['actions']['submit']['#attributes'] = array('class' => array('node-quickinfo-publish'));
         $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
         $form['field_author_name']['widget'][0]['value']['#value'] = $user->getAccountName();
         $form['#title'] = (t("Report DC QuickInfo"));
@@ -233,8 +243,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         
         $form['attachments']['#title'] = t('2.13 File attachments');
         $form['attachments']['#prefix'] = '<div class="attachments quickinfo-attachments">';
-        $form['field_unique_id']['#prefix'] = '<div class="uniq_id">';
-        $form['field_unique_id']['#suffix'] = '</div>';
+        $form['field_unique_id']['#type'] = 'hidden';
+//        $form['field_unique_id']['#suffix'] = '</div>';
         
         $form['field_author_name'][0]['#default_value']['value'] = $raw_name;
         $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
@@ -251,37 +261,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         $query->condition('s.id', $user_state);
         $state = $query->execute()->fetchField();
         
-        $form['field_author_state']['#prefix'] = '<div class="uniq_id">';
-        $form['field_author_state']['#suffix'] = '</div>';
+        $form['field_author_state']['#default_value'] = $state;
+//        $form['field_author_state']['#suffix'] = '</div>';
         $form['attachments']['#collapsed'] = FALSE;
-        unset($form['menu']);
-        unset($form['path']);
-        unset($form['notifications']);
-        
-        $form['actions']['submit']['#value'] = t('Publish');
-        
-        
-        $form['actions']['submit']['#prefix'] = '<div id="publish_content">';
-        $form['actions']['submit']['#suffix'] = '</div>';
+
     }
-    // Button button--primary js-form-submit form-submit btn-primary.
-    if ($form_id == 'node_quickinfo_gnode-form_form' || $form_id == 'node_quickinfo_edit_form') {
-        
-        $form['actions']['custom_unpublish'] = array(
-            '#type' => 'submit',
-            '#prefix' => '<div id="save_content">',
-            '#suffix' => '</div>',
-            '#value' => t('Save'),
-            '#submit' => array('cust_quick_info_node_form_submit'),
-            '#attributes' => array(
-                'class' => array('button', 'button--primary', 'js-form-submit', 'form-submit', 'btn-primary'),
-            ),
-        );
-        $form['actions']['custom_unpublish']['#submit'] = array_merge($form['actions']['custom_unpublish']['#submit'], $form['actions']['submit']['#submit']);
-        $form['actions']['submit']['#submit'][] = 'cust_quick_info_node_form_publish';
-        // dpm($form['actions']['custom_unpublish']['#submit']);.
-    }
-    
+//    pr(($form['actions']['publish']));exit;
     if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
         
         $db = \Drupal::database();
@@ -410,27 +395,20 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 /**
  * Submit function for quickinfo saved content.
  */
-function cust_quick_info_node_form_submit(&$form, FormStateInterface $form_state) {
+/*function cust_quick_info_node_form_submit(&$form, FormStateInterface $form_state) {
     $form_state->setValue('status', 0);
-}
+}*/
 
 function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_state) {
-    $form_state->setValue('status', 1);
-    if ($nodeId = $form_state->getValue('nid')) {
+    if (!$form_state->getValue('field_unique_id')[0]['value']) {
         $uniqueId = \Drupal::database()->select('node__field_unique_id', 'n')
             ->fields('n', ['field_unique_id_value'])
             ->orderBy('field_unique_id_value', 'desc')
             ->range(0, 1)
             ->execute()
             ->fetchField();
-        $node = Node::load($nodeId);
-        $node->set('field_unique_id', $uniqueId + 1);
-        $node->set('status', 1);
-        $node->validate();
-        $node->save();
-        exit;
+        $form_state->setValue('field_unique_id', [['value'=>$uniqueId + 1]]);
     }
-    exit;
 }
 
 /**
@@ -557,7 +535,7 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
 /**
  *
  */
-function hzd_customizations_node_quickinfo_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+/*function hzd_customizations_node_quickinfo_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
     // If ($node->type == 'page') {
     //        $_SESSION['access_page_id'] = $node->nid;
     //        $_SESSION['access_page_type'] = $node->type;
@@ -627,7 +605,7 @@ function hzd_customizations_node_quickinfo_view(array &$build, EntityInterface $
     //        $breadcrumb[] = t(drupal_get_title());
     //      }
     //      drupal_set_breadcrumb($breadcrumb);
-}
+}*/
 
 /**
  * Hook_node_search_result(\Drupal\node\NodeInterface $node)

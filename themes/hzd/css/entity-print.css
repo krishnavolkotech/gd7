@@ -41,8 +41,8 @@ body{
 }
 .pdf-wrapper{
   width:100%;
-  display:block;
-  line-height:auto !important;
+  display:inline-block;
+ /* line-height:auto !important;*/
   /*margin:2% 0;*/
 }
 .pdf-wrapper header .logo-sec-pdf img{
@@ -54,13 +54,16 @@ body{
   padding-top:20px;
   display:block;
 }
+.pdf-content article.downtimes,
 .pdf-wrapper .pdf-title,
-.pdf-wrapper header,
-.pdf-wrapper .pdf-content{
+.pdf-wrapper header{
   width:100%;
   display:block;
 }
-.pdf-wrapper .pdf-title{
+.pdf-wrapper .pdf-content{
+  width:100%;
+}
+.pdf-title{
   color:#006e9e;
   font-size:27px;
   margin-bottom:10px;
@@ -68,17 +71,34 @@ body{
 }
 .pdf-content article.downtimes .downtime-view-wrapper{
   background:#f5f7fa;
-  padding:2%;
-  width:96%;
-  float:left;
+  padding:2% 0;
+  width:98%;
+  display:inline-block;
   margin:10px 0 20px 0;
   text-align:left;
+  line-height:normal;
+  float:none;
+}
+.pdf-content article.downtimes .Incident{
+  width:98%;
+  display:block;
+  margin-bottom:10px;
+  float:none;
+ /* padding-left:2%;*/
+}
+.pdf-content article.downtimes .Incident .downtimes_title{
+  font-weight: 600;
+  display:inline-block;
+  width: 24%;
+  margin: 0 1% 3px 0;
+  float:none;
 }
 .pdf-content article.downtimes .back-search{
   color:#006e9e;
   margin-bottom:10px;
-  display:inline-block;
+  display:block;
   font-size:16px;
+  float:none;
 }
 .pdf-content article.downtimes .Incident .downtimes_title:after{
   content:":";
@@ -88,7 +108,73 @@ body{
 .pdf-content article.downtimes .Incident .downtimes_content{
   display:inline-block;
   margin-bottom:3px;
+  width: 75% !important;
+  float:none;
+}
+.pdf-content article.downtimes .downtime-view-history{
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #04425f;
+  float:none;
+  display:block;
+}
+.pdf-content table{
+  width:100%;
+  float:none;
+}
+.pdf-content article.downtimes .changed-group{
+  width: 100%;
+  margin: 0 0 20px 0;
+  padding: 0;
+  float:none;
+}
+.pdf-content article.downtimes .changed-group span.downtimes-view-updated {
+    width: 100%;
+    float: none;
+    margin: 0 0 10px 0;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #e6e9ed;
+    display:block;
+}
+.pdf-content article.downtimes .changed-group .field-wrapper,
+.pdf-content article.downtimes .changed-group .reason {
+    width: 100%;
+    float: none;
+    display:block;
+}
+.pdf-content article.downtimes .changed-group .field-wrapper ul,
+.pdf-content article.downtimes .changed-group .field-wrapper ol
+{
+    width: 98%;
+    display: inline-block;
+    float:none;
+}
+.pdf-content article.downtimes .changed-group .field-wrapper ol li{
+  width: 100%;
+  margin: 0 0 3px 13px;
+  padding: 0;
+  float:none;
+}
+.pdf-content article.downtimes .changed-group .field-wrapper ul li{
+  width: 100%;
+  margin: 0 0 3px 15px;
+  padding: 0;
+  float:none;
+}
+.pdf-content article.downtimes .changed-group .reason p {
+    width: 100%;
+    float: none;
+    margin: 0 0 20px 0;
+    display:block;
 }
 field--label-hidden{
   display:none;
+}
+.pdf-content h2,
+.pdf-content h2 a{
+  width:100%;
+  float:none;
+  display:block;
 }

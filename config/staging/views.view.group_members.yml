@@ -544,7 +544,7 @@ display:
     position: 2
     display_options:
       display_extenders: {  }
-      path: group/%/approved-members
+      path: group/%group/approved-members
       use_more: false
       defaults:
         use_more: false
