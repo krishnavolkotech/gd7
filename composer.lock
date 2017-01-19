@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a2b0743f399a5822ca726ebf9e5d463b",
-    "content-hash": "bc26edf84250f151304915f49b29d7b1",
+    "hash": "82b9a478d1a7e2f417d65fcb6b23aac4",
+    "content-hash": "9d53d35fd9d23c28fc60c60cafa9b3e5",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -619,16 +619,16 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "v0.7.0-beta3",
+            "version": "v0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "5f13a9afa8862bafdae2108e01246b293cc17a34"
+                "reference": "5c98652b1a5beb7e3cc8ec35419b2828dd63ab14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/5f13a9afa8862bafdae2108e01246b293cc17a34",
-                "reference": "5f13a9afa8862bafdae2108e01246b293cc17a34",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/5c98652b1a5beb7e3cc8ec35419b2828dd63ab14",
+                "reference": "5c98652b1a5beb7e3cc8ec35419b2828dd63ab14",
                 "shasum": ""
             },
             "require": {
@@ -676,7 +676,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "time": "2016-01-22 01:58:47"
+            "time": "2016-05-11 00:36:29"
         },
         {
             "name": "drupal/config_direct_save",
@@ -899,44 +899,6 @@
             "time": "2016-12-07 18:31:42"
         },
         {
-            "name": "drupal/menu_export",
-            "version": "dev-1.x",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupal.org/project/menu_export",
-                "reference": "f5b8196f4d3ebcf8b88f10d6eeefd94263113b1a"
-            },
-            "require": {
-                "drupal/core": "~8.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.0-beta1+1-dev",
-                    "datestamp": "1483514043"
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "sandeepreddyg",
-                    "homepage": "https://www.drupal.org/user/3397192"
-                }
-            ],
-            "description": "This module exports and imports menus and menu links.",
-            "homepage": "https://www.drupal.org/project/menu_export",
-            "support": {
-                "source": "http://cgit.drupalcode.org/menu_export"
-            },
-            "time": "2017-01-04 07:09:33"
-        },
-        {
             "name": "drupal/search_api",
             "version": "1.0.0-beta3",
             "source": {
@@ -1070,7 +1032,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/view_unpublished-8.x-1.0-alpha1.zip",
-                "reference": null,
+                "reference": "8.x-1.0-alpha1",
                 "shasum": "6c5928295162027cd4da8f45aba6111d11e899f0"
             },
             "require": {
@@ -4941,9 +4903,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "drupal/menu_export": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

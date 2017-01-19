@@ -12,6 +12,9 @@ use Drupal\Component\Utility\Xss;
 use Drupal\Core\Template\Attribute;
 use Drupal\node\Entity\Node;
 
+/**
+ * @param $variables
+ */
 function hzd_preprocess_page(&$variables) {
     $user = \Drupal::currentUser();
     $headerlinks = \Drupal\block\Entity\Block::load('hzdheaderlinks');
@@ -80,31 +83,48 @@ function hzd_preprocess_printable(&$variables) {
     /* $variables['content'] = $variables['content']['#node']->toArray(); */
 }
 
-function hzd_preprocess_entity_print(&$vars,$hook,$x) {
+/**
+ * @param $vars
+ */
+
+function hzd_preprocess_entity_print(&$vars) {
 //    pr(($vars));exit;
     $vars['quickinfo'] = false;
     $routeName = \Drupal::routeMatch()->getRouteName();
-    if (in_array($routeName,['entity_print.view.debug','entity_print.view'])) {
-        $pdf_original_link = \Drupal::request()->query->get('original', null);
-        global $base_url;
-        $vars['pdf_original_link'] = $base_url . $pdf_original_link;
+    if (in_array($routeName, ['entity_print.view.debug', 'entity_print.view'])) {
+//        $pdf_original_link = \Drupal::request()->query->get('original', null);
+//        $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
+//        global $base_url;
+        
         $params = \Drupal::routeMatch()->getParameters();
         $entity = \Drupal::entityManager()->getStorage($params->get('entity_type'))->load($params->get('entity_id'));
         if ($entity->bundle() == 'quickinfo') {
             $vars['quickinfo'] = true;
             $node = $vars['content'][0]['#node'];
             $vars['node'] = $node;
-            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
+            $vars['quickinfo_field_unique_id'] = ['#markup' => $node->get('field_unique_id')->getFieldDefinition()->getLabel() . $node->get('field_unique_id')->value];
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
+        if($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($entity->id())){
+            $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical',['absolute'=>1])->toString());
+        }else{
+            $previousUrl = $entity->toLink($entity->toUrl('canonical',['absolute'=>1])->toString());
+        }
+        $vars['pdf_original_link'] = $previousUrl;
         $vars['pdftitle'] = $entity->label();
         
-    }elseif($routeName == 'entity.node.edit_form'){
+    } elseif ($routeName == 'entity.node.edit_form') {
         $node = $vars['content'][0]['#node'];
         if ($node->getType() == 'quickinfo') {
             $vars['quickinfo'] = true;
             $vars['node'] = $node;
             $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
+            if($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id())){
+                $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical',['absolute'=>1])->toString());
+            }else{
+                $previousUrl = $entity->toLink($node->toUrl('canonical',['absolute'=>1])->toString());
+            }
+            $vars['pdf_original_link'] = $previousUrl;
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
     }
@@ -149,7 +169,7 @@ function hzd_preprocess_node(&$variables) {
         $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
         $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
         $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
-    
+        
         $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
         $pdfLink['link'] = ['#type' => 'link',
             '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $variables['node']->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => t('Pdf Preview')];

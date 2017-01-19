@@ -139,7 +139,8 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //            $definition->setDefaultValue('Keine');
 //        kint($definition);
 //        kint($entity->get($field_name)->value);
-            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
+//            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
+            if (in_array($field_name,['field_additional_email_recipient','field_business_impact','field_business_impact_services','field_contact','field_creators','field_custom_title','field_dates','field_depend_other_services','field_intial_situation','field_other_services','field_professional_conditions','field_recipients','field_related_transfer_number','field_special_notes','field_technical_impact','field_technical_impact_services','field_tech_requirements']) && empty($entity->get($field_name)->value)) {
 //                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
 //                    kint($definition->get('fieldStorage'));
 //                }
