@@ -7,10 +7,14 @@ dependencies:
     - field.storage.node.field_other_services
     - field.storage.node.field_related_transfer_number
     - group.content_type.moderate-group_node-quickinfo
+    - user.role.administrator
+    - user.role.authenticated
+    - user.role.site_administrator
   module:
     - group
     - node
     - options
+    - user
 id: rz_schnellinfo
 label: 'Rz Schnellinfo'
 module: views
@@ -871,7 +875,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
+          operator: word
           value: ''
           group: 1
           exposed: true
