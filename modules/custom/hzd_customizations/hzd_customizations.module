@@ -15,6 +15,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\node\Entity\Node;
+use Drupal\group\Entity\Group;
 
 if (!defined('SITE_ADMIN')) {
     define('SITE_ADMIN', 'site_administrator');
@@ -222,7 +223,27 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         // If the "Publish" button is clicked, we want to update the status to "published".
         $form['actions']['publish']['#published_status'] = TRUE;
         $form['actions']['publish']['#value'] = t('Publish');
-        $form['actions']['publish']['#access'] = TRUE;
+//        $user = \Drupal::currentUser();
+        
+        if (array_intersect($user->getRoles(), ['administrator', 'site_administrator'])) {
+            $form['actions']['publish']['#access'] = TRUE;
+        } else {
+            $group = Group::load(QUICKINFO);
+            $groupMember = $group->getMember($user);
+            if ($groupMember) {
+                $roles = $groupMember->getRoles();
+                if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                    $form['actions']['publish']['#access'] = TRUE;
+                } else {
+                    $form['actions']['publish']['#access'] = FALSE;
+                }
+            } else {
+                $form['actions']['publish']['#access'] = FALSE;
+            }
+            
+        }
+//        pr($user->getRoles());
+//        exit;
         array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
         $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Sind Sie sicher zu veröffentlichen?")';
         unset($form['actions']['unpublish']['#dropbutton']);
@@ -419,9 +440,9 @@ function hzd_customizations_node_update($node) {
         if ($node->original->get('status')->value == 0 && $node->get('status')->value == 1) {
             $uri = generate_quickinfo_pdf($node);
 //                $copy->save();
-            }
         }
-    
+    }
+
 //    if($uri){
 //        $file = File::Create([
 //            'uri' => $uri,
@@ -445,7 +466,7 @@ function generate_quickinfo_pdf($node = null) {
 //    $node = Node::load(reset($nodeId));
 //    pr($quickinfoId);exit;
     $custom_uri = 'public://RZ-Schnellinfo-Nr-' . $quickinfoId . '.pdf';
-    $uri =  $builder->savePrintable([$node], $print_engine, $custom_uri);
+    $uri = $builder->savePrintable([$node], $print_engine, $custom_uri);
 //    if($uri && 0){
 //        ///this is not working
 //        $file = File::Create([
@@ -457,7 +478,7 @@ function generate_quickinfo_pdf($node = null) {
 //        $node->set('upload',$file);
 //                $node->save();
 //    }
-    
+
 //    $copy = $node;
     
 }
