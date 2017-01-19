@@ -267,9 +267,9 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         $form['field_unique_id']['#type'] = 'hidden';
 //        $form['field_unique_id']['#suffix'] = '</div>';
         
-        $form['field_author_name'][0]['#default_value']['value'] = $raw_name;
+/*        $form['field_author_name'][0]['#default_value']['value'] = $raw_name;
         $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
-        $form['field_author_name']['#suffix'] = '</div>';
+        $form['field_author_name']['#suffix'] = '</div>';*/
         
         $query = \Drupal::database()->select('cust_profile', 'cp');
         $query->addField('cp', 'state_id');
@@ -281,8 +281,11 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         $query->Fields('s', array('state'));
         $query->condition('s.id', $user_state);
         $state = $query->execute()->fetchField();
-        
-        $form['field_author_state']['#default_value'] = $state;
+//        pr($form['field_author_state']);exit;
+        $form['field_author_state']['widget'][0]['value']['#default_value'] = $state;
+        $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
+        $form['field_author_name']['widget'][0]['value']['#default_value'] = $raw_name;
+        $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
 //        $form['field_author_state']['#suffix'] = '</div>';
         $form['attachments']['#collapsed'] = FALSE;
         
