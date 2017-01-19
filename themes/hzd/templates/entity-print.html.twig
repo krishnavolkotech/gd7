@@ -3,26 +3,96 @@
 <head>
     <meta charset="utf-8">
     {{ entity_print_css }}
-    {#<style>{{ source('themes/hzd/css/style.css') }}</style>#}
     <link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>
     <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
+    {% if quickinfo %}
+    <style>
+        @page {
+            margin: 150px 40px 40px 40px;
+        }
+        #header {
+            position: fixed;
+            left: 0px;
+            top: -120px;
+            right: 20px;
+            height: 70px;
+            /*background-color: orange;*/
+            text-align: center;
+        }
+
+        #footer {
+            position: fixed;
+            left: 10px;
+            bottom: 20px;
+            right: 10px;
+            height: 20px;
+            /*background-color: lightblue;*/
+        }
+        .pageCounter:after {
+            content: counter(page);
+        }
+    </style>
+    {% endif %}
 </head>
 <body>
 {% if quickinfo %}
-{{ content }}
+    <div id="header">
+        <table border="1" width="100%" cellspacing="0" cellpadding="0">
+            {% if node.isPublished() %}
+                <tr>
+                    <td rowspan="3">
+                        <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
+                    </td>
+                    <td rowspan="3">
+                        {{ field_unique_id }}
+                        <br>
+                        {{ node.getTitle() }}
+                    </td>
+                    <td> &nbsp;
+                        {{ 'Veröffentlicht am'|trans }}:
+                        {{ node.getCreatedTime|format_date('hzd_datetime') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ 'Veröffentlicht von'|trans }}:
+                        {{ node.getOwner().getDisplayName() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Seite <span class="pageCounter"></span> {#von <span class="totalPageCounter"></span>#}</td>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>
+                        <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
+                    </td>
+                    <td>
+                        {{ node.getTitle() }}
+                    </td>
+                    <td>
+                        Seite <span class="pageCounter"></span> {#von <span class="totalPageCounter"></span>#}</td>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+    {{ content }}
 {% else %}
 
-<div class="pdf-wrapper">
-    <header>
-        <div class="logo-sec-pdf">
-            <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+    <div class="pdf-wrapper">
+        <header>
+            <div class="logo-sec-pdf">
+                <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+            </div>
+        </header>
+        <div class="pdf-content">
+            <span class="pdf-title">{{ pdftitle }}</span>
+            {{ content }}
         </div>
-    </header>
-    <div class="pdf-content">
-        <span class="pdf-title">{{ pdftitle }}</span>
-        {{ content }}
     </div>
-</div>
 {% endif %}
 {% if pdf_original_link %}
     <hr>

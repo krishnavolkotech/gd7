@@ -80,9 +80,11 @@ function hzd_preprocess_printable(&$variables) {
     /* $variables['content'] = $variables['content']['#node']->toArray(); */
 }
 
-function hzd_preprocess_entity_print(&$vars) {
+function hzd_preprocess_entity_print(&$vars,$hook,$x) {
+//    pr(($vars));exit;
     $vars['quickinfo'] = false;
-    if (\Drupal::routeMatch()->getRouteName() == 'entity_print.view') {
+    $routeName = \Drupal::routeMatch()->getRouteName();
+    if (in_array($routeName,['entity_print.view.debug','entity_print.view'])) {
         $pdf_original_link = \Drupal::request()->query->get('original', null);
         global $base_url;
         $vars['pdf_original_link'] = $base_url . $pdf_original_link;
@@ -90,12 +92,22 @@ function hzd_preprocess_entity_print(&$vars) {
         $entity = \Drupal::entityManager()->getStorage($params->get('entity_type'))->load($params->get('entity_id'));
         if ($entity->bundle() == 'quickinfo') {
             $vars['quickinfo'] = true;
+            $node = $vars['content'][0]['#node'];
+            $vars['node'] = $node;
+            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+//            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
         $vars['pdftitle'] = $entity->label();
+        
+    }elseif($routeName == 'entity.node.edit_form'){
+        $node = $vars['content'][0]['#node'];
+        if ($node->getType() == 'quickinfo') {
+            $vars['quickinfo'] = true;
+            $vars['node'] = $node;
+            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+//            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
+        }
     }
-//    pr(($entity->bundle()));
-//    pr(array_keys($entity));
-//    exit;
 }
 
 /**

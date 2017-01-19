@@ -27,7 +27,6 @@ dependencies:
     - field.field.node.quickinfo.upload
     - node.type.quickinfo
   module:
-    - comment
     - file
     - options
     - text
@@ -37,146 +36,122 @@ targetEntityType: node
 bundle: quickinfo
 mode: default
 content:
-  comment:
-    label: hidden
-    type: comment_default
-    weight: 10
-    settings:
-      pager_id: 0
-      view_mode: default
-    third_party_settings: {  }
   field_additional_email_recipient:
     label: above
-    weight: 2
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-  field_author_name:
-    label: inline
-    weight: 5
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-  field_author_state:
-    label: inline
-    weight: 6
+    weight: 17
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_business_impact:
     label: above
-    weight: 12
+    weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_business_impact_services:
     label: above
-    weight: 14
+    weight: 10
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_contact:
     label: above
-    weight: 20
+    weight: 15
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_creators:
     label: above
-    weight: 19
+    weight: 14
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_custom_title:
-    weight: 23
+    weight: 0
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
   field_dates:
     label: above
-    weight: 18
+    weight: 13
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_depend_other_services:
     label: above
-    weight: 11
+    weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_intial_situation:
     label: above
-    weight: 7
+    weight: 4
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_other_services:
     label: above
-    weight: 3
+    weight: 2
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_professional_conditions:
     label: above
-    weight: 8
+    weight: 5
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_recipients:
     label: above
-    weight: 4
+    weight: 3
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_related_transfer_number:
-    weight: 25
+    weight: 1
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
   field_special_notes:
     label: above
-    weight: 17
+    weight: 12
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_tech_requirements:
     label: above
-    weight: 9
+    weight: 6
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_technical_impact:
     label: above
-    weight: 13
+    weight: 9
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_technical_impact_services:
     label: above
-    weight: 15
+    weight: 11
     type: text_default
-    settings: {  }
-    third_party_settings: {  }
-  field_unique_id:
-    type: number_integer
-    weight: 16
-    label: inline
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-  links:
-    weight: 22
     settings: {  }
     third_party_settings: {  }
   upload:
     label: above
     settings: {  }
     type: file_table
-    weight: 21
+    weight: 16
     third_party_settings: {  }
 hidden:
+  comment: true
   entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_author_name: true
+  field_author_state: true
+  field_unique_id: true
   langcode: true
+  links: true

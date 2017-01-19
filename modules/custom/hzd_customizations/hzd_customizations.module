@@ -133,14 +133,14 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         $display = $context['display'];
         $entityManager = Drupal::service('entity.manager');
         $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
-//    kint($fields)
+//    kint($entity->get('upload'));
         foreach ($fields as $field_name => $definition) {
 //        kint($field_name,$entity->get($field_name)->value);
 //        kint($entity->get($field_name)->value);
-            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null) {
-                /*if ($field_name == 'field_unique_id' || $field_name == 'field_related_transfer_number') {
-                    kint($definition->get('fieldStorage'));
-                }*/
+            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && $field_name != 'upload') {
+//                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
+//                    kint($definition->get('fieldStorage'));
+//                }
                 $component = $display->getComponent($field_name);
                 $build[$field_name] = [
                     '#theme' => 'field',
@@ -188,7 +188,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 }*/
 
 function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
-    if($entity->getType() == 'quickinfo'){
+    if ($entity->getType() == 'quickinfo') {
         $build['field_custom_title']['#prefix'] = t('<h2>1 @data</h2>', ['@data' => 'Meta-Daten']);
         $build['field_intial_situation']['#prefix'] = t('<h2>2 @data2</h2>', ['@data2' => 'Fachlich-inhaltliche Angaben']);
     }
@@ -216,14 +216,14 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         if (empty($form['field_custom_title']['#default_value'])) {
             $form_state->setValue('field_custom_title', $node->label());
         }
-    
+        
         $form['actions']['unpublish']['#value'] = t('Save');
         $form['actions']['publish'] = $form['actions']['submit'];
         // If the "Publish" button is clicked, we want to update the status to "published".
         $form['actions']['publish']['#published_status'] = TRUE;
         $form['actions']['publish']['#value'] = t('Publish');
         $form['actions']['publish']['#access'] = TRUE;
-        array_unshift($form['actions']['publish']['#submit'],'cust_quick_info_node_form_publish');
+        array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
         $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Sind Sie sicher zu veröffentlichen?")';
         unset($form['actions']['unpublish']['#dropbutton']);
         
@@ -264,7 +264,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         $form['field_author_state']['#default_value'] = $state;
 //        $form['field_author_state']['#suffix'] = '</div>';
         $form['attachments']['#collapsed'] = FALSE;
-
+        
     }
 //    pr(($form['actions']['publish']));exit;
     if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
@@ -407,8 +407,59 @@ function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_stat
             ->range(0, 1)
             ->execute()
             ->fetchField();
-        $form_state->setValue('field_unique_id', [['value'=>$uniqueId + 1]]);
+        $form_state->setValue('field_unique_id', [['value' => $uniqueId + 1]]);
+        
     }
+}
+
+
+function hzd_customizations_node_update($node) {
+    if ($node->getType() == 'quickinfo') {
+        // Act on the unpublishing of an article.
+        if ($node->original->get('status')->value == 0 && $node->get('status')->value == 1) {
+            $uri = generate_quickinfo_pdf($node);
+//                $copy->save();
+            }
+        }
+    
+//    if($uri){
+//        $file = File::Create([
+//            'uri' => $uri,
+//            'status' => 1,
+//            'uid' => 1,
+//        ]);
+//        $file->save();
+//        $node->upload[] = $file;
+//    }
+}
+
+//use \Drupal\file\Entity\File;
+
+function generate_quickinfo_pdf($node = null) {
+    if (is_null($node)) {
+        return false;
+    }
+    $quickinfoId = $node->get('field_unique_id')->value;
+    $builder = \Drupal::service('entity_print.print_builder');
+    $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')->createInstance('dompdf');
+//    $node = Node::load(reset($nodeId));
+//    pr($quickinfoId);exit;
+    $custom_uri = 'public://RZ-Schnellinfo-Nr-' . $quickinfoId . '.pdf';
+    $uri =  $builder->savePrintable([$node], $print_engine, $custom_uri);
+//    if($uri && 0){
+//        ///this is not working
+//        $file = File::Create([
+//            'uri' => $uri,
+//            'status' => 1,
+//            'uid' => 1,
+//        ]);
+//        $file->save();
+//        $node->set('upload',$file);
+//                $node->save();
+//    }
+    
+//    $copy = $node;
+    
 }
 
 /**

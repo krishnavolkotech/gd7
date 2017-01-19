@@ -53,20 +53,6 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
-  field_author_name:
-    weight: 23
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
-  field_author_state:
-    weight: 24
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
   field_business_impact:
     weight: 11
     settings:
@@ -181,11 +167,6 @@ content:
     settings:
       placeholder: ''
     third_party_settings: {  }
-  langcode:
-    type: language_select
-    weight: 1
-    settings: {  }
-    third_party_settings: {  }
   path:
     type: path
     weight: 28
@@ -203,13 +184,6 @@ content:
       display_label: true
     weight: 26
     third_party_settings: {  }
-  title:
-    type: string_textfield
-    weight: 0
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 2
@@ -224,4 +198,8 @@ content:
     type: file_generic
     weight: 19
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_author_name: true
+  field_author_state: true
+  langcode: true
+  title: true
