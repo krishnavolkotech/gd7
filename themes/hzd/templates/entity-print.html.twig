@@ -36,7 +36,7 @@
 </head>
 <body>
 {% if quickinfo %}
-    <div id="header">
+    <div id="header" class="pdf-quickinfo">
         <table border="1" width="100%" cellspacing="0" cellpadding="0">
             {% if node.isPublished() %}
                 <tr>
@@ -79,7 +79,10 @@
             {% endif %}
         </table>
     </div>
-    {{ content }}
+        <div class="pdf-content">
+            <span class="pdf-title">{{ pdftitle }}</span>
+            {{ content }}
+        </div>
 {% else %}
 
     <div class="pdf-wrapper">
