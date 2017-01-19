@@ -94,7 +94,7 @@ function hzd_preprocess_entity_print(&$vars,$hook,$x) {
             $vars['quickinfo'] = true;
             $node = $vars['content'][0]['#node'];
             $vars['node'] = $node;
-            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
         $vars['pdftitle'] = $entity->label();
@@ -104,7 +104,7 @@ function hzd_preprocess_entity_print(&$vars,$hook,$x) {
         if ($node->getType() == 'quickinfo') {
             $vars['quickinfo'] = true;
             $vars['node'] = $node;
-            $vars['field_unique_id'] = $node->get('field_unique_id')->view();
+            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
         }
     }

@@ -128,8 +128,8 @@ use Drupal\Core\Render\Element;
 function hzd_customizations_entity_display_build_alter(&$build, $context) {
     /** @var \Drupal\Core\Entity\EntityInterface $entity */
     $entity = $context['entity'];
-    
-    if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo' && in_array($context['view_mode'], ['full', 'pdf'])) {
+//    pr($context['view_mode']);exit;
+    if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo') {
         /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
         $display = $context['display'];
         $entityManager = Drupal::service('entity.manager');
@@ -138,7 +138,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         foreach ($fields as $field_name => $definition) {
 //        kint($field_name,$entity->get($field_name)->value);
 //        kint($entity->get($field_name)->value);
-            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && $field_name != 'upload') {
+            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id'])) {
 //                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
 //                    kint($definition->get('fieldStorage'));
 //                }
