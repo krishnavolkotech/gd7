@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     {{ entity_print_css }}
-
+    <link type="text/css" rel="stylesheet" href="/themes/hzd/css/style.css"/>
     <link type="text/css" rel="stylesheet" href="/themes/hzd/css/entity-print.css"/>
     {% if quickinfo %}
     <style>
@@ -37,7 +37,7 @@
 <body>
 {% if quickinfo %}
     <div id="header" class="pdf-quickinfo">
-        <table border="1" width="100%" cellspacing="0" cellpadding="0">
+           <table border="1" width="100%" cellspacing="0" cellpadding="0">
             {% if node.isPublished() %}
                 <tr>
                     <td rowspan="3">
@@ -78,11 +78,11 @@
                 </tr>
             {% endif %}
         </table>
-    </div>
-        <div class="pdf-content">
-            <span class="pdf-title">{{ pdftitle }}</span>
+      </div>
+    <div class="pdf-content">
             {{ content }}
         </div>
+       
 {% else %}
 
     <div class="pdf-wrapper">
@@ -99,8 +99,7 @@
 {% endif %}
 {% if pdf_original_link %}
     <hr>
-    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}): <a
-                href="{{ pdf_original_link }}">{{ pdf_original_link }}</a></div>
+    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}):{{ pdf_original_link }}</div>
 {% endif %}
 </body>
 </html>

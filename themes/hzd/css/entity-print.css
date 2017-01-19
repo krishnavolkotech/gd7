@@ -104,6 +104,7 @@ body{
 }
 .pdf-content article.quickinfo .field{
   margin:0 0 10px 0;
+  page-break-inside:always;
 }
 .pdf-content article.quickinfo .field .field--label{
   font-weight:700;
@@ -186,9 +187,8 @@ body{
   margin:0 !important;
 }
 .pdf-content table td{
-    border:1px solid #000 !important;
-    padding:0 !important;
-    border-bottom:1px solid #000 !important;
+  border:1px solid #000 !important;
+  border-bottom:1px solid #000 !important;
 }
 .pdf-content article.downtimes .changed-group{
   width: 100%;
@@ -197,12 +197,12 @@ body{
   float:none;
 }
 .pdf-content article.downtimes .changed-group span.downtimes-view-updated {
-    width: 100%;
-    float: none;
-    margin: 0 0 10px 0;
-    padding: 0 0 5px 0;
-    border-bottom: 1px solid #e6e9ed;
-    display:block;
+  width: 100%;
+  float: none;
+  margin: 0 0 10px 0;
+  padding: 0 0 5px 0;
+  border-bottom: 1px solid #e6e9ed;
+  display:block;
 }
 .pdf-content article.downtimes .changed-group .field-wrapper,
 .pdf-content article.downtimes .changed-group .reason {
@@ -253,6 +253,7 @@ field--label-hidden{
   text-align:left;
   height:70px;*/
 }
+#header table,
  #header .pdf-quickinfo table{
   margin: 0 !important;
   float: none;
@@ -263,4 +264,16 @@ field--label-hidden{
 #header.pdf-quickinfo table td{
   border-bottom:1px solid #000;
   padding:5px 10px;
+}
+#header.pdf-quickinfo table td .pageCounter{
+  display:inline-block;
+}
+table tr th,
+table tr td{
+  padding:5px;
+}
+table,
+table tr td,
+table tr th {
+	page-break-inside: avoid;
 }
