@@ -39,6 +39,14 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
 <p>	Das Betriebsportal dient als zentrale Anlaufstelle für betriebliche Fragen. Bitte geben Sie hierzu Ihre vollständigen dienstlichen Kontaktdaten an. Ihre Daten werden selbstverständlich nicht weitergegeben und sind nur für registrierte Benutzer des Betriebsportals sichtbar.<br>	<br>	Nach erfolgter Anmeldung ist Ihr Account aktiv.<br>
 	Wenn Sie sich länger als ein Jahr nicht&nbsp;am BpK anmelden wird Ihr Account nach vorheriger Ankündigung&nbsp;automatisch gesperrt.&nbsp;Sie erhalten danach&nbsp;keine Emailbenachrichtigungen mehr.&nbsp;Möchten Sie Ihren Account entsperren lassen können Sie dies mit dem Kontaktformular beantragen.</p>",
             ];
+            $form['account']['confirm_mail'] = $form['account']['mail'];
+            $form['account']['confirm_mail']['#weight'] = 1;
+            $emailLabel = $form['account']['mail']['#title'];
+            $form['account']['confirm_mail']['#title'] = t('Confirm @email',['@email'=>$emailLabel]);
+            $form['account']['mail']['#weight'] = 0;
+            $form['account']['name']['#weight'] = 2;
+//            pr(($form['account']['confirm_mail']['#weight']));exit;
+//            pr(($form['account']['mail']['#weight']));exit;
         }
         if ($form_id == 'user_form') {
             $account = $form_state->getFormObject()->getEntity();
@@ -129,6 +137,9 @@ function hzd_user_register_form_validate(array &$form, FormStateInterface $form_
     }
     if (!\Drupal::service('email.validator')->isValid($form_state->getValue('mail'))) {
         $form_state->setErrorByName('mail', t('Ungültige E-Mail'));
+    }
+    if ($form_state->getValue('mail') != $form_state->getValue('confirm_mail')) {
+        $form_state->setErrorByName('confirm_mail', t('Emails donot match'));
     }
 }
 
