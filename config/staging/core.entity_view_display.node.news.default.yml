@@ -18,21 +18,19 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 0
+    weight: 101
     settings: {  }
     third_party_settings: {  }
   field_news_date:
-    weight: 1
-    label: inline
+    weight: 102
+    label: above
     settings:
+      format_type: medium
       timezone_override: ''
-      format_type: hzd_datetime
     third_party_settings: {  }
     type: datetime_default
+  links:
+    weight: 100
 hidden:
   entity_print_view: true
-  entity_print_view_epub: true
-  entity_print_view_pdf: true
-  entity_print_view_word_docx: true
   langcode: true
-  links: true
