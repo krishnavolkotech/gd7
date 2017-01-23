@@ -165,7 +165,7 @@ hzd_release_management.deployed_releases:
   path: '/group/{group}/deployed_releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
-    _title: 'Deployed Released'
+    _title: 'Deployed Releases'
     _entity_view: group.default
   requirements:
     _permission: 'view releases'
