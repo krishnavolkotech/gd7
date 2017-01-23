@@ -90,17 +90,29 @@ class HzdStorage
         $query->condition('label', 'problem management', '=');
         $group_id = $query->execute()->fetchCol();
         
+        $query = \Drupal::entityQuery('node')
+            ->condition('type','problem')
+            ->condition('field_s_no',$values['sno'])
+            ->execute();
+        
+        $node = \Drupal\node\Entity\Node::load(reset($query));
+        
+        if($node){
+            $nid = $node->id();
+            $created = $node->getCreatedTime();
+        }
+/*        pr($node);exit;
         $query = \Drupal::database()->select('node_field_data', 'n');
         $query->join('node__field_s_no', 'nfsn', 'n.nid = nfsn.entity_id');
         $query->Fields('n', array('nid', 'vid', 'created'));
         $query->condition('field_s_no_value', $values['sno'], '=');
         $node_infos = $query->execute()->fetchAll();
-        
+        pr($node_info);exit;
         foreach ($node_infos as $node_info) {
             $nid = $node_info->nid;
             $vid = $node_info->vid;
             $created = $node_info->created;
-        }
+        }*/
         // The erofnet date field conversion.
         $replace = array('/' => '.', '-' => '.');
         $formatted_date = strtr($values['eroffnet'], $replace);
@@ -125,7 +137,7 @@ class HzdStorage
         // Generate notifications for updated problems.
         if (isset($nid)) {
             unset($values['sno']);
-            $exist_node = node_load($nid);
+            $exist_node = $node;
             $existing_node_vals = array();
             
             $existing_node_vals['status'] = $exist_node->field_problem_status->value;
@@ -146,6 +158,7 @@ class HzdStorage
             $existing_node_vals['eroffnet'] = $exist_node->field_eroffnet->value;
             $existing_node_vals['timezone'] = 'Europe/Berlin';
             $existing_node_vals['closed'] = $exist_node->field_closed->value;
+            $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
             /**
              * $existing_node_vals['problem_eroffnet'] = $exist_node->field_problem_eroffnet->value;
              * // $existing_node_vals['problem_status'] = $exist_node->field_problem_status->value;
@@ -154,7 +167,7 @@ class HzdStorage
              */
             if (count(array_diff($existing_node_vals, $values)) != 0) {
                 // $node_array['status'] = 1;.
-                $problem_node = node_load($nid);
+                $problem_node = $node;
                 $problem_node->setTitle(Html::escape($values['title']));
                 $problem_node->set('status', 1);
                 $problem_node->set('created', $created ? $created : time());
@@ -198,7 +211,7 @@ class HzdStorage
                 // $problem_node->set('field_release', $values['release']);
                 // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
                 // $problem_node->set('field_release', $values['release']);
-                // $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
+                 $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
                 // $problem_node->set('field_timezone', $values['timezone']);.
                 $problem_node->set('field_version', $values['version']);
                 $problem_node->set('field_work_around', array(
@@ -259,7 +272,11 @@ class HzdStorage
                 'field_s_no' => $values['sno'],
                 'field_task_force' => $values['taskforce'],
                 // 'field_ticketstore_count' => $values['ticketstore_count'],
-                // 'field_ticketstore_link' => $values['ticketstore_link'],.
+                'field_ticketstore_link' => array(
+                    'value' => $values['ticketstore_link'],
+                    'format' => 'basic_html',
+                ),
+//                'field_ticketstore_link' => $values['ticketstore_link'],
                 'field_version' => $values['version'],
                 'field_work_around' => array(
                     'value' => $values['workaround'],

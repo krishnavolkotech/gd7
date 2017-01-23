@@ -33,8 +33,8 @@ class ReadexcelController extends ControllerBase {
     $header_values = array(
       'sno', 'status', 'service', 'function', 'release', 'title',
       'body', 'diagnose', 'solution', 'workaround', 'version', 'priority',
-      'taskforce', 'comment', 'processing', 'attachment', 'eroffnet', 'timezone',
-      'closed',
+      'taskforce', 'comment', 'processing','attachment', 'eroffnet','ticketstore_link','closed', 'timezone',
+      
     );
 
     $path = DRUPAL_ROOT . '/'.\Drupal::config('problem_management.settings')->get('import_path');
