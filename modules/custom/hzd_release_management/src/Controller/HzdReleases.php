@@ -82,7 +82,7 @@ class HzdReleases extends ControllerBase
         $release_product = explode("_", $release_name);
         $release_versions = explode("-", $release_product[1]);
         $releases_title = $release_product[0] . "_" . $release_versions[0];
-        return "Documentation for " . $releases_title;
+        return $this->t("Documentation for @title",['@title'=>$releases_title]);
     }
     
     /**
