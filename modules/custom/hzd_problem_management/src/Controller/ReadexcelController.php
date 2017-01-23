@@ -37,7 +37,7 @@ class ReadexcelController extends ControllerBase {
       'closed',
     );
 
-    $path = \Drupal::config('problem_management.settings')->get('import_path');
+    $path = DRUPAL_ROOT . '/'.\Drupal::config('problem_management.settings')->get('import_path');
 
     if ($path) {
       if (file_exists($path)) {

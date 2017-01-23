@@ -121,14 +121,18 @@ class MaintenanceBlock extends BlockBase
                         // Loops for all states
                         if ($groupContent) {
 //                            $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-                            $hover_markup = MaintenanceBlock::get_hover_markup($incident);
+                            $hoverIconHtml = $hover_markup = null;
+                            if ($routeMatch->getRouteName() == 'front_page.front') {
+                                $hover_markup = MaintenanceBlock::get_hover_markup($incident);
+                                $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
+                            }
                             $class = '';
                             if ($vals->startdate_planned < REQUEST_TIME) {
                                 $class = 'text-danger';
 //                                $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                            $hoverIconHtml  = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
+                           
                             $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hoverIconHtml . $hover_markup);
                         }
                     }

@@ -466,6 +466,14 @@ class HzdStorage
             $limit = $filter_parameter['limit'];
         }
         
+        if ($string == 'archived_problems') {
+            $problem_node_ids->sort('field_closed','desc');
+//            $problem_node_ids->condition('field_closed','','<>');
+        }else{
+            $problem_node_ids->condition('field_processing','','<>');
+//            $problem_node_ids->sort('field_processing','desc');
+        }
+//        $problem_node_ids->addTag('problems_entity_query');
         $group_problems_view = self::get_problems_services($group_id);
         if (!empty($group_problems_view)) {
             $problem_node_ids->condition('field_services', $group_problems_view, 'IN');

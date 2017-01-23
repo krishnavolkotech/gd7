@@ -29,7 +29,7 @@ class MailTemplatesLocalTasks extends DeriverBase implements ContainerDeriverInt
      * {@inheritdoc}
      */
     public function getDerivativeDefinitions($base_plugin_definition) {
-        $types = ['problem', 'release', 'downtimes', 'planning_files', 'quickinfo'];
+        $types = ['problem', 'release', 'downtimes', 'planning_files', 'quickinfo','early_warnings'];
         $derivatives = [];
         foreach ($types as $type) {
             $nodeType = \Drupal\node\Entity\NodeType::load($type);

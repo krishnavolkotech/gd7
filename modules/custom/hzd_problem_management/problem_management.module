@@ -124,3 +124,16 @@ function get_group_id() {
     }
     return $group;
 }
+
+
+
+/**
+ *
+ */
+//the sort order is not working
+//function problem_management_query_problems_entity_query_alter($query){
+//    $order = &$query->getOrderBy();
+//    $order = ['STR_TO_DATE(node__field_processing.field_processing_value,"%d.%m.%Y")'=>'DESC'];
+////    $order = $query->getOrderBy('node__field_processing.field_processing_value','desc');
+//    debug($query);
+//}

@@ -72,10 +72,10 @@ class HzdproblemmanagementHelper {
     $handle = fopen($path, "r");
     if (fopen($path, "r")) {
       $count = 1;
-      $readdata = fgetcsv($handle, 5000, ",");
+      $readdata = fgetcsv($handle, 5000, ";");
 
       if ($readdata) {
-        while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+        while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
           if ($count == 0) {
             $heading = $data;
 
@@ -86,7 +86,8 @@ class HzdproblemmanagementHelper {
               $values[$header_values[$key]] = $data[$key];
 
             }
-
+//            pr($header_values);
+//pr($data);exit;
             if (count($values) == 1) {
               // $mail = variable_get('import_mail', ' ');.
               $mail = \Drupal::config('problem_management.settings')->get('import_mail');
