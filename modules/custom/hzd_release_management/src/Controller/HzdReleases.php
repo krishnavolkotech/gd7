@@ -173,7 +173,7 @@ class HzdReleases extends ControllerBase
     public function deployed() {
         global $base_url;
         $type = 'deployed';
-        $output['#title'] = $this->t('@type Releases', ['@type' => 'Deployed']);
+        $output['#title'] = $this->t('Deployed Releases');
         $output[] = HzdreleasemanagementStorage::deployed_releases_text();
         
         $output[]['#attached']['drupalSettings']['release_management'] = array(
@@ -312,7 +312,7 @@ class HzdReleases extends ControllerBase
             
             // $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));.
             if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator'))) {
-                $output['#title'] = $this->t("Deployed Releases");
+//                $output['#title'] = $this->t("Deployed Releases");
             } else {
                 $output['#title'] = t("Deployed Releases") . " in " . $state;
             }
