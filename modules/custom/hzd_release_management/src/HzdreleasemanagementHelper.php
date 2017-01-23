@@ -34,32 +34,32 @@ class HzdreleasemanagementHelper
      * Title in header array  = release in the csv file.
      */
     static public function _csv_headers() {
-        $released_path = DRUPAL_ROOT . '/' . \Drupal::config('hzd_release_management.settings')->get('import_path_csv_released');
-        $rejected_path = DRUPAL_ROOT . '/' . \Drupal::config('hzd_release_management.settings')->get('import_path_csv_rejected');
-        $locked_path = DRUPAL_ROOT . '/' . \Drupal::config('hzd_release_management.settings')->get('import_path_csv_locked');
-        $progress_path = DRUPAL_ROOT . '/' . \Drupal::config('hzd_release_management.settings')->get('import_path_csv_progress');
-        $ex_eoss_path = DRUPAL_ROOT . '/' . \Drupal::config('hzd_release_management.settings')->get('import_path_csv_ex_eoss');
+        $released_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_released');
+        $rejected_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_rejected');
+        $locked_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_locked');
+        $progress_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_progress');
+        $ex_eoss_path = \Drupal::config('hzd_release_management.settings')->get('import_path_csv_ex_eoss');
         
         if ($released_path) {
-            $path['released'] = $released_path;
+            $path['released'] = DRUPAL_ROOT . '/' . $released_path;
             $header_values['released'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
         }
         if ($progress_path) {
-            $path['progress'] = $progress_path;
+            $path['progress'] = DRUPAL_ROOT . '/' . $progress_path;
             $header_values['progress'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
         }
         if ($ex_eoss_path) {
-            $path['ex_eoss'] = $ex_eoss_path;
+            $path['ex_eoss'] = DRUPAL_ROOT . '/' . $ex_eoss_path;
             $header_values['ex_eoss'] = array('title', 'status', 'service', 'datum', 'link', 'documentation_link');
         }
         
         /*  if ($rejected_path) {
-        $path['rejected'] = $rejected_path;
+        $path['rejected'] = DRUPAL_ROOT . '/' . $rejected_path;
         $header_values['rejected'] = array('title', 'status', 'service', 'date', 'comment');
         }
          */
         if ($locked_path) {
-            $path['locked'] = $locked_path;
+            $path['locked'] = DRUPAL_ROOT . '/' . $locked_path;
             $header_values['locked'] = array('title', 'status', 'service', 'datum', 'link', 'comment');
         }
         $path_header = array('path' => $path, 'headers' => $header_values);
@@ -217,7 +217,7 @@ class HzdreleasemanagementHelper
         $upper_product = $release_product[0];
         $new_release = $get_product . "/" . strtolower($release_name);
         $dir = $new_release . "/dokumentation";
-        
+        $files = null;
         // Get the release versions.
         if (is_dir($dir)) {
             $files = scandir($dir);

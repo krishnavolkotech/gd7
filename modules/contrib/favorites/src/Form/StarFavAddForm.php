@@ -43,9 +43,10 @@ class StarFavAddForm extends FormBase
         $request = \Drupal::request();
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-        
+	if(is_array($title))
+            $title = \Drupal::service('renderer')->render($title);
         if (!isset($title)) {
-            $title = \Drupal::config('core.site_information')->get('site_name');
+//            $title = \Drupal::config('core.site_information')->get('site_name');
         }
         if ($title == '') {
             $current_path = \Drupal::service('path.current')->getPath();
@@ -53,7 +54,7 @@ class StarFavAddForm extends FormBase
         }
         if (is_string($title))
             $title = strip_tags($title);
-        
+        //pr($title);exit;
         $path = \Drupal::service('path.current')->getPath();
         $query = (isset($_GET['keys'])) ? UrlHelper::buildQuery($_GET) : '';
         

@@ -1,4 +1,4 @@
-import_path: /var/www/html/hzdupgrd_dev1/sites/default/files/imports/problem4.csv
+import_path: sites/default/files/imports/problems.csv-20170118_19-00-03
 import_mail: denis.roy@hzd.hessen.de
 import_alias: problems
 langcode: de

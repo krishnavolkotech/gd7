@@ -46,10 +46,11 @@ class HzdreleasemanagementStorage
             $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
             $nids = $node_ids->execute()->fetchCol();
             
+            //Not sure is this is really necessary here.
             $query = db_select('node', 'n');
             $query->Fields('n', array('nid'));
             $query->condition('nid', $nids, 'IN');
-            $locked_values = $query->execute()->fetchAssoc();
+            $locked_values = $query->execute()->fetchAll();
             // $release_management_group_id = $query->execute()->fetchCol();
             foreach ($locked_values as $locked_value) {
                 if (isset($locked_value)) {
@@ -81,8 +82,9 @@ class HzdreleasemanagementStorage
             }
         }
         $count = 0;
+        $sucess = false;
         while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
-            $explodedData = explode(',',$data[0]);
+            $explodedData = explode(',', $data[0]);
 //            pr($explodedData);exit;
             if ($count == 0) {
                 $heading = $data;
@@ -123,7 +125,7 @@ class HzdreleasemanagementStorage
             $subject = 'Error while import';
             $body = t("Required fields not found");
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-            $response = $type . t(' ERROR WHILE READING');
+            $response = $type . t(' ERROR WHILE READING 1');
         }
         
         $query = \Drupal::database()->select('groups_field_data', 'gfd');
@@ -302,7 +304,8 @@ class HzdreleasemanagementStorage
             "doku_link" => $field_documentation_link_value['field_documentation_link_value'],
         );
         
-        self::documentation_link_download($params, $values);
+        if ($values['type'] != 'locked')
+            self::documentation_link_download($params, $values);
         
         return TRUE;
     }
@@ -529,13 +532,13 @@ class HzdreleasemanagementStorage
     /**
      * Function for sending mail.
      */
-    public function release_not_import_mail($nid) {
+    public static function release_not_import_mail($nid) {
         global $language;
         $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
         $to = explode(',', $get_mails);
         $module = 'release_management';
         $key = 'download';
-        $from = $user->mail;
+        $from = \Drupal::config('system.site')->get('mail');;
         $params['body'] = \Drupal::config('hzd_release_management.settings')->get('release_mail_body');
         /**
          * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
@@ -560,7 +563,7 @@ class HzdreleasemanagementStorage
     /**
      * Copy subfolders to Sonstige foldes.
      */
-    public function copy_subfolders_to_sonstige($dokument_path) {
+    public static function copy_subfolders_to_sonstige($dokument_path) {
         $sonstige_docs_path = $dokument_path . "/sonstige";
         $sonstige_path = $dokument_path . "/sonstige";
         if (is_dir(str_replace("'", "", $sonstige_path))) {
@@ -571,11 +574,11 @@ class HzdreleasemanagementStorage
     /**
      * Move subfolders to sonstige and remove subfolders of sonstige.
      */
-    public function move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonstige_path) {
+    public static function move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonstige_path) {
         $sonstige_docs_path_scandir = scandir(str_replace("'", "", $sonstige_docs_path));
         unset($sonstige_docs_path_scandir[0]);
         unset($sonstige_docs_path_scandir[1]);
-        
+        $remove_sonstige_sub_folders = null;
         foreach ($sonstige_docs_path_scandir as $sonstige_docs_path_values) {
             $subfolders_of_sontige = str_replace("'", "", $sonstige_docs_path . "/" . $sonstige_docs_path_values);
             $sontige_sub_docs = $sonstige_path . "/'" . $sonstige_docs_path_values . "'";
@@ -588,7 +591,7 @@ class HzdreleasemanagementStorage
                 $release_sonstige_path = $dokument_path . "/sonstige";
                 shell_exec("mv " . $sontige_sub_docs . " " . $release_sonstige_path);
                 
-                if (is_dir($remove_sonstige_sub_folders)) {
+                if (isset($remove_sonstige_sub_folders) && is_dir($remove_sonstige_sub_folders)) {
                     shell_exec("rm -rf " . $remove_sub_doc);
                 }
             }
@@ -755,7 +758,7 @@ class HzdreleasemanagementStorage
         
         if ($filter_value['services']) {
             $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
-        }else{
+        } else {
             $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
@@ -818,7 +821,7 @@ class HzdreleasemanagementStorage
                 $deployed_releases_node_ids->condition($archive);
             }
         }
-        $deployed_releases_node_ids->sort('field_date_deployed','DESC');
+        $deployed_releases_node_ids->sort('field_date_deployed', 'DESC');
 
 //    $service_release_type = isset($filter_value['release_type']) 
 //        ? $filter_value['release_type'] : $default_type;
@@ -943,13 +946,13 @@ class HzdreleasemanagementStorage
                 
                 $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
                 
-                $elements[] = ['data'=>$earlywarnings_cell,'class'=>'earlywarnings-cell'];
+                $elements[] = ['data' => $earlywarnings_cell, 'class' => 'earlywarnings-cell'];
             }
             
             $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
             $download = "<img src = '/" . $download_imgpaths . "'>";
-            $link_info = !empty($release_node->field_documentation_link)?$release_node->field_documentation_link->value:null;
-            $link_info_path = !empty($release_node->field_link)?$release_node->field_link->value:null;
+            $link_info = !empty($release_node->field_documentation_link) ? $release_node->field_documentation_link->value : null;
+            $link_info_path = !empty($release_node->field_link) ? $release_node->field_link->value : null;
             $link = null;
             if ($link_info) {
                 $url = Url::fromRoute(
@@ -1173,24 +1176,24 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         
         // pr($rows);exit;
 //        if (!empty($rows)) {
-            $output['releases'] = array(
-                '#theme' => 'table',
-                '#rows' => $rows,
-                '#header' => $header,
-                '#attributes' => ['id' => "sortable", 'class' => ["tablesorter",'releases',$type]],
-                '#empty' => t('No records found'),
-            );
-            
-            $output['pager'] = array(
-                '#type' => 'pager',
-                '#quantity' => 5,
-                '#prefix' => '<div id="pagination">',
-                '#suffix' => '</div>',
-            );
-            $output['#attached']['drupalSettings']['release_management'] = array(
-                'group_id' => $group_id,
-            );
-            return $output;
+        $output['releases'] = array(
+            '#theme' => 'table',
+            '#rows' => $rows,
+            '#header' => $header,
+            '#attributes' => ['id' => "sortable", 'class' => ["tablesorter", 'releases', $type]],
+            '#empty' => t('No records found'),
+        );
+        
+        $output['pager'] = array(
+            '#type' => 'pager',
+            '#quantity' => 5,
+            '#prefix' => '<div id="pagination">',
+            '#suffix' => '</div>',
+        );
+        $output['#attached']['drupalSettings']['release_management'] = array(
+            'group_id' => $group_id,
+        );
+        return $output;
 //        } else {
 //            return $output[]['#markup'] = array(
 //                '#prefix' => '<div id="no-result">',
@@ -1262,11 +1265,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         if ($filter_value['filter_startdate']) {
             $startDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_startdate'])->getTimestamp();
-            $release_node_ids->condition('field_date',$startDate,'>=');
+            $release_node_ids->condition('field_date', $startDate, '>=');
         }
         if ($filter_value['filter_enddate']) {
             $endDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_enddate'])->getTimestamp() + 86399;
-            $release_node_ids->condition('field_date',$endDate,'<=');
+            $release_node_ids->condition('field_date', $endDate, '<=');
             /*$release_node_ids->condition('field_date',
                 array($filter_value['filter_startdate'],
                     $filter_value['filter_enddate']), 'BETWEEN');*/

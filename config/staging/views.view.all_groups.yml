@@ -728,10 +728,10 @@ display:
       menu:
         enabled: true
         expanded: false
+      rendering_language: de
     cache_metadata:
       max-age: 0
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args

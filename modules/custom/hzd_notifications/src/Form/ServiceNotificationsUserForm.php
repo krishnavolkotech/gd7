@@ -117,12 +117,12 @@ class ServiceNotificationsUserForm extends FormBase {
           ->condition('type',$types[$content_key])
           ->execute()->fetchAllAssoc('send_interval');
           //pr($data);exit;
-          $uids = null;
+          $uids = [];
         foreach([-1,0,86400,604800] as $interval){
           if(isset($data[$interval])){
             $uids = unserialize($data[$interval]->uids);
             //pr($data[$interval]);exit;
-            if(($key = array_search($uid, $uids)) !== false) {
+            if(($key = array_search($uid, (array)$uids)) !== false) {
               unset($uids[$key]);
             }
             if($int_val == $interval){

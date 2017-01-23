@@ -8,10 +8,8 @@ dependencies:
     - field.field.user.user.field_notifications_status
     - field.field.user.user.l10n_client_contributor_key
     - field.field.user.user.user_picture
-    - image.style.thumbnail
   module:
-    - image
-    - l10n_client_contributor
+    - path
     - user
 _core:
   default_config_hash: LLAieeozVsoZDb-2PbFxRJpQqnKmpR7-4OoRJnduz-U
@@ -24,10 +22,6 @@ content:
     weight: -10
     settings: {  }
     third_party_settings: {  }
-  contact:
-    weight: 5
-    settings: {  }
-    third_party_settings: {  }
   field_do_not_deactivate_automati:
     weight: 11
     settings:
@@ -38,19 +32,7 @@ content:
     weight: 9
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-  field_notifications_status:
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
     type: options_buttons
-  l10n_client_contributor_key:
-    type: l10n_client_contributor_key_widget
-    weight: 8
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   language:
     weight: 0
     settings: {  }
@@ -62,12 +44,9 @@ content:
     third_party_settings: {  }
   timezone:
     weight: 6
-  user_picture:
-    settings:
-      progress_indicator: throbber
-      preview_image_style: thumbnail
-    type: image_image
-    weight: 7
-    third_party_settings: {  }
 hidden:
+  contact: true
+  field_notifications_status: true
+  l10n_client_contributor_key: true
   langcode: true
+  user_picture: true
