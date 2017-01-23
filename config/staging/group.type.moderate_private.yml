@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: moderate_private
-label: 'Moderate Private'
+label: 'Mäßig Privat'
 description: 'Same as Moderate, But visible to only Members. '
 content:
   group_membership:

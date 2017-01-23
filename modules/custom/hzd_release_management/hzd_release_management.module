@@ -140,7 +140,7 @@ function get_earlywarning_release($service = NULL) {
     
     $group = ($group_id ? $group_id : RELEASE_MANAGEMENT);
     /**
-     *  select * from node_field_data nfd    
+     *  select * from node_field_data nfd
      * join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id
      *  join group_releases_view  grv on grv.service_id   = nfrs.
      * field_relese_services_target_id  where group_id = 32 ;
@@ -148,7 +148,7 @@ function get_earlywarning_release($service = NULL) {
      */
     $query = db_select('node_field_data', 'nfd');
     $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
-    $query->join('group_releases_view', 'grv', 
+    $query->join('group_releases_view', 'grv',
         'nfrs.field_relese_services_target_id = grv.service_id');
     $query->fields('nfd', array('nid', 'title'));
     if ($group) {
@@ -166,8 +166,8 @@ function get_earlywarning_release($service = NULL) {
         $default_release[$vals->nid] = $vals->title;
     }
     return array(
-      'releases' => $default_release
-     );
+        'releases' => $default_release
+    );
 }
 
 /**
@@ -353,12 +353,12 @@ function send_downtime_notifications($entity, $action = 'update') {
             $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
-      $token_service = \Drupal::token();
-      $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['subject'];
-      $subject = $token_service->replace($token_sub, array('node' => $entity));
-      $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['mail_content'];
-      // Replace the token for subject.
-      $message_text = $token_service->replace($token_body, array('node' => $entity));
+            $token_service = \Drupal::token();
+            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['subject'];
+            $subject = $token_service->replace($token_sub, array('node' => $entity));
+            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['mail_content'];
+            // Replace the token for subject.
+            $message_text = $token_service->replace($token_body, array('node' => $entity));
 //      pr($message_text);exit;
 //            $node = $view_builder->view($entity, 'full', 'de');
 //            $message_text = \Drupal::service('renderer')->render($node);
@@ -427,7 +427,7 @@ function send_qi_notifications($entity) {
             $mail = $values->mail;
             // Trigger mail functionality to send immediate notifications of quickinfo.
             //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
-            $markup = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId())->view($entity, 'print');
+            $markup = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId())->view($entity);
             $files = $entity->get('upload')->referencedEntities();
             //unset($markup['printfile']);
             $style = \Drupal::service('printable.css_include')->getCssIncludePath();

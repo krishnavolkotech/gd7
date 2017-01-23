@@ -1024,7 +1024,7 @@ display:
           exposed: true
           expose:
             operator_id: combine_op
-            label: Title
+            label: ''
             description: 'Name oder Email suchen'
             use_operator: false
             operator: combine_op
@@ -1315,7 +1315,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'User Name'
+          label: 'Last Name'
           exclude: false
           alter:
             alter_text: false
@@ -1414,7 +1414,7 @@ display:
           group_type: group
           admin_label: ''
           label: Lastname
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -1666,10 +1666,10 @@ display:
           entity_type: user
           entity_field: mail
           plugin_id: field
+      rendering_language: '***LANGUAGE_site_default***'
     cache_metadata:
       max-age: 0
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - route
         - url

@@ -465,25 +465,29 @@ class HzdStorage
         if (isset($filter_parameter['limit'])) {
             $limit = $filter_parameter['limit'];
         }
-        
-        if ($string == 'archived_problems') {
-            $problem_node_ids->sort('field_closed','desc');
-//            $problem_node_ids->condition('field_closed','','<>');
-        }else{
-            $problem_node_ids->condition('field_processing','','<>');
-//            $problem_node_ids->sort('field_processing','desc');
-        }
-//        $problem_node_ids->addTag('problems_entity_query');
         $group_problems_view = self::get_problems_services($group_id);
         if (!empty($group_problems_view)) {
             $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
         }
-        
+        //As sort on fields with format d.m.Y cannot be supported by entity query I m using database api to achieve it.
+        $ids = $problem_node_ids->execute();
+        $conn = \Drupal::database()->select('node_field_data','nfd');
+        $conn->addField('nfd','nid','dsa');
+        $conn = $conn->condition('nfd.nid',$ids,'IN')
+            ->orderBy('unix_order','desc');
+        if ($string == 'archived_problems') {
+            $conn->addExpression("STR_TO_DATE(nfp.field_closed_value,'%d.%m.%Y')",'unix_order');
+            $conn->leftJoin('node__field_closed','nfp','nfp.entity_id = nfd.nid');
+        }else{
+            $conn->addExpression("STR_TO_DATE(nfp.field_processing_value,'%d.%m.%Y')",'unix_order');
+            $conn->leftJoin('node__field_processing','nfp','nfp.entity_id = nfd.nid');
+        }
         if ($limit == 'all') {
-            $result = $problem_node_ids->execute();
+            $result = $conn->execute()->fetchCol();
         } else {
             $page_limit = ($limit ? $limit : DISPLAY_LIMIT);
-            $result = $problem_node_ids->pager($page_limit)->execute();
+            $pager = $conn->extend('Drupal\Core\Database\Query\PagerSelectExtender');
+            $result = $pager->limit($page_limit)->execute()->fetchCol();
         }
         
         $rows = array();

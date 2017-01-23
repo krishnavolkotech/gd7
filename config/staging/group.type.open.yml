@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: open
-label: Open
+label: Öffnen
 description: 'All authenticated users can join.'
 content:
   group_membership:

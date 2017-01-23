@@ -54,7 +54,7 @@ class ReadexcelController extends ControllerBase {
               // @sending mail to user when file need permissions or when file is corrupted
               $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
               $subject = 'Error while import';
-              $body = t("There is an issue while reading the file" . $file_path . ".");
+              $body = t("There is an issue while reading the file @file.",['@file'=>$file_path]);
               HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
               $response .= $type . t(' ERROR WHILE READING') . "<br>";
             }
@@ -63,7 +63,7 @@ class ReadexcelController extends ControllerBase {
             // @sending mail to user when file need permissions or when file is corrupted
             $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
             $subject = 'Error while import';
-            $body = t("There is an issue while reading the file" . $file_path . ".");
+              $body = t("There is an issue while reading the file @file.",['@file'=>$file_path]);
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
             $response .= $type . t(' ERROR WHILE READING') . "<br>";
           }
@@ -72,7 +72,7 @@ class ReadexcelController extends ControllerBase {
           // Sending mail to user when file does not exist.
           $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases');
           $subject = 'Error while import';
-          $body = t("There is an issue while importing of the file" . $file_path . ". The filename does not exist or it could have been corrupted.");
+          $body = t("There is an issue while importing of the file @file. The filename does not exist or it could have been corrupted.",['@file'=>$file_path]);
           HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
           $status = t('Error');
           $msg = t('No import file found <br>');

@@ -19,3 +19,6 @@ problem:
 group_content:
   subject: '[node:title] has been modified'
   mail_content: 'Group Content Updated again'
+early_warnings:
+  subject: '[node:title] has been modified'
+  mail_content: sffsd
