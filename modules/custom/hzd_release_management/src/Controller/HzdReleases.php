@@ -312,7 +312,7 @@ class HzdReleases extends ControllerBase
             
             // $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));.
             if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator'))) {
-                $output['#title'] = "Deployed Releases";
+                $output['#title'] = $this->t("Deployed Releases");
             } else {
                 $output['#title'] = t("Deployed Releases") . " in " . $state;
             }
