@@ -147,23 +147,29 @@ class HzdreleasemanagementStorage
         
         $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
         
-        // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
-        $field_date_value_query = db_select('node__field_date', 'ntr')
-            ->Fields('ntr', array('field_date_value'))
-            ->condition('entity_id', $nid, '=');
         
-        $field_date_value = $field_date_value_query->execute()->fetchAssoc();
-        // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
-        $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
-        
-        $field_release_value = $field_release_value_query->execute()->fetchAssoc();
-        // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
-        //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
-        $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
-        
-        $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
-        
-        if ($nid) {
+        if(isset($nid) && $nid) {
+            // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
+            $field_date_value_query = db_select('node__field_date', 'ntr')
+                ->Fields('ntr', array('field_date_value'))
+                ->condition('entity_id', $nid, '=');
+    
+            $field_date_value = $field_date_value_query->execute()->fetchAssoc();
+            // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
+            $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
+    
+            $field_release_value = $field_release_value_query->execute()->fetchAssoc();
+            // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
+            //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
+            $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
+    
+            $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
+        }else{
+            $field_date_value = ['field_date_value'=>null];
+            $field_release_value = ['field_release_type_value'=>null];
+            $field_documentation_link_value = ['field_documentation_link_value'=>null];
+        }
+        if (isset($nid) && $nid) {
             $node = Node::load($nid);
             $node->set("vid", $vid);
             $node->set("uid", 1);
@@ -274,7 +280,7 @@ class HzdreleasemanagementStorage
             
             $node = Node::create($node_array);
             $node->save();
-            
+            $nid = $node->id();
             if ($node->id()) {
                 // $group_id = \Drupal::routeMatch()->getParameter('group');
                 $group = Group::load($group_id['0']);
@@ -299,9 +305,9 @@ class HzdreleasemanagementStorage
         // Downloading the documentation link.
         $params = array(
             "title" => $title,
-            "date_value" => $field_date_value['field_date_value'],
-            "release_value" => $field_release_value['field_release_type_value'],
-            "doku_link" => $field_documentation_link_value['field_documentation_link_value'],
+            "date_value" => $field_date_value['field_date_value']?:null,
+            "release_value" => $field_release_value['field_release_type_value']?:null,
+            "doku_link" => $field_documentation_link_value['field_documentation_link_value']?:null,
         );
         
         if ($values['type'] != 'locked')
