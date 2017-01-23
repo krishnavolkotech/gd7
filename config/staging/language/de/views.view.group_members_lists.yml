@@ -1,8 +1,6 @@
-label: 'Alle Gruppen'
 display:
   default:
     display_options:
-      title: 'Alle Gruppen'
       exposed_form:
         options:
           submit_button: Suchen
