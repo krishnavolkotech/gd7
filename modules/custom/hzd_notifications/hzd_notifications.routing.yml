@@ -78,13 +78,7 @@ hzd_notifications.migrate_date_deployed:
     _title: 'Migrate Date field in Deployed Releases'
   requirements:
     _permission: 'access content'
-#hzd_notifications.daily_notification_cron:
-#  path: '/notifications-daily'
-#  defaults:
-#    _controller: '\Drupal\hzd_notifications\Controller\NotificationsCronController::dailyCron'
-#    _title: 'Daily Cron'
-#  requirements:
-#    _permission: 'access content'
+
 hzd_notifications.update_subscriptions:
   path: '/user/{user}/notifications/update/{status}'
   defaults:
@@ -98,5 +92,12 @@ hzd_notifications.cancel_all_subscriptions:
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::cancelUserNotifications'
     _title: 'Cancel Notifications'
+  requirements:
+    _permission: 'access content'
+hzd_notifications.unsent_notification_list:
+  path: '/notifications-debug'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\NotificationsController::listDaily'
+    _title: 'Daily Cron'
   requirements:
     _permission: 'access content'
