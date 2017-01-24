@@ -48,8 +48,10 @@ class GroupContentMailTemplatesForm extends ConfigFormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state) {
         $config = $this->config('hzd_customizations.mailtemplates');
-        $data = $config->get('group_content');
-        $form['#title'] = t('Mail Template for @type',['@type'=>'Group Content']);
+        $type = $this->routeMatch->getParameter('type');
+        $types = ['group'=>$this->t('Group'),'group_content'=>$this->t('Group Content')];
+        $data = $config->get($type);
+        $form['#title'] = t('Mail Template for @type',['@type'=>$types[$type]]);
         $form['subject'] = array(
             '#type' => 'textfield',
             '#title' => t('Subject'),
@@ -82,10 +84,11 @@ class GroupContentMailTemplatesForm extends ConfigFormBase
      * {@inheritdoc}
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
+        $type = $this->routeMatch->getParameter('type');
         parent::submitForm($form, $form_state);
         $data = ['subject' => $form_state->getValue('subject'), 'mail_content' => $form_state->getValue('mail_content')];
         $this->config('hzd_customizations.mailtemplates')
-            ->set('group_content', $data)
+            ->set($type, $data)
             ->save();
     }
     

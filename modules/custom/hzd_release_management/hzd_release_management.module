@@ -414,6 +414,33 @@ function send_pf_notifications($entity) {
 }
 
 /**
+ * Send immediate release notifications.
+ */
+function send_earlywarning_notifications($entity) {
+    $nid = $entity->id();
+    $service_id = $entity->get('field_release_service')->value;
+//    $service_id = $service_field[0]['target_id'];
+    
+    // Get immediate notifications user mails.
+    $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+    if (is_array($result) && count($result) > 0) {
+        foreach ($result as $values) {
+            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+            $mail = $values->mail;
+            // Trigger mail functionality to send immediate notifications of quickinfo.
+            $token_service = \Drupal::token();
+            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('early_warnings')['subject'];
+            $subject = $token_service->replace($token_sub, array('node' => $entity));
+            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('early_warnings')['mail_content'];
+            // Replace the token for subject.
+            $message_text = $token_service->replace($token_body, array('node' => $entity));
+            send_immediate_notifications($subject, $message_text, $mail, $preference);
+        }
+    }
+}
+
+
+/**
  * Send immediate Quickinfo Notifications
  * TODONOTIFICATIONS.
  */
@@ -461,6 +488,9 @@ function hzd_release_management_node_insert($entity) {
     
     if ($entity->getType() == 'planning_files') {
         send_pf_notifications($entity);
+    }
+    if ($entity->getType() == 'early_warnings') {
+        send_earlywarning_notifications($entity);
     }
     
     if ($entity->getType() == 'quickinfo') {
@@ -511,6 +541,9 @@ function hzd_release_management_node_update($entity) {
     
     if ($entity->getType() == 'planning_files') {
         send_pf_notifications($entity);
+    }
+    if ($entity->getType() == 'early_warnings') {
+        send_earlywarning_notifications($entity);
     }
     
     if ($entity->getType() == 'quickinfo') {
