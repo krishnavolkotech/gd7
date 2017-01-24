@@ -256,7 +256,7 @@ class HzdreleasemanagementHelper
      *
      * @return $zip string zip file path which created by compressing document folder.
      */
-    public function zip_file_path($doc_values) {
+    public static function zip_file_path($doc_values) {
         $arrs = $doc_values['arr'];
         unset($arrs[0]);
         unset($arrs[1]);
@@ -297,8 +297,10 @@ class HzdreleasemanagementHelper
             $release_path = $file_path . "/releases/downloads/" . $release_name . "_doku";
             $files_path = $file_path . "/releases/downloads";
             $release_name_doc = $release_name . "_doku";
-            $sh_zip = "./core/misc/create_zip.sh";
-            shell_exec("sh $sh_zip $files_path $release_name_doc");
+//            $sh_zip = "./core/misc/create_zip.sh";
+//            shell_exec("sh $sh_zip $files_path $release_name_doc");
+            $fileName = $release_name .'_doku.zip';
+            shell_exec("cd $files_path && zip -r $fileName $release_name_doc/");
             shell_exec("rm -rf " . $release_path);
         }
         $host_path = "http://" . $host . "/files/releases/downloads";
@@ -309,7 +311,7 @@ class HzdreleasemanagementHelper
     /**
      *
      */
-    public function copy_doc_sub_folders($doc_values, $array, $root_path) {
+    public static function copy_doc_sub_folders($doc_values, $array, $root_path) {
         $arrs = $doc_values['arr'];
         unset($arrs[0]);
         unset($arrs[1]);

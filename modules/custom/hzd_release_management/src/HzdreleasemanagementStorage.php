@@ -498,11 +498,13 @@ class HzdreleasemanagementStorage
                             }
                         }
                         $remove_docs = scandir(str_replace("'", "", $paths));
+                        unset($remove_docs[0]);
+                        unset($remove_docs[1]);
                         foreach ($remove_docs as $doc_files) {
                             shell_exec("rm -rf " . $paths . "/" . $doc_files);
                         }
                         // cache_clear_all('release_doc_import_'.$nid, 'cache');.
-                        drupal_flush_all_caches();
+//                        drupal_flush_all_caches();
                     }
                     $existing_paths_replace = str_replace("'", "", $paths);
                     $scan_docu = scandir($existing_paths_replace);
@@ -624,6 +626,7 @@ class HzdreleasemanagementStorage
     static public function release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid) {
         
         shell_exec("chmod -R 777 " . $paths);
+        
         shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
 //dpm($paths);
 //dpm("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
@@ -661,9 +664,9 @@ class HzdreleasemanagementStorage
                     $sonstige_content = array();
                     // $list_scandir = scandir($new_file);
                     $list_scandir = array();
-                    if ($dh = opendir($paths)) {
+                    if ($dh = opendir($new_file)) {
                         while (($file = readdir($dh)) !== FALSE) {
-                            if (!is_dir($paths . DIRECTORY_SEPARATOR . $file)) {
+                            if (!is_dir($new_file . DIRECTORY_SEPARATOR . $file)) {
                                 array_push($list_scandir, $file);
                             }
                         }
@@ -678,7 +681,8 @@ class HzdreleasemanagementStorage
                             $new_path = $dokument_path . "/" . $upper;
                             shell_exec("mkdir " . $new_path . "/sonstige");
                             shell_exec("chmod 777 -R " . $new_path . "/sonstige");
-                            shell_exec("mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige");
+//                            echo "mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige";exit;
+                            shell_exec("mv " . $new_path . "/" . $list_values . " " . $new_path . "/sonstige");
                         }
                     }
                 }

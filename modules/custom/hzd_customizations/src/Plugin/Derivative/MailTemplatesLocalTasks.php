@@ -41,6 +41,19 @@ class MailTemplatesLocalTasks extends DeriverBase implements ContainerDeriverInt
 //                    'weight' => 100,
                 ] + $base_plugin_definition;
         }
+        $groupTypes = ['group', 'group_content'];
+        $titles = ['group'=>'Group','group_content'=>'Group Content'];
+        $derivatives = [];
+        foreach ($groupTypes as $groupType) {
+//            $nodeType = \Drupal\node\Entity\NodeType::load($type);
+            $this->derivatives['hzd_customizations.mail_templates_' . $groupType] = [
+                    'route_name' => "hzd_customizations.group_content_mail_templates",
+                    'route_parameters'=>['type'=>$groupType],
+                    'title' => $titles[$groupType],
+                    'base_route' => "hzd_customizations.mail_templates_menu",
+//                    'weight' => 100,
+                ] + $base_plugin_definition;
+        }
         return $this->derivatives;
     }
 }

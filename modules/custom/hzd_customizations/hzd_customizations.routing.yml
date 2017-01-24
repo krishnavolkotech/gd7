@@ -134,15 +134,16 @@ hzd_customizations.mail_templates:
   options:
     _admin_route: TRUE
 hzd_customizations.group_content_mail_templates:
-  path: '/admin/messaging/templates/group_content'
+  path: '/admin/messaging/templates/{type}'
   defaults:
     _form: '\Drupal\hzd_customizations\Form\GroupContentMailTemplatesForm'
     _title: 'Mail Template for Group content'
+    type: group
   requirements:
     _permission: 'access administration pages'
+    type: group|group_content
   options:
     _admin_route: TRUE
-
 
 #hzd_customizations.problems_mail_template:
 #  path: '/admin/messaging/templates/problems'

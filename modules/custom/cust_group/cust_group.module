@@ -74,6 +74,11 @@ function cust_group_node_insert($entity) {
     \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'insert');
 }
 
+function cust_group_group_update($entity) {
+    sendGroupUpdateMail($entity);
+    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
+}
+
 
 function cust_group_group_content_insert($entity) {
     $node = $entity->getEntity();
@@ -87,10 +92,15 @@ function cust_group_group_content_insert($entity) {
 }
 
 function sendGroupUpdateMail($entity) {
-    $group = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+    if($entity->getEntityTypeId() == 'group'){
+        $group = $entity->id();
+    }else{
+        $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+        $group = $groupContentId->getGroup()->id();
+    }
 //    pr($group);exit;
-    if (!empty($group) && $group['gid'] && in_array($entity->getType(), ['event', 'faqs', 'forum', 'page', 'newsletter'])) {
-        $getUserMailList = getGroupMemberList($group['gid']);
+    if (!empty($group) && $group && (in_array($entity->bundle(), ['event', 'faqs', 'forum', 'page', 'newsletter']) || $entity->getEntityTypeId() == 'group')) {
+        $getUserMailList = getGroupMemberList($group);
         send_notifications($entity, $getUserMailList);
     }
 }
@@ -131,11 +141,12 @@ function send_notifications($entity, $mails) {
 //    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
     
     $token_service = \Drupal::token();
-    $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content')['subject'];
-    $params['subject'] = $token_service->replace($token_sub, array('node' => $entity));
-    $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content')['mail_content'];
-    $params['message'] = $token_service->replace($token_body, array('node' => $entity));
-//    echo $params['message'];exit;
+    $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['subject'];
+    $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
+    $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
+    $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
+    
+//    pr($mails);echo $params['message'];exit;
 //    global $base_url;
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
 //    $params['message'] .= '<br><br>' . $url;
@@ -363,12 +374,12 @@ function cust_group_user_delete($user) {
 }
 
 
-function cust_group_preprocess_node(&$variables){
+function cust_group_preprocess_node(&$variables) {
     $variables['page'] = 1;
 //    exit;
 }
 
-function cust_group_user_login(){
+function cust_group_user_login() {
     $response = new RedirectResponse("/");
     $response->send();
     return;

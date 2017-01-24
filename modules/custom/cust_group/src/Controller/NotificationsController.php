@@ -3,6 +3,8 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupContent;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,8 +27,10 @@ class NotificationsController extends ControllerBase
         if (empty($node)) {
             return null;
         }
-        
-        if (in_array($node->getType(), ['downtimes', 'early_warnings', 'problem', 'release'])) {
+        if ($action == 'update' && $node->getEntityTypeId() == 'group') {
+            $data = self::getGroupNotificationData($node);
+            self::insertNotification($data);
+        } elseif (in_array($node->getType(), ['downtimes', 'early_warnings', 'problem', 'release'])) {
             $data = self::getServiceNotificationData($node);
             self::insertNotification($data);
         } elseif ($node->getType() == 'planning_files') {
@@ -46,6 +50,9 @@ class NotificationsController extends ControllerBase
         if ($action == 'insert' && !empty($groupContent = \Drupal::entityQuery('group_content')->condition('entity_id', $node->id())->execute()) && in_array($node->getType(), ['event', 'faqs', 'forum', 'page', 'newsletter'])) {
             //get the group content id which is reffered to node->id();
             $data = self::getGroupNotificationData($groupContent);
+            self::insertNotification($data);
+        } elseif ($action == 'insert' && $node->getEntityTypeId() == 'group') {
+            $data = self::getGroupNotificationData($node);
             self::insertNotification($data);
         }
     }
@@ -115,9 +122,16 @@ class NotificationsController extends ControllerBase
         return $data;
     }
     
-    static function getGroupNotificationData($groupContent) {
-        $groupNode = \Drupal\group\Entity\GroupContent::load(reset($groupContent));
-        $group = $groupNode->getGroup()->id();
+    static function getGroupNotificationData($entity) {
+        if ($entity instanceof GroupContent) {
+            $groupNode = GroupContent::load(reset($entity));
+            $contentId = $groupNode->id();
+            $group = $groupNode->getGroup()->id();
+        } elseif ($entity instanceof Group) {
+            $group = $entity->id();
+            $contentId = -1;
+        }
+        
         //echo $group;exit;
         $group_notifications_id = \Drupal::database()->select('group_notifications', 'gn')
             ->fields('gn', ['id'])
@@ -127,7 +141,7 @@ class NotificationsController extends ControllerBase
             ->fetchCol();
         $data = [];
         foreach ($group_notifications_id as $id) {
-            $data[] = ['type' => 'group_notifications', 'type_id' => $id, 'timestamp' => REQUEST_TIME, 'nid' => $groupNode->id()];
+            $data[] = ['type' => 'group_notifications', 'type_id' => $id, 'timestamp' => REQUEST_TIME, 'nid' => $contentId];
         }
         return $data;
     }
@@ -154,8 +168,6 @@ class NotificationsController extends ControllerBase
                     ->fields($item)->condition('id', $periodic_notifications_id)->execute();
             }
         }
-        
-        
     }
     
     
@@ -236,7 +248,7 @@ class NotificationsController extends ControllerBase
                     ];
                 }
                 $params['message'] = $markup;
-                $params['subject'] = 'HZD Quick Info Updated';
+                $params['subject'] = t('Quick Info Updated');
                 self::sendNotificationMail($userEmails[$userId], $params);
                 $params = null;
             }
@@ -310,7 +322,7 @@ class NotificationsController extends ControllerBase
                 //$markup[] = $plannigMailData[$userId]['planning_files'];
             }
             $params['message'] = $markup;
-            $params['subject'] = 'HZD Service Content Updated';
+            $params['subject'] = t('Service Content Updated');
             self::sendNotificationMail($userEmails[$userId], $params);
             $params = null;
         }
@@ -367,12 +379,14 @@ class NotificationsController extends ControllerBase
                 }
                 $groupContentItem = null;
                 foreach ($groupContent as $cont) {
-                    if (!isset($groupContentEntity[$cont])) {
+                    if ($cont == -1) {
+                        $groupContentItem[] = $groupEntity[$groupId]->toLink($groupEntity[$groupId]->label(), 'canonical', ['absolute' => 1]);
+                    } elseif (!isset($groupContentEntity[$cont])) {
                         $groupContentEntity[$cont] = \Drupal\group\Entity\GroupContent::load($cont);
                     }
-                    $groupContentItem[] = $groupContentEntity[$cont]->toLink($groupContentEntity[$cont]->label(), 'canonical', ['absolute' => 1]);
-                    
-                    
+                    if ($cont != -1) {
+                        $groupContentItem[] = $groupContentEntity[$cont]->toLink($groupContentEntity[$cont]->label(), 'canonical', ['absolute' => 1]);
+                    }
                 }
                 $markup[] = [
                     '#prefix' => '<strong>' . $groupEntity[$groupId]->label() . '</strong>:',
@@ -384,7 +398,7 @@ class NotificationsController extends ControllerBase
                 
             }
             $params['message'] = $markup;
-            $params['subject'] = 'HZD Group Content Updated';
+            $params['subject'] = t('Group Content Updated');
             self::sendNotificationMail($userEmails[$userId], $params);
             $params = null;
         }
@@ -452,7 +466,7 @@ class NotificationsController extends ControllerBase
                     '#weight' => 100,
                 ];
                 $params['message'] = $markup;
-                $params['subject'] = 'HZD Planning Files Updated';
+                $params['subject'] = t('Planning Files Updated');
                 self::sendNotificationMail($userEmails[$userId], $params);
                 $params = null;
             }
@@ -482,7 +496,7 @@ class NotificationsController extends ControllerBase
             ->condition('ufd.status', 1);
         $userEmails->leftJoin('inactive_users', 'iu', 'iu.uid = ufd.uid');
         $userEmails->leftJoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = ufd.uid');
-        $userEmails->condition('ufns.field_notifications_status_value',1);
+        $userEmails->condition('ufns.field_notifications_status_value', 1);
         $orCondition = $userEmails->orConditionGroup()->condition('iu.inactive_user_notification_flag', 0)->isNull('iu.inactive_user_notification_flag');
         $userEmails->condition($orCondition);
         $userEmails = $userEmails->execute()->fetchAllAssoc('uid');

@@ -169,14 +169,15 @@ class CustNodeController extends ControllerBase {
     if (!$node) {
       return false;
     }
-    $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
-                    ->fields('gcfd', ['gid', 'id'])
-                    ->condition('gcfd.entity_id', $node->id())
-                    ->execute()->fetchAssoc();
-    if (!empty($checkGroupNode)) {
-      return $checkGroupNode;
-    }
-    return false;
+//      $checkGroupNode = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+//    $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
+//                    ->fields('gcfd', ['gid', 'id'])
+//                    ->condition('gcfd.entity_id', $node->id())
+//                    ->execute()->fetchAssoc();
+//    if (!empty($checkGroupNode)) {
+//      return $checkGroupNode;
+//    }
+    return \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
   }
 
   function groupNodeEdit() {
