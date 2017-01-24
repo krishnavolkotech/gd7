@@ -152,7 +152,7 @@ class UpdateConfigurationForm extends FormBase {
       foreach ($this->targetStorage->getAllCollectionNames() as $collection) {
         $target = str_replace('.', '/', $collection);
         $this->unlink_recursive($config_directory_selected . "/" . $target . "/", 'yml');
-        if (!is_dir($config_directory_selected . "$config_directory_selected." / ".$target." / "" . $target . "/")) {
+        if (!is_dir($config_directory_selected . "/" . $target . "/")) {
           mkdir(($config_directory_selected . "/" . $target . "/"), 0775, TRUE);
         }
         $collection_storage = $this->targetStorage->createCollection($collection);
