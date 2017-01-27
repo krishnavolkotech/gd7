@@ -4,7 +4,7 @@ status: true
 dependencies:
   module:
     - cust_group
-title: 'Default cron handler'
+title: 'Notification cron Daily'
 id: cust_group_cron
 weight: 0
 module: cust_group

@@ -22,3 +22,6 @@ group_content:
 early_warnings:
   subject: '[node:title] has been modified'
   mail_content: sffsd
+group:
+  subject: '[group:title] has been updated'
+  mail_content: '[group:url]'

@@ -44,20 +44,20 @@ if (!defined('SITE_ADMIN_ROLE')) {
  * return $return;
  * }.
  */
-/* function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
-  //print_r($items); die();
-  $user = \Drupal::currentUser();
-  if ($user) {
-  $groups_list = hzd_group_list($user->id(), TRUE);
-  foreach ($groups_list as $group) {
-  $group_ids[] = $group->id;
-  }
-  if (!empty($group_ids)) {
-  $query->addCondition('gid', $group_ids, 'IN');
-  }
-  }
-  }
- */
+/*function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+    //print_r($items); die();
+    $user = \Drupal::currentUser();
+    if ($user) {
+        $groups_list = hzd_group_list($user->id(), TRUE);
+        foreach ($groups_list as $group) {
+            $group_ids[] = $group->id;
+        }
+        if (!empty($group_ids)) {
+            $query->addCondition('gid', $group_ids, 'IN');
+        }
+    }
+}*/
+
 
 /**
  * Implements hook_form_alter().

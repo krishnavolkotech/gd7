@@ -45,9 +45,11 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             $emailLabel = $form['account']['mail']['#title'];
             $form['account']['confirm_mail']['#title'] = t('Confirm @email',['@email'=>$emailLabel]);
             $form['account']['mail']['#weight'] = 0;
-            $form['account']['name']['#weight'] = 2;
-//            pr(($form['account']['confirm_mail']['#weight']));exit;
-//            pr(($form['account']['mail']['#weight']));exit;
+            $form['account']['name']['#weight'] = 3;
+            $form['account']['pass']['#weight'] = 2;
+/*            pr(array_keys($form['account']));
+//exit;
+            pr(($form['account']['pass']['#weight']));exit;*/
         }
         if ($form_id == 'user_form') {
             $account = $form_state->getFormObject()->getEntity();
@@ -117,7 +119,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             //pr($groups);exit;
             $form['groups'] = array(
                 '#type' => 'checkboxes',
-                '#title' => t('@grp<span class="form-required"></span>',['@grp'=>'Groups']),
+                '#title' => t('@grp<span class="form-required"></span>',['@grp'=>t('Groups')]),
                 '#options' => $groups,
                 '#required' => true
             );

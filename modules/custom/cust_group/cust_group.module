@@ -79,6 +79,27 @@ function cust_group_group_update($entity) {
     \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
 }
 
+function cust_group_group_content_update($entity) {
+    if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
+        $group = $entity->getGroup();
+        $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
+        $mailManager = \Drupal::service('plugin.manager.mail');
+        $module = 'group';
+        $key = 'immediate_notifications';
+        $params['subject'] = $subject;
+        $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $send = true;
+        $user = $entity->get('entity_id')->referencedEntities()[0];
+        $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLink has been approved.', ['@user' => $user->getDisplayName(), '@groupLink' => $group->toLink($group->label(),'canonical',['absolute'=>1])->toString()]);
+        $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
+        if ($result['result'] !== true) {
+            drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+        } else {
+            drupal_set_message(t('Mail sent.'), 'status');
+        }
+    }
+}
+
 
 function cust_group_group_content_insert($entity) {
     $node = $entity->getEntity();
@@ -92,9 +113,9 @@ function cust_group_group_content_insert($entity) {
 }
 
 function sendGroupUpdateMail($entity) {
-    if($entity->getEntityTypeId() == 'group'){
+    if ($entity->getEntityTypeId() == 'group') {
         $group = $entity->id();
-    }else{
+    } else {
         $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
         $group = $groupContentId->getGroup()->id();
     }
@@ -145,7 +166,7 @@ function send_notifications($entity, $mails) {
     $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
     $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
     $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
-    
+
 //    pr($mails);echo $params['message'];exit;
 //    global $base_url;
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
@@ -252,7 +273,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 //            kint($fake_request);
             $url = \Drupal\Core\Url::fromUserInput($fake_request);
             $form_state->setRedirectUrl($url);
-            kint($form_state->getRedirect());
+//            kint($form_state->getRedirect());
             break;
     }
 }
@@ -279,7 +300,8 @@ function requst_submit_handler(&$form, $form_state) {
     $send = true;
     $link = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'entity.group_content.group_membership.pending_collection', ['group' => $group->id()], ['absolute' => TRUE])->toString();
     foreach ($users as $user) {
-        $params['message'] = t('Dear ' . $user['name'] . ',<br><br>There is a new Membership Request for Group ' . $group->toLink()->toString() . '<br><br>' . $message . '<br><br>' . $link);
+        
+        $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $user['name'], '@groupLink' => $group->toLink()->toString(), '@link' => $link]);
         $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, NULL, $send);
     }
     if ($result['result'] !== true) {

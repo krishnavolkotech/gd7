@@ -3,6 +3,7 @@
 namespace Drupal\hzd_release_management;
 
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
 use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\hzd_services\HzdservicesStorage;
@@ -507,6 +508,23 @@ class HzdreleasemanagementHelper
      * Returns the released releses for the deployment.
      */
     static public function released_deployed_releases($service = NULL) {
+        //Retriving teh data using entity query // PLease use the below code to optimize performance @sandeep
+/*        $services = \Drupal::database()->select('group_releases_view','grv')
+            ->fields('grv',['service_id'])
+            ->condition('grv.group_id', RELEASE_MANAGEMENT, '=')
+            ->execute()->fetchCol();
+        if($service){
+            $services = $service;
+        }
+        $data = \Drupal::entityQuery('node')
+            ->condition('field_relese_services',$services,'IN')
+            ->condition('field_release_type',[1,2],'IN')
+            ->condition('status',1)
+            ->execute();
+        $nodes = Node::loadMultiple($data);
+        foreach($nodes as $node){
+            $releases_infos[$node->get('field_relese_services')->target_id] = $node->get('field_relese_services')->referencedEntities()[0]->label();
+        }*/
         
         $query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->leftJoin('node__field_relese_services', 'nfrs', 'nfrs.entity_id = nfd.nid');
