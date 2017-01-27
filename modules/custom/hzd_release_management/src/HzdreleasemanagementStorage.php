@@ -148,26 +148,26 @@ class HzdreleasemanagementStorage
         $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
         
         
-        if(isset($nid) && $nid) {
+        if (isset($nid) && $nid) {
             // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
             $field_date_value_query = db_select('node__field_date', 'ntr')
                 ->Fields('ntr', array('field_date_value'))
                 ->condition('entity_id', $nid, '=');
-    
+            
             $field_date_value = $field_date_value_query->execute()->fetchAssoc();
             // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
             $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
-    
+            
             $field_release_value = $field_release_value_query->execute()->fetchAssoc();
             // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
             //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
             $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
-    
+            
             $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
-        }else{
-            $field_date_value = ['field_date_value'=>null];
-            $field_release_value = ['field_release_type_value'=>null];
-            $field_documentation_link_value = ['field_documentation_link_value'=>null];
+        } else {
+            $field_date_value = ['field_date_value' => null];
+            $field_release_value = ['field_release_type_value' => null];
+            $field_documentation_link_value = ['field_documentation_link_value' => null];
         }
         if (isset($nid) && $nid) {
             $node = Node::load($nid);
@@ -305,9 +305,9 @@ class HzdreleasemanagementStorage
         // Downloading the documentation link.
         $params = array(
             "title" => $title,
-            "date_value" => $field_date_value['field_date_value']?:null,
-            "release_value" => $field_release_value['field_release_type_value']?:null,
-            "doku_link" => $field_documentation_link_value['field_documentation_link_value']?:null,
+            "date_value" => $field_date_value['field_date_value'] ?: null,
+            "release_value" => $field_release_value['field_release_type_value'] ?: null,
+            "doku_link" => $field_documentation_link_value['field_documentation_link_value'] ?: null,
         );
         
         if ($values['type'] != 'locked')
@@ -756,14 +756,17 @@ class HzdreleasemanagementStorage
         $filter_value = HzdreleasemanagementStorage::get_release_filters();
         $type = 'deployed_releases';
         $group_id = get_group_id();
-        
-        if ($group_id != RELEASE_MANAGEMENT) {
-            $default_type = db_query("SELECT release_type "
-                . "FROM {default_release_type} "
-                . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
-            $default_type = $default_type ? $default_type : KONSONS;
+        if (isset($filter_value['release_type'])) {
+            $default_type = $filter_value['release_type'];
         } else {
-            $default_type = KONSONS;
+            if ($group_id != RELEASE_MANAGEMENT) {
+                $default_type = db_query("SELECT release_type "
+                    . "FROM {default_release_type} "
+                    . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
+                $default_type = $default_type ? $default_type : KONSONS;
+            } else {
+                $default_type = KONSONS;
+            }
         }
         
         if ($filter_value['services']) {

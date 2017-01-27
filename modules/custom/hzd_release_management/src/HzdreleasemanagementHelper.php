@@ -541,7 +541,7 @@ class HzdreleasemanagementHelper
         }
         $query->orderBy('title');
         $releases_infos = $query->execute()->fetchAll();
-        $services = array();
+        $services = $releases = array();
         foreach ($releases_infos as $releases_info) {
             if (!in_array($releases_info->service, $services)) {
                 $services[] = $releases_info->service;
@@ -642,7 +642,7 @@ class HzdreleasemanagementHelper
             // $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
             $result = $query->execute()->fetchAll();
         }
-        
+        $currently = $archived = [];
         foreach ($result as $deployed_release) {
             $query = \Drupal::database()->select('node_field_data', 'nfd');
             $query->fields('nfd', array('title'));
