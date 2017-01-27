@@ -9,7 +9,7 @@
         "dompdf/dompdf": "^0.7.0",
         "drupal/core": "8.2.4",
         "drupal/config_direct_save": "^1.0",
-        "drupal/search_api_solr": "1.0-beta1",
+        "drupal/search_api_solr": "1.0.0-beta1",
         "drupal/search_api": "1.0-beta3",
         "drupal/view_unpublished": "1.0-alpha1"
     },
