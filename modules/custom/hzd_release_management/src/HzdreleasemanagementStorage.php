@@ -125,7 +125,7 @@ class HzdreleasemanagementStorage
             $subject = 'Error while import';
             $body = t("Required fields not found");
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-            $response = $type . t(' ERROR WHILE READING 1');
+            $response = $type . t(' ERROR WHILE READING');
         }
         
         $query = \Drupal::database()->select('groups_field_data', 'gfd');

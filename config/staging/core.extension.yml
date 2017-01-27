@@ -82,7 +82,6 @@ module:
   reroute_email: 0
   rest: 0
   search_api: 0
-  search_api_page: 0
   serialization: 0
   shortcut: 0
   simplify: 0

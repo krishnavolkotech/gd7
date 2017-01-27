@@ -4,7 +4,7 @@ status: true
 dependencies:
   module:
     - cust_user
-title: 'Default cron handler'
+title: 'Notification cron Weekly'
 id: cust_user_cron
 weight: 0
 module: cust_user

@@ -99,7 +99,7 @@ class IncidentsBlock extends BlockBase
             ->fetchAllKeyed();
         /*    $maintenance_list = \Drupal::database()->select("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll(); */
         $result = $serviceids_list = array();
-        
+        $data = [];
         // Get the service id's list and get respective details from service id.
         foreach ($maintenance_list as $key => $vals) {
             $incident = Node::load($vals->downtime_id);

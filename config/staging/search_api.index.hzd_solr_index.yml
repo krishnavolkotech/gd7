@@ -1,0 +1,141 @@
+uuid: d38f1ecd-f750-4c53-a516-42d7c1c2a9db
+langcode: en
+status: false
+dependencies:
+  config:
+    - field.storage.group.field_description
+    - field.storage.group.field_old_reference
+    - field.storage.group.field_group_body
+  module:
+    - search_api
+    - node
+    - group
+id: hzd_solr_index
+name: 'HZD Solr Index'
+description: ''
+read_only: false
+field_settings:
+  id:
+    label: 'Group ID'
+    datasource_id: 'entity:group'
+    property_path: id
+    type: integer
+  type:
+    label: Type
+    datasource_id: 'entity:group'
+    property_path: type
+    type: string
+  langcode:
+    label: Language
+    datasource_id: 'entity:group'
+    property_path: langcode
+    type: string
+  label:
+    label: Title
+    datasource_id: 'entity:group'
+    property_path: label
+    type: string
+  uid:
+    label: 'Group creator'
+    datasource_id: 'entity:group'
+    property_path: uid
+    type: integer
+  created:
+    label: 'Created on'
+    datasource_id: 'entity:group'
+    property_path: created
+    type: date
+  changed:
+    label: 'Changed on'
+    datasource_id: 'entity:group'
+    property_path: changed
+    type: date
+  default_langcode:
+    label: 'Default translation'
+    datasource_id: 'entity:group'
+    property_path: default_langcode
+    type: boolean
+  field_description:
+    label: Description
+    datasource_id: 'entity:group'
+    property_path: field_description
+    type: string
+    dependencies:
+      config:
+        - field.storage.group.field_description
+  field_old_reference:
+    label: 'Old Reference'
+    datasource_id: 'entity:group'
+    property_path: field_old_reference
+    type: integer
+    dependencies:
+      config:
+        - field.storage.group.field_old_reference
+  field_group_body:
+    label: group_body
+    datasource_id: 'entity:group'
+    property_path: field_group_body
+    type: text
+    dependencies:
+      config:
+        - field.storage.group.field_group_body
+  status:
+    label: null
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+  uid_1:
+    label: null
+    datasource_id: 'entity:node'
+    property_path: uid
+    type: integer
+processor_settings:
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
+options:
+  index_directly: true
+  cron_limit: 50
+datasource_settings:
+  'entity:node':
+    plugin_id: 'entity:node'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - downtimes
+          - page
+          - problem
+          - quickinfo
+      languages:
+        default: true
+        selected: {  }
+  'entity:group':
+    plugin_id: 'entity:group'
+    settings:
+      bundles:
+        default: true
+        selected: {  }
+      languages:
+        default: true
+        selected: {  }
+  'entity:group_content':
+    plugin_id: 'entity:group_content'
+    settings:
+      bundles:
+        default: true
+        selected: {  }
+      languages:
+        default: true
+        selected: {  }
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {  }
+server: null
