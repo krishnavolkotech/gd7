@@ -238,6 +238,7 @@ function get_release($string = NULL, $service = NULL) {
  * Returns the type of release.
  */
 function get_release_type($type) {
+    $release_type = 1;
     switch ($type) {
         case 'released':
             $release_type = 1;
