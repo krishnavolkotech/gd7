@@ -124,10 +124,12 @@ class GroupNotifications extends FormBase {
         if (isset($data[$interval])) {
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;
-          if (($key = array_search($uid, $uids)) !== false) {
-            unset($uids[$key]);
+          foreach($uids as $userKey => $item){
+            if($item == $uid){
+              unset($uids[$userKey]);
+            }
           }
-          if ($userChoiceInterval == $interval) {
+          if ($id->send_interval == $interval) {
             $uids[] = $uid;
           }
           \Drupal::database()

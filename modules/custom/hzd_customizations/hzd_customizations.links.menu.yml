@@ -38,9 +38,15 @@ hzd_customizations.quickinfo_groupid:
   parent: hzd_customizations.notification
   description: 'Autoren RZ-Schnellinfo Group Id'
 
-hzd_customizations.quickinfo_uniqueid:
+hzd_customizations.notifications_config:
   title: 'Default Unqiue Id'
   route_name: hzd_customizations.quickinfo_uniqueid
+  parent: hzd_customizations.notification
+  description: 'Default Unqiue Id'
+
+hzd_customizations.quickinfo_uniqueid:
+  title: 'Default Notification Settings'
+  route_name: hzd_notifications.notifications_config
   parent: hzd_customizations.notification
   description: 'Default Unqiue Id'
 
