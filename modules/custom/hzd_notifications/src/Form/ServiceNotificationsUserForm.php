@@ -122,8 +122,10 @@ class ServiceNotificationsUserForm extends FormBase {
           if(isset($data[$interval])){
             $uids = unserialize($data[$interval]->uids);
             //pr($data[$interval]);exit;
-            if(($key = array_search($uid, (array)$uids)) !== false) {
-              unset($uids[$key]);
+            foreach($uids as $userKey => $item){
+              if($item == $uid){
+                unset($uids[$userKey]);
+              }
             }
             if($int_val == $interval){
               $uids[] = $uid;

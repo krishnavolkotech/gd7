@@ -94,6 +94,15 @@ hzd_notifications.cancel_all_subscriptions:
     _title: 'Cancel Notifications'
   requirements:
     _permission: 'access content'
+hzd_notifications.notifications_config:
+  path: '/admin/messaging/notifications'
+  defaults:
+    _form: '\Drupal\hzd_notifications\Form\NotificationsConfig'
+    _title: 'Einstellungen'
+  requirements:
+    _permission: 'administer content'
+#    _theme: 'hzd'
+    _admin_route: 'FALSE'
 hzd_notifications.unsent_notification_list:
   path: '/notifications-debug'
   defaults:

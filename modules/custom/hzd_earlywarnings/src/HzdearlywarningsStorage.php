@@ -236,6 +236,7 @@ class HzdearlywarningsStorage
         } else {
             $result = $earlywarnings_nids->execute();
         }
+        $rows = [];
         foreach ($result as $earlywarnings_nid) {
             $earlywarning = \Drupal\node\Entity\Node::load($earlywarnings_nid);
             
@@ -268,10 +269,10 @@ class HzdearlywarningsStorage
             $rows[] = $elements;
         }
         
-        if (count($rows) == 0) {
+        /*if (count($rows) == 0) {
             $output[]['#markup'] = t('<div id="no-result"> No Data to be displayed </div>');
             return $output;
-        }
+        }*/
         
         $output['earlywarnings'] = array(
             '#theme' => 'table',

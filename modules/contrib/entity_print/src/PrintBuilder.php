@@ -89,21 +89,24 @@ class PrintBuilder implements PrintBuilderInterface {
     ];
     return $renderer->generateHtml([$entity], $render, $use_default_css, $optimize_css);
   }
+  
 
   /**
    * {@inheritdoc}
    */
-  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $uri = '', $use_default_css = TRUE) {
+  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $scheme = 'public', $filename = FALSE, $use_default_css = TRUE) {
     $renderer = $this->prepareRenderer($entities, $print_engine, $use_default_css);
 
     // Allow other modules to alter the generated Print object.
     $this->dispatcher->dispatch(PrintEvents::PRE_SEND, new PreSendPrintEvent($print_engine, $entities));
 
     // If we didn't have a URI passed in the generate one.
-    if (!$uri) {
-      $uri = file_default_scheme() . '://' . $renderer->getFilename($entities) . '.' . $print_engine->getExportType()->getFileExtension();
+    if (!$filename) {
+      $filename = $renderer->getFilename($entities) . '.' . $print_engine->getExportType()->getFileExtension();
     }
-    $print_engine->getPrintObject()->render();
+
+    $uri = "$scheme://$filename";
+
     // Save the file.
     return file_unmanaged_save_data($print_engine->getBlob(), $uri, FILE_EXISTS_REPLACE);
   }
@@ -127,8 +130,8 @@ class PrintBuilder implements PrintBuilderInterface {
     }
 
     $renderer = $this->rendererFactory->create($entities);
-    $content = array_map([$renderer, 'render'], $entities);
-    
+    $content = $renderer->render($entities);
+
     $first_entity = reset($entities);
     $render = [
       '#theme' => 'entity_print__' . $first_entity->getEntityTypeId() . '__' . $first_entity->bundle(),
@@ -136,9 +139,9 @@ class PrintBuilder implements PrintBuilderInterface {
       '#content' => $content,
       '#attached' => [],
     ];
-//pr($renderer->generateHtml($entities, $render, $use_default_css, TRUE));exit;
+
     $print_engine->addPage($renderer->generateHtml($entities, $render, $use_default_css, TRUE));
-    
+
     return $renderer;
   }
 

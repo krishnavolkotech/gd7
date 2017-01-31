@@ -39,6 +39,13 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   protected $html = '';
 
   /**
+   * Keep track of whether we've rendered or not.
+   *
+   * @var bool
+   */
+  protected $hasRendered;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ExportTypeInterface $export_type, Request $request) {
@@ -143,7 +150,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public function send($filename = NULL) {
-    $this->dompdf->render();
+    $this->doRender();
 
     // Dompdf doesn't have a return value for send so just check the error
     // global it provides.
@@ -165,6 +172,16 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
    */
   public function getBlob() {
     return $this->dompdf->output();
+  }
+
+  /**
+   * Tell Dompdf to render the HTML into a PDF.
+   */
+  public function doRender() {
+    if (!$this->hasRendered) {
+      $this->dompdf->render();
+      $this->hasRendered = TRUE;
+    }
   }
 
   /**
