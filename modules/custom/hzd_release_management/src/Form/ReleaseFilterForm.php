@@ -184,7 +184,7 @@ class ReleaseFilterForm extends FormBase
             '#suffix' => '</div><div style="clear:both"></div>',
 //      '#validated' => TRUE,
             '#attributes' => array(
-                'onchange' => 'jQuery(\'select[name="function"]\').prop(\'selectedIndex\',0);jQuery(\'select[name="release"]\').prop(\'selectedIndex\',0);this.form.submit()',
+                'onchange' => 'jQuery(\'select[name="services"]\').prop(\'selectedIndex\',0);jQuery(\'select[name="releases"]\').prop(\'selectedIndex\',0);this.form.submit()',
             ),
         );
         
