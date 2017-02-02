@@ -7,8 +7,51 @@ dependencies:
 third_party_settings:
   menu_ui:
     available_menus:
+      - menu-36070
+      - menu-49812
+      - menu-31826
+      - menu-22545
+      - menu-19328
+      - menu-8453
+      - menu-21142
+      - menu-21141
+      - menu-11971
+      - menu-3602
+      - menu-23446
+      - menu-8454
+      - menu-927
+      - menu-32768
+      - menu-23176
+      - menu-28451
+      - menu-23639
+      - menu-18770
+      - menu-46549
+      - menu-32004
+      - menu-36520
+      - menu-34696
+      - menu-918
+      - menu-35246
+      - menu-340
+      - menu-928
+      - menu-8452
+      - menu-39300
       - main
-    parent: 'main:'
+      - menu-24124
+      - navigation
+      - optionen
+      - menu-21140
+      - menu-825
+      - menu-8455
+      - menu-339
+      - menu-5344
+      - menu-21139
+      - menu-11983
+      - menu-630
+      - menu-467
+      - menu-930
+      - menu-914
+      - menu-631
+    parent: 'menu-36070:'
 _core:
   default_config_hash: zhtPXoRcC6REiepM0k16zw__FDW5YOXDR6U2WlldTrs
 name: Seite
