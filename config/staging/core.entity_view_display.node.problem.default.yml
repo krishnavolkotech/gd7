@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.problem.body
     - field.field.node.problem.comment
     - field.field.node.problem.field_attachment
@@ -199,4 +200,7 @@ content:
     weight: 24
     third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true
