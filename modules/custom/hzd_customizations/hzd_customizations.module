@@ -444,7 +444,7 @@ function hzd_customizations_node_update($node) {
     if ($node->getType() == 'quickinfo') {
         // Act on the unpublishing of an article.
         if ($node->original->get('status')->value == 0 && $node->get('status')->value == 1) {
-            $uri = generate_quickinfo_pdf($node);
+//            $uri = generate_quickinfo_pdf($node);
 //                $copy->save();
         }
     }
