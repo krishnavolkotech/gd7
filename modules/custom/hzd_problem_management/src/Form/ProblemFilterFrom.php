@@ -101,6 +101,11 @@ class ProblemFilterFrom extends FormBase
             // $default_value_function: $form_state->getValue('function'),
             '#default_value' => isset($filter_value['function']) ? $filter_value['function'] : $form_state->getValue('function'),
             '#weight' => -9,
+          '#states' => [
+            'empty' => [
+              ':input[name="service"]' => array('filled' => TRUE),
+            ]
+          ],
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
