@@ -488,6 +488,9 @@ class HzdStorage
         }
         //As sort on fields with format d.m.Y cannot be supported by entity query I m using database api to achieve it.
         $ids = $problem_node_ids->execute();
+      if(empty($ids)){
+        $ids = [-1];
+      }
         $conn = \Drupal::database()->select('node_field_data','nfd');
         $conn->addField('nfd','nid','dsa');
         $conn = $conn->condition('nfd.nid',$ids,'IN')
