@@ -1124,6 +1124,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         }
         $release_type = get_release_type($type);
         $release_node_ids = self::hzd_release_query($release_type, $gid);
+//        pr($release_node_ids);exit;
         $rows = [];
         foreach ($release_node_ids as $release_node_id) {
             $link = null;
@@ -1155,8 +1156,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 )
             );
             $row = array();
-            $service = \Drupal\node\Entity\Node::load(
-                $releases->field_relese_services->target_id);
+            $service = $releases->get('field_relese_services')->first()->entity;
+//          pr($releases->id());
             $row = array(
                 'service' => $service->getTitle(),
                 'release' => $releases->getTitle()
@@ -1257,6 +1258,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 ->condition('release_type', $default_type, '=')
                 ->condition('nid', $group_release_view_service, 'IN')
                 ->execute();
+        }else{
+          $services = [-1];
         }
         if (isset($services) && !empty($services)) {
             $release_node_ids->condition('field_relese_services', $services, 'IN');

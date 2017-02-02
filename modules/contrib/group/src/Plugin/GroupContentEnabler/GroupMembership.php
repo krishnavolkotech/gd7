@@ -76,10 +76,10 @@ class GroupMembership extends GroupContentEnablerBase {
       'allowed for' => ['member'],
     ];
 
-    $permissions['request group membership'] = [
+/*    $permissions['request group'] = [
       'title' => 'Request group membership',
       'allowed for' => ['outsider'],
-    ];
+    ];*/
 
     // Update the labels of the default permissions.
     $permissions['view group_membership content']['title'] = 'View individual group members';
