@@ -124,8 +124,11 @@ class IncidentsBlock extends BlockBase
                         $hover_markup = MaintenanceBlock::get_hover_markup($incident);
                     }
                     $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
-                    $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
+//                    $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
+//                    $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
+                  $url = Url::fromRoute('cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),'type'=>'downtimes','group_content'=>$groupContent->id()],['attributes'=>['class' => ['text-danger']]]);
                     $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
+//                    $data[] = Markup::create(Link::createFromRoute($label, 'cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),['type'=>'downtimes','group_content'=>$groupContent->id()]],['attributes'])->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
                 }
 //        foreach ($serviceid as $ids) {
 //          // Loops for all services
