@@ -86,7 +86,7 @@ class ProblemFilterFrom extends FormBase
 //          ),
 //        ),
             '#attributes' => array(
-                'onchange' => 'this.form.submit();',
+                'onchange' => 'jQuery(\'select[name="function"]\').prop(\'selectedIndex\',0);jQuery(\'select[name="release"]\').prop(\'selectedIndex\',0);this.form.submit();',
             ),
             '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
             '#suffix' => '</div>',
