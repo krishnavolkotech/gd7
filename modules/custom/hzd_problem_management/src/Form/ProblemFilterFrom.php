@@ -86,7 +86,7 @@ class ProblemFilterFrom extends FormBase
 //          ),
 //        ),
             '#attributes' => array(
-                'onchange' => 'this.form.submit();',
+                'onchange' => 'jQuery(\'input[name="service"]\').reset();this.form.submit();',
             ),
             '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
             '#suffix' => '</div>',
@@ -101,11 +101,6 @@ class ProblemFilterFrom extends FormBase
             // $default_value_function: $form_state->getValue('function'),
             '#default_value' => isset($filter_value['function']) ? $filter_value['function'] : $form_state->getValue('function'),
             '#weight' => -9,
-          '#states' => [
-            'empty' => [
-              ':input[name="service"]' => array('filled' => TRUE),
-            ]
-          ],
 //      '#ajax' => array(
 //        'callback' => '::problem_search_results',
 //        'wrapper' => 'problem_search_results_wrapper',
