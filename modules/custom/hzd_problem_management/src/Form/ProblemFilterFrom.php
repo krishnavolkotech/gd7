@@ -86,7 +86,7 @@ class ProblemFilterFrom extends FormBase
 //          ),
 //        ),
             '#attributes' => array(
-                'onchange' => 'this.form.submit()',
+                'onchange' => 'this.form.submit();',
             ),
             '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
             '#suffix' => '</div>',
@@ -119,10 +119,6 @@ class ProblemFilterFrom extends FormBase
 //      '#validated' => TRUE,
         );
         
-        if(isset($filter_value['function']) && !in_array($filter_value['function'],$default_function)){
-          $form['function']['#attributes']['class'][] = 'error';
-        }
-        
         $form['release'] = array(
             '#type' => 'select',
             '#options' => $default_release,
@@ -150,9 +146,7 @@ class ProblemFilterFrom extends FormBase
 
 //    $service_id = isset($filter_value['service']) ? $filter_value['service']
 //    ['service']: $form_state->getValue('service');
-      if(isset($filter_value['release']) && !in_array($filter_value['release'],$default_release)){
-        $form['release']['#attributes']['class'][] = 'error';
-      }
+        
         
         $search_string = $filter_value['string'];
         $form['string'] = array(
