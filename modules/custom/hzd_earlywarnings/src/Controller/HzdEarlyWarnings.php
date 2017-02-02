@@ -190,7 +190,6 @@ class HzdEarlyWarnings extends ControllerBase
         if ($is_member || in_array($user_role, array('site_administrator'))) {
             $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
             $output['content']['pretext']['#markup'] = t($node->body->value);
-            $
             $output['content']['pretext']['#suffix'] = "<a href='/group/32/"
                 . "add/early-warnings?destination=group/32/early-warnings&amp;"
                 . "services=0&releases=0' title='" . t("Add an Early Warning for "
