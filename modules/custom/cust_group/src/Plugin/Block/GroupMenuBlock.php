@@ -49,7 +49,7 @@ class GroupMenuBlock extends BlockBase
             'problem_management.import_history',
         ];
         $parameters = $routeMatch->getParameters();
-        if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical'
+        if ($routeMatch->getRouteName() == 'cust_group.node_view'
             && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
         ) {
             //exception for downtimes content type

@@ -936,7 +936,7 @@ class HzdcustomisationStorage
                 $links['action']['popup']['view']['details'] = [
                     '#title' => t('Details'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
+                    '#url' => Url::fromRoute('cust_group.group_content_view', ['group' => $group_id, 'group_content' => $groupContent->id(),'type'=>'downtimes'], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
                 ];
             }
 

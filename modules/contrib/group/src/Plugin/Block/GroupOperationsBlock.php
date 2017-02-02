@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Plugin\Block\GroupOperationsBlock.
- */
-
 namespace Drupal\group\Plugin\Block;
 
 use Drupal\group\Cache\Context\GroupTypeCacheContext;
@@ -49,6 +44,8 @@ class GroupOperationsBlock extends BlockBase {
     /** @var \Drupal\group\Entity\GroupInterface $group */
     if (($group = $this->getContextValue('group')) && $group->id()) {
       $links = [];
+
+      // Retrieve the operations from the installed content plugins.
       foreach ($group->getGroupType()->getInstalledContentPlugins() as $plugin) {
         /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
         $links += $plugin->getGroupOperations($group);

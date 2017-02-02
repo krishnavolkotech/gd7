@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\GroupMembershipLoader.
- */
-
 namespace Drupal\group;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -73,7 +68,7 @@ class GroupMembershipLoader implements GroupMembershipLoaderInterface {
    * {@inheritdoc}
    */
   public function load(GroupInterface $group, AccountInterface $account) {
-    $filters = ['entity_id' => $account->id(),'request_status'=>1];
+    $filters = ['entity_id' => $account->id()];
     $group_contents = $this->groupContentStorage()->loadByGroup($group, 'group_membership', $filters);
     $group_memberships = $this->wrapGroupContentEntities($group_contents);
     return $group_memberships ? reset($group_memberships) : FALSE;

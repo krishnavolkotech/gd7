@@ -11,7 +11,8 @@
         "drupal/config_direct_save": "^1.0",
         "drupal/search_api_solr": "1.0.0-beta1",
         "drupal/search_api": "1.0-beta3",
-        "drupal/view_unpublished": "1.0-alpha1"
+        "drupal/view_unpublished": "1.0-alpha1",
+        "drupal/group": "^1.0@beta"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

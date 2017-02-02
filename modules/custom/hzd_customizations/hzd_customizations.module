@@ -191,7 +191,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 }*/
 
 function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
-    if ($entity->getType() == 'quickinfo') {
+    if ($entity->bundle() == 'quickinfo') {
         $build['field_custom_title']['#prefix'] = t('<h2>1 @data</h2>', ['@data' => 'Meta-Daten']);
         $build['field_intial_situation']['#prefix'] = t('<h2>2 @data2</h2>', ['@data2' => 'Fachlich-inhaltliche Angaben']);
     }

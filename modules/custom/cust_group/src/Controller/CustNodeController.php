@@ -40,9 +40,9 @@ class CustNodeController extends ControllerBase {
 
   function groupContentView() {
     $parm = \Drupal::routeMatch()->getParameter('group_content');
-    $node = $parm->get('entity_id')->referencedEntities()[0];
-    $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-    return $view_builder->view($node,'full','de');
+    $entity = $parm->get('entity_id')->referencedEntities()[0];
+    $view_builder = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId());
+    return $view_builder->view($entity,'full','de');
   }
   
   function groupContentTitle(){
@@ -188,7 +188,7 @@ class CustNodeController extends ControllerBase {
     $form = \Drupal::entityTypeManager()
             ->getFormObject('node', 'default')
             ->setEntity($node);
-    $url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group->id(), 'group_content' => $group_content->id()]);
+    $url = new \Drupal\Core\Url('entity.group_content.canonical', ['group' => $group->id(), 'group_content' => $group_content->id()]);
     return \Drupal::formBuilder()->getForm($form, ['redirect' => $url]);
   }
 

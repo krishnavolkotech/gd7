@@ -63,7 +63,7 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       'cck' => array(
-        'type' => 'VARCHAR',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
       ),
@@ -91,7 +91,7 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       'group_name' => array(
-        'type' => 'VARCHAR',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
       ),
@@ -123,7 +123,7 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       'group_name' => array(
-        'type' => 'VARCHAR',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
       ),

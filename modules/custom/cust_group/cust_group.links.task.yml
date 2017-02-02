@@ -13,3 +13,8 @@ cust_group.my_groups:
   route_name: view.my_groups.page_1
   base_route: view.all_groups.page_1
   weight: 10
+cust_group.pending_members:
+  title: 'Pending Members'
+  base_route: 'entity.group.canonical'
+  route_name: 'view.hzd_group_members.pending'
+  weight: 15

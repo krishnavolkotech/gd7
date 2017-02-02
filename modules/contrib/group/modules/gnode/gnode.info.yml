@@ -8,8 +8,8 @@ dependencies:
   - 'node'
   - 'group'
 
-# Information added by Drupal.org packaging script on 2016-06-23
-version: '8.x-1.0-alpha7'
+# Information added by Drupal.org packaging script on 2016-09-24
+version: '8.x-1.0-beta4'
 core: '8.x'
 project: 'group'
-datestamp: 1466690829
+datestamp: 1474722242

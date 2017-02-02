@@ -205,15 +205,15 @@ hzd_release_management.display_planning_files:
     _custom_access: '\Drupal\cust_group\Controller\AccessController::groupAdminAccess'
 # cust_planning_files_admin    
 
-hzd_release_management.quickinfo_published_view:
-  path: '/group/{group}/rz-schnellinfos/{search}'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\QuickinfopublishedviewController::quickinfo_published_view'
-#    _title: 'Quickinfo View'
-    _entity_view: group.default
-  requirements:
-    _permission: 'access content'
-#  'access callback' => 'cust_quickinfo_og_is_member',
+#hzd_release_management.quickinfo_published_view:
+#  path: '/group/{group}/rz-schnellinfos/{search}'
+#  defaults:
+#    _controller: '\Drupal\hzd_release_management\Controller\QuickinfopublishedviewController::quickinfo_published_view'
+##    _title: 'Quickinfo View'
+#    _entity_view: group.default
+#  requirements:
+#    _permission: 'access content'
+##  'access callback' => 'cust_quickinfo_og_is_member',
 
 
 #hzd_release_management.saved-rz-schnellinfo:

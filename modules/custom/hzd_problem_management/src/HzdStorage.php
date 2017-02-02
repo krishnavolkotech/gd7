@@ -2,6 +2,7 @@
 
 namespace Drupal\problem_management;
 
+use Drupal\Core\Link;
 use Drupal\group\Entity\Group;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Url;
@@ -488,6 +489,9 @@ class HzdStorage
         }
         //As sort on fields with format d.m.Y cannot be supported by entity query I m using database api to achieve it.
         $ids = $problem_node_ids->execute();
+        if(empty($ids)){
+          $ids = [-1];
+        }
         $conn = \Drupal::database()->select('node_field_data','nfd');
         $conn->addField('nfd','nid','dsa');
         $conn = $conn->condition('nfd.nid',$ids,'IN')
@@ -519,11 +523,12 @@ class HzdStorage
                 current($node_problem_group_id));
             $groupContentItemUrl = null;
             if($groupContentEntity instanceof \Drupal\group\Entity\GroupContent){
-                $groupContentItemUrl = $groupContentEntity->toLink(
-                    $problems_node->field_s_no->value, 'canonical', ['absolute' => 1,
-                        'query' => $exposedFilterData,
-                    ]
-                );
+              $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value,Url::fromRoute('cust_group.group_content_view', ['group' => $groupContentEntity->getGroup()->id(), 'group_content' => $groupContentEntity->id(),'type'=>'problems'], ['absolute' => 1, 'query' => $exposedFilterData]));
+//                $groupContentItemUrl = $groupContentEntity->toLink(
+//                    $problems_node->field_s_no->value, 'canonical', ['absolute' => 1,
+//                        'query' => $exposedFilterData,
+//                    ]
+//                );
             }
             // redirect to the node view if a specified SDCallID is searched for
             if(is_numeric($filterData->get('string',null)) && count($result) == 1){

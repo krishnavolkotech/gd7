@@ -39,23 +39,23 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
 
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
-    if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
-      if ($route->getPath() == '/group/{group}/node/{group_content}') {
+    if ($route = $collection->get('entity.group_content.canonical')) {
+//      $route->setPath('/group/{group}/node/{group_content}');
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupContentView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupContentTitle");
-      }
+//      }
     }
-    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
+/*    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
       if ($route->getPath() == '/group/{group}/members/{group_content}') {
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupMemberTitle");
       }
-    }
+    }*/
     if ($route = $collection->get('entity.node.edit_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
     if ($route = $collection->get('entity.group_content.group_membership.collection')) {
-      $route->setRequirement('_access', 'FALSE');
+//      $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it

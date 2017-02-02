@@ -299,7 +299,7 @@ function requst_submit_handler(&$form, $form_state) {
   $params['subject'] = $subject;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $send = true;
-  $link = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'entity.group_content.group_membership.pending_collection', ['group' => $group->id()], ['absolute' => TRUE])->toString();
+  $link = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $group->id()], ['absolute' => TRUE])->toString();
   foreach ($users as $user) {
     
     $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $user['name'], '@groupLink' => $group->toLink()->toString(), '@link' => $link]);
@@ -406,4 +406,29 @@ function cust_group_user_login() {
   $response = new RedirectResponse("/");
   $response->send();
   return;
+}
+
+
+function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
+  
+  if ($entity->getEntityTypeId() == 'group_content' && $entity->getContentPlugin()->getPluginId() == 'group_membership' && $entity->getGroup()->getMemberRequestStatus($entity->getEntity()) == 0) {
+//    pr(($entity->getGroup()->getMemberRequestStatus($entity->getEntity())));
+//    exit;
+    $group = $entity->getGroup()->id();
+    $group_content = $entity->id();
+    $operations['edit']['#access'] = FALSE;
+    unset($operations['edit']);
+    $operations['approve_request'] = array(
+      'title' => t('Approve Request'),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', ['group' => $group, 'group_content' => $group_content]),
+      'weight' => 50,
+    );
+    $operations['reject_request'] = array(
+      'title' => t('Reject Request'),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', ['group' => $group, 'group_content' => $group_content]),
+      'weight' => 51,
+    );
+//    pr(array_keys($operations));
+//    exit;
+  }
 }

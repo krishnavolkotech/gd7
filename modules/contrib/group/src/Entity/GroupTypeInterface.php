@@ -1,19 +1,14 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Entity\GroupTypeInterface.
- */
-
 namespace Drupal\group\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Entity\EntityDescriptionInterface;
 
 /**
  * Provides an interface defining a group type entity.
  */
-interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginCollectionInterface {
+interface GroupTypeInterface extends ConfigEntityInterface, EntityDescriptionInterface {
 
   /**
    * The maximum length of the ID, in characters.
@@ -23,14 +18,6 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
    * default limit there. We leave of 10 characters to account for '-anonymous'.
    */
   const ID_MAX_LENGTH = 22;
-
-  /**
-   * Gets the description.
-   *
-   * @return string
-   *   The description of this group type.
-   */
-  public function getDescription();
 
   /**
    * Gets the group roles.
@@ -47,9 +34,9 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
    *   The ids of the group roles this group type uses.
    */
   public function getRoleIds();
-  
+
   /**
-   * Gets the anonymous group role for this group type.
+   * Gets the generic anonymous group role for this group type.
    *
    * @return \Drupal\group\Entity\GroupRoleInterface
    *   The anonymous group role this group type uses.
@@ -57,7 +44,7 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
   public function getAnonymousRole();
 
   /**
-   * Gets the anonymous role ID.
+   * Gets the generic anonymous role ID.
    *
    * @return string
    *   The ID of the anonymous group role this group type uses.
@@ -65,7 +52,7 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
   public function getAnonymousRoleId();
 
   /**
-   * Gets the outsider group role for this group type.
+   * Gets the generic outsider group role for this group type.
    *
    * @return \Drupal\group\Entity\GroupRoleInterface
    *   The outsider group role this group type uses.
@@ -73,7 +60,7 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
   public function getOutsiderRole();
 
   /**
-   * Gets the outsider role ID.
+   * Gets the generic outsider role ID.
    *
    * @return string
    *   The ID of the outsider group role this group type uses.
@@ -139,6 +126,10 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
    *   (optional) An array of content enabler plugin configuration.
    *
    * @return $this
+   *
+   * @deprecated in Group 1.0-beta3, will be removed before Group 1.0-rc1. Use
+   *   \Drupal\group\Entity\Storage\GroupContentTypeStorageInterface::
+   *   createFromPlugin() instead.
    */
   public function installContentPlugin($plugin_id, array $configuration = []);
 
@@ -151,6 +142,10 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
    *   An array of content enabler plugin configuration.
    *
    * @return $this
+   *
+   * @deprecated in Group 1.0-beta3, will be removed before Group 1.0-rc1. Use
+   *   \Drupal\group\Entity\GroupContentTypeInterface::updateContentPlugin()
+   *   instead.
    */
   public function updateContentPlugin($plugin_id, array $configuration);
 
@@ -161,6 +156,9 @@ interface GroupTypeInterface extends ConfigEntityInterface, EntityWithPluginColl
    *   The content enabler plugin ID.
    *
    * @return $this
+   *
+   * @deprecated in Group 1.0-beta3, will be removed before Group 1.0-rc1. Use
+   *   \Drupal\group\Entity\GroupContentType::delete() instead.
    */
   public function uninstallContentPlugin($plugin_id);
 

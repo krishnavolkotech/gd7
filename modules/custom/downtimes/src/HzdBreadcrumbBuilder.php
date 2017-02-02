@@ -20,7 +20,7 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
     public function applies(RouteMatchInterface $route_match) {
         $route_name = $route_match->getRouteName();
         $params = $route_match->getParameters()->all();
-        if (in_array($route_name, ['entity.group_content.group_node__deployed_releases.canonical']) && in_array($params['group_content']->entity_id->referencedEntities()[0]->getType(), ['downtimes', 'quickinfo'])) {
+        if (in_array($route_name, ['cust_group.node_view']) && in_array($params['group_content']->entity_id->referencedEntities()[0]->getType(), ['downtimes', 'quickinfo'])) {
             return TRUE;
         }
         return FALSE;

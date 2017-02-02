@@ -5,27 +5,33 @@
  * Contains \Drupal\group\Entity\Form\GroupContentRejectForm.
  */
 
-namespace Drupal\group\Entity\Form;
+namespace Drupal\cust_group\Form;
 
-use Drupal\Core\Entity\ContentEntityConfirmFormBase;
+use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a form for deleting a group content entity.
  */
-class GroupContentRejectForm extends ContentEntityConfirmFormBase {
-
+class GroupContentRejectForm extends ConfirmFormBase {
+  
+  
+  public function __construct(RouteMatchInterface $routeMatch) {
+    $this->entity = $routeMatch->getParameter('group_content');
+  }
+  
+  public static function create(ContainerInterface $container) {
+    return new static($container->get('current_route_match'));
+  }
+  
   /**
-   * Returns the plugin responsible for this piece of group content.
-   *
-   * @return \Drupal\group\Plugin\GroupContentEnablerInterface
-   *   The responsible group content enabler plugin.
+   * @return string
    */
-  protected function getContentPlugin() {
-    /** @var \Drupal\group\Entity\GroupContent $group_content */
-    $group_content = $this->getEntity();
-    return $group_content->getContentPlugin();
+  public function getFormId(){
+    return "reject_membership_request";
   }
 
   /**
@@ -40,8 +46,8 @@ class GroupContentRejectForm extends ContentEntityConfirmFormBase {
    */
   public function getCancelURL() {
     // @todo Read a redirect from the plugin?
-    $entity = $this->getEntity();
-    return new Url('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+    $entity = $this->entity;
+    return new Url('view.hzd_group_members.pending',['group'=>$entity->getGroup()->id()]);
   }
 
   /**
@@ -55,7 +61,7 @@ class GroupContentRejectForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = $this->getEntity();
+    $entity = $this->entity;
     $entity->delete();
 
     \Drupal::logger('group_content')->notice('@type: rejected %title.', [
@@ -63,7 +69,7 @@ class GroupContentRejectForm extends ContentEntityConfirmFormBase {
       '%title' => $this->entity->label(),
     ]);
     // @todo Read a redirect from the plugin?
-    $form_state->setRedirect('entity.group_content.group_membership.pending_collection',['group'=>$entity->getGroup()->id()]);
+    $form_state->setRedirect('view.hzd_group_members.pending',['group'=>$entity->getGroup()->id()]);
   }
 
 }

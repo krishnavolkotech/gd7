@@ -3,6 +3,7 @@
 namespace Drupal\custom_views_php\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\Entity\User;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 use Drupal\Core\Url;
@@ -66,7 +67,7 @@ class GroupMemberName extends FieldPluginBase
                         $suffix = ' (admin)';
                     }
                 }
-                //AS per requirement we are adding only lastname here to apped it with admin for administrators
+                //AS per requirement we are adding only lastname here to append it with admin for administrators
                 $db = \Drupal::database();
                 $result = $db->select('cust_profile', 'cp')
                     ->fields('cp', array('lastname'))

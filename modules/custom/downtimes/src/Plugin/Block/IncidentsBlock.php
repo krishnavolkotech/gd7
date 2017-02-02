@@ -59,7 +59,7 @@ class IncidentsBlock extends BlockBase
     function access(AccountInterface $account, $return_as_object = false) {
         $routeMatch = \Drupal::routeMatch();
         $parameters = $routeMatch->getParameters();
-        if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes') {
+        if ($routeMatch->getRouteName() == 'cust_group.group_content_view' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->getEntity()->getType() == 'downtimes') {
             //exception for downtimes content type
             return AccessResult::allowed();
         }

@@ -62,3 +62,51 @@ cust_group.forums:
     _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
   requirements:
     _access: 'FALSE'
+cust_group.approve_membership_request:
+  path: '/group/{group}/member/{group_content}/approve'
+  defaults:
+    _form: '\Drupal\cust_group\Form\GroupContentApproveForm'
+    _entity_view: 'group_content.default'
+  requirements:
+    _permission: 'administer members'
+cust_group.reject_membership_request:
+  path: '/group/{group}/member/{group_content}/reject'
+  defaults:
+    _form: '\Drupal\cust_group\Form\GroupContentRejectForm'
+    _entity_view: 'group_content.default'
+  requirements:
+    _permission: 'administer members'
+cust_group.member_view:
+  path: '/group/{group}/member/{group_content}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberView'
+    _entity_view: 'group_content.default'
+  requirements:
+#    _access: 'TRUE'
+    _permission: 'access group_node overview'
+cust_group.node_view:
+  path: '/group/{group}/node/{group_content}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupContentView'
+    _title_callback: 'Drupal\cust_group\Controller\CustNodeController::groupContentTitle'
+    _entity_view: 'group.default'
+  requirements:
+#    _access: 'TRUE'
+    _permission: 'access group_node overview'
+  options:
+    parameters:
+      group_content:
+        type: 'entity:group_content'
+cust_group.group_content_view:
+  path: '/group/{group}/{type}/{group_content}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupContentViewController::viewGroupContent'
+    _entity_view: 'group.default'
+  requirements:
+    type: downtimes|problems|rz-schnellinfos
+#    _access: 'TRUE'
+    _permission: 'access group_node overview'
+  options:
+      parameters:
+        group_content:
+          type: 'entity:group_content'

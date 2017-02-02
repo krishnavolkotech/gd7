@@ -31,8 +31,11 @@ function inactive_user_mail($key, &$message, $params) {
 
 /**
  * Implements hook_schema().
+ *
+ * @todo remove this as this is already declared in inactive.install file
+ *
  */
-function inactive_user_schema() {
+/*function inactive_user_schema() {
   $schema['inactive_users'] = array(
     'description' => 'The base table for inactive_users.',
     'fields' => array(
@@ -99,7 +102,7 @@ function inactive_user_schema() {
       ),
       'inactive_user_notification_flag' => array(
         'description' => 'Inactive user notification flag.',
-        'type' => 'bool',
+        'type' => 'int',
         'not null' => TRUE,
         'default' => 1,
       ),
@@ -107,7 +110,7 @@ function inactive_user_schema() {
     'primary key' => array('uid'),
   );
   return $schema;
-}
+}*/
 
 /**
  * Returns 1 if the user has ever created a node or a comment.
