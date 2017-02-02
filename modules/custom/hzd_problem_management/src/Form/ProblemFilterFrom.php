@@ -48,6 +48,7 @@ class ProblemFilterFrom extends FormBase
         $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
         $query->Fields('nfd', array('nid', 'title'));
         $query->condition('gpv.group_id', $group_id, '=');
+        $query->order('nfd.title','asc');
         $service = $query->execute()->fetchAll();
         foreach ($service as $services) {
             $default_services[$services->nid] = $services->title;
