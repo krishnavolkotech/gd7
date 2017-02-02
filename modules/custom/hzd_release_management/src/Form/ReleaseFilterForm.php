@@ -212,7 +212,7 @@ class ReleaseFilterForm extends FormBase
             '#suffix' => '</div>',
 //      '#validated' => TRUE,
             '#attributes' => array(
-                'jQuery(\'select[name="releases"]\').prop(\'selectedIndex\',0);onchange' => 'this.form.submit()',
+                'onchange' => 'jQuery(\'select[name="releases"]\').prop(\'selectedIndex\',0);this.form.submit()',
             ),
         );
         
