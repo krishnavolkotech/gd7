@@ -119,6 +119,10 @@ class ProblemFilterFrom extends FormBase
 //      '#validated' => TRUE,
         );
         
+        if(!in_array($filter_value['function'],$default_function)){
+          $form['function']['#attributes']['class'][] = 'error';
+        }
+        
         $form['release'] = array(
             '#type' => 'select',
             '#options' => $default_release,
@@ -146,7 +150,9 @@ class ProblemFilterFrom extends FormBase
 
 //    $service_id = isset($filter_value['service']) ? $filter_value['service']
 //    ['service']: $form_state->getValue('service');
-        
+      if(!in_array($filter_value['release'],$default_release)){
+        $form['release']['#attributes']['class'][] = 'error';
+      }
         
         $search_string = $filter_value['string'];
         $form['string'] = array(
