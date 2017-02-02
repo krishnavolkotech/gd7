@@ -119,7 +119,7 @@ class ProblemFilterFrom extends FormBase
 //      '#validated' => TRUE,
         );
         
-        if(isset($filter_value['function']) && !in_array($filter_value['function'],$default_function)){
+        if(isset($filter_value['function']) && $filter_value['function'] != 0 && !in_array($filter_value['function'],$default_function)){
           $form['function']['#attributes']['class'][] = 'error';
         }
         
@@ -150,7 +150,7 @@ class ProblemFilterFrom extends FormBase
 
 //    $service_id = isset($filter_value['service']) ? $filter_value['service']
 //    ['service']: $form_state->getValue('service');
-      if(isset($filter_value['release']) && !in_array($filter_value['release'],$default_release)){
+      if(isset($filter_value['release']) && $filter_value['release'] != 0 && !in_array($filter_value['release'],$default_release)){
         $form['release']['#attributes']['class'][] = 'error';
       }
         
