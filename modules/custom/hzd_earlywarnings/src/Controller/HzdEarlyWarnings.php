@@ -192,7 +192,7 @@ class HzdEarlyWarnings extends ControllerBase
             $output['content']['pretext']['#markup'] = t($node->body->value);
             $
             $output['content']['pretext']['#suffix'] = "<a href='/group/32/"
-                . "add/early-warnings?\ destination=group/32/early-warnings&amp;"
+                . "add/early-warnings?destination=group/32/early-warnings&amp;"
                 . "services=0&amp;releases=0' title='" . t("Add an Early Warning for "
                     . "this release"
                     . "") . "'>" . $create_icon . "</a></div>";
@@ -201,7 +201,7 @@ class HzdEarlyWarnings extends ControllerBase
             $output['content']['pretext']['#markup'] = t($node->body->value);
             
             $output['content']['pretext']['#suffix'] = "<a href='/group/32/"
-                . "add/early-warnings?\ destination=group/32/early-warnings&amp;"
+                . "add/early-warnings?destination=group/32/early-warnings&amp;"
                 . "services=0&amp;releases=0' title='" . t("Add an Early Warning for"
                     . " this release"
                 ) . "'>" . $create_icon . "</a></div>";
