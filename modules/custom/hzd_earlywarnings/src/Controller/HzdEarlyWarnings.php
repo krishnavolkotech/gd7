@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 
 /**
  * For Release Specific Early Warnings create page and
@@ -335,7 +336,7 @@ class HzdEarlyWarnings extends ControllerBase {
     }
     $releasesFinal = $release_nids->execute();
     \Drupal::database()->query('SET sql_mode = "" ');
-    if ($page_limit) {
+    if (!$page_limit) {
       
       $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
       $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
@@ -345,24 +346,60 @@ class HzdEarlyWarnings extends ControllerBase {
         ->orderBy('nfd.changed', 'desc');
       $results = $releasesNewFinal->execute()
         ->fetchCol();
+  
+      $subQuery = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');;
+      $subQuery->fields('nfer', ['field_earlywarning_release_value']);
+      $subQuery->addExpression('max(nfd.created)','created');
+      $subQuery->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+  
+      $subQuery->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
+//      $subQuery->addField('nfd', 'created');
+      $subQuery->groupBy('field_earlywarning_release_value');
+      $subQuery->orderBy('nfd.created','desc');
+      $subQuery->orderBy('nfer.field_earlywarning_release_value','asc');
+  
+      $releasesNewFinal = \Drupal::database()->select($subQuery, 'dep');
+  
+  
+      $releasesNewFinal->fields('dep', ['field_earlywarning_release_value']);
+      $releasesNewFinal->groupBy('field_earlywarning_release_value');
+      $releasesNewFinal->addField('dep', 'created');
+      $releasesNewFinal->orderBy('dep.created', 'desc');
+//      pr($pager->__toString());
+      $results = $releasesNewFinal->execute()->fetchCol();
     } else {
       $page_limit = ($page_limit ? $page_limit : DISPLAY_LIMIT);
-      $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
-      $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
-      $releasesNewFinal = $releasesNewFinal->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+      $subQuery = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');;
+      $subQuery->fields('nfer', ['field_earlywarning_release_value']);
+      $subQuery->addExpression('max(nfd.created)','created');
+      $subQuery->addExpression('nfd.nid', 'nid');
+      $subQuery->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+      
+      $subQuery->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
+//      $subQuery->addField('nfd', 'created');
+      $subQuery->groupBy('field_earlywarning_release_value');
+      $subQuery->orderBy('nfd.created','desc');
+      $subQuery->orderBy('nfer.field_earlywarning_release_value','asc');
+      
+      $releasesNewFinal = \Drupal::database()->select($subQuery, 'dep');
       
       $count_query = clone $releasesNewFinal;
-      $count_query->addExpression('Count(nfd.nid)');
+//      $releasesNewFinal->addField('dep','created');
+      
+      $count_query->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+      $count_query->addExpression('Count(*)');
       $pager = $releasesNewFinal->extend('Drupal\Core\Database\Query\PagerSelectExtender');
       $pager->setCountQuery($count_query);
       $pager->limit($page_limit);
-      $pager->fields('nfer', ['field_earlywarning_release_value']);
-      $pager->groupBy('field_earlywarning_release_value')
-        ->orderBy('nfd.changed', 'desc');
-      $results = $pager->execute()
-        ->fetchCol();
+      $pager->fields('dep', ['field_earlywarning_release_value']);
+      $pager->groupBy('field_earlywarning_release_value');
+      $pager->addField('dep', 'nid');
+      $pager->orderBy('dep.created', 'desc');
+//      pr($pager->__toString());
+      $results = $pager->execute()->fetchCol();
     }
-//        pr($results);exit;
+//    pr($results);
+//    exit;
     foreach ($results as $key => $value) {
       $release_specifc_earlywarnings = \Drupal::entityQuery('node')
         ->condition('type', 'early_warnings', '=')
@@ -396,7 +433,7 @@ class HzdEarlyWarnings extends ControllerBase {
         
         
         $options['query'][] = array(
-          'services' => $release->field_relese_services->target_id,
+//          'services' => $release->field_relese_services->target_id,
           'releases' => $value,
           'r_type' => 'released',
           'release_type' => $release_type
@@ -415,7 +452,16 @@ class HzdEarlyWarnings extends ControllerBase {
         
         $earlywarining_link = \Drupal::service('link_generator')
           ->generate(t($earlywarining_view_link), $url);
-        
+  
+        $lastEw = \Drupal::entityQuery('node')
+          ->condition('type', 'early_warnings')
+          ->sort('nid', 'DESC')
+          ->range(0, 1)
+          ->execute();
+        $earlyWarningNode = Node::load(reset($lastEw));
+        $userName = $n->getOwner()->getDisplayName();
+        $lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
+          ' ' . t('by') . ' ' . $userName;
         $elements = array(
           array(
             'data' => $relase_title,
@@ -430,8 +476,8 @@ class HzdEarlyWarnings extends ControllerBase {
             'class' => 'responses-cell'
           ),
           array(
-            'data' => isset($warnings_lastpost['lastpost']) ?
-              $warnings_lastpost['lastpost'] : '',
+            'data' => isset($lastCreated) ?
+              $lastCreated : '',
             'class' => 'lastpostdate-cell'),
         );
         
