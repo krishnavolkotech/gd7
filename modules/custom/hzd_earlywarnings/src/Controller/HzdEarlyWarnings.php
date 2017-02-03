@@ -455,7 +455,7 @@ class HzdEarlyWarnings extends ControllerBase {
   
         $lastEw = \Drupal::entityQuery('node')
           ->condition('type', 'early_warnings')
-          ->condition('field_earlywarning_release', $value, '=');
+          ->condition('field_earlywarning_release', $value, '=')
           ->sort('nid', 'DESC')
           ->range(0, 1)
           ->execute();
