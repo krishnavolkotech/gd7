@@ -658,7 +658,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
     foreach (explode(',', trim($to, ',')) as $userMail) {
         $userEntity = \Drupal::entityTypeManager()->getStorage('user')
             ->loadByProperties(['mail' => $userMail]);
-        if (reset($userEntity)->get('field_notifications_status')->value == 1)
+        if ($userEntity && reset($userEntity)->get('field_notifications_status')->value == 1)
             $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
     if ($result['result'] !== TRUE) {
