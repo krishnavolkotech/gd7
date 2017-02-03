@@ -81,6 +81,10 @@ p {
   font-size:15px;
   /* text-transform: uppercase; */
 }
+#block-primarylinks ul li a font.goog-text-highlight{
+  background:transparent;
+  box-shadow:none;
+}
 #block-primarylinks ul li a.hover {
   text-decoration: underline;
 }
@@ -830,7 +834,9 @@ input.hasDatepicker{
   height: 34px !important;
   font-size:14px;
   color: #333;
-  width:210px !important;
+ /*width:210px !important;*/
+ width:100%;
+ 
 }
 /*.form-control{
   border-radius: 4px 0px 0px 4px !important;
@@ -965,7 +971,7 @@ button.button--reset:hover{
   margin:0 28px 0 0;
 }
 .hzd-form-element {
-  /*width: 31%;*/
+ width: 31%;
   float: left;
   margin: 0 2% 0 0;
 }
@@ -1490,7 +1496,7 @@ form#downtimes-filter .string_search.hzd-form-element {
   float: left;
 }
 .view-group-faqs .view-content .views-row .faq-title {
-  width: 85%;
+  width: 100%;
   float: left;
   margin-bottom: 5px;
   background: #04425f;
@@ -1500,16 +1506,20 @@ form#downtimes-filter .string_search.hzd-form-element {
   width: 100%;
   float: left;
   color: #fff;
-  line-height: 19px;
+  line-height: 24px;
 }
 .view-group-faqs .view-content .views-row .views-field-body {
   width: 100%;
   float: left;
+  margin-bottom:20px;
 }
 .view-group-faqs .view-content .views-row .btn-group {
   position: absolute;
   top: 0;
   right: 0;
+}
+#toolbar-administration + .hzd-innerpage-wrapper .view-group-faqs .view-content .views-row .faq-title{
+  width:83%;
 }
 .view-group-faqs .view-content .views-row p {
   margin-bottom: 0 !important;
@@ -1821,6 +1831,9 @@ form.node-service-profile-edit-form{
   margin-bottom:10px;
   background:#fff;
   padding:15px;
+}
+section form.node-faqs-delete-form{
+  margin-bottom:20px;
 }
 section form{
   width:100% !important;
@@ -2754,6 +2767,9 @@ select.error{
   color:#d0021b;
   text-indent:3px;
   line-height:24px;
+}
+.service_specific_notifications form.update-service-specific-notifications .btn-info{
+  margin-top:0;
 }
 form.update-service-specific-notifications .btn-info,
 form.update-service-specific-notifications .btn-danger
