@@ -81,10 +81,7 @@ p {
   font-size:15px;
   /* text-transform: uppercase; */
 }
-#block-primarylinks ul li a font.goog-text-highlight{
-  background:transparent;
-  box-shadow:none;
-}
+
 #block-primarylinks ul li a.hover {
   text-decoration: underline;
 }
@@ -225,7 +222,7 @@ header.navbar{
   /*footer{
 	width:1154px !important;  
 }*/
-  header {
+header {
     padding: 0 !important;
   }
   .user-login-form,
@@ -236,17 +233,57 @@ header.navbar{
   }
 }
 @media only screen and (max-width: 767px) {
-  .path-user .region-content nav.tabs li a {
-    padding: 7px !important;
-    font-size: 14px !important;
-  }
-  button.navbar-toggle {
-    float: left !important;
-    margin-left: 15px;
-    margin-bottom: 0 !important;
-    background: #04425f;
-    border: none !important;
-  }
+aside.col-sm-6,
+#header-right{
+  width:100%;
+  float:left;  
+}
+aside.col-sm-6, #header-right {
+  width: 100% !important;
+}
+#header-right #block-hzdheaderlinks .field--name-body {
+  float: left !important;
+  padding-bottom: 8px;
+  width: 100% !important;
+  padding-left:10px;
+}
+#header-right #block-hzdheaderlinks{
+  padding-top:15px !important;	
+}
+.navbar-header .region.region-navigation{
+  position:absolute;
+  left: 0;
+  top: 40px;
+  width: 75%;  
+}
+header.navbar{
+  width:100% !important;
+  background:#fff !important;
+  float:left;  
+  margin-bottom:15px;
+  padding-bottom:25px;
+  min-height:130px;
+}
+button.navbar-toggle{
+  position:absolute;
+  right:0;
+  top:45px;  
+}
+.navbar-header .region.region-navigation .logo img{
+  width:100% !important;
+  margin-left:10px !important;  
+}
+.path-user .region-content nav.tabs li a {
+  padding: 7px !important;
+  font-size: 14px !important;
+}
+button.navbar-toggle {
+  float: left !important;
+  margin-left: 15px;
+  margin-bottom: 0 !important;
+  background: #04425f;
+  border: none !important;
+}
   button.navbar-toggle:hover,
   button.navbar-toggle:focus {
     background: rgba(20, 117, 160, 0.8) !important;
@@ -1518,9 +1555,6 @@ form#downtimes-filter .string_search.hzd-form-element {
   top: 0;
   right: 0;
 }
-#toolbar-administration + .hzd-innerpage-wrapper .view-group-faqs .view-content .views-row .faq-title{
-  width:83%;
-}
 .view-group-faqs .view-content .views-row p {
   margin-bottom: 0 !important;
 }
@@ -1832,6 +1866,7 @@ form.node-service-profile-edit-form{
   background:#fff;
   padding:15px;
 }
+form.node-downtimes-delete-form,
 section form.node-faqs-delete-form{
   margin-bottom:20px;
 }
