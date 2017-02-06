@@ -18,7 +18,6 @@ module:
   contextual: 0
   cust_address_book: 0
   cust_group: 0
-  cust_pdf: 0
   cust_user: 0
   custom_script_batch: 0
   custom_views_php: 0
@@ -28,6 +27,7 @@ module:
   downtimes: 0
   dynamic_page_cache: 0
   editor: 0
+  entity_print: 0
   faq: 0
   faqfield: 0
   field: 0
