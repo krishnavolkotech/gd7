@@ -318,11 +318,18 @@ li.comment-reply a {
 }
 .form-actions button:hover{
   opacity: 0.98;
-  }
+}
 .region-sidebar-first section.blue ul.menu.nav .dropdown-menu,
 .region-sidebar-first nav#block-optionen ul.menu.nav .dropdown-menu {
   position: inherit;
   box-shadow: none !important;
+}
+#toolbar-administration + .hzd-innerpage-wrapper .view-group-faqs .view-content .views-row .faq-title{
+  width:83%;
+}
+#block-primarylinks ul li a font.goog-text-highlight{
+  background:transparent;
+  box-shadow:none;
 }
 aside section.blue h2,
 .region-sidebar-first .block-hzd-release-management h2,
