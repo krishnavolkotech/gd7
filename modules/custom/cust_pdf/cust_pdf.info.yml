@@ -3,3 +3,5 @@ type: module
 description: Module to handle custom pdf generation functions
 core: 8.x
 package: Custom
+dependencies:
+  - entity_print
