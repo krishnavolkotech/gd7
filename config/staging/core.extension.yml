@@ -28,7 +28,6 @@ module:
   downtimes: 0
   dynamic_page_cache: 0
   editor: 0
-  entity_print: 0
   faq: 0
   faqfield: 0
   field: 0

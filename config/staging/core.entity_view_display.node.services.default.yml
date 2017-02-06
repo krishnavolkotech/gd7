@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.services.comment
     - field.field.node.services.field_diff
     - field.field.node.services.field_downtime_type
@@ -14,13 +15,9 @@ dependencies:
     - node.type.services
   module:
     - comment
-    - entity_print
     - file
     - options
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.services.default
 targetEntityType: node
 bundle: services
@@ -82,5 +79,8 @@ content:
     weight: 7
     third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_enable_downtime: true
   langcode: true

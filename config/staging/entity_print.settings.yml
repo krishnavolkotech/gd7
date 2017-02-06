@@ -1,9 +1,0 @@
-default_css: true
-force_download: false
-_core:
-  default_config_hash: 69xb69NmxHknT0a9FYnVtajJ3Ntv1HIz7fSg9Pmd8qU
-langcode: de
-print_engines:
-  pdf_engine: dompdf
-  epub_engine: ''
-  word_docx_engine: ''

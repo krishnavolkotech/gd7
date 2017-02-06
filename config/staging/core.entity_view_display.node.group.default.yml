@@ -3,17 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.group.body
     - field.field.node.group.comment
     - node.type.group
   module:
     - comment
-    - entity_print
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.group.default
 targetEntityType: node
 bundle: group
@@ -42,4 +39,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true
