@@ -124,7 +124,7 @@ class ResolveForm extends FormBase {
       '#weight' => -2,
     );
     $groupMember = $group->getMember($user);
-   if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1))) {
+   if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
