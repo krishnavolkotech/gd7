@@ -280,6 +280,7 @@ class HzdearlywarningsStorage
             '#rows' => $rows,
             '#empty' => t('No Data Created Yet'),
             '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+            '#cache'=>['tags'=>['node_list']],
         );
         
         $output['pager'] = array(
@@ -316,7 +317,7 @@ class HzdearlywarningsStorage
 //    foreach ($resonses_cids as $resonses_cid) {
             
             $responses['uid'] = $last_comment->uid->value;
-            $responses['last_posted'] = date('d.m.Y', $last_comment->created->value['0']);
+            $responses['last_posted'] = date('d.m.Y', $last_comment->created->value);
             if ($responses['last_posted']) {
                 $user_query = db_select('cust_profile', 'cp');
                 $user_query->condition('cp.uid', $last_comment->getOwnerId(), '=')

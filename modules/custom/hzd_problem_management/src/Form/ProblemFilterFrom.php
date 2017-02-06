@@ -48,6 +48,7 @@ class ProblemFilterFrom extends FormBase
         $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
         $query->Fields('nfd', array('nid', 'title'));
         $query->condition('gpv.group_id', $group_id, '=');
+        $query->orderBy('nfd.title','asc');
         $service = $query->execute()->fetchAll();
         foreach ($service as $services) {
             $default_services[$services->nid] = $services->title;
@@ -86,7 +87,7 @@ class ProblemFilterFrom extends FormBase
 //          ),
 //        ),
             '#attributes' => array(
-                'onchange' => 'this.form.submit()',
+                'onchange' => 'jQuery(\'select[name="function"]\').prop(\'selectedIndex\',0);jQuery(\'select[name="release"]\').prop(\'selectedIndex\',0);this.form.submit();',
             ),
             '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
             '#suffix' => '</div>',

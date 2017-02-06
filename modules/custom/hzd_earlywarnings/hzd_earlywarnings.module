@@ -54,10 +54,13 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
         $rel = \Drupal::request()->query->get('releases');
         $form['field_release_service']['widget']['#default_value'] = $service;
         $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
-        $form['field_release_service']['#attributes']['readonly'] = 'readonly';
-        $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
-        $form['field_release_service']['#disabled'] = TRUE;
-        $form['field_earlywarning_release']['#disabled'] = TRUE;
+        if($rel && $service){
+          $form['field_release_service']['#attributes']['readonly'] = 'readonly';
+          $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
+          $form['field_release_service']['#disabled'] = TRUE;
+          $form['field_earlywarning_release']['#disabled'] = TRUE;
+        }
+        
         
     }
     
