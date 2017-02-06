@@ -1,0 +1,22 @@
+uuid: b84a7c63-5936-4dd9-bb5e-6cbdc7c2a3f6
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+  theme:
+    - hzd
+_core:
+  default_config_hash: oXUb3JZR2WW5VOdw4HrhRicCsq51mCgLfRyvheG68ck
+id: hzd_breadcrumbs
+theme: hzd
+region: '-1'
+weight: -23
+provider: null
+plugin: system_breadcrumb_block
+settings:
+  id: system_breadcrumb_block
+  label: Breadcrumbs
+  provider: system
+  label_display: '0'
+visibility: {  }

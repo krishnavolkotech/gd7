@@ -1,0 +1,59 @@
+uuid: 570f91e2-9fea-4ea8-a3e1-5ef432e82862
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.forum.body
+    - field.field.node.forum.comment
+    - field.field.node.forum.comment_forum
+    - field.field.node.forum.taxonomy_forums
+    - field.field.node.forum.upload
+    - node.type.forum
+  module:
+    - comment
+    - entity_print
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+_core:
+  default_config_hash: dYNgSzier2ho_TffDzhdX4UkzSnlX6FCouPFu3f_Oxs
+id: node.forum.default
+targetEntityType: node
+bundle: forum
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  comment_forum:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+  taxonomy_forums:
+    type: entity_reference_label
+    weight: -1
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+hidden:
+  comment: true
+  langcode: true
+  upload: true

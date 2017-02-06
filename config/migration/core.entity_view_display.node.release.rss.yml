@@ -1,0 +1,76 @@
+uuid: 7ea15c42-39d0-4d02-b829-ea154cb325a4
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.rss
+    - field.field.node.release.comment
+    - field.field.node.release.field_date
+    - field.field.node.release.field_documentation_link
+    - field.field.node.release.field_link
+    - field.field.node.release.field_release_comments
+    - field.field.node.release.field_release_type
+    - field.field.node.release.field_relese_services
+    - field.field.node.release.field_status
+    - field.field.node.release.upload
+    - node.type.release
+  module:
+    - text
+    - user
+id: node.release.rss
+targetEntityType: node
+bundle: release
+mode: rss
+content:
+  field_date:
+    label: above
+    weight: -2
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_documentation_link:
+    label: above
+    weight: 32
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_link:
+    label: above
+    weight: 31
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_release_comments:
+    label: above
+    weight: -1
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_release_type:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_relese_services:
+    label: above
+    weight: -3
+    type: entity_reference_label
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_status:
+    label: above
+    weight: 6
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

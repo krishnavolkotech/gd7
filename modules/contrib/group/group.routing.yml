@@ -40,7 +40,7 @@ entity.group.request:
     _controller: '\Drupal\group\Controller\GroupMembershipController::requestMembership'
     _title_callback: '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle'
   requirements:
-    _group_permission: 'request group'
+    _group_permission: 'request group membership'
     _group_member: 'FALSE'
 
 # Group type entity routes.

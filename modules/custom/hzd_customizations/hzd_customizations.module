@@ -233,7 +233,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         } else {
             $group = Group::load(QUICKINFO);
             $groupMember = $group->getMember($user);
-            if ($groupMember) {
+            if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
                 $roles = $groupMember->getRoles();
                 if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                     $form['actions']['publish']['#access'] = TRUE;

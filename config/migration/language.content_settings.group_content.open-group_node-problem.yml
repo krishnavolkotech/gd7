@@ -1,0 +1,11 @@
+uuid: 621e8c15-b0c7-49a3-96ae-7e83da36d868
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-problem
+id: group_content.open-group_node-problem
+target_entity_type_id: group_content
+target_bundle: open-group_node-problem
+default_langcode: site_default
+language_alterable: false

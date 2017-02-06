@@ -1,0 +1,22 @@
+uuid: 329cc3ac-23c1-46f4-bf10-9fbd4d12aa03
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.promote
+field_name: promote
+entity_type: node
+bundle: downtimes
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -57,7 +57,7 @@ class QuickinfoAccessController {
         
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
             return AccessResult::allowed();
         }
         
@@ -80,7 +80,7 @@ class QuickinfoAccessController {
         
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
             return AccessResult::allowed();
         }
         
@@ -110,7 +110,7 @@ class QuickinfoAccessController {
             }
             $group = \Drupal\group\Entity\Group::load($group_id);
             $content = $group->getMember(\Drupal::currentUser());
-            if ($content) {
+            if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
               return AccessResult::allowed();
             }
             return AccessResult::forbidden();
@@ -137,7 +137,7 @@ class QuickinfoAccessController {
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
         
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();

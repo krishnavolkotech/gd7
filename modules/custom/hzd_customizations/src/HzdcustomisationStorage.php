@@ -886,7 +886,8 @@ class HzdcustomisationStorage
             $maintenance_group = \Drupal\group\Entity\Group::load(MAINTENANCE_GROUP_ID);
             // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
             $currentUser = \Drupal::currentUser();
-            if ($maintenance_group->getMember($currentUser) || array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
+          $groupMember = $maintenance_group->getMember($user);
+            if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1))|| array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
                 $maintenance_edit = TRUE;
             } else {
                 $maintenance_edit = FALSE;

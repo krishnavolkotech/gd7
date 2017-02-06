@@ -1,0 +1,18 @@
+uuid: e84c9d48-6455-40f3-a953-bcd96b01bfb1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  module:
+    - gnode
+id: moderate_private-group_node-page
+label: 'Moderate Private: Group node (Seite)'
+description: 'Adds <em class="placeholder">Seite</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:page'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

@@ -1,0 +1,51 @@
+uuid: 364b45dd-0de9-4aec-b5a5-19e56eebebe9
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.early_warnings.body
+    - field.field.node.early_warnings.comment_no_subject
+    - field.field.node.early_warnings.field_earlywarning_release
+    - field.field.node.early_warnings.field_release_service
+    - node.type.early_warnings
+  module:
+    - text
+    - user
+id: node.early_warnings.teaser
+targetEntityType: node
+bundle: early_warnings
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+  field_earlywarning_release:
+    label: above
+    weight: 8
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_release_service:
+    label: above
+    weight: 7
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment_no_subject: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

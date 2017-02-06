@@ -1,0 +1,16 @@
+uuid: 3f376bb1-f24f-493c-bd9c-e69917441496
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: moderate-outsider
+label: Outsider
+weight: -101
+internal: true
+audience: outsider
+group_type: moderate
+permissions_ui: true
+permissions:
+  - 'view group'
+  - 'request group membership'

@@ -1,0 +1,17 @@
+uuid: 24629c16-32f3-43e1-8fc2-beaa21da8d4b
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Verfahrenssteckbrief
+type: service_profile
+description: ''
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: false

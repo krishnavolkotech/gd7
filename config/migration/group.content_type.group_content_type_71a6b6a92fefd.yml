@@ -1,0 +1,19 @@
+uuid: 3fe4800b-305e-4916-aa07-be6b7b80ddae
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  module:
+    - gnode
+id: group_content_type_71a6b6a92fefd
+label: 'Moderate Private: Group node (Eingesetzte Releases)'
+description: 'Adds <em class="placeholder">Eingesetzte Releases</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:deployed_releases'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: "<p>By submitting this form you will add this content to the group.<br />\r\nIt will then be subject to the access control settings that were configured for the group.<br />\r\nPlease fill out any available fields to describe the relation between the content and the group.</p>\r\n"
+    format: basic_html

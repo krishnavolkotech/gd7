@@ -1,0 +1,18 @@
+uuid: 51ab41bd-c003-4339-8910-e45f37109d3f
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+  module:
+    - gnode
+id: group_content_type_b2ed3eb8d19c9
+label: 'Moderate: Group node (Verfahrenssteckbrief)'
+description: 'Adds <em class="placeholder">Verfahrenssteckbrief</em> content to groups both publicly and privately.'
+group_type: moderate
+content_plugin: 'group_node:service_profile'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

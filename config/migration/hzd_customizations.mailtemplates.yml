@@ -1,0 +1,27 @@
+downtimes:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+problems:
+  subject: Hellooooooooooooo
+  mail_content: '[node:created][node:created]'
+quickinfo:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+planning_files:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+release:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+problem:
+  subject: '[node:title] has been modified'
+  mail_content: "\r\n[node:url:absolute]"
+group_content:
+  subject: '[node:title] has been modified'
+  mail_content: 'Group Content Updated again'
+early_warnings:
+  subject: '[node:title] has been modified'
+  mail_content: sffsd
+group:
+  subject: '[group:title] has been updated'
+  mail_content: '[group:url]'

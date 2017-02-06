@@ -1,0 +1,38 @@
+uuid: 59e264b5-2ff3-4a8d-b244-d9dff33ea677
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.news.body
+    - field.field.node.news.field_news_date
+    - node.type.news
+  module:
+    - datetime
+    - text
+    - user
+id: node.news.default
+targetEntityType: node
+bundle: news
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  field_news_date:
+    weight: 1
+    label: inline
+    settings:
+      timezone_override: ''
+      format_type: hzd_datetime
+    third_party_settings: {  }
+    type: datetime_default
+hidden:
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  links: true

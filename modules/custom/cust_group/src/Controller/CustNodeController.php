@@ -66,7 +66,8 @@ class CustNodeController extends ControllerBase {
     if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -78,7 +79,8 @@ class CustNodeController extends ControllerBase {
   static function hzdCreateDowntimesAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($user) {
       $group = $route_match->getParameter('group');
-      if ($group->id() == INCEDENT_MANAGEMENT && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
+      $groupMember = $group->getMember($user);
+      if ($group->id() == INCEDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -95,7 +97,8 @@ class CustNodeController extends ControllerBase {
     if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -108,7 +111,8 @@ class CustNodeController extends ControllerBase {
     if ($group = $route_match->getParameter('group')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -120,7 +124,8 @@ class CustNodeController extends ControllerBase {
                       ->execute()->fetchAssoc();
       if ($group_id) {
         $group = \Drupal\group\Entity\Group::load($group_id['gid']);
-        if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+        $groupMember = $group->getMember($user);
+        if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();
@@ -137,7 +142,8 @@ class CustNodeController extends ControllerBase {
     if ($group = $route_match->getParameter('arg_0')) {
       if (!is_object($group))
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1) {
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -155,7 +161,7 @@ class CustNodeController extends ControllerBase {
     }
     $group = \Drupal\group\Entity\Group::load($group_id);
     $content = $group->getMember(\Drupal::currentUser());
-    if ($content) {
+    if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
       $contentId = $content->getGroupContent()->id();
       $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
                       ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();

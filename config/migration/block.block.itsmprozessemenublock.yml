@@ -1,0 +1,38 @@
+uuid: 2a9e5086-6daa-4e37-a5b3-a0797676daca
+langcode: en
+status: false
+dependencies:
+  module:
+    - block_class
+    - cust_group
+    - system
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: blue
+id: itsmprozessemenublock
+theme: hzd
+region: '-1'
+weight: 3
+provider: null
+plugin: itsmprozesse_menu_block
+settings:
+  id: itsmprozesse_menu_block
+  label: ITSM-Prozesse
+  provider: cust_group
+  label_display: visible
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

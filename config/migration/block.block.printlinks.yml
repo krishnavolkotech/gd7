@@ -1,0 +1,32 @@
+uuid: cc6b1333-e956-45b2-8d3a-b5aed4c884ba
+langcode: en
+status: false
+dependencies:
+  module:
+    - block_class
+    - entity_print
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: printlinks
+theme: hzd
+region: '-1'
+weight: -5
+provider: null
+plugin: print_links
+settings:
+  id: print_links
+  label: 'Print Links'
+  provider: entity_print
+  label_display: '0'
+  pdf_enabled: true
+  pdf_link_text: 'View PDF'
+  epub_enabled: false
+  epub_link_text: 'View EPub'
+  word_docx_enabled: false
+  word_docx_link_text: 'View Word Document'
+  context_mapping:
+    entity: '@node.node_route_context:node'
+visibility: {  }

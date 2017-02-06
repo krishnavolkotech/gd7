@@ -288,9 +288,9 @@ class HzdReleases extends ControllerBase
         
         $user_role = $user->getRoles(TRUE);
         $group = Group::load(zrml);
-        
-        // $member = $group->getMember($user);
-        if ($group->getMember(\Drupal::currentUser()) || in_array($user_role, array('site_administrator'))) {
+  
+      $groupMember = $group->getMember(\Drupal::currentUser());
+        if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) || in_array($user_role, array('site_administrator'))) {
             $breadcrumb = array();
             $url = Url::fromRoute('/');
             $link = Link::fromTextAndUrl(t('Home'), $url);

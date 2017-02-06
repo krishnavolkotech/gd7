@@ -1,0 +1,7 @@
+uuid: 89f2f82b-308e-4936-b128-2c5b4efacf05
+langcode: en
+status: true
+dependencies: {  }
+id: moderate
+label: Mäßig
+description: 'Membership Request is required.'

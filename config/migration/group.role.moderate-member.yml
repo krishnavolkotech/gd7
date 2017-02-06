@@ -1,0 +1,37 @@
+uuid: c69d8116-64c3-4040-a46c-a5e214aade23
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: moderate-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: moderate
+permissions_ui: true
+permissions:
+  - 'view group'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'
+  - 'view group_node:event content'
+  - 'view event node'
+  - 'view group_node:faqs content'
+  - 'view faqs node'
+  - 'view group_node:newsletter content'
+  - 'view newsletter node'
+  - 'view group_node:page content'
+  - 'view page node'
+  - 'view group_node:quickinfo content'
+  - 'view quickinfo node'
+  - 'view group_node:service_profile content'
+  - 'view service_profile node'
+  - 'create group_node:quickinfo content'
+  - 'edit own group_node:quickinfo content'
+  - 'create quickinfo node'
+  - 'edit own quickinfo node'
+  - 'edit any group_node:quickinfo content'
+  - 'edit any quickinfo node'

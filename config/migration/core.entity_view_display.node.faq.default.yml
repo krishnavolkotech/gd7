@@ -1,0 +1,52 @@
+uuid: 8b8a73f4-1054-4f3b-9960-6c6a20856bd7
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.faq.body
+    - field.field.node.faq.field_detailed_question
+    - field.field.node.faq.upload
+    - node.type.faq
+  module:
+    - entity_print
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+_core:
+  default_config_hash: Gg4W3beAUi1mVE6gXN7UVJZjKUQHEoXLnOOHeRmq7uo
+id: node.faq.default
+targetEntityType: node
+bundle: faq
+mode: default
+content:
+  body:
+    type: text_summary_or_trimmed
+    weight: 2
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    label: hidden
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  field_detailed_question:
+    type: text_default
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true
+  upload: true

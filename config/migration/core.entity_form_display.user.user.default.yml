@@ -1,0 +1,36 @@
+uuid: 1d0dd98d-efaf-4eb0-baeb-b4507054053e
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.user.user.field_do_not_deactivate_automati
+    - field.field.user.user.field_message_preference
+    - field.field.user.user.field_notifications_status
+    - field.field.user.user.l10n_client_contributor_key
+    - field.field.user.user.user_picture
+  module:
+    - user
+_core:
+  default_config_hash: LLAieeozVsoZDb-2PbFxRJpQqnKmpR7-4OoRJnduz-U
+id: user.user.default
+targetEntityType: user
+bundle: user
+mode: default
+content:
+  account:
+    weight: -10
+    settings: {  }
+    third_party_settings: {  }
+  timezone:
+    weight: 6
+hidden:
+  contact: true
+  field_do_not_deactivate_automati: true
+  field_message_preference: true
+  field_notifications_status: true
+  l10n_client_contributor_key: true
+  langcode: true
+  language: true
+  path: true
+  translation: true
+  user_picture: true

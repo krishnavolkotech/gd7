@@ -131,7 +131,7 @@ abstract class GroupPermissionsForm extends FormBase {
         'is_member' => $group_role->isMember(),
       ];
     }
-
+kint($group_roles);
     // Render the general information.
     if ($info = $this->getInfo()) {
       $form['info'] = $info;

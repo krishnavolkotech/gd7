@@ -1,0 +1,9 @@
+uuid: 8c0b2923-a711-4082-a56f-b00dbc4c3e05
+langcode: en
+status: true
+dependencies: {  }
+id: dompdf
+settings:
+  enable_html5_parser: true
+  enable_remote: true
+  default_paper_size: letter

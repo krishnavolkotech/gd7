@@ -1,0 +1,18 @@
+uuid: 490a3b5c-4175-47cd-bc1a-466aac31e417
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.planning_files
+id: node.planning_files.created
+field_name: created
+entity_type: node
+bundle: planning_files
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

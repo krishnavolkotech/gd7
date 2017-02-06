@@ -1,0 +1,18 @@
+uuid: 71b613c3-55bf-4540-86d4-b9c2bccd997c
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.downtimes
+id: node.downtimes.title
+field_name: title
+entity_type: node
+bundle: downtimes
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

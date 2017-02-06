@@ -185,7 +185,8 @@ class HzdEarlyWarnings extends ControllerBase
         $create_icon_path = drupal_get_path('module', 'hzd_release_management') .
             '/images/create-icon.png';
         $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
-        $is_member = $group->getMember(\Drupal::service('current_user'));
+      $groupMember = $group->getMember(\Drupal::service('current_user'));
+        $is_member = ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1));
         
         if ($is_member || in_array($user_role, array('site_administrator'))) {
             $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";

@@ -1,0 +1,8 @@
+uuid: 39c7ea94-f582-4692-b617-1a7933103727
+langcode: de
+status: true
+dependencies: {  }
+id: hzd_datetime
+label: 'HZD datetime'
+locked: false
+pattern: 'd.m.Y H:i'

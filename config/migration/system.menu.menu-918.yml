@@ -1,0 +1,8 @@
+uuid: b8b7dc5d-e0d3-4db5-a034-1e02c5bccdfc
+langcode: en
+status: true
+dependencies: {  }
+id: menu-918
+label: Gruppenadministration
+description: null
+locked: false

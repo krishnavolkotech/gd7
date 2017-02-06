@@ -1,0 +1,33 @@
+uuid: a32177b8-0583-43ef-a423-70f1ab07aed4
+langcode: en
+status: false
+dependencies:
+  module:
+    - block_class
+    - hzd_release_management
+    - language
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: hzdheaderlinks
+theme: hzd
+region: '-1'
+weight: -17
+provider: null
+plugin: hzd_header_links
+settings:
+  id: hzd_header_links
+  label: 'HZD Header Links'
+  provider: hzd_release_management
+  label_display: '0'
+visibility:
+  language:
+    id: language
+    langcodes:
+      en: en
+      de: de
+    negate: false
+    context_mapping:
+      language: '@language.current_language_context:language_interface'

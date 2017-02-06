@@ -1,0 +1,18 @@
+uuid: 87ebc17f-86b8-474a-b07a-72870ccf3859
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - gnode
+id: open-group_node-planning_files
+label: 'Open: Group node (Planungsdateien)'
+description: 'Adds <em class="placeholder">Planungsdateien</em> content to groups both publicly and privately.'
+group_type: open
+content_plugin: 'group_node:planning_files'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

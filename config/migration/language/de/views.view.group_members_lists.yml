@@ -1,0 +1,12 @@
+display:
+  default:
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filtern
+  page_1:
+    display_options:
+      filters:
+        abbr:
+          expose:
+            label: Land

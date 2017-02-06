@@ -1,0 +1,14 @@
+uuid: a293cc52-fe01-4313-8d19-c95fa0da7368
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: group_content_type_6693a40b54133
+label: 'Realease Management: Group membership'
+description: 'Adds users to groups as members.'
+group_type: realease_management
+content_plugin: group_membership
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1

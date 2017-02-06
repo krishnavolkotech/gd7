@@ -1,0 +1,23 @@
+uuid: 800061d4-5061-4bf5-8ea1-2d0b177ad525
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_no_subject
+    - field.storage.comment.field_do_not_send_notifications
+id: comment.comment_no_subject.field_do_not_send_notifications
+field_name: field_do_not_send_notifications
+entity_type: comment
+bundle: comment_no_subject
+label: 'Do not send notifications for this update.'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

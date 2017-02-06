@@ -1,0 +1,11 @@
+uuid: 29ba76ef-70ee-4d80-ab64-7959793d22ed
+langcode: en
+status: true
+dependencies: {  }
+name: Newsletter
+type: newsletter
+description: 'Ein Newsletter ist eine Rundmail an registrierte Benutzer.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: true

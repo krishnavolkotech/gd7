@@ -1,0 +1,18 @@
+uuid: f1d8fd60-d676-4a8f-a899-eccd5ddecc34
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - gnode
+id: group_content_type_ecf0249297413
+label: 'Open: Group node (Eingesetzte Releases)'
+description: 'Adds <em class="placeholder">Eingesetzte Releases</em> content to groups both publicly and privately.'
+group_type: open
+content_plugin: 'group_node:deployed_releases'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

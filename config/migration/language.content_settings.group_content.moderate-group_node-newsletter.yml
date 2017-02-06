@@ -1,0 +1,11 @@
+uuid: a20d2d61-906c-4dbc-960e-925f0435a7c0
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate-group_node-newsletter
+id: group_content.moderate-group_node-newsletter
+target_entity_type_id: group_content
+target_bundle: moderate-group_node-newsletter
+default_langcode: site_default
+language_alterable: false

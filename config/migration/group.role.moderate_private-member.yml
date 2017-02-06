@@ -1,0 +1,33 @@
+uuid: 8bd98910-171d-48f2-bd95-46131e2a1bd6
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+id: moderate_private-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: moderate_private
+permissions_ui: true
+permissions:
+  - 'view group'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'
+  - 'view group_node:event content'
+  - 'view event node'
+  - 'view group_node:faqs content'
+  - 'view faqs node'
+  - 'view group_node:newsletter content'
+  - 'view newsletter node'
+  - 'view group_node:page content'
+  - 'view page node'
+  - 'view group_node:quickinfo content'
+  - 'view group_node:service_profile content'
+  - 'view service_profile node'
+  - 'view group_node:deployed_releases content'
+  - 'create group_node:deployed_releases content'
+  - 'edit own group_node:deployed_releases content'

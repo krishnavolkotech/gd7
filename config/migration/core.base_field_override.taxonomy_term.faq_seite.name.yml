@@ -1,0 +1,18 @@
+uuid: 4a9f8852-7516-4342-9cb9-27ec27181903
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.faq_seite
+id: taxonomy_term.faq_seite.name
+field_name: name
+entity_type: taxonomy_term
+bundle: faq_seite
+label: Name
+description: 'The term name.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

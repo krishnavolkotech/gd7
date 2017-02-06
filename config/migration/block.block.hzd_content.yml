@@ -1,0 +1,22 @@
+uuid: 8cf870b9-f483-4f65-91dd-15c016250442
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - hzd
+_core:
+  default_config_hash: 9EoWV2Lot6FVSr50t4hoKgiz1LIXYWNG-IIPYsWxBqo
+id: hzd_content
+theme: hzd
+region: content
+weight: -16
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  provider: system
+  label_display: '0'
+visibility: {  }

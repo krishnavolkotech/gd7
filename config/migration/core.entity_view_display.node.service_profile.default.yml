@@ -1,0 +1,105 @@
+uuid: f1530262-26f3-48fb-9890-782d4ee61b10
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.service_profile.body
+    - field.field.node.service_profile.comment
+    - field.field.node.service_profile.field_dependent_downtimeservices
+    - field.field.node.service_profile.field_dependent_service
+    - field.field.node.service_profile.field_impact
+    - field.field.node.service_profile.field_maintenance_advance_time
+    - field.field.node.service_profile.field_service_operator
+    - field.field.node.service_profile.field_service_recipient
+    - field.field.node.service_profile.upload
+    - node.type.service_profile
+  module:
+    - comment
+    - entity_print
+    - file
+    - options
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.service_profile.default
+targetEntityType: node
+bundle: service_profile
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 8
+    settings: {  }
+    third_party_settings: {  }
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 5
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  field_dependent_downtimeservices:
+    weight: 10
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+  field_dependent_service:
+    label: inline
+    weight: 3
+    type: entity_reference_label
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_impact:
+    label: inline
+    weight: 6
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_maintenance_advance_time:
+    label: inline
+    weight: 4
+    type: number_decimal
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+  field_service_operator:
+    label: inline
+    weight: 1
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+  field_service_recipient:
+    label: inline
+    weight: 2
+    type: list_key
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 9
+    third_party_settings: {  }
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

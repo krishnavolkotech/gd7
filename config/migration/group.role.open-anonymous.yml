@@ -1,0 +1,16 @@
+uuid: c12a8ba8-c2ed-4f04-959b-bac159759a23
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-anonymous
+label: Anonymous
+weight: -102
+internal: true
+audience: anonymous
+group_type: open
+permissions_ui: true
+permissions:
+  - 'view group_node:downtimes content'
+  - 'view downtimes node'

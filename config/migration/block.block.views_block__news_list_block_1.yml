@@ -1,0 +1,42 @@
+uuid: 440c783a-aeaa-4ac2-8454-72ab3b60483a
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.news_list
+  module:
+    - block_class
+    - system
+    - user
+    - views
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: news-block
+id: views_block__news_list_block_1
+theme: hzd
+region: content
+weight: -19
+provider: null
+plugin: 'views_block:news_list-block_1'
+settings:
+  id: 'views_block:news_list-block_1'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

@@ -1,0 +1,18 @@
+uuid: 2433cbf6-12ca-445c-b0dd-30303857f89f
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - gnode
+id: open-group_node-faq
+label: 'Open: Group node (FAQ)'
+description: 'Adds <em class="placeholder">FAQ</em> content to groups both publicly and privately.'
+group_type: open
+content_plugin: 'group_node:faq'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  info_text:
+    value: '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>'

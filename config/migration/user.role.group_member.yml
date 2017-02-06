@@ -1,0 +1,37 @@
+uuid: fabde967-1730-4761-97c4-7448a38e5c7c
+langcode: en
+status: true
+dependencies: {  }
+id: group_member
+label: 'group member'
+weight: 3
+is_admin: null
+permissions:
+  - 'access ckeditor'
+  - 'access comments'
+  - 'post comments'
+  - 'skip comment approval'
+  - 'access site-wide contact form'
+  - 'create service_profile content'
+  - 'edit any service_profile content'
+  - 'edit own service_profile content'
+  - 'create forum content'
+  - 'edit own forum content'
+  - 'access frontpage'
+  - 'access content'
+  - 'create deployed_releases content'
+  - 'create early_warnings content'
+  - 'manage own subscriptions'
+  - 'skip notifications'
+  - 'subscribe to content'
+  - 'subscribe to content type'
+  - 'view problems'
+  - 'search content'
+  - 'upload files'
+  - 'view uploaded files'
+  - 'access user profiles'
+  - 'access all views'
+  - 'use text format basic_html'
+  - 'use text format filtered_html'
+  - 'view printer friendly versions'
+  - 'create field_do_not_send_notifications'

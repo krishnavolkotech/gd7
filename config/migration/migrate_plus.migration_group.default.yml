@@ -1,0 +1,12 @@
+uuid: ce3b2880-bb1c-44c6-b6d6-b97309e558a0
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: RX-67i9WOQCu4AWLuhoM0XhownC-0jVCL34zqNGJUdw
+id: default
+label: Default
+description: 'A container for any migrations not explicitly assigned to a group.'
+source_type: null
+module: null
+shared_configuration: null

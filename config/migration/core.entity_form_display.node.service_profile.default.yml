@@ -1,0 +1,73 @@
+uuid: 80d28311-ead5-433a-8237-a9c4121f97e7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.service_profile.body
+    - field.field.node.service_profile.comment
+    - field.field.node.service_profile.field_dependent_downtimeservices
+    - field.field.node.service_profile.field_dependent_service
+    - field.field.node.service_profile.field_impact
+    - field.field.node.service_profile.field_maintenance_advance_time
+    - field.field.node.service_profile.field_service_operator
+    - field.field.node.service_profile.field_service_recipient
+    - field.field.node.service_profile.upload
+    - node.type.service_profile
+  module:
+    - text
+id: node.service_profile.default
+targetEntityType: node
+bundle: service_profile
+mode: default
+content:
+  field_dependent_downtimeservices:
+    weight: 26
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+  field_dependent_service:
+    weight: 4
+    type: options_buttons
+    settings: {  }
+    third_party_settings: {  }
+  field_impact:
+    weight: 14
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+  field_maintenance_advance_time:
+    weight: 5
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_service_operator:
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+  field_service_recipient:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+  langcode:
+    type: language_select
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  comment: true
+  created: true
+  path: true
+  promote: true
+  sticky: true
+  title: true
+  uid: true
+  upload: true

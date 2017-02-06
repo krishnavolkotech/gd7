@@ -46,7 +46,7 @@ class AccessController extends ControllerBase
                 if (array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
                     return AccessResult::allowed();
                 }
-                if ($content) {
+                if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
                     return AccessResult::allowed();
                 } else {
                     return AccessResult::forbidden();
@@ -100,7 +100,7 @@ class AccessController extends ControllerBase
                 if (!$content) {
                     return AccessResult::forbidden();
                 } else {
-                    if (!$node->isPublished()) {
+                    if (!$node->isPublished() && $content->getGroupContent()->get('request_status')->value == 1) {
                         return AccessResult::allowed();
                     }
                 }
@@ -116,7 +116,7 @@ class AccessController extends ControllerBase
         $loadedGroup = $route_match->getParameter('group');
         if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
             $content = $group->getMember($user);
-            if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+            if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1) {
                 return AccessResult::allowed();
             } else {
                 return AccessResult::forbidden();
@@ -147,7 +147,7 @@ class AccessController extends ControllerBase
                 $group = \Drupal\group\Entity\Group::load($group);
             }
             $groupMember = $group->getMember(\Drupal::currentUser());
-            if ($groupMember) {
+            if ($groupMember && $content->getGroupContent()->get('request_status')->value == 1) {
                 $roles = $groupMember->getRoles();
                 if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                     return AccessResult::allowed();

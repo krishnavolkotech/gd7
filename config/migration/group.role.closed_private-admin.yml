@@ -1,0 +1,34 @@
+uuid: 350dd092-dee0-4da2-9c45-9e47860d9113
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: closed_private-admin
+label: Admin
+weight: -98
+internal: false
+audience: member
+group_type: closed_private
+permissions_ui: true
+permissions:
+  0: 'edit group'
+  1: 'view group'
+  2: 'administer members'
+  3: 'access group_membership overview'
+  4: 'view group_membership content'
+  5: 'leave group'
+  6: 'access group_node overview'
+  19: 'view group_node:page content'
+  20: 'create group_node:page content'
+  21: 'edit own group_node:page content'
+  22: 'edit any group_node:page content'
+  23: 'delete own group_node:page content'
+  24: 'delete any group_node:page content'
+  25: 'view page node'
+  26: 'create page node'
+  27: 'edit own page node'
+  28: 'edit any page node'
+  29: 'delete own page node'
+  30: 'delete any page node'
+  31: 'edit own group_membership content'

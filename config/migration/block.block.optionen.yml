@@ -1,0 +1,42 @@
+uuid: 5f30af68-a148-4d9d-9afa-41f6928b6484
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.optionen
+  module:
+    - block_class
+    - system
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: optionen
+theme: hzd
+region: '-1'
+weight: -19
+provider: null
+plugin: 'system_menu_block:optionen'
+settings:
+  id: 'system_menu_block:optionen'
+  label: Optionen
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      administrator: administrator
+      site_administrator: site_administrator
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+  request_path:
+    id: request_path
+    pages: "<front>\r\n*-groups"
+    negate: true
+    context_mapping: {  }

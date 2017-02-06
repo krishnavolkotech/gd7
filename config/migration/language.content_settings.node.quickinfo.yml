@@ -1,0 +1,16 @@
+uuid: 7d3bee53-a89e-43dc-a853-54bfa19728c6
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.quickinfo
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: node.quickinfo
+target_entity_type_id: node
+target_bundle: quickinfo
+default_langcode: site_default
+language_alterable: false

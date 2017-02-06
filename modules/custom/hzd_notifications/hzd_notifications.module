@@ -310,7 +310,7 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
           '#type' => 'checkbox',
           '#title' => t('Do not send notifications for this update.'),
         );
-      } else if ($group->getMember($current_user) && in_array($form_id, $for_groupmemeber_formids)) {
+      } else if (($group->getMember($current_user) && $group->getMember($current_user)->getGroupContent()->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)) {
         $form['notification'] = array(
           '#type' => 'details',
           '#title' => t('Notifications settings'),

@@ -1,0 +1,113 @@
+uuid: 42e53a63-70b3-4bd6-ac60-d314aae3e910
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.services.comment
+    - field.field.node.services.field_diff
+    - field.field.node.services.field_downtime_type
+    - field.field.node.services.field_enable_downtime
+    - field.field.node.services.field_problem_name
+    - field.field.node.services.field_release_name
+    - field.field.node.services.release_type
+    - field.field.node.services.upload
+    - node.type.services
+  module:
+    - comment
+    - file
+    - path
+    - text
+id: node.services.default
+targetEntityType: node
+bundle: services
+mode: default
+content:
+  comment:
+    type: comment_default
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+  created:
+    type: datetime_timestamp
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+  field_diff:
+    weight: 1
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_downtime_type:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+  field_enable_downtime:
+    weight: -1
+    type: options_buttons
+    settings: {  }
+    third_party_settings: {  }
+  field_problem_name:
+    weight: -4
+    type: text_textfield
+    settings:
+      size: 30
+      placeholder: ''
+    third_party_settings: {  }
+  field_release_name:
+    weight: -2
+    type: text_textfield
+    settings:
+      size: 30
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 15
+    third_party_settings: {  }
+  release_type:
+    type: options_select
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 16
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  upload:
+    settings:
+      progress_indicator: throbber
+    type: file_generic
+    weight: 31
+    third_party_settings: {  }
+hidden: {  }

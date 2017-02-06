@@ -1,0 +1,42 @@
+uuid: 2c30fe15-3baa-424c-8ade-bfc4b72fab2b
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.release_list
+  module:
+    - block_class
+    - system
+    - user
+    - views
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: views_block__release_list_block_1
+theme: hzd
+region: sidebar_first
+weight: -20
+provider: null
+plugin: 'views_block:release_list-block_1'
+settings:
+  id: 'views_block:release_list-block_1'
+  label: 'Neue Releases'
+  provider: views
+  label_display: visible
+  views_label: 'Neue Releases'
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

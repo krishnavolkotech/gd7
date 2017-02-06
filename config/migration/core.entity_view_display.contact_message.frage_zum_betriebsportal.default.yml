@@ -1,0 +1,28 @@
+uuid: 88fedf4f-915f-44a8-a37c-2fc4fdcc37db
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.frage_zum_betriebsportal
+    - field.field.contact_message.frage_zum_betriebsportal.field_category
+id: contact_message.frage_zum_betriebsportal.default
+targetEntityType: contact_message
+bundle: frage_zum_betriebsportal
+mode: default
+content:
+  field_category:
+    weight: 1
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+  message:
+    type: string
+    weight: 0
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+hidden:
+  entity_print_view: true

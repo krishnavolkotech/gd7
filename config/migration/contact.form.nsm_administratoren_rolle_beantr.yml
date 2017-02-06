@@ -1,0 +1,12 @@
+uuid: 07df0d3e-2189-46dd-b963-7a5de878f29b
+langcode: en
+status: true
+dependencies: {  }
+id: nsm_administratoren_rolle_beantr
+label: 'NSM-Administratoren-Rolle beantragen'
+recipients:
+  - betriebsportal-konsens@hzd.hessen.de
+reply: "Vielen Dank für Ihre Nachricht. Wir bemühen uns um eine schnellstmögliche Bearbeitung.\r\n\r\n-- Team Betriebsportal KONSENS"
+weight: 8
+message: 'Your message has been sent.'
+redirect: ''

@@ -162,7 +162,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
         }
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1)) {
             return true;
         }
         return false;

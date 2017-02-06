@@ -1,0 +1,31 @@
+uuid: 5bcbfc00-9ab0-4e1e-8f7b-a3bfbafe547e
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_result
+    - field.field.node.non_production_environment.comment
+    - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.upload
+    - node.type.non_production_environment
+  module:
+    - text
+    - user
+id: node.non_production_environment.search_result
+targetEntityType: node
+bundle: non_production_environment
+mode: search_result
+content:
+  field_non_production_state:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

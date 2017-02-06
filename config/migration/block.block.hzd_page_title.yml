@@ -1,0 +1,20 @@
+uuid: ff8afdc4-f52e-4324-ac15-96aecd089537
+langcode: en
+status: false
+dependencies:
+  theme:
+    - hzd
+_core:
+  default_config_hash: 7rR9chwXvdM2H8OYMAYx9Zj3GGlPMrZp_M3ZA4thYTk
+id: hzd_page_title
+theme: hzd
+region: '-1'
+weight: -6
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  provider: core
+  label_display: '0'
+visibility: {  }

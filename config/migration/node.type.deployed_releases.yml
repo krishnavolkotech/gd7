@@ -1,0 +1,18 @@
+uuid: 838147eb-47c9-497b-a5d3-5ae138c3c09d
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: 'Eingesetzte Releases'
+type: deployed_releases
+description: 'Content type for creating Deployed releases '
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

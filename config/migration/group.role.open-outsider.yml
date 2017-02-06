@@ -1,0 +1,18 @@
+uuid: 1237a5ce-813a-46e7-98b0-4106ebc4f732
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-outsider
+label: Outsider
+weight: -101
+internal: true
+audience: outsider
+group_type: open
+permissions_ui: true
+permissions:
+  0: 'view group'
+  1: 'join group'
+  4: 'view group_node:downtimes content'
+  5: 'view downtimes node'

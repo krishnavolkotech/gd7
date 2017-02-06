@@ -1,0 +1,59 @@
+uuid: 07cabf93-2e5c-45d1-b40f-e2ee09f06fdb
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.page.body
+    - field.field.node.page.comment
+    - field.field.node.page.field_page_files
+    - field.field.node.page.field_page_links
+    - field.field.node.page.upload
+    - node.type.page
+  module:
+    - comment
+    - entity_print
+    - file
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+_core:
+  default_config_hash: oZ-7vpIJxjxL2up9B5KrJGD0lazQ9aN0P-fIPo6OrSU
+id: node.page.default
+targetEntityType: node
+bundle: page
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 1
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 4
+    third_party_settings: {  }
+hidden:
+  field_page_files: true
+  field_page_links: true
+  langcode: true

@@ -1,0 +1,34 @@
+uuid: 84d12991-5470-4239-a770-488dcbc1e627
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.tools
+  module:
+    - system
+    - user
+  theme:
+    - hzd
+_core:
+  default_config_hash: NeHSoqm4XFqA7_0bDmR429ZZQt3LRbZMNRJTMsFyOfI
+id: hzd_user_2
+theme: hzd
+region: '-1'
+weight: -8
+provider: null
+plugin: 'system_menu_block:tools'
+settings:
+  id: 'system_menu_block:tools'
+  label: Optionen
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      site_administrator: site_administrator
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    negate: false

@@ -1,0 +1,7 @@
+uuid: e7df51d3-002e-4dd1-8b84-5a9e3c641997
+langcode: en
+status: true
+dependencies: {  }
+id: moderate_private
+label: 'Mäßig Privat'
+description: 'Same as Moderate, But visible to only Members. '

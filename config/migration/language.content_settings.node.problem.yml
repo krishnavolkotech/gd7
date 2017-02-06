@@ -1,0 +1,16 @@
+uuid: c16ef14e-455c-4886-96c5-557c2cfb3fca
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.problem
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: node.problem
+target_entity_type_id: node
+target_bundle: problem
+default_langcode: site_default
+language_alterable: false

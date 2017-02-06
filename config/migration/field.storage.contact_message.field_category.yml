@@ -1,0 +1,19 @@
+uuid: 4fa10863-fc7d-4a0c-8303-9024a6fd8b4a
+langcode: en
+status: true
+dependencies:
+  module:
+    - contact
+id: contact_message.field_category
+field_name: field_category
+entity_type: contact_message
+type: entity_reference
+settings:
+  target_type: contact_form
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

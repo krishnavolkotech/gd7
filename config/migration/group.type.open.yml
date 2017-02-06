@@ -1,0 +1,7 @@
+uuid: d45b59d9-95d3-4fed-8d08-bd726975157a
+langcode: en
+status: true
+dependencies: {  }
+id: open
+label: Öffnen
+description: 'All authenticated users can join.'

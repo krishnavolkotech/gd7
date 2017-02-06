@@ -1,0 +1,7 @@
+uuid: 90c1e9ed-a234-4b8e-ba43-1db6d2dff77b
+langcode: en
+status: true
+dependencies: {  }
+id: downtimes
+label: Downtimes
+description: 'Same as open group.'

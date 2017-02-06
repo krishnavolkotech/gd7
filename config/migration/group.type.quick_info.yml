@@ -1,0 +1,7 @@
+uuid: d4f31386-9e84-4c59-8da8-6362bf457fb1
+langcode: en
+status: true
+dependencies: {  }
+id: quick_info
+label: 'Quick Info'
+description: 'Same as Closed.'

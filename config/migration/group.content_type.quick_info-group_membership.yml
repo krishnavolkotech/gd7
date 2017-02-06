@@ -1,0 +1,14 @@
+uuid: 07216e11-dcf6-4c7e-a5db-9b87fc568d71
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+id: quick_info-group_membership
+label: 'Quick Info: Group membership'
+description: 'Adds users to groups as members.'
+group_type: quick_info
+content_plugin: group_membership
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1

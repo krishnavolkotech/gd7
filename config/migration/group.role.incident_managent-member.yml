@@ -1,0 +1,14 @@
+uuid: 0a9042fd-b73e-446c-ab9e-8fc3761dfee6
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+id: incident_managent-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: incident_managent
+permissions_ui: true
+permissions: {  }

@@ -1,0 +1,41 @@
+uuid: 99729356-b365-4ddd-8240-305581a826ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: open
+permissions_ui: true
+permissions:
+  - 'view group'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'
+  - 'view group_node:deployed_releases content'
+  - 'view deployed_releases node'
+  - 'view group_node:downtimes content'
+  - 'view downtimes node'
+  - 'view group_node:early_warnings content'
+  - 'view early_warnings node'
+  - 'view group_node:faqs content'
+  - 'view faqs node'
+  - 'view group_node:newsletter content'
+  - 'view newsletter node'
+  - 'view group_node:page content'
+  - 'view page node'
+  - 'view group_node:planning_files content'
+  - 'view planning_files node'
+  - 'view group_node:problem content'
+  - 'view problem node'
+  - 'view group_node:release content'
+  - 'view release node'
+  - 'edit own group_node:downtimes content'
+  - 'edit any group_node:downtimes content'
+  - 'edit own downtimes node'
+  - 'edit any downtimes node'

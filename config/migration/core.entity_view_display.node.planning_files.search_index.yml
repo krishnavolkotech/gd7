@@ -1,0 +1,39 @@
+uuid: 1f61e8a2-2516-43df-8ba4-9db531381fb2
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_index
+    - field.field.node.planning_files.comment
+    - field.field.node.planning_files.field_planning_file_type
+    - field.field.node.planning_files.field_upload_planning_file
+    - field.field.node.planning_files.upload
+    - node.type.planning_files
+  module:
+    - file
+    - text
+    - user
+id: node.planning_files.search_index
+targetEntityType: node
+bundle: planning_files
+mode: search_index
+content:
+  field_planning_file_type:
+    label: above
+    weight: -4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+  field_upload_planning_file:
+    label: above
+    weight: -3
+    type: file_default
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+hidden:
+  comment: true
+  entity_print_view: true
+  langcode: true
+  upload: true

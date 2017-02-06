@@ -1,0 +1,14 @@
+uuid: 2091859c-e120-4c6c-9f19-518db00beb90
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+id: incident_managent-anonymous
+label: Anonymous
+weight: -102
+internal: true
+audience: anonymous
+group_type: incident_managent
+permissions_ui: true
+permissions: {  }

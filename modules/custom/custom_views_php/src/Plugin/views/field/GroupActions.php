@@ -53,7 +53,8 @@ class GroupActions extends FieldPluginBase {
   public function render(ResultRow $values) {
     $group = $values->_entity;
     $link = '';
-    if($group->getMember(\Drupal::currentUser())){
+    $groupMember = $group->getMember(\Drupal::currentUser());
+    if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
       $url = Url::fromRoute('entity.group.leave',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);
     }elseif($group->bundle() == 'open'){

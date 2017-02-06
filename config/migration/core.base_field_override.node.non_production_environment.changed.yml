@@ -1,0 +1,18 @@
+uuid: 6182c74f-7b1c-48b9-b58a-1d7657d99faa
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.non_production_environment
+id: node.non_production_environment.changed
+field_name: changed
+entity_type: node
+bundle: non_production_environment
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

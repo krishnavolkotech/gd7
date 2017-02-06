@@ -83,7 +83,8 @@ class GroupMenuBlock extends BlockBase
                 $group = \Drupal\group\Entity\Group::load($group);
             }
             $user = \Drupal::currentUser();
-            $groupMember = (bool)$group->getMember($user);
+          $groupMember = $group->getMember($user);
+            $groupMember = (bool)($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1);
             //pr((bool)$groupMember);exit;
             if ($groupMember || array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
                 $oldId = $group->get('field_old_reference')->value;

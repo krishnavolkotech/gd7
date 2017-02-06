@@ -1,0 +1,53 @@
+uuid: e89e6180-5b89-4142-be68-22db1459cee1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.non_production_environment.comment
+    - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.upload
+    - node.type.non_production_environment
+  module:
+    - comment
+    - entity_print
+    - file
+    - options
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.non_production_environment.default
+targetEntityType: node
+bundle: non_production_environment
+mode: default
+content:
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  field_non_production_state:
+    label: above
+    weight: -4
+    type: list_key
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 101
+    third_party_settings: {  }
+hidden:
+  langcode: true
