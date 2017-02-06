@@ -924,7 +924,7 @@ display:
             items_per_page_label: ''
             items_per_page_options: '25, 50, 100'
             items_per_page_options_all: true
-            items_per_page_options_all_label: All
+            items_per_page_options_all_label: '<Alle>'
             offset: false
             offset_label: Offset
           quantity: 9
@@ -1455,14 +1455,14 @@ display:
           empty_zero: false
           hide_alter_empty: true
           plugin_id: standard
-        phone:
-          id: phone
+        position:
+          id: position
           table: cust_profile
-          field: phone
+          field: position
           relationship: none
           group_type: group
           admin_label: ''
-          label: Phone
+          label: Position
           exclude: false
           alter:
             alter_text: false
@@ -1504,14 +1504,14 @@ display:
           empty_zero: false
           hide_alter_empty: true
           plugin_id: standard
-        position:
-          id: position
+        phone:
+          id: phone
           table: cust_profile
-          field: position
+          field: phone
           relationship: none
           group_type: group
           admin_label: ''
-          label: Position
+          label: Phone
           exclude: false
           alter:
             alter_text: false
@@ -1651,7 +1651,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: basic_string
+          type: email_mailto
           settings: {  }
           group_column: value
           group_columns: {  }
