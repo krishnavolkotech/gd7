@@ -2,35 +2,32 @@
 
 /**
  * Return the role of the user based on the global
- * variable $user.  
+ * variable $user.
  * In case we need to see if the user is authenticated
  * just check for the isset($user->uid).
  *
- * @return string or false 
+ * @return string or false
  */
 function get_user_role($value = NULL) {
   $user = \Drupal::currentUser();
   $group = \Drupal::routeMatch()->getParameter('group');
   if (is_object($group)) {
     $group_id = $group->id();
-  }
-  else {
+  } else {
     $group_id = $group;
   }
-
+  
   if ($user->id() == 1) {
     return 'site_administrator';
   }
   // The user is site administrator ? site-administrator's rid = 5
   if (in_array(1, array_keys($user->getRoles()))) {
     return 'site_administrator';
-  }
-  elseif (isset($group_id)) {
+  } elseif (isset($group_id)) {
     $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
     if ($is_group_admin) {
       return 'group_admin';
-    }
-    else {
+    } else {
       return 'group_member';
     }
   }
@@ -57,22 +54,22 @@ function nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state)
   // Retrieve an array which contains the path pieces.
   $path_args = explode('/', $current_path);
   $user_id = $path_args[2];
-
+  
   $nsm_roles = nsm_roles();
-
+  
   $query = \Drupal::database()->select('nsm_user_role', 'nur');
   $query->addField('nur', 'nsm_role_id');
   $query->condition('nur.user_id', $user_id, '=');
   $user_nsm_role = $query->execute()->fetchField();
-
+  
   $n_role = $user_nsm_role ? $user_nsm_role : 1;
-
+  
   $form['nsm'] = array(
     '#type' => 'fieldset',
     '#title' => t('NSM Roles'),
     '#weight' => 2
   );
-
+  
   $form['nsm']['name_nsm'] = array(
     '#type' => 'radios',
     '#title' => t('NSM Role'),
@@ -82,21 +79,21 @@ function nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state)
     '#description' => t('Member should have only one NSM role'),
   );
   $form['actions']['submit']['#submit'][] = 'nsm_user_role_update';
-
+  
   // return $form;   
 }
 
 function nsm_roles() {
   $roles = array();
-
+  
   $query = \Drupal::database()->select('nsm_role', 'nr');
   $query->fields('nr');
   $result = $query->execute()->fetchAll();
-
+  
   foreach ($result as $role) {
     $roles[$role->id] = $role->rolename;
   }
-
+  
   return $roles;
 }
 
@@ -109,14 +106,14 @@ function inactive_users_flag(&$form, \Drupal\Core\Form\FormStateInterface $form_
   // Retrieve an array which contains the path pieces.
   $path_args = explode('/', $current_path);
   $user_id = $path_args[2];
-
+  
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
   $query->condition('iuf.user_id', $user_id, '=');
   $user_flag = $query->execute()->fetchField();
-
+  
   $user_flag_val = $user_flag ? $user_flag : 0;
-
+  
   $form['inactive_users'] = array(
     '#type' => 'fieldset',
     '#title' => t('Inactive Users'),
@@ -138,17 +135,16 @@ function nsm_user_role_update($form, $form_state) {
   // Retrieve an array which contains the path pieces.
   $path_args = explode('/', $current_path);
   $user_id = $path_args[2];
-
+  
   if ($form_state->getValue('name_nsm')) {
     $role = $form_state->getValue('name_nsm');
-  }
-  else {
+  } else {
     $query = \Drupal::database()->select('nsm_role_id', 'nri');
     $query->addField('nri', 'value');
     $query->condition('nri.user_id', $user_id, '=');
     $role = $query->execute()->fetchField();
   }
-
+  
   $query = \Drupal::database()->update('nsm_user_role');
   $query->fields([
     'nsm_role_id' => $role
@@ -157,40 +153,40 @@ function nsm_user_role_update($form, $form_state) {
   $affected_rows = $query->execute();
   if (!$affected_rows) {
     \Drupal::database()->insert('nsm_user_role')
-        ->fields(array(
-          'user_id' => $form_state->getValue('uid'),
-          'nsm_role_id' => 1,
-        ))->execute();
+      ->fields(array(
+        'user_id' => $form_state->getValue('uid'),
+        'nsm_role_id' => 1,
+      ))->execute();
   }
 }
 
 // updating value for do not automatically block or delete the users.
 function inactive_users_flag_update($form, $form_state) {
   $user = \Drupal::routeMatch()->getParameter('user');
-
-    if(is_object($user)){
-      $user_id = $user->Id();
-    }else{
-      $user_id  = $user;
-    } 
-
+  
+  if (is_object($user)) {
+    $user_id = $user->Id();
+  } else {
+    $user_id = $user;
+  }
+  
   $query = \Drupal::database()->update('inactive_users');
   $query->fields([
     'notified_user' => 1
   ]);
   $query->condition('uid', $user_id);
   $query->execute();
-
+  
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
   $query->condition('iuf.user_id', $user_id, '=');
   $count = $query->countQuery()->execute()->fetchField();
-
+  
   $query = \Drupal::database()->select('inactive_user_flag', 'iuf');
   $query->addField('iuf', 'value');
   $query->condition('iuf.user_id', $user_id, '=');
   $val = $query->execute()->fetchField();
-
+  
   if ($count > 0) {
     if ($val != $form_state->getValue('inactive_user_flag')) {
       $query = \Drupal::database()->update('inactive_user_flag');
@@ -200,13 +196,12 @@ function inactive_users_flag_update($form, $form_state) {
       $query->condition('user_id', $user_id);
       $query->execute();
     }
-  }
-  else {
+  } else {
     \Drupal::database()->insert('inactive_user_flag')
-        ->fields(array(
-          'user_id' => $user_id,
-          'value' => $form_state->getValue('inactive_user_flag'),
-        ))->execute();
+      ->fields(array(
+        'user_id' => $user_id,
+        'value' => $form_state->getValue('inactive_user_flag'),
+      ))->execute();
   }
 }
 
@@ -236,8 +231,9 @@ function __gm($object) {
   exit;
 }
 
-function cust_user_cron(){
-    \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
+function cust_user_cron() {
+  //As per client request daily and weekly notifications are removed
+//    \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
 }
 
 //function cust_user_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
@@ -248,3 +244,88 @@ function cust_user_cron(){
 //    $element['#attributes']['disabled'] = 'disabled';
 //  }
 //}
+
+/**
+ * Implements hook_schema().
+ */
+function cust_user_schema() {
+  $schema = [];
+  $schema['cust_profile'] = [
+    'description' => 'Custom migrated user profile schema',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'The primary identifier.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'firstname' => array(
+        'description' => 'User First Name.',
+        'type' => 'varchar',
+        'length' => 125,
+        'default' => '',
+      ),
+      'lastname' => array(
+        'description' => 'User Last Name.',
+        'type' => 'varchar',
+        'length' => 125,
+        'default' => '',
+      ),
+      'phone' => array(
+        'description' => 'User Phone.',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => '',
+      ),
+      'position' => array(
+        'description' => 'User Position.',
+        'type' => 'varchar',
+        'length' => 125,
+        'default' => '',
+      ),
+      'state_id' => array(
+        'description' => 'User State foreign key.',
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('uid'),
+  ];
+  $schema['states'] = [
+    'description' => 'Custom migrated user profile schema',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'state' => array(
+        'description' => 'State Name.',
+        'type' => 'varchar',
+        'length' => 200,
+        'default' => '',
+      ),
+      'abbr' => array(
+        'description' => 'State Abbr.',
+        'type' => 'char',
+        'length' => 2,
+        'default' => '',
+      ),
+      'entity' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'active' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+  ];
+  
+  return $schema;
+}
