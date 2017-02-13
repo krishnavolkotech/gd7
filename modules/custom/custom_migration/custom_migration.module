@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * @file
+ * Contains custom_migration.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function custom_migration_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the custom_migration module.
+    case 'help.page.custom_migration':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom Migration Scripts and Plugins') . '</p>';
+      return $output;
+    
+    default:
+  }
+}
+
+
+function custom_migration_schema() {
+  $schema = [];
+  $schema['downtimes'] = [
+    'description' => 'The base table for downtimes',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'state_id' => array(
+        'description' => 'imploded state ids.',
+        'type' => 'varchar',
+        'length' => 250,
+        'default' => '',
+      ),
+      'description' => array(
+        'type' => 'text',
+      ),
+      'startdate_planned' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'enddate_planned' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'startdate_reported' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'enddate_reported' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'scheduled_p' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'length' => 1,
+      ),
+      'downtime_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'resolved' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'status' => array(
+        'type' => 'varchar',
+        'length' => 5,
+      ),
+      'email_reminder_sent' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'length' => 4,
+      ),
+      'cancelled' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'comment' => array(
+        'type' => 'text',
+      ),
+      'service_id' => array(
+        'type' => 'varchar',
+        'length' => 250,
+        'default' => '',
+      ),
+      'reason' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  return $schema;
+  
+}

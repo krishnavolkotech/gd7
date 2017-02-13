@@ -1,0 +1,36 @@
+langcode: de
+status: true
+id: service_downtimes_downtimes
+migration_tags: null
+migration_group: custom_migration
+source:
+  plugin: source_table
+  target: migrate
+  table_name: service_downtimes
+  fields:
+    - id
+    - service_id
+    - downtime_id
+  id_fields:
+      downtime_id:
+        type: integer
+        unsigned: FALSE
+        size: big
+process:
+  service_id:
+    plugin: extended_iterator
+    method: iterateData
+    source: service_id
+    key: downtime_id
+  downtime_id: downtime_id
+destination:
+  plugin: table
+  key_map:
+    downtime_id: downtime_id
+  id_fields:
+    downtime_id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: downtimes
+migration_dependencies: {  }

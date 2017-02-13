@@ -1,0 +1,7 @@
+name: Custom Migration
+type: module
+description: Custom Migration Scripts and Plugins
+core: 8.x
+package: Custom
+dependencies:
+  - migrate_plus
