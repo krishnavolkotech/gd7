@@ -114,6 +114,7 @@ class IncidentsBlock extends BlockBase
                     $serviceTitles .= $serviceItem->getTitle() . ', ';
                 }
                 foreach ($stateids as $stateId) {
+                  if(isset($states[$stateId]))
                     $stateTitles .= ' [' . $states[$stateId] . ']';
                 }
                 if ($groupContent) {
