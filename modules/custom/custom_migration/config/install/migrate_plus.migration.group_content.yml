@@ -27,7 +27,14 @@ process:
     -
       plugin: skip_on_empty
       method: row
-
+  type:
+    -
+      plugin: group_mapping_from_d6
+      method: getGroupContentTypeId
+      source: type
+    -
+      plugin: skip_on_empty
+      method: row
 #  revision_uid: revision_uid
 #  revision_log: log
 #  revision_timestamp: timestamp

@@ -9,6 +9,7 @@
 namespace Drupal\custom_migration\Plugin\migrate\process;
 
 
+use Drupal\group\Entity\Group;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
@@ -37,15 +38,34 @@ class GroupMapping extends ProcessPluginBase {
       ->condition('source_table_name.' . $this->configuration['source'], $value)
       ->execute()
       ->fetchAssoc();
-  
+    
     $d8Gid = false;
-    if(isset($data['group_nid'])){
+    if (isset($data['group_nid'])) {
       $d8Gid = \Drupal::entityQuery('group')
-        ->condition('field_old_reference',$data['group_nid'])
+        ->condition('field_old_reference', $data['group_nid'])
         ->execute();
       $d8Gid = reset($d8Gid);
+//      print_r($d8Gid);exit;
     }
     return $d8Gid;
     
+  }
+  
+  
+  public function getGroupContentTypeId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    $content_name = $row->getSourceProperty('type');
+    $nid = $row->getSourceProperty('nid');
+    $d8Gid = \Drupal::entityQuery('group')
+      ->condition('field_old_reference', $nid)
+      ->execute();
+    $d8Gid = reset($d8Gid);
+    if (!empty($d8Gid)) {
+      $group = Group::load($d8Gid);
+      $plugin_id = 'group_node:' . $content_name;
+      $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
+//      print_r($plugin);exit;
+      return $plugin;
+    }
+    return false;
   }
 }
