@@ -15,10 +15,11 @@ use Drupal\node\Entity\Node;
 /**
  * @param $variables
  */
+
 function hzd_preprocess_page(&$variables) {
     $user = \Drupal::currentUser();
-/*    $headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
-    $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);*/
+    $headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
+    $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);
     
     if ($user->id()) {
 //    $searchform = \Drupal\block\Entity\Block::load('searchform');
@@ -122,7 +123,7 @@ function hzd_preprocess_entity_print(&$vars) {
             if($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id())){
                 $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical',['absolute'=>1])->toString());
             }else{
-                $previousUrl = $entity->toLink($node->toUrl('canonical',['absolute'=>1])->toString());
+                $previousUrl = $node->toLink($node->toUrl('canonical',['absolute'=>1])->toString());
             }
             $vars['pdf_original_link'] = $previousUrl;
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
@@ -279,8 +280,8 @@ function hzd_preprocess_node(&$variables) {
         if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
             $variables['ticketstore_html'] = t('No attachments available');
         } else {
-            $att_html = $ticketstore_count > 1 ? "attachments" : "attachment";
-            $variables['ticketstore_html'] = t("<a href=$ticketstore_link>" . t("Link to Ticketstore") . " ($ticketstore_count " . t("$att_html available") . ")</a>");
+            $att_html = $variables['ticketstore_count'] > 1 ? "attachments" : "attachment";
+            $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']}>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
         }
         
         $variables['erroffnet_value'] = date('d.m.Y', $variables['node']

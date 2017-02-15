@@ -37,12 +37,12 @@ class PdfBeforeRenderSubscriber implements EventSubscriberInterface {
 //      $printEngine->set_option('isPhpEnabled',1);
 //      $dom_pdf = $pdf->getDomPDF();
 //
-    $event->getPrintEngine()->doRender();
+//    $event->getPrintEngine()->doRender();
 //    $node = $event->getEntities();
 //    pr($node);exit;
 //    $printEngine->setPaper(200, 200, 595.28, 841.89);
-    $font = $printEngine->getFontMetrics()->get_font("helvetica", "bold");
-    $printEngine->getCanvas()->page_text(22, 18, "Header: {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
+//    $font = $printEngine->getFontMetrics()->get_font("helvetica", "bold");
+//    $printEngine->getCanvas()->page_text(22, 18, "Header: {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
 
 //    drupal_set_message('Event entity_print.print.html_alter thrown by Subscriber in module cust_pdf.', 'status', TRUE);
   }
