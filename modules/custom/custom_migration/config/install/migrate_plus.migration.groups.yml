@@ -34,7 +34,6 @@ process:
   'field_group_body/format':
     plugin: default_value
     default_value: 'full_html'
-    source: format
   'field_group_body/value': body
   'field_group_body/summary': teaser
   type:
