@@ -1,0 +1,43 @@
+id: group_content
+label: Group Content
+migration_tags:
+  - Drupal 6
+deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
+source:
+  plugin: d6_node
+  target: migrate
+process:
+  id: dedupe_entity
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: "de"
+  label: title
+  uid: node_uid
+  status: status
+  created: created
+  changed: changed
+  promote: promote
+  entity_id: nid
+  gid:
+    -
+      plugin: group_mapping_from_d6
+      method: getGroupId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
+
+#  revision_uid: revision_uid
+#  revision_log: log
+#  revision_timestamp: timestamp
+
+#  unmapped d6 fields.
+#  tnid
+#  translate
+#  moderate
+#  comment
+
+destination:
+  plugin: entity:group_content
+migration_dependencies: {}
