@@ -17,8 +17,8 @@ use Drupal\node\Entity\Node;
  */
 function hzd_preprocess_page(&$variables) {
     $user = \Drupal::currentUser();
-    $headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
-    $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);
+/*    $headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
+    $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);*/
     
     if ($user->id()) {
 //    $searchform = \Drupal\block\Entity\Block::load('searchform');
