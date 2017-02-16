@@ -438,6 +438,24 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  */
 function cust_group_schema() {
   $schema = [];
-  
+  $schema['group_problems_view'] = [
+    'description' => 'Table for Problems and groups mappings',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
   return $schema;
 }
