@@ -1297,5 +1297,40 @@ function downtimes_schema() {
     ),
     'primary key' => array('id'),
   ];
+  $schema['resolve_cancel_incident'] = [
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'end_date' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'downtime_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'date_reported' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'comment' => array(
+        'type' => 'varchar',
+        'length' => 1000,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'type' => array(
+        'type' => 'int',
+        'length' => 11,
+        'size' => 'tiny',
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
   return $schema;
 }
