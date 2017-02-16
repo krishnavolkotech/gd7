@@ -54,18 +54,16 @@ class GroupMapping extends ProcessPluginBase {
   
   public function getGroupContentTypeId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $content_name = $row->getSourceProperty('type');
-    $nid = $row->getSourceProperty('nid');
-    $d8Gid = \Drupal::entityQuery('group')
-      ->condition('field_old_reference', $nid)
-      ->execute();
-    $d8Gid = reset($d8Gid);
-    if (!empty($d8Gid)) {
-      $group = Group::load($d8Gid);
+//    print_r($row);
+    $gid = $row->getDestinationProperty('gid');
+    if (!empty($gid)) {
+      $group = Group::load($gid);
       $plugin_id = 'group_node:' . $content_name;
       $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
-//      print_r($plugin);exit;
-      return $plugin;
+//      print_r($plugin->getContentTypeConfigId());exit;
+      return $plugin->getContentTypeConfigId();
     }
+//    exit;
     return false;
   }
 }
