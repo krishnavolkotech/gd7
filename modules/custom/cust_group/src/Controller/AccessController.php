@@ -116,7 +116,7 @@ class AccessController extends ControllerBase
         $loadedGroup = $route_match->getParameter('group');
         if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
             $content = $group->getMember($user);
-            if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1) {
+            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1) {
                 return AccessResult::allowed();
             } else {
                 return AccessResult::forbidden();

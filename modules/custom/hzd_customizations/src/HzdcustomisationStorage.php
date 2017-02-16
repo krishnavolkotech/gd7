@@ -944,7 +944,7 @@ class HzdcustomisationStorage {
 //            $query_seralized = serialize($query_params)
             $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
             if ($downtime_type == 1) {
-              if ($maintenance_edit && (INCEDENT_MANAGEMENT == $group_id) && $type != 'archived') {
+              if ($maintenance_edit && (INCIDENT_MANAGEMENT == $group_id) && $type != 'archived') {
                 $links['action']['edit'] = [
                   '#title' => t('Update'),
                   '#type' => 'link',
@@ -965,7 +965,7 @@ class HzdcustomisationStorage {
                 }
               }
             } else {
-              if ($show_resolve && (INCEDENT_MANAGEMENT == $group_id)) {
+              if ($show_resolve && (INCIDENT_MANAGEMENT == $group_id)) {
                 if ($type != 'archived') {
                   $links['action']['edit'] = [
                     '#title' => t('Update'),

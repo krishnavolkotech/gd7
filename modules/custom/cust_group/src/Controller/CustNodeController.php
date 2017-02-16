@@ -80,7 +80,7 @@ class CustNodeController extends ControllerBase {
     if ($user) {
       $group = $route_match->getParameter('group');
       $groupMember = $group->getMember($user);
-      if ($group->id() == INCEDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
+      if ($group->id() == INCIDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();

@@ -16,7 +16,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
 
-define('INCEDENT_MANAGEMENT', 24);
+//define('INCIDENT_MANAGEMENT', 2);
 if (!defined('SITE_ADMIN_ROLE')) {
     define('SITE_ADMIN_ROLE', 'site_administrator');
 }
@@ -481,7 +481,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         );
         // print_R($maintenance_windows_info);
         $form['#validate'][] = 'custom_service_profile_form_validate';
-        $form['#redirect'] = 'group/' . INCEDENT_MANAGEMENT . '/downtimes/service-profiles';
+        $form['#redirect'] = 'group/' . INCIDENT_MANAGEMENT . '/downtimes/service-profiles';
         $dependent_service_options = get_related_downtime_services('downtimes');
         // pr($dependent_service_options);exit;
         $form['field_dependent_downtimeservices'] = array(
