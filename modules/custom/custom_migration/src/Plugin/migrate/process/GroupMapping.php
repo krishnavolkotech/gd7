@@ -31,6 +31,10 @@ class GroupMapping extends ProcessPluginBase {
     
     
     $source = $row->getSource();
+  
+    if(empty($row->getSourceProperty('title'))){
+      return false;
+    }
     
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('og_ancestry', 'source_table_name')
