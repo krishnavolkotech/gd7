@@ -20,10 +20,14 @@ process:
   id: id
   service_id: service_id
   group_id:
-    plugin: group_mapping_from_d6
-    method: getNewGroupId
-    key: group_id
-    source: group_id
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      key: group_id
+      source: group_id
+    -
+      plugin: skip_on_empty
+      method: row
 destination:
   plugin: table
   key_map:

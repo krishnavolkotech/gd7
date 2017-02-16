@@ -72,11 +72,11 @@ class GroupMapping extends ProcessPluginBase {
   }
   
   public function getNewGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    $key = $row->getSourceProperty('key');
-    $sourceGid = $row->getSourceProperty($key);
     $d8Gid = \Drupal::entityQuery('group')
-      ->condition('field_old_reference', $sourceGid)
+      ->condition('field_old_reference', $value)
       ->execute();
-    return reset($d8Gid);
+    if (!empty($d8Gid))
+      return reset($d8Gid);
+    return false;
   }
 }
