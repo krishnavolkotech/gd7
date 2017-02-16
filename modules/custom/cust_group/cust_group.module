@@ -450,7 +450,7 @@ function cust_group_schema() {
         'length' => 11,
       ),
       'log' => array(
-        'type' => 'mediumtext',
+        'type' => 'text',
       ),
       'uid' => array(
         'type' => 'int',
