@@ -40,4 +40,21 @@ class ExtendedIterator extends ProcessPluginBase {
       ->fetchCol();
     return implode(',', $data);
   }
+  
+  /**
+   *
+   * convert datetime to epoch timestamp
+   *
+   * @param $value
+   * @param MigrateExecutableInterface $migrate_executable
+   * @param Row $row
+   * @param $destination_property
+   * @return false|int
+   */
+  public function dateToTimestamp($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    if($value){
+      return strtotime($value);
+    }
+    return 0;
+  }
 }
