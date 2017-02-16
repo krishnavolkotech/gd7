@@ -432,3 +432,29 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
 //    exit;
   }
 }
+
+/**
+ * Implements hook_schema().
+ */
+function cust_group_schema() {
+  $schema = [];
+  $schema['group_downtimes_view'] = [
+    'description' => 'Table for downtimes and groups mappings',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+}
