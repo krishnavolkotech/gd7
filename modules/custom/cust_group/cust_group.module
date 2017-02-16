@@ -438,25 +438,18 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  */
 function cust_group_schema() {
   $schema = [];
-  $schema['downtimes_logs'] = [
+  $schema['default_release_type'] = [
     'fields' => array(
       'id' => array(
         'type' => 'serial',
         'not null' => TRUE,
         'unsigned' => TRUE,
       ),
-      'downtime_id' => array(
+      'group_id' => array(
         'type' => 'int',
         'length' => 11,
       ),
-      'log' => array(
-        'type' => 'text',
-      ),
-      'uid' => array(
-        'type' => 'int',
-        'length' => 11,
-      ),
-      'updated' => array(
+      'release_type' => array(
         'type' => 'int',
         'length' => 11,
       ),
