@@ -12,7 +12,10 @@ process:
     plugin: default_value
     source: language
     default_value: "de"
-  label: title
+  label:
+    plugin: default_value
+    source: title
+    default_value: "Downtimes"
   uid: node_uid
   status: status
   created: created
