@@ -31,8 +31,8 @@ class GroupMapping extends ProcessPluginBase {
     
     
     $source = $row->getSource();
-  
-    if(empty($row->getSourceProperty('title'))){
+    
+    if (empty($row->getSourceProperty('title'))) {
       return false;
     }
     
@@ -69,5 +69,14 @@ class GroupMapping extends ProcessPluginBase {
     }
 //    exit;
     return false;
+  }
+  
+  public function getNewGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    $key = $row->getSourceProperty('key');
+    $sourceGid = $row->getSourceProperty($key);
+    $d8Gid = \Drupal::entityQuery('group')
+      ->condition('field_old_reference', $sourceGid)
+      ->execute();
+    return reset($d8Gid);
   }
 }
