@@ -457,4 +457,5 @@ function cust_group_schema() {
     ),
     'primary key' => array('id'),
   ];
+  return $schema;
 }
