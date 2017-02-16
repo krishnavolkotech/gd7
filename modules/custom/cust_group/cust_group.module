@@ -8,7 +8,7 @@
 define('SITE_ADMIN', 5);
 define('RELEASE_MANAGEMENT', 32);
 define('GEPLANTE_BLOCKZEITEN', 19);
-define('INCIDENT_MANAGEMENT', 24);
+define('INCIDENT_MANAGEMENT', 2);
 define('PROBLEM_MANAGEMENT', 31);
 define('QUICKINFO', 3);
 
