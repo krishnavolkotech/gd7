@@ -438,7 +438,7 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  */
 function cust_group_schema() {
   $schema = [];
-  $schema['default_release_type'] = [
+  $schema['group_releases_view'] = [
     'fields' => array(
       'id' => array(
         'type' => 'serial',
@@ -449,7 +449,7 @@ function cust_group_schema() {
         'type' => 'int',
         'length' => 11,
       ),
-      'release_type' => array(
+      'service_id' => array(
         'type' => 'int',
         'length' => 11,
       ),

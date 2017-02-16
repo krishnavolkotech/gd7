@@ -1068,3 +1068,29 @@ function add_ajax_service_filter(&$form) {
         'edit-field-release-service-value' => $ahah_binding_state,
     );
 }
+
+/**
+ * Implements hook_schema().
+ */
+function hzd_release_management_schema() {
+  $schema = [];
+  $schema['default_release_type'] = [
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'release_type' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  return $schema;
+}
