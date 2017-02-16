@@ -71,7 +71,7 @@ class DisplayplanningfilesController extends ControllerBase {
       $rows[] = $elements;
     }
     if (!isset($elements)) {
-      $url = Url::fromRoute('entity.group_content.group_node__planning_files.create_form', ['group' => 32]);
+      $url = Url::fromRoute('entity.group_content.group_node__planning_files.create_form', ['group' => RELEASE_MANAGEMENT]);
       $output[] = array(
         '#title' => t('Create Planning Files'),
         '#type' => 'link',
@@ -87,7 +87,7 @@ class DisplayplanningfilesController extends ControllerBase {
 
       return $output;
     }
-    $url = Url::fromRoute('entity.group_content.group_node__planning_files.create_form', ['group' => 32]);
+    $url = Url::fromRoute('entity.group_content.group_node__planning_files.create_form', ['group' => RELEASE_MANAGEMENT]);
     $output[] = array(
       '#title' => t('Create Planning Files'),
       '#type' => 'link',

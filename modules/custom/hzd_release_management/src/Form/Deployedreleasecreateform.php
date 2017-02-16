@@ -10,9 +10,7 @@ use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContent;
 
 
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 
 
 /**

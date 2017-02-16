@@ -19,7 +19,7 @@ if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
 if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
+  define('RELEASE_MANAGEMENT', 1);
 }
 
 /**

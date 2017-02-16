@@ -24,9 +24,7 @@ if (!defined('SITE_ADMIN')) {
 if (!defined('KONSONS')) {
     define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 }
-if (!defined('RELEASE_MANAGEMENT')) {
-    define('RELEASE_MANAGEMENT', 32);
-}
+
 
 /**
  * Implements hook_mail.

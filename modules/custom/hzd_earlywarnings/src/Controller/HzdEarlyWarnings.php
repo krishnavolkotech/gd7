@@ -23,9 +23,7 @@ if (!defined('DISPLAY_LIMIT')) {
   define('DISPLAY_LIMIT', 20);
 }
 
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 
 /**
  * Class HzdEarlyWarnings.

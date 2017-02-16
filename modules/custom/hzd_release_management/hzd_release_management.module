@@ -3,9 +3,7 @@
 /**
  * @file
  */
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 5);
 }

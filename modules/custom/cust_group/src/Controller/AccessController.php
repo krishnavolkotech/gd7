@@ -13,7 +13,7 @@ use Drupal\group\Entity\GroupContent;
 if (!defined('QUICKINFO')) {
     define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
-// define('RELEASE_MANAGEMENT', 32);
+
 
 /**
  * Returns Access grants for Node edit routes.

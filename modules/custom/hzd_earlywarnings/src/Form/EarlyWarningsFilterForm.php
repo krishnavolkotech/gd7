@@ -11,9 +11,7 @@ use Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings;
 if (!defined('KONSONS')) {
     define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 }
-if (!defined('RELEASE_MANAGEMENT')) {
-    define('RELEASE_MANAGEMENT', 32);
-}
+
 
 // TODO.
 // $_SESSION['Group_id'] = 339;.

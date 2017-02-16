@@ -9,9 +9,7 @@ use Drupal\Core\Controller\ControllerBase;
 if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 
 
 /**
@@ -84,7 +82,7 @@ class QuickinfopublishedviewController extends ControllerBase {
         }
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content && $content->getGroupContent()->get('request_status')->value == 1)) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
             return true;
         }
         return false;

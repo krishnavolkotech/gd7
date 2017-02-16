@@ -11,9 +11,7 @@ use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\Core\Url;
 
 // Use Drupal\Core\Render;.
-if (!defined('RELEASE_MANAGEMENT')) {
-    define('RELEASE_MANAGEMENT', 32);
-}
+
 
 /**
  *

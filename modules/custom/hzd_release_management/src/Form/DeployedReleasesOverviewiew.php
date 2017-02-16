@@ -254,7 +254,7 @@ class DeployedReleasesOverviewiew extends FormBase {
       $group_id = $group;
     }
 
-    $group_id = ($group_id ? $group_id : 32);
+    $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
 
     $deployed_query = db_select('node_field_data', 'n');
     $deployed_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
