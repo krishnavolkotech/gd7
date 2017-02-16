@@ -449,6 +449,10 @@ function cust_group_schema() {
         'type' => 'int',
         'length' => 11,
       ),
+      'downtime_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
       'date_reported' => array(
         'type' => 'int',
         'length' => 11,
