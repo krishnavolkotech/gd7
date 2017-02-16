@@ -59,7 +59,7 @@ class IncidentsBlock extends BlockBase
     function access(AccountInterface $account, $return_as_object = false) {
         $routeMatch = \Drupal::routeMatch();
         $parameters = $routeMatch->getParameters();
-        if ($routeMatch->getRouteName() == 'cust_group.group_content_view' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->getEntity()->getType() == 'downtimes') {
+        if ($routeMatch->getRouteName() == 'cust_group.group_content_view' && $parameters->get('group')->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->getEntity()->getType() == 'downtimes') {
             //exception for downtimes content type
             return AccessResult::allowed();
         }
@@ -154,8 +154,8 @@ class IncidentsBlock extends BlockBase
         );
 
 
-//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
-//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
+//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
 //    foreach ($data as $sid => $item) {
         $markup['incident_list'][] = [
 //        '#title' => $serviceNames[$sid],
@@ -172,13 +172,13 @@ class IncidentsBlock extends BlockBase
         $markup['downtimes']['list'] = [
             '#title' => $this->t('Störungen und Blockzeiten'),
             '#type' => 'link',
-            '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+            '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
         ];
         if ($routeMatch->getRouteName() == 'front_page.front') {
             $markup['downtimes']['create'] = [
                 '#title' => $this->t('Report Downtime'),
                 '#type' => 'link',
-                '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+                '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
             ];
             $markup['#attributes'] = ['class' => ['frontpage-downtime-block']];
         } else {

@@ -50,7 +50,7 @@ class GroupMenuBlock extends BlockBase
         ];
         $parameters = $routeMatch->getParameters();
         if ($routeMatch->getRouteName() == 'cust_group.node_view'
-            && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
+            && $parameters->get('group')->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
         ) {
             //exception for downtimes content type
             return false;

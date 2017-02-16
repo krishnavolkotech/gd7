@@ -438,21 +438,33 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  */
 function cust_group_schema() {
   $schema = [];
-  $schema['group_downtimes_view'] = [
-    'description' => 'Table for downtimes and groups mappings',
+  $schema['resolve_cancel_incident'] = [
     'fields' => array(
       'id' => array(
         'type' => 'serial',
         'not null' => TRUE,
         'unsigned' => TRUE,
       ),
-      'group_id' => array(
+      'end_date' => array(
         'type' => 'int',
         'length' => 11,
       ),
-      'service_id' => array(
+      'date_reported' => array(
         'type' => 'int',
         'length' => 11,
+      ),
+      'comment' => array(
+        'type' => 'varchar',
+        'length' => 1000,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'type' => array(
+        'type' => 'int',
+        'length' => 11,
+        'size' => 'tiny',
       ),
     ),
     'primary key' => array('id'),
