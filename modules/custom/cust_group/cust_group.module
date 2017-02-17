@@ -9,7 +9,7 @@ define('SITE_ADMIN', 5);
 define('RELEASE_MANAGEMENT', 1);
 define('GEPLANTE_BLOCKZEITEN', 19);
 define('INCIDENT_MANAGEMENT', 2);
-define('PROBLEM_MANAGEMENT', 31);
+define('PROBLEM_MANAGEMENT', 6);
 define('QUICKINFO', 3);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.

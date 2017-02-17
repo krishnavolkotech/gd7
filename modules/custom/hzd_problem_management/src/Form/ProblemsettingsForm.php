@@ -12,9 +12,7 @@ use Drupal\Core\Url;
 use Drupal\hzd_customizations\HzdcustomisationStorage;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 
-if (!defined('PROBLEM_MANAGEMENT')) {
-  define('PROBLEM_MANAGEMENT', 31);
-}
+
 
 /**
  *

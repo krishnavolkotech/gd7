@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 if (!defined('DISPLAY_LIMIT')) {
     define('DISPLAY_LIMIT', 20);
 }
-if (!defined('PROBLEM_MANAGEMENT')) {
-    define('PROBLEM_MANAGEMENT', 31);
-}
+
 
 /**
  *
@@ -29,7 +27,6 @@ class HzdStorage
     
     // Pass the dependency to the object constructor.
     const DISPLAY_LIMIT = 20;
-    const PROBLEM_MANAGEMENT = 31;
     
     /**
      *

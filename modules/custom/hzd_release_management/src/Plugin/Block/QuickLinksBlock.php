@@ -16,7 +16,7 @@ use Drupal\Core\Link;
  * )
  */
 class QuickLinksBlock extends BlockBase {
-
+  
   /**
    * {@inheritdoc}
    */
@@ -25,14 +25,14 @@ class QuickLinksBlock extends BlockBase {
     if (\Drupal::currentUser()->id()) {
       $markup[] = Link::createFromRoute($this->t('Störung melden'), 'downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Blockzeit melden'), 'downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT]);
-      $markup[] = Link::createFromRoute($this->t('Bekannte Fehler und Probleme'), 'problem_management.problems', ['group' => 31]);
+      $markup[] = Link::createFromRoute($this->t('Bekannte Fehler und Probleme'), 'problem_management.problems', ['group' => PROBLEM_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('Bereitgestellte Releases'), 'hzd_release_management.released', ['group' => RELEASE_MANAGEMENT]);
       $markup[] = Link::createFromRoute($this->t('RZ-Schnellinfos'), 'view.rz_schnellinfo.page_2', ['arg_0' => RELEASE_MANAGEMENT]);
-      $markup[] = Link::fromTextAndUrl($this->t('KONSENS-Glossar'),  Url::fromUri('http://glossar.konsens.ktz.testa-de.net',['attributes'=>['target'=>'_blank']]));
+      $markup[] = Link::fromTextAndUrl($this->t('KONSENS-Glossar'), Url::fromUri('http://glossar.konsens.ktz.testa-de.net', ['attributes' => ['target' => '_blank']]));
       $markup[] = Link::createFromRoute($this->t('Service Monitoring'), 'cust_user.nsm_login');
       $markup[] = Link::createFromRoute($this->t('Architektursteuerung'), 'entity.node.canonical', ['node' => 49812]);
     }
-
+    
     return [
       '#items' => $markup,
       '#theme' => 'item_list',
@@ -41,7 +41,7 @@ class QuickLinksBlock extends BlockBase {
       '#cache' => ['max-age' => 0]
     ];
   }
-
+  
   /**
    *
    */
@@ -54,8 +54,8 @@ class QuickLinksBlock extends BlockBase {
       // if(quicklink_maintenance_access(32454)) {.
       $output .= "<li>" . \Drupal::l('Blockzeit melden', Url::fromUserInput('/group/24/downtimes/create_maintenance')) . "</li>\n";
       // }.
-      $output .= "<li>" . \Drupal::l('Bekannte Fehler und Probleme', Url::fromUserInput('/group/31/problems')) . "</li>\n";
-      $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/group/'.RELEASE_MANAGEMENT.'/releases')) . "</li>\n";
+      $output .= "<li>" . \Drupal::l('Bekannte Fehler und Probleme', Url::fromUserInput('/group/' . PROBLEM_MANAGEMENT . '/problems')) . "</li>\n";
+      $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/group/' . RELEASE_MANAGEMENT . '/releases')) . "</li>\n";
       $output .= "<li>" . \Drupal::l('RZ-Schnellinfos', Url::fromUserInput('/release-management/rz-schnellinfos')) . "</li>\n";
       $output .= "<li><a target=\"_blank\" href=\"http://glossar.konsens.ktz.testa-de.net/\">KONSENS-Glossar</a></li>\n";
       $output .= "<li><a target=\"_blank\" href=\"/login_from_bp\">Service Monitoring</a></li>";
@@ -66,5 +66,5 @@ class QuickLinksBlock extends BlockBase {
     $output .= "</ul></div>";
     return $output;
   }
-
+  
 }
