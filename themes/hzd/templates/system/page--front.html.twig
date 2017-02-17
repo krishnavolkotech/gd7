@@ -96,7 +96,10 @@
 	        </div>
         </div>
       </div>
-
+        {# User Account Menu #}
+        {% if page.user_menu %}
+            {{ page.user_menu }}
+        {% endif %}
       {# Navigation (collapsible) #}
       {% if page.navigation_collapsible %}
         <div class="navbar-collapse collapse">
