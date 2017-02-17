@@ -48,4 +48,7 @@ process:
 destination:
   plugin: entity:group_content
   target: default
-migration_dependencies: {}
+migration_dependencies:
+  required:
+    - d6_user
+    - groups

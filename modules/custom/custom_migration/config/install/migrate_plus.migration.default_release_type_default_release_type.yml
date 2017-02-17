@@ -37,4 +37,6 @@ destination:
       unsigned: FALSE
       size: big
   table_name: default_release_type
-migration_dependencies: {  }
+migration_dependencies:
+  required:
+    - groups

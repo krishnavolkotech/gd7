@@ -43,4 +43,6 @@ destination:
       unsigned: FALSE
       size: big
   table_name: resolve_cancel_incident
-migration_dependencies: {  }
+migration_dependencies:
+  required:
+    - d6_node

@@ -41,4 +41,6 @@ destination:
       unsigned: false
       size: big
   table_name: group_releases_view
-migration_dependencies: {  }
+migration_dependencies:
+  required:
+    - groups

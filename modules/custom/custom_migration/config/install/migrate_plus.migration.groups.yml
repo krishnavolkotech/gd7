@@ -52,4 +52,6 @@ process:
 
 destination:
   plugin: entity:group
-migration_dependencies: {}
+migration_dependencies:
+  required:
+    - d6_node
