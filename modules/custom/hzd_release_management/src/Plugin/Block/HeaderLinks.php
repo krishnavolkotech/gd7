@@ -3,6 +3,7 @@
 namespace Drupal\hzd_release_management\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 
 /**
@@ -39,15 +40,15 @@ class HeaderLinks extends BlockBase {
       $name->condition('c.uid', $uid, '=');
       $results = $name->execute()->fetchField();
       $login = 'Abmelden' . ' (' . $results . ')';
-      $output .= \Drupal::l($login, Url::fromUserInput('/user/logout')) . ' | ';
-      $output .= \Drupal::l('Mein Profil', Url::fromUserInput('/user')) . ' | ';
+      $output .= Link::createFromRoute($login,'user.logout')->toString() . ' | ';
+      $output .= Link::createFromRoute('Mein Profil','entity.user.canonical',['user'=>$uid])->toString() . ' | ';
     }
     else {
-      $output .= \Drupal::l('Anmelden', Url::fromUserInput('/user')) . ' | ';
-      $output .= \Drupal::l('Registrieren', Url::fromUserInput('/user/register')) . ' | ';
+      $output .= Link::createFromRoute('Anmelden', 'user.login')->toString() . ' | ';
+      $output .= Link::createFromRoute('Registrieren', 'user.register')->toString() . ' | ';
     }
-    $output .= \Drupal::l(t('Contact'), Url::fromRoute('contact.site_page')) . ' | ';
-    $output .= \Drupal::l('Hilfe', Url::fromUserInput('/hilfe'));
+    $output .= Link::fromTextAndUrl(t('Contact'), Url::fromRoute('contact.site_page'))->toString() . ' | ';
+    $output .= Link::fromTextAndUrl('Hilfe', Url::fromUserInput('/hilfe'))->toString();
     $output .= "</div>";
     return $output;
   }
