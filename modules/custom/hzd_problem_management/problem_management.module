@@ -137,3 +137,30 @@ function get_group_id() {
 ////    $order = $query->getOrderBy('node__field_processing.field_processing_value','desc');
 //    debug($query);
 //}
+
+/**
+ * Implements hook_schema().
+ */
+function problem_management_schema() {
+  $schema = [];
+  $schema['group_problems_view'] = [
+    'description' => 'Table for Problems and groups mappings',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  return $schema;
+}
