@@ -1,6 +1,6 @@
 # $Id:
 name: 'Cust_Node'
 description: All the customed functions needed to override the node module
-package: "HZD"
+package: "HZD Custom"
 type: module
 core: 8.x

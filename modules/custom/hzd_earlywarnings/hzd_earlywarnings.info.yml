@@ -2,4 +2,4 @@ name: HZD Early Warnings
 type: module
 description: HZD Early Warnings
 core: 8.x
-package: HZD
+package: "HZD Custom"

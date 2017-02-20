@@ -109,6 +109,28 @@ function inactive_user_schema() {
     ),
     'primary key' => array('uid'),
   );
+
+  $schema['inactive_user_flag'] = array(
+    'description' => 'Inactive user flag.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary key to store unique information.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'user_id' => array(
+        'description' => 'Storing inactive user id.',
+        'type' => 'int',
+      ),
+      'value' => array(
+        'description' => 'Storing inacitve user value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
   return $schema;
 }
 

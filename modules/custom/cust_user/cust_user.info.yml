@@ -1,6 +1,6 @@
 # $Id:
 name: 'Cust_User'
 description: All the customed functions needed to override the user module
-package: "HZD"
+package: "HZD Custom"
 type: module
 core: 8.x

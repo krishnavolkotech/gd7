@@ -1,0 +1,39 @@
+uuid: abe93510-f97e-4966-978b-6b58eea02c44
+langcode: de
+status: true
+dependencies: {  }
+id: quickinfo_notifications_user_default_interval_quickinfo_notifications_user_default_interval
+migration_tags: null
+migration_group: custom_migration
+label: 'Quickinfo notification interval'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: quickinfo_notifications_user_default_interval
+  fields:
+    - id
+    - uid
+    - affected_service
+    - default_send_interval
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  uid: uid
+  affected_service: affected_service
+  default_send_interval: default_send_interval
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: quickinfo_notifications_user_default_interval
+migration_dependencies: {  }
+

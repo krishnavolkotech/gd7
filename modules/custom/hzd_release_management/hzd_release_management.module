@@ -1108,5 +1108,35 @@ function hzd_release_management_schema() {
     ),
     'primary key' => array('id'),
   ];
+
+  $schema['release_doc_failed_download_info'] = array(
+    'description' => 'Storing release doc download failed information.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing release doc download failed serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'nid' => array(
+        'description' => 'Storing release doc download failed node id value.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'Storing release doc download failed node id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'reason' => array(
+        'description' => 'Storing service maintenance id value.',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+
+    ),
+    'primary key' => array('id'),
+  );
+  
   return $schema;
 }
