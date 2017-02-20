@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cust_node_schema() {
+  $schema['nsm_role'] = array(
+    'description' => 'Inactive user flag.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing NSM id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'rolename' => array(
+        'description' => 'Storing inactive user id.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  $schema['nsm_user'] = array(
+    'description' => 'NSM user information storing.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing NSM id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'state_id' => array(
+        'description' => 'Storing NSM state id value.',
+        'type' => 'int',
+      ),
+      'nsm_role_id' => array(
+        'description' => 'Storing NSM role id value.',
+        'type' => 'int',
+      ),
+      'nsm_username' => array(
+        'description' => 'Storing NSM user name.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  $schema['nsm_user_role'] = array(
+    'description' => 'Storing Nsm user information and role.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing NSM id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'user_id' => array(
+        'description' => 'Storing NSM user id value.',
+        'type' => 'int',
+      ),
+      'nsm_role_id' => array(
+        'description' => 'Storing NSM user role id value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  $schema['service_notifications_priority'] = array(
+    'description' => 'Storing service notification priority value.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing service notification serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'sid' => array(
+        'description' => 'Storing service notification id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'Storing import status value.',
+        'type' => 'char',
+        'length' => 5,
+        'default' => '',
+      ),
+      'uid' => array(
+        'description' => 'Storing serivce nofication user id.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  return $schema;
+}

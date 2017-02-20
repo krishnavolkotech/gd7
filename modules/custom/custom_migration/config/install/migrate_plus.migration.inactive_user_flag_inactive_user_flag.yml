@@ -1,0 +1,34 @@
+langcode: de
+status: true
+id: inactive_user_flag_inactive_user_flag
+migration_tags: null
+migration_group: custom_migration
+label: Authors
+source:
+  plugin: source_table
+  target: migrate
+  table_name: inactive_user_flag
+  fields:
+    - id
+    - user_id
+    - value
+  id_fields:
+    id:
+      type: integer
+      unsigned: FALSE
+      size: big
+process:
+  id: id
+  user_id: user_id
+  value: value
+destination:
+  plugin: table
+  key_map:
+      id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: inactive_user_flag
+migration_dependencies: {  }

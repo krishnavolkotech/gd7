@@ -1357,5 +1357,67 @@ function downtimes_schema() {
     ),
     'primary key' => array('id'),
   ];
+
+  $schema['service_profile_maintenance_windows'] = array(
+    'description' => 'Storing service maintenance windows values.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing service maintenance serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'nid' => array(
+        'description' => 'Storing service maintenance related node id value.',
+        'type' => 'int',
+      ),
+      'service_id' => array(
+        'description' => 'Storing service maintenance id value.',
+        'type' => 'int',
+      ),
+      'day' => array(
+        'description' => 'Storing day value.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+      'from_time' => array(
+        'description' => 'Storing service maintenance from date.',
+        'type' => 'varchar',
+        'mysql_type' => 'datetime',
+      ),
+      'to_time' => array(
+        'description' => 'Storing service maintenance to date.',
+        'type' => 'varchar',
+        'mysql_type' => 'datetime',
+      ),
+      'day_until' => array(
+        'description' => 'Storing day untill value.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['service_profile_maintenance_service_time'] = array(
+    'description' => 'Storing service profile maintenance values.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing service maintenance serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'nid' => array(
+        'description' => 'Storing service maintenance related node id value.',
+        'type' => 'int',
+      ),
+      'day_time' => array(
+        'description' => 'Storing service maintenance day time value.',
+        'type' => 'text',
+        'size' => 'medium',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  
   return $schema;
 }

@@ -1,0 +1,41 @@
+uuid: 92346a1e-22ae-4674-b4c8-b4773260db30
+langcode: de
+status: true
+dependencies: {  }
+id: service_notifications_user_default_interval_service_notifications_user_default_interval
+migration_tags: null
+migration_group: custom_migration
+label: 'Service notification user default interval'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: service_notifications_user_default_interval
+  fields:
+    - id
+    - uid
+    - service_type
+    - default_send_interval
+    - rel_type
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  uid: uid
+  service_type: service_type
+  default_send_interval: default_send_interval
+  rel_type: rel_type
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: service_notifications_user_default_interval
+migration_dependencies: {  }
+

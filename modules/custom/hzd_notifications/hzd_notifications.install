@@ -170,6 +170,91 @@ function hzd_notifications_schema() {
     'primary key' => array('sid'),
   );
 
+  $schema['planning_files_notifications_default_interval'] = array(
+    'description' => 'Storing internal planning files notifications.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing planning notification id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'uid' => array(
+        'description' => 'Storing NSM user id value.',
+        'type' => 'int',
+      ),
+      'planning_file_type' => array(
+        'description' => 'Storing planning type file name.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing default send interval information.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  $schema['quickinfo_notifications_user_default_interval'] = array(
+    'description' => 'Storing quickinfo notifications.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing quickinfo notifications id value.',
+        'type' => 'int',
+      ),
+      'uid' => array(
+        'description' => 'Storing quickinfo notifications user id value.',
+        'type' => 'int',
+      ),
+      'affected_service' => array(
+        'description' => 'Storing quickinfo notifiations effected value.',
+        'type' => 'varchar',
+        'length' => 50,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing quickinfo notifications default send interval value.',
+        'type' => 'int',
+      ),
+    ),
+
+  );
+
+  $schema['service_notifications_user_default_interval'] = array(
+    'description' => 'Storing service notification user values.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing service notification serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'Storing service notification user id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'service_type' => array(
+        'description' => 'Storing import status value.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+        'not null' => TRUE,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing default send value.',
+        'type' => 'int',
+      ),
+      'rel_type' => array(
+        'description' => 'Storing rel value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
   return $schema;
 }
 

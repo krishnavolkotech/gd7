@@ -162,5 +162,39 @@ function problem_management_schema() {
     ),
     'primary key' => array('id'),
   ];
+
+  $schema['problem_import_history'] = array(
+    'description' => 'Storing problem import history information.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing planning notification id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'problem_date' => array(
+        'description' => 'Storing problem date value.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'import_status' => array(
+        'description' => 'Storing import status value.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+      ),
+      'error_message' => array(
+        'description' => 'Storing import error message.',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+  
   return $schema;
 }
