@@ -77,6 +77,7 @@ class GroupMember extends DestinationBase implements ContainerFactoryPluginInter
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     $values = $row->getDestination();
+//    $values['gid'] = 8;$values['uid'] = 1;
     $group = Group::load($values['gid']);
     $groupTypeId = $group->getGroupType()->id();
     if ($values['is_admin'] == 1) {
@@ -84,7 +85,9 @@ class GroupMember extends DestinationBase implements ContainerFactoryPluginInter
     } else {
       $group->addMember(User::load($values['uid']));
     }
-    return true;
+    $member = $group->getMember(User::load($values['uid']));
+//    echo  $member->getGroupContent()->id();exit;
+    return $member->getGroupContent()->id();
     
   }
   
