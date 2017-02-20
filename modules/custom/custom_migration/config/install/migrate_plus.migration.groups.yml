@@ -1,5 +1,6 @@
 id: groups
 label: Groups
+migration_group: groups
 migration_tags:
   - Drupal 6
 deriver: Drupal\node\Plugin\migrate\D6NodeDeriver

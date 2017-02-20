@@ -3,6 +3,7 @@ label: Group Content
 migration_tags:
   - Drupal 6
 deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
+migration_group: groups
 source:
   plugin: d6_node
   target: migrate

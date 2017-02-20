@@ -62,7 +62,7 @@ class GroupMember extends DestinationBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function getIds() {
-    return [];
+    return ['id'=>['type'=>'integer']];
   }
   
   /**
@@ -87,7 +87,7 @@ class GroupMember extends DestinationBase implements ContainerFactoryPluginInter
     }
     $member = $group->getMember(User::load($values['uid']));
 //    echo  $member->getGroupContent()->id();exit;
-    return $member->getGroupContent()->id();
+    return (array)$member->getGroupContent()->id();
     
   }
   
