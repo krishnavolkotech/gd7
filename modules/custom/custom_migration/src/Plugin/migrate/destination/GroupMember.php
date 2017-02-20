@@ -78,12 +78,12 @@ class GroupMember extends DestinationBase implements ContainerFactoryPluginInter
   public function import(Row $row, array $old_destination_id_values = []) {
     $values = $row->getDestination();
     $group = Group::load($values['gid']);
+    $groupTypeId = $group->getGroupType()->id();
     if ($values['is_admin'] == 1) {
-      $group->addMember(User::load($values['uid']), ['admin']);
+      $group->addMember(User::load($values['uid']), ['group_roles' => $groupTypeId . '-admin']);
     } else {
       $group->addMember(User::load($values['uid']));
     }
-    
     return true;
     
   }
