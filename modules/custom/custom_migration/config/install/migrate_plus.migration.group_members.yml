@@ -28,9 +28,9 @@ process:
       plugin: group_mapping_from_d6
       method: getNewGroupId
       source: nid
-#    -
-#      plugin: skip_on_empty
-#      method: row
+    -
+      plugin: skip_on_empty
+      method: row
   is_admin: is_admin
   uid: uid
   created: created
