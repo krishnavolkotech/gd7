@@ -261,8 +261,9 @@ function get_release_type($type) {
  * Implementation of hook_cron()
  */
 function hzd_release_management_cron() {
-  $readExcel = new ReadexcelController();
-  $readExcel->read_release_csv();
+  //disabling for migration purpose temporarily
+/*  $readExcel = new ReadexcelController();
+  $readExcel->read_release_csv(); */
 }
 
 /**
