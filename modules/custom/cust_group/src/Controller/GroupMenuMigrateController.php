@@ -31,14 +31,15 @@ class GroupMenuMigrateController extends ControllerBase{
                 if(strpos($uri,'/group/'.$new.'/members')){
                     $menu->set('link',['uri'=>'internal:'.'/group/'.$new.'/address'])->save();
                 }
-                if(strpos($uri,'/group/'.$new.'/faq')){
+                //special case for faq
+                /*if(strpos($uri,'/group/'.$new.'/faq')){
                     $newFaqPath = $this->migrateFaqPath($uri);
                     if($newFaqPath){
                         $menu->set('link',['uri'=>'internal:'.$newFaqPath])->save();
                     }
 //                    echo 'migrate faq'; pr($uri);pr($newFaqPath);
 //                    exit;
-                }
+                }*/
             }elseif(count(explode('/',trim(str_replace('internal:/','',$uri),'/'))) == 2){
                 $newUri = $this->getGroupNodeUri($uri);
                 if($newUri){
