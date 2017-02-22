@@ -25,7 +25,12 @@ process:
   id: id
   uid: uid
   service_type: service_type
-  default_send_interval: default_send_interval
+  default_send_interval:
+    plugin: static_map
+    source: default_send_interval
+    map:
+      86400: 0
+      604800: 0
   rel_type: rel_type
 destination:
   plugin: table
