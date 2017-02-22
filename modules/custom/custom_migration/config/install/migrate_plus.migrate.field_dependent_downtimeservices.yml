@@ -1,0 +1,28 @@
+id: field_dependent_downtimeservices
+label: Downtime Service Fields
+migration_tags:
+  - Drupal 6
+source:
+  plugin: source_table
+  target: migrate
+  table_name: content_field_dependent_downtimeservices
+  fields:
+    - field_dependent_downtimeservices_value
+    - nid
+  id_fields:
+      nid:
+        type: integer
+        unsigned: FALSE
+        size: big
+
+process:
+  field_dependent_downtimeservices: field_dependent_downtimeservices_value
+  nid: nid
+  type:
+    plugin: default_value
+    default_value: 'service_profile'
+destination:
+  plugin: entity:node
+migration_dependencies:
+  required:
+    - d6_node

@@ -118,7 +118,8 @@ class ServiceNotificationsUserForm extends FormBase {
           ->execute()->fetchAllAssoc('send_interval');
           //pr($data);exit;
           $uids = [];
-        foreach([-1,0,86400,604800] as $interval){
+        $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+        foreach($intervals as $interval){
           if(isset($data[$interval])){
             $uids = unserialize($data[$interval]->uids);
             //pr($data[$interval]);exit;
@@ -158,7 +159,8 @@ class ServiceNotificationsUserForm extends FormBase {
         $userChoiceInterval = $pf_int_val;
         $uids = null;
         //pr($data);exit;
-      foreach([-1,0,86400,604800] as $interval){
+      $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+      foreach($intervals as $interval){
         if(isset($data[$interval])){
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;

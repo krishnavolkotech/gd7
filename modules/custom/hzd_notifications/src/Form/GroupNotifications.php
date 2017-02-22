@@ -120,7 +120,8 @@ class GroupNotifications extends FormBase {
       $userChoiceInterval = $subscriptions[$gid]['subscriptions_interval_' . $gid];
       $uids = null;
       //pr($data);exit;
-      foreach ([-1, 0, 86400, 604800] as $interval) {
+      $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+      foreach ($intervals as $interval) {
         if (isset($data[$interval])) {
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;

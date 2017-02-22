@@ -1,4 +1,5 @@
 <?php
+use Drupal\hzd_notifications\HzdNotificationsHelper;
 
 /**
  * Implements hook_schema().
@@ -292,7 +293,8 @@ function hzd_notifications_update_8008() {
 }
 
 function insert_service_notifications($type, $nid) {
-  $interval = array('-1', 0, 86400, 604800);
+  
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($interval as $vals) {
     $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $vals, 'uids' => 0);
 	  db_insert('service_notifications')->fields($record)->execute();
@@ -310,7 +312,7 @@ function insert_service_notifications($type, $nid) {
 
 function hzd_notifications_update_8010() {
   // migrate quickinfo notifications.
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($interval as $vals) {
     $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(":val" => 'planning_files', "intval" => $vals))->fetchCol();
     $serialized_uids = serialize($uids);
@@ -322,7 +324,7 @@ function hzd_notifications_update_8010() {
 // migrate quickinfo notifications
 function hzd_notifications_update_8012() {
   $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($options as $content_key => $content) {
     foreach($interval as $vals) {
       $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(":val" => $content, ":intval" => $vals))->fetchCol();

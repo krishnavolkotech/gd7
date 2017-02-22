@@ -1,0 +1,28 @@
+id: field_relese_services
+label: Release Service Fields
+migration_tags:
+  - Drupal 6
+source:
+  plugin: source_table
+  target: migrate
+  table_name: content_type_release
+  fields:
+    - field_relese_services_nid
+    - nid
+  id_fields:
+      nid:
+        type: integer
+        unsigned: FALSE
+        size: big
+
+process:
+  field_relese_services: field_relese_services_nid
+  nid: nid
+  type:
+    plugin: default_value
+    default_value: 'release'
+destination:
+  plugin: entity:node
+migration_dependencies:
+  required:
+    - d6_node

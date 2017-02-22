@@ -9,6 +9,7 @@ if (!defined('SITE_ADMIN')) {
 }
 
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\hzd_release_management\Controller\ReadexcelController;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
@@ -733,7 +734,7 @@ function update_service_notifications($entity) {
  *
  */
 function hzd_service_update_notifications($type, $nid) {
-  $default_interval = array('-1', 0, 86400, 604800);
+  $default_interval = HzdNotificationsHelper::hzd_notification_send_interval();
   $service_notifications = \Drupal::database()->query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
   $result = array();
   foreach ($service_notifications as $vals) {
@@ -768,7 +769,7 @@ function hzd_notifications_delete_subscriptions($type, $nid) {
  *
  */
 function insert_new_service_notifications($type, $nid) {
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
   $result = array();
   foreach ($service_notifications as $vals) {

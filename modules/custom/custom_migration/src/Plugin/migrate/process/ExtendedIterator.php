@@ -9,6 +9,7 @@
 namespace Drupal\custom_migration\Plugin\migrate\process;
 
 
+use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
@@ -56,5 +57,19 @@ class ExtendedIterator extends ProcessPluginBase {
       return strtotime($value);
     }
     return 0;
+  }
+  
+  /**
+   * @param $value
+   * @param MigrateExecutableInterface $migrate_executable
+   * @param Row $row
+   * @param $destination_property
+   * @return static
+   */
+  function timestampToDate($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    if($value){
+      return DateTimePlus::createFromTimestamp($value);
+    }
+    return DateTimePlus::createFromTimestamp(time());
   }
 }

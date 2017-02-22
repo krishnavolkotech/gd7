@@ -3,6 +3,7 @@
 use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\cust_group\CustGroupHelper;
 use Drupal\hzd_notifications\Controller\HzdNotifications;
+use Drupal\hzd_notifications\HzdNotificationsHelper;
 
 /**
  * Implements callback_batch_operation().
@@ -95,7 +96,7 @@ function hzd_get_all_services($rel_type = null) {
  * insert user notifications in service notifications table
  */
 function insert_user_service_notifications($type, $nid, $uid, $user_notifications) {
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($interval as $vals) {
     $uids_list = array();
     $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
