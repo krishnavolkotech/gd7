@@ -589,7 +589,7 @@ display:
           admin_label: 'Group content User'
           required: false
           group_content_plugins:
-            group_membership: 0
+            group_membership: '0'
           entity_type: group_content
           plugin_id: group_content_to_entity
       arguments:

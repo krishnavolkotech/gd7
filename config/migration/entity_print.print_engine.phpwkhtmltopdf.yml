@@ -5,3 +5,7 @@ dependencies: {  }
 id: phpwkhtmltopdf
 settings:
   binary_location: /usr/local/bin/wkhtmltopdf
+  orientation: portrait
+  default_paper_size: letter
+  username: ''
+  password: ''

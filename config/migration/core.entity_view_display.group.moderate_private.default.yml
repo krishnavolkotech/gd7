@@ -37,6 +37,9 @@ content:
 hidden:
   changed: true
   created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_old_reference: true
   langcode: true
   uid: true

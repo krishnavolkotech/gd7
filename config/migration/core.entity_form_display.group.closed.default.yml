@@ -36,5 +36,10 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   uid: true
