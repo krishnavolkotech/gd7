@@ -24,7 +24,12 @@ process:
   id: id
   uid: uid
   planning_file_type: planning_file_type
-  default_send_interval: default_send_interval
+  default_send_interval:
+    plugin: static_map
+    source: default_send_interval
+      map:
+        86400: 0
+        604800: 0
 destination:
   plugin: table
   key_map:
