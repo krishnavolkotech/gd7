@@ -142,6 +142,9 @@ hidden:
   body: true
   comment: true
   entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_problem_status: true
   field_s_no: true
   field_sdcallid: true

@@ -18,6 +18,7 @@ module:
   contextual: 0
   cust_address_book: 0
   cust_group: 0
+  cust_node: 0
   cust_pdf: 0
   cust_user: 0
   custom_script_batch: 0

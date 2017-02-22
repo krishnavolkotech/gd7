@@ -31,6 +31,36 @@ dependencies:
     - options
     - text
     - user
+third_party_settings:
+  field_group:
+    group_meta_data:
+      label: '1 Meta-Daten'
+      weight: 5
+      children:
+        - field_custom_title
+        - field_other_services
+        - field_recipients
+        - field_related_transfer_number
+      format_type: fieldset
+      format_settings: {  }
+    group_content_information:
+      label: '2 Fachlich-inhaltliche Angaben'
+      weight: 6
+      children:
+        - field_business_impact
+        - field_business_impact_services
+        - field_contact
+        - field_creators
+        - field_dates
+        - field_depend_other_services
+        - field_intial_situation
+        - field_professional_conditions
+        - field_special_notes
+        - field_tech_requirements
+        - field_technical_impact
+        - field_technical_impact_services
+      format_type: fieldset
+      format_settings: {  }
 id: node.quickinfo.default
 targetEntityType: node
 bundle: quickinfo

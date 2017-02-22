@@ -39,4 +39,8 @@ content:
     type: file_default
     weight: 102
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

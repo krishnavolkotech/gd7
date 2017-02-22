@@ -366,19 +366,19 @@ display:
           required: false
           group_content_plugins:
             'group_node:faqs': 'group_node:faqs'
-            'group_node:deployed_releases': 0
-            'group_node:downtimes': 0
-            'group_node:early_warnings': 0
-            'group_node:event': 0
-            'group_node:faq': 0
-            'group_node:forum': 0
-            'group_node:newsletter': 0
-            'group_node:page': 0
-            'group_node:planning_files': 0
-            'group_node:problem': 0
-            'group_node:quickinfo': 0
-            'group_node:release': 0
-            'group_node:service_profile': 0
+            'group_node:deployed_releases': '0'
+            'group_node:downtimes': '0'
+            'group_node:early_warnings': '0'
+            'group_node:event': '0'
+            'group_node:faq': '0'
+            'group_node:forum': '0'
+            'group_node:newsletter': '0'
+            'group_node:page': '0'
+            'group_node:planning_files': '0'
+            'group_node:problem': '0'
+            'group_node:quickinfo': '0'
+            'group_node:release': '0'
+            'group_node:service_profile': '0'
           entity_type: group_content
           plugin_id: group_content_to_entity
       arguments:

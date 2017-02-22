@@ -8,6 +8,7 @@ dependencies:
     - block_content
     - system
 id: block
+theme: null
 region: sidebar_first
 weight: 2
 provider: null

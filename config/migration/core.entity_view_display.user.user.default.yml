@@ -41,7 +41,11 @@ content:
     third_party_settings: {  }
 hidden:
   entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_message_preference: true
   field_notifications_status: true
   l10n_client_contributor_key: true
+  langcode: true
   member_for: true
