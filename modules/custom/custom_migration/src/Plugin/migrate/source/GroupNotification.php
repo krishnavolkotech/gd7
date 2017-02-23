@@ -10,6 +10,7 @@ namespace Drupal\custom_migration\Plugin\migrate\source;
 
 
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
