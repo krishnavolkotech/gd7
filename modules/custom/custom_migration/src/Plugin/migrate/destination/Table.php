@@ -140,10 +140,6 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
       }
     }
     return $ids;
-    print_r($ids);
-//    print_r($destIds);
-    print_r($this->getIds());
-    exit;
 //    print_r($this->migration->getProcessPlugins($process['downtime_id']));exit;
   }
 }
