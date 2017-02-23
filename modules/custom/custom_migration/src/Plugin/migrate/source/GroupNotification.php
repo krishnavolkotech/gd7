@@ -47,7 +47,7 @@ class GroupNotification extends SqlBase {
    */
   public function query() {
     $query = $this->select('notifications', 'n');
-    $query->addJoin('notifications_fields','nf','n.sid = nf.sid');
+    $query->join('notifications_fields','nf','n.sid = nf.sid');
     $query->condition('nf.field','group');
     $query->distinct();
     $query->fields('n',['send_interval','uid']);
