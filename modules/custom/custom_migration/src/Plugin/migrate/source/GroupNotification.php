@@ -52,7 +52,7 @@ class GroupNotification extends SqlBase {
     $query->distinct();
     $query->fields('n',['send_interval','uid']);
     $query->fields('nf',['value']);
-    $query->addExpression('@row_num:=@row_num+1','row_num');
+    //$query->range(0,5);
     return $query;
   }
   
@@ -60,7 +60,7 @@ class GroupNotification extends SqlBase {
    * {@inheritdoc}
    */
   public function getIds() {
-    return ['row_num'=>['type'=>'integer']];
+    return ['uid'=>['type'=>'integer']];
   }
   
   /**
@@ -71,7 +71,6 @@ class GroupNotification extends SqlBase {
       'uid' => $this->t('User ID'),
       'send_interval' => $this->t('send_interval'),
       'value' => 'value',
-      'row_num' => 'row_num',
     ];
     return $fields;
   }
