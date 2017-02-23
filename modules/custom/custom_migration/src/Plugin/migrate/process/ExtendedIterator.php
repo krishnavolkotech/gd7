@@ -68,8 +68,9 @@ class ExtendedIterator extends ProcessPluginBase {
    */
   function timestampToDate($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
     if($value){
-      return DateTimePlus::createFromTimestamp($value);
+	return DateTimePlus::createFromTimestamp($value)->format('Y-m-d H:i:s');
     }
-    return DateTimePlus::createFromTimestamp(time());
+    return NULL;
+//    return DateTimePlus::createFromTimestamp(time())->format('Y-m-d H:i:s');
   }
 }
