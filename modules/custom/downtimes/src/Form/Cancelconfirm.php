@@ -141,7 +141,7 @@ class Cancelconfirm extends ConfirmFormBase {
         send_downtime_notifications($downtime_node);
         //exit;
         //capture the notification for the users to send daily and weekly
-        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
+//        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
       }
     }
     
