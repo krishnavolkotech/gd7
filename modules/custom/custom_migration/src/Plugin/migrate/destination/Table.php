@@ -109,11 +109,9 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
     }
 //    print_r($this->idFields);
 //    exit;
-    $merge = $this->dbConnection->merge($this->tableName);
-    if ($id) {
-      $merge->key($id);
-    }
-    $status = $merge->fields($values)
+    $status = $this->dbConnection->merge($this->tableName)
+      ->key($id)
+      ->fields($values)
       ->execute();
     
     return $status ? $id : NULL;
@@ -134,7 +132,7 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
   
   protected function getSourceDestinationIdMaping(Row $row) {
     $sourceIds = $row->getSourceIdValues();
-    if ($destIds = $this->configuration['key_map']) {
+    if($destIds = $this->configuration['key_map']){
       foreach ((array)$sourceIds as $key => $val) {
         foreach ($destIds as $destId => $destVal) {
           if ($destId == $key)
