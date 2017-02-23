@@ -109,9 +109,11 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
     }
 //    print_r($this->idFields);
 //    exit;
-    $status = $this->dbConnection->merge($this->tableName)
-      ->key($id)
-      ->fields($values)
+    $merge = $this->dbConnection->merge($this->tableName);
+    if ($id) {
+      $merge->key($id);
+    }
+    $status = $merge->fields($values)
       ->execute();
     
     return $status ? $id : NULL;
@@ -132,14 +134,16 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
   
   protected function getSourceDestinationIdMaping(Row $row) {
     $sourceIds = $row->getSourceIdValues();
-    $destIds = $this->configuration['key_map'];
-    foreach ((array)$sourceIds as $key => $val) {
-      foreach ($destIds as $destId => $destVal) {
-        if ($destId == $key)
-          $ids[$destVal] = $val;
+    if ($destIds = $this->configuration['key_map']) {
+      foreach ((array)$sourceIds as $key => $val) {
+        foreach ($destIds as $destId => $destVal) {
+          if ($destId == $key)
+            $ids[$destVal] = $val;
+        }
       }
+      return $ids;
     }
-    return $ids;
+    return false;
 //    print_r($this->migration->getProcessPlugins($process['downtime_id']));exit;
   }
 }
