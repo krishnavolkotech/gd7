@@ -23,7 +23,20 @@ function migrate_plus_migration_plugins_alter(array &$migrations) {
     }
     $group = MigrationGroup::load($migration['migration_group']);
     if (empty($group)) {
-      continue;
+      // If the specified group does not exist, create it. Provide a little more
+      // for the 'default' group.
+      $group_properties = [];
+      $group_properties['id'] = $migration['migration_group'];
+      if ($migration['migration_group'] == 'default') {
+        $group_properties['label'] = 'Default';
+        $group_properties['description'] = 'A container for any migrations not explicitly assigned to a group.';
+      }
+      else {
+        $group_properties['label'] = $group_properties['id'];
+        $group_properties['description'] = '';
+      }
+      $group = MigrationGroup::create($group_properties);
+      $group->save();
     }
     $shared_configuration = $group->get('shared_configuration');
     if (empty($shared_configuration)) {
@@ -53,13 +66,4 @@ function migrate_plus_migration_plugins_alter(array &$migrations) {
  */
 function migrate_plus_migrate_prepare_row(Row $row, MigrateSourceInterface $source, MigrationInterface $migration) {
   \Drupal::service('event_dispatcher')->dispatch(MigrateEvents::PREPARE_ROW, new MigratePrepareRowEvent($row, $source, $migration));
-  
-  if ($migration->id() == 'd6_node') {
-    $query = $source->getDatabase()->select('content_type_deployed_releases', 'n')
-      ->fields('n', array('field_date_deployed_value'))
-      ->condition('id', $row->getSourceProperty('nid'));
-    $mt_results = $query->execute()->fetchField();
-
-    $row->setSourceProperty('field_date_deployed', date('Y-m-d H:i:s', $mt_results));
-  }
 }

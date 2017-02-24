@@ -49,10 +49,11 @@ class GroupNotification extends SqlBase {
     $query = $this->select('notifications', 'n');
     $query->join('notifications_fields','nf','n.sid = nf.sid');
     $query->condition('nf.field','group');
+    $query->condition('nf.value','','<>');
     $query->distinct();
     $query->fields('n',['send_interval','uid']);
     $query->fields('nf',['value']);
-    //$query->range(0,5);
+//    $query->range(0,5);
     return $query;
   }
   
@@ -60,7 +61,7 @@ class GroupNotification extends SqlBase {
    * {@inheritdoc}
    */
   public function getIds() {
-    return ['uid'=>['type'=>'integer']];
+    return ['uid'=>['type'=>'integer'],'value'=>['type'=>'integer']];
   }
   
   /**

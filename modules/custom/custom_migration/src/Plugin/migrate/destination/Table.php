@@ -103,16 +103,26 @@ class Table extends DestinationBase implements ContainerFactoryPluginInterface {
     }
     
     $values = $row->getDestination();
-    
+//    pr($id);
+//    pr($values);exit;
     if ($this->fields) {
       $values = array_intersect_key($values, $this->fields);
     }
-//    print_r($this->idFields);
+//    print_r($key = array_keys($this->idFields));
 //    exit;
-    $status = $this->dbConnection->merge($this->tableName)
-      ->key($id)
-      ->fields($values)
-      ->execute();
+    if($id){
+      $status = $this->dbConnection->merge($this->tableName)
+        ->key($id)
+        ->fields($values)
+        ->execute();
+    }else{
+      $status = $this->dbConnection->insert($this->tableName)
+        ->fields($values)
+        ->execute();
+      $key = array_keys($this->idFields);
+      $id[$key[0]] = $status;
+    }
+    
     
     return $status ? $id : NULL;
     
