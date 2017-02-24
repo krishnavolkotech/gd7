@@ -2,7 +2,7 @@ uuid: 7a65a8a7-e0e4-439f-8279-40b277a0553d
 langcode: de
 status: true
 dependencies: {  }
-id: problem_import_history_problem_import_history
+id: problem_import_history
 migration_tags: null
 migration_group: custom_migration
 label: 'Problem import history'

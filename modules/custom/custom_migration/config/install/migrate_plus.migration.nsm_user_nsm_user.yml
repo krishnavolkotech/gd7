@@ -2,7 +2,7 @@ uuid: b98fa2d6-d9e2-4da0-bb0e-e86a08b6c4f9
 langcode: de
 status: true
 dependencies: {  }
-id: nsm_user_nsm_user
+id: nsm_user
 migration_tags: null
 migration_group: custom_migration
 label: 'NSM user'

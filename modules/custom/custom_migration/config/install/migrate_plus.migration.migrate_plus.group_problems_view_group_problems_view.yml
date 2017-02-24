@@ -2,7 +2,7 @@ uuid: 9cc7492d-78b6-4281-b09f-9af76937cc55
 langcode: de
 status: true
 dependencies: {  }
-id: group_problems_view_group_problems_view
+id: group_problems_view
 migration_tags: null
 migration_group: custom_migration
 label: 'Group Problems View'

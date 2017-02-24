@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
 /**
@@ -344,8 +345,13 @@ class Group extends ContentEntityBase implements GroupInterface {
     // If a new group is created, add the creator as a member by default.
     // @todo Add creator roles by passing in a second parameter like this:
     // ['group_roles' => ['foo', 'bar']].
+    if(empty($this->getOwner())){
+      $user = User::load(1);
+    }else{
+      $user = $this->getOwner();
+    }
     if ($update === FALSE) {
-      $this->addMember($this->getOwner());
+      $this->addMember($user);
     }
   }
 

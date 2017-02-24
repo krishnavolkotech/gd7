@@ -1,6 +1,6 @@
 langcode: de
 status: true
-id: cust_profile_cust_profile
+id: cust_profile
 migration_tags: null
 migration_group: custom_migration
 label: Authors

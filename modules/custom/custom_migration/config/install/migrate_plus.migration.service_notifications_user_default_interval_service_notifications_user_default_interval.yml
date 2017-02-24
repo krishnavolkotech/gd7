@@ -2,7 +2,7 @@ uuid: 92346a1e-22ae-4674-b4c8-b4773260db30
 langcode: de
 status: true
 dependencies: {  }
-id: service_notifications_user_default_interval_service_notifications_user_default_interval
+id: service_notifications_user_default_interval
 migration_tags: null
 migration_group: custom_migration
 label: 'Service notification user default interval'
@@ -31,6 +31,8 @@ process:
     map:
       86400: 0
       604800: 0
+      0: 0
+      -1: -1
   rel_type: rel_type
 destination:
   plugin: table

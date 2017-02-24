@@ -123,11 +123,12 @@ function hzd_notifications_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
-      'group_name' => array(
+      //group id is sufficient as this doesnt trigger on group update
+/*      'group_name' => array(
         'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
-      ),
+      ),*/
       'default_send_interval' => array(
         'type' => 'int',
       ),

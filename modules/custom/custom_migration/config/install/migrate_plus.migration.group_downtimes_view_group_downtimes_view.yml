@@ -1,6 +1,6 @@
 langcode: de
 status: true
-id: group_downtimes_view_group_downtimes_view
+id: group_downtimes_view
 migration_tags: null
 migration_group: custom_migration
 source:

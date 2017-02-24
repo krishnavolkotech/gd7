@@ -2,7 +2,7 @@ uuid: abe93510-f97e-4966-978b-6b58eea02c44
 langcode: de
 status: true
 dependencies: {  }
-id: quickinfo_notifications_user_default_interval_quickinfo_notifications_user_default_interval
+id: quickinfo_notifications_user_default_interval
 migration_tags: null
 migration_group: custom_migration
 label: 'Quickinfo notification interval'
@@ -30,6 +30,8 @@ process:
     map:
       86400: 0
       604800: 0
+      0: 0
+      -1: -1
 destination:
   plugin: table
   key_map:

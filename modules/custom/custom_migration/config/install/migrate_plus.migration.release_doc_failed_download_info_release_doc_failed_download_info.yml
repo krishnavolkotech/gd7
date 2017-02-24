@@ -2,7 +2,7 @@ uuid: 5e49f1c1-fd9d-41a1-be42-7c71899efe55
 langcode: de
 status: true
 dependencies: {  }
-id: release_doc_failed_download_info_release_doc_failed_download_info
+id: release_doc_failed_download_info
 migration_tags: null
 migration_group: custom_migration
 label: 'Release doc failed download info'

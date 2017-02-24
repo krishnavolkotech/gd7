@@ -2,7 +2,7 @@ uuid: 6dcb21cc-59a5-4107-b59a-4fc08101cec5
 langcode: de
 status: true
 dependencies: {  }
-id: service_notifications_priority_service_notifications_priority
+id: service_notifications_priority
 migration_tags: null
 migration_group: custom_migration
 label: 'Service notification priority'

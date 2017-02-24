@@ -1,7 +1,7 @@
 uuid: dcd49fd9-7aad-4b4a-879e-59dd449e37e9
 langcode: de
 status: true
-id: default_release_type_default_release_type
+id: default_release_type
 label: 'Default Release Type'
 migration_tags: null
 migration_group: custom_migration

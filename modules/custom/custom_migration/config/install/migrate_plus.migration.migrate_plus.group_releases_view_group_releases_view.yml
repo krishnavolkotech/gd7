@@ -2,7 +2,7 @@ uuid: 57bbfaf5-9cae-458b-84f0-2834a34b152a
 langcode: de
 status: true
 dependencies: {  }
-id: group_releases_view_group_releases_view
+id: group_releases_view
 migration_tags: null
 migration_group: custom_migration
 label: 'Group Releases View'

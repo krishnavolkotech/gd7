@@ -2,7 +2,7 @@ uuid: c59cf394-30e5-4e3c-b166-cd6aecc9c301
 langcode: de
 status: true
 dependencies: {  }
-id: nsm_user_role_nsm_user_role
+id: nsm_user_role
 migration_tags: null
 migration_group: custom_migration
 label: 'Nsm user role'
