@@ -27,7 +27,6 @@ source:
         unsigned: FALSE
         size: big
 process:
-  id: id
   description: reason
   startdate_planned: startdate_planned
   enddate_planned: enddate_planned

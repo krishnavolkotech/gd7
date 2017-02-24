@@ -22,6 +22,10 @@ source:
       type: integer
       unsigned: FALSE
       size: big
+    nid:
+      type: integer
+      unsigned: FALSE
+      size: big
 process:
   gid:
     -
