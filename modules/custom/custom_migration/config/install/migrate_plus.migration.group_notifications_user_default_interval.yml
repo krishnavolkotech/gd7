@@ -1,0 +1,39 @@
+uuid: 679ff9f8-ac2e-4746-aab1-53d59b756175
+langcode: de
+status: true
+dependencies: {  }
+id: group_notifications_user_default_interval
+migration_tags: null
+migration_group: custom_migration
+label: 'Group notification user default interval'
+source:
+  plugin: group_notification
+  target: migrate
+process:
+  uid: uid
+  id: dedupe_entity
+  default_send_interval:
+    plugin: static_map
+    source: send_interval
+    map:
+      86400: 0
+      604800: 0
+      0: 0
+      -1: -1
+  group_id:
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      source: value
+    -
+      plugin: skip_on_empty
+      method: row
+destination:
+  plugin: table
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: group_notifications_user_default_interval
+migration_dependencies: {  }
