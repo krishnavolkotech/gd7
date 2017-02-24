@@ -23,6 +23,11 @@ function migrate_manifest_drush_command() {
         'example-value' => 'mysql://root:pass@127.0.0.1/db',
         'required' => TRUE,
       ],
+      'legacy-db-prefix' => [
+        'description' => 'A database table prefix to apply.',
+        'example-value' => 'dr_',
+        'required' => FALSE,
+      ],
     ],
     'drupal dependencies' => ['migrate_manifest'],
     // Maintained for compatibility with inital release
@@ -34,6 +39,10 @@ function migrate_manifest_drush_command() {
       'tag' => [
         'description' => 'Template tag',
         'example-value' => 'Drupal 6',
+        'required' => FALSE,
+      ],
+      'as-yaml' => [
+        'description' => 'Create output as yaml that can be used as a manifest.',
         'required' => FALSE,
       ],
     ],
@@ -70,8 +79,8 @@ function drush_migrate_manifest($manifest) {
  * @return array
  */
 function drush_migrate_manifest_migrate_template_list() {
-  /** @var \Drupal\Migrate\MigrateTemplateStorage $template_storage */
-  $template_storage = \Drupal::service('migrate.template_storage');
+  /** @var \Drupal\migrate_manifest\MigrateTemplateStorageInterface $template_storage */
+  $template_storage = \Drupal::service('migrate_manifest.template_storage');
 
   $tag = drush_get_option('tag');
   if ($tag) {
@@ -81,8 +90,9 @@ function drush_migrate_manifest_migrate_template_list() {
     $templates = $template_storage->getAllTemplates();
   }
 
+  $as_yaml = drush_get_option('as-yaml');
 
   foreach ($templates as $template) {
-    drush_print($template['id']);
+    drush_print(($as_yaml ? '- ' : '') . $template['id']);
   }
 }
