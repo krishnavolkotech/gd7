@@ -149,7 +149,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function send($filename = NULL) {
+  public function send($filename, $force_download = TRUE) {
     $this->doRender();
 
     // Dompdf doesn't have a return value for send so just check the error
@@ -164,20 +164,21 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
 
     // If the filename received here is NULL, force open in the browser
     // otherwise attempt to have it downloaded.
-    $this->dompdf->stream($filename, ['Attachment' => (bool) $filename]);
+    $this->dompdf->stream($filename, ['Attachment' => $force_download]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getBlob() {
+    $this->doRender();
     return $this->dompdf->output();
   }
 
   /**
    * Tell Dompdf to render the HTML into a PDF.
    */
-  public function doRender() {
+  protected function doRender() {
     if (!$this->hasRendered) {
       $this->dompdf->render();
       $this->hasRendered = TRUE;
@@ -236,7 +237,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function getPrintObject(){
+  public function getPrintObject() {
     return $this->dompdf;
   }
 

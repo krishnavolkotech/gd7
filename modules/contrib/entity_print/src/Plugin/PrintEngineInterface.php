@@ -29,13 +29,15 @@ interface PrintEngineInterface extends PluginInspectionInterface, PluginFormInte
   /**
    * Send the Print contents to the browser.
    *
-   * @param $filename
-   *   (optional) The filename if we want to force the browser to download.
+   * @param string $filename
+   *   The filename if we want to force the browser to download.
+   * @param bool $force_download
+   *   TRUE to attempt to force the browser to download the PDF otherwise FALSE.
    *
    * @throws \Drupal\entity_print\PrintEngineException
    *   Thrown when Print generation fails.
    */
-  public function send($filename = NULL);
+  public function send($filename, $force_download = TRUE);
 
   /**
    * Gets the binary data for the printed document.
@@ -64,8 +66,11 @@ interface PrintEngineInterface extends PluginInspectionInterface, PluginFormInte
   /**
    * Gets the object for this Print engine.
    *
+   * Note, it is not advised that you use this method if you want your code to
+   * work generically across all print engines.
+   *
    * @return object
-   *   An object of this print engine.
+   *   The implementation specific print object being used.
    */
   public function getPrintObject();
 

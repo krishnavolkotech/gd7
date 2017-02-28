@@ -47,31 +47,15 @@ class PrintBuilder implements PrintBuilderInterface {
    * {@inheritdoc}
    */
   public function deliverPrintable(array $entities, PrintEngineInterface $print_engine, $force_download = FALSE, $use_default_css = TRUE) {
-    if (empty($entities)) {
-      throw new \InvalidArgumentException('You must pass at least 1 entity');
-    }
-
-    $renderer = $this->rendererFactory->create($entities);
-    $content = array_map([$renderer, 'render'], $entities);
-
-    $first_entity = reset($entities);
-    $render = [
-      '#theme' => 'entity_print__' . $first_entity->getEntityTypeId() . '__' . $first_entity->bundle(),
-      '#title' => $this->t('View @type', ['@type' => $print_engine->getExportType()->label()]),
-      '#content' => $content,
-      '#attached' => [],
-    ];
-
-    $print_engine->addPage($renderer->generateHtml($entities, $render, $use_default_css, TRUE));
+    $renderer = $this->prepareRenderer($entities, $print_engine, $use_default_css);
 
     // Allow other modules to alter the generated Print object.
     $this->dispatcher->dispatch(PrintEvents::PRE_SEND, new PreSendPrintEvent($print_engine, $entities));
 
-    // If we're forcing a download we need a filename otherwise it's just sent
-    // straight to the browser.
-    $filename = $force_download ? $renderer->getFilename($entities) . '.' . $print_engine->getExportType()->getFileExtension() : NULL;
+    // Calculate the filename.
+    $filename = $renderer->getFilename($entities) . '.' . $print_engine->getExportType()->getFileExtension();
 
-    return $print_engine->send($filename);
+    return $print_engine->send($filename, $force_download);
   }
 
   /**
@@ -79,17 +63,16 @@ class PrintBuilder implements PrintBuilderInterface {
    */
   public function printHtml(EntityInterface $entity, $use_default_css = TRUE, $optimize_css = TRUE) {
     $renderer = $this->rendererFactory->create([$entity]);
-    $content[] = $renderer->render($entity);
+    $content[] = $renderer->render([$entity]);
 
     $render = [
-      '#theme' => 'entity_print',
+      '#theme' => 'entity_print__' . $entity->getEntityTypeId() . '__' . $entity->bundle(),
       '#title' => $this->t('View'),
       '#content' => $content,
       '#attached' => [],
     ];
     return $renderer->generateHtml([$entity], $render, $use_default_css, $optimize_css);
   }
-  
 
   /**
    * {@inheritdoc}

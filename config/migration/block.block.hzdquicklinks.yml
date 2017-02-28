@@ -16,7 +16,7 @@ third_party_settings:
 id: hzdquicklinks
 theme: hzd
 region: '-1'
-weight: 2
+weight: 1
 provider: null
 plugin: hzd_quick_links
 settings:

@@ -1,0 +1,24 @@
+uuid: d2e8280f-b2fd-4d9d-a558-7d138521a23c
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_class
+    - cust_group
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: hzdfootercontent
+theme: hzd
+region: footer
+weight: 0
+provider: null
+plugin: hzd_footer
+settings:
+  id: hzd_footer
+  label: 'Hzd Footer content'
+  provider: cust_group
+  label_display: '0'
+visibility: {  }

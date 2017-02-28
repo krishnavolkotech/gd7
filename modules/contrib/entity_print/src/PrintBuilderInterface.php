@@ -55,14 +55,16 @@ interface PrintBuilderInterface {
    *   The content entity to render.
    * @param \Drupal\entity_print\Plugin\PrintEngineInterface $print_engine
    *   The plugin id of the Print engine to use.
-   * @param string $uri
-   *   The URI on disk the file should be saved to.
+   * @param string $scheme
+   *   The Drupal scheme.
+   * @param string $filename
+   *   (optional) The filename or empty to have one generated.
    * @param bool $use_default_css
    *   (optional) TRUE if you want the default CSS included, otherwise FALSE.
    *
    * @return string
    *   FALSE or the URI to the file. E.g. public://my-file.pdf.
    */
-  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $uri, $use_default_css = TRUE);
+  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $scheme = 'public', $filename = '', $use_default_css = TRUE);
 
 }

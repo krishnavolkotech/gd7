@@ -30,7 +30,7 @@ class FAQListController extends ControllerBase {
   
   function title(){
     $group = \Drupal::routeMatch()->getParameter('group');
-    
+    pr($group);exit;
     return $this->t($group->label().' - Frequently Asked Questions');
   }
 

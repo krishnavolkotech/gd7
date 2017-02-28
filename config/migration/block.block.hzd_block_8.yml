@@ -2,17 +2,14 @@ uuid: 6851028a-b42e-4327-8066-65b5c1499467
 langcode: en
 status: false
 dependencies:
-  content:
-    - 'block_content:basic:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
   module:
-    - block_content
     - system
   theme:
     - hzd
 id: hzd_block_8
 theme: hzd
 region: '-1'
-weight: -2
+weight: 4
 provider: null
 plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
 settings:

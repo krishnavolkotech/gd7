@@ -2,11 +2,8 @@ uuid: 0630d0d3-5cd0-4529-9f98-4f5769517be4
 langcode: en
 status: false
 dependencies:
-  content:
-    - 'block_content:basic:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
   module:
     - block_class
-    - block_content
     - language
     - system
   theme:
@@ -17,7 +14,7 @@ third_party_settings:
 id: verfahren
 theme: hzd
 region: '-1'
-weight: -1
+weight: 5
 provider: null
 plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
 settings:

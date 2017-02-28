@@ -40,7 +40,8 @@ class ContentView implements EventSubscriberInterface {
       return;
     }
     $node = $request->attributes->get('node');
-    if ($groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id())) {
+//    echo $node->getType();exit;
+    if (($groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id())) && $node->getType() != 'early_warnings') {
       $response = new RedirectResponse($groupContent->toUrl()->toString());
       $event->setResponse($response);
     }
