@@ -19,7 +19,6 @@ module:
   cust_address_book: 0
   cust_group: 0
   cust_node: 0
-  cust_pdf: 0
   cust_user: 0
   custom_script_batch: 0
   custom_views_php: 0
@@ -60,6 +59,7 @@ module:
   language: 0
   link: 0
   locale: 0
+  mailsystem: 0
   masquerade: 0
   mass_contact: 0
   menu_ui: 0
@@ -87,6 +87,7 @@ module:
   simplify: 0
   statistics: 0
   subpathauto: 0
+  swiftmailer: 0
   system: 0
   taxonomy: 0
   text: 0

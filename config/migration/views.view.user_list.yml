@@ -3,9 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - user.role.administrator
     - user.role.authenticated
-    - user.role.site_administrator
   module:
     - inactive_user
     - user
@@ -278,7 +276,19 @@ display:
           expose:
             operator: ''
           group: 1
-      sorts: {  }
+      sorts:
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: ''
+          plugin_id: standard
       title: 'User List'
       header: {  }
       footer: {  }
@@ -372,47 +382,6 @@ display:
           expose:
             operator: ''
           group: 1
-        roles_target_id:
-          id: roles_target_id
-          table: user__roles
-          field: roles_target_id
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: not
-          value:
-            administrator: administrator
-            site_administrator: site_administrator
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          entity_type: user
-          plugin_id: user_roles
         abbr:
           id: abbr
           table: states
@@ -459,6 +428,119 @@ display:
         groups:
           1: AND
       fields:
+        uid:
+          id: uid
+          table: users_field_data
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Benutzer-ID
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_unformatted
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: user
+          entity_field: uid
+          plugin_id: field
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Lastname
+          exclude: false
+          alter:
+            alter_text: true
+            text: '{{ lastname }}'
+            make_link: true
+            path: '/user/{{ uid }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
         name:
           id: name
           table: users_field_data
@@ -466,11 +548,11 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: UserName
-          exclude: false
+          label: LastName
+          exclude: true
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: '{{ lastname }}'
             make_link: false
             path: ''
             absolute: false
@@ -508,7 +590,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: user_name
+          type: string
           settings:
             link_to_entity: true
           group_column: value
@@ -528,11 +610,6 @@ display:
           id: firstname
           table: cust_profile
           field: firstname
-          plugin_id: standard
-        lastname:
-          id: lastname
-          table: cust_profile
-          field: lastname
           plugin_id: standard
         phone:
           id: phone
@@ -726,6 +803,36 @@ display:
         - url
         - url.query_args
         - user.roles
+      tags: {  }
+  attachment_1:
+    display_plugin: attachment
+    id: attachment_1
+    display_title: Anhang
+    position: 4
+    display_options:
+      display_extenders: {  }
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url.query_args
+        - user.permissions
+      tags: {  }
+  attachment_2:
+    display_plugin: attachment
+    id: attachment_2
+    display_title: 'Anhang 2'
+    position: 5
+    display_options:
+      display_extenders: {  }
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url.query_args
+        - user.permissions
       tags: {  }
   entity_reference_1:
     display_plugin: entity_reference
