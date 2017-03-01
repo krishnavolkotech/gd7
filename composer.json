@@ -15,7 +15,9 @@
         "zendframework/zend-stdlib": "3.0.1",
         "drupal/migrate_manifest": "^1.4",
         "drupal/entity_print": "2.0.0-beta2",
-        "dompdf/dompdf": "^0.8.0"
+        "dompdf/dompdf": "^0.8.0",
+        "drupal/swiftmailer": "^1.0@beta",
+        "drush/drush": "^8.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

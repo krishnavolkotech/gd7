@@ -250,10 +250,27 @@ aside.col-sm-6, #header-right {
 #header-right #block-hzdheaderlinks{
   padding-top:15px !important;	
 }
+.block-hzd-header-links{
+ background:#04425f;
+ width:100% !important;
+ float:left;
+ padding:10px 0 !important;
+ color:#fff;
+ margin-bottom:100px;
+}
+.block-hzd-header-links .field--name-body{
+  float: left !important;
+  padding:0 10px 0 10px;
+  width: 100% !important;
+}
+.block-hzd-header-links a{
+  color:#fff !important;
+  padding:0 5px;
+}
 .navbar-header .region.region-navigation{
   position:absolute;
   left: 0;
-  top: 40px;
+  top: 75px;
   width: 75%;  
 }
 header.navbar{
@@ -267,7 +284,7 @@ header.navbar{
 button.navbar-toggle{
   position:absolute;
   right:0;
-  top:45px;  
+  top:80px;  
 }
 .navbar-header .region.region-navigation .logo img{
   width:100% !important;
@@ -745,6 +762,22 @@ table tr.odd td {
 table tr.even:hover {
   /*background: #f9f9f9 !important;*/
   background:none !important;
+}
+
+.region-user-menu .block-hzd-header-links{
+  width: 45%;
+  float: right;
+  padding-top:30px;
+}
+.block-hzd-header-links .field--name-body{
+  float: right;
+  padding-bottom: 8px;
+  width: auto;
+}
+.block-hzd-header-links a{
+  padding: 0 3px;
+  font-size: 14px;
+  color: #333333;
 }
 .warningcount {
   background: url(../images/warning-icon.png) left top no-repeat;
@@ -1712,7 +1745,8 @@ aside .block-favorites h2.block-title,
   font-family: robotoregular;
 }
 aside .block-favorites h2.block-title{
-  background: url("../images/ic_star_black.png") no-repeat scroll 220px top;
+ /* background: url("../images/ic_star_black.png") no-repeat scroll 220px top;*/
+ background: url("../images/ic_star_black.png") no-repeat scroll right top;
 }
 .block-incidents-block ul{
   margin:0;
