@@ -1,6 +1,6 @@
-name: 'Group Role Sync'
-description: 'Allows you to synchronize global roles to special ''outsider'' group roles.'
-package: 'Group'
+name: 'Group role sync'
+description: 'DOES NOT CURRENTLY WORK, SEE https://www.drupal.org/node/2850417. Allows you to synchronize global roles to group roles.'
+package: 'Group (Work in progress)'
 type: 'module'
 # version: 1.0
 # core: '8.x'
@@ -8,8 +8,8 @@ dependencies:
   - 'user'
   - 'group'
 
-# Information added by Drupal.org packaging script on 2016-09-24
-version: '8.x-1.0-beta4'
+# Information added by Drupal.org packaging script on 2017-02-20
+version: '8.x-1.0-beta5'
 core: '8.x'
 project: 'group'
-datestamp: 1474722242
+datestamp: 1487606183

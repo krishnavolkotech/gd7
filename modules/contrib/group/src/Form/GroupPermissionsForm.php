@@ -131,7 +131,7 @@ abstract class GroupPermissionsForm extends FormBase {
         'is_member' => $group_role->isMember(),
       ];
     }
-kint($group_roles);
+
     // Render the general information.
     if ($info = $this->getInfo()) {
       $form['info'] = $info;
@@ -236,6 +236,9 @@ kint($group_roles);
 
     // @todo Do something like the global permissions page for 'member'.
     // $form['#attached']['library'][] = 'user/drupal.user.permissions';
+
+    // Add the CSS from the user module as it has styling for permission tables.
+    $form['#attached']['library'][] = 'user/drupal.user.admin';
 
     return $form;
   }

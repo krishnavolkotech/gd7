@@ -39,7 +39,6 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *       "delete" = "Drupal\group\Entity\Form\GroupContentDeleteForm",
  *       "group-join" = "Drupal\group\Form\GroupJoinForm",
  *       "group-leave" = "Drupal\group\Form\GroupLeaveForm",
- *       "group-request" = "Drupal\group\Form\GroupRequestMembershipForm",
  *     },
  *     "access" = "Drupal\group\Entity\Access\GroupContentAccessControlHandler",
  *   },
@@ -58,6 +57,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "add-page" = "/group/{group}/content/add",
  *     "canonical" = "/group/{group}/content/{group_content}",
  *     "collection" = "/group/{group}/content",
+ *     "create-form" = "/group/{group}/content/create/{plugin_id}",
+ *     "create-page" = "/group/{group}/content/create",
  *     "delete-form" = "/group/{group}/content/{group_content}/delete",
  *     "edit-form" = "/group/{group}/content/{group_content}/edit"
  *   },
@@ -182,12 +183,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getRequestStatus() {
-    return $this->get('request_status')->value;
-  }
-  /**
-   * {@inheritdoc}
-   */
   public function setOwnerId($uid) {
     $this->set('uid', $uid);
     return $this;
@@ -204,19 +199,47 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function setRequestStatus($value) {
-    $this->set('request_status', $value);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
     // Set the label so the DB also reflects it.
     $this->set('label', $this->label());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
+    if ($update === FALSE) {
+      // We want to make sure that the entity we just added to the group behaves
+      // as a grouped entity. This means we may need to update access records,
+      // flush some caches containing the entity or perform other operations we
+      // cannot possibly know about. Lucky for us, all of that behavior usually
+      // happens when saving an entity so let's re-save the added entity.
+      $this->getEntity()->save();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+
+    // For the same reasons we re-save entities that are added to a group, we
+    // need to re-save entities that were removed from one. See ::postSave().
+    /** @var GroupContentInterface[] $entities */
+    foreach ($entities as $group_content) {
+      // We only save the entity if it still exists to avoid trying to save an
+      // entity that just got deleted and triggered the deletion of its group
+      // content entities.
+      if ($entity = $group_content->getEntity()) {
+        // @todo Revisit when https://www.drupal.org/node/2754399 lands.
+        $entity->save();
+      }
+    }
   }
 
   /**
@@ -280,12 +303,17 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
 
-    $fields['request_status'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Request Status'))
-      ->setDescription(t('Request mebership status.'))
-      ->setSetting('unsigned', TRUE)
-      ->setDefaultValue(1)
-      ->setTranslatable(TRUE);
+    if (\Drupal::moduleHandler()->moduleExists('path')) {
+      $fields['path'] = BaseFieldDefinition::create('path')
+        ->setLabel(t('URL alias'))
+        ->setTranslatable(TRUE)
+        ->setDisplayOptions('form', array(
+          'type' => 'path',
+          'weight' => 30,
+        ))
+        ->setDisplayConfigurable('form', TRUE)
+        ->setComputed(TRUE);
+    }
 
     return $fields;
   }
@@ -320,8 +348,8 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // up until now. This is a bug in core because we can't simply unset those
       // two properties, see: https://www.drupal.org/node/2346329
       $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')
-        ->setLabel($original->getLabel())
-        ->setDescription($original->getDescription())
+        ->setLabel($plugin->getEntityReferenceLabel() ?: $original->getLabel())
+        ->setDescription($plugin->getEntityReferenceDescription() ?: $original->getDescription())
         ->setConstraints($original->getConstraints())
         ->setDisplayOptions('view', $original->getDisplayOptions('view'))
         ->setDisplayOptions('form', $original->getDisplayOptions('form'))
