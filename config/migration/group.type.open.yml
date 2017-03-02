@@ -5,3 +5,4 @@ dependencies: {  }
 id: open
 label: Öffnen
 description: 'All authenticated users can join.'
+creator_roles: {  }

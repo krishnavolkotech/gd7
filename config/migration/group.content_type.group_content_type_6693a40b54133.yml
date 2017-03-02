@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - group.type.realease_management
+  module:
+    - user
 id: group_content_type_6693a40b54133
 label: 'Realease Management: Group membership'
 description: 'Adds users to groups as members.'

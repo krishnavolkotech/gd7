@@ -12,7 +12,7 @@ mode: default
 content:
   entity_id:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 1
     settings:
       match_operator: CONTAINS
       size: 60
@@ -20,13 +20,14 @@ content:
     third_party_settings: {  }
   group_roles:
     type: options_buttons
-    weight: 6
+    weight: 2
     settings: {  }
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 2
+    weight: 0
     settings: {  }
     third_party_settings: {  }
 hidden:
+  path: true
   uid: true

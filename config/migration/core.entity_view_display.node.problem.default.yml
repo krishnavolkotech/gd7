@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.problem.body
     - field.field.node.problem.comment
     - field.field.node.problem.field_attachment
@@ -29,13 +30,9 @@ dependencies:
     - node.type.problem
   module:
     - comment
-    - entity_print
     - file
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.problem.default
 targetEntityType: node
 bundle: problem

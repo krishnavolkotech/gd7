@@ -15,4 +15,4 @@ permissions:
   - 'view group'
   - 'access group_node overview'
   - 'view group_node:forum content'
-  - 'view forum node'
+  - 'view group_node:forum entity'

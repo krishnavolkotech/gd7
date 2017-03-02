@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - group.type.moderate_private
+  module:
+    - user
 id: group_content_type_d4b06e2b6aad0
 label: 'Moderate Private: Group membership'
 description: 'Adds users to groups as members.'
@@ -12,5 +14,3 @@ content_plugin: group_membership
 plugin_config:
   group_cardinality: 0
   entity_cardinality: 1
-  info_text:
-    value: '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>'

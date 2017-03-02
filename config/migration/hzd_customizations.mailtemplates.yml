@@ -6,7 +6,7 @@ problems:
   mail_content: '[node:created][node:created]'
 quickinfo:
   subject: '[node:title] has been modified'
-  mail_content: "\r\n[node:url:absolute]"
+  mail_content: '[node:url:absolute]'
 planning_files:
   subject: '[node:title] has been modified'
   mail_content: "\r\n[node:url:absolute]"

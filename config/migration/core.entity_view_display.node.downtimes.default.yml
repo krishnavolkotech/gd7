@@ -3,18 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.downtimes.body
     - field.field.node.downtimes.comment
     - field.field.node.downtimes.upload
     - node.type.downtimes
   module:
     - comment
-    - entity_print
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.downtimes.default
 targetEntityType: node
 bundle: downtimes

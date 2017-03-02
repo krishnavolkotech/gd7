@@ -5,3 +5,4 @@ dependencies: {  }
 id: moderate
 label: Mäßig
 description: 'Membership Request is required.'
+creator_roles: {  }

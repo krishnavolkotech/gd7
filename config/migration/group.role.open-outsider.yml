@@ -12,7 +12,7 @@ audience: outsider
 group_type: open
 permissions_ui: true
 permissions:
-  0: 'view group'
-  1: 'join group'
-  4: 'view group_node:downtimes content'
-  5: 'view downtimes node'
+  - 'view group'
+  - 'join group'
+  - 'view group_node:downtimes content'
+  - 'view group_node:downtimes entity'

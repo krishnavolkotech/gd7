@@ -5,3 +5,4 @@ dependencies: {  }
 id: quick_info
 label: 'Quick Info'
 description: 'Same as Closed.'
+creator_roles: {  }

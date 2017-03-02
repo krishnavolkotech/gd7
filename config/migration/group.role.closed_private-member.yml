@@ -18,4 +18,4 @@ permissions:
   3: 'leave group'
   4: 'access group_node overview'
   7: 'view group_node:page content'
-  8: 'view page node'
+  8: 'view group_node:page entity'

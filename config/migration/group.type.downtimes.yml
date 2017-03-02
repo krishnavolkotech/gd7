@@ -5,3 +5,4 @@ dependencies: {  }
 id: downtimes
 label: Downtimes
 description: 'Same as open group.'
+creator_roles: {  }

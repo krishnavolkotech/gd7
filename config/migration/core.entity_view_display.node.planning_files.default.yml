@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.planning_files.comment
     - field.field.node.planning_files.field_planning_file_type
     - field.field.node.planning_files.field_upload_planning_file
@@ -10,13 +11,9 @@ dependencies:
     - node.type.planning_files
   module:
     - comment
-    - entity_print
     - file
     - options
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.planning_files.default
 targetEntityType: node
 bundle: planning_files

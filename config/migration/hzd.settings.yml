@@ -1,7 +1,7 @@
 favicon:
   mimetype: image/vnd.microsoft.icon
   path: ''
-  url: 'http://hzdupgrd-dev2.azri.de/themes/hzd/favicon.ico'
+  url: 'http://hzdupgrd-migr.azri.de/themes/hzd/favicon.ico'
   use_default: 1
 schema: '8000'
 features:
@@ -10,7 +10,7 @@ features:
   favicon: 1
   node_user_picture: 1
 logo:
-  path: 'public://hzd-logo_0_0.jpg'
+  path: themes/hzd/images/hzd-logo.jpg
   url: ''
   use_default: 0
 cdn_provider_import_data: ''
@@ -19,4 +19,15 @@ schemas:
   bootstrap: 8000
   hzd: 8000
 cdn_provider: jsdelivr
+region_wells:
+  navigation: ''
+  user_menu: ''
+  navigation_collapsible: ''
+  header: ''
+  highlighted: ''
+  help: ''
+  content: ''
+  sidebar_first: ''
+  sidebar_second: well
+  footer: ''
 table: ''

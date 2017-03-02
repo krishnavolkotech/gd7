@@ -5,3 +5,4 @@ dependencies: {  }
 id: realease_management
 label: 'Realease Management'
 description: 'Same as open group.'
+creator_roles: {  }

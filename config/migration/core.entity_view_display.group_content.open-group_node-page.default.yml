@@ -1,0 +1,24 @@
+uuid: 92289684-8edf-46e5-9d94-ea315f78c168
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-page
+id: group_content.open-group_node-page.default
+targetEntityType: group_content
+bundle: open-group_node-page
+mode: default
+content:
+  entity_id:
+    type: entity_reference_label
+    weight: 0
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  uid: true

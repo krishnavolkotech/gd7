@@ -3,6 +3,7 @@ langcode: de
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment_forum.default
     - field.field.node.forum.body
     - field.field.node.forum.comment
     - field.field.node.forum.comment_forum
@@ -11,12 +12,8 @@ dependencies:
     - node.type.forum
   module:
     - comment
-    - entity_print
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 _core:
   default_config_hash: dYNgSzier2ho_TffDzhdX4UkzSnlX6FCouPFu3f_Oxs
 id: node.forum.default

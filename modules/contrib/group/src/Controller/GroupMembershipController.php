@@ -72,9 +72,58 @@ class GroupMembershipController extends ControllerBase {
       'type' => $plugin->getContentTypeConfigId(),
       'gid' => $group->id(),
       'entity_id' => $this->currentUser->id(),
+      'request_status' => 1,
     ]);
 
     return $this->entityFormBuilder->getForm($group_content, 'group-join');
+  }
+
+  /**
+   * Provides the Request membership form for joining a group.
+   *
+   * @param \Drupal\group\Entity\GroupInterface $group
+   *   The group to join.
+   *
+   * @return array
+   *   A group join form.
+   */
+  public function requestMembership(GroupInterface $group) {
+    /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
+    $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+    // Pre-populate a group membership with the current user.
+    $group_content = GroupContent::create([
+      'type' => $plugin->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $this->currentUser->id(),
+      'request_status' => 0,
+    ]);
+    return $this->entityFormBuilder()->getForm($group_content, 'group-request');
+  }
+
+  /**
+   * The _title_callback for the request membership form route.
+   *
+   * @param \Drupal\group\Entity\GroupInterface $group
+   *   The group to join.
+   *
+   * @return string
+   *   The page title.
+   */
+  public function requestMembershipTitle(GroupInterface $group) {
+    return $this->t('Request membership group %label', ['%label' => $group->label()]);
+  }
+
+  /**
+   * The _title_callback for the request membership form route.
+   *
+   * @param \Drupal\group\Entity\GroupInterface $group
+   *   The group to join.
+   *
+   * @return string
+   *   The page title.
+   */
+  public function cancelMembershipTitle(GroupInterface $group) {
+    return $this->t('Cancel membership request for group %label', ['%label' => $group->label()]);
   }
 
   /**

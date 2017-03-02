@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - group.type.incident_managent
+  module:
+    - user
 id: group_content_type_7b308aea24fe7
 label: 'Incident Managent: Group membership'
 description: 'Adds users to groups as members.'

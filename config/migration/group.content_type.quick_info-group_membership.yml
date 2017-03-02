@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - group.type.quick_info
+  module:
+    - user
 id: quick_info-group_membership
 label: 'Quick Info: Group membership'
 description: 'Adds users to groups as members.'

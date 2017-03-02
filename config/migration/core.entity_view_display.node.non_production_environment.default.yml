@@ -3,19 +3,16 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.non_production_environment.comment
     - field.field.node.non_production_environment.field_non_production_state
     - field.field.node.non_production_environment.upload
     - node.type.non_production_environment
   module:
     - comment
-    - entity_print
     - file
     - options
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.non_production_environment.default
 targetEntityType: node
 bundle: non_production_environment

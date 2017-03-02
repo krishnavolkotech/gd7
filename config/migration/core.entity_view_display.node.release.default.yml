@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.release.comment
     - field.field.node.release.field_date
     - field.field.node.release.field_documentation_link
@@ -15,14 +16,10 @@ dependencies:
     - node.type.release
   module:
     - comment
-    - entity_print
     - file
     - options
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.release.default
 targetEntityType: node
 bundle: release

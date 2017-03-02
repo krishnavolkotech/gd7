@@ -13,4 +13,4 @@ group_type: open
 permissions_ui: true
 permissions:
   - 'view group_node:downtimes content'
-  - 'view downtimes node'
+  - 'view group_node:downtimes entity'
