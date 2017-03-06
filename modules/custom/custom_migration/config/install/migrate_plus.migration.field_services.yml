@@ -1,6 +1,7 @@
 uuid: d6fd9c64-aefa-49f6-b73f-c9abcdf637d4
 id: field_services
 label: Problem Service Fields
+migration_group: fields
 migration_tags:
   - Drupal 6
 source:
