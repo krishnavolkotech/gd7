@@ -789,7 +789,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%group/rz-schnellinfos/entwuerfe
+      path: group/%group/saved-rz-schnellinfo
       rendering_language: de
       title: 'Table of Draft RZ Accelerators'
       defaults:
@@ -950,7 +950,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%group/rz-schnellinfos
+      path: group/%group/rz-schnellinfo-overview
       filters:
         type:
           id: type

@@ -14,7 +14,7 @@ third_party_settings:
 id: groupoperations
 theme: hzd
 region: '-1'
-weight: -19
+weight: -20
 provider: null
 plugin: group_operations
 settings:

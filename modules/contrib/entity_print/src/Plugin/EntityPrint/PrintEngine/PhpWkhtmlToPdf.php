@@ -3,6 +3,7 @@
 namespace Drupal\entity_print\Plugin\EntityPrint\PrintEngine;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
 use Drupal\entity_print\Plugin\ExportTypeInterface;
 use Drupal\entity_print\PrintEngineException;
 use mikehaertl\wkhtmlto\Pdf;
@@ -76,7 +77,8 @@ class PhpWkhtmlToPdf extends PdfEngineBase implements AlignableHeaderFooterInter
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::validateConfigurationForm($form, $form_state);
-    $binary_location = $form_state->getValue('binary_location');
+    $values = OptGroup::flattenOptions($form_state->getValues());
+    $binary_location = $values['binary_location'];
     if (!file_exists($binary_location)) {
       $form_state->setErrorByName('binary_location', sprintf('The wkhtmltopdf binary does not exist at %s', $binary_location));
     }
@@ -85,10 +87,10 @@ class PhpWkhtmlToPdf extends PdfEngineBase implements AlignableHeaderFooterInter
   /**
    * {@inheritdoc}
    */
-  public function send($filename = NULL) {
+  public function send($filename, $force_download = TRUE) {
     // If the filename received here is NULL, force open in the browser
     // otherwise attempt to have it downloaded.
-    if (!$this->pdf->send($filename, !(bool) $filename)) {
+    if (!$this->pdf->send($filename, !$force_download)) {
       throw new PrintEngineException(sprintf('Failed to generate PDF: %s', $this->pdf->getError()));
     }
   }
@@ -171,7 +173,7 @@ class PhpWkhtmlToPdf extends PdfEngineBase implements AlignableHeaderFooterInter
   /**
    * {@inheritdoc}
    */
-  public function getPrintObject(){
+  public function getPrintObject() {
     return $this->pdf;
   }
 

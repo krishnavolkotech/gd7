@@ -13,7 +13,7 @@ third_party_settings:
 id: printlinks
 theme: hzd
 region: '-1'
-weight: -5
+weight: -1
 provider: null
 plugin: print_links
 settings:

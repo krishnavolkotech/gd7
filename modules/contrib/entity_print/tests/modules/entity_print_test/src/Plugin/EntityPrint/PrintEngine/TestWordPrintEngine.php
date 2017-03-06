@@ -31,7 +31,7 @@ class TestWordPrintEngine extends PrintEngineBase {
   /**
    * {@inheritdoc}
    */
-  public function send($filename = NULL) {
+  public function send($filename, $force_download = TRUE) {
     echo $filename;
     echo 'Using ' . $this->getPluginId();
     echo $this->html;
@@ -72,7 +72,7 @@ class TestWordPrintEngine extends PrintEngineBase {
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    $this->configuration['test_word_setting'] = $form_state->getValue('test_word_setting');
+    $this->configuration['test_word_setting'] = $form_state->getValue(['test_word_print_engine', 'test_word_setting']);
   }
 
   /**

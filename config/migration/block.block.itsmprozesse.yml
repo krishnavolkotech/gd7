@@ -2,11 +2,8 @@ uuid: 29307d97-d6a1-4916-a2cb-d72dbdc569dd
 langcode: en
 status: false
 dependencies:
-  content:
-    - 'block_content:basic:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
   module:
     - block_class
-    - block_content
     - language
     - system
   theme:
@@ -17,7 +14,7 @@ third_party_settings:
 id: itsmprozesse
 theme: hzd
 region: '-1'
-weight: -15
+weight: -14
 provider: null
 plugin: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
 settings:

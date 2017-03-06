@@ -167,7 +167,6 @@ function send_notifications($entity, $mails) {
   $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
   $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
   $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
-
 //    pr($mails);echo $params['message'];exit;
 //    global $base_url;
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
@@ -221,7 +220,11 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       if (empty($group)) {
         $node = \Drupal::routeMatch()->getParameter('node');
         $groupId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($node);
-        $group = \Drupal\group\Entity\Group::load($groupId['gid']);
+        if ($groupId) {
+          $gid = $groupId->getGroup()->id();
+          $group = \Drupal\group\Entity\Group::load($gid);
+        }
+        
       }
       $categoryQuery = \Drupal::entityQuery('taxonomy_term')
         ->condition('name', $group->label())
@@ -354,11 +357,32 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     header('Location: ' . $base_url . \Drupal::url('hzd_release_management.display_planning_files', ['group' => RELEASE_MANAGEMENT]));
     exit;
   }
-//    if($entity->getType() == 'quickinfo'){
-  //\Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity);
-//    }
+  if ($entity->getType() == 'quickinfo') {
+    
+//    send_notifications($entity,['sandeep@azrisolutions.com']);
+//    quickinfoPublishedMail($entity);exit;
+  }
   
-  //exit;
+  
+}
+
+function quickinfoPublishedMail($entity) {
+  $token_service = \Drupal::token();
+  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('quickinfo')['subject'];
+  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
+  $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('quickinfo')['mail_content'];
+  $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
+//  $html = \Drupal::service('renderer')->render($page);
+  
+  $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')->createSelectedInstance('pdf');
+  $print_builder = \Drupal::service('entity_print.print_builder');
+//  $nodes = \Drupal::entityTypeManager()->getStorage('node')->load($node_id);
+  $uri = $print_builder->savePrintable([$entity], $print_engine);
+  pr($uri);
+//  send_immediate_notifications($params['subject'],$params['message'],'betriebsportal-konsens@hzd.hessen.de','html');
+  print_r(22);exit;
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $mailManager->mail('cust_group', 'periodic_notifications', 'sandeep@azrisolutions.com', 'de', ['subject'=>'dddasd','message'=>$html], NULL, 1);
 }
 
 function get_planning_file_data($type) {
@@ -430,6 +454,22 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     );
 //    pr(array_keys($operations));
 //    exit;
+  }
+}
+
+/**
+ * Implements hook_file_download().
+ *
+ * implementation to serve all the private files which are migrated from d6
+ *
+ */
+function cust_group_file_download($uri) {
+  $scheme = \Drupal::service('file_system')->uriScheme($uri);
+  if(\Drupal::currentUser()->isAnonymous() && $scheme == 'private'){
+    return -1;
+  }else{
+//    echo 1;exit;
+    return 1;
   }
 }
 

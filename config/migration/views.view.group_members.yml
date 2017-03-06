@@ -627,7 +627,19 @@ display:
           destination: true
           plugin_id: dropbutton
       filters: {  }
-      sorts: {  }
+      sorts:
+        group_roles_target_id:
+          id: group_roles_target_id
+          table: group_content__group_roles
+          field: group_roles_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: false
+          expose:
+            label: ''
+          plugin_id: standard
       header: {  }
       footer: {  }
       empty:

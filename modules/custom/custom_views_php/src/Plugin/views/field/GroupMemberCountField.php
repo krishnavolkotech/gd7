@@ -15,31 +15,31 @@ use Drupal\Core\Url;
  * @ViewsField("group_member_count_field")
  */
 class GroupMemberCountField extends FieldPluginBase {
-
+  
   /**
    * {@inheritdoc}
    */
   public function usesGroupBy() {
     return FALSE;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function query() {
     // Do nothing -- to override the parent query.
   }
-
+  
   /**
    * {@inheritdoc}
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-
+    
     $options['hide_alter_empty'] = array('default' => FALSE);
     return $options;
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -56,22 +56,27 @@ class GroupMemberCountField extends FieldPluginBase {
       'group_content_type_6693a40b54133',
       'group_content_type_c26112f8ad4cd',
     );
-    $gpc = \Drupal::database()->select('group_content_field_data')
-        ->condition('gid', $gid)
-        ->condition('type', $contents, 'IN')
-        ->countQuery()
-        ->execute()
-        ->fetchField();
+    $gpc = \Drupal::database()->select('group_content_field_data', 'g');
+    $gpc->innerJoin('users_field_data', 'u', 'g.entity_id = u.uid');
+    $gpc->condition('u.status', 1)
+      ->condition('g.gid', $gid)
+      ->condition('g.type', $contents, 'IN')
+//      ->countQuery()
+    ->fields('g');
+    
+    $gpc = $gpc->execute()
+      ->fetchCol();
     // Return the result in object format.
-    return $gpc;
+    return count($gpc);
   }
+  
   /**
    * {@inheritdoc}
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -80,12 +85,12 @@ class GroupMemberCountField extends FieldPluginBase {
     $result = $this->groupMemberCount($gid);
     $res = $result;
     $groupMember = $values->_entity->getMember(\Drupal::currentUser());
-    if(($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || \Drupal::currentUser()->id() == 1){
+    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || \Drupal::currentUser()->id() == 1) {
       $doc_options['attributes'] = array('class' => 'member-link');
-      $url = Url::fromUserInput('/group/' . $gid .'/address', $doc_options);
+      $url = Url::fromUserInput('/group/' . $gid . '/address', $doc_options);
       $res = \Drupal::service('link_generator')->generate($result, $url);
     }
     return $res;
   }
-
+  
 }

@@ -2,11 +2,8 @@ uuid: dc58aa6e-5ecf-49ff-9928-baac5f4a49c7
 langcode: en
 status: false
 dependencies:
-  content:
-    - 'block_content:basic:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'
   module:
     - block_class
-    - block_content
     - language
   theme:
     - hzd
@@ -16,7 +13,7 @@ third_party_settings:
 id: gruppenadministration
 theme: hzd
 region: '-1'
-weight: -18
+weight: -19
 provider: null
 plugin: 'block_content:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'
 settings:
