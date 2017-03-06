@@ -106,9 +106,9 @@ function cust_group_group_content_insert($entity) {
   if ($node instanceof \Drupal\node\Entity\Node) {
     sendGroupUpdateMail($node);
     \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
-    if ($node->getType() == 'page') {
+    /*if ($node->getType() == 'page') {
       \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
-    }
+    }*/
   }
 }
 
@@ -196,7 +196,7 @@ function cust_group_mail($key, &$message, $params) {
     case 'periodic_notifications':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = t($params['subject'], $options);
-      $message['body'][] = SafeMarkup::checkPlain(t($params['message']));
+      $message['body'][] = $params['message'];
       break;
   }
 }
@@ -224,7 +224,6 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
           $gid = $groupId->getGroup()->id();
           $group = \Drupal\group\Entity\Group::load($gid);
         }
-        
       }
       $categoryQuery = \Drupal::entityQuery('taxonomy_term')
         ->condition('name', $group->label())
@@ -285,7 +284,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 function requst_submit_handler(&$form, $form_state) {
   $group = \Drupal::routeMatch()->getParameter('group');
   $form_state->setRedirect('view.all_groups.page_1');
-  $subject = t("Membership Request for a Group - " . $group->label());
+  $subject = "Membership Request for a Group - " . $group->label();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
     ->loadByGroup($group, 'group_membership', ['group_roles' => ['moderate-admin']]);
   $users = [];
@@ -297,7 +296,7 @@ function requst_submit_handler(&$form, $form_state) {
   }
   $message = $form_state->getValue('message');
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $module = 'group';
+  $module = 'cust_group';
   $key = 'immediate_notifications';
   $params['subject'] = $subject;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
@@ -305,8 +304,9 @@ function requst_submit_handler(&$form, $form_state) {
   $link = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $group->id()], ['absolute' => TRUE])->toString();
   foreach ($users as $user) {
     
-    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $user['name'], '@groupLink' => $group->toLink()->toString(), '@link' => $link]);
-    $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, NULL, $send);
+    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $user['name'], '@groupLink' => $group->toLink($group->label(),'canonical',['absolute'=>true])->toString(), '@link' => $link,'@message'=>$message]);
+//    pr($params);exit;
+    $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, null, $send);
   }
   if ($result['result'] !== true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
@@ -339,6 +339,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 }
 use Drupal\Core\Url;
 use Drupal\Core\Link;
+use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
@@ -357,32 +358,52 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     header('Location: ' . $base_url . \Drupal::url('hzd_release_management.display_planning_files', ['group' => RELEASE_MANAGEMENT]));
     exit;
   }
-  if ($entity->getType() == 'quickinfo') {
-    
+
+  if ($entity->getType() == 'downtimes') {
+
+
 //    send_notifications($entity,['sandeep@azrisolutions.com']);
-//    quickinfoPublishedMail($entity);exit;
+//    if(empty($_SESSION['check'])) {
+      quickinfoPublishedMail($entity);
+      exit;
+//    }
+
   }
   
   
 }
 
 function quickinfoPublishedMail($entity) {
-  $token_service = \Drupal::token();
-  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('quickinfo')['subject'];
-  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
-  $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('quickinfo')['mail_content'];
-  $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
-//  $html = \Drupal::service('renderer')->render($page);
-  
+
   $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')->createSelectedInstance('pdf');
   $print_builder = \Drupal::service('entity_print.print_builder');
-//  $nodes = \Drupal::entityTypeManager()->getStorage('node')->load($node_id);
-  $uri = $print_builder->savePrintable([$entity], $print_engine);
-  pr($uri);
+  $nodes = \Drupal::entityTypeManager()->getStorage('node')->load(55871);
+  $uri = $print_builder->savePrintable([$nodes], $print_engine,'public','55871.pdf');
+  
+  $file_two = new stdClass();
+  $file_two->uri = $uri;
+  $file_two->filename = '55871.pdf';
+  $file_two->filemime = 'application/pdf';
+  
+  
+  $params = [
+    'headers' => [
+      'Content-Type' => 'text/html',
+    ],
+    'from' => 'sandeep@azrisolutions.com',
+    'subject' => '44444444444',
+  ];
+
+  $params['files'] = [$file_two];
+  $params['body'] = 'dsadsada';
+  
+//  pr($uri);exit;
 //  send_immediate_notifications($params['subject'],$params['message'],'betriebsportal-konsens@hzd.hessen.de','html');
-  print_r(22);exit;
+//  print_r(22);exit;
+  $file = $file_two;
+//  $file;
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $mailManager->mail('cust_group', 'periodic_notifications', 'sandeep@azrisolutions.com', 'de', ['subject'=>'dddasd','message'=>$html], NULL, 1);
+  $mailManager->mail('cust_group', 'periodic_notifications', 'sandeep@azrisolutions.com', 'de', $params, NULL, 1);
 }
 
 function get_planning_file_data($type) {

@@ -11,13 +11,15 @@
         "drupal/search_api_solr": "1.0.0-beta1",
         "drupal/search_api": "1.0-beta3",
         "drupal/view_unpublished": "1.0-alpha1",
-        "drupal/group": "^1.0@beta",
+        "drupal/group": "1.0.0-beta5",
         "zendframework/zend-stdlib": "3.0.1",
         "drupal/migrate_manifest": "^1.4",
         "drupal/entity_print": "2.0.0-beta2",
         "dompdf/dompdf": "^0.8.0",
         "drupal/swiftmailer": "^1.0@beta",
-        "drush/drush": "^8.1"
+        "drush/drush": "^8.1",
+        "symfony/dom-crawler": "2.8",
+        "drupal/console": "^0.11.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

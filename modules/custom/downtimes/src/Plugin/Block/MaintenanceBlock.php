@@ -132,8 +132,8 @@ class MaintenanceBlock extends BlockBase
 //                                $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                           
-                            $data[$ids][] = Markup::create($groupContent->toLink($label)->toString() . $hoverIconHtml . $hover_markup);
+                          $url = Url::fromRoute('cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),'type'=>'downtimes','group_content'=>$groupContent->id()]);
+                            $data[$ids][] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . $hoverIconHtml . $hover_markup);
                         }
                     }
                 }

@@ -30,21 +30,14 @@ class PdfBeforeRenderSubscriber implements EventSubscriberInterface {
    * @param GetResponseEvent $event
    */
   public function pdfPreRender(Event $event) {
-//    exit;
+    $node = reset($event->getEntities());
+    if($node->bundle() == 'quickinfo'){
       $printEngine = $event->getPrintEngine()->getPrintObject();
-//      $printEngine->configuration['default_paper_size'] = [200, 20, 595.28, 841.89];
-      
-//      $printEngine->set_option('isPhpEnabled',1);
-//      $dom_pdf = $pdf->getDomPDF();
-//
-//    $event->getPrintEngine()->doRender();
-//    $node = $event->getEntities();
-//    pr($node);exit;
-//    $printEngine->setPaper(200, 200, 595.28, 841.89);
-//    $font = $printEngine->getFontMetrics()->get_font("helvetica", "bold");
-//    $printEngine->getCanvas()->page_text(22, 18, "Header: {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
-
-//    drupal_set_message('Event entity_print.print.html_alter thrown by Subscriber in module cust_pdf.', 'status', TRUE);
+      $event->getPrintEngine()->doRender();
+      $printEngine->setPaper(200, 200, 595.28, 841.89);
+      $font = $printEngine->getFontMetrics()->get_font("robotoregular");
+      $printEngine->getCanvas()->page_text(460, 140, "Siete {PAGE_NUM} von {PAGE_COUNT}", $font, 12, array(0,0,0));
+    }
   }
 
 }

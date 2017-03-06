@@ -10,6 +10,7 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Template\Attribute;
+use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
 
 /**
@@ -91,6 +92,11 @@ function hzd_preprocess_printable(&$variables) {
 function hzd_preprocess_entity_print(&$vars) {
 //    pr(($vars));exit;
     $vars['quickinfo'] = false;
+  $node = $vars['content'][0]['#node'];
+  if($node->getType() == 'quickinfo'){
+    $vars['quickinfo'] = true;
+    $vars['node'] = $node;
+  }
     $routeName = \Drupal::routeMatch()->getRouteName();
     if (in_array($routeName, ['entity_print.view.debug', 'entity_print.view'])) {
 //        $pdf_original_link = \Drupal::request()->query->get('original', null);
@@ -498,4 +504,24 @@ function hzd_preprocess_views_view_summary_unformatted(&$variables) {
         
         $variables['rows'][] = $all_terms;
     }
+}
+
+function hzd_form_alter(&$form, $form_state, $form_id) {
+  if($form_id == 'node_page_form'){
+    $group = \Drupal::routeMatch()->getRawParameter('group');
+    if(!empty($group)){
+      if(!$group instanceof Group){
+        $group = Group::load($group);
+      }
+      $options = $form['menu']['link']['menu_parent']['#options'];
+      $menu = 'menu-'.$group->get('field_old_reference')->value;
+      foreach($options as $key=>$option){
+        if(strpos($key,$menu) === false){
+           unset($form['menu']['link']['menu_parent']['#options'][$key]);
+        }
+      }
+/*      kint($menu);
+      kint($options);exit;*/
+    }
+  }
 }

@@ -110,3 +110,9 @@ cust_group.group_content_view:
       parameters:
         group_content:
           type: 'entity:group_content'
+cust_group.group_node_create:
+  path: '/group/{group}/group-node-create'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupContentAddController::addPage'
+  requirements:
+    _permission: 'access content'
