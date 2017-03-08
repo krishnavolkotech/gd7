@@ -116,3 +116,9 @@ cust_group.group_node_create:
     _controller: '\Drupal\cust_group\Controller\GroupContentAddController::addPage'
   requirements:
     _permission: 'access content'
+cust_group.notifications_update:
+  path: '/update-all-user-notifications'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::updateNotifications'
+  requirements:
+    _permission: 'administer site'

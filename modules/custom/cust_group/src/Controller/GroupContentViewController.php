@@ -27,7 +27,9 @@ class GroupContentViewController extends ControllerBase {
     $typeMappings = ['problems'=>'problem','rz-schnellinfos'=>'quickinfo','downtimes'=>'downtimes'];
     if ($group_content->getEntity()->bundle() == $typeMappings[$type]) {
       $view_builder = \Drupal::entityManager()->getViewBuilder($group_content->getEntity()->getEntityTypeId());
-      return $view_builder->view($group_content->getEntity(),'full','de');
+      $build = $view_builder->view($group_content->getEntity(),'full','de');
+      $build['#title'] = $group_content->getEntity()->label();
+      return $build;
     } else {
       throw new NotFoundHttpException();
     }

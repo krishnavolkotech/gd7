@@ -340,6 +340,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 use Drupal\Core\Url;
 use Drupal\Core\Link;
 use Drupal\file\Entity\File;
+use Drupal\node\Entity\Node;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
@@ -359,52 +360,13 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     exit;
   }
 
-  if ($entity->getType() == 'downtimes') {
-
-
-//    send_notifications($entity,['sandeep@azrisolutions.com']);
-//    if(empty($_SESSION['check'])) {
-      quickinfoPublishedMail($entity);
-      exit;
-//    }
-
-  }
+  /*if ($entity->getType() == 'downtimes') {
+    generate_quickinfo_pdf(Node::load(55871));
+  }*/
   
   
 }
 
-function quickinfoPublishedMail($entity) {
-
-  $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')->createSelectedInstance('pdf');
-  $print_builder = \Drupal::service('entity_print.print_builder');
-  $nodes = \Drupal::entityTypeManager()->getStorage('node')->load(55871);
-  $uri = $print_builder->savePrintable([$nodes], $print_engine,'public','55871.pdf');
-  
-  $file_two = new stdClass();
-  $file_two->uri = $uri;
-  $file_two->filename = '55871.pdf';
-  $file_two->filemime = 'application/pdf';
-  
-  
-  $params = [
-    'headers' => [
-      'Content-Type' => 'text/html',
-    ],
-    'from' => 'sandeep@azrisolutions.com',
-    'subject' => '44444444444',
-  ];
-
-  $params['files'] = [$file_two];
-  $params['body'] = 'dsadsada';
-  
-//  pr($uri);exit;
-//  send_immediate_notifications($params['subject'],$params['message'],'betriebsportal-konsens@hzd.hessen.de','html');
-//  print_r(22);exit;
-  $file = $file_two;
-//  $file;
-  $mailManager = \Drupal::service('plugin.manager.mail');
-  $mailManager->mail('cust_group', 'periodic_notifications', 'sandeep@azrisolutions.com', 'de', $params, NULL, 1);
-}
 
 function get_planning_file_data($type) {
   $plannigFileNodeIds = \Drupal::entityQuery('node')
