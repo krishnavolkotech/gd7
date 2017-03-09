@@ -4,6 +4,7 @@ namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupContent;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
@@ -454,5 +455,26 @@ class CustNodeController extends ControllerBase {
       }
     }
     //Updating Quuick info notifications completed.
+  }
+  
+  function updateUrlAlias(){
+    $aliasStorage = \Drupal::service('path.alias_storage');
+    $groupContent = \Drupal::entityQuery('group_content')
+      ->condition('type','%group_node-pag%','LIKE')
+      ->execute();
+    $pid = [];
+    foreach($groupContent as $item){
+      $groupContentEntity = GroupContent::load($item);
+      $node = $groupContentEntity->getEntity();
+//      $nodeAlias = $node->get('path')->value;
+//      pr($node->toUrl()->getInternalPath());
+      $urlAlias = $aliasStorage->load(['source'=>'/'.$node->toUrl()->getInternalPath()]);
+      if(!empty($urlAlias)){
+        $aliasStorage->save('/'.$groupContentEntity->toUrl()->getInternalPath(),$urlAlias['alias'],$urlAlias['langcode'],$urlAlias['pid']);
+        $pid[] = $urlAlias['pid'];
+      }
+    }
+    pr(($pid));
+      echo 'Success';exit;
   }
 }

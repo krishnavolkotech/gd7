@@ -2,6 +2,7 @@
 
 namespace Drupal\cust_group\Controller;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\group\Entity\GroupContent;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 class GroupMenuMigrateController extends ControllerBase{
@@ -62,10 +63,17 @@ class GroupMenuMigrateController extends ControllerBase{
     function getGroupNodeUri($oldUri){
         $oldNode = explode('/',trim(str_replace('internal:/','',$oldUri),'/'));
         $node = $oldNode[1];
-        $groupData = \Drupal::database()->select('group_content_field_data','gcfd')
-            ->fields('gcfd',['gid','id'])->condition('entity_id',$node,'=')->execute()->fetchAssoc();
-        if(!empty($groupData)){
-            return '/group/'.$groupData['gid'].'/node/'.$groupData['id'];
+      $groupContent = \Drupal::entityQuery('group_content')
+        ->condition('type','%group_node%','LIKE')
+        ->condition('entity_id',$node)
+        ->execute();
+//      $groupData = \Drupal::database()->select('group_content_field_data','gcfd')
+//            ->fields('gcfd',['gid','id'])->condition('entity_id',$node,'=')->execute()->fetchAssoc();
+        if(!empty($groupContent)){
+          $groupContentEntity = GroupContent::load(reset($groupContent));
+//          pr($groupContentEntity);
+          return $groupContentEntity->toUrl()->toString();
+//            return '/group/'.$groupData['gid'].'/node/'.$groupData['id'];
         }
         return false;
         //pr($groupData);exit;
