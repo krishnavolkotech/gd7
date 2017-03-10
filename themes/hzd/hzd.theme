@@ -109,7 +109,7 @@ function hzd_preprocess_entity_print(&$vars) {
             $vars['quickinfo'] = true;
             $node = $vars['content'][0]['#node'];
             $vars['node'] = $node;
-            if($node->hasField('field_unique_id')) {
+            if($node instanceof Node && $node->hasField('field_unique_id')) {
               $vars['quickinfo_field_unique_id'] = [
                 '#markup' => $node->get('field_unique_id')
                     ->getFieldDefinition()
