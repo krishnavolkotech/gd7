@@ -1,5 +1,6 @@
 id: field_date_deployed
 label: Deployed Release Date Fields
+migration_group: fields
 migration_tags:
   - Drupal 6
 source:
