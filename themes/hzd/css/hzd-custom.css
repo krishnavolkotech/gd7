@@ -366,3 +366,6 @@ a.back-search{
    border-radius: 0 !important;
   }
 }
+.form-control:-moz-placeholder{
+  color:#333333 !important;	
+}

@@ -367,12 +367,8 @@ button.navbar-toggle {
     width: 45%;
   }
   #block-customtable td {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    border-color: -moz-use-text-color -moz-use-text-color #eeeeee;
-    border-image: none;
+    border:none;
+    border-color:#eeeeee;
     border-style: none none solid;
     border-width: medium medium 1px;
     padding-left: 50% !important;
@@ -509,7 +505,7 @@ body.not-loggedin.path-user .region-content {
   background: #0c4f6d !important;
   color: #ffffff !important;
 }
-.path-user .region-content nav.tabs {
+.path-user .region-content nav.tabs{
   padding: 0 !important;
   width: 100%;
   border-top: 1px solid #04425f;
@@ -2744,9 +2740,7 @@ a.downtimes_cancel_link{
   float:left;
   font-size:0;
 }
-.form-control:-moz-placeholder{
-  color:#333333 !important;	
-}
+
 /*article.popup:after {
   background: url(../images/grey-list-arrow.png) right center no-repeat;
   position: absolute;
