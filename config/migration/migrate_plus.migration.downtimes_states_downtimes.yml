@@ -1,0 +1,41 @@
+uuid: 7948db28-300a-4fb0-b3ff-198ed8d2b0df
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: Mujoa8QTWYkHcglqWW6bgIEA5Fs1E5vE_YyGYrtHAlA
+id: downtimes_states_downtimes
+migration_tags: null
+migration_group: custom_migration
+label: null
+source:
+  plugin: source_table
+  target: migrate
+  table_name: downtimes_states
+  fields:
+    - id
+    - state_id
+    - nid
+  id_fields:
+    nid:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  state_id:
+    plugin: extended_iterator
+    method: iterateData
+    source: state_id
+    key: nid
+  downtime_id: nid
+destination:
+  plugin: table
+  key_map:
+    nid: downtime_id
+  id_fields:
+    downtime_id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: downtimes
+migration_dependencies: {  }

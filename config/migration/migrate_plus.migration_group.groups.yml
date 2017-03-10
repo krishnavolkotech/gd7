@@ -1,0 +1,10 @@
+uuid: 48957105-221b-4649-b5bc-73b3f273224f
+langcode: de
+status: true
+dependencies: {  }
+id: groups
+label: groups
+description: ''
+source_type: null
+module: null
+shared_configuration: null

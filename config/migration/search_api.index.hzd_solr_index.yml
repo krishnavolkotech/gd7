@@ -8,13 +8,23 @@ dependencies:
     - field.storage.group.field_group_body
   module:
     - search_api
-    - node
     - group
+    - node
 id: hzd_solr_index
 name: 'HZD Solr Index'
 description: ''
 read_only: false
 field_settings:
+  id_1:
+    label: ID
+    datasource_id: 'entity:group_content'
+    property_path: id
+    type: integer
+  entity_id:
+    label: Inhalt
+    datasource_id: 'entity:group_content'
+    property_path: entity_id
+    type: integer
   id:
     label: 'Group ID'
     datasource_id: 'entity:group'
@@ -80,39 +90,35 @@ field_settings:
       config:
         - field.storage.group.field_group_body
   status:
-    label: null
+    label: status
     datasource_id: 'entity:node'
     property_path: status
     type: boolean
   uid_1:
-    label: null
+    label: uid_1
     datasource_id: 'entity:node'
     property_path: uid
     type: integer
 processor_settings:
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
   add_url:
     plugin_id: add_url
     settings: {  }
-  aggregated_field:
-    plugin_id: aggregated_field
-    settings: {  }
 options:
   index_directly: true
   cron_limit: 50
 datasource_settings:
-  'entity:node':
-    plugin_id: 'entity:node'
+  'entity:group_content':
+    plugin_id: 'entity:group_content'
     settings:
       bundles:
-        default: false
-        selected:
-          - downtimes
-          - page
-          - problem
-          - quickinfo
+        default: true
+        selected: {  }
       languages:
         default: true
         selected: {  }
@@ -125,12 +131,16 @@ datasource_settings:
       languages:
         default: true
         selected: {  }
-  'entity:group_content':
-    plugin_id: 'entity:group_content'
+  'entity:node':
+    plugin_id: 'entity:node'
     settings:
       bundles:
-        default: true
-        selected: {  }
+        default: false
+        selected:
+          - downtimes
+          - page
+          - problem
+          - quickinfo
       languages:
         default: true
         selected: {  }

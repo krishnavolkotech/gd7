@@ -406,7 +406,7 @@ class HzdNotificationsHelper {
   }
   
   static function hzd_user_group_default_interval($uid) {
-    $default_intval = \Drupal::database()->query("SELECT group_id, group_name, default_send_interval FROM {group_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
+    $default_intval = \Drupal::database()->query("SELECT group_id, default_send_interval FROM {group_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
     $interval = array();
     foreach ($default_intval as $val) {
       $interval[$val->group_id] = $val->default_send_interval;

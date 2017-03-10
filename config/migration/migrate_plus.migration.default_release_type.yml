@@ -1,0 +1,45 @@
+uuid: dcd49fd9-7aad-4b4a-879e-59dd449e37e9
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ffsVVUbwBt5wEHmAnyPdahazD7V-m4K6NZnR5Ub4ESY
+id: default_release_type
+migration_tags: null
+migration_group: custom_migration
+label: 'Default Release Type'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: default_release_type
+  fields:
+    - id
+    - group_id
+    - release_type
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  release_type: release_type
+  group_id:
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      key: group_id
+      source: group_id
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: default_release_type
+migration_dependencies:
+  required:
+    - groups

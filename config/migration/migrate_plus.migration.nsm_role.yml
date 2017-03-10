@@ -1,0 +1,36 @@
+uuid: 3d4da048-8b76-4477-978e-a2449beac069
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: vPooYDzRdzIE_E-RFaoDTfomK_oJsoKdmW20yNhQFxk
+id: nsm_role
+migration_tags: null
+migration_group: custom_migration
+label: 'Nsm role'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: nsm_role
+  fields:
+    - id
+    - rolename
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  rolename: rolename
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: nsm_role
+migration_dependencies: {  }

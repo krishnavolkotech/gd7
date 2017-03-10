@@ -3,6 +3,7 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\node\NodeTypeInterface;
@@ -42,17 +43,21 @@ class CustNodeController extends ControllerBase {
     return $form;
   }
   
-  function groupContentView() {
-    $parm = \Drupal::routeMatch()->getParameter('group_content');
+  function groupContentView(RouteMatchInterface $routeMatch) {
+    $parm = $routeMatch->getParameter('group_content');
     $entity = $parm->get('entity_id')->referencedEntities()[0];
     $view_builder = \Drupal::entityManager()
       ->getViewBuilder($entity->getEntityTypeId());
     return $view_builder->view($entity, 'full', 'de');
   }
   
-  function groupContentTitle() {
-    $parm = \Drupal::routeMatch()->getParameter('group_content');
-    return $parm->get('entity_id')->referencedEntities()[0]->label();
+  function groupContentTitle(RouteMatchInterface $routeMatch) {
+    $parm = $routeMatch->getParameter('group_content');
+    if ($parm instanceof GroupContent && $parm->hasField('entity_id')) {
+      return $parm->get('entity_id')->referencedEntities()[0]->label();
+    }else{
+      return [];
+    }
   }
   
   function groupMemberView() {
@@ -303,7 +308,7 @@ class CustNodeController extends ControllerBase {
       $preparedArray[$item->service_id][$item->type][$item->send_interval][] = $item->uid;
     }
     foreach ($preparedArray as $item => $values) {
-      foreach ($values as $type=>$value) {
+      foreach ($values as $type => $value) {
         foreach ($this->intervals as $interval) {
           $finalArray[] = [
             'service_id' => $item,
@@ -457,24 +462,29 @@ class CustNodeController extends ControllerBase {
     //Updating Quuick info notifications completed.
   }
   
-  function updateUrlAlias(){
+  function updateUrlAlias() {
     $aliasStorage = \Drupal::service('path.alias_storage');
     $groupContent = \Drupal::entityQuery('group_content')
-      ->condition('type','%group_node-pag%','LIKE')
+      ->condition('type', '%group_node-pag%', 'LIKE')
       ->execute();
     $pid = [];
-    foreach($groupContent as $item){
+    foreach ($groupContent as $item) {
       $groupContentEntity = GroupContent::load($item);
       $node = $groupContentEntity->getEntity();
 //      $nodeAlias = $node->get('path')->value;
 //      pr($node->toUrl()->getInternalPath());
-      $urlAlias = $aliasStorage->load(['source'=>'/'.$node->toUrl()->getInternalPath()]);
-      if(!empty($urlAlias)){
-        $aliasStorage->save('/'.$groupContentEntity->toUrl()->getInternalPath(),$urlAlias['alias'],$urlAlias['langcode'],$urlAlias['pid']);
+      $urlAlias = $aliasStorage->load([
+        'source' => '/' . $node->toUrl()
+            ->getInternalPath()
+      ]);
+      if (!empty($urlAlias)) {
+        $aliasStorage->save('/' . $groupContentEntity->toUrl()
+            ->getInternalPath(), $urlAlias['alias'], $urlAlias['langcode'], $urlAlias['pid']);
         $pid[] = $urlAlias['pid'];
       }
     }
     pr(($pid));
-      echo 'Success';exit;
+    echo 'Success';
+    exit;
   }
 }

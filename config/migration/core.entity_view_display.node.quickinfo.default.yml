@@ -27,6 +27,7 @@ dependencies:
     - field.field.node.quickinfo.upload
     - node.type.quickinfo
   module:
+    - field_group
     - file
     - options
     - text
@@ -38,29 +39,51 @@ third_party_settings:
       weight: 5
       children:
         - field_custom_title
+        - field_related_transfer_number
         - field_other_services
         - field_recipients
-        - field_related_transfer_number
-      format_type: fieldset
-      format_settings: {  }
+      format_type: html_element
+      format_settings:
+        label: '1 Meta-Daten'
+        element: div
+        show_label: true
+        label_element: h3
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+      parent_name: ''
     group_content_information:
       label: '2 Fachlich-inhaltliche Angaben'
       weight: 6
       children:
-        - field_business_impact
-        - field_business_impact_services
-        - field_contact
-        - field_creators
-        - field_dates
-        - field_depend_other_services
         - field_intial_situation
         - field_professional_conditions
-        - field_special_notes
         - field_tech_requirements
+        - field_depend_other_services
+        - field_business_impact
         - field_technical_impact
+        - field_business_impact_services
         - field_technical_impact_services
-      format_type: fieldset
-      format_settings: {  }
+        - field_special_notes
+        - field_dates
+        - field_creators
+        - field_contact
+        - upload
+        - field_additional_email_recipient
+      format_type: html_element
+      format_settings:
+        label: '2 Fachlich-inhaltliche Angaben'
+        element: div
+        show_label: true
+        label_element: h2
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+      parent_name: ''
 id: node.quickinfo.default
 targetEntityType: node
 bundle: quickinfo
@@ -171,7 +194,7 @@ content:
   upload:
     label: above
     settings: {  }
-    type: file_table
+    type: file_default
     weight: 16
     third_party_settings: {  }
 hidden:

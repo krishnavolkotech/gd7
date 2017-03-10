@@ -1,0 +1,40 @@
+uuid: 6dcb21cc-59a5-4107-b59a-4fc08101cec5
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: PTVQPST6aYpcQ3B3IsqLPcDb_Da8QCPfYQDLHv-aZvg
+id: service_notifications_priority
+migration_tags: null
+migration_group: custom_migration
+label: 'Service notification priority'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: service_notifications_priority
+  fields:
+    - id
+    - sid
+    - status
+    - uid
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  sid: sid
+  status: status
+  uid: uid
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: service_notifications_priority
+migration_dependencies: {  }

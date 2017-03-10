@@ -1,0 +1,10 @@
+uuid: adeec07c-7dfe-4917-a5af-cf7b705456dd
+langcode: de
+status: true
+dependencies: {  }
+id: custom_migration
+label: custom_migration
+description: ''
+source_type: null
+module: null
+shared_configuration: null
