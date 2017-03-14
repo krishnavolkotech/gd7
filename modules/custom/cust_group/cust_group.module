@@ -14,7 +14,7 @@ define('QUICKINFO', 32);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
-
+use Drupal\user\Entity\User;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
   $build['group_list'] = array(
@@ -105,7 +105,7 @@ function cust_group_group_content_insert($entity) {
   $node = $entity->getEntity();
   if ($node instanceof \Drupal\node\Entity\Node) {
     sendGroupUpdateMail($node);
-    \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
+//    \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
     /*if ($node->getType() == 'page') {
       \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
     }*/
@@ -137,16 +137,22 @@ function getGroupMemberList($gid) {
   foreach ($uids as $uid) {
     $users[] = $uid->uid;
   }
+//  pr($users);exit;
   $userMails = [];
   if (!empty($users)) {
-    $emails = \Drupal::database()->select('users_field_data', 'ufd')
+  
+    $userEntities = User::loadMultiple($users);
+//    pr($userEntities);exit;
+/*    $emails = \Drupal::database()->select('users_field_data', 'ufd')
       ->fields('ufd', ['uid', 'mail']);
     $emails->leftJoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = ufd.uid');
-    $emails = $emails->condition('ufns.field_notifications_status_value', 1)
+    $emails = $emails->condition('ufns.field_notifications_status_value', 0,'<>')
       ->condition('uid', $users, 'IN')
-      ->execute()->fetchAll();
-    foreach ($emails as $mail) {
-      $userMails[$mail->uid] = $mail->mail;
+      ->execute()->fetchAll();*/
+    foreach ($userEntities as $user) {
+        if($user->get('field_notifications_status')->value !== 0){
+          $userMails[$user->id()] = $user->getEmail();
+        }
     }
   }
   return $userMails;
@@ -162,15 +168,22 @@ function send_notifications($entity, $mails) {
 //    $params['subject'] = "Aktualisiert - Seite: " . $groupContent->label();
 //    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
   
-  $token_service = \Drupal::token();
-  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['subject'];
-  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
-  $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
-  $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
+//  $token_service = \Drupal::token();
+//  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['subject'];
+//  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
+//  $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
+//  $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
 //    pr($mails);echo $params['message'];exit;
 //    global $base_url;
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
 //    $params['message'] .= '<br><br>' . $url;
+  
+  $view_builder = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId());
+  $renderarray = $view_builder->view($entity);
+  $html = \Drupal::service('renderer')->renderRoot($renderarray);
+  $entityTypeLabel = $entity->type->entity->label();
+  $params['subject'] = "Aktualisiert - {$entityTypeLabel}: " . $entity->label();
+  $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = true;
   foreach ($mails as $to) {
@@ -341,6 +354,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Link;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\Node;
+
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {

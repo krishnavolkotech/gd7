@@ -203,7 +203,7 @@ function hzd_notifications_schema() {
     'fields' => array(
       'id' => array(
         'description' => 'Storing quickinfo notifications id value.',
-        'type' => 'int',
+        'type' => 'serial',
       ),
       'uid' => array(
         'description' => 'Storing quickinfo notifications user id value.',

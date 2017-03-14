@@ -43,6 +43,7 @@ class RouteSubscriber extends RouteSubscriberBase {
 //      $route->setPath('/group/{group}/node/{group_content}');
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupContentView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupContentTitle");
+        $route->setRequirement('group_content', "^[0-9]*$");
 //      }
     }
 /*    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
@@ -56,6 +57,9 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
     if ($route = $collection->get('entity.group_content.group_membership.collection')) {
 //      $route->setRequirement('_access', 'FALSE');
+    }
+    if ($route = $collection->get('view.group_members.page_1')) {
+      $route->setRequirement('_access', 'FALSE');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
