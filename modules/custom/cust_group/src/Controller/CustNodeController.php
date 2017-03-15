@@ -439,10 +439,10 @@ class CustNodeController extends ControllerBase {
         ];
       }
     }
-    
+    $this->db->query("Alter table {quickinfo_notifications} convert to character set utf8 collate utf8_general_ci;");
     foreach ($finalArray as $value) {
       $check = $this->db->select('quickinfo_notifications', 'base_table')
-        ->fields('qn', ['base_table'])
+        ->fields('base_table', ['id'])
         ->condition('cck', $value['cck'])
         ->condition('send_interval', $value['send_interval'])
         ->execute()

@@ -219,7 +219,7 @@ function hzd_notifications_schema() {
         'type' => 'int',
       ),
     ),
-
+    'primary key' => array('id'),
   );
 
   $schema['service_notifications_user_default_interval'] = array(
