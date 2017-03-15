@@ -67,7 +67,7 @@ class Gruppenadministration extends BlockBase {
     }
     if (CustNodeController::isGroupAdmin($groupId)) {
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_content.page_1', ['group' => $groupId]);
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'entity.group_content.group_node_add_page', ['group' => $groupId]);
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'cust_group.group_node_create', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'), 'view.group_members.page_1', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Störungen und Blockzeiten'), 'downtimes.DowntimessettingForm', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Bekannte Fehler und Probleme'), 'problem_management.problem_settings', ['group' => $groupId]);

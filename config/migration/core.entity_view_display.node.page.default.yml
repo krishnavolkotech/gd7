@@ -42,7 +42,7 @@ content:
     third_party_settings: {  }
   field_page_files:
     type: file_table
-    weight: 4
+    weight: 3
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -50,15 +50,10 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
-  upload:
-    label: hidden
-    settings: {  }
-    type: file_default
-    weight: 3
-    third_party_settings: {  }
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   field_page_links: true
   langcode: true
+  upload: true
