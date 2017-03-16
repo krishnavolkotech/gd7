@@ -1,0 +1,76 @@
+diff --git a/block_upload.info.yml b/block_upload.info.yml
+old mode 100755
+new mode 100644
+index c240236..afd9f18
+--- a/block_upload.info.yml
++++ b/block_upload.info.yml
+@@ -2,7 +2,13 @@ name: 'Block Upload'
+ type: module
+ description: 'Upload new files/images to node through the block.'
+ package: Other
+-version: VERSION
+-core: 8.x
++# version: VERSION
++# core: 8.x
+ configure: block_upload.admin
+ 
++
++# Information added by Drupal.org packaging script on 2016-08-08
++version: '8.x-1.x-dev'
++core: '8.x'
++project: 'block_upload'
++datestamp: 1470648996
+diff --git a/src/BlockUploadBuild.php b/src/BlockUploadBuild.php
+index b5bdfda..14a9929 100755
+--- a/src/BlockUploadBuild.php
++++ b/src/BlockUploadBuild.php
+@@ -15,14 +15,13 @@ class BlockUploadBuild {
+    */
+   public static function blockUploadRemoveForm($field_limit, $node, $field_name) {
+     $field_images = $node->get($field_name);
+-    foreach ($field_images->getValue() as $field_image) {
+-      $file = File::load($field_image['target_id']);
++    foreach ($field_images->referencedEntities() as $file) {
+       $uid = $file->get('uid')->target_id;
+       $uploader = User::load($uid);
+       global $base_url;
+       $url = Url::fromUri($base_url . '/user/' . $uid, array());
+       $uploader =  $uploader ? Link::fromTextAndUrl($uploader->getDisplayName(), $url) : '';
+-      $options[$field_image['target_id']] = array(
++      $options[$file->id()] = array(
+         array(
+           'data' => array(
+             '#type' => 'item',
+@@ -111,8 +110,8 @@ class BlockUploadBuild {
+       'file_validate_extensions' => array($settings['file_extensions']),
+       'file_validate_size' => array(Bytes::toInt($settings['max_filesize'])),
+     );
+-    $min_resolution = $settings['min_resolution'];
+-    $max_resolution = $settings['max_resolution'];
++    $min_resolution = isset($settings['min_resolution']) ? $settings['min_resolution'] : FALSE;
++    $max_resolution = isset($settings['max_resolution']) ? $settings['max_resolution'] : FALSE;
+     if (isset($min_resolution) || isset($min_resolution)) {
+       $validators['file_validate_image_resolution'] = array($max_resolution, $min_resolution);
+       $validators['file_validate_image_min_resolution'] = array($min_resolution);
+diff --git a/src/Form/BlockUploadForm.php b/src/Form/BlockUploadForm.php
+index 88234fc..a4962a8 100755
+--- a/src/Form/BlockUploadForm.php
++++ b/src/Form/BlockUploadForm.php
+@@ -119,7 +119,7 @@ class BlockUploadForm extends FormBase {
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     $values = $form_state->getValues();
+     $nid = $values['block_upload_nid'];
+-    $file = $values['block_upload_file']['fids']['0']?:$values['block_upload_file']['0'];
++    $file = isset($values['block_upload_file']['0'])?$values['block_upload_file']['0']:'';
+     $buid = $values['buid'];
+     $field_name = explode('.', \Drupal::state()->get('block_upload_' . $buid . '_field') ?: '')[1];
+     $node = Node::load($nid);
+@@ -128,7 +128,7 @@ class BlockUploadForm extends FormBase {
+         BlockUploadBuild::blockUploadDeleteFiles($node, $field_name, $values);
+       }
+     }
+-    if ($values['block_upload_file']['fids'] != array() || $values['block_upload_file'] != array()) {
++    if (!empty($values['block_upload_file'])) {
+       $new_file['target_id'] = $file;
+       if (isset($values['block_upload_' . $buid . '_alt'])) {
+         $alt = Html::escape($values['block_upload_' . $buid . '_alt']);
