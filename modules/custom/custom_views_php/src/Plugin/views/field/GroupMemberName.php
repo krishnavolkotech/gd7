@@ -73,7 +73,7 @@ class GroupMemberName extends FieldPluginBase
                     ->fields('cp', array('lastname'))
                     ->condition('cp.uid', $user->id());
                 $val = $result->execute()->fetchField();
-                return $this->t($values->_entity->toLink($val)->toString() . $suffix);
+                return $this->t($values->_entity->getEntity()->toLink($val)->toString() . $suffix);
             }
         }
         return '';

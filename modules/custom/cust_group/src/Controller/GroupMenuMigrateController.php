@@ -33,7 +33,7 @@ class GroupMenuMigrateController extends ControllerBase{
                     $menu->set('link',['uri'=>'internal:'.'/group/'.$new.'/address'])->save();
                 }
                 //special case for faq
-                if(strpos($uri,'/group/'.$new.'/faq')){
+                if(strpos($uri,'/group/'.$new.'/faq/')){
                     $newFaqPath = $this->migrateFaqPath($uri);
                     if($newFaqPath){
                         $menu->set('link',['uri'=>'internal:'.$newFaqPath])->save();
