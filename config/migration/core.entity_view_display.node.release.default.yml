@@ -20,6 +20,9 @@ dependencies:
     - options
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.release.default
 targetEntityType: node
 bundle: release

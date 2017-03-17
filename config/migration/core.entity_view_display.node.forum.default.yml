@@ -14,6 +14,9 @@ dependencies:
     - comment
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 _core:
   default_config_hash: dYNgSzier2ho_TffDzhdX4UkzSnlX6FCouPFu3f_Oxs
 id: node.forum.default

@@ -18,6 +18,9 @@ dependencies:
     - file
     - options
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.services.default
 targetEntityType: node
 bundle: services

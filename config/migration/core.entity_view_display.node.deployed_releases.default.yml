@@ -21,6 +21,9 @@ dependencies:
     - options
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.deployed_releases.default
 targetEntityType: node
 bundle: deployed_releases

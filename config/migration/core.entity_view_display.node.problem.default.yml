@@ -33,6 +33,9 @@ dependencies:
     - file
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.problem.default
 targetEntityType: node
 bundle: problem

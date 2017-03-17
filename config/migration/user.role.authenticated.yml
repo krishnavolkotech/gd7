@@ -68,4 +68,3 @@ permissions:
   59: 'entity print access type node'
   60: 'entity print access type group'
   61: 'entity print access type group_content'
-  62: 'administer menu'

@@ -13,6 +13,9 @@ dependencies:
     - file
     - options
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.non_production_environment.default
 targetEntityType: node
 bundle: non_production_environment

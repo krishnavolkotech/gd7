@@ -10,6 +10,9 @@ dependencies:
   module:
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 _core:
   default_config_hash: Gg4W3beAUi1mVE6gXN7UVJZjKUQHEoXLnOOHeRmq7uo
 id: node.faq.default

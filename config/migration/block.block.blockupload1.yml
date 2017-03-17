@@ -1,0 +1,38 @@
+uuid: 6bf3d11c-fe79-4699-875b-3dac59eb1f7e
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_class
+    - block_upload
+    - node
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: blockupload1
+theme: hzd
+region: content
+weight: 0
+provider: null
+plugin: 'block_upload:block_upload1'
+settings:
+  id: 'block_upload:block_upload1'
+  label: 'Datei hochladen'
+  provider: block_upload
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      im_upload_page: im_upload_page
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+  request_path:
+    id: request_path
+    pages: '/node/*/edit'
+    negate: true
+    context_mapping: {  }

@@ -15,6 +15,9 @@ dependencies:
     - file
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 _core:
   default_config_hash: oZ-7vpIJxjxL2up9B5KrJGD0lazQ9aN0P-fIPo6OrSU
 id: node.page.default
@@ -42,7 +45,7 @@ content:
     third_party_settings: {  }
   field_page_files:
     type: file_table
-    weight: 3
+    weight: 4
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -50,10 +53,15 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 3
+    third_party_settings: {  }
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   field_page_links: true
   langcode: true
-  upload: true

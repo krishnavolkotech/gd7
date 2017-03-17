@@ -12,6 +12,9 @@ dependencies:
     - comment
     - text
     - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
 id: node.downtimes.default
 targetEntityType: node
 bundle: downtimes

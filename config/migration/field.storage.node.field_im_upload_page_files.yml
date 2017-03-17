@@ -3,8 +3,12 @@ langcode: en
 status: true
 dependencies:
   module:
+    - field_permissions
     - file
     - node
+third_party_settings:
+  field_permissions:
+    permission_type: public
 id: node.field_im_upload_page_files
 field_name: field_im_upload_page_files
 entity_type: node

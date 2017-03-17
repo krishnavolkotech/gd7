@@ -12,7 +12,7 @@ third_party_settings:
   filefield_paths:
     enabled: true
     file_path:
-      value: '[group:title]/[content-type:name]'
+      value: im-ablage-attachments
       options:
         slashes: false
         pathauto: false

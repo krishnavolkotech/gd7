@@ -5,12 +5,4 @@ dependencies: {  }
 id: closed
 label: Abgeschlossen
 description: 'Admin can add the members.'
-content:
-  group_membership:
-    id: group_membership
-    group_type: closed
-    data:
-      group_cardinality: 0
-      entity_cardinality: 1
-      info_text:
-        value: '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>'
+creator_roles: {  }
