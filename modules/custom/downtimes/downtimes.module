@@ -975,6 +975,7 @@ function pass_maitenance_value(&$form) {
 }
 
 function dependent_service_list() {
+  $result = [];
   $services_list = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfdd')
     ->fields('nfdd', ['entity_id'])
     ->distinct()
