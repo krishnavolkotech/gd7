@@ -334,7 +334,7 @@ class HzdNotifications extends ControllerBase {
       }
       $groupNotifications = null;
       foreach ($groups as $group) {
-        $groupNotifications[] = $this->db->insert('group_notifications_user_default_interval')->fields(['uid' => $user, 'default_send_interval' => $intervalValue, 'group_name' => $group->label(), 'group_id' => $group->id()])->execute();
+        $groupNotifications[] = $this->db->insert('group_notifications_user_default_interval')->fields(['uid' => $user, 'default_send_interval' => $intervalValue, 'group_id' => $group->id()])->execute();
       }
   
       $groupNotificationsInterval = $this->db->select('group_notifications_user_default_interval', 'gnudi')
