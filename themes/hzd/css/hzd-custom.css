@@ -224,6 +224,29 @@ article.popup .downtime-view-wrapper{
 article.popup:after {
   background-size: 15px 15px;
 }
+table.sticky-header th.views-field-changed a:hover,
+table.sticky-header th.views-field-created a:hover,
+table.sticky-table th.views-field-changed a:hover,
+table.sticky-table th.views-field-created a:hover{
+  color:#333333;
+}
+table.sticky-table th.views-field-changed a span,
+table.sticky-table th.views-field-created a span{
+  float:right;
+}
+table.sticky-header th.views-field-changed a,
+table.sticky-header th.views-field-created a,
+table.sticky-table th.views-field-changed a,
+table.sticky-table th.views-field-created a{
+  width:80px !important;
+  float:left !important;
+}
+table.sticky-table th.views-field-changed a,
+table.sticky-table th.views-field-created a,
+table.sticky-table th.views-field-changed a:hover,
+table.sticky-table th.views-field-created a:hover{
+  pointer-events: unset;
+}
 table tr th a,
 table tr th a:hover {
   pointer-events: none; 
