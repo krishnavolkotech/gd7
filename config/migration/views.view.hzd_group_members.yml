@@ -469,20 +469,7 @@ display:
           plugin_id: numeric
       sorts: {  }
       title: ''
-      header:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: false
-          tokenize: true
-          content:
-            value: '<a href="/group/{{ raw_arguments.gid }}/members/add?destination=/group/{{ raw_arguments.gid }}/pending-members" class="btn btn-xs btn-success">Add member</a>'
-            format: basic_html
-          plugin_id: text
+      header: {  }
       footer: {  }
       empty: {  }
       relationships: {  }
