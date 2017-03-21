@@ -1,0 +1,21 @@
+uuid: 93d0609c-eb41-47a7-a2ee-feb47814ab87
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_einfuehrung
+    - group.type.moderate
+  module:
+    - text
+id: group.moderate.field_einfuehrung
+field_name: field_einfuehrung
+entity_type: group
+bundle: moderate
+label: Einfuehrung
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

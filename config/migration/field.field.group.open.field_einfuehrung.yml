@@ -1,0 +1,21 @@
+uuid: 2e8967a2-8a29-4ddf-84c9-9565b725dc31
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_einfuehrung
+    - group.type.open
+  module:
+    - text
+id: group.open.field_einfuehrung
+field_name: field_einfuehrung
+entity_type: group
+bundle: open
+label: Einfuehrung
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

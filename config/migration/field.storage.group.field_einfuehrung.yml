@@ -1,0 +1,23 @@
+uuid: 8e85ac22-beb8-44eb-bb02-5f89c805b4e9
+langcode: de
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - group
+    - text
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: group.field_einfuehrung
+field_name: field_einfuehrung
+entity_type: group
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
