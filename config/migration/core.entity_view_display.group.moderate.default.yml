@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.group.moderate.field_description
+    - field.field.group.moderate.field_einfuehrung
     - field.field.group.moderate.field_group_body
     - field.field.group.moderate.field_old_reference
     - group.type.moderate
@@ -21,6 +22,12 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+  field_einfuehrung:
+    weight: -1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
   field_group_body:
     weight: -2
     label: hidden
