@@ -118,7 +118,25 @@ class GroupMenuBlock extends BlockBase
             $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
           }
           //\Drupal::service('renderer')->render($link)
-          return ['#title' => $title, '#markup' => $link, '#cache' => ['max-age' => 0]];
+          $markup['#title'] = $title;
+          $markup['link'] = ['#type'=>'link','#title'=>'Request Membership','#url'=>$url];
+          $groupAdmins = $group->getMembers($group->bundle() . '-admin');
+          foreach ($groupAdmins as $groupadmin) {
+            $data[] = ['#type' => 'link',
+              '#title' => $groupadmin->getUser()->getDisplayName(),
+              '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()->getEmail())];
+          }
+          $markup['groupadmin_list'] = [
+            '#title' => $this->t('List of Group Admin'),
+            '#prefix' => '<div>',
+            '#suffix' => '</div>',
+            '#items' => $data,
+            '#theme' => 'item_list',
+            '#type' => 'ul',
+              //'#attributes' => ['class' => ['incidents-home-block']]
+          ];
+          $markup['#cache'] = ['max-age' => 0];
+          return $markup;
         }
       }
     }
