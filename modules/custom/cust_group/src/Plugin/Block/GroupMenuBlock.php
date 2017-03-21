@@ -9,6 +9,7 @@ namespace Drupal\cust_group\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\group\Entity\Group;
+use Drupal\Core\Url;
 
 /**
  * Provides a 'cust_group' block.
@@ -105,7 +106,22 @@ class GroupMenuBlock extends BlockBase
                 $title = $group->label();
                 return ['#title' => $title, '#markup' => \Drupal::service('renderer')->render($menu), '#cache' => ['max-age' => 0]];
             }
+      else {
+        if ($group->bundle() == 'open' || $group->bundle() == 'moderate' || $group->bundle() == 'moderate_private') {
+          $title = $this->t('Actions for @group', ['@group' => $group->label()]);
+          if ($group->bundle() == 'open') {
+            $url = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
+            $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
+          }
+          elseif (in_array($group->bundle(), ['moderate', 'moderate_private'])) {
+            $url = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
+            $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
+          }
+          //\Drupal::service('renderer')->render($link)
+          return ['#title' => $title, '#markup' => $link, '#cache' => ['max-age' => 0]];
         }
+      }
+    }
         return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
     }
     
