@@ -119,7 +119,7 @@ class ServiceNotificationsUserForm extends FormBase {
           //pr($data);exit;
           $uids = [];
         $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-        foreach($intervals as $interval){
+        foreach($intervals as $interval=>$val){
           if(isset($data[$interval])){
             $uids = unserialize($data[$interval]->uids);
             //pr($data[$interval]);exit;
@@ -160,7 +160,7 @@ class ServiceNotificationsUserForm extends FormBase {
         $uids = null;
         //pr($data);exit;
       $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-      foreach($intervals as $interval){
+      foreach($intervals as $interval=>$val){
         if(isset($data[$interval])){
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;
