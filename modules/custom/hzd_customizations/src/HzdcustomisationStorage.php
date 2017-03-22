@@ -18,9 +18,9 @@ use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Utility\Unicode;
 use Drupal\node\Entity\Node;
 
-if (!defined('MAINTENANCE_GROUP_ID')) {
+/*if (!defined('MAINTENANCE_GROUP_ID')) {
   define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
-}
+}*/
 
 if (!defined('PAGE_LIMIT')) {
   define('PAGE_LIMIT', 20);
@@ -653,7 +653,7 @@ class HzdcustomisationStorage {
   static public function current_incidents($type = 'incident', $string = '') {
     
     $group = \Drupal::routeMatch()->getParameter('group');
-    $group_id = $group->id();
+    $group_id = (int)$group->id();
     ///// optimizd the code for filters things
     $db = \Drupal::database();
     $downtimesQuery = $db->select('downtimes', 'd');
