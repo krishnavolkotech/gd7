@@ -244,6 +244,7 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       }
       else {
         $build['field_einfuehrung']['#access'] = TRUE;
+        $build['field_einfuehrung']['#title'] = '';
         $build['field_description']['#access'] = FALSE;
         $build['field_group_body']['#access'] = FALSE;
         $build['field_old_reference']['#access'] = FALSE;

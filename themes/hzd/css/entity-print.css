@@ -79,6 +79,21 @@ body{
   display:none;
   margin:5px 0 !important;
 }
+.pdf-content article ol,
+.pdf-content article ul{
+  width:100%;
+  display:inline-block;
+  margin:0;
+  padding:0;
+  float:none;
+}
+.pdf-content article ol li,
+.pdf-content article ul li{
+  width:100%;
+  margin:0 0 5px 0 !important; 
+  padding:0;
+  float:none;
+}
 .pdf-content article.page .field--item p strong{
   float:none;
   width:auto;
@@ -147,6 +162,7 @@ div[style]{
   width:100%;
   float:none;
 }
+.pdf-content article.downtimes .Incident p,
 .pdf-quickinfo{
   width:100%;
   display:block;
@@ -162,7 +178,7 @@ div[style]{
   background:transparent;
   padding:2% 0;
   width:98%;
-  display:inline-block;
+  display:block;
   margin:10px 0 20px 0;
   text-align:left;
   line-height:normal;
@@ -172,30 +188,32 @@ div[style]{
   width:100%;
   margin-bottom:10px;
   float:none;
+  display:inline-block;
 }
 .pdf-content article.downtimes .Incident .downtimes_title{
   font-weight: 600;
   display:inline-block;
-  width: 24%;
+  width: 27%;
   margin: 0 1% 3px 0;
-  float:none;
+  line-height:25px;
+  /*float:none;*/
 }
 .pdf-content article.downtimes .back-search{
   color:#006e9e;
-  margin-bottom:10px;
   display:block;
   font-size:16px;
   float:none;
 }
 .pdf-content article.downtimes .Incident .downtimes_title:after{
   content:":";
-  display:inline-block;
+  display:inline;
 }
 .pdf-content article.downtimes .Incident .downtimes_content{
   display:inline-block;
   margin-bottom:3px;
-  width: 74% !important;
-  float:none;
+  width: 70% !important;
+  line-height:25px;
+  /*float:none;*/
 }
 .pdf-content article.downtimes .downtime-view-history{
   width: 100%;
@@ -249,7 +267,7 @@ div[style]{
   white-space:normal;
 }
 .pdf-content article.downtimes .changed-group{
-  width: 100%;
+  width: 98%;
   margin: 0 0 20px 0;
   padding: 0;
   float:none;

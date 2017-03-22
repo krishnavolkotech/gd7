@@ -109,17 +109,18 @@ class GroupMenuBlock extends BlockBase
       else {
         if ($group->bundle() == 'open' || $group->bundle() == 'moderate' || $group->bundle() == 'moderate_private') {
           $title = $this->t('Actions for @group', ['@group' => $group->label()]);
+          $group_member_join_link =['#type'=>'link'];
           if ($group->bundle() == 'open') {
-            $url = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
-            $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
+              $group_member_join_link['#url'] = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
+              $group_member_join_link['#title'] = $this->t('Join Group');
           }
           elseif (in_array($group->bundle(), ['moderate', 'moderate_private'])) {
-            $url = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
-            $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
+              $group_member_join_link['#url'] = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
+              $group_member_join_link['#title'] = $this->t('Request Membership');
           }
           //\Drupal::service('renderer')->render($link)
           $markup['#title'] = $title;
-          $markup['link'] = ['#type'=>'link','#title'=>'Request Membership','#url'=>$url];
+          $markup['link'] = $group_member_join_link;
           $groupAdmins = $group->getMembers($group->bundle() . '-admin');
           foreach ($groupAdmins as $groupadmin) {
             $data[] = ['#type' => 'link',
