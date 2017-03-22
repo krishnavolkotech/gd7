@@ -137,7 +137,7 @@ class GroupNotifications extends FormBase {
         if (isset($data[$interval])) {
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;
-          foreach ($uids as $userKey => $item) {
+          foreach ((array)$uids as $userKey => $item) {
             if ($item == $uid) {
               unset($uids[$userKey]);
             }
