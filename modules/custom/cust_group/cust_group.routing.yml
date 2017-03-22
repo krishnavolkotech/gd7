@@ -23,11 +23,11 @@ cust_group.quickinfo:
     _permission: 'access content'
 
 cust_group.faq_list:
-  path: '/group/{group}/faq'
+  path: '/group/{group}/faq/{term}'
   defaults:
     _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
     _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
-    _entity_view: 'group.default'
+#    _entity_view: 'group.default'
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     _permission: 'access content'
