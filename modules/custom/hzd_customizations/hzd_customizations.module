@@ -219,12 +219,37 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //    echo 1;
 }*/
 
-function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
-  if ($entity->bundle() == 'quickinfo') {
+//function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
+//  if ($entity->bundle() == 'quickinfo') {
 //    $build['field_custom_title']['#prefix'] = t('<h2>1 @data</h2>', ['@data' => 'Meta-Daten']);
 //    $build['field_intial_situation']['#prefix'] = t('<h2>2 @data2</h2>', ['@data2' => 'Fachlich-inhaltliche Angaben']);
-  }
+//  }
 //    pr($build['field_custom_title']);exit;
+//}
+
+function hzd_customizations_group_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($view_mode == 'full' && isset($build['field_einfuehrung']) && is_array($build['field_einfuehrung'])) {
+    if ($entity->bundle() == 'open' || $entity->bundle() == 'moderate' || $entity->bundle() == 'moderate_private') {
+      $user = \Drupal::service('current_user');
+      $group = \Drupal::routeMatch()->getParameter('group');
+      //$groupTypeId = $group->getGroupType()->id();
+      $groupMember = $group->getMember($user);
+      if ($groupMember && $groupMember->getGroupContent()
+              ->get('request_status')->value == 1
+      ) {
+        $build['field_einfuehrung']['#access'] = FALSE;
+        $build['field_description']['#access'] = TRUE;
+        $build['field_group_body']['#access'] = TRUE;
+        $build['field_old_reference']['#access'] = TRUE;
+      }
+      else {
+        $build['field_einfuehrung']['#access'] = TRUE;
+        $build['field_description']['#access'] = FALSE;
+        $build['field_group_body']['#access'] = FALSE;
+        $build['field_old_reference']['#access'] = FALSE;
+      }
+    }
+  }
 }
 
 /**

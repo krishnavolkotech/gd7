@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.group.open.field_description
+    - field.field.group.open.field_einfuehrung
     - field.field.group.open.field_group_body
     - field.field.group.open.field_old_reference
     - group.type.open
@@ -21,6 +22,12 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+  field_einfuehrung:
+    weight: 3
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
   field_group_body:
     type: text_default
     weight: 2

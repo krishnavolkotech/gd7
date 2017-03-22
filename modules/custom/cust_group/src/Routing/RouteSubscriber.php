@@ -58,9 +58,9 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.group_membership.collection')) {
 //      $route->setRequirement('_access', 'FALSE');
     }
-    if ($route = $collection->get('view.group_members.page_1')) {
+/*    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setRequirement('_role', 'administrator');
-    }
+    }*/
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
       $route->setRequirement('_access', 'FALSE');
@@ -68,16 +68,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
     }
-    foreach ($collection as $key => $route) {
+    //We have all acces defined seperatly using permissions and custom in few place. I feel this causes issues at sometimes.
+/*    foreach ($collection as $key => $route) {
       if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical', 'entity.group_content.group_membership.request_membership_form'])) {
-        /*if (in_array($key, $this->returnGroupViews())) {
-          //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
-          $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
-        }*/
         if (!$route->getRequirement('_custom_access'))
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
       }
-    }
+    }*/
     if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
     }

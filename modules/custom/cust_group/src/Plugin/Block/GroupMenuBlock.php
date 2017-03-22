@@ -9,6 +9,7 @@ namespace Drupal\cust_group\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\group\Entity\Group;
+use Drupal\Core\Url;
 
 /**
  * Provides a 'cust_group' block.
@@ -105,7 +106,40 @@ class GroupMenuBlock extends BlockBase
                 $title = $group->label();
                 return ['#title' => $title, '#markup' => \Drupal::service('renderer')->render($menu), '#cache' => ['max-age' => 0]];
             }
+      else {
+        if ($group->bundle() == 'open' || $group->bundle() == 'moderate' || $group->bundle() == 'moderate_private') {
+          $title = $this->t('Actions for @group', ['@group' => $group->label()]);
+          if ($group->bundle() == 'open') {
+            $url = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
+            $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
+          }
+          elseif (in_array($group->bundle(), ['moderate', 'moderate_private'])) {
+            $url = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
+            $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
+          }
+          //\Drupal::service('renderer')->render($link)
+          $markup['#title'] = $title;
+          $markup['link'] = ['#type'=>'link','#title'=>'Request Membership','#url'=>$url];
+          $groupAdmins = $group->getMembers($group->bundle() . '-admin');
+          foreach ($groupAdmins as $groupadmin) {
+            $data[] = ['#type' => 'link',
+              '#title' => $groupadmin->getUser()->getDisplayName(),
+              '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()->getEmail())];
+          }
+          $markup['groupadmin_list'] = [
+            '#title' => $this->t('List of Group Admin'),
+            '#prefix' => '<div>',
+            '#suffix' => '</div>',
+            '#items' => $data,
+            '#theme' => 'item_list',
+            '#type' => 'ul',
+              //'#attributes' => ['class' => ['incidents-home-block']]
+          ];
+          $markup['#cache'] = ['max-age' => 0];
+          return $markup;
         }
+      }
+    }
         return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
     }
     
