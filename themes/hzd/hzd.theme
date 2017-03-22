@@ -216,8 +216,8 @@ function hzd_preprocess_node(&$variables) {
         $result = $get_maintain_window->execute()->fetchObject();
         
         $incident_data = new stdClass();
-        $incident_data->startdate_planned = date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr');
-        $incident_data->service_name = $result->service;
+        $incident_data->startdate_planned = isset($result->startdate_planned)?date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr'):null;
+        $incident_data->service_name = isset($result->service)?$result->service:null;
 //    $incident_data->service_name = [
 //      '#items' => explode(',', $result->service),
 //      '#theme' => 'item_list',
@@ -229,14 +229,14 @@ function hzd_preprocess_node(&$variables) {
             $incident_data->reason = '';
         }
         //$incident_data->state = $states[$result->state_id];
-        $incident_data->state_id = $result->state_id;
-        $incident_data->description = $result->description;
-        $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField();
+        $incident_data->state_id = isset($result->state_id)?$result->state_id:null;
+        $incident_data->description = isset($result->description)?$result->description:null;
+        $reporter_uid = isset($result->downtime_id)?db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField():null;
         $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
         $incident_data->reported_by = $name;
-        $incident_data->downtimes_type = ($result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
-        $incident_data->enddate_planned = ($result->enddate_planned ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
-        $incident_data->startdate_reported = date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr');
+        $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
+        $incident_data->enddate_planned = (isset($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
+        $incident_data->startdate_reported = isset($result->startdate_reported)?date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr'):null;
 //    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 
 //   dpm( date('d.m.Y - H:i', $result->enddate_planned));
@@ -245,7 +245,7 @@ function hzd_preprocess_node(&$variables) {
 //    if (isset($result->enddate_reported) && $result->enddate_reported != '') {
 //      $incident_data->enddate_planned = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 //    }
-        $resolved_data = db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject();
+        $resolved_data = isset($result->downtime_id)?db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject():null;
 // dpm($resolved_data->end_date);
         if (!empty($resolved_data)) {
             $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
@@ -257,8 +257,8 @@ function hzd_preprocess_node(&$variables) {
             $incident_data->enddate_planned = ($resolved_data->end_date ? date('d.m.Y - H:i', $resolved_data->end_date) . " " . t('Uhr') : '');
         }
         
-        $incident_data->resolved = $result->resolved;
-        $incident_data->cancelled = $result->cancelled;
+        $incident_data->resolved = isset($result->resolved)?$result->resolved:null;
+        $incident_data->cancelled = isset($result->cancelled)?$result->cancelled:null;
         $incident_data->reason = !empty($result->reason) ? $reasons[$result->reason] : '';
         $incident_data->description = !is_null($result->description) ? t($result->description) : '';
         $statesArray = \Drupal::database()->select('states', 's');
