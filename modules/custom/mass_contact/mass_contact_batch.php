@@ -17,7 +17,7 @@ class MassMail {
     $send = true;
 
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-    if ($result['result'] !== true) {
+    if ($result['result'] != true) {
       drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
     }
     else {
