@@ -27,7 +27,10 @@ process:
   changed: changed
   promote: promote
   sticky: sticky
-  field_description: description
+  field_description:
+    plugin: group_type_maintainer
+    method: groupDescription
+    source: nid
   field_old_reference: tnid
 #  field_group_body: body
   'field_group_body/format':

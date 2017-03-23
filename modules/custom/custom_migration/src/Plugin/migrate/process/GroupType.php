@@ -64,4 +64,16 @@ class GroupType extends ProcessPluginBase {
     return $finalData;
     
   }
+  
+  
+  function groupDescription($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    $source = $row->getSource();
+    $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('og', 'source_table_name')
+      ->fields('source_table_name')
+      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->execute()
+      ->fetchAssoc();
+    return $data['og_description'];
+  }
 }
