@@ -63,6 +63,10 @@ class MailTemplatesForm extends ConfigFormBase
             '#title' => t('Content'),
             '#default_value' => $data['mail_content'] ?: NULL,
         );
+        if($this->mailType == 'downtimes'){
+          $form['mail_content']['#disabled'] = true;
+          $form['mail_content']['#value'] = $this->t('This template uses node view.');
+        }
         
         if (\Drupal::moduleHandler()->moduleExists('token')) {
             $form['token_tree'] = [

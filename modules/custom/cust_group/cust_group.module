@@ -188,7 +188,7 @@ function send_notifications($entity, $mails) {
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
   }
   
-  if (isset($result['result']) && $result['result'] !== true) {
+  if (isset($result['result']) && $result['result'] != true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   } else {
     drupal_set_message(t('Your message has been sent.'));
@@ -319,7 +319,7 @@ function requst_submit_handler(&$form, $form_state) {
 //    pr($params);exit;
     $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, null, $send);
   }
-  if ($result['result'] !== true) {
+  if ($result['result'] != true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   } else {
     drupal_set_message(t('Mail sent.'), 'status');
@@ -343,7 +343,8 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
     ->condition('status', 1)
     ->execute();
   //pr(count($check));exit;
-  if (count($check) > 1) {
+  //Todo sometimes giving true while value is one
+  if (count($check) >= 1) {
     $errors[] = t("The file's name already exists in database.");
   }
   return $errors;

@@ -138,7 +138,6 @@ hzd_customizations.group_content_mail_templates:
   defaults:
     _form: '\Drupal\hzd_customizations\Form\GroupContentMailTemplatesForm'
     _title: 'Mail Template for Group content'
-    type: group
   requirements:
     _permission: 'access administration pages'
     type: group|group_content

@@ -531,3 +531,11 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
     }
   }
 }
+
+use Drupal\Core\Form\FormStateInterface;
+function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->isNew()) {
+    $form['menu']['enabled']['#default_value'] = TRUE;
+  }
+}
