@@ -13,7 +13,7 @@ define('PROBLEM_MANAGEMENT', 6);
 define('QUICKINFO', 32);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
-define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
+define('MAINTENANCE_GROUP_ID', 2);
 use Drupal\user\Entity\User;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
