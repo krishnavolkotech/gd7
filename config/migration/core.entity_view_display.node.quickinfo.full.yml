@@ -30,10 +30,63 @@ dependencies:
     - node.type.quickinfo
   module:
     - comment
+    - field_group
     - file
     - options
     - text
     - user
+third_party_settings:
+  field_group:
+    group_meta:
+      children:
+        - field_custom_title
+        - field_related_transfer_number
+        - field_other_services
+        - field_recipients
+      parent_name: ''
+      weight: 0
+      label: '1 Meta-Daten'
+      format_type: html_element
+      format_settings:
+        label: '1 Meta-Daten'
+        element: div
+        show_label: true
+        label_element: h2
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+    group_fachlich:
+      children:
+        - field_intial_situation
+        - field_professional_conditions
+        - field_tech_requirements
+        - field_depend_other_services
+        - field_business_impact
+        - field_technical_impact
+        - field_business_impact_services
+        - field_technical_impact_services
+        - field_special_notes
+        - field_dates
+        - field_creators
+        - field_contact
+        - upload
+        - field_additional_email_recipient
+      parent_name: ''
+      weight: 1
+      label: '2 Fachlich-inhaltliche Angaben'
+      format_type: html_element
+      format_settings:
+        label: '2 Fachlich-inhaltliche Angaben'
+        element: div
+        show_label: true
+        label_element: h2
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
 id: node.quickinfo.full
 targetEntityType: node
 bundle: quickinfo
@@ -42,122 +95,122 @@ content:
   comment:
     label: hidden
     type: comment_default
-    weight: 20
+    weight: 16
     settings:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
   field_additional_email_recipient:
     label: above
-    weight: 19
+    weight: 15
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_business_impact:
     label: above
-    weight: 10
+    weight: 6
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_business_impact_services:
     label: above
-    weight: 12
+    weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_contact:
     label: above
-    weight: 17
+    weight: 13
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_creators:
     label: above
-    weight: 16
+    weight: 12
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_custom_title:
     type: basic_string
-    weight: 2
+    weight: 1
     label: above
     settings: {  }
     third_party_settings: {  }
   field_dates:
     label: above
-    weight: 15
+    weight: 11
     type: basic_string
     settings: {  }
     third_party_settings: {  }
   field_depend_other_services:
     label: above
-    weight: 9
+    weight: 5
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_intial_situation:
     label: above
-    weight: 6
+    weight: 2
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_other_services:
     label: above
-    weight: 4
+    weight: 3
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_professional_conditions:
     label: above
-    weight: 7
+    weight: 3
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_recipients:
     label: above
-    weight: 5
+    weight: 4
     type: list_default
     settings: {  }
     third_party_settings: {  }
   field_related_transfer_number:
     type: basic_string
-    weight: 3
+    weight: 2
     label: above
     settings: {  }
     third_party_settings: {  }
   field_special_notes:
     label: above
-    weight: 14
+    weight: 10
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_tech_requirements:
     label: above
-    weight: 8
+    weight: 4
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_technical_impact:
     label: above
-    weight: 11
+    weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
   field_technical_impact_services:
     label: above
-    weight: 13
+    weight: 9
     type: text_default
     settings: {  }
     third_party_settings: {  }
   links:
-    weight: 21
+    weight: 17
     settings: {  }
     third_party_settings: {  }
   upload:
     label: above
     settings: {  }
     type: file_table
-    weight: 18
+    weight: 14
     third_party_settings: {  }
 hidden:
   entity_print_view: true
