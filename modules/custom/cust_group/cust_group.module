@@ -13,7 +13,7 @@ define('PROBLEM_MANAGEMENT', 6);
 define('QUICKINFO', 32);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
-define('MAINTENANCE_GROUP_ID', \Drupal::config('downtimes.settings')->get('maintenance_group_id'));
+define('MAINTENANCE_GROUP_ID', 2);
 use Drupal\user\Entity\User;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
@@ -92,9 +92,7 @@ function cust_group_group_content_update($entity) {
     $user = $entity->get('entity_id')->referencedEntities()[0];
     $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLink has been approved.', ['@user' => $user->getDisplayName(), '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])->toString()]);
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
-    if ($result['result'] !== true) {
-      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-    } else {
+    if ($result['result']) {
       drupal_set_message(t('Mail sent.'), 'status');
     }
   }

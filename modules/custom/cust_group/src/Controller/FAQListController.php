@@ -3,6 +3,8 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 
@@ -11,27 +13,45 @@ use Drupal\Core\Access\AccessResult;
  */
 class FAQListController extends ControllerBase {
 
-  function faqList(){
-    $faqTypes = ['closed-group_node-faqs','moderate-group_node-faqs','open-group_node-faqs'];
-    $group = \Drupal::routeMatch()->getParameter('group');
-    $query = \Drupal::entityQuery('group_content')
-      ->condition('type',$faqTypes,'IN')
-      ->condition('gid',$group->id())
+  function faqList($group, $term = null){
+  
+    $group = Group::load($group);
+    $parentTermQuery = \Drupal::entityQuery('taxonomy_term')
+      ->condition('name',$group->label())
+      ->condition('vid','faq_seite')
       ->execute();
-    $faqs = \Drupal\group\Entity\GroupContent::loadMultiple($query);
-    $view_builder = \Drupal::entityManager()->getViewBuilder('group');
-    $list = '';
-    foreach($faqs as $faq){
-      $faqView = $view_builder->view($faq);
-      $list .= \Drupal::service('renderer')->render($faqView);
+    $termQuery = \Drupal::entityQuery('taxonomy_term')
+      ->condition('name',$term)
+      ->condition('vid','faq_seite')
+      ->execute();
+    $tid = null;
+    if(empty($parentTermQuery)){
+      $tid = array_values($termQuery)[0];
     }
-    return ['#markup'=>$list,'#type'=>'markup'];
+    if($termQuery && $parentTermQuery){
+      $tid = \Drupal::database()->select('taxonomy_term_hierarchy','t')
+        ->fields('t',['tid'])
+        ->condition('parent',$parentTermQuery,'IN')
+        ->condition('tid',$termQuery,'IN')
+        ->execute()->fetchCol();
+    }
+    
+    
+    
+    $view = \Drupal\views\Views::getView('group_faqs');
+
+// set the display machine id
+    $view->setDisplay('page_1');
+
+// set arguments/filter values
+    $view->setArguments(array($group->id(), $tid[0]));
+  
+    return $view->render();
   }
   
-  function title(){
-    $group = \Drupal::routeMatch()->getParameter('group');
-    pr($group);exit;
-    return $this->t($group->label().' - Frequently Asked Questions');
+  function title($group){
+    $group = Group::load($group);
+    return $this->t($group->label().' - Häufig gestellte Fragen');
   }
 
 }

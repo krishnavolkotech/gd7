@@ -198,7 +198,7 @@ class HzdNotificationsHelper {
     $uids = null;
     //pr($data);exit;
     $intervals = self::hzd_notification_send_interval();
-    foreach ($intervals as $interval) {
+    foreach ($intervals as $interval=>$val) {
       if (isset($data[$interval])) {
         $uids = unserialize($data[$interval]->uids);
         //pr($data[$interval]);exit;

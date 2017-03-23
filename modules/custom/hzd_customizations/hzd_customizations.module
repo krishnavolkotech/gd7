@@ -155,6 +155,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
           'field_other_services',
           'field_professional_conditions',
           'field_recipients',
+//          'upload',
           'field_related_transfer_number',
           'field_special_notes',
           'field_technical_impact',
@@ -186,6 +187,13 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         ];
       }
     }
+    /*    if($entity->isPublished()){
+          $quickinfoId = $entity->get('field_unique_id')->value;
+          $build['upload'][100] = [
+            '#type'=>'link',
+            '#url'=>Url::fromUserInput("/system/files/rz-schnellinfos/{$quickinfoId}/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf"),
+            '#title'=>"RZ-Schnellinfo-Nr-{$quickinfoId}.pdf"];
+        }*/
   }
 //    kint($build['field_custom_title']);
 }
@@ -236,6 +244,7 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       }
       else {
         $build['field_einfuehrung']['#access'] = TRUE;
+        $build['field_einfuehrung']['#title'] = '';
         $build['field_description']['#access'] = FALSE;
         $build['field_group_body']['#access'] = FALSE;
         $build['field_old_reference']['#access'] = FALSE;
@@ -500,13 +509,46 @@ function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_stat
   }
 }
 
-
 function hzd_customizations_node_update($node) {
   if ($node->getType() == 'quickinfo') {
     // Act on the unpublishing of an article.
-    if ($node->original->get('status')->value == 0 && $node->get('status')->value == 1) {
+    if ($node->get('status')->value == 1) {
       generate_quickinfo_pdf($node);
-//                $copy->save();
+      
+    }
+  }
+}
+
+function hzd_customizations_entity_presave($node) {
+  if ($node->getEntityTypeId() == 'node' && $node->getType() == 'quickinfo') {
+    // Act on the unpublishing of an article.
+    if ($node->get('status')->value == 1) {
+      $quickinfoId = $node->get('field_unique_id')->value;
+      \Drupal::service('file_system')
+        ->mkdir('private://rz-schnellinfos/' . $quickinfoId, NULL, TRUE);
+      if (!file_exists('private://rz-schnellinfos/' . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf")) {
+        $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
+          ->createSelectedInstance('pdf');
+        $print_builder = \Drupal::service('entity_print.print_builder');
+        $uri = $print_builder->savePrintable([$node], $print_engine, 'private', "rz-schnellinfos/{$quickinfoId}/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf");
+        $file = File::create([
+          'filename' => "RZ-Schnellinfo-Nr-{$quickinfoId}.pdf",
+          'uri' => $uri,
+          'uid' => \Drupal::currentUser()->id(),
+        ]);
+        $file->save();
+//      $entity = Node::load($node->id());
+        $node->upload->appendItem([
+          'target_id' => $file->id(),
+          'display' => 1,
+          'description' => '',
+        ]);
+      }
+
+//      $entity->save();
+//      pr($node->toArray());exit;
+//      generate_quickinfo_pdf($node);
+      
     }
   }
 }
@@ -519,10 +561,7 @@ function generate_quickinfo_pdf($node = NULL) {
   }
   $quickinfoId = $node->get('field_unique_id')->value;
   $fileName = "{$quickinfoId}.pdf";
-  $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
-    ->createSelectedInstance('pdf');
-  $print_builder = \Drupal::service('entity_print.print_builder');
-  $uri = $print_builder->savePrintable([$node], $print_engine, 'private', $fileName);
+  $uri = "private://rz-schnellinfos/" . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf";
   
   $view_builder = \Drupal::entityManager()->getViewBuilder('node');
   $renderarray = $view_builder->view($node, 'mail');
@@ -541,7 +580,7 @@ function generate_quickinfo_pdf($node = NULL) {
   $file_two->filename = $fileName;
   $file_two->filemime = 'application/pdf';
   $siteMail = \Drupal::config('system.site')->get('mail');
-  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - ".$node->label();
+  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
   
   
   $params = [
@@ -552,15 +591,14 @@ function generate_quickinfo_pdf($node = NULL) {
     'subject' => $subject,
   ];
   $params['files'] = $attachments;
-  $params['files'][] = $file_two;
+//  $params['files'][] = $file_two;
 //  pr(array_keys($params['files']));exit;
   $params['message'] = $html;
   $mailManager = \Drupal::service('plugin.manager.mail');
   $recepients = $node->get('field_additional_email_recipient')->value;
-  foreach ((array)explode(',',$recepients) as $email){
+  foreach ((array) explode(',', $recepients) as $email) {
     $mailManager->mail('cust_group', 'periodic_notifications', $email, 'de', $params, NULL, 1);
   }
-  
   
   
 }
