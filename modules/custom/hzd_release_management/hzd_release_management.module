@@ -354,15 +354,15 @@ function send_downtime_notifications($entity, $action = 'update') {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
       // Trigger mail functionality to send immediate notifications of quickinfo.
-      $token_service = \Drupal::token();
+      /*$token_service = \Drupal::token();
       $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['subject'];
       $subject = $token_service->replace($token_sub, array('node' => $entity));
       $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['mail_content'];
       // Replace the token for subject.
-      $message_text = $token_service->replace($token_body, array('node' => $entity));
+      $message_text = $token_service->replace($token_body, array('node' => $entity));*/
 //      pr($message_text);exit;
-//            $node = $view_builder->view($entity, 'full', 'de');
-//            $message_text = \Drupal::service('renderer')->render($node);
+            $node = $view_builder->view($entity, 'mail', 'de');
+            $message_text = \Drupal::service('renderer')->render($node);
       send_immediate_notifications($subject, $message_text, $mail, $preference);
     }
   }
@@ -677,7 +677,7 @@ function hzd_release_management_mail($key, &$message, $params) {
     case 'immediate_notifications':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = $params['subject'];
-      $message['body'][] = SafeMarkup::checkPlain($params['message']);
+      $message['body'][] = $params['message'];
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
       $message['headers']['Bcc'] = 'sandeep@azrisolutions.com';
       break;

@@ -97,7 +97,9 @@ view_mode ? view_mode|clean_class,
       {{ content }}
     </div>#}
     {#{{ content.entity_print_view_pdf }}#}
+    {% if view_mode == 'full' %}
     {{  back_to_search }}
+    {% endif %}
 {% if(incident.cancelled) %}
 <div class='cancelled-downtime-title'>Diese Blockzeit wurde vor Beginn storniert</div>
 {% endif %}
