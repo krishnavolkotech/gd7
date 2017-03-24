@@ -344,7 +344,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
     ->execute();
   //pr(count($check));exit;
   //Todo sometimes giving true while value is one
-  if (count($check) >= 1) {
+  if (count($check) >= 1 && $file->isNew()) {
     $errors[] = t("The file's name already exists in database.");
   }
   return $errors;
