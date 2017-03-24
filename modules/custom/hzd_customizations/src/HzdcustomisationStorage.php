@@ -880,10 +880,10 @@ class HzdcustomisationStorage {
 //      $user_url = Url::fromUserInput('/user/' . $reporter_uid);
 //      $user_name = ($user->id() ? \Drupal::l($name, $user_url) : $name);
       
-      $downtime_ids = array();
-      $downtime_ids = explode(',', $client->state_id);
-      $show_resolve = self::resolve_link_display($downtime_ids, $reporter_uid);
-      $maintenance_group = \Drupal\group\Entity\Group::load(MAINTENANCE_GROUP_ID);
+      $downtime_state_ids = array();
+      $downtime_state_ids = explode(',', $client->state_id);
+      $show_resolve = self::resolve_link_display($downtime_state_ids, $reporter_uid);
+      $maintenance_group = \Drupal\group\Entity\Group::load(GEPLANTE_BLOCKZEITEN);
       // $maintenance_edit = saved_quickinfo_og_is_member(MAINTENANCE_GROUP_ID);
       $currentUser = \Drupal::currentUser();
       $groupMember = $maintenance_group->getMember($currentUser);
