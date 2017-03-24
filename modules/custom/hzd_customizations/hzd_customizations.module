@@ -240,7 +240,7 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       $groupMember = $group->getMember($user);
       if (($groupMember && $groupMember->getGroupContent()
               ->get('request_status')->value == 1
-      ) || ($user->id() == 1)) {
+      ) || (array_intersect($user->getRoles(), ['site_administrator', 'administrator']))) {
         $build['field_einfuehrung']['#access'] = FALSE;
         $build['field_description']['#access'] = TRUE;
         $build['field_group_body']['#access'] = TRUE;
