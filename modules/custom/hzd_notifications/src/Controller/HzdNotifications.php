@@ -510,7 +510,10 @@ class HzdNotifications extends ControllerBase {
     return $result;
   }
   
-  function userAccess($user) {
+  function userAccess($user = null) {
+    if(is_null($user)){
+      $user = \Drupal::currentUser();
+    }
     if(in_array('site_administrator',\Drupal::currentUser()->getRoles())){
       return AccessResult::allowed();
     }
