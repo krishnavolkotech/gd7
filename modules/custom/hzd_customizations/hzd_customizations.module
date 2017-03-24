@@ -228,15 +228,19 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //}
 
 function hzd_customizations_group_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if($entity->hasField('field_forum_containers')) {
+    $build['field_forum_containers']['#access'] = FALSE;
+  }
+  
   if ($view_mode == 'full' && isset($build['field_einfuehrung']) && is_array($build['field_einfuehrung'])) {
     if ($entity->bundle() == 'open' || $entity->bundle() == 'moderate' || $entity->bundle() == 'moderate_private') {
       $user = \Drupal::service('current_user');
       $group = \Drupal::routeMatch()->getParameter('group');
       //$groupTypeId = $group->getGroupType()->id();
       $groupMember = $group->getMember($user);
-      if ($groupMember && $groupMember->getGroupContent()
+      if (($groupMember && $groupMember->getGroupContent()
               ->get('request_status')->value == 1
-      ) {
+      ) || ($user->id() == 1)) {
         $build['field_einfuehrung']['#access'] = FALSE;
         $build['field_description']['#access'] = TRUE;
         $build['field_group_body']['#access'] = TRUE;
@@ -250,6 +254,25 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
         $build['field_old_reference']['#access'] = FALSE;
       }
     }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+//  pr(array_keys($build));exit;
+  if($entity->getType() == 'quickinfo' && in_array($view_mode, ['full','mail'])){
+    if($entity->isPublished()){
+      $build['quickinfoId'] = $entity->get('field_unique_id')->view();
+      $build['quickinfoId']['#label_display'] = 'inline';
+      $build['field_author_name'] = $entity->get('field_author_name')->view();
+      $build['field_author_name']['#label_display'] = 'inline';
+      $build['modified'] = $entity->get('changed')->view();
+      $build['modified']['#label_display'] = 'inline';
+    }
+/*    $build['field_custom_title']['#prefix'] = '<h2>1 Meta-Daten</h2>';
+    $build['field_intial_situation']['#prefix'] = '<h2>2 Fachlich-inhaltliche Angaben</h2>';*/
   }
 }
 

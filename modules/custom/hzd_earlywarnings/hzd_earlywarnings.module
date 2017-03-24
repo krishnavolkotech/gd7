@@ -69,19 +69,23 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
 
 
 function hzd_earlywarnings_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
     $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
     if (!$do_not_send_notifications) {
-        send_earlywarning_comment_notifications($entity);
+      send_earlywarning_comment_notifications($entity);
     }
-    // Update the entity's entry in a fictional table of this type of entity.
+  }
+  // Update the entity's entry in a fictional table of this type of entity.
 }
 
 function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
     $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
     if (!$do_not_send_notifications) {
-        send_earlywarning_comment_notifications($entity);
+      send_earlywarning_comment_notifications($entity);
     }
-    // Insert the new entity into a fictional table of all entities.
+  }
+  // Insert the new entity into a fictional table of all entities.
 }
 
 function send_earlywarning_comment_notifications($entity) {
