@@ -228,15 +228,19 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //}
 
 function hzd_customizations_group_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if($entity->hasField('field_forum_containers')) {
+    $build['field_forum_containers']['#access'] = FALSE;
+  }
+  
   if ($view_mode == 'full' && isset($build['field_einfuehrung']) && is_array($build['field_einfuehrung'])) {
     if ($entity->bundle() == 'open' || $entity->bundle() == 'moderate' || $entity->bundle() == 'moderate_private') {
       $user = \Drupal::service('current_user');
       $group = \Drupal::routeMatch()->getParameter('group');
       //$groupTypeId = $group->getGroupType()->id();
       $groupMember = $group->getMember($user);
-      if ($groupMember && $groupMember->getGroupContent()
+      if (($groupMember && $groupMember->getGroupContent()
               ->get('request_status')->value == 1
-      ) {
+      ) || ($user->id() == 1)) {
         $build['field_einfuehrung']['#access'] = FALSE;
         $build['field_description']['#access'] = TRUE;
         $build['field_group_body']['#access'] = TRUE;
