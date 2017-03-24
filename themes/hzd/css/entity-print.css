@@ -58,7 +58,6 @@ body{
 .pdf-content article.downtimes{
   width:100%;
   display:block;
-  float:none;
   margin:10px 0;
   padding:0;
 }
@@ -89,8 +88,8 @@ body{
 }
 .pdf-content article ol li,
 .pdf-content article ul li{
-  width:100%;
-  margin:0 0 5px 0 !important; 
+  width:98%;
+  margin:0 0 5px 2% !important; 
   padding:0;
   float:none;
 }
@@ -157,6 +156,7 @@ div[style]{
 .pdf-wrapper .pdf-content{
   width:100%;
   float:none;
+  display:inline-block;
 }
 .pdf-content{
   width:100%;
@@ -193,7 +193,7 @@ div[style]{
 .pdf-content article.downtimes .Incident .downtimes_title{
   font-weight: 600;
   display:inline-block;
-  width: 27%;
+  width: 32%;
   margin: 0 1% 3px 0;
   line-height:25px;
   /*float:none;*/
@@ -211,9 +211,12 @@ div[style]{
 .pdf-content article.downtimes .Incident .downtimes_content{
   display:inline-block;
   margin-bottom:3px;
-  width: 70% !important;
+  width: 65% !important;
   line-height:25px;
   /*float:none;*/
+}
+.pdf-content article.downtimes .Incident .downtimes_content p{
+  margin:2px 0 !important;
 }
 .pdf-content article.downtimes .downtime-view-history{
   width: 100%;
@@ -301,6 +304,7 @@ table tr th {
   width: 98%;
   display: inline-block;
   float:none;
+  margin-left:2% !important;
 }
 .pdf-content article.downtimes .changed-group .field-wrapper ol li{
   width: 100%;
@@ -309,11 +313,10 @@ table tr th {
   float:none;
 }
 .pdf-content article.downtimes .changed-group .field-wrapper ul li{
-  width: 100%;
-  margin: 0 0 3px 15px;
+  width: 98%;
+  margin: 0 0 3px 2%;
   padding: 0;
   float:none;
-  display:block;
 }
 .pdf-content article.downtimes .changed-group .reason p {
   width: 100%;
@@ -352,8 +355,9 @@ hr{
 }
 .pdf-content article.quickinfo .field .field--item table,
 #header.pdf-quickinfo table td{
-  border-bottom:1px solid #000;
+  border-bottom:1px solid #545454;
   padding:5px 10px;
+  text-align:center;
 }
 #header.pdf-quickinfo table td .pageCounter,
 .totalPageCounter{
