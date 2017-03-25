@@ -477,3 +477,13 @@ function cust_group_schema() {
   
   return $schema;
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_insert to update menu link from node entity to group entity.
+ */
+function cust_group_menu_link_content_insert($menu) {
+  $nodeid = explode('/', $menu->link->uri)[1];
+  $finalpath = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->toUrl()->getInternalPath();
+  $menu->link->uri = 'internal:/'.$finalpath;
+  $menu->save();
+}
