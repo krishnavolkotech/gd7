@@ -293,31 +293,32 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 }
 
 function requst_submit_handler(&$form, $form_state) {
-  $group = \Drupal::routeMatch()->getParameter('group');
+  $data['group'] = \Drupal::routeMatch()->getParameter('group');
   $form_state->setRedirect('view.all_groups.page_1');
-  $subject = "Membership Request for a Group - " . $group->label();
+  
+  
+  $data['message'] = $form_state->getValue('message');
+  
+  $data['module'] = 'cust_group';
+  $data['key'] = 'immediate_notifications';
+  
+  mailToGroupAdmins($data);
+}
+
+function mailToGroupAdmins($data = []){
+  $data['subject'] = "Membership Request for a Group - " . $data['group']->label();
+  $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
-    ->loadByGroup($group, 'group_membership', ['group_roles' => ['moderate-admin']]);
-  $users = [];
+    ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin']]);
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $send = true;
+  $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $params['subject'] = $data['subject'];
   foreach ($groupAdmins as $admin) {
     $userEntity = $admin->entity_id->entity;
-    $userId = $userEntity->id();
-    $users[$userId]['email'] = $userEntity->getEmail();
-    $users[$userId]['name'] = $userEntity->label();
-  }
-  $message = $form_state->getValue('message');
-  $mailManager = \Drupal::service('plugin.manager.mail');
-  $module = 'cust_group';
-  $key = 'immediate_notifications';
-  $params['subject'] = $subject;
-  $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-  $send = true;
-  $link = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $group->id()], ['absolute' => TRUE])->toString();
-  foreach ($users as $user) {
-    
-    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $user['name'], '@groupLink' => $group->toLink($group->label(),'canonical',['absolute'=>true])->toString(), '@link' => $link,'@message'=>$message]);
+    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $userEntity->getDisplayName(), '@groupLink' => $data['group']->toLink($data['group']->label(),'canonical',['absolute'=>true])->toString(), '@link' => $data['link'],'@message'=>$data['message']]);
 //    pr($params);exit;
-    $result = $mailManager->mail($module, $key, $user['email'], $langcode, $params, null, $send);
+    $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, null, $send);
   }
   if ($result['result'] != true) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
