@@ -69,3 +69,5 @@ permissions:
   60: 'entity print access type group'
   61: 'entity print access type group_content'
   62: 'administer menu'
+  63: 'block remove'
+  64: 'block upload'

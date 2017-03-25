@@ -80,6 +80,7 @@ module:
   pdf_api: 0
   printable: 0
   printable_pdf: 0
+  prlp: 0
   problem_management: 0
   quickedit: 0
   rdf: 0
