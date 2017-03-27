@@ -92,13 +92,6 @@ class GroupMapping extends ProcessPluginBase {
     if (empty($value)) {
       return false;
     }
-//    print_r('dsadasdsa');exit;
-    $tid = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
-      ->select('forum', 'source_table_name')
-      ->fields('source_table_name',['tid'])
-      ->condition('source_table_name.' . $this->configuration['source'], $value)
-      ->execute()
-      ->fetchField();
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_hierarchy', 'source_table_name')
       ->fields('source_table_name')
