@@ -9,6 +9,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
 use Symfony\Component\Routing\Route;
 use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\Group;
 
 if (!defined('QUICKINFO')) {
     define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
@@ -70,7 +71,29 @@ class AccessController extends ControllerBase
         }
         return AccessResult::allowed();
     }
-    
+
+    public function groupAdministratorValidation(Route $route, RouteMatch $route_match, AccountInterface $user) {
+        // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
+       // $group_content = $route_match->getRawParameter('group_content');
+
+        $user = \Drupal::currentUser();
+//        if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+//            return AccessResult::allowed();
+//        }
+        if ($group = $route_match->getRawParameter('group')) {
+            if (!is_object($group)) {
+                $group = Group::load($group);
+            }
+            $groupMembersCount = count($group->getMembers($group->bundle() . '-admin'));
+            if($groupMembersCount < 2) {
+                drupal_set_message(t('You cannot remove admin for this group. There should be at least one admin in the group.'), 'error');
+                return AccessResult::forbidden();
+            }
+        }
+        //return AccessResult::neutral();
+        return AccessResult::allowed();
+    }
+
     /**
      * By default all user can access all node view page
      * quickinfo group member of rz-schnellinfos and administrator can only access the quickinfo node view pages
