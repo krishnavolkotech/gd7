@@ -86,13 +86,23 @@ class GroupMapping extends ProcessPluginBase {
     if (empty($row->getSourceProperty('title'))) {
       return false;
     }
-  
+    if (empty($value)) {
+      return false;
+    }
+//    print_r('dsadasdsa');exit;
+    $tid = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('forum', 'source_table_name')
+      ->fields('source_table_name',['tid'])
+      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->execute()
+      ->fetchField();
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_hierarchy', 'source_table_name')
       ->fields('source_table_name')
-      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->condition('source_table_name.tid' , $tid)
       ->execute()
       ->fetchAssoc();
+//    print_r($value);exit;
     if($data['parent'] != 0){
       $tid = $data['parent'];
     }else{
@@ -105,13 +115,14 @@ class GroupMapping extends ProcessPluginBase {
       ->execute()
       ->fetchAssoc();
     $d8Gid = false;
-    if (isset($data['group_nid'])) {
+    if (isset($groupName['name'])) {
       $d8Gid = \Drupal::entityQuery('group')
         ->condition('label', $groupName['name'])
         ->execute();
       $d8Gid = reset($d8Gid);
 //      print_r($d8Gid);exit;
     }
+//          print_r($d8Gid);exit;
     return $d8Gid;
   }
 }
