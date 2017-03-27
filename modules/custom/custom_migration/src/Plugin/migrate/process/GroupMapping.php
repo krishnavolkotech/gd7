@@ -79,4 +79,39 @@ class GroupMapping extends ProcessPluginBase {
       return reset($d8Gid);
     return false;
   }
+  
+  public function getForumGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    $source = $row->getSource();
+  
+    if (empty($row->getSourceProperty('title'))) {
+      return false;
+    }
+  
+    $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('term_hierarchy', 'source_table_name')
+      ->fields('source_table_name')
+      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->execute()
+      ->fetchAssoc();
+    if($data['parent'] != 0){
+      $tid = $data['parent'];
+    }else{
+      $tid = $data['tid'];
+    }
+    $groupName = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('term_data', 'source_table_name')
+      ->fields('source_table_name')
+      ->condition('source_table_name.tid', $tid)
+      ->execute()
+      ->fetchAssoc();
+    $d8Gid = false;
+    if (isset($data['group_nid'])) {
+      $d8Gid = \Drupal::entityQuery('group')
+        ->condition('label', $groupName['name'])
+        ->execute();
+      $d8Gid = reset($d8Gid);
+//      print_r($d8Gid);exit;
+    }
+    return $d8Gid;
+  }
 }
