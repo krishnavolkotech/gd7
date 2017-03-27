@@ -1,0 +1,14 @@
+uuid: 0ca59655-0d8d-4178-bc96-3242c588f348
+langcode: de
+status: true
+dependencies:
+  module:
+    - forum
+id: gforum
+label: gforum
+type: forum
+pattern: '[term:name]/forum'
+selection_criteria: {  }
+selection_logic: and
+weight: 0
+relationships: {  }

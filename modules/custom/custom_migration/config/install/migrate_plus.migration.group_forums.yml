@@ -24,29 +24,19 @@ process:
   changed: changed
   promote: promote
   entity_id: nid
+  gid:
+    -
+      plugin: group_mapping_from_d6
+      method: getGroupForumId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
   type:
     -
       plugin: group_mapping_from_d6
       method: getGroupContentTypeId
       source: type
-  gid:
-    -
-      plugin: group_mapping_from_d6
-      method: getGroupForumId
-      source: tid
-    -
-      plugin: skip_on_empty
-      method: row
-#  revision_uid: revision_uid
-#  revision_log: log
-#  revision_timestamp: timestamp
-
-#  unmapped d6 fields.
-#  tnid
-#  translate
-#  moderate
-#  comment
-
 destination:
   plugin: entity:group_content
 migration_dependencies:

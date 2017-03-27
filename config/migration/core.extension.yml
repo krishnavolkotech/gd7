@@ -43,6 +43,7 @@ module:
   filefield_paths: 0
   filter: 0
   front: 0
+  gforum: 0
   gnode: 0
   group: 0
   help: 0

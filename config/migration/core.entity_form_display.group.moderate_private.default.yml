@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.group.moderate_private.field_description
     - field.field.group.moderate_private.field_einfuehrung
+    - field.field.group.moderate_private.field_forum_containers
     - field.field.group.moderate_private.field_group_body
     - field.field.group.moderate_private.field_old_reference
     - group.type.moderate_private
@@ -30,6 +31,14 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+  field_forum_containers:
+    weight: 32
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
   field_group_body:
     weight: 5
     settings:

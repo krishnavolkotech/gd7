@@ -16,3 +16,4 @@ permissions:
   - 'join group'
   - 'view group_node:downtimes content'
   - 'view group_node:downtimes entity'
+  - 'request group membership'

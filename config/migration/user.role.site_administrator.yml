@@ -57,7 +57,6 @@ permissions:
   47: 'edit own service_profile content'
   48: 'manage features'
   49: 'administer filters'
-  50: 'administer forums'
   51: 'create forum content'
   52: 'delete any forum content'
   53: 'delete own forum content'
@@ -418,3 +417,4 @@ permissions:
   412: 'view own field_do_not_send_notifications'
   413: 'view field_do_not_send_notifications'
   414: 'bypass entity print access'
+  415: 'assign forum containers to groups'
