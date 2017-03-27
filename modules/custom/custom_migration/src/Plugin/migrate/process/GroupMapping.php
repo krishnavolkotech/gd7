@@ -9,6 +9,7 @@
 namespace Drupal\custom_migration\Plugin\migrate\process;
 
 
+use Drupal\Core\Database\Database;
 use Drupal\group\Entity\Group;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
@@ -33,7 +34,7 @@ class GroupMapping extends ProcessPluginBase {
     $source = $row->getSource();
     
     if (empty($row->getSourceProperty('title'))) {
-      return false;
+      return FALSE;
     }
     
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
@@ -43,7 +44,7 @@ class GroupMapping extends ProcessPluginBase {
       ->execute()
       ->fetchAssoc();
     
-    $d8Gid = false;
+    $d8Gid = FALSE;
     if (isset($data['group_nid'])) {
       $d8Gid = \Drupal::entityQuery('group')
         ->condition('field_old_reference', $data['group_nid'])
@@ -68,34 +69,36 @@ class GroupMapping extends ProcessPluginBase {
       return $plugin->getContentTypeConfigId();
     }
 //    exit;
-    return false;
+    return FALSE;
   }
   
   public function getNewGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $d8Gid = \Drupal::entityQuery('group')
       ->condition('field_old_reference', $value)
       ->execute();
-    if (!empty($d8Gid))
+    if (!empty($d8Gid)) {
       return reset($d8Gid);
-    return false;
+    }
+    return FALSE;
   }
   
-  public function getGroupForumId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+  public function getGroupForumId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $source = $row->getSource();
-  
+    
     if (empty($row->getSourceProperty('title'))) {
-      return false;
+      return FALSE;
     }
-  
+    
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_hierarchy', 'source_table_name')
       ->fields('source_table_name')
       ->condition('source_table_name.' . $this->configuration['source'], $value)
       ->execute()
       ->fetchAssoc();
-    if($data['parent'] != 0){
+    if ($data['parent'] != 0) {
       $tid = $data['parent'];
-    }else{
+    }
+    else {
       $tid = $data['tid'];
     }
     $groupName = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
@@ -104,7 +107,7 @@ class GroupMapping extends ProcessPluginBase {
       ->condition('source_table_name.tid', $tid)
       ->execute()
       ->fetchAssoc();
-    $d8Gid = false;
+    $d8Gid = FALSE;
     if (isset($data['group_nid'])) {
       $d8Gid = \Drupal::entityQuery('group')
         ->condition('label', $groupName['name'])
@@ -113,5 +116,56 @@ class GroupMapping extends ProcessPluginBase {
 //      print_r($d8Gid);exit;
     }
     return $d8Gid;
+  }
+  
+  function getForumTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    $source = $row->getSource();
+    
+    if (empty($row->getSourceProperty('nid'))) {
+      return FALSE;
+    }
+    
+    $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('term_node', 'source_table_name')
+      ->fields('source_table_name', ['tid'])
+      ->condition('source_table_name.nid', $value)
+      ->execute()
+      ->fetchField();
+    if (!empty($data)) {
+      return $data;
+    }
+    return FALSE;
+  }
+  
+  function getFaqCategoryTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    //5
+    return $this->getFaqTaxonomyId($value, $migrate_executable, $row, $destination_property, 5);
+  }
+  
+  function getFaqSeiteTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    //4
+    return $this->getFaqTaxonomyId($value, $migrate_executable, $row, $destination_property, 4);
+  }
+  
+  function getFaqTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property, $vid) {
+    $source = $row->getSource();
+    
+    $data = Database::getConnection('default', $source['target'])
+      ->select('term_node', 'source_table_name')
+      ->fields('source_table_name')
+      ->condition('source_table_name.nid', $value)
+      ->execute()
+      ->fetchCol();
+    $categoryOrSeiteId = false;
+    if ($data) {
+      $categoryOrSeiteId = Database::getConnection('default', $source['target'])
+        ->select('term_data', 'source_table_name')
+        ->fields('source_table_name')
+        ->condition('source_table_name.tid', $data, 'IN')
+        ->condition('source_table_name.vid', $vid)
+        ->execute()
+        ->fetchField();
+    }
+    return $categoryOrSeiteId;
   }
 }
