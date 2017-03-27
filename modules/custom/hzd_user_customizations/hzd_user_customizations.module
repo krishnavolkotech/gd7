@@ -180,7 +180,7 @@ function hzd_user_customizations_user_insert($user) {
                 'entity_id' => $user->id(),
                 'request_status' => 0,
             ])->save();
-            
+          mailToGroupAdmins(['group'=>$group,'module'=>'cust_group','key'=>'immediate_notifications','message'=>'']);
         }
     }
 }

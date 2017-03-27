@@ -8,8 +8,8 @@
     {% if quickinfo %}
         <style>
             @page {
-                margin: 200px 40px 40px 40px;
-                display:inline-block;
+                margin: 205px 40px 40px 40px;
+                display:block;
                 width:100%;
             }
 
@@ -17,8 +17,8 @@
                position: fixed;
                left: 0px;
                top: -180px;
-              /*right: 20px;*/
-              /* height: 260px;*/
+               right: 20px;
+               /*height: 70px;*/
                /*background: #ffcc00;*/
                text-align: center;
             }
@@ -43,7 +43,7 @@
     <div id="header" class="pdf-quickinfo">
         <table border="1" width="100%" height="230" cellspacing="0" cellpadding="0">
             <tr>
-                <td  height="80" width="20%" rowspan="3">
+                <td height="35" width="20%" rowspan="3">
                     <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
                 </td>
                 <td rowspan="3">
@@ -54,7 +54,7 @@
 
                     {{ node.getTitle() }}
                 </td>
-                <td>
+                <td height="35">
                     {{ 'Veröffentlicht am'|trans }}:
                     {% if node.isPublished() %}
                         {{ node.getCreatedTime|format_date('hzd_datetime') }}
@@ -62,7 +62,7 @@
                 </td>
             </tr>
             <tr>
-                <td width="30%">
+                <td height="35" width="30%">
                     {{ 'Veröffentlicht von'|trans }}:
                     {% if node.isPublished() %}
                         {{ node.getOwner().getDisplayName() }}
@@ -70,7 +70,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td height="35">
                     {#Seite <span class="pageCounter"></span> #}{#von <span class="totalPageCounter"></span>#}{#</td>#}
                 </td>
             </tr>
