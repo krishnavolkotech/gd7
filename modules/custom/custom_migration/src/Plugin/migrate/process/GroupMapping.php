@@ -80,7 +80,7 @@ class GroupMapping extends ProcessPluginBase {
     return false;
   }
   
-  public function getForumGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+  public function getGroupForumId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
     $source = $row->getSource();
   
     if (empty($row->getSourceProperty('title'))) {
