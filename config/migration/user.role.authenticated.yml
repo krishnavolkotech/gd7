@@ -20,8 +20,6 @@ permissions:
   8: 'edit any quickinfo content'
   9: 'edit any service_profile content'
   10: 'edit own service_profile content'
-  11: 'create forum content'
-  12: 'edit own forum content'
   13: 'access frontpage'
   14: 'access content'
   15: 'create im_upload_page content'

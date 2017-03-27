@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.group.closed_private.field_description
+    - field.field.group.closed_private.field_forum_containers
     - field.field.group.closed_private.field_group_body
     - field.field.group.closed_private.field_old_reference
     - group.type.closed_private
@@ -21,6 +22,13 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+  field_forum_containers:
+    weight: -1
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
   field_group_body:
     weight: -2
     label: hidden
