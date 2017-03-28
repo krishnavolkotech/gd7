@@ -1,0 +1,5 @@
+flood_control.flood_control_config_link:
+  title: Configure Flood Control
+  description: 'Configuration Form for flood control'
+  parent: system.admin_config_system
+  route_name: flood_control.flood_control_config_form

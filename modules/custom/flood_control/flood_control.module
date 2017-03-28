@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Contains flood_control.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function flood_control_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the flood_control module.
+    case 'help.page.flood_control':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Interface for hidden flood control options.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
