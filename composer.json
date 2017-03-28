@@ -22,7 +22,8 @@
         "drupal/console": "^0.11.3",
         "drupal/gforum": "^1.0@beta",
         "drupal/subpathauto": "^1.0@beta",
-        "drupal/login_emailusername": "^1.1"
+        "drupal/login_emailusername": "^1.1",
+        "drupal/flood_unblock": "^1.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
