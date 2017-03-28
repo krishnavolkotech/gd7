@@ -29,7 +29,6 @@ dependencies:
     - node.type.problem
   module:
     - comment
-    - file
     - path
     - text
 id: node.problem.default
@@ -57,17 +56,17 @@ content:
     third_party_settings: {  }
   field_attachment:
     weight: 12
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_closed:
     weight: 19
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_comments:
     weight: 9
@@ -78,31 +77,31 @@ content:
     type: text_textarea
   field_diagnose:
     weight: 4
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_eroffnet:
     weight: 10
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_function:
     weight: 3
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_priority:
     weight: 7
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_problem_eroffnet:
     weight: 20
@@ -112,24 +111,24 @@ content:
     third_party_settings: {  }
   field_problem_status:
     weight: 1
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_processing:
     weight: 11
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_release:
     weight: 17
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_s_no:
     weight: -3
@@ -157,10 +156,10 @@ content:
     type: text_textarea
   field_task_force:
     weight: 8
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_ticketstore_count:
     weight: 32
@@ -170,17 +169,17 @@ content:
     third_party_settings: {  }
   field_ticketstore_link:
     weight: 31
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_version:
     weight: 18
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_work_around:
     weight: 6
@@ -226,10 +225,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 33
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  upload: true

@@ -15,7 +15,6 @@ dependencies:
     - node.type.release
   module:
     - comment
-    - file
     - path
     - text
 id: node.release.default
@@ -41,17 +40,17 @@ content:
     third_party_settings: {  }
   field_documentation_link:
     weight: 32
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_link:
     weight: 31
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_release_comments:
     weight: -1
@@ -72,10 +71,10 @@ content:
     third_party_settings: {  }
   field_status:
     weight: 6
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 60
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   langcode:
     type: language_select
@@ -114,10 +113,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 33
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  upload: true

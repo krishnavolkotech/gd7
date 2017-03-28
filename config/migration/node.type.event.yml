@@ -6,9 +6,8 @@ dependencies:
     - menu_ui
 third_party_settings:
   menu_ui:
-    available_menus:
-      - main
-    parent: 'main:'
+    available_menus: {  }
+    parent: ''
 name: Event
 type: event
 description: 'Events have a start date and an optional end date as well as a teaser and a body. They can be extended by other modules, too.'

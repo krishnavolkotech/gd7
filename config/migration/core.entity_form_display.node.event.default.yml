@@ -9,7 +9,6 @@ dependencies:
     - node.type.event
   module:
     - comment
-    - file
     - path
     - text
 id: node.event.default
@@ -72,10 +71,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 32
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  upload: true

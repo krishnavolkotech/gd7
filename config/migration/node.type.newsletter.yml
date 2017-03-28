@@ -1,7 +1,13 @@
 uuid: 29ba76ef-70ee-4d80-ab64-7959793d22ed
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
 name: Newsletter
 type: newsletter
 description: 'Ein Newsletter ist eine Rundmail an registrierte Benutzer.'

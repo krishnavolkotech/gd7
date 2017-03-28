@@ -14,9 +14,7 @@ dependencies:
     - node.type.services
   module:
     - comment
-    - file
     - path
-    - text
 id: node.services.default
 targetEntityType: node
 bundle: services
@@ -50,17 +48,17 @@ content:
     third_party_settings: {  }
   field_problem_name:
     weight: -4
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 30
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   field_release_name:
     weight: -2
-    type: text_textfield
+    type: string_textarea
     settings:
-      size: 30
       placeholder: ''
+      rows: 5
     third_party_settings: {  }
   langcode:
     type: language_select
@@ -104,10 +102,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  upload:
-    settings:
-      progress_indicator: throbber
-    type: file_generic
-    weight: 31
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  upload: true
