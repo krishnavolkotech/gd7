@@ -1,7 +1,13 @@
 uuid: 7ccab3ac-de7f-4d78-8d35-9d74cea2e245
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
 name: 'IM Ablage Attachments'
 type: im_upload_page
 description: 'Dieser Inhaltstyp stellt eine Seite bereit, auf der alle registrierten Mitglieder Daten hochladen können.'
