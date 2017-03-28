@@ -21,7 +21,8 @@
         "symfony/dom-crawler": "2.8",
         "drupal/console": "^0.11.3",
         "drupal/gforum": "^1.0@beta",
-        "drupal/subpathauto": "^1.0@beta"
+        "drupal/subpathauto": "^1.0@beta",
+        "drupal/login_emailusername": "^1.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

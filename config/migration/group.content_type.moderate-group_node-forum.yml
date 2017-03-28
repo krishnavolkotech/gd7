@@ -1,0 +1,19 @@
+uuid: 55001cf9-8869-4542-afd2-afc1064ea387
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+    - node.type.forum
+  module:
+    - gnode
+    - node
+id: moderate-group_node-forum
+label: 'Moderate de: Group node (Forenthema)'
+description: 'Adds <em class="placeholder">Forenthema</em> content to groups both publicly and privately.'
+group_type: moderate
+content_plugin: 'group_node:forum'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

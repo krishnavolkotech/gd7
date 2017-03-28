@@ -63,6 +63,7 @@ module:
   language: 0
   link: 0
   locale: 0
+  login_emailusername: 0
   mailsystem: 0
   masquerade: 0
   mass_contact: 0

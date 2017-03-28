@@ -3,11 +3,11 @@ langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: Qr8qctS3ynmjBhx2MLc2gHKfh7UiRmyueq_GggoOS_I
+  default_config_hash: boH3THxFIuxpHusf1Ti3p7dKEvyN5ahzeVMARHWqgaA
 id: field_services
 migration_tags:
   - 'Drupal 6'
-migration_group: null
+migration_group: fields
 label: 'Problem Service Fields'
 source:
   plugin: source_table

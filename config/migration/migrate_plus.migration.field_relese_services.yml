@@ -1,13 +1,13 @@
-uuid: 32c34395-a132-4e8d-a50e-d8e5d0d3708c
+uuid: f24765ff-8877-4650-9a9e-0877b6d8780d
 langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: Wp4NwjVPvumv7SADcBdk29kjGXu7lC0sq12LwGJk_7Q
+  default_config_hash: FbI-rwzEG4xDJWpRfY9OnGdp9WKs-IfF0qwIOyI3hQg
 id: field_relese_services
 migration_tags:
   - 'Drupal 6'
-migration_group: null
+migration_group: fields
 label: 'Release Service Fields'
 source:
   plugin: source_table

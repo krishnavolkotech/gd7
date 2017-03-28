@@ -1,13 +1,13 @@
-uuid: 0ed9ae66-7550-493e-a5df-c4e8cf833e00
+uuid: 6ec9f585-72fe-40b8-98f1-faa4f107a5e8
 langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: _ziar_Fhde6CZDvvoq68bge1rCHr3tPO6r45a69fQrA
+  default_config_hash: dMHAGz3AMw0YYRXkX2eQy2bS_VqWpNrWqSTVh-sR7ck
 id: field_dependent_service
 migration_tags:
   - 'Drupal 6'
-migration_group: null
+migration_group: fields
 label: 'Service Profile Service Fields'
 source:
   plugin: source_table

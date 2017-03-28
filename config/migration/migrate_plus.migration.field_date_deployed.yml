@@ -1,13 +1,13 @@
-uuid: 8b966bfa-71c6-4995-9791-db9e01829e24
+uuid: ab2bd6bd-58d7-4585-9d3d-463a1dd48f95
 langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: amMNAA69dNZ1cQWbj4-42xbLpFcVrJc4AtzYFCBkcMk
+  default_config_hash: zAepgJI9MRDtPIBLmU9THf71MKHL2SdoZDxvICP0NQ0
 id: field_date_deployed
 migration_tags:
   - 'Drupal 6'
-migration_group: null
+migration_group: fields
 label: 'Deployed Release Date Fields'
 source:
   plugin: source_table

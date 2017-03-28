@@ -1,16 +1,17 @@
-uuid: 685b3f74-4383-4c8a-a39a-e9f8b15102e7
+uuid: 5b095b41-a88e-49da-a316-632b774934f7
 langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: Le9IUeMSHLsDrHkyLzNmn6gkNs1YVzzP7MaFYLXKbEY
-id: group_content
+  default_config_hash: SCZau3IjwioQg0XEgH7Fa80wxZTH_rBOU-3qPGnHBFk
+id: group_forums
 migration_tags:
   - 'Drupal 6'
 migration_group: groups
-label: 'Group Content'
+label: 'Groups Forums'
 source:
   plugin: d6_node
+  node_type: forum
   target: migrate
 process:
   id: dedupe_entity
@@ -21,7 +22,7 @@ process:
   label:
     plugin: default_value
     source: title
-    default_value: Downtimes
+    default_value: Forum
   uid: node_uid
   status: status
   created: created
@@ -31,7 +32,7 @@ process:
   gid:
     -
       plugin: group_mapping_from_d6
-      method: getGroupId
+      method: getGroupForumId
       source: nid
     -
       plugin: skip_on_empty
@@ -43,8 +44,6 @@ process:
       source: type
 destination:
   plugin: 'entity:group_content'
-  target: default
 migration_dependencies:
   required:
-    - d6_user
-    - groups
+    - d6_node

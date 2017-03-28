@@ -1,13 +1,13 @@
-uuid: 3576c819-4d60-4772-a45e-434c2e060144
+uuid: 4fd011ea-ad39-4b2c-bbec-53b8cbfac052
 langcode: de
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: jgdLfJvS-7fKffKWyO2X62iufE3238Byovt3DG2vIVY
+  default_config_hash: IsJHt6jcwOZmswrHP8fsdt3bZms4V-2od_RfruF8_-w
 id: field_dependent_downtimeservices
 migration_tags:
   - 'Drupal 6'
-migration_group: null
+migration_group: fields
 label: 'Downtime Service Fields'
 source:
   plugin: source_table
