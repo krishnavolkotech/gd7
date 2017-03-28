@@ -155,7 +155,7 @@ class GroupMapping extends ProcessPluginBase {
     
     $data = Database::getConnection('default', $source['target'])
       ->select('term_node', 'source_table_name')
-      ->fields('source_table_name')
+      ->fields('source_table_name',['tid'])
       ->condition('source_table_name.nid', $value)
       ->execute()
       ->fetchCol();
@@ -169,6 +169,7 @@ class GroupMapping extends ProcessPluginBase {
         ->execute()
         ->fetchField();
     }
+//    print_r($categoryOrSeiteId);exit;
     return $categoryOrSeiteId;
   }
 }
