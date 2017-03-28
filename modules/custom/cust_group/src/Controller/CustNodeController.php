@@ -91,9 +91,10 @@ class CustNodeController extends ControllerBase {
   }
   
   static function hzdCreateDowntimesAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    if ($user->isAuthenticated()) {
+    if ($user) {
       $group = $route_match->getParameter('group');
       $groupMember = $group->getMember($user);
+      pr($groupMember);exit;
       if ($group->id() == INCIDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()
               ->get('request_status')->value == 1) || array_intersect([
             'site_administrator',

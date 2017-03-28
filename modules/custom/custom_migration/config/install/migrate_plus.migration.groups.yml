@@ -32,6 +32,10 @@ process:
     method: groupDescription
     source: nid
   field_old_reference: tnid
+  field_forum_containers:
+    plugin: group_type_maintainer
+    method: forumTermRef
+    source: title
 #  field_group_body: body
   'field_group_body/format':
     plugin: default_value

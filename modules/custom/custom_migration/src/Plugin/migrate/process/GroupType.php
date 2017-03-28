@@ -76,4 +76,15 @@ class GroupType extends ProcessPluginBase {
       ->fetchAssoc();
     return $data['og_description'];
   }
+  
+  function forumTermRef($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    if(empty($value)){
+      return false;
+    }
+    $term = \Drupal::entityTypeManager()->getStorage('term')->loadByProperties(['label'=>$value]);
+    if($term){
+      return $term->id();
+    }
+    return false;
+  }
 }
