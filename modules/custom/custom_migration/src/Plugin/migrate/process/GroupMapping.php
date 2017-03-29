@@ -95,7 +95,7 @@ class GroupMapping extends ProcessPluginBase {
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_hierarchy', 'source_table_name')
       ->fields('source_table_name')
-      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->condition('source_table_name.nid' , $value)
       ->execute()
       ->fetchAssoc();
     if ($data['parent'] != 0) {
