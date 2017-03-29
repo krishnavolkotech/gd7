@@ -487,4 +487,28 @@ function cust_group_menu_link_content_insert($menu) {
   $finalpath = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->toUrl()->getInternalPath();
   $menu->link->uri = 'internal:/'.$finalpath;
   $menu->save();
+
+  $pgroupid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->gid->target_id;
+  $gcontentid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->id();
+  $title = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->label->value;
+  $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
+  $title = $aliasCleaner->cleanstring($title);
+  $langcode = $menu->langcode->value;
+  if ($menu->getParentId()) {
+    $parent = $menu->getParentId();
+    $menu_uuid = explode(':',$parent)[1];
+    $menu_content = \Drupal::entityManager()->getStorage('menu_link_content')->loadByProperties(array('uuid' => $menu_uuid));
+    $menu_content = array_shift($menu_content);
+    $parent_path = explode(':',$menu_content->link->uri)[1];
+    $parent_alias = \Drupal::service('path.alias_manager')->getAliasByPath($parent_path, $langcode);
+
+    $system_path = '/group/'.$pgroupid.'/content/'.$gcontentid;
+    $path_alias = $parent_alias.'/'.$title;
+    \Drupal::service('path.alias_storage')->save($system_path, $path_alias, $langcode); 
+  } else {
+    $system_path = '/group/'.$pgroupid.'/content/'.$gcontentid;
+    $groupalias = \Drupal::service('path.alias_manager')->getAliasByPath('/group/'.$pgroupid, $langcode);
+    $path_alias = $groupalias.'/'.$title;
+    \Drupal::service('path.alias_storage')->save($system_path, $path_alias, $langcode);    
+  }
 }
