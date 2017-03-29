@@ -44,7 +44,7 @@ class GroupMenuMigrateController extends ControllerBase{
             }elseif(count(explode('/',trim(str_replace('internal:/','',$uri),'/'))) == 2){
                 $newUri = $this->getGroupNodeUri($uri);
                 if($newUri){
-                    $menu->set('link',['uri'=>'internal:'.$newUri])->save();
+                    $menu->set('link',['uri'=>'internal:/'.$newUri])->save();
                 }
                 //echo $uri.'==='.$newUri.'<br>';
             }
@@ -72,7 +72,7 @@ class GroupMenuMigrateController extends ControllerBase{
         if(!empty($groupContent)){
           $groupContentEntity = GroupContent::load(reset($groupContent));
 //          pr($groupContentEntity);
-          return $groupContentEntity->toUrl()->toString();
+          return $groupContentEntity->toUrl()->getInternalPath();
 //            return '/group/'.$groupData['gid'].'/node/'.$groupData['id'];
         }
         return false;

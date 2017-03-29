@@ -1,0 +1,13 @@
+diff --git a/src/PathProcessor.php b/src/PathProcessor.php
+index 9b2eb52..9af7962 100644
+--- a/src/PathProcessor.php
++++ b/src/PathProcessor.php
+@@ -157,7 +157,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
+       $path_info = '/' . substr($path_info, strlen($language_prefix));
+     }
+ 
+-    return $path_info;
++    return rtrim(urldecode($path_info),'/');
+   }
+ 
+   /**
