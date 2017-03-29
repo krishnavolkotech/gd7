@@ -81,7 +81,7 @@ class GroupType extends ProcessPluginBase {
     if(empty($value)){
       return false;
     }
-    $term = \Drupal::entityTypeManager()->getStorage('term')->loadByProperties(['label'=>$value]);
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['label'=>$value]);
     if($term){
       return $term->id();
     }
