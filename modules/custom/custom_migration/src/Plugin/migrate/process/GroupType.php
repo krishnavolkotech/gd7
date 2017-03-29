@@ -12,6 +12,7 @@ namespace Drupal\custom_migration\Plugin\migrate\process;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Provides process plugin.
@@ -75,5 +76,16 @@ class GroupType extends ProcessPluginBase {
       ->execute()
       ->fetchAssoc();
     return $data['og_description'];
+  }
+  
+  function forumTermRef($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property){
+    if(empty($value)){
+      return false;
+    }
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name'=>$value,'vid'=>'forums']);
+    if($term instanceof Term){
+      return $term->id();
+    }
+    return false;
   }
 }

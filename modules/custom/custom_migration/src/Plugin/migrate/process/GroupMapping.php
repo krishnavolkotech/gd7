@@ -92,10 +92,18 @@ class GroupMapping extends ProcessPluginBase {
     if (empty($value)) {
       return false;
     }
+    
+    $term = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
+      ->select('term_node', 'source_table_name')
+      ->fields('source_table_name',['tid'])
+      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->execute()
+      ->fetchField();
+//    print_r($term);exit;
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_hierarchy', 'source_table_name')
       ->fields('source_table_name')
-      ->condition('source_table_name.' . $this->configuration['source'], $value)
+      ->condition('source_table_name.tid', $term)
       ->execute()
       ->fetchAssoc();
     if ($data['parent'] != 0) {
@@ -111,7 +119,7 @@ class GroupMapping extends ProcessPluginBase {
       ->execute()
       ->fetchAssoc();
     $d8Gid = FALSE;
-    if (isset($data['group_nid'])) {
+    if (isset($groupName['name'])) {
       $d8Gid = \Drupal::entityQuery('group')
         ->condition('label', $groupName['name'])
         ->execute();

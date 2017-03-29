@@ -60,9 +60,9 @@ cust_group.path_alias_update:
 cust_group.forums:
   path: '/group/{group}/forum'
   defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
+    _controller: '\Drupal\cust_group\Controller\Forum::forum'
   requirements:
-    _access: 'FALSE'
+    _access: 'TRUE'
 cust_group.approve_membership_request:
   path: '/group/{group}/member/{group_content}/approve'
   defaults:

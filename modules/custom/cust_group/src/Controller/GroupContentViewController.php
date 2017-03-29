@@ -15,13 +15,18 @@ use Drupal\group\Entity\GroupContentInterface;
 use Drupal\group\Entity\GroupInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class GroupContentViewController
+ * @package Drupal\cust_group\Controller
+ */
 class GroupContentViewController extends ControllerBase {
   
   
   /**
-   * @param GroupInterface $group
+   * @param \Drupal\group\Entity\GroupInterface $group
    * @param $type
-   * @param GroupContentInterface $groupContent
+   * @param \Drupal\group\Entity\GroupContentInterface|NULL $group_content
+   * @return array
    */
   public function viewGroupContent(GroupInterface $group, $type, GroupContentInterface $group_content = null) {
     $typeMappings = ['problems'=>'problem','rz-schnellinfos'=>'quickinfo','downtimes'=>'downtimes'];
