@@ -8,6 +8,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\GroupInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Provides group membership route controllers.
@@ -79,6 +80,28 @@ class GroupMembershipController extends ControllerBase {
   }
 
   /**
+   * Provides the Request membership form for joining a group access check.
+   *
+   * @param \Drupal\group\Entity\GroupInterface $group
+   *   The group to join.
+   *
+   * @return array
+   *   A group join form access.
+   */
+  public function access(GroupInterface $group) {
+    $currentUser = \Drupal::currentUser();
+    $groupMember = $group->getMember($currentUser);
+    if (($groupMember && $groupMember->getGroupContent()
+            ->get('request_status')->value == 1)
+    ) {
+      return AccessResult::forbidden();
+    }
+    else {
+      return AccessResult::allowed();
+    }
+  }
+
+  /**
    * Provides the Request membership form for joining a group.
    *
    * @param \Drupal\group\Entity\GroupInterface $group
@@ -88,16 +111,25 @@ class GroupMembershipController extends ControllerBase {
    *   A group join form.
    */
   public function requestMembership(GroupInterface $group) {
-    /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
-    $plugin = $group->getGroupType()->getContentPlugin('group_membership');
-    // Pre-populate a group membership with the current user.
-    $group_content = GroupContent::create([
-      'type' => $plugin->getContentTypeConfigId(),
-      'gid' => $group->id(),
-      'entity_id' => $this->currentUser->id(),
-      'request_status' => 0,
-    ]);
-    return $this->entityFormBuilder()->getForm($group_content, 'group-request');
+    $currentUser = \Drupal::currentUser();
+    $groupMember = $group->getMember($currentUser);
+    if (($groupMember && $groupMember->getGroupContent()
+            ->get('request_status')->value == 0)
+    ) {
+      return ['#markup' => $this->t('Your request for membership group of %label is in queue, Please wait for approval.', ['%label' => $group->label()])];
+    }
+    else {
+      /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
+      $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+      // Pre-populate a group membership with the current user.
+      $group_content = GroupContent::create([
+            'type' => $plugin->getContentTypeConfigId(),
+            'gid' => $group->id(),
+            'entity_id' => $this->currentUser->id(),
+            'request_status' => 0,
+      ]);
+      return $this->entityFormBuilder()->getForm($group_content, 'group-request');
+    }
   }
 
   /**
