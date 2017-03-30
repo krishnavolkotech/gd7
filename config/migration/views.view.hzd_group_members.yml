@@ -934,6 +934,104 @@ display:
           entity_type: group_content
           entity_field: id
           plugin_id: field
+        firstname:
+          id: firstname
+          table: cust_profile
+          field: firstname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Firstname
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Lastname
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
       relationships:
         gid:
           id: gid
@@ -945,6 +1043,15 @@ display:
           required: false
           entity_type: group_content
           entity_field: gid
+          plugin_id: standard
+        uid:
+          id: uid
+          table: cust_profile
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' user profile uid'
+          required: true
           plugin_id: standard
       display_description: 'Approved members of a group'
       filters:
@@ -1038,10 +1145,10 @@ display:
           entity_type: group_content
           entity_field: request_status
           plugin_id: numeric
-        lastname:
-          id: lastname
-          table: cust_profile
-          field: lastname
+        combine:
+          id: combine
+          table: views
+          field: combine
           relationship: none
           group_type: group
           admin_label: ''
@@ -1050,12 +1157,12 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: lastname_op
+            operator_id: combine_op
             label: Name
             description: ''
             use_operator: false
-            operator: lastname_op
-            identifier: name
+            operator: combine_op
+            identifier: combine
             required: false
             remember: false
             multiple: false
@@ -1078,7 +1185,11 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: string
+          fields:
+            label: label
+            firstname: firstname
+            lastname: lastname
+          plugin_id: combine
       filter_groups:
         operator: AND
         groups:
@@ -1112,6 +1223,7 @@ display:
         relationships: false
         filters: false
         filter_groups: false
+        header: false
       use_more_always: false
       use_more_text: more
       pager:
@@ -1609,6 +1721,18 @@ display:
         operator: AND
         groups:
           1: AND
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content: 'No data found'
+          plugin_id: text_custom
     cache_metadata:
       max-age: 0
       contexts:

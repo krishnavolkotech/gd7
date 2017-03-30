@@ -4,8 +4,13 @@ status: true
 dependencies:
   config:
     - group.content_type.closed-group_membership
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
 id: group_content.closed-group_membership
 target_entity_type_id: group_content
 target_bundle: closed-group_membership
 default_langcode: site_default
-language_alterable: false
+language_alterable: true

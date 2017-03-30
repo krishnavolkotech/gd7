@@ -1,0 +1,20 @@
+uuid: 7360fddf-ed91-47c4-b677-c2ed70b20bfd
+langcode: de
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.faq_seite
+  module:
+    - path
+id: taxonomy_term.faq_seite.path
+field_name: path
+entity_type: taxonomy_term
+bundle: faq_seite
+label: URL-Alias
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path
