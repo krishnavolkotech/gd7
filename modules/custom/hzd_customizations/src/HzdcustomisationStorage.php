@@ -622,7 +622,7 @@ class HzdcustomisationStorage {
       $owner_state_id = '';
     }*/
     $is_group_admin = CustNodeController::isGroupAdmin($group_id);
-    array_push($content_state_id, $owner_state_id);
+//    array_push($content_state_id, $owner_state_id);
     if (in_array(SITE_ADMIN_ROLE, $user->getRoles())) {
       return TRUE;
     } elseif ($is_group_admin) {
