@@ -4,8 +4,13 @@ status: true
 dependencies:
   config:
     - group.content_type.group_content_type_c26112f8ad4cd
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
 id: group_content.group_content_type_c26112f8ad4cd
 target_entity_type_id: group_content
 target_bundle: group_content_type_c26112f8ad4cd
 default_langcode: site_default
-language_alterable: false
+language_alterable: true

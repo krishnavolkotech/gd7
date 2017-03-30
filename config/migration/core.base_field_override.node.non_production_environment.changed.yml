@@ -11,7 +11,7 @@ bundle: non_production_environment
 label: Changed
 description: 'The time that the node was last edited.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
