@@ -83,7 +83,9 @@ class GroupType extends ProcessPluginBase {
       return false;
     }
     $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name'=>$value,'vid'=>'forums']);
-    if($term instanceof Term){
+    
+    if(!empty($term)){
+      $term = reset($term);
       return $term->id();
     }
     return false;
