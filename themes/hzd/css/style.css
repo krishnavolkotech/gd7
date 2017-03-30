@@ -1314,6 +1314,10 @@ article .quickedit-field .field__items .field--item {
 .table-striped > tbody > tr:nth-of-type(odd) {
   background:transparent !important;
 }
+.view-group-nodes .views-field-uid a {
+    word-wrap: break-word;
+    word-break: break-all;
+}
 .node-preview-container {
   width: 250px;
   background: #04425f;
