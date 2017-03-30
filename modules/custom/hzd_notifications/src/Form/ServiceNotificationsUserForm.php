@@ -72,7 +72,7 @@ class ServiceNotificationsUserForm extends FormBase {
       $form['subscriptions'][5]['subscriptions_interval_5'] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => ($planning_files_default_interval == 0 || $planning_files_default_interval) ? $planning_files_default_interval : -1,
+        '#default_value' => ($planning_files_default_interval == 0) ? $planning_files_default_interval : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
         '#suffix' => '</div>'
       );
