@@ -8,9 +8,9 @@ dependencies:
     - content_translation
 third_party_settings:
   content_translation:
-    enabled: false
+    enabled: true
 id: group.incident_managent
 target_entity_type_id: group
 target_bundle: incident_managent
 default_langcode: site_default
-language_alterable: false
+language_alterable: true

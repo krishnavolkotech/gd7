@@ -615,12 +615,12 @@ class HzdcustomisationStorage {
       $current_user_state_id = '';
     }
     // dsm(\Drupal\user\Entity\User::load($owner_id));
-    /*$owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
+    $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
     if ($owner_state) {
       $owner_state_id = $owner_state;
     } else {
       $owner_state_id = '';
-    }*/
+    }
     $is_group_admin = CustNodeController::isGroupAdmin($group_id);
 //    array_push($content_state_id, $owner_state_id);
     if (in_array(SITE_ADMIN_ROLE, $user->getRoles())) {

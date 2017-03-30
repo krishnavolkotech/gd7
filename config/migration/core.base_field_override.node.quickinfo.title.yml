@@ -8,10 +8,10 @@ id: node.quickinfo.title
 field_name: title
 entity_type: node
 bundle: quickinfo
-label: Title
+label: Titel
 description: ''
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
