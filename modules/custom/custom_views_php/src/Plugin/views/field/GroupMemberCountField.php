@@ -44,32 +44,22 @@ class GroupMemberCountField extends FieldPluginBase {
    * {@inheritdoc}
    */
   protected static function groupMemberCount($gid) {
-    $contents = array(
-      'closed_private-group_membership',
-      'closed-group_membership',
-      'downtimes-group_membership',
-      'group_content_type_7b308aea24fe7',
-      'group_content_type_d4b06e2b6aad0',
-      'moderate-group_membership',
-      'open-group_membership',
-      'quick_info-group_membership',
-      'group_content_type_6693a40b54133',
-      'group_content_type_c26112f8ad4cd',
-    );
     $gpc = \Drupal::database()->select('group_content_field_data', 'g');
-    $gpc->innerJoin('users_field_data', 'u', 'g.entity_id = u.uid');
+    $gpc->Join('users_field_data', 'u', 'g.entity_id = u.uid');
     $gpc->condition('u.status', 1)
-      ->condition('g.gid', $gid)
-      ->condition('g.type', $contents, 'IN')
+        ->condition('g.gid', $gid)
+        //->condition('g.type', $contents, 'IN')
+        ->condition('g.type', '%group_node%', 'NOT LIKE')
 //      ->countQuery()
-    ->fields('g');
-    
+        ->fields('g');
+
     $gpc = $gpc->execute()
-      ->fetchCol();
+        ->fetchCol();
+    $cc = count($gpc);
     // Return the result in object format.
-    return count($gpc);
+    return $cc;
   }
-  
+
   /**
    * {@inheritdoc}
    */
