@@ -1,0 +1,20 @@
+uuid: fa242ccb-35ca-492c-a39c-10eb1e0fcf1b
+langcode: de
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.thema
+  module:
+    - path
+id: taxonomy_term.thema.path
+field_name: path
+entity_type: taxonomy_term
+bundle: thema
+label: URL-Alias
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

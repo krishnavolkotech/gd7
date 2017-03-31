@@ -1,0 +1,16 @@
+uuid: 6c417634-8191-4c66-ad8f-e10aa36666a1
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.group_content_type_486a744513175
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.group_content_type_486a744513175
+target_entity_type_id: group_content
+target_bundle: group_content_type_486a744513175
+default_langcode: site_default
+language_alterable: true

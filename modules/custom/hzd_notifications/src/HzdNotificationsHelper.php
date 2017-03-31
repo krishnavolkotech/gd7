@@ -213,7 +213,7 @@ class HzdNotificationsHelper {
           ->fields(['uids' => serialize($uids)])
           ->condition('sid', $data[$interval]->sid)->execute();
       } else {
-        $notifyData = ['uids' => serialize([$uid]), 'send_interval' => $interval, 'type' => $type, ''];
+        $notifyData = ['uids' => serialize([$uid]), 'send_interval' => $interval, 'type' => $type, 'service_id' => $service];
         \Drupal::database()
           ->insert('service_notifications')
           ->fields($notifyData)->execute();

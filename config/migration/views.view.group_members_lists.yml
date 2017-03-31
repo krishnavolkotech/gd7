@@ -34,8 +34,9 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: group_permission
+        options:
+          group_permission: 'view group_membership content'
       cache:
         type: tag
         options: {  }
@@ -856,6 +857,7 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
@@ -879,6 +881,7 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
@@ -921,7 +924,7 @@ display:
             last: 'Last »'
           expose:
             items_per_page: true
-            items_per_page_label: ''
+            items_per_page_label: Items
             items_per_page_options: '25, 50, 100'
             items_per_page_options_all: true
             items_per_page_options_all_label: All
@@ -1708,6 +1711,7 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_interface'
         - route
         - url

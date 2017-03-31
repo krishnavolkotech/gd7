@@ -9,10 +9,10 @@ id: node.quickinfo.field_related_transfer_number
 field_name: field_related_transfer_number
 entity_type: node
 bundle: quickinfo
-label: '1.2 Related to software transfer no.'
+label: '1.2 Bezug zu SW-Übergabe-Nr.:'
 description: '(max. 254 Zeichen)'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
