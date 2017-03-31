@@ -96,7 +96,7 @@ class BulkMailGroupMembersForm extends FormBase {
       $groupMembers = $group->getMembers();
       foreach ($groupMembers as $groupMember){
         $user = $groupMember->getGroupContent();
-        if($user->get('request_status')->value == 1 && !in_array($group->getGroupType()->id().'-admin', array_keys($groupMember->getRoles()))){
+        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 && !in_array($group->getGroupType()->id().'-admin', array_keys($groupMember->getRoles()))){
           $mailToGroupMember[] = $user->getEntity()->getEmail();
 //          break;
         }
