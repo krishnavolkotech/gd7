@@ -629,6 +629,8 @@ class HzdcustomisationStorage {
       return TRUE;
     } elseif (in_array($current_user_state_id, $content_state_id)) {
       return TRUE;
+    } elseif ($owner_id == $user->id()) {
+      return TRUE;
     } else {
       return FALSE;
     }
