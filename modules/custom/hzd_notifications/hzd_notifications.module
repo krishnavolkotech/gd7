@@ -272,16 +272,25 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
       }
     }
     
-    
+/**
+ * @todo Make it configrable to enable configration access
+ */
     if (isset($group_id)) {
-      
       $for_admin_formids = array(
+        'node_page_form',
+        'node_page_edit_form',
+        'node_faq_form',
+        'node_faq_edit_form',
         'node_downtimes_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
         'node_type_edit_form',
       );
       $for_groupadmin_formids = array(
+        'node_page_form',
+        'node_page_edit_form',
+        'node_faq_form',
+        'node_faq_edit_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
       );

@@ -69,3 +69,4 @@ permissions:
   62: 'administer menu'
   63: 'block remove'
   64: 'block upload'
+  65: 'administer users'
