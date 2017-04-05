@@ -20,6 +20,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\EventSubscriber\DefaultExceptionSubscriber;
 use Drupal\cust_group\CustGroupHelper;
+use Drupal\Core\Routing;
+use Drupal\user\Entity\User;
 
 /**
  * Description of ContentView
@@ -36,6 +38,25 @@ class ContentView implements EventSubscriberInterface {
 
   function groupContentRedirect(GetResponseEvent $event) {
     $request = $event->getRequest();
+
+    if ($request->attributes->get('_route') == 'front_page.front') {
+      //$response = new RedirectResponse(Url::fromRoute('front_page.front',['tour'=> TRUE])->toString());
+      $user = \Drupal::currentUser()->id();
+      if ($user) {
+        $currentUser = User::load($user);
+        if (!(in_array('site_administrator', $currentUser->getRoles()) || $user == 1)) {
+          if ($currentUser->getLastAccessedTime() == $currentUser->getLastLoginTime()) {
+            if (!isset($_GET['tour'])) {
+              $all_query['query'] = ['tour' => TRUE];
+              $response = new RedirectResponse(Url::fromUserInput('/', $all_query)->toString());
+              $event->setResponse($response);
+              return $event;
+            }
+          }
+        }
+      }
+    }
+
     if ($request->attributes->get('_route') !== 'entity.node.canonical') {
       return;
     }

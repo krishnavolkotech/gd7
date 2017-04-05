@@ -1,0 +1,56 @@
+id: tour-builder
+module: tour_builder
+label: 'Explain what tour builder does'
+status: '1'
+langcode: en
+paths:
+  - admin/config/development/tour-builder
+tips:
+  tour-builder-page-1:
+    id: tour-builder-page-1
+    plugin: text
+    label: 'Tour Builder'
+    weight: '-10'
+    attributes: ''
+    body: '<p>On this page you see a list of all available tours.</p><p>You can View, Edit, Clone Export and Patch a Tour.</p>'
+    location: top
+  view:
+    id: view
+    plugin: text_extended
+    label: View
+    weight: '-9'
+    attributes: ''
+    body: '<p>View provides a human readable version of the tour.</p><p>This will help discussing a tour between peers.</p>'
+    location: top
+  edit:
+    id: edit
+    plugin: text_extended
+    label: Edit
+    weight: '-8'
+    attributes: ''
+    body: 'This will redirect you to the Tour UI edit tool.'
+    location: top
+  clone:
+    id: clone
+    plugin: text_extended
+    label: Clone
+    weight: '-7'
+    attributes: ''
+    body: 'By cloning a tour you can speed up the tour writing effort.'
+    location: top
+  export:
+    id: export
+    plugin: text_extended
+    label: Export
+    weight: '-6'
+    attributes: ''
+    body: "<p>This gives you the YAML file content for copy/paste actions or a full download.</p>\r\n<p>This is the fastest way to exchange tours between non developers. Developers mostly want Patch files which follows next.</p>"
+    location: top
+  tour-builder-page-2:
+    id: tour-builder-page-2
+    plugin: text
+    label: Patch
+    weight: '-5'
+    attributes: {  }
+    body: '<p>You can create a patch against the latest of Drupal core 8</p><p>A patch is useless unless you have an issue on http://drupal.org</p><p>You should upload the patch file as a new comment to the mentioned issue.</p>'
+    location: top

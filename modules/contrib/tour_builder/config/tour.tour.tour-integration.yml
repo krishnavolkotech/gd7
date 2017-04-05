@@ -1,0 +1,32 @@
+id: tour-integration
+module: ''
+label: 'Tour Integration'
+status: '1'
+langcode: ''
+paths:
+  - '<front>'
+tips:
+  welcome-to-tour-for-writers:
+    id: welcome-to-tour-for-writers
+    plugin: text_extended
+    label: 'Tour for Writers'
+    weight: '-10'
+    attributes: {  }
+    body: "<p>This site provides tools for Tour Writers. All you need to know is\r\n  <ol>\r\n    <li>What is a Tour.</li>\r\n    <li>What page you want to write a Tour for.</li>\r\n    <li>How to inspect the source HTML for the page you want to work on.</li>\r\n    <li>Know how to write basic HTML.</li>\r\n  </ol>\r\n</p>\r\n"
+    location: top
+  tour-building-options:
+    id: tour-building-options
+    plugin: text_extended
+    label: 'Collaboration options.'
+    weight: '-9'
+    attributes: ''
+    body: "<p>To communicate with developer Tour Builder offers export of tours as YAML and even a patch file .</p>\r\n<p>Start the <a href=\"admin/config/development/tour-builder?tour=1\">Tour Builder tour</a> for an overview.</p>\r\n"
+    location: top
+  tour-ui:
+    id: tour-ui
+    plugin: text_extended
+    label: 'Tour UI'
+    weight: '-8'
+    attributes: ''
+    body: 'Start the <a href="admin/config/user-interface/tour?tour=1">Tour UI tour</a> for an overview how to Add, Delete Tours and Tips.'
+    location: top

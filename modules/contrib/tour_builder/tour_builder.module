@@ -1,0 +1,627 @@
+<?php
+
+/**
+ * @file
+ * Tour Builder module.
+ *
+ * TODOs:
+ *  - build or use a controller like: ConfigTestFormController
+ */
+use Drupal\Core\Config\Schema\Element;
+use Drupal\tour\Plugin\Core\Entity\Tour;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Home of Tour Buider
+ */
+    const TOUR_BUILDER_HOME = 'admin/config/user-interface/tour-builder';
+
+/**
+ * HOME of Tour UI
+ */
+    const TOUR_BUILDER_TOUR_HOME = 'admin/config/user-interface/tour';
+
+/**
+ * Implements hook_menu().
+ */
+function tour_builder_menu() {
+  $items[TOUR_BUILDER_HOME] = array(
+    'title' => 'Tour builder',
+    'description' => 'Interface with d.o issue queue and Tour writers.',
+    'page callback' => 'tour_builder_overview_page',
+    'access arguments' => array('list tours'),
+  );
+  $items[TOUR_BUILDER_HOME . '/list'] = array(
+    'title' => 'List',
+    #'description' => 'Create and manage tours.',
+    'page callback' => 'tour_builder_overview_page',
+    'access arguments' => array('list tours'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items[TOUR_BUILDER_HOME . '/%/view'] = array(
+    'title' => 'View',
+    'page callback' => 'tour_builder_list_page',
+    'page arguments' => array(4),
+    'access arguments' => array('list tours'),
+    'weight' => 2,
+  );
+  $items[TOUR_BUILDER_HOME . '/%/clone'] = array(
+    'title' => 'Clone',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tour_builder_clone_form', 4),
+    'access arguments' => array('edit tours'),
+    'weight' => 3,
+  );
+  $items[TOUR_BUILDER_HOME . '/%/export'] = array(
+    'title' => 'Download',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tour_builder_export_form', 4),
+    'access arguments' => array('list tours'),
+    'weight' => 3,
+  );
+  $items[TOUR_BUILDER_HOME . '/%/patch'] = array(
+    'title' => 'Patch',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tour_builder_patch_form', 4),
+    'access arguments' => array('list tours'),
+    'weight' => 3,
+  );
+  $items[TOUR_BUILDER_HOME . '/%/apply-patch'] = array(
+    'title' => 'Apply patch on given tour.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tour_builder_apply_patch_form', 4),
+    'access arguments' => array('edit tours'),
+    'weight' => 3,
+  );
+  $items[TOUR_BUILDER_HOME . '/apply-patch'] = array(
+    'title' => 'Apply patch containing some tours.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tour_builder_apply_patch_form'),
+    'access arguments' => array('edit tours'),
+    'weight' => 3,
+    'weight' => 3,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function tour_builder_permission() {
+  return array(
+    'list tours' => array(
+      'title' => t('List tours'),
+      'description' => t('See an overview of all tours available.'),
+    ),
+    'edit tours' => array(
+      'title' => t('Edit tours'),
+      'description' => t('Edit all tours available.'),
+    ),
+  );
+}
+
+/**
+ * Overview page
+ */
+function tour_builder_overview_page() {
+  $rows = array();
+  foreach (tour_builder_name_list() as $name) {
+    // Only handle elements with a schema. The schema system falls back on the
+    // Property class for unknown types. See http://drupal.org/node/1905230
+    $definition = config_typed()->getDefinition($name);
+    if (is_array($definition) && $definition['class'] == '\Drupal\Core\Config\Schema\Property') {
+      continue;
+    }
+    $tour = config_typed()->get($name)->getValue();
+    $short_name = str_replace('tour.tour.', '', $name);
+    $label = $tour['label'];
+    $paths = $tour['paths'];
+    $links = array();
+    foreach ($paths as $path) {
+      if (strpos($path, "*") === FALSE) {
+        $links[] = l($path, $path, array('query' => array('tour' => 1)));
+      }
+      else {
+        $links[] = check_plain($path);
+      }
+    }
+    $link = theme('item_list', array('items' => $links));
+    $row = array(
+      $name,
+      $label,
+      $link,
+    );
+    $operations = array(
+      'print' => array(
+        'title' => 'Print',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/view',
+      ),
+      'edit' => array(
+        'title' => 'Edit',
+        'href' => TOUR_BUILDER_TOUR_HOME . '/manage/' . $short_name,
+      ),
+      'delete' => array(
+        'title' => 'Delete',
+        'href' => TOUR_BUILDER_TOUR_HOME . '/manage/' . $short_name . '/delete',
+      ),
+      'clone' => array(
+        'title' => 'Clone',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/clone',
+      ),
+      'tour-output' => array(
+        'title' => 'Take from this site',
+      ),
+      'export' => array(
+        'title' => 'Export',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/export',
+      ),
+      'generate-patch' => array(
+        'title' => 'Generate patch',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/patch',
+        'attributes' => array('title' => 'This needs a shell script.'),
+      ),
+      'tour-input' => array(
+        'title' => 'Put on this site',
+      ),
+      'import' => array(
+        'title' => 'Import',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/import',
+      ),
+      'apply-patch' => array(
+        'title' => 'Apply patch',
+        'href' => TOUR_BUILDER_HOME . '/' . $short_name . '/apply-patch',
+        'attributes' => array('title' => 'This needs a shell script.'),
+      ),
+    );
+    $row[] = array(
+      'data' => array(
+        '#type' => 'operations',
+        '#links' => $operations,
+      ),
+    );
+    $rows[] = $row;
+  }
+  $header = array(t('Available tours'), t('Description'), t('Links'), array('data' => t('Operations'), 'colspan' => 7));
+  $button = l('Apply patch', TOUR_BUILDER_HOME . '/apply-patch', array('attributes' => array('class' => 'button button-action')));
+
+  return $button . theme('table', array('header' => $header, 'rows' => $rows));
+}
+
+/**
+ * List all available configuration names.
+ */
+function tour_builder_name_list() {
+  return \Drupal::service('config.storage')->listAll('tour.tour.');
+}
+
+function tour_builder_list_page($short_name) {
+  $name = 'tour.tour.' . $short_name;
+  if (!_tour_builder_is_tour($name)) {
+    return new RedirectResponse(url(TOUR_BUILDER_HOME, array('absolute' => TRUE)));
+  }
+
+  $tour = config_typed()->get($name);
+  $values = $tour->getValue();
+
+  if (isset($values['paths'])) {
+    $paths = $values['paths'];
+    $paths = is_array($paths)? $paths : array();
+    $values['paths'] = htmlspecialchars(join(", ", $paths));
+  }
+  if (isset($values['tips'])) {
+    $tips = $values['tips'];
+    uasort($tips, function($a, $b) {
+          return $a['weight'] - $b['weight'];
+        });
+    unset($values['tips']);
+    foreach ($tips as $id => &$tip) {
+      $tip['body'] = htmlspecialchars($tip['body']);
+      if (isset($tip['attributes']) && !empty($tip['attributes'])) {
+        $attr = '';
+        foreach ($tip['attributes'] as $attrib => $value) {
+          $attr .= $attrib . ' : ' . $value;
+        }
+        $tip['attributes'] = $attr;
+      }
+    }
+  }
+  $output = '';
+  $header = array('Name', $name);
+  $rows = array();
+  foreach ($values as $key => $value) {
+    $rows[] = array($key, $value);
+  }
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+
+  foreach ($tips as $key => $tip) {
+    $header = array('Tip', $key);
+    $rows = array();
+    foreach ($tip as $id => $value) {
+      $rows[] = array($id, $value);
+    }
+    $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  }
+  return $output;
+}
+
+/**
+ * Check for tour existance for given schema.
+ *
+ * @param string $name
+ *   Should be prefixed with 'tour.tour.'
+ * @return boolean
+ */
+function _tour_builder_is_tour($schema) {
+  $is_tour = strpos($schema, 'tour.tour.') === 0;
+  if ($is_tour) {
+    $tours = tour_builder_name_list();
+    $is_tour = in_array($schema, $tours);
+  }
+  return $is_tour;
+}
+
+// == Page callbacks ==========================================================
+
+function tour_builder_clone_form($form, &$form_state, $short_name) {
+  $name = 'tour.tour.' . $short_name;
+  if (!_tour_builder_is_tour($name)) {
+    return new RedirectResponse(url(TOUR_BUILDER_HOME, array('absolute' => TRUE)));
+  }
+
+  $form['old_name'] = array(
+    '#type' => 'value',
+    '#value' => $short_name,
+  );
+  $form['new_name'] = array(
+    '#title' => 'File name for new tour item.',
+    '#type' => 'textfield',
+    '#description' => 'This value should start with <strong>tour.tour.</strong> and may not exists.',
+    '#field_prefix' => 'tour.tour.',
+    '#default_value' => $short_name,
+  );
+
+  $tour = config_typed()->get($name);
+  $values = $tour->getValue();
+  $module = $values['module'];
+
+  $form['module'] = array(
+    '#title' => 'Module for this tour.',
+    '#type' => 'textfield',
+    '#default_value' => $module,
+  );
+  return confirm_form($form, t("You are cloning tour %tour", array('%tour' => $name)), TOUR_BUILDER_HOME, NULL, "Clone");
+}
+
+function tour_builder_clone_form_validate($form, &$form_state) {
+  $values = $form_state['values'];
+  $old_name = $values['old_name'];
+  $new_name = $values['new_name'];
+  if ($old_name == $new_name) {
+    form_set_error('new_name', 'You must change the name');
+    return;
+  }
+
+  $name = 'tour.tour.' . $new_name;
+  $list = tour_builder_name_list();
+  if (in_array($name, $list)) {
+    form_set_error('new_name', 'Name already exists');
+    return;
+  }
+}
+
+function tour_builder_clone_form_submit($form, &$form_state) {
+  $old_name = $form_state['values']['old_name'];
+  $name = 'tour.tour.' . $old_name;
+  $old = config_typed()->get($name);
+
+  $short_name = $form_state['values']['new_name'];
+  $name = 'tour.tour.' . $short_name;
+  $values = $old->getValue();
+  $values['id'] = $short_name;
+  entity_create('tour', $values)->save();
+  $form_state['redirect'] = TOUR_BUILDER_TOUR_HOME . '/manage/' . $short_name;
+}
+
+function tour_builder_export_form($form, &$form_state, $short_name) {
+  $name = 'tour.tour.' . $short_name;
+  if (!_tour_builder_is_tour($name)) {
+    return new RedirectResponse(url(TOUR_BUILDER_HOME, array('absolute' => TRUE)));
+  }
+
+  $tour = config_typed()->get($name);
+
+  $file_path = _tour_builder_get_active_tour_path($name);
+
+  // TODO: use default file system
+  //$temp_dir = file_directory_temp();
+  $temp_dir = 'sites/default/files';
+  $temp_file = $temp_dir . '/' . $name . '.yml';
+  $link = l($name, $temp_file);
+  $content = file_get_contents($file_path);
+  file_put_contents($temp_file, $content);
+  $form['link'] = array(
+    '#type' => 'item',
+    '#title' => "Download",
+    '#markup' => $link,
+    '#description' => 'Right click to download.',
+  );
+  $form['export'] = array(
+    '#type' => 'textarea',
+    '#title' => 'YAML Content',
+    '#rows' => 15,
+    '#default_value' => $content,
+    '#description' => "You may copy paste parts of it's content.",
+  );
+  return $form;
+}
+
+function tour_builder_patch_form($form, &$form_state, $short_name) {
+  $name = 'tour.tour.' . $short_name;
+  if (!_tour_builder_is_tour($name)) {
+    return new RedirectResponse(url(TOUR_BUILDER_HOME, array('absolute' => TRUE)));
+  }
+
+  $tour = config_typed()->get($name);
+  $values = $tour->getValue();
+  $module = $values['module'];
+  // TODO: what if argument misses?
+  $form['schema'] = array(
+    '#type' => 'value',
+    '#value' => $name,
+  );
+  $form['nid'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Issue ID',
+    '#description' => 'This the the NID over the issue you are working on.',
+    '#required' => TRUE,
+    '#default_value' => '12345',
+  );
+  $form['cid'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Comment #',
+    '#description' => 'This the comment # the patch is destined for',
+    '#required' => TRUE,
+    '#default_value' => '1',
+  );
+  $modules = system_rebuild_module_data();
+  $core_modules = array_filter($modules, function($data) {
+        return strpos($data->uri, 'core/module') === 0;
+      });
+  $enabled = array_filter($core_modules, function($data) {
+        return $data->status;
+      });
+  $disabled = array_filter($core_modules, function($data) {
+        return !$data->status && (!isset($data->info['hidden']) || !$data->info['hidden']);
+      });
+  $options = array(
+    'enabled' => array_combine(array_keys($enabled), array_keys($enabled)),
+    'disabled' => array_combine(array_keys($disabled), array_keys($disabled)),
+  );
+  $form['module'] = array(
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#title' => 'Select the module the tour patch is for.',
+    '#options' => $options,
+    '#description' => 'TODO: fix tour module value?',
+  );
+  if (!empty($module)) {
+    $form['module']['#default_value'] = $module;
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  return $form;
+}
+
+function tour_builder_patch_form_validate($form, &$form_state) {
+  $urls = array(
+    'http://drupal.org/node/',
+    'https://drupal.org/node/',
+  );
+  $nid = $form_state['values']['nid'];
+  $nid = str_replace($urls, '', $nid);
+  if (!is_numeric($nid)) {
+    form_set_error('nid', 'You must enter a numeric value');
+  }
+  else {
+    $form_state['values']['nid'] = $nid;
+  }
+  $cid = $form_state['values']['cid'];
+  if (!is_numeric($cid)) {
+    form_set_error('cid', 'You must enter a numeric value');
+  }
+}
+
+function tour_builder_patch_form_submit($form, &$form_state) {
+  $schema = $form_state['values']['schema'];
+  $module = $form_state['values']['module'];
+  $nid = $form_state['values']['nid'];
+  $cid = $form_state['values']['cid'];
+
+  $active_tour = _tour_builder_get_active_tour_path($schema);
+  // TODO: create patch file
+  $filename = _tour_builder_generate_patch($active_tour, $module, $nid, $cid);
+  if (!empty($filename)) {
+    drupal_set_message("You may download: " . l('Patch file', $filename));
+    // TODO: create file download response
+  }
+}
+
+function tour_builder_apply_patch_form($form, &$form_state, $short_name = NULL) {
+  if (empty($short_name)) {
+    $name = '';
+  }
+  else {
+    $name = 'tour.tour.' . $short_name;
+    if (!_tour_builder_is_tour($name)) {
+      return new RedirectResponse(url(TOUR_BUILDER_HOME, array('absolute' => TRUE)));
+    }
+
+    $tour = config_typed()->get($name);
+    if (empty($tour)) {
+      drupal_set_message('Tour not found');
+      return array();
+    }
+    $values = $tour->getValue();
+    if (empty($values)) {
+      // TODO: return proper response
+      drupal_set_message('Tour also not found');
+      return array();
+    }
+    $module = $values['module'];
+    $form['short_name'] = array(
+      '#type' => 'value',
+      '#value' => $short_name,
+    );
+    $form['module'] = array(
+      '#type' => 'value',
+      '#value' => $module,
+    );
+  }
+  $form['nid'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Issue ID or d.o. URL' . (!empty($short_name) ? ' containing "tour.tour.' . $short_name . '".' : '.'),
+    '#description' => 'Which patch on d.o. contains the mentioned tour?',
+    '#required' => TRUE,
+    '#default_value' => '12345',
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  return $form;
+}
+
+function tour_builder_apply_patch_form_validate($form, &$form_state) {
+  $urls = array(
+    'http://drupal.org/node/',
+    'https://drupal.org/node/',
+  );
+  $nid = $form_state['values']['nid'];
+  $nid = str_replace($urls, '', $nid);
+  if (!is_numeric($nid)) {
+    form_set_error('nid', 'You must enter a numeric value');
+  }
+  else {
+    $form_state['values']['nid'] = $nid;
+  }
+}
+
+function tour_builder_apply_patch_form_submit($form, &$form_state) {
+  if (isset($form_state['values']['short_name'])) {
+    $short_name = $form_state['values']['short_name'];
+  }
+  $nid = $form_state['values']['nid'];
+
+  global $config_directories;
+  $active = $config_directories['active']['path'];
+  $destination = './sites/default/files/' . $active;
+
+  if (!empty($short_name)) {
+    _tour_builder_apply_patch($nid, $destination, 'tour.tour.' . $short_name . '.yml');
+  }
+  else {
+    _tour_builder_apply_patch($nid, $destination);
+  }
+
+  _tour_builder_zap_cache();
+  if (!empty($short_name)) {
+    $form_state['redirect'] = TOUR_BUILDER_TOUR_HOME . '/manage/' . $short_name;
+    ;
+  }
+  else {
+    $form_state['redirect'] = TOUR_BUILDER_HOME;
+  }
+}
+
+function _tour_builder_get_active_tour_path($schema) {
+  $tour = config_typed()->get($schema);
+  $tour_id = $tour->get('id');
+  $file = 'tour.tour.' . $tour_id->getValue() . '.yml';
+
+  global $config_directories;
+  $path = $config_directories['active']['path'];
+  return './sites/default/files/' . $path . '/' . $file;
+}
+
+/**
+ * Call the backend script to generate patch file
+ *
+ * @param type $active_tour
+ * @param string $module
+ * @param int $nid
+ * @param int $comment
+ * @return string
+ */
+function _tour_builder_generate_patch($active_tour, $module, $nid, $comment) {
+  $output = array();
+  $command = "makepatch $active_tour $module $nid $comment";
+  watchdog('tour_builder', 'Executing %command', array('%command' => $command));
+  exec($command, $output, $error);
+
+  if ($error) {
+    // what is error 127?
+    watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
+    drupal_set_message("Unable to generate patch file. Error: " . $error, 'error');
+    return;
+  }
+
+  // remove this in favour of $file form check below
+  watchdog('tour_builder', 'Output from script: %output', array('%output' => join("\n", $output)));
+  // TODO: add result of line 0 (should be a file name.
+  $file = './' . array_pop($output);
+  return $file;
+}
+
+/**
+ * Applies the latest patch from issue on d.o.
+ *
+ * TODO: make it work for contrib
+ * TODO: check for $tour value
+ * TODO: check for $module
+ *
+ * @param type $destination
+ * @param type $nid
+ * @param type $tour
+ * @param type $module
+ * @return type
+ */
+function _tour_builder_apply_patch($nid, $destination, $tour = NULL) {
+  $tour = !empty($tour) ? $tour : '';
+  $command = "apply_tour_patch.sh $nid $destination $tour";
+  watchdog('tour_builder', 'Executing %command', array('%command' => $command));
+  exec($command, $output, $error);
+
+  if ($error) {
+    $hints = array(
+      1 => 'Is there a patch',
+      2 => 'Patch not applicable',
+    );
+    // what is error 127?
+    watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
+    drupal_set_message("Unable to apply given patch. Error: " . $error, 'error');
+    return;
+  }
+}
+
+/**
+ * Implementation of hook_tour_insert().
+ *
+ * TODO: why should we implement this?
+ */
+function tour_builder_tour_insert($entity) {
+  \Drupal::service('plugin.manager.tour.tip')->clearCachedDefinitions();
+}
+
+function tour_builder_tour_update($entity) {
+  \Drupal::service('plugin.manager.tour.tip')->clearCachedDefinitions();
+}
+
+function _tour_builder_zap_cache() {
+  Drupal::service('plugin.manager.tour.tip')->clearCachedDefinitions();
+  // TODO: is this enough: https://drupal.org/node/2072575
+  cache('config')->delete('find:tour.tour.');
+
+}
