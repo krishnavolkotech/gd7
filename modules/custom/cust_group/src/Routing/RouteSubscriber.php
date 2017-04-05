@@ -60,8 +60,8 @@ class RouteSubscriber extends RouteSubscriberBase {
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdministratorValidation');
       }
 
-    if ($route = $collection->get('entity.group_content.group_membership.collection')) {
-//      $route->setRequirement('_access', 'FALSE');
+    if ($route = $collection->get('entity.group_content.collection')) {
+      $route->setRequirement('_role', 'administrator');
     }
 /*    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setRequirement('_role', 'administrator');

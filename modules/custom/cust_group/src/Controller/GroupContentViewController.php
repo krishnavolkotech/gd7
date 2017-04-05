@@ -33,7 +33,21 @@ class GroupContentViewController extends ControllerBase {
     if ($group_content->getEntity()->bundle() == $typeMappings[$type]) {
       $view_builder = \Drupal::entityManager()->getViewBuilder($group_content->getEntity()->getEntityTypeId());
       $build = $view_builder->view($group_content->getEntity(),'full','de');
-      $build['#title'] = $group_content->getEntity()->label();
+      $title = $group_content->getEntity()->label();
+      if($group_content->getEntity()->bundle() == 'downtimes'){
+        $downtime = $group_content->getEntity();
+        $db = \Drupal::database();
+        $downtimeTypeQuery = $db->select('downtimes','d');
+        $downtimeTypeQuery->fields('d',['scheduled_p']);
+        $downtimeTypeQuery->condition('downtime_id',$downtime->id());
+        $downtimeType = $downtimeTypeQuery->execute()->fetchField();
+        if($downtimeType == 0){
+          $title = $this->t('Störung');
+        }else{
+          $title = $this->t('Blockzeit');
+        }
+      }
+      $build['#title'] = $title;
       return $build;
     } else {
       throw new NotFoundHttpException();
