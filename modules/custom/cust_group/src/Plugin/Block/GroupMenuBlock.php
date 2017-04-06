@@ -96,12 +96,16 @@ class GroupMenuBlock extends BlockBase
                 
                 // Load the tree based on this set of parameters.
                 $tree = $menu_tree->load($menu_name, $parameters);
-                $manipulators = [];
-                $tree = $menu_tree->transform($tree, $manipulators);
+                $manipulators = [
+                                  ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+                                  ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']
+                                ];
+
+        $tree = $menu_tree->transform($tree, $manipulators);
                 
                 // Finally, build a renderable array from the transformed tree.
                 $menu = $menu_tree->build($tree);
-                
+
                 //    $menu_html = drupal_render($menu);
                 $title = $group->label();
                 return ['#title' => $title, '#markup' => \Drupal::service('renderer')->render($menu), '#cache' => ['max-age' => 0]];
@@ -143,5 +147,4 @@ class GroupMenuBlock extends BlockBase
     }
         return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
     }
-    
 }
