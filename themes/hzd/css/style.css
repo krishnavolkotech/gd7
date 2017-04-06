@@ -1401,7 +1401,7 @@ nav#block-optionen ul li {
 .region-sidebar-first section.blue ul.menu.nav li.expanded.dropdown.active .caret{
   display:none !important;	
 }
-.region-sidebar-first section.blue.incident-menu ul.menu.nav > li.expanded.dropdown.active > a{/
+.region-sidebar-first section.blue.incident-menu ul.menu.nav > li.expanded.dropdown.active > a{
   padding-left:15px !important;
   background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat;
 }
@@ -2940,4 +2940,8 @@ form.deployedreleases-create-form .form-item-deployed-date label{
 }
 form.problem-filter-form .string_search.hzd-form-element input{
   color:#555;
+}
+
+form#views-exposed-form-group-members-lists-page-1 .form-item.js-form-item.form-type-select.js-form-type-select.form-item-sort-by.js-form-item-sort-by.form-group {
+    display:none;
 }

@@ -82,7 +82,7 @@ a.button--danger{
   -moz-box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
   box-shadow: 4px 5px 18px -3px rgba(0, 0, 0, 0.5);
 }
-,
+
 #archived_search_results_wrapper table tr.odd td:first-child,
 #archived_search_results_wrapper table tr.even td:first-child,
 #archived_search_results_wrapper table tr.odd td:last-child,
