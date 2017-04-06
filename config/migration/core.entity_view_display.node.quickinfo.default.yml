@@ -77,7 +77,7 @@ third_party_settings:
         label: '2 Fachlich-inhaltliche Angaben'
         element: div
         show_label: true
-        label_element: h2
+        label_element: h3
         attributes: ''
         effect: none
         speed: fast
