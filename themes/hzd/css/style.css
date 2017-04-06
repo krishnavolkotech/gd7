@@ -1316,7 +1316,8 @@ article .quickedit-field .field__items .field--item {
 }
 .view-group-nodes .views-field-uid a {
     word-wrap: break-word;
-    word-break: break-all;
+    /*@todo move this to hzd-custom.css*/
+    /*word-break: break-all;*/
 }
 .node-preview-container {
   width: 250px;
