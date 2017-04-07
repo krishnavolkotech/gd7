@@ -4,6 +4,9 @@ status: true
 dependencies:
   module:
     - node
+third_party_settings:
+  field_permissions:
+    permission_type: public
 id: node.field_author_name
 field_name: field_author_name
 entity_type: node
