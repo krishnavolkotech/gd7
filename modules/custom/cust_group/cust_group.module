@@ -96,6 +96,8 @@ function cust_group_group_content_update($entity) {
       drupal_set_message(t('Mail sent.'), 'status');
     }
   }
+  \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.hzd_local_tasks']);
+  
 }
 
 

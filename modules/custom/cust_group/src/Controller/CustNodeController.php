@@ -207,14 +207,10 @@ class CustNodeController extends ControllerBase {
     if ($content && $content->getGroupContent()
         ->get('request_status')->value == 1
     ) {
-      $contentId = $content->getGroupContent()->id();
-      $adminquery = \Drupal::database()
-        ->select('group_content__group_roles', 'gcgr')
-        ->fields('gcgr', ['group_roles_target_id'])
-        ->condition('entity_id', $contentId)
-        ->execute()
-        ->fetchAll();
-      return (bool) !empty($adminquery);
+      $roles = $content->getRoles();
+      if(in_array($group->getGroupType()->id().'-admin', array_keys($roles))){
+        return true;
+      }
     }
     
     return FALSE;

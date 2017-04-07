@@ -232,22 +232,28 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
     if ($entity->bundle() == 'open' || $entity->bundle() == 'moderate' || $entity->bundle() == 'moderate_private') {
       $user = \Drupal::service('current_user');
       $group = \Drupal::routeMatch()->getParameter('group');
-      //$groupTypeId = $group->getGroupType()->id();
-      $groupMember = $group->getMember($user);
-      if (($groupMember && $groupMember->getGroupContent()
+      if($group instanceof Group) {
+        //$groupTypeId = $group->getGroupType()->id();
+        $groupMember = $group->getMember($user);
+        if (($groupMember && $groupMember->getGroupContent()
               ->get('request_status')->value == 1
-          ) || (array_intersect($user->getRoles(), ['site_administrator', 'administrator']))) {
-        $build['field_einfuehrung']['#access'] = FALSE;
-        $build['field_description']['#access'] = TRUE;
-        $build['field_group_body']['#access'] = TRUE;
-        $build['field_old_reference']['#access'] = TRUE;
-      }
-      else {
-        $build['field_einfuehrung']['#access'] = TRUE;
-        $build['field_einfuehrung']['#title'] = '';
-        $build['field_description']['#access'] = FALSE;
-        $build['field_group_body']['#access'] = FALSE;
-        $build['field_old_reference']['#access'] = FALSE;
+          ) || (array_intersect($user->getRoles(), [
+            'site_administrator',
+            'administrator'
+          ]))
+        ) {
+          $build['field_einfuehrung']['#access'] = FALSE;
+          $build['field_description']['#access'] = TRUE;
+          $build['field_group_body']['#access'] = TRUE;
+          $build['field_old_reference']['#access'] = TRUE;
+        }
+        else {
+          $build['field_einfuehrung']['#access'] = TRUE;
+          $build['field_einfuehrung']['#title'] = '';
+          $build['field_description']['#access'] = FALSE;
+          $build['field_group_body']['#access'] = FALSE;
+          $build['field_old_reference']['#access'] = FALSE;
+        }
       }
     }
   }

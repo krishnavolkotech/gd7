@@ -27,10 +27,11 @@ class PdfBeforeRenderSubscriber implements EventSubscriberInterface {
    * This method is called whenever the entity_print.print.html_alter event is
    * dispatched.
    *
-   * @param GetResponseEvent $event
+   * @param Event $event
    */
   public function pdfPreRender(Event $event) {
-    $node = reset($event->getEntities());
+    $node = $event->getEntities();
+    $node = reset($node);
     if($node->bundle() == 'quickinfo'){
       $printEngine = $event->getPrintEngine()->getPrintObject();
       $event->getPrintEngine()->doRender();
