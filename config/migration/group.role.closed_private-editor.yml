@@ -1,0 +1,58 @@
+uuid: 5dfcc803-6262-400d-b31a-f727fb4c1aac
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: closed_private-editor
+label: Editor
+weight: -88
+internal: false
+audience: member
+group_type: closed_private
+permissions_ui: true
+permissions:
+  - 'edit group'
+  - 'update own group_membership content'
+  - 'view group_membership content'
+  - 'view group'
+  - 'access group_node overview'
+  - 'create group_node:faq entity'
+  - 'delete any group_node:faq entity'
+  - 'delete own group_node:faq entity'
+  - 'update any group_node:faq entity'
+  - 'update own group_node:faq entity'
+  - 'view group_node:faq entity'
+  - 'view unpublished group_node:faq entity'
+  - 'create group_node:faq content'
+  - 'delete any group_node:faq content'
+  - 'delete own group_node:faq content'
+  - 'update any group_node:faq content'
+  - 'update own group_node:faq content'
+  - 'view group_node:faq content'
+  - 'create group_node:forum entity'
+  - 'delete any group_node:forum entity'
+  - 'delete own group_node:forum entity'
+  - 'update any group_node:forum entity'
+  - 'update own group_node:forum entity'
+  - 'view group_node:forum entity'
+  - 'view unpublished group_node:forum entity'
+  - 'create group_node:forum content'
+  - 'delete any group_node:forum content'
+  - 'delete own group_node:forum content'
+  - 'update any group_node:forum content'
+  - 'update own group_node:forum content'
+  - 'view group_node:forum content'
+  - 'create group_node:page entity'
+  - 'delete any group_node:page entity'
+  - 'delete own group_node:page entity'
+  - 'update any group_node:page entity'
+  - 'update own group_node:page entity'
+  - 'view group_node:page entity'
+  - 'view unpublished group_node:page entity'
+  - 'create group_node:page content'
+  - 'delete any group_node:page content'
+  - 'delete own group_node:page content'
+  - 'update any group_node:page content'
+  - 'update own group_node:page content'
+  - 'view group_node:page content'

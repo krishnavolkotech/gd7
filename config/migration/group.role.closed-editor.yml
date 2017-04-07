@@ -1,0 +1,60 @@
+uuid: ffaf62c7-007f-4b01-b0dd-36993cefe293
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-editor
+label: Editor
+weight: -89
+internal: false
+audience: member
+group_type: closed
+permissions_ui: true
+permissions:
+  0: 'access content overview'
+  1: 'edit group'
+  3: 'update own group_membership content'
+  4: 'leave group'
+  5: 'view group_membership content'
+  6: 'view group'
+  7: 'access group_node overview'
+  8: 'create group_node:faq entity'
+  9: 'delete any group_node:faq entity'
+  10: 'delete own group_node:faq entity'
+  11: 'update any group_node:faq entity'
+  12: 'update own group_node:faq entity'
+  13: 'view group_node:faq entity'
+  14: 'view unpublished group_node:faq entity'
+  15: 'create group_node:faq content'
+  16: 'delete any group_node:faq content'
+  17: 'delete own group_node:faq content'
+  18: 'update any group_node:faq content'
+  19: 'update own group_node:faq content'
+  20: 'view group_node:faq content'
+  21: 'create group_node:forum entity'
+  22: 'delete any group_node:forum entity'
+  23: 'delete own group_node:forum entity'
+  24: 'update any group_node:forum entity'
+  25: 'update own group_node:forum entity'
+  26: 'view group_node:forum entity'
+  27: 'view unpublished group_node:forum entity'
+  28: 'create group_node:forum content'
+  29: 'delete any group_node:forum content'
+  30: 'delete own group_node:forum content'
+  31: 'update any group_node:forum content'
+  32: 'update own group_node:forum content'
+  33: 'view group_node:forum content'
+  34: 'create group_node:page entity'
+  35: 'delete any group_node:page entity'
+  36: 'delete own group_node:page entity'
+  37: 'update any group_node:page entity'
+  38: 'update own group_node:page entity'
+  39: 'view group_node:page entity'
+  40: 'view unpublished group_node:page entity'
+  41: 'create group_node:page content'
+  42: 'delete any group_node:page content'
+  43: 'delete own group_node:page content'
+  44: 'update any group_node:page content'
+  45: 'update own group_node:page content'
+  46: 'view group_node:page content'
