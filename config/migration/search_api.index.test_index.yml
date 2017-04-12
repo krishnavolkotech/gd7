@@ -1,27 +1,19 @@
-uuid: d38f1ecd-f750-4c53-a516-42d7c1c2a9db
-langcode: en
+uuid: 01966ff9-bbec-4b20-b409-21220a37289c
+langcode: de
 status: true
 dependencies:
   module:
     - group
     - node
     - search_api
-    - downtimes
   config:
     - field.storage.node.body
     - search_api.server.hzd_solr
-id: hzd_solr_index
-name: 'HZD Solr Index'
+id: test_index
+name: 'test index'
 description: ''
 read_only: false
 field_settings:
-  node_grants:
-    label: 'Node access information'
-    property_path: search_api_node_grants
-    type: string
-    indexed_locked: true
-    type_locked: true
-    hidden: true
   id:
     label: ID
     datasource_id: 'entity:group_content'
@@ -35,6 +27,22 @@ field_settings:
     dependencies:
       module:
         - group
+  path:
+    label: 'Parent group » Gruppe » URL-Alias'
+    datasource_id: 'entity:group_content'
+    property_path: 'gid:entity:path'
+    type: text
+    dependencies:
+      module:
+        - group
+  nid:
+    label: 'Inhalt » Inhalt » ID'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:nid'
+    type: text
+    dependencies:
+      module:
+        - node
   title:
     label: 'Inhalt » Inhalt » Titel'
     datasource_id: 'entity:group_content'
@@ -43,10 +51,10 @@ field_settings:
     dependencies:
       module:
         - node
-  uid:
-    label: 'Inhalt » Inhalt » Erstellt von'
+  type:
+    label: 'Inhalt » Inhalt » Type'
     datasource_id: 'entity:group_content'
-    property_path: 'entity_id:entity:uid'
+    property_path: 'entity_id:entity:type'
     type: text
     dependencies:
       module:
@@ -55,6 +63,22 @@ field_settings:
     label: 'Inhalt » Inhalt » geschrieben am'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:created'
+    type: text
+    dependencies:
+      module:
+        - node
+  changed:
+    label: 'Inhalt » Inhalt » Geändert'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:changed'
+    type: text
+    dependencies:
+      module:
+        - node
+  path_1:
+    label: 'Inhalt » Inhalt » URL-Alias'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:path'
     type: text
     dependencies:
       module:
@@ -69,94 +93,16 @@ field_settings:
         - node
       config:
         - field.storage.node.body
-  gid:
-    label: 'Parent group'
-    datasource_id: 'entity:group_content'
-    property_path: gid
-    type: text
-  entity_id:
-    label: Inhalt
-    datasource_id: 'entity:group_content'
-    property_path: entity_id
-    type: text
 processor_settings:
-  group_access:
-    plugin_id: group_access
-    settings:
-      weights:
-        preprocess_query: -3
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
-  html_filter:
-    plugin_id: html_filter
-    settings:
-      fields:
-        - type
-        - title
-        - body
-      title: true
-      alt: true
-      tags:
-        h1: 5
-        h2: 3
-        h3: 2
-        strong: 2
-        b: 2
-      weights:
-        preprocess_index: -10
-        preprocess_query: -10
   add_url:
     plugin_id: add_url
     settings: {  }
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
-  ignorecase:
-    plugin_id: ignorecase
-    settings:
-      fields:
-        - node_grants
-        - gid
-        - entity_id
-        - id
-        - nid
-        - type
-        - title
-        - status_1
-        - created
-        - changed
-        - revision_translation_affected
-        - body
-      weights:
-        preprocess_index: -10
-        preprocess_query: -10
-  content_access:
-    plugin_id: content_access
-    settings:
-      weights:
-        preprocess_query: -7
-  highlight:
-    plugin_id: highlight
-    settings:
-      highlight: always
-      excerpt: true
-      excerpt_length: 256
-      exclude_fields: {  }
-      prefix: '<strong>'
-      suffix: '</strong>'
-      weights:
-        postprocess_query: 0
-  transliteration:
-    plugin_id: transliteration
-    settings:
-      fields:
-        - type
-        - title
-        - body
-      weights:
-        preprocess_index: -10
-        preprocess_query: -4
 options:
   index_directly: true
   cron_limit: 50
@@ -173,11 +119,8 @@ datasource_settings:
           - closed_private-group_node-faq
           - closed_private-group_node-forum
           - closed_private-group_node-page
-          - group_content_type_466cc368a8c15
           - group_content_type_486a744513175
-          - group_content_type_8fbe33e60f149
           - group_content_type_aa3a511b55f8c
-          - moderate-group_node-event
           - moderate-group_node-faqs
           - moderate-group_node-forum
           - moderate-group_node-page
@@ -187,11 +130,9 @@ datasource_settings:
           - open-group_node-downtimes
           - open-group_node-faqs
           - open-group_node-forum
-          - open-group_node-newsletter
           - open-group_node-page
           - open-group_node-planning_files
           - open-group_node-problem
-          - open-group_node-quickinfo
       languages:
         default: true
         selected: {  }

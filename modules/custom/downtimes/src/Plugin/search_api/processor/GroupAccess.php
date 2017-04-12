@@ -32,12 +32,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class GroupAccess extends ProcessorPluginBase {
-
+  
   /**
    * {@inheritdoc}
    */
   public function preprocessSearchQuery(QueryInterface $query) {
-    
+    $user = \Drupal::currentUser();
+    $groupMembershipService = \Drupal::service('group.membership_loader');
+    $userGroups = [];
+    $groupMemberships = $groupMembershipService->loadByUser($user);
+    foreach ($groupMemberships as $groupMembership) {
+      $group = $groupMembership->getGroup();
+      $userGroups[] = $group->id();
+    }
+    $query->addCondition('gid', $userGroups, 'IN');
+//    pr($userGroups);exit;
   }
-
+  
 }

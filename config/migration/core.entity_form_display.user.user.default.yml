@@ -18,7 +18,12 @@ bundle: user
 mode: default
 content:
   account:
-    weight: -10
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+  field_message_preference:
+    type: options_buttons
+    weight: 1
     settings: {  }
     third_party_settings: {  }
   timezone:
@@ -26,7 +31,6 @@ content:
 hidden:
   contact: true
   field_do_not_deactivate_automati: true
-  field_message_preference: true
   field_notifications_status: true
   l10n_client_contributor_key: true
   langcode: true
