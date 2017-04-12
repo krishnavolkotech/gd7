@@ -100,6 +100,10 @@ function cust_group_group_content_update($entity) {
   
 }
 
+function cust_group_group_content_delete(){
+  \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.hzd_local_tasks']);
+}
+
 
 function cust_group_group_content_insert($entity) {
   $node = $entity->getEntity();
@@ -444,12 +448,12 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     $operations['approve_request'] = array(
       'title' => t('Approve Request'),
       'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', ['group' => $group, 'group_content' => $group_content]),
-      'weight' => 50,
+      'weight' => -51,
     );
     $operations['reject_request'] = array(
       'title' => t('Reject Request'),
       'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', ['group' => $group, 'group_content' => $group_content]),
-      'weight' => 51,
+      'weight' => -50,
     );
 //    pr(array_keys($operations));
 //    exit;

@@ -8,14 +8,10 @@ dependencies:
     - field.storage.node.field_related_transfer_number
     - field.storage.node.field_unique_id
     - group.content_type.moderate-group_node-quickinfo
-    - user.role.administrator
-    - user.role.authenticated
-    - user.role.site_administrator
   module:
     - group
     - node
     - options
-    - user
 id: rz_schnellinfo
 label: 'Rz Schnellinfo'
 module: views
@@ -32,12 +28,9 @@ display:
     position: 0
     display_options:
       access:
-        type: role
+        type: group_permission
         options:
-          role:
-            authenticated: authenticated
-            administrator: administrator
-            site_administrator: site_administrator
+          group_permission: 'view group_node:quickinfo entity'
       cache:
         type: tag
         options: {  }
@@ -774,11 +767,11 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -936,10 +929,10 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -1609,11 +1602,11 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'

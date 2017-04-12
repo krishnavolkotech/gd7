@@ -1507,6 +1507,7 @@ display:
         filters: false
         filter_groups: false
         header: false
+        empty: false
       use_more_always: false
       use_more_text: more
       pager:
@@ -1732,14 +1733,14 @@ display:
           entity_type: null
           entity_field: label
           plugin_id: field
-        group_member_name:
-          id: group_member_name
-          table: views
-          field: group_member_name
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Group Members'
+          label: Lastname
           exclude: false
           alter:
             alter_text: false
@@ -1779,8 +1780,57 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: false
-          plugin_id: group_member_name
+          hide_alter_empty: true
+          plugin_id: standard
+        firstname:
+          id: firstname
+          table: cust_profile
+          field: firstname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Firstname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
         operations:
           id: operations
           table: group_content
@@ -1908,6 +1958,27 @@ display:
           entity_type: group_content
           entity_field: gid
           plugin_id: standard
+        gc__user:
+          id: gc__user
+          table: group_content_field_data
+          field: gc__user
+          relationship: none
+          group_type: group
+          admin_label: 'Group content Benutzer'
+          required: false
+          group_content_plugins:
+            group_membership: '0'
+          entity_type: group_content
+          plugin_id: group_content_to_entity
+        uid:
+          id: uid
+          table: cust_profile
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' user profile uid'
+          required: false
+          plugin_id: standard
       display_description: 'Pending members of a group'
       filters:
         type:
@@ -2004,7 +2075,8 @@ display:
         operator: AND
         groups:
           1: AND
-      header:
+      header: {  }
+      empty:
         area_text_custom:
           id: area_text_custom
           table: views
@@ -2012,7 +2084,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          empty: false
+          empty: true
           tokenize: false
           content: 'No data found'
           plugin_id: text_custom
