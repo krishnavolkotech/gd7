@@ -7,6 +7,7 @@
 use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
+use Drupal\hzd_release_management\Plugin\Block\Gruppenadministration;
 
 /**
  * Implements hook_help().
@@ -39,10 +40,11 @@ function custom_toolbar_menu_toolbar() {
 
   $group = \Drupal::routeMatch()->getParameter('group');
 
-  if(!$group) {
+  if (!$group) {
     return $items;
   }
-  
+
+
   if (is_object($group)) {
     $groupId = $group->id();
     $groupName = $group->label();
@@ -53,6 +55,10 @@ function custom_toolbar_menu_toolbar() {
     $groupName = $group->label();
   }
 
+  if (CustNodeController::isGroupAdmin($groupId) == FALSE) {
+    return $items;
+  }
+
   $items['toolbar_menu_' . $groupId] = array(
     '#type' => 'toolbar_item',
     'tab' => array(
@@ -60,7 +66,7 @@ function custom_toolbar_menu_toolbar() {
       '#title' => $groupName,
       '#url' => Url::fromRoute('<front>'),
       '#attributes' => array(
-        'title' => $groupId,
+        'title' => $groupName,
         'class' => array(
           'toolbar-icon',
           'toolbar-icon-toolbar-menu',
@@ -88,7 +94,6 @@ function custom_toolbar_menu_toolbar() {
     ),
     '#cache' => ['max-age' => 0]
   );
-
   return $items;
 }
 
@@ -102,43 +107,24 @@ function custom_toolbar_menu_toolbar() {
  *   The pre-rendered tray element.
  */
 function custom_toolbar_menu_prerender_toolbar_tray(array $element) {
-  $group = \Drupal::routeMatch()->getParameter('group');
-
-  if (is_object($group)) {
-    $groupId = $group->id();
-  }
-  else {
-    $groupId = $group;
-  }
-
-  if (CustNodeController::isGroupAdmin($groupId)) {
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_nodes.page_1', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'cust_group.group_node_create', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'), 'view.hzd_group_members.approved', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Störungen und Blockzeiten'), 'downtimes.DowntimessettingForm', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Bekannte Fehler und Probleme'), 'problem_management.problem_settings', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Releases'), 'hzd_release_management.release_settings', ['group' => $groupId]);
-    $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Mass Contact'), 'mass_contact.bulk_mail_group_members_form');
-    if ($groupId == RELEASE_MANAGEMENT) {
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Planungsdateien'), 'hzd_release_management.display_planning_files', ['group' => $groupId]);
-    }
-
-    $menuHtml = [
-      '#items' => $menuItems,
-      '#theme' => 'item_list',
-      '#list_type' => 'ul',
-      '#attributes' => ['class' => ['menu nav']],
-      '#cache' => ['max-age' => 0]
-    ];
-  }
-  else {
-    $menuHtml = [
-      '#markup' => '',
-      '#title' => '',
-      '#cache' => ['max-age' => 0]
-    ];
-  }
+  $menuHtml = Gruppenadministration::hzdGroupAdminLinks();
   $element['toolbar_menu_' . $element['#id']] = $menuHtml; //$menu_tree->build($tree);
-
   return $element;
+}
+
+/**
+ * 
+ * @param type $items
+ * @return type
+ */
+function custom_toolbar_menu_toolbar_alter(&$items) {
+  if (!(in_array('site_administrator', \Drupal::currentUser()
+              ->getRoles()) || \Drupal::currentUser()->id() == 1
+      )) {
+    unset($items['admin_toolbar_tools']);
+    unset($items['contextual']);
+    unset($items['home']);
+    unset($items['administration']);
+    unset($items['user']);
+  }
 }
