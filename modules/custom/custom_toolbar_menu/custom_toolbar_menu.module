@@ -109,6 +109,7 @@ function custom_toolbar_menu_toolbar() {
 function custom_toolbar_menu_prerender_toolbar_tray(array $element) {
   $menuHtml = Gruppenadministration::hzdGroupAdminLinks();
   $element['toolbar_menu_' . $element['#id']] = $menuHtml; //$menu_tree->build($tree);
+  $element['#cache'] = ['max-age' => 0];
   return $element;
 }
 
