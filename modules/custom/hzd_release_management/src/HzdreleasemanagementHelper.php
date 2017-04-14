@@ -209,7 +209,7 @@ class HzdreleasemanagementHelper
         $releases_title = $release_product[0] . "_" . $release_versions[0];
         
         // Get the documentation folder path.
-        $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $file_path = \Drupal::service('file_system')->realpath("public://");
         
         $get_product = $file_path . "/releases/" . strtolower($service_name) . "/" . strtolower($release_product[0]);
         $product = strtolower($release_product[0]);
