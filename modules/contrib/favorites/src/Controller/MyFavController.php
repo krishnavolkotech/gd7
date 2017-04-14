@@ -7,6 +7,7 @@
 
 namespace Drupal\favorites\Controller;
 
+use Drupal\Core\Cache\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
@@ -79,6 +80,7 @@ class MyFavController extends ControllerBase {
     if ($access) {
       FavoriteStorage::deleteFavorite($fid);
       $options = array('list' => 'del-' . $fid);
+      Cache::invalidateTags(['config:block.block.myfavorites_2']);
       return new JsonResponse($options);
     }
   }
