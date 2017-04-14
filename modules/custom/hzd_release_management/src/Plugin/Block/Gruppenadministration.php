@@ -22,7 +22,7 @@ class Gruppenadministration extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return $this->hzdGroupAdminLinks();
+    return self::hzdGroupAdminLinks();
   }
 
   /**
@@ -54,7 +54,7 @@ class Gruppenadministration extends BlockBase {
   /**
    *
    */
-  public function hzdGroupAdminLinks() {
+  public static function hzdGroupAdminLinks() {
     $group = \Drupal::routeMatch()->getParameter('group');
 //    if (empty($group)) {
 //      $group = \Drupal::routeMatch()->getParameter('arg_0');

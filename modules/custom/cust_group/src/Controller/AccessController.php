@@ -183,6 +183,14 @@ class AccessController extends ControllerBase
         return AccessResult::neutral();
     }
     
+    function userCreateAccess() {
+        $user = \Drupal::currentUser();
+        if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+            return AccessResult::allowed();
+        }
+        return AccessResult::forbidden();
+    }
+    
     function isGroupAdminAccess() {
         $user = \Drupal::currentUser();
         $uid = $user->id();

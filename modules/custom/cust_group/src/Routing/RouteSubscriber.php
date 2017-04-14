@@ -88,6 +88,10 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('front_page.front')) {
       $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
     }
+    
+    if (($route = $collection->get('user.admin_create')) || ($route = $collection->get('entity.user.collection'))) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::userCreateAccess');
+    }
   }
 
   //retuns the views related to groups created from UI
