@@ -468,7 +468,7 @@ class HzdreleasemanagementStorage
                 // Check secure-download string is in documentation link. If yes excluded from documentation download.
                 if (empty($link_search)) {
                     $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-                    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . "/releases";
+                    $path = \Drupal::service('file_system')->realpath( "public://") . "/releases";
                     // $service = "'" . $service . "'";.
                     $release_title = strtolower($release_title);
                     $service = strtolower($service);
