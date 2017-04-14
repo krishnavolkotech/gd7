@@ -29,6 +29,7 @@ function custom_toolbar_menu_help($route_name, RouteMatchInterface $route_match)
  * Add a new cache tag for the toolbar cache.
  */
 function custom_toolbar_menu_page_top(array &$page_top) {
+  \Drupal\Core\Cache\Cache::invalidateTags(array('toolbar'));
   $page_top['toolbar']['#cache'] = ['max-age' => 0];
 }
 
