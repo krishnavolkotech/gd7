@@ -1062,7 +1062,7 @@ class HzdreleasemanagementStorage
      * Deployed release tab default text.
      */
     static public function deployed_releases_text() {
-        $url = Url::fromRoute('hzd_release_management.deployed_releases', array('group' => 39));
+        $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander ]);
         $link = \Drupal::l(t('hier'), $url);
         
         $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
