@@ -69,8 +69,9 @@ class resolve_form extends FormBase {
       '#id' => 'reason',
       '#weight' => -2,
     );
+    $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1))) {
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
@@ -165,5 +166,10 @@ class resolve_form extends FormBase {
       $form_state['redirect'] = 'confirm';
     }
   }
-
+  
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    // TODO: Implement submitForm() method.
+    return parent::submitForm($form, $form_state);
+  }
+  
 }
