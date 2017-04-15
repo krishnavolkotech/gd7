@@ -399,7 +399,7 @@ display:
           admin_label: ''
           empty: false
           tokenize: false
-          content: '<a class="all-problems" href="/group/31/problems">Alle bekannten Fehler und Probleme</a>'
+          content: '<a class="all-problems" href="/group/6/problems">Alle bekannten Fehler und Probleme</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1

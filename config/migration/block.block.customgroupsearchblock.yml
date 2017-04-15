@@ -14,7 +14,7 @@ third_party_settings:
 id: customgroupsearchblock
 theme: hzd
 region: user_menu
-weight: 0
+weight: -28
 provider: null
 plugin: cust_group_search_block
 settings:
