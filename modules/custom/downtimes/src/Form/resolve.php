@@ -28,7 +28,7 @@ class resolve_form extends FormBase {
    * Resolve Downtimes form
    */
 
-  public function buildForm(array $form, FormStateInterface $form_state, $form_type) {
+  public function buildForm(array $form, FormStateInterface $form_state, $form_type = null) {
     
     $group = \Drupal::routeMatch()->getParameter('group');
       if (is_object($group)) {
@@ -71,7 +71,7 @@ class resolve_form extends FormBase {
     );
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) {
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)){
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
