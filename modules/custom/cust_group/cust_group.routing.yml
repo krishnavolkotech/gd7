@@ -129,3 +129,9 @@ cust_group.url_alias_update:
     _controller: '\Drupal\cust_group\Controller\CustNodeController::updateUrlAlias'
   requirements:
     _permission: 'administer site'
+cust_group.old_url_alias_delete:
+  path: '/delete-old-urls'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::deleteOldAlias'
+  requirements:
+    _permission: 'administer site'
