@@ -126,7 +126,7 @@ function sendGroupUpdateMail($entity) {
       $group = $groupContentId->getGroup()->id();
   }
 //    pr($group);exit;
-  if (!empty($group) && $group && (in_array($entity->bundle(), ['event', 'faqs', 'forum', 'page', 'newsletter']) || $entity->getEntityTypeId() == 'group')) {
+  if (!empty($group) && $group && (in_array($entity->bundle(), ['event', 'forum', 'page', 'newsletter']) || $entity->getEntityTypeId() == 'group')) {
     $getUserMailList = getGroupMemberList($group);
     send_notifications($entity, $getUserMailList);
   }
@@ -234,6 +234,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
     case 'node_faqs_gnode-form_form':
     case 'node_faqs_edit_form':
+    case 'node_faqs_form':
       $group = \Drupal::routeMatch()->getParameter('group');
       if (empty($group)) {
         $node = \Drupal::routeMatch()->getParameter('node');
