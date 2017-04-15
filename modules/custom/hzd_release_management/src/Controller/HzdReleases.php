@@ -17,7 +17,7 @@ use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 // if(!defined('RELEASE_MANAGEMENT'))
 //  define('RELEASE_MANAGEMENT', 339);
 // $_SESSION['Group_id'] = 339;.
-define('zrml', 39);
+define('zrml', Zentrale_Release_Manager_Lander);
 define('DEPLOYED_RELESES_HEADING', \Drupal::config('hzd_release_management.settings')->get('deployed_releses'));
 
 if (!defined('DISPLAY_LIMIT')) {
