@@ -399,12 +399,12 @@ class HzdearlywarningsStorage
      * Display early warning text on view warly warnings page.
      */
     static public function early_warning_text() {
-        $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
-        $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
+//        $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
+//        $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
         $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
-        $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
-        $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query' => ['destination' => 'group/' . RELEASE_MANAGEMENT . '/early-warnings']]));
-        $output = "<div class = 'earlywarnings_text'>" . $body . $link;
+//        $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
+//        $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query' => ['destination' => 'group/' . RELEASE_MANAGEMENT . '/early-warnings']]));
+        $output = "<div class = 'earlywarnings_text'>" . $body;
         //$output = "<div class = 'earlywarnings_text'>" . $body .
         //"<a href='/release-management/add/early-warnings?\
         //destination=group/32/early-warnings&amp;services=0&amp;releases=0'
