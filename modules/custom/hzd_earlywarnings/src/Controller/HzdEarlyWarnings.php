@@ -3,6 +3,7 @@
 namespace Drupal\hzd_earlywarnings\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Render\Markup;
 use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\Core\Url;
@@ -185,13 +186,20 @@ class HzdEarlyWarnings extends ControllerBase {
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $is_member = $group->getMember(\Drupal::service('current_user'));
     
-    $url = Url::fromRoute('entity.group_content.create_form', ['group' => RELEASE_MANAGEMENT,'plugin_id' => 'group_node:early_warnings'])->toString();
+    $url = Url::fromRoute('entity.group_content.create_form', ['group' => RELEASE_MANAGEMENT,'plugin_id' => 'group_node:early_warnings']);
     $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
     
     if ($is_member || in_array($user_role, array('site_administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['#markup'] = t($node->body->value);
-      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['body']['#markup'] = t($node->body->value);
+//      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['body'][] = [
+        '#type'=>'link',
+        '#title'=>Markup::create($create_icon),
+        '#url'=>$url
+      ];
+      $output['content']['pretext']['#suffix'] = '</div>';
+//      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     } else {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
       $output['content']['pretext']['#markup'] = t($node->body->value);
