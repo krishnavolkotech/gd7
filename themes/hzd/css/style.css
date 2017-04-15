@@ -2946,3 +2946,50 @@ form.problem-filter-form .string_search.hzd-form-element input{
 form#views-exposed-form-group-members-lists-page-1 .form-item.js-form-item.form-type-select.js-form-type-select.form-item-sort-by.js-form-item-sort-by.form-group {
     display:none;
 }
+header .block-cust-group-search-block{
+  width:250px;
+  float:right;
+  margin:26px 0 0 10px;
+}
+header .block-cust-group-search-block input[type="text"]{
+  width:100%;
+  float:left;
+  height:28px;
+  padding-left:5px !important;
+}
+header .block-cust-group-search-block .form-type-textfield{
+  width:59%;
+  float:left;
+  margin:0;
+}
+header .block-cust-group-search-block button{
+  width:41%;
+  text-align:center;
+  float:left;
+}
+.path-search .view-solr-search .form-type-textfield input[type="text"]{
+  height:34px !important;
+  border-radius:0 !important;
+}
+.path-search form.views-exposed-form{
+  margin-bottom:25px;
+}
+.path-search .view-solr-search .view-content ul{
+  width:100%;
+  float:left;
+  margin:0;
+  padding:0;
+}
+.path-search .view-solr-search .view-content ul li{
+  width:100%;
+  float:left;
+  margin-bottom:20px;
+  padding:0;
+  list-style-type:none;
+}
+.path-search .view-solr-search .view-content ul li .views-field-label-1 .field-content a{
+  width:100%;
+  float:left;
+  margin-bottom:5px;
+  border-bottom:1px dotted #04425f;
+}

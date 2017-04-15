@@ -185,14 +185,17 @@ class HzdEarlyWarnings extends ControllerBase {
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $is_member = $group->getMember(\Drupal::service('current_user'));
     
+    $url = Url::fromRoute('entity.group_content.create_form', ['group' => RELEASE_MANAGEMENT,'plugin_id' => 'group_node:early_warnings'])->toString();
+    $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
+    
     if ($is_member || in_array($user_role, array('site_administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
       $output['content']['pretext']['#markup'] = t($node->body->value);
-      $output['content']['pretext']['#suffix'] = "<a href='/group/32/add/early-warnings?destination=group/32/early-warnings&amp;services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     } else {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
       $output['content']['pretext']['#markup'] = t($node->body->value);
-      $output['content']['pretext']['#suffix'] = "<a href='/group/32/add/early-warnings?destination=group/32/early-warnings&amp;services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     }
     
     $output['content']['table_header']['#markup'] = '<h2>' .
