@@ -13,4 +13,4 @@ id: group_content.open-group_node-problem
 target_entity_type_id: group_content
 target_bundle: open-group_node-problem
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

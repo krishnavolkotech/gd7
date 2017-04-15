@@ -13,4 +13,4 @@ id: group_content.closed_private-group_node-forum
 target_entity_type_id: group_content
 target_bundle: closed_private-group_node-forum
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

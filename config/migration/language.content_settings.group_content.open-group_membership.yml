@@ -13,4 +13,4 @@ id: group_content.open-group_membership
 target_entity_type_id: group_content
 target_bundle: open-group_membership
 default_langcode: site_default
-language_alterable: true
+language_alterable: false
