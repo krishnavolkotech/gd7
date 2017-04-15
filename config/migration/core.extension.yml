@@ -24,6 +24,7 @@ module:
   cust_user: 0
   custom_migration: 0
   custom_script_batch: 0
+  custom_toolbar_menu: 0
   custom_views_php: 0
   datetime: 0
   dblog: 0
@@ -103,13 +104,10 @@ module:
   token: 0
   toolbar: 0
   tour: 0
-  tour_builder: 0
-  tour_ui: 0
   ultimate_cron: 0
   update: 0
   user: 0
   view_unpublished: 0
-  views_tools: 0
   views_ui: 0
   xmlrpc: 0
   ctools: 1
