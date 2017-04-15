@@ -461,14 +461,14 @@ class HzdreleasemanagementStorage
              * Check released release date/time changed or not.
              */
             
-            if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid > 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
+            if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
                 
                 list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
                 
                 // Check secure-download string is in documentation link. If yes excluded from documentation download.
                 if (empty($link_search)) {
-                    $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-                    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . "/releases";
+                    $root_path = \Drupal::service('file_system')->realpath("public://");
+                    $path = \Drupal::service('file_system')->realpath( "public://") . "/releases";
                     // $service = "'" . $service . "'";.
                     $release_title = strtolower($release_title);
                     $service = strtolower($service);

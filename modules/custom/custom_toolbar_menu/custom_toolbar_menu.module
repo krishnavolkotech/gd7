@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * @file
+ * Add group current menu entries in the Drupal Toolbar.
+ */
+use Drupal\cust_group\Controller\CustNodeController;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\hzd_release_management\Plugin\Block\Gruppenadministration;
+
+/**
+ * Implements hook_help().
+ */
+function custom_toolbar_menu_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.custom_toolbar_menu':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Add your favorite group custom menu in the Drupal Toolbar');
+      $output .= '</ul>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_page_top().
+ *
+ * Add a new cache tag for the toolbar cache.
+ */
+function custom_toolbar_menu_page_top(array &$page_top) {
+  \Drupal\Core\Cache\Cache::invalidateTags(array('toolbar'));
+  $page_top['toolbar']['#cache'] = ['max-age' => 0];
+}
+
+/**
+ * Implements hook_toolbar().
+ */
+function custom_toolbar_menu_toolbar() {
+  $items = [];
+
+  $group = \Drupal::routeMatch()->getParameter('group');
+
+  if (!$group) {
+    return $items;
+  }
+
+
+  if (is_object($group)) {
+    $groupId = $group->id();
+    $groupName = $group->label();
+  }
+  else {
+    $groupId = $group;
+    $group = \Drupal\group\Entity\Group::load($groupId);
+    $groupName = $group->label();
+  }
+
+  if (CustNodeController::isGroupAdmin($groupId) == FALSE) {
+    return $items;
+  }
+
+  $items['toolbar_menu_' . $groupId] = array(
+    '#type' => 'toolbar_item',
+    'tab' => array(
+      '#type' => 'link',
+      '#title' => $groupName,
+      '#url' => Url::fromRoute('<front>'),
+      '#attributes' => array(
+        'title' => $groupName,
+        'class' => array(
+          'toolbar-icon',
+          'toolbar-icon-toolbar-menu',
+          'toolbar-icon-toolbar-menu-' . $groupId,
+        ),
+        'data-drupal-subtrees' => '',
+      ),
+    ),
+    'tray' => array(
+      '#heading' => t('@menu_label actions', ['@menu_label' => $groupId]),
+      'toolbar_menu_' . $groupId . '_links' => array(
+        '#type' => 'container',
+        '#id' => $groupName,
+        '#pre_render' => ['custom_toolbar_menu_prerender_toolbar_tray'],
+        '#attributes' => array(
+          'class' => array('toolbar-menu-administration'),
+        ),
+      ),
+    ),
+    '#weight' => 0,
+    '#attached' => array(
+      'library' => array(
+        'toolbar_menu/icons',
+      ),
+    ),
+    '#cache' => ['max-age' => 0]
+  );
+  return $items;
+}
+
+/**
+ * Pre-render the toolbar_menu tray element.
+ *
+ * @param array $element
+ *   The tray element to pre-render.
+ *
+ * @return array
+ *   The pre-rendered tray element.
+ */
+function custom_toolbar_menu_prerender_toolbar_tray(array $element) {
+  $menuHtml = Gruppenadministration::hzdGroupAdminLinks();
+  $element['toolbar_menu_' . $element['#id']] = $menuHtml; //$menu_tree->build($tree);
+  $element['#cache'] = ['max-age' => 0];
+  return $element;
+}
+
+/**
+ * 
+ * @param type $items
+ * @return type
+ */
+function custom_toolbar_menu_toolbar_alter(&$items) {
+  if (!(in_array('site_administrator', \Drupal::currentUser()
+              ->getRoles()) || \Drupal::currentUser()->id() == 1
+      )) {
+    unset($items['admin_toolbar_tools']);
+    unset($items['contextual']);
+    unset($items['home']);
+    unset($items['administration']);
+    unset($items['user']);
+  }
+}
