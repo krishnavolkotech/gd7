@@ -13,4 +13,4 @@ id: group.open
 target_entity_type_id: group
 target_bundle: open
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

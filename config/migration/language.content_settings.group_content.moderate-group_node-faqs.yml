@@ -13,4 +13,4 @@ id: group_content.moderate-group_node-faqs
 target_entity_type_id: group_content
 target_bundle: moderate-group_node-faqs
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

@@ -13,4 +13,4 @@ id: group.zentrale_release_manag
 target_entity_type_id: group
 target_bundle: zentrale_release_manag
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

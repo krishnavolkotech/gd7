@@ -13,4 +13,4 @@ id: group_content.moderate_private-group_node-page
 target_entity_type_id: group_content
 target_bundle: moderate_private-group_node-page
 default_langcode: site_default
-language_alterable: true
+language_alterable: false
