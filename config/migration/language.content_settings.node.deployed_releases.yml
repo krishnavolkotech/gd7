@@ -13,4 +13,4 @@ id: node.deployed_releases
 target_entity_type_id: node
 target_bundle: deployed_releases
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

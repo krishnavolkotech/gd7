@@ -13,4 +13,4 @@ id: group_content.group_content_type_71a6b6a92fefd
 target_entity_type_id: group_content
 target_bundle: group_content_type_71a6b6a92fefd
 default_langcode: site_default
-language_alterable: true
+language_alterable: false

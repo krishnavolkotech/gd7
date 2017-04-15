@@ -13,4 +13,4 @@ id: node.non_production_environment
 target_entity_type_id: node
 target_bundle: non_production_environment
 default_langcode: site_default
-language_alterable: true
+language_alterable: false
