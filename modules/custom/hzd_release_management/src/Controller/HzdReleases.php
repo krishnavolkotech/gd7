@@ -91,7 +91,7 @@ class HzdReleases extends ControllerBase
     public function DownloadDocumentFiles($service_id, $release_id) {
         $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
         $zip = HzdreleasemanagementHelper::zip_file_path($doc_values);
-        $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $path = \Drupal::service('file_system')->realpath("public://");
         $files_path = $path . "/releases/downloads";
         $zipfiles = $files_path . '/' . $zip;
         
