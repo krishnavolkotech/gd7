@@ -18,14 +18,21 @@ define('MAINTENANCE_GROUP_ID', 2);
 use Drupal\user\Entity\User;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
-  $build['group_list'] = array(
-    '#markup' => hzd_group_list($account->id()),
-    '#cache' => ['max-age' => 0],
-    '#weight' => -10
-  );
-  $userData = get_user_fields($account);
-  foreach ($userData as $key => $val) {
-    $build[$key] = ['#theme' => 'usercustomfield', '#label' => t($val['label']), '#value' => t($val['value'])];
+  if ($view_mode == 'full') {
+    $userData = get_user_fields($account);
+    foreach ($userData as $key => $val) {
+      $build[$key] = [
+        '#theme' => 'usercustomfield',
+        '#label' => t($val['label']),
+        '#value' => t($val['value']),
+      ];
+    }
+    $build['group_list'] = array(
+      '#markup' => hzd_group_list($account->id()),
+      '#cache' => ['max-age' => 0],
+//      '#weight' => -10
+    );
+    
   }
   
   //}
@@ -34,16 +41,31 @@ function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal
 function get_user_fields($user) {
   $db = \Drupal::database();
   $result = $db->select('cust_profile', 'cp')
-    ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
+    ->fields('cp', array(
+      'firstname',
+      'lastname',
+      'phone',
+      'position',
+      'state_id'
+    ))
     ->condition('cp.uid', $user->id());
   $val = $result->execute()->fetchAssoc();
   $state = $db->select('states', 's')
     ->fields('s', array('state'))
     ->condition('s.id', $val['state_id'], '=');
   $state_name = $state->execute()->fetchField();
-  $variables['name'] = ['label' => 'User Name', 'value' => $user->getDisplayName()];
-  $variables['firstname'] = ['label' => 'First Name', 'value' => $val['firstname']];
-  $variables['lastname'] = ['label' => 'Last Name', 'value' => $val['lastname']];
+  $variables['name'] = [
+    'label' => 'User Name',
+    'value' => $user->getDisplayName()
+  ];
+  $variables['firstname'] = [
+    'label' => 'First Name',
+    'value' => $val['firstname']
+  ];
+  $variables['lastname'] = [
+    'label' => 'Last Name',
+    'value' => $val['lastname']
+  ];
   $variables['phone'] = ['label' => 'Phone', 'value' => $val['phone']];
   $variables['position'] = ['label' => 'Position', 'value' => $val['position']];
   $variables['email'] = ['label' => 'Email', 'value' => $user->getEmail()];
@@ -89,20 +111,26 @@ function cust_group_group_content_update($entity) {
     $key = 'immediate_notifications';
     $params['subject'] = $subject;
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-    $send = true;
+    $send = TRUE;
     $user = $entity->get('entity_id')->referencedEntities()[0];
-    $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLink has been approved.', ['@user' => $user->getDisplayName(), '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])->toString()]);
+    $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLink has been approved.', [
+      '@user' => $user->getDisplayName(),
+      '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
+        ->toString()
+    ]);
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
       drupal_set_message(t('Mail sent.'), 'status');
     }
   }
-  \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.hzd_local_tasks']);
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags(['config:block.block.hzd_local_tasks']);
   
 }
 
-function cust_group_group_content_delete(){
-  \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.hzd_local_tasks']);
+function cust_group_group_content_delete() {
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags(['config:block.block.hzd_local_tasks']);
 }
 
 
@@ -120,44 +148,46 @@ function cust_group_group_content_insert($entity) {
 function sendGroupUpdateMail($entity) {
   if ($entity->getEntityTypeId() == 'group') {
     $group = $entity->id();
-  } else {
+  }
+  else {
     $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
-    if ($groupContentId)
+    if ($groupContentId) {
       $group = $groupContentId->getGroup()->id();
+    }
   }
 //    pr($group);exit;
-  if (!empty($group) && $group && (in_array($entity->bundle(), ['event', 'forum', 'page', 'newsletter']) || $entity->getEntityTypeId() == 'group')) {
+  if (!empty($group) && $group && (in_array($entity->bundle(), [
+        'event',
+        'forum',
+        'page',
+        'newsletter'
+      ]) || $entity->getEntityTypeId() == 'group')
+  ) {
     $getUserMailList = getGroupMemberList($group);
     send_notifications($entity, $getUserMailList);
   }
 }
 
 function getGroupMemberList($gid) {
-  $uids = \Drupal::database()->select('group_notifications_user_default_interval', 'gnudi')
-    ->fields('gnudi', ['uid'])
+  $uids = \Drupal::database()->select('group_notifications', 'gnudi')
+    ->fields('gnudi', ['uids'])
     ->condition('gnudi.group_id', $gid, '=')
-    ->condition('gnudi.default_send_interval', '0', '=')
-    ->execute()->fetchAll();
+    ->condition('gnudi.send_interval', '0', '=')
+    ->execute()->fetchField();
   $users = [];
-  foreach ($uids as $uid) {
-    $users[] = $uid->uid;
+  if (!empty($uids)) {
+    $users = unserialize($uids);
   }
 //  pr($users);exit;
   $userMails = [];
   if (!empty($users)) {
-  
+    
     $userEntities = User::loadMultiple($users);
-//    pr($userEntities);exit;
-/*    $emails = \Drupal::database()->select('users_field_data', 'ufd')
-      ->fields('ufd', ['uid', 'mail']);
-    $emails->leftJoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = ufd.uid');
-    $emails = $emails->condition('ufns.field_notifications_status_value', 0,'<>')
-      ->condition('uid', $users, 'IN')
-      ->execute()->fetchAll();*/
+    
     foreach ($userEntities as $user) {
-        if($user->get('field_notifications_status')->value !== 0){
-          $userMails[$user->id()] = $user->getEmail();
-        }
+      if ($user->get('field_notifications_status')->value !== 0) {
+        $userMails[$user->id()] = $user->getEmail();
+      }
     }
   }
   return $userMails;
@@ -172,7 +202,7 @@ function send_notifications($entity, $mails) {
 //    $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
 //    $params['subject'] = "Aktualisiert - Seite: " . $groupContent->label();
 //    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
-  
+
 //  $token_service = \Drupal::token();
 //  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['subject'];
 //  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
@@ -183,21 +213,23 @@ function send_notifications($entity, $mails) {
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
 //    $params['message'] .= '<br><br>' . $url;
   
-  $view_builder = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId());
+  $view_builder = \Drupal::entityManager()
+    ->getViewBuilder($entity->getEntityTypeId());
   $renderarray = $view_builder->view($entity);
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $entityTypeLabel = $entity->type->entity->label();
   $params['subject'] = "Aktualisiert - {$entityTypeLabel}: " . $entity->label();
   $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
-  $send = true;
+  $send = TRUE;
   foreach ($mails as $to) {
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
   }
   
-  if (isset($result['result']) && $result['result'] != true) {
+  if (isset($result['result']) && $result['result'] != TRUE) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-  } else {
+  }
+  else {
     drupal_set_message(t('Your message has been sent.'));
   }
   
@@ -290,7 +322,8 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     case 'node_faqs_delete_form':
 //            kint($_SERVER);
       $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
-      $fake_request = \Symfony\Component\HttpFoundation\Request::create($previousUrl)->getRequestUri();
+      $fake_request = \Symfony\Component\HttpFoundation\Request::create($previousUrl)
+        ->getRequestUri();
 //            $url_object = \Drupal::service('path.validator')->getUrlIfValid($fake_request->getRequestUri());
 //            kint($fake_request);
       $url = \Drupal\Core\Url::fromUserInput($fake_request);
@@ -313,24 +346,32 @@ function requst_submit_handler(&$form, $form_state) {
   mailToGroupAdmins($data);
 }
 
-function mailToGroupAdmins($data = []){
+function mailToGroupAdmins($data = []) {
   $data['subject'] = "Membership Request for a Group - " . $data['group']->label();
-  $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])->toString();
+  $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
+    ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
     ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin']]);
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $send = true;
+  $send = TRUE;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $params['subject'] = $data['subject'];
   foreach ($groupAdmins as $admin) {
     $userEntity = $admin->entity_id->entity;
-    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', ['@user' => $userEntity->getDisplayName(), '@groupLink' => $data['group']->toLink($data['group']->label(),'canonical',['absolute'=>true])->toString(), '@link' => $data['link'],'@message'=>$data['message']]);
+    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
+      '@user' => $userEntity->getDisplayName(),
+      '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
+        ->toString(),
+      '@link' => $data['link'],
+      '@message' => $data['message']
+    ]);
 //    pr($params);exit;
-    $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, null, $send);
+    $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
   }
-  if ($result['result'] != true) {
+  if ($result['result'] != TRUE) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-  } else {
+  }
+  else {
     drupal_set_message(t('Mail sent.'), 'status');
   }
 }
@@ -367,21 +408,28 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   //pr($entity->bundle());exit;
-  $plannigFileRef = array(1048 => "mlrp", 658 => "test calendar", 1049 => "transcription pp", 785 => "transcription fmk");
+  $plannigFileRef = array(
+    1048 => "mlrp",
+    658 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
+  );
   if (in_array($entity->id(), array_keys($plannigFileRef))) {
     $items = get_planning_file_data($plannigFileRef[$entity->id()]);
-    $build['planning_file_data'] = ['#prefix' => '<strong>Dataen</strong>:',
+    $build['planning_file_data'] = [
+      '#prefix' => '<strong>Dataen</strong>:',
       '#items' => $items,
       '#theme' => 'item_list',
       '#type' => 'ul',
       '#weight' => 100,
     ];
-  } elseif ('planning_files' == $entity->bundle()) {
+  }
+  elseif ('planning_files' == $entity->bundle()) {
     global $base_url;
     header('Location: ' . $base_url . \Drupal::url('hzd_release_management.display_planning_files', ['group' => RELEASE_MANAGEMENT]));
     exit;
   }
-
+  
   /*if ($entity->getType() == 'downtimes') {
     generate_quickinfo_pdf(Node::load(55871));
   }*/
@@ -400,8 +448,14 @@ function get_planning_file_data($type) {
     $file = $node->get('field_upload_planning_file')->referencedEntities();
     if (!empty($file[0])) {
       $fileUrl = $file[0]->url();
-      $date = \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'short');
-      $filenames[] = ['#markup' => \Drupal::service('link_generator')->generate($file[0]->getFilename(), Url::fromUri($fileUrl))->__toString() . ' (' . $date . ')', '#type' => 'markup'];
+      $date = \Drupal::service('date.formatter')
+        ->format($node->getCreatedTime(), 'short');
+      $filenames[] = [
+        '#markup' => \Drupal::service('link_generator')
+            ->generate($file[0]->getFilename(), Url::fromUri($fileUrl))
+            ->__toString() . ' (' . $date . ')',
+        '#type' => 'markup'
+      ];
       //$filenames[] = ['file'=>Link::fromTextAndUrl($file[0]->getFilename(),  Url::fromUri($fileUrl)),
       //'text'=>'sjdbd'];
     }
@@ -418,7 +472,9 @@ function cust_group_cron() {
 }
 
 function cust_group_user_delete($user) {
-  $groupContent = \Drupal::entityQuery('group_content')->condition('entity_id', $user->id())->execute();
+  $groupContent = \Drupal::entityQuery('group_content')
+    ->condition('entity_id', $user->id())
+    ->execute();
   $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
   foreach ($groupUsers as $gUser) {
     $gUser->delete();
@@ -440,7 +496,10 @@ function cust_group_user_login() {
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
   
-  if ($entity->getEntityTypeId() == 'group_content' && $entity->getContentPlugin()->getPluginId() == 'group_membership' && $entity->getGroup()->getMemberRequestStatus($entity->getEntity()) == 0) {
+  if ($entity->getEntityTypeId() == 'group_content' && $entity->getContentPlugin()
+      ->getPluginId() == 'group_membership' && $entity->getGroup()
+      ->getMemberRequestStatus($entity->getEntity()) == 0
+  ) {
 //    pr(($entity->getGroup()->getMemberRequestStatus($entity->getEntity())));
 //    exit;
     $group = $entity->getGroup()->id();
@@ -449,12 +508,18 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     unset($operations['edit']);
     $operations['approve_request'] = array(
       'title' => t('Approve Request'),
-      'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', ['group' => $group, 'group_content' => $group_content]),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', [
+        'group' => $group,
+        'group_content' => $group_content
+      ]),
       'weight' => -51,
     );
     $operations['reject_request'] = array(
       'title' => t('Reject Request'),
-      'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', ['group' => $group, 'group_content' => $group_content]),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', [
+        'group' => $group,
+        'group_content' => $group_content
+      ]),
       'weight' => -50,
     );
 //    pr(array_keys($operations));
@@ -470,9 +535,10 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  */
 function cust_group_file_download($uri) {
   $scheme = \Drupal::service('file_system')->uriScheme($uri);
-  if(\Drupal::currentUser()->isAnonymous() && $scheme == 'private'){
+  if (\Drupal::currentUser()->isAnonymous() && $scheme == 'private') {
     return -1;
-  }else{
+  }
+  else {
 //    echo 1;exit;
     return 1;
   }
@@ -492,31 +558,46 @@ function cust_group_schema() {
  */
 function cust_group_menu_link_content_insert($menu) {
   $nodeid = explode('/', $menu->link->uri)[1];
-  $finalpath = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->toUrl()->getInternalPath();
-  $menu->link->uri = 'internal:/'.$finalpath;
+  $finalpath = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)
+    ->toUrl()
+    ->getInternalPath();
+  $menu->link->uri = 'internal:/' . $finalpath;
   $menu->save();
-
+  
   $pgroupid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->gid->target_id;
-  $gcontentid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->id();
+  $gcontentid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)
+    ->id();
   $title = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->label->value;
   $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
   $title = $aliasCleaner->cleanstring($title);
   $langcode = $menu->langcode->value;
   if ($menu->getParentId()) {
     $parent = $menu->getParentId();
-    $menu_uuid = explode(':',$parent)[1];
-    $menu_content = \Drupal::entityManager()->getStorage('menu_link_content')->loadByProperties(array('uuid' => $menu_uuid));
+    $menu_uuid = explode(':', $parent)[1];
+    $menu_content = \Drupal::entityManager()
+      ->getStorage('menu_link_content')
+      ->loadByProperties(array('uuid' => $menu_uuid));
     $menu_content = array_shift($menu_content);
-    $parent_path = explode(':',$menu_content->link->uri)[1];
-    $parent_alias = \Drupal::service('path.alias_manager')->getAliasByPath($parent_path, $langcode);
-
-    $system_path = '/group/'.$pgroupid.'/content/'.$gcontentid;
-    $path_alias = $parent_alias.'/'.$title;
-    \Drupal::service('path.alias_storage')->save($system_path, $path_alias, $langcode); 
-  } else {
-    $system_path = '/group/'.$pgroupid.'/content/'.$gcontentid;
-    $groupalias = \Drupal::service('path.alias_manager')->getAliasByPath('/group/'.$pgroupid, $langcode);
-    $path_alias = $groupalias.'/'.$title;
-    \Drupal::service('path.alias_storage')->save($system_path, $path_alias, $langcode);    
+    $parent_path = explode(':', $menu_content->link->uri)[1];
+    $parent_alias = \Drupal::service('path.alias_manager')
+      ->getAliasByPath($parent_path, $langcode);
+    
+    $system_path = '/group/' . $pgroupid . '/content/' . $gcontentid;
+    $path_alias = $parent_alias . '/' . $title;
+    \Drupal::service('path.alias_storage')
+      ->save($system_path, $path_alias, $langcode);
   }
+  else {
+    $system_path = '/group/' . $pgroupid . '/content/' . $gcontentid;
+    $groupalias = \Drupal::service('path.alias_manager')
+      ->getAliasByPath('/group/' . $pgroupid, $langcode);
+    $path_alias = $groupalias . '/' . $title;
+    \Drupal::service('path.alias_storage')
+      ->save($system_path, $path_alias, $langcode);
+  }
+}
+
+function cust_group_preprocess_swiftmailer(&$variables) {
+  global $base_url;
+  $variables['base_url'] = $base_url;
 }
