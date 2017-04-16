@@ -274,7 +274,7 @@ class HzdreleasemanagementHelper
         $host_path = "http://" . $host . "/files/releases/" . strtolower($service_name) . "/" . $product;
         $upper_product = $doc_values['upper_product'];
         $zip_link = $doc_values['zip_link'];
-        $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $file_path = \Drupal::service('file_system')->realpath("public://");
         $release_dir = $file_path . "/releases/'" . $service_name . "'";
         $new_directory = $release_dir . "/" . $product . "/" . $product . "_" . max($arr) . "/dokumentation";
         $root_path = $file_path . "/releases/downloads";

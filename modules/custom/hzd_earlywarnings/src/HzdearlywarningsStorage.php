@@ -254,8 +254,8 @@ class HzdearlywarningsStorage
                 'entity.node.canonical',
                 array(
                     'node' => $earlywarning->id()
-                ),
-                ['query'=>['destination'=>\Drupal::request()->getRequestUri()]]
+                )
+//                ['query'=>['destination'=>\Drupal::request()->getRequestUri()]]
             );
             $early_warning = \Drupal::service('link_generator')->generate(
                 $earlywarning->getTitle(), $url);

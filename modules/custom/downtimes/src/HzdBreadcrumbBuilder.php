@@ -20,7 +20,7 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
     public function applies(RouteMatchInterface $route_match) {
         $route_name = $route_match->getRouteName();
         $params = $route_match->getParameters()->all();
-        if (in_array($route_name, ['cust_group.node_view']) && in_array($params['group_content']->entity_id->referencedEntities()[0]->getType(), ['downtimes', 'quickinfo'])) {
+        if (in_array($route_name, ['entity.group_content.canonical']) && in_array($params['group_content']->entity_id->referencedEntities()[0]->getType(), ['early_warnings'])) {
             return TRUE;
         }
         return FALSE;
@@ -37,10 +37,10 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
         $links = array();
         $links[] = Link::createFromRoute(t('Home'), '<front>');
         $group = $params['group'];
-        $listItems = self::getBreadcrumbConfigList($type,$group);
+//        $listItems = self::getBreadcrumbConfigList($type,$group);
         $links[] = Link::createFromRoute($group->label(), 'entity.group.canonical', array('group' => $group->id()));
-        if ($listItems)
-            $links[] = Link::createFromRoute($listItems['title'], $listItems['route'], $listItems['params']);
+//        if ($listItems)
+            $links[] = Link::createFromRoute(t('Early Warnings'), 'hzd_earlywarnings.early-warnings', ['group'=>RELEASE_MANAGEMENT]);
         
         return $breadcrumb->setLinks($links)->addCacheableDependency(0);
     }
