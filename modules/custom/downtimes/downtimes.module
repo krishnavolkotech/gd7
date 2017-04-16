@@ -128,13 +128,16 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $node = \Drupal::routeMatch()->getParameter('node');
       if ($node) {
         $downtime_data = \Drupal::database()->select('downtimes', 'd')
-          ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p'])
+          ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p', 'description'])
           ->condition('downtime_id', $node->id(), '=')
           ->execute()->fetchObject();
         $downtime_services = explode(',', $downtime_data->service_id);
         if (!$downtime_data->scheduled_p) {
           $type = 0;
         }
+      if(!empty($downtime_data->description)){
+          $form['body']['widget'][0]['#default_value'] = $downtime_data->description;
+      }
       }
     } else {
       $type = ($downtime_type == 'create_downtimes') ? 0 : 1;
