@@ -95,6 +95,8 @@ function swiftmailer_theme_suggestions_swiftmailer(array $variables) {
 function template_preprocess_swiftmailer(&$variables) {
   $variables['subject'] = $variables['message']['subject'];
   $variables['body'] = $variables['message']['body'];
+  global $base_url;
+  $variables['base_url'] = $base_url;
 }
 
 /**
