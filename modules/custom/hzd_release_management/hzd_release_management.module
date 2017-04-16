@@ -25,7 +25,7 @@ function hzd_get_deployed_serivces_list() {
   $current_url = Url::fromRoute('<current>');
   $path = $current_url->toString();
   $current_path = explode("/", $path);
-  
+  $type = NULL;
   if (is_numeric($current_path[2])) {
     $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
   }
