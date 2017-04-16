@@ -73,6 +73,9 @@ class CustNodeController extends ControllerBase {
   }
   
   static function hzdGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if($user->isAnonymous()){
+      return AccessResult::forbidden();
+    }
     if ($group = $route_match->getParameter('group')) {
       if (!is_object($group)) {
         $group = \Drupal\group\Entity\Group::load($group);
