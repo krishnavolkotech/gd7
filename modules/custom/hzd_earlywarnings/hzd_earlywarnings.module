@@ -30,7 +30,7 @@ function getErlywarningServies() {
      * WHERE n.nid = grv.service_id and grv.group_id = %d ORDER by title ", $group_id);
      */
     
-    $services['none'] = " < " . t('Service') . ' > ';
+    //$services['none'] = " < " . t('Service') . ' > ';
     
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->join('group_releases_view', 'grv', 'nfd.nid = grv.service_id');
@@ -60,13 +60,22 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
           $form['field_release_service']['#disabled'] = TRUE;
           $form['field_earlywarning_release']['#disabled'] = TRUE;
         }
-        
-        
+        $form['field_release_service']['widget']['#ajax'] = [
+              'callback' => 'hzd_early_warnings_service_change',
+              'wrapper' => 'hzd-release-early-warnings',
+        ];        
+        $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
+        $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
     }
     
     return $form;
 }
 
+function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+    $service = $form_state->getValue('field_release_service')[0]['value'];
+        $form['field_earlywarning_release']['widget']['#options'] = released_deployed_releases($service)['releases'];
+    return $form['field_earlywarning_release']['widget'];
+}
 
 function hzd_earlywarnings_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->hasField('field_do_not_send_notifications')) {
