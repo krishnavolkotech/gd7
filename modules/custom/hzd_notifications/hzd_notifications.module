@@ -279,8 +279,9 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
       $for_admin_formids = array(
         'node_page_form',
         'node_page_edit_form',
-        'node_faq_form',
-        'node_faq_edit_form',
+        'node_faqs_form',
+        'node_faqs_edit_form',
+        'node_faqs_gnode-form_form',
         'node_downtimes_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
@@ -289,8 +290,9 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
       $for_groupadmin_formids = array(
         'node_page_form',
         'node_page_edit_form',
-        'node_faq_form',
-        'node_faq_edit_form',
+        'node_faqs_form',
+        'node_faqs_edit_form',
+        'node_faqs_gnode-form_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
       );
