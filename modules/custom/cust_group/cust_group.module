@@ -376,12 +376,13 @@ function mailToGroupAdmins($data = []) {
   }
 }
 
+use Drupal\group\Entity\Group;
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
     $groupId = \Drupal::routeMatch()->getParameter('group');
-    $group = \Drupal\group\Entity\Group::load($groupId);
-    $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
+    $group = Group::load($groupId);
+    $view->build_info['title'] = $group->label . " - " . $view->build_info['title'];
   }
 }
 
