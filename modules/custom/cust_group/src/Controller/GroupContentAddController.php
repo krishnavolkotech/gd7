@@ -32,7 +32,9 @@ class GroupContentAddController extends GroupContentController {
   
   public function addPage(GroupInterface $group, $create_mode = FALSE) {
     $build = parent::addPage($group,true);
-    $contentTypes = ['page','faqs','newsletter','forum'];
+//    $contentTypes = ['page','faqs','newsletter','forum'];
+    //removed newsletter content type from content being created
+    $contentTypes = ['page','faqs','forum'];
     if($group->id() == QUICKINFO){
       $contentTypes[] = 'quickinfo';
     }
