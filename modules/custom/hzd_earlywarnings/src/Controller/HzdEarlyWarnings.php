@@ -186,7 +186,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $is_member = $group->getMember(\Drupal::service('current_user'));
     
-    $url = Url::fromRoute('entity.group_content.create_form', ['group' => RELEASE_MANAGEMENT,'plugin_id' => 'group_node:early_warnings']);
+    $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
     $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
     
     if ($is_member || in_array($user_role, array('site_administrator'))) {
