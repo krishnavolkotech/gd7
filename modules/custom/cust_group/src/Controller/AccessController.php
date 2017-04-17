@@ -132,7 +132,21 @@ class AccessController extends ControllerBase
         return AccessResult::allowed();
     }
     
-    function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    
+    function userEditAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return AccessResult::allowed();
+    }
+
+    if ($route_match->getParameter('user')->id() == \Drupal::currentUser()->id()) {
+      return AccessResult::allowed();
+    }
+    else {
+      return AccessResult::forbidden();
+    }
+  }
+
+  function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
         if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
             return AccessResult::allowed();
         }
