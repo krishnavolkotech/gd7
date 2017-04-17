@@ -25,7 +25,7 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
     $replacements = array();
     
     if ($type == 'group') {
-        $group = $data['group'];
+        $group = $data['group'] ? : '';
         if(empty($group)){
             $group = \Drupal::routeMatch()->getParameter('group');
             if(!empty($group) && !is_object($group)){
