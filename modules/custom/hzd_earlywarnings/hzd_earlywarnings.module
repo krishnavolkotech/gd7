@@ -82,16 +82,17 @@ function earlywarning_form_submit(&$form, FormState $formState){
  * @param \Drupal\Core\Entity\EntityInterface $entity
  */
 function hzd_earlywarnings_node_insert(EntityInterface $entity){
-  if($entity->getType() == 'early_warnings')
-  $group = \Drupal::routeMatch()->getParameter('group');
-  $plugin = $group->getGroupType()->getContentPlugin('group_node:early_warnings');
-  
-  $values = [
-    'type' => $plugin->getContentTypeConfigId(),
-    'gid' => $group->id(),
-    'entity_id'=>$entity->id(),
-  ];
-  $group_content = \Drupal::entityTypeManager()->getStorage('group_content')->create($values)->save();
+  if($entity->getType() == 'early_warnings'){
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $plugin = $group->getGroupType()->getContentPlugin('group_node:early_warnings');
+
+    $values = [
+      'type' => $plugin->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id'=>$entity->id(),
+    ];
+    $group_content = \Drupal::entityTypeManager()->getStorage('group_content')->create($values)->save();
+  }
 }
 
 function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){

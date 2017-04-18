@@ -205,6 +205,10 @@ header.navbar{
   padding-bottom:20px!important;
   background:#f7f7f7 !important;*/
 }
+/*  Body content custom style*/
+article.page .content table{
+  width:100% !important;
+}
 @media only screen and (min-width: 768px) {
   #block-primarylinks ul ul {
     width: auto !important;
@@ -2993,3 +2997,4 @@ header .block-cust-group-search-block button{
   margin-bottom:5px;
   border-bottom:1px dotted #04425f;
 }
+

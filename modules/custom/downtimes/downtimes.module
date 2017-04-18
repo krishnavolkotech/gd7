@@ -224,6 +224,11 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       if ($node) {
         $downtime_data = downtimes_set_default_values($form, $node->id());
       }
+      
+      $ftitle = $form['#title']->getArguments();
+      $ftitle['@title'] = ($downtime_type == 'create_downtimes') ? t('Störung') : t('Blockzeit');
+      $stringTitle = $form['#title']->getUntranslatedString();
+      $form['#title'] = t($stringTitle,$ftitle);
     } else {
       $title = ($downtime_type == 'create_downtimes') ? t('Störung') : t('Blockzeit');
       $form['title']['widget'][0]['value']['#default_value'] = $title;

@@ -376,12 +376,13 @@ function mailToGroupAdmins($data = []) {
   }
 }
 
+use Drupal\group\Entity\Group;
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
     $groupId = \Drupal::routeMatch()->getParameter('group');
-    $group = \Drupal\group\Entity\Group::load($groupId);
-    $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
+    $group = Group::load($groupId);
+    $view->build_info['title'] = $group->label . " - " . $view->build_info['title'];
   }
 }
 
@@ -395,6 +396,13 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
   //pr(count($check));exit;
   //Todo sometimes giving true while value is one
   if (count($check) >= 1 && $file->isNew()) {
+    $errors[] = t("The file's name already exists in database.");
+  }
+  $tempcheck = \Drupal::entityQuery('file')
+    ->condition('filename', $fileName)
+      ->condition('status', 0)
+   ->execute();
+  if (count($tempcheck) >= 1 && $file->isNew()) {
     $errors[] = t("The file's name already exists in database.");
   }
   return $errors;
