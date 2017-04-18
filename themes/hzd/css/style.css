@@ -2637,7 +2637,7 @@ body.path-group .main-container .region-content{
 }
 /*----  16-12-16   ----*/
 .text-danger td a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2645,7 +2645,7 @@ body.path-group .main-container .region-content{
   margin: 0 10px 0 0;
 }
 a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2653,7 +2653,7 @@ a.downtimes_details_link{
   margin-right:10px;
 }
 table.archived tr td a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2663,7 +2663,7 @@ table.archived tr td a.downtimes_details_link{
 }
 .text-danger td a.downtimes_update_link,
 a.downtimes_update_link{
-  background:url(../images/details-icon.png)left top no-repeat;
+  background:url(../images/details-icon.png) left top no-repeat;
    width:20px;
   height:20px;
   float:left;
@@ -2672,7 +2672,7 @@ a.downtimes_update_link{
   }
 .text-danger td a.downtimes_resolve_link,
 a.downtimes_resolve_link{
-  background:url(../images/tick-icon.png)left top no-repeat;
+  background:url(../images/tick-icon.png) left top no-repeat;
   width:20px;
   height:17px;
   float:left;
