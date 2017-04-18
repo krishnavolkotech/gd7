@@ -506,25 +506,28 @@ class HzdreleasemanagementHelper
      * Returns the released releses for the deployment.
      */
     static public function released_deployed_releases($service = NULL) {
-        //Retriving teh data using entity query // PLease use the below code to optimize performance @sandeep
-/*        $services = \Drupal::database()->select('group_releases_view','grv')
+        //Retriving the data using entity query // PLease use the below code to optimize performance @sandeep
+        $services = \Drupal::database()->select('group_releases_view','grv')
             ->fields('grv',['service_id'])
             ->condition('grv.group_id', RELEASE_MANAGEMENT, '=')
             ->execute()->fetchCol();
         if($service){
-            $services = $service;
+            $services = [$service];
         }
         $data = \Drupal::entityQuery('node')
             ->condition('field_relese_services',$services,'IN')
             ->condition('field_release_type',[1,2],'IN')
-            ->condition('status',1)
+//            ->condition('status',1)
+            ->condition('type','release')
             ->execute();
         $nodes = Node::loadMultiple($data);
+      $releases = [];
         foreach($nodes as $node){
-            $releases_infos[$node->get('field_relese_services')->target_id] = $node->get('field_relese_services')->referencedEntities()[0]->label();
-        }*/
+          $releases[$node->id()] = $node->label();
+        }
         
-        $query = \Drupal::database()->select('node_field_data', 'nfd');
+        
+        /*$query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->leftJoin('node__field_relese_services', 'nfrs', 'nfrs.entity_id = nfd.nid');
         $query->leftJoin('group_releases_view', 'GRV', 'GRV.service_id = nfrs.field_relese_services_target_id');
         $query->leftJoin('node__field_release_type', 'nfrt', 'nfrt.entity_id = nfrs.entity_id ');
@@ -545,7 +548,7 @@ class HzdreleasemanagementHelper
                 $services[] = $releases_info->service;
             }
             $releases[$releases_info->service] = $releases_info->title;
-        }
+        }*/
         $deployed_services[] = t('< @service >', ['@service' => 'Service']);
         if (!empty($services)) {
             $query = \Drupal::database()->select('node_field_data', 'nfd');
@@ -648,12 +651,13 @@ class HzdreleasemanagementHelper
             $service = $query->execute()->fetchField();
             
             if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
+              $buildRedirUrl = Url::fromRoute('hzd_release_management.deployed_releases',['group'=>$group_id])->toString();
                 $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployed_release->nid], array(
                         'query' => array(
                             'ser' => $deployed_release->service,
                             'rel' => $deployed_release->release_id,
                             'env' => $deployed_release->environment,
-                            'destination' => 'group/' . $group_id . '/deployed_releases',
+                            'destination' => $buildRedirUrl,
                         ),
                     )
                 );
