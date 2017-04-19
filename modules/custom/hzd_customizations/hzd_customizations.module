@@ -618,7 +618,10 @@ function generate_quickinfo_pdf($node = NULL) {
   $mailManager = \Drupal::service('plugin.manager.mail');
   $recepients = $node->get('field_additional_email_recipient')->value;
   foreach ((array) explode(',', $recepients) as $email) {
-    $mailManager->mail('cust_group', 'periodic_notifications', $email, 'de', $params, NULL, 1);
+    if(!empty($email)){
+      $mailManager->mail('cust_group', 'periodic_notifications', $email, 'de', $params, NULL, 1);
+    }
+    
   }
 }
 
