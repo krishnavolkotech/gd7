@@ -3,6 +3,7 @@
 /**
  * @file
  */
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
@@ -511,6 +512,13 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_text']);
   }
+  if($form_id == 'node_deployed_releases_edit_form'){
+    $entity = $form_state->getFormObject()->getEntity();
+    $dateData = $entity->get('field_date_deployed')->value;
+//   $form['field_date_deployed']['widget'] = ['#type'=>'date','#value'=>$dateData,'#date_format'=>'Y-m-d'];
+    $form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
+  }
+//  echo $form_id;exit;
 }
 
 /**
