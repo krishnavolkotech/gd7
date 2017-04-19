@@ -15,7 +15,7 @@ third_party_settings:
 id: blockupload1
 theme: hzd
 region: content
-weight: 0
+weight: -22
 provider: null
 plugin: 'block_upload:block_upload1'
 settings:

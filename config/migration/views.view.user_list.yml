@@ -390,7 +390,7 @@ display:
           group_type: group
           admin_label: ''
           operator: '='
-          value: ''
+          value: BW
           group: 1
           exposed: true
           expose:

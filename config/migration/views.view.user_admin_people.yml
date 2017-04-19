@@ -850,6 +850,9 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
           is_grouped: false
           group_info:
             label: ''
@@ -863,6 +866,8 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           fields:
+            lastname: lastname
+            firstname: firstname
             name: name
             mail: mail
           plugin_id: combine
