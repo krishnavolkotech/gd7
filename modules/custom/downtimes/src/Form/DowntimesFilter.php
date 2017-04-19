@@ -344,6 +344,7 @@ class DowntimesFilter extends FormBase
             'search_string' => t('Search Reason'),
             'group_id' => $group_id,
         );
+        $form['#exclude_from_print'] = 1;
         
         return $form;
     }
