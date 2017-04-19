@@ -589,12 +589,14 @@ class HzdStorage {
       '#rows' => $rows,
       '#empty' => t('No Data Created Yet'),
       '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+      '#caption' => t('Problems'),
     );
     
     $build['pager'] = array(
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
+      '#exclude_from_print'=>1,
     );
     return $build;
 //        }

@@ -205,8 +205,11 @@ class AccessController extends ControllerBase
         return AccessResult::forbidden();
     }
     
-    function isGroupAdminAccess() {
-        $user = \Drupal::currentUser();
+    function isGroupAdminAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+      if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+        return AccessResult::allowed();
+      }
+//        $user = \Drupal::currentUser();
         $uid = $user->id();
         $user_role = $user->getRoles();
         if (!in_array(SITE_ADMIN_ROLE, $user_role)) {

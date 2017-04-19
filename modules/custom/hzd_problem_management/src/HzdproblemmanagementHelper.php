@@ -49,7 +49,7 @@ class HzdproblemmanagementHelper {
     $result['#prefix'] = "<div id = 'problem_search_results_wrapper'>";
     $result['problems_filter_element'] = \Drupal::formBuilder()->getForm(
         '\Drupal\problem_management\Form\ProblemFilterFrom', $type, DISPLAY_LIMIT);
-    $result['problems_default_display']['table'] = 
+    $result['problems_default_display'] =
         HzdStorage::problems_default_display( $type, DISPLAY_LIMIT);
     $result['#suffix'] = "</div>";
 // sid load 

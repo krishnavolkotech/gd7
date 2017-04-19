@@ -5,3 +5,9 @@ services:
     tags:
       - { name: event_subscriber }
 
+  cust_pdf.render_pdf:
+    class: Drupal\cust_pdf\EventSubscriber\RenderPdfSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }
+
