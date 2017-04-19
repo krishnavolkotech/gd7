@@ -22,15 +22,15 @@ cust_group.quickinfo:
   requirements:
     _permission: 'access content'
 
-cust_group.faq_list:
-  path: '/group/{group}/faq/{term}'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
-    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
+#cust_group.faq_list:
+#  path: '/group/{group}/faq/{term}'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
+#    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
 #    _entity_view: 'group.default'
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-    _permission: 'access content'
+#  requirements:
+#    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+#    _permission: 'access content'
 
 cust_group.menu_migrate:
   path: '/menu-migrate'
