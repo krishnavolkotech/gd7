@@ -653,7 +653,9 @@ class HzdcustomisationStorage {
    *
    */
   static public function current_incidents($type = 'incident', $string = '') {
-    
+    //Make sure to print only necessary data for print formats
+    $filterData = \Drupal::request()->query;
+    $isPrintFormat = $filterData->has('print');
     $group = \Drupal::routeMatch()->getParameter('group');
     $group_id = (int)$group->id();
     ///// optimizd the code for filters things
@@ -666,7 +668,7 @@ class HzdcustomisationStorage {
     }
     $downtimesQuery = $downtimesQuery->condition('gcfd.type', '%group_node%', 'LIKE');
     $downtimesQuery = $downtimesQuery->condition('gcfd.gid', $group_id);
-    $filterData = \Drupal::request()->query;
+    
     $exposedFilterData = $filterData->all();
     unset($exposedFilterData['form_build_id']);
     unset($exposedFilterData['form_id']);
@@ -933,7 +935,8 @@ class HzdcustomisationStorage {
             $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($client->downtime_id);
             
             $links = [];
-            if ($groupContent) {
+      $query = \Drupal::request()->query;
+            if ($groupContent && !$query->has('print')) {
               $links['action']['popup'] = ['#type' => 'container', '#attributes' => ['class' => ['popup-wrapper']]];
               $links['action']['popup']['view'] = ['#type' => 'container', '#attributes' => ['class' => ['details-wrapper']]];
               $links['action']['popup']['view']['details'] = [
@@ -982,11 +985,13 @@ class HzdcustomisationStorage {
                 }
               }
             }
-            $headersNew = array_merge($headersNew, ['action' => 'Action']);
-            $entity = Node::load($client->downtime_id);
-            $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-            $links['action']['popup']['node'] = $view_builder->view($entity, 'popup', 'de');
-            $elements['action'] = $renderer->render($links);
+            if(!$isPrintFormat){
+              $headersNew = array_merge($headersNew, ['action' => 'Action']);
+              $entity = Node::load($client->downtime_id);
+              $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+              $links['action']['popup']['node'] = $view_builder->view($entity, 'popup', 'de');
+              $elements['action'] = $renderer->render($links);
+            }
 //            pr(count($links));
 //      $elements['table_type'] = $string;
             $rowClass = '';
@@ -1004,7 +1009,7 @@ class HzdcustomisationStorage {
     $variables = array('header' => $headersNew, 'rows' => $rows, 'footer' => NULL, 'attributes' => array('class' => [$type]), 'caption' => NULL, 'colgroups' => array(), 'sticky' => true, 'responsive' => TRUE, 'empty' => $noDataText[$type]);
 //    self::downtimes_display_table($variables);
     $build = [];
-    $build['problem_table'] = array(
+    $build['downtime_data'] = array(
       '#header' => $variables['header'],
       '#rows' => $variables['rows'],
       '#attributes' => $variables['attributes'],
@@ -1012,11 +1017,14 @@ class HzdcustomisationStorage {
 //      '#header_columns' => $variables['header_columns'],
       '#type' => 'table',
       '#caption' => $title[$type],
+      
+      '#prefix'=>Markup::create('<div style="clear:both"></div>'),
     );
     $build['pager'] = array(
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
+      '#exclude_from_print'=>1,
     );
     
     
