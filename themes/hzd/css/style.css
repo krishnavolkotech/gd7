@@ -1410,7 +1410,8 @@ nav#block-optionen ul li {
   padding-left:15px !important;
   background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat;
 }
-.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle{
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle,
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.is-active{
   color:rgb(4, 66, 95);
   margin-bottom:5px;
 }
