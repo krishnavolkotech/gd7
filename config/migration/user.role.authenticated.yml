@@ -71,3 +71,5 @@ permissions:
   64: 'block upload'
   65: 'administer users'
   66: 'use text format full_html'
+  67: 'access draggableviews'
+  68: 'access contextual links'
