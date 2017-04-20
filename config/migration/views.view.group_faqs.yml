@@ -524,6 +524,7 @@ display:
         fields: false
         sorts: false
         arguments: false
+        access: false
       row:
         type: fields
         options:
@@ -816,9 +817,14 @@ display:
           require_value: false
           reduce_duplicates: false
           plugin_id: taxonomy_index_tid
+      access:
+        type: group_permission
+        options:
+          group_permission: 'leave group'
     cache_metadata:
       max-age: 0
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
@@ -1058,7 +1064,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: group/%group/faq/%
+      path: group/%group/faqs/%
       sorts:
         faq_kategorie_target_id:
           id: faq_kategorie_target_id
@@ -1086,9 +1092,15 @@ display:
           plugin_id: standard
       defaults:
         sorts: false
+        access: false
+      access:
+        type: group_permission
+        options:
+          group_permission: 'leave group'
     cache_metadata:
       max-age: -1
       contexts:
+        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route

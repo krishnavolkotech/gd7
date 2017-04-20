@@ -23,12 +23,12 @@ settings:
   id: 'views_block:group_faqs-block_1'
   label: ''
   provider: views
-  label_display: visible
+  label_display: '0'
   views_label: ''
   items_per_page: none
 visibility:
   request_path:
     id: request_path
-    pages: '/group/*/faq/*'
+    pages: '/group/*/faqs/*'
     negate: false
     context_mapping: {  }
