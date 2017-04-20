@@ -1538,11 +1538,34 @@ form#downtimes-filter .string_search.hzd-form-element {
   float: left;
 }
 .view-group-faqs .view-content .views-row .faq-title {
-  width: 100%;
+  width: 82%;
+  float: left;
+  margin-bottom: 5px;
+  background: #02547a;
+  padding: 5px;
+}
+.view-group-faqs h3{
+  font-size:16px !important;
+  line-height:35px;
+  font-weight:bold;
+  font-family: 'robotomedium';
+  float:left;
+  display:block;
+  margin-top:10px !important;
+}
+.view-group-faqs .view-content .views-row .views-field-edit-node,
+.view-group-faqs .view-content .views-row .views-field-delete-node{
   float: left;
   margin-bottom: 5px;
   background: #04425f;
-  padding: 5px;
+  padding:5px 3px;
+  border-left:1px solid #fff;
+  cursor:pointer;
+}
+.view-group-faqs .view-content .views-row .views-field-edit-node a,
+.view-group-faqs .view-content .views-row .views-field-delete-node a{
+  color:#fff;
+  line-height:24px;
 }
 .view-group-faqs .view-content .views-row .faq-title .field-content {
   width: 100%;
