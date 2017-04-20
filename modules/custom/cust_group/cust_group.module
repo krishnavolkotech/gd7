@@ -380,8 +380,8 @@ use Drupal\group\Entity\Group;
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
-    $groupId = \Drupal::routeMatch()->getParameter('group');
-    $group = Group::load($groupId);
+    $group = \Drupal::routeMatch()->getParameter('group');
+//    $group = Group::load($groupId);
     if(is_object($group)) {
     $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
     }else {
@@ -605,4 +605,14 @@ function cust_group_menu_link_content_insert($menu) {
 function cust_group_preprocess_swiftmailer(&$variables) {
   global $base_url;
   $variables['base_url'] = $base_url;
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  if($block->id() == 'views_block__group_faqs_block_1' && $operation == 'view'){
+    $routeMatch = \Drupal::routeMatch();
+    return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(),$routeMatch->getCurrentRouteMatch(),$account);
+  }
 }

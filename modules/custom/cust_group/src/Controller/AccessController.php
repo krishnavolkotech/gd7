@@ -174,7 +174,7 @@ class AccessController extends ControllerBase
         return 'Members of ' . $this->t($group->label());
     }
     
-    function groupAdminAccess() {
+    static function groupAdminAccess() {
         $user = \Drupal::currentUser();
         if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
             return AccessResult::allowed();

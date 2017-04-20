@@ -135,3 +135,9 @@ cust_group.old_url_alias_delete:
     _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::deleteOldAlias'
   requirements:
     _permission: 'administer site'
+cust_group.faq_paths_alias_update:
+  path: '/faqs-paths-update'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::generateFaqPathAlias'
+  requirements:
+    _permission: 'administer site'

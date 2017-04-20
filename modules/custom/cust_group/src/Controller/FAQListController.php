@@ -13,9 +13,9 @@ use Drupal\Core\Access\AccessResult;
  */
 class FAQListController extends ControllerBase {
 
-  function faqList($group, $term = null){
+  function faqList(Group $group, $term = null){
   
-    $group = Group::load($group);
+//    $group = Group::load($group);
     $parentTermQuery = \Drupal::entityQuery('taxonomy_term')
       ->condition('name',$group->label())
       ->condition('vid','faq_seite')
@@ -49,8 +49,8 @@ class FAQListController extends ControllerBase {
     return $view->render();
   }
   
-  function title($group){
-    $group = Group::load($group);
+  function title(Group $group){
+//    $group = Group::load($group);
     return $this->t($group->label().' - Häufig gestellte Fragen');
   }
 
