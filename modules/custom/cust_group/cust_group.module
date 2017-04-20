@@ -380,8 +380,8 @@ use Drupal\group\Entity\Group;
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
-    $groupId = \Drupal::routeMatch()->getParameter('group');
-    $group = Group::load($groupId);
+    $group = \Drupal::routeMatch()->getParameter('group');
+//    $group = Group::load($groupId);
     if(is_object($group)) {
     $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
     }else {
