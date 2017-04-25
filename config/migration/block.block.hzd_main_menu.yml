@@ -13,7 +13,7 @@ _core:
 id: hzd_main_menu
 theme: hzd
 region: '-1'
-weight: -11
+weight: -12
 provider: null
 plugin: 'system_menu_block:main'
 settings:

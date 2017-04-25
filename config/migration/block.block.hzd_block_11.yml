@@ -9,7 +9,7 @@ dependencies:
 id: hzd_block_11
 theme: hzd
 region: '-1'
-weight: -13
+weight: -14
 provider: null
 plugin: 'block_content:9329f366-eec5-4ca0-b4c5-a411299615da'
 settings:
