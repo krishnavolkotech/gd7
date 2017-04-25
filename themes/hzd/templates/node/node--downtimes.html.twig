@@ -171,7 +171,7 @@ view_mode ? view_mode|clean_class,
 	{% else %}
 	  Abgebrochen
 	{% endif %}
-    von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_repoted|date('d.m.Y - H:i') }} Uhr</span>
+    von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_reported|date('d.m.Y - H:i') }} Uhr</span>
    <div class="field-wrapper">
    </div>
     {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
