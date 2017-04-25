@@ -1,6 +1,6 @@
 uuid: b9f8673e-05cb-4cd4-9003-f30e82806e3d
 langcode: de
-status: true
+status: false
 dependencies:
   module:
     - block_class
@@ -13,8 +13,8 @@ third_party_settings:
     classes: ''
 id: customgroupsearchblock
 theme: hzd
-region: user_menu
-weight: -28
+region: '-1'
+weight: 6
 provider: null
 plugin: cust_group_search_block
 settings:

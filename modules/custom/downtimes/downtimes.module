@@ -1076,16 +1076,16 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   $log = array();
   $form_values = $form;
   //Startdate log.
-  $startdate_old = get_unix_timestamp($form_values['dates']['start']['startdate_planned']['#default_value']);
-  $startdate_new = get_unix_timestamp($form_state->getValue('startdate_planned'));
+  $startdate_old = $form_values['dates']['start']['startdate_planned']['#default_value'];
+  $startdate_new = $form_state->getValue('startdate_planned');
   if ($startdate_old != $startdate_new) {
     $log['start_date']['old'] = $startdate_old;
     $log['start_date']['new'] = $startdate_new;
   }
   // End date log.
-  $enddate_old = get_unix_timestamp($form_values['dates']['end']['enddate_planned']['#default_value']);
+  $enddate_old = $form_values['dates']['end']['enddate_planned']['#default_value'];
   if (!empty($form_state->getValue('enddate_planned'))) {
-    $enddate_new = get_unix_timestamp($form_state->getValue('enddate_planned'));
+    $enddate_new = $form_state->getValue('enddate_planned');
   } else {
     $enddate_new = "";
   }
@@ -1166,6 +1166,14 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
       )
     )->execute();
   }
+  $downtime_type = $form_state->getValue('downtime_type');
+  $messages = drupal_get_messages();
+  if($downtime_type == 0){
+    $text = 'An Incident was created';
+  }else{
+    $text = 'A Maintenance was created';
+  }
+  drupal_set_message(t($text));
 }
 
 /**
