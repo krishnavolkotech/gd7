@@ -154,7 +154,8 @@ class GroupNotifications extends FormBase {
           $notifyData = [
             'uids' => serialize([$uids]),
             'send_interval' => $interval,
-            'group_id' => $gid
+            'group_id' => $gid,
+            'group_name'=>$gid
           ];
           \Drupal::database()
             ->insert('group_notifications')

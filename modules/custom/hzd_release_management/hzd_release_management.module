@@ -680,7 +680,7 @@ function hzd_user_mails($uids) {
   $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
   $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
   $query->condition('u.status', 1, '=')
-    ->condition('ufns.field_notifications_status_value', 1)
+    ->condition('ufns.field_notifications_status_value', 0,'<>')
     ->fields('ufmp', array('field_message_preference_value'))
     ->condition('u.uid', $uids, 'IN')
     ->groupBy('ufmp.field_message_preference_value');
