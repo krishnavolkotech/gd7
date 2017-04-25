@@ -89,9 +89,9 @@ class RouteSubscriber extends RouteSubscriberBase {
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
       }
     }*/
-    if ($route = $collection->get('view.group_members.page_1')) {
+/*    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
-    }
+    }*/
 
     // Overriding the controller for front page contrib module
     if ($route = $collection->get('front_page.front')) {
