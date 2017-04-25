@@ -1,0 +1,11 @@
+uuid: 0de7c742-685a-4529-a07f-efb611b63cfe
+langcode: de
+status: true
+dependencies:
+  config:
+    - filter.format.full_html
+id: hzdfooter_content
+title: 'HZD Footer'
+content:
+  value: "<div class=\"row\"><span class=\"cp col-sm-6\">©2009-2017 KONSENS</span><span class=\"footer-links col-sm-6\"><a href=\"#\">IMPRESSUM</a> | <a href=\"#\">DATENSCHTZ</a></span></div>\r\n"
+  format: full_html
