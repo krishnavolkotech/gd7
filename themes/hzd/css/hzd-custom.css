@@ -71,6 +71,8 @@ a.button--danger{
 .form-actions button .glyphicon-ok{
   display:none;
 }
+
+
 /*------- Css3 styles -----*/
 .alert {
   word-wrap: break-word;
@@ -335,6 +337,7 @@ li.comment-delete a {
 li.comment-reply a {
   border-radius: 0 2px 2px 0;
 }
+
 .search_string_submit button,
 .views-exposed-form input[type="text"] {
   border-radius: 3px !important; 
@@ -348,7 +351,7 @@ li.comment-reply a {
   box-shadow: none !important;
 }
 #toolbar-administration + .hzd-innerpage-wrapper .view-group-faqs .view-content .views-row .faq-title{
-  width:83%;
+  width:82%;
 }
 #block-primarylinks ul li a font.goog-text-highlight{
   background:transparent;
