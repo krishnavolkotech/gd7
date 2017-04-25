@@ -46,12 +46,6 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
-  field_old_reference:
-    weight: 3
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
   label:
     type: string_textfield
     weight: -5
@@ -69,5 +63,10 @@ content:
     weight: 30
     settings: {  }
     third_party_settings: {  }
+  translation:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
 hidden:
+  field_old_reference: true
   uid: true
