@@ -146,25 +146,29 @@ function cust_group_group_content_insert($entity) {
 }
 
 function sendGroupUpdateMail($entity) {
-  if ($entity->getEntityTypeId() == 'group') {
-    $group = $entity->id();
-  }
-  else {
-    $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
-    if ($groupContentId) {
-      $group = $groupContentId->getGroup()->id();
+  
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getEntityTypeId() == 'group') {
+      $group = $entity->id();
     }
-  }
+    else {
+      $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+      if ($groupContentId) {
+        $group = $groupContentId->getGroup()->id();
+      }
+    }
 //    pr($group);exit;
-  if (!empty($group) && $group && (in_array($entity->bundle(), [
-        'event',
-        'forum',
-        'page',
-        'newsletter'
-      ]) || $entity->getEntityTypeId() == 'group')
-  ) {
-    $getUserMailList = getGroupMemberList($group);
-    send_notifications($entity, $getUserMailList);
+    if (!empty($group) && $group && (in_array($entity->bundle(), [
+          'event',
+          'forum',
+          'page',
+          'newsletter'
+        ]) || $entity->getEntityTypeId() == 'group')
+    ) {
+      $getUserMailList = getGroupMemberList($group);
+      send_notifications($entity, $getUserMailList);
+    }
   }
 }
 
@@ -377,14 +381,16 @@ function mailToGroupAdmins($data = []) {
 }
 
 use Drupal\group\Entity\Group;
+
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
     $group = \Drupal::routeMatch()->getParameter('group');
 //    $group = Group::load($groupId);
-    if(is_object($group)) {
-    $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
-    }else {
+    if (is_object($group)) {
+      $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
+    }
+    else {
       $view->build_info['title'] = $group->label . " - " . $view->build_info['title'];
     }
   }
@@ -564,11 +570,11 @@ function cust_group_schema() {
 function cust_group_menu_link_content_insert($menu) {
   $nodeid = explode('/', $menu->link->uri)[1];
   $groupcontent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid);
-  if($nodeid && $groupcontent){
+  if ($nodeid && $groupcontent) {
     $finalpath = $groupcontent->toUrl()->getInternalPath();
     $menu->link->uri = 'internal:/' . $finalpath;
     $menu->save();
-
+    
     $pgroupid = $groupcontent ? $groupcontent->gid->target_id : "";
     $gcontentid = $groupcontent ? $groupcontent->id() : "";
     $title = $groupcontent ? $groupcontent->label->value : "";
@@ -585,7 +591,7 @@ function cust_group_menu_link_content_insert($menu) {
       $parent_path = explode(':', $menu_content->link->uri)[1];
       $parent_alias = \Drupal::service('path.alias_manager')
         ->getAliasByPath($parent_path, $langcode);
-
+      
       $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
       $path_alias = $parent_alias . '/' . $title;
       \Drupal::service('path.alias_storage')
@@ -611,8 +617,8 @@ function cust_group_preprocess_swiftmailer(&$variables) {
  * Implements hook_block_access().
  */
 function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
-  if($block->id() == 'views_block__group_faqs_block_1' && $operation == 'view'){
+  if ($block->id() == 'views_block__group_faqs_block_1' && $operation == 'view') {
     $routeMatch = \Drupal::routeMatch();
-    return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(),$routeMatch->getCurrentRouteMatch(),$account);
+    return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(), $routeMatch->getCurrentRouteMatch(), $account);
   }
 }
