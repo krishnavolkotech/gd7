@@ -15,7 +15,7 @@ third_party_settings:
 id: arco
 theme: hzd
 region: '-1'
-weight: -28
+weight: -29
 provider: null
 plugin: 'system_menu_block:menu-36070'
 settings:

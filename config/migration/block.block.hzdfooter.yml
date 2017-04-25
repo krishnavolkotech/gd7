@@ -1,0 +1,29 @@
+uuid: b785ff08-7c59-4fac-a408-225113e7408a
+langcode: de
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:e9c18ca4-9437-4924-b27b-d81ab2852dad'
+  module:
+    - block_class
+    - block_content
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: hzdfooter
+theme: hzd
+region: footer
+weight: -28
+provider: null
+plugin: 'block_content:e9c18ca4-9437-4924-b27b-d81ab2852dad'
+settings:
+  id: 'block_content:e9c18ca4-9437-4924-b27b-d81ab2852dad'
+  label: 'HZD Footer'
+  provider: block_content
+  label_display: '0'
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }
