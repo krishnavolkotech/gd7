@@ -1170,12 +1170,18 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   }
   $downtime_type = $form_state->getValue('downtime_type');
   $messages = drupal_get_messages();
-  if($downtime_type == 0){
-    $text = 'An Incident was created';
+  $entity = $form_state->getFormObject()->getEntity();
+  if($entity->isNew()){
+    $status = t('created');
   }else{
-    $text = 'A Maintenance was created';
+    $status = t('updated');
   }
-  drupal_set_message(t($text));
+  if($downtime_type == 0){
+    $text = 'An Incident was @status';
+  }else{
+    $text = 'A Maintenance was @status';
+  }
+  drupal_set_message(t($text,['@status'=>$status]));
 }
 
 /**

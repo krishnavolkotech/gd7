@@ -143,7 +143,6 @@ class Confirm extends ConfirmFormBase {
     $user = Drupal::currentUser();
     // $user_role = get_user_role();
     //extract($_SESSION['form_values']);
-    $message = 'Downtime has been resolved ';
 
     /* $date_report = get_timestamp($resolved_end_date);
       $date_report = get_unix_timestamp($resolved_end_date); */
@@ -153,7 +152,17 @@ class Confirm extends ConfirmFormBase {
     } else {
       $nid = $node;
     }
-
+    $message = 'Downtime has been resolved ';
+    $downtimeType = \Drupal::database()->select('downtimes','d')
+      ->fields('d',['scheduled_p'])
+      ->condition('downtime_id',$nid)
+      ->execute()
+      ->fetchField();
+    if($downtimeType == 1){
+      $message = 'Maintenance has been resolved';
+    }else{
+      $message = 'Incident has been resolved';
+    }
     $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
     if(!isset($downtimes_resolve['notifications_content_disable'])  ||  $downtimes_resolve['notifications_content_disable'] != 1) {
       $downtime_node =  \Drupal\node\Entity\Node::load($nid);

@@ -12,13 +12,6 @@ targetEntityType: group
 bundle: closed
 mode: default
 content:
-  field_description:
-    weight: -3
-    label: hidden
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
   field_forum_containers:
     weight: -2
     label: above
@@ -39,6 +32,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_description: true
   field_old_reference: true
   langcode: true
   uid: true
