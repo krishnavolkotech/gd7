@@ -121,10 +121,12 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#markup' => $help_markup,
         '#weight' => -1,
       ];
+      $isNewlyCreated = 1;
     }
     $downtime_data = new stdClass();
     //$node = array();
     if ($form_id == 'node_downtimes_edit_form') {
+      $isNewlyCreated = 0;
       $node = \Drupal::routeMatch()->getParameter('node');
       if ($node) {
         $downtime_data = \Drupal::database()->select('downtimes', 'd')
@@ -142,6 +144,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     } else {
       $type = ($downtime_type == 'create_downtimes') ? 0 : 1;
     }
+    $form_state->getFormObject()->isNewlyCreated = $isNewlyCreated;
     $stateoption = HzdcustomisationStorage::get_states(1);
     unset($stateoption[1]);
     $form['states'] = [
@@ -1170,8 +1173,8 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   }
   $downtime_type = $form_state->getValue('downtime_type');
   $messages = drupal_get_messages();
-  $entity = $form_state->getFormObject()->getEntity();
-  if($entity->isNew()){
+  $isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
+  if($isNewlyCreated){
     $status = t('created');
   }else{
     $status = t('updated');
