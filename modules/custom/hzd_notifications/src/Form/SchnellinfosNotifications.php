@@ -109,7 +109,19 @@ class SchnellinfosNotifications extends FormBase {
             ->fields(['uids'=>serialize($uids)])
             ->condition('id',$data[$interval]->id)->execute();
         }else{
-          $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'cck'=>$content];
+          if($subscriptions[$content_key]['subscriptions_interval_'.$content_key] == $interval) {
+            $notifyData = [
+              'uids' => serialize([$uid]),
+              'send_interval' => $interval,
+              'cck' => $content
+            ];
+          }else{
+            $notifyData = [
+              'uids' => serialize([]),
+              'send_interval' => $interval,
+              'cck' => $content
+            ];
+          }
           \Drupal::database()
             ->insert('quickinfo_notifications')
             ->fields($notifyData)->execute();

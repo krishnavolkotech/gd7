@@ -151,12 +151,23 @@ class GroupNotifications extends FormBase {
             ->condition('id', $data[$interval]->id)->execute();
         }
         else {
-          $notifyData = [
-            'uids' => serialize([$uids]),
-            'send_interval' => $interval,
-            'group_id' => $gid,
-            'group_name'=>$gid
-          ];
+  
+          if($subscriptions[$gid]['subscriptions_interval_'.$gid] == $interval){
+            $notifyData = [
+              'uids' => serialize([$uids]),
+              'send_interval' => $interval,
+              'group_id' => $gid,
+              'group_name'=>$gid
+            ];
+          }else{
+            $notifyData = [
+              'uids' => serialize([]),
+              'send_interval' => $interval,
+              'group_id' => $gid,
+              'group_name'=>$gid
+            ];
+          }
+          
           \Drupal::database()
             ->insert('group_notifications')
             ->fields($notifyData)->execute();
