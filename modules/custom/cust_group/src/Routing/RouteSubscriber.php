@@ -72,6 +72,12 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.group_node_relate_page')) {
       $route->setRequirement('_role', 'administrator');
     }
+    if ($route = $collection->get('entity.group_content.edit_form')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('entity.group_content.delete_form')) {
+      $route->setRequirement('_role', 'administrator');
+    }
 /*    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setRequirement('_role', 'administrator');
     }*/
