@@ -15,7 +15,13 @@ define('Zentrale_Release_Manager_Lander', 5);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\user\Entity\User;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+use Drupal\file\Entity\File;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
   if ($view_mode == 'full') {
@@ -95,6 +101,49 @@ function cust_group_node_insert($entity) {
   //  pr($entity->getType());exit;
   //capture the notification for the users to send daily and weekly
 //  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'insert');
+}
+
+
+
+function cust_group_group_insert($group) {
+  $node = Node::create([
+    'type'=>'group',
+    'title'=>$group->label(),
+  ]);
+  $node->save();
+  \Drupal::service('path.alias_storage')->delete(['source'=>'/node/'.$node->id()]);
+  $group->set('field_old_reference',$node->id());
+  $group->save();
+  $menu = \Drupal::entityTypeManager()
+    ->getStorage('menu')
+    ->create([
+      'id' => 'menu-'.$node->id(),
+      'label' => $group->label(),
+      'description' => 'test test',
+    ]);
+  $menu->save();
+  
+  $items = array(
+    'Allgemeines' => 'internal:/'.$group->toUrl()->getInternalPath(),
+//Cannot create dummy menu links as the Menu link url validation fails
+/*    'Ansprechpartner' => '/ansprechpartner',
+    'Dokumentation' => '/dokumentation',
+    'FAQs' => '/faqs',
+    'Reporting' => '/reporting',
+    'Forums' => '/forum',*/
+    'Gruppenmitglieder' => 'internal:/'.Url::fromRoute('view.group_members_lists.page_1',['group'=>$group->id()])->getInternalPath(),
+  );
+  
+  foreach($items as $title => $link) {
+    $menu_link = MenuLinkContent::create([
+      'title' => $title,
+      'link' => ['uri' => $link],
+      'menu_name' => $menu->id(),
+      'expanded' => TRUE,
+    ]);
+    $menu_link->save();
+  }
+  
 }
 
 function cust_group_group_update($entity) {
@@ -410,12 +459,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
   }
   return $errors;
 }
-use Drupal\Core\Url;
-use Drupal\Core\Link;
-use Drupal\file\Entity\File;
-use Drupal\node\Entity\Node;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   //pr($entity->bundle());exit;
