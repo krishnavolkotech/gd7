@@ -26,7 +26,7 @@ class HzdFooter extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $footerHtml = '<div class="row"><span class="cp col-sm-6">©2009-2016 KONSENS</span><span class="footer-links col-sm-6"><a href="#">IMPRESSUM</a> | <a href="#">DATENSCHTZ</a></span></div>
+    $footerHtml = '<div class="row"><span class="cp col-sm-6">© 2009-2017 KONSENS</span><span class="footer-links col-sm-6"><a href="#">Impressum</a> | <a href="#">Datenschutz</a></span></div>
 ';
     return ['#markup' => $footerHtml];
   }

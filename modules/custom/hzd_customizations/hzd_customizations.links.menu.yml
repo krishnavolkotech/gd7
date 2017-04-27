@@ -20,7 +20,7 @@ hzd_customizations.planning_files_form:
   weight: 99
 
 hzd_customizations.notification:
-  title: 'Notification'
+  title: 'Notifications'
   route_name: system.admin
   parent: hzd_customizations.custom_configurations
   description: 'Manage Non-Production Environment'

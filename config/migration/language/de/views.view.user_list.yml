@@ -1,0 +1,59 @@
+display:
+  default:
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Anwenden
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+      pager:
+        options:
+          expose:
+            items_per_page_label: 'Einträge pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+      title: Benutzer
+  address:
+    display_title: Seite
+    display_options:
+      filters:
+        combine:
+          expose:
+            label: 'Name oder E-Mail'
+        abbr:
+          expose:
+            label: Land
+      fields:
+        lastname:
+          label: Nachname
+        name:
+          label: Nachname
+        abbr:
+          label: Land
+        mail:
+          label: E-Mail
+      pager:
+        options:
+          tags:
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page_label: 'Einträge pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+      empty:
+        area:
+          content:
+            value: "<p>No results found for your search!!</p>\r\n"
+            format: basic_html
+  entity_reference_1:
+    display_options:
+      pager:
+        options:
+          tags:
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page_label: 'Einträge pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+  page_1:
+    display_title: Seite
