@@ -1282,11 +1282,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             // $filter_where .= " and field_date_value > ". $start_date;.
         }
         if ($filter_value['filter_startdate']) {
-            $startDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_startdate'])->getTimestamp();
+            $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'],null,['validate_format'=>FALSE])->getTimestamp();
             $release_node_ids->condition('field_date', $startDate, '>=');
         }
         if ($filter_value['filter_enddate']) {
-            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_enddate'])->getTimestamp() + 86399;
+            $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'],null,['validate_format'=>FALSE])->getTimestamp() + 86399;
             $release_node_ids->condition('field_date', $endDate, '<=');
             /*$release_node_ids->condition('field_date',
                 array($filter_value['filter_startdate'],
