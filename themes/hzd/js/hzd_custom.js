@@ -135,7 +135,7 @@
                 showTodayButton: true,
                 ignoreReadonly: true,
                 sideBySide: true,
-//                stepping: 5,
+                stepping: 5,
                 toolbarPlacement: 'bottom',
                 showClear: true,
                 // debug: true
