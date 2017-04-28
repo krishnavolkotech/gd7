@@ -11,7 +11,7 @@ id: group.moderate.field_group_body
 field_name: field_group_body
 entity_type: group
 bundle: moderate
-label: group_body
+label: 'Group Body'
 description: ''
 required: false
 translatable: true

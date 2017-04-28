@@ -16,6 +16,7 @@ define('Zentrale_Release_Manager_Lander', 5);
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
 use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
@@ -111,15 +112,28 @@ function cust_group_group_insert($group) {
     'title'=>$group->label(),
   ]);
   $node->save();
+  $forum = Term::create([
+    'name'=>$group->label(),
+    'vid'=>'forums'
+  ]);
+  $forum->save();
+  $forumTerm = Term::create([
+    'name'=>'Allgemeines',
+    'vid'=>'forums',
+    'parent'=>$forum->id(),
+  ]);
+  $forumTerm->save();
+  
   \Drupal::service('path.alias_storage')->delete(['source'=>'/node/'.$node->id()]);
   $group->set('field_old_reference',$node->id());
+  $group->set('field_forum_containers',$forum->id());
   $group->save();
   $menu = \Drupal::entityTypeManager()
     ->getStorage('menu')
     ->create([
       'id' => 'menu-'.$node->id(),
       'label' => $group->label(),
-      'description' => 'test test',
+      'description' => '',
     ]);
   $menu->save();
   
@@ -129,8 +143,8 @@ function cust_group_group_insert($group) {
 /*    'Ansprechpartner' => '/ansprechpartner',
     'Dokumentation' => '/dokumentation',
     'FAQs' => '/faqs',
-    'Reporting' => '/reporting',
-    'Forums' => '/forum',*/
+    'Reporting' => '/reporting',*/
+    'Forums' => 'internal:/'.Url::fromRoute('cust_group.forums',['group'=>$group->id()])->getInternalPath(),
     'Gruppenmitglieder' => 'internal:/'.Url::fromRoute('view.group_members_lists.page_1',['group'=>$group->id()])->getInternalPath(),
   );
   
