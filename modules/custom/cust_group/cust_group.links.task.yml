@@ -13,7 +13,7 @@ cust_group.my_groups:
   route_name: view.my_groups.page_1
   base_route: view.all_groups.page_1
   weight: 11
-cust_group.my_groups:
+cust_group.unpublished_groups:
   title: 'Unpublished Groups'
   route_name: view.all_groups.unpublished
   base_route: view.all_groups.page_1
