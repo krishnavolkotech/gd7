@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Queue Mail module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function queue_mail_install() {
+  _queue_mail_get_queue()->createQueue();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function queue_mail_uninstall() {
+  _queue_mail_get_queue()->deleteQueue();
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function queue_mail_requirements($phase) {
+  $requirements = array();
+
+  switch ($phase) {
+    case 'runtime':
+      $queue_length = _queue_mail_get_queue()->numberOfItems();
+      $destination = \Drupal::destination()->getAsArray();
+      $requirements['queue_mail'] = array(
+        'title' => t('Queue mail'),
+        'value' => \Drupal::translation()->formatPlural(
+          $queue_length,
+          '1 mail currently queued for sending.',
+          '@count mails currently queued for sending.'),
+        'description' => [
+          [
+            '#markup' => t('Sending of queued mails happens on cron.'),
+            '#suffix' => ' ',
+          ],
+          [
+            '#markup' => t('You can <a href=":cron">run cron manually</a>.',
+              [':cron' => \Drupal::url('system.run_cron')]),
+            '#prefix' => '<br/>',
+          ],
+        ],
+        'severity' => $queue_length > 0 ? REQUIREMENT_INFO : REQUIREMENT_OK,
+      );
+      break;
+  }
+
+  return $requirements;
+}
