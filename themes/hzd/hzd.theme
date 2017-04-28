@@ -527,13 +527,17 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
       if(!$group instanceof Group){
         $group = Group::load($group);
       }
-      $options = $form['menu']['link']['menu_parent']['#options'];
       $menu = 'menu-'.$group->get('field_old_reference')->value;
-      foreach($options as $key=>$option){
-        if(strpos($key,$menu) === false){
+      $menuEntity = \Drupal::entityTypeManager()->getStorage('menu')
+        ->load($menu);
+      $menuOptions = \Drupal::service('menu.parent_form_selector')->getParentSelectOptions('',[$menuEntity->id()=>$menuEntity->label()]);
+      $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
+//      pr($x);exit;
+      /*foreach($options as $key=>$option){
+        if(strpos($key,$menu) !== 0){
            unset($form['menu']['link']['menu_parent']['#options'][$key]);
         }
-      }
+      }*/
 /*      kint($menu);
       kint($options);exit;*/
     }
