@@ -1,0 +1,5 @@
+queue_mail_keys: "cust_group_*\r\nhzd_customizations_*\r\nhzd_release_management_*\r\ninactive_user_*\r\nmass_contact_*\r\nproblem_management_*\r\nreroute_email_*\r\nswiftmailer_*\r\nuser_*"
+queue_mail_queue_time: 20
+_core:
+  default_config_hash: pf1sgP08qOF1C19yVSs1Uxp0mlyDNa5YDUK2oO9vHKU
+langcode: de

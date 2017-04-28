@@ -23,14 +23,6 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
-  field_forum_containers:
-    weight: 6
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
   field_group_body:
     weight: 3
     settings:
@@ -60,5 +52,6 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_forum_containers: true
   field_old_reference: true
   uid: true
