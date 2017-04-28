@@ -112,7 +112,7 @@ WHERE ufd.uid = gcfd_mem.uid AND ufd.uid <> 0 AND gcfd_mem.request_status = 1 AN
     $subject = $form_state->getValue('subject');
     $body = Markup::create($form_state->getValue('body')['value']);
     foreach ($mailToGroupMember as $group_members) {
-      $group_members_list[] = $group_members->mail;
+//      $group_members_list[] = $group_members->mail;
       $operations[] = array(
         '\Drupal\mass_contact\MassMail::sendMail',
         array(
