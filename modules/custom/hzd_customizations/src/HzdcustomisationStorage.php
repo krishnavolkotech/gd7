@@ -684,10 +684,10 @@ class HzdcustomisationStorage {
     }
     $startDate = $endDate = null;
     if ($filterData->has('filter_startdate') && $filterData->get('filter_startdate') != '') {
-      $startDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_startdate'))->getTimestamp();
+      $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filterData->get('filter_startdate'),null,['validate_format'=>FALSE])->getTimestamp();
     }
     if ($filterData->has('filter_enddate') && $filterData->get('filter_enddate') != '') {
-      $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp() + 86399;
+      $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filterData->get('filter_enddate'),null,['validate_format'=>FALSE])->getTimestamp() + 86399;
     }
     
     if ($filterData->has('time_period') && $filterData->get('time_period') != 0) {
