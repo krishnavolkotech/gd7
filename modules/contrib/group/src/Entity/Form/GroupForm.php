@@ -65,7 +65,7 @@ class GroupForm extends ContentEntityForm {
   protected function actions(array $form, FormStateInterface $form_state) {
     $element = parent::actions($form, $form_state);
     $group = $this->entity;
-    if (\Drupal::currentUser()->hasPermission('administer groups')) {
+    if (\Drupal::currentUser()->hasPermission('administer group') || $group->hasPermission('administer group',\Drupal::currentUser())) {
       // isNew | prev status » default   & publish label             & unpublish label
       // 1     | 1           » publish   & Save and publish          & Save as unpublished
       // 1     | 0           » unpublish & Save and publish          & Save as unpublished
