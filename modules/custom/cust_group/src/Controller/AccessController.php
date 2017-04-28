@@ -7,6 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
+use Drupal\user\Entity\User;
 use Symfony\Component\Routing\Route;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\Group;
@@ -219,6 +220,17 @@ class AccessController extends ControllerBase
             }
         }
         return AccessResult::allowed();
+    }
+    
+    public function groupContentAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $groupContent = $route_match->getParameter('group_content');
+      $group = $route_match->getParameter('group');
+      $userEntity = User::load($user->id());
+      if($groupContent->getEntity()->getEntityTypeId() == 'node'){
+        return AccessResult::forbiddenIf(!$userEntity->hasRole('administrator'));
+      }
+      // @var $group = Group
+      return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
     }
     
 }
