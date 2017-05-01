@@ -392,4 +392,7 @@ a.back-search{
 .form-control:-moz-placeholder{
   color:#333333 !important;	
 }
+article.page .content table{
+  width:100% !important;
+}
 
