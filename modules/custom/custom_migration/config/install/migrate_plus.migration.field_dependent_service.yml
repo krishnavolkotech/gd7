@@ -19,6 +19,10 @@ source:
 process:
   field_dependent_service: field_dependent_service_nid
   nid: nid
+  changed:
+    plugin: extended_iterator
+    method: getNodeModifiedValue
+    source: nid
   type:
     plugin: default_value
     default_value: 'service_profile'
