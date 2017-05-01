@@ -82,7 +82,7 @@ class ExtendedIterator extends ProcessPluginBase {
     $source = $row->getSource();
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('node', 'source_table_name')
-      ->fields('changed')
+      ->fields('source_table_name',['changed'])
       ->condition('source_table_name.nid', $value)
       ->execute()
       ->fetchField();
