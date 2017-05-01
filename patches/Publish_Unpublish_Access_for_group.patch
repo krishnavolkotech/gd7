@@ -1,8 +1,3 @@
-Index: group.install
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 --- group.install	(revision 7d52ed84ff5673abc72c89d8e6cf5a0706459a55)
 +++ group.install	(revision )
 @@ -16,18 +16,18 @@
@@ -847,7 +842,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +  protected function actions(array $form, FormStateInterface $form_state) {
 +    $element = parent::actions($form, $form_state);
 +    $group = $this->entity;
-+    if (\Drupal::currentUser()->hasPermission('administer groups')) {
++    if (\Drupal::currentUser()->hasPermission('administer group') || $group->hasPermission('administer group',\Drupal::currentUser())) {
 +      // isNew | prev status » default   & publish label             & unpublish label
 +      // 1     | 1           » publish   & Save and publish          & Save as unpublished
 +      // 1     | 0           » unpublish & Save and publish          & Save as unpublished

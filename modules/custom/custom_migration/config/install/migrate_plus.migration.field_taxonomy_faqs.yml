@@ -10,6 +10,7 @@ source:
   target: migrate
 process:
   nid: nid
+  changed: changed
   langcode:
     plugin: default_value
     source: language

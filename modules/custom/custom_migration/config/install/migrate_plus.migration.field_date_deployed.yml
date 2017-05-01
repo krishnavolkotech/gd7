@@ -22,6 +22,10 @@ process:
     method: timestampToDate
     source: field_date_deployed_value
   nid: nid
+  changed:
+    plugin: extended_iterator
+    method: getNodeModifiedValue
+    source: nid
   type:
     plugin: default_value
     default_value: 'deployed_releases'
