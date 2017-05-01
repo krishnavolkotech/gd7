@@ -1410,7 +1410,8 @@ nav#block-optionen ul li {
   padding-left:15px !important;
   background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat;
 }
-.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle{
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle,
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.is-active{
   color:rgb(4, 66, 95);
   margin-bottom:5px;
 }
@@ -1537,11 +1538,34 @@ form#downtimes-filter .string_search.hzd-form-element {
   float: left;
 }
 .view-group-faqs .view-content .views-row .faq-title {
-  width: 100%;
+  width: 82%;
+  float: left;
+  margin-bottom: 5px;
+  background: #02547a;
+  padding: 5px;
+}
+.view-group-faqs h3{
+  font-size:16px !important;
+  line-height:35px;
+  font-weight:bold;
+  font-family: 'robotomedium';
+  float:left;
+  display:block;
+  margin-top:10px !important;
+}
+.view-group-faqs .view-content .views-row .views-field-edit-node,
+.view-group-faqs .view-content .views-row .views-field-delete-node{
   float: left;
   margin-bottom: 5px;
   background: #04425f;
-  padding: 5px;
+  padding:5px 3px;
+  border-left:1px solid #fff;
+  cursor:pointer;
+}
+.view-group-faqs .view-content .views-row .views-field-edit-node a,
+.view-group-faqs .view-content .views-row .views-field-delete-node a{
+  color:#fff;
+  line-height:24px;
 }
 .view-group-faqs .view-content .views-row .faq-title .field-content {
   width: 100%;
@@ -2637,7 +2661,7 @@ body.path-group .main-container .region-content{
 }
 /*----  16-12-16   ----*/
 .text-danger td a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2645,7 +2669,7 @@ body.path-group .main-container .region-content{
   margin: 0 10px 0 0;
 }
 a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2653,7 +2677,7 @@ a.downtimes_details_link{
   margin-right:10px;
 }
 table.archived tr td a.downtimes_details_link{
-  background:url(../images/notification-icon.png)left top no-repeat;
+  background:url(../images/notification-icon.png) left top no-repeat;
   width:22px;
   height:22px;
   float:left;
@@ -2663,7 +2687,7 @@ table.archived tr td a.downtimes_details_link{
 }
 .text-danger td a.downtimes_update_link,
 a.downtimes_update_link{
-  background:url(../images/details-icon.png)left top no-repeat;
+  background:url(../images/details-icon.png) left top no-repeat;
    width:20px;
   height:20px;
   float:left;
@@ -2672,7 +2696,7 @@ a.downtimes_update_link{
   }
 .text-danger td a.downtimes_resolve_link,
 a.downtimes_resolve_link{
-  background:url(../images/tick-icon.png)left top no-repeat;
+  background:url(../images/tick-icon.png) left top no-repeat;
   width:20px;
   height:17px;
   float:left;

@@ -22,15 +22,15 @@ cust_group.quickinfo:
   requirements:
     _permission: 'access content'
 
-cust_group.faq_list:
-  path: '/group/{group}/faq/{term}'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
-    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
+#cust_group.faq_list:
+#  path: '/group/{group}/faq/{term}'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
+#    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
 #    _entity_view: 'group.default'
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-    _permission: 'access content'
+#  requirements:
+#    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+#    _permission: 'access content'
 
 cust_group.menu_migrate:
   path: '/menu-migrate'
@@ -133,5 +133,11 @@ cust_group.old_url_alias_delete:
   path: '/delete-old-urls'
   defaults:
     _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::deleteOldAlias'
+  requirements:
+    _permission: 'administer site'
+cust_group.faq_paths_alias_update:
+  path: '/faqs-paths-update'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::generateFaqPathAlias'
   requirements:
     _permission: 'administer site'

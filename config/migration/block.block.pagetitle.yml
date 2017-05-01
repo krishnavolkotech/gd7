@@ -13,7 +13,7 @@ third_party_settings:
 id: pagetitle
 theme: hzd
 region: content
-weight: -18
+weight: -25
 provider: null
 plugin: page_title_block
 settings:

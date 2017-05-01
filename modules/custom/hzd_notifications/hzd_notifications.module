@@ -242,6 +242,30 @@ function hzd_notifications_form_submit(&$form, \Drupal\Core\Form\FormStateInterf
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
+function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//echo 132;exit;
+  $current_user = \Drupal::service('current_user');
+  $current_user_roles = $current_user->getRoles();
+  if (in_array('site_administrator', $current_user_roles)) {
+    $form['notification'] = array(
+      '#type' => 'details',
+      '#title' => t('Notifications settings'),
+      '#open' => TRUE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+      '#group' => 'advanced',
+      '#weight'=>33
+    );
+    $form['notification']['node_notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not send notifications for this update.'),
+    );
+    $form['actions']['#weight'] = 34;
+  }
+
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
 function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   //Validate content type.
   $type = $form_state->getFormObject()->getEntity()->getType();

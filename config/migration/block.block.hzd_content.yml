@@ -11,7 +11,7 @@ _core:
 id: hzd_content
 theme: hzd
 region: content
-weight: -16
+weight: -23
 provider: null
 plugin: system_main_block
 settings:

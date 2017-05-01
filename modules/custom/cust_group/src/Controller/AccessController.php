@@ -7,6 +7,7 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
+use Drupal\user\Entity\User;
 use Symfony\Component\Routing\Route;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\Group;
@@ -132,7 +133,21 @@ class AccessController extends ControllerBase
         return AccessResult::allowed();
     }
     
-    function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    
+    function userEditAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return AccessResult::allowed();
+    }
+
+    if ($route_match->getParameter('user')->id() == \Drupal::currentUser()->id()) {
+      return AccessResult::allowed();
+    }
+    else {
+      return AccessResult::forbidden();
+    }
+  }
+
+  function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
         if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
             return AccessResult::allowed();
         }
@@ -160,7 +175,7 @@ class AccessController extends ControllerBase
         return 'Members of ' . $this->t($group->label());
     }
     
-    function groupAdminAccess() {
+    static function groupAdminAccess() {
         $user = \Drupal::currentUser();
         if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
             return AccessResult::allowed();
@@ -191,8 +206,11 @@ class AccessController extends ControllerBase
         return AccessResult::forbidden();
     }
     
-    function isGroupAdminAccess() {
-        $user = \Drupal::currentUser();
+    function isGroupAdminAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+      if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+        return AccessResult::allowed();
+      }
+//        $user = \Drupal::currentUser();
         $uid = $user->id();
         $user_role = $user->getRoles();
         if (!in_array(SITE_ADMIN_ROLE, $user_role)) {
@@ -202,6 +220,17 @@ class AccessController extends ControllerBase
             }
         }
         return AccessResult::allowed();
+    }
+    
+    public function groupContentAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $groupContent = $route_match->getParameter('group_content');
+      $group = $route_match->getParameter('group');
+      $userEntity = User::load($user->id());
+      if($groupContent->getEntity()->getEntityTypeId() == 'node'){
+        return AccessResult::forbiddenIf(!$userEntity->hasRole('administrator'));
+      }
+      // @var $group = Group
+      return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
     }
     
 }

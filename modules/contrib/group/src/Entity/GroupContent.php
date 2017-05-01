@@ -221,7 +221,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // flush some caches containing the entity or perform other operations we
       // cannot possibly know about. Lucky for us, all of that behavior usually
       // happens when saving an entity so let's re-save the added entity.
-      $this->getEntity()->save();
+//      $this->getEntity()->save();
     }
   }
 

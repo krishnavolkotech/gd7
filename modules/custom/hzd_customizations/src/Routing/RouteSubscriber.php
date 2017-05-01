@@ -45,6 +45,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       // Added the below check in \Drupal\cust_group\Controller\AccessController::groupNodeEdit
       //           $route->setRequirement('_custom_access','\Drupal\hzd_customizations\Controller\HZDCustomizations::access');.
     }
+    
+    if ($route = $collection->get('entity.user.edit_form')) {
+      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::userEditAcces");
+    }
   }
 
 }

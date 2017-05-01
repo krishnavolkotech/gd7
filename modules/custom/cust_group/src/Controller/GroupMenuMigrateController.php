@@ -3,8 +3,10 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\taxonomy\Entity\Term;
 
 class GroupMenuMigrateController extends ControllerBase {
   
@@ -145,4 +147,54 @@ class GroupMenuMigrateController extends ControllerBase {
     pr($aliasDeleted);
     exit;
   }
+  
+  function generateFaqPathAlias() {
+    $db = \Drupal::database();
+    $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
+    $query = \Drupal::entityQuery('group')
+      ->execute();
+    //$query = [31=>31,32=>32];
+    $groups = \Drupal\group\Entity\Group::loadMultiple($query);
+    foreach ($groups as $group) {
+      $data[$group->get('field_old_reference')->value] = $group->id();
+    }
+    foreach ($data as $old => $new) {
+      $menuId = 'menu-' . $old;
+      $menuItems = \Drupal::entityQuery('menu_link_content')
+        ->condition('menu_name', $menuId)
+        ->execute();
+      
+      foreach ($menuItems as $item) {
+        $menu = MenuLinkContent::load($item);
+        
+        //if($item->get('link'))
+        $uri = $menu->get('link')->getValue()[0]['uri'];
+        
+        $needle = '/group/' . $new . '/faqs/';
+        if (strpos($uri, $needle)) {
+          $src = trim(str_replace('internal:/', '', $uri));
+          $alias = $db->select('url_alias', 'u')
+            ->fields('u', ['source'])
+            ->condition('source', '%' . $src . '%', 'LIKE')
+            ->execute()
+            ->fetchField();
+//          pr($alias);exit;
+          if (!$alias) {
+            $terms = explode('/', trim(str_replace('internal:/', '', $uri), '/'));
+            $termEntity = Term::load($terms[3]);
+            if ($termEntity) {
+              $group = Group::load($terms[1]);
+              $path_alias = '/' . $aliasCleaner->cleanString($group->label()) . '/faqs/' . $aliasCleaner->cleanString($termEntity->label());
+              \Drupal::service('path.alias_storage')
+                ->save('/' . $src, $path_alias);
+            }
+          }
+        }
+      }
+      
+    }
+    echo 'Success';
+    exit;
+  }
+  
 }

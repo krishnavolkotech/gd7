@@ -219,7 +219,7 @@ class ProblemFilterFrom extends FormBase
                 'onclick' => 'reset_form_elements(); return false;'
             ),
         );
-        
+      $form['#exclude_from_print']=1;
         
         return $form;
     }

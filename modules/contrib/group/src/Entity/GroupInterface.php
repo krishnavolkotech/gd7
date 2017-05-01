@@ -161,5 +161,16 @@ interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, E
    *   Whether the user has the requested permission.
    */
   public function hasPermission($permission, AccountInterface $account);
+  
+  /**
+   * @return mixed
+   */
+  public function isPublished();
+  
+  /**
+   * @param $published
+   * @return mixed
+   */
+  public function setPublished($published);
 
 }

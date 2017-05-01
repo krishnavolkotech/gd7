@@ -235,7 +235,7 @@ function hzd_preprocess_node(&$variables) {
         $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
         $incident_data->reported_by = $name;
         $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
-        $incident_data->enddate_planned = (isset($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
+        $incident_data->enddate_planned = (!empty($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
         $incident_data->startdate_reported = isset($result->startdate_reported)?date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr'):null;
 //    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 
@@ -358,12 +358,18 @@ function hzd_preprocess_breadcrumb(&$variables) {
         $pdfLink['link'] = ['#type' => 'link',
             '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $groupContent->get('entity_id')->referencedEntities()[0]->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => 'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
-    }
-    if ($routeName == 'entity.group.canonical') {
+    }elseif($routeName == 'entity.group.canonical') {
         $group = \Drupal::routeMatch()->getParameter('group');
         $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
         $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => $group->getEntityTypeId(), 'entity_id' => $group->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => 'PDF'];
         $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+    }else{
+      $que = \Drupal::request()->query;
+      $querr = $que->all();
+      $querr['print'] = 'pdf';
+      $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
+      $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRouteMatch(\Drupal::routeMatch())->setOption('query',$querr), '#title' => 'PDF'];
+      $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
 //    $variables['breadcrumb'][] = $rightData;
 //    pr(($variables['breadcrumb']['extras']['pdf_print']));exit;
@@ -408,7 +414,9 @@ function downtimes_revisions($node) {
             }
             if (in_array($name, ['start_date', 'end_date'])) {
                 if (!empty($field_value['new']))
-                    $logData[$order[$name]] = $labels[$name] . ': ' . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y - H:i') . ' Uhr';
+//                    $logData[$order[$name]] = $labels[$name] . ': ' . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y - H:i') . ' Uhr';
+                  // Modifying this as the date in the migrated data comes in expected format
+                  $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'] . ' Uhr';
             }
         }
 /////appending the reason as a seperate wrapper to preserve wyswyg styles
@@ -519,13 +527,17 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
       if(!$group instanceof Group){
         $group = Group::load($group);
       }
-      $options = $form['menu']['link']['menu_parent']['#options'];
       $menu = 'menu-'.$group->get('field_old_reference')->value;
-      foreach($options as $key=>$option){
-        if(strpos($key,$menu) === false){
+      $menuEntity = \Drupal::entityTypeManager()->getStorage('menu')
+        ->load($menu);
+      $menuOptions = \Drupal::service('menu.parent_form_selector')->getParentSelectOptions('',[$menuEntity->id()=>$menuEntity->label()]);
+      $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
+//      pr($x);exit;
+      /*foreach($options as $key=>$option){
+        if(strpos($key,$menu) !== 0){
            unset($form['menu']['link']['menu_parent']['#options'][$key]);
         }
-      }
+      }*/
 /*      kint($menu);
       kint($options);exit;*/
     }

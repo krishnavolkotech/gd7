@@ -50,7 +50,7 @@ class ReleaseFilterForm extends FormBase
             $default_type = $release_type;
         }
         
-        $services_obj = db_query("SELECT n.title, n.nid 
+        $services_obj = db_query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -360,6 +360,7 @@ class ReleaseFilterForm extends FormBase
             '#prefix' => '<div class = "reset_form">',
             '#suffix' => '</div><div style = "clear:both"></div>',
         );
+        $form['#exclude_from_print']=1;
         
         return $form;
     }
@@ -368,7 +369,7 @@ class ReleaseFilterForm extends FormBase
      * {@inheritdoc}
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
-        
+    
     }
     
     /**
@@ -750,5 +751,5 @@ class ReleaseFilterForm extends FormBase
 //    $output[]['#attached']['library']['drupalSettings']['status'] = TRUE;
 //    return $output;
 //  }
-    
+
 }

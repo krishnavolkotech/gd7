@@ -1,0 +1,16 @@
+Index: src/Entity/GroupContent.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Entity/GroupContent.php	(revision )
++++ src/Entity/GroupContent.php	(revision 6c1340ca9cbb7ce337e732e67815a8f01b0ede14)
+@@ -221,7 +221,7 @@
+       // flush some caches containing the entity or perform other operations we
+       // cannot possibly know about. Lucky for us, all of that behavior usually
+       // happens when saving an entity so let's re-save the added entity.
+-//      $this->getEntity()->save();
++      $this->getEntity()->save();
+     }
+   }
+ 

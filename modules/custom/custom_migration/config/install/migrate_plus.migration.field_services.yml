@@ -20,6 +20,10 @@ source:
 process:
   field_services: field_services_nid
   nid: nid
+  changed:
+    plugin: extended_iterator
+    method: getNodeModifiedValue
+    source: nid
   type:
     plugin: default_value
     default_value: 'problem'

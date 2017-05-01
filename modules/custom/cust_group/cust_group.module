@@ -15,7 +15,14 @@ define('Zentrale_Release_Manager_Lander', 5);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+use Drupal\file\Entity\File;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
   if ($view_mode == 'full') {
@@ -97,6 +104,62 @@ function cust_group_node_insert($entity) {
 //  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'insert');
 }
 
+
+
+function cust_group_group_insert($group) {
+  $node = Node::create([
+    'type'=>'group',
+    'title'=>$group->label(),
+  ]);
+  $node->save();
+  $forum = Term::create([
+    'name'=>$group->label(),
+    'vid'=>'forums'
+  ]);
+  $forum->save();
+  $forumTerm = Term::create([
+    'name'=>'Allgemeines',
+    'vid'=>'forums',
+    'parent'=>$forum->id(),
+  ]);
+  $forumTerm->save();
+  
+  \Drupal::service('path.alias_storage')->delete(['source'=>'/node/'.$node->id()]);
+  $group->set('field_old_reference',$node->id());
+  $group->set('field_forum_containers',$forum->id());
+  $group->save();
+  $menu = \Drupal::entityTypeManager()
+    ->getStorage('menu')
+    ->create([
+      'id' => 'menu-'.$node->id(),
+      'label' => $group->label(),
+      'description' => '',
+    ]);
+  $menu->save();
+  
+  $items = array(
+    'Allgemeines' => 'internal:/'.$group->toUrl()->getInternalPath(),
+//Cannot create dummy menu links as the Menu link url validation fails
+/*    'Ansprechpartner' => '/ansprechpartner',
+    'Dokumentation' => '/dokumentation',
+    'FAQs' => '/faqs',
+    'Reporting' => '/reporting',*/
+    'Forums' => 'internal:/'.Url::fromRoute('cust_group.forums',['group'=>$group->id()])->getInternalPath(),
+    'Gruppenmitglieder' => 'internal:/'.Url::fromRoute('view.group_members_lists.page_1',['group'=>$group->id()])->getInternalPath(),
+  );
+  
+  foreach($items as $title => $link) {
+    $menu_link = MenuLinkContent::create([
+      'title' => $title,
+      'link' => ['uri' => $link],
+      'menu_name' => $menu->id(),
+      'expanded' => TRUE,
+    ]);
+    $menu_link->save();
+  }
+  
+}
+
 function cust_group_group_update($entity) {
   sendGroupUpdateMail($entity);
 //  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
@@ -146,25 +209,29 @@ function cust_group_group_content_insert($entity) {
 }
 
 function sendGroupUpdateMail($entity) {
-  if ($entity->getEntityTypeId() == 'group') {
-    $group = $entity->id();
-  }
-  else {
-    $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
-    if ($groupContentId) {
-      $group = $groupContentId->getGroup()->id();
+  
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getEntityTypeId() == 'group') {
+      $group = $entity->id();
     }
-  }
+    else {
+      $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
+      if ($groupContentId) {
+        $group = $groupContentId->getGroup()->id();
+      }
+    }
 //    pr($group);exit;
-  if (!empty($group) && $group && (in_array($entity->bundle(), [
-        'event',
-        'forum',
-        'page',
-        'newsletter'
-      ]) || $entity->getEntityTypeId() == 'group')
-  ) {
-    $getUserMailList = getGroupMemberList($group);
-    send_notifications($entity, $getUserMailList);
+    if (!empty($group) && $group && (in_array($entity->bundle(), [
+          'event',
+          'forum',
+          'page',
+          'newsletter'
+        ]) || $entity->getEntityTypeId() == 'group')
+    ) {
+      $getUserMailList = getGroupMemberList($group);
+      send_notifications($entity, $getUserMailList);
+    }
   }
 }
 
@@ -376,12 +443,19 @@ function mailToGroupAdmins($data = []) {
   }
 }
 
+use Drupal\group\Entity\Group;
+
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
   if ($view->id() == 'group_faqs') {
-    $groupId = \Drupal::routeMatch()->getParameter('group');
-    $group = \Drupal\group\Entity\Group::load($groupId);
-    $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
+    $group = \Drupal::routeMatch()->getParameter('group');
+//    $group = Group::load($groupId);
+    if (is_object($group)) {
+      $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
+    }
+    else {
+      $view->build_info['title'] = $group->label . " - " . $view->build_info['title'];
+    }
   }
 }
 
@@ -399,12 +473,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
   }
   return $errors;
 }
-use Drupal\Core\Url;
-use Drupal\Core\Link;
-use Drupal\file\Entity\File;
-use Drupal\node\Entity\Node;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   //pr($entity->bundle());exit;
@@ -558,46 +627,56 @@ function cust_group_schema() {
  */
 function cust_group_menu_link_content_insert($menu) {
   $nodeid = explode('/', $menu->link->uri)[1];
-  $finalpath = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)
-    ->toUrl()
-    ->getInternalPath();
-  $menu->link->uri = 'internal:/' . $finalpath;
-  $menu->save();
-  
-  $pgroupid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->gid->target_id;
-  $gcontentid = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)
-    ->id();
-  $title = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid)->label->value;
-  $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
-  $title = $aliasCleaner->cleanstring($title);
-  $langcode = $menu->langcode->value;
-  if ($menu->getParentId()) {
-    $parent = $menu->getParentId();
-    $menu_uuid = explode(':', $parent)[1];
-    $menu_content = \Drupal::entityManager()
-      ->getStorage('menu_link_content')
-      ->loadByProperties(array('uuid' => $menu_uuid));
-    $menu_content = array_shift($menu_content);
-    $parent_path = explode(':', $menu_content->link->uri)[1];
-    $parent_alias = \Drupal::service('path.alias_manager')
-      ->getAliasByPath($parent_path, $langcode);
+  $groupcontent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid);
+  if ($nodeid && $groupcontent) {
+    $finalpath = $groupcontent->toUrl()->getInternalPath();
+    $menu->link->uri = 'internal:/' . $finalpath;
+    $menu->save();
     
-    $system_path = '/group/' . $pgroupid . '/content/' . $gcontentid;
-    $path_alias = $parent_alias . '/' . $title;
-    \Drupal::service('path.alias_storage')
-      ->save($system_path, $path_alias, $langcode);
-  }
-  else {
-    $system_path = '/group/' . $pgroupid . '/content/' . $gcontentid;
-    $groupalias = \Drupal::service('path.alias_manager')
-      ->getAliasByPath('/group/' . $pgroupid, $langcode);
-    $path_alias = $groupalias . '/' . $title;
-    \Drupal::service('path.alias_storage')
-      ->save($system_path, $path_alias, $langcode);
+    $pgroupid = $groupcontent ? $groupcontent->gid->target_id : "";
+    $gcontentid = $groupcontent ? $groupcontent->id() : "";
+    $title = $groupcontent ? $groupcontent->label->value : "";
+    $aliasCleaner = \Drupal::service('pathauto.alias_cleaner');
+    $title = $aliasCleaner->cleanstring($title);
+    $langcode = $menu->langcode->value;
+    if ($menu->getParentId()) {
+      $parent = $menu->getParentId();
+      $menu_uuid = explode(':', $parent)[1];
+      $menu_content = \Drupal::entityManager()
+        ->getStorage('menu_link_content')
+        ->loadByProperties(array('uuid' => $menu_uuid));
+      $menu_content = array_shift($menu_content);
+      $parent_path = explode(':', $menu_content->link->uri)[1];
+      $parent_alias = \Drupal::service('path.alias_manager')
+        ->getAliasByPath($parent_path, $langcode);
+      
+      $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
+      $path_alias = $parent_alias . '/' . $title;
+      \Drupal::service('path.alias_storage')
+        ->save($system_path, $path_alias, $langcode);
+    }
+    else {
+      $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
+      $groupalias = \Drupal::service('path.alias_manager')
+        ->getAliasByPath('/group/' . $pgroupid, $langcode);
+      $path_alias = $groupalias . '/' . $title;
+      \Drupal::service('path.alias_storage')
+        ->save($system_path, $path_alias, $langcode);
+    }
   }
 }
 
 function cust_group_preprocess_swiftmailer(&$variables) {
   global $base_url;
   $variables['base_url'] = $base_url;
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  if ($block->id() == 'views_block__group_faqs_block_1' && $operation == 'view') {
+    $routeMatch = \Drupal::routeMatch();
+    return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(), $routeMatch->getCurrentRouteMatch(), $account);
+  }
 }

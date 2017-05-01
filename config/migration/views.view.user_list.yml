@@ -5,6 +5,7 @@ dependencies:
   config:
     - user.role.authenticated
   module:
+    - better_exposed_filters
     - inactive_user
     - user
 id: user_list
@@ -326,6 +327,8 @@ display:
         access: false
         empty: false
         header: false
+        exposed_form: false
+        arguments: false
       filters:
         combine:
           id: combine
@@ -412,16 +415,19 @@ display:
               site_administrator: '0'
           is_grouped: false
           group_info:
-            label: ''
-            description: ''
-            identifier: ''
+            label: 'State abbr'
+            description: null
+            identifier: abbr
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
           plugin_id: string
       filter_groups:
         operator: AND
@@ -795,6 +801,35 @@ display:
           empty: false
           content: '@total Mitglieder insgesamt'
           plugin_id: result
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Apply
+          reset_button: true
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+          bef:
+            general:
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+              autosubmit: false
+              autosubmit_hide: false
+            combine:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+            abbr:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+      arguments: {  }
     cache_metadata:
       max-age: 0
       contexts:

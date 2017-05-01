@@ -797,7 +797,7 @@ class HzdreleasemanagementStorage
             $deployed_releases_node_ids->condition('field_earlywarning_release', $filter_value['releases'], '=');
         }
         if ($filter_value['filter_startdate']) {
-            $startdate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_startdate'])->format('Y-m-d');
+            $startdate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'],null,['validate_format'=>FALSE])->format('Y-m-d');
 //            $startdate = mktime(0, 0, 0, date('m', $filter_value['filter_startdate']),
 //                date('d', $filter_value['filter_startdate']), date('y', $filter_value['filter_startdate']));
             $deployed_releases_node_ids->condition('field_date_deployed', $startdate, '>=');
@@ -807,7 +807,7 @@ class HzdreleasemanagementStorage
 //            $enddate = mktime(23, 59, 59,
 //                date('m', $filter_value['filter_enddate']), date('d', $filter_value['filter_enddate']),
 //                date('y', $filter_value['filter_enddate']));
-            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_enddate'])->format('Y-m-d');
+            $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'],null,['validate_format'=>FALSE])->format('Y-m-d');
 //            $deployed_releases_node_ids->condition('field_date_deployed',
 //                array($filter_value['filter_startdate'], $filter_value['filter_enddate']), 'BETWEEN');
             $deployed_releases_node_ids->condition('field_date_deployed', $endDate, '<=');
@@ -1078,6 +1078,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     static public function release_info() {
         $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src = '/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
         $build['#markup'] = $output;
+      $build['#exclude_from_print']=1;
         return $build;
     }
     
@@ -1203,6 +1204,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             '#quantity' => 5,
             '#prefix' => '<div id="pagination">',
             '#suffix' => '</div>',
+          '#exclude_from_print'=>1,
         );
         $output['#attached']['drupalSettings']['release_management'] = array(
             'group_id' => $group_id,
@@ -1280,11 +1282,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             // $filter_where .= " and field_date_value > ". $start_date;.
         }
         if ($filter_value['filter_startdate']) {
-            $startDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_startdate'])->getTimestamp();
+            $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'],null,['validate_format'=>FALSE])->getTimestamp();
             $release_node_ids->condition('field_date', $startDate, '>=');
         }
         if ($filter_value['filter_enddate']) {
-            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filter_value['filter_enddate'])->getTimestamp() + 86399;
+            $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'],null,['validate_format'=>FALSE])->getTimestamp() + 86399;
             $release_node_ids->condition('field_date', $endDate, '<=');
             /*$release_node_ids->condition('field_date',
                 array($filter_value['filter_startdate'],
@@ -1415,7 +1417,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             'release_type' => $tid
         );
         $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
-        $create_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/add/early-warnings', $options);
+        $create_earlywarning_url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group'=>$group_id],$options);
         $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
         

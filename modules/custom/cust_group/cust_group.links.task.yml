@@ -12,7 +12,12 @@ cust_group.my_groups:
   title: 'My Groups'
   route_name: view.my_groups.page_1
   base_route: view.all_groups.page_1
-  weight: 10
+  weight: 11
+cust_group.unpublished_groups:
+  title: 'Unpublished Groups'
+  route_name: view.unpublished_groups.unpublished
+  base_route: view.all_groups.page_1
+  weight: 12
 cust_group.pending_members:
   title: 'Pending Members'
   base_route: 'entity.group.canonical'
