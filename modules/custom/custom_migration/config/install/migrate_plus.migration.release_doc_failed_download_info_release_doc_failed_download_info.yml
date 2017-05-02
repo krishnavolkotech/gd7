@@ -11,65 +11,26 @@ source:
   target: migrate
   table_name: release_doc_failed_download_info
   fields:
-    - id
     - nid
     - created
     - reason
   id_fields:
-    id:
+    nid:
       type: integer
       unsigned: false
       size: big
 process:
-  id: id
   nid: nid
   created: created
   reason: reason
 destination:
   plugin: table
   key_map:
-    id: id
+    nid: nid
   id_fields:
-    id:
+    nid:
       type: integer
       unsigned: false
-      size: big
-  table_name: release_doc_failed_download_info
-migration_dependencies: {  }
-
-langcode: de
-status: true
-id: release_doc_failed_download_info_release_doc_failed_download_info
-migration_tags: null
-migration_group: custom_migration
-label: 'Release doc failed download info'
-source:
-  plugin: source_table
-  target: migrate
-  table_name: release_doc_failed_download_info
-  fields:
-    - id
-    - nid
-    - created
-    - reason
-  id_fields:
-    id:
-      type: integer
-      unsigned: FALSE
-      size: big
-process:
-  id: id
-  nid: nid
-  created: created
-  reason: reason
-destination:
-  plugin: table
-  key_map:
-      id: id
-  id_fields:
-    id:
-      type: integer
-      unsigned: FALSE
       size: big
   table_name: release_doc_failed_download_info
 migration_dependencies: {  }
