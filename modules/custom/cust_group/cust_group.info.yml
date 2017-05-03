@@ -4,3 +4,6 @@ description: Customized version of the group module drupal 8
 package: "HZD Custom"
 type: module
 core: 8.x
+dependencies:
+  - forum
+  - group

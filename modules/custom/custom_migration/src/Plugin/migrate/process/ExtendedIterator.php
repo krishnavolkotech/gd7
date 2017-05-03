@@ -86,6 +86,7 @@ class ExtendedIterator extends ProcessPluginBase {
       ->condition('source_table_name.nid', $value)
       ->execute()
       ->fetchField();
+//    print_r($data);exit;
     return $data;
   }
 }
