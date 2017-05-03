@@ -666,10 +666,10 @@ function cust_group_menu_link_content_insert($menu) {
   }
 }
 
-function cust_group_preprocess_swiftmailer(&$variables) {
+/*function cust_group_preprocess_swiftmailer(&$variables) {
   global $base_url;
   $variables['base_url'] = $base_url;
-}
+  }*/
 
 /**
  * Implements hook_block_access().
