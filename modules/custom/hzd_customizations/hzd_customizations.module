@@ -880,7 +880,7 @@ function hzd_customizations_node_update_index(NodeInterface $node) {
   if (isset($node->field_page_files)) {
     foreach ($node->field_page_files as $file) {
       $replace_chars = array('_', '-', '.');
-      $files[] = "<a href = " . $base_path . '/' . $file['filepath'] . ">" . str_replace($replace_chars, ' ', $file['filename']) . "</a>";
+      $files[] = "<a href = " . $base_path . '/' . $file->filepath . ">" . str_replace($replace_chars, ' ', $file->filename) . "</a>";
     }
   }
   if (count($files)) {

@@ -1,6 +1,6 @@
 uuid: 28a0efd5-03c8-45b9-926e-64d91c5a7e2c
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - hzd_release_management

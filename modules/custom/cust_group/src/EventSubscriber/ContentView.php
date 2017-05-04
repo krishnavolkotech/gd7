@@ -38,7 +38,12 @@ class ContentView implements EventSubscriberInterface {
 
   function groupContentRedirect(GetResponseEvent $event) {
     $request = $event->getRequest();
-
+    if(\Drupal::service('module_handler')->moduleExists('queue_mail')){
+      module_set_weight('queue_mail', 20);
+    }
+    if(\Drupal::service('module_handler')->moduleExists('reroute_email')){
+      module_set_weight('reroute_email', 19);
+    }
     if ($request->attributes->get('_route') == 'front_page.front') {
       //$response = new RedirectResponse(Url::fromRoute('front_page.front',['tour'=> TRUE])->toString());
       $user = \Drupal::currentUser()->id();
@@ -79,6 +84,10 @@ class ContentView implements EventSubscriberInterface {
       $response = new RedirectResponse(Url::fromRoute('downtimes.service_profiles',['group'=>INCIDENT_MANAGEMENT])->toString());
       $event->setResponse($response);
     }
+  
+
+    
+    
     return $event;
   }
 

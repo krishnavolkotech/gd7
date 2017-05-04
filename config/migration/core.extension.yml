@@ -23,7 +23,6 @@ module:
   cust_node: 0
   cust_pdf: 0
   cust_user: 0
-  custom_migration: 0
   custom_script_batch: 0
   custom_toolbar_menu: 0
   custom_views_php: 0
@@ -90,7 +89,6 @@ module:
   problem_management: 0
   quickedit: 0
   rdf: 0
-  reroute_email: 0
   rest: 0
   search: 0
   search_api: 0
@@ -120,6 +118,8 @@ module:
   pathauto: 1
   content_translation: 10
   views: 10
+  reroute_email: 19
+  queue_mail: 20
   standard: 1000
 theme:
   stable: 0

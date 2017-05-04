@@ -1213,6 +1213,18 @@ display:
           expose:
             label: Roles
           plugin_id: standard
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: ''
+          plugin_id: standard
       fields:
         uid:
           id: uid
