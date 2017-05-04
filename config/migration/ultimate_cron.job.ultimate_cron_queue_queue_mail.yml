@@ -1,0 +1,20 @@
+uuid: 3daee1e7-7cfc-463c-8ff4-ab599c92fef2
+langcode: de
+status: true
+dependencies:
+  module:
+    - queue_mail
+title: 'Queue: Queue mail worker'
+id: ultimate_cron_queue_queue_mail
+weight: 10
+module: queue_mail
+callback: ultimate_cron_queue_callback
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '* * * * *'
+launcher:
+  id: serial
+logger:
+  id: database
