@@ -197,7 +197,9 @@
 
     });
 
-
+    $('#user-register-form .form-email,[type="password"]').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
 })
 (jQuery);
 

@@ -78,9 +78,9 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.delete_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentAccess');
     }
-/*    if ($route = $collection->get('view.group_members.page_1')) {
+    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setRequirement('_role', 'administrator');
-    }*/
+    }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
       $route->setRequirement('_role', 'administrator');
