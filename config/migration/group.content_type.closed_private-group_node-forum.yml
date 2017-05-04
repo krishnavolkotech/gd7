@@ -9,7 +9,7 @@ dependencies:
     - gnode
     - node
 id: closed_private-group_node-forum
-label: 'Abgeschlossen Privat: Group node (Forenthema)'
+label: 'Geschlossen Privat: Group node (Forenthema)'
 description: 'Adds <em class="placeholder">Forenthema</em> content to groups both publicly and privately.'
 group_type: closed_private
 content_plugin: 'group_node:forum'

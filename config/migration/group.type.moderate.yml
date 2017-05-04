@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: moderate
-label: Mäßig
+label: Moderiert
 description: 'Membership Request is required.'
 creator_roles: {  }

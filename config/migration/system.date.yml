@@ -1,5 +1,5 @@
 country:
-  default: IN
+  default: DE
 first_day: 1
 timezone:
   default: Europe/Paris
