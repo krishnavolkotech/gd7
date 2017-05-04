@@ -22,7 +22,7 @@ hzd_release_management.inprogress:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
     _title: 'In Progress'
-    _entity_view: group.default    
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
 
@@ -31,7 +31,7 @@ hzd_release_management.locked:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
     _title: 'Locked'
-    _entity_view: group.default    
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
     
@@ -40,7 +40,7 @@ hzd_release_management.deployed:
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
     _title: 'Deployed'
-    _entity_view: group.default    
+    _entity_view: group.default
   requirements:
     _permission: 'access content'
 
@@ -48,7 +48,6 @@ hzd_release_management.eingesetzte:
   path: 'group/{group}/eingesetzte-releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
-    _title: 'Deployed Released'
     _entity_view: group.default
   requirements:
     _permission: 'view releases'

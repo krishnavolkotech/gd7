@@ -24,6 +24,16 @@ use Drupal\Core\Link;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
+  // Provide special overrides for German for a custom site.
+  if ($langcode == 'de') {
+    // The core-provided transliteration of Ä is Ae, but we want just A.
+      $overrides[0xDC] = 'UE';
+      $overrides[0xFC] = 'ue';
+  }
+}
+
+
 function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal\Core\Entity\Entity\EntityViewDisplay $display, $view_mode) {
   if ($view_mode == 'full') {
     $userData = get_user_fields($account);
@@ -318,14 +328,14 @@ function cust_group_mail($key, &$message, $params) {
   }
 }
 
-function cust_group_mail_alter(&$message) {
+/*function cust_group_mail_alter(&$message) {
   switch ($message['key']) {
     case 'immediate_notifications':
     case 'periodic_notifications':
 //      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
       break;
   }
-}
+}*/
 
 function cust_group_form_alter(&$form, $form_state, $form_id) {
 //    echo $form_id;exit;

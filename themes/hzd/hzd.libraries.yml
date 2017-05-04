@@ -29,3 +29,9 @@ bootstrap-scripts:
     js/libraries/fit-columns.js : {}
   dependencies:
       - core/drupal.tableheader
+theme:
+  js:
+    js/3.3.5/bootstrap.js: {}
+  dependencies:
+    - bootstrap/drupal.bootstrap
+    - bootstrap/attributes
