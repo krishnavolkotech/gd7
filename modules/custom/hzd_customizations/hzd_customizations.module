@@ -518,6 +518,15 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 //   $form['field_date_deployed']['widget'] = ['#type'=>'date','#value'=>$dateData,'#date_format'=>'Y-m-d'];
     $form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
   }
+  
+  if($form_id == 'block_upload_form'){
+      $form['upload_files_title']['#weight'] = 1;
+      $form['block_upload_file']['#weight'] = 2;
+      $form['remove_files_title']['#weight'] = 3;
+      $form['remove_files']['#weight'] = 4;
+      $form['submit']['#weight'] = 19;
+  }
+  
 //  echo $form_id;exit;
 }
 
