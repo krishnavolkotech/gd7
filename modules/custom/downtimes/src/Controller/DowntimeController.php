@@ -41,10 +41,10 @@ class DowntimeController extends ControllerBase {
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = pathinfo($current_path, PATHINFO_BASENAME);
     if ($downtime_type == 'create_maintenance') {
-      return 'Report Maintenance';
+      return $this->t('Report Maintenance');
     }
     else {
-      return 'Report Incident';
+      return $this->t('Report Incident');
     }
   }
 
