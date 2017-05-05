@@ -2835,8 +2835,8 @@ form .type_search_dropdown{
 .node-downtimes-form .downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget{
   top:auto!important;
 }
-.downtimes-date-wrapper .timepicker{
-  margin-top: 72px;
+.timepicker{
+  margin-top: 80px;
 }
 table.archived tr td:last-child .popup-wrapper .details-wrapper{
   display:inline-block;
