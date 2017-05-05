@@ -42,7 +42,7 @@ function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal
       $build[$key] = [
         '#theme' => 'usercustomfield',
         '#label' => t($val['label']),
-        '#value' => t($val['value']),
+        '#value' => $val['value'],
       ];
     }
     $build['group_list'] = array(
