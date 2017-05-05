@@ -6,3 +6,20 @@ display:
       exposed_form:
         options:
           submit_button: Suchen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+          reset_button_label: Zurücksetzen
+      fields:
+        field_description:
+          label: Beschreibung
+        group_member_count_field:
+          label: Mitglieder
+        group_type_value:
+          label: Typ
+        group_actions_field:
+          label: Aktionen
+      filters:
+        label:
+          expose:
+            label: Gruppenname

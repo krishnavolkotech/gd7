@@ -2607,7 +2607,6 @@ a#edit-cancel{
 }
 .form-actions button{
   margin:0 5px 0 0 ;
-  text-transform:capitalize;
   background: #04425f !important;
   color:#fff !important;
   padding: 6px 12px !important;

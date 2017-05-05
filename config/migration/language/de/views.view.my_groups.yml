@@ -1,0 +1,26 @@
+label: 'Meine Gruppen'
+display:
+  default:
+    display_options:
+      empty:
+        area:
+          content:
+            value: "<p>You have not joined in any group yet!!!</p>\r\n"
+            format: basic_html
+      exposed_form:
+        options:
+          submit_button: Suchen
+      fields:
+        field_description:
+          label: Beschreibung
+        group_post_count_field:
+          label: Beiträge
+        group_member_count_field:
+          label: Mitglieder
+        group_actions_field:
+          label: Aktionen
+        label:
+          label: Name
+      title: 'Meine Gruppen'
+  page_1:
+    display_title: Seite

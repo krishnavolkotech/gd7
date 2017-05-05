@@ -10,8 +10,8 @@ class HzdNotificationsHelper {
   
   // default send intervals array
   static function hzd_notification_send_interval() {
-    return array(-1 => 'Never',
-      0 => 'Immediately',
+    return array(-1 => t('Never'),
+      0 => t('Immediately'),
 //      86400 => 'Daily',
 //      604800 => 'Weekly'
     );
@@ -23,7 +23,7 @@ class HzdNotificationsHelper {
    */
   static function service_notifications_content_type($rel_type = KONSONS) {
     if ($rel_type == KONSONS) {
-      return array(1 => 'Current Incidents and Planned Maintenances', 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
+      return array(1 => t('Incidents and Maintenances'), 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
     } else {
       return array(3 => 'Releases', 4 => 'Early Warnings');
     }

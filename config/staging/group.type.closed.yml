@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: closed
-label: Abgeschlossen
+label: Geschlossen
 description: 'Admin can add the members.'
 content:
   group_membership:

@@ -15,6 +15,7 @@ define('Zentrale_Release_Manager_Lander', 5);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
+use Drupal\cust_group\Access\UserAccessControl;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
@@ -326,6 +327,13 @@ function cust_group_mail($key, &$message, $params) {
       $message['body'][] = $params['message'];
       break;
   }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function cust_group_entity_type_alter(array &$entity_types) {
+  $entity_types['user']->setHandlerClass('access', UserAccessControl::class);
 }
 
 /*function cust_group_mail_alter(&$message) {

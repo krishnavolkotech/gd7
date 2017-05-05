@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: open
-label: Öffnen
+label: Offen
 description: 'All authenticated users can join.'
 creator_roles: {  }

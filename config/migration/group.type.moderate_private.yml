@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: moderate_private
-label: 'Mäßig Privat'
+label: 'Moderiert Privat'
 description: 'Same as Moderate, But visible to only Members. '
 creator_roles: {  }

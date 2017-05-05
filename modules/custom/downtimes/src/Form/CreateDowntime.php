@@ -62,7 +62,7 @@ class CreateDowntime extends FormBase {
     ];
     $form['services_effected'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Services Effected'),
+      '#title' => $this->t('Services Affected'),
       '#description' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.'),
       '#options' => HzdcustomisationStorage::get_published_services(),
     ];

@@ -17,13 +17,13 @@ downtimes.archived_downtimes_controller:
   weight: 1
   
 downtimes.create_downtimes:
-  title: 'Report an Incident'
+  title: 'Report Incident'
   route_name: downtimes.create_downtimes #route defined in .routing.yml
   base_route: downtimes.new_downtimes_controller_newDowntimes #same as the route name
   weight: 2
 
 downtimes.create_maintenance:
-  title: 'Report a Maintenance'
+  title: 'Report Maintenance'
   route_name: downtimes.create_maintenance #route defined in .routing.yml
   base_route: downtimes.new_downtimes_controller_newDowntimes #same as the route name
   weight: 3
