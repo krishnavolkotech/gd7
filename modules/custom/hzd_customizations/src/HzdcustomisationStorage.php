@@ -792,6 +792,26 @@ class HzdcustomisationStorage {
         ->condition('d.service_id', "{$filterData->get('services_effected')}");
       $downtimesQuery = $downtimesQuery->condition($orServiceGroup);
 //            $state = " ( ds.state_id LIKE '" . $state_id . ",%' or ds.state_id LIKE '%," . $state_id . ",%' or  ds.state_id LIKE '%," . $state_id . "' ) ";
+    }else{
+      $defaultServicesList = [];
+      $group_downtimes_view_service_query = \Drupal::database()->select('group_downtimes_view', 'gdv');
+      $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
+      $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
+      $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchAll();
+  
+      foreach ($group_downtimes_view_service as $service) {
+        $defaultServicesList[$service->service_id] = $service->service_id;
+      }
+      $orAllServiceGroup = $downtimesQuery->orConditionGroup();
+      foreach ($defaultServicesList as $item){
+        $orServiceGroup = $downtimesQuery->orConditionGroup()
+          ->condition('d.service_id', "{$item},%", 'LIKE')
+          ->condition('d.service_id', "%,{$item},%", 'LIKE')
+          ->condition('d.service_id', "%,{$item}", 'LIKE')
+          ->condition('d.service_id', "{$item}");
+        $orAllServiceGroup->condition($orServiceGroup);
+      }
+      $downtimesQuery->condition($orAllServiceGroup);
     }
 //        kint($downtimesQuery->__toString());
     $count_query = clone $downtimesQuery;
