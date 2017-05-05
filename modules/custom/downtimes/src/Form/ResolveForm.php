@@ -112,7 +112,7 @@ class ResolveForm extends FormBase {
     }
     else {
       // drupal_set_title(t('Resolve Maintenances'));
-      $form['#title'] = t('Resolve Maintenances');
+      $form['#title'] = t('Resolve Maintenance');
     }
     // drupal_set_breadcrumb($breadcrumb);
 
