@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: closed
-label: Abgeschlossen
+label: Geschlossen
 description: 'Admin can add the members.'
 creator_roles: {  }

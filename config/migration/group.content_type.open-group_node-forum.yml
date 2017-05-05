@@ -9,7 +9,7 @@ dependencies:
     - gnode
     - node
 id: open-group_node-forum
-label: 'Öffnen: Group node (Forenthema)'
+label: 'Offen: Group node (Forenthema)'
 description: 'Adds <em class="placeholder">Forenthema</em> content to groups both publicly and privately.'
 group_type: open
 content_plugin: 'group_node:forum'

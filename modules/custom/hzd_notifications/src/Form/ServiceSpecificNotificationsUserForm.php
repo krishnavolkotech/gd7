@@ -32,7 +32,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     $form_state_complete_form = $form_state->getCompleteForm();
     //$default_val = $form_state->getValue('services') ? $form_state->getValue('services') : '';
     if(empty($form_state_complete_form)) {
-      $options = array('0' => 'Content Type');
+      $options = array('0' => t('Content Type'));
     }
     else {
       $options = $this->service_content($form, $form_state);

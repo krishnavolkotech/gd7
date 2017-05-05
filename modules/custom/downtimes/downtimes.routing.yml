@@ -84,7 +84,7 @@ downtimes.create_downtimes:
   path: '/group/{group}/downtimes/create_downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
-    _title: 'Report an Incident'
+    _title: 'Report Incident'
     _entity_view: 'group.default'
   requirements:
 #    _access: 'TRUE'
@@ -95,7 +95,7 @@ downtimes.create_maintenance:
   path: '/group/{group}/downtimes/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
-    _title: 'Create Maintenance'
+    _title: 'Report Maintenance'
     _entity_view: 'group.default'
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\AccessController::createMaintenanceAccess'

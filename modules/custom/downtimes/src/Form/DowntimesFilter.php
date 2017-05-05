@@ -233,7 +233,7 @@ class DowntimesFilter extends FormBase
         
         $form['first_row']['services_effected'] = [
             '#type' => 'select',
-//      '#title' => t('Services Effected'),
+//      '#title' => t('Services Affected'),
             '#options' => $services,
 //      '#ajax' => array(
 //        'callback' => $path,

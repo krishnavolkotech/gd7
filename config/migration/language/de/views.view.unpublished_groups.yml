@@ -1,0 +1,41 @@
+label: 'Unveröffentlichte Gruppen'
+display:
+  default:
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Suchen
+          reset_button_label: Zurücksetzen
+      fields:
+        field_description:
+          label: Beschreibung
+        group_post_count_field:
+          label: Beiträge
+        group_member_count_field:
+          label: Mitglieder
+        group_type_value:
+          label: Typ
+        group_actions_field:
+          label: Aktionen
+      filters:
+        label:
+          expose:
+            label: Gruppenname
+      title: 'Alle Gruppen'
+  unpublished:
+    display_title: 'Unveröffentlichte Gruppen'
+    display_options:
+      title: 'Unveröffentlichte Gruppen'
+      filters:
+        label:
+          expose:
+            label: Gruppenname
+      fields:
+        field_description:
+          label: Beschreibung
+        group_member_count_field:
+          label: Mitglieder
+        group_type_value:
+          label: Typ
+        group_actions_field:
+          label: Aktionen

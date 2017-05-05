@@ -157,7 +157,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $list_groups = !empty($node) ? HzdcustomisationStorage::get_maintenance_related_services('service_profile', $node->id(), $downtime_services) : HzdcustomisationStorage::get_maintenance_related_services('service_profile');
     $form['services_effected'] = [
       '#type' => 'checkboxes',
-      '#title' => t('Services Effected'),
+      '#title' => t('Services Affected'),
       '#field_prefix' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Störung länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.<br><br>'),
       '#options' => $list_groups,
       '#theme' => 'service_checkboxes',

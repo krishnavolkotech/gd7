@@ -3,10 +3,11 @@ display:
     display_options:
       exposed_form:
         options:
-          submit_button: Anwenden
+          submit_button: Suchen
           exposed_sorts_label: 'Sortieren nach'
           sort_asc_label: Auf
           sort_desc_label: Ab
+          reset_button_label: Zurücksetzen
       pager:
         options:
           expose:
@@ -23,6 +24,8 @@ display:
         abbr:
           expose:
             label: Land
+          group_info:
+            description: ''
       fields:
         lastname:
           label: Nachname
@@ -43,7 +46,7 @@ display:
       empty:
         area:
           content:
-            value: "<p>No results found for your search!!</p>\r\n"
+            value: "<p>Keine Ergebnisse gefunden</p>\r\n"
             format: basic_html
   entity_reference_1:
     display_options:
