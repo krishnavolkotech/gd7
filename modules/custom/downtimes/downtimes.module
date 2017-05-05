@@ -1177,16 +1177,16 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   $messages = drupal_get_messages();
   $isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
   if($isNewlyCreated){
-    $status = t('created');
+    $status = 'created';
   }else{
-    $status = t('updated');
+    $status = 'updated';
   }
   if($downtime_type == 0){
-    $text = 'An Incident was @status';
+    $text = 'An Incident was '.$status;
   }else{
-    $text = 'A Maintenance was @status';
+    $text = 'A Maintenance was '.$status;
   }
-  drupal_set_message(t($text,['@status'=>$status]));
+  drupal_set_message(t($text));
 }
 
 /**
