@@ -772,7 +772,7 @@ class HzdreleasemanagementStorage
         if ($filter_value['services']) {
             $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
         } else {
-            $services_obj = db_query("SELECT n.title, n.nid 
+            $services_obj = db_query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -1260,7 +1260,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 ->condition('release_type', $default_type, '=')
                 ->condition('nid', $group_release_view_service, 'IN')
                 ->execute();
-        }else{
+        }
+        if(empty($services)){
           $services = [-1];
         }
         if (isset($services) && !empty($services)) {
@@ -1305,7 +1306,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     
     static function getSelectedServicesForReleases($groupId, $defaultTye) {
 //    $defaultTye = \Drupal::database()->query("SELECT release_type FROM {default_release_type} WHERE group_id = :gid", array(":gid" => $groupId))->fetchField();
-        $services_obj = \Drupal::database()->query("SELECT n.title, n.nid 
+        $services_obj = \Drupal::database()->query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
                      ORDER BY n.title asc", array(":gid" => $groupId, ":tid" => $defaultTye))->fetchAll();
