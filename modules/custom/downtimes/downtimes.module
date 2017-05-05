@@ -128,7 +128,9 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     //$node = array();
     if ($form_id == 'node_downtimes_edit_form') {
       $isNewlyCreated = 0;
-      $node = \Drupal::routeMatch()->getParameter('node');
+      $group_content = \Drupal::routeMatch()->getParameter('group_content');
+      $node = $group_content->getEntity();
+      
       if ($node) {
         $downtime_data = \Drupal::database()->select('downtimes', 'd')
           ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p', 'description'])
@@ -226,7 +228,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 //      '#suffix' => '</div>',
     ];
     if ($form_id == 'node_downtimes_edit_form') {
-      $node = \Drupal::routeMatch()->getParameter('node');
+//      $node = \Drupal::routeMatch()->getParameter('node');
       if ($node) {
         $downtime_data = downtimes_set_default_values($form, $node->id());
       }
@@ -314,7 +316,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
      * $breadcrumb[] = drupal_set_title();
      * drupal_set_breadcrumb($breadcrumb);
      */
-    $node = \Drupal::routeMatch()->getParameter('node');
+//    $node = \Drupal::routeMatch()->getParametergetParameter('node');
     //pr($node);exit;
     
     if (empty($node)) {
