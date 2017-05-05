@@ -101,10 +101,10 @@ class ResolveForm extends FormBase {
     $query = Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['scheduled_p']);
     $query->condition('d.downtime_id', $nid, '=');
-    $query->range(1);
-    $services = $query->execute()->fetchField();
+//    $query->range(1);
+    $resolved_title = $query->execute()->fetchField();
 
-    $resolved_title = $services['scheduled_p'];
+//    $resolved_title = $services['scheduled_p'];
 
     if ($resolved_title == 0) {
       // drupal_set_title(t('Resolve Incident'));
