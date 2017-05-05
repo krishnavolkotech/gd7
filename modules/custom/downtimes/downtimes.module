@@ -516,6 +516,15 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $form['field_dependent_service']['widget']['#default_value'] = $_REQUEST['service'];
     }
     $form['field_dependent_service']['#attributes']['class'][] = 'hide-field-content';
+    
+    $serviceoptions = $form['field_service_recipient']['widget']['#options'];
+    unset($serviceoptions[1]);
+    $form['field_service_recipient']['widget']['#options'] = $serviceoptions;
+    
+    $field_service_operator = $form['field_service_operator']['widget']['#options'];
+    unset($field_service_operator[1]);
+    $form['field_service_operator']['widget']['#options'] = $field_service_operator;
+
   }
 }
 
