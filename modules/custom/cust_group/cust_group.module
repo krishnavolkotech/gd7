@@ -293,7 +293,7 @@ function send_notifications($entity, $mails, $isNew) {
   
   $view_builder = \Drupal::entityManager()
     ->getViewBuilder($entity->getEntityTypeId());
-  $renderarray = $view_builder->view($entity);
+  $renderarray = $view_builder->view($entity,'mail');
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $entityTypeLabel = $entity->type->entity->label();
   if($isNew){
