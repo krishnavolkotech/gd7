@@ -4,6 +4,8 @@ use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\cust_group\CustGroupHelper;
 use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Language\LanguageInterface;
 
 /**
  * Implements callback_batch_operation().
@@ -407,4 +409,59 @@ function hzd_notifications_user_insert($entity) {
     $notificationController->setDefaultForServiceTypeNotifications($type, $user, $data[$type]);
   }
 //echo $entity->id();exit;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function hzd_notifications_token_info() {
+  $type = array(
+    'name' => t('Node update status'),
+    'description' => t('Tokens related to node updated status message.'),
+    'needs-data' => 'node',
+  );
+
+  // Core tokens for nodes.
+  $node['nodecreatedupdatedstatus'] = array(
+    'name' => t("Node update status message"),
+    'description' => t('Displays node updte message as created or updated'),
+  );
+
+  return array(
+    'types' => array('node' => $type),
+    'tokens' => array('node' => $node),
+  );    
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function hzd_notifications_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $token_service = \Drupal::token();
+
+  $url_options = array('absolute' => TRUE);
+  if (isset($options['langcode'])) {
+    $url_options['language'] = \Drupal::languageManager()->getLanguage($options['langcode']);
+    $langcode = $options['langcode'];
+  }
+  else {
+    $langcode = LanguageInterface::LANGCODE_DEFAULT;
+  }
+  $replacements = array();
+
+  if ($type == 'node' && !empty($data['node'])) {
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $data['node'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        // Simple key values on the node.
+        case 'nodecreatedupdatedstatus':
+          $replacements[$original] = $node->getChangedTime() == $node->getCreatedTime() ? 'created' : 'updated';
+          break;
+      }
+    }
+  }
+
+  return $replacements;    
 }
