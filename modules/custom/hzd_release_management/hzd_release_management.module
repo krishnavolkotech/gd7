@@ -500,7 +500,7 @@ function send_qi_notifications($entity) {
       //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
       $markup = \Drupal::entityManager()
         ->getViewBuilder($entity->getEntityTypeId())
-        ->view($entity);
+        ->view($entity,'email');///View differsfrom the normal default(full) mode
       $files = $entity->get('upload')->referencedEntities();
       //unset($markup['printfile']);
 //      $style = \Drupal::service('printable.css_include')->getCssIncludePath();
@@ -594,9 +594,9 @@ function hzd_release_management_node_update($entity) {
   }
   
   if ($entity->getType() == 'quickinfo') {
-    if ($entity->get('status')->value) {
+//    if ($entity->get('status')->value) {
       send_qi_notifications($entity);
-    }
+//    }
   }
   
   if ($entity->getType() == 'services') {
