@@ -607,7 +607,11 @@ class HzdcustomisationStorage {
    */
   static public function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
-    $group_id = \Drupal::routeMatch()->getParameter('group')->id();
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
+    if(!$group->getMember($user)){
+      return false;
+    }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
     if ($owner_state) {
       $current_user_state_id = $owner_state;
@@ -792,6 +796,26 @@ class HzdcustomisationStorage {
         ->condition('d.service_id', "{$filterData->get('services_effected')}");
       $downtimesQuery = $downtimesQuery->condition($orServiceGroup);
 //            $state = " ( ds.state_id LIKE '" . $state_id . ",%' or ds.state_id LIKE '%," . $state_id . ",%' or  ds.state_id LIKE '%," . $state_id . "' ) ";
+    }else{
+      $defaultServicesList = [];
+      $group_downtimes_view_service_query = \Drupal::database()->select('group_downtimes_view', 'gdv');
+      $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
+      $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
+      $group_downtimes_view_service = $group_downtimes_view_service_query->execute()->fetchAll();
+  
+      foreach ($group_downtimes_view_service as $service) {
+        $defaultServicesList[$service->service_id] = $service->service_id;
+      }
+      $orAllServiceGroup = $downtimesQuery->orConditionGroup();
+      foreach ($defaultServicesList as $item){
+        $orServiceGroup = $downtimesQuery->orConditionGroup()
+          ->condition('d.service_id', "{$item},%", 'LIKE')
+          ->condition('d.service_id', "%,{$item},%", 'LIKE')
+          ->condition('d.service_id', "%,{$item}", 'LIKE')
+          ->condition('d.service_id', "{$item}");
+        $orAllServiceGroup->condition($orServiceGroup);
+      }
+      $downtimesQuery->condition($orAllServiceGroup);
     }
 //        kint($downtimesQuery->__toString());
     $count_query = clone $downtimesQuery;
@@ -953,7 +977,7 @@ class HzdcustomisationStorage {
                 $links['action']['edit'] = [
                   '#title' => t('Update'),
                   '#type' => 'link',
-                  '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
+                  '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
                 ];
                 if ($client->startdate_planned > REQUEST_TIME) {
                   $links['action']['cancel'] = [
@@ -965,7 +989,7 @@ class HzdcustomisationStorage {
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }
@@ -975,12 +999,12 @@ class HzdcustomisationStorage {
                   $links['action']['edit'] = [
                     '#title' => t('Update'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
+                    '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
                   ];
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }

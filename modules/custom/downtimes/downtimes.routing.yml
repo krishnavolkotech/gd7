@@ -26,7 +26,7 @@ downtimes.Downtimesnotes:
     _permission: 'administer messaging'
 
 downtimes.resolve:
-  path: '/group/{group}/resolve/{node}'
+  path: '/group/{group}/downtimes/{group_content}/resolve'
   defaults:
     _form: '\Drupal\downtimes\Form\ResolveForm'
     _title: 'Resolve'

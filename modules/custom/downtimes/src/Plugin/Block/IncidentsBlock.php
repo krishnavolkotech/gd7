@@ -175,11 +175,14 @@ class IncidentsBlock extends BlockBase
             '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
         ];
         if ($routeMatch->getRouteName() == 'front_page.front') {
+          $access = \Drupal::service('access_manager')->checkNamedRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], \Drupal::currentUser());
+          if($access) {
             $markup['downtimes']['create'] = [
-                '#title' => $this->t('Report Downtime'),
-                '#type' => 'link',
-                '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
+              '#title' => $this->t('Report Downtime'),
+              '#type' => 'link',
+              '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
             ];
+          }
             $markup['#attributes'] = ['class' => ['frontpage-downtime-block']];
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];

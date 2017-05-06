@@ -53,4 +53,41 @@ class GroupContentViewController extends ControllerBase {
       throw new NotFoundHttpException();
     }
   }
+  
+  function viewGroupContentTitle(GroupInterface $group, $type, GroupContentInterface $group_content = null){
+    $title = $group_content->getEntity()->label();
+    if($group_content->getEntity()->bundle() == 'downtimes'){
+      $downtime = $group_content->getEntity();
+      $db = \Drupal::database();
+      $downtimeTypeQuery = $db->select('downtimes','d');
+      $downtimeTypeQuery->fields('d',['scheduled_p']);
+      $downtimeTypeQuery->condition('downtime_id',$downtime->id());
+      $downtimeType = $downtimeTypeQuery->execute()->fetchField();
+      if($downtimeType == 0){
+        $title = $this->t('Incident');
+      }else{
+        $title = $this->t('Maintenance');
+      }
+    }
+    return $title;
+  }
+  
+  function editGroupContent(GroupInterface $group, $type, GroupContentInterface $group_content = null){
+    $typeMappings = ['problems'=>'problem','rz-schnellinfos'=>'quickinfo','downtimes'=>'downtimes'];
+    if ($group_content->getEntity()->bundle() == $typeMappings[$type]) {
+      $form = \Drupal::service('entity.manager')
+        ->getFormObject('node', 'edit')
+        ->setEntity($group_content->getEntity());
+//      $build[] = \Drupal::formBuilder()->getForm($form);
+      
+      $build = \Drupal::formBuilder()->getForm($form);
+      return $build;
+    } else {
+      throw new NotFoundHttpException();
+    }
+  }
+  
+  function editGroupContentTitle(GroupInterface $group, $type, GroupContentInterface $group_content = null){
+    return $this->t('Edit @title',['@title'=>$this->viewGroupContentTitle($group,$type,$group_content)]);
+  }
 }

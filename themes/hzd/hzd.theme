@@ -11,6 +11,7 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Template\Attribute;
 use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
 
 /**
@@ -354,6 +355,9 @@ function hzd_preprocess_breadcrumb(&$variables) {
     $routeName = \Drupal::routeMatch()->getRouteName();
     $groupContent = \Drupal::routeMatch()->getParameter('group_content');
     if ($groupContent) {
+      if(!$groupContent instanceof GroupContent){
+        $groupContent = GroupContent::load($groupContent);
+      }
         $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
         $pdfLink['link'] = ['#type' => 'link',
             '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $groupContent->get('entity_id')->referencedEntities()[0]->id()], ['query' => ['original' => \Drupal::request()->getRequestUri()]]), '#title' => 'PDF'];

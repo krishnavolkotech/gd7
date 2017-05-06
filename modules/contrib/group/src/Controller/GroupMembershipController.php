@@ -111,11 +111,13 @@ class GroupMembershipController extends ControllerBase {
    *   A group join form.
    */
   public function requestMembership(GroupInterface $group) {
-    $currentUser = \Drupal::currentUser();
-    $groupMember = $group->getMember($currentUser);
-    if (($groupMember && $groupMember->getGroupContent()
-            ->get('request_status')->value == 0)
-    ) {
+    $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+    $check = \Drupal::entityQuery('group_content')
+      ->condition('gid',$group->id())
+      ->condition('entity_id',$this->currentUser->id())
+      ->condition('type',$plugin->getContentTypeConfigId())
+      ->execute();
+    if (!empty($check)) {
       return ['#markup' => $this->t('Your request for membership group of %label is in queue, Please wait for approval.', ['%label' => $group->label()])];
     }
     else {
