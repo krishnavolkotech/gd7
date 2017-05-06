@@ -181,7 +181,7 @@ function cust_group_group_content_update($entity) {
     $group = $entity->getGroup();
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
-    $module = 'group';
+    $module = 'cust_group';
     $key = 'immediate_notifications';
     $params['subject'] = $subject;
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
@@ -296,7 +296,7 @@ function send_notifications($entity, $mails) {
   $renderarray = $view_builder->view($entity);
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $entityTypeLabel = $entity->type->entity->label();
-  $params['subject'] = "Aktualisiert - {$entityTypeLabel}: " . $entity->label();
+  $params['subject'] = t("Aktualisiert - {$entityTypeLabel}: " . $entity->label());
   $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
@@ -323,7 +323,7 @@ function cust_group_mail($key, &$message, $params) {
     case 'immediate_notifications':
     case 'periodic_notifications':
       $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t($params['subject'], $options);
+      $message['subject'] = $params['subject'];
       $message['body'][] = $params['message'];
       break;
   }
@@ -402,6 +402,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       }
       break;
     case 'group_content_moderate-group_membership_group-request_form':
+    case 'group_content_group_content_type_d4b06e2b6aad0_group-request_form':
       $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
       break;
     case 'node_faqs_delete_form':
@@ -432,11 +433,11 @@ function requst_submit_handler(&$form, $form_state) {
 }
 
 function mailToGroupAdmins($data = []) {
-  $data['subject'] = "Membership Request for a Group - " . $data['group']->label();
+  $data['subject'] = t("Membership Request for a Group - @label",['@label'=>$data['group']->label()]);
   $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
     ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
-    ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin']]);
+    ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin','moderate_private-admin']]);
   $mailManager = \Drupal::service('plugin.manager.mail');
   $send = TRUE;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
@@ -453,12 +454,7 @@ function mailToGroupAdmins($data = []) {
 //    pr($params);exit;
     $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
   }
-  if ($result['result'] != TRUE) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-  }
-  else {
-    drupal_set_message(t('Mail sent.'), 'status');
-  }
+    drupal_set_message(t('Request has been sucessfully placed.'), 'status');
 }
 
 use Drupal\group\Entity\Group;
