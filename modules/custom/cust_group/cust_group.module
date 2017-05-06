@@ -505,8 +505,19 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     ];
   }
   elseif ('planning_files' == $entity->bundle()) {
+    $field_planning_file_type = $entity->get('field_planning_file_type')->value;
+    $plannigFileRefFlipped = array_flip($plannigFileRef);
+    $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
+    $group = Group::load(RELEASE_MANAGEMENT);
+//    $plugin = $group->getGroupType()->getContentPlugin('group_node:planning_files');
+    $group_content = \Drupal::entityQuery('group_content')
+      ->condition('gid',$group->id())
+      ->condition('entity_id',$nodeId)
+      ->condition('type','%group_node%','LIKE')
+      ->execute();
+//    pr($group_content);exit;
     global $base_url;
-    header('Location: ' . $base_url . \Drupal::url('hzd_release_management.display_planning_files', ['group' => RELEASE_MANAGEMENT]));
+    header('Location: ' . $base_url . \Drupal::url('entity.group_content.canonical', ['group_content' => reset($group_content),'group'=>$group->id()]));
     exit;
   }
   
