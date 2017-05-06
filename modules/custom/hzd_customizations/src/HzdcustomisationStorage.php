@@ -607,7 +607,11 @@ class HzdcustomisationStorage {
    */
   static public function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
-    $group_id = \Drupal::routeMatch()->getParameter('group')->id();
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
+    if(!$group->getMember($user)){
+      return false;
+    }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
     if ($owner_state) {
       $current_user_state_id = $owner_state;

@@ -185,11 +185,14 @@ class MaintenanceBlock extends BlockBase
         ];
         if ($routeMatch->getRouteName() == 'front_page.front') {
             $markup['#attributes'] = ['class' => ['frontpage-downtime-block']];
+          $access = \Drupal::service('access_manager')->checkNamedRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], \Drupal::currentUser());
+          if($access) {
             $markup['downtimes']['create'] = [
-                '#title' => $this->t('Report Maintenance'),
-                '#type' => 'link',
-                '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $link_options)
+              '#title' => $this->t('Report Maintenance'),
+              '#type' => 'link',
+              '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $link_options)
             ];
+          }
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }

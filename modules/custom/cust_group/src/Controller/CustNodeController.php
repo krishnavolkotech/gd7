@@ -113,7 +113,9 @@ class CustNodeController extends ControllerBase {
   }
   
   static function hzdIncidentGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    $uid = $user->id();
+    //Irrespective of the user is member of Incident management this is accessible
+    return AccessResult::allowed();
+/*    $uid = $user->id();
     if ($uid == 0) {
       return AccessResult::allowed();
     }
@@ -131,7 +133,7 @@ class CustNodeController extends ControllerBase {
         return AccessResult::forbidden();
       }
     }
-    return AccessResult::neutral();
+    return AccessResult::neutral();*/
   }
   
   static function hzdnodeConfirmAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
