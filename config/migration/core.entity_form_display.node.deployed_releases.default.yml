@@ -66,12 +66,6 @@ content:
     type: options_select
     settings: {  }
     third_party_settings: {  }
-  field_user_state:
-    weight: 17
-    type: number
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 2
@@ -103,6 +97,8 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -112,4 +108,5 @@ content:
       placeholder: ''
     third_party_settings: {  }
 hidden:
+  field_user_state: true
   upload: true
