@@ -612,7 +612,7 @@ class HzdreleasemanagementHelper
             $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
             $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
             $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
-            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nar.entity_id');
+            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nfd.nid');
             $query->condition('nfd.type', 'deployed_releases');
             $query->orderBy('ndd.field_date_deployed_value', 'DESC');
             // $query->range(0, 100);
@@ -634,7 +634,7 @@ class HzdreleasemanagementHelper
             $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
             $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
             $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
-            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nar.entity_id');
+            $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nfd.nid');
             $query->leftJoin('node__field_user_state', 'nfus', 'nfus.entity_id = nfe.entity_id');
             $query->condition('nfd.type', 'deployed_releases');
             $query->condition('nfus.field_user_state_value', $user_state, '=');

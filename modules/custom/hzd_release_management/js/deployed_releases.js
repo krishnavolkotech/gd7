@@ -76,7 +76,7 @@
                 var is_archive = confirm("Do you really want to archive?");
                 if (is_archive == true) {
                     var nid = $(this).attr('nid');
-                    $(this).next().prepend('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>');
+                    $(this).next().prepend('Archivierung !! Warten Sie mal.');
                     var url = drupalSettings.deploy_release.basePath + '/archive_deployedreleases';
                     
                     $.post(url, {'nid': nid}, function (data) {
