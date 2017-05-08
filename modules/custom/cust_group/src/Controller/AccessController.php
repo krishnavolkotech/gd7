@@ -234,4 +234,15 @@ class AccessController extends ControllerBase
       return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
     }
     
+    public function deployedReleasesAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $group = $route_match->getParameter('group');
+      $member = $group->getMember($user);
+      $releaseManagementGroup = Group::load(RELEASE_MANAGEMENT);
+      $releaseManagementMember = $releaseManagementGroup->getMember($user);
+      if($member && $releaseManagementMember){
+        return AccessResult::allowed();
+      }
+      return AccessResult::neutral();
+    }
+    
 }
