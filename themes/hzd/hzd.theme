@@ -347,7 +347,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
 //    $rightData['extras'] = ['#type'=>'container','#attributes'=>['class'=>['test']]];
     $variables['breadcrumb']['extras'] = ['#type' => 'container', '#attributes' => ['class' => ['print-action-wrapper']]];
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
-    if (isset($block)) {
+    if (isset($block) && \Drupal::currentUser()->isAuthenticated()) {
         $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
         $block_view['#weight'] = 1;
         $variables['breadcrumb']['extras']['add_fav_form'] = $block_view;
