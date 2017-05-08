@@ -51,6 +51,7 @@ hzd_release_management.eingesetzte:
     _entity_view: group.default
   requirements:
     _permission: 'view releases'
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::deployedReleasesAccess'
     
     
     
