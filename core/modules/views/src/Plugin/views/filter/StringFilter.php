@@ -268,7 +268,7 @@ class StringFilter extends FilterPluginBase {
     $where = $this->operator == 'word' ? db_or() : db_and();
 
     // Don't filter on empty strings.
-    if (empty(trim($this->value))) {
+    if (empty($this->value)) {
       return;
     }
 
@@ -287,7 +287,7 @@ class StringFilter extends FilterPluginBase {
       }
     }
 
-    if (!$where) {
+    if ($where->count() === 0) {
       return;
     }
 
