@@ -142,7 +142,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //        kint($entity->get($field_name)->value);
 //            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
       if (in_array($field_name, [
-            'field_additional_email_recipient',
+//            'field_additional_email_recipient',
             'field_business_impact',
             'field_business_impact_services',
             'field_contact',
