@@ -679,7 +679,7 @@ class HzdreleasemanagementHelper
             }
             
             if (!$deployed_release->archived) {
-                if ($edit_url) {
+                if (!empty($edit_url)) {
                     $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
                   >Archive</a>  <span class = "loader"></span>', array(
                             '@edit_url' => $edit_url->toString(),
@@ -702,7 +702,7 @@ class HzdreleasemanagementHelper
                     $action,
                 );
             } else {
-                if ($edit_url) {
+                if (!empty($edit_url)) {
                     $edit = t('<a href="@edit_url">Edit</a>', array(
                             '@edit_url' => $edit_url->toString(),
                         )
