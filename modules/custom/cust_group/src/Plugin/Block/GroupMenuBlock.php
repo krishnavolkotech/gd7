@@ -45,6 +45,7 @@ class GroupMenuBlock extends BlockBase {
       'problem_management.problems',
       'problem_management.archived_problems',
       'problem_management.import_history',
+      'downtimes.DowntimesnotesDisplay',
     ];
     $parameters = $routeMatch->getParameters();
     if ($routeMatch->getRouteName() == 'cust_group.node_view'

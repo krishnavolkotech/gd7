@@ -25,6 +25,16 @@ downtimes.Downtimesnotes:
   requirements:
     _permission: 'administer messaging'
 
+downtimes.DowntimesnotesDisplay:
+  path: '/group/{group}/downtimes/notes'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimesNotesDisplayController::downtime_notes_message_display'
+    _title: 'Downtimes Notes'
+    _entity_view: 'group.default'
+  requirements:
+    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
+    
 downtimes.resolve:
   path: '/group/{group}/downtimes/{group_content}/resolve'
   defaults:
