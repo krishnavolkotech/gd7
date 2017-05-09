@@ -1177,7 +1177,7 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
       array(
         'downtime_id' => $form_state->getValue('nid'),
         'uid' => \Drupal::currentUser()->id(),
-        'updated' => time(),
+        'updated' => REQUEST_TIME,
         'log' => serialize($log),
       )
     )->execute();
