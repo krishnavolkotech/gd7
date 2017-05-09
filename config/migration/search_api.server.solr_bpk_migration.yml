@@ -1,0 +1,30 @@
+uuid: 751acb2e-3bd0-4e2b-82ee-630a211225d3
+langcode: de
+status: true
+dependencies:
+  module:
+    - search_api_solr
+id: solr_bpk_migration
+name: 'Solr BpK Migration'
+description: ''
+backend: search_api_solr
+backend_config:
+  connector: standard
+  connector_config:
+    scheme: http
+    host: localhost
+    port: '8983'
+    path: /solr
+    core: bpkmig
+    timeout: 5
+    index_timeout: 5
+    optimize_timeout: 10
+    solr_version: ''
+    http_method: AUTO
+  retrieve_data: true
+  highlight_data: true
+  excerpt: true
+  skip_schema_check: false
+  site_hash: true
+  autocorrect_spell: true
+  autocorrect_suggest_words: true

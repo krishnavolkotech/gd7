@@ -399,3 +399,13 @@ article.page .content table{
   width:100% !important;
 }
 
+#views-exposed-form-user-list-address input[type="text"] {
+  height: 35px !important;
+  margin-left: 3px;
+}
+#views-exposed-form-user-list-address .form-item {
+  margin-right: 15px;
+}
+#views-exposed-form-user-list-address label {
+  margin-right: 5px;
+}

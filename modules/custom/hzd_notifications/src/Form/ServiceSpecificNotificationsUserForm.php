@@ -35,12 +35,13 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
       $options = array('0' => t('Content Type'));
     }
     else {
-      $options = $this->service_content($form, $form_state);
+      $options = $this->service_content($form, $form_state)['#options'];
     }
 
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
+      '#weight' => 1,
       '#ajax' => array(
           'callback' => '::service_content',
           'wrapper' =>  'service-content-types',
@@ -57,6 +58,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
 
     $form['content_type'] = array(
       '#type' => 'select',
+      '#weight' => 2,
       '#prefix' => "<div id ='service-content-types' class = 'content-type hzd-form-element'>",
       '#suffix' => '</div>',
       '#options' => $options,
@@ -76,12 +78,13 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     $intervals[''] = t('Interval');
     $form['send_interval'] = array(
       '#type' => 'select',
+      '#weight' => 3,
       '#options' => $intervals,
       '#prefix' => "<div class = 'send-interval hzd-form-element'>",
       '#suffix' => '</div>',
     );
 
-    $form['submit'] = array('#type' => 'submit', '#value' => t('Save'));
+    $form['submit'] = array('#type' => 'submit','#weight' => 4, '#value' => t('Save'));
     return $form;
   }
 

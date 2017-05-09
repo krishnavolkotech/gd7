@@ -179,7 +179,8 @@ class ResolveForm extends FormBase {
       );
     }
 
-    $first_month_first_day = date('01.01.Y - 00:00');
+    //$first_month_first_day = date('01.01.Y - 00:00');
+    $first_month_first_day = $start_date;
 
     $form['date_reported'] = array(
       '#title' => t('Actual End Date'),

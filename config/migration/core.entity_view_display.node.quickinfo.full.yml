@@ -72,7 +72,6 @@ third_party_settings:
         - field_creators
         - field_contact
         - upload
-        - field_additional_email_recipient
       parent_name: ''
       weight: 1
       label: '2 Fachlich-inhaltliche Angaben'
@@ -99,12 +98,6 @@ content:
     settings:
       pager_id: 0
       view_mode: default
-    third_party_settings: {  }
-  field_additional_email_recipient:
-    label: above
-    weight: 15
-    type: basic_string
-    settings: {  }
     third_party_settings: {  }
   field_business_impact:
     label: above
@@ -217,6 +210,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_additional_email_recipient: true
   field_author_name: true
   field_author_state: true
   field_unique_id: true

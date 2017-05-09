@@ -517,7 +517,7 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: Search
+            label: Suche
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
@@ -555,7 +555,7 @@ display:
             body: body
           plugin_id: search_api_fulltext
       sorts: {  }
-      title: Search
+      title: Suche
       header: {  }
       footer: {  }
       empty:
@@ -568,7 +568,7 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'No results found, Please try narrowing your search.'
+          content: 'Keine Ergebnisse gefunden.'
           plugin_id: text_custom
       relationships:
         gid:
@@ -609,7 +609,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: search
+      path: suche
     cache_metadata:
       max-age: 0
       contexts:

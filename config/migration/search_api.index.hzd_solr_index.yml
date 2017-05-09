@@ -1,6 +1,6 @@
 uuid: d38f1ecd-f750-4c53-a516-42d7c1c2a9db
 langcode: en
-status: false
+status: true
 dependencies:
   module:
     - group
@@ -9,7 +9,7 @@ dependencies:
     - downtimes
   config:
     - field.storage.node.body
-    - search_api.server.hzd_solr
+    - search_api.server.solr_bpk_migration
 id: hzd_solr_index
 name: 'HZD Solr Index'
 description: ''
@@ -85,9 +85,6 @@ processor_settings:
     settings:
       weights:
         preprocess_query: -3
-  rendered_item:
-    plugin_id: rendered_item
-    settings: {  }
   html_filter:
     plugin_id: html_filter
     settings:
@@ -106,12 +103,6 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
-  add_url:
-    plugin_id: add_url
-    settings: {  }
-  aggregated_field:
-    plugin_id: aggregated_field
-    settings: {  }
   ignorecase:
     plugin_id: ignorecase
     settings:
@@ -131,6 +122,22 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
+  transliteration:
+    plugin_id: transliteration
+    settings:
+      fields:
+        - type
+        - title
+        - body
+      weights:
+        preprocess_index: -10
+        preprocess_query: -4
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
   content_access:
     plugin_id: content_access
     settings:
@@ -147,16 +154,9 @@ processor_settings:
       suffix: '</strong>'
       weights:
         postprocess_query: 0
-  transliteration:
-    plugin_id: transliteration
-    settings:
-      fields:
-        - type
-        - title
-        - body
-      weights:
-        preprocess_index: -10
-        preprocess_query: -4
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
 options:
   index_directly: true
   cron_limit: 50
@@ -199,4 +199,4 @@ tracker_settings:
   default:
     plugin_id: default
     settings: {  }
-server: hzd_solr
+server: solr_bpk_migration

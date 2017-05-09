@@ -11,7 +11,7 @@ id: node.early_warnings.field_earlywarning_release
 field_name: field_earlywarning_release
 entity_type: node
 bundle: early_warnings
-label: Releases
+label: Release
 description: ''
 required: true
 translatable: true
