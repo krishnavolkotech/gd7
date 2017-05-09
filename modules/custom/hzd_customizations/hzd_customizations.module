@@ -494,7 +494,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     );
     $form['block_inactive_user']['inactive_user_block_warn_text']['#weight'] = 5;
     
-    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
+/*    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
       ->get('inactive_user_delete_notify_mail_subject');
     $inactive_user_delete_notify_mail_subject = $inactive_user_delete_notify_mail_subject ? $inactive_user_delete_notify_mail_subject : $account_inactivity;
     
@@ -505,7 +505,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       '#required' => TRUE,
       '#weight' => 1,
     );
-    
+*/    
     $form['delete_inactive_user']['inactive_user_delete_notify_text']['#weight'] = 2;
     unset($form['delete_inactive_user']['inactive_user_auto_delete_warn']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
