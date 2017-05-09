@@ -607,7 +607,11 @@ class HzdcustomisationStorage {
    */
   static public function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
-    $group_id = \Drupal::routeMatch()->getParameter('group')->id();
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $group_id = $group->id();
+    if(!$group->getMember($user)){
+      return false;
+    }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
     if ($owner_state) {
       $current_user_state_id = $owner_state;
@@ -738,8 +742,12 @@ class HzdcustomisationStorage {
     }
     
     if ($startDate && $endDate) {
-//            $startDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_startdate'))->getTimestamp();
-//            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp();
+      if($startDate > $endDate){
+        $andDateGrp = $downtimesQuery->andConditionGroup()
+          ->condition('d.startdate_planned', $startDate, '>')
+          ->condition('d.enddate_planned', $endDate, '<');
+        $downtimesQuery = $downtimesQuery->condition($andDateGrp);
+      }
       if ($type == 'archived') {
         $andDateGrp = $downtimesQuery->andConditionGroup()
           ->condition('d.startdate_planned', $startDate, '<')
@@ -973,7 +981,7 @@ class HzdcustomisationStorage {
                 $links['action']['edit'] = [
                   '#title' => t('Update'),
                   '#type' => 'link',
-                  '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
+                  '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
                 ];
                 if ($client->startdate_planned > REQUEST_TIME) {
                   $links['action']['cancel'] = [
@@ -985,7 +993,7 @@ class HzdcustomisationStorage {
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }
@@ -995,12 +1003,12 @@ class HzdcustomisationStorage {
                   $links['action']['edit'] = [
                     '#title' => t('Update'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
+                    '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
                   ];
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }

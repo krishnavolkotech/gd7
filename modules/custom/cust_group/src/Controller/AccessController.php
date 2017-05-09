@@ -154,7 +154,8 @@ class AccessController extends ControllerBase
         $loadedGroup = $route_match->getParameter('group');
         if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
             $content = $group->getMember($user);
-            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1) {
+            $incidentGroupMember = \Drupal\group\Entity\group::load(INCIDENT_MANAGEMENT)->getMember($user);
+            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1 && $incidentGroupMember && $incidentGroupMember->getGroupContent()->get('request_status')->value == 1) {
                 return AccessResult::allowed();
             } else {
                 return AccessResult::forbidden();
@@ -231,6 +232,17 @@ class AccessController extends ControllerBase
       }
       // @var $group = Group
       return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
+    }
+    
+    public function deployedReleasesAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $group = $route_match->getParameter('group');
+      $member = $group->getMember($user);
+      $releaseManagementGroup = Group::load(RELEASE_MANAGEMENT);
+      $releaseManagementMember = $releaseManagementGroup->getMember($user);
+      if($member && $releaseManagementMember){
+        return AccessResult::allowed();
+      }
+      return AccessResult::neutral();
     }
     
 }

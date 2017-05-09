@@ -500,7 +500,7 @@ function send_qi_notifications($entity) {
       //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
       $markup = \Drupal::entityManager()
         ->getViewBuilder($entity->getEntityTypeId())
-        ->view($entity);
+        ->view($entity,'email');///View differsfrom the normal default(full) mode
       $files = $entity->get('upload')->referencedEntities();
       //unset($markup['printfile']);
 //      $style = \Drupal::service('printable.css_include')->getCssIncludePath();
@@ -594,9 +594,9 @@ function hzd_release_management_node_update($entity) {
   }
   
   if ($entity->getType() == 'quickinfo') {
-    if ($entity->get('status')->value) {
+//    if ($entity->get('status')->value) {
       send_qi_notifications($entity);
-    }
+//    }
   }
   
   if ($entity->getType() == 'services') {
@@ -705,7 +705,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   foreach (explode(',', trim($to, ',')) as $userMail) {
     $userEntity = \Drupal::entityTypeManager()->getStorage('user')
       ->loadByProperties(['mail' => trim($userMail)]);
-    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value == 1) {
+    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 0) {
       $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
   }
@@ -816,12 +816,12 @@ function hzd_service_update_notifications($type, $nid) {
     $updated_result[$interval][] = $key;
   }
   
-  foreach ($default_interval as $send_interval) {
-    $serialized_uids = serialize($updated_result[$send_interval]);
+  foreach ($default_interval as $key => $send_interval) {
+    $serialized_uids = serialize($updated_result[$key]);
     $record = array(
       'service_id' => $nid,
       'type' => $type,
-      'send_interval' => $send_interval,
+      'send_interval' => $key,
       'uids' => $serialized_uids
     );
     db_insert('service_notifications')->fields($record)->execute();
@@ -849,19 +849,19 @@ function insert_new_service_notifications($type, $nid) {
     $result[$vals->default_send_interval][$vals->uid] = $vals->uid;
   }
   
-  foreach ($interval as $each_interval) {
-    foreach ($result as $service_vals) {
-      $serialized_uids = serialize($service_vals);
+  foreach ($interval as $key => $each_interval) {
+      foreach ($result as $service_vals) {
+        $serialized_uids = serialize($service_vals);
+      }
       $record = array(
         'service_id' => $nid,
         'type' => $type,
-        'send_interval' => $each_interval,
+        'send_interval' => $key,
         'uids' => $serialized_uids
       );
       db_insert('service_notifications')->fields($record)->execute();
-    }
   }
-}
+  }
 
 /*
   use Drupal\Core\Access\AccessResult;

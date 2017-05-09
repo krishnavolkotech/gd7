@@ -1201,18 +1201,6 @@ display:
           content: '@total Mitglieder insgesamt'
           plugin_id: result
       sorts:
-        group_roles_target_id:
-          id: group_roles_target_id
-          table: group_content__group_roles
-          field: group_roles_target_id
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: true
-          expose:
-            label: Roles
-          plugin_id: standard
         lastname:
           id: lastname
           table: cust_profile
@@ -1221,9 +1209,9 @@ display:
           group_type: group
           admin_label: ''
           order: ASC
-          exposed: false
+          exposed: true
           expose:
-            label: ''
+            label: Lastname
           plugin_id: standard
       fields:
         uid:

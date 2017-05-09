@@ -42,7 +42,7 @@ class Confirm extends ConfirmFormBase {
       $nid = $node;
     }
     return new static(
-            $container->get('keyvalue.expirable')->get('downtimes_resolve_' . $nid)
+            $container->get('keyvalue.expirable')->get('downtimes_resolve_')
     );
   }
 

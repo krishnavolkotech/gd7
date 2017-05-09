@@ -1293,7 +1293,12 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                 array($filter_value['filter_startdate'],
                     $filter_value['filter_enddate']), 'BETWEEN');*/
         }
-        
+        $deployedReleases = \Drupal::database()->select('node__field_earlywarning_release','nd')
+          ->condition('bundle','deployed_releases')
+          ->fields('nd',['field_earlywarning_release_value'])
+          ->execute()
+          ->fetchCol();
+      $release_node_ids->condition('nid',(array)$deployedReleases,'NOT IN');
         $release_node_ids->sort('field_date', 'DESC');
         if ($filter_value['limit'] == 'all') {
             $result = $release_node_ids->execute();

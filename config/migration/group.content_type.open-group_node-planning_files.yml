@@ -16,3 +16,4 @@ content_plugin: 'group_node:planning_files'
 plugin_config:
   group_cardinality: 0
   entity_cardinality: 1
+  use_creation_wizard: false

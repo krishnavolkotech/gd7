@@ -42,7 +42,7 @@ function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal
       $build[$key] = [
         '#theme' => 'usercustomfield',
         '#label' => t($val['label']),
-        '#value' => t($val['value']),
+        '#value' => $val['value'],
       ];
     }
     $build['group_list'] = array(
@@ -102,7 +102,7 @@ function cust_group_theme() {
 
 function cust_group_node_update($entity) {
   if ($entity instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($entity);
+    sendGroupUpdateMail($entity,0);
     //exit;
     //capture the notification for the users to send daily and weekly
 //    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
@@ -172,7 +172,7 @@ function cust_group_group_insert($group) {
 }
 
 function cust_group_group_update($entity) {
-  sendGroupUpdateMail($entity);
+  sendGroupUpdateMail($entity,0);
 //  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
 }
 
@@ -181,7 +181,7 @@ function cust_group_group_content_update($entity) {
     $group = $entity->getGroup();
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
-    $module = 'group';
+    $module = 'cust_group';
     $key = 'immediate_notifications';
     $params['subject'] = $subject;
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
@@ -211,7 +211,7 @@ function cust_group_group_content_delete() {
 function cust_group_group_content_insert($entity) {
   $node = $entity->getEntity();
   if ($node instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($node);
+    sendGroupUpdateMail($node,1);
 //    \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
     /*if ($node->getType() == 'page') {
       \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
@@ -219,7 +219,7 @@ function cust_group_group_content_insert($entity) {
   }
 }
 
-function sendGroupUpdateMail($entity) {
+function sendGroupUpdateMail($entity, $isNew = 1) {
   
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
@@ -237,11 +237,11 @@ function sendGroupUpdateMail($entity) {
           'event',
           'forum',
           'page',
-          'newsletter'
+          'faqs'
         ]) || $entity->getEntityTypeId() == 'group')
     ) {
       $getUserMailList = getGroupMemberList($group);
-      send_notifications($entity, $getUserMailList);
+      send_notifications($entity, $getUserMailList, $isNew);
     }
   }
 }
@@ -271,7 +271,7 @@ function getGroupMemberList($gid) {
   return $userMails;
 }
 
-function send_notifications($entity, $mails) {
+function send_notifications($entity, $mails, $isNew) {
   $result = array();
   $mailManager = \Drupal::service('plugin.manager.mail');
   $module = 'cust_group';
@@ -293,24 +293,21 @@ function send_notifications($entity, $mails) {
   
   $view_builder = \Drupal::entityManager()
     ->getViewBuilder($entity->getEntityTypeId());
-  $renderarray = $view_builder->view($entity);
+  $renderarray = $view_builder->view($entity,'mail');
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $entityTypeLabel = $entity->type->entity->label();
-  $params['subject'] = "Aktualisiert - {$entityTypeLabel}: " . $entity->label();
+  if($isNew){
+    $params['subject'] = t("Erstellt - {$entityTypeLabel}: " . $entity->label());
+  }else{
+    $params['subject'] = t("Aktualisiert - {$entityTypeLabel}: " . $entity->label());
+  }
+  
   $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
   foreach ($mails as $to) {
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
   }
-  
-  if (isset($result['result']) && $result['result'] != TRUE) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-  }
-  else {
-    drupal_set_message(t('Your message has been sent.'));
-  }
-  
 }
 
 use Drupal\Component\Utility\SafeMarkup;
@@ -323,7 +320,7 @@ function cust_group_mail($key, &$message, $params) {
     case 'immediate_notifications':
     case 'periodic_notifications':
       $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t($params['subject'], $options);
+      $message['subject'] = $params['subject'];
       $message['body'][] = $params['message'];
       break;
   }
@@ -402,6 +399,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       }
       break;
     case 'group_content_moderate-group_membership_group-request_form':
+    case 'group_content_group_content_type_d4b06e2b6aad0_group-request_form':
       $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
       break;
     case 'node_faqs_delete_form':
@@ -432,11 +430,11 @@ function requst_submit_handler(&$form, $form_state) {
 }
 
 function mailToGroupAdmins($data = []) {
-  $data['subject'] = "Membership Request for a Group - " . $data['group']->label();
+  $data['subject'] = t("Membership Request for a Group - @label",['@label'=>$data['group']->label()]);
   $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
     ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
-    ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin']]);
+    ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin','moderate_private-admin']]);
   $mailManager = \Drupal::service('plugin.manager.mail');
   $send = TRUE;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
@@ -453,12 +451,7 @@ function mailToGroupAdmins($data = []) {
 //    pr($params);exit;
     $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
   }
-  if ($result['result'] != TRUE) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-  }
-  else {
-    drupal_set_message(t('Mail sent.'), 'status');
-  }
+    drupal_set_message(t('Request has been sucessfully placed.'), 'status');
 }
 
 use Drupal\group\Entity\Group;
@@ -482,9 +475,9 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
   $fileName = $file->getFilename();
   $check = \Drupal::entityQuery('file')
     ->condition('filename', $fileName)
-    ->condition('status', 1)
+//    ->condition('status', 1)
     ->execute();
-  //pr(count($check));exit;
+  //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
   //Todo sometimes giving true while value is one
   if (count($check) >= 1 && $file->isNew()) {
     $errors[] = t("The file's name already exists in database.");
@@ -512,8 +505,19 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     ];
   }
   elseif ('planning_files' == $entity->bundle()) {
+    $field_planning_file_type = $entity->get('field_planning_file_type')->value;
+    $plannigFileRefFlipped = array_flip($plannigFileRef);
+    $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
+    $group = Group::load(RELEASE_MANAGEMENT);
+//    $plugin = $group->getGroupType()->getContentPlugin('group_node:planning_files');
+    $group_content = \Drupal::entityQuery('group_content')
+      ->condition('gid',$group->id())
+      ->condition('entity_id',$nodeId)
+      ->condition('type','%group_node%','LIKE')
+      ->execute();
+//    pr($group_content);exit;
     global $base_url;
-    header('Location: ' . $base_url . \Drupal::url('hzd_release_management.display_planning_files', ['group' => RELEASE_MANAGEMENT]));
+    header('Location: ' . $base_url . \Drupal::url('entity.group_content.canonical', ['group_content' => reset($group_content),'group'=>$group->id()]));
     exit;
   }
   

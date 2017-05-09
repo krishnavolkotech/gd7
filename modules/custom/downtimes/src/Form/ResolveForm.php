@@ -36,7 +36,7 @@ class ResolveForm extends FormBase {
       $nid = $node;
     }
     return new static(
-        $container->get('keyvalue.expirable')->get("downtimes_resolve_" . $nid)
+        $container->get('keyvalue.expirable')->get("downtimes_resolve_")
     );
   }
 
@@ -76,7 +76,9 @@ class ResolveForm extends FormBase {
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
-    $node = Drupal::routeMatch()->getParameter('node');
+    $group_content_id = Drupal::routeMatch()->getParameter('group_content');
+    $group_content = Drupal\group\Entity\GroupContent::load($group_content_id);
+    $node = $group_content->getEntity();
     if (is_object($node)) {
       $nid = $node->id();
     }
@@ -177,7 +179,8 @@ class ResolveForm extends FormBase {
       );
     }
 
-    $first_month_first_day = date('01.01.Y - 00:00');
+    //$first_month_first_day = date('01.01.Y - 00:00');
+    $first_month_first_day = $start_date;
 
     $form['date_reported'] = array(
       '#title' => t('Actual End Date'),
@@ -246,8 +249,9 @@ class ResolveForm extends FormBase {
       'gid'=>$group,
       'notifications_content_disable' => $notifications_content_disable,
     );
+    $key = "downtimes_resolve_" . $nid;
     //Todo if more than one user access this might get issue
-    $this->keyValueExpirable->setWithExpire("downtimes_resolve_" . $nid, $downtime_resolve, 6 * 60 * 60);
+    $this->keyValueExpirable->setWithExpire($key, $downtime_resolve, 24 * 60 * 60);
 
     // Redirect to the confirm form.
     $url = Url::fromRoute('downtimes.confirm',['group'=>$group,'node'=>$nid]);
