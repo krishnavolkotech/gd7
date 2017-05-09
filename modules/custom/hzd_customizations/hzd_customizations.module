@@ -142,18 +142,18 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //        kint($entity->get($field_name)->value);
 //            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
       if (in_array($field_name, [
-          'field_additional_email_recipient',
-          'field_business_impact',
-          'field_business_impact_services',
-          'field_contact',
-          'field_creators',
-          'field_custom_title',
-          'field_dates',
-          'field_depend_other_services',
-          'field_intial_situation',
-          'field_other_services',
-          'field_professional_conditions',
-          'field_recipients',
+//            'field_additional_email_recipient',
+            'field_business_impact',
+            'field_business_impact_services',
+            'field_contact',
+            'field_creators',
+            'field_custom_title',
+            'field_dates',
+            'field_depend_other_services',
+            'field_intial_situation',
+            'field_other_services',
+            'field_professional_conditions',
+            'field_recipients',
 //          'upload',
           'field_related_transfer_number',
           'field_special_notes',
@@ -494,7 +494,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     );
     $form['block_inactive_user']['inactive_user_block_warn_text']['#weight'] = 5;
     
-    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
+/*    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
       ->get('inactive_user_delete_notify_mail_subject');
     $inactive_user_delete_notify_mail_subject = $inactive_user_delete_notify_mail_subject ? $inactive_user_delete_notify_mail_subject : $account_inactivity;
     
@@ -505,7 +505,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       '#required' => TRUE,
       '#weight' => 1,
     );
-    
+*/    
     $form['delete_inactive_user']['inactive_user_delete_notify_text']['#weight'] = 2;
     unset($form['delete_inactive_user']['inactive_user_auto_delete_warn']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
@@ -543,6 +543,15 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   
     // Rel.
   }
+  
+  if($form_id == 'block_upload_form'){
+      $form['upload_files_title']['#weight'] = 1;
+      $form['block_upload_file']['#weight'] = 2;
+      $form['remove_files_title']['#weight'] = 3;
+      $form['remove_files']['#weight'] = 4;
+      $form['submit']['#weight'] = 19;
+  }
+  
 //  echo $form_id;exit;
 }
 

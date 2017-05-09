@@ -8,8 +8,8 @@ quickinfo:
   subject: '[node:title] has been modified'
   mail_content: '[node:url:absolute]'
 planning_files:
-  subject: '[node:title] has been modified'
-  mail_content: "\r\n[node:url:absolute]"
+  subject: '[node:title] has been [node:nodecreatedupdatedstatus]'
+  mail_content: '[node:url:absolute]'
 release:
   subject: '[node:title] has been modified'
   mail_content: "\r\n[node:url:absolute]"

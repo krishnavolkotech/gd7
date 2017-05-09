@@ -1,0 +1,13 @@
+diff --git a/core/modules/views/src/Plugin/views/filter/StringFilter.php b/core/modules/views/src/Plugin/views/filter/StringFilter.php
+index 618b584..8128606 100755
+--- a/core/modules/views/src/Plugin/views/filter/StringFilter.php
++++ b/core/modules/views/src/Plugin/views/filter/StringFilter.php
+@@ -268,7 +268,7 @@ protected function opContainsWord($field) {
+     $where = $this->operator == 'word' ? db_or() : db_and();
+ 
+     // Don't filter on empty strings.
+-    if (empty($this->value)) {
++    if (empty(trim($this->value))) {
+       return;
+     }
+ 
