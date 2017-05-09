@@ -742,8 +742,12 @@ class HzdcustomisationStorage {
     }
     
     if ($startDate && $endDate) {
-//            $startDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_startdate'))->getTimestamp();
-//            $endDate = DateTimePlus::createFromFormat('d.m.Y', $filterData->get('filter_enddate'))->getTimestamp();
+      if($startDate > $endDate){
+        $andDateGrp = $downtimesQuery->andConditionGroup()
+          ->condition('d.startdate_planned', $startDate, '>')
+          ->condition('d.enddate_planned', $endDate, '<');
+        $downtimesQuery = $downtimesQuery->condition($andDateGrp);
+      }
       if ($type == 'archived') {
         $andDateGrp = $downtimesQuery->andConditionGroup()
           ->condition('d.startdate_planned', $startDate, '<')

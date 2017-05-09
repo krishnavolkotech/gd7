@@ -6,6 +6,7 @@
  *
  * Place your custom PHP code in this file.
  */
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Component\Utility\Xss;
@@ -19,14 +20,14 @@ use Drupal\node\Entity\Node;
  */
 
 function hzd_preprocess_page(&$variables) {
-    $user = \Drupal::currentUser();
-    /*$headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
-    $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);*/
-    
-    if ($user->id()) {
+  $user = \Drupal::currentUser();
+  /*$headerlinks = \Drupal\block\Entity\Block::load('hzd_header_links');
+  $variables['content']['block_headerlinks'] = \Drupal::entityManager()->getViewBuilder('block')->view($headerlinks);*/
+  
+  if ($user->id()) {
 //    $searchform = \Drupal\block\Entity\Block::load('searchform');
 //    $variables['content']['block_searchform'] = \Drupal::entityManager()->getViewBuilder('block')->view($searchform);
-    }
+  }
 }
 
 /*
@@ -49,15 +50,15 @@ function hzd_preprocess_page(&$variables) {
  * Implements hook_preprocess_html().
  */
 function hzd_preprocess_html(&$variables) {
-    $user = \Drupal::currentUser()->id();
-    if (!$user) {
-        $variables['attributes']['class'][] = 'not-loggedin';
-    }
-    $current_path = \Drupal::service('path.current')->getPath();
-    $path_args = explode('/', $current_path);
-    if ($path_args[1] == 'user' && is_numeric($path_args[2]) && (isset($path_args[3]) && $path_args[3] == 'notifications')) {
-        $variables['attributes']['class'][] = 'hzd-secondary-tabs';
-    }
+  $user = \Drupal::currentUser()->id();
+  if (!$user) {
+    $variables['attributes']['class'][] = 'not-loggedin';
+  }
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+  if ($path_args[1] == 'user' && is_numeric($path_args[2]) && (isset($path_args[3]) && $path_args[3] == 'notifications')) {
+    $variables['attributes']['class'][] = 'hzd-secondary-tabs';
+  }
 }
 
 /*
@@ -72,18 +73,20 @@ function hzd_preprocess_html(&$variables) {
  */
 
 function hzd_preprocess_printable(&$variables) {
-    global $base_url;
-    $variables['unique_id'] = $variables['content']['#node']->get('field_unique_id')->value;
-    $variables['base_path'] = $base_url;
-    $variables['changed'] = date('d.m.Y', $variables['content']['#node']->get('changed')->value);
-    $variables['author_name'] = $variables['content']['#node']->get('field_author_name')->value;
-    if ($include_path = \Drupal::service('printable.css_include')->getCssIncludePath()) {
-        $variables['include_css'] = $include_path;
-    }
-    $variables['content']['#theme'] = 'node__quickinfo__pdf';
-    //dsm($variables['content']['#node']->get('upload')->entity->url());
-    //kint($variables['content']['#node']->get('upload'));
-    /* $variables['content'] = $variables['content']['#node']->toArray(); */
+  global $base_url;
+  $variables['unique_id'] = $variables['content']['#node']->get('field_unique_id')->value;
+  $variables['base_path'] = $base_url;
+  $variables['changed'] = date('d.m.Y', $variables['content']['#node']->get('changed')->value);
+  $variables['author_name'] = $variables['content']['#node']->get('field_author_name')->value;
+  if ($include_path = \Drupal::service('printable.css_include')
+    ->getCssIncludePath()
+  ) {
+    $variables['include_css'] = $include_path;
+  }
+  $variables['content']['#theme'] = 'node__quickinfo__pdf';
+  //dsm($variables['content']['#node']->get('upload')->entity->url());
+  //kint($variables['content']['#node']->get('upload'));
+  /* $variables['content'] = $variables['content']['#node']->toArray(); */
 }
 
 /**
@@ -92,152 +95,190 @@ function hzd_preprocess_printable(&$variables) {
 
 function hzd_preprocess_entity_print(&$vars) {
 //    pr(($vars));exit;
-    $vars['quickinfo'] = false;
-  $node = !empty($vars['content'][0]['#node'])?$vars['content'][0]['#node']:null;
-  if($node instanceof Node && $node->getType() == 'quickinfo'){
-    $vars['quickinfo'] = true;
+  $vars['quickinfo'] = FALSE;
+  $node = !empty($vars['content'][0]['#node']) ? $vars['content'][0]['#node'] : NULL;
+  if ($node instanceof Node && $node->getType() == 'quickinfo') {
+    $vars['quickinfo'] = TRUE;
     $vars['node'] = $node;
   }
-    $routeName = \Drupal::routeMatch()->getRouteName();
-    if (in_array($routeName, ['entity_print.view.debug', 'entity_print.view'])) {
+  $routeName = \Drupal::routeMatch()->getRouteName();
+  if (in_array($routeName, ['entity_print.view.debug', 'entity_print.view'])) {
 //        $pdf_original_link = \Drupal::request()->query->get('original', null);
 //        $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
 //        global $base_url;
-        
-        $params = \Drupal::routeMatch()->getParameters();
-        $entity = \Drupal::entityManager()->getStorage($params->get('entity_type'))->load($params->get('entity_id'));
-        if ($entity->bundle() == 'quickinfo') {
-            $vars['quickinfo'] = true;
-            $node = $vars['content'][0]['#node'];
-            $vars['node'] = $node;
-            if($node instanceof Node && $node->hasField('field_unique_id')) {
-              $vars['quickinfo_field_unique_id'] = [
-                '#markup' => $node->get('field_unique_id')
-                    ->getFieldDefinition()
-                    ->getLabel() . $node->get('field_unique_id')->value
-              ];
-            }
+    
+    $params = \Drupal::routeMatch()->getParameters();
+    $entity = \Drupal::entityManager()
+      ->getStorage($params->get('entity_type'))
+      ->load($params->get('entity_id'));
+    if ($entity->bundle() == 'quickinfo') {
+      $vars['quickinfo'] = TRUE;
+      $node = $vars['content'][0]['#node'];
+      $vars['node'] = $node;
+      if ($node instanceof Node && $node->hasField('field_unique_id')) {
+        $vars['quickinfo_field_unique_id'] = [
+          '#markup' => $node->get('field_unique_id')
+              ->getFieldDefinition()
+              ->getLabel() . $node->get('field_unique_id')->value
+        ];
+      }
 //            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
-        }
-        if($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($entity->id())){
-            $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical',['absolute'=>1])->toString());
-        }else{
-            $previousUrl = $entity->toLink($entity->toUrl('canonical',['absolute'=>1])->toString());
-        }
-        $vars['pdf_original_link'] = $previousUrl;
-        $vars['pdftitle'] = $entity->label();
-        
-    } elseif ($routeName == 'entity.node.edit_form') {
-        $node = $vars['content'][0]['#node'];
-        if ($node->getType() == 'quickinfo') {
-            $vars['quickinfo'] = true;
-            $vars['node'] = $node;
-            $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')->view();
-            if($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id())){
-                $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical',['absolute'=>1])->toString());
-            }else{
-                $previousUrl = $node->toLink($node->toUrl('canonical',['absolute'=>1])->toString());
-            }
-            $vars['pdf_original_link'] = $previousUrl;
-//            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
-        }
     }
+    if ($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($entity->id())) {
+      $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical', ['absolute' => 1])
+        ->toString());
+    }
+    else {
+      $previousUrl = $entity->toLink($entity->toUrl('canonical', ['absolute' => 1])
+        ->toString());
+    }
+    $vars['pdf_original_link'] = $previousUrl;
+    $vars['pdftitle'] = $entity->label();
+    
+  }
+  elseif ($routeName == 'entity.node.edit_form') {
+    $node = $vars['content'][0]['#node'];
+    if ($node->getType() == 'quickinfo') {
+      $vars['quickinfo'] = TRUE;
+      $vars['node'] = $node;
+      $vars['quickinfo_field_unique_id'] = $node->get('field_unique_id')
+        ->view();
+      if ($groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id())) {
+        $previousUrl = $groupContent->toLink($groupContent->toUrl('canonical', ['absolute' => 1])
+          ->toString());
+      }
+      else {
+        $previousUrl = $node->toLink($node->toUrl('canonical', ['absolute' => 1])
+          ->toString());
+      }
+      $vars['pdf_original_link'] = $previousUrl;
+//            $vars['field_unique_id'] = ['#theme'=>'field','#title'=>'RZ-Schnellinfo-Nr:','#value'=>$node->get('field_unique_id')->value];
+    }
+  }
 }
 
 /**
  * Implements hook_preprocess_node().
  */
 function hzd_preprocess_node(&$variables) {
-    $config = \Drupal::config('planning.settings');
-    $nid = $variables['node']->id();
-    $viewMode = $variables['view_mode'];
-    if ($nid == $config->get('mlrp')) {
-        $files = get_related_files('mlrp');
-        $variables['mlrp_files'] = $files;
-    }
-    if ($nid == $config->get('test_kalender')) {
-        $files = get_related_files('test calendar');
-        $variables['testcalender_files'] = $files;
-    }
-    if ($nid == $config->get('transkription_pp')) {
-        $files = get_related_files('transcription pp');
-        $variables['transkription_pp_files'] = $files;
-    }
-    if ($nid == $config->get('transkription_fmk')) {
-        $files = get_related_files('transcription fmk');
-        $variables['transkription_fmk_files'] = $files;
-    }
-    if ($variables['node']->getType() == 'quickinfo') {
-        /*$url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-        $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
-        if ($variables['node']->isPublished()) {
-            $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
-        }*/
+  $config = \Drupal::config('planning.settings');
+  $nid = $variables['node']->id();
+  $viewMode = $variables['view_mode'];
+  if ($nid == $config->get('mlrp')) {
+    $files = get_related_files('mlrp');
+    $variables['mlrp_files'] = $files;
+  }
+  if ($nid == $config->get('test_kalender')) {
+    $files = get_related_files('test calendar');
+    $variables['testcalender_files'] = $files;
+  }
+  if ($nid == $config->get('transkription_pp')) {
+    $files = get_related_files('transcription pp');
+    $variables['transkription_pp_files'] = $files;
+  }
+  if ($nid == $config->get('transkription_fmk')) {
+    $files = get_related_files('transcription fmk');
+    $variables['transkription_fmk_files'] = $files;
+  }
+  if ($variables['node']->getType() == 'quickinfo') {
+    /*$url = Url::fromUserInput('/printable/pdf/node/' . $nid);
+    $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
+    if ($variables['node']->isPublished()) {
+        $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
+    }*/
 //        $variables['changed'] = date('d.m.Y', $variables['node']->get('changed')->value);
-        if (isset($variables['elements']['#revisions_table_print']) && count($variables['elements']['#revisions_table_print']['node_revisions_table']['#rows']) > 1 && $viewMode == 'full') {
-            $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
-        }
+    if (isset($variables['elements']['#revisions_table_print']) && count($variables['elements']['#revisions_table_print']['node_revisions_table']['#rows']) > 1 && $viewMode == 'full') {
+      $variables['revisions_table_print'] = render($variables['elements']['#revisions_table_print']);
     }
-    if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished() && $viewMode == 'full') {
-        
-        $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
-        $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
-        $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
-        
-        $pdfLink = ['#type' => 'container', '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']], '#weight' => 2];
-        $pdfLink['link'] = ['#type' => 'link',
-            '#url' => Url::fromRoute('entity_print.view', ['export_type' => 'pdf', 'entity_type' => 'node', 'entity_id' => $variables['node']->id()]), '#title' => t('Pdf Preview')];
-        $variables['pdf_priview'] = $pdfLink;
-        
-        //$url = Url::fromUserInput('/entityprint/node/' . $nid);
-        
-        /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-         $urldata = \Drupal::l("PDF preview", $url);
-         $variables['pdf_priview'] = array('#markup' => $urldata);*/
-    }
-    if ($variables['node']->getType() == 'downtimes') {
-        $id = $nid;
-        $reasons = array(
-            t('Please select a reason here'),
-            t('Urgency of the maintenance'),
-            t('No staff available during maintenance hours'),
-            t('No service partner (State) available during maintenance hours'),
-            t('External service partner required'),
-            t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
-            t('Public holiday or weekend'),
-            t('No service partner (KONSENS) available during maintenance hours'),
-            t('No service interruption planned')
-        );
-        $get_maintain_window = \Drupal::database()->select('downtimes', 'd');
-        $get_maintain_window->fields('d', ['downtime_id', 'description', 'startdate_reported', 'state_id', 'status', 'email_reminder_sent', 'comment', 'reason', 'service_id', 'resolved', 'enddate_reported', 'startdate_planned', 'enddate_planned', 'scheduled_p', 'cancelled']);
-        $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
-        $get_maintain_window->where('downtime_id=' . $id);
-        $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
-        $get_maintain_window->join('node_field_data', 'n', "FIND_IN_SET(n.nid, d.service_id)");
-        $result = $get_maintain_window->execute()->fetchObject();
-        
-        $incident_data = new stdClass();
-        $incident_data->startdate_planned = isset($result->startdate_planned)?date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr'):null;
-        $incident_data->service_name = isset($result->service)?$result->service:null;
+  }
+  if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished() && $viewMode == 'full') {
+    
+    $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
+    $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
+    $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
+    
+    $pdfLink = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']],
+      '#weight' => 2
+    ];
+    $pdfLink['link'] = [
+      '#type' => 'link',
+      '#url' => Url::fromRoute('entity_print.view', [
+        'export_type' => 'pdf',
+        'entity_type' => 'node',
+        'entity_id' => $variables['node']->id()
+      ]),
+      '#title' => t('Pdf Preview')
+    ];
+    $variables['pdf_priview'] = $pdfLink;
+    
+    //$url = Url::fromUserInput('/entityprint/node/' . $nid);
+    
+    /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
+     $urldata = \Drupal::l("PDF preview", $url);
+     $variables['pdf_priview'] = array('#markup' => $urldata);*/
+  }
+  if ($variables['node']->getType() == 'downtimes') {
+    $id = $nid;
+    $reasons = array(
+      t('Please select a reason here'),
+      t('Urgency of the maintenance'),
+      t('No staff available during maintenance hours'),
+      t('No service partner (State) available during maintenance hours'),
+      t('External service partner required'),
+      t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+      t('Public holiday or weekend'),
+      t('No service partner (KONSENS) available during maintenance hours'),
+      t('No service interruption planned')
+    );
+    $get_maintain_window = \Drupal::database()->select('downtimes', 'd');
+    $get_maintain_window->fields('d', [
+      'downtime_id',
+      'description',
+      'startdate_reported',
+      'state_id',
+      'status',
+      'email_reminder_sent',
+      'comment',
+      'reason',
+      'service_id',
+      'resolved',
+      'enddate_reported',
+      'startdate_planned',
+      'enddate_planned',
+      'scheduled_p',
+      'cancelled'
+    ]);
+    $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
+    $get_maintain_window->where('downtime_id=' . $id);
+    $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
+    $get_maintain_window->join('node_field_data', 'n', "FIND_IN_SET(n.nid, d.service_id)");
+    $result = $get_maintain_window->execute()->fetchObject();
+    
+    $incident_data = new stdClass();
+    $incident_data->startdate_planned = isset($result->startdate_planned) ? date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr') : NULL;
+    $incident_data->service_name = isset($result->service) ? $result->service : NULL;
 //    $incident_data->service_name = [
 //      '#items' => explode(',', $result->service),
 //      '#theme' => 'item_list',
 //      '#type' => 'ul',
 //    ];
-        if (!empty($result->reason)) {
-            $incident_data->reason = $reasons[$result->reason];
-        } else {
-            $incident_data->reason = '';
-        }
-        //$incident_data->state = $states[$result->state_id];
-        $incident_data->state_id = isset($result->state_id)?$result->state_id:null;
-        $incident_data->description = isset($result->description)?$result->description:null;
-        $reporter_uid = isset($result->downtime_id)?db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField():null;
-        $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
-        $incident_data->reported_by = $name;
-        $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
-        $incident_data->enddate_planned = (!empty($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
-        $incident_data->startdate_reported = isset($result->startdate_reported)?date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr'):null;
+    if (!empty($result->reason)) {
+      $incident_data->reason = $reasons[$result->reason];
+    }
+    else {
+      $incident_data->reason = '';
+    }
+    //$incident_data->state = $states[$result->state_id];
+    $incident_data->state_id = isset($result->state_id) ? $result->state_id : NULL;
+    $incident_data->description = isset($result->description) ? $result->description : NULL;
+    $reporter_uid = isset($result->downtime_id) ? db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField() : NULL;
+    $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
+    $incident_data->reported_by = $name;
+    $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
+    $incident_data->enddate_planned = (!empty($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
+    $incident_data->startdate_reported = isset($result->startdate_reported) ? date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr') : NULL;
 //    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 
 //   dpm( date('d.m.Y - H:i', $result->enddate_planned));
@@ -246,96 +287,101 @@ function hzd_preprocess_node(&$variables) {
 //    if (isset($result->enddate_reported) && $result->enddate_reported != '') {
 //      $incident_data->enddate_planned = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 //    }
-        $resolved_data = isset($result->downtime_id)?db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject():null;
+    $resolved_data = isset($result->downtime_id) ? db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject() : NULL;
 // dpm($resolved_data->end_date);
-        if (!empty($resolved_data)) {
-            $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
-            $incident_data->resolved_data = $resolved_data;
-            $incident_data->resolved_data->name = $resolved_name;
-        }
-        
-        if (isset($resolved_data->end_date) && $resolved_data->end_date != '') {
-            $incident_data->enddate_planned = ($resolved_data->end_date ? date('d.m.Y - H:i', $resolved_data->end_date) . " " . t('Uhr') : '');
-        }
-        
-        $incident_data->resolved = isset($result->resolved)?$result->resolved:null;
-        $incident_data->cancelled = isset($result->cancelled)?$result->cancelled:null;
-        $incident_data->reason = !empty($result->reason) ? $reasons[$result->reason] : '';
-        $incident_data->description = !is_null($result->description) ? t($result->description) : '';
-        $statesArray = \Drupal::database()->select('states', 's');
-        $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
-        $statesArray = $statesArray->condition('s.id', explode(',', $result->state_id), 'IN')
-            ->execute()
-            ->fetchCol();
-        //$state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchAssoc();
+    if (!empty($resolved_data)) {
+      $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
+      $incident_data->resolved_data = $resolved_data;
+      $incident_data->resolved_data->name = $resolved_name;
+    }
+    
+    if (isset($resolved_data->end_date) && $resolved_data->end_date != '') {
+      $incident_data->enddate_planned = ($resolved_data->end_date ? date('d.m.Y - H:i', $resolved_data->end_date) . " " . t('Uhr') : '');
+    }
+    
+    $incident_data->resolved = isset($result->resolved) ? $result->resolved : NULL;
+    $incident_data->cancelled = isset($result->cancelled) ? $result->cancelled : NULL;
+    $incident_data->reason = !empty($result->reason) ? $reasons[$result->reason] : '';
+    $incident_data->description = !is_null($result->description) ? t($result->description) : '';
+    $statesArray = \Drupal::database()->select('states', 's');
+    $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
+    $statesArray = $statesArray->condition('s.id', explode(',', $result->state_id), 'IN')
+      ->execute()
+      ->fetchCol();
+    //$state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchAssoc();
 //    $incident_data->state = [
 //      '#items' => $statesArray,
 //      '#theme' => 'item_list',
 //      '#type' => 'ul',
 //    ];
-        //pr($result);
-        $incident_data->state = trim(implode(', ', $statesArray), ',');
-        $variables['revisions'] = downtimes_revisions($nid);
-        $variables['incident'] = $incident_data;
-        $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
-        $groupId = INCIDENT_MANAGEMENT;
-        if ($groupContent) {
-            $groupId = $groupContent->getGroup()->id();
-        }
-        $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => $groupId), ['attributes' => ['class' => ['back-search']], 'query' => \Drupal::request()->query->all()]);
-        $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
+    //pr($result);
+    $incident_data->state = trim(implode(', ', $statesArray), ',');
+    $variables['revisions'] = downtimes_revisions($nid);
+    $variables['incident'] = $incident_data;
+    $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
+    $groupId = INCIDENT_MANAGEMENT;
+    if ($groupContent) {
+      $groupId = $groupContent->getGroup()->id();
     }
-    if ($variables['node']->getType() == 'problem') {
-        $variables['problem_text'] = $variables['node']->body->value;
-        
-        $variables['ticketstore_count'] = $variables['node']->get('field_ticketstore_count')->value;
-        $variables['ticketstore_link'] = $variables['node']->get('field_ticketstore_link')->value;
-        if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
-            $variables['ticketstore_html'] = t('No attachments available');
-        } else {
-            $att_html = $variables['ticketstore_count'] > 1 ? "attachments" : "attachment";
-            $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']}>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
-        }
-        
-        $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
-            ->get('field_problem_eroffnet')->value);
-
-//        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
-        
-        $url = Url::fromRoute('problem_management.problems', array(
-            'group' => PROBLEM_MANAGEMENT
-        ),
-            array(
-                'query' => array(
-                    \Drupal::request()->query->all()
-                )
-            )
-        );
-        $variables['back_to_search'] = \Drupal::service('link_generator')
-            ->generate(t('Back To Search'), $url);
-        
+    $url = Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', array('group' => $groupId), [
+      'attributes' => ['class' => ['back-search']],
+      'query' => \Drupal::request()->query->all()
+    ]);
+    $variables['back_to_search'] = \Drupal::service('link_generator')
+      ->generate(t('Back To Search'), $url);
+  }
+  if ($variables['node']->getType() == 'problem') {
+    $variables['problem_text'] = $variables['node']->body->value;
+    
+    $variables['ticketstore_count'] = $variables['node']->get('field_ticketstore_count')->value;
+    $variables['ticketstore_link'] = $variables['node']->get('field_ticketstore_link')->value;
+    if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
+      $variables['ticketstore_html'] = t('No attachments available');
+    }
+    else {
+      $att_html = $variables['ticketstore_count'] > 1 ? "attachments" : "attachment";
+      $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']}>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
     }
     
-    // Adds class to view pdf link.
-    if (isset($variables['content']['entity_print_view'])) {
-        $variables['content']['entity_print_view']['#attributes'] = ['class' => ['entity_print_view']];
-        //pr($variables['content']['entity_print_view']);exit;
-    }
+    $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
+      ->get('field_problem_eroffnet')->value);
+
+//        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
+    
+    $url = Url::fromRoute('problem_management.problems', array(
+      'group' => PROBLEM_MANAGEMENT
+    ),
+      array(
+        'query' => array(
+          \Drupal::request()->query->all()
+        )
+      )
+    );
+    $variables['back_to_search'] = \Drupal::service('link_generator')
+      ->generate(t('Back To Search'), $url);
+    
+  }
+  
+  // Adds class to view pdf link.
+  if (isset($variables['content']['entity_print_view'])) {
+    $variables['content']['entity_print_view']['#attributes'] = ['class' => ['entity_print_view']];
+    //pr($variables['content']['entity_print_view']);exit;
+  }
 }
 
 function hzd_preprocess_breadcrumb(&$variables) {
-    // This breadcrumb will apply only for our view at /group/24/address
-    $route = \Drupal::routeMatch()->getRouteName();
-    if ($route == 'view.group_members_lists.page_1') {
-        // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
-        /**
-         * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail in breadcrumb.
-         * Help Link: https://www.previousnext.com.au/blog/making-drupal-8s-menu-active-trail-consider-query-arguments
-         */
-        if (count($variables['breadcrumb']) == 4) {
-            unset($variables['breadcrumb'][2]);
-        }
+  // This breadcrumb will apply only for our view at /group/24/address
+  $route = \Drupal::routeMatch()->getRouteName();
+  if ($route == 'view.group_members_lists.page_1') {
+    // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
+    /**
+     * @todo: Doing a hack of unsetting 2nd instead of 3rd link. Need to explore how to set a active trail in breadcrumb.
+     * Help Link: https://www.previousnext.com.au/blog/making-drupal-8s-menu-active-trail-consider-query-arguments
+     */
+    if (count($variables['breadcrumb']) == 4) {
+      unset($variables['breadcrumb'][2]);
     }
+  }
 
 
 //  $block = \Drupal\block\Entity\Block::load('printlinks');
@@ -343,8 +389,9 @@ function hzd_preprocess_breadcrumb(&$variables) {
 //    $block_view = \Drupal::entityManager()->getViewBuilder('block')->view($block);
 //    $variables['breadcrumb']['entity_print_block'] = $block_view;
 //  }
-    // Embedding the add to favorites block in breadcrumb.
+  // Embedding the add to favorites block in breadcrumb.
 //    $rightData['extras'] = ['#type'=>'container','#attributes'=>['class'=>['test']]];
+
     $variables['breadcrumb']['extras'] = ['#type' => 'container', '#attributes' => ['class' => ['print-action-wrapper']]];
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
     if (isset($block) && \Drupal::currentUser()->isAuthenticated()) {
@@ -375,90 +422,239 @@ function hzd_preprocess_breadcrumb(&$variables) {
       $pdfLink['link'] = ['#type' => 'link', '#url' => Url::fromRouteMatch(\Drupal::routeMatch())->setOption('query',$querr), '#title' => 'PDF'];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
+    $pdfLink = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']],
+      '#weight' => 2
+    ];
+    $pdfLink['link'] = [
+      '#type' => 'link',
+      '#url' => Url::fromRoute('entity_print.view', [
+        'export_type' => 'pdf',
+        'entity_type' => 'node',
+        'entity_id' => $groupContent->get('entity_id')
+          ->referencedEntities()[0]->id()
+      ], ['query' => ['original' => \Drupal::request()->getRequestUri()]]),
+      '#title' => 'PDF'
+    ];
+    $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+  }
+  elseif ($routeName == 'entity.group.canonical') {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $pdfLink = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']],
+      '#weight' => 2
+    ];
+    $pdfLink['link'] = [
+      '#type' => 'link',
+      '#url' => Url::fromRoute('entity_print.view', [
+        'export_type' => 'pdf',
+        'entity_type' => $group->getEntityTypeId(),
+        'entity_id' => $group->id()
+      ], ['query' => ['original' => \Drupal::request()->getRequestUri()]]),
+      '#title' => 'PDF'
+    ];
+    $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+  }
+  else {
+    $que = \Drupal::request()->query;
+    $querr = $que->all();
+    $querr['print'] = 'pdf';
+    $pdfLink = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['unpublished-quickinfo-pdf-preview']],
+      '#weight' => 2
+    ];
+    $pdfLink['link'] = [
+      '#type' => 'link',
+      '#url' => Url::fromRouteMatch(\Drupal::routeMatch())
+        ->setOption('query', $querr),
+      '#title' => 'PDF'
+    ];
+    $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+  }
 //    $variables['breadcrumb'][] = $rightData;
 //    pr(($variables['breadcrumb']['extras']['pdf_print']));exit;
 }
 
 function custom_user_fullname($uid) {
-    $query = "select concat(firstname, ' ', lastname) from {cust_profile} where uid = ?";
-    $user_fullname = db_query($query, array($uid))->fetchField();
-    return $user_fullname;
+  $query = "select concat(firstname, ' ', lastname) from {cust_profile} where uid = ?";
+  $user_fullname = db_query($query, array($uid))->fetchField();
+  return $user_fullname;
 }
 
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
-    $labels = ['non_compliance' => t('Grund für die Wartung der Wartungsfenster'), 'start_date' => t('Beginn'), 'end_date' => t('Ende'), 'services' => t('Verfahren'), 'states' => t('Land/System'), 'reason' => t('Beschreibung')];
-    $order = ['services' => 1, 'states' => 2, 'start_date' => 3, 'end_date' => 4, 'non_compliance' => 5, 'reason' => 6];
-    $renderService = \Drupal::service('renderer');
-    $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
-    if (empty($query)) {
-        return;
-    }
-    $output = null;
-    $itemCount = 1;
+  $labels = [
+    'non_compliance' => t('Grund für die Wartung der Wartungsfenster'),
+    'start_date' => t('Beginn'),
+    'end_date' => t('Ende'),
+    'services' => t('Verfahren'),
+    'states' => t('Land/System'),
+    'reason' => t('Beschreibung')
+  ];
+  $order = [
+    'services' => 1,
+    'states' => 2,
+    'start_date' => 3,
+    'end_date' => 4,
+    'non_compliance' => 5,
+    'reason' => 6
+  ];
+  $renderService = \Drupal::service('renderer');
+  $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
+//  if (empty($query)) {
+//    return;
+//  }
+  $downtimeData = \Drupal::database()->select('downtimes', 'd')
+    ->fields('d')
+    ->condition('downtime_id', $node)
+    ->execute()
+    ->fetchAll();
+  $downtimeData = reset($downtimeData);
+  $hasFirstLog = TRUE;
+  $output = NULL;
+  $itemCount = 1;
+  if (!empty($query)) {
+    
     foreach ($query as $value) {
-        if ($itemCount == count($query)) {
-            $text = 'Erstellt';
-        } else {
-            $text = 'Geändert';
+      if ($itemCount == count($query)) {
+        $text = 'Erstellt';
+      }
+      else {
+        $text = 'Geändert';
+      }
+      
+      $value = (array) $value;
+      $log_values = unserialize($value['log']);
+      $logData = [];
+      $reason = '';
+      if (isset($log_values['reason']) && $log_values['reason']['new'] != $downtimeData->description && $itemCount == count($query)) {
+        $hasFirstLog = FALSE;
+      }
+      $itemCount++;
+      foreach ($log_values as $name => $field_value) {
+        if ($name == 'reason') {
+          $reason = $field_value['new'];
+          if ($hasFirstLog === FALSE) {
+            $oldDataReason['desc'] = $field_value['old'];
+          }
         }
-        $itemCount++;
-        $value = (array)$value;
-        $output .= "<div class='changed-group'><span class='downtimes-view-updated'>" . $text . " von " . custom_user_fullname($value['uid']) . ' am ' . date('d.m.Y - H:i', $value['updated']) . ' Uhr</span>';
-        $log_values = unserialize($value['log']);
-        $logData = [];
-        $reason = '';
-        foreach ($log_values as $name => $field_value) {
-            if ($name == 'reason') {
-                $reason = $field_value['new'];
-            }
-            if (in_array($name, ['non_compliance', 'services', 'states'])) {
-                $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'];
-            }
-            if (in_array($name, ['start_date', 'end_date'])) {
-                if (!empty($field_value['new']))
+        if (in_array($name, ['non_compliance', 'services', 'states'])) {
+          $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'];
+          if ($hasFirstLog === FALSE) {
+            $oldData[$order[$name]] = $labels[$name] . ': ' . $field_value['old'];
+          }
+        }
+        if (in_array($name, ['start_date', 'end_date'])) {
+          if (!empty($field_value['new']))
 //                    $logData[$order[$name]] = $labels[$name] . ': ' . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y - H:i') . ' Uhr';
-                  // Modifying this as the date in the migrated data comes in expected format
-                  $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'] . ' Uhr';
-            }
+            // Modifying this as the date in the migrated data comes in expected format
+          {
+            $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'] . ' Uhr';
+          }
+          if (!empty($field_value['old']) && $hasFirstLog === FALSE) {
+            $oldData[$order[$name]] = $labels[$name] . ': ' . $field_value['old'] . ' Uhr';
+          }
         }
+      }
 /////appending the reason as a seperate wrapper to preserve wyswyg styles
-        if (!empty($reason))
-            $logData[$order['reason']] = t("@label: ", ['@label' => $labels['reason']]);
-        ksort($logData);
-        $items = [
-            '#items' => $logData,
-            '#theme' => 'item_list',
-            '#type' => 'ul',
-        ];
-        $output .= "<div class ='field-wrapper'>";
-        $markup = $renderService->render($items);
-        $output .= $markup . '</div>';
-        if (!empty($reason))
-            $output .= '<div class="reason">' . trim($reason) . '</div>';
-        $output .= '</div>';
+      if (!empty($reason)) {
+        $logData[$order['reason']] = t("@label: ", ['@label' => $labels['reason']]);
+      }
+      ksort($logData);
+      $items[] = [
+        'items' => [
+          '#title' => $text . " von " . custom_user_fullname($value['uid']) . ' am ' . DateTimePlus::createFromTimestamp((integer) $value['updated'])
+              ->format('d.m.Y - H:i') . ' Uhr',
+          '#items' => $logData,
+          '#theme' => 'item_list',
+          '#type' => 'ul',
+        ],
+        'reason' => [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['reason']],
+          'markup' => ['#markup' => Markup::create(trim($reason))]
+        ]
+      ];
     }
-    return $output;
+  }
+  if ($hasFirstLog === FALSE || empty($query)) {
+    if (empty($query)) {
+      $oldData = NULL;
+      if (!empty($downtimeData->reason)) {
+        $oldData[] = $labels['non_compliance'] . ' : ' . $downtimeData->reason;
+      }
+  
+      $get_maintain_window = \Drupal::database()->select('node_field_data', 'n');
+      $get_maintain_window->addExpression("n.title", "service");
+      $get_maintain_window = $get_maintain_window->condition('n.nid', explode(',', $downtimeData->service_id), 'IN')
+        ->execute()
+        ->fetchCol();
+      
+      if (!empty($get_maintain_window)) {
+        $oldData[] = $labels['services'] . ' : ' . trim(implode($get_maintain_window,','));
+      }
+      $statesArray = \Drupal::database()->select('states', 's');
+      $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
+      $statesArray = $statesArray->condition('s.id', explode(',', $downtimeData->state_id), 'IN')
+        ->execute()
+        ->fetchCol();
+      if (!empty($statesArray)) {
+        $oldData[] = $labels['states'] . ' : ' . trim(implode(', ', $statesArray), ',');
+      }
+      if (!empty($downtimeData->startdate_planned)) {
+        $oldData[] = $labels['start_date'] . ' : ' . DateTimePlus::createFromTimestamp((integer) $downtimeData->startdate_planned)
+            ->format('d.m.Y - H:i') . ' Uhr';
+      }
+      if (!empty($downtimeData->enddate_planned)) {
+        $oldData[] = $labels['end_date'] . ' : ' . DateTimePlus::createFromTimestamp((integer) $downtimeData->enddate_planned)
+            ->format('d.m.Y - H:i') . ' Uhr';
+      }
+      if (!empty($downtimeData->description)) {
+        $oldData[] = $labels['reason'] . ' : ';
+        $oldDataReason['desc'] = $downtimeData->description;
+      }
+    }
+    $nodeEntity = Node::load($node);
+    
+    $items[] = [
+      'items' => [
+        '#title' => "Erstellt von " . custom_user_fullname($nodeEntity->getOwnerId()) . ' am ' . DateTimePlus::createFromTimestamp((integer) $nodeEntity->getCreatedTime())
+            ->format('d.m.Y - H:i') . ' Uhr',
+        '#items' => $oldData,
+        '#theme' => 'item_list',
+        '#type' => 'ul',
+      ],
+      'reason' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['reason']],
+        'markup' => ['#markup' => Markup::create(trim($oldDataReason['desc']))]
+      ]
+    ];
+  }
+  return $items;
 }
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for node templates.
  */
 function hzd_theme_suggestions_node_alter(array &$suggestions, array $variables) {
-    $config = \Drupal::config('planning.settings');
-    if (in_array('node__' . $config->get('mlrp') . '__full', $suggestions)) {
-        $suggestions[] = 'node__mlrp';
-    }
-    if (in_array('node__' . $config->get('test_kalender') . '__full', $suggestions)) {
-        $suggestions[] = 'node__test_kalender';
-    }
-    if (in_array('node__' . $config->get('transkription_pp') . '__full', $suggestions)) {
-        $suggestions[] = 'node__transkription_pp';
-    }
-    if (in_array('node__' . $config->get('transkription_fmk') . '__full', $suggestions)) {
-        $suggestions[] = 'node__transkription_fmk';
-    }
+  $config = \Drupal::config('planning.settings');
+  if (in_array('node__' . $config->get('mlrp') . '__full', $suggestions)) {
+    $suggestions[] = 'node__mlrp';
+  }
+  if (in_array('node__' . $config->get('test_kalender') . '__full', $suggestions)) {
+    $suggestions[] = 'node__test_kalender';
+  }
+  if (in_array('node__' . $config->get('transkription_pp') . '__full', $suggestions)) {
+    $suggestions[] = 'node__transkription_pp';
+  }
+  if (in_array('node__' . $config->get('transkription_fmk') . '__full', $suggestions)) {
+    $suggestions[] = 'node__transkription_fmk';
+  }
 }
 
 /**
@@ -485,56 +681,57 @@ function hzd_preprocess_user(&$variables) {
 }
 
 function hzd_preprocess_menu_local_tasks(&$vars) {
-    
-    $node = \Drupal::routeMatch()->getParameter('node');
-    if (!empty($node) && $node->getType() == 'downtimes') {
-        unset($vars['primary']['entity.node.edit_form']);
-        unset($vars['primary']['entity.node.delete_form']);
-    }
+  
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!empty($node) && $node->getType() == 'downtimes') {
+    unset($vars['primary']['entity.node.edit_form']);
+    unset($vars['primary']['entity.node.delete_form']);
+  }
 }
 
 function hzd_preprocess_views_view_summary_unformatted(&$variables) {
-    $view = $variables['view'];
-    if ($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1') {
-        // Adding the all link to glossary
-        
-        $active_urls = array(
-            // Force system path.
-            \Drupal::url('<current>', [], ['alias' => TRUE]),
-            // Could be an alias.
-            \Drupal::url('<current>'),
-        );
-        $active_urls = array_combine($active_urls, $active_urls);
-        
-        $url_options = array();
-        $args = $view->args;
-        if (!empty($view->exposed_raw_input)) {
-            $url_options['query'] = $view->exposed_raw_input;
-        }
-        $view_url = $view->getUrl($args)->setOptions($url_options);
-        
-        $all_terms = new stdClass();
-        $all_terms->url = $view_url->toString();
-        $all_terms->separator = Xss::filterAdmin($variables['options']['separator']);
-        $all_terms->active = isset($active_urls[$all_terms->url]);
-        $all_terms->link = t('All');
-        $all_terms->attributes = new Attribute(array());
-        
-        $variables['rows'][] = $all_terms;
+  $view = $variables['view'];
+  if ($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1') {
+    // Adding the all link to glossary
+    
+    $active_urls = array(
+      // Force system path.
+      \Drupal::url('<current>', [], ['alias' => TRUE]),
+      // Could be an alias.
+      \Drupal::url('<current>'),
+    );
+    $active_urls = array_combine($active_urls, $active_urls);
+    
+    $url_options = array();
+    $args = $view->args;
+    if (!empty($view->exposed_raw_input)) {
+      $url_options['query'] = $view->exposed_raw_input;
     }
+    $view_url = $view->getUrl($args)->setOptions($url_options);
+    
+    $all_terms = new stdClass();
+    $all_terms->url = $view_url->toString();
+    $all_terms->separator = Xss::filterAdmin($variables['options']['separator']);
+    $all_terms->active = isset($active_urls[$all_terms->url]);
+    $all_terms->link = t('All');
+    $all_terms->attributes = new Attribute(array());
+    
+    $variables['rows'][] = $all_terms;
+  }
 }
 
 function hzd_form_alter(&$form, $form_state, $form_id) {
-  if($form_id == 'node_page_form'){
+  if ($form_id == 'node_page_form') {
     $group = \Drupal::routeMatch()->getRawParameter('group');
-    if(!empty($group)){
-      if(!$group instanceof Group){
+    if (!empty($group)) {
+      if (!$group instanceof Group) {
         $group = Group::load($group);
       }
-      $menu = 'menu-'.$group->get('field_old_reference')->value;
+      $menu = 'menu-' . $group->get('field_old_reference')->value;
       $menuEntity = \Drupal::entityTypeManager()->getStorage('menu')
         ->load($menu);
-      $menuOptions = \Drupal::service('menu.parent_form_selector')->getParentSelectOptions('',[$menuEntity->id()=>$menuEntity->label()]);
+      $menuOptions = \Drupal::service('menu.parent_form_selector')
+        ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
       $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
 //      pr($x);exit;
       /*foreach($options as $key=>$option){
@@ -542,13 +739,14 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
            unset($form['menu']['link']['menu_parent']['#options'][$key]);
         }
       }*/
-/*      kint($menu);
-      kint($options);exit;*/
+      /*      kint($menu);
+            kint($options);exit;*/
     }
   }
 }
 
 use Drupal\Core\Form\FormStateInterface;
+
 function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
   $node = $form_state->getFormObject()->getEntity();
   if ($node->isNew()) {

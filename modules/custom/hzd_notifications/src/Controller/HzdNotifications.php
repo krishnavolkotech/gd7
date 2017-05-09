@@ -93,11 +93,12 @@ class HzdNotifications extends ControllerBase {
     $userEntity = User::load($user);
     $optionLinks = [];
     $currentNotificationStatus = $userEntity->get('field_notifications_status')->value;
+    $hassActiveNotifySetting = $currentNotificationStatus === 0 ? 0 : 1;
     $notificationsCount = $this->getAllSubscribedNotificationsCount($user);
     $optionLinks[] = [
-      '#title' => $currentNotificationStatus ? $this->t('Alle Benachrichtigungen temporär deaktivieren, z.B. während Ihres Urlaubs') : $this->t('(Re-)Aktivieren Sie Ihre Benachrichtigungen'),
+      '#title' => $hassActiveNotifySetting ? $this->t('Alle Benachrichtigungen temporär deaktivieren, z.B. während Ihres Urlaubs') : $this->t('(Re-)Aktivieren Sie Ihre Benachrichtigungen'),
       '#type' => 'link',
-      '#url' => Url::fromRoute('hzd_notifications.update_subscriptions', ['user' => $user, 'status' => $currentNotificationStatus ? 'disable' : 'enable'])
+      '#url' => Url::fromRoute('hzd_notifications.update_subscriptions', ['user' => $user, 'status' => $hassActiveNotifySetting ? 'disable' : 'enable'])
     ];
     if ($notificationsCount) {
       $optionLinks[] = [
