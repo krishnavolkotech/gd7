@@ -38,7 +38,8 @@ class HzdReleases extends ControllerBase
     public function released() {
         global $base_url;
         $type = 'released';
-        $output['#title'] = $this->t('@type Releases', ['@type' => 'Released']);
+        # $output['#title'] = $this->t('@type Releases', ['@type' => 'Released']);
+	$output['#title'] = $this->t('Available Releases');
     $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
     $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
@@ -109,7 +110,8 @@ class HzdReleases extends ControllerBase
     public function inprogress() {
         global $base_url;
         $type = 'progress';
-        $output['#title'] = $this->t('@type Releases', ['@type' => 'In progress']);
+        # $output['#title'] = $this->t('@type Releases', ['@type' => 'In progress']);
+	$output['#title'] = $this->t('In progress Releases');
         $output[] = HzdreleasemanagementStorage::release_info();
         $output[] = array('#markup' => '<div id = "released_results_wrapper">');
         $output[]['#attached']['library'] = array('locale.libraries/translations',
@@ -143,7 +145,8 @@ class HzdReleases extends ControllerBase
      */
     public function locked() {
         $type = 'locked';
-        $output['#title'] = $this->t('@type Releases', ['@type' => 'Locked']);
+        # $output['#title'] = $this->t('@type Releases', ['@type' => 'Locked']);
+	$output['#title'] = $this->t('Locked Releases');
         global $base_url;
         //   $output[] = array('#markup' => '<div id = "released_results_wrapper">');
         $output[]['#attached']['library'] = array('locale.libraries/translations',

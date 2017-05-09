@@ -406,7 +406,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Roles
+          label: Rollen
           exclude: false
           alter:
             alter_text: false
