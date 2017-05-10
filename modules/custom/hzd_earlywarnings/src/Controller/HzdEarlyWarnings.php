@@ -263,19 +263,24 @@ class HzdEarlyWarnings extends ControllerBase {
       $group_id, '=');
     $group_release_view_service = $group_release_view_service_id_query
       ->execute()->fetchCol();
-    
+    if(empty($group_release_view_service)){
+    $group_release_view_service = [-1];
+    }
     $services = \Drupal::entityQuery('node')
       ->condition('type', 'services', '=')
       ->condition('release_type', $default_type, '=')
-      ->condition('nid', $group_release_view_service, 'IN')
+      ->condition('nid', (array)$group_release_view_service, 'IN')
       ->execute();
     
     $all_releases = \Drupal::entityQuery('node')
       ->condition('type', 'release', '=');
     
-    if (!empty($services)) {
-      $all_releases->condition('field_relese_services', $services, 'IN');
+    if (empty($services)) {
+      $services = [-1];
     }
+//    if (!empty($services)) {
+      $all_releases->condition('field_relese_services', $services, 'IN');
+//    }
     $ar = $all_releases->execute();
     
     $releases = array();
@@ -302,7 +307,9 @@ class HzdEarlyWarnings extends ControllerBase {
         $releases[] = $value;
       }
     }
-    
+    if (empty($releases)) {
+      $releases = [-1];
+    }
     $release_nids = \Drupal::entityQuery('node')
       ->condition('type', 'release', '=')
       ->condition('nid', $releases, 'IN');
@@ -345,6 +352,9 @@ class HzdEarlyWarnings extends ControllerBase {
     }
     $releasesFinal = $release_nids->execute();
     \Drupal::database()->query('SET sql_mode = "" ');
+    if(empty($releasesFinal)){
+      $releasesFinal = [-1];
+    }
     if (!$page_limit) {
       
       $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');

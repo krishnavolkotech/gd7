@@ -3,6 +3,7 @@
 namespace Drupal\hzd_earlywarnings;
 
 use Drupal\Core\Url;
+use Drupal\cust_group\CustGroupHelper;
 
 /**
  * Use Drupal\node\Entity\Node;
@@ -249,11 +250,13 @@ class HzdearlywarningsStorage
             }
             
             $total_responses = self::get_earlywarning_responses_info($earlywarning->id());
+            $groupContentId = CustGroupHelper::getGroupNodeFromNodeId($earlywarnings_nid);
             
             $url = Url::fromRoute(
-                'entity.node.canonical',
+                'entity.group_content.canonical',
                 array(
-                    'node' => $earlywarning->id()
+                    'group_content' => $groupContentId->id(),
+                    'group' => $groupContentId->getGroup()->id()
                 )
 //                ['query'=>['destination'=>\Drupal::request()->getRequestUri()]]
             );
