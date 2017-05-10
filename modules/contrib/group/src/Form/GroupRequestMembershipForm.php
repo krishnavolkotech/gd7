@@ -36,6 +36,7 @@ class GroupRequestMembershipForm extends ContentEntityForm {
       '#type' => 'textarea',
       '#title' => $this->t('Message Body'),
       '#description' => $this->t('We will attache this message in request membership mail.'),
+      '#required'=>1,
     ];
     return $form;
   }
