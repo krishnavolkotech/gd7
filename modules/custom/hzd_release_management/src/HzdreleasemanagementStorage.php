@@ -783,6 +783,9 @@ class HzdreleasemanagementStorage
                 )
             )->fetchAll();
             $services = [];
+            if(empty($services_obj)){
+              $services = [-1];
+            }
             foreach ($services_obj as $services_data) {
                 $services[] = $services_data->nid;
             }
