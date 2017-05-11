@@ -126,7 +126,8 @@ class ResolveForm extends FormBase {
       '#weight' => -2,
     );
     $groupMember = $group->getMember($user);
-   if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) {
+    //Only site admins have the checkbox not to send notifications
+   if (array_intersect(['site_administrator','administrator'], $user_role)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
