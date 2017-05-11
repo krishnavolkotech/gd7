@@ -457,7 +457,7 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
       switch ($name) {
         // Simple key values on the node.
         case 'nodecreatedupdatedstatus':
-          $replacements[$original] = $node->getChangedTime() == $node->getCreatedTime() ? 'created' : 'updated';
+          $replacements[$original] = isset($node->original) ? 'updated' : 'created';
           break;
       }
     }
