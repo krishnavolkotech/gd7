@@ -241,29 +241,18 @@ class HzdearlywarningsStorage
         foreach ($result as $earlywarnings_nid) {
             $earlywarning = \Drupal\node\Entity\Node::load($earlywarnings_nid);
             
-            $user_query = db_select('cust_profile', 'cp');
+            /*$user_query = db_select('cust_profile', 'cp');
             $user_query->condition('cp.uid', $earlywarning->uid->target_id, '=')
                 ->fields('cp', array('firstname', 'lastname'));
             $author = $user_query->execute()->fetchAssoc();
             if (isset($author)) {
                 $author_name = $author['firstname'] . ' ' . $author['lastname'];
-            }
-            
+            }*/
+            $author_name = $earlywarning->getOwner()->getDisplayName();
             $total_responses = self::get_earlywarning_responses_info($earlywarning->id());
-            $groupContentId = CustGroupHelper::getGroupNodeFromNodeId($earlywarnings_nid);
-            
-            $url = Url::fromRoute(
-                'entity.group_content.canonical',
-                array(
-                    'group_content' => $groupContentId->id(),
-                    'group' => $groupContentId->getGroup()->id()
-                )
-//                ['query'=>['destination'=>\Drupal::request()->getRequestUri()]]
-            );
-            $early_warning = \Drupal::service('link_generator')->generate(
-                $earlywarning->getTitle(), $url);
+            $early_warningTitle = $earlywarning->toLink();
             $elements = array(
-                array('data' => $early_warning, 'class' => 'earlywarningslink-cell'),
+                array('data' => $early_warningTitle, 'class' => 'earlywarningslink-cell'),
                 array('data' => date('d.m.Y', $earlywarning->created->value) . ' ' .
                     t('by') . ' ' . $author_name, 'class' => 'created-cell'),
                 array('data' => $total_responses['total_responses'], 'class' => 'responses-cell'),
@@ -330,7 +319,7 @@ class HzdearlywarningsStorage
         
 //                $response_lastposted = $responses['last_posted'] .
 //                    ' ' . t('by') . ' ' . $author['firstname'] . ' ' . $author['lastname'];
-                $response_lastposted = t($responses['last_posted'] . ' by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname']]);
+                $response_lastposted = t('@date by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname'],'@date'=>$responses['last_posted']]);
             }
         }
         
