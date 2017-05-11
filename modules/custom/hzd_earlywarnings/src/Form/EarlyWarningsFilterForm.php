@@ -131,7 +131,9 @@ class EarlyWarningsFilterForm extends FormBase
             '#prefix' => '<div class = "service_search_dropdown  hzd-form-element">',
             '#suffix' => '</div>',
         );
-        
+        if($default_value_services == 0){
+          $default_value_services = -1;
+        }
         $default_value_releases = $filter_value['releases'];
         $options = HzdreleasemanagementHelper::get_dependent_release($default_value_services);
         $form['releases'] = array(

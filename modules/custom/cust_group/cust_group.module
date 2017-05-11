@@ -702,3 +702,13 @@ function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, 
     return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(), $routeMatch->getCurrentRouteMatch(), $account);
   }
 }
+
+function cust_group_user_format_name_alter(&$name, $account){
+    if($account->id()){
+        $userQuery = \Drupal::database()->select('cust_profile', 'cp');
+        $userQuery->condition('cp.uid', $account->id(), '=')
+            ->fields('cp', array('firstname', 'lastname'));
+        $userData = $userQuery->execute()->fetchAssoc();
+        $name = $userData['firstname'] .' '.$userData['lastname'];        
+    }
+}
