@@ -10,7 +10,7 @@ dependencies:
     - filefield_paths
 third_party_settings:
   filefield_paths:
-    enabled: true
+    enabled: false
     file_path:
       value: '[group:title]/[node:content-type]'
       options:
