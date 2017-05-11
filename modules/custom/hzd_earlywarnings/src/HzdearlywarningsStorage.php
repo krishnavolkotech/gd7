@@ -319,7 +319,7 @@ class HzdearlywarningsStorage
         
 //                $response_lastposted = $responses['last_posted'] .
 //                    ' ' . t('by') . ' ' . $author['firstname'] . ' ' . $author['lastname'];
-                $response_lastposted = t($responses['last_posted'] . ' by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname']]);
+                $response_lastposted = t('@date by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname'],'@date'=>$responses['last_posted']]);
             }
         }
         
