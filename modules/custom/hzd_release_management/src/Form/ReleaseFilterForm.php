@@ -115,9 +115,9 @@ class ReleaseFilterForm extends FormBase
             );
             
             $types = array(
+                'all' => t('All'),
                 'current' => t('Current'),
                 'archived' => t('Archived'),
-                'all' => t('All')
             );
             $form['deployed_type'] = array(
                 '#type' => 'select',

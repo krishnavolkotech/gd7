@@ -21,9 +21,6 @@ display:
       use_more_text: mehr
   page_1:
     display_options:
-      filters:
-        abbr:
-          expose: {  }
       pager:
         options:
           tags:
@@ -34,10 +31,6 @@ display:
           expose:
             items_per_page_label: Einträge
             items_per_page_options_all_label: Alle
-      sorts:
-        group_roles_target_id:
-          expose:
-            label: Rollen
       fields:
         group_member_name:
           label: Nachname
