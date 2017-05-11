@@ -85,8 +85,8 @@ class RouteSubscriber extends RouteSubscriberBase {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
       $route->setRequirement('_role', 'administrator');
     }
-    if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
-      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
+    if ($route = $collection->get('view.hzd_group_members.pending')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::pendingMembersAccess');
     }
     //We have all acces defined seperatly using permissions and custom in few place. I feel this causes issues at sometimes.
 /*    foreach ($collection as $key => $route) {
