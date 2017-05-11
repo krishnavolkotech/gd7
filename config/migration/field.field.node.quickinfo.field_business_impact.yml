@@ -11,7 +11,7 @@ id: node.quickinfo.field_business_impact
 field_name: field_business_impact
 entity_type: node
 bundle: quickinfo
-label: '2.5 Business impact'
+label: '2.5 Fachliche Auswirkungen'
 description: ''
 required: false
 translatable: true

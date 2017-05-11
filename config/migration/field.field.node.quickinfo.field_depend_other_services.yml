@@ -11,7 +11,7 @@ id: node.quickinfo.field_depend_other_services
 field_name: field_depend_other_services
 entity_type: node
 bundle: quickinfo
-label: '2.4 Depending on the use of other services'
+label: '2.4 Abhängigkeiten'
 description: '(zu anderen Verfahren, z.B. Releases oder Datenbearbeitungsstände)'
 required: false
 translatable: true

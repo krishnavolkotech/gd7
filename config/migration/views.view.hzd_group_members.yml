@@ -893,7 +893,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Lastname
+          label: Nachname
           exclude: false
           alter:
             alter_text: false
@@ -942,7 +942,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Firstname
+          label: Vorname
           exclude: false
           alter:
             alter_text: false
@@ -991,7 +991,7 @@ display:
           relationship: uid
           group_type: group
           admin_label: ''
-          label: Username
+          label: Benutzername
           exclude: false
           alter:
             alter_text: false
@@ -1056,7 +1056,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Roles
+          label: Rollen
           exclude: false
           alter:
             alter_text: false
@@ -1119,7 +1119,7 @@ display:
           relationship: state_id
           group_type: group
           admin_label: ''
-          label: State
+          label: Land
           exclude: false
           alter:
             alter_text: false
@@ -1232,7 +1232,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Operations links'
+          label: Aktionen
           exclude: false
           alter:
             alter_text: false

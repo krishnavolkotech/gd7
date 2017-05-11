@@ -9,7 +9,7 @@ id: node.quickinfo.field_author_name
 field_name: field_author_name
 entity_type: node
 bundle: quickinfo
-label: 'Published by'
+label: 'Veröffentlicht von'
 description: ''
 required: false
 translatable: true

@@ -9,7 +9,7 @@ id: node.quickinfo.field_creators
 field_name: field_creators
 entity_type: node
 bundle: quickinfo
-label: '2.11 Creators'
+label: '2.11 Ersteller'
 description: '(dieser RZ-Schnellinfo)'
 required: false
 translatable: true
