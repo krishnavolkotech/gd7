@@ -397,6 +397,11 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
         }
         $form['state'] = ['#type' => 'select', '#options' => $stateOptions];
       }
+      
+      //Adding this as the bootstrap theme just displays the descriptions as tool tips.
+        if(isset($form['combine'])){
+            $form['combine']['#placeholder'] = 'Name oder Email suchen';
+        }
       break;
     case 'group_content_moderate-group_membership_group-request_form':
     case 'group_content_group_content_type_d4b06e2b6aad0_group-request_form':
