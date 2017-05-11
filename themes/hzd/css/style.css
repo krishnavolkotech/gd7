@@ -512,7 +512,7 @@ body.not-loggedin.path-user .region-content {
 .path-user .region-content nav.tabs{
   padding: 0 !important;
   width: 100%;
-  border-top: 1px solid #04425f;
+/*  border-top: 1px solid #04425f;*/
   border-bottom: 0 !important;
   background: #04425f;
 }

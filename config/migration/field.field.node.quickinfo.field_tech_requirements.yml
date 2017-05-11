@@ -11,7 +11,7 @@ id: node.quickinfo.field_tech_requirements
 field_name: field_tech_requirements
 entity_type: node
 bundle: quickinfo
-label: '2.3 Technical Requirements for use'
+label: '2.3 Technische Einsatzvoraussetzungen'
 description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
 required: false
 translatable: true

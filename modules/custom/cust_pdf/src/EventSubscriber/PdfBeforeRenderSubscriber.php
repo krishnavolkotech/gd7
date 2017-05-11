@@ -37,7 +37,7 @@ class PdfBeforeRenderSubscriber implements EventSubscriberInterface {
       $event->getPrintEngine()->doRender();
       $printEngine->setPaper(200, 200, 595.28, 841.89);
       $font = $printEngine->getFontMetrics()->get_font("Trebuchet MS");
-      $printEngine->getCanvas()->page_text(425, 115, "Siete {PAGE_NUM} von {PAGE_COUNT}", $font, 11, array(0,0,0));
+      $printEngine->getCanvas()->page_text(425, 115, "Seite {PAGE_NUM} von {PAGE_COUNT}", $font, 11, array(0,0,0));
     }
   }
 

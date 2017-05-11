@@ -5,7 +5,7 @@ hzd_notifications.notifications:
   weight: 3
 
 hzd_notifications.notifications_new:
-  title: 'Overview'
+  title: 'Benachrichtigungen'
   route_name: hzd_notifications.notifications
   parent_id: hzd_notifications.notifications
 

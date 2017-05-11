@@ -11,7 +11,7 @@ id: node.quickinfo.field_intial_situation
 field_name: field_intial_situation
 entity_type: node
 bundle: quickinfo
-label: '2.1 Initial situation'
+label: '2.1 Ausgangslage'
 description: '(z.B. Arbeitsaufträge in PROGDOK, aus AGs)'
 required: false
 translatable: true

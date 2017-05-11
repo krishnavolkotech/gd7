@@ -30,7 +30,7 @@ id: node.quickinfo.upload
 field_name: upload
 entity_type: node
 bundle: quickinfo
-label: '2.13 File attachments'
+label: '2.13 Dateianhänge'
 description: ''
 required: false
 translatable: true
