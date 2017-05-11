@@ -12,6 +12,7 @@ dependencies:
     - node.type.forum
   module:
     - comment
+    - entity_print
     - text
     - user
 third_party_settings:
@@ -49,9 +50,9 @@ content:
   taxonomy_forums:
     type: entity_reference_label
     weight: -1
-    label: above
+    label: inline
     settings:
-      link: true
+      link: false
     third_party_settings: {  }
 hidden:
   comment: true
