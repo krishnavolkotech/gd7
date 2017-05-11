@@ -245,4 +245,13 @@ class AccessController extends ControllerBase
       return AccessResult::neutral();
     }
     
+    function pendingMembersAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+//        exit;
+        $group = $route_match->getParameter('group');
+        $groupTypeId = $group->getGroupType()->id();
+        if(in_array($groupTypeId, ['moderate','moderate_private'])){
+            return AccessResult::allowed();
+        }
+        return AccessResult::forbidden();
+    }
 }
