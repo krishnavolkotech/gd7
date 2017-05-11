@@ -555,7 +555,7 @@ body.not-loggedin.path-user .region-content {
   background: #fff;
   line-height: 22px;
   padding: 1% 0% 1% 1%;
-  border-bottom: 1px solid #ddd !important;
+/*  border-bottom: 1px solid #ddd !important;*/
   border: none;
 } 
 .user-groups .user-group-list{

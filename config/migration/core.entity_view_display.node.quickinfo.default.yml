@@ -36,7 +36,7 @@ third_party_settings:
   field_group:
     group_meta_data:
       label: '1 Meta-Daten'
-      weight: 5
+      weight: 0
       children:
         - field_custom_title
         - field_related_transfer_number
@@ -56,7 +56,7 @@ third_party_settings:
       parent_name: ''
     group_content_information:
       label: '2 Fachlich-inhaltliche Angaben'
-      weight: 6
+      weight: 1
       children:
         - field_intial_situation
         - field_professional_conditions
@@ -71,7 +71,6 @@ third_party_settings:
         - field_creators
         - field_contact
         - upload
-        - field_additional_email_recipient
       format_type: html_element
       format_settings:
         label: '2 Fachlich-inhaltliche Angaben'
@@ -89,12 +88,6 @@ targetEntityType: node
 bundle: quickinfo
 mode: default
 content:
-  field_additional_email_recipient:
-    label: above
-    weight: 17
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
   field_business_impact:
     label: above
     weight: 8
@@ -203,6 +196,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_additional_email_recipient: true
   field_author_name: true
   field_author_state: true
   field_unique_id: true
