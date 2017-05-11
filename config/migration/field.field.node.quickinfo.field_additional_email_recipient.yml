@@ -9,7 +9,7 @@ id: node.quickinfo.field_additional_email_recipient
 field_name: field_additional_email_recipient
 entity_type: node
 bundle: quickinfo
-label: '2.14 Additional email recipients'
+label: '2.14 Zusätzliche E-Mail-Empfänger'
 description: '(Sendet Emails zusätzlich zu Benachrichtigungen an die durch Komma getrennten Emailadressen. Email-Empfänger werden nicht in der RZ-Schnellinfo veröffentlicht.)'
 required: false
 translatable: true

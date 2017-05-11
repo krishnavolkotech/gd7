@@ -11,7 +11,7 @@ id: node.quickinfo.field_business_impact_services
 field_name: field_business_impact_services
 entity_type: node
 bundle: quickinfo
-label: '2.7 Business impact on other (business) services'
+label: '2.7 Fachliche Auswirkungen auf andere (Fach-) Verfahren'
 description: ''
 required: false
 translatable: true

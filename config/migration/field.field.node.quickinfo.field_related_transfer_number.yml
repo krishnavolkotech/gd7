@@ -9,7 +9,7 @@ id: node.quickinfo.field_related_transfer_number
 field_name: field_related_transfer_number
 entity_type: node
 bundle: quickinfo
-label: '1.2 Bezug zu SW-Übergabe-Nr.:'
+label: '1.2 Bezug zu SW-Übergabe-Nr.'
 description: '(max. 254 Zeichen)'
 required: false
 translatable: true

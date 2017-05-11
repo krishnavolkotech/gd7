@@ -69,8 +69,7 @@ class ReleasesettingsForm extends FormBase {
 
 
     // l($path, $path) .
-    $form['#prefix'] = "<div class = 'release_settings'> " . t("The Releases group view will be available at $release_view") . "<p>" .
-            "<p><div> " . t("Please specify the services of which you would like to display the Releases in this group") . "</div></p>";
+    $form['#prefix'] = "<div class = 'release_settings'> " . " <div> " . t("Please specify the services of which you would like to display the Releases in this group.") . "</div></p>";
     $form['#suffix'] = "</div>";
     $form['services'] = array(
       '#type' => 'checkboxes',

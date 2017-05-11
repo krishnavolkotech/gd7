@@ -11,7 +11,7 @@ id: node.quickinfo.field_professional_conditions
 field_name: field_professional_conditions
 entity_type: node
 bundle: quickinfo
-label: '2.2 Professional / organizational conditions for employment'
+label: '2.2 Fachliche / organisatorische Einsatzvoraussetzungen'
 description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
 required: false
 translatable: true
