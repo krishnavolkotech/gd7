@@ -45,13 +45,13 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Anwenden
           reset_button: false
           reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
+          exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
+          sort_asc_label: Auf
+          sort_desc_label: Ab
       pager:
         type: mini
         options:
@@ -719,7 +719,7 @@ display:
           entity_type: node
           entity_field: created
           plugin_id: date
-      title: 'Table of Published RZ Accelerators'
+      title: RZ-Schnellinfos
       header: {  }
       footer: {  }
       empty:
@@ -1006,7 +1006,7 @@ display:
           exposed: true
           expose:
             operator_id: label_op
-            label: Title
+            label: Titel
             description: ''
             use_operator: false
             operator: label_op
@@ -1049,7 +1049,7 @@ display:
           exposed: true
           expose:
             operator_id: field_related_transfer_number_value_op
-            label: 'SW Transfer No'
+            label: SW-Übergabe-Nr.
             description: ''
             use_operator: false
             operator: field_related_transfer_number_value_op
@@ -1094,7 +1094,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'RZ-Schnellinfo Nr'
+          label: Nr.
           exclude: false
           alter:
             alter_text: false
@@ -1289,7 +1289,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: State
+          label: Land
           exclude: false
           alter:
             alter_text: false
@@ -1351,7 +1351,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Title
+          label: Titel
           exclude: false
           alter:
             alter_text: false
@@ -1416,7 +1416,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Erstellendes method'
+          label: 'Erstellendes Verfahren'
           exclude: false
           alter:
             alter_text: false
@@ -1478,7 +1478,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'SW Transfer No'
+          label: SW-Übergabe-Nr.
           exclude: false
           alter:
             alter_text: false
@@ -1540,7 +1540,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Veröffentlicht auf'
+          label: 'Veröffentlicht am'
           exclude: false
           alter:
             alter_text: false

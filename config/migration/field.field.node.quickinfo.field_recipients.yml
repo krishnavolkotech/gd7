@@ -11,7 +11,7 @@ id: node.quickinfo.field_recipients
 field_name: field_recipients
 entity_type: node
 bundle: quickinfo
-label: '1.4 Recipients'
+label: '1.4 Angesprochene Stellen'
 description: '(Mehrfachnennung möglich)'
 required: false
 translatable: true

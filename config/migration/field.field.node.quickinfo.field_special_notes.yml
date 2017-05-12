@@ -11,7 +11,7 @@ id: node.quickinfo.field_special_notes
 field_name: field_special_notes
 entity_type: node
 bundle: quickinfo
-label: '2.9 Special notes'
+label: '2.9 Besondere Hinweise'
 description: '(z.B. auch planerische Hinweise)'
 required: false
 translatable: true

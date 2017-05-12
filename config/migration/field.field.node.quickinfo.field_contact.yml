@@ -11,7 +11,7 @@ id: node.quickinfo.field_contact
 field_name: field_contact
 entity_type: node
 bundle: quickinfo
-label: '2.12 Contact'
+label: '2.12 Ansprechpartner'
 description: '(für Rückfragen, falls abweichend vom Ersteller in 2.11)'
 required: false
 translatable: true

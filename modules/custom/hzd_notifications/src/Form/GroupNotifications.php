@@ -39,7 +39,7 @@ class GroupNotifications extends FormBase {
         '#header' => '',
         '#attributes' => ['class' => ['subscription_vals']],
       );
-      $form['subscription']['text']['label'] = array(
+/*      $form['subscription']['text']['label'] = array(
         '#markup' => $this->t('All (de) activate'),
         '#prefix' => "<div class = 'hzd_type'>",
         '#suffix' => "</div>"
@@ -50,7 +50,7 @@ class GroupNotifications extends FormBase {
 //        '#default_value' => '-1',
         '#prefix' => "<div class = 'hzd_time_interval dummy_selects'>",
         '#suffix' => "</div>",
-      );
+      );*/
       foreach ($user_groups as $gid => $label) {
         $form['subscription'][$gid]['subscriptions_type_' . $gid] = array(
           '#markup' => $label,

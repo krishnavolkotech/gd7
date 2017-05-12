@@ -9,7 +9,7 @@ id: node.quickinfo.field_dates
 field_name: field_dates
 entity_type: node
 bundle: quickinfo
-label: '2.10 Dates'
+label: '2.10 Termine'
 description: '(z.B. gesetzlich vorgegebene Ersatztermine)'
 required: false
 translatable: true

@@ -11,7 +11,7 @@ id: node.quickinfo.field_technical_impact
 field_name: field_technical_impact
 entity_type: node
 bundle: quickinfo
-label: '2.6 Technical impact'
+label: '2.6 Technische Auswirkungen'
 description: ''
 required: false
 translatable: true

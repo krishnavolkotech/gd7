@@ -332,7 +332,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 //        pr($user->getRoles());
 //        exit;
     array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
-    $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Sind Sie sicher zu veröffentlichen?")';
+    $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Bitte bestätigen Sie die Veröffentlichung dieser RZ-Schnellinfo.")';
     unset($form['actions']['unpublish']['#dropbutton']);
 
 
