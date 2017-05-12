@@ -24,7 +24,7 @@ if (!defined('SITE_ADMIN')) {
 
 if (!defined('KONSONS')) {
   define('KONSONS', \Drupal::config('hzd_release_management.settings')
-    ->get('konsens_service_term_id'));
+                  ->get('konsens_service_term_id'));
 }
 
 /**
@@ -32,7 +32,7 @@ if (!defined('KONSONS')) {
  */
 function hzd_customizations_mail($key, &$message, $params) {
   $options = array(
-    'langcode' => $message['langcode'],
+      'langcode' => $message['langcode'],
   );
   switch ($key) {
     case 'immediate_notifications':
@@ -41,7 +41,7 @@ function hzd_customizations_mail($key, &$message, $params) {
       $message['body'][] = Html::escape($params['message']);
       $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
       break;
-    
+
     case 'custom_mails':
       $message['subject'] = $params['subject'];
       $message['body'][] = Html::escape($params['body']);
@@ -49,14 +49,14 @@ function hzd_customizations_mail($key, &$message, $params) {
         $message['headers']['Bcc'] = $params['Bcc'];
       }
       break;
-    
+
     case 'inactive_user':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = $params['subject'];
       $message['body'][] = Html::escape($params['message']);
       $message['headers']['Content-Type'] = (isset($params['preference']) == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
       break;
-    
+
     case 'hzd_customizations_additional_email':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = t($params['subject'], $options);
@@ -73,7 +73,7 @@ function get_related_downtime_services($type) {
   // Global $user;.
   $user = Drupal::currentUser();
   $user_roles = $user->getRoles();
-  
+
   if (in_array('site_administrator', $user_roles)) {
     $dependent_Services = HzdservicesStorage::get_related_services($type);
     $request = \Drupal::request()->getRequestUri();
@@ -84,15 +84,14 @@ function get_related_downtime_services($type) {
     $path = explode("/", $current_path->getInternalPath());
     if ($path['0'] == 'node' && is_numeric($path['1']) && $path['2'] == 'edit') {
       $query = \Drupal::database()
-        ->select('node__field_dependent_service', 'nfds');
+              ->select('node__field_dependent_service', 'nfds');
       $query->addField('nfds', 'field_dependent_service_target_id');
       $query->condition('nfds.entity_id', '1', '=');
       $service_id = $query->execute()->fetchField();
       unset($dependent_Services[$service_id]);
     }
     return $dependent_Services;
-  }
-  else {
+  } else {
     return array(0 => t("This list is only editable by site admins"));
   }
 }
@@ -143,46 +142,46 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
 //            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
       if (in_array($field_name, [
 //            'field_additional_email_recipient',
-            'field_business_impact',
-            'field_business_impact_services',
-            'field_contact',
-            'field_creators',
-            'field_custom_title',
-            'field_dates',
-            'field_depend_other_services',
-            'field_intial_situation',
-            'field_other_services',
-            'field_professional_conditions',
-            'field_recipients',
+                  'field_business_impact',
+                  'field_business_impact_services',
+                  'field_contact',
+                  'field_creators',
+                  'field_custom_title',
+                  'field_dates',
+                  'field_depend_other_services',
+                  'field_intial_situation',
+                  'field_other_services',
+                  'field_professional_conditions',
+                  'field_recipients',
 //          'upload',
-          'field_related_transfer_number',
-          'field_special_notes',
-          'field_technical_impact',
-          'field_technical_impact_services',
-          'field_tech_requirements'
-        ]) && empty($entity->get($field_name)->value)
+                  'field_related_transfer_number',
+                  'field_special_notes',
+                  'field_technical_impact',
+                  'field_technical_impact_services',
+                  'field_tech_requirements'
+              ]) && empty($entity->get($field_name)->value)
       ) {
 //                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
 //                    kint($definition->get('fieldStorage'));
 //                }
         $component = $display->getComponent($field_name);
         $build[$field_name] = [
-          '#theme' => 'field',
-          '#title' => $definition->getLabel(),
-          '#label_display' => $component['label'],
-          '#view_mode' => $context['view_mode'],
-          '#language' => $entity->get($field_name)->getLangcode(),
-          '#field_name' => $definition->getName(),
-          '#field_type' => 'string',
-          '#field_translatable' => $definition->isTranslatable(),
-          '#entity_type' => $entity->getEntityTypeId(),
-          '#bundle' => $entity->bundle(),
-          '#object' => $entity,
-          '#items' => [(object) ['_attributes' => []]],
-          '#is_multiple' => FALSE,
-          // Use simple formatter.
-          '#formatter' => 'string',
-          '0' => ['#markup' => t('Keine Angabe')],
+            '#theme' => 'field',
+            '#title' => $definition->getLabel(),
+            '#label_display' => $component['label'],
+            '#view_mode' => $context['view_mode'],
+            '#language' => $entity->get($field_name)->getLangcode(),
+            '#field_name' => $definition->getName(),
+            '#field_type' => 'string',
+            '#field_translatable' => $definition->isTranslatable(),
+            '#entity_type' => $entity->getEntityTypeId(),
+            '#bundle' => $entity->bundle(),
+            '#object' => $entity,
+            '#items' => [(object) ['_attributes' => []]],
+            '#is_multiple' => FALSE,
+            // Use simple formatter.
+            '#formatter' => 'string',
+            '0' => ['#markup' => t('Keine Angabe')],
         ];
       }
     }
@@ -237,18 +236,17 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
         //$groupTypeId = $group->getGroupType()->id();
         $groupMember = $group->getMember($user);
         if (($groupMember && $groupMember->getGroupContent()
-              ->get('request_status')->value == 1
-          ) || (array_intersect($user->getRoles(), [
-            'site_administrator',
-            'administrator'
-          ]))
+                        ->get('request_status')->value == 1
+                ) || (array_intersect($user->getRoles(), [
+                    'site_administrator',
+                    'administrator'
+                ]))
         ) {
           $build['field_einfuehrung']['#access'] = FALSE;
           $build['field_description']['#access'] = TRUE;
           $build['field_group_body']['#access'] = TRUE;
           $build['field_old_reference']['#access'] = TRUE;
-        }
-        else {
+        } else {
           $build['field_einfuehrung']['#access'] = TRUE;
           $build['field_einfuehrung']['#title'] = '';
           $build['field_description']['#access'] = FALSE;
@@ -265,11 +263,7 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
  */
 function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
 //  pr(array_keys($build));exit;
-  if ($entity->getType() == 'quickinfo' && in_array($view_mode, [
-      'full',
-      'mail'
-    ])
-  ) {
+  if ($entity->getType() == 'quickinfo' && in_array($view_mode, ['full'])) {
     if ($entity->isPublished()) {
       $build['quickinfoId'] = $entity->get('field_unique_id')->view();
       $build['quickinfoId']['#label_display'] = 'inline';
@@ -288,7 +282,7 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
  * Implements hook_form_alter.
  */
 function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  
+
   $user = \Drupal::service('current_user');
   $uid = $user->id();
   $formatted_name = $user->getDisplayName();
@@ -305,7 +299,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     if (empty($form['field_custom_title']['#default_value'])) {
       $form_state->setValue('field_custom_title', $node->label());
     }
-    
+
     $form['actions']['unpublish']['#value'] = t('Save');
     $form['actions']['publish'] = $form['actions']['submit'];
     // If the "Publish" button is clicked, we want to update the status to "published".
@@ -313,28 +307,25 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['actions']['submit']['#published_status'] = FALSE;
     $form['actions']['publish']['#value'] = t('Publish');
 //        $user = \Drupal::currentUser();
-    
+
     if (array_intersect($user->getRoles(), [
-      'administrator',
-      'site_administrator'
-    ])) {
+                'administrator',
+                'site_administrator'
+            ])) {
       $form['actions']['publish']['#access'] = TRUE;
-    }
-    else {
+    } else {
       $group = Group::load(QUICKINFO);
       $groupMember = $group->getMember($user);
       if ($groupMember && $groupMember->getGroupContent()
-          ->get('request_status')->value == 1
+                      ->get('request_status')->value == 1
       ) {
         $roles = $groupMember->getRoles();
         if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
           $form['actions']['publish']['#access'] = TRUE;
-        }
-        else {
+        } else {
           $form['actions']['publish']['#access'] = FALSE;
         }
-      }
-      else {
+      } else {
         $form['actions']['publish']['#access'] = FALSE;
       }
     }
@@ -343,8 +334,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
     $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Sind Sie sicher zu veröffentlichen?")';
     unset($form['actions']['unpublish']['#dropbutton']);
-    
-    
+
+
     $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
     $form['field_author_name']['widget'][0]['value']['#value'] = $user->getAccountName();
@@ -357,22 +348,22 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $uniue_id_val = $query->execute()->fetchField();
       } */
     $form['#validate'][] = 'custom_quickinfo';
-    
+
     $form['attachments']['#title'] = t('2.13 File attachments');
     $form['attachments']['#prefix'] = '<div class="attachments quickinfo-attachments">';
     $form['field_unique_id']['#type'] = 'hidden';
 //        $form['field_unique_id']['#suffix'] = '</div>';
-    
+
     /*        $form['field_author_name'][0]['#default_value']['value'] = $raw_name;
       $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
       $form['field_author_name']['#suffix'] = '</div>'; */
-    
+
     $query = \Drupal::database()->select('cust_profile', 'cp');
     $query->addField('cp', 'state_id');
     $query->condition('cp.uid', $uid, '=');
     $user_state = $query->execute()->fetchField();
-    
-    
+
+
     $query = \Drupal::database()->select('states', 's');
     $query->Fields('s', array('state'));
     $query->condition('s.id', $user_state);
@@ -387,20 +378,20 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   }
 //    pr(($form['actions']['publish']));exit;
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
-    
+
     $db = \Drupal::database();
     $result = $db->select('states', 's')
-      ->fields('s', array('abbr', 'state'))
-      ->condition('s.entity', 1, '!=');
+            ->fields('s', array('abbr', 'state'))
+            ->condition('s.entity', 1, '!=');
     $val = $result->execute()->fetchAll();
     $states = array();
     foreach ($val as $user_states_list) {
       $states[$user_states_list->abbr] = $user_states_list->state;
     }
     $form['abbr'] = array(
-      '#type' => 'select',
-      '#options' => $states,
-      '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
+        '#type' => 'select',
+        '#options' => $states,
+        '#default_value' => isset($_GET['abbr']) ? $_GET['abbr'] : '',
     );
   }
   if ($form_id == 'views_exposed_form' && ($form['#id'] == 'views-exposed-form-user-admin-people-page-1' || $form['#id'] == 'views-exposed-form-user-admin-people-page-2')) {
@@ -413,18 +404,18 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     }
     $glossary = implode(' | ', $glossarydata);
     $form['glossarylist'] = array(
-      '#markup' => $glossary,
-      '#theme_wrappers' => array('form_element')
+        '#markup' => $glossary,
+        '#theme_wrappers' => array('form_element')
     );
   }
-  
-  
+
+
   if ($form_id == 'inactive_user_admin_settings') {
     unset($form['delete_inactive_user']['inactive_user_auto_delete_warn']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_text']);
   }
-  
+
   if ($form_id == 'inactive_user_admin_settings') {
     // Adding lesser periods to inactive users reminder email.
     $period_options = $form['inactive_user_notification']['inactive_user_notify']['#options'];
@@ -435,77 +426,77 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     ksort($period_options);
     $form['inactive_user_notification']['inactive_user_notify']['#options'] = $period_options;
     $form['inactive_user_notification']['inactive_user_notify_admin']['#options'] = $period_options;
-    
+
     // Adding lesser periods to Warn before block users reminder email.
     $warn_period_options = $form['block_inactive_user']['inactive_user_auto_block_warn']['#options'];
     $warn_period_options['3600'] = t('1 hour');
     $warn_period_options['7200'] = t('2 hours');
     $warn_period_options['10800'] = t('3 hours');
     ksort($warn_period_options);
-    
+
     $form['block_inactive_user']['inactive_user_auto_block']['#options'] = $period_options;
     $form['block_inactive_user']['inactive_user_auto_block_warn']['#options'] = $warn_period_options;
     $form['delete_inactive_user']['inactive_user_auto_delete']['#options'] = $period_options;
     $form['delete_inactive_user']['inactive_user_auto_delete_warn']['#options'] = $warn_period_options;
-    
+
     $site_name = \Drupal::config('inactive_user.settings')->get('site_name');
-    
+
     $account_inactivity = t('[@sitename] Account inactivity', array(
         '@sitename' => $site_name,
-      )
+            )
     );
     $inactive_user_notify_mail_subject = \Drupal::config('inactive_user.settings')
-      ->get('inactive_user_notify_mail_subject');
+            ->get('inactive_user_notify_mail_subject');
     $inactive_user_notify_mail_subject = $inactive_user_notify_mail_subject ? $inactive_user_notify_mail_subject : $account_inactivity;
-    
+
     $form['inactive_user_notification']['inactive_user_notify_mail_subject'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Subject of user notification e-mail'),
-      '#default_value' => $inactive_user_notify_mail_subject,
-      '#required' => TRUE,
-      '#weight' => 1,
+        '#type' => 'textfield',
+        '#title' => t('Subject of user notification e-mail'),
+        '#default_value' => $inactive_user_notify_mail_subject,
+        '#required' => TRUE,
+        '#weight' => 1,
     );
     $form['inactive_user_notification']['inactive_user_notify_text']['#weight'] = 2;
-    
+
     $inactive_user_block_mail_subject = \Drupal::config('inactive_user.settings')
-      ->get('inactive_user_block_mail_subject');
+            ->get('inactive_user_block_mail_subject');
     $inactive_user_block_mail_subject = $inactive_user_block_mail_subject ? $inactive_user_block_mail_subject : $account_inactivity;
-    
+
     $form['block_inactive_user']['inactive_user_block_mail_subject'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Subject of blocked user acount e-mail'),
-      '#default_value' => $inactive_user_block_mail_subject,
-      '#required' => TRUE,
-      '#weight' => 1,
+        '#type' => 'textfield',
+        '#title' => t('Subject of blocked user acount e-mail'),
+        '#default_value' => $inactive_user_block_mail_subject,
+        '#required' => TRUE,
+        '#weight' => 1,
     );
     $form['block_inactive_user']['inactive_user_block_notify_text']['#weight'] = 2;
     $form['block_inactive_user']['inactive_user_auto_block_warn']['#weight'] = 3;
-    
+
     $inactive_user_block_warn_mail_subject = \Drupal::config('inactive_user.settings')
-      ->get('inactive_user_block_warn_mail_subject');
+            ->get('inactive_user_block_warn_mail_subject');
     $inactive_user_block_warn_mail_subject = $inactive_user_block_warn_mail_subject ? $inactive_user_block_warn_mail_subject : $account_inactivity;
-    
+
     $form['block_inactive_user']['inactive_user_block_warn_mail_subject'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Subject of user warning e-mail'),
-      '#default_value' => $inactive_user_block_warn_mail_subject,
-      '#required' => TRUE,
-      '#weight' => 4,
+        '#type' => 'textfield',
+        '#title' => t('Subject of user warning e-mail'),
+        '#default_value' => $inactive_user_block_warn_mail_subject,
+        '#required' => TRUE,
+        '#weight' => 4,
     );
     $form['block_inactive_user']['inactive_user_block_warn_text']['#weight'] = 5;
-    
-/*    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
+
+    /*    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
       ->get('inactive_user_delete_notify_mail_subject');
-    $inactive_user_delete_notify_mail_subject = $inactive_user_delete_notify_mail_subject ? $inactive_user_delete_notify_mail_subject : $account_inactivity;
-    
-    $form['delete_inactive_user']['inactive_user_delete_notify_mail_subject'] = array(
+      $inactive_user_delete_notify_mail_subject = $inactive_user_delete_notify_mail_subject ? $inactive_user_delete_notify_mail_subject : $account_inactivity;
+
+      $form['delete_inactive_user']['inactive_user_delete_notify_mail_subject'] = array(
       '#type' => 'textfield',
       '#title' => t('Subject of deleted user account e-mail'),
       '#default_value' => $inactive_user_delete_notify_mail_subject,
       '#required' => TRUE,
       '#weight' => 1,
-    );
-*/    
+      );
+     */
     $form['delete_inactive_user']['inactive_user_delete_notify_text']['#weight'] = 2;
     unset($form['delete_inactive_user']['inactive_user_auto_delete_warn']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
@@ -518,7 +509,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
     $form['#validate'][] = 'field_date_deployed_validate';
     $service = $form_state->getValue('field_release_service')[0]['value'];
-    if(empty($service)){
+    if (empty($service)) {
       $service = $form['field_release_service']['widget']['#default_value'][0];
     }
 //    $environment = $form['field_environment']['widget']['#default_value'];
@@ -534,24 +525,24 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
     $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';
     $form['field_release_service']['widget']['#ajax'] = [
-      'callback' => 'releaseData',
-      'wrapper' => 'edit-field-earlywarning-release-wrapper-one',
-      'progress' => array(
-        'type' => 'throbber',
-      ),
+        'callback' => 'releaseData',
+        'wrapper' => 'edit-field-earlywarning-release-wrapper-one',
+        'progress' => array(
+            'type' => 'throbber',
+        ),
     ];
-  
+
     // Rel.
   }
-  
-  if($form_id == 'block_upload_form'){
-      $form['upload_files_title']['#weight'] = 1;
-      $form['block_upload_file']['#weight'] = 2;
-      $form['remove_files_title']['#weight'] = 3;
-      $form['remove_files']['#weight'] = 4;
-      $form['submit']['#weight'] = 19;
+
+  if ($form_id == 'block_upload_form') {
+    $form['upload_files_title']['#weight'] = 1;
+    $form['block_upload_file']['#weight'] = 2;
+    $form['remove_files_title']['#weight'] = 3;
+    $form['remove_files']['#weight'] = 4;
+    $form['submit']['#weight'] = 19;
   }
-  
+
 //  echo $form_id;exit;
 }
 
@@ -564,16 +555,16 @@ function releaseData(&$form, $form_state) {
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
     $form['field_earlywarning_release']['widget']['#default_value'] = 0;
   }
-  
-  $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';  return $form['field_earlywarning_release'];
+
+  $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';
+  return $form['field_earlywarning_release'];
 }
 
-
-function field_date_deployed_validate(&$form, $form_state){
+function field_date_deployed_validate(&$form, $form_state) {
   $field_date_deployed = $form_state->getValue('field_date_deployed')[0]['value'];
   $currentDate = new DateTimePlus();
-  if($currentDate->diff($field_date_deployed)->format('%R%a') > 0){
-    $form_state->setErrorByName('field_date_deployed',t('Deployed date cannot be in future'));
+  if ($currentDate->diff($field_date_deployed)->format('%R%a') > 0) {
+    $form_state->setErrorByName('field_date_deployed', t('Deployed date cannot be in future'));
   }
 }
 
@@ -587,11 +578,11 @@ function field_date_deployed_validate(&$form, $form_state){
 function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_state) {
   if (!$form_state->getValue('field_unique_id')[0]['value']) {
     $uniqueId = \Drupal::database()->select('node__field_unique_id', 'n')
-      ->fields('n', ['field_unique_id_value'])
-      ->orderBy('field_unique_id_value', 'desc')
-      ->range(0, 1)
-      ->execute()
-      ->fetchField();
+            ->fields('n', ['field_unique_id_value'])
+            ->orderBy('field_unique_id_value', 'desc')
+            ->range(0, 1)
+            ->execute()
+            ->fetchField();
     $form_state->setValue('field_unique_id', [['value' => $uniqueId + 1]]);
   }
 }
@@ -600,35 +591,48 @@ function hzd_customizations_node_update($node) {
   if ($node->getType() == 'quickinfo') {
     // Act on the unpublishing of an article.
     if ($node->get('status')->value == 1) {
+      hzd_customizations_quickinfo_save($node);
       generate_quickinfo_pdf($node);
     }
   }
 }
 
-function hzd_customizations_entity_presave($node) {
+function hzd_customizations_node_insert($node) {
+  if ($node->getType() == 'quickinfo') {
+    // Act on the unpublishing of an article.
+    if ($node->get('status')->value == 1) {
+      hzd_customizations_quickinfo_save($node);
+//      generate_quickinfo_pdf($node);
+    }
+  }
+}
+
+function hzd_customizations_quickinfo_save($node) {
   if ($node->getEntityTypeId() == 'node' && $node->getType() == 'quickinfo') {
     // Act on the unpublishing of an article.
     if ($node->get('status')->value == 1) {
       $quickinfoId = $node->get('field_unique_id')->value;
-      \Drupal::service('file_system')
-        ->mkdir('private://rz-schnellinfos/' . $quickinfoId, NULL, TRUE);
       if (!file_exists('private://rz-schnellinfos/' . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf")) {
+        \Drupal::service('file_system')
+                ->mkdir('private://rz-schnellinfos/' . $quickinfoId, NULL, TRUE);
         $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
-          ->createSelectedInstance('pdf');
+                ->createSelectedInstance('pdf');
         $print_builder = \Drupal::service('entity_print.print_builder');
         $uri = $print_builder->savePrintable([$node], $print_engine, 'private', "rz-schnellinfos/{$quickinfoId}/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf");
         $file = File::create([
-          'filename' => "RZ-Schnellinfo-Nr-{$quickinfoId}.pdf",
-          'uri' => $uri,
-          'uid' => \Drupal::currentUser()->id(),
+                    'filename' => "RZ-Schnellinfo-Nr-{$quickinfoId}.pdf",
+                    'uri' => $uri,
+                    'uid' => \Drupal::currentUser()->id(),
         ]);
         $file->save();
+        $quickinfo = Node::load($node->id());
 //      $entity = Node::load($node->id());
-        $node->upload->appendItem([
-          'target_id' => $file->id(),
-          'display' => 1,
-          'description' => '',
+        $quickinfo->upload->appendItem([
+            'target_id' => $file->id(),
+            'display' => 1,
+            'description' => '',
         ]);
+        $quickinfo->save();
       }
 
 //      $entity->save();
@@ -645,47 +649,52 @@ function generate_quickinfo_pdf($node = NULL) {
     return FALSE;
   }
   $quickinfoId = $node->get('field_unique_id')->value;
-  $fileName = "{$quickinfoId}.pdf";
-  $uri = "private://rz-schnellinfos/" . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf";
-  
+//  $fileName = "{$quickinfoId}.pdf";
+//  $uri = "private://rz-schnellinfos/" . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf";
+
   $view_builder = \Drupal::entityManager()->getViewBuilder('node');
   $renderarray = $view_builder->view($node, 'mail');
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $files = $node->get('upload')->referencedEntities();
+  $siteMail = \Drupal::config('system.site')->get('mail');
+  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
+  $params = [
+      'headers' => [
+          'Content-Type' => 'text/html',
+      ],
+      'from' => $siteMail,
+      'subject' => $subject,
+  ];
   foreach ($files as $file) {
     $temp = new stdClass();
     $temp->uri = $file->getFileUri();
     $temp->filename = $file->getFilename();
     $temp->filemime = $file->getMimeType();
-    
-    $attachments[] = $temp;
+
+    $params['files'][] = $temp;
   }
-  $file_two = new stdClass();
-  $file_two->uri = $uri;
-  $file_two->filename = $fileName;
-  $file_two->filemime = 'application/pdf';
-  $siteMail = \Drupal::config('system.site')->get('mail');
-  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
-  
-  
-  $params = [
-    'headers' => [
-      'Content-Type' => 'text/html',
-    ],
-    'from' => $siteMail,
-    'subject' => $subject,
-  ];
-  $params['files'] = $attachments;
+//  $file_two = new stdClass();
+//  $file_two->uri = $uri;
+//  $file_two->filename = $fileName;
+//  $file_two->filemime = 'application/pdf';
 //  $params['files'][] = $file_two;
 //  pr(array_keys($params['files']));exit;
   $params['message'] = $html;
   $mailManager = \Drupal::service('plugin.manager.mail');
-  $recepients = $node->get('field_additional_email_recipient')->value;
-  foreach ((array) explode(',', $recepients) as $email) {
+  $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
+  $subscribedUsers = hzd_get_immediate_qi_notification_user_mails($node->get('field_other_services')->getValue());
+  foreach ($subscribedUsers as $key => $val) {
+    foreach (explode(',', trim($val->mail, ',')) as $usermail) {
+      $userEntity = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => trim($usermail)]);
+      if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 0 && reset($userEntity)->isActive()) {
+        $recepients[] = $val->mail;
+      }
+    }
+  }
+  foreach ((array) $recepients as $email) {
     if (!empty($email)) {
       $mailManager->mail('cust_group', 'periodic_notifications', $email, 'de', $params, NULL, 1);
     }
-    
   }
 }
 
@@ -698,7 +707,7 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
     $email_recipients = str_replace(",", " ", $additional_email_recipients[0]['value']);
     foreach (explode(" ", $email_recipients) as $email) {
       if (!\Drupal::service('email.validator')
-          ->isValid(trim($email)) && trim($email)
+                      ->isValid(trim($email)) && trim($email)
       ) {
         // form_set_error('',t('Invalid mail id'));.
         $form_state->setErrorByName('field_additional_email_recipient', t("Enter valid email"));
@@ -741,11 +750,11 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
       }
     }
   }
-  
+
   // Altering the problems block on front page
   if ($view->id() == 'problems_front_page' && $view->current_display == 'block_1') {
     $last_unix_time = get_last_unix_time('last_n_days_problems');
-    
+
     // Traverse through the 'where' part of the query.
     foreach ($query->where as &$condition_group) {
       foreach ($condition_group['conditions'] as &$condition) {
@@ -755,11 +764,11 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
       }
     }
   }
-  
+
   // Altering the releases block on front page
   if ($view->id() == 'release_list' && $view->current_display == 'block_1') {
     $last_unix_time = get_last_unix_time('last_n_days_releases');
-    
+
     // Traverse through the 'where' part of the query.
     foreach ($query->where as &$condition_group) {
       foreach ($condition_group['conditions'] as &$condition) {
@@ -781,7 +790,7 @@ function get_last_unix_time($block_name) {
   $num_of_days = $config_object->get($block_name);
   // 86400 is total seconds for a day
   $last_unix_time = time() - ($num_of_days * 86400);
-  
+
   return $last_unix_time;
 }
 
@@ -790,24 +799,24 @@ function get_last_unix_time($block_name) {
  *
  */
 function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view) {
-  
+
   // converting the unix timestamp to date just before render for our front page blocks
   if ($view->id() == 'problems_front_page') {
-    
+
     foreach ($view->result as $value) {
       $start_date = $value->_entity->get('field_problem_eroffnet')->value;
       $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)
-        ->format('d.m.Y');
+              ->format('d.m.Y');
       $value->_entity->set('field_problem_eroffnet', (string) $start_date);
     }
   }
-  
+
   if ($view->id() == 'release_list') {
-    
+
     foreach ($view->result as $value) {
       $start_date = $value->_entity->get('field_date')->value;
       $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)
-        ->format('d.m.Y');
+              ->format('d.m.Y');
       $value->_entity->set('field_date', (string) $start_date);
     }
   }
@@ -905,7 +914,7 @@ function hzd_customizations_node_search_result(NodeInterface $node) {
   if (isset($node->field_page_files)) {
     foreach ($node->field_page_files as $file) {
       $replace_chars = array('_', '-', '.');
-      
+
       $url = Url::fromUserInput('/' . $file['filepath']);
       $link = Link::fromTextAndUrl(str_replace($replace_chars, ' ', $file['filename']), $url);
       $files[] = $link;
@@ -922,7 +931,7 @@ function hzd_customizations_node_search_result(NodeInterface $node) {
  * Hook_node_update_index(\Drupal\node\NodeInterface $node)
  */
 function hzd_customizations_node_update_index(NodeInterface $node) {
-  
+
   global $base_path;
   $files = array();
   // dpm('hzd_customizations_node_update_index');
@@ -974,36 +983,35 @@ function quickinfo_file_attachments($files) {
   //  }
   //  // $output .= '</tbody></table>';.
   $header = array(t("Attachment"), t("Size"));
-  
+
   foreach ($files as $file) {
     if ($file->list && empty($file->remove)) {
       $href = file_create_url($file->filepath);
       $text = $file->description ? $file->description : $file->filename;
       $url = Url::fromUserInput(
-        '/' . $href
+                      '/' . $href
       );
       // array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))
       $file_attachement = Link::fromTextAndUrl($text, $url);
-      
+
       $size = format_size($file->filesize);
       $elements = array(
-        'file_attachement' => $file_attachement,
-        'size' => $size,
+          'file_attachement' => $file_attachement,
+          'size' => $size,
       );
       $rows[] = $elements;
     }
   }
   if (!isset($elements)) {
     $output[] = t('No Data to be displayed') . "<br/>";
-  }
-  else {
+  } else {
     $output[] = array(
-      '#theme' => 'table',
-      '#header' => $header,
-      '#rows' => $rows,
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
     );
   }
-  
+
   return $output;
 }
 
@@ -1020,31 +1028,30 @@ function quickinfo_mail_header($node, $additional_recipients = 0) {
     $query->addExpression("CONCAT(firstname, ' ', lastname)");
     $query->condition('uid', $node->revision_uid);
     $published_by = $query->execute()->fetchField();
-  }
-  else {
+  } else {
     $query = \Drupal::database()->select('cust_profile', 'cp');
     $query->addExpression("CONCAT(firstname, ' ', lastname)");
     $query->condition('uid', $user->uid);
     $published_by = $query->execute()->fetchField();
   }
-  
+
   $logo_uri = $base_url . '/' . drupal_get_path('module', 'hzd_customizations')
-    . '/hzd_logo.gif';
-  
+          . '/hzd_logo.gif';
+
   $logo_render_array = [
-    '#theme' => 'image_style',
-    // '#width' => $variables['width'],
-    //  '#height' => $variables['height'],
-    //  '#style_name' => $variables['style_name'],.
-    '#uri' => $variables['uri'],
+      '#theme' => 'image_style',
+      // '#width' => $variables['width'],
+      //  '#height' => $variables['height'],
+      //  '#style_name' => $variables['style_name'],.
+      '#uri' => $variables['uri'],
   ];
   $rows[] = array(
-    'logo_render_array' => $logo_render_array,
-    'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title),
-    'date' => t("Published on :") . date('d.m.Y', $node->changed),
+      'logo_render_array' => $logo_render_array,
+      'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title),
+      'date' => t("Published on :") . date('d.m.Y', $node->changed),
   );
   $rows[] = array(
-    'pb' => t("Published by :") . $published_by,
+      'pb' => t("Published by :") . $published_by,
   );
   // $output .= "<table class='q-header' style='margin-bottom: 10px; border-collapse: collapse; line-height: 20px;' cellpadding='0' cellspacing='0'  border='1' width='100%'>";
   //
@@ -1058,10 +1065,10 @@ function quickinfo_mail_header($node, $additional_recipients = 0) {
   //  $output .= '<tr><td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published by") . ':<br>' . $published_by . '</td></tr>';
   //  $output .= "</table>";.
   $output = array(
-    '#theme' => 'table',
-    '#rows' => $rows,
+      '#theme' => 'table',
+      '#rows' => $rows,
   );
-  
+
   return $output;
 }
 
@@ -1092,17 +1099,17 @@ function quickinfo_mail_header($node, $additional_recipients = 0) {
  */
 function quickinfo_custom_body($action, $node) {
   global $base_url;
-  
+
   $quickinfo_url_alias = Url::fromUserInput(
-    "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
+                  "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
   );
   $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
   $files_attachments = quickinfo_file_attachments($node->files);
-  
+
   $original = \Drupal::config('hzd_customizations.settings')
-      ->get('quick_info_content') .
-    "<p><b>" . t("2.13 File attachments") . "</b></p><p>" . $files_attachments . "</p><p style='text-align: left;'><hr><b style='text-align: left;'>" . t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $link . "</p>";
-  
+                  ->get('quick_info_content') .
+          "<p><b>" . t("2.13 File attachments") . "</b></p><p>" . $files_attachments . "</p><p style='text-align: left;'><hr><b style='text-align: left;'>" . t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $link . "</p>";
+
   $token_service = \Drupal::token();
   /*
    * to do
@@ -1118,7 +1125,7 @@ function quickinfo_custom_body($action, $node) {
  */
 function quickinfo_custom_footer($action, $node) {
   $original_footer = \Drupal::config('hzd_customizations.settings')
-    ->get('quick_info_footer');
+          ->get('quick_info_footer');
   $token_service = \Drupal::token();
   /*
    * to do
@@ -1133,7 +1140,7 @@ function quickinfo_custom_footer($action, $node) {
  */
 function hzd_customizations_queue_info() {
   $queues['notifications'] = array(
-    'worker callback' => 'insert_notifications_after_login',
+      'worker callback' => 'insert_notifications_after_login',
   );
   return $queues;
 }
@@ -1153,12 +1160,12 @@ function insert_notifications_after_login($userid) {
  *
  */
 function default_notification_insert($edit) {
-  
+
   $konsons = \Drupal::config('hzd_release_management.settings')
-    ->get('konsens_service_term_id');
+          ->get('konsens_service_term_id');
   $excoss = \Drupal::config('hzd_release_management.settings')
-    ->get('ex_eoss_service_term_id');
-  
+          ->get('ex_eoss_service_term_id');
+
   $release_type = array("konsons" => $konsons, "excoss" => $excoss);
   foreach ($release_type as $rel_val) {
     /*
@@ -1170,7 +1177,7 @@ function default_notification_insert($edit) {
        * to do
        */
       $default_time = default_sent_interval($content);
-      
+
       switch ($content_types[$content_key]) {
         /**
          * to do
@@ -1178,15 +1185,15 @@ function default_notification_insert($edit) {
         case t('Current Incidents and Planned Maintenances'):
           $release_type = 'downtimes';
           break;
-        
+
         case t('Problems'):
           $release_type = 'problem';
           break;
-        
+
         case t('Releases'):
           $release_type = 'release';
           break;
-        
+
         case t('Early Warnings'):
           $release_type = 'early_warnings';
           break;
@@ -1195,11 +1202,11 @@ function default_notification_insert($edit) {
        * to do
        */
       $services = _get_type_relatedServices($release_type, $rel_val);
-      
+
       foreach ($services as $services_id) {
         $subscription_fields = array(
-          'service' => $services_id,
-          'type' => $release_type
+            'service' => $services_id,
+            'type' => $release_type
         );
         $subscription = $defaults;
         $subscription['send_interval'] = $default_time;
@@ -1223,7 +1230,7 @@ function default_notification_insert($edit) {
       insert_default_user_intervel($release_type, $default_time, $edit['uid'], $rel_val);
     }
   }
-  
+
   insert_quickinfo_default_notification($edit);
 }
 
@@ -1232,13 +1239,13 @@ function default_notification_insert($edit) {
  */
 function insert_quickinfo_default_notification($edit) {
   $gid = \Drupal::config('hzd_customizations.settings')
-    ->get('quickinfo_group_id');
+          ->get('quickinfo_group_id');
   $intval = \Drupal::config('hzd_customizations.settings')
-    ->get('service_interval_quickinfo', -1);
-  
+          ->get('service_interval_quickinfo', -1);
+
   $allowed_values = FieldStorageConfig::loadByName('node', 'field_other_services')
-    ->getSetting('allowed_values');
-  
+          ->getSetting('allowed_values');
+
   foreach ($allowed_values as $key => $val) {
     $subscription = array();
     $subscription['send_interval'] = $intval;
@@ -1261,16 +1268,16 @@ function insert_quickinfo_default_notification($edit) {
  */
 function hzd_customizations_user_login($account) {
   $uid = $account->Id();
-  
+
   $query = \Drupal::database()->select('inactive_users', 'iu');
   $query->fields('iu', array('uid'));
   $query->condition('uid', $uid);
   $check_inactive_user = $query->execute()->fetchAssoc();
-  
+
   if (!empty($check_inactive_user)) {
     $query = \Drupal::database()->update('inactive_users');
     $query->fields([
-      'inactive_user_notification_flag' => 0,
+        'inactive_user_notification_flag' => 0,
     ]);
     $query->condition('uid', $uid);
     $query->execute();
@@ -1281,7 +1288,7 @@ function hzd_customizations_user_login($account) {
  * Implements hook_entity_update(Drupal\Core\Entity\EntityInterface $entity)
  */
 function hzd_customizations_user_presave(EntityInterface $entity) {
-  
+
   if (is_object($entity->original) && ($entity->original->isBlocked() == 1) && isset($entity->status->getValue()['0']['value']) && ($entity->status->getValue()['0']['value'] == 1)) {
     $query = \Drupal::database()->select('inactive_users', 'iu');
     $query->fields('iu', array('uid'));
@@ -1290,7 +1297,7 @@ function hzd_customizations_user_presave(EntityInterface $entity) {
     if (!empty($check_inactive_user)) {
       $query = \Drupal::database()->update('inactive_users');
       $query->fields([
-        'inactive_user_notification_flag' => 0,
+          'inactive_user_notification_flag' => 0,
       ]);
       $query->condition('uid', $entity->id());
       $query->execute();
@@ -1349,84 +1356,82 @@ function _hzd_customizations_user_login_form_submit() {
  * Implementation of hook_cron()
  */
 function hzd_customizations_cron() {
-  
+
   $inactive_user = new \Drupal\hzd_customizations\Controller\Inactiveusers();
   $inactive_user->inactive_users();
 }
-
 
 /**
  * Implements hook_preprocess_block().
  */
 function hzd_customizations_preprocess_block(&$variables) {
-  
+
   if ('system_main_block' == $variables['plugin_id']) {
-    
+
     $url = Url::fromRoute('<current>');
     $internalpath = $url->getInternalPath();
     $parts = explode('/', $internalpath);
-    
+
     // If the internal path starts with 'forum', we might want to modify the UI.
     if ('forum' == $parts[0]) {
       $groupid = \Drupal::entityQuery('group')
-        ->condition('field_forum_containers', $parts[1], '=')
-        ->execute();
+              ->condition('field_forum_containers', $parts[1], '=')
+              ->execute();
       if (NULL == $groupid) {
         $storage = \Drupal::service('entity_type.manager')
-          ->getStorage('taxonomy_term');
+                ->getStorage('taxonomy_term');
         $parents = $storage->loadParents($parts[1]);
         $ptid = key($parents);
         $groupid = \Drupal::entityQuery('group')
-          ->condition('field_forum_containers', $ptid, '=')
-          ->execute();
+                ->condition('field_forum_containers', $ptid, '=')
+                ->execute();
       }
       $url = Url::fromRoute('entity.group_content.create_form', [
-        'group' => key($groupid),
-        'plugin_id' => 'group_node:forum'
+                  'group' => key($groupid),
+                  'plugin_id' => 'group_node:forum'
       ]);
       $links = [
-        '#attributes' => ['class' => ['action-links']],
-        '#theme' => 'menu_local_action',
-        '#link' => [
-          'title' => t('Add new Group Forum'),
-          'url' => $url,
-        ],
-        '#cache' => ['max-age' => 0],
-        '#weight' => -100
+          '#attributes' => ['class' => ['action-links']],
+          '#theme' => 'menu_local_action',
+          '#link' => [
+              'title' => t('Add new Group Forum'),
+              'url' => $url,
+          ],
+          '#cache' => ['max-age' => 0],
+          '#weight' => -100
       ];
-      
+
       $variables['content']['link'] = $links;
       $account = \Drupal::currentUser();
-      
+
       if ($account->hasPermission('create forum content')) {
         // The user has the 'create forum content' permission in Drupal's core
         // permissions, but we probably don't want to show the ui.
         $remove_ui = \Drupal::config('gforum.settings')
-          ->get('remove_core_create_ui');
-      }
-      else {
+                ->get('remove_core_create_ui');
+      } else {
         // If the user doesn't have permission to create forum topics in
         // Drupal's core permissions, we probably don't want to show a "You are
         // not allowed" message here, because the user is probably able to
         // create group forum content.  For most use cases, if a user has read
         // access to a forum, they probably will have ability to create topics.
         $remove_ui = \Drupal::config('gforum.settings')
-          ->get('remove_core_create_disallowed_message');
+                ->get('remove_core_create_disallowed_message');
       }
-      
+
       if ($remove_ui) {
-        
+
         $original = $variables['content']['#markup'];
-        
+
         // Remove everything before the forum div.
         $ui_removed = strstr($original, '<div class="forum"');
         $variables['content']['#markup'] = $ui_removed ? $ui_removed : $original;
-        
+
         $topic_create_help = \Drupal::config('gforum.settings')
-          ->get('topic_create_help');
-        
+                ->get('topic_create_help');
+
         if ($topic_create_help && !$account->hasPermission('create forum content')) {
-          
+
           $targs['@topic_create_help'] = $topic_create_help;
           $prefix = '<p class="gforum-help">' . t('@topic_create_help', $targs) . '</p>';
           $variables['content']['#markup'] = $prefix . $variables['content']['#markup'];

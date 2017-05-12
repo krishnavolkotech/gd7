@@ -47,7 +47,7 @@
                     <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
                 </td>
                 <td rowspan="3">
-                    {% if node.isPublished() %}
+                    {% if quickinfo_field_unique_id %}
                         {{ quickinfo_field_unique_id }}
                     {% endif %}
                         <br>
@@ -56,16 +56,16 @@
                 </td>
                 <td height="35">
                     {{ 'Veröffentlicht am'|trans }}:
-                    {% if node.isPublished() %}
-                        {{ node.getCreatedTime|format_date('hzd_datetime') }}
+                    {% if quickinfo_field_unique_id %}
+                        {{ publishedTime|format_date('hzd_datetime') }}
                     {% endif %}
                 </td>
             </tr>
             <tr>
                 <td height="35" width="30%">
                     {{ 'Veröffentlicht von'|trans }}:
-                    {% if node.isPublished() %}
-                        {{ node.getOwner().getDisplayName() }}
+                    {% if quickinfo_field_unique_id %}
+                        {{ publisher }}
                     {% endif %}
                 </td>
             </tr>
@@ -96,9 +96,9 @@
         </div>
     </div>
 {% endif %}
-{% if pdf_original_link %}
+{#{% if pdf_original_link %}#}
     <hr>
-    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}):{{ pdf_original_link }}</div>
-{% endif %}
+    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}):{{ url }}</div>
+{#{% endif %}#}
 </body>
 </html>
