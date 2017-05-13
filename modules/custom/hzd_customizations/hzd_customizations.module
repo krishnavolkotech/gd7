@@ -687,7 +687,7 @@ function generate_quickinfo_pdf($node = NULL) {
     foreach (explode(',', trim($val->mail, ',')) as $usermail) {
       $userEntity = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => trim($usermail)]);
       if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 0 && reset($userEntity)->isActive()) {
-        $recepients[] = $val->mail;
+        $recepients[] = $usermail;
       }
     }
   }
