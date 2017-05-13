@@ -44,11 +44,13 @@
         <table border="1" width="100%" height="230" cellspacing="0" cellpadding="0">
             <tr>
                 <td height="35" width="20%" rowspan="3">
-                    <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
+                    <img alt="Home" src="{{ base_url }}/themes/hzd/images/hzd_pdf_logo.png"></td>
                 </td>
                 <td rowspan="3">
                     {% if quickinfo_field_unique_id %}
                         {{ quickinfo_field_unique_id }}
+                        {% else %}
+                          RZ-Schnellinfo-Nr.XXXX
                     {% endif %}
                         <br>
 
@@ -58,6 +60,8 @@
                     {{ 'Veröffentlicht am'|trans }}:
                     {% if quickinfo_field_unique_id %}
                         {{ publishedTime|format_date('hzd_datetime') }}
+                        {% else %}
+                          {{ 'unpublished'|trans }}
                     {% endif %}
                 </td>
             </tr>
