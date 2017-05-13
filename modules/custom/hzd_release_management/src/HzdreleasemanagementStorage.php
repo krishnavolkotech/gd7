@@ -467,8 +467,8 @@ class HzdreleasemanagementStorage
                 
                 // Check secure-download string is in documentation link. If yes excluded from documentation download.
                 if (empty($link_search)) {
-                    $root_path = \Drupal::service('file_system')->realpath("public://");
-                    $path = \Drupal::service('file_system')->realpath( "public://") . "/releases";
+                    $root_path = \Drupal::service('file_system')->realpath("private://");
+                    $path = \Drupal::service('file_system')->realpath( "private://") . "/releases";
                     // $service = "'" . $service . "'";.
                     $release_title = strtolower($release_title);
                     $service = strtolower($service);
@@ -1146,11 +1146,13 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
             }
             if ($releases->field_link->value) {
                 $options['attributes'] = array('class' => 'download_img_icon');
-                $url = Url::fromUri($releases->field_link->value, $options);
-                $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
-                $download = "<img src = '/" . $download_imgpath . "'>";
-                $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
-                $link_path = \Drupal::service('renderer')->renderRoot($download_link);
+                if(\Drupal\Component\Utility\UrlHelper::isValid($releases->field_link->value)){
+                  $url = Url::fromUri($releases->field_link->value, $options);
+                  $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
+                  $download = "<img src = '/" . $download_imgpath . "'>";
+                  $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
+                  $link_path = \Drupal::service('renderer')->renderRoot($download_link);
+                }
             } else {
                 $link_path = '';
             }
