@@ -541,7 +541,7 @@ function hzd_release_management_node_insert($entity) {
   }
   
   if ($entity->getType() == 'quickinfo') {
-    send_qi_notifications($entity);
+//    send_qi_notifications($entity);
   }
   
   if ($entity->getType() == 'services') {
@@ -595,7 +595,7 @@ function hzd_release_management_node_update($entity) {
   
   if ($entity->getType() == 'quickinfo') {
 //    if ($entity->get('status')->value) {
-      send_qi_notifications($entity);
+//      send_qi_notifications($entity);
 //    }
   }
   
