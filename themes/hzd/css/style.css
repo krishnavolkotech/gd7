@@ -1224,7 +1224,7 @@ table.view-deployed-releases {
   border-bottom: none !important;
 }
 article .quickedit-field {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   width: 100%;
   float: left;
 }
@@ -1293,8 +1293,12 @@ article .quickedit-field .field__items .field--item {
   font-family: 'robotomedium';
   font-weight: 300 !important;
 }
+.views-exposed-form{
+  margin:10px 0;
+}
 .views-exposed-form .form-actions{
-  margin:0 !important ;
+  float:right ;
+  margin:0 !important;
 }
 .views-exposed-form .form-actions button{
   margin:0 5px 0 0 !important;
@@ -2380,6 +2384,11 @@ article.quickinfo{
   margin:10px 0 20px 0;
   text-align:left;
 }
+article.downtimes h3{ 
+  width:100%;
+  float:left;
+  margin:10px 0 !important;
+}
 article.downtimes .downtime-view-wrapper{
   /*border:1px solid #aaaaaa;*/
   background:#f5f7fa;
@@ -2389,12 +2398,25 @@ article.downtimes .downtime-view-wrapper{
   margin:10px 0 20px 0;
   text-align:left;
 }
+article.downtimes .form-group,
 article.quickinfo .field--name-field-unique-id,
 article.quickinfo .field,
 article.quickinfo .field .field--label{
   width:100%;
   float:left;
 } 
+.quickinfo-attachments table tr td.checkbox{
+ margin:0;
+}
+.quickinfo-attachments table tr td.checkbox .form-type-checkbox{
+  text-align:center;
+}
+.quickinfo-attachments table tr td{
+  border:none;
+}
+article.quickinfo .field .field--label{
+  margin-bottom:3px;
+}
 .region-content .field--label-inline .field--label,
 .region-content .field--label-inline .field--item
 {
@@ -2414,6 +2436,11 @@ article.quickinfo .field .field--items{
   float:left;
   margin:0 0 3px 2%;
 }
+dl dt,dl da,
+article.quickinfo .field .field--item ul li{
+  margin:0 0 7px 0;
+}
+
 article.downtimes .Incident .downtimes_content{
   width:75% !important;
   float:left;
@@ -2430,6 +2457,27 @@ article.quickinfo table{
   width:100%;
   margin:10px 0;
 }
+#earlywarnings_results_wrapper .table-responsive table tr td.responses-cell{
+  text-align:center;
+}
+.quickinfo-attachments table tr.checkbox{
+  margin:0;
+}
+.quickinfo-attachments table th.checkbox{
+  display:table-cell;
+}
+.quickinfo-attachments table tr{
+  border-bottom:1px solid #ddd;
+}
+.quickinfo-attachments table tr td button#edit-upload-1-remove-button{
+  margin-top:25px;
+}
+.quickinfo-attachments table tr td{
+  border:0 !important;
+}
+.quickinfo-attachments .field--name-upload .table-responsive button.tabledrag-toggle-weight{
+  float:right;
+}
 article.quickinfo h2{
   width:100%;
   float:left;
@@ -2441,7 +2489,7 @@ article.downtimes .downtime-view-history{
   width:100%;
   float:left;
   font-size:20px;
-  margin-bottom:15px;
+  margin-bottom:10px;
   color: #04425f;
 }
 article.downtimes .changed-group .reason p{
@@ -2641,22 +2689,23 @@ form.cancel-form{
  padding:13px 20px;
  border:none;
 }
+body.path-group .main-container .region-content,
 body.path-address .main-container .region-content,
 body.path-node .main-container .region-content,
 .hzd-innerpage-wrapper .main-container .region-content{
   background: #fff none repeat scroll 0 0;
   border: 1px solid #e6e9ed;
   float: left;
-  padding: 20px 20px 0;
   width: 100%;
   margin: 0 0 10px;
 }
+body.path-address .main-container .region-content,{
+  padding: 20px 20px 0;
+}
+body.path-node .main-container .region-content,
+.hzd-innerpage-wrapper .main-container .region-content,
 body.path-group .main-container .region-content{
-   background: #fff none repeat scroll 0 0;
-    border: 1px solid #e6e9ed;
-    float: left;
-    margin: 0 0 10px;
-    padding: 20px 20px 10px 20px; 
+  padding: 20px 20px 10px 20px; 
 }
 /*----  16-12-16   ----*/
 .text-danger td a.downtimes_details_link{
