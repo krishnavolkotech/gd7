@@ -137,6 +137,7 @@ function hzd_preprocess_node(&$variables) {
     $variables['transkription_fmk_files'] = $files;
   }
   if ($variables['node']->getType() == 'quickinfo') {
+    $variables['base_url'] = 'http://'.\Drupal::request()->getHost();
     /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
       $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
       if ($variables['node']->isPublished()) {
