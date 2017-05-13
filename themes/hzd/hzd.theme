@@ -94,7 +94,7 @@ function hzd_preprocess_printable(&$variables) {
 function hzd_preprocess_entity_print(&$vars) {
 //    pr(($vars));exit;
   $vars['quickinfo'] = FALSE;
-  $vars['base_url'] = \Drupal::request()->getHost();
+  $vars['base_url'] = 'http://'.\Drupal::request()->getHost();
   $node = !empty($vars['content'][0]['#node']) ? $vars['content'][0]['#node'] : NULL;
   $group = !empty($vars['content'][0]['#group']) ? $vars['content'][0]['#group'] : NULL;
   $entity = $node ? $node : ($group ? $group : null);
