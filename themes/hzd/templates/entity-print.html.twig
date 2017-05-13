@@ -44,11 +44,13 @@
         <table border="1" width="100%" height="230" cellspacing="0" cellpadding="0">
             <tr>
                 <td height="35" width="20%" rowspan="3">
-                    <img alt="Home" src="/themes/hzd/images/hzd_pdf_logo.png"></td>
+                    <img alt="Home" src="{{ base_url }}/themes/hzd/images/hzd_pdf_logo.png"></td>
                 </td>
                 <td rowspan="3">
-                    {% if node.isPublished() %}
+                    {% if quickinfo_field_unique_id %}
                         {{ quickinfo_field_unique_id }}
+                        {% else %}
+                          RZ-Schnellinfo-Nr.XXXX
                     {% endif %}
                         <br>
 
@@ -56,16 +58,18 @@
                 </td>
                 <td height="35">
                     {{ 'Veröffentlicht am'|trans }}:
-                    {% if node.isPublished() %}
-                        {{ node.getCreatedTime|format_date('hzd_datetime') }}
+                    {% if quickinfo_field_unique_id %}
+                        {{ publishedTime|format_date('hzd_datetime') }}
+                        {% else %}
+                          {{ 'unpublished'|trans }}
                     {% endif %}
                 </td>
             </tr>
             <tr>
                 <td height="35" width="30%">
                     {{ 'Veröffentlicht von'|trans }}:
-                    {% if node.isPublished() %}
-                        {{ node.getOwner().getDisplayName() }}
+                    {% if quickinfo_field_unique_id %}
+                        {{ publisher }}
                     {% endif %}
                 </td>
             </tr>
@@ -87,7 +91,7 @@
     <div class="pdf-wrapper">
         <header>
             <div class="logo-sec-pdf">
-                <img alt="Home" src="{{ base_path }}/sites/default/files/hzd_logo.gif">
+                <img alt="Home" src="{{ base_url }}/sites/default/files/hzd_logo.gif">
             </div>
         </header>
         <div class="pdf-content">
@@ -96,9 +100,9 @@
         </div>
     </div>
 {% endif %}
-{% if pdf_original_link %}
+{#{% if pdf_original_link %}#}
     <hr>
-    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}):{{ pdf_original_link }}</div>
-{% endif %}
+    <div class="pdf-footer">Source URL (retrieved on {{ 'now'|date('d.m.Y H:i') }}):{{ url }}</div>
+{#{% endif %}#}
 </body>
 </html>

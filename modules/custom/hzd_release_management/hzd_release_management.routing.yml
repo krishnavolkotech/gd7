@@ -136,7 +136,9 @@ hzd_release_management.document_page_link:
     _title_callback: '\Drupal\hzd_release_management\Controller\HzdReleases::getTitle'
     _entity_view: group.default
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+#    _access: 'FALSE'
+    _group_permission: 'leave group'
 
 # create a zip link to download document files
 hzd_release_management.document_zip_link:
