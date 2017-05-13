@@ -331,6 +331,10 @@ function cust_group_mail($key, &$message, $params) {
  */
 function cust_group_entity_type_alter(array &$entity_types) {
   $entity_types['user']->setHandlerClass('access', UserAccessControl::class);
+  $nodeFormHandlers = $entity_types['node']->get('handlers');
+  $nodeFormHandlers['form']['default'] =    'Drupal\cust_group\Form\AlteredNodeForm';
+  $nodeFormHandlers['form']['edit'] = 'Drupal\cust_group\Form\AlteredNodeForm';
+  $entity_types['node']->set('handlers', $nodeFormHandlers);
 }
 
 /*function cust_group_mail_alter(&$message) {
