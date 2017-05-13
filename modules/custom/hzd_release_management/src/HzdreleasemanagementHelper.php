@@ -209,7 +209,7 @@ class HzdreleasemanagementHelper
         $releases_title = $release_product[0] . "_" . $release_versions[0];
         
         // Get the documentation folder path.
-        $file_path = \Drupal::service('file_system')->realpath("public://");
+        $file_path = \Drupal::service('file_system')->realpath("private://");
         
         $get_product = $file_path . "/releases/" . strtolower($service_name) . "/" . strtolower($release_product[0]);
         $product = strtolower($release_product[0]);
@@ -274,7 +274,7 @@ class HzdreleasemanagementHelper
         $host_path = "http://" . $host . "/files/releases/" . strtolower($service_name) . "/" . $product;
         $upper_product = $doc_values['upper_product'];
         $zip_link = $doc_values['zip_link'];
-        $file_path = \Drupal::service('file_system')->realpath("public://");
+        $file_path = \Drupal::service('file_system')->realpath("private://");
         $release_dir = $file_path . "/releases/'" . $service_name . "'";
         $new_directory = $release_dir . "/" . $product . "/" . $product . "_" . max($arr) . "/dokumentation";
         $root_path = $file_path . "/releases/downloads";
@@ -342,7 +342,7 @@ class HzdreleasemanagementHelper
                             $version = max($arr_copy);
                             $search_version = array_search($version, $arr_copy);
                             unset($arr_copy[$search_version]);
-                            $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+                            $file_path = \Drupal::service('file_system')->realpath("private://");
                             $release_dir = $file_path . "/releases/" . $service_name;
                             if (count($arr_copy) > 0) {
                                 $title = $upper_product . "_" . max($arr_copy);

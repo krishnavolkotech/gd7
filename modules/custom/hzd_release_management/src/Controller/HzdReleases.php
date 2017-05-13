@@ -92,7 +92,7 @@ class HzdReleases extends ControllerBase
     public function DownloadDocumentFiles($service_id, $release_id) {
         $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
         $zip = HzdreleasemanagementHelper::zip_file_path($doc_values);
-        $path = \Drupal::service('file_system')->realpath("public://");
+        $path = \Drupal::service('file_system')->realpath("private://");
         $files_path = $path . "/releases/downloads";
         $zipfiles = $files_path . '/' . $zip;
         
@@ -219,7 +219,7 @@ class HzdReleases extends ControllerBase
             if (!empty($files)) {
                 
                 $host = \Drupal::request()->getHost();
-                $host_path = "http://" . $host . "/sites/default/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
+                $host_path = "http://" . $host . "/system/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
                 unset($arr[0]);
                 unset($arr[1]);
                 
