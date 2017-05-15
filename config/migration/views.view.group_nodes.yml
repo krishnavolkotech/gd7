@@ -39,13 +39,13 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Suchen
           reset_button: false
           reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
+          exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
+          sort_asc_label: Auf
+          sort_desc_label: Ab
       pager:
         type: full
         options:
@@ -56,8 +56,8 @@ display:
           tags:
             previous: ‹‹
             next: ››
-            first: '« First'
-            last: 'Last »'
+            first: '« Erste'
+            last: 'Letzte »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -193,7 +193,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Title
+          label: Titel
           exclude: false
           alter:
             alter_text: false
@@ -258,7 +258,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Type
+          label: Typ
           exclude: false
           alter:
             alter_text: false
@@ -323,7 +323,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Author
+          label: Autor
           exclude: false
           alter:
             alter_text: false
@@ -455,7 +455,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Created
+          label: Erstellt
           exclude: false
           alter:
             alter_text: false
@@ -522,7 +522,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Updated
+          label: Geändert
           exclude: false
           alter:
             alter_text: false
@@ -844,7 +844,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Operations
+          label: Aktionen
           exclude: false
           alter:
             alter_text: false
@@ -893,7 +893,9 @@ display:
             delete_node: delete_node
             title: '0'
             type: '0'
+            uid: '0'
             status: '0'
+            created: '0'
             changed: '0'
           destination: true
           plugin_id: dropbutton
@@ -969,7 +971,7 @@ display:
               group_admin: '0'
           is_grouped: true
           group_info:
-            label: 'Published status'
+            label: Status
             description: ''
             identifier: status
             optional: true
@@ -1003,7 +1005,7 @@ display:
           exposed: true
           expose:
             operator_id: type_op
-            label: Type
+            label: Typ
             description: ''
             use_operator: false
             operator: type_op
@@ -1015,7 +1017,9 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-              group_admin: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
             reduce: false
           is_grouped: false
           group_info:
@@ -1045,7 +1049,7 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'No content available.'
+          content: 'Keine Inhalte vorhanden.'
           plugin_id: text_custom
       relationships:
         group_content:
@@ -1073,7 +1077,7 @@ display:
             title_enable: false
             title: All
           title_enable: true
-          title: '{{ arguments.gid|placeholder }} nodes'
+          title: 'Inhalte von {{ arguments.gid|placeholder }}'
           default_argument_type: fixed
           default_argument_options:
             argument: ''
@@ -1098,7 +1102,7 @@ display:
           entity_field: gid
           plugin_id: numeric
       display_extenders: {  }
-      title: Nodes
+      title: Inhalte
       filter_groups:
         operator: AND
         groups:
@@ -1123,14 +1127,13 @@ display:
       path: group/%group/nodes
       menu:
         type: tab
-        title: Nodes
+        title: Inhalte
         description: ''
         expanded: false
         parent: ''
         weight: 25
         context: '0'
         menu_name: main
-        enabled: true
     cache_metadata:
       max-age: 0
       contexts:

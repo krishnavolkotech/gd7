@@ -733,7 +733,7 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'No data created.'
+            value: 'Keine Ergebnisse gefunden.'
             format: basic_html
           plugin_id: text
       relationships:

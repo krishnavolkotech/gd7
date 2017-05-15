@@ -525,7 +525,7 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
   if (in_array($entity->id(), array_keys($plannigFileRef))) {
     $items = get_planning_file_data($plannigFileRef[$entity->id()]);
     $build['planning_file_data'] = [
-      '#prefix' => '<strong>Dataen</strong>:',
+      '#prefix' => '<h1 class="js-quickedit-page-title page-header">' . t('Files') . '</h1>',
       '#items' => $items,
       '#theme' => 'item_list',
       '#type' => 'ul',
