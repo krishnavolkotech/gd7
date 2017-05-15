@@ -3069,4 +3069,15 @@ header .block-cust-group-search-block button{
   margin-bottom:5px;
   border-bottom:1px dotted #04425f;
 }
-
+span.form-required::after{
+  background-image:none !important;
+}
+span.form-required::after,
+.form-wrapper .panel-title.form-required::after {
+  content:" * " !important;
+  display: inline-block;
+  line-height: 1;
+  color:#ef1616;
+  font-size:17px;
+  font-weight:700;
+}
