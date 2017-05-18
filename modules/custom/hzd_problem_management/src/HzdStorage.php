@@ -519,7 +519,8 @@ class HzdStorage {
         current($node_problem_group_id));
       $groupContentItemUrl = null;
       if ($groupContentEntity instanceof \Drupal\group\Entity\GroupContent) {
-        $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, Url::fromRoute('cust_group.group_content_view', ['group' => $groupContentEntity->getGroup()->id(), 'group_content' => $groupContentEntity->id(), 'type' => 'problems'], ['absolute' => 1, 'query' => $exposedFilterData]));
+        $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical',['absolute' => 1, 'query' => $exposedFilterData]));
+//        $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, Url::fromRoute('cust_group.group_content_view', ['group' => $groupContentEntity->getGroup()->id(), 'group_content' => $groupContentEntity->id(), 'type' => 'problems'], ['absolute' => 1, 'query' => $exposedFilterData]));
 //                $groupContentItemUrl = $groupContentEntity->toLink(
 //                    $problems_node->field_s_no->value, 'canonical', ['absolute' => 1,
 //                        'query' => $exposedFilterData,

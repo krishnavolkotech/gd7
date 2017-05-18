@@ -28,7 +28,7 @@ class Gruppenadministration extends BlockBase {
   /**
    *
    */
-  public function access(AccountInterface $account, $return_as_object = false) {
+  /*public function access(AccountInterface $account, $return_as_object = false) {
     $routeMatch = \Drupal::routeMatch();
     if ($account->id()) {
       $group = \Drupal::routeMatch()->getParameter('group');
@@ -49,13 +49,21 @@ class Gruppenadministration extends BlockBase {
     else {
       return AccessResult::forbidden();
     }
-  }
+  }*/
 
   /**
    *
    */
   public static function hzdGroupAdminLinks() {
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $routeMatch = \Drupal::routeMatch();
+    $group = $routeMatch->getParameter('group');
+    $node = $routeMatch->getParameter('node');
+    if (!empty($node) && empty($group)) {
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+      if (!empty($groupContent)) {
+        $group = $groupContent->getGroup();
+      }
+    }
 //    if (empty($group)) {
 //      $group = \Drupal::routeMatch()->getParameter('arg_0');
 //    }

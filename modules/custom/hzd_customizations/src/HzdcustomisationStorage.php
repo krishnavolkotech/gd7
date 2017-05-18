@@ -972,7 +972,7 @@ class HzdcustomisationStorage {
               $links['action']['popup']['view']['details'] = [
                 '#title' => t('Details'),
                 '#type' => 'link',
-                '#url' => Url::fromRoute('cust_group.group_content_view', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
+                '#url' => Url::fromRoute('entity.node.canonical', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_details_link']], 'query' => $exposedFilterData])
               ];
             }
 
@@ -983,7 +983,7 @@ class HzdcustomisationStorage {
                 $links['action']['edit'] = [
                   '#title' => t('Update'),
                   '#type' => 'link',
-                  '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
+                  '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
                 ];
                 if ($client->startdate_planned > REQUEST_TIME) {
                   $links['action']['cancel'] = [
@@ -995,7 +995,7 @@ class HzdcustomisationStorage {
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }
@@ -1005,12 +1005,12 @@ class HzdcustomisationStorage {
                   $links['action']['edit'] = [
                     '#title' => t('Update'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('cust_group.group_content_edit', ['group' => $group_id, 'group_content' => $groupContent->id(), 'type' => 'downtimes'], ['attributes' => ['class' => ['downtimes_update_link']]])
+                    '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_update_link']]])
                   ];
                   $links['action']['resolve'] = [
                     '#title' => t('Resolve'),
                     '#type' => 'link',
-                    '#url' => Url::fromRoute('downtimes.resolve', ['group' => $group_id, 'group_content' => $groupContent->id()], ['attributes' => ['class' => ['downtimes_resolve_link']]])
+                    '#url' => Url::fromRoute('downtimes.resolve', ['node' => $client->downtime_id], ['attributes' => ['class' => ['downtimes_resolve_link']]])
                   ];
                 }
               }

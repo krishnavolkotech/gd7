@@ -47,13 +47,13 @@ class GroupMenuMigrateController extends ControllerBase {
 //                    exit;
           }
         }
-        elseif (count(explode('/', trim(str_replace('internal:/', '', $uri), '/'))) == 2) {
-          $newUri = $this->getGroupNodeUri($uri);
-          if ($newUri) {
-            $menu->set('link', ['uri' => 'internal:/' . $newUri])->save();
-          }
-          //echo $uri.'==='.$newUri.'<br>';
-        }
+//        elseif (count(explode('/', trim(str_replace('internal:/', '', $uri), '/'))) == 2) {
+//          $newUri = $this->getGroupNodeUri($uri);
+//          if ($newUri) {
+//            $menu->set('link', ['uri' => 'internal:/' . $newUri])->save();
+//          }
+//          //echo $uri.'==='.$newUri.'<br>';
+//        }
         
       }
       

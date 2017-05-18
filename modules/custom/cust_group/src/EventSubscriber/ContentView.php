@@ -66,20 +66,20 @@ class ContentView implements EventSubscriberInterface {
       return;
     }
     $node = $request->attributes->get('node');
-    if ($groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id())) {
-      $type = $node->getType();
-      $typeMappings = ['problem'=>'problems','quickinfo'=>'rz-schnellinfos','downtimes'=>'downtimes'];
-      if(in_array($type,array_keys($typeMappings))){
-        $group = $groupContent->getGroup()->id();
-        $groupContentTye = $typeMappings[$type];
-        
-        $response = new RedirectResponse(Url::fromRoute('cust_group.group_content_view',['group'=>$group,'type'=>$groupContentTye,'group_content'=>$groupContent->id()])->toString());
-      }else{
-        $response = new RedirectResponse($groupContent->toUrl()->toString());
-      }
-      
-      $event->setResponse($response);
-    }
+//    if ($groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id())) {
+//      $type = $node->getType();
+//      $typeMappings = ['problem'=>'problems','quickinfo'=>'rz-schnellinfos','downtimes'=>'downtimes'];
+//      if(in_array($type,array_keys($typeMappings))){
+//        $group = $groupContent->getGroup()->id();
+//        $groupContentTye = $typeMappings[$type];
+//        
+//        $response = new RedirectResponse(Url::fromRoute('cust_group.group_content_view',['group'=>$group,'type'=>$groupContentTye,'group_content'=>$groupContent->id()])->toString());
+//      }else{
+//        $response = new RedirectResponse($groupContent->toUrl()->toString());
+//      }
+//      
+//      $event->setResponse($response);
+//    }
     if($node->getType() == 'service_profile'){
       $response = new RedirectResponse(Url::fromRoute('downtimes.service_profiles',['group'=>INCIDENT_MANAGEMENT])->toString());
       $event->setResponse($response);

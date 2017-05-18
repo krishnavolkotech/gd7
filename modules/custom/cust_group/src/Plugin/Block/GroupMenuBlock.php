@@ -22,7 +22,7 @@ use Drupal\Core\Url;
  */
 class GroupMenuBlock extends BlockBase {
   
-  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = FALSE) {
+/*  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = FALSE) {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
     if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
@@ -36,7 +36,7 @@ class GroupMenuBlock extends BlockBase {
       return \Drupal\Core\Access\AccessResult::allowed();
     }
     return \Drupal\Core\Access\AccessResult::neutral();
-  }
+  }*/
   
   static function showBlock($routeMatch = NULL) {
     $routeToHide = [
@@ -67,14 +67,14 @@ class GroupMenuBlock extends BlockBase {
   public function build() {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
-    if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
-      $node = $routeMatch->getParameter('node');
+    $node = $routeMatch->getParameter('node');
+    if (!empty($node) && empty($group)) {
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       if (!empty($groupContent)) {
         $group = $groupContent->getGroup();
       }
     }
-    //pr($group->id());exit;
+//    pr($group->id());exit;
     if (!empty($group)) {
       //pr($group);exit;
       if (!is_object($group)) {

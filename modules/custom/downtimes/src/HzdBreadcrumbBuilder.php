@@ -18,6 +18,7 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface
      * {@inheritdoc}
      */
     public function applies(RouteMatchInterface $route_match) {
+      return FALSE;
         $route_name = $route_match->getRouteName();
         $params = $route_match->getParameters()->all();
         if (in_array($route_name, ['entity.group_content.canonical']) && in_array($params['group_content']->getEntity()->bundle(), ['early_warnings'])) {
