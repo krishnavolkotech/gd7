@@ -21,36 +21,34 @@ use Drupal\Core\Url;
  * )
  */
 class GroupMenuBlock extends BlockBase {
-  
-/*  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = FALSE) {
+  /*  public function access(\Drupal\Core\Session\AccountInterface $account, $return_as_object = FALSE) {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
     if (empty($group) && $routeMatch->getRouteName() == 'entity.node.edit_form') {
-      $node = $routeMatch->getParameter('node');
-      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-      if (!empty($groupContent)) {
-        $group = $groupContent->getGroup();
-      }
+    $node = $routeMatch->getParameter('node');
+    $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+    if (!empty($groupContent)) {
+    $group = $groupContent->getGroup();
+    }
     }
     if (!empty($group) && self::showBlock($routeMatch)) {
-      return \Drupal\Core\Access\AccessResult::allowed();
+    return \Drupal\Core\Access\AccessResult::allowed();
     }
     return \Drupal\Core\Access\AccessResult::neutral();
-  }*/
-  
+    } */
+
   static function showBlock($routeMatch = NULL) {
     $routeToHide = [
-      'downtimes.new_downtimes_controller_newDowntimes',
-      'downtimes.archived_downtimes_controller',
-      'problem_management.problems',
-      'problem_management.archived_problems',
-      'problem_management.import_history',
-      'downtimes.DowntimesnotesDisplay',
+        'downtimes.new_downtimes_controller_newDowntimes',
+        'downtimes.archived_downtimes_controller',
+        'problem_management.problems',
+        'problem_management.archived_problems',
+        'problem_management.import_history',
+        'downtimes.DowntimesnotesDisplay',
     ];
     $parameters = $routeMatch->getParameters();
-    if ($routeMatch->getRouteName() == 'cust_group.node_view'
-      && $parameters->get('group')
-        ->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
+    if ($routeMatch->getRouteName() == 'cust_group.node_view' && $parameters->get('group')
+                    ->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
     ) {
       //exception for downtimes content type
       return FALSE;
@@ -60,21 +58,13 @@ class GroupMenuBlock extends BlockBase {
     }
     return TRUE;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function build() {
-    $routeMatch = \Drupal::routeMatch();
-    $group = $routeMatch->getParameter('group');
-    $node = $routeMatch->getParameter('node');
-    if (!empty($node) && empty($group)) {
-      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-      if (!empty($groupContent)) {
-        $group = $groupContent->getGroup();
-      }
-    }
-//    pr($group->id());exit;
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+//    pr($routeMatch->getParameters());exit;
     if (!empty($group)) {
       //pr($group);exit;
       if (!is_object($group)) {
@@ -83,51 +73,49 @@ class GroupMenuBlock extends BlockBase {
       $user = \Drupal::currentUser();
       $groupMember = $group->getMember($user);
       $groupMember = (bool) ($groupMember && $groupMember->getGroupContent()
-          ->get('request_status')->value == 1);
+                      ->get('request_status')->value == 1);
       //pr((bool)$groupMember);exit;
       if ($groupMember || array_intersect($user->getRoles(), [
-          'admininstrator',
-          'site_administrator'
-        ])
+                  'admininstrator',
+                  'site_administrator'
+              ])
       ) {
         $oldId = $group->get('field_old_reference')->value;
         $menu_name = 'menu-' . $oldId;
         $menu_tree = \Drupal::menuTree();
         // Build the typical default set of menu tree parameters.
         $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
-        
+
         // Load the tree based on this set of parameters.
         $tree = $menu_tree->load($menu_name, $parameters);
         $manipulators = [
-          ['callable' => 'menu.default_tree_manipulators:checkAccess'],
-          ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']
+            ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+            ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']
         ];
-        
+
         $tree = $menu_tree->transform($tree, $manipulators);
-        
+
         // Finally, build a renderable array from the transformed tree.
         $menu = $menu_tree->build($tree);
-        
+
         //    $menu_html = drupal_render($menu);
         $title = $group->label();
         return [
-          '#title' => $title,
-          '#markup' => \Drupal::service('renderer')->render($menu),
-          '#cache' => ['max-age' => 0]
+            '#title' => $title,
+            '#markup' => \Drupal::service('renderer')->render($menu),
+            '#cache' => ['max-age' => 0]
         ];
-      }
-      else {
+      } else {
         if ($group->bundle() == 'open' || $group->bundle() == 'moderate' || $group->bundle() == 'moderate_private') {
           $title = $this->t('Actions for @group', ['@group' => $group->label()]);
           $group_member_join_link = ['#type' => 'link'];
           if ($group->bundle() == 'open') {
             $group_member_join_link['#url'] = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
             $group_member_join_link['#title'] = $this->t('Join Group');
-          }
-          elseif (in_array($group->bundle(), [
-            'moderate',
-            'moderate_private'
-          ])) {
+          } elseif (in_array($group->bundle(), [
+                      'moderate',
+                      'moderate_private'
+                  ])) {
             $group_member_join_link['#url'] = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
             $group_member_join_link['#title'] = $this->t('Request Membership');
           }
@@ -137,20 +125,20 @@ class GroupMenuBlock extends BlockBase {
           $groupAdmins = $group->getMembers($group->bundle() . '-admin');
           foreach ($groupAdmins as $groupadmin) {
             $data[] = [
-              '#type' => 'link',
-              '#title' => $groupadmin->getUser()->getDisplayName(),
-              '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()
-                  ->getEmail())
+                '#type' => 'link',
+                '#title' => $groupadmin->getUser()->getDisplayName(),
+                '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()
+                                ->getEmail())
             ];
           }
           $markup['groupadmin_list'] = [
-            '#title' => $this->t('List of Group Admin'),
-            '#prefix' => '<div>',
-            '#suffix' => '</div>',
-            '#items' => $data,
-            '#theme' => 'item_list',
-            '#type' => 'ul',
-            //'#attributes' => ['class' => ['incidents-home-block']]
+              '#title' => $this->t('List of Group Admin'),
+              '#prefix' => '<div>',
+              '#suffix' => '</div>',
+              '#items' => $data,
+              '#theme' => 'item_list',
+              '#type' => 'ul',
+                  //'#attributes' => ['class' => ['incidents-home-block']]
           ];
           $markup['#cache'] = ['max-age' => 0];
           return $markup;
@@ -159,4 +147,5 @@ class GroupMenuBlock extends BlockBase {
     }
     return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
   }
+
 }
