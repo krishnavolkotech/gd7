@@ -116,7 +116,7 @@ class GroupMenuMigrateController extends ControllerBase {
 //      pr($tid);exit;
       $termEntity = Term::load(reset($tid)); 
       if($termEntity)
-      return $termEntity->toUrl()->getInternalPath();
+      return '/'.$termEntity->toUrl()->getInternalPath();
     }
     echo 'migrate faq';
     pr($oldUri);
