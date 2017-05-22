@@ -28,39 +28,41 @@ dependencies:
     - node.type.quickinfo
   module:
     - comment
+    - field_group
     - file
-    - path
     - text
 third_party_settings:
   field_group:
     group_meta_data:
       label: '1 Meta-Daten'
-      weight: 5
+      weight: 1
       children:
         - field_custom_title
+        - field_related_transfer_number
         - field_other_services
         - field_recipients
-        - field_related_transfer_number
       format_type: fieldset
       format_settings: {  }
+      parent_name: ''
     group_content_information:
       label: '2 Fachlich-inhaltliche Angaben'
-      weight: 6
+      weight: 2
       children:
-        - field_business_impact
-        - field_business_impact_services
-        - field_contact
-        - field_creators
-        - field_dates
-        - field_depend_other_services
         - field_intial_situation
         - field_professional_conditions
-        - field_special_notes
         - field_tech_requirements
+        - field_depend_other_services
+        - field_business_impact
         - field_technical_impact
+        - field_business_impact_services
         - field_technical_impact_services
+        - field_special_notes
+        - field_dates
+        - field_creators
+        - field_contact
       format_type: fieldset
       format_settings: {  }
+      parent_name: ''
 id: node.quickinfo.default
 targetEntityType: node
 bundle: quickinfo
@@ -68,16 +70,16 @@ mode: default
 content:
   comment:
     type: comment_default
-    weight: 23
+    weight: 10
     settings: {  }
     third_party_settings: {  }
   created:
     type: datetime_timestamp
-    weight: 19
+    weight: 6
     settings: {  }
     third_party_settings: {  }
   field_additional_email_recipient:
-    weight: 18
+    weight: 5
     type: string_textarea
     settings:
       placeholder: ''
@@ -85,14 +87,14 @@ content:
     third_party_settings: {  }
   field_author_name:
     type: string_textarea
-    weight: 26
+    weight: 12
     settings:
       rows: 1
       placeholder: ''
     third_party_settings: {  }
   field_author_state:
     type: string_textarea
-    weight: 25
+    weight: 11
     settings:
       rows: 1
       placeholder: ''
@@ -206,27 +208,26 @@ content:
     third_party_settings: {  }
     type: text_textarea
   field_unique_id:
-    weight: 20
+    weight: 7
     type: number
     settings:
       placeholder: ''
-    third_party_settings: {  }
-  path:
-    type: path
-    weight: 24
-    settings: {  }
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 21
+    weight: 8
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 22
+    weight: 9
+    third_party_settings: {  }
+  translation:
+    weight: 3
+    settings: {  }
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
@@ -240,8 +241,9 @@ content:
     settings:
       progress_indicator: throbber
     type: file_generic
-    weight: 17
+    weight: 4
     third_party_settings: {  }
 hidden:
   langcode: true
+  path: true
   title: true

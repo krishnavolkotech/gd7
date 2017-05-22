@@ -14,7 +14,7 @@ third_party_settings:
 id: incidentblock_2
 theme: hzd
 region: sidebar_first
-weight: -27
+weight: -29
 provider: null
 plugin: incidents_block
 settings:

@@ -1,0 +1,8 @@
+uuid: 1b44c529-9b76-4d4d-b9cc-da0b7c55371b
+langcode: de
+status: true
+dependencies: {  }
+id: menu-53512
+label: BuStra/Steufa
+description: null
+locked: false

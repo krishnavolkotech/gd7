@@ -499,7 +499,6 @@ permissions:
   506: 'administer group_content display'
   507: 'administer group_content fields'
   508: 'administer group_content form display'
-  509: 'administer forums'
   510: 'access in-place editing'
   511: 'administer search_api'
   512: 'administer simplify'

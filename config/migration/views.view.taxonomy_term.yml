@@ -1,6 +1,6 @@
 uuid: 916386a2-03bb-462a-9a12-61e65d58a736
 langcode: de
-status: true
+status: false
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
@@ -13,7 +13,7 @@ _core:
 id: taxonomy_term
 label: Taxonomie-Begriff
 module: taxonomy
-description: 'Content belonging to a certain taxonomy term.'
+description: 'Inhalt, der zu einem bestimmten Taxonomie-Begriff gehört.'
 tag: default
 base_table: node_field_data
 base_field: nid

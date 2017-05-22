@@ -2,8 +2,11 @@ uuid: c3766107-4602-4725-9973-0206d9209372
 langcode: en
 status: true
 dependencies:
+  config:
+    - block_visibility_groups.block_visibility_group.group_menu
   module:
     - block_class
+    - block_visibility_groups
     - hzd_release_management
     - language
     - system
@@ -15,7 +18,7 @@ third_party_settings:
 id: hzdgruppenadministration
 theme: hzd
 region: sidebar_first
-weight: -23
+weight: -26
 provider: null
 plugin: hzd_group_admin
 settings:
@@ -34,6 +37,11 @@ visibility:
       language: '@language.current_language_context:language_interface'
   request_path:
     id: request_path
-    pages: "*/problems\r\n*/problems/*\r\n*/*releases\r\n*/releases/*"
+    pages: "*/problems\r\n*/releases\r\n*/downtimes"
     negate: true
+    context_mapping: {  }
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: group_menu
     context_mapping: {  }
