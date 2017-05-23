@@ -1,0 +1,22 @@
+uuid: 76ecd127-49ef-426c-8c39-f09d9e84947f
+langcode: de
+status: false
+dependencies:
+  module:
+    - node
+id: downtimes
+label: Downtimes
+type: 'canonical_entities:node'
+pattern: 'incident-management/storung/[node:nid]'
+selection_criteria:
+  70bbb97e-20e5-4d4d-ad27-af59fbb4bfea:
+    id: node_type
+    bundles:
+      downtimes: downtimes
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 70bbb97e-20e5-4d4d-ad27-af59fbb4bfea
+selection_logic: and
+weight: -7
+relationships: {  }

@@ -1,0 +1,23 @@
+uuid: b2066d23-d16d-4a9d-9589-a86b02764f59
+langcode: de
+status: false
+dependencies:
+  module:
+    - ctools
+    - taxonomy
+id: faq_kategorie
+label: FAQ-Kategorie
+type: 'canonical_entities:taxonomy_term'
+pattern: '[term:parent:name]/faq/[term:name]'
+selection_criteria:
+  c582b9f6-83fe-45d3-976c-309fa4330f42:
+    id: 'entity_bundle:taxonomy_term'
+    bundles:
+      faq_seite: faq_seite
+    negate: false
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    uuid: c582b9f6-83fe-45d3-976c-309fa4330f42
+selection_logic: and
+weight: -5
+relationships: {  }

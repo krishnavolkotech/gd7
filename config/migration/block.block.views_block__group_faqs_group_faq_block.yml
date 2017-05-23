@@ -2,12 +2,9 @@ uuid: 3c74d833-6e0f-4f98-abb9-684742f17722
 langcode: en
 status: false
 dependencies:
-  config:
-    - views.view.group_faqs
   module:
     - block_class
     - system
-    - views
   theme:
     - hzd
 third_party_settings:

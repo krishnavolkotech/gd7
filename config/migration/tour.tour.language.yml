@@ -46,7 +46,7 @@ tips:
   language-operations:
     id: language-operations
     plugin: text
-    label: 'Modifying languages'
+    label: 'Sprachen anpassen'
     body: '<p>Operations are provided for editing and deleting your languages.</p><p>You can edit the name and the direction of the language.</p><p>Deleted languages can be added back at a later time. Deleting a language will remove all interface translations associated with it, and content in this language will be set to be language neutral. Note that you cannot delete the default language of the site.</p>'
     weight: 5
     attributes:

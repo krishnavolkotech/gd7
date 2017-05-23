@@ -31,7 +31,7 @@ tips:
     id: locale-search
     plugin: text
     label: Search
-    body: 'Enter the specific word or sentence you want to translate, you can also write just a part of a word.'
+    body: 'Eingabe eines bestimmten Wortes oder Satzes, das übersetzt werden soll. Es kann auch nur ein Teil eines Wortes angegeben werden.'
     weight: 3
     attributes:
       data-id: edit-string
@@ -47,7 +47,7 @@ tips:
     id: locale-submit
     plugin: text
     label: 'Ihre Suchkriterien anwenden'
-    body: 'To apply your search criteria, click on the <em>Filter</em> button.'
+    body: 'Um die Suchkriterien anzuwenden, auf den <em>Filter</em>-Button klicken.'
     weight: 5
     attributes:
       data-id: edit-submit

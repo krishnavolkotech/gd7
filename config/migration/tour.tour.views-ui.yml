@@ -18,7 +18,7 @@ tips:
   views-main:
     id: views-main
     plugin: text
-    label: 'Manage view settings'
+    label: 'Ansicht-Einstellungen verwalten'
     body: 'View or edit the configuration.'
     weight: 1
   views-ui-displays:
@@ -32,7 +32,7 @@ tips:
   views-ui-view-admin:
     id: views-ui-view-admin
     plugin: text
-    label: 'View administration'
+    label: 'Ansicht verwalten'
     body: 'Perform administrative tasks, including adding a description and creating a clone. Click the drop-down button to view the available options.'
     weight: 3
     location: left
@@ -90,7 +90,7 @@ tips:
     id: views-ui-preview
     plugin: text
     label: Vorschau
-    body: 'Show a preview of the view output.'
+    body: 'Vorschau der Ansicht anzeigen.'
     weight: 10
     location: left
     attributes:

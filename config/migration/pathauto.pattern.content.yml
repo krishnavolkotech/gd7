@@ -1,6 +1,6 @@
 uuid: 65554a4c-04c9-4983-ba2f-41886d8ea888
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - language
@@ -19,7 +19,7 @@ selection_criteria:
       language: 'node:langcode:language'
     uuid: e312e86b-3c62-4a33-a4b3-c2d2f71f1db4
 selection_logic: and
-weight: -5
+weight: -2
 relationships:
   'node:langcode:language':
     label: Language

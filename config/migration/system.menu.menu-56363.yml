@@ -1,0 +1,8 @@
+uuid: d7d09261-1ea2-467b-979f-612086662bf2
+langcode: de
+status: true
+dependencies: {  }
+id: menu-56363
+label: Aktenvermerke
+description: null
+locked: false
