@@ -21,9 +21,9 @@ class AlteredNodeForm extends NodeForm {
 
   public function save(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
     parent::save($form, $form_state);
-    $messages = drupal_get_messages();
     $node = $this->entity;
     if ($node->getType() == 'quickinfo') {
+      $messages = drupal_get_messages();
       if ($node->get('status')->value == 1) {
         drupal_set_message(t('@type %title has been published.', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
       } else {

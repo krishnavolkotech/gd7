@@ -263,6 +263,7 @@ class HzdcustomisationStorage {
       $query->condition('nfds.field_dependent_service_target_id', $service->nid);
       $query->range(0, 1);
       $id = $query->execute()->fetchField();
+      $current_uri = \Drupal::request()->getRequestUri();
       if ($id) {
         $query = \Drupal::database()->select('url_alias', 'ua');
         $query->addField('ua', 'alias');
@@ -271,11 +272,12 @@ class HzdcustomisationStorage {
         $path_alias = $query->execute()->fetchField();
         $text = $service->service;
         // $url = Url::fromUserInput($path_alias . '/edit');.
-        $url = Url::fromUserInput('/node/' . $id . '/edit');
+        
+        $url = Url::fromUserInput('/node/' . $id . '/edit?destination=' . $current_uri);
         $data[] = \Drupal::l($text, $url);
       } else {
         $text = $service->service;
-        $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile?service=' . $service->nid);
+        $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile?service=' . $service->nid. '&destination=' . $current_uri);
         // $link = Link::fromTextAndUrl($text, $url);.
         $data[] = Link::fromTextAndUrl($text, $url);
         // Echo '<pre>';  print_r($check);  exit;.

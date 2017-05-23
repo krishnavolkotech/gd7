@@ -34,6 +34,6 @@ visibility:
       language: '@language.current_language_context:language_interface'
   request_path:
     id: request_path
-    pages: "*/problems\r\n*/problems/*\r\n*/*releases\r\n*/releases/*"
+    pages: "*/problems\r\n*/problems/*\r\n*/*releases\r\n*/releases/*\r\n*/nodes"
     negate: true
     context_mapping: {  }

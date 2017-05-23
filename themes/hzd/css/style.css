@@ -2037,6 +2037,58 @@ section form#favorites-add .panel-default .panel-heading a.panel-title {
     font-size: 14px;
     line-height: 25px;
     font-weight: bold;
+
+section .form-group .views-field-field-news-date{
+ float:left;
+ width:100%;
+}
+section .form-group .views-field-title span a{
+  color:#333;
+  line-height:20px;
+  float:left;
+  width:100%;
+  padding:3px 0 8px 0;
+}
+section .form-group .views-field-body p{
+  font-size: 14px;
+  line-height:20px;
+  float:left;
+  width:100%;
+}
+section .form-group .views-row{
+  width:100%;
+  float:left;
+  margin-bottom:20px;
+}
+section .form-group .views-row:last-child{
+  margin:0;
+}
+aside .well{
+  border:none;
+  padding:0;
+  margin:0;
+}
+section form#favorites-add .form-wrapper.panel-default{
+  border:none !important;
+}
+section form#favorites-add .form-wrapper .panel-body{
+  margin:0;
+  padding:0;
+  width:86%;
+}
+section form#favorites-add .form-wrapper .panel-heading{
+  width:75%;
+  float:left;
+  margin:0 0 0 15px;
+  padding:0;
+}
+section form#favorites-add .panel-default .panel-heading a.panel-title{
+  background:#04425f;
+  color:#fff;
+  font-family: "robotoregular";
+  font-size: 14px;
+  line-height:25px;
+  font-weight:bold;
 }
 section form#favorites-add .panel-default .panel-body .form-type-textfield,
 section form#favorites-add .panel-default .panel-body .form-type-textfield input {
