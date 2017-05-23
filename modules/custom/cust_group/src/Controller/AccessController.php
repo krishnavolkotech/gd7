@@ -59,6 +59,9 @@ class AccessController extends ControllerBase
                 return AccessResult::allowed();
             }
             if ($node->getType() == 'im_upload_page') {
+                if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+                    return AccessResult::allowed();
+                }
                 $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
                 $groupMember = $group->getMember(\Drupal::currentUser());
                 if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
