@@ -30,7 +30,7 @@ id: node.page.field_page_files
 field_name: field_page_files
 entity_type: node
 bundle: page
-label: Files
+label: Dateien
 description: ''
 required: false
 translatable: true

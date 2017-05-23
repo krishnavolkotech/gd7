@@ -11,13 +11,13 @@ id: node.page.field_page_links
 field_name: field_page_links
 entity_type: node
 bundle: page
-label: 'External Links'
+label: 'Externe Links'
 description: ''
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  title: 1
   link_type: 17
+  title: 1
 field_type: link

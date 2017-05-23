@@ -325,10 +325,12 @@ class HzdNotifications extends ControllerBase {
 //      ->condition('default_send_interval', $intervalValue, '<>')
       ->execute()
       ->fetchCol();
-    
     if (empty($groupNotificationsInterval)) {
       if($this->isNewUser == true){
         $groupsIds = \Drupal::request()->request->get('groups');
+        if(empty($groupsIds)){
+          return;
+        }
         $groups = Group::loadMultiple($groupsIds);
       }else{
         $groupIds = HzdNotificationsHelper::hzd_user_groups_list($user);
