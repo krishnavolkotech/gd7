@@ -1,0 +1,34 @@
+uuid: 6e56a0ab-088c-4ee6-89ff-310a2be02721
+langcode: de
+status: false
+dependencies:
+  module:
+    - language
+    - node
+id: rz_schnellinfo
+label: RZ-Schnellinfo
+type: 'canonical_entities:node'
+pattern: '[node:group_raw]/rz-schnellinfos/[node:title]'
+selection_criteria:
+  6fa74676-a6ad-4ff6-b698-4c414eea8cdc:
+    id: node_type
+    bundles:
+      quickinfo: quickinfo
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 6fa74676-a6ad-4ff6-b698-4c414eea8cdc
+  8b76de4d-2f1b-4fc2-9920-7dc018ea5bd8:
+    id: language
+    langcodes:
+      de: de
+      en: en
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: 8b76de4d-2f1b-4fc2-9920-7dc018ea5bd8
+selection_logic: and
+weight: -8
+relationships:
+  'node:langcode:language':
+    label: Sprache

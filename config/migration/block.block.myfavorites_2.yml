@@ -15,7 +15,7 @@ third_party_settings:
 id: myfavorites_2
 theme: hzd
 region: sidebar_first
-weight: -22
+weight: -25
 provider: null
 plugin: favorites_block
 settings:

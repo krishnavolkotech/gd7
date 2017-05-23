@@ -1,6 +1,6 @@
 uuid: 4889f85d-f0e5-4bdb-af9b-ad3ea4d989be
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - ctools
@@ -33,7 +33,7 @@ selection_criteria:
       language: 'group:langcode:language'
     uuid: 9f4ed1fe-0909-406f-8365-7741f325b56b
 selection_logic: and
-weight: -10
+weight: -9
 relationships:
   'group:langcode:language':
     label: Language
