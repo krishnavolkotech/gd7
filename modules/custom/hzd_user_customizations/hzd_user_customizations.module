@@ -28,7 +28,7 @@ function pr($data) {
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
     
-    if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+        if ($form_id == 'user_register_form' || $form_id == 'user_form') {
         $val = [];
         $user_states = hzd_states();
         if ($form_id == 'user_register_form') {
@@ -119,9 +119,9 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             //pr($groups);exit;
             $form['groups'] = array(
                 '#type' => 'checkboxes',
-                '#title' => t('@grp<span class="form-required"></span>',['@grp'=>t('Groups')]),
+                '#title' => t('@grp',['@grp'=>t('Groups')]),
                 '#options' => $groups,
-                '#required' => true
+                //'#required' => true
             );
         }
         $form['#validate'][] = 'hzd_user_register_form_validate';
@@ -143,6 +143,11 @@ function hzd_user_register_form_validate(array &$form, FormStateInterface $form_
     }
     if ($form_state->getValue('mail') != $form_state->getValue('confirm_mail') && $form_state->get('isUserRegistration') == 1) {
         $form_state->setErrorByName('confirm_mail', t('Emails donot match'));
+    }
+    $name = $form_state->getValue('name');
+    $user= \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['name'=>$name]);
+    if($user){
+        $form_state->setErrorByName('name', t('The username %value is already taken.',['%value'=>$name]));
     }
 }
 
@@ -167,20 +172,22 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
  * hook implementing hook_user_insert()
  */
 function hzd_user_customizations_user_insert($user) {
-    $groupData = $_POST['groups'];
-    foreach ($groupData as $gid) {
-        $group = \Drupal\group\Entity\Group::load($gid);
-        if ($group->bundle() == 'open') {
-            $group->addMember($user);
-        } elseif ($group->bundle() == 'moderate') {
-            $plugin = $group->getGroupType()->getContentPlugin('group_membership');
-            $group_content = \Drupal\group\Entity\GroupContent::create([
-                'type' => $plugin->getContentTypeConfigId(),
-                'gid' => $group->id(),
-                'entity_id' => $user->id(),
-                'request_status' => 0,
-            ])->save();
-          mailToGroupAdmins(['group'=>$group,'module'=>'cust_group','key'=>'immediate_notifications','message'=>'']);
+    if(!empty($_POST['groups'])) {
+        $groupData = $_POST['groups'];
+        foreach ($groupData as $gid) {
+            $group = \Drupal\group\Entity\Group::load($gid);
+            if ($group->bundle() == 'open') {
+                $group->addMember($user);
+            } elseif ($group->bundle() == 'moderate') {
+                $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+                $group_content = \Drupal\group\Entity\GroupContent::create([
+                    'type' => $plugin->getContentTypeConfigId(),
+                    'gid' => $group->id(),
+                    'entity_id' => $user->id(),
+                    'request_status' => 0,
+                ])->save();
+              mailToGroupAdmins(['group'=>$group,'module'=>'cust_group','key'=>'immediate_notifications','message'=>'']);
+            }
         }
     }
 }

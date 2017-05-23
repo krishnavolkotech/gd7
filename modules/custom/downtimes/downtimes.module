@@ -318,19 +318,16 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
      */
 //    $node = \Drupal::routeMatch()->getParametergetParameter('node');
     //pr($node);exit;
-    
+      $node = \Drupal::routeMatch()->getParameter('node');
     if (empty($node)) {
       // $service_name = db_result(db_query("SELECT title FROM {node} WHERE nid=%d", $_REQUEST['service']));.
       $service_name = \Drupal::database()->select('node_field_data', 'nfd')
         ->fields('nfd', array('title'))
         ->condition('nid', $_REQUEST['service'], '=')
         ->execute()->fetchField();
-      
-      // drupal_set_title(check_plain(t("Service Profile for ") . $service_name['title']));.
-      /**
-       *  TO DO
-       *  title #title
-       */
+      $form['title']['#type'] = 'hidden';
+      $form['title']['#value'] = t("Service Profile for @title",['@title'=>$service_name]);
+      $form_state->getFormObject()->getEntity()->set('title',t("Service Profile for @title",['@title'=>$service_name]));
     }
     $serialized_data = $mwData = array();
     $maintenance_windows_info = [];

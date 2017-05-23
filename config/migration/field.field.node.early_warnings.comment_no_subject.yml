@@ -11,7 +11,7 @@ id: node.early_warnings.comment_no_subject
 field_name: comment_no_subject
 entity_type: node
 bundle: early_warnings
-label: Comments
+label: Kommentare
 description: ''
 required: true
 translatable: true
