@@ -12,7 +12,7 @@ third_party_settings:
   filefield_paths:
     enabled: true
     file_path:
-      value: '[group:title]/[node:content-type]'
+      value: 'gruppen/[group:title]/[node:content-type:machine-name]'
       options:
         slashes: false
         pathauto: false
@@ -30,7 +30,7 @@ id: node.page.field_page_files
 field_name: field_page_files
 entity_type: node
 bundle: page
-label: Dateien
+label: Files
 description: ''
 required: false
 translatable: true

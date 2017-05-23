@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: menu-340
 label: 'Incident Management'
-description: null
+description: ''
 locked: false
