@@ -28,7 +28,7 @@ class Gruppenadministration extends BlockBase {
   /**
    *
    */
-  public function access(AccountInterface $account, $return_as_object = false) {
+  /*public function access(AccountInterface $account, $return_as_object = false) {
     $routeMatch = \Drupal::routeMatch();
     if ($account->id()) {
       $group = \Drupal::routeMatch()->getParameter('group');
@@ -49,13 +49,13 @@ class Gruppenadministration extends BlockBase {
     else {
       return AccessResult::forbidden();
     }
-  }
+  }*/
 
   /**
    *
    */
   public static function hzdGroupAdminLinks() {
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
 //    if (empty($group)) {
 //      $group = \Drupal::routeMatch()->getParameter('arg_0');
 //    }
@@ -65,6 +65,7 @@ class Gruppenadministration extends BlockBase {
     else {
       $groupId = $group;
     }
+    $menuHtml = [];
     if (CustNodeController::isGroupAdmin($groupId)) {
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_nodes.page_1', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'cust_group.group_node_create', ['group' => $groupId]);
@@ -97,13 +98,13 @@ class Gruppenadministration extends BlockBase {
         '#cache' => ['max-age' => 0]
       ];
     }
-    else {
-      $menuHtml = [
-        '#markup' => '',
-        '#title' => '',
-        '#cache' => ['max-age' => 0]
-      ];
-    }
+//    else {
+//      $menuHtml = [
+//        '#markup' => '',
+//        '#title' => '',
+//        '#cache' => ['max-age' => 0]
+//      ];
+//    }
     return $menuHtml;
   }
 

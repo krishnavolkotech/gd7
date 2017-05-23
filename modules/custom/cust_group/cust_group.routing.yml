@@ -112,20 +112,20 @@ cust_group.group_content_view:
       parameters:
         group_content:
           type: 'entity:group_content'
-cust_group.group_content_edit:
-  path: '/group/{group}/{type}/{group_content}/edit'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContent'
-    _entity_view: 'group.default'
-    _title_callback: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContentTitle'
-  requirements:
-    type: downtimes|rz-schnellinfos
-#    _access: 'TRUE'
-    _group_permission: 'leave group'
-  options:
-      parameters:
-        group_content:
-          type: 'entity:group_content'
+#cust_group.group_content_edit:
+#  path: '/group/{group}/{type}/{group_content}/edit'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContent'
+#    _entity_view: 'group.default'
+#    _title_callback: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContentTitle'
+#  requirements:
+#    type: downtimes|rz-schnellinfos
+##    _access: 'TRUE'
+#    _group_permission: 'leave group'
+#  options:
+#      parameters:
+#        group_content:
+#          type: 'entity:group_content'
 cust_group.group_node_create:
   path: '/group/{group}/group-node-create'
   defaults:

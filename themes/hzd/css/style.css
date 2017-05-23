@@ -1509,7 +1509,7 @@ form#downtimes-filter .string_search.hzd-form-element {
     background: transparent;
     border: none;
 }
-.view-group-faqs .view-content .views-row {
+.view-groups-faq .view-content .views-row {
     margin: 0 0 15px 0;
     padding: 0 0 15px 0;
     border-bottom: 1px solid #ccc;
@@ -1517,14 +1517,14 @@ form#downtimes-filter .string_search.hzd-form-element {
     width: 100%;
     float: left;
 }
-.view-group-faqs .view-content .views-row .faq-title {
+.view-groups-faq .view-content .views-row .views-field-title {
     width: 82%;
     float: left;
     margin-bottom: 5px;
     background: #02547a;
     padding: 5px;
 }
-.view-group-faqs h3 {
+.view-groups-faq h3 {
     font-size: 16px !important;
     line-height: 35px;
     font-weight: bold;
@@ -1533,8 +1533,8 @@ form#downtimes-filter .string_search.hzd-form-element {
     display: block;
     margin-top: 10px !important;
 }
-.view-group-faqs .view-content .views-row .views-field-edit-node,
-.view-group-faqs .view-content .views-row .views-field-delete-node {
+.view-groups-faq .view-content .views-row .views-field-edit-node,
+.view-groups-faq .view-content .views-row .views-field-delete-node {
     float: left;
     margin-bottom: 5px;
     background: #04425f;
@@ -1542,28 +1542,28 @@ form#downtimes-filter .string_search.hzd-form-element {
     border-left: 1px solid #fff;
     cursor: pointer;
 }
-.view-group-faqs .view-content .views-row .views-field-edit-node a,
-.view-group-faqs .view-content .views-row .views-field-delete-node a {
+.view-groups-faq .view-content .views-row .views-field-edit-node a,
+.view-groups-faq .view-content .views-row .views-field-delete-node a {
     color: #fff;
     line-height: 24px;
 }
-.view-group-faqs .view-content .views-row .faq-title .field-content {
+.view-groups-faq .view-content .views-row .views-field-title .field-content {
     width: 100%;
     float: left;
     color: #fff;
     line-height: 24px;
 }
-.view-group-faqs .view-content .views-row .views-field-body {
+.view-groups-faq .view-content .views-row .views-field-body {
     width: 100%;
     float: left;
     margin-bottom: 20px;
 }
-.view-group-faqs .view-content .views-row .btn-group {
+.view-groups-faq .view-content .views-row .btn-group {
     position: absolute;
     top: 0;
     right: 0;
 }
-.view-group-faqs .view-content .views-row p {
+.view-groups-faq .view-content .views-row p {
     margin-bottom: 0 !important;
 }
 #sortable .downtime_enable .form-type-checkbox {
