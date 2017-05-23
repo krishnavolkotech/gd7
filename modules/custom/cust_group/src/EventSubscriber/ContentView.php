@@ -81,8 +81,8 @@ class ContentView implements EventSubscriberInterface {
       $event->setResponse($response);
     }
     if($node->getType() == 'service_profile'){
-      $response = new RedirectResponse(Url::fromRoute('downtimes.service_profiles',['group'=>INCIDENT_MANAGEMENT])->toString());
-      $event->setResponse($response);
+      //$response = new RedirectResponse(Url::fromRoute('downtimes.service_profiles',['group'=>INCIDENT_MANAGEMENT])->toString());
+      //$event->setResponse($response);
     }
   
 
