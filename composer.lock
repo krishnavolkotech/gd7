@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "57dcecdb17b6d4dcfe63a50a14767602",
+    "content-hash": "fad96c93107f415c387cd81da586d4d5",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -916,6 +916,53 @@
             }
         },
         {
+            "name": "drupal/block_visibility_groups",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/block_visibility_groups",
+                "reference": "8.x-1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/block_visibility_groups-8.x-1.1.zip",
+                "reference": "8.x-1.1",
+                "shasum": "664732995ec5c67c6478f9c2bffaa1c0a18b95de"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.1",
+                    "datestamp": "1472414339"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "tedbow",
+                    "homepage": "https://www.drupal.org/user/240860"
+                }
+            ],
+            "description": "My Awesome Module",
+            "homepage": "http://drupal.org/project/block_visibility_groups",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/block_visibility_groups",
+                "issues": "http://drupal.org/project/issues/block_visibility_groups"
+            }
+        },
+        {
             "name": "drupal/config_direct_save",
             "version": "1.0.0",
             "source": {
@@ -1048,12 +1095,12 @@
             "version": "8.2.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/drupal-composer/drupal-core.git",
+                "url": "https://github.com/drupal/core.git",
                 "reference": "0741cbf486fc55721b5dab050b37c721c80df097"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal-composer/drupal-core/zipball/0741cbf486fc55721b5dab050b37c721c80df097",
+                "url": "https://api.github.com/repos/drupal/core/zipball/0741cbf486fc55721b5dab050b37c721c80df097",
                 "reference": "0741cbf486fc55721b5dab050b37c721c80df097",
                 "shasum": ""
             },
@@ -1518,6 +1565,49 @@
             }
         },
         {
+            "name": "drupal/menu_export",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/menu_export",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/menu_export-8.x-1.0.zip",
+                "reference": null,
+                "shasum": "b4e4210a678b2d6e4190056037cb87b48db84c65"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1489724884"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "sandeepguntaka",
+                    "homepage": "https://www.drupal.org/user/3397192"
+                }
+            ],
+            "description": "This module exports and imports menus and menu links.",
+            "homepage": "https://www.drupal.org/project/menu_export",
+            "support": {
+                "source": "http://cgit.drupalcode.org/menu_export"
+            }
+        },
+        {
             "name": "drupal/migrate_manifest",
             "version": "1.4.0",
             "source": {
@@ -1676,7 +1766,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/queue_mail-8.x-1.0-alpha3.zip",
-                "reference": null,
+                "reference": "8.x-1.0-alpha3",
                 "shasum": "773fd2a3b648aac405f8ee755c2ebd6915614918"
             },
             "require": {

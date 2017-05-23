@@ -36,7 +36,7 @@ downtimes.DowntimesnotesDisplay:
     _user_is_logged_in: 'FALSE'
     
 downtimes.resolve:
-  path: '/group/{group}/downtimes/{group_content}/resolve'
+  path: '/node/{node}/resolve'
   defaults:
     _form: '\Drupal\downtimes\Form\ResolveForm'
     _title: 'Resolve'

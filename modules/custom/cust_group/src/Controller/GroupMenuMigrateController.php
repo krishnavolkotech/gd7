@@ -47,13 +47,13 @@ class GroupMenuMigrateController extends ControllerBase {
 //                    exit;
           }
         }
-        elseif (count(explode('/', trim(str_replace('internal:/', '', $uri), '/'))) == 2) {
-          $newUri = $this->getGroupNodeUri($uri);
-          if ($newUri) {
-            $menu->set('link', ['uri' => 'internal:/' . $newUri])->save();
-          }
-          //echo $uri.'==='.$newUri.'<br>';
-        }
+//        elseif (count(explode('/', trim(str_replace('internal:/', '', $uri), '/'))) == 2) {
+//          $newUri = $this->getGroupNodeUri($uri);
+//          if ($newUri) {
+//            $menu->set('link', ['uri' => 'internal:/' . $newUri])->save();
+//          }
+//          //echo $uri.'==='.$newUri.'<br>';
+//        }
         
       }
       
@@ -113,7 +113,10 @@ class GroupMenuMigrateController extends ControllerBase {
         ->execute()->fetchCol();
     }
     if ($tid) {
-      return "/group/" . $oldTerms[1] . "/faqs/" . $tid[0];
+//      pr($tid);exit;
+      $termEntity = Term::load(reset($tid)); 
+      if($termEntity)
+      return $termEntity->toUrl()->toString();
     }
     echo 'migrate faq';
     pr($oldUri);

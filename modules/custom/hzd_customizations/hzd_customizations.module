@@ -1389,18 +1389,18 @@ function hzd_customizations_preprocess_block(&$variables) {
                   'group' => key($groupid),
                   'plugin_id' => 'group_node:forum'
       ]);
-      $links = [
-          '#attributes' => ['class' => ['action-links']],
-          '#theme' => 'menu_local_action',
-          '#link' => [
-              'title' => t('Add new Group Forum'),
-              'url' => $url,
-          ],
-          '#cache' => ['max-age' => 0],
-          '#weight' => -100
-      ];
-
-      $variables['content']['link'] = $links;
+//      $links = [
+//          '#attributes' => ['class' => ['action-links']],
+//          '#theme' => 'menu_local_action',
+//          '#link' => [
+//              'title' => t('Add new Group Forum'),
+//              'url' => $url,
+//          ],
+//          '#cache' => ['max-age' => 0],
+//          '#weight' => -100
+//      ];
+//
+//      $variables['content']['link'] = $links;
       $account = \Drupal::currentUser();
 
       if ($account->hasPermission('create forum content')) {

@@ -58,6 +58,17 @@ class AccessController extends ControllerBase
             if ($node->getType() == 'downtimes') {
                 return AccessResult::allowed();
             }
+            if ($node->getType() == 'im_upload_page') {
+                $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+                $groupMember = $group->getMember(\Drupal::currentUser());
+                if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+                    $roles = $groupMember->getRoles();
+                    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                        return AccessResult::allowed();
+                    }
+                    return AccessResult::forbidden();
+                }
+            }
             //$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
             //    ->fields('gcfd',['gid'])
             //    ->condition('gcfd.entity_id',$node->id())

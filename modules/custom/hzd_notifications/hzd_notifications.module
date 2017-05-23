@@ -427,6 +427,16 @@ function hzd_notifications_token_info() {
     'description' => t('Displays node updte message as created or updated'),
   );
 
+  $node['group_raw'] = array(
+    'name' => t("Group title"),
+    'description' => t('path aliased group title'),
+  );
+
+  $node['field_earlywarning_release_title'] = array(
+    'name' => t("Release title"),
+    'description' => t('Release title referenced from field_earlywarning_release'),
+  );
+
   return array(
     'types' => array('node' => $type),
     'tokens' => array('node' => $node),
@@ -459,6 +469,27 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
         case 'nodecreatedupdatedstatus':
           $replacements[$original] = isset($node->original) ? 'updated' : 'created';
           break;
+        case 'group_raw': 
+          $groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id());
+          if($groupContent){
+            $group = $groupContent->getGroup();
+          }else{
+            $group = \Drupal::routeMatch()->getParameter('group');
+          }
+          $label = null;
+          if($group instanceof \Drupal\group\Entity\Group){
+            $label = $group->label();
+          }
+          $replacements[$original] = \Drupal::service('pathauto.alias_cleaner')->cleanString($label);;
+          break;
+        case 'field_earlywarning_release_title':
+          $nodeId = $node->get('field_earlywarning_release')->value;
+          $release  = \Drupal\node\Entity\Node::load($nodeId);
+          $label = null;
+          if($release){
+            $label = $release->label();
+          }
+          $replacements[$original] = \Drupal::service('pathauto.alias_cleaner')->cleanString($label);;
       }
     }
   }

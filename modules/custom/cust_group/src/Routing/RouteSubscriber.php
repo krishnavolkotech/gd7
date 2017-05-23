@@ -39,13 +39,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
 
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
-    if ($route = $collection->get('entity.group_content.canonical')) {
+/*    if ($route = $collection->get('entity.group_content.canonical')) {
 //      $route->setPath('/group/{group}/node/{group_content}');
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupContentView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupContentTitle");
         $route->setRequirement('group_content', "^[0-9]*$");
 //      }
-    }
+    }*/
 /*    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
       if ($route->getPath() == '/group/{group}/members/{group_content}') {
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
@@ -79,6 +79,9 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentAccess');
     }
     if ($route = $collection->get('view.group_members.page_1')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('forum.index')) {
       $route->setRequirement('_role', 'administrator');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {

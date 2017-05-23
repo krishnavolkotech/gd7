@@ -676,7 +676,7 @@ function cust_group_schema() {
  * Implements hook_ENTITY_TYPE_insert to update menu link from node entity to group entity.
  */
 function cust_group_menu_link_content_insert($menu) {
-  $nodeid = explode('/', $menu->link->uri)[1];
+/*  $nodeid = explode('/', $menu->link->uri)[1];
   $groupcontent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid);
   if ($nodeid && $groupcontent) {
     $finalpath = $groupcontent->toUrl()->getInternalPath();
@@ -713,7 +713,7 @@ function cust_group_menu_link_content_insert($menu) {
       \Drupal::service('path.alias_storage')
         ->save($system_path, $path_alias, $langcode);
     }
-  }
+  }*/
 }
 
 /*function cust_group_preprocess_swiftmailer(&$variables) {
