@@ -1,7 +1,7 @@
 import_path_csv_rejected: null
-import_path_csv_released: sites/default/files/imports/Bereitgestellte-Best-Fakt-Verfahren.csv
+import_path_csv_released: sites/default/files/imports/Bereitgestellte-Best-Fakt-Verfahren1.csv
 import_path_csv_locked: sites/default/files/imports/locked2.csv
-import_path_csv_progress: sites/default/files/imports/inprogress2.csv
+import_path_csv_progress: sites/default/files/imports/inprogress.csv
 import_time_releases: '03:40'
 import_mail_releases: sureshkumara+release@azrisolutions.com
 import_alias_releases: release

@@ -17,6 +17,7 @@ use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\node\Entity\Node;
 use Drupal\group\Entity\Group;
+use Drupal\hzd_customizations\Controller\Inactiveusers;
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
@@ -1356,9 +1357,7 @@ function _hzd_customizations_user_login_form_submit() {
  * Implementation of hook_cron()
  */
 function hzd_customizations_cron() {
-
-  $inactive_user = new \Drupal\hzd_customizations\Controller\Inactiveusers();
-  $inactive_user->inactive_users();
+  Inactiveusers::inactive_users();
 }
 
 /**

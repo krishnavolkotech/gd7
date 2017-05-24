@@ -2908,6 +2908,8 @@ form .type_search_dropdown {
 .node-downtimes-form .downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget {
     top: auto!important;
 }
+.timepicker{
+  margin-top: 80px;
 .downtimes-date-wrapper .timepicker {
     margin-top: 72px;
 }

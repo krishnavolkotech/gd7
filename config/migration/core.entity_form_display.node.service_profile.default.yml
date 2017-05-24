@@ -61,6 +61,8 @@ content:
     weight: 6
     settings: {  }
     third_party_settings: {  }
+  translation:
+    weight: 10
 hidden:
   body: true
   comment: true

@@ -3,7 +3,7 @@ inactive_user_notify_admin: '0'
 inactive_user_notify_text: 'Hello %username,\n\n  We haven''t seen you at %sitename since %lastaccess, and we miss you!  Please come back and visit us soon at %siteurl.\n\nSincerely,\n  %sitename team'
 inactive_user_auto_block_warn: '0'
 inactive_user_block_warn_text: 'Hello %username,\n\n  We haven''t seen you at %sitename since %lastaccess, and we miss you!  This automatic message is to warn you that your account will be disabled in %period unless you come back and visit us before that time.\n\n  Please visit us at %siteurl.\n\nSincerely,\n  %sitename team'
-inactive_user_auto_block: '0'
+inactive_user_auto_block: '60'
 inactive_user_block_notify_text: 'Hello %username,\n\n  This automatic message is to notify you that your account on %sitename has been automatically disabled due to no activity for more than %period.\n\n  Please visit us at %siteurl to have your account re-enabled.\n\nSincerely,\n  %sitename team'
 inactive_user_notify_block: 1
 inactive_user_notify_block_admin: 1
@@ -16,6 +16,6 @@ inactive_user_notify_delete_admin: 1
 inactive_user_auto_delete_warn: null
 _core:
   default_config_hash: tk7Ljnk3c1LFBgG3JuMZw_ifzsgUCLlhZtxU-co0vvI
-inactive_user_admin_email: 'aditya@azrisolutions.com, sureshkumara+inactive_user@azrisolutions.com'
+inactive_user_admin_email: sureshkumara@azrisolutions.com
 inactive_user_timestamp: 1480053191
 langcode: de

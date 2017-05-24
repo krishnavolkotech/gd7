@@ -5,6 +5,7 @@ dependencies:
   module:
     - block_class
     - block_upload
+    - block_visibility_groups
     - node
     - system
   theme:
@@ -35,4 +36,9 @@ visibility:
     id: request_path
     pages: '/node/*/edit'
     negate: true
+    context_mapping: {  }
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
     context_mapping: {  }
