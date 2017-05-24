@@ -128,8 +128,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     //$node = array();
     if ($form_id == 'node_downtimes_edit_form') {
       $isNewlyCreated = 0;
-      $group_content = \Drupal::routeMatch()->getParameter('group_content');
-      $node = $group_content->getEntity();
+      $node = \Drupal::routeMatch()->getParameter('node');
+//      $node = $group_content->getEntity();
       
       if ($node) {
         $downtime_data = \Drupal::database()->select('downtimes', 'd')
