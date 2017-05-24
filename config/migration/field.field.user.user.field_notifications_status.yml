@@ -17,7 +17,7 @@ required: false
 translatable: false
 default_value:
   -
-    value: Enable
+    value: '1'
 default_value_callback: ''
 settings: {  }
 field_type: list_string
