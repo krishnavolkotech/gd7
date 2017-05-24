@@ -15,6 +15,7 @@ dependencies:
     - group.content_type.open-group_membership
     - group.content_type.quick_info-group_membership
   module:
+    - better_exposed_filters
     - custom_views_php
     - group
     - inactive_user
@@ -548,6 +549,7 @@ display:
         filters: false
         filter_groups: false
         sorts: false
+        exposed_form: false
       use_more_always: false
       use_more_text: more
       pager:
@@ -1474,6 +1476,38 @@ display:
           expose:
             label: Lastname
           plugin_id: standard
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Apply
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+          bef:
+            general:
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+              autosubmit: false
+              autosubmit_hide: false
+            sort:
+              bef_format: default
+              advanced:
+                collapsible: false
+                collapsible_label: 'Sort options'
+                combine: true
+                combine_rewrite: ''
+                reset: false
+                reset_label: ''
+                is_secondary: false
+            combine:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
     cache_metadata:
       max-age: 0
       contexts:
