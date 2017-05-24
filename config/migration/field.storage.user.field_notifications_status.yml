@@ -16,10 +16,10 @@ type: list_string
 settings:
   allowed_values:
     -
-      value: '1'
+      value: Enable
       label: Enable
     -
-      value: '0'
+      value: Disable
       label: Disable
   allowed_values_function: ''
 module: options

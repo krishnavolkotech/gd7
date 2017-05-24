@@ -263,7 +263,7 @@ function getGroupMemberList($gid) {
     $userEntities = User::loadMultiple($users);
     
     foreach ($userEntities as $user) {
-      if ($user->get('field_notifications_status')->value !== 0 && $user->isActive()) {
+      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive()) {
         $userMails[$user->id()] = $user->getEmail();
       }
     }

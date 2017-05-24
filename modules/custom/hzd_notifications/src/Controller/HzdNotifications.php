@@ -93,7 +93,7 @@ class HzdNotifications extends ControllerBase {
     $userEntity = User::load($user);
     $optionLinks = [];
     $currentNotificationStatus = $userEntity->get('field_notifications_status')->value;
-    $hassActiveNotifySetting = $currentNotificationStatus == 0 ? 0 : 1;
+    $hassActiveNotifySetting = $currentNotificationStatus == 'Enable' ? 1 : 0;
 //    pr($hassActiveNotifySetting);exit;
     $notificationsCount = $this->getAllSubscribedNotificationsCount($user);
     $optionLinks[] = [
@@ -121,7 +121,7 @@ class HzdNotifications extends ControllerBase {
   
   public function notificationsUpdateForUser($user, $status = 'enable') {
     ///temporarily disable/enable notifications by setting status field to false/true.
-    $data = ['enable' => 1, 'disable' => 0];
+    $data = ['enable' => 'Enable', 'disable' => 'Disable'];
     $user->set('field_notifications_status', $data[$status])->save();
     $url = Url::fromRoute('hzd_notifications.notifications', ['user' => $user->id()])->toString();
     return \Symfony\Component\HttpFoundation\RedirectResponse::create($url);

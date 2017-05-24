@@ -48,7 +48,7 @@ class SchnellinfosNotifications extends FormBase {
       $form['schnellinfos'][$content_key]['subscriptions_interval_' . $content_key] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => $default_interval ? $default_interval[$content] : -1,
+        '#default_value' => isset($default_interval[$content]) ? $default_interval[$content] : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
         '#suffix' => "</div>"
       );
