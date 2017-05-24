@@ -61,7 +61,7 @@ class Inactiveusers extends ControllerBase {
                          * log the message
                          */
             $url = Url::fromRoute('entity.user.edit_form', array('user' => $access_user->uid));
-            $link = \Drupal::l($this->t('edit user'), $url);
+            $link = \Drupal::l(t('edit user'), $url);
             $message = 'recent user activity: ' . $access_user->name . 'removed from inactivity list. ' . $link;
             \Drupal::logger('inactive_user')->notice($message);
           }
@@ -70,22 +70,22 @@ class Inactiveusers extends ControllerBase {
     }
 
     // Notify administrator of inactive user accounts.
-    $this->notify_admin_inactive_accounts();
+    self::notify_admin_inactive_accounts();
 
     // Notify users that their account has been inactive.
-    $this->notify_user_inactive_accounts();
+    self::notify_user_inactive_accounts();
 
     // Warn users when they are about to be blocked.
-    $this->warn_to_block_inactive_accounts();
+    self::warn_to_block_inactive_accounts();
 
     // Block user.
-    $this->block_inactive_accounts();
+    self::block_inactive_accounts();
 
     // Warn users when they are about to be deleted
 //    $this->warn_to_delete_inactive_accounts();
     // Automatically delete users.
     // $this->delete_inactive_accounts();
-    $result['#markup'] = $this->t("Checked inactive users");
+    $result['#markup'] = t("Checked inactive users");
     return $result;
   }
 
@@ -255,7 +255,7 @@ class Inactiveusers extends ControllerBase {
           $user_list .= "user $user->name notified of inactivity " . \Drupal::service('date.formatter')->format($user->access, 'long') . ".\n";
 
           $url = Url::fromRoute('entity.user.edit_form', array('user' => $user->uid));
-          $link = \Drupal::l($this->t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
+          $link = \Drupal::l(t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
           // $edit_user = Link::createFromRoute($this->t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')))->toString();
           $message = "user $user->name notified of inactivity " . $user->name . $link;
           \Drupal::logger('inactive_user')->notice($message);
@@ -355,7 +355,7 @@ class Inactiveusers extends ControllerBase {
           Inactiveuserhelper::inactive_user_mail($inactive_user_block_warn_mail_subject, $inactive_user_block_warn_text, $warn_time, $user, NULL);
 
           $url = Url::fromRoute('entity.user.edit_form', array('user' => $user->uid));
-          $link = \Drupal::l($this->t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
+          $link = \Drupal::l(t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
 
           $message = "user $user->name warned will be blocked due to inactivity " . $user->name . $link;
           \Drupal::logger('inactive_user')->notice($message);
@@ -480,7 +480,7 @@ class Inactiveusers extends ControllerBase {
 
                 // watchdog('user', 'user %user blocked due to inactivity', array('%user' => $user->name), WATCHDOG_NOTICE, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));.
                 $url = Url::fromRoute('entity.user.edit_form', array('user' => $user->uid));
-                $link = \Drupal::l($this->t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
+                $link = \Drupal::l(t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
 
                 $message = "user $user->name blocked due to inactivity" . $user->name . $link;
                 \Drupal::logger('inactive_user')->notice($message);
@@ -584,7 +584,7 @@ class Inactiveusers extends ControllerBase {
                 // watchdog('user', 'user %user blocked due to inactivity', array('%user' => $user->name), WATCHDOG_NOTICE, l(t('edit user'), "user/$user->uid/edit", array('query' => array('destination' => 'admin/user/user'))));.
                 $url = Url::fromRoute('entity.user.edit_form', array('user' => $user->uid));
 
-                $link = \Drupal::l($this->t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
+                $link = \Drupal::l(t('edit user'), $url, array('query' => array('destination' => 'admin/user/user')));
                 $message = "user $user->name blocked due to inactivity" . $user->name . $link;
                 \Drupal::logger('inactive_user')->notice($message);
               }

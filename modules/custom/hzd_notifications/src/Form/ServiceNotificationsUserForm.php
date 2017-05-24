@@ -92,6 +92,7 @@ class ServiceNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    drupal_set_message(t('Service mail preferences saved successfully'));
     $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);

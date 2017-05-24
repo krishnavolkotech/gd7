@@ -232,7 +232,7 @@ class ResolveForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     //Todo pass form state values to confirm form
-    $group = Drupal::routeMatch()->getParameter('group');
+    $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
     $user = Drupal::currentUser();
     $comment = $form_state->getValue('comment');
     $nid = $form_state->getValue('nid');
@@ -244,7 +244,7 @@ class ResolveForm extends FormBase {
         'nid' => $nid,
         'date_reported' => $date_reported,
         'uid' => $uid,
-        'gid' => $group,
+        'gid' => $group->id(),
         'notifications_content_disable' => $notifications_content_disable,
     );
     $key = "downtimes_resolve_" . $nid;
@@ -252,7 +252,7 @@ class ResolveForm extends FormBase {
     $this->keyValueExpirable->setWithExpire($key, $downtime_resolve, 24 * 60 * 60);
 
     // Redirect to the confirm form.
-    $url = Url::fromRoute('downtimes.confirm', ['group' => $group, 'node' => $nid]);
+    $url = Url::fromRoute('downtimes.confirm', ['group' => $group->id(), 'node' => $nid]);
     $form_state->setRedirectUrl($url);
   }
 
