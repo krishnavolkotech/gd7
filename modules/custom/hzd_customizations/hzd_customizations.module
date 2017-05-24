@@ -511,12 +511,13 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['#validate'][] = 'field_date_deployed_validate';
     $service = $form_state->getValue('field_release_service')[0]['value'];
     if (empty($service)) {
-      $service = $form['field_release_service']['widget']['#default_value'][0];
+      $service = $entity->get('field_release_service')->value;
     }
 //    $environment = $form['field_environment']['widget']['#default_value'];
 //  pr($service);exit;
     // $form_state->setValue('submitted', FALSE);.
-    $default_releases = array("0" => t('Release'));
+    $releaseNode = Node::load($entity->get('field_earlywarning_release')->value);
+    $default_releases = array("0" => t('Release'),$releaseNode->id()=>$releaseNode->label());
     if ($service != 0) {
       $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
     }
@@ -524,6 +525,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
 //    $rel = \Drupal::request()->query->get('rel');
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
+    $form['field_earlywarning_release']['widget']['#default_value'] = $releaseNode->id();
     $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';
     $form['field_release_service']['widget']['#ajax'] = [
         'callback' => 'releaseData',
