@@ -76,10 +76,20 @@ class CustNodeController extends ControllerBase {
     if($user->isAnonymous()){
       return AccessResult::forbidden();
     }
-    if ($group = $route_match->getParameter('group')) {
-      if (!is_object($group)) {
-        $group = \Drupal\group\Entity\Group::load($group);
+    if($group = $route_match->getParameter('group')){
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()
+            ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      ) {
+        return AccessResult::allowed();
       }
+      else {
+        return AccessResult::forbidden();
+      }
+    }
+    if ($node = $route_match->getParameter('node')) {
+        $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+        $group = $groupContent->getGroup();
       $groupMember = $group->getMember($user);
       if (($groupMember && $groupMember->getGroupContent()
             ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())

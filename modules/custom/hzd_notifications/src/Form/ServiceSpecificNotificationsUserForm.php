@@ -111,6 +111,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    drupal_set_message(t('Service mail preferences saved successfully'));
     $service = $form_state->getValue('services');
     $content_type = $form_state->getValue('content_type');
     $send_interval = $form_state->getValue('send_interval');
