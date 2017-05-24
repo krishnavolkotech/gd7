@@ -20,8 +20,16 @@ class CustGroupHelper {
 
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
+    $node = \Drupal\node\Entity\Node::load($nodeId);
+    $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
+    $allPlugins = $contentEnablerManager->getPluginGroupContentTypeMap();
+    foreach ($allPlugins as $group_content_type) {
+      foreach ($group_content_type as $item){
+        $types[] = $item;
+      }        
+    }
     $groupContentIds = \Drupal::entityQuery('group_content')
-            ->condition('type', '%group_node%', 'LIKE')
+            ->condition('type', $types, 'IN')
             ->condition('entity_id', $nodeId)
             ->execute();
 
