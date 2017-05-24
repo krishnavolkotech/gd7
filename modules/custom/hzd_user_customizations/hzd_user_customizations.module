@@ -144,10 +144,14 @@ function hzd_user_register_form_validate(array &$form, FormStateInterface $form_
     if ($form_state->getValue('mail') != $form_state->getValue('confirm_mail') && $form_state->get('isUserRegistration') == 1) {
         $form_state->setErrorByName('confirm_mail', t('Emails donot match'));
     }
+    $routeuser = \Drupal::routeMatch()->getParameter('user');
+    $routeusername = $routeuser ? $routeuser->getAccountName() : '';
     $name = $form_state->getValue('name');
-    $user= \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['name'=>$name]);
-    if($user){
-        $form_state->setErrorByName('name', t('The username %value is already taken.',['%value'=>$name]));
+    if($routeusername != $name){
+        $user= \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['name'=>$name]);
+        if($user){
+            $form_state->setErrorByName('name', t('The username %value is already taken.',['%value'=>$name]));
+        }
     }
 }
 
