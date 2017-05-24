@@ -514,9 +514,21 @@ class HzdreleasemanagementHelper
         if($service){
             $services = [$service];
         }
+        $deployedReleases = \Drupal::entityQuery('node')
+            ->condition('field_release_service',$services,'IN')
+            ->condition('type','deployed_releases')
+            ->execute();
+        $deployedReleasesEntities = Node::loadMultiple($deployedReleases);
+        $deployed = [];
+        if($deployedReleasesEntities){
+          foreach ($deployedReleasesEntities as $node){
+            $deployed[] = $node->get('field_earlywarning_release')->value;
+          }
+        }
         $data = \Drupal::entityQuery('node')
             ->condition('field_relese_services',$services,'IN')
             ->condition('field_release_type',[1,2],'IN')
+            ->condition('nid',$deployed,'NOT IN')
 //            ->condition('status',1)
             ->condition('type','release')
             ->execute();
