@@ -680,7 +680,7 @@ function hzd_user_mails($uids) {
   $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
   $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
   $query->condition('u.status', 1, '=')
-    ->condition('ufns.field_notifications_status_value', 0,'<>')
+    ->condition('ufns.field_notifications_status_value', 'Disable','<>')
     ->fields('ufmp', array('field_message_preference_value'))
     ->condition('u.uid', $uids, 'IN')
     ->groupBy('ufmp.field_message_preference_value');
@@ -705,7 +705,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   foreach (explode(',', trim($to, ',')) as $userMail) {
     $userEntity = \Drupal::entityTypeManager()->getStorage('user')
       ->loadByProperties(['mail' => trim($userMail)]);
-    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 0 && reset($userEntity)->isActive()) {
+    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()) {
       $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
   }
