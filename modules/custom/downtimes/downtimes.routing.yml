@@ -40,6 +40,7 @@ downtimes.resolve:
   defaults:
     _form: '\Drupal\downtimes\Form\ResolveForm'
     _title: 'Resolve'
+    _entity_view: 'node.default'
   requirements:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'

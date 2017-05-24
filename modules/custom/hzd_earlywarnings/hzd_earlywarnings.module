@@ -20,7 +20,7 @@ function getErlywarningServies() {
     $type = $query->execute()->fetchField();
     
     if ($type == 'deployed_releases') {
-        $services_releases = released_deployed_releases();
+        $services_releases = Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases();
         return $services_data = $services_releases['services'];
     }
     
