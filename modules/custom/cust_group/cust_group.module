@@ -738,9 +738,14 @@ function cust_group_menu_link_content_insert($menu) {
  * Implements hook_block_access().
  */
 function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
-  if ($block->id() == 'views_block__group_faqs_block_1' && $operation == 'view') {
-    $routeMatch = \Drupal::routeMatch();
-    return \Drupal\cust_group\Controller\AccessController::groupAdminAccess($routeMatch->getRouteObject(), $routeMatch->getCurrentRouteMatch(), $account);
+  if ($block->id() == 'views_block__groups_faq_block_1' && $operation == 'view') {
+    $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+    if($group instanceof Group){
+      if(\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())){
+        return \Drupal\Core\Access\AccessResult::allowed();
+      }
+    }
+    return \Drupal\Core\Access\AccessResult::forbidden();
   }
 }
 
