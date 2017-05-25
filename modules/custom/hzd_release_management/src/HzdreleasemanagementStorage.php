@@ -1272,7 +1272,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     if ($filter_value['releases']) {
       $release_node_ids->condition('nid', $filter_value['releases'], '=');
     }
-    if (isset($filter_value['filter_startdate']) && $filter_value['filter_enddate'] == '') {
+    if (!empty($filter_value['filter_startdate']) && $filter_value['filter_enddate'] == '') {
       $release_node_ids->condition('field_date', $filter_value['filter_startdate'], '>');
       // $filter_where .= " and field_date_value > ". $start_date;.
     }
