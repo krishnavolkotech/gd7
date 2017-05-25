@@ -64,7 +64,7 @@ class CancelForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
     $node = \Drupal::routeMatch()->getParameter('node');
     $query = Drupal::database()->select('resolve_cancel_incident','ri')
-            ->condition('downtime_id',$node->id())
+            ->condition('downtime_id',$node)
             ->fields('ri',['downtime_id'])
             ->execute()
             ->fetchField();
