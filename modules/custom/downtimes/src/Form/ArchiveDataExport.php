@@ -166,8 +166,8 @@ class ArchiveDataExport extends FormBase {
       }
       $result1['uid'] = db_query("select abbr from {node_field_data} n, {cust_profile} p, {states} s where n.uid = p.uid and state_id = id and n.uid = ?", array($result1['uid']))->fetchField();
       // Converting timestamps to Date format.
-      $result1['service_id'] = implode(',', $title);
-      $result1['state_id'] = implode(',', $states_id);
+      $result1['service_id'] = '"'.implode(',', $title).'"';
+      $result1['state_id'] = '"'.implode(',', $states_id).'"';
       $result1['created'] = date('d.m.Y - H:i', $result1['created']);
       $result1['startdate_planned'] = date('d.m.Y - H:i', $result1['startdate_planned']);
       $result1['enddate_planned'] = date('d.m.Y - H:i', $result1['enddate_planned']);
@@ -196,7 +196,7 @@ class ArchiveDataExport extends FormBase {
       // Making individual array to single array.
       $result2[] = $result1;
     }
-
+//pr($result2);exit;
     $filename = "geplante_blockzeiten" . $filename_from . $filename_to . ".csv";
     self::array_to_csv_download($result2, $filename);
   }
