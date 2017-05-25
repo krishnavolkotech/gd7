@@ -143,7 +143,14 @@ hzd_customizations.group_content_mail_templates:
     type: group|group_content
   options:
     _admin_route: TRUE
-
+hzd_customizations.front:
+  path: '/home'
+  defaults:
+    _controller: '\Drupal\front\Controller\FrontPage::view'
+    _title: 'Willkommen beim Betriebsportal KONSENS'
+  requirements:
+    _permission: 'access content'
+    
 #hzd_customizations.problems_mail_template:
 #  path: '/admin/messaging/templates/problems'
 #  defaults:
