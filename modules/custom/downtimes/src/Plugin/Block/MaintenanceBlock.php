@@ -64,7 +64,7 @@ class MaintenanceBlock extends BlockBase
             //exception for downtimes content type
             return AccessResult::allowed();
         }
-        if ($routeMatch->getRouteName() == 'front_page.front') {
+        if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
             return AccessResult::allowed();
         }
         return AccessResult::forbidden();
@@ -122,7 +122,7 @@ class MaintenanceBlock extends BlockBase
                         if ($groupContent) {
 //                            $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
                             $hoverIconHtml = $hover_markup = null;
-                            if ($routeMatch->getRouteName() == 'front_page.front') {
+                            if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
                                 $hover_markup = MaintenanceBlock::get_hover_markup($incident);
                                 $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
                             }
@@ -184,7 +184,7 @@ class MaintenanceBlock extends BlockBase
             '#type' => 'link',
             '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
         ];
-        if ($routeMatch->getRouteName() == 'front_page.front') {
+        if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
             $markup['#attributes'] = ['class' => ['frontpage-downtime-block']];
           $access = \Drupal::service('access_manager')->checkNamedRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], \Drupal::currentUser());
           if($access) {

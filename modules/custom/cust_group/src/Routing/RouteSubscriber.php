@@ -103,7 +103,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     }*/
 
     // Overriding the controller for front page contrib module
-    if ($route = $collection->get('front_page.front')) {
+    if ($route = $collection->get('hzd_customizations.front')) {
       $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
     }
     
