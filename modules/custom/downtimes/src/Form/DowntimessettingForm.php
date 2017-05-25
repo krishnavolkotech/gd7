@@ -107,7 +107,7 @@ class DowntimessettingForm extends FormBase {
     if ($noLinkAvailable && $counter != 0) {
       $menu_link = MenuLinkContent::create([
                 'title' => $this->t('Störungen und Blockzeiten'),
-                'link' => ['uri' => 'internal:/group/' . $group->id() . '/downtimes'],
+                'link' => ['uri' => 'internal:/group/' . $group->id() . '/storung'],
                 'menu_name' => $menu_name,
                 'expanded' => TRUE,
                 'enabled' => 1,

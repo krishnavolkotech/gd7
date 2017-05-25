@@ -26,7 +26,7 @@ downtimes.Downtimesnotes:
     _permission: 'administer messaging'
 
 downtimes.DowntimesnotesDisplay:
-  path: '/group/{group}/downtimes/notes'
+  path: '/group/{group}/storung/notes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimesNotesDisplayController::downtime_notes_message_display'
     _title: 'Downtimes Notes'
@@ -79,7 +79,7 @@ downtimes.cancel_confirm:
     node: \d+
 
 downtimes.service_profiles:
-  path: '/group/{group}/downtimes/service-profiles'
+  path: '/group/{group}/storung/service-profiles'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
     _title: 'Service Profiles'
@@ -92,7 +92,7 @@ downtimes.service_profiles:
 #    _permission: 'access content'
 
 downtimes.create_downtimes:
-  path: '/group/{group}/downtimes/create_downtimes'
+  path: '/group/{group}/storung/create_downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Incident'
@@ -103,7 +103,7 @@ downtimes.create_downtimes:
 #    group: '24'
 
 downtimes.create_maintenance:
-  path: '/group/{group}/downtimes/create_maintenance'
+  path: '/group/{group}/storung/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Maintenance'
@@ -195,7 +195,7 @@ downtimes.downtimes_scheduled_maintenance_mail_template_form:
 #   'access callback' => 'downtimes_resolve'
 
 downtimes.new_downtimes_controller_newDowntimes:
-  path: '/group/{group}/downtimes'
+  path: '/group/{group}/storung'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
     _title: 'Störungen und Blockzeiten'
@@ -205,7 +205,7 @@ downtimes.new_downtimes_controller_newDowntimes:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archived_downtimes_controller:
-  path: '/group/{group}/downtimes/archive'
+  path: '/group/{group}/storung/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
     _title: 'Archiv'

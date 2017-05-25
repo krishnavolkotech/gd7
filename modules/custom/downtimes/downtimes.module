@@ -493,7 +493,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     );
     // print_R($maintenance_windows_info);
     $form['#validate'][] = 'custom_service_profile_form_validate';
-    $form['#redirect'] = 'group/' . INCIDENT_MANAGEMENT . '/downtimes/service-profiles';
+    $form['#redirect'] = 'group/' . INCIDENT_MANAGEMENT . '/storung/service-profiles';
     $dependent_service_options = get_related_downtime_services('downtimes');
     // pr($dependent_service_options);exit;
     $form['field_dependent_downtimeservices'] = array(
