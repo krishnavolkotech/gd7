@@ -12,7 +12,6 @@ dependencies:
   module:
     - comment
     - file
-    - path
     - text
 _core:
   default_config_hash: KSvzyFhdLuxniTsunUnUfpfMmod2l57GibtVjL8ymHM
@@ -50,11 +49,6 @@ content:
     weight: 1
     settings: {  }
     third_party_settings: {  }
-  path:
-    type: path
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
   promote:
     type: boolean_checkbox
     settings:
@@ -88,4 +82,5 @@ content:
     third_party_settings: {  }
 hidden:
   field_page_links: true
+  path: true
   upload: true

@@ -9,7 +9,6 @@ dependencies:
     - field.field.node.early_warnings.field_release_service
     - node.type.early_warnings
   module:
-    - path
     - text
 id: node.early_warnings.default
 targetEntityType: node
@@ -18,7 +17,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 31
+    weight: 5
     settings:
       rows: 9
       summary_rows: 3
@@ -29,55 +28,31 @@ content:
     weight: 20
     settings: {  }
     third_party_settings: {  }
-  created:
-    type: datetime_timestamp
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
   field_earlywarning_release:
-    weight: 8
+    weight: 4
     type: options_select
     settings: {  }
     third_party_settings: {  }
   field_release_service:
-    weight: 7
+    weight: 3
     type: options_select
     settings: {  }
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 2
+    weight: 1
     settings: {  }
-    third_party_settings: {  }
-  path:
-    type: path
-    weight: 30
-    settings: {  }
-    third_party_settings: {  }
-  promote:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 15
-    third_party_settings: {  }
-  sticky:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 16
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: -5
+    weight: 0
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  translation:
-    weight: 10
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 2
     settings:
       match_operator: CONTAINS
       size: 60
@@ -85,3 +60,8 @@ content:
     third_party_settings: {  }
 hidden:
   comment_no_subject: true
+  created: true
+  path: true
+  promote: true
+  sticky: true
+  translation: true

@@ -11,7 +11,6 @@ dependencies:
     - node.type.forum
   module:
     - comment
-    - path
     - text
 _core:
   default_config_hash: XEvo30OCEpNoqn9kqhGc-yKvimWu7lSFxySsw7AUf3U
@@ -43,11 +42,6 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
-  path:
-    type: path
-    weight: 30
-    settings: {  }
-    third_party_settings: {  }
   promote:
     type: boolean_checkbox
     settings:
@@ -74,6 +68,8 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -84,4 +80,5 @@ content:
     third_party_settings: {  }
 hidden:
   comment: true
+  path: true
   upload: true
