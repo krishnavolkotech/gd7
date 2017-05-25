@@ -195,24 +195,17 @@ downtimes.downtimes_scheduled_maintenance_mail_template_form:
 #   'access callback' => 'downtimes_resolve'
 
 downtimes.new_downtimes_controller_newDowntimes:
-  path: '/group/{group}/storung'
+  path: '/group/{group}/{type}'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
     _title: 'Störungen und Blockzeiten'
     _entity_view: 'group.default'
+    type: storung
   requirements:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
+    type: storung|downtimes
     
-downtimes.new_downtimes_controller_engDowntimes:
-  path: '/group/{group}/downtimes'
-  defaults:
-    _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
-    _title: 'Störungen und Blockzeiten'
-    _entity_view: 'group.default'
-  requirements:
-    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archived_downtimes_controller:
   path: '/group/{group}/storung/archive'
