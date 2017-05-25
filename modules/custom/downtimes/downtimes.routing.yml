@@ -35,6 +35,16 @@ downtimes.DowntimesnotesDisplay:
     _permission: 'access content'
     _user_is_logged_in: 'FALSE'
     
+downtimes.DowntimesnotesDisplay_eng:
+  path: '/group/{group}/storung/notes'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimesNotesDisplayController::downtime_notes_message_display'
+    _title: 'Downtimes Notes'
+    _entity_view: 'group.default'
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'FALSE'
+    
 downtimes.resolve:
   path: '/node/{node}/resolve'
   defaults:
@@ -87,10 +97,17 @@ downtimes.service_profiles:
   requirements:
      _permission: 'service profiles view/add'
      group: \d+
-#    _permission: 'access content'
-#    node: \d+
-#    _permission: 'access content'
 
+downtimes.service_profiles_eng:
+  path: '/group/{group}/storung/service-profiles'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
+    _title: 'Service Profiles'
+    _description: 'Service Profiles.'
+  requirements:
+     _permission: 'service profiles view/add'
+     group: \d+
+     
 downtimes.create_downtimes:
   path: '/group/{group}/storung/create_downtimes'
   defaults:
@@ -98,11 +115,28 @@ downtimes.create_downtimes:
     _title: 'Report Incident'
     _entity_view: 'group.default'
   requirements:
-#    _access: 'TRUE'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdCreateDowntimesAccess'
-#    group: '24'
 
+downtimes.create_downtimes_eng:
+  path: '/group/{group}/storung/create_downtimes'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
+    _title: 'Report Incident'
+    _entity_view: 'group.default'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdCreateDowntimesAccess'
+    
 downtimes.create_maintenance:
+  path: '/group/{group}/storung/create_maintenance'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
+    _title: 'Report Maintenance'
+    _entity_view: 'group.default'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::createMaintenanceAccess'
+    group: \d+
+    
+downtimes.create_maintenance_eng:
   path: '/group/{group}/storung/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
@@ -215,6 +249,16 @@ downtimes.new_downtimes_controller_engDowntimes:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archived_downtimes_controller:
+  path: '/group/{group}/storung/archive'
+  defaults:
+    _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
+    _title: 'Archiv'
+    _entity_view: 'group.default'
+  requirements:
+    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
+    
+downtimes.archived_downtimes_controller_eng:
   path: '/group/{group}/storung/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
