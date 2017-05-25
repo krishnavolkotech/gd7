@@ -101,8 +101,8 @@ class ArchiveDataExport extends FormBase {
     if ($to) {
       //Adding offset 23:59:59 for end date.
       $to_date = strtotime($to) + 86399;
-      $nonresolve_to = 'ds.enddate_planned <= ' . $to_date . ' and ';
-      $to = 'ri.end_date <= ' . $to_date . ' and ';
+      $nonresolve_to = 'ds.enddate_planned <= ' . $to_date . ' or ';
+      $to = 'ds.enddate_planned <= ' . $to_date . ' and ';
       $filename_to = "_" . date('Ymd', $to_date);
     }
     else {
@@ -124,8 +124,7 @@ class ArchiveDataExport extends FormBase {
     }
 
     // Query to get the values from given user inputs.
-    $query = 'SELECT group_concat(DISTINCT s.abbr SEPARATOR\', \') AS abbr,
-          ds.startdate_planned,
+    $query = 'SELECT distinct n.nid, ds.state_id,ds.startdate_planned,
           ds.enddate_planned,
           ri.end_date,
           n.created,
@@ -133,28 +132,16 @@ class ArchiveDataExport extends FormBase {
           ds.service_id AS service_id,
           ds.status,
           ds.description,
-          ds.reason,
-          gcfa.id
+          ds.reason
           FROM      {downtimes} ds,
-                    {group_content_field_data} gcfa,
                     {resolve_cancel_incident} ri,
-                    {node_field_data} n,
-                    {states} s
-          WHERE     ds.downtime_id = gcfa.entity_id
-          AND  gcfa.type like \'%' . $group_node . '%\'
-          AND n.type = \'downtimes\'
+                    {node_field_data} n
+          WHERE      n.type = \'downtimes\'
           AND ' . $from . $to . '
-          s.id = ds.state_id
-          AND       n.nid = ds.downtime_id
+              n.nid = ds.downtime_id
           AND       ds.scheduled_p = 1
           AND       ds.downtime_id  = ri.downtime_id
-          AND       ri.type = 1
-          AND       ds.resolved = 1
-          AND  gcfa.entity_id = n.nid
-          GROUP BY 
-          gcfa.id, s.abbr,ds.startdate_planned,ds.enddate_planned,
-          ri.end_date,n.created,n.uid,ds.service_id,
-          ds.status, ds.description,ds.reason ORDER BY  ds.startdate_planned ASC ';
+           ORDER BY  ds.startdate_planned ASC ';
 
     $result = db_query($query)->fetchAll();
 
@@ -171,9 +158,16 @@ class ArchiveDataExport extends FormBase {
         $query = "select title from {node_field_data} where nid = ?";
         $title[] = db_query($query, array($value))->fetchField();
       }
+      $states = explode(',', $result1['state_id']);
+      $states_id = [];
+      foreach ($states as $key => $value) {
+        $query = "select abbr from {states} where id = ?";
+        $states_id[] = db_query($query, array($value))->fetchField();
+      }
       $result1['uid'] = db_query("select abbr from {node_field_data} n, {cust_profile} p, {states} s where n.uid = p.uid and state_id = id and n.uid = ?", array($result1['uid']))->fetchField();
       // Converting timestamps to Date format.
       $result1['service_id'] = implode(',', $title);
+      $result1['state_id'] = implode(',', $states_id);
       $result1['created'] = date('d.m.Y - H:i', $result1['created']);
       $result1['startdate_planned'] = date('d.m.Y - H:i', $result1['startdate_planned']);
       $result1['enddate_planned'] = date('d.m.Y - H:i', $result1['enddate_planned']);
@@ -194,8 +188,10 @@ class ArchiveDataExport extends FormBase {
         $result1['reason'] = '';
       }
      // Load all the group content for this node.
-      $groupContent = \Drupal\group\Entity\GroupContent::load($result1['id']);
+      $groupContent = \Drupal\node\Entity\Node::load($result1['nid']);
       $result1['url'] = $groupContent->toUrl()->setAbsolute()->toString();
+      unset($result1['id']);
+      unset($result1['nid']);
       unset($result1['id']);
       // Making individual array to single array.
       $result2[] = $result1;

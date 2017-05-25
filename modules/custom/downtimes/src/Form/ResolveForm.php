@@ -61,6 +61,15 @@ class ResolveForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
+    $node = Drupal::routeMatch()->getParameter('node');
+    $query = Drupal::database()->select('resolve_cancel_incident','ri')
+            ->condition('downtime_id',$node->id())
+            ->fields('ri',['downtime_id'])
+            ->execute()
+            ->fetchField();
+    if($query){
+      throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+    }
 //    $group = \Drupal::routeMatch()->getParameter('group');
 //      if (is_object($group)) {
 //        $group_id = $group->id();
@@ -75,7 +84,7 @@ class ResolveForm extends FormBase {
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
-    $node = Drupal::routeMatch()->getParameter('node');
+    
 //    $node = Drupal\group\Entity\GroupContent::load($group_content_id);
 //    $node = $group_content->getEntity();
     if (is_object($node)) {
