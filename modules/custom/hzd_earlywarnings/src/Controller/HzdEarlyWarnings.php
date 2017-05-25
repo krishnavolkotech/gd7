@@ -480,8 +480,9 @@ class HzdEarlyWarnings extends ControllerBase {
           ->execute();
         $earlyWarningNode = Node::load(reset($lastEw));
         $userName = $earlyWarningNode->getOwner()->getDisplayName();
-        $lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
-          ' ' . t('by') . ' ' . $userName;
+        //$lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
+        //  ' ' . t('by') . ' ' . $userName;
+        $lastCreated = $lastpost = t('@date by @username',['@date' => date('d.m.Y', $earlyWarningNode->created->value), '@username' => $userName]);
         $elements = array(
           array(
             'data' => $relase_title,

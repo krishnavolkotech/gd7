@@ -253,8 +253,8 @@ class HzdearlywarningsStorage
             $early_warningTitle = $earlywarning->toLink();
             $elements = array(
                 array('data' => $early_warningTitle, 'class' => 'earlywarningslink-cell'),
-                array('data' => date('d.m.Y', $earlywarning->created->value) . ' ' .
-                    t('by') . ' ' . $author_name, 'class' => 'created-cell'),
+                array('data' => t('@date by @username',['@date' => date('d.m.Y', $earlywarning->created->value), '@username' => $author_name]),
+                    'class' => 'created-cell'),
                 array('data' => $total_responses['total_responses'], 'class' => 'responses-cell'),
                 array('data' => $total_responses['response_lastposted'], 'class' => 'lastpostdate-cell'),
             );
