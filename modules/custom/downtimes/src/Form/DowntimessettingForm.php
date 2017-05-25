@@ -93,7 +93,7 @@ class DowntimessettingForm extends FormBase {
     $menuItems = MenuLinkContent::loadMultiple($menuItemIds);
     $noLinkAvailable = true;
     foreach ($menuItems as $menu) {
-      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_newDowntimes') {
+      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_engDowntimes') {
         $noLinkAvailable = false;
         if ($counter == 0) {
           $menu->set('enabled', 0);
@@ -107,7 +107,7 @@ class DowntimessettingForm extends FormBase {
     if ($noLinkAvailable && $counter != 0) {
       $menu_link = MenuLinkContent::create([
                 'title' => $this->t('Störungen und Blockzeiten'),
-                'link' => ['uri' => 'internal:/group/' . $group->id() . '/storung'],
+                'link' => ['uri' => 'internal:/group/' . $group->id() . '/downtimes'],
                 'menu_name' => $menu_name,
                 'expanded' => TRUE,
                 'enabled' => 1,
