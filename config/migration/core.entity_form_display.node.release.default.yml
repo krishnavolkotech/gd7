@@ -15,7 +15,6 @@ dependencies:
     - node.type.release
   module:
     - comment
-    - path
     - text
 id: node.release.default
 targetEntityType: node
@@ -81,11 +80,6 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
-  path:
-    type: path
-    weight: 30
-    settings: {  }
-    third_party_settings: {  }
   promote:
     type: boolean_checkbox
     settings:
@@ -107,6 +101,8 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -116,4 +112,5 @@ content:
       placeholder: ''
     third_party_settings: {  }
 hidden:
+  path: true
   upload: true

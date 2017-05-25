@@ -5,10 +5,10 @@ dependencies:
   config:
     - field.field.node.downtimes.body
     - field.field.node.downtimes.comment
+    - field.field.node.downtimes.upload
     - node.type.downtimes
   module:
     - comment
-    - path
     - text
 id: node.downtimes.default
 targetEntityType: node
@@ -38,11 +38,6 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
-  path:
-    type: path
-    weight: 30
-    settings: {  }
-    third_party_settings: {  }
   promote:
     type: boolean_checkbox
     settings:
@@ -64,6 +59,8 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -73,4 +70,5 @@ content:
       placeholder: ''
     third_party_settings: {  }
 hidden:
+  path: true
   upload: true
