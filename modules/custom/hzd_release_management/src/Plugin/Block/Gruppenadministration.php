@@ -107,5 +107,8 @@ class Gruppenadministration extends BlockBase {
 //    }
     return $menuHtml;
   }
-
+  
+  function getCacheMaxAge(){
+    return 0;
+  }
 }
