@@ -235,6 +235,26 @@ article.page .content table {
         width: 500px;
     }
 }
+@media only screen and (max-width:480px) {
+  .block-maintenance-block .maintenance-list{
+    width:100% !important;
+    float:left !important;
+    position:unset !important;
+  }
+  article.popup{
+    left: 0 !important;
+    position: absolute !important;
+    top: 30px !important;
+    width: 100% !important;
+  }
+  article.downtimes .Incident .downtimes_title{
+    width: 35% !important;
+    word-wrap: break-word;
+  }
+  article.downtimes .Incident .downtimes_content{
+   width: 63% !important;
+  }
+}
 @media only screen and (max-width: 767px) {
     aside.col-sm-6,
     #header-right {
@@ -1631,7 +1651,7 @@ article.downtimes .Incident .downtimes_title {
     font-weight: 600;
     float: left;
     width: 24%;
-    margin: 0 1% 3px 0;
+    margin: 0 2% 3px 0;
 }
 form.incidents .incident_states_filter_form_wrapper,
 form.maintenance .incident_states_filter_form_wrapper {
@@ -2228,6 +2248,9 @@ a.entity_print_view {
 aside ul.menu li.dropdown.active .dropdown-menu {
     display: block !important;
 }
+form.deployed-released-view-form .sticky-header{
+  display:none;
+}
 table.sticky-header {
     margin-top: 0 !important;
 }
@@ -2470,7 +2493,7 @@ article.quickinfo .field .field--item ul li {
     margin: 0 0 7px 0;
 }
 article.downtimes .Incident .downtimes_content {
-    width: 75% !important;
+    width: 73%;
     float: left;
 }
 article.downtimes .downtimes_content_paragraph {
@@ -2485,6 +2508,7 @@ article.quickinfo table {
     width: 100%;
     margin: 10px 0;
 }
+#earlywarnings_results_wrapper .table-responsive table thead tr th.responses-hdr,
 #earlywarnings_results_wrapper .table-responsive table tr td.responses-cell {
     text-align: center;
 }

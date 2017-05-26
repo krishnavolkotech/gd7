@@ -86,10 +86,13 @@ a.button--danger {
 #archived_search_results_wrapper table tr.odd td:first-child,
 #archived_search_results_wrapper table tr.even td:first-child,
 #archived_search_results_wrapper table tr.odd td:last-child,
-#archived_search_results_wrapper table tr.even td:last-child,
+#archived_search_results_wrapper table tr.even td:last-child {
+    width: 10% !important;
+    word-break: break-all;
+}
 #incidents_search_results_wrapper table tr.odd td:last-child,
 #incidents_search_results_wrapper table tr.even td:last-child {
-    width: 10% !important;
+    width: 12% !important;
     word-break: break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(2),
@@ -134,11 +137,11 @@ table.releases.released tr.even td.earlywarnings-cell {
 }
 #incidents_search_results_wrapper table tr td:last-child,
 #maintenance_search_results_wrapper table tr td:last-child {
-    width: 10%;
+    width: 12%;
 }
 #maintenance_search_results_wrapper table tr td:first-child,
 #incidents_search_results_wrapper table tr td:first-child {
-    width: 38% !important;
+    width: 35% !important;
     word-wrap: break-word;
 }
 #maintenance_search_results_wrapper table tr td:nth-child(2),
