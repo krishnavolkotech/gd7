@@ -24,6 +24,9 @@ class NodeEditBreadcrumbBuilder implements BreadcrumbBuilderInterface
         if ($route_name == 'entity.node.edit_form' && in_array($params['node']->getType(), ['downtimes', 'quickinfo'])) {
             return TRUE;
         }
+        if ($route_name == 'entity.node.canonical' && in_array($params['node']->getType(), ['downtimes', 'quickinfo'])) {
+            return TRUE;
+        }
         return FALSE;
     }
     
@@ -44,7 +47,26 @@ class NodeEditBreadcrumbBuilder implements BreadcrumbBuilderInterface
         if ($listItems)
             $links[] = Link::createFromRoute($listItems['title'], $listItems['route'], $listItems['params']);
         $node = $route_match->getParameter('node');
-        $links[] = Link::createFromRoute(t('Edit ' . $node->getTitle()), 'entity.node.edit_form', array('node' => $node->id()));
+        if ($node->bundle() == 'downtimes') {
+          $db = \Drupal::database();
+          $downtimeTypeQuery = $db->select('downtimes', 'd');
+          $downtimeTypeQuery->fields('d', ['scheduled_p']);
+          $downtimeTypeQuery->condition('downtime_id', $node->id());
+          $downtimeType = $downtimeTypeQuery->execute()->fetchField();
+          if ($downtimeType == 0) {
+            $title = 'Störung';
+          } else {
+            $title = 'Blockzeit';
+          }
+          if($route_match->getRouteName() == 'entity.node.edit_form'){
+            $links[] = Link::createFromRoute(t($title . ' bearbeiten'), '<none>');
+          }
+        } else {
+            if($route_match->getRouteName() == 'entity.node.edit_form'){
+                $links[] = Link::createFromRoute(t('Edit ' . $node->getTitle()), 'entity.node.edit_form', array('node' => $node->id()));
+            }
+        }
+        
         
         return $breadcrumb->setLinks($links)->addCacheableDependency(0);
     }
