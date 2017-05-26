@@ -26,7 +26,7 @@ downtimes.Downtimesnotes:
     _permission: 'administer messaging'
 
 downtimes.DowntimesnotesDisplay:
-  path: '/group/{group}/storung/notes'
+  path: '/group/{group}/stoerung/notes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimesNotesDisplayController::downtime_notes_message_display'
     _title: 'Downtimes Notes'
@@ -36,7 +36,7 @@ downtimes.DowntimesnotesDisplay:
     _user_is_logged_in: 'FALSE'
     
 downtimes.DowntimesnotesDisplay_eng:
-  path: '/group/{group}/storung/notes'
+  path: '/group/{group}/stoerung/notes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimesNotesDisplayController::downtime_notes_message_display'
     _title: 'Downtimes Notes'
@@ -89,7 +89,7 @@ downtimes.cancel_confirm:
     node: \d+
 
 downtimes.service_profiles:
-  path: '/group/{group}/storung/service-profiles'
+  path: '/group/{group}/stoerung/service-profiles'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
     _title: 'Service Profiles'
@@ -99,7 +99,7 @@ downtimes.service_profiles:
      group: \d+
 
 downtimes.service_profiles_eng:
-  path: '/group/{group}/storung/service-profiles'
+  path: '/group/{group}/stoerung/service-profiles'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::service_profiles'
     _title: 'Service Profiles'
@@ -109,7 +109,7 @@ downtimes.service_profiles_eng:
      group: \d+
      
 downtimes.create_downtimes:
-  path: '/group/{group}/storung/create_downtimes'
+  path: '/group/{group}/stoerung/create_downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Incident'
@@ -118,7 +118,7 @@ downtimes.create_downtimes:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdCreateDowntimesAccess'
 
 downtimes.create_downtimes_eng:
-  path: '/group/{group}/storung/create_downtimes'
+  path: '/group/{group}/stoerung/create_downtimes'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Incident'
@@ -127,7 +127,7 @@ downtimes.create_downtimes_eng:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdCreateDowntimesAccess'
     
 downtimes.create_maintenance:
-  path: '/group/{group}/storung/create_maintenance'
+  path: '/group/{group}/stoerung/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Maintenance'
@@ -137,7 +137,7 @@ downtimes.create_maintenance:
     group: \d+
     
 downtimes.create_maintenance_eng:
-  path: '/group/{group}/storung/create_maintenance'
+  path: '/group/{group}/stoerung/create_maintenance'
   defaults:
     _controller: '\Drupal\downtimes\Controller\DowntimeController::create_downtime'
     _title: 'Report Maintenance'
@@ -229,7 +229,7 @@ downtimes.downtimes_scheduled_maintenance_mail_template_form:
 #   'access callback' => 'downtimes_resolve'
 
 downtimes.new_downtimes_controller_newDowntimes:
-  path: '/group/{group}/storung'
+  path: '/group/{group}/stoerung'
   defaults:
     _controller: '\Drupal\downtimes\Controller\NewDowntimesController::newDowntimes'
     _title: 'Störungen und Blockzeiten'
@@ -249,7 +249,7 @@ downtimes.new_downtimes_controller_engDowntimes:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 downtimes.archived_downtimes_controller:
-  path: '/group/{group}/storung/archive'
+  path: '/group/{group}/stoerung/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
     _title: 'Archiv'
@@ -259,7 +259,7 @@ downtimes.archived_downtimes_controller:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
     
 downtimes.archived_downtimes_controller_eng:
-  path: '/group/{group}/storung/archive'
+  path: '/group/{group}/stoerung/archive'
   defaults:
     _controller: '\Drupal\downtimes\Controller\ArchivedDowntimesController::archivedDowntimes'
     _title: 'Archiv'
