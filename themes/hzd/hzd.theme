@@ -453,7 +453,7 @@ function downtimes_revisions($node) {
       $log_values = unserialize($value['log']);
       $logData = [];
       $reason = '';
-      if (isset($log_values['reason']) && $log_values['reason']['new'] != $downtimeData->description && $itemCount == count($query)) {
+      if (isset($log_values['reason']) && $log_values['reason']['new'] != $downtimeData->description && $itemCount == count($query)-1) {
         $hasFirstLog = FALSE;
       }
       $itemCount++;
