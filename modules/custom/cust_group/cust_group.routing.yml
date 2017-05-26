@@ -69,7 +69,7 @@ cust_group.approve_membership_request:
     _form: '\Drupal\cust_group\Form\GroupContentApproveForm'
     _entity_view: 'group_content.default'
   requirements:
-    _permission: 'administer members'
+    _group_permission: 'administer members'
 cust_group.reject_membership_request:
   path: '/group/{group}/member/{group_content}/reject'
   defaults:
