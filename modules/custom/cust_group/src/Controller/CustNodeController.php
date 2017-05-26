@@ -500,6 +500,7 @@ class CustNodeController extends ControllerBase {
       } else {
         $title = t('Blockzeit');
       }
+      return $title;
     } else {
       return $node->label();
     }
