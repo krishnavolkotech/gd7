@@ -30,7 +30,7 @@ content:
     type: entity_reference_autocomplete
   field_dependent_service:
     weight: 4
-    type: options_buttons
+    type: options_select
     settings: {  }
     third_party_settings: {  }
   field_impact:
@@ -63,6 +63,8 @@ content:
     third_party_settings: {  }
   translation:
     weight: 10
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   body: true
   comment: true
