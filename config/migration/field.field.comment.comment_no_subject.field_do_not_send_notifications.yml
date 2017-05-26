@@ -9,15 +9,15 @@ id: comment.comment_no_subject.field_do_not_send_notifications
 field_name: field_do_not_send_notifications
 entity_type: comment
 bundle: comment_no_subject
-label: 'Do not send notifications for this update.'
+label: 'Senden Sie keine Benachrichtigungen für dieses Update.'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0
 default_value_callback: ''
 settings:
-  on_label: 'On'
-  off_label: 'Off'
+  on_label: Auf
+  off_label: Aus
 field_type: boolean

@@ -11,10 +11,10 @@ id: comment.comment_no_subject.comment_body
 field_name: comment_body
 entity_type: comment
 bundle: comment_no_subject
-label: Comment
+label: Kommentar
 description: ''
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

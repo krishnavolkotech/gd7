@@ -1518,11 +1518,11 @@ form#downtimes-filter .string_search.hzd-form-element {
     float: left;
 }
 .view-groups-faq .view-content .views-row .views-field-title {
-    width: 82%;
+    width: 78%;
     float: left;
-    margin-bottom: 5px;
-    background: #02547a;
-    padding: 5px;
+    margin-bottom: 7px;
+    /*background: #02547a;*/
+    padding-right: 5px;
 }
 .view-groups-faq h3 {
     font-size: 16px !important;
@@ -1531,16 +1531,18 @@ form#downtimes-filter .string_search.hzd-form-element {
     font-family: 'robotomedium';
     float: left;
     display: block;
-    margin-top: 10px !important;
+    margin: 10px 0 !important;
 }
-.view-groups-faq .view-content .views-row .views-field-edit-node,
-.view-groups-faq .view-content .views-row .views-field-delete-node {
+.view-groups-faq .view-content .views-row .views-field-edit-node a,
+.view-groups-faq .view-content .views-row .views-field-delete-node a {
     float: left;
     margin-bottom: 5px;
     background: #04425f;
-    padding: 5px 3px;
+    padding: 6px 12px;
     border-left: 1px solid #fff;
     cursor: pointer;
+    text-decoration:none;
+    margin-left:5px;
 }
 .view-groups-faq .view-content .views-row .views-field-edit-node a,
 .view-groups-faq .view-content .views-row .views-field-delete-node a {
@@ -1550,8 +1552,10 @@ form#downtimes-filter .string_search.hzd-form-element {
 .view-groups-faq .view-content .views-row .views-field-title .field-content {
     width: 100%;
     float: left;
-    color: #fff;
-    line-height: 24px;
+   /* color: #fff;*/
+   font-size:16px;
+    color: #02547a;
+    line-height: 22px;
 }
 .view-groups-faq .view-content .views-row .views-field-body {
     width: 100%;
@@ -2499,6 +2503,7 @@ article.quickinfo table {
 .quickinfo-attachments table tr td {
     border: 0 !important;
 }
+.view-groups-faq form button.tabledrag-toggle-weight, 
 .quickinfo-attachments .field--name-upload .table-responsive button.tabledrag-toggle-weight {
     float: right;
 }

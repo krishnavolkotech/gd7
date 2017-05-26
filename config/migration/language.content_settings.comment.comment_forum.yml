@@ -8,9 +8,9 @@ dependencies:
     - content_translation
 third_party_settings:
   content_translation:
-    enabled: false
+    enabled: true
 id: comment.comment_forum
 target_entity_type_id: comment
 target_bundle: comment_forum
 default_langcode: site_default
-language_alterable: false
+language_alterable: true

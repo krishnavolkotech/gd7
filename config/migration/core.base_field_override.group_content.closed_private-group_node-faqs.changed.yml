@@ -1,0 +1,18 @@
+uuid: 81c5e2c3-c1c7-4485-888d-33baf4e84a1c
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.closed_private-group_node-faqs
+id: group_content.closed_private-group_node-faqs.changed
+field_name: changed
+entity_type: group_content
+bundle: closed_private-group_node-faqs
+label: 'Changed on'
+description: 'The time that the group content was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

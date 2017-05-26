@@ -1,0 +1,16 @@
+uuid: ec90bb55-0a6d-447e-8e76-da78b2ea2aec
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.closed_private-group_node-faqs
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+id: group_content.closed_private-group_node-faqs
+target_entity_type_id: group_content
+target_bundle: closed_private-group_node-faqs
+default_langcode: site_default
+language_alterable: false
