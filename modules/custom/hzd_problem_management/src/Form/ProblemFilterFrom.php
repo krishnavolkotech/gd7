@@ -51,7 +51,8 @@ class ProblemFilterFrom extends FormBase
         $query->orderBy('nfd.title','asc');
         $service = $query->execute()->fetchAll();
         foreach ($service as $services) {
-            $default_services[$services->nid] = $services->title;
+          $serviceEntity = \Drupal\node\Entity\Node::load($services->nid);
+            $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
         }
         // default functions
         $default_function[0] = '<' . t("Select Function") . '>';

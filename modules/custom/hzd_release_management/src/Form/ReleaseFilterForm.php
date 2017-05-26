@@ -62,7 +62,8 @@ class ReleaseFilterForm extends FormBase
         )->fetchAll();
         
         foreach ($services_obj as $services_data) {
-            $services[$services_data->nid] = $services_data->title;
+          $serviceNode = \Drupal\node\Entity\Node::load($services_data->nid);
+            $services[$services_data->nid] = $serviceNode->get('field_release_name')->value;
         }
         
         $container = \Drupal::getContainer();
