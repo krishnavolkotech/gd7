@@ -52,3 +52,4 @@ content:
     third_party_settings: {  }
 hidden:
   subject: true
+  translation: true

@@ -1,0 +1,24 @@
+uuid: 0030d283-4273-4f96-9d82-99de6bd8df27
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.closed_private-group_node-faqs
+id: group_content.closed_private-group_node-faqs.request_status
+field_name: request_status
+entity_type: group_content
+bundle: closed_private-group_node-faqs
+label: 'Request Status'
+description: 'Request mebership status.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer
