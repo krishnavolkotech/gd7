@@ -27,6 +27,7 @@ class RouteSubscriber extends RouteSubscriberBase {
 
     if ($route = $collection->get('entity.node.canonical')) {
 //      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodeviewAccess");
+      $route->setRequirement('_title_callback', "\Drupal\cust_group\Controller\CustNodeController::nodeTitle");
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::downtimeAcces");
     }
 

@@ -90,7 +90,7 @@ class CustNodeController extends ControllerBase {
     }
     if ($node = $route_match->getParameter('node')) {
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-      if(!$groupContent){
+      if (!$groupContent) {
         return AccessResult::neutral();
       }
       $group = $groupContent->getGroup();
@@ -485,6 +485,24 @@ class CustNodeController extends ControllerBase {
     pr(($pid));
     echo 'Success';
     exit;
+  }
+
+  function nodeTitle() {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node->bundle() == 'downtimes') {
+      $db = \Drupal::database();
+      $downtimeTypeQuery = $db->select('downtimes', 'd');
+      $downtimeTypeQuery->fields('d', ['scheduled_p']);
+      $downtimeTypeQuery->condition('downtime_id', $node->id());
+      $downtimeType = $downtimeTypeQuery->execute()->fetchField();
+      if ($downtimeType == 0) {
+        $title = t('Störung');
+      } else {
+        $title = t('Blockzeit');
+      }
+    } else {
+      return $node->label();
+    }
   }
 
 }
