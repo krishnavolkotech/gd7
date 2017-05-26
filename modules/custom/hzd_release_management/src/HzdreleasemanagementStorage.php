@@ -751,7 +751,6 @@ class HzdreleasemanagementStorage {
    */
   static public function deployed_releases_displaytable($service_release_type = KONSONS) {
     $deployed_releases_node_ids = \Drupal::entityQuery('node')
-            ->condition('field_archived_release', 1, '<>')
             ->condition('type', 'deployed_releases', '=');
 
     $filter_value = HzdreleasemanagementStorage::get_release_filters();
