@@ -247,6 +247,7 @@ function sendGroupUpdateMail($entity, $isNew = 1) {
 }
 
 function getGroupMemberList($gid) {
+  $group = \Drupal\group\Entity\Group::load($gid);
   $uids = \Drupal::database()->select('group_notifications', 'gnudi')
     ->fields('gnudi', ['uids'])
     ->condition('gnudi.group_id', $gid, '=')
@@ -263,7 +264,8 @@ function getGroupMemberList($gid) {
     $userEntities = User::loadMultiple($users);
     
     foreach ($userEntities as $user) {
-      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive()) {
+      $groupMember = $group->getMember($user);
+      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive() && $groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
         $userMails[$user->id()] = $user->getEmail();
       }
     }
