@@ -1,8 +1,0 @@
-uuid: c32b7ddd-aba8-47e7-aaab-dfde5e9e942a
-langcode: de
-status: true
-dependencies: {  }
-id: menu-58176
-label: 'Test unpublished open group'
-description: ''
-locked: false
