@@ -862,7 +862,7 @@ class HzdreleasemanagementStorage {
               )
               )->fetchField();
       $service = \Drupal\node\Entity\Node::load(
-                      $deployed_release_node->field_release_service->value)->getTitle();
+                      $deployed_release_node->field_release_service->value)->get('field_release_name')->value;
 
       $release_node = \Drupal\node\Entity\Node::load(
                       $deployed_release_node->field_earlywarning_release->value);
@@ -1155,7 +1155,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $service = $releases->get('field_relese_services')->first()->entity;
 //          pr($releases->id());
       $row = array(
-          'service' => $service->getTitle(),
+          'service' => $service->get('field_release_name')->value,
           'release' => $releases->getTitle()
       );
       if ($type != 'released') {

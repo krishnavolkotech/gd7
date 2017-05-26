@@ -162,7 +162,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             $newData[$state_details->abbr] = '';
           }
         }
-        $dep[] = $service->label();
+        $dep[] = $service->get('field_release_name')->value;
         $dep += $newData;
         $depReleases[] = $dep;
         $newData = NULL;

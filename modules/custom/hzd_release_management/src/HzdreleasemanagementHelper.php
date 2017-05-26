@@ -573,7 +573,10 @@ class HzdreleasemanagementHelper {
     $services_infos = $query->execute()->fetchAll();
 
     foreach ($services_infos as $services_info) {
-      $deployed_services[$services_info->nid] = $services_info->title;
+      $serviceEntity = Node::load($services_info->nid);
+      if(!empty($serviceEntity->get('field_release_name')->value)){
+        $deployed_services[$services_info->nid] = $serviceEntity->get('field_release_name')->value;
+      }
     }
 
 //         dpm($deployed_services);
@@ -660,11 +663,12 @@ class HzdreleasemanagementHelper {
     }
     $currently = $archived = [];
     foreach ($result as $deployed_release) {
-      $query = \Drupal::database()->select('node_field_data', 'nfd');
-      $query->fields('nfd', array('title'));
-      $query->condition('nfd.nid', $deployed_release->service, '=');
-      $service = $query->execute()->fetchField();
-
+//      $query = \Drupal::database()->select('node_field_data', 'nfd');
+//      $query->fields('nfd', array('title'));
+//      $query->condition('nfd.nid', $deployed_release->service, '=');
+//      $service = $query->execute()->fetchField();
+      $serviceEntity = Node::load($deployed_release->service);
+      
       if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
         $buildRedirUrl = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $group_id])->toString();
         $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployed_release->nid], array(
@@ -711,7 +715,7 @@ class HzdreleasemanagementHelper {
         }
         $currently[] = array(
             $environment,
-            $service,
+            $serviceEntity->get('field_release_name')->value,
             $release,
             date("d.m.Y", strtotime($deployed_release->deployed_date)),
             $action,
@@ -727,7 +731,7 @@ class HzdreleasemanagementHelper {
         }
         $archived[] = array(
             $environment,
-            $service,
+            $serviceEntity->get('field_release_name')->value,
             $release,
             date("d.m.Y", strtotime($deployed_release->deployed_date)),
             $edit,
