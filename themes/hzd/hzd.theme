@@ -410,6 +410,7 @@ function custom_user_fullname($uid) {
 use Drupal\Component\Datetime\DateTimePlus;
 
 function downtimes_revisions($node) {
+  $nodeEntity = Node::load($node);
   $labels = [
       'non_compliance' => t('Grund für die Wartung der Wartungsfenster'),
       'start_date' => t('Beginn'),
@@ -443,19 +444,19 @@ function downtimes_revisions($node) {
   if (!empty($query)) {
 
     foreach ($query as $value) {
-      if ($itemCount == count($query)) {
+      $value = (array) $value;
+      $log_values = unserialize($value['log']);
+      $logData = [];
+      $reason = '';
+      if ($value['updated'] != $nodeEntity->getCreatedTime() && $itemCount == count($query)) {
+        $hasFirstLog = FALSE;
+      }
+      if ($itemCount == count($query) && $hasFirstLog == TRUE) {
         $text = 'Erstellt';
       } else {
         $text = 'Geändert';
       }
 
-      $value = (array) $value;
-      $log_values = unserialize($value['log']);
-      $logData = [];
-      $reason = '';
-      if (isset($log_values['reason']) && $log_values['reason']['new'] != $downtimeData->description && $itemCount == count($query)-1) {
-        $hasFirstLog = FALSE;
-      }
       $itemCount++;
       foreach ($log_values as $name => $field_value) {
         if ($name == 'reason') {
@@ -503,7 +504,8 @@ function downtimes_revisions($node) {
     }
   }
   if ($hasFirstLog === FALSE || empty($query)) {
-    if (empty($query)) {
+//  pr($oldData);exit;
+  if (empty($query) || empty($oldData)) {
       $oldData = NULL;
       if (!empty($downtimeData->reason)) {
         $oldData[] = $labels['non_compliance'] . ' : ' . $downtimeData->reason;
@@ -540,7 +542,7 @@ function downtimes_revisions($node) {
         $oldDataReason['desc'] = $downtimeData->description;
       }
     }
-    $nodeEntity = Node::load($node);
+//    $nodeEntity = Node::load($node);
 
     $items[] = [
         'items' => [
