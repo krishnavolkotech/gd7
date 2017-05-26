@@ -15,7 +15,6 @@ conditions:
     id: node_type
     bundles:
       deployed_releases: deployed_releases
-      downtimes: downtimes
       early_warnings: early_warnings
       faq: faq
       faqs: faqs
