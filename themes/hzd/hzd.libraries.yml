@@ -8,9 +8,8 @@ global-styling:
       css/3.3.5/bootstrap.min.css: {}
       css/bootstrap-datetimepicker-standalone.css : {}
   js:
-    theme:
-      js/3.3.5/bootstrap.js: {}
-      js/3.3.5/bootstrap.min.js: {}
+    js/3.3.5/bootstrap.js: {}
+    js/3.3.5/bootstrap.min.js: {}
 
 quickinfo:
   css:
