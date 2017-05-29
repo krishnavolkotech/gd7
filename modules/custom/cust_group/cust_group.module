@@ -760,3 +760,21 @@ function cust_group_user_format_name_alter(&$name, $account){
         $name = $userData['firstname'] .' '.$userData['lastname'];        
     }
 }
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function cust_group_entity_base_field_info(Drupal\Core\Entity\ContentEntityTypeInterface $entity_type) {
+  if ($entity_type->id() === 'node') {
+    $fields = [];
+    // Add a field that shows a link to the user's current company.
+    $fields['downtime_description'] = \Drupal\Core\Field\BaseFieldDefinition::create('downtime_description')
+      ->setName('Downtime Description')
+      ->setLabel(t('Downtime Description'))
+      ->setComputed(TRUE)
+      ->setClass('\Drupal\cust_group\DowntimeDescriptionItemList')
+      ->setDisplayConfigurable('view', TRUE);
+
+    return $fields;
+  }
+}
