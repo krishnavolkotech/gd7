@@ -28,7 +28,8 @@
         "drupal/better_exposed_filters": "^3.0@alpha",
         "drupal/queue_mail": "^1.0@alpha",
         "drupal/block_visibility_groups": "1.1.0",
-        "drupal/menu_export": "1.0.0"
+        "drupal/menu_export": "1.0.0",
+        "drupal/views_merge_rows": "^2.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
