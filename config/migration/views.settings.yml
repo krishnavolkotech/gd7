@@ -1,4 +1,5 @@
-display_extenders: {  }
+display_extenders:
+  - views_merge_rows
 skip_cache: false
 sql_signature: false
 ui:

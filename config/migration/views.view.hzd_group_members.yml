@@ -535,7 +535,8 @@ display:
     display_title: approved
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/members/approved
       use_more: false
       defaults:
@@ -1546,6 +1547,81 @@ display:
                 is_secondary: false
                 rewrite:
                   filter_rewrite_values: ''
+      merge_rows: 1
+      use_grouping: 0
+      field_config:
+        id:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_2:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_member_name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        label:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_1:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        lastname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        firstname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_roles:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        abbr:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        mail:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        operations:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
     cache_metadata:
       max-age: 0
       contexts:

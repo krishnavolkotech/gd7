@@ -110,6 +110,7 @@ module:
   update: 0
   user: 0
   view_unpublished: 0
+  views_merge_rows: 0
   views_ui: 0
   xmlrpc: 0
   ctools: 1
