@@ -92,7 +92,7 @@ a.button--danger {
 }
 #incidents_search_results_wrapper table tr.odd td:last-child,
 #incidents_search_results_wrapper table tr.even td:last-child {
-    width: 12% !important;
+    width: 12% ;
     word-break: break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(2),
@@ -115,24 +115,24 @@ table.releases.released tr.even td.earlywarnings-cell {
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(3),
 #archived_search_results_wrapper table tr.even td:nth-child(3) {
-    width: 15% !important;
+    width: 15%;
     word-break: break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(4),
 #archived_search_results_wrapper table tr.even td:nth-child(4) {
-    width: 8% !important;
+    width: 8%;
     word-break: break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
 #archived_search_results_wrapper table tr.even td:nth-child(5),
 #archived_search_results_wrapper table tr.odd td:nth-child(6),
 #archived_search_results_wrapper table tr.even td:nth-child(6) {
-    width: 14% !important;
+    width: 14%;
     word-break: break-all;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(7),
 #archived_search_results_wrapper table tr.even td:nth-child(7) {
-    width: 7% !important;
+    width: 7%;
     word-break: break-all;
 }
 #incidents_search_results_wrapper table tr td:last-child,
@@ -141,24 +141,24 @@ table.releases.released tr.even td.earlywarnings-cell {
 }
 #maintenance_search_results_wrapper table tr td:first-child,
 #incidents_search_results_wrapper table tr td:first-child {
-    width: 35% !important;
+    width: 35%;
     word-wrap: break-word;
 }
 #maintenance_search_results_wrapper table tr td:nth-child(2),
 #incidents_search_results_wrapper table tr td:nth-child(2) {
-    width: 16% !important;
+    width: 16%;
     word-wrap: break-word;
 }
 #maintenance_search_results_wrapper table tr td:nth-child(3),
 #incidents_search_results_wrapper table tr td:nth-child(3) {
-    width: 10% !important;
+    width: 10%;
     word-wrap: break-word;
 }
 #maintenance_search_results_wrapper table tr td:nth-child(4),
 #incidents_search_results_wrapper table tr td:nth-child(4),
 #maintenance_search_results_wrapper table tr td:nth-child(5),
 #incidents_search_results_wrapper table tr td:nth-child(5) {
-    width: 13.5% !important;
+    width: 13.5%;
     word-wrap: break-word;
 }
 table tr td,
@@ -399,4 +399,53 @@ article.page .content table {
 }
 #views-exposed-form-user-list-address label {
     margin-right: 5px;
+}
+
+@media only screen and (max-width:767px){
+.frontpage-downtime-block a.front-page-link{
+  width:100%;
+  margin-top:10px;
+}
+.table-responsive{
+  border:none !important;
+}
+.table-responsive table,
+.table-responsive table tbody{
+  width:100%;
+  display:block;
+}
+.table-responsive table tbody tr{
+  width:100%;
+  float:left;
+  margin:10px 0 15px 0;
+  border:1px solid #ddd;
+}
+.table-responsive table thead, .table-responsive table th{
+  display:none;
+}
+.table-responsive table tbody td{
+  width:100% !important;
+  display:inline-block;
+}
+.table-responsive table tr{
+  width:100%;
+  float:left;
+}
+.table-responsive table tbody td::before{
+  content: attr(data-th) ":"; 
+  font-weight: bold;
+  display: inline-block;
+  color:#333;
+  padding-right:3px;
+  float:left;
+}
+.table-responsive table tr td div,
+.table-responsive table tr td ul{
+  display:inline-block;
+  width:auto;
+  float:none;
+}
+table.archived caption, table.incident caption, table.maintenance caption{
+  display:block;
+}
 }

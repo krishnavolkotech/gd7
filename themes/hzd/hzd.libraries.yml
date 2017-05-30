@@ -10,6 +10,7 @@ global-styling:
   js:
     js/3.3.5/bootstrap.js: {}
     js/3.3.5/bootstrap.min.js: {}
+    js/tableresponsive.js: {}    
 
 quickinfo:
   css:
