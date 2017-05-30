@@ -431,7 +431,7 @@ class HzdcustomisationStorage {
     $query->fields('nfi', ['field_impact_value']);
     $query->fields('nfmat', ['field_maintenance_advance_time_value']);
     $query->leftJoin('node__field_impact', 'nfi', 'nfi.entity_id = nfd.entity_id');
-    $query->join('node__field_maintenance_advance_time', 'nfmat', 'nfmat.entity_id = nfd.entity_id');
+    $query->leftJoin('node__field_maintenance_advance_time', 'nfmat', 'nfmat.entity_id = nfd.entity_id');
     $query->condition('nfd.field_dependent_service_target_id', $sid);
     $services = $query->execute()->fetchAll();
     if (empty($services)) {
