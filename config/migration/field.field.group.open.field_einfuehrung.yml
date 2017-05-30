@@ -11,7 +11,7 @@ id: group.open.field_einfuehrung
 field_name: field_einfuehrung
 entity_type: group
 bundle: open
-label: Einfuehrung
+label: Einführung
 description: ''
 required: false
 translatable: true
