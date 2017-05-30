@@ -9,7 +9,7 @@ id: group.open.field_description
 field_name: field_description
 entity_type: group
 bundle: open
-label: Description
+label: Beschreibung
 description: ''
 required: false
 translatable: true

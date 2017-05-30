@@ -2757,8 +2757,7 @@ body.path-node .main-container .region-content,
     width: 100%;
     margin: 0 0 10px;
 }
-body.path-address .main-container .region-content,
-{
+body.path-address .main-container .region-content {
     padding: 20px 20px 0;
 }
 body.path-node .main-container .region-content,
@@ -3158,4 +3157,12 @@ span.form-required::after,
     color: #ef1616;
     font-size: 17px;
     font-weight: 700;
+}
+
+/*Forum*/
+.table > thead > tr > th a {
+  color: #333333;
+}
+.hzd-innerpage-wrapper .action-links {
+    list-style: none;
 }

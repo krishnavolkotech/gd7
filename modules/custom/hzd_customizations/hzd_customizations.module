@@ -1441,3 +1441,10 @@ function hzd_customizations_preprocess_block(&$variables) {
     }
   }
 }
+
+
+function hzd_preprocess_menu_local_action(&$variables) {
+    if($variables['link']['#url']->getInternalPath() == 'node/add/forum') {
+        unset($variables['link']);
+    }
+}

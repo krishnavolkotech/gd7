@@ -511,7 +511,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: or
+          operator: and
           value: ''
           group: 1
           exposed: true
@@ -553,6 +553,26 @@ display:
             uid: uid
             created: created
             body: body
+            gid: gid
+            entity_id: entity_id
+            field_additional_email_recipient: field_additional_email_recipient
+            field_business_impact: field_business_impact
+            field_business_impact_services: field_business_impact_services
+            field_contact: field_contact
+            field_creators: field_creators
+            field_custom_title: field_custom_title
+            field_dates: field_dates
+            field_depend_other_services: field_depend_other_services
+            field_intial_situation: field_intial_situation
+            field_other_services: field_other_services
+            field_professional_conditions: field_professional_conditions
+            field_recipients: field_recipients
+            field_related_transfer_number: field_related_transfer_number
+            field_special_notes: field_special_notes
+            field_technical_impact: field_technical_impact
+            field_technical_impact_services: field_technical_impact_services
+            field_tech_requirements: field_tech_requirements
+            downtime_description: downtime_description
           plugin_id: search_api_fulltext
       sorts: {  }
       title: Suche

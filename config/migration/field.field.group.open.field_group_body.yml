@@ -11,7 +11,7 @@ id: group.open.field_group_body
 field_name: field_group_body
 entity_type: group
 bundle: open
-label: 'Group Body'
+label: Startseite
 description: ''
 required: false
 translatable: true
