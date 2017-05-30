@@ -105,7 +105,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
         );
         
         if ($form_id == 'user_register_form') {
-            $gids = \Drupal::entityQuery('group')->condition('type', ['open', 'moderate'], 'IN')->execute();
+            $gids = \Drupal::entityQuery('group')->condition('type', ['open', 'moderate'], 'IN')->condition('status',1)->execute();
             sort($gids);
             $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
             $groups = [];

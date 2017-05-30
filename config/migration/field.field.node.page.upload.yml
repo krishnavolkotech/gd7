@@ -12,7 +12,7 @@ third_party_settings:
   filefield_paths:
     enabled: true
     file_path:
-      value: 'gruppen/[group:title]/[node:content-type:machine-name]'
+      value: 'gruppen/[group:title]/'
       options:
         slashes: false
         pathauto: false
