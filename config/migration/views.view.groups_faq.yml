@@ -6,6 +6,9 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.storage.node.body
     - field.storage.node.faq_kategorie
+    - user.role.administrator
+    - user.role.authenticated
+    - user.role.site_administrator
   module:
     - draggableviews
     - node
@@ -593,7 +596,8 @@ display:
         type: views_query
         options: {  }
       path: taxonomy/term/%
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       menu:
         enabled: true
         expanded: false
@@ -613,6 +617,7 @@ display:
         fields: false
         sorts: false
         pager: false
+        access: false
       row:
         type: fields
         options:
@@ -945,13 +950,20 @@ display:
         type: none
         options:
           offset: 0
+      access:
+        type: role
+        options:
+          role:
+            authenticated: authenticated
+            administrator: administrator
+            site_administrator: site_administrator
     cache_metadata:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       max-age: -1
       tags:
         - 'config:field.storage.node.body'
