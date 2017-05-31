@@ -70,7 +70,7 @@ hzd_customizations.manage_non_production_environment:
     _form: 'Drupal\hzd_customizations\Form\ManagenonproductionenvironmentForm'
     _title: 'Manage Non-Production Environment'
   requirements:
-    _role: 'administrator,site_administrator'
+    _role: 'administrator+site_administrator'
   options:
     _admin_route: TRUE
 
