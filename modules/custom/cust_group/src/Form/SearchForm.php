@@ -30,7 +30,7 @@ class SearchForm extends FormBase {
       '#size'=>15,
       '#placeholder'=>$this->t('Search site'),
     ];
-    $form['#action'] = '/search';
+    $form['#action'] = '/suche';
     $form['#method'] = 'GET';
     
     $form['submit'] = [
