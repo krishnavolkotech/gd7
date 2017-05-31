@@ -743,7 +743,7 @@ function cust_group_menu_link_content_insert($menu) {
  * Implements hook_block_access().
  */
 function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
-  if ($block->id() == 'views_block__groups_faq_block_1' && $operation == 'view') {
+/*  if ($block->id() == 'views_block__groups_faq_block_1' && $operation == 'view') {
     $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
     if($group instanceof Group){
       if(\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())){
@@ -751,7 +751,7 @@ function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, 
       }
     }
     return \Drupal\Core\Access\AccessResult::forbidden();
-  }
+  }*/
 }
 
 function cust_group_user_format_name_alter(&$name, $account){
@@ -780,4 +780,33 @@ function cust_group_entity_base_field_info(Drupal\Core\Entity\ContentEntityTypeI
 
     return $fields;
   }
+}
+
+function cust_group_preprocess_views_view_table(&$variables) {
+    $view = $variables['view'];
+    $status = FALSE;
+    if (!isset($view->field['draggableviews']) ) {
+      return;
+    } 
+    if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
+        $status = TRUE;
+    }
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+     if ($group) {
+        if (!is_object($group)) {
+            $group = \Drupal\group\Entity\Group::load($group);
+        }
+        $groupMember = $group->getMember(\Drupal::currentUser());
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
+                $status = TRUE;
+            } else {
+                $status = FALSE;
+            }
+        }
+    }
+    if($status == FALSE) {
+        unset($view->field['draggableviews']);
+    }
 }

@@ -527,3 +527,4 @@ permissions:
   535: 'view any unpublished downtimes content'
   536: 'view any unpublished services content'
   537: 'view any unpublished service_profile content'
+  538: 'access draggableviews'
