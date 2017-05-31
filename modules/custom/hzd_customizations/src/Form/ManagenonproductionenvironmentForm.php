@@ -20,6 +20,8 @@ class ManagenonproductionenvironmentForm extends \Drupal\Core\Form\FormBase {
   }
 
   function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    
+    $form['add_link'] = ['#type'=>'link','#title'=>'Add a new non-production environment','#url'=> \Drupal\Core\Url::fromRoute('node.add', ['node_type'=>'non_production_environment'])];
     $this->states = \Drupal::database()->select('states', 's')
             ->fields('s', ['id', 'state'])
             ->execute()
