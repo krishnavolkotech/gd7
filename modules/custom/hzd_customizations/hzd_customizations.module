@@ -288,7 +288,30 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $uid = $user->id();
   $formatted_name = $user->getDisplayName();
   $raw_name = $user->getAccountName();
-
+  if($form_id == 'views_form_groups_faq_block_1_318'){
+    $status = FALSE;
+    if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
+        $status = TRUE;
+    }
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+     if ($group) {
+        if (!is_object($group)) {
+            $group = \Drupal\group\Entity\Group::load($group);
+        }
+        $groupMember = $group->getMember(\Drupal::currentUser());
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
+                $status = TRUE;
+            } else {
+                $status = FALSE;
+            }
+        }
+    }
+    if($status == FALSE) {
+        unset($form['actions']['save_order']);
+    }
+  }
 //        pr($form['actions']['unpublish']);exit;
 //        pr(($form['actions']['submit']['#submit']));exit;
   if (($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form')) {
