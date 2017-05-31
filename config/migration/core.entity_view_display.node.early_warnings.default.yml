@@ -11,6 +11,7 @@ dependencies:
     - node.type.early_warnings
   module:
     - comment
+    - entity_print
     - options
     - text
     - user
@@ -64,6 +65,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true

@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.newsletter.body
     - field.field.node.newsletter.comment
     - field.field.node.newsletter.upload
@@ -40,6 +41,7 @@ content:
     weight: 102
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true

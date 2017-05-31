@@ -27,19 +27,31 @@ dependencies:
     - field.storage.node.field_technical_impact_services
     - field.storage.node.field_tech_requirements
     - field.storage.node.field_unique_id
+    - field.storage.node.field_attachment
+    - field.storage.node.field_closed
+    - field.storage.node.field_diagnose
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_problem_eroffnet
+    - field.storage.node.field_function
+    - field.storage.node.field_priority
+    - field.storage.node.field_problem_status
+    - field.storage.node.field_processing
+    - field.storage.node.field_release
+    - field.storage.node.field_sdcallid
+    - field.storage.node.field_s_no
+    - field.storage.node.field_release_service
+    - field.storage.node.field_solution
+    - field.storage.node.field_task_force
+    - field.storage.node.field_ticketstore_count
+    - field.storage.node.field_ticketstore_link
+    - field.storage.node.field_version
+    - field.storage.node.field_work_around
     - search_api.server.solr_bpk_migration
 id: hzd_solr_index
 name: 'HZD Solr Index'
 description: ''
 read_only: false
 field_settings:
-  node_grants:
-    label: 'Node access information'
-    property_path: search_api_node_grants
-    type: string
-    indexed_locked: true
-    type_locked: true
-    hidden: true
   id:
     label: ID
     datasource_id: 'entity:group_content'
@@ -91,7 +103,7 @@ field_settings:
     label: 'Parent group'
     datasource_id: 'entity:group_content'
     property_path: gid
-    type: text
+    type: integer
   entity_id:
     label: Inhalt
     datasource_id: 'entity:group_content'
@@ -285,6 +297,196 @@ field_settings:
     dependencies:
       module:
         - node
+  field_attachment:
+    label: 'Inhalt » Inhalt » Attachment'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_attachment'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_attachment
+  field_closed:
+    label: 'Inhalt » Inhalt » Closed'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_closed'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_closed
+  field_diagnose:
+    label: 'Inhalt » Inhalt » Diagnose'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_diagnose'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_diagnose
+  field_eroffnet:
+    label: 'Inhalt » Inhalt » Eroffnet'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_eroffnet'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_eroffnet
+  field_problem_eroffnet:
+    label: 'Inhalt » Inhalt » Eroffnet'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_problem_eroffnet'
+    type: integer
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_problem_eroffnet
+  field_function:
+    label: 'Inhalt » Inhalt » Function'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_function'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_function
+  field_priority:
+    label: 'Inhalt » Inhalt » Priority'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_priority'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_priority
+  field_problem_status:
+    label: 'Inhalt » Inhalt » Problem Status'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_problem_status'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_problem_status
+  field_processing:
+    label: 'Inhalt » Inhalt » Processiong'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_processing'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_processing
+  field_release:
+    label: 'Inhalt » Inhalt » Release'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_release'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_release
+  field_sdcallid:
+    label: 'Inhalt » Inhalt » sdcallid'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_sdcallid'
+    type: integer
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_sdcallid
+  field_s_no:
+    label: 'Inhalt » Inhalt » SDCallID'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_s_no'
+    type: integer
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_s_no
+  field_release_service:
+    label: 'Inhalt » Inhalt » Services'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_release_service'
+    type: integer
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_release_service
+  field_solution:
+    label: 'Inhalt » Inhalt » Solution'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_solution'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_solution
+  field_task_force:
+    label: 'Inhalt » Inhalt » Task Force'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_task_force'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_task_force
+  field_ticketstore_count:
+    label: 'Inhalt » Inhalt » Ticketstore Count'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_ticketstore_count'
+    type: integer
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_ticketstore_count
+  field_ticketstore_link:
+    label: 'Inhalt » Inhalt » Ticketstore link'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_ticketstore_link'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_ticketstore_link
+  field_version:
+    label: 'Inhalt » Inhalt » Version'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_version'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_version
+  processed:
+    label: 'Inhalt » Inhalt » Work Around » Processed text'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_work_around:processed'
+    type: string
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.field_work_around
 processor_settings:
   group_access:
     plugin_id: group_access
@@ -300,11 +502,6 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -4
-  content_access:
-    plugin_id: content_access
-    settings:
-      weights:
-        preprocess_query: -7
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
@@ -364,7 +561,6 @@ processor_settings:
     plugin_id: ignorecase
     settings:
       fields:
-        - node_grants
         - id
         - title
         - created
