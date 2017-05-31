@@ -38,6 +38,9 @@ class GroupAccess extends ProcessorPluginBase {
    */
   public function preprocessSearchQuery(QueryInterface $query) {
     $user = \Drupal::currentUser();
+    if(in_array($user->getRoles(),['administrator','site_administrator'])){
+      return ;
+    }
     $groupMembershipService = \Drupal::service('group.membership_loader');
     $userGroups = [];
     $groupMemberships = $groupMembershipService->loadByUser($user);
