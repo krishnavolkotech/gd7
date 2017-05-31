@@ -67,10 +67,10 @@ hzd_customizations.quickinfo_uniqueid:
 hzd_customizations.manage_non_production_environment:
   path: 'admin/config/manage-non-production-environment'
   defaults:
-    _form: '\Drupal\hzd_customizations\Form\Managenonproductionenvironment'
+    _form: 'Drupal\hzd_customizations\Form\ManagenonproductionenvironmentForm'
     _title: 'Manage Non-Production Environment'
   requirements:
-    _permission: 'access all views'
+    _role: 'administrator,site_administrator'
   options:
     _admin_route: TRUE
 
