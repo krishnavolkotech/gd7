@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.faqs.body
     - field.field.node.faqs.comment
     - field.field.node.faqs.faq_kategorie
@@ -58,6 +59,7 @@ content:
     weight: 6
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

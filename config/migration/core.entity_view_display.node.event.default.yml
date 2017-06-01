@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.event.body
     - field.field.node.event.comment
     - field.field.node.event.upload
@@ -42,6 +43,7 @@ content:
     weight: 2
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

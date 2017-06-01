@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.grouppost.body
     - field.field.node.grouppost.comment
     - node.type.grouppost
@@ -32,6 +33,7 @@ content:
   links:
     weight: 100
 hidden:
+  downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true

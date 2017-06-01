@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.faq.upload
     - node.type.faq
   module:
+    - entity_print
     - text
     - user
 third_party_settings:
@@ -47,6 +48,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
