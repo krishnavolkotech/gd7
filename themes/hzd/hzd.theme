@@ -428,7 +428,13 @@ function downtimes_revisions($node) {
       'reason' => 6
   ];
   $renderService = \Drupal::service('renderer');
-  $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
+  $query = \Drupal::database()->select('downtimes_logs', 'd')
+          ->fields('d')
+          ->condition('downtime_id', $node)
+          ->orderBy('id', 'DESC')
+          ->execute()
+          ->fetchAll();
+//  $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
 //  if (empty($query)) {
 //    return;
 //  }
@@ -448,26 +454,24 @@ function downtimes_revisions($node) {
       $log_values = unserialize($value['log']);
       $logData = [];
       $reason = '';
-      if ($value['updated'] != $nodeEntity->getCreatedTime() && $itemCount == count($query)) {
-        $hasFirstLog = FALSE;
-      }
-      if ($itemCount == count($query) && $hasFirstLog == TRUE) {
-        $text = 'Erstellt';
-      } else {
-        $text = 'Geändert';
-      }
+//      if ($value['updated'] != $nodeEntity->getCreatedTime() && $itemCount == count($query)) {
+//        $hasFirstLog = FALSE;
+//      }
 
-      $itemCount++;
+
+
       foreach ($log_values as $name => $field_value) {
         if ($name == 'reason') {
           $reason = $field_value['new'];
-          if ($hasFirstLog === FALSE) {
-            $oldDataReason['desc'] = $field_value['old'];
+          if (!empty($field_value['old']) && $itemCount == count($query)) {
+            $hasFirstLog = FALSE;
+            $oldDataReason['desc'] = $oldData['desc'] = $field_value['old'];
           }
         }
         if (in_array($name, ['non_compliance', 'services', 'states'])) {
           $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'];
-          if ($hasFirstLog === FALSE) {
+          if (!empty($field_value['old']) && $itemCount == count($query)) {
+            $hasFirstLog = FALSE;
             $oldData[$order[$name]] = $labels[$name] . ': ' . $field_value['old'];
           }
         }
@@ -477,11 +481,18 @@ function downtimes_revisions($node) {
             // Modifying this as the date in the migrated data comes in expected format
             $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'] . ' Uhr';
           }
-          if (!empty($field_value['old']) && $hasFirstLog === FALSE) {
+          if (!empty($field_value['old']) && $itemCount == count($query)) {
+            $hasFirstLog = FALSE;
             $oldData[$order[$name]] = $labels[$name] . ': ' . $field_value['old'] . ' Uhr';
           }
         }
       }
+      if ($itemCount == count($query) && $hasFirstLog == FALSE) {
+        $text = 'Erstellt';
+      } else {
+        $text = 'Geändert';
+      }
+      $itemCount++;
 /////appending the reason as a seperate wrapper to preserve wyswyg styles
       if (!empty($reason)) {
         $logData[$order['reason']] = t("@label: ", ['@label' => $labels['reason']]);
@@ -505,7 +516,8 @@ function downtimes_revisions($node) {
   }
   if ($hasFirstLog === FALSE || empty($query)) {
 //  pr($oldData);exit;
-  if (empty($query) || empty($oldData)) {
+    if (empty($query) || empty($oldData)) {
+//    echo 1223;exit;
       $oldData = NULL;
       if (!empty($downtimeData->reason)) {
         $oldData[] = $labels['non_compliance'] . ' : ' . $downtimeData->reason;
@@ -542,6 +554,7 @@ function downtimes_revisions($node) {
         $oldDataReason['desc'] = $downtimeData->description;
       }
     }
+//    pr($oldDataReason);exit;
 //    $nodeEntity = Node::load($node);
 
     $items[] = [
@@ -678,9 +691,9 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
   }
 }
 
-function hzd_preprocess_page_title(&$vars){
+function hzd_preprocess_page_title(&$vars) {
   $title = $vars['title'];
-  if($title instanceof Markup){
+  if ($title instanceof Markup) {
     $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
 }
