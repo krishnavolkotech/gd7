@@ -26,12 +26,14 @@ use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
-  // Provide special overrides for German for a custom site.
-  if ($langcode == 'de') {
-    // The core-provided transliteration of Ä is Ae, but we want just A.
-      $overrides[0xDC] = 'UE';
-      $overrides[0xFC] = 'ue';
-  }
+    $overrides[0xC4] = 'AE';
+    $overrides[0xD6] = 'OE';
+    $overrides[0xDC] = 'UE';
+    $overrides[0xE4] = 'ae';
+    $overrides[0xF6] = 'oe';
+    $overrides[0xFC] = 'ue';
+    $overrides[0xDF] = 'ss';
+
 }
 
 
