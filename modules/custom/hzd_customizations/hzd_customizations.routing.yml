@@ -5,6 +5,7 @@ hzd_customizations.planning_files_form:
     _title: 'Planning Files of Release Management'
   requirements:
     _permission: 'access administration pages'
+    _access: 'FALSE'
   options:
     _admin_route: TRUE
 
