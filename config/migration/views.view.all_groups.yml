@@ -765,8 +765,9 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
-      path: groups
+      display_extenders:
+        views_merge_rows: {  }
+      path: gruppen
       menu:
         enabled: true
         expanded: false

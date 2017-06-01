@@ -763,7 +763,8 @@ display:
     display_title: 'Unpublished groups'
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       display_description: ''
       title: 'Unpublished Groups'
       defaults:
@@ -901,7 +902,7 @@ display:
         operator: AND
         groups:
           1: AND
-      path: groups/unpublished
+      path: gruppen/unpublished
       fields:
         id:
           id: id
