@@ -30,20 +30,24 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    */
   public function build(RouteMatchInterface $routeMatch) {
 //    exit;
+    $breadcrumb = new Breadcrumb();
+    $links = array();
+    $links[] = Link::createFromRoute(t('Home'), '<front>');
     $term = $routeMatch->getParameter('taxonomy_term');
     $label = $term->label();
     $storage = \Drupal::service('entity_type.manager')
             ->getStorage('taxonomy_term');
     $parents = $storage->loadParents($term->id());
-    $group = \Drupal::service('entity_type.manager')
-            ->getStorage('group')
-            ->loadByProperties(['label' => reset($parents)->label()]);
-    $group = reset($group);
-    $links = array();
-    $links[] = Link::createFromRoute(t('Home'), '<front>');
-    $links[] = $group->toLink();
-    $links[] = Link::createFromRoute('FAQ-Einträge', '<current>');
-    $breadcrumb = new Breadcrumb();
+    if (reset($parents) instanceof \Drupal\taxonomy\Entity\Term) {
+      $group = \Drupal::service('entity_type.manager')
+              ->getStorage('group')
+              ->loadByProperties(['label' => reset($parents)->label()]);
+      $group = reset($group);
+
+      $links[] = $group->toLink();
+      $links[] = Link::createFromRoute('FAQ-Einträge', '<current>');
+      
+    }
     return $breadcrumb->setLinks($links)->addCacheableDependency(0);
   }
 

@@ -16,6 +16,9 @@ class Forum extends ForumController {
   public function forum(GroupInterface $group) {
     
     $term = $group->get('field_forum_containers')->referencedEntities()[0];
+    if(empty($term)){
+      throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(t('No Forum container created for the group'));
+    }
     $data = parent::forumPage($term);
 //    pr($data);exit;
     return $data;

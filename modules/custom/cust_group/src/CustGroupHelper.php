@@ -62,6 +62,9 @@ class CustGroupHelper {
                 ->getStorage('group')
                 ->loadByProperties(['field_forum_containers' => $parents->id()]);
       } elseif ($routeMatch->getRouteName() == 'entity.taxonomy_term.canonical') {
+        if(!(reset($parents) instanceof \Drupal\taxonomy\Entity\Term)){
+          return FALSE;
+        }
         $group = \Drupal::service('entity_type.manager')
                 ->getStorage('group')
                 ->loadByProperties(['label' => reset($parents)->label()]);
