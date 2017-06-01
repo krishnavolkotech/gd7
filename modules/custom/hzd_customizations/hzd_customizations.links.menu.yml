@@ -12,12 +12,12 @@ hzd_customizations.manage_non_production_environment:
   description: 'Manage Non-Production Environment'
   weight: 100
 
-hzd_customizations.planning_files_form:
-  title: 'PlanningFilesForm'
-  route_name: hzd_customizations.planning_files_form
-  description: 'A description for the menu entry'
-  parent: hzd_customizations.custom_configurations
-  weight: 99
+#hzd_customizations.planning_files_form:
+#  title: 'PlanningFilesForm'
+#  route_name: hzd_customizations.planning_files_form
+#  description: 'A description for the menu entry'
+#  parent: hzd_customizations.custom_configurations
+#  weight: 99
 
 hzd_customizations.notification:
   title: 'Notifications'
