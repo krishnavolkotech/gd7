@@ -13,11 +13,11 @@ cust_user.nsm_auth:
     _controller: '\Drupal\cust_user\Controller\NSMPortalController::authentication'
     _title: 'NSM Portal Authentication'
   requirements:
-    _permission: "administer users"
+    _permission: "access content"
 cust_user.nsm_login:
   path: '/login_from_bp'
   defaults: 
     _controller: '\Drupal\cust_user\Controller\NSMPortalController::login'
     _title: 'NSM Portal Login'
   requirements:
-    _permission: "administer users"
+    _permission: "access content"
