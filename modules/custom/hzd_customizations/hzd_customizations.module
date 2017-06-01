@@ -288,7 +288,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $uid = $user->id();
   $formatted_name = $user->getDisplayName();
   $raw_name = $user->getAccountName();
-  if($form_id == 'views_form_groups_faq_block_1_318'){
+  if(strpos($form_id, 'views_form_groups_faq_block_1') !== FALSE){
     $status = FALSE;
     if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
         $status = TRUE;
