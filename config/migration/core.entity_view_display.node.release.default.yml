@@ -16,6 +16,7 @@ dependencies:
     - node.type.release
   module:
     - comment
+    - entity_print
     - file
     - options
     - text
@@ -96,6 +97,7 @@ content:
     weight: 10
     third_party_settings: {  }
 hidden:
+  downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
