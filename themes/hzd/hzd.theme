@@ -677,3 +677,8 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
     $form['menu']['enabled']['#default_value'] = TRUE;
   }
 }
+
+function hzd_preprocess_page_title(&$vars){
+  $title = $vars['title'];
+  $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
+}
