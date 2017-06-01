@@ -680,5 +680,7 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
 
 function hzd_preprocess_page_title(&$vars){
   $title = $vars['title'];
-  $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
+  if($title instanceof Markup){
+    $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
+  }
 }
