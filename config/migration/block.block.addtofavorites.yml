@@ -13,7 +13,7 @@ third_party_settings:
 id: addtofavorites
 theme: hzd
 region: '-1'
-weight: -28
+weight: -29
 provider: null
 plugin: star_favorites_block
 settings:

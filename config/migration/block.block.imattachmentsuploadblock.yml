@@ -6,7 +6,6 @@ dependencies:
     - block_class
     - block_visibility_groups
     - ctools
-    - cust_group
   theme:
     - hzd
 third_party_settings:
