@@ -22,6 +22,10 @@ function pr($data) {
     echo "<pre>";
     print_r($data);
 }
+function prk($data) {
+    echo "<pre>";
+    print_r(array_keys($data));
+}
 
 /**
  * implements hook_form_alter
