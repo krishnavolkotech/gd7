@@ -143,8 +143,11 @@ class AccessController extends ControllerBase
                     }
                 }
             }
+        }elseif($node->getType() == 'downtimes'){
+          return AccessResult::allowed();
         }
-        return AccessResult::allowed();
+//        echo 12312;exit;
+        return AccessResult::neutral();
     }
     
     

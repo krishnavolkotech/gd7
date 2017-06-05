@@ -35,6 +35,8 @@ class ImAttachmentsUploadForm extends FormBase {
         '#upload_location' => 'private://',
         '#upload_validators' => $validators,
 //        '#description' => 'jsdbfjksdbfjbsdkjfsj',
+        '#progress_indicator' => 'bar',
+        '#progress_message' => 'Uploading File',
     );
     $form['form_build_id']['#access'] = FALSE;
     $form['form_token']['#access'] = FALSE;

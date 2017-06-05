@@ -574,7 +574,7 @@ class HzdreleasemanagementHelper {
 
     foreach ($services_infos as $services_info) {
       $serviceEntity = Node::load($services_info->nid);
-      if(!empty($serviceEntity->get('field_release_name')->value)){
+      if (!empty($serviceEntity->get('field_release_name')->value)) {
         $deployed_services[$services_info->nid] = $serviceEntity->get('field_release_name')->value;
       }
     }
@@ -592,7 +592,7 @@ class HzdreleasemanagementHelper {
    * Deployed releases are edited by groupor site admin
    * Onclicking the archive link deployed release status is changed to archived sing ajax
    */
-  static public function deployed_releases_table() {
+  static public function deployed_releases_table($type = 'current') {
     $page_limit = 100;
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
@@ -612,70 +612,62 @@ class HzdreleasemanagementHelper {
         'hzd_release_management/hzd_release_management',
         'hzd_release_management/deployed_releases',
     );
-    $output['current_deploy_table']['#markup'] = '<div class = "currently_deployed_relesaes" ><div class = "deployed_release_title" ><strong>' . t("Currently Deployed Releases:") . '</strong></div>';
+//    $output['current_deploy_table']['#markup'] = '<div class = "currently_deployed_relesaes" ><div class = "deployed_release_title" ><strong>' . t("Currently Deployed Releases:") . '</strong></div>';
 
-    $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
+    $header = array(t('State'), t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
     /**
      *  TO do check group admin
      */
-    if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_administrator'))) {
-      $query = \Drupal::database()->select('node_field_data', 'nfd');
-      $query->fields('nfd', array('nid'));
-      $query->addField('nfrs', 'field_release_service_value', 'service');
-      $query->addField('nfer', 'field_earlywarning_release_value', 'release_id');
-      $query->addField('ndd', 'field_date_deployed_value', 'deployed_date');
-      $query->addField('nfe', 'field_environment_value', 'environment');
-      $query->addField('nar', 'field_archived_release_value', 'archived');
-      $query->leftJoin('node__field_earlywarning_release', 'nfer', 'nfer.entity_id = nfd.nid');
-      $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
-      $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
-      $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
-      $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nfd.nid');
-      $query->condition('nfd.type', 'deployed_releases');
-      $query->orderBy('ndd.field_date_deployed_value', 'DESC');
-      // $query->range(0, 100);
-      $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
-      $result = $pager->execute()->fetchAll();
-      // dpm($result);
-//      $page_limit = ($limit ? $limit : self::DISPLAY_LIMIT);
-//      $pager = $sql_select->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
-//      $result = $pager->execute()->fetchAll();
+    $entityQuery = \Drupal::entityQuery('node')->condition('type', 'deployed_releases');
+    $request = \Drupal::request();
+    if (CustNodeController::isGroupAdmin(zrml) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
+      $userState = $request->get('state', 1);
     } else {
-      $query = \Drupal::database()->select('node_field_data', 'nfd');
-      $query->fields('nfd', array('nid'));
-      $query->addField('nfrs', 'field_release_service_value', 'service');
-      $query->addField('nfer', 'field_earlywarning_release_value', 'release_id');
-      $query->addField('ndd', 'field_date_deployed_value', 'deployed_date');
-      $query->addField('nfe', 'field_environment_value', 'environment');
-      $query->addField('nar', 'field_archived_release_value', 'archived');
-      $query->leftJoin('node__field_earlywarning_release', 'nfer', 'nfer.entity_id = nfd.nid');
-      $query->leftJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfer.entity_id');
-      $query->leftJoin('node__field_date_deployed', 'ndd', 'ndd.entity_id = nfrs.entity_id');
-      $query->leftJoin('node__field_archived_release', 'nar', 'nar.entity_id = ndd.entity_id');
-      $query->leftJoin('node__field_environment', 'nfe', 'nfe.entity_id = nfd.nid');
-      $query->leftJoin('node__field_user_state', 'nfus', 'nfus.entity_id = nfe.entity_id');
-      $query->condition('nfd.type', 'deployed_releases');
-      $query->condition('nfus.field_user_state_value', $user_state, '=');
-      $query->orderBy('ndd.field_date_deployed_value', 'DESC');
-      // $query->range(0, 100);
-      // $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender')->limit($page_limit);
-      $result = $query->execute()->fetchAll();
+      $userState = $user_state;
     }
-    $currently = $archived = [];
-    foreach ($result as $deployed_release) {
-//      $query = \Drupal::database()->select('node_field_data', 'nfd');
-//      $query->fields('nfd', array('title'));
-//      $query->condition('nfd.nid', $deployed_release->service, '=');
-//      $service = $query->execute()->fetchField();
-      $serviceEntity = Node::load($deployed_release->service);
-      
+    if ($userState != 1) {
+      $entityQuery->condition('field_user_state', $userState);
+    }
+    if ($request->get('environment', 0)) {
+      $entityQuery->condition('field_environment', $request->get('environment'));
+    }
+    if ($request->get('service', 0)) {
+      $entityQuery->condition('field_release_service', $request->get('service'));
+    }
+    if ($request->get('release', 0)) {
+      $entityQuery->condition('field_earlywarning_release', $request->get('release'));
+    }
+    if ($request->get('startdate', '') != '') {
+      $startDate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('startdate', ''), null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
+      $entityQuery->condition('field_date_deployed', $startDate, '>=');
+    }
+    if ($request->get('enddate', '') != '') {
+      $enddate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('enddate', ''), null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
+      $entityQuery->condition('field_date_deployed', $enddate, '<=');
+    }
+
+    if ($type == 'archived') {
+      $entityQuery->condition('field_archived_release', 1);
+    } else {
+      $entityQuery->condition('field_archived_release', 1, '<>');
+    }
+//      $entityQuery->sort('field_date_deployed','DESC');
+//      $entityQuery->addTag('debug');
+    $result = $entityQuery->pager(DISPLAY_LIMIT)->execute();
+//       pr($result);exit;
+    $data = [];
+    $states = get_all_user_state();
+    foreach ($result as $deployed_release_id) {
+      $deployedRelease = Node::load($deployed_release_id);
+      $serviceEntity = Node::load($deployedRelease->get('field_release_service')->value);
+
       if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
         $buildRedirUrl = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $group_id])->toString();
-        $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployed_release->nid], array(
+        $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployedRelease->id()], array(
                     'query' => array(
-                        'ser' => $deployed_release->service,
-                        'rel' => $deployed_release->release_id,
-                        'env' => $deployed_release->environment,
+                        'ser' => $deployedRelease->get('field_release_service')->value,
+                        'rel' => $deployedRelease->get('field_earlywarning_release')->value,
+                        'env' => $deployedRelease->get('field_environment')->value,
                         'destination' => $buildRedirUrl,
                     ),
                         )
@@ -685,64 +677,59 @@ class HzdreleasemanagementHelper {
       $archive_url = Url::fromUserInput('/archive/');
       $query = \Drupal::database()->select('node_field_data', 'nfd');
       $query->fields('nfd', array('title'));
-      $query->condition('nfd.nid', $deployed_release->release_id, '=');
+      $query->condition('nfd.nid', $deployedRelease->get('field_earlywarning_release')->value, '=');
       $release = $query->execute()->fetchField();
 
-      if ($deployed_release->environment == 1) {
+      if ($deployedRelease->get('field_environment')->value == 1) {
         $environment = 'Produktion';
       } else {
         $query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->fields('nfd', array('title'));
-        $query->condition('nfd.nid', $deployed_release->environment, '=');
+        $query->condition('nfd.nid', $deployedRelease->get('field_environment')->value, '=');
         $environment = $query->execute()->fetchField();
       }
 
-      if (!$deployed_release->archived) {
+      if ($deployedRelease->get('field_archived_release')->value != 1) {
         if (!empty($edit_url)) {
           $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
                   >Archive</a>  <span class = "loader"></span>', array(
               '@edit_url' => $edit_url->toString(),
               '@archive_url' => $archive_url->toString(),
-              '@nid' => $deployed_release->nid,
+              '@nid' => $deployedRelease->id(),
                   )
           );
         } else {
           $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >Archive</a> <span class = "loader"></span>', array(
               '@archive_url' => $archive_url->toString(),
-              '@nid' => $deployed_release->nid,
+              '@nid' => $deployedRelease->id(),
                   )
           );
         }
-        $currently[] = array(
-            $environment,
-            $serviceEntity->get('field_release_name')->value,
-            $release,
-            date("d.m.Y", strtotime($deployed_release->deployed_date)),
-            $action,
-        );
       } else {
         if (!empty($edit_url)) {
-          $edit = t('<a href="@edit_url">Edit</a>', array(
+          $action = t('<a href="@edit_url">Edit</a>', array(
               '@edit_url' => $edit_url->toString(),
                   )
           );
         } else {
-          $edit = '';
+          $action = '';
         }
-        $archived[] = array(
-            $environment,
-            $serviceEntity->get('field_release_name')->value,
-            $release,
-            date("d.m.Y", strtotime($deployed_release->deployed_date)),
-            $edit,
-        );
       }
+      $state = isset($deployedRelease->get('field_user_state')->value) ? $states[$deployedRelease->get('field_user_state')->value] : '';
+      $data[] = array(
+          $state,
+          $environment,
+          $serviceEntity->get('field_release_name')->value,
+          $release,
+          date("d.m.Y", strtotime($deployedRelease->get('field_date_deployed')->value)),
+          $action,
+      );
     }
 
     $output['current_deploy_table']['table'] = array(
         '#theme' => 'table',
         '#header' => $header,
-        '#rows' => $currently,
+        '#rows' => $data,
         '#empty' => t('No Data Created Yet'),
         '#attributes' => array(
             'id' => 'current_deploysortable',
@@ -750,33 +737,34 @@ class HzdreleasemanagementHelper {
         ),
     );
 
-    $output['current_deploy_table']['pager1'] = array(
+    $output['current_deploy_table']['pager'] = array(
         '#type' => 'pager',
         '#prefix' => '<div id="pagination">',
         '#suffix' => '</div>',
+        '#exclude_from_print' => 1,
     );
 
-    $output['archived_deployed_relesaes_table']['#prefix'] = '</div><div class = "archived_deployed_relesaes" >'
-            . '<div class = "deployed_release_title" ><strong>' . t("Archived deployed releases:") . '</strong></div>';
-    $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
-
-    $output['archived_deployed_relesaes_table']['table'] = array(
-        '#theme' => 'table',
-        '#header' => $header,
-        '#rows' => $archived,
-        '#attributes' => array(
-            'id' => 'archived_deploysortable',
-            'class' => 'tablesorter',
-        ),
-    );
-
-    $output['archived_deployed_relesaes_table']['pager2'] = array(
-        '#type' => 'pager',
-        '#prefix' => '<div id="pagination">',
-        '#suffix' => '</div>',
-    );
-
-    $output['archived_deployed_relesaes_table']['#suffix'] = "</div>";
+//    $output['archived_deployed_relesaes_table']['#prefix'] = '</div><div class = "archived_deployed_relesaes" >'
+//            . '<div class = "deployed_release_title" ><strong>' . t("Archived deployed releases:") . '</strong></div>';
+//    $header = array(t('Environment'), t('Service'), t('Release'), t('Date Deployed'), t('Action'));
+//
+//    $output['archived_deployed_relesaes_table']['table'] = array(
+//        '#theme' => 'table',
+//        '#header' => $header,
+//        '#rows' => $archived,
+//        '#attributes' => array(
+//            'id' => 'archived_deploysortable',
+//            'class' => 'tablesorter',
+//        ),
+//    );
+//
+//    $output['archived_deployed_relesaes_table']['pager2'] = array(
+//        '#type' => 'pager',
+//        '#prefix' => '<div id="pagination">',
+//        '#suffix' => '</div>',
+//    );
+//
+//    $output['archived_deployed_relesaes_table']['#suffix'] = "</div>";
 
     return $output;
   }

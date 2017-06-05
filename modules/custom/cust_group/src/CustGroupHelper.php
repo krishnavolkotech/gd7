@@ -23,11 +23,15 @@ class CustGroupHelper {
     $node = \Drupal\node\Entity\Node::load($nodeId);
     $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
     $allPlugins = $contentEnablerManager->getPluginGroupContentTypeMap();
-    foreach ($allPlugins as $group_content_type) {
-      foreach ($group_content_type as $item){
-        $types[] = $item;
-      }        
+    foreach ($allPlugins as $key => $group_content_type) {
+      if ($key == 'group_node:' . $node->bundle()) {
+        foreach ($group_content_type as $item) {
+          $types[] = $item;
+        }
+      }
     }
+//    pr($types);
+//    exit;
     $groupContentIds = \Drupal::entityQuery('group_content')
             ->condition('type', $types, 'IN')
             ->condition('entity_id', $nodeId)
@@ -49,20 +53,20 @@ class CustGroupHelper {
       }
     } elseif ($term = $routeMatch->getParameter('taxonomy_term')) {
       $storage = \Drupal::service('entity_type.manager')
-                ->getStorage('taxonomy_term');
-        $parents = $storage->loadParents($term->id());
+              ->getStorage('taxonomy_term');
+      $parents = $storage->loadParents($term->id());
 //        pr($parents);exit;
       if ($routeMatch->getRouteName() == 'forum.page') {
-        if(empty($parents)){
+        if (empty($parents)) {
           $parents = $term;
-        }else{
+        } else {
           $parents = reset($parents);
         }
         $group = \Drupal::service('entity_type.manager')
                 ->getStorage('group')
                 ->loadByProperties(['field_forum_containers' => $parents->id()]);
       } elseif ($routeMatch->getRouteName() == 'entity.taxonomy_term.canonical') {
-        if(!(reset($parents) instanceof \Drupal\taxonomy\Entity\Term)){
+        if (!(reset($parents) instanceof \Drupal\taxonomy\Entity\Term)) {
           return FALSE;
         }
         $group = \Drupal::service('entity_type.manager')

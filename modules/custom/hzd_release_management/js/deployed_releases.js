@@ -39,9 +39,9 @@
                     if (s) {
                         var dateele = s.split('.');
                         //adding 20 if date is formatted in only YY format.
-                        if (dateele[2].length == 2) {
-                            dateele[2] = '20' + dateele[2];
-                        }
+//                        if (dateele[2].length == 2) {
+//                            dateele[2] = '20' + dateele[2];
+//                        }
                         var date = dateele[2] + dateele[1] + dateele[0];
                         return parseInt(date, 10);
 
