@@ -983,7 +983,7 @@ class HzdreleasemanagementStorage {
 //                $link = t('No Download link available');
       }
 
-      if ($link_info_path) {
+      if (\Drupal\Component\Utility\UrlHelper::isValid($link_info_path)) {
         $options['attributes'] = array('class' => 'download_img_icon');
         $download_url = Url::fromUri($link_info_path);
         $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
