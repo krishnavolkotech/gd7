@@ -32,13 +32,15 @@ class CustGroupHelper {
     }
 //    pr($types);
 //    exit;
-    $groupContentIds = \Drupal::entityQuery('group_content')
-            ->condition('type', $types, 'IN')
-            ->condition('entity_id', $nodeId)
-            ->execute();
+    if (!empty($types)) {
+      $groupContentIds = \Drupal::entityQuery('group_content')
+              ->condition('type', $types, 'IN')
+              ->condition('entity_id', $nodeId)
+              ->execute();
 
-    if (!empty($groupContentIds))
-      return GroupContent::load(reset($groupContentIds));
+      if (!empty($groupContentIds))
+        return GroupContent::load(reset($groupContentIds));
+    }
     return null;
   }
 
