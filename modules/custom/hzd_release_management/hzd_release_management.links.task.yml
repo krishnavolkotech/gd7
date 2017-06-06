@@ -65,7 +65,7 @@ hzd_release_management.deployed_releases_tab:
   route_name: hzd_release_management.deployed_releases
   base_route: hzd_release_management.deployed_releases
   weight: 1
-hzd_release_management.release_management_overview_deployed_tab:
+hzd_release_management.archived_deployed_releases_tab:
   title: Archived Deployed Releases
   route_name: hzd_release_management.archived_deployed_releases
   base_route: hzd_release_management.deployed_releases
