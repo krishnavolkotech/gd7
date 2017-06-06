@@ -618,7 +618,7 @@ class HzdreleasemanagementHelper {
     /**
      *  TO do check group admin
      */
-    $entityQuery = \Drupal::entityQuery('node')->condition('type', 'deployed_releases');
+    $entityQuery = \Drupal::entityQuery('node')->condition('type', 'deployed_releases')->sort('field_date_deployed', 'DESC');
     $request = \Drupal::request();
     if (CustNodeController::isGroupAdmin(zrml) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
       $userState = $request->get('state', 1);
