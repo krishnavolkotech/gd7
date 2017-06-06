@@ -145,9 +145,13 @@ class AccessController extends ControllerBase
             }
         }elseif($node->getType() == 'downtimes'){
           return AccessResult::allowed();
+        }elseif($node->getType() == 'im_upload_page'){
+          if($user->isAnonymous()){
+            return AccessResult::forbidden();
+          }
         }
 //        echo 12312;exit;
-        return AccessResult::neutral();
+        return AccessResult::allowed();
     }
     
     
