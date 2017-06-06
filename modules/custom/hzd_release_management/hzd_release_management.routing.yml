@@ -165,7 +165,7 @@ hzd_release_management.release_settings:
 
 
 hzd_release_management.deployed_releases:
-  path: '/group/{group}/deployed-releases'
+  path: '/group/{group}/eingesetzte-releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
     _title: 'Deployed Releases'
@@ -173,7 +173,7 @@ hzd_release_management.deployed_releases:
   requirements:
     _permission: 'view releases'
 hzd_release_management.archived_deployed_releases:
-  path: '/group/{group}/deployed-releases/archived'
+  path: '/group/{group}/eingesetzte-releases/archiv'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::archived_deployed_releases'
     _title: 'Archived Deployed Releases'
