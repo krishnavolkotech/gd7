@@ -68,7 +68,7 @@ class ImAttachmentsUploadForm extends FormBase {
       ];
 //      pr($file->url());exit;
 //      ['#markup' => $file->getFilename()];
-      $form['files'][$file->id()]['delete'] = ['#type' => 'submit', '#value' => $this->t('Delete'), '#fileId' => $file->id(), '#attributes' => ['class' => ['btn-danger'], 'onclick' => t('return confirm("Are you sure?")')]];
+      $form['files'][$file->id()]['delete'][$file->id()] = ['#type' => 'submit','#name'=>$file->id(), '#value' => $this->t('Delete'), '#fileId' => $file->id(), '#attributes' => ['class' => ['btn-danger'], 'onclick' => t('return confirm("Are you sure?")')]];
     }
     $form['#attached']['drupalSettings']['isImupload'] = 1;
     return $form;
