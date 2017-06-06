@@ -24,7 +24,10 @@ class SearchForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $query = \Drupal::request()->query;
-    $form['fulltext'] = [
+    $form['search'] = ['#type'=>'button','#value'=>'Search','#attributes'=>['onclick'=>'jQuery(".search-expanded").toggleClass("hide");return false;']];
+    $form['expanded'] = ['#type'=>'container','#attributes'=>['class'=>['search-expanded','hide']]];
+    $form['expanded']['close'] = ['#type'=>'html_tag','#tag'=>'a','#attributes'=>['class'=>['close'],'onclick'=>'jQuery(".search-expanded").toggleClass("hide");return false;'],'#value'=>'Close'];
+    $form['expanded']['fulltext'] = [
       '#type'=>'textfield',
       '#default_value'=>$query->has('fulltext')?$query->get('fulltext'):null,
       '#size'=>15,
@@ -33,7 +36,7 @@ class SearchForm extends FormBase {
     $form['#action'] = '/suche';
     $form['#method'] = 'GET';
     
-    $form['submit'] = [
+    $form['expanded']['submit'] = [
       '#type' => 'submit',
       '#name' => '',
       '#value' => t('Submit'),
