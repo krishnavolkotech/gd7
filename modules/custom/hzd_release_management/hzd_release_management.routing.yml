@@ -44,15 +44,15 @@ hzd_release_management.deployed:
   requirements:
     _permission: 'access content'
 
-hzd_release_management.eingesetzte:
-  path: 'group/{group}/eingesetzte-releases'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
-    _title: 'Deployed Releases'
-    _entity_view: group.default
-  requirements:
-    _permission: 'view releases'
-    _custom_access: '\Drupal\cust_group\Controller\AccessController::deployedReleasesAccess'
+#hzd_release_management.eingesetzte:
+#  path: 'group/{group}/eingesetzte-releases'
+#  defaults:
+#    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
+#    _title: 'Deployed Releases'
+#    _entity_view: group.default
+#  requirements:
+#    _permission: 'view releases'
+#    _custom_access: '\Drupal\cust_group\Controller\AccessController::deployedReleasesAccess'
     
     
     
