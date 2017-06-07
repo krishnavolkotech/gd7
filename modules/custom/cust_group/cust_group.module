@@ -627,9 +627,13 @@ function cust_group_preprocess_node(&$variables) {
 }
 
 function cust_group_user_login() {
-//  $response = new RedirectResponse("/");
-//  $response->send();
-//  return;
+  $request = \Drupal::request()->get('destination', null);
+  if(!$request){
+    $response = new RedirectResponse("/");
+    $response->send();
+    return;
+  }
+
 }
 
 
