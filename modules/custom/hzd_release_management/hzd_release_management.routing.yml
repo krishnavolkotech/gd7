@@ -171,7 +171,7 @@ hzd_release_management.deployed_releases:
     _title: 'Deployed Releases'
     _entity_view: group.default
   requirements:
-    _permission: 'view releases'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_release_management.archived_deployed_releases:
   path: '/group/{group}/eingesetzte-releases/archiv'
   defaults:
@@ -179,7 +179,7 @@ hzd_release_management.archived_deployed_releases:
     _title: 'Archived Deployed Releases'
     _entity_view: group.default
   requirements:
-    _permission: 'view releases'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #   cust_og_is_admin: 'TRUE'     
 
 # to do access check ( group id is releasemanagement)
