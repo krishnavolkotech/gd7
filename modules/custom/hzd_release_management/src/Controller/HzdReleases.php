@@ -351,6 +351,9 @@ class HzdReleases extends ControllerBase {
   public function archived_deployed_releases(\Drupal\group\Entity\GroupInterface $group) {
     $output['deployed_releases_filter'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\DeployedReleasesFilterForm');
     $output['deployment_table'] = HzdreleasemanagementHelper::deployed_releases_table('archived');
+    $output['#attachment']['library'] = array(
+          'hzd_release_management/hzd_release_management',
+      );
     return $output;
   }
 

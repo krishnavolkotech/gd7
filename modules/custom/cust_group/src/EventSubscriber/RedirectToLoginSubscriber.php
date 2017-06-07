@@ -81,7 +81,8 @@ class RedirectToLoginSubscriber implements EventSubscriberInterface {
       if (\Drupal::currentUser()->isAnonymous() && $type != 'downtimes') {
         global $base_url;
         $currentPath = \Drupal::service('path.current')->getPath();
-        $loginPath = '/user/login?destination=' . $currentPath;
+        $resultPath = \Drupal::service('path.alias_manager')->getAliasByPath($currentPath);
+        $loginPath = '/user/login?destination=' . $resultPath;
         drupal_set_message(t('Please login to access the page.'), 'error');
         header('Location: ' . $base_url . $loginPath);
         exit;
