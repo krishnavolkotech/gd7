@@ -29,7 +29,7 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: "*/problems\r\n*/problems/*\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/deployed-releases/*\r\n*/deployed-releases"
+    pages: "*/problems\r\n*/problems/*\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases/*\r\n*/eingesetzte-releases\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes"
     negate: true
     context_mapping: {  }
   user_role:
