@@ -409,6 +409,9 @@ article.page .content table {
 .table-responsive{
   border:none !important;
 }
+body.not-loggedin.path-user .region-content{
+  margin:0;
+}
 .table-responsive table,
 .table-responsive table tbody{
   width:100%;
@@ -420,13 +423,15 @@ article.page .content table {
   margin:10px 0 15px 0;
   border:1px solid #ddd;
 }
+.tooltip,
 .table-responsive table thead, .table-responsive table th{
-  display:none;
+  display:none !important;
 }
 .table-responsive table tbody td{
   width:100% !important;
   display:inline-block;
 }
+body.not-loggedin .region-content,
 .table-responsive table tr{
   width:100%;
   float:left;
@@ -445,7 +450,139 @@ article.page .content table {
   width:auto;
   float:none;
 }
+.table-responsive table tr td{
+  position:relative;
+}
 table.archived caption, table.incident caption, table.maintenance caption{
   display:block;
 }
+header .block-cust-group-search-block form button#edit-search--2{
+  text-align:right;
+  padding-right:20px !important;
+}
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox{
+  width:100% !important;
+  margin:0 0 10px 0 !important;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data{
+  width:100% !important;
+  left: -21px !important;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table tr,
+#edit-services-effected .form-checkbox .published-services .service-profile-data table tbody,
+#edit-services-effected .form-checkbox .published-services .service-profile-data table{
+  display:block !important;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table tr:last-child{
+  border:none;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table tr{
+  border-bottom:1px solid #ddd;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data table tr td{
+  display:inline-block;
+  border:none;
+}
+body.not-loggedin.path-user .region-content,
+form.node-downtimes-form .start-date-wrapper, form.node-downtimes-form .end-date-wrapper{
+ width:100%;
+}
+.bootstrap-datetimepicker-widget{
+  left:-10px !important;
+  width:100% !important;
+}
+header .block-cust-group-search-block{
+  margin:5px 0;
+  width:100%;
+}
+.navbar-header .region.region-navigation{
+  position: unset !important;
+}
+button.navbar-toggle{
+  right: 0;
+  top: 0;
+}
+header .block-cust-group-search-block form button#edit-search--2,
+.block-hzd-header-links{
+  margin-bottom:5px;
+}
+body.not-loggedin button.navbar-toggle{
+  display:none;
+}
+header .block-cust-group-search-block form button#edit-search--2{
+  margin-top:-4% !important;
+}
+header .block-cust-group-search-block form .search-expanded{
+  margin-top:-3% !important;
+}
+header .block-cust-group-search-block form button#edit-search--2,
+header .block-cust-group-search-block form .search-expanded{
+  margin: 0 1% 0 2%;
+  width: 97% !important;
+}
+header .block-cust-group-search-block form .search-expanded{
+  left:0 !important;
+}
+}
+header .block-cust-group-search-block form {
+  position: relative;
+}
+header .block-cust-group-search-block form .search-expanded{
+  background: #fff none repeat scroll 0 0;
+  width: 225px;
+  position: absolute;
+  top: 25px;
+  right: 18px;
+  padding: 15px;
+  z-index:10;
+  border: 1px solid #ccc;
+}
+header .block-cust-group-search-block input[type="text"]{
+  border:none !important;
+  border-bottom:1px solid #ccc !important;
+  box-shadow:none;
+  padding-bottom: 0;
+}
+header .block-cust-group-search-block form button#edit-search--2{
+  background: transparent !important;
+  color: #04425f;
+  font-size: 0;
+  border:none;
+  outline: medium none;
+  padding:5px !important;
+  width: auto;
+  box-shadow: none;
+  float:right;
+}
+header .block-cust-group-search-block form button#edit-submit {
+  background: #04425f !important;
+  font-size: 14px;
+  color:#fff;
+  width: auto;
+}
+header .block-cust-group-search-block form button#edit-search--2:focus,
+header .block-cust-group-search-block form button#edit-search--2:hover{
+  color:#04425f !important;
+  border:none;
+  background:transparent !important;
+}
+header .block-cust-group-search-block form button .glyphicon-search{
+  font-size: 14px;
+}
+header .block-cust-group-search-block form .search-expanded a.close{
+  font-size:0;
+  opacity: unset !important;
+  line-height: 28px;
+  padding-top: 7px;
+}
+header .block-cust-group-search-block form .search-expanded .form-item{
+  width:90%;
+  margin-bottom: 5px;
+}
+header .block-cust-group-search-block form .search-expanded a.close:after{
+  content:"X";
+  font-weight:700;
+  font-size: 14px;
+  color:#04425f !important;
 }

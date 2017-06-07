@@ -235,7 +235,7 @@ article.page .content table {
         width: 500px;
     }
 }
-@media only screen and (max-width:480px) {
+@media only screen and (max-width:767px) {
   .block-maintenance-block .maintenance-list{
     width:100% !important;
     float:left !important;
@@ -246,14 +246,19 @@ article.page .content table {
     position: absolute !important;
     top: 30px !important;
     width: 100% !important;
+    z-index:100000;
   }
-  article.downtimes .Incident .downtimes_title{
+    article.downtimes .Incident .downtimes_title,
+    article.downtimes .Incident .downtimes_content{
+      width:100% !important;
+    }
+  /*article.downtimes .Incident .downtimes_title{
     width: 35% !important;
     word-wrap: break-word;
   }
   article.downtimes .Incident .downtimes_content{
    width: 63% !important;
-  }
+  }*/
 }
 @media only screen and (max-width: 767px) {
     aside.col-sm-6,
@@ -3103,14 +3108,16 @@ form#views-exposed-form-group-members-lists-page-1 .form-item.js-form-item.form-
     display: none;
 }
 header .block-cust-group-search-block {
-    width: 250px;
+   /* width: 250px;*/
+    width:auto;
     float: right;
     margin: 26px 0 0 10px;
+    padding-right:15px;
 }
 header .block-cust-group-search-block input[type="text"] {
     width: 100%;
     float: left;
-    height: 28px;
+    height: 31px;
     padding-left: 5px !important;
 }
 header .block-cust-group-search-block .form-type-textfield {
