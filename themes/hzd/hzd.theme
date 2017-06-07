@@ -447,6 +447,7 @@ function downtimes_revisions($node) {
   $hasFirstLog = TRUE;
   $output = NULL;
   $itemCount = 1;
+  $oldDataReason = [];
   if (!empty($query)) {
 
     foreach ($query as $value) {
@@ -569,7 +570,7 @@ function downtimes_revisions($node) {
         'reason' => [
             '#type' => 'container',
             '#attributes' => ['class' => ['reason']],
-            'markup' => ['#markup' => Markup::create(trim($oldDataReason['desc']))]
+            'markup' => ['#markup' => Markup::create(trim(isset($oldDataReason['desc'])?$oldDataReason['desc']:''))]
         ]
     ];
   }
