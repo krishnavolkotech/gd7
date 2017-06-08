@@ -560,7 +560,7 @@ class HzdreleasemanagementHelper {
       }
       $releases[$releases_info->service] = $releases_info->title;
       } */
-    $deployed_services[] = t('< @service >', ['@service' => 'Service']);
+    $deployed_services[] = t('< Service >');
 
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->fields('nfd', array('nid', 'title'));

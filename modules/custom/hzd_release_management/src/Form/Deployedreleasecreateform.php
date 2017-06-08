@@ -107,7 +107,7 @@ class Deployedreleasecreateform extends FormBase {
       '#maxlength' => '20',
       '#attributes' => array("class" => ["deployed_date"]),
       '#weight' => -3,
-        '#placeholder'=> t('< @date >',['@date'=>'Date']),
+        '#placeholder'=> t('< Date >'),
 
     );
 

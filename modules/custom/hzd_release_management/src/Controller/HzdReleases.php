@@ -349,8 +349,18 @@ class HzdReleases extends ControllerBase {
   }
 
   public function archived_deployed_releases(\Drupal\group\Entity\GroupInterface $group) {
+    global  $base_url;
     $output['deployed_releases_filter'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\DeployedReleasesFilterForm');
     $output['deployment_table'] = HzdreleasemanagementHelper::deployed_releases_table('archived');
+    $output['#attached']['library'] = array(
+          'hzd_release_management/deployed_releases',
+      );
+    $output['#attached']['drupalSettings']['deploy_release'] = array(
+        'type' => 'deployed_releases',
+        'base_path' => $base_url,
+        'basePath' => $base_url,
+    );
+    $output['#cache'] = ['tags' => ['node_list']];
     return $output;
   }
 
