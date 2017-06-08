@@ -4,3 +4,11 @@ problem_management.problem_management_settings:
   parent: hzd_customizations.custom_configurations
   description: 'Configure csv import'
   weight: -10
+
+hzd_problem_management.read_problem_csv_submenu:
+  title: 'Import Problems'
+  route_name: problem_management.read_problem_csv
+  parent: problem_management.problem_management_settings
+  description: 'Import Problems'
+  weight: -11
+

@@ -16,7 +16,7 @@ tips:
   locale-overview:
     id: locale-overview
     plugin: text
-    label: 'User interface translation'
+    label: 'Übersetzung UI'
     body: 'This page allows you to translate the user interface or modify existing translations. If you have installed your site initially in English, you must first add another language on the <a href="[site:url]/admin/config/regional/language">Languages page</a>, in order to use this page.'
     weight: 1
   locale-language:
