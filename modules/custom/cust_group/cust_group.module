@@ -507,6 +507,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
       }
     } else {
       $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+      if($group instanceof \Drupal\group\Entity\Group){
       foreach (File::loadMultiple($check) as $fileEntity) {
         $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
         $data = [];
@@ -523,6 +524,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
       }
       if (!in_array($group->id(), $data)) {
         return [];
+      }
       }
     }
     $errors[] = t("The file's name already exists in database.");
