@@ -40,7 +40,7 @@ settings:
   file_directory: im-ablage-attachments
   file_extensions: 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp docx xlsx pptx zip mpp mm tar gz xsd'
   max_filesize: ''
-  description_field: true
+  description_field: false
   handler: 'default:file'
   handler_settings: {  }
 field_type: file
