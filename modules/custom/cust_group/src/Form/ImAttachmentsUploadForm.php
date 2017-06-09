@@ -36,7 +36,7 @@ class ImAttachmentsUploadForm extends FormBase {
         '#upload_validators' => $validators,
 //        '#description' => 'jsdbfjksdbfjbsdkjfsj',
         '#progress_indicator' => 'bar',
-        '#progress_message' => 'Uploading File',
+        '#progress_message' => t('Uploading File'),
     );
     $form['form_build_id']['#access'] = FALSE;
     $form['form_token']['#access'] = FALSE;
@@ -73,7 +73,7 @@ class ImAttachmentsUploadForm extends FormBase {
     $form['#attached']['drupalSettings']['isImupload'] = 1;
     return $form;
   }
-
+  
   /**
    * {@inheritdoc}
    */

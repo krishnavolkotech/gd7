@@ -31,7 +31,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
   public function access(AccountInterface $account, $return_as_object = FALSE) {
     $access = parent::access($account, $return_as_object);
     $routeMatch = Drupal::routeMatch();
-    if ($routeMatch->getRouteName() == 'entity.node.edit_form') {
+    if (in_array($routeMatch->getRouteName(),['entity.node.edit_form','node.add'])) {
       return AccessResult::forbidden();
     }
     return $access;
