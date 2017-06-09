@@ -1019,7 +1019,7 @@ class HzdcustomisationStorage {
         }
       }
       if (!$isPrintFormat) {
-        $headersNew = array_merge($headersNew, ['action' => 'Action']);
+        $headersNew = array_merge($headersNew, ['action' => t('Action')]);
         $entity = Node::load($client->downtime_id);
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
         $links['action']['popup']['node'] = $view_builder->view($entity, 'popup', 'de');
