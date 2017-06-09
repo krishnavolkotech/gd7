@@ -503,23 +503,33 @@ button.navbar-toggle{
   right: 0;
   top: 0;
 }
-header .block-cust-group-search-block form button#edit-search--2,
+header .block-cust-group-search-block form button,
 .block-hzd-header-links{
   margin-bottom:5px;
 }
 body.not-loggedin button.navbar-toggle{
   display:none;
 }
-header .block-cust-group-search-block form button#edit-search--2{
+
+header .block-cust-group-search-block form button{
   margin-top:-4% !important;
 }
 header .block-cust-group-search-block form .search-expanded{
   margin-top:-3% !important;
 }
-header .block-cust-group-search-block form button#edit-search--2,
+header .block-cust-group-search-block form button,
 header .block-cust-group-search-block form .search-expanded{
   margin: 0 1% 0 2%;
   width: 97% !important;
+}
+header .block-cust-group-search-block form .search-expanded button{
+  width:auto !important;
+  float:left;
+  margin-top:0 !important;
+}
+header .block-cust-group-search-block form button{
+  text-align:right;
+  float:right;
 }
 header .block-cust-group-search-block form .search-expanded{
   left:0 !important;
@@ -544,7 +554,7 @@ header .block-cust-group-search-block input[type="text"]{
   box-shadow:none;
   padding-bottom: 0;
 }
-header .block-cust-group-search-block form button#edit-search--2{
+header .block-cust-group-search-block form button{
   background: transparent !important;
   color: #04425f;
   font-size: 0;
@@ -553,19 +563,22 @@ header .block-cust-group-search-block form button#edit-search--2{
   padding:5px !important;
   width: auto;
   box-shadow: none;
-  float:right;
+  float:left;
 }
-header .block-cust-group-search-block form button#edit-submit {
+header .block-cust-group-search-block form .search-expanded button:focus,
+header .block-cust-group-search-block form .search-expanded button:hover,
+header .block-cust-group-search-block form .search-expanded button {
   background: #04425f !important;
   font-size: 14px;
-  color:#fff;
+  color:#fff !important;
   width: auto;
 }
-header .block-cust-group-search-block form button#edit-search--2:focus,
-header .block-cust-group-search-block form button#edit-search--2:hover{
+header .block-cust-group-search-block form button:focus,
+header .block-cust-group-search-block form button:hover{
   color:#04425f !important;
   border:none;
   background:transparent !important;
+  box-shadow:none;
 }
 header .block-cust-group-search-block form button .glyphicon-search{
   font-size: 14px;
