@@ -630,7 +630,7 @@ function hzd_preprocess_menu_local_tasks(&$vars) {
 
 function hzd_preprocess_views_view_summary_unformatted(&$variables) {
   $view = $variables['view'];
-  if ($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1') {
+  if (($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1') || ($view->id() == 'user_list' && $view->current_display == 'attachment_1')) {
     // Adding the all link to glossary
 
     $active_urls = array(
