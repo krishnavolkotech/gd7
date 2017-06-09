@@ -344,7 +344,7 @@ class Deployedreleasecreateform extends FormBase {
         'uid ' => 1,
       ]);
       $group_content->save();
-
+      drupal_set_message(t('Release has been deployed sucessfully'), 'success');
     }
 
   }
