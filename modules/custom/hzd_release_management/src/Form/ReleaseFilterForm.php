@@ -35,7 +35,7 @@ class ReleaseFilterForm extends FormBase
         $form['#method'] = 'get';
         
         $wrapper = 'released_results_wrapper';
-        $services[] = '<' . $this->t('Service') . '>';
+        $services[] = '<' . $this->t('Service')->render() . '>';
         
         $release_type = $filter_value['release_type'];
         if (!$release_type) {
@@ -220,7 +220,7 @@ class ReleaseFilterForm extends FormBase
         );
         
         $service = $filter_value['services'];
-        $options = array('<' . $this->t('Release') . '>');
+        $options = array('<' . $this->t('Release')->render() . '>');
         if ($service) {
             $def_releases = get_release($type, $service);
             $options = $def_releases['releases'];
@@ -268,7 +268,7 @@ class ReleaseFilterForm extends FormBase
             '#attributes' => array(
                 'class' => array("start_date"),
                 'placeholder' => array(
-                    '<' . $this->t('Start Date') . '>',
+                    '<' . $this->t('Start Date')->render() . '>',
                 ),
                 'onchange' => 'this.form.submit()',
             ),
@@ -299,7 +299,7 @@ class ReleaseFilterForm extends FormBase
             '#attributes' => array(
                 'class' => array("end_date"),
                 'placeholder' => array(
-                    '<' . $this->t('End Date') . '>'
+                    '<' . $this->t('End Date')->render() . '>'
                 ),
                 'onchange' => 'this.form.submit()',
             ),
