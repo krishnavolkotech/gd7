@@ -691,15 +691,15 @@ class HzdreleasemanagementHelper {
 
       if ($deployedRelease->get('field_archived_release')->value != 1) {
         if (!empty($edit_url)) {
-          $action = t('<a href="@edit_url">Edit</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
-                  >Archive</a>  <span class = "loader"></span>', array(
+          $action = t('<a href="@edit_url">'.t('Edit')->render().'</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
+                  >'.t('Archive')->render().'</a>  <span class = "loader"></span>', array(
               '@edit_url' => $edit_url->toString(),
               '@archive_url' => $archive_url->toString(),
               '@nid' => $deployedRelease->id(),
                   )
           );
         } else {
-          $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >Archive</a> <span class = "loader"></span>', array(
+          $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >'.t('Archive')->render().'</a> <span class = "loader"></span>', array(
               '@archive_url' => $archive_url->toString(),
               '@nid' => $deployedRelease->id(),
                   )
