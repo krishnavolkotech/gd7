@@ -410,7 +410,7 @@ class HzdStorage {
     }
     $ids = $query->sort('field_function')->execute();
     $entities = Node::loadMultiple($ids);
-
+    $default_function = $default_release = [];
     foreach ($entities as $entity) {
       $default_function[$entity->get('field_function')->value] = $entity->get('field_function')->value;
       if ($entity->hasField('field_release')) {
