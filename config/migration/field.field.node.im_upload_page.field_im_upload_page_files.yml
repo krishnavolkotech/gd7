@@ -12,7 +12,7 @@ third_party_settings:
   filefield_paths:
     enabled: true
     file_path:
-      value: im-ablage-attachments
+      value: 'im-ablage-attachments/[node:vid]'
       options:
         slashes: false
         pathauto: false

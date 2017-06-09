@@ -12,24 +12,11 @@ dependencies:
     - field.field.node.services.release_type
     - field.field.node.services.upload
     - node.type.services
-  module:
-    - comment
-    - path
 id: node.services.default
 targetEntityType: node
 bundle: services
 mode: default
 content:
-  comment:
-    type: comment_default
-    weight: 20
-    settings: {  }
-    third_party_settings: {  }
-  created:
-    type: datetime_timestamp
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
   field_diff:
     weight: 1
     type: number
@@ -60,32 +47,10 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
-  langcode:
-    type: language_select
-    weight: 2
-    settings: {  }
-    third_party_settings: {  }
-  path:
-    type: path
-    weight: 30
-    settings: {  }
-    third_party_settings: {  }
-  promote:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 15
-    third_party_settings: {  }
   release_type:
     type: options_select
     weight: 20
     settings: {  }
-    third_party_settings: {  }
-  sticky:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 16
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -94,15 +59,13 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  translation:
-    weight: 10
-  uid:
-    type: entity_reference_autocomplete
-    weight: 5
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
 hidden:
+  comment: true
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  sticky: true
+  translation: true
+  uid: true
   upload: true

@@ -487,8 +487,7 @@ class CustNodeController extends ControllerBase {
     exit;
   }
 
-  function nodeTitle() {
-    $node = \Drupal::routeMatch()->getParameter('node');
+  function nodeTitle(\Drupal\node\NodeInterface $node) {
     if ($node->bundle() == 'downtimes') {
       $db = \Drupal::database();
       $downtimeTypeQuery = $db->select('downtimes', 'd');
