@@ -891,7 +891,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          operator: '='
+          operator: word
           value: ''
           group: 1
           exposed: true
