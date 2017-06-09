@@ -313,7 +313,7 @@ display:
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: mitglieder
+      path: address
       menu:
         enabled: true
         expanded: false
