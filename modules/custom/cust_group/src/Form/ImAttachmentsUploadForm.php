@@ -31,7 +31,7 @@ class ImAttachmentsUploadForm extends FormBase {
     );
     $form['upload_file'] = array(
         '#type' => 'managed_file',
-//        '#title' => 'kjdsfds',
+        '#title' => 'Upload file',
         '#upload_location' => 'private://',
         '#upload_validators' => $validators,
 //        '#description' => 'jsdbfjksdbfjbsdkjfsj',
@@ -68,25 +68,42 @@ class ImAttachmentsUploadForm extends FormBase {
       ];
 //      pr($file->url());exit;
 //      ['#markup' => $file->getFilename()];
-      $form['files'][$file->id()]['delete'][$file->id()] = ['#type' => 'submit','#name'=>$file->id(), '#value' => $this->t('Delete'), '#fileId' => $file->id(), '#attributes' => ['class' => ['btn-danger'], 'onclick' => t('return confirm("Are you sure?")')]];
+      $form['files'][$file->id()]['delete'][$file->id()] = ['#type' => 'submit', '#name' => $file->id(), '#value' => $this->t('Delete'), '#fileId' => $file->id(), '#attributes' => ['class' => ['btn-danger'], 'onclick' => 'return confirm("'.t("Are you sure?")->render().'")']];
     }
     $form['#attached']['drupalSettings']['isImupload'] = 1;
     return $form;
   }
   
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    $action = $form_state->getTriggeringElement()['#parents'][0];
+    $values = $form_state->getValues();
+    if ($action == 'upload_submit') {
+      if (empty($values['upload_file'])) {
+        $form_state->setErrorByName('upload_file',t('Field @title is required',['@title'=>$form['upload_file']['#title']]));
+      }
+    }
+  }
+
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    drupal_get_messages(null, TRUE);
     $values = $form_state->getValues();
     $action = $form_state->getTriggeringElement()['#parents'][0];
 //    pr($action);exit;
     $node = \Drupal::routeMatch()->getParameter('node');
+    $message = null;
     if ($action == 'upload_submit') {
-      foreach ($values['upload_file'] as $uploadedFile) {
-        $node->get('field_im_upload_page_files')->appendItem(['target_id' => $uploadedFile]);
+      if (!empty($values['upload_file'])) {
+        foreach ($values['upload_file'] as $uploadedFile) {
+          $node->get('field_im_upload_page_files')->appendItem(['target_id' => $uploadedFile]);
+        }
+        $node->save();
+        $message = t('File was successfully uploaded!');
       }
-      drupal_set_message(t('File was successfully uploaded!'));
+//      drupal_set_message(t('File was successfully uploaded!'));
     } elseif ($action == 'files') {
       $deleteId = $form_state->getTriggeringElement()['#fileId'];
 //      pr($deleteId);exit;
@@ -99,9 +116,10 @@ class ImAttachmentsUploadForm extends FormBase {
           $count++;
         }
       }
-      drupal_set_message(t('File was successfully deleted!'));
+      $node->save();
+      $message = t('File was successfully deleted!');
     }
-    $node->save();
+    drupal_set_message($message);
   }
 
 }

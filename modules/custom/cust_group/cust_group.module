@@ -476,42 +476,48 @@ function cust_group_views_pre_render($view) {
 }
 
 function cust_group_file_validate(Drupal\file\FileInterface $file) {
+//  drupal_get_messages(null, TRUE);
   $errors = [];
   $fileName = $file->getFilename();
 
   $node = \Drupal::routeMatch()->getParameter('node');
   if ($node instanceof Node && $node->bundle() == 'im_upload_page') {
-        $data = [];
-        $attachedFiles = \Drupal::entityQuery('node')
-                ->condition('field_im_upload_page_files.entity:file.filename',$fileName)
-                ->execute();
-        if(in_array($node->id(), $attachedFiles)){
-          return [t("The file's name already exists in database.")];
-        }
-//        pr($attachedFiles);exit;
+    $data = [];
+    $attachedFiles = \Drupal::entityQuery('node')
+            ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
+            ->condition('nid', $node->id())
+            ->execute();
+    if (empty($attachedFiles)) {
+      if ($file->isNew()) {
+        
+      } else {
+        return [t("The file's name already exists in database.")];
       }
-    $query = \Drupal::request()->get('upload');
-    if(\Drupal::routeMatch()->getRouteName() == 'node.add' && \Drupal::routeMatch()->getParameter('node_type')->id() == 'im_upload_page'){
-      $query = \Drupal::request()->get('field_im_upload_page_files');
+    } else {
+      return [t("The file's name already exists in database.")];
     }
+//        pr($attachedFiles);exit;
+  }
+  $query = \Drupal::request()->get('upload');
+  if (\Drupal::routeMatch()->getRouteName() == 'node.add' && \Drupal::routeMatch()->getParameter('node_type')->id() == 'im_upload_page') {
+    $query = \Drupal::request()->get('field_im_upload_page_files');
+  }
 //  $check = \Drupal::entityQuery('file')
 //          ->condition('filename', $fileName)
 //          ->execute();
-  foreach ($query as $tempFile) {
-    if (!empty($tempFile['fids'])) {
-      $fileEnt = File::load($tempFile['fids']);
-      if ($fileName == $fileEnt->getFilename() && !$file->isPermanent()) {
+  if (!empty($query)) {
+    foreach ($query as $tempFile) {
+      if (!empty($tempFile['fids'])) {
+        $fileEnt = File::load($tempFile['fids']);
+        if ($fileName == $fileEnt->getFilename() && !$file->isPermanent() && $file->isNew()) {
 //        $errors[] = t("The file's name already exists in database.");
-        return [t("The file's name already exists in database.")];
+          return [t("The file's name already exists in database.")];
+        }
       }
     }
   }
 
 
-  $check = \Drupal::entityQuery('file')
-          ->condition('filename', $fileName)
-//    ->condition('status', 1)
-          ->execute();
 
   //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
   //Todo sometimes giving true while value is one
