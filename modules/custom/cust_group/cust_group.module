@@ -502,7 +502,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
   if (\Drupal::routeMatch()->getRouteName() == 'node.add' && \Drupal::routeMatch()->getParameter('node_type')->id() == 'im_upload_page') {
     $query = \Drupal::request()->get('field_im_upload_page_files');
   }
-  if(\Drupal::request()->get('field_page_files','null')){
+  if(\Drupal::request()->get('field_page_files',null)){
     $query = \Drupal::request()->get('field_page_files');
   }
 //  $check = \Drupal::entityQuery('file')
