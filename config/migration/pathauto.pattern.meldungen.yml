@@ -1,0 +1,22 @@
+uuid: 7755ae97-733a-4a14-8abb-c71633f5af63
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: meldungen
+label: Meldungen
+type: 'canonical_entities:node'
+pattern: 'meldungen/[node:title]'
+selection_criteria:
+  21803235-8773-4146-a46a-4051c8a65e4c:
+    id: node_type
+    bundles:
+      news: news
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 21803235-8773-4146-a46a-4051c8a65e4c
+selection_logic: and
+weight: -5
+relationships: {  }

@@ -261,7 +261,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: State
+          label: Land
           exclude: false
           alter:
             alter_text: false
@@ -323,7 +323,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Title
+          label: Titel
           exclude: false
           alter:
             alter_text: false
@@ -388,7 +388,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Erstellendes method'
+          label: 'Erstellendes Verfahren'
           exclude: false
           alter:
             alter_text: false
@@ -450,7 +450,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'SW Transfer No'
+          label: SW-Übergabe-Nr.
           exclude: false
           alter:
             alter_text: false
@@ -512,7 +512,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Last update'
+          label: 'Letzte Aktualisierung'
           exclude: false
           alter:
             alter_text: false
@@ -787,7 +787,7 @@ display:
         views_merge_rows: {  }
       path: group/%group/saved-rz-schnellinfo
       rendering_language: de
-      title: 'Table of Draft RZ Accelerators'
+      title: 'Entwürfe RZ-Schnellinfos'
       defaults:
         title: false
         filters: false
@@ -854,7 +854,7 @@ display:
           exposed: true
           expose:
             operator_id: label_op
-            label: Title
+            label: Titel
             description: ''
             use_operator: false
             operator: label_op
@@ -897,7 +897,7 @@ display:
           exposed: true
           expose:
             operator_id: field_related_transfer_number_value_op
-            label: 'SW Transfer No'
+            label: SW-Übergabe-Nr.
             description: ''
             use_operator: false
             operator: field_related_transfer_number_value_op
@@ -934,7 +934,7 @@ display:
         options:
           submit_button: Anwenden
           reset_button: true
-          reset_button_label: Reset
+          reset_button_label: Zurücksetzen
           exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: false
           sort_asc_label: Auf
@@ -1585,7 +1585,7 @@ display:
         options:
           submit_button: Anwenden
           reset_button: true
-          reset_button_label: Reset
+          reset_button_label: Zurücksetzen
           exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: false
           sort_asc_label: Auf

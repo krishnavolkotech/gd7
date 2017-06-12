@@ -9,7 +9,7 @@ id: node.quickinfo.field_custom_title
 field_name: field_custom_title
 entity_type: node
 bundle: quickinfo
-label: '1.1 Title'
+label: '1.1 Titel'
 description: '(max. 254 Zeichen)'
 required: true
 translatable: true

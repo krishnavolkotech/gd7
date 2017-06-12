@@ -309,10 +309,12 @@ display:
     display_title: Block
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       pager:
-        type: none
+        type: some
         options:
+          items_per_page: 5
           offset: 0
       defaults:
         pager: false
@@ -346,45 +348,6 @@ display:
           entity_type: node
           entity_field: type
           plugin_id: bundle
-        field_problem_eroffnet_value:
-          id: field_problem_eroffnet_value
-          table: node__field_problem_eroffnet
-          field: field_problem_eroffnet_value
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '>='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: numeric
       filter_groups:
         operator: AND
         groups:
@@ -397,9 +360,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          empty: false
+          empty: true
           tokenize: false
-          content: '<a class="all-problems" href="/group/6/problems">Alle bekannten Fehler und Probleme</a>'
+          content: '<a class="all-problems" href="/problem-management/problems">Bekannte Fehler und Probleme</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1
