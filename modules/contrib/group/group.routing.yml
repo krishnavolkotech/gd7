@@ -16,6 +16,7 @@ entity.group.join:
     _title_callback: '\Drupal\group\Controller\GroupMembershipController::joinTitle'
   requirements:
     _group_permission: 'join group'
+    _group_member: 'FALSE'
 
 entity.group.leave:
   path: '/group/{group}/leave'
@@ -23,6 +24,7 @@ entity.group.leave:
     _controller: '\Drupal\group\Controller\GroupMembershipController::leave'
   requirements:
     _group_permission: 'leave group'
+    _group_member: 'TRUE'
 
 entity.group.request:
   path: '/group/{group}/request'

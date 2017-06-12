@@ -9,6 +9,7 @@ dependencies:
     - field.storage.node.field_unique_id
     - group.content_type.moderate-group_node-quickinfo
   module:
+    - better_exposed_filters
     - group
     - node
     - options
@@ -782,7 +783,8 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/saved-rz-schnellinfo
       rendering_language: de
       title: 'Table of Draft RZ Accelerators'
@@ -790,6 +792,7 @@ display:
         title: false
         filters: false
         filter_groups: false
+        exposed_form: false
       filters:
         type:
           id: type
@@ -845,7 +848,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
+          operator: word
           value: ''
           group: 1
           exposed: true
@@ -888,7 +891,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          operator: '='
+          operator: word
           value: ''
           group: 1
           exposed: true
@@ -926,6 +929,34 @@ display:
         operator: AND
         groups:
           1: AND
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Anwenden
+          reset_button: true
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: false
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+          bef:
+            general:
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+              autosubmit: false
+              autosubmit_hide: false
+            label:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+            field_related_transfer_number_value:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
     cache_metadata:
       max-age: 0
       contexts:
@@ -943,7 +974,8 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/rz-schnellinfo-overview
       filters:
         type:
@@ -1082,6 +1114,7 @@ display:
         filter_groups: false
         fields: false
         sorts: false
+        exposed_form: false
       filter_groups:
         operator: AND
         groups:
@@ -1547,6 +1580,34 @@ display:
           expose:
             label: ''
           plugin_id: standard
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Anwenden
+          reset_button: true
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: false
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+          bef:
+            general:
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+              autosubmit: false
+              autosubmit_hide: false
+            label:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+            field_related_transfer_number_value:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
     cache_metadata:
       max-age: 0
       contexts:

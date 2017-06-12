@@ -62,7 +62,7 @@ class DeployedReleasesFilterForm extends FormBase {
         '#attributes' => array(
             'class' => array("start_date"),
             'placeholder' => array(
-                '< ' . $this->t('Start Date') . ' >',
+                '<' . $this->t('Start Date')->render() . '>',
             ),
             'onchange' => 'this.form.submit()',
         ),
@@ -75,7 +75,7 @@ class DeployedReleasesFilterForm extends FormBase {
         '#attributes' => array(
             'class' => array("end_date"),
             'placeholder' => array(
-                '< ' . $this->t('End Date') . ' >',
+                '<' . $this->t('End Date')->render() . '>',
             ),
             'onchange' => 'this.form.submit()',
         ),
@@ -114,7 +114,7 @@ class DeployedReleasesFilterForm extends FormBase {
 
   public function deployed_dependent_releases(array &$form, FormStateInterface $form_state) {
     $service = $this->request->get('service', 0);
-    $deployedReleaseData[] = t('< Release >');
+    $deployedReleaseData[] = '<'.t('Release')->render().'>';
     if ($service) {
       $deployedReleases = \Drupal::entityQuery('node')
               ->condition('field_release_service', $service)

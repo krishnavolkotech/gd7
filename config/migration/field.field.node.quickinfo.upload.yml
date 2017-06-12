@@ -10,9 +10,9 @@ dependencies:
     - filefield_paths
 third_party_settings:
   filefield_paths:
-    enabled: false
+    enabled: true
     file_path:
-      value: '[group:title]/[node:content-type]'
+      value: 'gruppen/[group:title]/[node:content-type:machine-name]/[node:vid]'
       options:
         slashes: false
         pathauto: false
@@ -40,7 +40,7 @@ settings:
   file_directory: '[date:custom:Y]-[date:custom:m]'
   file_extensions: 'jpg jpeg gif png txt csv doc xls pdf ppt pps odt ods odp docx xlsx pptx zip rar mpp mm gz tar xsd'
   max_filesize: 100MB
-  description_field: true
+  description_field: false
   handler: 'default:file'
   handler_settings: {  }
 field_type: file

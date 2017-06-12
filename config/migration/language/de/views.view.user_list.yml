@@ -24,8 +24,6 @@ display:
         abbr:
           expose:
             label: Land
-          group_info:
-            description: ''
       fields:
         lastname:
           label: Nachname

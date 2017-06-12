@@ -14,7 +14,6 @@ dependencies:
     - field.field.node.deployed_releases.upload
     - node.type.deployed_releases
   module:
-    - comment
     - datetime
     - text
 id: node.deployed_releases.default
@@ -29,16 +28,6 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
-    third_party_settings: {  }
-  comment:
-    type: comment_default
-    weight: 20
-    settings: {  }
-    third_party_settings: {  }
-  created:
-    type: datetime_timestamp
-    weight: 10
-    settings: {  }
     third_party_settings: {  }
   field_archived_release:
     weight: 16
@@ -65,18 +54,6 @@ content:
     type: options_select
     settings: {  }
     third_party_settings: {  }
-  promote:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 15
-    third_party_settings: {  }
-  sticky:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 16
-    third_party_settings: {  }
   title:
     type: string_textfield
     weight: -5
@@ -84,20 +61,14 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  translation:
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
-  uid:
-    type: entity_reference_autocomplete
-    weight: 5
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
 hidden:
+  comment: true
+  created: true
   field_user_state: true
   langcode: true
   path: true
+  promote: true
+  sticky: true
+  translation: true
+  uid: true
   upload: true

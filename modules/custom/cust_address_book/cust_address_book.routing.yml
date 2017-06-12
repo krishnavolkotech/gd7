@@ -13,7 +13,7 @@
 #  requirements:
 #    _permission: 'administer search'
 cust_address_book.address_username:
-  path: '/address/{username}'
+  path: '/addresssss/{username}'
   defaults:
     _controller: '\Drupal\cust_address_book\Controller\HzdAddressBook::address_book_user_view'
     _title: 'Members'

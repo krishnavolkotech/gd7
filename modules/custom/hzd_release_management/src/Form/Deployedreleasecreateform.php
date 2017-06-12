@@ -107,7 +107,7 @@ class Deployedreleasecreateform extends FormBase {
       '#maxlength' => '20',
       '#attributes' => array("class" => ["deployed_date"]),
       '#weight' => -3,
-        '#placeholder'=> t('< Date >'),
+        '#placeholder'=> '<'.t('Date')->render().'>',
 
     );
 
@@ -188,7 +188,7 @@ class Deployedreleasecreateform extends FormBase {
       $default_releases = get_undeployed_dependent_release($service, $environment);
     }
     else {
-      $default_releases = array("0" => t('Release'));
+      $default_releases = array("0" => '<'.t('Release')->render().'>');
     }
 
 //    $form['deployed_releases']['#options'] =$default_releases;
@@ -344,7 +344,7 @@ class Deployedreleasecreateform extends FormBase {
         'uid ' => 1,
       ]);
       $group_content->save();
-
+      drupal_set_message(t('Release has been deployed sucessfully'), 'success');
     }
 
   }

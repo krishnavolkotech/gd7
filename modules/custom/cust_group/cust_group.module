@@ -73,7 +73,7 @@ function get_user_fields($user) {
   $state_name = $state->execute()->fetchField();
   $variables['name'] = [
       'label' => 'User Name',
-      'value' => $user->getDisplayName()
+      'value' => $user->getUsername()
   ];
   $variables['firstname'] = [
       'label' => 'First Name',
@@ -416,6 +416,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 //            kint($form_state->getRedirect());
       break;
   }
+  $form['revision_log']['#access'] = FALSE;
+  $form['revision']['#access'] = FALSE;
+  $form['revision_information']['#access'] = FALSE;
+//  pr($form['revision']);exit;
 }
 
 function requst_submit_handler(&$form, $form_state) {
@@ -472,60 +476,101 @@ function cust_group_views_pre_render($view) {
 }
 
 function cust_group_file_validate(Drupal\file\FileInterface $file) {
+//  drupal_get_messages(null, TRUE);
   $errors = [];
   $fileName = $file->getFilename();
-  $check = \Drupal::entityQuery('file')
-          ->condition('filename', $fileName)
-//    ->condition('status', 1)
-          ->execute();
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof Node && $node->bundle() == 'im_upload_page') {
+    $data = [];
+    $attachedFiles = \Drupal::entityQuery('node')
+            ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
+            ->condition('nid', $node->id())
+            ->execute();
+    if (empty($attachedFiles)) {
+      if ($file->isNew()) {
+        
+      } else {
+        return [t("The file's name already exists in database.")];
+      }
+    } else {
+      return [t("The file's name already exists in database.")];
+    }
+//        pr($attachedFiles);exit;
+  }
+  $query = \Drupal::request()->get('upload');
+  if (\Drupal::routeMatch()->getRouteName() == 'node.add' && \Drupal::routeMatch()->getParameter('node_type')->id() == 'im_upload_page') {
+    $query = \Drupal::request()->get('field_im_upload_page_files');
+  }
+  if(\Drupal::request()->get('field_page_files','null')){
+    $query = \Drupal::request()->get('field_page_files');
+  }
+//  $check = \Drupal::entityQuery('file')
+//          ->condition('filename', $fileName)
+//          ->execute();
+  if (!empty($query)) {
+    foreach ($query as $tempFile) {
+      if (!empty($tempFile['fids'])) {
+        $fileEnt = File::load($tempFile['fids']);
+        if ($fileName == $fileEnt->getFilename() && !$file->isPermanent() && $file->isNew()) {
+//        $errors[] = t("The file's name already exists in database.");
+          return [t("The file's name already exists in database.")];
+        }
+      }
+    }
+  }
+
+
 
   //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
   //Todo sometimes giving true while value is one
   if (count($check) >= 1 && $file->isNew()) {
-    $node = \Drupal::routeMatch()->getParameter('node');
-    if ($node instanceof Node && $node->bundle() == 'quickinfo') {
+//    $node = \Drupal::routeMatch()->getParameter('node');
+    /* if ($node instanceof Node && $node->bundle() == 'quickinfo') {
       $checkQuickinfo = \Drupal::entityQuery('node')
-              ->condition('upload.entity:file.fid', (array) $check, 'IN')
-              ->condition('type', 'quickinfo')
-              ->execute();
+      ->condition('upload.entity:file.fid', (array) $check, 'IN')
+      ->condition('type', 'quickinfo')
+      ->execute();
       $query = \Drupal::request()->get('upload');
-
+      pr($query);exit;
       foreach ($query as $tempFile) {
-        if (!empty($tempFile['fids'])) {
-          $file = File::load($tempFile['fids']);
-          $temporaryFileData[] = $file->getFilename();
-        }
+      if (!empty($tempFile['fids'])) {
+      $file = File::load($tempFile['fids']);
+      $temporaryFileData[] = $file->getFilename();
+      }
       }
 
       $route = \Drupal::routeMatch()->getRouteName();
 
       if (!in_array($node->id(), (array) $checkQuickinfo) && !in_array($fileName, $temporaryFileData)) {
-        return [];
+      return [];
       }
       if ($route == 'entity.group_content.create_form' && !in_array($fileName, $temporaryFileData)) {
-        return [];
+      return [];
       }
-    } else {
+      } else {
       $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+      if($group instanceof \Drupal\group\Entity\Group){
       foreach (File::loadMultiple($check) as $fileEntity) {
-        $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
-        $data = [];
-        foreach ($file_usage as $module) {
-          foreach ($module as $contentType => $type) {
-            foreach ($type as $id => $count) {
-              $groupContent = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
-              if ($groupContent instanceof \Drupal\group\Entity\GroupContent) {
-                $data[] = $groupContent->getGroup()->id();
-              }
-            }
-          }
-        }
+      $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
+      $data = [];
+      foreach ($file_usage as $module) {
+      foreach ($module as $contentType => $type) {
+      foreach ($type as $id => $count) {
+      $groupContent = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
+      if ($groupContent instanceof \Drupal\group\Entity\GroupContent) {
+      $data[] = $groupContent->getGroup()->id();
+      }
+      }
+      }
+      }
       }
       if (!in_array($group->id(), $data)) {
-        return [];
+      return [];
       }
-    }
-    $errors[] = t("The file's name already exists in database.");
+      }
+      } */
+//    $errors[] = t("The file's name already exists in database.");
   }
   return $errors;
 }

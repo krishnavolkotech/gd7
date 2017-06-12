@@ -56,22 +56,15 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
-  langcode:
-    type: language_select
-    weight: 6
-    settings: {  }
-    third_party_settings: {  }
-  translation:
-    weight: 10
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   body: true
   comment: true
   created: true
+  langcode: true
   path: true
   promote: true
   sticky: true
   title: true
+  translation: true
   uid: true
   upload: true
