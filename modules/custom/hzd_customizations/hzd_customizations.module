@@ -568,8 +568,17 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['remove_files']['#weight'] = 4;
     $form['submit']['#weight'] = 19;
   }
+  
+  if($form_id == 'node_revision_revert_confirm') {
+      $form['actions']['submit']['#submit'][] = 'node_revisions_revert_confirm_custom';
+  }
 
 //  echo $form_id;exit;
+}
+
+function node_revisions_revert_confirm_custom($form, FormStateInterface $form_state) {
+      $nodeid = \Drupal::routeMatch()->getParameter('node');
+      $form_state->setRedirect('entity.node.canonical', ['node' => $nodeid] );
 }
 
 function releaseData(&$form, $form_state) {
