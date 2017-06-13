@@ -90,3 +90,4 @@ permissions:
   84: 'assign forum containers to groups'
   85: 'delete any forum content'
   86: 'delete own forum content'
+  87: 'access toolbar'

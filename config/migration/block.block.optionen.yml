@@ -16,7 +16,7 @@ third_party_settings:
 id: optionen
 theme: hzd
 region: '-1'
-weight: -8
+weight: -7
 provider: null
 plugin: 'system_menu_block:optionen'
 settings:

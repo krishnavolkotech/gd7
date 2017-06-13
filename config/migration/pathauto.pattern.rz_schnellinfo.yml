@@ -8,17 +8,17 @@ dependencies:
 id: rz_schnellinfo
 label: RZ-Schnellinfo
 type: 'canonical_entities:node'
-pattern: '[node:group_raw]/rz-schnellinfos/[node:title]'
+pattern: 'release-management/rz-schnellinfos/[node:field_unique_id]'
 selection_criteria:
-  6fa74676-a6ad-4ff6-b698-4c414eea8cdc:
+  ecedd22c-72d1-4b45-9ebb-ec01373f50fc:
     id: node_type
     bundles:
       quickinfo: quickinfo
     negate: false
     context_mapping:
       node: node
-    uuid: 6fa74676-a6ad-4ff6-b698-4c414eea8cdc
-  8b76de4d-2f1b-4fc2-9920-7dc018ea5bd8:
+    uuid: ecedd22c-72d1-4b45-9ebb-ec01373f50fc
+  64748674-7637-4669-9bc6-e80f4d6b1e34:
     id: language
     langcodes:
       de: de
@@ -26,9 +26,9 @@ selection_criteria:
     negate: false
     context_mapping:
       language: 'node:langcode:language'
-    uuid: 8b76de4d-2f1b-4fc2-9920-7dc018ea5bd8
+    uuid: 64748674-7637-4669-9bc6-e80f4d6b1e34
 selection_logic: and
-weight: -8
+weight: -10
 relationships:
   'node:langcode:language':
     label: Sprache
