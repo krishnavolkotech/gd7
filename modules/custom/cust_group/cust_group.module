@@ -24,6 +24,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Link;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\pathauto\PathautoPatternInterface;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -860,5 +861,12 @@ function cust_group_preprocess_views_view_table(&$variables) {
   }
   if ($status == FALSE) {
     unset($view->field['draggableviews']);
+  }
+}
+
+function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, array $context) {
+  if ($context['module'] == 'node'  
+      && $context['bundle'] == "quickinfo" && $context['data']['node']->isPublished() == FALSE) {
+    $pattern->setPattern('[node:group_raw]/rz-schnellinfos/[node:title]');
   }
 }
