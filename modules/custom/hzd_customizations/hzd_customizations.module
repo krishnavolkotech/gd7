@@ -570,7 +570,8 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   }
   
   if($form_id == 'node_revision_revert_confirm') {
-      $form['actions']['submit']['#submit'][] = 'node_revisions_revert_confirm_custom';
+      $form['#submit'][] = 'node_revisions_revert_confirm_custom';
+      //kint($form['#action']);exit;
   }
 
 //  echo $form_id;exit;
