@@ -1,0 +1,21 @@
+diff --git a/modules/contrib/group/src/Entity/Form/GroupContentForm.php b/modules/contrib/group/src/Entity/Form/GroupContentForm.php
+index 9f203c1..0f0f822 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupContentForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupContentForm.php
+@@ -124,12 +124,13 @@ public function save(array $form, FormStateInterface $form_state) {
+     if ($group_content->access('view')) {
+       $form_state->setRedirectUrl($group_content->toUrl());
+     }
+-    elseif ($group_content->getEntity()->access('view')) {
+-      $form_state->setRedirectUrl($group_content->getEntity()->toUrl());
+-    }
+     elseif ($group_content->getGroup()->access('view')) {
+       $form_state->setRedirectUrl($group_content->getGroup()->toUrl());
+     }
++    elseif ($group_content->getEntity()->access('view')) {
++      $form_state->setRedirectUrl($group_content->getEntity()->toUrl());
++    }
++
+     else {
+       $form_state->setRedirect('<front>');
+     }
