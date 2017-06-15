@@ -447,16 +447,18 @@ function mailToGroupAdmins($data = []) {
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $params['subject'] = $data['subject'];
   foreach ($groupAdmins as $admin) {
-    $userEntity = $admin->entity_id->entity;
-    $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
-        '@user' => $userEntity->getDisplayName(),
-        '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
-                ->toString(),
-        '@link' => $data['link'],
-        '@message' => $data['message']
-    ]);
-//    pr($params);exit;
-    $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
+    if($userEntity->isActive()){
+        $userEntity = $admin->entity_id->entity;
+        $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
+            '@user' => $userEntity->getDisplayName(),
+            '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
+                    ->toString(),
+            '@link' => $data['link'],
+            '@message' => $data['message']
+        ]);
+    //    pr($params);exit;
+        $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
+    }
   }
   drupal_set_message(t('Request has been sucessfully placed.'), 'status');
 }
