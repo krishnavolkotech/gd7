@@ -1,6 +1,6 @@
 uuid: c3766107-4602-4725-9973-0206d9209372
 langcode: en
-status: false
+status: true
 dependencies:
   config:
     - block_visibility_groups.block_visibility_group.group_menu
@@ -17,8 +17,8 @@ third_party_settings:
     classes: blue
 id: hzdgruppenadministration
 theme: hzd
-region: '-1'
-weight: 6
+region: sidebar_first
+weight: -27
 provider: null
 plugin: hzd_group_admin
 settings:

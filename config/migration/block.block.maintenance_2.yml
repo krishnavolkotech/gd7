@@ -14,7 +14,7 @@ third_party_settings:
 id: maintenance_2
 theme: hzd
 region: sidebar_first
-weight: -28
+weight: -29
 provider: null
 plugin: maintenance_block
 settings:
