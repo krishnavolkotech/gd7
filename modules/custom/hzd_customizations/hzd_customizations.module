@@ -623,29 +623,28 @@ function cust_quick_info_node_form_publish(&$form, FormStateInterface $form_stat
   }
 }
 
-function hzd_customizations_node_update($node) {
-  if ($node->getType() == 'quickinfo') {
-    // Act on the unpublishing of an article.
-    if ($node->get('status')->value == 1) {
-      hzd_customizations_quickinfo_save($node);
-      generate_quickinfo_pdf($node);
+function hzd_customizations_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    if($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form') {
+        foreach (array_keys($form['actions']) as $action) {
+            if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+              $form['actions'][$action]['#submit'][] = 'hzd_customizations_quickinfo_node_save_callback';
+            }
+        }
     }
-  }
 }
 
-function hzd_customizations_node_insert($node) {
-  if ($node->getType() == 'quickinfo') {
-    // Act on the unpublishing of an article.
-    if ($node->get('status')->value == 1) {
-      hzd_customizations_quickinfo_save($node);
-//      generate_quickinfo_pdf($node);
+function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {
+    $node = $form_state->getFormObject()->getEntity();
+    if($node->get('status')->value == 1) {
+        hzd_customizations_quickinfo_save($node);
+        $node = node_load($node->id());
+        generate_quickinfo_pdf($node);
     }
-  }
 }
 
 function hzd_customizations_quickinfo_save($node) {
   if ($node->getEntityTypeId() == 'node' && $node->getType() == 'quickinfo') {
-    // Act on the unpublishing of an article.
+    // Act on the publishing of an article.
     if ($node->get('status')->value == 1) {
       $quickinfoId = $node->get('field_unique_id')->value;
       if (!file_exists('private://rz-schnellinfos/' . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf")) {
@@ -670,10 +669,6 @@ function hzd_customizations_quickinfo_save($node) {
         ]);
         $quickinfo->save();
       }
-
-//      $entity->save();
-//      pr($node->toArray());exit;
-//      generate_quickinfo_pdf($node);
     }
   }
 }
