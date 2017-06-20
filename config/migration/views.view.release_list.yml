@@ -369,7 +369,7 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: '<a class="all-releases" href="/release-management/releases">Alle bereitgestellten Releases</a>'
+          content: '<a class="all-releases" href="/release-management/releases">Bereitgestellte Releases</a>'
           plugin_id: text_custom
     cache_metadata:
       max-age: -1

@@ -322,7 +322,8 @@ display:
     display_title: Block
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       pager:
         type: some
         options:
@@ -336,7 +337,7 @@ display:
         fields: false
       use_more: true
       use_more_always: true
-      use_more_text: 'Alle aktuellen Meldungen'
+      use_more_text: 'Alle Meldungen'
       fields:
         title:
           id: title
