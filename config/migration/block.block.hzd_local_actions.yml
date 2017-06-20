@@ -2,8 +2,13 @@ uuid: c608e530-6949-47a5-8b25-c368b1f10ef3
 langcode: en
 status: true
 dependencies:
+  module:
+    - block_class
   theme:
     - hzd
+third_party_settings:
+  block_class:
+    classes: ''
 _core:
   default_config_hash: 13GQpeITIJsp1kyPniXtWZfyFH87vb1xxJCHifL4UeE
 id: hzd_local_actions

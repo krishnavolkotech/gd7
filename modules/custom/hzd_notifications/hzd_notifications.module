@@ -328,10 +328,11 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
       
       if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $for_admin_formids)) {
         $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
+          '#type' => 'fieldset',
+          '#weight' => 99,
+          //'#title' => t('Notifications settings'),
+          //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+          //'#group' => 'advanced',
         );
         $form['notification']['node_notification_checkbox'] = array(
           '#type' => 'checkbox',
@@ -339,10 +340,11 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         );
       } else if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
         $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
+          '#type' => 'fieldset',
+          '#weight' => 99,
+          //'#title' => t('Notifications settings'),
+          //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+          //'#group' => 'advanced',
         );
         $form['notification']['node_notification_checkbox'] = array(
           '#type' => 'checkbox',
@@ -350,10 +352,11 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         );
       } else if (($group->getMember($current_user) && $group->getMember($current_user)->getGroupContent()->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)) {
         $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
+          '#type' => 'fieldset',
+          '#weight' => 99,
+          //'#title' => t('Notifications settings'),
+          //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+          //'#group' => 'advanced',
         );
         $form['notification']['node_notification_checkbox'] = array(
           '#type' => 'checkbox',

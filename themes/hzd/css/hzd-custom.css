@@ -59,7 +59,7 @@ button[value="Save and publish"] {
 .form-type-vertical-tabs .tabs-left {
     margin-top: 50px;
 }
-.form-actions button,
+/*.form-actions button,
 a.button--danger {
     background: #04425f !important;
     font-size: 14px;
@@ -68,7 +68,7 @@ a.button--danger {
     border-radius: 4px;
     float: left;
     border: none !important;
-}
+}*/
 .form-actions button .glyphicon-ok {
     display: none;
 }
@@ -88,17 +88,17 @@ a.button--danger {
 #archived_search_results_wrapper table tr.odd td:last-child,
 #archived_search_results_wrapper table tr.even td:last-child {
     width: 10% !important;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #incidents_search_results_wrapper table tr.odd td:last-child,
 #incidents_search_results_wrapper table tr.even td:last-child {
     width: 12% ;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(2),
 #archived_search_results_wrapper table tr.even td:nth-child(2) {
     width: 25% !important;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #released_results_wrapper table.releases.progress {
     background: transparent;
@@ -116,24 +116,24 @@ table.releases.released tr.even td.earlywarnings-cell {
 #archived_search_results_wrapper table tr.odd td:nth-child(3),
 #archived_search_results_wrapper table tr.even td:nth-child(3) {
     width: 15%;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(4),
 #archived_search_results_wrapper table tr.even td:nth-child(4) {
     width: 8%;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
 #archived_search_results_wrapper table tr.even td:nth-child(5),
 #archived_search_results_wrapper table tr.odd td:nth-child(6),
 #archived_search_results_wrapper table tr.even td:nth-child(6) {
     width: 14%;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(7),
 #archived_search_results_wrapper table tr.even td:nth-child(7) {
     width: 7%;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 #incidents_search_results_wrapper table tr td:last-child,
 #maintenance_search_results_wrapper table tr td:last-child {
@@ -277,14 +277,14 @@ nav#block-optionen ul li a {
 fieldset[disabled] .btn {
     opacity: 1 !important;
 }
-form .form-type-vertical-tabs,
+/*form .form-type-vertical-tabs,
 .form-actions button,
 a.button--danger,
 a#edit-cancel,
 .form-actions button,
 .form-actions button:hover {
     border-radius: 4px !important;
-}
+}*/
 a.button--danger:hover,
 a#edit-cancel:hover,
 .btn:hover {
@@ -394,12 +394,18 @@ article.page .content table {
     height: 35px !important;
     margin-left: 3px;
 }
-#views-exposed-form-user-list-address .form-item {
+.views-exposed-form .form-item {
+    margin-right: 15px;
+}
+.views-exposed-form label {
+    margin-right: 5px;
+}
+/*#views-exposed-form-user-list-address .form-item {
     margin-right: 15px;
 }
 #views-exposed-form-user-list-address label {
     margin-right: 5px;
-}
+}*/
 
 @media only screen and (max-width:767px){
 .frontpage-downtime-block a.front-page-link{
@@ -542,7 +548,7 @@ header .block-cust-group-search-block form .search-expanded{
   background: #fff none repeat scroll 0 0;
   width: 225px;
   position: absolute;
-  top: 25px;
+  top: 40px;
   right: 18px;
   padding: 15px;
   z-index:10;

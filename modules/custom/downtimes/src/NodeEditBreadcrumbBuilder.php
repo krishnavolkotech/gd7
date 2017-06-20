@@ -38,9 +38,17 @@ class NodeEditBreadcrumbBuilder implements BreadcrumbBuilderInterface {
     $links[] = Link::createFromRoute(t('Home'), '<front>');
     $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($params['node']->id());
     if ($groupContent) {
-      $type = $groupContent->entity_id->referencedEntities()[0]->getType();
-      $group = $groupContent->getGroup();
-
+      $noderouteMatch = \Drupal::routeMatch();
+      $node = $noderouteMatch->getParameter('node');
+      if($node && $node->getType() == 'quickinfo' && $node->isPublished()) {
+        $groupContent = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
+        $type = $node->getType();
+        $group = $groupContent;
+      } else {
+        $type = $groupContent->entity_id->referencedEntities()[0]->getType();
+        $group = $groupContent->getGroup();            
+      }
+    
       $listItems = \Drupal\downtimes\HzdBreadcrumbBuilder::getBreadcrumbConfigList($type, $group);
       $links[] = Link::createFromRoute($group->label(), 'entity.group.canonical', array('group' => $group->id()));
       if ($listItems)
