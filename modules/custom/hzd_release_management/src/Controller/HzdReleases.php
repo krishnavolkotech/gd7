@@ -40,7 +40,6 @@ class HzdReleases extends ControllerBase {
     # $output['#title'] = $this->t('@type Releases', ['@type' => 'Released']);
     $output['#title'] = $this->t('Available Releases');
     $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
-    $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
 
     $output[]['#attached']['library'] = array(
@@ -59,6 +58,7 @@ class HzdReleases extends ControllerBase {
     $output[] = \Drupal::formBuilder()
             ->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
 
+    $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
     $output['#cache'] = ['tags' => ['node_list']];

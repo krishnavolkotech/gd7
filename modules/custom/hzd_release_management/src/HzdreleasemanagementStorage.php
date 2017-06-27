@@ -1071,7 +1071,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    * Display text on releases and inprogress tabs.
    */
   static public function release_info() {
-    $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src = '/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src = '/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
+    $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
     $build['#markup'] = $output;
     $build['#exclude_from_print'] = 1;
     return $build;

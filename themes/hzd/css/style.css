@@ -634,10 +634,10 @@ body.not-loggedin.path-user .region-content {
     margin-right: 0 !important;
     background: #004077 !important;
     font-size: 14px;
-    text-transform: capitalize;
 }
 .path-user .form-actions button {
     float: right;
+    border-radius: 3px !important;
 }
 .path-user .region-content nav.tabs li a:hover,
 .path-user .region-content nav.tabs li a:focus {
@@ -731,23 +731,22 @@ body.not-loggedin.path-user .region-content {
 .menu-filter {
     width: 100%;
     float: left;
-    background: #9db2c3;
+    background: rgba(0,0,0,.6);
     padding: 6px 5px;
-    border-bottom: 2px solid #6e8496;
     margin: 8px 0 20px 0 !important;
+    border-radius: 3px;
 }
 .menu-filter ul {
     width: 100%;
     float: left;
-    padding: 0 !important;
-    margin: 0 0 0px 0 !important;
+    margin: 0 0 0px 30px !important;
 }
 .menu-filter ul li {
     list-style-type: none;
     float: left;
     color: #ffffff;
     list-style-type: none !important;
-    padding: 0 10px 0 0 !important;
+    padding: 0 40px 0 0 !important;
     margin: 0 !important;
     width: auto !important;
     background: transparent !important;
@@ -1170,7 +1169,7 @@ select {
 .popover ol:last-child,
 .popover ul:last-child,
 p:last-child {
-    margin-bottom: 20px !important;
+    margin-bottom: 0 !important;
     box-shadow: none;
 }
 li.comment-add {
@@ -1218,7 +1217,6 @@ body.not-loggedin.path-user .region-content h1 {
     width: 100%;
     float: left;
     text-indent: 31px;
-    text-transform: capitalize;
     font-size: 22px;
     font-weight: normal !important;
 }
@@ -2057,10 +2055,6 @@ aside .view-release-list ul li {
     color: #004077;
     margin-top: 15px;
 }
-aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems {
-    margin-top: 0 !important;
-}
 aside .view-problems-front-page ul li {
    /* background: url(../images/grey-list-arrow.png)left 9px no-repeat !important;*/
     padding-bottom: 3px;
@@ -2433,6 +2427,7 @@ section .form-group .more-link a,
 .block-incidents-block a {
     color: #0084bf;
     line-height: 1.75;
+    margin-top: 15px;
 }
 section .form-group .more-link a:hover,
 aside section .form-group .view-footer a:hover,
