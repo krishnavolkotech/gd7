@@ -383,6 +383,14 @@ a.back-search {
     button.navbar-toggle {
         border-radius: 0 !important;
     }
+    .views-exposed-form .form-item,
+    .deployedreleases-create-form .form-item,
+    .deployedreleases-create-form .form-group .input-group {
+        width:100%;
+    }
+    form.deployedreleases-create-form .btn{
+      margin-bottom:2%;
+    }
 }
 .form-control:-moz-placeholder {
     color: #333333 !important;
@@ -394,19 +402,17 @@ article.page .content table {
     height: 35px !important;
     margin-left: 3px;
 }
+form.deployedreleases-create-form .form-item,
 .views-exposed-form .form-item {
     margin-right: 15px;
+    margin-bottom:10px !important;
 }
 .views-exposed-form label {
     margin-right: 5px;
 }
-/*#views-exposed-form-user-list-address .form-item {
-    margin-right: 15px;
-}
-#views-exposed-form-user-list-address label {
-    margin-right: 5px;
-}*/
-
+.node-form .field--type-text-with-summary .form-item label{
+  margin-top:15px !important;
+}  
 @media only screen and (max-width:767px){
 .frontpage-downtime-block a.front-page-link{
   width:100%;

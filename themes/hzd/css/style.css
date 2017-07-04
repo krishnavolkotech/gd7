@@ -260,6 +260,9 @@ header .block-cust-group-search-block form span.glyphicon-search{
     article.downtimes .Incident .downtimes_content{
       width:100% !important;
     }
+    #deployed_release_form_warapper .reset_form .button{
+      margin-top:10px !important;
+}
   /*article.downtimes .Incident .downtimes_title{
     width: 35% !important;
     word-wrap: break-word;
@@ -1094,8 +1097,12 @@ select {
     padding-top: 10px;
 }
 .reset_form {
-    float: right !important;
+    /*float: right !important;*/
     margin-right: 12px;
+    float:left;
+}
+#deployedreleases_posting .form-group strong{
+  margin-top:10px;
 }
 .filter_end_date {
     padding-left: 0 !important;
@@ -3123,7 +3130,10 @@ form.deployedreleases-create-form .btn,
 form.deployedreleases-create-form .form-group {
     width: auto;
     float: left;
-    margin: 2% 2% 0 0;
+    margin: 2% 2% 0 0 !important;
+}
+.deployedreleases-create-form .reset_form .butoon{
+  margin-top:10px !important;
 }
 form.deployedreleases-create-form .form-group .input.hasDatepicker {
     width: auto;
