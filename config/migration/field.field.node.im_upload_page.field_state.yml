@@ -1,0 +1,19 @@
+uuid: bf9a5a54-8876-47be-a007-b73ddc648bbd
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_state
+    - node.type.im_upload_page
+id: node.im_upload_page.field_state
+field_name: field_state
+entity_type: node
+bundle: im_upload_page
+label: State
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
