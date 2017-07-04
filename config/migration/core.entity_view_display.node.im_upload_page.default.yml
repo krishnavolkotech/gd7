@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.im_upload_page.body
     - field.field.node.im_upload_page.comment
     - field.field.node.im_upload_page.field_im_upload_page_files
+    - field.field.node.im_upload_page.field_state
     - field.field.node.im_upload_page.upload
     - node.type.im_upload_page
   module:
@@ -57,4 +58,5 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   field_im_upload_page_files: true
+  field_state: true
   langcode: true

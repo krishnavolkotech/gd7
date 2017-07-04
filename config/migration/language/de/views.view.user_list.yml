@@ -24,6 +24,8 @@ display:
         abbr:
           expose:
             label: Land
+          group_info:
+            description: ''
       fields:
         lastname:
           label: Nachname
@@ -48,7 +50,7 @@ display:
             format: basic_html
       exposed_form:
         options:
-          submit_button: Anwenden
+          submit_button: Suchen
           reset_button_label: Zurücksetzen
           exposed_sorts_label: 'Sortieren nach'
           sort_asc_label: Aufsteigend

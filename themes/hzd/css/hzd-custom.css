@@ -1,5 +1,4 @@
 form.node-downtimes-form .panel-body .form-checkboxes {
-    padding-top: 9px;
     float: left;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
@@ -307,13 +306,16 @@ input[type="submit"],
 input[type="reset"],
 input[type="button"],
 input.hasDatepicker,
-.path-user .region-content nav.tabs li a,
 .form-control {
-    border-radius: 0 !important;
+    border-radius: 3px !important;
 }
 .pagination > li:first-child > a,
 .pagination > li:first-child > span {
     border-radius: 3px 0px 0 3px !important;
+}
+.btn {
+    border: 0 !important;
+    border-radius: 3px !important;
 }
 .btn-default:hover,
 .views-exposed-form button:hover,
@@ -409,6 +411,7 @@ form.deployedreleases-create-form .form-item,
 }
 .views-exposed-form label {
     margin-right: 5px;
+    font-weight: normal;
 }
 .node-form .field--type-text-with-summary .form-item label{
   margin-top:15px !important;
@@ -552,7 +555,7 @@ header .block-cust-group-search-block form {
 }
 header .block-cust-group-search-block form .search-expanded{
   background: #fff none repeat scroll 0 0;
-  width: 225px;
+  width: 400px;
   position: absolute;
   top: 40px;
   right: 18px;

@@ -490,15 +490,15 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
             ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
             ->condition('nid', $node->id())
             ->execute();
-    if (empty($attachedFiles)) {
-      if ($file->isNew()) {
-        
-      } else {
-        return [t("The file's name already exists in database.")];
-      }
-    } else {
-      return [t("The file's name already exists in database.")];
-    }
+//    if (empty($attachedFiles)) {
+//      if ($file->isNew()) {
+//        
+//      } else {
+//        return [t("The file's name already exists in database.")];
+//      }
+//    } else {
+//      return [t("The file's name already exists in database.")];
+//    }
 //        pr($attachedFiles);exit;
   }
   $query = \Drupal::request()->get('upload');
@@ -624,10 +624,44 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $build['title'] = ['#markup' => $title];
   }
 
-
+  if ('im_upload_page' == $entity->bundle()) {
+      if(empty($entity->get('field_state')->value)) {
+            $current_path = \Drupal::service('path.current')->getPath();
+            $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
+            $statecode = substr($result, -2);
+            $state = get_hzd_states_by_id($statecode);
+            $node = \Drupal::routeMatch()->getParameter('node');
+            $node->field_state->value = $state;
+            $node->save();
+          //kint($entity->get('field_state')->value);
+      }
+  }
   /* if ($entity->getType() == 'downtimes') {
     generate_quickinfo_pdf(Node::load(55871));
     } */
+}
+
+function get_hzd_states_by_id($id = NULL) {
+    $states = [
+        'bw' => 'Baden-Württemberg',
+        'by' => 'Bayern',
+        'be' => 'Berlin', //Berlin (BE)
+        'bb' => 'Brandenburg', //Brandenburg (BB)
+        'hb' => 'Bremen', //Bremen (HB)
+        'bu' => 'Bund', //Bund (BU)
+        'hh' => 'Hamburg', //Hamburg (HH)
+        'he' => 'Hessen', //Hessen (HE)
+        'mv' => 'Mecklenburg-Vorpommern', //Mecklenburg-Vorpommern (MV)
+        'ni' => 'Niedersachsen', //Niedersachsen (NI)
+        'nw' => 'Nordrhein-Westfalen', //Nordrhein-Westfalen (NW)
+        'rp' => 'Rheinland-Pfalz', //Rheinland-Pfalz (RP)
+        'sl' => 'Saarland', //Saarland (SL)
+        'sn' => 'Sachsen', //Sachsen (SN)
+        'st' => 'Sachsen-Anhalt', //Sachsen-Anhalt (ST)
+        'sh' => 'Schleswig-Holstein', //Schleswig-Holstein (SH)
+        'th' => 'Thüringen', //Thüringen (TH)
+    ];
+    return $states[$id];
 }
 
 function get_planning_file_data($type) {
