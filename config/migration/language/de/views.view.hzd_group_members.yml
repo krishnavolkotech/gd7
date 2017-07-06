@@ -13,6 +13,9 @@ display:
         operations:
           label: Aktionen
       use_more_text: mehr
+      arguments:
+        gid:
+          title: 'Mitglieder von {{ arguments.gid|placeholder }} '
   approved:
     display_options:
       use_more_text: mehr
