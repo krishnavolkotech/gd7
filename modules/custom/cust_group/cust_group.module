@@ -447,8 +447,8 @@ function mailToGroupAdmins($data = []) {
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $params['subject'] = $data['subject'];
   foreach ($groupAdmins as $admin) {
+    $userEntity = $admin->entity_id->entity;
     if($userEntity->isActive()){
-        $userEntity = $admin->entity_id->entity;
         $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
             '@user' => $userEntity->getDisplayName(),
             '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
