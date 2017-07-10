@@ -17,7 +17,7 @@ third_party_settings:
 id: views_block__groups_faq_block_1
 theme: hzd
 region: content
-weight: -24
+weight: -27
 provider: null
 plugin: 'views_block:groups_faq-block_1'
 settings:
