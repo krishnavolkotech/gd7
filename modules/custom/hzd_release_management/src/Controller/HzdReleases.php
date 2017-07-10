@@ -324,21 +324,25 @@ class HzdReleases extends ControllerBase {
                               ->get('deployed_releses') ? DEPLOYED_RELESES_HEADING : 11220);
 
       $output['node_body']['#markup'] = $node->body->value;
-      $output['newdeployrelease']['#prefix'] = "<div class = 'deployedReleases'><strong>";
+      $output['newdeployrelease']['#prefix'] = '<h2 class="konsens">';
       $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
-      $output['newdeployrelease']['#suffix'] = "</strong></div>";
+      $output['newdeployrelease']['#suffix'] = "</h2>";
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $output['deploy_release_form']['form'] = ['#type' => 'container'];
       $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
       $output['deploy_release_form']['form']['render'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
-      // $output['deploy_release_form']['form']['#suffix'] = '</div>';
+      $output['deploy_release_form']['form']['#suffix'] = '</div>';
       //  $output['deploy_release_form']['reset']['#prefix'] = "<div class = 'reset_form'>" .
-      $output['deploy_release_form']['reset'] = HzdreleasemanagementHelper::releases_reset_element();
-      $output['deploy_release_form']['reset']['#suffix'] = "</div>";
+      # $output['deploy_release_form']['reset'] = HzdreleasemanagementHelper::releases_reset_element();
+      # $output['deploy_release_form']['reset']['#suffix'] = "</div>";
       $output['deploy_release_form']['clear_div']['#markup'] = "<div style = 'clear:both'></div>";
       $output['deploy_release_form']['#suffix'] = '</div>';
+      $output['deployed_data_h2']['#prefix'] = '<h2 class="konsens">';
+      $output['deployed_data_h2']['#markup'] = t("Currently Deployed Releases");
+      $output['deployed_data_h2']['#suffix'] = "</h2>";
+      #$output['deployed_data']['header'] = ['#type' => 'html_tag', '#tag' => 'h2 class="konsens"', '#value' => t('Currently Deployed Releases')];
       $output['deployed_data'] = ['#type' => 'container','#attributes'=>['style'=>['width:100%;','float:left;']]];
-      $output['deployed_data']['header'] = ['#type' => 'html_tag', '#tag' => 'strong', '#value' => t('Currently Deployed Releases')];
+
       $output['deployed_data']['deployed_releases_filter'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\DeployedReleasesFilterForm');
       $output['deployed_data']['deployment_table'] = HzdreleasemanagementHelper::deployed_releases_table();
     } else {
