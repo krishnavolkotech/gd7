@@ -416,7 +416,21 @@ form.deployedreleases-create-form .form-item,
 .node-form .field--type-text-with-summary .form-item label{
   margin-top:15px !important;
 }  
+
 @media only screen and (max-width:767px){
+form.downtimes-setting-form #edit-services,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-states,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
+form.node-service-profile-edit-form #edit-field-service-recipient , 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
+  -webkit-column-count:2;
+  -moz-column-count:2;
+  column-count:2;
+}
 .frontpage-downtime-block a.front-page-link{
   width:100%;
   margin-top:10px;
@@ -549,6 +563,29 @@ header .block-cust-group-search-block form button{
 header .block-cust-group-search-block form .search-expanded{
   left:0 !important;
 }
+}
+
+@media only screen and (max-width:480px){
+.path-frontpage .block-maintenance-block .maintenance-home-info,
+form.downtimes-setting-form #edit-services,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-states,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
+form.node-service-profile-edit-form #edit-field-service-recipient , 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
+  -webkit-column-count:1 !important;
+  -moz-column-count:1 !important;
+  column-count:1 !important;
+}
+}
+.path-frontpage .block-maintenance-block .maintenance-home-info{
+  height: auto;
+  -webkit-column-count:2;
+  -moz-column-count:2;
+  column-count:2; 
 }
 header .block-cust-group-search-block form {
   position: relative;

@@ -189,12 +189,13 @@
         //     });
         // });
 
-        $('.frontpage-downtime-block .maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
+/*        $('.frontpage-downtime-block .maintenance-home-info').find('div.maintenance-list').css('width', '47%').css('float', 'none');
         $('.frontpage-downtime-block .maintenance-home-info').isotope({
             layoutMode: 'masonry',
             itemSelector: '.frontpage-downtime-block .maintenance-home-info div.maintenance-list'
         });
-
+*/
+	// $('.maintenance-home-info').css('-webkit-column-count',2).css('-moz-column-count',2).css('column-count',2);
     });
 
     $('#user-register-form .form-email,[type="password"]').bind("cut copy paste",function(e) {
