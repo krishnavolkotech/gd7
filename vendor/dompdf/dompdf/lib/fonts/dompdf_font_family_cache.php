@@ -83,4 +83,8 @@
   'robotomedium' => array(
     'normal' => $fontDir . '/3d6e13a1d564dbaf605d752393e3fbad',
   ),
+  'roboto' => array(
+    'normal' => $fontDir . '/61f1a70ff406a2541515be6aaa94bfd7',
+    'italic' => $fontDir . '/9bb36abdb4627720b4664dc5fa6128c0',
+  ),
 ) ?>

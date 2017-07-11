@@ -1888,7 +1888,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Lastname
+          label: Nachname
           exclude: false
           alter:
             alter_text: false
@@ -1937,7 +1937,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Firstname
+          label: Vorname
           exclude: false
           alter:
             alter_text: false
@@ -1986,7 +1986,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Operations links'
+          label: Optionen
           exclude: false
           alter:
             alter_text: false

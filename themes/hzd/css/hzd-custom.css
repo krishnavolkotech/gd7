@@ -317,6 +317,9 @@ input.hasDatepicker,
     border: 0 !important;
     border-radius: 3px !important;
 }
+.btn-success {
+  background-color: #0e9e57 !important;
+}
 .btn-default:hover,
 .views-exposed-form button:hover,
 button.button--reset:hover {
@@ -650,4 +653,7 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
   font-weight:700;
   font-size: 14px;
   color:#04425f !important;
+}
+.deployedReleases {
+  padding-top: 20px;
 }

@@ -6,6 +6,7 @@ dependencies:
     - views.view.release_list
   module:
     - block_class
+    - block_visibility_groups
     - system
     - user
     - views
@@ -13,11 +14,11 @@ dependencies:
     - hzd
 third_party_settings:
   block_class:
-    classes: ''
+    classes: news-block
 id: views_block__release_list_block_1
 theme: hzd
-region: sidebar_first
-weight: -25
+region: content
+weight: -23
 provider: null
 plugin: 'views_block:release_list-block_1'
 settings:
@@ -40,3 +41,8 @@ visibility:
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
