@@ -98,7 +98,7 @@ function non_productions_list() {
       ":type" => 'non_production_environment'
     ))->fetchAll();
   }
-  $environment_lists[0] = t("Bitte Umgebung auswählen");
+  $environment_lists[0] = '<' . t("Umgebung") . '>';
   $environment_lists[1] = t('Produktion');
   foreach ($non_productions_lists as $vals) {
     $environment_lists[$vals->nid] = $vals->title;

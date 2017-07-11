@@ -27,12 +27,12 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $rel_type = NULL) {
-    $services = array(t('Service')) + HzdNotificationsHelper::_services_list($rel_type);
+    $services = array('<' . t('Service') . '>') + HzdNotificationsHelper::_services_list($rel_type);
     $uid = $uid ? $uid : \Drupal::currentUser()->id();
     $form_state_complete_form = $form_state->getCompleteForm();
     //$default_val = $form_state->getValue('services') ? $form_state->getValue('services') : '';
     if(empty($form_state_complete_form)) {
-      $options = array('0' => t('Content Type'));
+      $options = array('0' => '<' . t('Content Type') . '>');
     }
     else {
       $options = $this->service_content($form, $form_state)['#options'];
@@ -75,7 +75,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     );
 
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-    $intervals[''] = t('Interval');
+    $intervals[''] = '<' . t('Send notifications') . '>';
     $form['send_interval'] = array(
       '#type' => 'select',
       '#weight' => 3,

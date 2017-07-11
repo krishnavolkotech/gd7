@@ -5,8 +5,8 @@ dependencies:
   module:
     - block_class
     - block_visibility_groups
+    - ctools
     - cust_group
-    - system
   theme:
     - hzd
 third_party_settings:
@@ -15,7 +15,7 @@ third_party_settings:
 id: imattachmentsuploadblock
 theme: hzd
 region: content
-weight: 0
+weight: -25
 provider: null
 plugin: im_attachments_upload_block
 settings:
@@ -29,8 +29,10 @@ visibility:
     negate: false
     block_visibility_group: ''
     context_mapping: {  }
-  request_path:
-    id: request_path
-    pages: "/node/826\r\n/incident-management/ablage-attachments"
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      im_upload_page: im_upload_page
     negate: false
-    context_mapping: {  }
+    context_mapping:
+      node: '@node.node_route_context:node'

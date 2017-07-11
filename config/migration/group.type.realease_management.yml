@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: realease_management
-label: 'Realease Management'
+label: 'Release Management'
 description: 'Same as open group.'
 creator_roles: {  }
