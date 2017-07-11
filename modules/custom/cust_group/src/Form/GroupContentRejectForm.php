@@ -64,6 +64,24 @@ class GroupContentRejectForm extends ConfirmFormBase {
     $entity = $this->entity;
     $entity->delete();
 
+    $grouplabel = $this->entity->get('gid')->referencedEntities()[0]->label();
+    $subject = t("Membership Request for a Group - @groupLabel has been rejected", ['@groupLabel' => $grouplabel]);
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'cust_group';
+    $key = 'immediate_notifications';
+    $params['subject'] = $subject;
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $send = TRUE;
+    $user = $this->entity->get('entity_id')->referencedEntities()[0];
+    $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLabel has been rejected.', [
+        '@user' => $user->getDisplayName(),
+        '@groupLabel' => $grouplabel
+    ]);
+    $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
+    if ($result['result']) {
+      drupal_set_message(t('Mail sent.'), 'status');
+    }
+    
     \Drupal::logger('group_content')->notice('@type: rejected %title.', [
       '@type' => $this->entity->bundle(),
       '%title' => $this->entity->label(),
