@@ -10,8 +10,8 @@ class HzdNotificationsHelper {
   
   // default send intervals array
   static function hzd_notification_send_interval() {
-    return array(-1 => t('Never'),
-      0 => t('Immediately'),
+    return array(-1 => t('No'),
+      0 => t('Yes'),
 //      86400 => 'Daily',
 //      604800 => 'Weekly'
     );
