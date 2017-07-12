@@ -577,7 +577,15 @@ function downtimes_set_default_values(&$form, $nid) {
   if (!empty($downtime_data)) {
     $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
     $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
+    if($downtime_data->startdate_planned <= REQUEST_TIME && REQUEST_TIME < $downtime_data->enddate_planned) {
+        $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
+    }
     $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
+    if($downtime_data->enddate_planned <= REQUEST_TIME) {
+        $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
+        $form['dates']['start']['enddate_planned']['#attributes']['disabled'] =  TRUE;
+    }
+    
     if (!empty($downtime_data->enddate_planned)) {
       $form['dates']['end']['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
     }
@@ -797,8 +805,13 @@ function downtimes_node_update($node) {
     $record['description'] = $node->get('body')->value;
     $record['service_id'] = implode(',', $data['services_effected']);
     //$record->downtime_id = $node->id();
-    $record['enddate_planned'] = !empty($data['enddate_planned']) ? get_unix_timestamp($data['enddate_planned']) : 0;
-    $record['startdate_planned'] = get_unix_timestamp($data['startdate_planned']);
+    if(!empty($data['enddate_planned'])) {
+        $record['enddate_planned'] = !empty($data['enddate_planned']) ? get_unix_timestamp($data['enddate_planned']) : 0;
+    }
+    
+    if(!empty($data['startdate_planned'])) {
+        $record['startdate_planned'] = get_unix_timestamp($data['startdate_planned']);
+    }
     $record['resolved'] = 0;
     $record['status'] = !empty($data['maintenance_type']) ? $data['maintenance_type'] : NULL;
     $record['email_reminder_sent'] = 1;
@@ -1092,14 +1105,29 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   $log = array();
   $form_values = $form;
   //Startdate log.
-  $startdate_old = $form_values['dates']['start']['startdate_planned']['#default_value'];
-  $startdate_new = $form_state->getValue('startdate_planned');
+  if(!empty($form_values['dates']['start']['startdate_planned']['#default_value'])){
+      $startdate_old = $form_values['dates']['start']['startdate_planned']['#default_value'];
+  } else {
+      $startdate_old = '';
+  }
+//  $startdate_old = $form_values['dates']['start']['startdate_planned']['#default_value'];
+  if(!empty($form_state->getValue('startdate_planned'))) {
+      $startdate_new = $form_state->getValue('startdate_planned');
+  } else {
+      $startdate_new = '';
+  }
+  
   if ($startdate_old != $startdate_new) {
     $log['start_date']['old'] = $startdate_old;
     $log['start_date']['new'] = $startdate_new;
   }
   // End date log.
-  $enddate_old = $form_values['dates']['end']['enddate_planned']['#default_value'];
+  if(!empty($form_values['dates']['end']['enddate_planned']['#default_value'])){
+      $enddate_old = $form_values['dates']['end']['enddate_planned']['#default_value'];
+  } else {
+      $enddate_old = '';
+  }
+//  $enddate_old = $form_values['dates']['end']['enddate_planned']['#default_value'];
   if (!empty($form_state->getValue('enddate_planned'))) {
     $enddate_new = $form_state->getValue('enddate_planned');
   } else {
