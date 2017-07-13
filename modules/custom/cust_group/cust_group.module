@@ -11,6 +11,9 @@ define('INCIDENT_MANAGEMENT', 2);
 define('PROBLEM_MANAGEMENT', 6);
 define('QUICKINFO', 32);
 define('Zentrale_Release_Manager_Lander', 5);
+define('SERVICE_LEVEL_MANAGEMENT', 15);
+define('BETRIEBSPORTAL_KONSENS', 21);
+define('KAPAZITATSMANAGEMENT', 39);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
@@ -129,9 +132,21 @@ function cust_group_group_insert($group) {
               'name' => 'Allgemeines',
               'vid' => 'forums',
               'parent' => $forum->id(),
-  ]);
+  ]);   
   $forumTerm->save();
 
+  $faq = Term::create([
+              'name' => $group->label(),
+              'vid' => 'faq_seite',
+  ]);
+  $faq->save();
+  $faqterm = Term::create([
+              'name' => 'Allgemein',
+              'vid' => 'faq_seite',
+              'parent' => $faq->id(),
+  ]);
+  $faqterm->save();
+  
   \Drupal::service('path.alias_storage')->delete(['source' => '/node/' . $node->id()]);
   $group->set('field_old_reference', $node->id());
   $group->set('field_forum_containers', $forum->id());
@@ -152,6 +167,7 @@ function cust_group_group_insert($group) {
         'Dokumentation' => '/dokumentation',
         'FAQs' => '/faqs',
         'Reporting' => '/reporting', */
+      'FAQ' => 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $faqterm->id()])->getInternalPath(),
       'Forums' => 'internal:/' . Url::fromRoute('cust_group.forums', ['group' => $group->id()])->getInternalPath(),
       'Gruppenmitglieder' => 'internal:/' . Url::fromRoute('view.group_members_lists.page_1', ['group' => $group->id()])->getInternalPath(),
   );
@@ -211,6 +227,38 @@ function cust_group_group_content_insert($entity) {
       \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
       } */
   }
+}
+
+function cust_group_taxonomy_term_insert($term) {
+    if($term->getVocabularyId() != 'faq_seite' || empty($term->get('parent')->referencedEntities())) {
+        return;
+    }
+    $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
+    $query = \Drupal::entityQuery('group');
+    $query->condition('label', $parentlabel);
+    $groupid = $query->execute();
+    $gid = reset($groupid);
+    $group = \Drupal\group\Entity\Group::load($gid);
+    $nodeid = $group->get('field_old_reference')->value;
+    $link = 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()])->getInternalPath();
+    
+    $menuquery = \Drupal::entityQuery('menu_link_content');
+    $menuquery->condition('title', 'FAQ');
+    $menuquery->condition('menu_name', 'menu-' . $nodeid);
+    $menuitem = $menuquery->execute();
+    $parentmenuid = reset($menuitem);
+    if(empty($parentmenuid)) {
+        return;
+    }
+    $parentmenu = MenuLinkContent::load($parentmenuid)->getPluginId();
+    $menu_link = MenuLinkContent::create([
+                'title' => $term->label(),
+                'link' => ['uri' => $link],
+                'menu_name' => 'menu-' . $nodeid,
+                'parent' => $parentmenu,
+                'expanded' => TRUE,
+    ]);
+    $menu_link->save();    
 }
 
 function sendGroupUpdateMail($entity, $isNew = 1) {

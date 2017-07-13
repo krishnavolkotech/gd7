@@ -125,8 +125,16 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
                 '#type' => 'checkboxes',
                 '#title' => t('@grp',['@grp'=>t('Groups')]),
                 '#options' => $groups,
+                '#default_value' => array(RELEASE_MANAGEMENT, INCIDENT_MANAGEMENT, PROBLEM_MANAGEMENT,
+                    SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT),
                 //'#required' => true
             );
+            $form['groups'][RELEASE_MANAGEMENT] = array( '#disabled' => TRUE, );
+            $form['groups'][INCIDENT_MANAGEMENT] = array( '#disabled' => TRUE, );
+            $form['groups'][PROBLEM_MANAGEMENT] = array( '#disabled' => TRUE, );
+            $form['groups'][SERVICE_LEVEL_MANAGEMENT] = array( '#disabled' => TRUE, );
+            $form['groups'][BETRIEBSPORTAL_KONSENS] = array( '#disabled' => TRUE, );
+            $form['groups'][KAPAZITATSMANAGEMENT] = array( '#disabled' => TRUE, );
         }
         $form['#validate'][] = 'hzd_user_register_form_validate';
         $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
@@ -182,7 +190,16 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
 function hzd_user_customizations_user_insert($user) {
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
-        foreach ($groupData as $gid) {
+        $preselected = array(
+            RELEASE_MANAGEMENT => RELEASE_MANAGEMENT,
+            INCIDENT_MANAGEMENT => INCIDENT_MANAGEMENT,
+            PROBLEM_MANAGEMENT => PROBLEM_MANAGEMENT,
+            SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
+            BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
+            KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+        );
+        $finalgroups = array_merge($groupData, $preselected);
+        foreach ($finalgroups as $gid) {
             $group = \Drupal\group\Entity\Group::load($gid);
             if ($group->bundle() == 'open') {
                 $group->addMember($user);
