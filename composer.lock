@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4ab2c509ee3110962424d10985a0f5eb",
-    "content-hash": "17f39e8086eb93df5a2bd8b3b6b02704",
+    "hash": "53b975801eb176da1b4fecbb7ba069bc",
+    "content-hash": "b6e716ef4dcd5f64e6b789faaeca0266",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -872,6 +872,61 @@
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "time": "2017-02-16 02:40:40"
+        },
+        {
+            "name": "drupal/back_to_top",
+            "version": "1.0.0-beta2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/back_to_top",
+                "reference": "8.x-1.0-beta2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/back_to_top-8.x-1.0-beta2.zip",
+                "reference": null,
+                "shasum": "387923041fa13e4eb09dbfbf301ca22646e5447f"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0-beta2",
+                    "datestamp": "1471598939"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nitesh Sethia",
+                    "homepage": "https://www.drupal.org/user/2474982"
+                },
+                {
+                    "name": "acke",
+                    "homepage": "https://www.drupal.org/user/765764"
+                },
+                {
+                    "name": "sockiplatsmurf",
+                    "homepage": "https://www.drupal.org/user/1726528"
+                },
+                {
+                    "name": "sumitmadan",
+                    "homepage": "https://www.drupal.org/user/1538790"
+                }
+            ],
+            "description": "Back To Top adds a button that hovers in the bottom of your screen and allow users to smoothly scroll up the page using jQuery.",
+            "homepage": "https://www.drupal.org/project/back_to_top",
+            "support": {
+                "source": "http://cgit.drupalcode.org/back_to_top"
+            }
         },
         {
             "name": "drupal/better_exposed_filters",
@@ -2144,7 +2199,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/views_merge_rows-8.x-2.1.zip",
-                "reference": null,
+                "reference": "8.x-2.1",
                 "shasum": "64b68cbe2ed1ea50b74bf0c924d947adefb6bd9e"
             },
             "require": {
@@ -7071,7 +7126,8 @@
         "drupal/subpathauto": 10,
         "drupal/simple_block": 10,
         "drupal/better_exposed_filters": 15,
-        "drupal/queue_mail": 15
+        "drupal/queue_mail": 15,
+        "drupal/back_to_top": 10
     },
     "prefer-stable": true,
     "prefer-lowest": false,
