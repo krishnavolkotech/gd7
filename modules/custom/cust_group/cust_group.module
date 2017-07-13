@@ -147,6 +147,18 @@ function cust_group_group_insert($group) {
   ]);
   $faqterm->save();
   
+  $faqcategory = Term::create([
+              'name' => $group->label(),
+              'vid' => 'faq_kategorie',
+  ]);
+  $faqcategory->save();
+  $faqcategoryterm = Term::create([
+              'name' => 'Allgemein',
+              'vid' => 'faq_kategorie',
+              'parent' => $faqcategory->id(),
+  ]);
+  $faqcategoryterm->save();
+  
   \Drupal::service('path.alias_storage')->delete(['source' => '/node/' . $node->id()]);
   $group->set('field_old_reference', $node->id());
   $group->set('field_forum_containers', $forum->id());
