@@ -188,17 +188,21 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
  * hook implementing hook_user_insert()
  */
 function hzd_user_customizations_user_insert($user) {
+    $preselected = array(
+        RELEASE_MANAGEMENT => RELEASE_MANAGEMENT,
+        INCIDENT_MANAGEMENT => INCIDENT_MANAGEMENT,
+        PROBLEM_MANAGEMENT => PROBLEM_MANAGEMENT,
+        SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
+        BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
+        KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+    );
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
-        $preselected = array(
-            RELEASE_MANAGEMENT => RELEASE_MANAGEMENT,
-            INCIDENT_MANAGEMENT => INCIDENT_MANAGEMENT,
-            PROBLEM_MANAGEMENT => PROBLEM_MANAGEMENT,
-            SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
-            BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
-            KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
-        );
         $finalgroups = array_merge($groupData, $preselected);
+    } else {
+        $finalgroups = $preselected;
+    }  
+    if($finalgroups) {
         foreach ($finalgroups as $gid) {
             $group = \Drupal\group\Entity\Group::load($gid);
             if ($group->bundle() == 'open') {
