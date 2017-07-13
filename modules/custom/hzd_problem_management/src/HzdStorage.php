@@ -548,7 +548,7 @@ class HzdStorage {
       }
       // redirect to the node view if a specified SDCallID is searched for
       if (is_numeric($filterData->get('string', null)) && count($result) == 1) {
-        $response = new RedirectResponse($groupContentEntity->toUrl()->toString());
+        $response = new RedirectResponse($groupContentEntity->getEntity()->toUrl()->toString());
         $response->send();
       }
 
