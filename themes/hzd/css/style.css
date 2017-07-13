@@ -132,9 +132,21 @@ p {
     margin-bottom: 15px;
 }
 
-h1, h2, h3 {
-    color: #00004d;
-    font-weight: 500;
+h1, h2, h3, h4, h5, h6 {
+    color: #004070 !important;
+    font-weight: 500 !important;
+}
+h1 {
+    font-size: 20px !important;
+}
+h2 {
+    font-size: 18px !important;
+}
+h3 {
+    font-size: 16px !important;
+}
+h4, h5, h6 {
+    font-size: 14px !important;
 }
 #block-primarylinks {
     width: 100%;
@@ -253,7 +265,8 @@ h1 {
 }
 h2,
 h2 a,
-h2.konsens {
+h2.konsens,
+h2.title {
     font-size: 20px;
     line-height: 29px;
     float: left;
@@ -946,7 +959,6 @@ h1.page-header {
 .col-sm-9 .field--name-body.field--type-text-with-summary ul li {
     background: url(../images/list-bullet.jpg) left 7px no-repeat;
     list-style-type: none;
-    margin-bottom: 10px;
     padding-left: 16px;
     width: 100%;
     float: left;
@@ -1125,7 +1137,7 @@ button.button--reset:hover {
     float: left;
     border: 1px solid #ddd !important;
     margin: 10px 0 5px 0 !important;
-    height: 34px;
+    /* height: 34px; */
 }
 button.button--reset,
 button.button--reset:hover {
@@ -2812,7 +2824,7 @@ a#edit-cancel {
     margin: 0 0 0 5px !important;
 }
 .form-actions button {
-    margin: 0 5px 0 0;
+    margin: 10px 5px 5px 0;
    /* background: #004077 !important;
     color: #fff !important;
     padding: 6px 12px !important;*/
@@ -3071,6 +3083,7 @@ table.archived tr td:last-child .popup-wrapper .details-wrapper {
 table.archived tr th:last-child {
     text-align: center !important;
 }
+/*
 .field--type-text-long h1,
 h2,
 h3 {
