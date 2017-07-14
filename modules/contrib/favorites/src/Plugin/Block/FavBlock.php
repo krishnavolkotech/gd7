@@ -64,7 +64,12 @@ class FavBlock extends BlockBase {
       'fav_lists' => array(  
         '#theme' => 'favlist_item_list',       
         'items' => $items,  
-      ),    
+      ),
+        '#cache' => array(
+         'contexts' => array(
+         'user',
+        ),
+      ),
      // 'add_this_page' => $form,   
     );   	
 	
