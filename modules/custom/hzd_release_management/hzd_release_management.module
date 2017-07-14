@@ -1223,3 +1223,25 @@ function hzd_release_management_schema() {
   
   return $schema;
 }
+
+
+function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
+    $routes = ['hzd_release_management.release_management_release_tab',
+               'hzd_release_management.release_management_progress_tab',
+               'hzd_release_management.release_management_locked_tab',
+               'hzd_release_management.release_management_deployed_tab',
+               'hzd_release_management.release_management_overview_deployed_tab',
+               'downtimes.new_downtimes_controller_newDowntime.profiles_management',
+               'downtimes.archived_downtimes_controller',
+               'problem_management.problems_tab',
+               'problem_management.archived_problems_tab',
+        ];
+    $param = \Drupal::request()->query->all();
+    $release = $data['tabs'][0];
+    foreach ($release as $key => $value) {
+        if(in_array($key, $routes)) {
+            $value['#link']['url']->setOption('query', $param);
+            $data['cacheability']->setCacheMaxAge(0);
+        }
+    }
+}
