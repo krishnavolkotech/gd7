@@ -1237,11 +1237,13 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
                'problem_management.archived_problems_tab',
         ];
     $param = \Drupal::request()->query->all();
-    $release = $data['tabs'][0];
-    foreach ($release as $key => $value) {
-        if(in_array($key, $routes)) {
-            $value['#link']['url']->setOption('query', $param);
-            $data['cacheability']->setCacheMaxAge(0);
+    if(!empty($data['tabs'][0])) {
+        $release = $data['tabs'][0];
+        foreach ($release as $key => $value) {
+            if(in_array($key, $routes)) {
+                $value['#link']['url']->setOption('query', $param);
+                $data['cacheability']->setCacheMaxAge(0);
+            }
         }
     }
 }
