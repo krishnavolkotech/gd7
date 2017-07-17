@@ -250,7 +250,7 @@ function hzd_group_list($uid, $no_html = false) {
         ->orderBy('label', 'ASC');
     $val = $result->execute()->fetchAll();
     if (!$no_html) {
-        $groups = '<div class="user-groups"><h2 class="title">Groups </h2>';
+        $groups = '<div class="user-groups"><h2 class="title">' . t("My Groups") .' </h2>';
         foreach ($val as $group) {
             $url = Url::fromUserInput('/group/' . $group->id);
             $groups .= '<div class="user-group-list">' . \Drupal::l(t($group->label), $url) . '</div>';
