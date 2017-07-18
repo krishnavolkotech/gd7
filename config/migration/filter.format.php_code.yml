@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'PHP code'
 format: php_code
-weight: 0
+weight: -5
 filters:
   filter_html:
     id: filter_html

@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Messaging plain text'
 format: messaging_plain_text
-weight: 0
+weight: -6
 filters:
   filter_null:
     id: filter_null

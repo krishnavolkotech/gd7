@@ -1821,15 +1821,17 @@ strong {
     float: left;
     color: #004077;
     margin: 0 !important;
-    font-size: 14px;
+    font-size: 14px !important;
     text-indent: 2px;
-    padding-right: 7px;
+    padding: 0 7px 5px 0;
     line-height: 25px;
     /*background: url(../images/blue-list-arrow.png)left 8px no-repeat;*/
-    padding-left: 11px;
 }
 .block-incidents-block h2.block-title {
     color: #d0021b !important;
+}
+.block-maintenance-block h2.block-title {
+    color: #d35400 !important;
 }
 section h2.block-title,
 aside .block-favorites h2.block-title,
@@ -1894,7 +1896,7 @@ section .form-group .view-content .item-list ul li {
 .block-incidents-block ul > li {
     list-style-type: none;
     float: left;
-    padding: 0 0 6px 13px;
+    padding: 0 0 6px 0;
     width: 100%;
     margin-right: 5px;
     position: relative;
@@ -1915,7 +1917,6 @@ section .form-group .view-content .item-list ul li {
   -moz-column-count:1;
   column-count:1; */
   margin-bottom: 20px;
-  padding-left: 13px;
 }
 .block-maintenance-block ul li {
     list-style-type: none;
@@ -1975,6 +1976,9 @@ section .form-group .view-content .item-list ul li {
 .text-danger {
     color: #d0021b !important;
 }
+.maintenance-list .front-page-link .text-danger {
+    color: #d35400 !important;
+}
 .user-logged-in ul.contextual-links li a {
     color: #004077 !important;
 }
@@ -1990,9 +1994,14 @@ aside section {
     padding: 15px;
     background: #fff;
     box-shadow: 0 1px 2px grey;
+    border-radius: 3px;
 }
 .block-maintenance-block {
     margin-bottom: 10px;
+    box-shadow: inset 0px 4px 0px 0px #d35400, 0 1px 2px grey;
+}
+.block-incidents-block {
+    box-shadow: inset 0px 4px 0px 0px #d0021b, 0 1px 2px grey;
 }
 section.news-block,
 aside section {
@@ -2098,13 +2107,13 @@ section .form-group .more-link a {
 .block-maintenance-block a.front-page-link {
     display: inline-block;
     background: url(../images/grey-list-arrow.png)left 4px no-repeat;
+    margin-top: 15px;
     padding-left: 14px;
 }
 .block-incidents-block a.front-page-link {
     display: inline-block;
     background: url(../images/grey-list-arrow.png)left 7px no-repeat;
     padding-left: 14px;
-    color: #333333;
     margin-top: 15px;
 }
 .frontpage-downtime-block a.front-page-link {
@@ -2473,6 +2482,7 @@ aside section .form-group .more-link a:hover,
 .block-maintenance-block ul li span {
     font-size: 14px;
     line-height: 1.6;
+    color: #333;
 }
 form.node-downtimes-form #edit-services-effected .form-checkbox .published-services label.option,
 form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper table td.left b,
@@ -2765,7 +2775,7 @@ form.node-downtimes-form > .form-wrapper,
 form.node-downtimes-form > .form-item {
     width: 100%;
     float: left;
-    margin: 20px 0;
+    /* margin: 20px 0; */
 }
 .maintenance-window-field .form-type-select {
     width: auto;
@@ -2856,7 +2866,7 @@ a#edit-cancel {
     margin: 0 0 0 5px !important;
 }
 .form-actions button {
-    margin: 10px 5px 5px 0;
+    /* margin: 10px 5px 5px 0;
    /* background: #004077 !important;
     color: #fff !important;
     padding: 6px 12px !important;*/

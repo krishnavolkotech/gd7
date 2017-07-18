@@ -39,9 +39,11 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             $form['desc'] = [
                 '#weight' => -100,
                 '#type' => 'markup',
-                '#markup' => "Herzlich Willkommen beim Betriebsportal KONSENS. Es sind jetzt nur noch wenige Schritte bis zu Ihrer Freischaltung.<br><br><strong><span class='text-danger'>Bitte beachten Sie bei der Registrierung folgende Hinweise:</span></strong>
-<p>	Das Betriebsportal dient als zentrale Anlaufstelle für betriebliche Fragen. Bitte geben Sie hierzu Ihre vollständigen dienstlichen Kontaktdaten an. Ihre Daten werden selbstverständlich nicht weitergegeben und sind nur für registrierte Benutzer des Betriebsportals sichtbar.<br>	<br>	Nach erfolgter Anmeldung ist Ihr Account aktiv.<br>
-	Wenn Sie sich länger als ein Jahr nicht&nbsp;am BpK anmelden wird Ihr Account nach vorheriger Ankündigung&nbsp;automatisch gesperrt.&nbsp;Sie erhalten danach&nbsp;keine Emailbenachrichtigungen mehr.&nbsp;Möchten Sie Ihren Account entsperren lassen können Sie dies mit dem Kontaktformular beantragen.</p>",
+                '#markup' => "<p>Herzlich Willkommen beim Betriebsportal KONSENS. Es sind jetzt nur noch wenige Schritte bis zu Ihrer Freischaltung.</p>
+<p><strong><span class='text-danger'>Bitte beachten Sie bei der Registrierung folgende Hinweise:</span></strong></p>
+<p>Das Betriebsportal dient als zentrale Anlaufstelle für betriebliche Fragen. Bitte geben Sie hierzu Ihre vollständigen dienstlichen Kontaktdaten an. Ihre Daten werden selbstverständlich nicht weitergegeben und sind nur für registrierte Benutzer des Betriebsportals sichtbar.</p>
+<p>Nach erfolgter Anmeldung ist Ihr Account aktiv.</p>
+<p>Wenn Sie sich länger als ein Jahr nicht am BpK anmelden, wird Ihr Account nach vorheriger Ankündigung&nbsp;automatisch deaktiviert. Sie erhalten danach keine Emailbenachrichtigungen mehr. Durch einen erneuten Login wird Ihr Account automatisch wieder reaktiviert.</p>",
             ];
             $form_state->set('isUserRegistration',1);
             $form['account']['confirm_mail'] = $form['account']['mail'];
