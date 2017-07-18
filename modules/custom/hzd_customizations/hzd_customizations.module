@@ -634,6 +634,9 @@ function hzd_customizations_form_node_form_alter(&$form, \Drupal\Core\Form\FormS
             }
         }
     }
+    if(isset($form['body']['widget'])){
+        $form['body']['widget'][0]['summary']['#access'] = FALSE;
+    }
 }
 
 function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {
