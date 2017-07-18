@@ -55,8 +55,8 @@ class StarFavAddForm extends FormBase
         if (is_string($title))
             $title = strip_tags($title);
         //pr($title);exit;
-        $path = \Drupal::service('path.current')->getPath();
-        $query = (isset($_GET['keys'])) ? UrlHelper::buildQuery($_GET) : '';
+        $path = \Drupal::request()->getPathInfo();
+        $query = \Drupal::request()->getQueryString();
         
         $form['title'] = array(
             '#type' => 'hidden',
@@ -116,10 +116,10 @@ class StarFavAddForm extends FormBase
         return $form;
     }
     
-    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
-        $form_state->setRebuild(TRUE);
-        return $form;
-    }
+//    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
+//        $form_state->setRebuild(TRUE);
+//        return $form;
+//    }
     
     /**
      * {@inheritdoc}
@@ -148,6 +148,7 @@ class StarFavAddForm extends FormBase
             $fav->addFavJS();
         }
         \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.myfavorites_2']);
+        $form_state->setRebuild();
     }
     
 }
