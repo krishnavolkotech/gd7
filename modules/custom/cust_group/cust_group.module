@@ -587,7 +587,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 
   //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
   //Todo sometimes giving true while value is one
-  if (count($check) >= 1 && $file->isNew()) {
+  //if (count($check) >= 1 && $file->isNew()) {
 //    $node = \Drupal::routeMatch()->getParameter('node');
     /* if ($node instanceof Node && $node->bundle() == 'quickinfo') {
       $checkQuickinfo = \Drupal::entityQuery('node')
@@ -634,7 +634,7 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
       }
       } */
 //    $errors[] = t("The file's name already exists in database.");
-  }
+  //}
   return $errors;
 }
 

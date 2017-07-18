@@ -637,6 +637,15 @@ function hzd_customizations_form_node_form_alter(&$form, \Drupal\Core\Form\FormS
     if(isset($form['body']['widget'])){
         $form['body']['widget'][0]['summary']['#access'] = FALSE;
     }
+    if(\Drupal::routeMatch()->getRouteName() == 'entity.node.edit_form') {
+        $form['#attached']['library'][] = 'hzd_customizations/hzd_customizations_dragable_remove_from_filefield';
+    }
+}
+
+function hzd_customizations_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
+    if(\Drupal::routeMatch()->getRouteName() == 'entity.node.edit_form') {
+        unset($javascript['core/misc/tabledrag.js']);
+    }
 }
 
 function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {

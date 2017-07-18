@@ -699,3 +699,8 @@ function hzd_preprocess_page_title(&$vars) {
     $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
 }
+
+function hzd_preprocess_file_link(&$variables) {
+    $file = $variables['file'];
+    $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
+}

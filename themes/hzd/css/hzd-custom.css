@@ -657,3 +657,9 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
 .deployedReleases {
   padding-top: 20px;
 }
+.hzd-file-created {
+    padding: 0 1em;
+    white-space: pre;
+    display: table-cell;
+    vertical-align: middle;
+}

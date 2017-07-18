@@ -22,3 +22,7 @@ hzd_customizations_js:
     js/hzd_customizations.js: {}
   dependencies:
     - core/jquery
+    
+hzd_customizations_dragable_remove_from_filefield:
+    js:
+        js/remove-weight-column-from-field.js: {}
