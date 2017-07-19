@@ -28,7 +28,9 @@ settings:
         -
           name: Tools
           items:
-            - Source
+            - Paste
+            - PasteText
+            - PasteFromWord
   plugins:
     language:
       language_list: un

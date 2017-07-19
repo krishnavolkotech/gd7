@@ -91,3 +91,4 @@ permissions:
   85: 'delete any forum content'
   86: 'delete own forum content'
   87: 'access toolbar'
+  88: 'use text format full_html'

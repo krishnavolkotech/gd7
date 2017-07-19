@@ -13,7 +13,6 @@ permissions:
   1: 'access site-wide contact form'
   2: 'access frontpage'
   3: 'access content'
-  6: 'use text format basic_html'
   7: 'view own field_contact_from_pretext'
   8: 'view field_contact_from_pretext'
   9: 'edit any deployed_releases content'

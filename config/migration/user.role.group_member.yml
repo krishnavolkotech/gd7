@@ -37,3 +37,4 @@ permissions:
   28: 'create forum content'
   29: 'assign forum containers to groups'
   30: 'delete own forum content'
+  31: 'use text format full_html'
