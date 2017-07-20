@@ -433,8 +433,8 @@ display:
           type: boolean
           settings:
             format: custom
-            format_custom_true: Published
-            format_custom_false: Unpublished
+            format_custom_true: Veröffentlicht
+            format_custom_false: Unveröffentlicht
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -630,7 +630,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: 'View relation'
+          text: Ansichtsbeziehung
           entity_type: group_content
           plugin_id: entity_link
         edit_group_content:
@@ -783,7 +783,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: 'Edit node'
+          text: 'Knoten bearbeiten'
           entity_type: node
           plugin_id: entity_link_edit
         delete_node:
@@ -834,7 +834,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: 'Delete node'
+          text: 'Knoten löschen'
           entity_type: node
           plugin_id: entity_link_delete
         dropbutton:

@@ -236,6 +236,7 @@ function hzd_preprocess_node(&$variables) {
     $incident_data->reported_by = $name;
     $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
     $incident_data->enddate_planned = (!empty($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
+    $incident_data->enddate_planned_label = (!empty($result->enddate_planned) ? t('Expected End Date') : '');
     $incident_data->startdate_reported = isset($result->startdate_reported) ? date('d.m.Y - H:i', $result->startdate_reported) . " " . t('Uhr') : NULL;
 //    $incident_data->enddate_reported = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 //   dpm( date('d.m.Y - H:i', $result->enddate_planned));
@@ -253,6 +254,7 @@ function hzd_preprocess_node(&$variables) {
 
     if (isset($resolved_data->end_date) && $resolved_data->end_date != '') {
       $incident_data->enddate_planned = ($resolved_data->end_date ? date('d.m.Y - H:i', $resolved_data->end_date) . " " . t('Uhr') : '');
+      $incident_data->enddate_planned_label = ($resolved_data->end_date ? t('Actual End Date') : '');
     }
 
     $incident_data->resolved = isset($result->resolved) ? $result->resolved : NULL;

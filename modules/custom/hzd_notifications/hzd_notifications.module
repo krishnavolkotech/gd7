@@ -248,7 +248,12 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
 //echo 132;exit;
   $current_user = \Drupal::service('current_user');
   $current_user_roles = $current_user->getRoles();
-  if (in_array('site_administrator', $current_user_roles)) {
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if (!is_object($group)) {
+      $group = \Drupal\group\Entity\Group::load($group);
+  }
+  if (isset($group) && \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())
+          || in_array('site_administrator', $current_user_roles)) {
     $form['notification'] = array(
       '#type' => 'details',
       '#title' => t('Notifications settings'),
@@ -263,6 +268,16 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
     $form['actions']['#weight'] = 34;
   }
 
+}
+
+function hzd_notifications_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
+    if(isset($element['pathauto']['#description'])) {
+        $current_user = \Drupal::service('current_user');
+        $current_user_roles = $current_user->getRoles();
+        if(!in_array('site_administrator', $current_user_roles)) {
+            $element['pathauto']['#description'] = '';
+        }
+    }
 }
 
 /**

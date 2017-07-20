@@ -372,7 +372,9 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           fields:
+            lastname: lastname
             name: name
+            firstname: firstname
             mail: mail
           plugin_id: combine
         status:
@@ -928,14 +930,18 @@ display:
           validate_options: {  }
           glossary: true
           limit: 1
-          case: none
-          path_case: none
+          case: upper
+          path_case: lower
           transform_dash: false
           break_phrase: false
           plugin_id: string
       defaults:
         arguments: false
       inherit_exposed_filters: false
+      pager:
+        type: none
+        options:
+          offset: 0
     cache_metadata:
       max-age: 0
       contexts:

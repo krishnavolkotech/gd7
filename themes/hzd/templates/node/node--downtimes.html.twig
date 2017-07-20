@@ -123,7 +123,7 @@ view_mode ? view_mode|clean_class,
     <div style = "clear:both" ></div>
    {% if incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
     <div class = "Incident">
-      <div class = 'downtimes_title'>{{ 'Ende'|trans }}:</div>
+      <div class = 'downtimes_title'>{{ incident.enddate_planned_label }}:</div>
       <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
     </div>
     <div style = "clear:both" ></div>
@@ -175,7 +175,7 @@ view_mode ? view_mode|clean_class,
    <div class="field-wrapper">
    </div>
     {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
-      <ul><li>{{ 'Ende'|trans }} : {{ incident.enddate_planned }}</li></ul>
+      <ul><li>{{ incident.enddate_planned_label }} : {{ incident.enddate_planned }}</li></ul>
     <div style = "clear:both" ></div>
         {% endif %}
    <div class="reason">{{ incident.resolved_data.comment|raw }}</div>
