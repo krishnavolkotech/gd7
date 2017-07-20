@@ -548,14 +548,7 @@ header .navbar-collapse.collapse {
 footer h2 {
     display: none;
 }
-.footer {
-    border: none !important;
-    margin-top: 0 !important;
-    padding: 10px 0 !important;
-    font-size: 13px;
-    background: #e2e2e2;
-    box-shadow: 0 -1px 0 rgba(0,0,0,.2);
-}
+
 body.path-frontpage .main-container {
     min-height: 600px;
     background: #f2f1ec;
@@ -652,10 +645,7 @@ body.not-loggedin.path-user .region-content {
     background: #004077 !important;
     font-size: 14px;
 }
-.path-user .form-actions button {
-    float: right;
-    border-radius: 3px !important;
-}
+
 .path-user .region-content nav.tabs li a:hover,
 .path-user .region-content nav.tabs li a:focus {
     color: #333333 !important;
@@ -744,15 +734,6 @@ body.not-loggedin.path-user .region-content {
     right: 0 !important;
 }
 /*****  Messages Styles Ends *****/
-
-.menu-filter {
-    width: 100%;
-    float: left;
-    background: rgba(0,0,0,.6);
-    padding: 6px 5px;
-    margin: 8px 0 20px 0 !important;
-    border-radius: 3px;
-}
 .menu-filter ul {
     width: 100%;
     float: left;
@@ -848,12 +829,7 @@ table tr th a:hover {
   color: #fff;
   text-decoration: none !important;
 }
-table tr th a,
-table tr th.views-field a,
-table tr th {
-    color: #333333;
-    border-radius: 5px;
-}
+
 table tr td ul {
     float: left;
     margin: 0;
@@ -975,14 +951,7 @@ table.tablesorter thead tr .header {
 table.sticky-header {
     width: auto !important;
 }
-table {
-    width: 100%;
-    float: left;
-    margin: 10px 0 30px 0 !important;
-    border: 1px solid rgba(0,0,0,.2);
-    border-radius: 5px !important;
-    border-collapse: inherit !important;
-}
+
 table.sticky-header th{
   padding:15px 8px !important;
 }
@@ -1136,26 +1105,30 @@ button.button--reset:hover {
     padding: 6px 12px !important;
     float: left;
     border: 1px solid #ddd !important;
-    margin: 10px 0 5px 0 !important;
+    /*margin: 10px 0 5px 0 !important;*/
     /* height: 34px; */
 }
 button.button--reset,
 button.button--reset:hover {
     margin-top: 2px !important;
 }
+.form-group .btn-default,
+.form-group .btn-default:hover{
+  /*margin:0 0 0 5px !important;*/
+}
 .btn-default,
 .btn-default:hover {
-    margin: 0 28px 0 0;
+  /*  margin: 0 28px 0 0;*/
 }
 .hzd-form-element {
     width: 31%;
     float: left;
-    margin: 10px 10px 0 0;
+    margin: 0 10px 10px 0;
 }
 .hzd-form-element-auto {
     width: auto;
     float: left;
-    margin:  10px 10px 0 0;
+    margin: 0 10px 10px 0;
 }
 select {
     width: inherit !important;
@@ -1184,14 +1157,7 @@ select {
 .filter_end_date {
     padding-left: 0 !important;
 }
-.form-group:last-child,
-.panel:last-child,
-.popover ol:last-child,
-.popover ul:last-child,
-p:last-child {
-    margin-bottom: 0 !important;
-    box-shadow: none;
-}
+
 li.comment-add {
     border-top: 1px solid #004077;
     border-bottom: 1px solid #004077;
@@ -1589,8 +1555,8 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     margin-right: 5px;
 }
 #edit-services-effected .form-checkbox .published-services {
-    position: relative;
     margin-left: 21px;
+    position: relative;
 }
 #edit-services-effected .form-checkbox .published-services label {
     float: left;
@@ -1599,14 +1565,31 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     margin: 0;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
+   /* width: 530px;*/
+    border: 1px solid rgb(204, 204, 204);
+    padding: 10px;
+    background: #fbfcfc !important;
+    z-index: 10;
     position: absolute;
     top: 20px;
+    /*left: -21px;*/
+    left:0;
+    width:100%;
+    -webkit-column-break-inside:avoid-column;
+    break-inside: avoid-column;
+}
+#edit-services-effected .form-checkbox .published-services .service-profile-data {
+    /*position: absolute;
+    top: 20px;
     left: -21px;
+    left:0;
+    width:100%;
+    -webkit-column-break-inside: avoid;*/
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
     background: #fff !important;
     float: left;
-    position: relative;
+    /*position: relative;*/
     z-index: 10;
 }
 .form-required:after {
@@ -1761,6 +1744,7 @@ ul.nav-tabs li:hover a .summary {
 }
 .unpublished-quickinfo-pdf-preview a {
     background: url(../images/pdf-icon-grey.jpg) left top no-repeat !important;
+    display:block;
 }
 article.downtimes .downtime_reason,
 article.downtimes .Incident {
@@ -1981,27 +1965,6 @@ section .form-group .view-content .item-list ul li {
 }
 .user-logged-in ul.contextual-links li a {
     color: #004077 !important;
-}
-.link-wrapper-downtimes,
-section.news-block,
-aside .block-favorites,
-.block-incidents-block,
-.block-maintenance-block,
-aside section {
-    width: 100% !important;
-    float: left;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: #fff;
-    box-shadow: 0 1px 2px grey;
-    border-radius: 3px;
-}
-.block-maintenance-block {
-    margin-bottom: 10px;
-    box-shadow: inset 0px 4px 0px 0px #d35400, 0 1px 2px grey;
-}
-.block-incidents-block {
-    box-shadow: inset 0px 4px 0px 0px #d0021b, 0 1px 2px grey;
 }
 section.news-block,
 aside section {
@@ -2257,6 +2220,9 @@ form.node-service-profile-edit-form .service-time b {
     float: left;
     margin-bottom: 25px;
 }
+form.node-service-profile-form .service-time .form-type-checkbox,
+form.node-service-profile-form .service-time .control-label,
+form.node-service-profile-form .service-time .container-inline,
 form.node-service-profile-edit-form .service-time .form-type-checkbox,
 form.node-service-profile-edit-form .service-time .control-label,
 form.node-service-profile-edit-form .service-time .container-inline {
@@ -2272,10 +2238,12 @@ form.node-service-profile-edit-form .maintenance-window-field {
     width: 100%;
     float: left;
 }
+form.node-service-profile-form .service-time .form-type-checkbox,
 form.node-service-profile-edit-form .service-time .form-type-checkbox {
     margin: 0 0 25px 0!important;
     width: 100px;
 }
+form.node-service-profile-form .service-time .container-inline,
 form.node-service-profile-edit-form .service-time .container-inline {
     margin-right: 20px;
 }
@@ -2522,26 +2490,15 @@ form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
 form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
-  width: 100%;
+  width: 99%;
   display: inline-block;
-  margin: 0 2% 7px 0;
+  margin: 0 1% 7px 0;
   padding: 0;
 }
-form.downtimes-setting-form #edit-services,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-states,
-form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
-form.node-service-profile-edit-form #edit-field-service-recipient , 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
-    height:auto;
-    -webkit-column-count:3;
-    -moz-column-count:3;
-    column-count:3;
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox{
+  position:relative;
 }
-
 form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox {
     margin-top: 0;
 }
@@ -2781,6 +2738,7 @@ form.node-downtimes-form > .form-item {
     width: auto;
     float: left;
 }
+
 .maintenance-window-field label {
     width: auto;
     float: left;
@@ -2840,17 +2798,12 @@ form.archive-data-export .container-inline {
 .form-actions {
     margin: 10px 0 0 0;
 }
-.form-actions button,
-a.button--danger,
-a#edit-cancel {
-    background: #0e9e57 !important;
-    font-size: 14px;
-    color: #ffffff !important;
-    padding: 6px 12px !important;
-    float: left !important;
-    border: none !important;
-    text-decoration: none;
-    border-radius: 3px;
+
+.form-actions #edit-actions-cancel{
+  margin:0 0 0 10px !important;
+}
+.form-actions .button .glyphicon{
+  display:none;
 }
 .form-actions .btn-group {
     float: left;
@@ -2863,10 +2816,10 @@ a#edit-cancel {
 }
 a.button--danger,
 a#edit-cancel {
-    margin: 0 0 0 5px !important;
+   /* margin: 0 0 0 5px !important;*/
 }
 .form-actions button {
-    /* margin: 10px 5px 5px 0;
+     margin: 0 5px 5px 0;
    /* background: #004077 !important;
     color: #fff !important;
     padding: 6px 12px !important;*/
@@ -2879,7 +2832,10 @@ a#edit-cancel {
   margin-right:8px;
 }
 .form-actions button.dropdown-toggle {
-    margin-left: -10px !important;
+    /*margin-left: -10px !important;*/
+}
+table .btn-group button.dropdown-toggle{
+  margin-left:0 !important;
 }
 @media (min-width: 1280px) {
     .container,
@@ -3232,7 +3188,8 @@ article.downtimes .Incident .downtimes_content_paragraph ol li {
 .print-action-wrapper .unpublished-quickinfo-pdf-preview {
     float: right;
     margin: 0 !important;
-    font-size: 0;
+    /*font-size: 0;*/
+    text-indent:-9999px;
     padding-left: 10px;
 }
 .print-action-wrapper section.block-star-favorites-block {
@@ -3291,10 +3248,7 @@ header .block-cust-group-search-block button {
     text-align: center;
     float: left;
 }
-.path-search .view-solr-search .form-type-textfield input[type="text"] {
-    height: 34px !important;
-    border-radius: 0 !important;
-}
+
 .path-search form.views-exposed-form {
     margin-bottom: 25px;
 }

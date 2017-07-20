@@ -92,12 +92,14 @@
                 //$("#close-"+btn_id).parent('label.option').find('.service-tooltip').bind('mouseenter mouseleave');
             });
             ///moving every third element to its left by 190 px for better visibility
-            var count = 1;
-            $('#edit-services-effected div.form-checkbox').each(function () {
-                if (count++ % 3 == 0) {
-                    $(this).find('div.service-profile-data').css({left: '-250px'});
-                }
-            });
+            // var count = 1;
+            // $('#edit-services-effected div.form-checkbox').each(function () {
+            //     var totaldivs = $("#edit-services-effected").find("div.form-checkbox").length;
+            //     var subtotal = (totaldivs/3) * 2;
+            //     if(count++ > subtotal) {
+            //         $(this).find('div.service-profile-data').css({left: '-250px'});
+            //     }
+            // });
 
         }
     };

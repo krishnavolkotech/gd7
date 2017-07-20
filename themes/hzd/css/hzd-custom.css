@@ -1,17 +1,12 @@
 form.node-downtimes-form .panel-body .form-checkboxes {
     float: left;
 }
-#edit-services-effected .form-checkbox .published-services .service-profile-data {
-    width: 530px;
-    border: 1px solid rgb(204, 204, 204);
-    padding: 10px;
-    background: #fbfcfc !important;
-    z-index: 10;
-}
+
 #edit-services-effected .form-checkbox .published-services .service-profile-data table,
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
     background: #fbfcfc;
     width: 100%;
+    border:0;
 }
 #edit-services-effected .form-checkbox .published-services .data {
     left: 0px;
@@ -43,6 +38,58 @@ form.node-downtimes-form .panel-body .form-checkboxes {
 #edit-states--wrapper .panel-title.form-required:after {
     content: '*';
     color: #ee0000;
+}
+.btn-group button.js-form-submit{
+  border-radius:3px 0 0 3px !important;
+}
+.btn-group button.dropdown-toggle {
+  border-radius:0 3px 3px 0 !important;
+  margin-left: -5px !important;
+}
+.datepicker table tr th{
+  border-radius:0;
+}
+table tr th a,
+table tr th.views-field a,
+table tr th {
+    color: #333333;
+    border-radius: 5px;
+}
+table {
+    width: 100%;
+    float: left;
+    margin: 10px 0 30px 0 !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+    border-collapse: inherit !important;
+}
+.form-actions button,
+a.button--danger,
+a#edit-cancel {
+    background: #0e9e57 !important;
+    font-size: 14px;
+    color: #ffffff !important;
+    padding: 6px 12px !important;
+    float: left !important;
+    border: none !important;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.path-search .view-solr-search .form-type-textfield input[type="text"] {
+    height: 34px !important;
+    border-radius: 0 !important;
+}
+.path-user .form-actions button {
+    float: right;
+    border-radius: 3px !important;
+}
+.menu-filter {
+    width: 100%;
+    float: left;
+    background: rgba(0,0,0,.6);
+    padding: 6px 5px;
+    margin: 8px 0 20px 0 !important;
+    border-radius: 3px;
 }
 button[value="Save and publish"] {
     margin-right: 0 !important;
@@ -190,6 +237,9 @@ table tr th {
 .curr_incidents_form + .reset_form button {
     margin-right: 0;
 }
+form.archived .search.form-group{
+  margin-top:10px;
+}
 form .form-type-vertical-tabs .tabs-left .tab-content,
 form.node-downtimes-edit-form .panel,
 form.node-downtimes-form .panel {
@@ -268,7 +318,8 @@ nav#block-optionen ul.menu.nav li a,
 nav#block-optionen ul li a {
     white-space: pre-wrap !important;
 }
-.filter_title_header {
+.filter_title_header,
+form.deployed-releases-filter-form .reset_form{
     clear: both;
 }
 .btn.disabled,
@@ -289,6 +340,7 @@ a#edit-cancel:hover,
 .btn:hover {
     opacity: 0.98;
     text-decoration: none;
+    border-radius: 3px;
 }
 .region-sidebar-first section.blue ul.menu.nav li.active ul.dropdown-menu,
 .region-sidebar-first nav#block-optionen ul.menu.nav li ul.dropdown-menu,
@@ -313,7 +365,8 @@ input.hasDatepicker,
 .pagination > li:first-child > span {
     border-radius: 3px 0px 0 3px !important;
 }
-.btn {
+.btn,
+.btn:hover{
     border: 0 !important;
     border-radius: 3px !important;
 }
@@ -412,9 +465,13 @@ form.deployedreleases-create-form .form-item,
     margin-right: 15px;
     margin-bottom:10px !important;
 }
+.views-exposed-form .form-actions{
+    float:left;
+}
 .views-exposed-form label {
     margin-right: 5px;
     font-weight: normal;
+    line-height:36px;
 }
 .node-form .field--type-text-with-summary .form-item label{
   margin-top:15px !important;
@@ -668,4 +725,55 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     width: 45px;
     border-radius: 50%;
     background-size: 90%;
+}
+.footer {
+    border: none !important;
+    margin-top: 0 !important;
+    padding: 10px 0 !important;
+    font-size: 13px;
+    background: #e2e2e2;
+    box-shadow: 0 -1px 0 rgba(0,0,0,.2);
+}
+.form-group:last-child,
+.panel:last-child,
+.popover ol:last-child,
+.popover ul:last-child,
+p:last-child {
+    margin-bottom: 0 !important;
+    box-shadow: none;
+}
+.link-wrapper-downtimes,
+section.news-block,
+aside .block-favorites,
+.block-incidents-block,
+.block-maintenance-block,
+aside section {
+    width: 100% !important;
+    float: left;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0 1px 2px grey;
+    border-radius: 3px;
+}
+.block-maintenance-block {
+    margin-bottom: 10px;
+    box-shadow: inset 0px 4px 0px 0px #d35400, 0 1px 2px grey;
+}
+.block-incidents-block {
+    box-shadow: inset 0px 4px 0px 0px #d0021b, 0 1px 2px grey;
+}
+form.downtimes-setting-form #edit-services,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-states,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
+form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
+form.node-service-profile-edit-form #edit-field-service-recipient , 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
+    height:auto;
+    -webkit-column-count:3;
+    -moz-column-count:3;
+    column-count:3;
 }
