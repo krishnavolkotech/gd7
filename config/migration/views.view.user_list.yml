@@ -372,7 +372,9 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           fields:
+            lastname: lastname
             name: name
+            firstname: firstname
             mail: mail
           plugin_id: combine
         status:
