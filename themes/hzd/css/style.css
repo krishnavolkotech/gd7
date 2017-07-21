@@ -1557,6 +1557,8 @@ nav#block-optionen ul li.active ul.dropdown-menu {
 #edit-services-effected .form-checkbox .published-services {
     margin-left: 21px;
     position: relative;
+    vertical-align:top;
+    width:100%;
 }
 #edit-services-effected .form-checkbox .published-services label {
     float: left;
@@ -1564,19 +1566,22 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     padding-right: 5px;
     margin: 0;
 }
+#edit-services-effected .form-checkbox .published-services:hover .service-profile-data{
+  visibility: visible;
+  display:block;
+  background:#ffcc00;
+}
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
-   /* width: 530px;*/
+    /*width: 530px;*/
     border: 1px solid rgb(204, 204, 204);
     padding: 10px;
     background: #fbfcfc !important;
     z-index: 10;
     position: absolute;
-    top: 20px;
-    /*left: -21px;*/
-    left:0;
-    width:100%;
-    -webkit-column-break-inside:avoid-column;
-    break-inside: avoid-column;
+    top: 10px;
+    left: 0;
+    width:auto;
+    height:100%;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
     /*position: absolute;
@@ -2497,7 +2502,7 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .
 }
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox{
-  position:relative;
+ /* position:relative;*/
 }
 form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox {
     margin-top: 0;
