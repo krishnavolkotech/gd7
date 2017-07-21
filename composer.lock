@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "53b975801eb176da1b4fecbb7ba069bc",
-    "content-hash": "b6e716ef4dcd5f64e6b789faaeca0266",
+    "hash": "15d86f291c7819e8fb90e14ded604e24",
+    "content-hash": "d314447f9513037bea5f4017ae636798",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -874,6 +874,53 @@
             "time": "2017-02-16 02:40:40"
         },
         {
+            "name": "drupal/anchor_link",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/anchor_link",
+                "reference": "8.x-1.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/anchor_link-8.x-1.5.zip",
+                "reference": null,
+                "shasum": "60fefc0fb910c28af5ba6e35a7cc47d04c0ad7b0"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.5",
+                    "datestamp": "1497280742"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Mohammed J. Razem",
+                    "homepage": "https://www.drupal.org/user/255384"
+                },
+                {
+                    "name": "RajabNatshah",
+                    "homepage": "https://www.drupal.org/user/1414312"
+                }
+            ],
+            "description": "This plugin module adds the better link dialog and anchor related features to CKEditor in Drupal 8",
+            "homepage": "https://www.drupal.org/project/anchor_link",
+            "support": {
+                "source": "http://cgit.drupalcode.org/anchor_link"
+            }
+        },
+        {
             "name": "drupal/back_to_top",
             "version": "1.0.0-beta2",
             "source": {
@@ -884,7 +931,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/back_to_top-8.x-1.0-beta2.zip",
-                "reference": null,
+                "reference": "8.x-1.0-beta2",
                 "shasum": "387923041fa13e4eb09dbfbf301ca22646e5447f"
             },
             "require": {
