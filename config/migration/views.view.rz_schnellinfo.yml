@@ -31,7 +31,7 @@ display:
       access:
         type: group_permission
         options:
-          group_permission: 'view group_node:quickinfo entity'
+          group_permission: 'view group'
       cache:
         type: tag
         options: {  }
