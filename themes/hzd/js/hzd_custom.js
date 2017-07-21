@@ -201,6 +201,12 @@
     $('#user-register-form .form-email,[type="password"]').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
+
+    $("div.ckeditor-custom-wrapper table").each(function(index, element) {
+        //if (!$( element ).hasClass( "ckeditor-table-responsive" )) {
+           $(element).wrap("<div class='table-responsive'></div>");
+        //}
+    });
 })
 (jQuery);
 
@@ -216,3 +222,4 @@ function reset_form_elements() {
 //  window.history.pushState( {}, null, res['0']);
     return false;
 }
+

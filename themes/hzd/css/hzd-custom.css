@@ -501,9 +501,12 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
 body.not-loggedin.path-user .region-content{
   margin:0;
 }
+.table-responsive table{
+  border:0;
+}
 .table-responsive table,
 .table-responsive table tbody{
-  width:100%;
+  width:100% !important;
   display:block;
 }
 .table-responsive table tbody tr{
@@ -513,7 +516,8 @@ body.not-loggedin.path-user .region-content{
   border:1px solid #ddd;
 }
 .tooltip,
-.table-responsive table thead, .table-responsive table th{
+.table-responsive table thead, 
+.table-responsive table th{
   display:none !important;
 }
 .table-responsive table tbody td{
@@ -776,4 +780,7 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
     -webkit-column-count:3;
     -moz-column-count:3;
     column-count:3;
+    column-gap:20px;
+    column-fill: auto;
+    -moz-column-fill: auto;
 }
