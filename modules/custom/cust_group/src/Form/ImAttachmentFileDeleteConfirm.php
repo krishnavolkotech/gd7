@@ -33,7 +33,7 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
      * {@inheritdoc}
      */
     public function getCancelUrl() {
-        return new Url('entity.node.canonical', ['node' => $this->nodeid]);
+        return new Url('entity.node.canonical', ['node' => 826]);
     }
 
     /**
@@ -98,7 +98,7 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
           }
         }
         $node->save();
-        $form_state->setRedirect('entity.node.canonical', ['node' => $nid]);
+        $form_state->setRedirect('entity.node.canonical', ['node' => 826]);
         drupal_set_message('File was successfully deleted!');
     }
 }

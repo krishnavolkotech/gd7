@@ -21,11 +21,88 @@ class ImAttachmentsUploadBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $node = Drupal::routeMatch()->getParameter('node');
+    $result['im_attachment_upload_form'] = \Drupal::formBuilder()->getForm(
+        'Drupal\cust_group\Form\ImAttachmentsUploadForm');
+    $result['im_attachment_upload_form']['#prefix'] = '<div class = "im-attachment-filesupload-form-wrapper">';
+    $result['im_attachment_upload_form']['#suffix'] = '</div>';
 
-    $form = Drupal::formBuilder()->getForm('Drupal\cust_group\Form\ImAttachmentsUploadForm');
+    $result['im_attachment_filter_element'] = \Drupal::formBuilder()->getForm(
+        '\Drupal\cust_group\Form\ImAttachmentUploadFilterForm');
+    $result['im_attachment_filter_element']['#prefix'] = '<div class = "im-attachment-filter-form-wrapper">';
+    $result['im_attachment_filter_element']['#suffix'] = '</div>';
 
-    return $form;
+    $exposedFilterData = \Drupal::request()->query->all();
+    $statename = isset($exposedFilterData['state']) ? get_hzd_states_by_id($exposedFilterData['state']) : '';
+    $nids = \Drupal::entityQuery('node')
+            ->condition('type','im_upload_page', '=');
+    if(!empty($statename)) {
+        $nids->condition('field_state', $statename, '=');
+    }
+    $nodeids = $nids->execute();
+    $nodes = \Drupal\node\Entity\Node::loadMultiple($nodeids);
+    foreach($nodes as $key => $node ) {
+        if(!empty($node->get('field_im_upload_page_files')->referencedEntities())) {
+            foreach($node->get('field_im_upload_page_files')->referencedEntities() as $fileitem) {
+              $files[] = $fileitem;
+              $nodeid[$fileitem->id()] = $node->id();
+            }
+        }
+    }
+    if(empty($files)) {
+        $result['empty_files'] = array(
+          '#type' => 'markup',
+          '#markup' => $this->t("No files uploaded yet."),
+        );
+        return $result;
+    }
+    $result['files'] = [
+        '#type' => 'table',
+        '#attributes' => ['class' => ['files']],
+        '#header' => [$this->t('Filename'), $this->t('Description'), 
+                      $this->t('Ticket ID'), $this->t('Date uploaded'),
+                      $this->t('File size'), $this->t('User'),
+                      $this->t('Action')],
+    ];
+    foreach ($files as $file) {
+      //$file = reset($file);
+      $attachment = \Drupal::entityTypeManager()->getStorage('cust_group_imattachments_data')->loadByProperties(['fid' => $file->id()]);
+      $attachment = reset($attachment);
+      $result['files'][$file->id()]['filename'] = [
+          '#type' => 'link',
+          '#title' => $file->getFileName(),
+          '#url' => \Drupal\Core\Url::fromUri($file->url()),
+      ];
+      $description = $attachment ? $attachment->get('description')->value : '';
+      $result['files'][$file->id()]['description'] = [
+          '#markup' => $description,
+      ];
+      $ticketid = $attachment ? $attachment->get('ticket_id')->value : '';
+      $result['files'][$file->id()]['ticketid'] = [
+          '#markup' => $ticketid,
+      ];
+      $created = $attachment ? format_date($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
+      $result['files'][$file->id()]['dateupload'] = [
+          '#markup' => $created,
+      ]; 
+      $result['files'][$file->id()]['filesize'] = [
+          '#markup' => format_size($file->getSize(),NULL),
+      ]; 
+      $result['files'][$file->id()]['owner'] = [
+          '#type' => 'link',
+          '#title' => $file->getOwner()->getDisplayName(),
+          '#url' => $file->getOwner()->toUrl(),
+      ];
+
+      $result['files'][$file->id()]['delete'][$file->id()] = [
+          '#type' => 'link', 
+          '#title' => $this->t('Delete'), 
+          '#url' => \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', ['fid' => $file->id(), 'nid' => $nodeid[$file->id()]]), 
+          '#attributes' => ['class' => ['btn btn-danger']]
+      ];
+    }
+   
+        
+        return $result;
   }
 
   public function access(AccountInterface $account, $return_as_object = FALSE) {
