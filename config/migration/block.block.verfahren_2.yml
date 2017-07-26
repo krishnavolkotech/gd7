@@ -14,7 +14,7 @@ third_party_settings:
 id: verfahren_2
 theme: hzd
 region: '-1'
-weight: 2
+weight: 3
 provider: null
 plugin: verfahren_menu_side
 settings:

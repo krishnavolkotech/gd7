@@ -1,6 +1,6 @@
 uuid: 17030207-7610-442a-8e7f-12b6fb312eb9
 langcode: de
-status: true
+status: false
 dependencies:
   module:
     - block_class
@@ -14,8 +14,8 @@ third_party_settings:
     classes: ''
 id: imattachmentsuploadedfilesblock
 theme: hzd
-region: content
-weight: 0
+region: '-1'
+weight: 6
 provider: null
 plugin: im_attachments_uploaded_files_block
 settings:
