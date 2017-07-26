@@ -20,16 +20,7 @@ class ImAttachmentUploadFilterForm extends FormBase {
     public function buildForm(array $form, FormStateInterface $form_state) {
         $request = \Drupal::request()->query;
         $state = $request->get('state');
-        $statesoptions[] = 'Select';
-        $states = \Drupal::database()->select('states', 'st')
-              ->fields('st', ['state', 'abbr'])
-              ->execute()
-              ->fetchAll();
-        foreach($states as $key => $value) {
-            if(!empty($value->abbr)) {
-                $statesoptions[strtolower($value->abbr)] = $value->state;
-            }
-        }
+        $statesoptions = hzd_states();
         $form['#method'] = 'get';
         $form['state'] = array(
             '#type' => 'select',
@@ -37,6 +28,7 @@ class ImAttachmentUploadFilterForm extends FormBase {
             '#default_value' => isset($state) ? $state : '',
             '#attributes' => array(
                 'onchange' => 'this.form.submit()',
+                'id' => 'imattachment-states-options',
             ),
             '#prefix' => "<div class = 'service_search_dropdown hzd-form-element'>",
             '#suffix' => '</div>',

@@ -24,7 +24,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
     $result['im_attachment_upload_form'] = \Drupal::formBuilder()->getForm(
         'Drupal\cust_group\Form\ImAttachmentsUploadForm');
     $result['im_attachment_upload_form']['#prefix'] = '<div class = "im-attachment-filesupload-form-wrapper">';
-    $result['im_attachment_upload_form']['#suffix'] = '</div>';
+    $result['im_attachment_upload_form']['#suffix'] = '</div><div id="im-attachment-files-list">';
 
     $result['im_attachment_filter_element'] = \Drupal::formBuilder()->getForm(
         '\Drupal\cust_group\Form\ImAttachmentUploadFilterForm');
@@ -32,7 +32,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
     $result['im_attachment_filter_element']['#suffix'] = '</div>';
 
     $exposedFilterData = \Drupal::request()->query->all();
-    $statename = isset($exposedFilterData['state']) ? get_hzd_states_by_id($exposedFilterData['state']) : '';
+    $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? hzd_states()[$exposedFilterData['state']] : '';
     $nids = \Drupal::entityQuery('node')
             ->condition('type','im_upload_page', '=');
     if(!empty($statename)) {
@@ -58,6 +58,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
     $result['files'] = [
         '#type' => 'table',
         '#attributes' => ['class' => ['files']],
+        '#suffix' => '</div>',
         '#header' => [$this->t('Filename'), $this->t('Description'), 
                       $this->t('Ticket ID'), $this->t('Date uploaded'),
                       $this->t('File size'), $this->t('User'),
