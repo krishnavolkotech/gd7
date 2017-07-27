@@ -56,7 +56,7 @@ table tr th {
     border-radius: 5px;
 }
 table {
-    width: 100%;
+    width: 100% !important;
     float: left;
     margin: 10px 0 30px 0 !important;
     border: 1px solid rgba(0,0,0,.2);
@@ -224,6 +224,14 @@ table tr th {
 .block-im-attachments-upload-block #im-attachment-files-list table tr th,
 .block-im-attachments-upload-block #im-attachment-files-list table tr td{
   padding:8px 2px !important;
+}
+.block-im-attachments-upload-block #im-attachment-files-list table tr th:first-child,
+.block-im-attachments-upload-block #im-attachment-files-list table tr td:first-child{
+  word-break:break-all;
+  width:200px;
+}
+#im-attachment-files-list {
+   clear: both;
 }
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
