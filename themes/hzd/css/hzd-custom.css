@@ -221,6 +221,10 @@ table tr th {
     word-wrap: break-word;
     float: left;
 }
+.block-im-attachments-upload-block #im-attachment-files-list table tr th,
+.block-im-attachments-upload-block #im-attachment-files-list table tr td{
+  padding:8px 2px !important;
+}
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
   padding:8px 0 !important;
@@ -237,6 +241,9 @@ table tr th {
 #released_results_wrapper table.view-deployed-releases tr td {
     white-space: pre;
     vertical-align: top;
+}
+.block-im-attachments-upload-block .im-attachment-filesupload-form-wrapper form.im-attachments-upload-form{
+  margin-bottom:30px;
 }
 .curr_incidents_form + .reset_form {
     /* float: left !important;
