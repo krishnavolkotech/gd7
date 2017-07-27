@@ -14,7 +14,7 @@ _core:
 id: hzd_local_actions
 theme: hzd
 region: content
-weight: -31
+weight: -30
 provider: null
 plugin: local_actions_block
 settings:

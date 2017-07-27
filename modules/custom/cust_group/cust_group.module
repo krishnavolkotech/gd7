@@ -684,24 +684,27 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $build['title'] = ['#markup' => $title];
   }
 
-  if ('im_upload_page' == $entity->bundle()) {
-      if(empty($entity->get('field_state')->value)) {
-            $current_path = \Drupal::service('path.current')->getPath();
-            $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
-            $statecode = substr($result, -2);
-            $state = get_hzd_states_by_id($statecode);
-            $node = \Drupal::routeMatch()->getParameter('node');
-            $node->field_state->value = $state;
-            $node->save();
-          //kint($entity->get('field_state')->value);
-      }
-  }
+//  if ('im_upload_page' == $entity->bundle()) {
+//      if(empty($entity->get('field_state')->value)) {
+//            $current_path = \Drupal::service('path.current')->getPath();
+//            $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
+//            $statecode = substr($result, -2);
+//            $state = get_hzd_states_by_id($statecode);
+//            $node = \Drupal::routeMatch()->getParameter('node');
+//            $node->field_state->value = $state;
+//            $node->save();
+//          //kint($entity->get('field_state')->value);
+//      }
+//  }
   /* if ($entity->getType() == 'downtimes') {
     generate_quickinfo_pdf(Node::load(55871));
     } */
 }
 
 function get_hzd_states_by_id($id = NULL) {
+    if(empty($id)) {
+        return;
+    }
     $states = [
         'bw' => 'Baden-Württemberg',
         'by' => 'Bayern',

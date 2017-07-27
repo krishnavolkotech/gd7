@@ -162,3 +162,13 @@ cust_group.imattachment_delete_confirm:
     _form: '\Drupal\cust_group\Form\ImAttachmentFileDeleteConfirm'
   requirements:
     _permission: 'access content'
+    
+#Inserting States values based on url in im attachments node's state field.
+#we can remove this route and fucntion after first migration go live
+cust_group.imablageattachments_stateinsert:
+  path: '/ablageattachments/stateinsert'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\ImAlageAttachmentController::defaultStatesInsert'
+    _title: 'Störungslogs der Länder'
+  requirements:
+    _access: 'TRUE'

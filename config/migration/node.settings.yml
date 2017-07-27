@@ -22,3 +22,7 @@ notification_checkbox_services: 0
 notification_checkbox_faqs: 1
 notification_checkbox_news: 0
 notification_checkbox_downtimes: 1
+notification_checkbox_faq: 0
+notification_checkbox_im_upload_page: 0
+notification_checkbox_newsletter: 0
+notification_checkbox_group: 0

@@ -49,6 +49,7 @@ class ImAttachmentsUploadForm extends FormBase {
         '#type' => 'textarea',
         '#title' => $this->t('Description'),
         '#required' => TRUE,
+        '#attributes' => ['class' => ['form-group']],
     );
     $form['ticket_id'] = array(
         '#type' => 'textfield',
@@ -63,7 +64,10 @@ class ImAttachmentsUploadForm extends FormBase {
     $form['form_build_id']['#access'] = FALSE;
     $form['form_token']['#access'] = FALSE;
     $form['form_id']['#access'] = FALSE;
-    $form['upload_submit'] = [
+    $form['actions'] = [
+      '#type' => 'actions',
+    ];
+    $form['actions']['upload_submit'] = [
         '#type' => 'submit',
         '#value' => $this->t('Upload'),
         '#submit' => [[$this, 'submitForm']],

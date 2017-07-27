@@ -196,6 +196,9 @@
         });
 */
 	// $('.maintenance-home-info').css('-webkit-column-count',2).css('-moz-column-count',2).css('column-count',2);
+        
+        window.onload = imAttachmentScrooltop;        
+        
     });
 
     $('#user-register-form .form-email,[type="password"]').bind("cut copy paste",function(e) {
@@ -223,3 +226,20 @@ function reset_form_elements() {
     return false;
 }
 
+function imAttachmentScrooltop() {
+    if(GetURLParameter('state')) {
+        jQuery('html, body').animate({
+            scrollTop: (jQuery('#im-attachment-files-list').offset().top)
+        },2000);
+    }
+}
+function GetURLParameter(sParam) {
+   var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+   for (var i = 0; i < sURLVariables.length; i++) {
+       var sParameterName = sURLVariables[i].split('=');
+           if (sParameterName[0] == sParam){
+               return sParameterName[1];
+           }
+    }
+}

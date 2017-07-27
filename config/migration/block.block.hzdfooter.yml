@@ -15,7 +15,7 @@ third_party_settings:
 id: hzdfooter
 theme: hzd
 region: footer
-weight: 0
+weight: -30
 provider: null
 plugin: 'simple_block:hzdfooter_content'
 settings:
