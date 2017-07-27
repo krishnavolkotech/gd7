@@ -47,7 +47,7 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
       $x['data'] = $this->searchNestedArrayKey($renderArray, '#exclude_from_print');
 //      pr(array_keys($x));exit;
       $x['#type'] = 'container';
-      $x['#attributes'] = ['style' => 'font-size:12px;'];
+      $x['#attributes'] = ['style' => 'font-size:12px;', 'class' => 'pdf-content'];
       $xr['#attached']['library'][] = 'hzd/global-styling';
 //      $css_assets = \Drupal::service('asset.resolver')
 //        ->getCssAssets(AttachedAssets::createFromRenderArray($xr), 0);

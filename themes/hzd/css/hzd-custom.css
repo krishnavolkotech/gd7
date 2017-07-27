@@ -221,6 +221,15 @@ table tr th {
     word-wrap: break-word;
     float: left;
 }
+#problem_search_results_wrapper table tr th,
+#problem_search_results_wrapper table tr td{
+  padding:0 !important;
+}
+#problem_search_results_wrapper table#sortable th.problem_title,
+#problem_search_results_wrapper table#sortable tr td:nth-child(4){
+  width:5% !important;
+  word-wrap:break-word;
+}
 #problem_search_results_wrapper table th.status {
     width: 10% !important;
     word-wrap: break-word;
@@ -630,6 +639,7 @@ header .block-cust-group-search-block form .search-expanded{
 }
 
 @media only screen and (max-width:480px){
+
 .path-frontpage .block-maintenance-block .maintenance-home-info,
 form.downtimes-setting-form #edit-services,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
@@ -646,7 +656,7 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
 }
 }
 .path-frontpage .block-maintenance-block .maintenance-home-info{
-  height: auto;
+ height: auto;
   -webkit-column-count:2;
   -moz-column-count:2;
   column-count:2; 
@@ -776,11 +786,14 @@ form.node-downtimes-form .form-wrapper #edit-services-effected,
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
 form.node-service-profile-edit-form #edit-field-service-recipient , 
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
-    height:auto;
     -webkit-column-count:3;
     -moz-column-count:3;
     column-count:3;
+    -webkit-column-fill: balance; 
+    -moz-column-fill: balance; 
+    column-fill: balance;
     column-gap:20px;
-    column-fill: auto;
-    -moz-column-fill: auto;
+    -webkit-column-gap: 20px; 
+    -moz-column-gap: 20px; 
+    position: relative;
 }

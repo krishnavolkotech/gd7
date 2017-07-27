@@ -1556,7 +1556,7 @@ nav#block-optionen ul li.active ul.dropdown-menu {
 }
 #edit-services-effected .form-checkbox .published-services {
     margin-left: 21px;
-    position: relative;
+    /*position: relative;*/
     vertical-align:top;
     width:100%;
 }
@@ -1572,16 +1572,15 @@ nav#block-optionen ul li.active ul.dropdown-menu {
   background:#ffcc00;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
-    /*width: 530px;*/
     border: 1px solid rgb(204, 204, 204);
-    padding: 10px;
     background: #fbfcfc !important;
     z-index: 10;
     position: absolute;
-    top: 10px;
-    left: 0;
-    width:auto;
-    height:100%;
+    padding: 10px;
+    width: 800px;
+    top:30px;
+    left:0;
+    /*height:auto;*/
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
     /*position: absolute;
@@ -2497,12 +2496,16 @@ form.node-service-profile-edit-form #edit-field-service-recipient .form-type-che
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
   width: 99%;
   display: inline-block;
-  margin: 0 1% 7px 0;
+  /*margin: 0 1% 7px 0;*/
+  margin:0 0 7px 0;
   padding: 0;
 }
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox{
- /* position:relative;*/
+  /*position:relative;*/
+  display:inline-block;
+  vertical-align:top;
+  width:100%;
 }
 form.downtimes-setting-form #edit-services .form-type-checkbox label .form-checkbox {
     margin-top: 0;
@@ -3299,4 +3302,14 @@ span.form-required::after,
 .panel-title {
     margin: 0 !important;
     padding-bottom: 10px !important;
+}
+
+table.cke_dialog tr td .cke_dialog_body table.cke_dialog_contents{
+  margin-top:30px !important;
+}
+.modal-dialog .editor-image-dialog .form-actions button{
+  display:none !important;
+}
+table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
+  width:100% !important
 }
