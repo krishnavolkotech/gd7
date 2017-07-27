@@ -577,6 +577,7 @@ function downtimes_set_default_values(&$form, $nid) {
   if (!empty($downtime_data)) {
     $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
     $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
+
     $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
 
     $node = \Drupal::routeMatch()->getParameter('node');
@@ -594,25 +595,24 @@ function downtimes_set_default_values(&$form, $nid) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
     $restict = FALSE;
-    if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-        $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-member', array_keys($roles)))) {
-            $restict = TRUE;
-        }
-        
-    }
-    if (array_intersect(['site_administrator'], $user->getRoles())) {
-        $restict = TRUE;
-    }
-    if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-        $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-            $restict = FALSE;
-        }
-        
-    }
-    if (array_intersect(['administrator'], $user->getRoles())) {
+
+    if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
         $restict = FALSE;
+    } else {
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (!empty($roles) && (in_array($group->bundle() . '-member', array_keys($roles)))) {
+                $restict = TRUE;
+            }
+
+        }
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                $restict = FALSE;
+            }
+
+        }
     }
     //For maintanences
     if($restict && $downtime_data->scheduled_p == 1) {
