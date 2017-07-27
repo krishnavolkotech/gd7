@@ -625,7 +625,7 @@ function downtimes_set_default_values(&$form, $nid) {
     }
 
     //For insidents/downtimes
-    if($downtime_data->scheduled_p == 0) {
+    if($restict && $downtime_data->scheduled_p == 0) {
         if($downtime_data->startdate_planned <= REUEST_TIME ) {
             $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
         }
