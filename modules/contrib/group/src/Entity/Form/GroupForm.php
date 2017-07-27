@@ -55,8 +55,8 @@ class GroupForm extends ContentEntityForm {
     ];
 
     drupal_set_message($this->operation == 'edit'
-      ? $this->t('@type %title has been updated.', $t_args)
-      : $this->t('@type %title has been created.', $t_args)
+      ? $this->t('%title has been updated.', $t_args)
+      : $this->t('%title has been created.', $t_args)
     );
 
     $form_state->setRedirect('entity.group.canonical', ['group' => $this->entity->id()]);
