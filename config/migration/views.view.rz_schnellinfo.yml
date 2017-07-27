@@ -1661,6 +1661,7 @@ display:
         fields: false
         sorts: false
         exposed_form: false
+        pager: false
       filter_groups:
         operator: AND
         groups:
@@ -2154,6 +2155,27 @@ display:
                 is_secondary: false
                 rewrite:
                   filter_rewrite_values: ''
+      pager:
+        type: full
+        options:
+          items_per_page: 20
+          offset: 0
+          id: 0
+          total_pages: null
+          tags:
+            previous: ‹‹
+            next: ››
+            first: '« Anfang'
+            last: 'Ende »'
+          expose:
+            items_per_page: true
+            items_per_page_label: ' &nbsp;'
+            items_per_page_options: '20, 50, 100'
+            items_per_page_options_all: true
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
     cache_metadata:
       max-age: 0
       contexts:
