@@ -190,9 +190,11 @@ div[style] {
 .pdf-content article.downtimes .Incident .downtimes_title {
     font-weight: 600;
     display: inline-block;
-    width: 32%;
+    /*width: 32%;*/
+    width:auto !important;
     margin: 0 1% 3px 0;
     line-height: 25px;
+    float:none;
 }
 .pdf-content article.downtimes .back-search {
     color: #006e9e;
@@ -207,8 +209,10 @@ div[style] {
 .pdf-content article.downtimes .Incident .downtimes_content {
     display: inline-block;
     margin-bottom: 3px;
-    width: 65% !important;
+    /*width: 65% !important;*/
+    width:auto !important;
     line-height: 25px;
+    float:none;
 }
 .pdf-content article.downtimes .Incident .downtimes_content p {
     margin: 2px 0 !important;
@@ -250,10 +254,40 @@ div[style] {
   vertical-align:middle;
   text-align:center;
  }*/
-
-.pdf-content table td {
-    border: 1px solid #000 !important;
+.pdf-content #edit-services-effected .form-checkbox .published-services{
+   margin-top:-20px !important;
+ }
+.pdf-content #edit-services-effected .form-checkbox .published-services label{
+  display:inline;
+  float:none;
 }
+.pdf-content form.node-downtimes-form #edit-services-effected .form-checkbox .published-services .service-tooltip,
+.pdf-content #edit-services-effected .form-checkbox input[type="checkbox"]{
+  float:none;
+}
+.pdf-wrapper .pdf-content table td {
+  border: 1px solid #000 !important;
+}
+ .pdf-content #problem_search_results_wrapper table#sortable tr td{
+  border-top: 1px solid #ddd !important;
+}
+.pdf-content #problem_search_results_wrapper table#sortable caption{
+  /*margin:30px 0 !important;
+  display: table-caption;*/
+}
+.pdf-content #problem_search_results_wrapper table tr th,
+.pdf-content #problem_search_results_wrapper table tr td{
+  padding:8px 1px !important;
+}
+.pdf-content #problem_search_results_wrapper table#sortable
+.pdf-content #problem_search_results_wrapper table#sortable th{
+  color:#333;
+}
+.pdf-content #problem_search_results_wrapper table#sortable th.problem_title,
+.pdf-content #problem_search_results_wrapper table#sortable tr td:nth-child(4){
+  width:5% !important;
+ }
+
 .pdf-content table.problem_info tr.odd td,
 .pdf-content table.problem_info tr.even td {
     float: none;
@@ -293,9 +327,15 @@ form.node-downtimes-form > .form-item {
     padding: 0;
     float: none;
 }
+table#sortable,
 table.maintenance,
 table.incident {
     margin: 40px 0 20px !important;
+}
+table.incident thead,
+table.incident thead tr{
+  width:100%;
+  float:none;
 }
 table.incident caption h2,
 table.maintenance caption h2 {
@@ -396,6 +436,17 @@ table tr th,
 table tr td {
     padding: 5px;
 }
+.pdf-content .ckeditor-custom-wrapper table{
+ float:none;
+ display:table;
+ width:100%;
+}
+.pdf-content .ckeditor-custom-wrapper .field strong{
+  float:none;
+  display:block;
+  width:100%;
+}
+.pdf-content .ckeditor-custom-wrapper .field,
 .pdf-content article.quickinfo .field,
 .pdf-content article .field {
     margin: 0 0 10px 0 !important;
