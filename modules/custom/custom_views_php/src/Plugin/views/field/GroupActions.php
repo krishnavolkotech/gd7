@@ -53,13 +53,30 @@ class GroupActions extends FieldPluginBase {
   public function render(ResultRow $values) {
     $group = $values->_entity;
     $link = '';
-    $groupMember = $group->getMember(\Drupal::currentUser());
+    $user = \Drupal::currentUser();
+    $groupMember = $group->getMember($user);
     if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
-      $url = Url::fromRoute('entity.group.leave',['group'=>$group->id()]);
-      $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);
+            $roles = $groupMember->getRoles();
+            if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                $link = 'Group Admin';
+            } else {
+                $url = Url::fromRoute('entity.group.leave',['group'=>$group->id()]);
+                $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);                
+            }
+
+    } else if(array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+        if($group->bundle() == 'open'){
+          $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
+          $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
+        }elseif(in_array($group->bundle(),['moderate','moderate_private', 'closed', 'closed_private'])){
+          $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
+          $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
+        }        
     }elseif($group->bundle() == 'open'){
       $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
+    } elseif($group->bundle() == 'closed') {
+        $link = 'Closed';
     }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
       $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
