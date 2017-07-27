@@ -222,7 +222,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     ];
     $form['dates']['end']['enddate_planned'] = [
       '#type' => 'textfield',
-      '#title' => t('End Date'),
+      '#title' => t('Expected End Date'),
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
 //      '#suffix' => '</div>',
@@ -577,13 +577,61 @@ function downtimes_set_default_values(&$form, $nid) {
   if (!empty($downtime_data)) {
     $form['states']['#default_value'] = explode(',', $downtime_data->state_id);
     $form['services_effected']['#default_value'] = explode(',', $downtime_data->service_id);
-    if($downtime_data->startdate_planned <= REQUEST_TIME ) {
-        $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
-    }
+
     $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
-    if((!empty($downtime_data->enddate_planned) && $downtime_data->scheduled_p == 0) 
-            || (!empty($downtime_data->enddate_planned) && $downtime_data->scheduled_p == 1 && REQUEST_TIME > $downtime_data->enddate_planned)) {
-        $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
+
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if (isset($node)) {
+      if (is_object($node)) {
+        $node_id = $node->id();
+      } else {
+        $node_id = $node;
+      }
+      $group_content = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node_id);
+      if ($group_content) {
+        $group = $group_content->getgroup();
+      }
+    }
+    $user = \Drupal::currentUser();
+    $groupMember = $group->getMember($user);
+    $restict = FALSE;
+
+    if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+        $restict = FALSE;
+    } else {
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (!empty($roles) && (in_array($group->bundle() . '-member', array_keys($roles)))) {
+                $restict = TRUE;
+            }
+
+        }
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            $roles = $groupMember->getRoles();
+            if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                $restict = FALSE;
+            }
+
+        }
+    }
+    //For maintanences
+    if($restict && $downtime_data->scheduled_p == 1) {
+        if($downtime_data->startdate_planned <= REQUEST_TIME ) {
+            $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
+        }
+        if(REQUEST_TIME > $downtime_data->enddate_planned) {
+            $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
+        }
+    }
+
+    //For insidents/downtimes
+    if($restict && $downtime_data->scheduled_p == 0) {
+        if($downtime_data->startdate_planned <= REUEST_TIME ) {
+            $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
+        }
+        if(!empty($downtime_data->enddate_planned)) {
+            $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
+        }
     }
     
     if (!empty($downtime_data->enddate_planned)) {
