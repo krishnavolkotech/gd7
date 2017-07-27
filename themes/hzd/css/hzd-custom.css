@@ -223,7 +223,7 @@ table tr th {
 }
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
-  padding:0 !important;
+  padding:8px 0 !important;
 }
 #problem_search_results_wrapper table#sortable th.problem_title,
 #problem_search_results_wrapper table#sortable tr td:nth-child(4){
