@@ -62,24 +62,24 @@
                 return result;
             }
 
-            $(".service-tooltip").unbind("hover").hover(function () {
-                var id = $(this).attr('id');
-                $(".service-profile-data-" + id).css("display", "block");
-            }, function () {
-                var id = $(this).attr('id');
-                $(".service-profile-data-" + id).css("display", "none");
-            });
-
-            $(".service-tooltip").unbind("click").click(function () {
-                // On click of service profile tool tip, close already open ones.
-                $('.service-profile-close a').click();
-                // Open the tool tip data
-                var id = $(this).attr('id');
-                $(".service-profile-data-" + id).css("display", "block");
-                $("#close-" + id).css("display", "block");
-                //$(this).unbind("mouseenter mouseleave");
-                $(".service-profile-data-" + id).attr("class", "data");
-            });
+//            $(".service-tooltip").unbind("hover").hover(function () {
+//                var id = $(this).attr('id');
+//                $(".service-profile-data-" + id).css("display", "block");
+//            }, function () {
+//                var id = $(this).attr('id');
+//                $(".service-profile-data-" + id).css("display", "none");
+//            });
+//
+//            $(".service-tooltip").unbind("click").click(function () {
+//                // On click of service profile tool tip, close already open ones.
+//                $('.service-profile-close a').click();
+//                // Open the tool tip data
+//                var id = $(this).attr('id');
+//                $(".service-profile-data-" + id).css("display", "block");
+//                $("#close-" + id).css("display", "block");
+//                //$(this).unbind("mouseenter mouseleave");
+//                $(".service-profile-data-" + id).attr("class", "data");
+//            });
 
             $(".service-profile-close a").unbind("click").click(function () {
                 var id = $(this).attr('id');
@@ -100,6 +100,40 @@
             //         $(this).find('div.service-profile-data').css({left: '-250px'});
             //     }
             // });
+            $('.downtimes-service-tooltip').popover({
+                trigger: 'click hover',
+                container: '#edit-services-effected',
+                placement: 'top',
+                html: true,
+                content: function () {
+                    return $(this).next('.downtimes-service-profile-data').html();
+                }
+            });
+            $('.downtimes-service-tooltip').each(function () {
+                var $element = $(this);
+                $element.on('shown.bs.popover', function () {
+                    var popover = $element.data('bs.popover');
+                    if (typeof popover !== "undefined") {
+                        var $tip = popover.tip();
+                        zindex = $tip.css('z-index');
+
+                        $tip.find('#service-profile-close').bind('click', function () {
+                            popover.hide();
+                        });
+
+                        $tip.mouseover(function () {
+                            $tip.css('z-index', function () {
+                                return zindex + 1;
+                            });
+                        })
+                            .mouseout(function () {
+                            $tip.css('z-index', function () {
+                                return zindex;
+                            });
+                        });
+                    }
+                });
+            });
 
         }
     };
