@@ -58,7 +58,7 @@ class GroupActions extends FieldPluginBase {
     if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
             $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-                $link = 'Group Admin';
+                $link = $this->t('Group Admin');
             } else {
                 $url = Url::fromRoute('entity.group.leave',['group'=>$group->id()]);
                 $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);                
@@ -76,7 +76,7 @@ class GroupActions extends FieldPluginBase {
       $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
     } elseif($group->bundle() == 'closed') {
-        $link = 'Closed';
+        $link = $this->t('Closed');
     }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
       $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
