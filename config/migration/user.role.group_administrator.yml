@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: group_administrator
-label: 'group administrator'
+label: 'group administrator(Not in use)'
 weight: 4
 is_admin: null
 permissions:

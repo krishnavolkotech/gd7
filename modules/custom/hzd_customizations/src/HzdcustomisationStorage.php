@@ -843,11 +843,16 @@ class HzdcustomisationStorage {
 //        kint($pager->__toString());
     $result = $pager->execute()->fetchAll();
     $renderer = \Drupal::service('renderer');
+    if ($type == 'archived') {
+        $enddate_label = t('Actual End Date');
+    } else {
+        $enddate_label = t('Expected End Date');
+    }
     $headersNew = $rows = [];
     if ($type == 'archived')
       $headersNew = array_merge($headersNew, ['type' => t('Type')]);
     $headersNew = array_merge($headersNew, ['description' => t('Beschreibung'), 'service' => t('Verfahren'), 'state' => t('Land')]);
-    $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => t('Ende')]);
+    $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => $enddate_label]);
     if ($type == 'archived')
       $headersNew = array_merge($headersNew, ['status' => t('Status')]);
     foreach ($result as $client) {

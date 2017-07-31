@@ -134,6 +134,12 @@
                     }
                 });
             });
+            $('.downtimes-service-tooltip').click(function(){
+                $('.downtimes-service-tooltip').not(this).popover('hide'); 
+            });
+            //$(".downtimes-service-tooltip").mouseover(function(){
+            //     $('.downtimes-service-tooltip').not(this).popover('hide');
+            //});
 
         }
     };
