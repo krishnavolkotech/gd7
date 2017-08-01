@@ -103,7 +103,15 @@
             $('.downtimes-service-tooltip').popover({
                 trigger: 'click hover',
                 container: '#edit-services-effected',
-                placement: 'top',
+                placement: function (context, source) {
+                    var position = $(source).offset();
+                    var popupHeight = $(source).parents('.published-services').find('.downtimes-service-profile-data').height();
+                    if (position.top - $(window).scrollTop() < popupHeight) {
+                        return "bottom";
+                    } else {
+                        return "top";
+                    }
+                },
                 html: true,
                 content: function () {
                     return $(this).next('.downtimes-service-profile-data').html();
@@ -126,16 +134,16 @@
                                 return zindex + 1;
                             });
                         })
-                            .mouseout(function () {
-                            $tip.css('z-index', function () {
-                                return zindex;
-                            });
-                        });
+                                .mouseout(function () {
+                                    $tip.css('z-index', function () {
+                                        return zindex;
+                                    });
+                                });
                     }
                 });
             });
             $('.downtimes-service-tooltip').click(function(){
-                $('.downtimes-service-tooltip').not(this).popover('hide'); 
+                $('.downtimes-service-tooltip').not(this).popover('hide');
             });
             //$(".downtimes-service-tooltip").mouseover(function(){
             //     $('.downtimes-service-tooltip').not(this).popover('hide');
