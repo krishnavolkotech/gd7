@@ -270,12 +270,13 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
 
 }
 
-function hzd_notifications_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
-    if(isset($element['pathauto']['#description'])) {
+function hzd_notifications_preprocess_form_element(&$variables) {
+    $element = &$variables['element'];
+    if($element['#id'] == 'edit-path-0-pathauto') {
         $current_user = \Drupal::service('current_user');
         $current_user_roles = $current_user->getRoles();
         if(!in_array('site_administrator', $current_user_roles)) {
-            $element['pathauto']['#description'] = '';
+            $variables['description']['content'] = t('Uncheck this to create a custom alias below. Configure URL alias patterns.');
         }
     }
 }

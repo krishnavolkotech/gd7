@@ -385,7 +385,7 @@ class HzdcustomisationStorage {
       $id = $query->execute()->fetchField();
       $sdata = self::get_service_data($service_nid, $service);
       if ($id && !empty($sdata) && $option_type != 'select') {
-        $c_data = trim($service) . "|<div class='service-tooltip' id = '" . $service_nid . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $service_nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $service_nid . "'><a id='close-" . $service_nid . "'>Close</a></div>" . $sdata . "</div></div>";
+        $c_data = trim($service) . "|<div class='downtimes-service-tooltip' id = '" . $service_nid . "'><img height=10 src = '/" . $img . "'></div><div class='downtimes-service-profile-data service-profile-data-" . $service_nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='' id='close-" . $service_nid . "'><a id='service-profile-close'>Close</a></div>" . $sdata . "</div></div>";
         $service_names[$service_nid] = $c_data;
       } else {
         $service_names[$service_nid] = $service;
@@ -843,11 +843,16 @@ class HzdcustomisationStorage {
 //        kint($pager->__toString());
     $result = $pager->execute()->fetchAll();
     $renderer = \Drupal::service('renderer');
+    if ($type == 'archived') {
+        $enddate_label = t('Actual End Date');
+    } else {
+        $enddate_label = t('Expected End Date');
+    }
     $headersNew = $rows = [];
     if ($type == 'archived')
       $headersNew = array_merge($headersNew, ['type' => t('Type')]);
     $headersNew = array_merge($headersNew, ['description' => t('Beschreibung'), 'service' => t('Verfahren'), 'state' => t('Land')]);
-    $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => t('Ende')]);
+    $headersNew = array_merge($headersNew, ['start_date' => t('Beginn'), 'end_date' => $enddate_label]);
     if ($type == 'archived')
       $headersNew = array_merge($headersNew, ['status' => t('Status')]);
     foreach ($result as $client) {

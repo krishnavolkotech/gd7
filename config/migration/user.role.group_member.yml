@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: group_member
-label: 'group member'
+label: 'group member(Not in use)'
 weight: 3
 is_admin: null
 permissions:

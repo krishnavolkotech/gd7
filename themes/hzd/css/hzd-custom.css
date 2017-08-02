@@ -8,7 +8,8 @@ form.node-downtimes-form .panel-body .form-checkboxes {
     width: 100%;
     /*border:0;*/
 }
-#edit-services-effected .form-checkbox .published-services .data {
+#edit-services-effected .form-checkbox .published-services .data,
+#edit-services-effected .popover {
     left: 0px;
     position: absolute;
     top: 20px;
@@ -25,7 +26,8 @@ form.node-downtimes-form .panel-body .form-checkboxes {
 #edit-services-effected .form-checkbox .published-services .data table {
     margin: 0 !important;
 }
-#edit-services-effected .form-checkbox .published-services .data .service-profile-close a {
+#edit-services-effected .form-checkbox .published-services .data .service-profile-close a,
+a#service-profile-close{
     float: right;
     background: url(../images/tip-close-btn.jpg) left top no-repeat;
     width: 15px;

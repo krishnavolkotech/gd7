@@ -95,14 +95,14 @@ view_mode ? view_mode|clean_class,
 
         {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
             <div class = "Incident">
-                <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
+                <div class = 'downtimes_title'>{{ incident.enddate_planned_label }}</div>
                 <!--  resolved end date -->
                 <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
             </div>
             <div style = "clear:both" ></div>
         {% elseif incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
             <div class = "Incident">
-                <div class = 'downtimes_title'>{{ 'Ende'|trans }}</div>
+                <div class = 'downtimes_title'>{{ incident.enddate_planned_label }}</div>
                 <div class = 'downtimes_content'>{{ incident.enddate_planned }}</div>
             </div>
             <div style = "clear:both" ></div>

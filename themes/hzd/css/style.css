@@ -1598,12 +1598,12 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     padding-right: 5px;
     margin: 0;
 }
-#edit-services-effected .form-checkbox .published-services:hover .service-profile-data{
+/*#edit-services-effected .form-checkbox .published-services:hover .service-profile-data{
   visibility: visible;
   display:block;
   background:#ffcc00;
-}
-#edit-services-effected .form-checkbox .published-services .service-profile-data {
+}*/
+/*#edit-services-effected .form-checkbox .published-services .service-profile-data {
     border: 1px solid rgb(204, 204, 204);
     background: #fbfcfc !important;
     z-index: 10;
@@ -1612,7 +1612,14 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     width: 800px;
     top:30px;
     left:0;
-    /*height:auto;*/
+    height:auto;
+}*/
+.downtimes-service-profile-data {
+    display: none;
+}
+.popover{
+    max-width: 100% !important;
+    width: auto !important;
 }
 #edit-services-effected .form-checkbox .published-services .service-profile-data {
     /*position: absolute;

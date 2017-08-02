@@ -416,7 +416,7 @@ function downtimes_revisions($node) {
   $labels = [
       'non_compliance' => t('Grund für die Wartung der Wartungsfenster'),
       'start_date' => t('Beginn'),
-      'end_date' => t('Ende'),
+      'end_date' => t('Expected End Date'),
       'services' => t('Verfahren'),
       'states' => t('Land/System'),
       'reason' => t('Beschreibung')

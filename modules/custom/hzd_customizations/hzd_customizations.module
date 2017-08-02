@@ -844,7 +844,7 @@ function private_group_member_view_access_check($group) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
     if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) 
-            || $user->id() == 1 ) {
+            || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
       return TRUE;
     }
     return FALSE;
@@ -859,7 +859,7 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
         foreach ($view -> result as $key => &$result) {
             $access = private_group_member_view_access_check($result->_entity);
             if(($result->_entity->getGroupType()->id() == 'closed_private' ||
-                    $result->_entity->getGroupType()->id() == 'closed') && !$access) {
+                    $result->_entity->getGroupType()->id() == 'moderate_private') && !$access) {
                 unset($view -> result[$key]);
             }
            

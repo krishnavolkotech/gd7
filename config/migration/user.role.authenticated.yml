@@ -68,3 +68,4 @@ permissions:
   68: 'edit any im_upload_page content'
   69: 'edit own im_upload_page content'
   71: 'access draggableviews'
+  72: 'use text format full_html'
