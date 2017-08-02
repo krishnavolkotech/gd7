@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7452a5aaf8c5bb2a1f8f24f936047de6",
-    "content-hash": "a9cc3654fe1783c8687a9911816aa44f",
+    "hash": "6000c1d087ff54cd2ccc3f06fe259842",
+    "content-hash": "45e99798c8a5675d99f936e4ef0c9c9a",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1732,23 +1732,23 @@
         },
         {
             "name": "drupal/entity_print",
-            "version": "2.0.0-beta2",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/entity_print",
-                "reference": "8.x-2.0-beta2"
+                "reference": "8.x-2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.0-beta2.zip",
-                "reference": "8.x-2.0-beta2",
-                "shasum": "a0b8ac3e43fc1e972e167749b30f983908e084c1"
+                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.0.zip",
+                "reference": null,
+                "shasum": "8546bff4dba58ab69cd45a252ffa710591f6e311"
             },
             "require": {
+                "dompdf/dompdf": "0.8.0",
                 "drupal/core": "~8.0"
             },
             "suggest": {
-                "dompdf/dompdf:0.7.0-beta3": "Dompdf provides a no config installation to convert HTML to PDF. Only tested with beta3",
                 "mikehaertl/phpwkhtmltopdf": "PhpWkhtmlToPdf provides the PHP library to use Wkhtmltopdf"
             },
             "type": "drupal-module",
@@ -1757,7 +1757,7 @@
                     "dev-2.x": "2.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-2.0-beta2",
+                    "version": "8.x-2.0",
                     "datestamp": "1492069743"
                 }
             },

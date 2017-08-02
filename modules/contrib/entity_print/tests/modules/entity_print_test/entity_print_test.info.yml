@@ -6,8 +6,8 @@ hidden: true
 dependencies:
   - entity_print
 
-# Information added by Drupal.org packaging script on 2017-02-06
-version: '8.x-2.0-beta2'
+# Information added by Drupal.org packaging script on 2017-04-13
+version: '8.x-2.0'
 core: '8.x'
 project: 'entity_print'
-datestamp: 1486385399
+datestamp: 1492069754

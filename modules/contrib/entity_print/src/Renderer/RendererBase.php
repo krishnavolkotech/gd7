@@ -2,25 +2,21 @@
 
 namespace Drupal\entity_print\Renderer;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityHandlerInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Render\RenderContext;
 use Drupal\entity_print\Asset\AssetRendererInterface;
 use Drupal\entity_print\Event\PrintEvents;
 use Drupal\entity_print\Event\PrintHtmlAlterEvent;
+use Drupal\entity_print\FilenameGeneratorInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Drupal\Core\Render\RendererInterface as CoreRendererInterface;
 
 /**
  * The RendererBase class.
  */
-abstract class RendererBase implements RendererInterface {
-
-  /**
-   * The filename used when we're unable to calculate a filename.
-   *
-   * @var string
-   */
-  const DEFAULT_FILENAME = 'document';
+abstract class RendererBase implements RendererInterface, EntityHandlerInterface {
 
   /**
    * The renderer for renderable arrays.
@@ -37,16 +33,48 @@ abstract class RendererBase implements RendererInterface {
   protected $assetRenderer;
 
   /**
+   * Generate filename's for a printed document.
+   *
+   * @var \Drupal\entity_print\FilenameGeneratorInterface
+   */
+  protected $filenameGenerator;
+
+  /**
    * The event dispatcher.
    *
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected $dispatcher;
 
-  public function __construct(CoreRendererInterface $renderer, AssetRendererInterface $asset_renderer, EventDispatcherInterface $event_dispatcher) {
+  /**
+   * RendererBase constructor.
+   *
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   Cores renderer.
+   * @param \Drupal\entity_print\Asset\AssetRendererInterface $asset_renderer
+   *   The asset renderer.
+   * @param \Drupal\entity_print\FilenameGeneratorInterface $filename_generator
+   *   Filename generator.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
+   */
+  public function __construct(CoreRendererInterface $renderer, AssetRendererInterface $asset_renderer, FilenameGeneratorInterface $filename_generator, EventDispatcherInterface $event_dispatcher) {
     $this->renderer = $renderer;
     $this->assetRenderer = $asset_renderer;
+    $this->filenameGenerator = $filename_generator;
     $this->dispatcher = $event_dispatcher;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
+    return new static (
+      $container->get('renderer'),
+      $container->get('entity_print.asset_renderer'),
+      $container->get('entity_print.filename_generator'),
+      $container->get('event_dispatcher')
+    );
   }
 
   /**
@@ -69,40 +97,10 @@ abstract class RendererBase implements RendererInterface {
   }
 
   /**
-   * Gets a safe filename.
-   *
-   * @param string $filename
-   *   The un-processed filename.
-   *
-   * @return string
-   *   The filename stripped to only safe characters.
-   */
-  protected function sanitizeFilename($filename) {
-    return preg_replace("/[^A-Za-z0-9 ]/", '', $filename);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getFilename(array $entities) {
-    $filenames = [];
-    foreach ($entities as $entity) {
-      if ($label = trim($this->sanitizeFilename($this->getLabel($entity)))) {
-        $filenames[] = $label;
-      }
-    }
-    return $filenames ? implode('-', $filenames) : static::DEFAULT_FILENAME;
+    return $this->filenameGenerator->generateFilename($entities);
   }
-
-  /**
-   * Gets the entity label.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity we want to generate a label for.
-   *
-   * @return string
-   *   The label for this entity.
-   */
-  abstract protected function getLabel(EntityInterface $entity);
 
 }

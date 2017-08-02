@@ -3,13 +3,26 @@
 namespace Drupal\entity_print_views\Renderer;
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\entity_print\Renderer\RendererBase;
-use Drupal\views\ViewEntityInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Providers a renderer for Views.
  */
 class ViewRenderer extends RendererBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
+    return new static (
+      $container->get('renderer'),
+      $container->get('entity_print.asset_renderer'),
+      $container->get('entity_print.filename_generator'),
+      $container->get('event_dispatcher')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -45,17 +58,13 @@ class ViewRenderer extends RendererBase {
   }
 
   /**
-   * Gets a label for the view object.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $view
-   *   The view object we want to get a label for.
-   *
-   * @return false|string
-   *   The view title.
+   * {@inheritdoc}
    */
-  protected function getLabel(EntityInterface $view) {
-    /** @var \Drupal\views\ViewEntityInterface $view */
-    return $view->getExecutable()->getTitle();
+  public function getFilename(array $entities) {
+    return $this->filenameGenerator->generateFilename($entities, function ($view) {
+      /** @var \Drupal\views\ViewEntityInterface $view */
+      return $view->getExecutable()->getTitle();
+    });
   }
 
   /**

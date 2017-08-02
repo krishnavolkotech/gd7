@@ -3,7 +3,6 @@
 namespace Drupal\entity_print\EventSubscriber;
 
 use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Component\Utility\Xss;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
@@ -13,18 +12,33 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Exception event subscriber.
+ */
 class PrintEngineExceptionSubscriber implements EventSubscriberInterface {
 
   /**
+   * The route match service.
+   *
    * @var \Drupal\Core\Routing\RouteMatchInterface
    */
   protected $routeMatch;
 
   /**
+   * The entity type manager.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
+  /**
+   * PrintEngineExceptionSubscriber constructor.
+   *
+   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
+   *   Route match service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager.
+   */
   public function __construct(RouteMatchInterface $routeMatch, EntityTypeManagerInterface $entityTypeManager) {
     $this->routeMatch = $routeMatch;
     $this->entityTypeManager = $entityTypeManager;
@@ -39,9 +53,7 @@ class PrintEngineExceptionSubscriber implements EventSubscriberInterface {
   public function handleException(GetResponseForExceptionEvent $event) {
     $exception = $event->getException();
     if ($exception instanceof PrintEngineException) {
-      // Build a safe markup string using Xss::filter() so that the instructions
-      // for installing dependencies can contain quotes.
-      drupal_set_message(new FormattableMarkup('Error generating document: ' . Xss::filter($exception->getMessage()), []), 'error');
+      drupal_set_message(new FormattableMarkup($exception->getPrettyMessage(), []), 'error');
 
       if ($entity = $this->getEntity()) {
         $event->setResponse(new RedirectResponse($entity->toUrl()->toString()));
