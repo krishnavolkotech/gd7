@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\block_upload;
+
 use Drupal\file\Entity\File;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -8,6 +9,9 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Component\Utility\Bytes;
 use Drupal\user\Entity\User;
 
+/**
+ * BlockUploadBuild class.
+ */
 class BlockUploadBuild {
 
   /**
@@ -15,43 +19,44 @@ class BlockUploadBuild {
    */
   public static function blockUploadRemoveForm($field_limit, $node, $field_name) {
     $field_images = $node->get($field_name);
-    foreach ($field_images->referencedEntities() as $file) {
+    foreach ($field_images->getValue() as $field_image) {
+      $file = File::load($field_image['target_id']);
       $uid = $file->get('uid')->target_id;
       $uploader = User::load($uid);
       global $base_url;
-      $url = Url::fromUri($base_url . '/user/' . $uid, array());
-      $uploader =  $uploader ? Link::fromTextAndUrl($uploader->getDisplayName(), $url) : '';
-      $options[$file->id()] = array(
-        array(
-          'data' => array(
+      $url = Url::fromUri($base_url . '/user/' . $uid, []);
+      $uploader = $uploader ? Link::fromTextAndUrl($uploader->getDisplayName(), $url) : '';
+      $options[$field_image['target_id']] = [
+        [
+          'data' => [
             '#type' => 'item',
             '#title' => $uploader ? $uploader->toString()->getGeneratedLink() : '',
-          ),
-        ),
-        array(
-          'data' => array(
+          ],
+        ],
+        [
+          'data' => [
             '#type' => 'item',
             '#title' => \Drupal::service('date.formatter')->format($file->getCreatedTime()),
-          ),
-        ),
-        array(
-          'data' => array(
+          ],
+        ],
+        [
+          'data' => [
             '#theme' => 'file_link',
             '#file' => (object) $file,
-          ),
+          ],
           'field_type' => $field_limit->getType(),
-        ),
-      );
+        ],
+      ];
 
     }
-    $header = array(t('Uploader'), t('Created time'), t('File'));
-    $form = array(
+    $header = [t('Uploader'), t('Created time'), t('File')];
+    $form = [
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options,
       '#empty' => t('No content available.'),
-      '#attributes' => array('class' => array('delete-files')),
-    );
+      '#attributes' => ['class' => ['delete-files']],
+    ];
     return $form;
   }
 
@@ -67,7 +72,7 @@ class BlockUploadBuild {
         $node = \Drupal::request()->attributes->get('node');
       }
       $token = \Drupal::token();
-      $destination = $token->replace($destination, array('node' => $node));
+      $destination = $token->replace($destination, ['node' => $node]);
     }
     $field_info = FieldStorageConfig::loadByName($field->get('entity_type'), $field->getName());
     $uri_scheme = $field_info->getSetting('uri_scheme');
@@ -106,18 +111,17 @@ class BlockUploadBuild {
    */
   public static function blockUploadGetValidators($field_name, $fields_info, $node) {
     $settings = $node->get($field_name)->getSettings();
-    $validators = array(
-      'file_validate_extensions' => array($settings['file_extensions']),
-      'file_validate_size' => array(Bytes::toInt($settings['max_filesize'])),
-    );
-    $min_resolution = isset($settings['min_resolution']) ? $settings['min_resolution'] : FALSE;
-    $max_resolution = isset($settings['max_resolution']) ? $settings['max_resolution'] : FALSE;
+    $validators = [
+      'file_validate_extensions' => [$settings['file_extensions']],
+      'file_validate_size' => [Bytes::toInt($settings['max_filesize'])],
+    ];
+    $min_resolution = isset($settings['min_resolution']) ? $settings['min_resolution'] : NULL;
+    $max_resolution = isset($settings['max_resolution']) ? $settings['max_resolution'] : NULL;
     if (isset($min_resolution) || isset($min_resolution)) {
-      $validators['file_validate_image_resolution'] = array($max_resolution, $min_resolution);
-      $validators['file_validate_image_min_resolution'] = array($min_resolution);
+      $validators['file_validate_image_resolution'] = [$max_resolution, $min_resolution];
+      $validators['file_validate_image_min_resolution'] = [$min_resolution];
     }
     return $validators;
   }
 
 }
-

@@ -16,12 +16,12 @@ class BlockUploadSettingsForm extends ConfigFormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['block_upload_blocks_count'] = array(
+    $form['block_upload_blocks_count'] = [
       '#type' => 'select',
       '#title' => $this->t('Blocks count'),
       '#options' => array_combine(range(1, 10), range(1, 10)),
       '#default_value' => $this->config('block_upload.settings')->get('blocks_count'),
-    );
+    ];
     return parent::buildForm($form, $form_state);
   }
 

@@ -31,7 +31,8 @@
         "drupal/back_to_top": "^1.0@beta",
         "drupal/anchor_link": "^1.5",
         "drupal/admin_toolbar": "^1.19",
-        "drupal/block_class": "^1.0@alpha"
+        "drupal/block_class": "^1.0@alpha",
+        "drupal/block_upload": "1.x-dev"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

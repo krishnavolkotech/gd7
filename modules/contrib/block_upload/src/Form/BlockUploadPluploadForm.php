@@ -40,47 +40,47 @@ class BlockUploadPluploadForm extends FormBase {
     }
     if (\Drupal::currentUser()->hasPermission('block remove') && $field_files_exists > 0) {
       $title_remove_form = $this->t('Remove files');
-      $form['remove_files_title'] = array('#markup' => '<h3>' . $title_remove_form . '</h3>');
+      $form['remove_files_title'] = ['#markup' => '<h3>' . $title_remove_form . '</h3>'];
       $form['remove_files'] = BlockUploadBuild::blockUploadRemoveForm($field_limit, $node, $field_name);
       $submit = TRUE;
     }
     if (($field_limit->getCardinality() > $field_files_exists || $field_limit->getCardinality() == FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)) {
       $title_upload_form = t('Upload file');
-      $form['upload_files_title'] = array('#markup' => '<h3>' . $title_upload_form . '</h3>');
-      $form['block_upload_file'] = array(
+      $form['upload_files_title'] = ['#markup' => '<h3>' . $title_upload_form . '</h3>'];
+      $form['block_upload_file'] = [
         '#type' => 'plupload',
         '#upload_validators' => BlockUploadBuild::blockUploadGetValidators($field_name, $fields_info, $node),
-      );
+      ];
       $submit = TRUE;
-      $settings = \Drupal::state()->get('block_upload_' . $buid . '_settings') ?: array();
+      $settings = \Drupal::state()->get('block_upload_' . $buid . '_settings') ?: [];
     }
     else {
-      $form[] = array(
+      $form[] = [
         '#type' => 'item',
         '#description' => t('Exceeded limit of files'),
-      );
+      ];
     }
     if ($submit) {
       $module_path = drupal_get_path('module', 'block_upload');
       $form['#attached']['library'][] = 'block_upload/table-file';
-      $form['block_upload_nid'] = array(
+      $form['block_upload_nid'] = [
         '#type' => 'textfield',
         '#access' => FALSE,
         '#value' => $node->get('nid')->getValue()['0']['value'],
-      );
-      $form['block_upload_node_type'] = array(
+      ];
+      $form['block_upload_node_type'] = [
         '#type' => 'textfield',
         '#access' => FALSE,
         '#value' => $node->getType,
-      );
-      $form['buid'] = array(
+      ];
+      $form['buid'] = [
         '#type' => 'value',
         '#value' => $buid,
-      );
-      $form['submit'] = array(
+      ];
+      $form['submit'] = [
         '#type' => 'submit',
         '#value' => t('Save'),
-      );
+      ];
     }
     return $form;
   }
@@ -91,7 +91,7 @@ class BlockUploadPluploadForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     foreach ($form_state->getValue('block_upload_file') as $uploaded_file) {
       if ($uploaded_file['status'] != 'done') {
-        $form_state->setErrorByName('block_upload_file', t("Upload of %filename failed.", array('%filename' => $uploaded_file['name'])));
+        $form_state->setErrorByName('block_upload_file', t("Upload of %filename failed.", ['%filename' => $uploaded_file['name']]));
       }
     }
     parent::validateForm($form, $form_state);

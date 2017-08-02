@@ -178,7 +178,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * Tell Dompdf to render the HTML into a PDF.
    */
-  public function doRender() {
+  protected function doRender() {
     if (!$this->hasRendered) {
       $this->dompdf->render();
       $this->hasRendered = TRUE;

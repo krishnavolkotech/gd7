@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "995aabac08917cf4aefeb5e20920d061",
-    "content-hash": "f3f469fccfdd6fee1adb651acfb2d607",
+    "hash": "9b1bb233954b75c4ade76d99f722b482",
+    "content-hash": "c214fa271d9686ec6b6f08f577f79292",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1108,7 +1108,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/block_class-8.x-1.0-alpha1.zip",
-                "reference": null,
+                "reference": "8.x-1.0-alpha1",
                 "shasum": "194cd52210ea2e0e5dbbd34fad4528d500424430"
             },
             "require": {
@@ -1175,6 +1175,52 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/block_class"
             }
+        },
+        {
+            "name": "drupal/block_upload",
+            "version": "dev-1.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/block_upload",
+                "reference": "54dfed3c6d9aef94953611d58f75a51d6f7be74b"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.x-dev",
+                    "datestamp": "1493106844"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "adci_contributor",
+                    "homepage": "https://www.drupal.org/user/1830536"
+                },
+                {
+                    "name": "adcillc",
+                    "homepage": "https://www.drupal.org/user/366450"
+                },
+                {
+                    "name": "usdv",
+                    "homepage": "https://www.drupal.org/user/2476206"
+                }
+            ],
+            "description": "Upload new files/images to node through the block.",
+            "homepage": "https://www.drupal.org/project/block_upload",
+            "support": {
+                "source": "http://cgit.drupalcode.org/block_upload"
+            },
+            "time": "2017-04-27 08:52:43"
         },
         {
             "name": "drupal/block_visibility_groups",
@@ -7314,6 +7360,7 @@
         "drupal/queue_mail": 15,
         "drupal/back_to_top": 10,
         "drupal/block_class": 15,
+        "drupal/block_upload": 20,
         "behat/mink": 20
     },
     "prefer-stable": true,
