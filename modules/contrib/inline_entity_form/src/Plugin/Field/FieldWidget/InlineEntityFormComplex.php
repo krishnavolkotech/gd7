@@ -198,7 +198,7 @@ class InlineEntityFormComplex extends InlineEntityFormBase implements ContainerF
     $element = [
       '#type' => 'fieldset',
       '#tree' => TRUE,
-      '#description' => NULL,
+      '#description' => $this->fieldDefinition->getDescription(),
       '#prefix' => '<div id="' . $wrapper . '">',
       '#suffix' => '</div>',
       '#ief_id' => $this->getIefId(),
@@ -206,7 +206,7 @@ class InlineEntityFormComplex extends InlineEntityFormBase implements ContainerF
       '#translating' => $this->isTranslating($form_state),
       '#field_title' => $this->fieldDefinition->getLabel(),
       '#after_build' => [
-        [get_class($this), 'removeTranslatabilityCue'],
+        [get_class($this), 'removeTranslatabilityClue'],
       ],
     ] + $element;
 

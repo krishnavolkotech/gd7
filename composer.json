@@ -37,7 +37,9 @@
         "drupal/draggableviews": "^1.0",
         "drupal/field_group": "^1.0@RC",
         "drupal/field_permissions": "^1.0@beta",
-        "drupal/filefield_paths": "^1.0@beta"
+        "drupal/filefield_paths": "^1.0@beta",
+        "drupal/inline_entity_form": "^1.0@beta",
+        "drupal/l10n_client": "^1.0@alpha"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
