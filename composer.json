@@ -42,7 +42,8 @@
         "drupal/l10n_client": "^1.0@alpha",
         "drupal/mailsystem": "^4.1",
         "drupal/masquerade": "^2.0@beta",
-        "drupal/migrate_plus": "^2.0"
+        "drupal/migrate_plus": "^2.0",
+        "drupal/pathauto": "^1.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
