@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d30a9e5a538e68d0f9efb87d62941ffa",
-    "content-hash": "7c051b4578423d2f46e121e404d2d4e1",
+    "hash": "361d97e2363b00c5fe9551e8879c5c60",
+    "content-hash": "af671e5cc768424cd799e1fde9ee1acd",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2215,6 +2215,69 @@
             "homepage": "https://www.drupal.org/project/mailsystem",
             "support": {
                 "source": "http://cgit.drupalcode.org/mailsystem"
+            }
+        },
+        {
+            "name": "drupal/masquerade",
+            "version": "2.0.0-beta1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/masquerade",
+                "reference": "8.x-2.0-beta1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/masquerade-8.x-2.0-beta1.zip",
+                "reference": null,
+                "shasum": "d8071c2b01db9a3cc5d5bc8ecd570276e12840d4"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-2.0-beta1",
+                    "datestamp": "1481184923"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Gurpartap Singh",
+                    "homepage": "https://www.drupal.org/user/41470"
+                },
+                {
+                    "name": "andypost",
+                    "homepage": "https://www.drupal.org/user/118908"
+                },
+                {
+                    "name": "deekayen",
+                    "homepage": "https://www.drupal.org/user/972"
+                },
+                {
+                    "name": "deviantintegral",
+                    "homepage": "https://www.drupal.org/user/71291"
+                },
+                {
+                    "name": "shrop",
+                    "homepage": "https://www.drupal.org/user/14767"
+                },
+                {
+                    "name": "sun",
+                    "homepage": "https://www.drupal.org/user/54136"
+                }
+            ],
+            "description": "Allows privileged users to masquerade as another user.",
+            "homepage": "https://www.drupal.org/project/masquerade",
+            "support": {
+                "source": "http://cgit.drupalcode.org/masquerade"
             }
         },
         {
@@ -7791,6 +7854,7 @@
         "drupal/filefield_paths": 10,
         "drupal/inline_entity_form": 10,
         "drupal/l10n_client": 15,
+        "drupal/masquerade": 10,
         "behat/mink": 20
     },
     "prefer-stable": true,
