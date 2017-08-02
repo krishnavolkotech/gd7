@@ -3,10 +3,6 @@
 /**
  * @file
  * Provides a printable format for generating PDFs.
- * 
- * Azri Comments
- * Hacked the printable module because of template override issue
- * To work the header and footer templates in pdf for everypage refer to printable_pdf/templates directory
  */
 
 /**
@@ -14,23 +10,6 @@
  */
 function printable_pdf_theme() {
   $module_path = drupal_get_path('module', 'printable_pdf');
-  global $base_url;
-  $quickinfo_node = \Drupal::routeMatch()->getParameter('entity');
-  $base_path = $base_url;
-  if ($quickinfo_node) {
-    if ($quickinfo_node->isPublished()) {
-      $unique_id = $quickinfo_node->get('field_unique_id')->value;
-      $author_name = $quickinfo_node->get('field_author_name')->value;
-    }
-    else {
-      $author_name = $unique_id = '';
-    }
-    $changed = date('d.m.Y', $quickinfo_node->get('changed')->value);
-    $title = $quickinfo_node->get('title')->value;
-  }
-  else {
-    $author_name = $unique_id = $title = $changed = '';
-  }
   return array(
     'printable_pdf_footer' => array(
       'template' => 'printable-footer',
@@ -41,14 +20,7 @@ function printable_pdf_theme() {
     'printable_pdf_header' => array(
       'template' => 'printable-header',
       'pattern' => 'printable_header__',
-      'variables' => array(
-        'logo_url' => NULL,
-        'base_path' => $base_path,
-        'title' => $title,
-        'changed' => $changed,
-        'author_name' => $author_name,
-        'unique_id' => $unique_id,
-      ),
+      'variables' => array(),
       'path' => $module_path . '/templates',
     ),
   );

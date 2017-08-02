@@ -126,9 +126,6 @@ class PdfFormat extends PrintableFormatBase {
     $pdf_header = array(
       '#theme' => 'printable_pdf_header',
     );
-    $content = parent::buildContent();
-    $pdf_header = $content['#header'];
-    $pdf_header['#theme'] = 'printable_pdf_header';
     return render($pdf_header);
   }
 
@@ -153,8 +150,7 @@ class PdfFormat extends PrintableFormatBase {
    */
   public function buildPdfContent() {
     $content = parent::buildContent();
-    //$rendered_page = parent::extractLinks(render($content));
-    $rendered_page = render($content);
+    $rendered_page = parent::extractLinks(render($content));
     return $rendered_page;
   }
 
