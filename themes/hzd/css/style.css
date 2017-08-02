@@ -196,6 +196,26 @@ a.name.navbar-brand,
 #block-hzd-main-menu {
     float: right;
 }
+
+footer .region-footer .footer-links .cr{
+  padding-right:2px;
+}
+footer .region-footer .footer-links{
+  text-align:center;
+}
+footer .region-footer .footer-links a:first-child{
+   border-left: 1px solid #fff;
+   padding-left: 9px;
+ }
+ footer .region-footer .footer-links a{
+   line-height: 11px;
+   display: inline-block;
+   padding: 0 4px;
+ }
+footer .region-footer .cp,
+footer .region-footer .footer-links a{
+  color:#fff;
+}
 footer h2 ul,
 a.name.navbar-brand ul,
 #block-customtable h2.block-title ul,
@@ -1095,18 +1115,30 @@ button.button--reset:hover {
     margin: 0 !important;
     height: 34px;
 }
+.block-incidents-block a.downtime-create-button:hover,
+.block-maintenance-block a.downtime-create-button:hover{
+  text-decoration:none; 
+  opacity:0.95;
+}
+.block-incidents-block a.downtime-create-button,
+.block-maintenance-block a.downtime-create-button{
+  display:inline-block;
+  border-radius:3px;
+  line-height:1.42857143;
+}
+.block-incidents-block a.downtime-create-button,
+.block-maintenance-block a.downtime-create-button,
 .btn-default,
 .btn-default:hover {
-    /*background: #fff !important;
-    color: #555 !important;*/
     background:#0e9e57 !important;
     font-size: 14px;
     color: #fff !important;
     padding: 6px 12px !important;
+   /* border: 1px solid #ddd !important;*/
+}
+.btn-default,
+.btn-default:hover {
     float: left;
-    border: 1px solid #ddd !important;
-    /*margin: 10px 0 5px 0 !important;*/
-    /* height: 34px; */
 }
 button.button--reset,
 button.button--reset:hover {
@@ -2055,6 +2087,14 @@ aside .view-release-list ul li {
     padding-left: 14px !important;
     color: #004077;
     margin-top: 15px;
+}
+aside .view-problems-front-page ul li,
+aside .view-release-list ul li{
+  padding-left:0 !important;
+}
+.view-news-list .field-content{
+  border-bottom:1px solid #ccc;
+  padding-bottom: 10px;
 }
 aside .view-problems-front-page ul li {
    /* background: url(../images/grey-list-arrow.png)left 9px no-repeat !important;*/

@@ -6,7 +6,7 @@ form.node-downtimes-form .panel-body .form-checkboxes {
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
     background: #fbfcfc;
     width: 100%;
-    border:0;
+    /*border:0;*/
 }
 #edit-services-effected .form-checkbox .published-services .data {
     left: 0px;
@@ -207,6 +207,20 @@ table.releases.released tr.even td.earlywarnings-cell {
     width: 13.5%;
     word-wrap: break-word;
 }
+.home-problems-date{
+  width:100%;
+  display:inline-block;
+  color:#9b9b9b !important;
+  font-size:13px;
+  
+}
+.news-block ul li a{
+ /* border-bottom:1px solid #ccc;*/
+ }
+.home-problems-title,
+.home-problems-title a{
+  color:#333 !important;
+}
 table tr td,
 table tr th {
     word-wrap: break-word;
@@ -235,16 +249,19 @@ table tr th {
 }
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
-  padding:8px 0 !important;
+  padding:8px !important;
 }
-#problem_search_results_wrapper table#sortable th.problem_title,
+#problem_search_results_wrapper table#sortable tr th:nth-child(2),
+#problem_search_results_wrapper table#sortable tr td:nth-child(2),
+#problem_search_results_wrapper table#sortable tr th:nth-child(3),
+#problem_search_results_wrapper table#sortable tr td:nth-child(3){
+  width:11%;
+  word-break:break-all;
+}
+#problem_search_results_wrapper table#sortable tr th:nth-child(4),
 #problem_search_results_wrapper table#sortable tr td:nth-child(4){
-  width:5% !important;
-  word-wrap:break-word;
-}
-#problem_search_results_wrapper table th.status {
-    width: 10% !important;
-    word-wrap: break-word;
+  width:17%;
+  word-break:break-all;
 }
 #released_results_wrapper table.view-deployed-releases tr td {
     white-space: pre;
@@ -760,8 +777,10 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     margin-top: 0 !important;
     padding: 10px 0 !important;
     font-size: 13px;
-    background: #e2e2e2;
+   /* background: #e2e2e2;*/
+    background:#004077;
     box-shadow: 0 -1px 0 rgba(0,0,0,.2);
+    color:#fff;
 }
 .form-group:last-child,
 .panel:last-child,
