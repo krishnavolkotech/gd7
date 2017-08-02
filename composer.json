@@ -29,7 +29,9 @@
         "drupal/menu_export": "1.0.0",
         "drupal/views_merge_rows": "^2.1",
         "drupal/back_to_top": "^1.0@beta",
-        "drupal/anchor_link": "^1.5"
+        "drupal/anchor_link": "^1.5",
+        "drupal/admin_toolbar": "^1.19",
+        "drupal/block_class": "^1.0@alpha"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
