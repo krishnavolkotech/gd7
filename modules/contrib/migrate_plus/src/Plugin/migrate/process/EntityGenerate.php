@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\migrate_plus\Plugin\migrate\process\EntityGenerate.
+ */
+
 namespace Drupal\migrate_plus\Plugin\migrate\process;
 
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
 
 /**
- * This plugin generates entities within the process plugin.
+ * This plugin generates entity stubs.
  *
  * @MigrateProcessPlugin(
  *   id = "entity_generate"
@@ -14,9 +19,9 @@ use Drupal\migrate\Row;
  *
  * @see EntityLookup
  *
- * All the configuration from the lookup plugin applies here. In its most
+ * All the configuration from the lookup plugin applies here. In it's most
  * simple form, this plugin needs no configuration. If there are fields on the
- * generated entity that are required or need some default value, that can be
+ * stub entity that are required or need some default value, that can be
  * provided via a default_values configuration option.
  *
  * Example usage with default_values configuration:
@@ -31,8 +36,8 @@ use Drupal\migrate\Row;
  *     plugin: entity_generate
  *     source: tags
  *     default_values:
- *       description: Default description
- *       field_long_description: Default long description
+ *       description: Stub description
+ *       field_long_description: Stub long description
  * @endcode
  */
 class EntityGenerate extends EntityLookup {
@@ -41,7 +46,7 @@ class EntityGenerate extends EntityLookup {
    * {@inheritdoc}
    */
   public function transform($value, MigrateExecutableInterface $migrateExecutable, Row $row, $destinationProperty) {
-    // Creates an entity if the lookup determines it doesn't exist.
+    // Creates a stub entity if one doesn't exist.
     if (!($result = parent::transform($value, $migrateExecutable, $row, $destinationProperty))) {
       $result = $this->generateEntity($value);
     }
@@ -50,19 +55,19 @@ class EntityGenerate extends EntityLookup {
   }
 
   /**
-   * Generates an entity for a given value.
+   * Generates stub entity for a given value.
    *
    * @param string $value
-   *   Value to use in creation of the entity.
+   *   Value to use in creation of stub entity.
    *
    * @return int|string
    *   The entity id of the generated entity.
    */
   protected function generateEntity($value) {
-    if (!empty($value)) {
+    if(!empty($value)) {
       $entity = $this->entityManager
         ->getStorage($this->lookupEntityType)
-        ->create($this->entity($value));
+        ->create($this->stub($value));
       $entity->save();
 
       return $entity->id();
@@ -70,32 +75,32 @@ class EntityGenerate extends EntityLookup {
   }
 
   /**
-   * Fabricate an entity.
+   * Fabricate a stub entity.
    *
    * This is intended to be extended by implementing classes to provide for more
    * dynamic default values, rather than just static ones.
    *
    * @param $value
-   *   Primary value to use in creation of the entity.
+   *   Value to use in creation of stub entity.
    *
    * @return array
-   *   Entity value array.
+   *   The stub entity.
    */
-  protected function entity($value) {
-    $entity_values = [$this->lookupValueKey => $value];
+  protected function stub($value) {
+    $stub = [$this->lookupValueKey => $value];
 
     if ($this->lookupBundleKey) {
-      $entity_values[$this->lookupBundleKey] = $this->lookupBundle;
+      $stub[$this->lookupBundleKey] = $this->lookupBundle;
     }
 
     // Gather any static default values for properties/fields.
     if (isset($this->configuration['default_values']) && is_array($this->configuration['default_values'])) {
       foreach ($this->configuration['default_values'] as $key => $value) {
-        $entity_values[$key] = $value;
+        $stub[$key] = $value;
       }
     }
 
-    return $entity_values;
+    return $stub;
   }
 
 }
