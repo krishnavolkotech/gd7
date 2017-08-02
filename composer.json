@@ -35,7 +35,9 @@
         "drupal/block_upload": "1.x-dev",
         "drupal/ctools": "^3.0",
         "drupal/draggableviews": "^1.0",
-        "drupal/field_group": "^1.0@RC"
+        "drupal/field_group": "^1.0@RC",
+        "drupal/field_permissions": "^1.0@beta",
+        "drupal/filefield_paths": "^1.0@beta"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
