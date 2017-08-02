@@ -26,9 +26,9 @@ class DateTimeItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function defaultStorageSettings() {
-    return array(
+    return [
       'datetime_type' => 'datetime',
-    ) + parent::defaultStorageSettings();
+    ] + parent::defaultStorageSettings();
   }
 
   /**
@@ -40,11 +40,6 @@ class DateTimeItem extends FieldItemBase {
    * Value for the 'datetime_type' setting: store a date and time.
    */
   const DATETIME_TYPE_DATETIME = 'datetime';
-  
-   /**
-   * Value for the 'datetime_type' setting: store a date and time.
-   */
-  const DATETIME_TYPE_TIME = 'time';
 
   /**
    * {@inheritdoc}
@@ -68,38 +63,37 @@ class DateTimeItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return array(
-      'columns' => array(
-        'value' => array(
+    return [
+      'columns' => [
+        'value' => [
           'description' => 'The date value.',
           'type' => 'varchar',
           'length' => 20,
-        ),
-      ),
-      'indexes' => array(
-        'value' => array('value'),
-      ),
-    );
+        ],
+      ],
+      'indexes' => [
+        'value' => ['value'],
+      ],
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function storageSettingsForm(array &$form, FormStateInterface $form_state, $has_data) {
-    $element = array();
+    $element = [];
 
-    $element['datetime_type'] = array(
+    $element['datetime_type'] = [
       '#type' => 'select',
       '#title' => t('Date type'),
       '#description' => t('Choose the type of date to create.'),
       '#default_value' => $this->getSetting('datetime_type'),
-      '#options' => array(
+      '#options' => [
         static::DATETIME_TYPE_DATETIME => t('Date and time'),
         static::DATETIME_TYPE_DATE => t('Date only'),
-        static::DATETIME_TYPE_TIME => t('Time only'),
-      ),
+      ],
       '#disabled' => $has_data,
-    );
+    ];
 
     return $element;
   }
@@ -116,9 +110,7 @@ class DateTimeItem extends FieldItemBase {
     if ($type == DateTimeItem::DATETIME_TYPE_DATE) {
       $values['value'] = gmdate(DATETIME_DATE_STORAGE_FORMAT, $timestamp);
     }
-    elseif ($type == DateTimeItem::DATETIME_TYPE_TIME) {
-      $values['value'] = gmdate(DATETIME_TIME_STORAGE_FORMAT, $timestamp);
-    }else {
+    else {
       $values['value'] = gmdate(DATETIME_DATETIME_STORAGE_FORMAT, $timestamp);
     }
     return $values;

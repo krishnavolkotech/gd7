@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'org\\bovigo\\vfs\\' => array($vendorDir . '/mikey179/vfsStream/src/main/php'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
@@ -19,10 +20,7 @@ return array(
     'EasyRdf_' => array($vendorDir . '/easyrdf/easyrdf/lib'),
     'Drush' => array($vendorDir . '/drush/drush/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
-    'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
     'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
-    'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
     'Consolidation' => array($vendorDir . '/drush/drush/lib'),
-    'Asm89\\Stack' => array($vendorDir . '/asm89/stack-cors/src'),
 );
