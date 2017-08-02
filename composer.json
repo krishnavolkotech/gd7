@@ -34,7 +34,8 @@
         "drupal/block_class": "^1.0@alpha",
         "drupal/block_upload": "1.x-dev",
         "drupal/ctools": "^3.0",
-        "drupal/draggableviews": "^1.0"
+        "drupal/draggableviews": "^1.0",
+        "drupal/field_group": "^1.0@RC"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
