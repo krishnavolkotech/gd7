@@ -5,7 +5,7 @@
  * Provides printer friendly content entities.
  */
 
-//use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Template\Attribute;
@@ -76,7 +76,7 @@ function printable_theme() {
  * @param array $variables
  *   An associative array containing:
  *   - elements: Array of participant names.
- *     Array keys: #base_url, #title, #html_attributes, #send_script.
+ *     Array keys: #base_url, #title, #html_attributes, #send_script, #include_css.
  */
 function template_preprocess_printable(&$variables) {
   global $base_url;
@@ -99,6 +99,9 @@ function template_preprocess_printable(&$variables) {
     $variables['send_script'] = $variables['base_url'] . '/js/script.js';
     if ($config->get('close_window')) {
       $variables['close_script'] = $variables['base_url'] . '/js/close.js';
+    }
+    if($include_path = \Drupal::service('printable.css_include')->getCssIncludePath()){
+      $variables['include_css'] = $include_path;
     }
   }
 }

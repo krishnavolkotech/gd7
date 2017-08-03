@@ -272,7 +272,7 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
 
 function hzd_notifications_preprocess_form_element(&$variables) {
     $element = &$variables['element'];
-    if($element['#id'] == 'edit-path-0-pathauto') {
+    if(isset($element['#id']) && $element['#id'] == 'edit-path-0-pathauto') {
         $current_user = \Drupal::service('current_user');
         $current_user_roles = $current_user->getRoles();
         if(!in_array('site_administrator', $current_user_roles)) {

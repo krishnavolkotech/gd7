@@ -1,1 +1,38 @@
-[page]/[topage]
+
+<head>
+    <META HTTP-EQUIV="content-type" CONTENT="text/html; charset=utf-8">
+
+    <style type="text/css">
+        /*(bootstrap source)*/
+    </style>
+
+    <style type="text/css">
+		.footer-info{
+	      background:#000; 
+		  color:#fff; 
+		  padding:3px 4px;		  
+          display:inline-block;
+          line-height:20px;		  
+   	   }
+
+    </style>
+    <script>
+        function subst() {
+            var vars = {};
+            var x = window.location.search.substring(1).split('&');
+            for (var i in x) {
+                var z = x[i].split('=', 2);
+                vars[z[0]] = unescape(z[1]);
+            }
+            var x = ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection'];
+            for (var i in x) {
+                var y = document.getElementsByClassName(x[i]);
+                for (var j = 0; j < y.length; ++j)
+                    y[j].textContent = vars[x[i]];
+            }
+        }
+    </script>
+</head>
+<body onload="subst()" >
+&nbsp;&nbsp;<span class="page footer-info"></span><p>&nbsp;</p>
+</body>
