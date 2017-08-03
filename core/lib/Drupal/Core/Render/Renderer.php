@@ -511,7 +511,12 @@ class Renderer implements RendererInterface {
     $prefix = isset($elements['#prefix']) ? $this->xssFilterAdminIfUnsafe($elements['#prefix']) : '';
     $suffix = isset($elements['#suffix']) ? $this->xssFilterAdminIfUnsafe($elements['#suffix']) : '';
 
-    $elements['#markup'] = Markup::create($prefix . $elements['#children'] . $suffix);
+    if (isset($elements['#render_children'])) {
+      $elements['#markup'] = $elements['#children'];
+    }
+    else {
+      $elements['#markup'] = Markup::create($prefix . $elements['#children'] . $suffix);
+    }
 
     // We've rendered this element (and its subtree!), now update the context.
     $context->update($elements);
