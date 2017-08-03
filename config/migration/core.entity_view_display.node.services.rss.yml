@@ -29,12 +29,14 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_downtime_type:
     label: above
     weight: 0
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_enable_downtime:
     label: hidden
     weight: -1
@@ -43,22 +45,27 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_problem_name:
     label: above
     weight: -4
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release_name:
     label: above
     weight: -2
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
+    region: content
 hidden:
   comment: true
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

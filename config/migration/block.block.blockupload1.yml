@@ -15,7 +15,7 @@ third_party_settings:
     classes: ''
 id: blockupload1
 theme: hzd
-region: '-1'
+region: navigation
 weight: -27
 provider: null
 plugin: 'block_upload:block_upload1'

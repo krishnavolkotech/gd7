@@ -12,7 +12,7 @@ _core:
   default_config_hash: kkISXE1LT2FJEoYnqCrCpeFB-2pmGmMxMklVk7rQcfg
 id: hzd_footer
 theme: hzd
-region: '-1'
+region: navigation
 weight: -26
 provider: null
 plugin: 'system_menu_block:footer'

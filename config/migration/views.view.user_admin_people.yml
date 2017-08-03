@@ -419,7 +419,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Rollen
+          label: Roles
           exclude: false
           alter:
             alter_text: false

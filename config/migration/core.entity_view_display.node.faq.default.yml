@@ -28,25 +28,30 @@ content:
       trim_length: 600
     third_party_settings: {  }
     label: hidden
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_detailed_question:
     type: text_default
     weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 3
     settings: {  }
     third_party_settings: {  }
+    region: content
   path:
     type: path
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

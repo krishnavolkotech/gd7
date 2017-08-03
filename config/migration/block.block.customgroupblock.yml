@@ -11,7 +11,7 @@ third_party_settings:
     classes: ''
 id: customgroupblock
 theme: hzd
-region: '-1'
+region: navigation
 weight: -23
 provider: null
 plugin: cust_group_block

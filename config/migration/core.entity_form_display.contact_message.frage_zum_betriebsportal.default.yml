@@ -14,20 +14,24 @@ content:
     weight: 7
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_category:
     weight: 4
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
   langcode:
     type: language_select
     weight: 6
     settings: {  }
     third_party_settings: {  }
+    region: content
   mail:
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   message:
     type: string_textarea
     weight: 5
@@ -35,10 +39,15 @@ content:
       rows: 12
       placeholder: ''
     third_party_settings: {  }
+    region: content
   name:
     weight: 1
     settings: {  }
     third_party_settings: {  }
+    region: content
+  preview:
+    weight: 40
+    region: content
   subject:
     type: string_textfield
     weight: 3
@@ -46,4 +55,5 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden: {  }

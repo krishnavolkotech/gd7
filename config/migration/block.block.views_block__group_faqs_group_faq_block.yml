@@ -12,7 +12,7 @@ third_party_settings:
     classes: ''
 id: views_block__group_faqs_group_faq_block
 theme: hzd
-region: '-1'
+region: navigation
 weight: -14
 provider: null
 plugin: 'views_block:group_faqs-group_faq_block'

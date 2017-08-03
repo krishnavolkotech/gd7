@@ -24,6 +24,7 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_release_service:
     label: above
     weight: 7
@@ -32,11 +33,14 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
+    region: content
 hidden:
   body: true
   comment_no_subject: true
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

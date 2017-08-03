@@ -31,6 +31,7 @@ content:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment_forum:
     label: hidden
     type: comment_default
@@ -39,14 +40,17 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
     settings: {  }
     third_party_settings: {  }
+    region: content
   taxonomy_forums:
     type: entity_reference_label
     weight: -1
@@ -54,6 +58,7 @@ content:
     settings:
       link: false
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
   downtime_description: true

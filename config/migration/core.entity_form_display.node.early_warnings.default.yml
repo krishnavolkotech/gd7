@@ -23,21 +23,25 @@ content:
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
+    region: content
   comment:
     type: comment_default
     weight: 20
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_earlywarning_release:
     weight: 2
     type: options_select
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release_service:
     weight: 1
     type: options_select
     settings: {  }
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: 0
@@ -45,6 +49,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden:
   comment_no_subject: true
   created: true

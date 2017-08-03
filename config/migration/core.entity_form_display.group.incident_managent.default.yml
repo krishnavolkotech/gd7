@@ -8,6 +8,7 @@ dependencies:
     - field.field.group.incident_managent.field_old_reference
     - group.type.incident_managent
   module:
+    - path
     - text
 id: group.incident_managent.default
 targetEntityType: group
@@ -21,6 +22,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
   field_group_body:
     weight: 5
     settings:
@@ -28,12 +30,14 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_old_reference:
     weight: 3
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: number
+    region: content
   label:
     type: string_textfield
     weight: -5
@@ -41,15 +45,21 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   path:
     type: path
     weight: 30
     settings: {  }
     third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
 hidden:
   uid: true

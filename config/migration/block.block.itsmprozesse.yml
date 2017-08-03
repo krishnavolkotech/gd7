@@ -13,7 +13,7 @@ third_party_settings:
     classes: blue
 id: itsmprozesse
 theme: hzd
-region: '-1'
+region: navigation
 weight: -16
 provider: null
 plugin: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'

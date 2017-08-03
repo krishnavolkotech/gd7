@@ -48,6 +48,7 @@ content:
     weight: 22
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment:
     label: hidden
     type: comment_default
@@ -56,52 +57,61 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_attachment:
     label: inline
     weight: 14
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_closed:
     label: inline
     weight: 17
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_comments:
     label: inline
     weight: 11
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_diagnose:
     label: inline
     weight: 6
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_eroffnet:
     label: inline
     weight: 12
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_function:
     label: inline
     weight: 5
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_priority:
     label: inline
     weight: 9
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_problem_eroffnet:
     label: inline
     weight: 18
@@ -110,24 +120,28 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_problem_status:
     label: inline
     weight: 3
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_processing:
     label: inline
     weight: 13
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release:
     label: inline
     weight: 15
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_s_no:
     label: inline
     weight: 1
@@ -136,6 +150,7 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_sdcallid:
     label: inline
     weight: 2
@@ -144,6 +159,7 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_services:
     label: inline
     weight: 4
@@ -151,18 +167,21 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   field_solution:
     label: inline
     weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_task_force:
     label: inline
     weight: 10
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_ticketstore_count:
     label: inline
     weight: 21
@@ -171,34 +190,40 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_ticketstore_link:
     label: inline
     weight: 20
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_version:
     label: inline
     weight: 16
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_work_around:
     label: inline
     weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 23
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 24
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

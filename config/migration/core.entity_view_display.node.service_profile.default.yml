@@ -35,6 +35,7 @@ content:
     weight: 8
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment:
     label: hidden
     type: comment_default
@@ -43,10 +44,12 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_dependent_downtimeservices:
     weight: 10
     label: above
@@ -54,6 +57,7 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
   field_dependent_service:
     label: inline
     weight: 3
@@ -61,12 +65,14 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   field_impact:
     label: inline
     weight: 6
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_maintenance_advance_time:
     label: inline
     weight: 4
@@ -77,28 +83,33 @@ content:
       scale: 2
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_service_operator:
     label: inline
     weight: 1
     type: list_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_service_recipient:
     label: inline
     weight: 2
     type: list_key
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 7
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 9
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

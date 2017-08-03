@@ -21,13 +21,16 @@ content:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_message_preference:
     type: options_buttons
     weight: 1
     settings: {  }
     third_party_settings: {  }
+    region: content
   timezone:
     weight: 6
+    region: content
 hidden:
   contact: true
   field_do_not_deactivate_automati: true

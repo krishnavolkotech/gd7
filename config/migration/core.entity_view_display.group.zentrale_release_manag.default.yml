@@ -21,12 +21,14 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
   field_group_body:
     weight: -2
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
   field_old_reference:
     weight: -4
     label: above
@@ -35,6 +37,7 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
+    region: content
   label:
     label: hidden
     type: string
@@ -42,6 +45,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    region: content
 hidden:
   changed: true
   created: true

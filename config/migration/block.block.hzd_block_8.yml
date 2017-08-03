@@ -8,7 +8,7 @@ dependencies:
     - hzd
 id: hzd_block_8
 theme: hzd
-region: '-1'
+region: navigation
 weight: 4
 provider: null
 plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'

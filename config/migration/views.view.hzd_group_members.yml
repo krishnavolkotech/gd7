@@ -21,7 +21,7 @@ dependencies:
     - inactive_user
     - user
 id: hzd_group_members
-label: 'Group Members'
+label: Gruppenmitglieder
 module: views
 description: ''
 tag: ''
@@ -53,13 +53,13 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Anwenden
           reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
+          sort_asc_label: Auf
+          sort_desc_label: Ab
       pager:
         type: some
         options:
@@ -269,7 +269,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Operations links'
+          label: Aktionen
           exclude: false
           alter:
             alter_text: false
@@ -490,7 +490,7 @@ display:
             title_enable: false
             title: All
           title_enable: true
-          title: '{{ arguments.gid|placeholder }} members'
+          title: 'Mitglieder von {{ arguments.gid|placeholder }} '
           default_argument_type: group_id_from_url
           default_argument_options: {  }
           default_argument_skip_url: false
@@ -516,7 +516,7 @@ display:
       display_extenders: {  }
       use_more: true
       use_more_always: false
-      use_more_text: more
+      use_more_text: mehr
       link_url: ''
       link_display: page_1
     cache_metadata:
@@ -552,7 +552,7 @@ display:
         sorts: false
         exposed_form: false
       use_more_always: false
-      use_more_text: more
+      use_more_text: mehr
       pager:
         type: full
         options:
@@ -561,16 +561,16 @@ display:
           id: 0
           total_pages: null
           tags:
-            previous: '‹ Previous'
-            next: 'Next ›'
-            first: '« First'
-            last: 'Last »'
+            previous: '‹ Vorherige'
+            next: 'Nächste ›'
+            first: '« Erste'
+            last: 'Letzte »'
           expose:
             items_per_page: false
             items_per_page_label: ''
             items_per_page_options: '5, 10, 25, 50'
             items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
+            items_per_page_options_all_label: '- Alle -'
             offset: false
             offset_label: Offset
           quantity: 9
@@ -718,7 +718,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Group Members'
+          label: Gruppenmitglieder
           exclude: true
           alter:
             alter_text: false
@@ -836,7 +836,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
+            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Bearbeiten</a><br>\r\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Entfernen</a>"
             make_link: false
             path: 'group/{{ id_2 }}/members/{{ id }}/edit'
             absolute: false
@@ -1309,7 +1309,7 @@ display:
           admin_label: ' State id'
           required: false
           plugin_id: standard
-      display_description: 'Approved members of a group'
+      display_description: 'Freigeschaltete Mitglieder der Gruppe'
       filters:
         type:
           id: type
@@ -1501,7 +1501,7 @@ display:
           order: DESC
           exposed: true
           expose:
-            label: Roles
+            label: Rollen
           plugin_id: standard
         lastname:
           id: lastname
@@ -1513,18 +1513,18 @@ display:
           order: ASC
           exposed: false
           expose:
-            label: Lastname
+            label: Nachname
           plugin_id: standard
       exposed_form:
         type: bef
         options:
-          submit_button: Apply
+          submit_button: Anwenden
           reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
+          sort_asc_label: Auf
+          sort_desc_label: Ab
           bef:
             general:
               allow_secondary: false
@@ -1535,7 +1535,7 @@ display:
               bef_format: default
               advanced:
                 collapsible: false
-                collapsible_label: 'Sort options'
+                collapsible_label: Sortierungsoptionen
                 combine: true
                 combine_rewrite: ''
                 reset: false
@@ -1638,7 +1638,7 @@ display:
   pending:
     display_plugin: page
     id: pending
-    display_title: pending
+    display_title: Freizuschalten
     position: 2
     display_options:
       display_extenders: {  }
@@ -1657,7 +1657,7 @@ display:
         header: false
         empty: false
       use_more_always: false
-      use_more_text: more
+      use_more_text: mehr
       pager:
         type: full
         options:
@@ -2041,7 +2041,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
+            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\r\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
             make_link: false
             path: 'group/{{ id_2 }}/members/{{ id }}/edit'
             absolute: false
@@ -2127,7 +2127,7 @@ display:
           admin_label: ' user profile uid'
           required: false
           plugin_id: standard
-      display_description: 'Pending members of a group'
+      display_description: Freischaltungen
       filters:
         type:
           id: type
@@ -2234,7 +2234,7 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'No data found'
+          content: 'Keine Daten vorhanden'
           plugin_id: text_custom
     cache_metadata:
       max-age: 0

@@ -17,7 +17,7 @@ dependencies:
     - group
     - user
 id: all_groups
-label: 'All Groups'
+label: 'Alle Gruppen'
 module: views
 description: ''
 tag: ''
@@ -52,13 +52,13 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Suchen
           reset_button: true
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
           expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
+          sort_asc_label: Auf
+          sort_desc_label: Ab
       pager:
         type: none
         options:
@@ -284,7 +284,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Description
+          label: Beschreibung
           exclude: false
           alter:
             alter_text: false
@@ -461,7 +461,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Group Member Count'
+          label: Mitglieder
           exclude: false
           alter:
             alter_text: false
@@ -510,7 +510,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Group Type'
+          label: Typ
           exclude: false
           alter:
             alter_text: false
@@ -559,7 +559,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Actions
+          label: Aktionen
           exclude: false
           alter:
             alter_text: false
@@ -615,7 +615,7 @@ display:
           exposed: true
           expose:
             operator_id: label_op
-            label: 'Search for a group by name'
+            label: Gruppenname
             description: ''
             use_operator: false
             operator: label_op
@@ -742,7 +742,7 @@ display:
           entity_type: group
           entity_field: label
           plugin_id: standard
-      title: 'All Groups'
+      title: 'Alle Gruppen'
       header: {  }
       footer: {  }
       empty: {  }

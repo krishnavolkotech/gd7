@@ -21,6 +21,7 @@ content:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_news_date:
     weight: 1
     label: inline
@@ -29,6 +30,7 @@ content:
       format_type: hzd_datetime
     third_party_settings: {  }
     type: datetime_default
+    region: content
 hidden:
   downtime_description: true
   entity_print_view: true

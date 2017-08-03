@@ -13,7 +13,7 @@ _core:
   default_config_hash: NeHSoqm4XFqA7_0bDmR429ZZQt3LRbZMNRJTMsFyOfI
 id: hzd_user_2
 theme: hzd
-region: '-1'
+region: navigation
 weight: -5
 provider: null
 plugin: 'system_menu_block:tools'

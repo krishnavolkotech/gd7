@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - core.entity_view_mode.node.printable
     - field.field.node.quickinfo.comment
     - field.field.node.quickinfo.field_additional_email_recipient
@@ -46,120 +47,140 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   field_additional_email_recipient:
     label: above
     weight: 2
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_author_name:
     label: inline
     weight: 5
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_author_state:
     label: inline
     weight: 6
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_business_impact:
     label: above
     weight: 12
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_business_impact_services:
     label: above
     weight: 14
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_contact:
     label: above
     weight: 20
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_creators:
     label: above
     weight: 19
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_custom_title:
     weight: 23
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
+    region: content
   field_dates:
     label: above
     weight: 18
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_depend_other_services:
     label: above
     weight: 11
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_intial_situation:
     label: above
     weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_other_services:
     label: above
     weight: 3
     type: list_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_professional_conditions:
     label: above
     weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_recipients:
     label: above
     weight: 4
     type: list_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_related_transfer_number:
     weight: 25
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
+    region: content
   field_special_notes:
     label: above
     weight: 17
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_tech_requirements:
     label: above
     weight: 9
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_technical_impact:
     label: above
     weight: 13
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_technical_impact_services:
     label: above
     weight: 15
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_unique_id:
     type: number_integer
     weight: 16
@@ -168,17 +189,21 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   links:
     weight: 22
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: above
     settings: {  }
     type: file_table
     weight: 21
     third_party_settings: {  }
+    region: content
 hidden:
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

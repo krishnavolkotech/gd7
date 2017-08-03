@@ -13,7 +13,7 @@ third_party_settings:
     classes: ''
 id: groupoperations
 theme: hzd
-region: '-1'
+region: navigation
 weight: -22
 provider: null
 plugin: group_operations

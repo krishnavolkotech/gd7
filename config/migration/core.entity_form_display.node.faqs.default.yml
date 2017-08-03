@@ -24,16 +24,19 @@ content:
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
+    region: content
   faq_kategorie:
     type: options_select
     weight: 20
     settings: {  }
     third_party_settings: {  }
+    region: content
   faq_seite:
     type: options_select
     weight: 20
     settings: {  }
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: -5
@@ -41,6 +44,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
   created: true

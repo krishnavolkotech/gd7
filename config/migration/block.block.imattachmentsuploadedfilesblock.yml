@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: imattachmentsuploadedfilesblock
 theme: hzd
-region: '-1'
+region: navigation
 weight: 6
 provider: null
 plugin: im_attachments_uploaded_files_block

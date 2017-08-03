@@ -12,7 +12,7 @@ third_party_settings:
     classes: ''
 id: printlinks
 theme: hzd
-region: '-1'
+region: navigation
 weight: -2
 provider: null
 plugin: print_links
