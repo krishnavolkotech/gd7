@@ -44,7 +44,8 @@
         "drupal/masquerade": "^2.0@beta",
         "drupal/migrate_plus": "^2.0",
         "drupal/pathauto": "^1.0",
-        "drupal/printable": "1.x-dev"
+        "drupal/printable": "1.x-dev",
+        "drupal/bootstrap": "^3.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -68,7 +69,7 @@
         "installer-paths": {
             "modules/contrib/{$name}": ["type:drupal-module"],
             "profiles/contrib/{$name}": ["type:drupal-profile"],
-            "themes/contrib/{$name}": ["type:drupal-theme"]
+            "themes/{$name}": ["type:drupal-theme"]
         }
     },
     "autoload": {

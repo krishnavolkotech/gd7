@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6000c1d087ff54cd2ccc3f06fe259842",
-    "content-hash": "45e99798c8a5675d99f936e4ef0c9c9a",
+    "hash": "1eba860abcda9d114435d45cd6cf5ba9",
+    "content-hash": "7888b73d7b9b16cdefd9af615af46d78",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1270,6 +1270,60 @@
             }
         },
         {
+            "name": "drupal/bootstrap",
+            "version": "3.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/bootstrap",
+                "reference": "8.x-3.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.5.zip",
+                "reference": null,
+                "shasum": "569f8a243ad6a2e04a86123a0b2a594783a09860"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-theme",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.5",
+                    "datestamp": "1495040301"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "markcarver",
+                    "homepage": "https://www.drupal.org/user/501638"
+                },
+                {
+                    "name": "neardark",
+                    "homepage": "https://www.drupal.org/user/661076"
+                },
+                {
+                    "name": "sylus",
+                    "homepage": "https://www.drupal.org/user/339714"
+                },
+                {
+                    "name": "wundo",
+                    "homepage": "https://www.drupal.org/user/25523"
+                }
+            ],
+            "homepage": "https://www.drupal.org/project/bootstrap",
+            "support": {
+                "source": "http://cgit.drupalcode.org/bootstrap"
+            }
+        },
+        {
             "name": "drupal/config_direct_save",
             "version": "1.0.0",
             "source": {
@@ -1741,7 +1795,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.0.zip",
-                "reference": null,
+                "reference": "8.x-2.0",
                 "shasum": "8546bff4dba58ab69cd45a252ffa710591f6e311"
             },
             "require": {
@@ -2582,8 +2636,7 @@
             "homepage": "https://www.drupal.org/project/printable",
             "support": {
                 "source": "http://cgit.drupalcode.org/printable"
-            },
-            "time": "2015-08-21 17:10:56"
+            }
         },
         {
             "name": "drupal/queue_mail",
