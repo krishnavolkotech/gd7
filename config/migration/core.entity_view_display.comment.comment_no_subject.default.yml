@@ -5,6 +5,7 @@ dependencies:
   config:
     - comment.type.comment_no_subject
     - field.field.comment.comment_no_subject.comment_body
+    - field.field.comment.comment_no_subject.field_do_not_send_notifications
   module:
     - text
 id: comment.comment_no_subject.default
@@ -18,8 +19,10 @@ content:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
+    region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true

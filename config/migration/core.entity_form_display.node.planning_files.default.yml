@@ -20,12 +20,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
   field_upload_planning_file:
     weight: -3
     type: file_generic
     settings:
       progress_indicator: bar
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: -5
@@ -33,6 +35,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
   created: true

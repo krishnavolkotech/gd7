@@ -29,6 +29,7 @@ content:
     settings:
       trim_length: 600
     third_party_settings: {  }
+    region: content
   field_dependent_service:
     label: above
     weight: -2
@@ -36,12 +37,14 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   field_impact:
     label: above
     weight: 31
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_maintenance_advance_time:
     label: above
     weight: 0
@@ -52,22 +55,27 @@ content:
       scale: 2
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_service_operator:
     label: above
     weight: -4
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_service_recipient:
     label: above
     weight: -3
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
+    region: content
 hidden:
   comment: true
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

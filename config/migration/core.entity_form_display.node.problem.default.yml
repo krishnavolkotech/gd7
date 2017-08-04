@@ -43,16 +43,19 @@ content:
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
+    region: content
   comment:
     type: comment_default
     weight: 20
     settings: {  }
     third_party_settings: {  }
+    region: content
   created:
     type: datetime_timestamp
     weight: 10
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_attachment:
     weight: 12
     type: string_textarea
@@ -60,6 +63,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_closed:
     weight: 19
     type: string_textarea
@@ -67,6 +71,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_comments:
     weight: 9
     settings:
@@ -74,6 +79,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_diagnose:
     weight: 4
     type: string_textarea
@@ -81,6 +87,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_eroffnet:
     weight: 10
     type: string_textarea
@@ -88,6 +95,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_function:
     weight: 3
     type: string_textarea
@@ -95,6 +103,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_priority:
     weight: 7
     type: string_textarea
@@ -102,12 +111,14 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_problem_eroffnet:
     weight: 20
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_problem_status:
     weight: 1
     type: string_textarea
@@ -115,6 +126,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_processing:
     weight: 11
     type: string_textarea
@@ -122,6 +134,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_release:
     weight: 17
     type: string_textarea
@@ -129,23 +142,27 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_s_no:
     weight: -3
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_sdcallid:
     weight: -1
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_services:
     weight: 2
     type: options_select
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_solution:
     weight: 5
     settings:
@@ -153,6 +170,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_task_force:
     weight: 8
     type: string_textarea
@@ -160,12 +178,14 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_ticketstore_count:
     weight: 32
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_ticketstore_link:
     weight: 31
     type: string_textarea
@@ -173,6 +193,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_version:
     weight: 18
     type: string_textarea
@@ -180,6 +201,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_work_around:
     weight: 6
     settings:
@@ -187,23 +209,27 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   langcode:
     type: language_select
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   promote:
     type: boolean_checkbox
     settings:
       display_label: true
     weight: 15
     third_party_settings: {  }
+    region: content
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
     weight: 16
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: -5
@@ -211,10 +237,12 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   translation:
     weight: 10
     settings: {  }
     third_party_settings: {  }
+    region: content
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -223,6 +251,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden:
   path: true
   upload: true

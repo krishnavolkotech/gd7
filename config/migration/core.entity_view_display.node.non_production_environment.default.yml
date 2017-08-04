@@ -30,26 +30,31 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_non_production_state:
     label: above
     weight: -4
     type: list_key
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 101
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

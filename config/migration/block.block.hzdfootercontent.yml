@@ -12,7 +12,7 @@ third_party_settings:
     classes: ''
 id: hzdfootercontent
 theme: hzd
-region: '-1'
+region: navigation
 weight: -19
 provider: null
 plugin: hzd_footer

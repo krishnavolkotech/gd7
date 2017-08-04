@@ -12,7 +12,7 @@ third_party_settings:
     classes: ''
 id: addtofavorites
 theme: hzd
-region: '-1'
+region: navigation
 weight: -29
 provider: null
 plugin: star_favorites_block

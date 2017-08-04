@@ -10,7 +10,7 @@ _core:
   default_config_hash: oXUb3JZR2WW5VOdw4HrhRicCsq51mCgLfRyvheG68ck
 id: hzd_breadcrumbs
 theme: hzd
-region: '-1'
+region: navigation
 weight: -28
 provider: null
 plugin: system_breadcrumb_block

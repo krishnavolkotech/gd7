@@ -26,6 +26,7 @@ content:
     weight: 5
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment:
     label: hidden
     type: comment_default
@@ -34,6 +35,7 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   faq_kategorie:
     label: hidden
     type: entity_reference_label
@@ -41,6 +43,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   faq_seite:
     label: hidden
     type: entity_reference_label
@@ -48,16 +51,19 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   links:
     weight: 4
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 6
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view: true

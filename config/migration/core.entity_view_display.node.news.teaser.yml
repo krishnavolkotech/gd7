@@ -22,9 +22,12 @@ content:
     settings:
       trim_length: 600
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
+    region: content
 hidden:
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

@@ -15,7 +15,7 @@ third_party_settings:
     classes: ''
 id: mainnavigation
 theme: hzd
-region: '-1'
+region: navigation
 weight: -12
 provider: null
 plugin: 'system_menu_block:main'

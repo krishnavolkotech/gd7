@@ -15,7 +15,7 @@ third_party_settings:
     classes: blue
 id: hzdquicklinks
 theme: hzd
-region: '-1'
+region: navigation
 weight: 0
 provider: null
 plugin: hzd_quick_links

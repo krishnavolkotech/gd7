@@ -3,6 +3,7 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.taxonomy_term.forums.forum_container
     - taxonomy.vocabulary.forums
   module:
     - text
@@ -19,6 +20,7 @@ content:
     settings: {  }
     third_party_settings: {  }
     label: above
+    region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true

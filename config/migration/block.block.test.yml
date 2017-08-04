@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: test
 theme: hzd
-region: '-1'
+region: navigation
 weight: 5
 provider: null
 plugin: 'system_menu_block:test'

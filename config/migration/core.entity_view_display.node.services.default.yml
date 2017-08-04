@@ -35,10 +35,12 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_diff:
     label: inline
     weight: 3
@@ -47,28 +49,33 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_downtime_type:
     label: inline
     weight: 2
     type: list_key
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_problem_name:
     label: inline
     weight: 0
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release_name:
     label: inline
     weight: 1
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 6
     settings: {  }
     third_party_settings: {  }
+    region: content
   release_type:
     label: hidden
     type: entity_reference_label
@@ -76,12 +83,14 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 7
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

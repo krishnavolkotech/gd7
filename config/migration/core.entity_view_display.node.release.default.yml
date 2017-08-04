@@ -37,10 +37,12 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_date:
     label: inline
     weight: 3
@@ -49,30 +51,35 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    region: content
   field_documentation_link:
     label: inline
     weight: 8
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_link:
     label: inline
     weight: 7
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release_comments:
     label: inline
     weight: 4
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_release_type:
     label: inline
     weight: 1
     type: list_key
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_relese_services:
     label: inline
     weight: 2
@@ -80,22 +87,26 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
   field_status:
     label: inline
     weight: 5
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 9
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: hidden
     settings: {  }
     type: file_default
     weight: 10
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

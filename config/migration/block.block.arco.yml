@@ -14,7 +14,7 @@ third_party_settings:
     classes: ''
 id: arco
 theme: hzd
-region: '-1'
+region: navigation
 weight: -30
 provider: null
 plugin: 'system_menu_block:menu-36070'

@@ -32,6 +32,7 @@ content:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment_body:
     type: text_textarea
     weight: 2
@@ -39,17 +40,20 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_do_not_send_notifications:
     type: boolean_checkbox
     weight: 0
     settings:
       display_label: true
     third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 1
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   subject: true
   translation: true

@@ -12,7 +12,7 @@ third_party_settings:
     classes: blue
 id: gruppenadministration
 theme: hzd
-region: '-1'
+region: navigation
 weight: -21
 provider: null
 plugin: 'block_content:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'

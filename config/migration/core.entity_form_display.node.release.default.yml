@@ -26,17 +26,20 @@ content:
     weight: 20
     settings: {  }
     third_party_settings: {  }
+    region: content
   created:
     type: datetime_timestamp
     weight: 10
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_date:
     weight: -2
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_documentation_link:
     weight: 32
     type: string_textarea
@@ -44,6 +47,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_link:
     weight: 31
     type: string_textarea
@@ -51,6 +55,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_release_comments:
     weight: -1
     settings:
@@ -58,16 +63,19 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_release_type:
     weight: -4
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
   field_relese_services:
     weight: -3
     type: options_select
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_status:
     weight: 6
     type: string_textarea
@@ -75,23 +83,27 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   promote:
     type: boolean_checkbox
     settings:
       display_label: true
     weight: 15
     third_party_settings: {  }
+    region: content
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
     weight: 16
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: -5
@@ -99,10 +111,12 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   translation:
     weight: 10
     settings: {  }
     third_party_settings: {  }
+    region: content
   uid:
     type: entity_reference_autocomplete
     weight: 5
@@ -111,6 +125,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
 hidden:
   path: true
   upload: true

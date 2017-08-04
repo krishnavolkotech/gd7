@@ -13,7 +13,7 @@ dependencies:
     - group
     - user
 id: my_groups
-label: 'My Groups'
+label: 'Meine Gruppen'
 module: views
 description: ''
 tag: ''
@@ -49,7 +49,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Suchen
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -207,7 +207,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Group
+          label: Name
           exclude: false
           alter:
             alter_text: false
@@ -272,7 +272,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Description
+          label: Beschreibung
           exclude: false
           alter:
             alter_text: false
@@ -400,7 +400,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Posts
+          label: Beiträge
           exclude: true
           alter:
             alter_text: false
@@ -449,7 +449,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Members
+          label: Mitglieder
           exclude: false
           alter:
             alter_text: false
@@ -498,7 +498,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Actions
+          label: Aktionen
           exclude: false
           alter:
             alter_text: false
@@ -594,7 +594,7 @@ display:
           entity_type: group
           entity_field: label
           plugin_id: standard
-      title: 'My Groups'
+      title: 'Meine Gruppen'
       header: {  }
       footer: {  }
       empty:
@@ -608,7 +608,7 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'You have not joined in any group yet!!!'
+            value: "<p>You have not joined in any group yet!!!</p>\r\n"
             format: basic_html
           plugin_id: text
       relationships: {  }
@@ -664,7 +664,7 @@ display:
   page_1:
     display_plugin: page
     id: page_1
-    display_title: Page
+    display_title: Seite
     position: 1
     display_options:
       display_extenders:

@@ -22,8 +22,10 @@ content:
     weight: -10
     settings: {  }
     third_party_settings: {  }
+    region: content
   timezone:
     weight: 6
+    region: content
 hidden:
   contact: true
   field_do_not_deactivate_automati: true

@@ -47,7 +47,8 @@
         "drupal/printable": "1.x-dev",
         "doctrine/inflector": "1.1.0",
         "doctrine/common": "2.6.2",
-        "drupal/group": "^1.0@RC"
+        "drupal/group": "^1.0@RC",
+        "drupal/bootstrap": "^3.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -71,7 +72,7 @@
         "installer-paths": {
             "modules/contrib/{$name}": ["type:drupal-module"],
             "profiles/contrib/{$name}": ["type:drupal-profile"],
-            "themes/contrib/{$name}": ["type:drupal-theme"]
+            "themes/{$name}": ["type:drupal-theme"]
         }
     },
     "autoload": {

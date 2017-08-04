@@ -18,16 +18,22 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   group_roles:
     type: options_buttons
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
 hidden:
   path: true
   uid: true

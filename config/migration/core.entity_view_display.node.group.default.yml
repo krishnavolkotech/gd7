@@ -26,6 +26,7 @@ content:
     weight: 101
     settings: {  }
     third_party_settings: {  }
+    region: content
   comment:
     label: hidden
     type: comment_default
@@ -34,14 +35,17 @@ content:
       pager_id: 0
       view_mode: default
     third_party_settings: {  }
+    region: content
   entity_print_view:
     weight: 0
     settings: {  }
     third_party_settings: {  }
+    region: content
   links:
     weight: 100
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

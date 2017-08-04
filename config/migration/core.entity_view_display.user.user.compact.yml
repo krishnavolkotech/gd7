@@ -22,6 +22,7 @@ mode: compact
 content:
   masquerade:
     weight: 50
+    region: content
   user_picture:
     type: image
     weight: 0
@@ -30,6 +31,7 @@ content:
       image_link: content
     third_party_settings: {  }
     label: hidden
+    region: content
 hidden:
   entity_print_view: true
   entity_print_view_epub: true

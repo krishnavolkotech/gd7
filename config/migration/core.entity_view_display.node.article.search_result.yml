@@ -28,6 +28,7 @@ content:
       trim_length: 300
     third_party_settings: {  }
     label: hidden
+    region: content
   field_image:
     type: image
     weight: 0
@@ -36,12 +37,15 @@ content:
       image_link: content
     third_party_settings: {  }
     label: hidden
+    region: content
   links:
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
+  downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

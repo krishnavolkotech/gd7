@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.field.group_content.group_content_type_d4b06e2b6aad0.group_roles
     - group.content_type.group_content_type_d4b06e2b6aad0
+  module:
+    - path
 id: group_content.group_content_type_d4b06e2b6aad0.default
 targetEntityType: group_content
 bundle: group_content_type_d4b06e2b6aad0
@@ -18,22 +20,27 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   group_roles:
     type: options_buttons
     weight: 6
     settings: {  }
     third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 2
     settings: {  }
     third_party_settings: {  }
+    region: content
   path:
     type: path
     weight: 30
     settings: {  }
     third_party_settings: {  }
+    region: content
   translation:
     weight: 10
+    region: content
 hidden:
   uid: true

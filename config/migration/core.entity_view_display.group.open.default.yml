@@ -22,12 +22,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
   field_group_body:
     type: text_default
     weight: 2
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    region: content
   label:
     label: hidden
     type: string
@@ -35,6 +37,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    region: content
 hidden:
   changed: true
   created: true

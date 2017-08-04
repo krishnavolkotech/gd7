@@ -22,6 +22,7 @@ content:
     weight: 50
     settings: {  }
     third_party_settings: {  }
+    region: content
   user_picture:
     label: hidden
     settings:
@@ -30,6 +31,7 @@ content:
     type: image
     weight: 6
     third_party_settings: {  }
+    region: content
 hidden:
   entity_print_view: true
   entity_print_view_epub: true

@@ -74,6 +74,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_author_state:
     type: string_textarea
     weight: 7
@@ -81,6 +82,7 @@ content:
       rows: 1
       placeholder: ''
     third_party_settings: {  }
+    region: content
   field_business_impact:
     weight: 9
     settings:
@@ -88,6 +90,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_business_impact_services:
     weight: 11
     settings:
@@ -95,6 +98,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_contact:
     weight: 16
     settings:
@@ -102,6 +106,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_creators:
     weight: 15
     type: string_textarea
@@ -109,6 +114,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_custom_title:
     weight: 1
     settings:
@@ -116,6 +122,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textarea
+    region: content
   field_dates:
     weight: 14
     type: string_textarea
@@ -123,6 +130,7 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
   field_depend_other_services:
     weight: 8
     settings:
@@ -130,6 +138,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_intial_situation:
     weight: 5
     settings:
@@ -137,11 +146,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_other_services:
     weight: 3
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
+    region: content
   field_professional_conditions:
     weight: 6
     settings:
@@ -149,11 +160,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_recipients:
     weight: 4
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
+    region: content
   field_related_transfer_number:
     weight: 2
     settings:
@@ -161,6 +174,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textarea
+    region: content
   field_special_notes:
     weight: 13
     settings:
@@ -168,6 +182,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_tech_requirements:
     weight: 7
     settings:
@@ -175,6 +190,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_technical_impact:
     weight: 10
     settings:
@@ -182,6 +198,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_technical_impact_services:
     weight: 12
     settings:
@@ -189,18 +206,21 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
+    region: content
   field_unique_id:
     weight: 6
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
+    region: content
   upload:
     settings:
       progress_indicator: throbber
     type: file_generic
     weight: 4
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
   created: true

@@ -94,102 +94,119 @@ content:
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_business_impact_services:
     label: above
     weight: 10
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_contact:
     label: above
     weight: 15
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_creators:
     label: above
     weight: 14
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_custom_title:
     weight: 0
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
+    region: content
   field_dates:
     label: above
     weight: 13
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_depend_other_services:
     label: above
     weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_intial_situation:
     label: above
     weight: 4
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_other_services:
     label: above
     weight: 2
     type: list_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_professional_conditions:
     label: above
     weight: 5
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_recipients:
     label: above
     weight: 3
     type: list_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_related_transfer_number:
     weight: 1
     label: above
     settings: {  }
     third_party_settings: {  }
     type: basic_string
+    region: content
   field_special_notes:
     label: above
     weight: 12
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_tech_requirements:
     label: above
     weight: 6
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_technical_impact:
     label: above
     weight: 9
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   field_technical_impact_services:
     label: above
     weight: 11
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
   upload:
     label: above
     settings: {  }
     type: file_default
     weight: 16
     third_party_settings: {  }
+    region: content
 hidden:
   comment: true
   downtime_description: true
