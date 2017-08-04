@@ -3,43 +3,83 @@
 namespace Drupal\group\Entity\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\group\Entity\GroupInterface;
+use Drupal\user\PrivateTempStoreFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Form controller for the group edit forms.
+ * Form controller for the group add and edit forms.
  *
  * @ingroup group
  */
 class GroupForm extends ContentEntityForm {
-  
-  
-  public function form(array $form, FormStateInterface $form_state) {
-    $form['#entity_builders']['update_status'] = [$this, 'updateStatus'];
-    return parent::form($form, $form_state);
-  }
-  
+
   /**
-   * Entity builder updating the node status with the submitted value.
+   * The private store factory.
    *
-   * @param string $entity_type_id
-   *   The entity type identifier.
-   * @param \Drupal\node\GroupInterface $group
-   *   The node updated with the submitted values.
-   * @param array $form
-   *   The complete form array.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
-   *
-   * @see \Drupal\node\NodeForm::form()
+   * @var \Drupal\user\PrivateTempStoreFactory
    */
-  function updateStatus($entity_type_id, GroupInterface $group, array $form, FormStateInterface $form_state) {
-    $element = $form_state->getTriggeringElement();
-    if (isset($element['#published_status'])) {
-      $group->setPublished($element['#published_status']);
-    }
+  protected $privateTempStoreFactory;
+
+  /**
+   * Constructs a GroupForm object.
+   *
+   * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
+   *   The private store factory.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
+   */
+  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityManagerInterface $entity_manager) {
+    $this->privateTempStoreFactory = $temp_store_factory;
+    parent::__construct($entity_manager);
   }
-  
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('user.private_tempstore'),
+      $container->get('entity.manager')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
+    $actions = parent::actions($form, $form_state);
+
+    /** @var \Drupal\group\Entity\GroupTypeInterface $group_type */
+    $group_type = $this->getEntity()->getGroupType();
+    $replace = ['@group_type' => $group_type->label()];
+
+    // We need to adjust the actions when using the group creator wizard.
+    if ($form_state->get('group_wizard') && $form_state->get('group_wizard_id') == 'group_creator') {
+      // Store a group instead of saving it.
+      $actions['submit']['#submit'] = ['::submitForm', '::store'];
+
+      // Update the label to be more user friendly.
+      $actions['submit']['#value'] = $this->t('Create @group_type and complete your membership', $replace);
+
+      // Add a cancel button to clear the private temp store.
+      $actions['cancel'] = [
+        '#type' => 'submit',
+        '#value' => $this->t('Cancel'),
+        '#submit' => ['::cancel'],
+        '#limit_validation_errors' => [],
+      ];
+    }
+    // If we are not in the wizard, but creator memberships are enabled, we need
+    // to reflect that on the submit button as well.
+    elseif ($group_type->creatorGetsMembership()) {
+      $actions['submit']['#value'] = $this->t('Create @group_type and become a member', $replace);
+    }
+
+    return $actions;
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -55,71 +95,55 @@ class GroupForm extends ContentEntityForm {
     ];
 
     drupal_set_message($this->operation == 'edit'
-      ? $this->t('%title has been updated.', $t_args)
-      : $this->t('%title has been created.', $t_args)
+      ? $this->t('@type %title has been updated.', $t_args)
+      : $this->t('@type %title has been created.', $t_args)
     );
 
     $form_state->setRedirect('entity.group.canonical', ['group' => $this->entity->id()]);
     return $return;
   }
-  
+
   /**
-   * {@inheritdoc}
+   * Cancels the wizard for group creator membership.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @see \Drupal\group\Entity\Controller\GroupController::addForm()
    */
-  protected function actions(array $form, FormStateInterface $form_state) {
-    $element = parent::actions($form, $form_state);
-    $group = $this->entity;
-    if (\Drupal::currentUser()->hasPermission('administer group') || $group->hasPermission('administer group',\Drupal::currentUser())) {
-      // isNew | prev status » default   & publish label             & unpublish label
-      // 1     | 1           » publish   & Save and publish          & Save as unpublished
-      // 1     | 0           » unpublish & Save and publish          & Save as unpublished
-      // 0     | 1           » publish   & Save and keep published   & Save and unpublish
-      // 0     | 0           » unpublish & Save and keep unpublished & Save and publish
-      
-      // Add a "Publish" button.
-      $element['publish'] = $element['submit'];
-      // If the "Publish" button is clicked, we want to update the status to "published".
-      $element['publish']['#published_status'] = TRUE;
-      $element['publish']['#dropbutton'] = 'save';
-      if ($group->isNew()) {
-        $element['publish']['#value'] = t('Save and publish');
-      }
-      else {
-        $element['publish']['#value'] = $group->isPublished() ? t('Save and keep published') : t('Save and publish');
-      }
-      $element['publish']['#weight'] = 0;
-      
-      // Add a "Unpublish" button.
-      $element['unpublish'] = $element['submit'];
-      // If the "Unpublish" button is clicked, we want to update the status to "unpublished".
-      $element['unpublish']['#published_status'] = FALSE;
-      $element['unpublish']['#dropbutton'] = 'save';
-      if ($group->isNew()) {
-        $element['unpublish']['#value'] = t('Save as unpublished');
-      }
-      else {
-        $element['unpublish']['#value'] = !$group->isPublished() ? t('Save and keep unpublished') : t('Save and unpublish');
-      }
-      $element['unpublish']['#weight'] = 10;
-      
-      // If already published, the 'publish' button is primary.
-      if ($group->isPublished()) {
-        unset($element['unpublish']['#button_type']);
-      }
-      // Otherwise, the 'unpublish' button is primary and should come first.
-      else {
-        unset($element['publish']['#button_type']);
-        $element['unpublish']['#weight'] = -10;
-      }
-      
-      // Remove the "Save" button.
-      $element['submit']['#access'] = FALSE;
-    }
-    
-    $element['delete']['#access'] = $group->access('delete');
-    $element['delete']['#weight'] = 100;
-    
-    return $element;
+  public function cancel(array &$form, FormStateInterface $form_state) {
+    $store = $this->privateTempStoreFactory->get($form_state->get('group_wizard_id'));
+    $store_id = $form_state->get('store_id');
+    $store->delete("$store_id:entity");
+    $store->delete("$store_id:step");
+
+    // Redirect to the front page if no destination was set in the URL.
+    $form_state->setRedirect('<front>');
   }
-  
+
+  /**
+   * Stores a group from the wizard step 1 in the temp store.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @see \Drupal\group\Entity\Controller\GroupController::addForm()
+   */
+  public function store(array &$form, FormStateInterface $form_state) {
+    // Store the unsaved group in the temp store.
+    $store = $this->privateTempStoreFactory->get($form_state->get('group_wizard_id'));
+    $store_id = $form_state->get('store_id');
+    $store->set("$store_id:entity", $this->getEntity());
+    $store->set("$store_id:step", 2);
+
+    // Disable any URL-based redirect until the final step.
+    $request = $this->getRequest();
+    $form_state->setRedirect('<current>', [], ['query' => $request->query->all()]);
+    $request->query->remove('destination');
+  }
+
 }

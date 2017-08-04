@@ -44,7 +44,10 @@
         "drupal/masquerade": "^2.0@beta",
         "drupal/migrate_plus": "^2.0",
         "drupal/pathauto": "^1.0",
-        "drupal/printable": "1.x-dev"
+        "drupal/printable": "1.x-dev",
+        "doctrine/inflector": "1.1.0",
+        "doctrine/common": "2.6.2",
+        "drupal/group": "^1.0@RC"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

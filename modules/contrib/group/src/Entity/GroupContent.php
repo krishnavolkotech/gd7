@@ -2,13 +2,13 @@
 
 namespace Drupal\group\Entity;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\user\UserInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\UserInterface;
 
 /**
  * Defines the Group content entity.
@@ -109,34 +109,18 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
    * {@inheritdoc}
    */
   public static function loadByContentPluginId($plugin_id) {
-    $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
-
-    if (empty($group_content_types)) {
-      return [];
-    }
-
-    return \Drupal::entityTypeManager()
-      ->getStorage('group_content')
-      ->loadByProperties(['type' => array_keys($group_content_types)]);
+    /** @var \Drupal\group\Entity\Storage\GroupContentStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('group_content');
+    return $storage->loadByContentPluginId($plugin_id);
   }
 
   /**
    * {@inheritdoc}
    */
   public static function loadByEntity(ContentEntityInterface $entity) {
-    $group_content_types = GroupContentType::loadByEntityTypeId($entity->getEntityTypeId());
-
-    // If no responsible group content types were found, we return nothing.
-    if (empty($group_content_types)) {
-      return [];
-    }
-
-    return \Drupal::entityTypeManager()
-      ->getStorage('group_content')
-      ->loadByProperties([
-        'type' => array_keys($group_content_types),
-        'entity_id' => $entity->id(),
-      ]);
+    /** @var \Drupal\group\Entity\Storage\GroupContentStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('group_content');
+    return $storage->loadByEntity($entity);
   }
 
   /**
@@ -221,7 +205,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // flush some caches containing the entity or perform other operations we
       // cannot possibly know about. Lucky for us, all of that behavior usually
       // happens when saving an entity so let's re-save the added entity.
-//      $this->getEntity()->save();
+      $this->getEntity()->save();
     }
   }
 
@@ -326,10 +310,10 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       $fields['path'] = BaseFieldDefinition::create('path')
         ->setLabel(t('URL alias'))
         ->setTranslatable(TRUE)
-        ->setDisplayOptions('form', array(
+        ->setDisplayOptions('form', [
           'type' => 'path',
           'weight' => 30,
-        ))
+        ])
         ->setDisplayConfigurable('form', TRUE)
         ->setComputed(TRUE);
     }
