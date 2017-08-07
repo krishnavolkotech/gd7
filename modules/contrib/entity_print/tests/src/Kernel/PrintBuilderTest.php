@@ -128,4 +128,24 @@ class PrintBuilderTest extends KernelTestBase {
     $this->assertEquals('Using testprintengine', file_get_contents($uri));
   }
 
+  /**
+   * Test that a file blob is successfully saved.
+   */
+  public function testFileSaved() {
+    $builder = $this->container->get('entity_print.print_builder');
+    $print_engine = $this->container->get('plugin.manager.entity_print.print_engine')->createInstance('testprintengine');
+    $node = $this->createNode([]);
+
+    // Print builder generates a filename for us.
+    $uri = $builder->savePrintable([$node], $print_engine);
+    $this->assertRegExp('#public://(.*)\.pdf#', $uri);
+
+    $custom_uri = 'public://' . $this->randomMachineName() . 'pdf';
+    $uri = $builder->savePrintable([$node], $print_engine, $custom_uri);
+    $this->assertEquals($custom_uri, $uri);
+
+    // Test the file contents.
+    $this->assertEquals('Using testprintengine', file_get_contents($uri));
+  }
+
 }

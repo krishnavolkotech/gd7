@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
+use Symfony\Component\Validator\Constraints\False;
 
 /**
  * Defines the Group entity.
@@ -49,7 +50,8 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid",
  *     "langcode" = "langcode",
  *     "bundle" = "type",
- *     "label" = "label"
+ *     "label" = "label",
+ *     "status" = "status"
  *   },
  *   links = {
  *     "add-form" = "/group/add/{group_type}",
@@ -65,9 +67,9 @@ use Drupal\user\UserInterface;
  * )
  */
 class Group extends ContentEntityBase implements GroupInterface {
-
+  
   use EntityChangedTrait;
-
+  
   /**
    * Gets the group membership loader.
    *
@@ -76,7 +78,7 @@ class Group extends ContentEntityBase implements GroupInterface {
   protected function membershipLoader() {
     return \Drupal::service('group.membership_loader');
   }
-
+  
   /**
    * Gets the group content storage.
    *
@@ -85,7 +87,7 @@ class Group extends ContentEntityBase implements GroupInterface {
   protected function groupContentStorage() {
     return $this->entityTypeManager()->getStorage('group_content');
   }
-
+  
   /**
    * Gets the group role storage.
    *
@@ -94,35 +96,35 @@ class Group extends ContentEntityBase implements GroupInterface {
   protected function groupRoleStorage() {
     return $this->entityTypeManager()->getStorage('group_role');
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getCreatedTime() {
     return $this->get('created')->value;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getChangedTime() {
     return $this->get('changed')->value;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getOwner() {
     return $this->get('uid')->entity;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getOwnerId() {
     return $this->get('uid')->target_id;
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -130,7 +132,7 @@ class Group extends ContentEntityBase implements GroupInterface {
     $this->set('uid', $uid);
     return $this;
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -138,50 +140,61 @@ class Group extends ContentEntityBase implements GroupInterface {
     $this->set('uid', $account->id());
     return $this;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getGroupType() {
     return $this->type->entity;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function addContent(ContentEntityInterface $entity, $plugin_id, $values = []) {
     $storage = $this->groupContentStorage();
-    $group_content = $storage->createForEntityInGroup($entity, $this, $plugin_id, $values);
+
+    $group_content = $storage->createForEntityInGroup($entity , $this, $plugin_id, $values);
     $storage->save($group_content);
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getContent($plugin_id = NULL, $filters = []) {
-    return $this->groupContentStorage()->loadByGroup($this, $plugin_id, $filters);
+    return $this->groupContentStorage()
+      ->loadByGroup($this, $plugin_id, $filters);
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getContentByEntityId($plugin_id, $id) {
     return $this->getContent($plugin_id, ['entity_id' => $id]);
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getContentEntities($plugin_id = NULL, $filters = []) {
     $entities = [];
-
+    
     foreach ($this->getContent($plugin_id, $filters) as $group_content) {
       $entities[] = $group_content->getEntity();
     }
-
+    
     return $entities;
   }
-
+  
+  public function getMemberRequestStatus(AccountInterface $account) {
+    $filters = ['entity_id' => $account->id()];
+    $group_content = $this->groupContentStorage()->loadByGroup($this, 'group_membership', $filters);
+    if($group_content){
+      return (int)array_values($group_content)[0]->get('request_status')->value;
+    }
+    return false;
+  }
+  
   /**
    * {@inheritdoc}
    */
@@ -190,7 +203,7 @@ class Group extends ContentEntityBase implements GroupInterface {
       $this->addContent($account, 'group_membership', $values);
     }
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -199,21 +212,21 @@ class Group extends ContentEntityBase implements GroupInterface {
       $member->getGroupContent()->delete();
     }
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getMember(AccountInterface $account) {
     return $this->membershipLoader()->load($this, $account);
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function getMembers($roles = NULL) {
     return $this->membershipLoader()->loadByGroup($this, $roles);
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -222,12 +235,17 @@ class Group extends ContentEntityBase implements GroupInterface {
     if ($account->hasPermission('bypass group access')) {
       return TRUE;
     }
-
+    
     // Before anything else, check if the user can administer the group.
     if ($permission != 'administer group' && $this->hasPermission('administer group', $account)) {
       return TRUE;
     }
-
+  
+    $status = $this->isPublished();
+    if(!$status){
+      return FALSE;
+    }
+    
     // Retrieve all of the group roles the user may get for the group.
     $group_roles = $this->groupRoleStorage()->loadByUserAndGroup($account, $this);
 
@@ -237,17 +255,33 @@ class Group extends ContentEntityBase implements GroupInterface {
         return TRUE;
       }
     }
-
+    
     // If no role had the requested permission, we deny access.
     return FALSE;
   }
-
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function isPublished() {
+    return (bool) $this->getEntityKey('status');
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function setPublished($published) {
+    $this->set('status', $published ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    return $this;
+  }
+  
+  
   /**
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
-
+    
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))
       ->setRequired(TRUE)
@@ -264,7 +298,7 @@ class Group extends ContentEntityBase implements GroupInterface {
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
-
+    
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Group creator'))
       ->setDescription(t('The username of the group creator.'))
@@ -274,7 +308,14 @@ class Group extends ContentEntityBase implements GroupInterface {
       ->setTranslatable(TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
-
+    
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Publishing status'))
+      ->setDescription(t('A boolean indicating whether the node is published.'))
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE)
+      ->setDefaultValue(TRUE);
+    
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created on'))
       ->setDescription(t('The time that the group was created.'))
@@ -285,7 +326,7 @@ class Group extends ContentEntityBase implements GroupInterface {
         'weight' => 0,
       ])
       ->setDisplayConfigurable('view', TRUE);
-
+    
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group was last edited.'))
@@ -296,7 +337,7 @@ class Group extends ContentEntityBase implements GroupInterface {
         'weight' => 0,
       ])
       ->setDisplayConfigurable('view', TRUE);
-
+    
     if (\Drupal::moduleHandler()->moduleExists('path')) {
       $fields['path'] = BaseFieldDefinition::create('path')
         ->setLabel(t('URL alias'))
@@ -308,10 +349,10 @@ class Group extends ContentEntityBase implements GroupInterface {
         ->setDisplayConfigurable('form', TRUE)
         ->setComputed(TRUE);
     }
-
+    
     return $fields;
   }
-
+  
   /**
    * Default value callback for 'uid' base field definition.
    *
@@ -323,13 +364,13 @@ class Group extends ContentEntityBase implements GroupInterface {
   public static function getCurrentUserId() {
     return [\Drupal::currentUser()->id()];
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
-
+    
     // If a new group is created and the group type is configured to grant group
     // creators a membership by default, add the creator as a member.
     // @todo Deprecate in 8.x-2.x in favor of a form-only approach. API-created
@@ -341,7 +382,7 @@ class Group extends ContentEntityBase implements GroupInterface {
       $this->addMember($this->getOwner(), $values);
     }
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -353,5 +394,5 @@ class Group extends ContentEntityBase implements GroupInterface {
       }
     }
   }
-
+  
 }

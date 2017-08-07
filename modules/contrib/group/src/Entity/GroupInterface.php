@@ -124,6 +124,18 @@ interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, E
    *   The loaded GroupMembership or FALSE if none was found.
    */
   public function getMember(AccountInterface $account);
+  
+  /**
+   * Retrieves a user's membership request status for the group.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user to load the membership for.
+   *
+   * @return \Drupal\group\GroupMembership|false
+   *   The loaded GroupMembership or FALSE if none was found.
+   */
+
+  public function getMemberRequestStatus(AccountInterface $account);
 
   /**
    * Retrieves all group memberships for the group.

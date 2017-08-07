@@ -39,6 +39,9 @@ use Drupal\user\UserInterface;
  *       "delete" = "Drupal\group\Entity\Form\GroupContentDeleteForm",
  *       "group-join" = "Drupal\group\Form\GroupJoinForm",
  *       "group-leave" = "Drupal\group\Form\GroupLeaveForm",
+ *       "approve" = "Drupal\group\Entity\Form\GroupContentApproveForm",
+ *       "reject" = "Drupal\group\Entity\Form\GroupContentRejectForm",
+ *       "group-request" = "Drupal\group\Form\GroupRequestMembershipForm",
  *     },
  *     "access" = "Drupal\group\Entity\Access\GroupContentAccessControlHandler",
  *   },
@@ -225,6 +228,15 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       }
     }
   }
+  
+  public function getRequestStatus() {
+    return $this->get('request_status')->value;
+  }
+  
+  public function setRequestStatus($value) {
+    $this->set('request_status', $value);
+    return $this;
+  }
 
   /**
    * {@inheritdoc}
@@ -286,7 +298,14 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
-
+    
+    $fields['request_status'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Request Status'))
+      ->setDescription(t('Request mebership status.'))
+      ->setSetting('unsigned', TRUE)
+      ->setDefaultValue(1)
+      ->setTranslatable(TRUE);
+    
     if (\Drupal::moduleHandler()->moduleExists('path')) {
       $fields['path'] = BaseFieldDefinition::create('path')
         ->setLabel(t('URL alias'))

@@ -132,12 +132,13 @@ class GroupContentForm extends ContentEntityForm {
     if ($group_content->access('view')) {
       $form_state->setRedirectUrl($group_content->toUrl());
     }
-    elseif ($group_content->getEntity()->access('view')) {
-      $form_state->setRedirectUrl($group_content->getEntity()->toUrl());
-    }
     elseif ($group_content->getGroup()->access('view')) {
       $form_state->setRedirectUrl($group_content->getGroup()->toUrl());
     }
+    elseif ($group_content->getEntity()->access('view')) {
+      $form_state->setRedirectUrl($group_content->getEntity()->toUrl());
+    }
+
     else {
       $form_state->setRedirect('<front>');
     }
