@@ -38,13 +38,7 @@ class GroupMembership extends GroupContentEnablerBase {
     $operations = [];
 
     if ($group->getMember($account)) {
-      if($group->getMemberRequestStatus($account) == 0) {
-        $operations['group-cancel'] = [
-          'title' => $this->t('Cancel requested membership'),
-          'url' => new Url($this->getRouteName('cancel-membership-form'), ['group' => $group->id()]),
-          'weight' => 99,
-        ];
-      }elseif ($group->hasPermission('leave group', $account)) {
+      if ($group->hasPermission('leave group', $account)) {
         $operations['group-leave'] = [
           'title' => $this->t('Leave group'),
           'url' => new Url('entity.group.leave', ['group' => $group->id()]),
@@ -56,13 +50,6 @@ class GroupMembership extends GroupContentEnablerBase {
       $operations['group-join'] = [
         'title' => $this->t('Join group'),
         'url' => new Url('entity.group.join', ['group' => $group->id()]),
-        'weight' => 0,
-      ];
-    }
-    if ($group->hasPermission('request group membership', $account) && (!$group->getMember($account))) {
-      $operations['group-request'] = [
-        'title' => $this->t('Request group membership'),
-        'url' => new Url($this->getRouteName('request-membership-form'), ['group' => $group->id()]),
         'weight' => 0,
       ];
     }
@@ -92,12 +79,7 @@ class GroupMembership extends GroupContentEnablerBase {
       'title' => '%plugin_name: Leave group',
       'allowed for' => ['member'],
     ] + $defaults;
-    
-    $permissions['request group membership'] = [
-      'title' => 'Request group membership',
-      'allowed for' => ['outsider'],
-    ] + $defaults;
-    
+
     // Update the labels of the default permissions.
     $permissions['view group_membership content']['title'] = '%plugin_name: View individual group members';
     $permissions['update own group_membership content']['title'] = '%plugin_name: Edit own membership';
