@@ -27,42 +27,6 @@ function group_update_8103() {
     'default' => 1,
   );
   $schema->addField('group_content_field_data', 'request_status', $spec);
-}
-
-/*
- * Added for a new field in group content entity
- *
- */
-function group_update_8103() {
-    $database = \Drupal::database();
-    $schema = $database->schema();
-    $spec = array(
-        'description' => 'Request status code.',
-        'type' => 'int',
-        'size' => 'small',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 1,
-      );
-    $schema->addField('group_content_field_data', 'request_status', $spec);
-  }
-
-/*
- * Added for a new field in group content entity
- *
- */
-function group_update_8103() {
-    $database = \Drupal::database();
-    $schema = $database->schema();
-    $spec = array(
-        'description' => 'Request status code.',
-        'type' => 'int',
-        'size' => 'small',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 1,
-      );
-    $schema->addField('group_content_field_data', 'request_status', $spec);
   }
 
 /**
