@@ -240,20 +240,22 @@ class Group extends ContentEntityBase implements GroupInterface {
     if ($permission != 'administer group' && $this->hasPermission('administer group', $account)) {
       return TRUE;
     }
-  
-    $status = $this->isPublished();
-    if(!$status){
-      return FALSE;
-    }
     
     // Retrieve all of the group roles the user may get for the group.
     $group_roles = $this->groupRoleStorage()->loadByUserAndGroup($account, $this);
 
     // Check each retrieved role for the requested permission.
     foreach ($group_roles as $group_role) {
+      if ($group_role->hasPermission('edit group') && !$this->isPublished()) {
+        return TRUE;
+      }
+      elseif (!$this->isPublished()) {
+        return FALSE;
+      }
       if ($group_role->hasPermission($permission)) {
         return TRUE;
       }
+    
     }
     
     // If no role had the requested permission, we deny access.
