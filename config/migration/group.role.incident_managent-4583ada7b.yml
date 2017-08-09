@@ -1,0 +1,17 @@
+uuid: 2202d673-bda9-47c7-953e-5e449d0748ff
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+  enforced:
+    config:
+      - user.role.group_administrator
+id: incident_managent-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: incident_managent
+permissions_ui: false
+permissions: {  }

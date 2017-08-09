@@ -1,0 +1,17 @@
+uuid: a8cafec1-a379-4e1f-b654-598fcdbdf148
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+  enforced:
+    config:
+      - user.role.administrator
+id: open-a416e6833
+label: Administrator
+weight: 2
+internal: true
+audience: outsider
+group_type: open
+permissions_ui: false
+permissions: {  }

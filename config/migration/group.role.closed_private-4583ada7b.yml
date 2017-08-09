@@ -1,0 +1,17 @@
+uuid: 6209e428-caaa-48a9-a316-e69b7bdb8d09
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+  enforced:
+    config:
+      - user.role.group_administrator
+id: closed_private-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: closed_private
+permissions_ui: false
+permissions: {  }

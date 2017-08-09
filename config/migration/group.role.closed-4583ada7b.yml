@@ -1,0 +1,17 @@
+uuid: cbe1ef9e-7b85-43c8-9c24-a19ead19f5ef
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+  enforced:
+    config:
+      - user.role.group_administrator
+id: closed-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: closed
+permissions_ui: false
+permissions: {  }

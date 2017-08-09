@@ -1,0 +1,17 @@
+uuid: d2c0539c-2f93-4ef4-bde9-3d47e756c488
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+  enforced:
+    config:
+      - user.role.site_administrator
+id: closed-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: closed
+permissions_ui: false
+permissions: {  }

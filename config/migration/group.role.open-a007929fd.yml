@@ -1,0 +1,17 @@
+uuid: b3e0c4c0-a3f0-47a2-a505-33c65f601408
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+  enforced:
+    config:
+      - user.role.group_member
+id: open-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: open
+permissions_ui: false
+permissions: {  }

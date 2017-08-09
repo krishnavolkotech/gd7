@@ -6,6 +6,7 @@ dependencies:
     - core.entity_view_display.comment.comment.default
     - field.field.node.non_production_environment.comment
     - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.field_order
     - field.field.node.non_production_environment.upload
     - node.type.non_production_environment
   module:
@@ -42,6 +43,15 @@ content:
     type: list_key
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_order:
+    weight: 102
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
     region: content
   links:
     weight: 100

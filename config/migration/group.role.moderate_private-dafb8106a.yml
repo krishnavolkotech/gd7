@@ -1,0 +1,17 @@
+uuid: 5e14d0f6-9118-49d5-a433-7ce2b89234d1
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  enforced:
+    config:
+      - user.role.site_administrator
+id: moderate_private-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: moderate_private
+permissions_ui: false
+permissions: {  }

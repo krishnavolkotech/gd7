@@ -1,0 +1,17 @@
+uuid: 113d1d52-7fa3-41e1-9c8f-985203a3ae48
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+  enforced:
+    config:
+      - user.role.site_administrator
+id: realease_management-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: realease_management
+permissions_ui: false
+permissions: {  }

@@ -1,0 +1,17 @@
+uuid: 92ddf89c-4cce-4a5d-b40f-6754b48b663f
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+  enforced:
+    config:
+      - user.role.group_administrator
+id: zentrale_release_manag-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: zentrale_release_manag
+permissions_ui: false
+permissions: {  }
