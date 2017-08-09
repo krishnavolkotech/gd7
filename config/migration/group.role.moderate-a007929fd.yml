@@ -1,0 +1,17 @@
+uuid: 712ecb29-0f24-4ad2-9ce9-7f5a27e05fb2
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+  enforced:
+    config:
+      - user.role.group_member
+id: moderate-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: moderate
+permissions_ui: false
+permissions: {  }

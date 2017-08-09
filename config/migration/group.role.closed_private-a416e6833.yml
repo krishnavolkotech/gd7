@@ -1,0 +1,17 @@
+uuid: ea8ce61c-79f8-4cdc-b2a5-209542163f53
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+  enforced:
+    config:
+      - user.role.administrator
+id: closed_private-a416e6833
+label: Administrator
+weight: 2
+internal: true
+audience: outsider
+group_type: closed_private
+permissions_ui: false
+permissions: {  }

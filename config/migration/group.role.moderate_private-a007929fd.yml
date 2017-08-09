@@ -1,0 +1,17 @@
+uuid: b2e4a8f6-b96a-4550-af1d-577e32ef2a65
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+  enforced:
+    config:
+      - user.role.group_member
+id: moderate_private-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: moderate_private
+permissions_ui: false
+permissions: {  }

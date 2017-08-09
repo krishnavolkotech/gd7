@@ -1,0 +1,17 @@
+uuid: d4017b25-a2ca-4af1-8b63-eae9e6437db6
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+  enforced:
+    config:
+      - user.role.group_administrator
+id: realease_management-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: realease_management
+permissions_ui: false
+permissions: {  }
