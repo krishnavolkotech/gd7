@@ -88,7 +88,17 @@ function released_deployed_releases($service = NULL) {
 function non_productions_list() {
   $account = \Drupal::currentUser();
   $roles = $account->getRoles();
-  if (in_array('site_administrator', $roles)) {
+  
+  $entityQuery = Drupal::entityQuery('node');
+  $entityQuery->condition('type','non_production_environment');
+  $entityQuery->sort('field_order');
+  if (!in_array('site_administrator', $roles)) {
+    $state = hzd_user_state();
+    $entityQuery->condition('field_non_production_state',$state);
+  }
+  $nodes = Node::loadMultiple($entityQuery->execute());
+  
+  /*if (in_array('site_administrator', $roles)) {
     $non_productions_lists = db_query("SELECT nid, title FROM {node_field_data} WHERE type = :type", array(":type" => 'non_production_environment'))->fetchAll();
   }
   else {
@@ -97,11 +107,11 @@ function non_productions_list() {
       ":state" => $state,
       ":type" => 'non_production_environment'
     ))->fetchAll();
-  }
+  }*/
   $environment_lists[0] = '<' . t("Umgebung") . '>';
   $environment_lists[1] = t('Produktion');
-  foreach ($non_productions_lists as $vals) {
-    $environment_lists[$vals->nid] = $vals->title;
+  foreach ($nodes as $vals) {
+    $environment_lists[$vals->id()] = $vals->label();
   }
   return $environment_lists;
 }
@@ -194,7 +204,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
 //    ->condition('status', 1)
     ->execute();
   $entities = Node::loadMultiple($entityQuery);
-  foreach ($entities as $entity){
+  foreach ($entities as $entity) {
     $releaseData[$entity->get('field_earlywarning_release')->value] = $entity->get('field_earlywarning_release')->value;
   }
   
@@ -500,7 +510,7 @@ function send_qi_notifications($entity) {
       //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
       $markup = \Drupal::entityManager()
         ->getViewBuilder($entity->getEntityTypeId())
-        ->view($entity,'email');///View differsfrom the normal default(full) mode
+        ->view($entity, 'email');///View differsfrom the normal default(full) mode
       $files = $entity->get('upload')->referencedEntities();
       //unset($markup['printfile']);
 //      $style = \Drupal::service('printable.css_include')->getCssIncludePath();
@@ -680,7 +690,7 @@ function hzd_user_mails($uids) {
   $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
   $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
   $query->condition('u.status', 1, '=')
-    ->condition('ufns.field_notifications_status_value', 'Disable','<>')
+    ->condition('ufns.field_notifications_status_value', 'Disable', '<>')
     ->fields('ufmp', array('field_message_preference_value'))
     ->condition('u.uid', $uids, 'IN')
     ->groupBy('ufmp.field_message_preference_value');
@@ -850,18 +860,18 @@ function insert_new_service_notifications($type, $nid) {
   }
   
   foreach ($interval as $key => $each_interval) {
-      foreach ($result as $service_vals) {
-        $serialized_uids = serialize($service_vals);
-      }
-      $record = array(
-        'service_id' => $nid,
-        'type' => $type,
-        'send_interval' => $key,
-        'uids' => $serialized_uids
-      );
-      db_insert('service_notifications')->fields($record)->execute();
+    foreach ($result as $service_vals) {
+      $serialized_uids = serialize($service_vals);
+    }
+    $record = array(
+      'service_id' => $nid,
+      'type' => $type,
+      'send_interval' => $key,
+      'uids' => $serialized_uids
+    );
+    db_insert('service_notifications')->fields($record)->execute();
   }
-  }
+}
 
 /*
   use Drupal\Core\Access\AccessResult;
@@ -1226,24 +1236,25 @@ function hzd_release_management_schema() {
 
 
 function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
-    $routes = ['hzd_release_management.release_management_release_tab',
-               'hzd_release_management.release_management_progress_tab',
-               'hzd_release_management.release_management_locked_tab',
-               'hzd_release_management.release_management_deployed_tab',
-               'hzd_release_management.release_management_overview_deployed_tab',
-               'downtimes.new_downtimes_controller_newDowntime.profiles_management',
-               'downtimes.archived_downtimes_controller',
-               'problem_management.problems_tab',
-               'problem_management.archived_problems_tab',
-        ];
-    $param = \Drupal::request()->query->all();
-    if(!empty($data['tabs'][0])) {
-        $release = $data['tabs'][0];
-        foreach ($release as $key => $value) {
-            if(in_array($key, $routes)) {
-                $value['#link']['url']->setOption('query', $param);
-                $data['cacheability']->setCacheMaxAge(0);
-            }
-        }
+  $routes = [
+    'hzd_release_management.release_management_release_tab',
+    'hzd_release_management.release_management_progress_tab',
+    'hzd_release_management.release_management_locked_tab',
+    'hzd_release_management.release_management_deployed_tab',
+    'hzd_release_management.release_management_overview_deployed_tab',
+    'downtimes.new_downtimes_controller_newDowntime.profiles_management',
+    'downtimes.archived_downtimes_controller',
+    'problem_management.problems_tab',
+    'problem_management.archived_problems_tab',
+  ];
+  $param = \Drupal::request()->query->all();
+  if (!empty($data['tabs'][0])) {
+    $release = $data['tabs'][0];
+    foreach ($release as $key => $value) {
+      if (in_array($key, $routes)) {
+        $value['#link']['url']->setOption('query', $param);
+        $data['cacheability']->setCacheMaxAge(0);
+      }
     }
+  }
 }

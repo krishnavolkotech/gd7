@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.non_production_environment.comment
     - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.field_order
     - field.field.node.non_production_environment.upload
     - node.type.non_production_environment
   module:
@@ -32,6 +33,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_order:
+    weight: 31
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
     region: content
   langcode:
     type: language_select
