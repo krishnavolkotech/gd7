@@ -663,8 +663,16 @@ function hzd_preprocess_views_view_summary_unformatted(&$variables) {
 }
 
 function hzd_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'node_page_form') {
-    $group = \Drupal::routeMatch()->getRawParameter('group');
+  if ($form_id == 'node_page_form' || $form_id == 'node_page_edit_form') {
+    if ($form_id == 'node_page_form') {
+        $group = \Drupal::routeMatch()->getRawParameter('group');
+    } elseif($form_id == 'node_page_edit_form') {
+        $node = \Drupal::routeMatch()->getParameter('node');
+        $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+        if (!empty($groupContent)) {
+          $group = $groupContent->getGroup();
+        }
+    }
     if (!empty($group)) {
       if (!$group instanceof Group) {
         $group = Group::load($group);
@@ -708,7 +716,7 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
           $available_menus[$menu] = $menu_names[$menu];
         }
         $default = $menu_link->getMenuName() . ':' . $menu_link->getParentId();
-        $parent_element = $menu_parent_selector->parentSelectElement($default, $menu_link->getPluginId(), $available_menus);
+//        $parent_element = $menu_parent_selector->parentSelectElement($default, $menu_link->getPluginId(), $available_menus);
         
         $form['menu']['#open'] = (bool) $menu_link->getPluginId();
         $form['menu']['enabled']['#default_value'] = (int) (bool) $menu_link->getPluginId();
@@ -716,19 +724,32 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
         $form['menu']['link']['entity_id']['#value'] = $menu_link->id();
         $form['menu']['link']['title']['#default_value'] = $menu_link->getTitle();
         $form['menu']['link']['description']['#default_value'] = $menu_link->getDescription();
-        $form['menu']['link']['menu_parent'] = $parent_element;
+        $form['menu']['link']['menu_parent']['#default_value'] = $default;
         $form['menu']['link']['menu_parent']['#title'] = t('Parent item');
         $form['menu']['link']['menu_parent']['#attributes']['class'][] = 'menu-parent-select';
         $form['menu']['link']['weight']['#default_value'] = $menu_link->getWeight();
         foreach (array_keys($form['actions']) as $action) {
           if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-            $form['actions'][$action]['#submit'][] = 'menu_ui_form_node_form_submit';
+            $form['actions'][$action]['#submit'][] = 'custom_menu_ui_form_node_form_submit';
           }
         }
       }
   }
 }
 
+function custom_menu_ui_form_node_form_submit($form, FormStateInterface $form_state) {
+    $node = $form_state->getFormObject()->getEntity();
+    if (!$form_state->isValueEmpty('menu')) {
+        $values = $form_state->getValue('menu');
+        if (!empty($values['menu_parent']) && !empty($values['entity_id'])) {
+            $entity = \Drupal\menu_link_content\Entity\MenuLinkContent::load($values['entity_id']);
+            $entity->link->uri = 'entity:node/' . $node->id();
+            $entity->save();
+        }
+    }
+}
+
+// Getting menu id using node
 function hzd_getmenucontent_menuid($node){
        $query = \Drupal::entityQuery('menu_link_content')
         ->condition('link.uri', 'internal:/node/' . $node->id())
