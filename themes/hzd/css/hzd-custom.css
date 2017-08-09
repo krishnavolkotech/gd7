@@ -6,18 +6,21 @@ form.node-downtimes-form .panel-body .form-checkboxes {
 #edit-services-effected .form-checkbox .published-services .service-profile-data .wrapper {
     background: #fbfcfc;
     width: 100%;
-    /*border:0;*/
 }
-#edit-services-effected .form-checkbox .published-services .data,
-#edit-services-effected .popover {
-    left: 0px;
-    position: absolute;
-    top: 20px;
-    width: 500px;
-    background: #fbfcfc;
-    z-index: 10;
-    border: 1px solid rgb(204, 204, 204);
-    padding: 10px;
+#edit-services-effected .popover .popover-content{
+  display:inline-block;
+}
+#edit-services-effected .popover table{
+  border:1px solid rgba(0,0,0,.2) !important;
+  border-top:none !important;
+  margin:0 !important;
+}
+#edit-services-effected .popover table tbody tr td{
+  border-top:1px solid rgba(0,0,0,.2) !important;
+  padding:5px;
+}
+#edit-services-effected .popover .arrow{
+  display:none !important;
 }
 #edit-services-effected .form-checkbox .published-services .data b {
     font-weight: normal !important;
@@ -27,7 +30,7 @@ form.node-downtimes-form .panel-body .form-checkboxes {
     margin: 0 !important;
 }
 #edit-services-effected .form-checkbox .published-services .data .service-profile-close a,
-a#service-profile-close{
+#service-profile-close{
     float: right;
     background: url(../images/tip-close-btn.jpg) left top no-repeat;
     width: 15px;
@@ -530,9 +533,9 @@ form.node-downtimes-form .form-wrapper #edit-services-effected,
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
 form.node-service-profile-edit-form #edit-field-service-recipient , 
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
-  -webkit-column-count:2;
-  -moz-column-count:2;
-  column-count:2;
+  -webkit-column-count:2 !important;
+  -moz-column-count:2 !important;
+  column-count:2 !important;
 }
 .frontpage-downtime-block a.front-page-link{
   width:100%;
