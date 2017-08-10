@@ -876,7 +876,8 @@ table.sticky-header {
 }
 
 table.sticky-header th{
-  padding:15px 8px !important;
+  /*padding:15px 8px !important;*/
+  padding:10px 8px !important;
 }
 table th {
     vertical-align: middle !important;
@@ -3070,6 +3071,9 @@ table.incident caption,
 table.maintenance caption {
     padding: 0 !important;
     width:100%;
+}
+table.incident{
+  width:100%;
 }
 /* .node-downtimes-form */
 

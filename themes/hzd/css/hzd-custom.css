@@ -610,6 +610,7 @@ form.deployedreleases-create-form .form-item,
     margin-right: 15px;
     margin-bottom:10px !important;
 }
+.views-exposed-form .form-item,
 .views-exposed-form .form-actions{
     float:left;
 }
