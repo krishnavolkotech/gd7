@@ -625,14 +625,14 @@ function downtimes_set_default_values(&$form, $nid) {
     }
 
     //For insidents/downtimes
-    if($restict && $downtime_data->scheduled_p == 0) {
-        if($downtime_data->startdate_planned <= REUEST_TIME ) {
-            $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
-        }
-        if(!empty($downtime_data->enddate_planned)) {
-            $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
-        }
-    }
+//    if($restict && $downtime_data->scheduled_p == 0) {
+//        if($downtime_data->startdate_planned <= REUEST_TIME ) {
+//            $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
+//        }
+//        if(!empty($downtime_data->enddate_planned)) {
+//            $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
+//        }
+//    }
     
     if (!empty($downtime_data->enddate_planned)) {
       $form['dates']['end']['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
