@@ -463,3 +463,7 @@ table tr td {
     width: auto;
     display: inline-block;
 }
+.pdf-content .dropdown-menu,
+.pdf-content .dropdown-toggle{
+   display:none;
+}
