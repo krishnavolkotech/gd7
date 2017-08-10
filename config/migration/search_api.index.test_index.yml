@@ -93,19 +93,6 @@ field_settings:
         - node
       config:
         - field.storage.node.body
-processor_settings:
-  rendered_item:
-    plugin_id: rendered_item
-    settings: {  }
-  add_url:
-    plugin_id: add_url
-    settings: {  }
-  aggregated_field:
-    plugin_id: aggregated_field
-    settings: {  }
-options:
-  index_directly: true
-  cron_limit: 50
 datasource_settings:
   'entity:group_content':
     plugin_id: 'entity:group_content'
@@ -136,8 +123,21 @@ datasource_settings:
       languages:
         default: true
         selected: {  }
+processor_settings:
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
 tracker_settings:
   default:
     plugin_id: default
     settings: {  }
+options:
+  index_directly: true
+  cron_limit: 50
 server: hzd_solr
