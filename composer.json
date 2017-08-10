@@ -49,7 +49,8 @@
         "drupal/bootstrap": "^3.5",
         "solarium/solarium": "^3.8",
         "drupal/search_api_solr": "^1.0",
-        "drupal/search_api_solr_multilingual": "^1.0@beta"
+        "drupal/search_api_solr_multilingual": "^1.0@beta",
+        "drupal/allowed_formats": "^1.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

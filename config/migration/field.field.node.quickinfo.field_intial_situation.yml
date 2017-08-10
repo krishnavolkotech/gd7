@@ -6,7 +6,17 @@ dependencies:
     - field.storage.node.field_intial_situation
     - node.type.quickinfo
   module:
+    - allowed_formats
     - text
+third_party_settings:
+  allowed_formats:
+    basic_html: basic_html
+    full_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
 id: node.quickinfo.field_intial_situation
 field_name: field_intial_situation
 entity_type: node

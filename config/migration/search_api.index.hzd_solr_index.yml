@@ -487,6 +487,42 @@ field_settings:
         - node
       config:
         - field.storage.node.field_work_around
+datasource_settings:
+  'entity:group_content':
+    plugin_id: 'entity:group_content'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - closed-group_node-faq
+          - closed-group_node-forum
+          - closed-group_node-page
+          - closed_private-group_node-faq
+          - closed_private-group_node-forum
+          - closed_private-group_node-page
+          - group_content_type_466cc368a8c15
+          - group_content_type_486a744513175
+          - group_content_type_8fbe33e60f149
+          - group_content_type_aa3a511b55f8c
+          - moderate-group_node-event
+          - moderate-group_node-faqs
+          - moderate-group_node-forum
+          - moderate-group_node-page
+          - moderate-group_node-quickinfo
+          - moderate_private-group_node-faqs
+          - moderate_private-group_node-page
+          - open-group_node-downtimes
+          - open-group_node-early_warnings
+          - open-group_node-faqs
+          - open-group_node-forum
+          - open-group_node-newsletter
+          - open-group_node-page
+          - open-group_node-planning_files
+          - open-group_node-problem
+          - open-group_node-quickinfo
+      languages:
+        default: true
+        selected: {  }
 processor_settings:
   group_access:
     plugin_id: group_access
@@ -570,47 +606,11 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
-options:
-  index_directly: true
-  cron_limit: 50
-datasource_settings:
-  'entity:group_content':
-    plugin_id: 'entity:group_content'
-    settings:
-      bundles:
-        default: false
-        selected:
-          - closed-group_node-faq
-          - closed-group_node-forum
-          - closed-group_node-page
-          - closed_private-group_node-faq
-          - closed_private-group_node-forum
-          - closed_private-group_node-page
-          - group_content_type_466cc368a8c15
-          - group_content_type_486a744513175
-          - group_content_type_8fbe33e60f149
-          - group_content_type_aa3a511b55f8c
-          - moderate-group_node-event
-          - moderate-group_node-faqs
-          - moderate-group_node-forum
-          - moderate-group_node-page
-          - moderate-group_node-quickinfo
-          - moderate_private-group_node-faqs
-          - moderate_private-group_node-page
-          - open-group_node-downtimes
-          - open-group_node-early_warnings
-          - open-group_node-faqs
-          - open-group_node-forum
-          - open-group_node-newsletter
-          - open-group_node-page
-          - open-group_node-planning_files
-          - open-group_node-problem
-          - open-group_node-quickinfo
-      languages:
-        default: true
-        selected: {  }
 tracker_settings:
   default:
     plugin_id: default
     settings: {  }
+options:
+  index_directly: true
+  cron_limit: 50
 server: solr_bpk_migration

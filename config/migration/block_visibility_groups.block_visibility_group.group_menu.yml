@@ -11,6 +11,23 @@ id: group_menu
 label: 'Group Menu'
 logic: or
 conditions:
+  5f279d16-e6c4-4d28-9c4b-d5613c453b74:
+    id: node_type
+    bundles:
+      deployed_releases: deployed_releases
+      early_warnings: early_warnings
+      faq: faq
+      faqs: faqs
+      forum: forum
+      page: page
+      planning_files: planning_files
+      problem: problem
+      quickinfo: quickinfo
+      release: release
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    uuid: 5f279d16-e6c4-4d28-9c4b-d5613c453b74
   d4223c81-c685-4008-8e3c-572ba232972f:
     id: group_type
     group_types:
@@ -36,21 +53,4 @@ conditions:
     negate: false
     context_mapping: {  }
     uuid: c34304de-96f6-45d4-b175-cb4bf78d5605
-  5f279d16-e6c4-4d28-9c4b-d5613c453b74:
-    id: node_type
-    bundles:
-      deployed_releases: deployed_releases
-      early_warnings: early_warnings
-      faq: faq
-      faqs: faqs
-      forum: forum
-      page: page
-      planning_files: planning_files
-      problem: problem
-      quickinfo: quickinfo
-      release: release
-    negate: false
-    context_mapping:
-      node: '@node.node_route_context:node'
-    uuid: 5f279d16-e6c4-4d28-9c4b-d5613c453b74
 allow_other_conditions: true
