@@ -4,6 +4,7 @@ status: false
 dependencies:
   module:
     - block_class
+    - block_upload
     - block_visibility_groups
     - node
     - system

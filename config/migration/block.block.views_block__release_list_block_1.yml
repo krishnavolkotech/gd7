@@ -1,5 +1,5 @@
-uuid: 2c30fe15-3baa-424c-8ade-bfc4b72fab2b
-langcode: en
+uuid: e63fd888-b4e3-4501-b228-c6331d4cc61a
+langcode: de
 status: true
 dependencies:
   config:
@@ -8,7 +8,6 @@ dependencies:
     - block_class
     - block_visibility_groups
     - system
-    - user
     - views
   theme:
     - hzd
@@ -29,20 +28,13 @@ settings:
   views_label: 'Neue Releases'
   items_per_page: none
 visibility:
-  request_path:
-    id: request_path
-    pages: '<front>'
-    negate: false
-    context_mapping: {  }
-  user_role:
-    id: user_role
-    roles:
-      authenticated: authenticated
-    negate: false
-    context_mapping:
-      user: '@user.current_user_context:current_user'
   condition_group:
     id: condition_group
     negate: false
     block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
     context_mapping: {  }
