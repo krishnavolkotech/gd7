@@ -1,0 +1,17 @@
+uuid: 176bb17a-8570-4123-8cb8-c464b4833a14
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+  enforced:
+    config:
+      - user.role.site_administrator
+id: quick_info-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: quick_info
+permissions_ui: false
+permissions: {  }

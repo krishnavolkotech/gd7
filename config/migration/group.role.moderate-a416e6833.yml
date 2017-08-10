@@ -1,0 +1,17 @@
+uuid: 5708e09b-0ee8-4c8f-8872-aacce0bd72b1
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+  enforced:
+    config:
+      - user.role.administrator
+id: moderate-a416e6833
+label: Administrator
+weight: 2
+internal: true
+audience: outsider
+group_type: moderate
+permissions_ui: false
+permissions: {  }

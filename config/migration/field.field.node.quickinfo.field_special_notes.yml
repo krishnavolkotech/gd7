@@ -6,7 +6,17 @@ dependencies:
     - field.storage.node.field_special_notes
     - node.type.quickinfo
   module:
+    - allowed_formats
     - text
+third_party_settings:
+  allowed_formats:
+    basic_html: basic_html
+    full_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
 id: node.quickinfo.field_special_notes
 field_name: field_special_notes
 entity_type: node

@@ -15,7 +15,7 @@ third_party_settings:
 id: imattachmentsuploadblock
 theme: hzd
 region: content
-weight: -22
+weight: -23
 provider: null
 plugin: im_attachments_upload_block
 settings:

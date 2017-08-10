@@ -1,0 +1,17 @@
+uuid: 9f798447-0668-4182-8dcd-cc0ce6bfe3b3
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+  enforced:
+    config:
+      - user.role.group_member
+id: closed_private-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: closed_private
+permissions_ui: false
+permissions: {  }

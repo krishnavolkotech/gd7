@@ -1,0 +1,17 @@
+uuid: a9badd7b-15d2-484d-b85b-0fa9757cf350
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+  enforced:
+    config:
+      - user.role.site_administrator
+id: zentrale_release_manag-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: zentrale_release_manag
+permissions_ui: false
+permissions: {  }

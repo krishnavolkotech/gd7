@@ -149,7 +149,13 @@ class MaintenanceBlock extends BlockBase
                 ),
             ),
         );
-
+        $downtime_link_options = array(
+            'attributes' => array(
+                'class' => array(
+                    'downtime-create-button',
+                ),
+            ),
+        );
 
 //    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
 //    $report_link = Link::createFromRoute($this->t('Report Maintenance'), 'downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $link_options);
@@ -191,7 +197,7 @@ class MaintenanceBlock extends BlockBase
             $markup['downtimes']['create'] = [
               '#title' => $this->t('Report Maintenance'),
               '#type' => 'link',
-              '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $link_options)
+              '#url' => Url::fromRoute('downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $downtime_link_options)
             ];
           }
         } else {

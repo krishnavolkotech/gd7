@@ -1,0 +1,17 @@
+uuid: 377cd227-987f-4d79-9a27-6fad9689955e
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+  enforced:
+    config:
+      - user.role.group_member
+id: incident_managent-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: incident_managent
+permissions_ui: false
+permissions: {  }

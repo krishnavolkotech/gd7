@@ -1,0 +1,17 @@
+uuid: 0ccb916f-f909-4aec-a93f-73f9f1c29078
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+  enforced:
+    config:
+      - user.role.group_member
+id: zentrale_release_manag-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: zentrale_release_manag
+permissions_ui: false
+permissions: {  }

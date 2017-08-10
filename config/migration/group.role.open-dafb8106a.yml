@@ -1,0 +1,17 @@
+uuid: a3a9ffbf-988e-4da7-908c-1d1ab49b7ff4
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+  enforced:
+    config:
+      - user.role.site_administrator
+id: open-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: open
+permissions_ui: false
+permissions: {  }
