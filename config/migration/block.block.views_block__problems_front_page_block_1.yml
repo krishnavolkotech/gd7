@@ -17,8 +17,8 @@ third_party_settings:
     classes: news-block
 id: views_block__problems_front_page_block_1
 theme: hzd
-region: content
-weight: -24
+region: sidebar_first
+weight: -25
 provider: null
 plugin: 'views_block:problems_front_page-block_1'
 settings:
