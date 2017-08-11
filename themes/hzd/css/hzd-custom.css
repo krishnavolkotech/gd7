@@ -355,11 +355,15 @@ table tr th {
 #problem_search_results_wrapper table tr td{
   padding:8px !important;
 }
+.view-rz-schnellinfo table tr th:nth-child(6),
+.view-rz-schnellinfo table tr td:nth-child(6),
 #im-attachment-files-list table tr th:nth-child(2),
 #im-attachment-files-list table tr td:nth-child(2){
   width:16%;
   word-break:break-all;
 }
+#problem_search_results_wrapper table#sortable tr th:nth-child(7),
+#problem_search_results_wrapper table#sortable tr td:nth-child(7),
 #im-attachment-files-list table tr th:nth-child(4),
 #im-attachment-files-list table tr td:nth-child(4){
   width:10%;
@@ -368,6 +372,11 @@ table tr th {
 #im-attachment-files-list table tr th:nth-child(5),
 #im-attachment-files-list table tr td:nth-child(5){
   width:15%;
+  word-break:break-all;
+}
+#problem_search_results_wrapper table#sortable tr th:nth-child(6),
+#problem_search_results_wrapper table#sortable tr td:nth-child(6){
+  width:8%;
   word-break:break-all;
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(2),
@@ -437,7 +446,10 @@ form.im-attachments-upload-form .form-type-checkbox label.form-required{
 }
 form.im-attachments-upload-form .form-actions button,
 form.im-attachments-upload-form .form-type-checkbox label.form-required{
-  margin-left:20%;
+  margin-left:18%;
+}
+form.im-attachments-upload-form .form-type-checkbox label.form-required .form-checkbox{
+  margin-top:0;
 }
 form.im-attachments-upload-form .form-item .form-text,
 form.im-attachments-upload-form .form-item .form-managed-file,
