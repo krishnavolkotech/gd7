@@ -335,27 +335,27 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['actions']['unpublish']['#weight'] = 5;
 //        $user = \Drupal::currentUser();
 
-    if (array_intersect($user->getRoles(), [
-                'administrator',
-                'site_administrator'
-            ])) {
-      $form['actions']['publish']['#access'] = TRUE;
-    } else {
-      $group = Group::load(QUICKINFO);
-      $groupMember = $group->getMember($user);
-      if ($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1
-      ) {
-        $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-          $form['actions']['publish']['#access'] = TRUE;
-        } else {
-          $form['actions']['publish']['#access'] = FALSE;
-        }
-      } else {
-        $form['actions']['publish']['#access'] = FALSE;
-      }
-    }
+//    if (array_intersect($user->getRoles(), [
+//                'administrator',
+//                'site_administrator'
+//            ])) {
+//      $form['actions']['publish']['#access'] = TRUE;
+//    } else {
+//      $group = Group::load(QUICKINFO);
+//      $groupMember = $group->getMember($user);
+//      if ($groupMember && $groupMember->getGroupContent()
+//                      ->get('request_status')->value == 1
+//      ) {
+//        $roles = $groupMember->getRoles();
+//        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+//          $form['actions']['publish']['#access'] = TRUE;
+//        } else {
+//          $form['actions']['publish']['#access'] = FALSE;
+//        }
+//      } else {
+//        $form['actions']['publish']['#access'] = FALSE;
+//      }
+//    }
 //        pr($user->getRoles());
 //        exit;
     array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
