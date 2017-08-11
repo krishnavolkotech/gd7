@@ -80,7 +80,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
         ->loadByProperties(['fid' => $file->id()]);
       $attachment = reset($attachment);
       $result['files'][$file->id()]['state'] = [
-        '#markup' => hzd_states()[$nodeData[$file->id()]->get('field_state')->value],
+        '#markup' => hzd_states_abbr()[$nodeData[$file->id()]->get('field_state')->value],
       ];
       $result['files'][$file->id()]['filename'] = [
         '#type' => 'link',
