@@ -341,12 +341,12 @@ table tr th {
 }
 .block-im-attachments-upload-block #im-attachment-files-list table tr th,
 .block-im-attachments-upload-block #im-attachment-files-list table tr td{
-  padding:8px 2px !important;
+  padding:8px !important;
 }
 .block-im-attachments-upload-block #im-attachment-files-list table tr th:first-child,
 .block-im-attachments-upload-block #im-attachment-files-list table tr td:first-child{
-  word-break:break-all;
-  width:200px;
+ /* word-break:break-all;
+  width:200px;*/
 }
 #im-attachment-files-list {
    clear: both;
@@ -354,6 +354,21 @@ table tr th {
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
   padding:8px !important;
+}
+#im-attachment-files-list table tr th:nth-child(2),
+#im-attachment-files-list table tr td:nth-child(2){
+  width:16%;
+  word-break:break-all;
+}
+#im-attachment-files-list table tr th:nth-child(4),
+#im-attachment-files-list table tr td:nth-child(4){
+  width:10%;
+  word-break:break-all;
+}
+#im-attachment-files-list table tr th:nth-child(5),
+#im-attachment-files-list table tr td:nth-child(5){
+  width:15%;
+  word-break:break-all;
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(2),
 #problem_search_results_wrapper table#sortable tr td:nth-child(2),
