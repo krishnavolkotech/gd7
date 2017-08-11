@@ -400,6 +400,11 @@ function cust_group_entity_type_alter(array &$entity_types) {
   }
   } */
 
+function cust_group_entity_reference_selection_alter(&$def){
+  $def['default:user']['class'] = 'Drupal\cust_group\Plugin\EntityReferenceSelection\CustomUserSelection';
+//  pr($def);exit;
+}
+
 function cust_group_form_alter(&$form, $form_state, $form_id) {
 //    echo $form_id;exit;
   //pr($form_state->redirect);exit;

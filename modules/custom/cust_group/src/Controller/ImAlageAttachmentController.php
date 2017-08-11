@@ -9,7 +9,7 @@ class ImAlageAttachmentController extends ControllerBase {
     
     public function defaultStatesInsert() {
       $states = \Drupal::database()->select('states', 'st')
-              ->fields('st', ['state', 'abbr'])
+              ->fields('st', ['id', 'state', 'abbr'])
               ->execute()
               ->fetchAll();
       foreach ($states as $key => $value) {
@@ -17,8 +17,8 @@ class ImAlageAttachmentController extends ControllerBase {
             $path = \Drupal::service('path.alias_manager')->getPathByAlias($url);
             if(preg_match('/node\/(\d+)/', $path, $matches)) {
               $node = \Drupal\node\Entity\Node::load($matches[1]);
-              if($node && empty($node->get('field_state')->value)) {
-                $node->field_state->value = $value->state;
+              if($node ) {
+                $node->field_state->value = $value->id;
                 $node->save();
               }
             }

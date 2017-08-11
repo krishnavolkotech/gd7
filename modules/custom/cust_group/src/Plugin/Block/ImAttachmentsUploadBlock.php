@@ -32,7 +32,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
     $result['im_attachment_filter_element']['#suffix'] = '</div>';
     
     $exposedFilterData = \Drupal::request()->query->all();
-    $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? hzd_states()[$exposedFilterData['state']] : '';
+    $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? $exposedFilterData['state'] : '';
     $nids = \Drupal::entityQuery('node')
       ->condition('type', 'im_upload_page', '=');
     if (!empty($statename)) {
@@ -80,7 +80,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
         ->loadByProperties(['fid' => $file->id()]);
       $attachment = reset($attachment);
       $result['files'][$file->id()]['state'] = [
-        '#markup' => $nodeData[$file->id()]->get('field_state')->value,
+        '#markup' => hzd_states()[$nodeData[$file->id()]->get('field_state')->value],
       ];
       $result['files'][$file->id()]['filename'] = [
         '#type' => 'link',
