@@ -240,6 +240,22 @@ function hzd_states() {
 }
 
 /**
+ * get list of hzd states abbreviations
+ */
+function hzd_states_abbr() {
+    $db = \Drupal::database();
+    $result = $db->select('states', 's')
+        ->fields('s', array('id', 'abbr'))
+        ->condition('s.entity', 1, '!=');
+    $val = $result->execute()->fetchAll();
+    $states = array();
+    foreach ($val as $user_states_list) {
+        $states[$user_states_list->id] = $user_states_list->abbr;
+    }
+    return $states;
+}
+
+/**
  * get list of hzd states
  */
 function hzd_group_list($uid, $no_html = false) {

@@ -81,14 +81,21 @@ body {
 .pdf-content article ol,
 .pdf-content article ul {
     width: 100%;
-    display: inline-block;
-    margin: 0;
+    display: block;
+    margin: 0 0 10px 20px;
     padding: 0;
     float: none;
 }
+.pdf-content article ol li a,
+.pdf-content article ul li a{
+  float:none;
+  width:100%;
+  display: inline-block;  
+}
+
 .pdf-content article ol li,
 .pdf-content article ul li {
-    width: 98%;
+    width: 95%;
     margin: 0 0 5px 2% !important;
     padding: 0;
     float: none;
@@ -467,3 +474,31 @@ table tr td {
 .pdf-content .dropdown-toggle{
    display:none;
 }
+.pdf-content .view-groups-faq .view-content .views-row .views-field-edit-node a, 
+.pdf-content .view-groups-faq .view-content .views-row .views-field-delete-node a{
+  float:none;
+  color:#fff !important;
+  padding:10px;
+  display:inline-block;
+}
+.view-groups-faq .view-content .views-row .views-field-title{
+  display:block;
+  float:none;
+  color:#fff;
+  width:100%;
+}
+.pdf-content br{
+  display:none;
+}
+.pdf-content .views-element-container,
+.pdf-content .ckeditor-custom-wrapper p,
+.pdf-content .ckeditor-custom-wrapper,
+.view-groups-faq .view-content .views-row .views-field-body,
+.pdf-content .view-groups-faq h3,
+.pdf-content .view-groups-faq .views-field,
+.pdf-content .view-groups-faq .view-content .views-row,
+.pdf-content .view-groups-faq .view-content .views-row .views-field-title .field-content{
+  float:none;
+  width:100%;
+}
+

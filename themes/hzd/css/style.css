@@ -1069,8 +1069,9 @@ button.button--reset:hover {
 select {
     width: inherit !important;
 }
-.search_string_submit button {
-    background: url(../images/form-search-btn.png) left -1px no-repeat !important;
+.search_string_submit button,
+.search_string_submit button:hover {
+    background: url(../images/form-search-btn.png) left top no-repeat !important;
     float: left;
     width: 34px;
     height: 34px;
