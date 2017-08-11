@@ -16,7 +16,7 @@ use Drupal\inactive_user\InactiveuserStorage;
  */
 class Inactiveusers extends ControllerBase {
 
-  public function inactive_users() {
+  public static function inactive_users() {
     $user_list = '';
     /**
          * fetch user from inactive users table
@@ -92,7 +92,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Notify administrator of inactive user accounts.
    */
-  public function notify_admin_inactive_accounts() {
+  public static function notify_admin_inactive_accounts() {
     $notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify_admin');
 
     /**
@@ -180,7 +180,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Notify users that their account has been inactive.
    */
-  public function notify_user_inactive_accounts() {
+  public static function notify_user_inactive_accounts() {
 
     $notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify');
 
@@ -267,7 +267,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Warn users when they are about to be blocked.
    */
-  public function warn_to_block_inactive_accounts() {
+  public static function warn_to_block_inactive_accounts() {
 
     $warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block_warn');
     $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block');
@@ -369,7 +369,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Automatically block users.
    */
-  public function block_inactive_accounts() {
+  public static function block_inactive_accounts() {
     $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block');
     if ($block_time) {
       $query = \Drupal::database()->select('users_field_data', 'ufd');
