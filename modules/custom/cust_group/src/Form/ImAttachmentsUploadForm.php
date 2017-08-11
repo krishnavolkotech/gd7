@@ -105,8 +105,7 @@ class ImAttachmentsUploadForm extends FormBase {
         ->fields('cp', array('state_id'))
         ->condition('cp.uid', $userid);
     $stateid = $result->execute()->fetchField();
-    $statename = hzd_states()[$stateid];
-    $nodedata = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['field_state' => $statename]);
+    $nodedata = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['field_state' => $stateid]);
     $nodeid = array_shift($nodedata)->id();
     $node = \Drupal\node\Entity\Node::load($nodeid);
     $message = null;
