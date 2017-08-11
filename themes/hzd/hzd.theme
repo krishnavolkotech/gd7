@@ -699,7 +699,8 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
 //  if ($node->isNew()) {
 //    $form['menu']['enabled']['#default_value'] = TRUE;
 //  }
-  if(\Drupal::routeMatch()->getRouteName() == 'entity.node.edit_form' && $form['menu']['enabled']['#default_value'] == FALSE) {
+  if(\Drupal::routeMatch()->getRouteName() == 'entity.node.edit_form' && 
+          isset($form['menu']) && $form['menu']['enabled']['#default_value'] == FALSE) {
       $node = $form_state->getFormObject()->getEntity();
 
       $id = hzd_getmenucontent_menuid($node);
