@@ -371,6 +371,9 @@ table tr th {
     white-space: pre;
     vertical-align: top;
 }
+form.im-attachment-upload-filter{
+  margin-bottom:15px;
+}
 .block-im-attachments-upload-block .im-attachment-filesupload-form-wrapper form.im-attachments-upload-form{
   margin-bottom:30px;
 }
@@ -383,7 +386,49 @@ table tr th {
     margin-right: 0;
 }
 form.archived .search.form-group{
-  margin-top:10px;
+  /*margin-top:10px;*/
+  margin:0;
+}
+.node-service-profile-edit-form .maintenance-window-field #downtimes-fieldset-wrapper{
+  margin-bottom:10px;
+}
+.node-service-profile-edit-form .fieldset-legend {
+  margin:10px 0;
+  display:inline-block;
+}
+form.im-attachments-upload-form .form-item,
+form.im-attachments-upload-form .form-group{
+  width:100%;
+  display:inline-block;
+}
+form.im-attachments-upload-form{
+  border:1px solid #ddd;
+  padding:20px;
+}
+form.im-attachments-upload-form .form-item label.form-required,
+form.im-attachments-upload-form .form-group label.form-required{
+  width:15%;
+  float:left;
+  margin-right:3%;
+}
+form.im-attachments-upload-form .form-item{
+  margin:0 0 15px 0;
+}
+form.im-attachments-upload-form .form-actions{
+  margin:0;
+}
+form.im-attachments-upload-form .form-type-checkbox label.form-required{
+  width:40% !important;
+}
+form.im-attachments-upload-form .form-actions button,
+form.im-attachments-upload-form .form-type-checkbox label.form-required{
+  margin-left:20%;
+}
+form.im-attachments-upload-form .form-item .form-text,
+form.im-attachments-upload-form .form-item .form-managed-file,
+form.im-attachments-upload-form .form-item .form-textarea-wrapper{
+  width:80%;
+  float:left;
 }
 form .form-type-vertical-tabs .tabs-left .tab-content,
 form.node-downtimes-edit-form .panel,
@@ -583,17 +628,48 @@ a.back-search {
     }
 }
 @media only screen and (max-width: 767px) {
-    button.navbar-toggle {
-        border-radius: 0 !important;
-    }
-    .views-exposed-form .form-item,
-    .deployedreleases-create-form .form-item,
-    .deployedreleases-create-form .form-group .input-group {
-        width:100%;
-    }
-    form.deployedreleases-create-form .btn{
-      margin-bottom:2%;
-    }
+form.im-attachments-upload-form .form-item label.form-required,
+form.im-attachments-upload-form .form-group label.form-required
+form.im-attachments-upload-form .form-item .form-text,
+form.im-attachments-upload-form .form-item .form-managed-file,
+form.im-attachments-upload-form .form-item .form-textarea-wrapper{
+  width:100% !important;
+}
+form.im-attachments-upload-form .form-actions button,
+form.im-attachments-upload-form .form-type-checkbox label.form-required{
+  margin-left:0;
+}
+button.navbar-toggle {
+  border-radius: 0 !important;
+}
+.views-exposed-form .form-item,
+.deployedreleases-create-form .form-item,
+.deployedreleases-create-form .form-group .input-group {
+  width:100%;
+}
+form.deployedreleases-create-form .btn{
+ margin-bottom:2%;
+}
+}
+@media only screen and (min-width:768px) and (max-width:991px){ 
+form.im-attachments-upload-form .form-item label.form-required,
+form.im-attachments-upload-form .form-group label.form-required{
+  width:25% !important;
+}
+form.im-attachments-upload-form .form-actions button, 
+form.im-attachments-upload-form .form-type-checkbox label.form-required{
+  margin-left:27%;
+}
+form.im-attachments-upload-form .form-type-checkbox label.form-required{
+  width:70% !important;
+}
+form.im-attachments-upload-form .form-item .form-text,
+form.im-attachments-upload-form .form-item .form-managed-file,
+form.im-attachments-upload-form .form-item .form-textarea-wrapper{
+  width:70%;
+  float:left;
+}
+
 }
 .form-control:-moz-placeholder {
     color: #333333 !important;
