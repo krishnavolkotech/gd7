@@ -1045,6 +1045,7 @@ display:
         sorts: false
         fields: false
         exposed_form: false
+        empty: false
       use_more_always: false
       use_more_text: more
       pager:
@@ -1943,6 +1944,18 @@ display:
                 is_secondary: false
                 rewrite:
                   filter_rewrite_values: ''
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content: 'No results found'
+          plugin_id: text_custom
     cache_metadata:
       max-age: 0
       contexts:
