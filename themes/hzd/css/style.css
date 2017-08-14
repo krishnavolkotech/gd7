@@ -2524,6 +2524,9 @@ article.downtimes .downtime-view-wrapper {
     margin: 0px;
     text-align: left;
 }
+#edit-services-effected article.downtimes .downtime-view-wrapper {  
+    margin: 10px 0 20px 0;
+}
 article.downtimes .form-group,
 article.quickinfo .field--name-field-unique-id,
 article.quickinfo .field,
@@ -2913,8 +2916,16 @@ article.popup {
 }
 .popover {
     padding: 0px !important;
-    background: none !important;
+    /*background: none !important;*/
 }
+#edit-services-effected .popover-content {
+    padding: 9px 14px !important;
+}
+#edit-services-effected .path-frontpage .popover {
+    padding: 1px !important;
+    /*background-color: #fff !important;*/
+}
+
 
 article.popup .downtime-view-wrapper {
     background: rgb(255, 255, 255) none repeat scroll 0 0;
