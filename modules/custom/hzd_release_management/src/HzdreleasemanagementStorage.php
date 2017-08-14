@@ -1037,6 +1037,7 @@ class HzdreleasemanagementStorage {
         '#quantity' => 5,
         '#prefix' => '<div id="pagination">',
         '#suffix' => '</div>',
+        '#exclude_from_print'=>TRUE,
     );
 
     $output['#attached']['library'] = array(
