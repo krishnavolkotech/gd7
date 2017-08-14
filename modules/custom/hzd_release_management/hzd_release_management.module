@@ -689,10 +689,12 @@ function hzd_user_mails($uids) {
   $query = db_select('users_field_data', 'u');
   $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
   $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
+  $query->leftjoin('inactive_users', 'iu', 'iu.uid = u.uid');
   $query->condition('u.status', 1, '=')
     ->condition('ufns.field_notifications_status_value', 'Disable', '<>')
     ->fields('ufmp', array('field_message_preference_value'))
     ->condition('u.uid', $uids, 'IN')
+    ->isNull('iu.uid')
     ->groupBy('ufmp.field_message_preference_value');
   $query->addExpression("GROUP_CONCAT(u.mail separator ', ')", "mail");
   $result = $query->execute()->fetchAll();
@@ -715,13 +717,26 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   foreach (explode(',', trim($to, ',')) as $userMail) {
     $userEntity = \Drupal::entityTypeManager()->getStorage('user')
       ->loadByProperties(['mail' => trim($userMail)]);
-    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()) {
+    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
+            && !hzd_user_inactive_status_check(reset($userEntity)->id())) {
       $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
   }
   /*if ($result['result'] != TRUE) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }*/
+}
+
+/**
+ * Check whether user is inactive or not
+ */
+function hzd_user_inactive_status_check($uid = NULL) {
+    $result = db_select('inactive_users', 'iu')
+      ->fields('iu', array('uid'))
+      ->condition('iu.uid', $uid)
+      ->range(0, 1)
+      ->execute()->fetchField();
+    return !empty($result) ? TRUE : FALSE;
 }
 
 /**

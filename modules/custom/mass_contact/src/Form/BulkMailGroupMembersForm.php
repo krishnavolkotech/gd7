@@ -96,7 +96,9 @@ class BulkMailGroupMembersForm extends FormBase {
       $groupMembers = $group->getMembers();
       foreach ($groupMembers as $groupMember){
         $user = $groupMember->getGroupContent();
-        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 && !in_array($group->getGroupType()->id().'-admin', array_keys($groupMember->getRoles()))){
+        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 
+             && !in_array($group->getGroupType()->id().'-admin', array_keys($groupMember->getRoles()))
+             && !hzd_user_inactive_status_check($user->id())){
           $mailToGroupMember[] = $user->getEntity()->getEmail();
 //          break;
         }
