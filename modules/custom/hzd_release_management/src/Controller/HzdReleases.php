@@ -292,7 +292,7 @@ class HzdReleases extends ControllerBase {
     $group = Group::load(zrml);
 
     $groupMember = $group->getMember(\Drupal::currentUser());
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || in_array($user_role, array('site_administrator'))) {
+    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || in_array($user_role, array('site_administrator','administrator'))) {
       $breadcrumb = array();
       $url = Url::fromRoute('/');
       $link = Link::fromTextAndUrl(t('Home'), $url);
@@ -313,7 +313,7 @@ class HzdReleases extends ControllerBase {
       $state = $query->execute()->fetchField();
 
       // $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));.
-      if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator'))) {
+      if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator','administrator'))) {
 //                $output['#title'] = $this->t("Deployed Releases");
       } else {
         $output['#title'] = t("Deployed Releases") . " in " . $state;
@@ -327,6 +327,7 @@ class HzdReleases extends ControllerBase {
       $output['newdeployrelease']['#prefix'] = '<h2 class="konsens">';
       $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
       $output['newdeployrelease']['#suffix'] = "</h2>";
+      $output['newdeployrelease']['#exclude_from_print'] = 1;
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $output['deploy_release_form']['form'] = ['#type' => 'container'];
       $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
@@ -337,6 +338,7 @@ class HzdReleases extends ControllerBase {
       # $output['deploy_release_form']['reset']['#suffix'] = "</div>";
       $output['deploy_release_form']['clear_div']['#markup'] = "<div style = 'clear:both'></div>";
       $output['deploy_release_form']['#suffix'] = '</div>';
+      $output['deploy_release_form']['#exclude_from_print'] = 1;
       $output['deployed_data_h2']['#prefix'] = '<h2 class="konsens">';
       $output['deployed_data_h2']['#markup'] = t("Currently Deployed Releases");
       $output['deployed_data_h2']['#suffix'] = "</h2>";
@@ -344,6 +346,7 @@ class HzdReleases extends ControllerBase {
       $output['deployed_data'] = ['#type' => 'container','#attributes'=>['style'=>['width:100%;','float:left;']]];
 
       $output['deployed_data']['deployed_releases_filter'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\DeployedReleasesFilterForm');
+      $output['deployed_data']['deployed_releases_filter']['#exclude_from_print'] = 1;
       $output['deployed_data']['deployment_table'] = HzdreleasemanagementHelper::deployed_releases_table();
     } else {
       $output['#markup'] = t('You are not authorized to access this page.');
