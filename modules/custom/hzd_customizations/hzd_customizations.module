@@ -1457,7 +1457,6 @@ function hzd_customizations_preprocess_block(&$variables) {
                   'group' => key($groupid),
                   'plugin_id' => 'group_node:forum'
       ]);
-      
 //      $links = [
 //          '#attributes' => ['class' => ['action-links']],
 //          '#theme' => 'menu_local_action',

@@ -2521,7 +2521,7 @@ article.downtimes .downtime-view-wrapper {
     padding: 20px;
     width: 100%;
     float: left;
-    margin: 10px 0 20px 0;
+    margin: 0px;
     text-align: left;
 }
 article.downtimes .form-group,
@@ -2900,11 +2900,22 @@ a.downtimes_cancel_link {
 article.popup {
     position: relative;
     float: left;
-    display: none;
+    /*display: none;*/
     z-index: 999;
     width: 750px;
     color: #333333 !important;
 }
+.downtime-popover-wrapper{
+    display: none;
+}
+.popover-content {
+    padding: 0px !important;
+}
+.popover {
+    padding: 0px !important;
+    background: none !important;
+}
+
 article.popup .downtime-view-wrapper {
     background: rgb(255, 255, 255) none repeat scroll 0 0;
     min-height: 300px;
