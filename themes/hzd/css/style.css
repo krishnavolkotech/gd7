@@ -2603,7 +2603,9 @@ article.quickinfo table {
 .quickinfo-attachments table tr td {
     border: 0 !important;
 }
-.view-groups-faq form button.tabledrag-toggle-weight, 
+.view-groups-faq form button.tabledrag-toggle-weight{
+  float:left;
+} 
 .quickinfo-attachments .field--name-upload .table-responsive button.tabledrag-toggle-weight {
     float: right;
 }
@@ -3234,11 +3236,18 @@ header .block-cust-group-search-block button {
     margin-bottom: 5px;
     border-bottom: 1px dotted #004077;
 }
-span.form-required::after {
+.fieldset-legend,
+.form-required{
+  font-size:14px;
+  font-weight:700;
+  color:#000;
+}
+.form-required:after,
+span.form-required:after{
     background-image: none !important;
 }
-span.form-required::after,
-.form-wrapper .panel-title.form-required::after {
+.form-required:after,
+.form-wrapper .panel-title.form-required:after {
     content: " * " !important;
     display: inline-block;
     line-height: 1;
