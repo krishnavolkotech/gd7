@@ -793,6 +793,7 @@ table tr.even:hover {
     line-height: 29px;
     text-align: center;
     font-size: 14px;
+    display: block;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
