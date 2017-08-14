@@ -137,26 +137,36 @@
 //                .hide();
 //        });
 //
-//        //Clears from jquery indternal data cache
-//        $('.block-cust-group-menu-block .dropdown-toggle').removeData('toggle');
-//        // Removes the data-toggle atribute entirely from the parent anchor link.
-//        $('.block-cust-group-menu-block .dropdown-toggle').removeAttr('data-toggle');
-//        // Date time picker on service creation fields found at : /group/24/downtimes/create_downtimes
-//        $('#edit-startdate-planned, #edit-date-reported, #edit-enddate-planned')
-//            .prop('readonly', 'readonly')
-//            .css('background-color', '#fff')
-//            .datetimepicker({
-//                format: 'DD.MM.YYYY - HH:mm',
-//                useCurrent: true,
-//                showTodayButton: true,
-//                ignoreReadonly: true,
-//                sideBySide: true,
-//                stepping: 5,
-//                toolbarPlacement: 'bottom',
-//                showClear: true,
-//                // debug: true
-//            })
-//            .parent().css('position', 'relative');
+        //Clears from jquery indternal data cache
+        $('.block-cust-group-menu-block .dropdown-toggle').removeData('toggle');
+        // Removes the data-toggle atribute entirely from the parent anchor link.
+        $('.block-cust-group-menu-block .dropdown-toggle').removeAttr('data-toggle');
+        // Date time picker on service creation fields found at : /group/24/downtimes/create_downtimes
+        $('#edit-startdate-planned, #edit-date-reported, #edit-enddate-planned')
+            .prop('readonly', 'readonly')
+            .css('background-color', '#fff')
+            .datetimepicker({
+                format: 'DD.MM.YYYY - HH:mm',
+                useCurrent: true,
+                showTodayButton: true,
+                ignoreReadonly: true,
+                sideBySide: true,
+                stepping: 5,
+                toolbarPlacement: 'bottom',
+                showClear: true,
+                // debug: true
+            })
+            .parent().css('position', 'relative');
+    
+        $('div.popup-wrapper').popover({
+            trigger: 'hover',
+            container: 'body',
+            placement: 'left',
+            html: true,
+            content: function () {
+                return $(this).find('.downtime-popover-wrapper').html();
+            }
+        });
 //        $('div.popup-wrapper').hover(function () {
 //            var offset = $(this).offset();
 //            var popHeight = $(this).find('article.popup').height();

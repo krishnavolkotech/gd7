@@ -1117,7 +1117,8 @@ class HzdcustomisationStorage {
         $headersNew = array_merge($headersNew, ['action' => t('Action')]);
         $entity = Node::load($client->downtime_id);
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-        $links['action']['popup']['node'] = $view_builder->view($entity, 'popup', 'de');
+        $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['class'=>['downtime-popover-wrapper']]];
+        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
         $elements['action'] = $renderer->render($links);
       }
 //            pr(count($links));
