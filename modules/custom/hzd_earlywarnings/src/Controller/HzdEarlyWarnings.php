@@ -189,7 +189,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
     $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
     
-    if ($is_member || in_array($user_role, array('site_administrator'))) {
+    if ($is_member || in_array($user_role, array('site_administrator','administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
       $output['content']['pretext']['body']['#markup'] = t($node->body->value);
 //      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
@@ -518,6 +518,7 @@ class HzdEarlyWarnings extends ControllerBase {
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
+      '#exclude_from_print'=>1
     );
     
     return $output;
