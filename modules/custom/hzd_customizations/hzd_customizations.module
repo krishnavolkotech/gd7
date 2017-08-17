@@ -543,11 +543,11 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 //  pr($service);exit;
     // $form_state->setValue('submitted', FALSE);.
     $releaseNode = Node::load($entity->get('field_earlywarning_release')->value);
-    $default_releases = array("0" => t('Release'),$releaseNode->id()=>$releaseNode->label());
+    $default_releases = array("0" => '<' . t('Release') . '>',$releaseNode->id()=>$releaseNode->label());
     if ($service != 0) {
       $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
     }
-
+    asort($default_releases);
 
 //    $rel = \Drupal::request()->query->get('rel');
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
@@ -588,9 +588,10 @@ function node_revisions_revert_confirm_custom($form, FormStateInterface $form_st
 function releaseData(&$form, $form_state) {
   $form_state->setRebuild();
   $service = $form_state->getValue('field_release_service')[0]['value'];
-  $default_releases = array("0" => t('Release'));
+  $default_releases = array("0" => '<' . t('Release') . '>');
   if ($service != 0) {
     $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
+    asort($default_releases);
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
     $form['field_earlywarning_release']['widget']['#default_value'] = 0;
   }

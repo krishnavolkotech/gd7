@@ -159,6 +159,7 @@ class HzdreleasemanagementHelper {
     foreach ($result as $vals) {
       $default_release[$vals->nid] = $vals->title;
     }
+    asort($default_release);
     return array('releases' => $default_release);
   }
 
