@@ -869,6 +869,21 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
         
     }
     
+    //Hidding unpublished groups from /gruppen/meine table for group members
+    if($view->id() == 'my_groups') {
+        $user = \Drupal::currentUser();
+        if(!in_array('site_administrator', $user->getRoles())) {
+            foreach ($view -> result as $key => &$result) {
+                $groupMember = $result->_entity->getMember($user);
+                $roles = $groupMember->getRoles();
+                if(!$result->_entity->isPublished() && $groupMember 
+                        && $groupMember->getGroupContent()->get('request_status')->value == 1
+                        && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
+                    unset($view -> result[$key]);
+                }
+            }
+        }
+    }
 
   // converting the unix timestamp to date just before render for our front page blocks
   if ($view->id() == 'problems_front_page') {
