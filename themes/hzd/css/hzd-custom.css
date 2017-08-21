@@ -362,26 +362,28 @@ table tr th {
   width:16%;
   /*word-break:break-all;*/
 }
-/*#problem_search_results_wrapper table#sortable tr th:nth-child(7),*/
-#problem_search_results_wrapper table#sortable tr td:nth-child(7),
+#problem_search_results_wrapper table#sortable tr th:nth-child(8),
+#problem_search_results_wrapper table#sortable tr td:nth-child(8),
+/*#problem_search_results_wrapper table#sortable tr th:nth-child(7),
+#problem_search_results_wrapper table#sortable tr td:nth-child(7),*/
 #im-attachment-files-list table tr th:nth-child(4),
 #im-attachment-files-list table tr td:nth-child(4){
   /*word-break:break-all;*/
 }
-#problem_search_results_wrapper table#sortable tr th:nth-child(7),
-#problem_search_results_wrapper table#sortable tr td:nth-child(7),
+/*#problem_search_results_wrapper table#sortable tr th:nth-child(7),
+#problem_search_results_wrapper table#sortable tr td:nth-child(7),*/
 #im-attachment-files-list table tr th:nth-child(4),
 #im-attachment-files-list table tr td:nth-child(4){
   width:10%;
 }
+.view-rz-schnellinfo table tr th:nth-child(4),
+.view-rz-schnellinfo table tr td:nth-child(4),
 #im-attachment-files-list table tr th:nth-child(5),
 #im-attachment-files-list table tr td:nth-child(5){
   width:15%;
   /*word-break:break-all;*/
 }
 .view-rz-schnellinfo table tr td:first-child,
-#problem_search_results_wrapper table#sortable tr th:nth-child(8),
-#problem_search_results_wrapper table#sortable tr td:nth-child(8),
 #problem_search_results_wrapper table#sortable tr th:nth-child(6),
 #problem_search_results_wrapper table#sortable tr td:nth-child(6){
   width:8%;
@@ -403,6 +405,10 @@ table tr th {
     word-wrap: break-word;
     /*@todo move this to hzd-custom.css*/
     /*word-break: break-all;*/
+}
+table.sticky-enabled tr th,
+table.sticky-header tr th{
+ /* border-radius:0*/
 }
 table tr td,
 #problem_search_results_wrapper table#sortable tr td:nth-child(8),
