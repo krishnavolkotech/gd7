@@ -697,7 +697,8 @@ class HzdcustomisationStorage {
     $filterData = \Drupal::request()->query;
     $isPrintFormat = $filterData->has('print');
     $group = \Drupal::routeMatch()->getParameter('group');
-    $group_id = (int) $group->id();
+    $current_group_id = (int) $group->id();
+    $group_id = INCIDENT_MANAGEMENT;
     ///// optimizd the code for filters things
     $db = \Drupal::database();
     $downtimesQuery = $db->select('downtimes', 'd');
@@ -848,7 +849,7 @@ class HzdcustomisationStorage {
       $group_downtimes_view_service_query = \Drupal::database()
         ->select('group_downtimes_view', 'gdv');
       $group_downtimes_view_service_query->Fields('gdv', array('service_id'));
-      $group_downtimes_view_service_query->condition('group_id', $group_id, '=');
+      $group_downtimes_view_service_query->condition('group_id', $current_group_id, '=');
       $group_downtimes_view_service = $group_downtimes_view_service_query->execute()
         ->fetchAll();
       if (empty($group_downtimes_view_service)) {
@@ -881,8 +882,11 @@ class HzdcustomisationStorage {
     if ($type == 'archived') {
       $pager->addField('rci', 'end_date');
       $pager->orderby('rci.end_date', 'desc');
-    }
-    else {
+    } elseif ($type == 'incident') {
+        $pager->orderby('d.startdate_planned', 'desc');
+    } elseif ($type == 'maintenance') {
+        $pager->orderby('d.startdate_planned', 'asc');
+    } else {
       $pager->orderby('d.startdate_planned', 'asc');
     }
 

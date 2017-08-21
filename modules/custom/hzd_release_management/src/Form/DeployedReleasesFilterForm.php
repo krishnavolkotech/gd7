@@ -99,10 +99,12 @@ class DeployedReleasesFilterForm extends FormBase {
   public function deployed_dependent_services(&$form, FormState $form_state) {
     $environment = $this->request->get('environment');
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
+    $services_options = $services_releases['services'];
+    asort($services_options);
     $form['service'] = array(
         '#type' => 'select',
         '#default_value' => $this->request->get('service'),
-        '#options' => $services_releases['services'],
+        '#options' => $services_options,
         '#attributes' => array(
             'onchange' => 'this.form.submit()',
         ),
@@ -127,6 +129,7 @@ class DeployedReleasesFilterForm extends FormBase {
           $deployedReleaseData[$actualRelease->id()] = $actualRelease->label();
         }
       }
+      asort($deployedReleaseData);
     }
 
     $form['release'] = array(
