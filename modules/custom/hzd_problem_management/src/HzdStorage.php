@@ -417,6 +417,8 @@ class HzdStorage {
         $default_release[$entity->get('field_release')->value] = $entity->get('field_release')->value;
       }
     }
+    asort($default_release);
+    asort($default_function);
     return array('releases' => $default_release, 'functions' => $default_function);
     
     //Optimized the code with entityquery above

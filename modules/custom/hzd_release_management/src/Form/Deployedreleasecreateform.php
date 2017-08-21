@@ -129,11 +129,12 @@ class Deployedreleasecreateform extends FormBase {
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
 //    $form['deployed_services']['#options'] = $services_releases['services'];
 //    $form['deployed_services']['#default_value'] = 0;
-  
+    $deployed_options = $services_releases['services'];
+    asort($deployed_options);
     $form['deployed_services'] = array(
       '#type' => 'select',
       '#default_value' => $form_state->getValue('ser'),
-      '#options' => $services_releases['services'],
+      '#options' => $deployed_options,
       '#weight' => -5,
       '#ajax' => array(
         'callback' => '::deployed_dependent_releases_env',
@@ -158,7 +159,9 @@ class Deployedreleasecreateform extends FormBase {
 //    $service = $form_state->getValue('deployed_services');
     $environment = $form_state->getValue('deployed_environment');
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
-    $services_releases['releases'][0] = t('< @release >',['@release'=>'Release']);
+    $services_options = $services_releases['releases'];
+    $services_options[0] = t('< @release >',['@release'=>'Release']);
+    asort($services_options);
 //    array_unshift($services_releases['releases'], '');
     // $form_state->setValue('submitted', FALSE);
     // Geting  release data.
@@ -166,10 +169,10 @@ class Deployedreleasecreateform extends FormBase {
       $default_releases = get_undeployed_dependent_release('', $environment);
 //    }
 //    else {
-      $default_releases[] = t("Release");
+      $default_releases[] = '<' . t("Release") . '>';
 //    }
 //pr($default_releases);exit;
-    $form['deployed_releases']['#options'] = $services_releases['releases'];
+    $form['deployed_releases']['#options'] = $services_options;
 
     $form_state->setRebuild(TRUE);
 

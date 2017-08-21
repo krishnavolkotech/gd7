@@ -824,10 +824,10 @@ function downtimes_node_insert($node) {
     $record['scheduled_p'] = $data['downtime_type'];
     db_insert('downtimes')->fields((array)$record)->execute();
     
-    $group = \Drupal::routeMatch()->getParameter('group');
-    if(empty($group)){
-      $group = Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
-    }
+//    $group = \Drupal::routeMatch()->getParameter('group');
+//    if(empty($group)){
+    $group = Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+//    }
     $group_id = $group->id();
     //Adding node to group
     $group_content = GroupContent::create([

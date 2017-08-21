@@ -107,6 +107,7 @@ class HzdNotificationsHelper {
     foreach ($services_query as $services_info) {
       $services[$services_info->nid] = $services_info->title;
     }
+    asort($services);
     return $services;
   }
   
