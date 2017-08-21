@@ -1037,6 +1037,7 @@ class HzdreleasemanagementStorage {
         '#quantity' => 5,
         '#prefix' => '<div id="pagination">',
         '#suffix' => '</div>',
+        '#exclude_from_print'=>TRUE,
     );
 
     $output['#attached']['library'] = array(
@@ -1084,16 +1085,27 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $environment_lists[0] = t('All');
     $environment_lists[1] = t('Produktion');
     if ($state != 1) {
-      $non_productions_lists_query = db_select('node_field_data', 'nfd');
+  
+      $entityQuery = \Drupal::entityQuery('node');
+      $entityQuery->condition('type','non_production_environment');
+      $entityQuery->sort('field_order');
+        $entityQuery->condition('field_non_production_state',$state);
+      $nodes = Node::loadMultiple($entityQuery->execute());
+      foreach ($nodes as $vals) {
+        $environment_lists[$vals->id()] = $vals->label();
+      }
+      
+      /*$non_productions_lists_query = db_select('node_field_data', 'nfd');
       $non_productions_lists_query->Fields('nfd', array('nid', 'title'));
       $non_productions_lists_query->join('node__field_non_production_state', 'nfnps', 'nfd.nid = nfnps.entity_id');
       $non_productions_lists_query->condition('nfnps.field_non_production_state_value', $state, '=');
       $non_productions_lists_query->condition('nfd.type', 'non_production_environment', '=');
+      $non_productions_lists_query->orderBy('field_order');
       $non_productions_lists = $non_productions_lists_query->execute()->fetchAll();
       // While ($row = db_fetch_array($non_productions_lists)) {.
       foreach ($non_productions_lists as $row) {
         $environment_lists[$row->nid] = $row->title;
-      }
+      }*/
     }
     return $environment_lists;
   }

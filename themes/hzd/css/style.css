@@ -793,6 +793,7 @@ table tr.even:hover {
     line-height: 29px;
     text-align: center;
     font-size: 14px;
+    display: block;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -2518,8 +2519,11 @@ article.downtimes .downtime-view-wrapper {
     padding: 20px;
     width: 100%;
     float: left;
-    margin: 10px 0 20px 0;
+    margin: 0px;
     text-align: left;
+}
+#edit-services-effected article.downtimes .downtime-view-wrapper {  
+    margin: 10px 0 20px 0;
 }
 article.downtimes .form-group,
 article.quickinfo .field--name-field-unique-id,
@@ -2897,11 +2901,30 @@ a.downtimes_cancel_link {
 article.popup {
     position: relative;
     float: left;
-    display: none;
+    /*display: none;*/
     z-index: 999;
     width: 750px;
     color: #333333 !important;
 }
+.downtime-popover-wrapper{
+    display: none;
+}
+.popover-content {
+    padding: 0px !important;
+}
+.popover {
+    padding: 0px !important;
+    /*background: none !important;*/
+}
+#edit-services-effected .popover-content {
+    padding: 9px 14px !important;
+}
+#edit-services-effected .path-frontpage .popover {
+    padding: 1px !important;
+    /*background-color: #fff !important;*/
+}
+
+
 article.popup .downtime-view-wrapper {
     background: rgb(255, 255, 255) none repeat scroll 0 0;
     min-height: 300px;

@@ -1,11 +1,12 @@
-id: group_content
-label: Group Content
+id: group_forums
+label: Groups Forums
+migration_group: groups
 migration_tags:
   - Drupal 6
-deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
-migration_group: groups
+#deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
 source:
   plugin: d6_node
+  node_type: 'forum'
   target: migrate
 process:
   id: dedupe_entity
@@ -16,7 +17,7 @@ process:
   label:
     plugin: default_value
     source: title
-    default_value: "Downtimes"
+    default_value: "Forum"
   uid: node_uid
   status: status
   created: created
@@ -26,7 +27,7 @@ process:
   gid:
     -
       plugin: group_mapping_from_d6
-      method: getGroupId
+      method: getGroupForumId
       source: nid
     -
       plugin: skip_on_empty
@@ -36,20 +37,9 @@ process:
       plugin: group_mapping_from_d6
       method: getGroupContentTypeId
       source: type
-#  revision_uid: revision_uid
-#  revision_log: log
-#  revision_timestamp: timestamp
-
-#  unmapped d6 fields.
-#  tnid
-#  translate
-#  moderate
-#  comment
-
 destination:
   plugin: entity:group_content
-  target: default
 migration_dependencies:
   required:
-    - d6_user
+    - d6_node
     - groups

@@ -18,6 +18,23 @@ function inactive_user_user_cancel($edit, $account, $method) {
 }
 
 /**
+ * Hook_user_login($account)
+ */
+function inactive_user_user_login($account) {
+  $uid = $account->Id();
+
+  $query = \Drupal::database()->select('inactive_users', 'iu');
+  $query->fields('iu', array('uid'));
+  $query->condition('uid', $uid);
+  $check_inactive_user = $query->execute()->fetchAssoc();
+
+  if (!empty($check_inactive_user)) {
+    \Drupal::database()->delete('inactive_users')
+     ->condition('uid', $uid)
+     ->execute();
+  }
+}
+/**
  * Implements hook_mail().
  */
 

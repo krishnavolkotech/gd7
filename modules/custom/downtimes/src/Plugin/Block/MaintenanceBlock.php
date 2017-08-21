@@ -243,8 +243,9 @@ class MaintenanceBlock extends BlockBase
         $html .= "</ul>";*/
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
         $markup = $view_builder->view($entity, 'popup', 'de');
-        
-        return \Drupal::service('renderer')->render($markup);
+        $container = ['#type'=>'container','#attributes'=>['class'=>['downtime-popover-wrapper']]];
+        $container[] = $markup;
+        return \Drupal::service('renderer')->render($container);
     }
     
 }

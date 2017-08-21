@@ -60,67 +60,83 @@
          function handlerOutIncident() {
          $(this).next('.downtime-hover').css('display', 'none');
          }*/
-
-        $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
-            var ele = $(this);
-            var offset = ele.offset();
-            var popHeight = ele.parents('li').find('article.popup').height();
-            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            var popWidth = ele.parents('li').find('article.popup').width();
-            var finalLeft = offset.left - popWidth - 15;
-            if (finalTop < 78 && $('#toolbar-administration').length) {
-                finalTop = 88;
-            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
-                finalTop = 10;
+        $('.frontpage-downtime-block ul.incidents-home-block>li .service-tooltip').popover({
+            trigger: 'hover',
+            container: 'body',
+            placement: 'left',
+            html: true,
+            content: function () {
+                return $(this).next('.downtime-popover-wrapper').html();
             }
-            if (finalLeft < 0) {
-                var newWidth = popWidth * 3 / 4;
-                ele.parents('li').find('article.popup').width(newWidth);
-                finalLeft = offset.left - newWidth - 15;
-            }
-            ele.parents('li').find('article.popup')
-                .css('position', 'fixed')
-                .css('top', finalTop)
-                .css('left', finalLeft)
-                .show();
-        }, function () {
-            var ele = $(this).parent('li');
-            ele.find('article.popup')
-                .removeAttr('position')
-                .removeAttr('top')
-                .hide();
         });
-
-        $(".frontpage-downtime-block .maintenance-list ul li .service-tooltip").hover(function () {
-            var ele = $(this);
-            var offset = ele.offset();
-            var popHeight = ele.parents('li').find('article.popup').height();
-            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            var popWidth = ele.parents('li').find('article.popup').width();
-            var finalLeft = offset.left - popWidth - 15;
-            if (finalTop < 78 && $('#toolbar-administration').length) {
-                finalTop = 88;
-            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
-                finalTop = 10;
+//        $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
+//            var ele = $(this);
+//            var offset = ele.offset();
+//            var popHeight = ele.parents('li').find('article.popup').height();
+//            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+//            var popWidth = ele.parents('li').find('article.popup').width();
+//            var finalLeft = offset.left - popWidth - 15;
+//            if (finalTop < 78 && $('#toolbar-administration').length) {
+//                finalTop = 88;
+//            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+//                finalTop = 10;
+//            }
+//            if (finalLeft < 0) {
+//                var newWidth = popWidth * 3 / 4;
+//                ele.parents('li').find('article.popup').width(newWidth);
+//                finalLeft = offset.left - newWidth - 15;
+//            }
+//            ele.parents('li').find('article.popup')
+//                .css('position', 'fixed')
+//                .css('top', finalTop)
+//                .css('left', finalLeft)
+//                .show();
+//        }, function () {
+//            var ele = $(this).parent('li');
+//            ele.find('article.popup')
+//                .removeAttr('position')
+//                .removeAttr('top')
+//                .hide();
+//        });
+        $('.frontpage-downtime-block .maintenance-list ul li .service-tooltip').popover({
+            trigger: 'hover',
+            container: 'body',
+            placement: 'left',
+            html: true,
+            content: function () {
+                return $(this).next('.downtime-popover-wrapper').html();
             }
-            if (finalLeft < 0) {
-                var newWidth = popWidth * 3 / 4;
-                ele.parents('li').find('article.popup').width(newWidth);
-                finalLeft = offset.left - newWidth - 15;
-            }
-            ele.parents('li').find('article.popup')
-                .css('position', 'fixed')
-                .css('top', finalTop)
-                .css('left', finalLeft)
-                .show();
-        }, function () {
-            var ele = $(this).parent('li');
-            ele.find('article.popup')
-                .removeAttr('position')
-                .removeAttr('top')
-                .hide();
         });
-
+//        $(".frontpage-downtime-block .maintenance-list ul li .service-tooltip").hover(function () {
+//            var ele = $(this);
+//            var offset = ele.offset();
+//            var popHeight = ele.parents('li').find('article.popup').height();
+//            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+//            var popWidth = ele.parents('li').find('article.popup').width();
+//            var finalLeft = offset.left - popWidth - 15;
+//            if (finalTop < 78 && $('#toolbar-administration').length) {
+//                finalTop = 88;
+//            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+//                finalTop = 10;
+//            }
+//            if (finalLeft < 0) {
+//                var newWidth = popWidth * 3 / 4;
+//                ele.parents('li').find('article.popup').width(newWidth);
+//                finalLeft = offset.left - newWidth - 15;
+//            }
+//            ele.parents('li').find('article.popup')
+//                .css('position', 'fixed')
+//                .css('top', finalTop)
+//                .css('left', finalLeft)
+//                .show();
+//        }, function () {
+//            var ele = $(this).parent('li');
+//            ele.find('article.popup')
+//                .removeAttr('position')
+//                .removeAttr('top')
+//                .hide();
+//        });
+//
         //Clears from jquery indternal data cache
         $('.block-cust-group-menu-block .dropdown-toggle').removeData('toggle');
         // Removes the data-toggle atribute entirely from the parent anchor link.
@@ -141,28 +157,38 @@
                 // debug: true
             })
             .parent().css('position', 'relative');
-        $('div.popup-wrapper').hover(function () {
-            var offset = $(this).offset();
-            var popHeight = $(this).find('article.popup').height();
-            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
-            if (finalTop < 78 && $('#toolbar-administration').length) {
-                finalTop = 88;
-            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
-                finalTop = 10;
+    
+        $('div.popup-wrapper').popover({
+            trigger: 'hover',
+            container: 'body',
+            placement: 'left',
+            html: true,
+            content: function () {
+                return $(this).find('.downtime-popover-wrapper').html();
             }
-            var popWidth = $(this).find('article.popup').width();
-            var finalLeft = offset.left - popWidth - 10;
-            $(this).find('article.popup')
-                .css('position', 'fixed')
-                .css('top', finalTop)
-                .css('left', finalLeft)
-                .show();
-        }, function () {
-            $(this).find('article.popup')
-                .removeAttr('position')
-                .removeAttr('top')
-                .hide();
         });
+//        $('div.popup-wrapper').hover(function () {
+//            var offset = $(this).offset();
+//            var popHeight = $(this).find('article.popup').height();
+//            var finalTop = offset.top - $(window).scrollTop() - popHeight / 2;
+//            if (finalTop < 78 && $('#toolbar-administration').length) {
+//                finalTop = 88;
+//            } else if (finalTop < 0 && !$('#toolbar-administration').length) {
+//                finalTop = 10;
+//            }
+//            var popWidth = $(this).find('article.popup').width();
+//            var finalLeft = offset.left - popWidth - 10;
+//            $(this).find('article.popup')
+//                .css('position', 'fixed')
+//                .css('top', finalTop)
+//                .css('left', finalLeft)
+//                .show();
+//        }, function () {
+//            $(this).find('article.popup')
+//                .removeAttr('position')
+//                .removeAttr('top')
+//                .hide();
+//        });
 
         /*jQuery('div.popup-wrapper')
          .mouseover(function () {

@@ -3,7 +3,7 @@ label: Groups
 migration_group: groups
 migration_tags:
   - Drupal 6
-deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
+#deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
 source:
   plugin: d6_node
   node_type: 'group'
