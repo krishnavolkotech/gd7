@@ -69,6 +69,7 @@ class TermType extends ConditionPluginBase implements ContainerFactoryPluginInte
     foreach ($node_types as $type) {
       $options[$type->id()] = $type->label();
     }
+    asort($options);
     $form['bundles'] = array(
       '#title' => $this->t('Term types'),
       '#type' => 'checkboxes',

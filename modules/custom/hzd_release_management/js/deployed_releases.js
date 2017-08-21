@@ -54,7 +54,7 @@
             $(context).find("#current_deploysortable").tablesorter({
                 headers: {
                     //3: {sorter: 'deployed_date'},
-                    4: {sorter: false}
+//                    4: {sorter: false}
                 },
                 widgets: ['zebra']
             });

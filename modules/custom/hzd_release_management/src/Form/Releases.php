@@ -30,6 +30,7 @@ class Releases extends FormBase {
     foreach ($terms as $key => $value) {
       $release_type[$value->tid] = $value->name;
     }
+    asort($release_type);
     $form['release_type'] = array(
       '#type' => 'select',
       '#default_value' => 459,
@@ -47,7 +48,7 @@ class Releases extends FormBase {
       '#suffix' => '</div><div style="clear:both"></div>',
     );
 
-    $services[] = $this->t('Service');
+    $services[] = '<' . $this->t('Service') . '>';
     $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
@@ -56,7 +57,7 @@ class Releases extends FormBase {
     foreach ($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
     }
-
+    asort($services);
     $form['services'] = array(
       '#type' => 'select',
       '#default_value' => '',
@@ -74,14 +75,14 @@ class Releases extends FormBase {
       '#suffix' => '</div>',
     );
 
-    $options = array("Releases");
+    $options[] = '<' . t("Releases") . '>';
     $service = \Drupal::request()->get('services');
     if ($service) {
       $release = \Drupal::request()->get('releases');
       $def_releases = get_release($string, $service);
       $options = $def_releases['releases'];
     }
-
+    asort($options);
     $form['releases'] = array(
       '#type' => 'select',
       '#default_value' => '',

@@ -1,0 +1,31 @@
+id: service_release_type
+label: Service Release Type Fields(taxonomy)
+migration_group: fields
+migration_tags:
+  - Drupal 6
+source:
+  plugin: source_table
+  target: migrate
+  table_name: term_node
+  fields:
+    - tid
+    - nid
+  id_fields:
+      nid:
+        type: integer
+        unsigned: FALSE
+        size: big
+
+process:
+  release_type: tid
+  nid: nid
+  changed:
+    plugin: extended_iterator
+    method: getNodeModifiedValue
+    source: nid
+destination:
+  plugin: entity:node
+migration_dependencies:
+  required:
+    - d6_node
+    - d6_taxonomy_term

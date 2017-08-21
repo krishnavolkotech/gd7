@@ -68,7 +68,7 @@ function released_deployed_releases($service = NULL) {
     $releases[$releases_info->release_id] = $releases_info->title;
   }
   
-  $deployed_services[] = t('Service');
+  $deployed_services[] = '<' . t('Service') . '>';
   if (!empty($services)) {
     $list = implode(", ", $services);
     $sql = db_query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
@@ -113,6 +113,7 @@ function non_productions_list() {
   foreach ($nodes as $vals) {
     $environment_lists[$vals->id()] = $vals->label();
   }
+  asort($environment_lists);
   return $environment_lists;
 }
 
@@ -243,6 +244,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$deployed_nid] = $title;
     }
   }
+  asort($undeployed_releases);
   // dpm($release);
   return $undeployed_releases;
 }

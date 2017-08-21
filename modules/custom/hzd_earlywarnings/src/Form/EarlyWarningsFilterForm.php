@@ -87,6 +87,7 @@ class EarlyWarningsFilterForm extends FormBase
         foreach ($terms as $key => $value) {
             $release_type_list[$value->tid] = $value->name;
         }
+        asort($release_type_list);
         $form['release_type'] = array(
             '#type' => 'select',
             '#default_value' => $filter_value['release_type'] ?
@@ -110,6 +111,7 @@ class EarlyWarningsFilterForm extends FormBase
         );
         
         $default_value_services = $filter_value['services'];
+        asort($services);
         $form['services'] = array(
             '#type' => 'select',
             '#options' => $services,
