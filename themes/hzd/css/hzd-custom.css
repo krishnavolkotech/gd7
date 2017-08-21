@@ -325,10 +325,10 @@ table.releases.released tr.even td.earlywarnings-cell {
 .home-problems-title a{
   color:#333 !important;
 }
-table tr td,
+/*table tr td,
 table tr th {
     word-wrap: break-word;
-}
+}*/
 #archived_search_results_wrapper table tr td:last-child .popup-wrapper,
 #incidents_search_results_wrapper table tr td:last-child .popup-wrapper,
 #maintenance_search_results_wrapper table tr td:last-child .popup-wrapper {
@@ -360,35 +360,61 @@ table tr th {
 #im-attachment-files-list table tr th:nth-child(2),
 #im-attachment-files-list table tr td:nth-child(2){
   width:16%;
-  word-break:break-all;
+  /*word-break:break-all;*/
+}
+/*#problem_search_results_wrapper table#sortable tr th:nth-child(7),*/
+#problem_search_results_wrapper table#sortable tr td:nth-child(7),
+#im-attachment-files-list table tr th:nth-child(4),
+#im-attachment-files-list table tr td:nth-child(4){
+  /*word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(7),
 #problem_search_results_wrapper table#sortable tr td:nth-child(7),
 #im-attachment-files-list table tr th:nth-child(4),
 #im-attachment-files-list table tr td:nth-child(4){
   width:10%;
-  word-break:break-all;
 }
 #im-attachment-files-list table tr th:nth-child(5),
 #im-attachment-files-list table tr td:nth-child(5){
   width:15%;
-  word-break:break-all;
+  /*word-break:break-all;*/
 }
+.view-rz-schnellinfo table tr td:first-child,
+#problem_search_results_wrapper table#sortable tr th:nth-child(8),
+#problem_search_results_wrapper table#sortable tr td:nth-child(8),
 #problem_search_results_wrapper table#sortable tr th:nth-child(6),
 #problem_search_results_wrapper table#sortable tr td:nth-child(6){
   width:8%;
-  word-break:break-all;
+  /*word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(2),
 #problem_search_results_wrapper table#sortable tr td:nth-child(2),
 #problem_search_results_wrapper table#sortable tr th:nth-child(3),
 #problem_search_results_wrapper table#sortable tr td:nth-child(3){
   width:11%;
-  word-break:break-all;
+  /*word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(4),
 #problem_search_results_wrapper table#sortable tr td:nth-child(4){
   width:17%;
+  /*word-break:break-all;*/
+}
+.view-group-nodes .views-field-uid a {
+    word-wrap: break-word;
+    /*@todo move this to hzd-custom.css*/
+    /*word-break: break-all;*/
+}
+table tr td,
+#problem_search_results_wrapper table#sortable tr td:nth-child(8),
+#problem_search_results_wrapper table#sortable tr td:nth-child(4),
+#problem_search_results_wrapper table#sortable tr td:nth-child(3),
+#problem_search_results_wrapper table#sortable tr td:nth-child(2),
+#problem_search_results_wrapper table#sortable tr td:nth-child(6),
+#im-attachment-files-list table tr td:nth-child(5),
+#im-attachment-files-list table tr td:nth-child(4),
+#problem_search_results_wrapper table#sortable tr td:nth-child(7),
+#im-attachment-files-list table tr td:nth-child(2),
+.view-rz-schnellinfo table tr td:nth-child(6){
   word-break:break-all;
 }
 #released_results_wrapper table.view-deployed-releases tr td {
@@ -489,16 +515,25 @@ table.sticky-table th.views-field-changed a:hover,
 table.sticky-table th.views-field-created a:hover {
     color: #333333;
 }
-table.sticky-table th.views-field-changed a span,
+.field--name-body,
+a,
+p {
+    word-wrap: break-word;
+}
+table.sticky-header th.views-field-changed a span,
 table.sticky-table th.views-field-created a span {
-    float: right;
+    float: right !important;
 }
 table.sticky-header th.views-field-changed a,
 table.sticky-header th.views-field-created a,
 table.sticky-table th.views-field-changed a,
 table.sticky-table th.views-field-created a {
-    width: 80px !important;
-    float: left !important;
+   width: 80px !important;
+   float: left !important;
+}
+.view-rz-schnellinfo table.sticky-table th.views-field a,
+.view-rz-schnellinfo table.sticky-header th.views-field a{
+   width: 115px !important;
 }
 table.sticky-table th.views-field-changed a,
 table.sticky-table th.views-field-created a,
@@ -594,11 +629,6 @@ input.hasDatepicker,
 .views-exposed-form button:hover,
 button.button--reset:hover {
     opacity: 0.95;
-}
-.field--name-body,
-a,
-p {
-    word-wrap: break-word;
 }
 li.comment-delete a {
     border-radius: 2px 0 0 2px;

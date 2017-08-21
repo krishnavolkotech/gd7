@@ -1349,11 +1349,6 @@ article .quickedit-field .field__items .field--item {
 .table-striped > tbody > tr:nth-of-type(odd) {
     background: transparent !important;
 }
-.view-group-nodes .views-field-uid a {
-    word-wrap: break-word;
-    /*@todo move this to hzd-custom.css*/
-    /*word-break: break-all;*/
-}
 .node-preview-container {
     width: 250px;
     background: #004077;
@@ -2046,13 +2041,15 @@ section .form-group .more-link a {
     background: none;
     padding: 0;
 }
-aside section .form-group .item-list ul li {
+/*aside section .form-group .item-list ul li*/ 
+section .form-group .item-list ul li{
     display: inline-block;
     padding: 0;
     margin: 0;
     width: 100%;
 }
-aside section .form-group .item-list ul li .field-content {
+/*aside section .form-group .item-list ul li .field-content*/
+section .form-group .item-list ul li .field-content {
     color: #333;
     font-size: 14px;
     line-height: 20px;
@@ -3242,9 +3239,11 @@ header .block-cust-group-search-block button {
   font-weight:700;
   color:#000;
 }
-.form-required:after,
-span.form-required:after{
+.form-required:after{
     background-image: none !important;
+}
+span.form-required:after{
+    background-image: none;
 }
 .form-required:after,
 .form-wrapper .panel-title.form-required:after {
