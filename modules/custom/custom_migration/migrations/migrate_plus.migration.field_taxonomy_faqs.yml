@@ -1,12 +1,12 @@
-id: fields_forums
-label: Forums Taxonomy field
+id: fields_faq_terms
+label: Faq Taxonomy field
 migration_group: fields
 migration_tags:
   - Drupal 6
-deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
+#deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
 source:
   plugin: d6_node
-  node_type: 'forum'
+  node_type: 'faqs'
   target: migrate
 process:
   nid: nid
@@ -15,10 +15,18 @@ process:
     plugin: default_value
     source: language
     default_value: "de"
-  'taxonomy_forums/target_id':
+  'faq_kategorie/target_id':
     -
       plugin: group_mapping_from_d6
-      method: getForumTaxonomyId
+      method: getFaqCategoryTaxonomyId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
+  'faq_seite/target_id':
+    -
+      plugin: group_mapping_from_d6
+      method: getFaqSeiteTaxonomyId
       source: nid
     -
       plugin: skip_on_empty
