@@ -333,6 +333,9 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     
     $form['actions']['publish']['#weight'] = 10;
     $form['actions']['unpublish']['#weight'] = 5;
+    if(\Drupal::currentUser()->isAuthenticated()) {
+        $form['actions']['publish']['#access'] = TRUE;
+    }
 //        $user = \Drupal::currentUser();
 
 //    if (array_intersect($user->getRoles(), [
