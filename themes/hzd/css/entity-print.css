@@ -500,4 +500,22 @@ table tr td {
   float:none;
   width:100%;
 }
-
+.pdf-content .warningcount{
+  float:none;
+  display:inline-block;
+}
+.pdf-content a.create_earlywarning,
+.pdf-content a.view-earlywarning{
+  text-decoration:none;
+}
+.pdf-content .block-incidents-block a.downtime-create-button, 
+.pdf-content .block-maintenance-block a.downtime-create-button, 
+.pdf-content .btn-default, .btn-default:hover{
+  border:none;
+}
+.pdf-content .btn-default, 
+.pdf-content .btn-default:hover{
+  float:none;
+ /* display:block;*/
+  
+}
