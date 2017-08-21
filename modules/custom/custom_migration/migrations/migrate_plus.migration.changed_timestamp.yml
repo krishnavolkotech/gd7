@@ -1,0 +1,26 @@
+id: changed_timestamp
+label: Changed Timestamp
+migration_group: timestamp
+migration_tags:
+  - Drupal 6
+source:
+  plugin: source_table
+  target: migrate
+  table_name: node
+  fields:
+    - changed
+    - nid
+  id_fields:
+      nid:
+        type: integer
+        unsigned: FALSE
+        size: big
+
+process:
+  changed: changed
+  nid: nid
+destination:
+  plugin: entity:node
+migration_dependencies:
+  required:
+    - d6_node
