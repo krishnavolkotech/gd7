@@ -660,7 +660,7 @@ class HzdreleasemanagementHelper {
     }
 //      $entityQuery->sort('field_date_deployed','DESC');
 //      $entityQuery->addTag('debug');
-    $result = $entityQuery->pager($limit)->execute();
+//    $result = $entityQuery->pager($limit)->execute();
 //       pr($result);exit;
     $data = [];
     $states = get_all_user_state();
