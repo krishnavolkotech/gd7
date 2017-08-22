@@ -30,7 +30,7 @@ class Releases extends FormBase {
     foreach ($terms as $key => $value) {
       $release_type[$value->tid] = $value->name;
     }
-    asort($release_type);
+    natcasesort($release_type);
     $form['release_type'] = array(
       '#type' => 'select',
       '#default_value' => 459,
@@ -57,7 +57,7 @@ class Releases extends FormBase {
     foreach ($services_obj as $services_data) {
       $services[$services_data->nid] = $services_data->title;
     }
-    asort($services);
+    natcasesort($services);
     $form['services'] = array(
       '#type' => 'select',
       '#default_value' => '',
@@ -82,7 +82,7 @@ class Releases extends FormBase {
       $def_releases = get_release($string, $service);
       $options = $def_releases['releases'];
     }
-    asort($options);
+    natcasesort($options);
     $form['releases'] = array(
       '#type' => 'select',
       '#default_value' => '',

@@ -113,7 +113,7 @@ function non_productions_list() {
   foreach ($nodes as $vals) {
     $environment_lists[$vals->id()] = $vals->label();
   }
-  asort($environment_lists);
+  natcasesort($environment_lists);
   return $environment_lists;
 }
 
@@ -244,7 +244,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
       $undeployed_releases[$deployed_nid] = $title;
     }
   }
-  asort($undeployed_releases);
+  natcasesort($undeployed_releases);
   // dpm($release);
   return $undeployed_releases;
 }

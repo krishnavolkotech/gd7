@@ -413,12 +413,12 @@ class HzdStorage {
     $default_function = $default_release = [];
     foreach ($entities as $entity) {
       $default_function[$entity->get('field_function')->value] = $entity->get('field_function')->value;
-      if ($entity->hasField('field_release')) {
+      if ($entity->hasField('field_release') && !empty($entity->get('field_release')->value)) {
         $default_release[$entity->get('field_release')->value] = $entity->get('field_release')->value;
       }
     }
-    asort($default_release);
-    asort($default_function);
+    natcasesort($default_release);
+    natcasesort($default_function);
     return array('releases' => $default_release, 'functions' => $default_function);
     
     //Optimized the code with entityquery above

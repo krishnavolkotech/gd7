@@ -1107,7 +1107,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $environment_lists[$row->nid] = $row->title;
       }*/
     }
-    asort($environment_lists);
+    natcasesort($environment_lists);
     return $environment_lists;
   }
 
