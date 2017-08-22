@@ -550,7 +550,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     if ($service != 0) {
       $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
     }
-    asort($default_releases);
+    natcasesort($default_releases);
 
 //    $rel = \Drupal::request()->query->get('rel');
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
@@ -594,7 +594,7 @@ function releaseData(&$form, $form_state) {
   $default_releases = array("0" => '<' . t('Release') . '>');
   if ($service != 0) {
     $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
-    asort($default_releases);
+    natcasesort($default_releases);
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
     $form['field_earlywarning_release']['widget']['#default_value'] = 0;
   }

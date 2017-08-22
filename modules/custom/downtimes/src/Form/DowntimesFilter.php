@@ -230,7 +230,7 @@ class DowntimesFilter extends FormBase
         foreach ($services_obj as $services_data) {
             $services[$services_data->nid] = $services_data->title;
         }
-        asort($services);
+        natcasesort($services);
         $form['first_row']['services_effected'] = [
             '#type' => 'select',
 //      '#title' => t('Services Affected'),

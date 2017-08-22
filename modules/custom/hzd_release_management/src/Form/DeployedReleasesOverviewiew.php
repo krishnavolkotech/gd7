@@ -37,7 +37,7 @@ class DeployedReleasesOverviewiew extends FormBase {
     foreach ($terms as $key => $value) {
       $release_type_list[$value->tid] = $value->name;
     }
-    asort($release_type_list);
+    natcasesort($release_type_list);
     # $form['#title'] = $this->t('@type Releases (@overview)', ['@type' => 'Deployed','@overview'=>'Overview']);
     $form['#title'] = $this->t('Deployed Releases (Overview)');
     $form['release_type'] = array(

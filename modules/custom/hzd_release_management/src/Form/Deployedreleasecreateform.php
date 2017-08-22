@@ -130,7 +130,7 @@ class Deployedreleasecreateform extends FormBase {
 //    $form['deployed_services']['#options'] = $services_releases['services'];
 //    $form['deployed_services']['#default_value'] = 0;
     $deployed_options = $services_releases['services'];
-    asort($deployed_options);
+    natcasesort($deployed_options);
     $form['deployed_services'] = array(
       '#type' => 'select',
       '#default_value' => $form_state->getValue('ser'),
@@ -161,7 +161,7 @@ class Deployedreleasecreateform extends FormBase {
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
     $services_options = $services_releases['releases'];
     $services_options[0] = t('< @release >',['@release'=>'Release']);
-    asort($services_options);
+    natcasesort($services_options);
 //    array_unshift($services_releases['releases'], '');
     // $form_state->setValue('submitted', FALSE);
     // Geting  release data.

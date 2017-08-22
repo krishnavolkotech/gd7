@@ -1213,7 +1213,7 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
       $result[] = db_query($query, array($value))->fetchField();
     }
   }
-  asort($result);
+  natcasesort($result);
   $old_services = $form_values['services_effected']['#default_value'];
   foreach ($old_services as $key => $value) {
     if ($value) {
@@ -1221,7 +1221,7 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
       $old_result[] = db_query($query, array($value))->fetchField();
     }
   }
-  asort($old_result);
+  natcasesort($old_result);
   if (strcmp(implode(", ", $result), implode(", ", $old_result))) {
     $log['services']['old'] = implode(", ", $old_result);
     $log['services']['new'] = implode(", ", $result);
@@ -1233,14 +1233,14 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
       $new_states[] = $states_list[$value];
     }
   }
-  asort($new_states);
+  natcasesort($new_states);
   $old_states = array();
   foreach ($form_values['states']['#default_value'] as $key => $value) {
     if ($value) {
       $old_states[] = $states_list[$value];
     }
   }
-  asort($old_states);
+  natcasesort($old_states);
   
   if (strcmp(implode(", ", $new_states), implode(", ", $old_states))) {
     $log['states']['old'] = implode(", ", $old_states);
