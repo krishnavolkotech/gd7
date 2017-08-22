@@ -3,10 +3,21 @@
 namespace Drupal\cust_group\Plugin\EntityReferenceSelection;
 
 use Drupal\Core\Entity\Plugin\EntityReferenceSelection\DefaultSelection;
+use Drupal\group\Entity\Group;
 
 //use Drupal\user\Plugin\EntityReferenceSelection\UserSelection;
 
-
+/**
+ * Provides specific access control for the user entity type.
+ *
+ * @EntityReferenceSelection(
+ *   id = "group:user",
+ *   label = @Translation("Custom User selection"),
+ *   entity_types = {"user"},
+ *   group = "group",
+ *   weight = 1
+ * )
+ */
 class CustomUserSelection extends DefaultSelection {
   
   
@@ -15,16 +26,21 @@ class CustomUserSelection extends DefaultSelection {
    */
   protected function buildEntityQuery($match = NULL, $match_operator = 'CONTAINS') {
     $db = \Drupal::database();
-    $query = parent::buildEntityQuery($match, $match_operator);
-    
+    $target_type = $this->configuration['target_type'];
+    $query = $this->entityManager->getStorage($target_type)->getQuery();
+    $query->condition('mail',$match,$match_operator);
+    $query->condition('status',1,'=');
     $que = $db->select('cust_profile', 'cp')
       ->fields('cp', ['uid']);
     $or = $que->orConditionGroup()
       ->condition('firstname', '%' . $match . '%', 'LIKE')
       ->condition('lastname', '%' . $match . '%', 'LIKE');
     $que = $que->condition($or)->execute()->fetchCol();
-    $orp = $query->orConditionGroup()->condition('uid', (array) $que, 'IN');
-    $query->condition($orp);
+    if (!empty($que)) {
+      $orp = $query->orConditionGroup()->condition('uid', (array) $que, 'IN');
+      $query->condition($orp);
+    }
+    $query->condition('uid', [0], 'NOT IN');
     return $query;
   }
   
@@ -36,7 +52,16 @@ class CustomUserSelection extends DefaultSelection {
     $entities = $this->entityManager->getStorage($target_type)
       ->loadMultiple(array_keys($options[$target_type]));
     $users = [];
+    $group = $this->configuration['handler_settings']['hzd_group'];
     foreach ($entities as $entity) {
+      $que = \Drupal::database()->select('inactive_users', 'inf')
+        ->fields('inf')
+        ->condition('uid',$entity->id())
+        ->execute()
+      ->fetchCol();
+      if($group->getMember($entity) || !empty($que)){
+        continue;
+      }
       $bundle = $entity->bundle();
       $users[$bundle][$entity->id()] = $entity->getDisplayName() . '(' . $entity->getEmail() . ')';
     }

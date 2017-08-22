@@ -135,7 +135,10 @@ class AccessController extends ControllerBase
                 $groupQuickInfoContentEntity = GroupContent::load(reset($groupQuickInfoContent));
                 $group = $groupQuickInfoContentEntity->getGroup();
                 $content = $group->getMember($user);
-                if (!$content) {
+                $releaseGroup = Group::load(RELEASE_MANAGEMENT);
+                $releaseMember = $releaseGroup->getMember($user);
+//                pr($releaseMember->id());exit;
+                if (!$content && !$releaseMember) {
                     return AccessResult::forbidden();
                 } else {
                     if (!$node->isPublished() && $content->getGroupContent()->get('request_status')->value == 1) {
