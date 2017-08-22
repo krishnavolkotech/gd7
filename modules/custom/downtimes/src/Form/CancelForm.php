@@ -128,6 +128,8 @@ class CancelForm extends FormBase {
       '#title' => t('Comment'),
       '#required' => TRUE,
       '#id' => 'reason',
+      '#allowed_formats'  => ['basic_html'],
+      '#format' => 'basic_html',
       '#weight' => -2,
     );
     $groupMember = $group->getMember($user);
