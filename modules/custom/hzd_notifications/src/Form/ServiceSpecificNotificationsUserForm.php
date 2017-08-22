@@ -126,6 +126,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
       ->condition('service_id',$service)
       ->condition('type',$types[$content_type])
       ->condition('rel_type',$rel_type)
+      ->condition('uid',$uid)
       ->execute()
       ->fetchField();
     if(!empty($checkId)){
@@ -148,7 +149,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
   }
 
   // ajax callback function
-  function service_content(array &$form, FormStateInterface $form_state) {
+  public function service_content(array &$form, FormStateInterface $form_state) {
     $service = $form_state->getValue('services');
     $rel_type = $form_state->getValue('rel_type');
     $content_types = HzdNotificationsHelper::_get_content_types($service, FALSE, $rel_type);
