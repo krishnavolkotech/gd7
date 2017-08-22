@@ -83,6 +83,27 @@ class DeployedReleasesFilterForm extends FormBase {
         "#prefix" => "<div class = 'hzd-form-element'>",
         '#suffix' => '</div>',
     );
+    $default_limit = array(
+        'all' => '<' . t('All') . '>',
+        20 => 20,
+        50 => 50,
+        100 => 100,
+    );
+    if($this->request->get('limit')) {
+        $limit_default = $this->request->get('limit');
+    } else{
+        $limit_default = DISPLAY_LIMIT;
+    }
+     $form['limit'] = array(
+        '#type' => 'select',
+        '#options' => $default_limit,
+        '#default_value' => $limit_default,
+        '#attributes' => array(
+            'onchange' => 'this.form.submit()',
+        ),
+        "#prefix" => "<div class = 'limit_search_dropdown  hzd-form-element'>",
+        '#suffix' => '</div>',
+    );
 
     $current_path = \Drupal::service('path.current')->getPath();
     $form['reset_link'] = ['#type'=>'container','#attributes'=>['class'=>['reset_form']]];
