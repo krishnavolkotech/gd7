@@ -111,6 +111,11 @@ class RouteSubscriber extends RouteSubscriberBase {
     if (($route = $collection->get('user.admin_create')) || ($route = $collection->get('entity.user.collection'))) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::userCreateAccess');
     }
+    if ($route = $collection->get('entity.group_content.add_form')) {
+      $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::GroupAddMemberCallback");
+    }
+    
+    
   }
 
   //retuns the views related to groups created from UI

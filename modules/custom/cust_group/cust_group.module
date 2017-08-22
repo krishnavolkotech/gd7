@@ -435,7 +435,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       foreach ($categoryTerms as $term) {
         $categoryOptions[$term->tid] = $term->name;
       }
-      asort($categoryOptions);
+      natcasesort($categoryOptions);
       $form['faq_kategorie']['widget']['#options'] = $categoryOptions;
       $pageQuery = \Drupal::entityQuery('taxonomy_term')
               ->condition('name', $group->label())
@@ -449,7 +449,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       foreach ($pageTerms as $pageTerm) {
         $pageOptions[$pageTerm->tid] = $pageTerm->name;
       }
-      asort($pageOptions);
+      natcasesort($pageOptions);
       $form['faq_seite']['widget']['#options'] = $pageOptions;
       break;
     case 'views_exposed_form':

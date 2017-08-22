@@ -87,7 +87,7 @@ class ReleasesettingsForm extends FormBase {
     foreach ($terms as $key => $value) {
       $release_type[$value->tid] = $value->name;
     }
-    asort($release_type);
+    natcasesort($release_type);
 
     // Getting the default Release type.
     $default_release_type = HzdreleasemanagementStorage::get_release_type_current_session();

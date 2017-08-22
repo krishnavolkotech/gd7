@@ -504,5 +504,13 @@ class CustNodeController extends ControllerBase {
       return $node->label();
     }
   }
+  
+  public function GroupAddMemberCallback(RouteMatch $routeMatch){
+    $pluginId = $routeMatch->getRawParameter('plugin_id');
+    if($pluginId == 'group_membership'){
+      return $this->t('Add Member');
+    }
+    return $this->t('Add Content');
+  }
 
 }

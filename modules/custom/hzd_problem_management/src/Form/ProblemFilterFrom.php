@@ -71,7 +71,7 @@ class ProblemFilterFrom extends FormBase
 
         $form['#prefix'] = "<div class = 'problem_filters'>";
         $form['#suffix'] = "</div>";
-        asort($default_services);
+        natcasesort($default_services);
         $form['service'] = array(
             '#type' => 'select',
             '#options' => $default_services,

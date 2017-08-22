@@ -169,7 +169,7 @@ class ReleaseFilterForm extends FormBase
                 ),
             );
         }
-        asort($release_type_list);
+        natcasesort($release_type_list);
         $form['release_type'] = array(
             '#type' => 'select',
             '#default_value' => $default_type,
@@ -239,7 +239,7 @@ class ReleaseFilterForm extends FormBase
         if (!$default_value_releases) {
             $default_value_releases = isset($timer) ? $timer : $form_state->getValue('releases');
         }
-        asort($options);
+        natcasesort($options);
         $form['releases'] = array(
             '#type' => 'select',
             '#options' => $options,

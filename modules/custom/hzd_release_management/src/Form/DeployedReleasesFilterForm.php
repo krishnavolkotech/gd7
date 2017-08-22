@@ -129,7 +129,7 @@ class DeployedReleasesFilterForm extends FormBase {
           $deployedReleaseData[$actualRelease->id()] = $actualRelease->label();
         }
       }
-      asort($deployedReleaseData);
+      natcasesort($deployedReleaseData);
     }
 
     $form['release'] = array(

@@ -58,7 +58,7 @@ class HzdservicesStorage
             //while ($services = $query->execute()->fetchAssoc()) {
             $service_names[$services->nid] = trim($services->service);
         }
-        asort($service_names);
+        natcasesort($service_names);
 //   echo "<pre>";  print_r($service_names); exit;
         return $service_names;
     }
