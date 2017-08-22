@@ -652,14 +652,15 @@ class HzdreleasemanagementHelper {
     } else {
       $entityQuery->condition('field_archived_release', 1, '<>');
     }
-    if($request->get('limit', '') != '') {
+    if($request->get('limit', 'all') != 'all') {
         $limit = $request->get('limit');
+        $result = $entityQuery->pager($limit)->execute();
     } else {
-        $limit = DISPLAY_LIMIT;
+        $result = $entityQuery->execute();
     }
 //      $entityQuery->sort('field_date_deployed','DESC');
 //      $entityQuery->addTag('debug');
-    $result = $entityQuery->pager($limit)->execute();
+//    $result = $entityQuery->pager($limit)->execute();
 //       pr($result);exit;
     $data = [];
     $states = get_all_user_state();
