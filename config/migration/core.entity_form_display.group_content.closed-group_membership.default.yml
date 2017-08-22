@@ -6,41 +6,38 @@ dependencies:
     - field.field.group_content.closed-group_membership.group_roles
     - group.content_type.closed-group_membership
   module:
-    - path
+    - cust_group
 id: group_content.closed-group_membership.default
 targetEntityType: group_content
 bundle: closed-group_membership
 mode: default
 content:
   entity_id:
-    type: entity_reference_autocomplete
-    weight: 5
+    type: group_user_field_widget
+    weight: 1
     settings:
-      match_operator: CONTAINS
       size: 60
       placeholder: ''
+      hzd_group: ''
     third_party_settings: {  }
     region: content
   group_roles:
     type: options_buttons
-    weight: 6
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     region: content
   langcode:
     type: language_select
-    weight: 2
-    settings: {  }
-    third_party_settings: {  }
-    region: content
-  path:
-    type: path
-    weight: 30
+    weight: 0
     settings: {  }
     third_party_settings: {  }
     region: content
   translation:
-    weight: 10
+    weight: 3
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
+  path: true
   uid: true
