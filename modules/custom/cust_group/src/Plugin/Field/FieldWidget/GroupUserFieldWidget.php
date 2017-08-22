@@ -58,7 +58,7 @@ class GroupUserFieldWidget extends WidgetBase {
   public function settingsSummary() {
     $summary = [];
     
-    $summary[] = t('Textfield size: !size', array('!size' => $this->getSetting('size')));
+    $summary[] = t('Textfield size: @size', array('@size' => $this->getSetting('size')));
     if (!empty($this->getSetting('placeholder'))) {
       $summary[] = t('Placeholder: @placeholder', array('@placeholder' => $this->getSetting('placeholder')));
     }
