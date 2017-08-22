@@ -652,9 +652,14 @@ class HzdreleasemanagementHelper {
     } else {
       $entityQuery->condition('field_archived_release', 1, '<>');
     }
+    if($request->get('limit', '') != '') {
+        $limit = $request->get('limit');
+    } else {
+        $limit = DISPLAY_LIMIT;
+    }
 //      $entityQuery->sort('field_date_deployed','DESC');
 //      $entityQuery->addTag('debug');
-    $result = $entityQuery->pager(DISPLAY_LIMIT)->execute();
+    $result = $entityQuery->pager($limit)->execute();
 //       pr($result);exit;
     $data = [];
     $states = get_all_user_state();

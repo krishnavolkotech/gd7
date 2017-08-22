@@ -1075,3 +1075,7 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
     -moz-column-gap: 20px; 
     position: relative;
 }
+.ckeditor-custom-wrapper blockquote{
+  display:inline-block;
+  /*font-size:14px;*/
+}
