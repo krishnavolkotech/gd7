@@ -328,6 +328,15 @@ class HzdNotifications extends ControllerBase {
     if (empty($groupNotificationsInterval)) {
       if($this->isNewUser == true){
         $groupsIds = \Drupal::request()->request->get('groups');
+        $preselected = array(
+            RELEASE_MANAGEMENT => RELEASE_MANAGEMENT,
+            INCIDENT_MANAGEMENT => INCIDENT_MANAGEMENT,
+            PROBLEM_MANAGEMENT => PROBLEM_MANAGEMENT,
+            SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
+            BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
+            KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+        );
+        $groupsIds = array_merge($groupsIds, $preselected);
         if(empty($groupsIds)){
           return;
         }
