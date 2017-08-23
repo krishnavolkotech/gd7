@@ -1641,7 +1641,8 @@ display:
     display_title: Freizuschalten
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/members/pending
       use_more: false
       defaults:
@@ -1656,6 +1657,7 @@ display:
         filter_groups: false
         header: false
         empty: false
+        arguments: false
       use_more_always: false
       use_more_text: mehr
       pager:
@@ -1679,7 +1681,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-      title: ''
+      title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
       menu:
         enabled: true
         expanded: false
@@ -2236,6 +2238,450 @@ display:
           tokenize: false
           content: 'Keine Daten vorhanden'
           plugin_id: text_custom
+      arguments:
+        gid:
+          id: gid
+          table: group_content_field_data
+          field: gid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: default
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: true
+          title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+          default_argument_type: group_id_from_url
+          default_argument_options: {  }
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: false
+          validate:
+            type: none
+            fail: 'not found'
+          validate_options: {  }
+          break_phrase: false
+          not: false
+          entity_type: group_content
+          entity_field: gid
+          plugin_id: numeric
+      relationship: none
+      fieldsets:
+        - more
+        - admin_label
+      admin_label: ''
+      default_action: default
+      exception:
+        value: all
+        title_enable: 0
+        title: All
+      default_argument_skip_url: 0
+      default_argument_type: group_id_from_url
+      argument_default:
+        group_id_from_loggedin_user: {  }
+        group_id_from_url: {  }
+        node: {  }
+        taxonomy_tid:
+          term_page: '1'
+          anyall: ','
+          node: 0
+          limit: 0
+          vids:
+            faq_kategorie: 0
+            faq_seite: 0
+            forums: 0
+            release_type: 0
+            tags: 0
+            thema: 0
+        user:
+          user: 0
+        current_user: {  }
+        raw:
+          index: '0'
+          use_alias: 0
+        query_parameter:
+          query_param: ''
+          fallback: ''
+          multiple: and
+        fixed:
+          argument: ''
+      summary:
+        sort_order: asc
+        number_of_records: '0'
+        format: default_summary
+        options:
+          default_summary:
+            base_path: ''
+            count: '1'
+            items_per_page: '25'
+            override: 0
+          unformatted_summary:
+            base_path: ''
+            count: '1'
+            items_per_page: '25'
+            separator: ''
+            override: 0
+            inline: 0
+      title_enable: 1
+      specify_validation: 0
+      validate:
+        type: none
+        options:
+          taxonomy_term_name:
+            operation: view
+            bundles:
+              faq_kategorie: 0
+              faq_seite: 0
+              forums: 0
+              release_type: 0
+              tags: 0
+              thema: 0
+            access: 0
+            transform: 0
+          user_name:
+            operation: view
+            multiple: '0'
+            access: 0
+            restrict_roles: 0
+            roles:
+              authenticated: 0
+              administrator: 0
+              group_member: 0
+              group_administrator: 0
+              site_administrator: 0
+          entity---block:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---block_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              basic: 0
+            access: 0
+          entity---block_content_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---block_visibility_group:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---comment_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---comment:
+            operation: view
+            multiple: '0'
+            bundles:
+              comment: 0
+              comment_forum: 0
+              comment_no_subject: 0
+            access: 0
+          entity---contact_form:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---contact_message:
+            operation: view
+            multiple: '0'
+            bundles:
+              bpk_account_deaktivieren: 0
+              bpk_account_reaktivieren: 0
+              faq_seite_faq_kategorie_beantrag: 0
+              feedback: 0
+              frage_zum_betriebsportal: 0
+              nsm_administratoren_rolle_beantr: 0
+              personal: 0
+              sonstiges: 0
+              verbesserungsvorschlag: 0
+            access: 0
+          entity---cust_group_imattachments_data:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---editor:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---print_engine:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---field_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---field_storage_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---file:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---filter_format:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group:
+            operation: view
+            multiple: '0'
+            bundles:
+              closed: 0
+              closed_private: 0
+              downtimes: 0
+              incident_managent: 0
+              moderate: 0
+              moderate_private: 0
+              open: 0
+              quick_info: 0
+              realease_management: 0
+              zentrale_release_manag: 0
+            access: 0
+          entity---group_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_role:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_content_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              closed-group_membership: 0
+              closed-group_node-faq: 0
+              closed-group_node-forum: 0
+              closed-group_node-page: 0
+              closed_private-group_membership: 0
+              closed_private-group_node-faq: 0
+              closed_private-group_node-faqs: 0
+              closed_private-group_node-forum: 0
+              closed_private-group_node-page: 0
+              downtimes-group_membership: 0
+              group_content_type_466cc368a8c15: 0
+              group_content_type_486a744513175: 0
+              group_content_type_6693a40b54133: 0
+              group_content_type_71a6b6a92fefd: 0
+              group_content_type_7b308aea24fe7: 0
+              group_content_type_8fbe33e60f149: 0
+              group_content_type_aa3a511b55f8c: 0
+              group_content_type_b2ed3eb8d19c9: 0
+              group_content_type_c26112f8ad4cd: 0
+              group_content_type_d4b06e2b6aad0: 0
+              group_content_type_e340605cbaf90: 0
+              group_content_type_ecf0249297413: 0
+              moderate-group_membership: 0
+              moderate-group_node-event: 0
+              moderate-group_node-faq: 0
+              moderate-group_node-faqs: 0
+              moderate-group_node-forum: 0
+              moderate-group_node-newsletter: 0
+              moderate-group_node-page: 0
+              moderate-group_node-quickinfo: 0
+              moderate_private-group_node-faq: 0
+              moderate_private-group_node-faqs: 0
+              moderate_private-group_node-page: 0
+              open-group_membership: 0
+              open-group_node-downtimes: 0
+              open-group_node-early_warnings: 0
+              open-group_node-faq: 0
+              open-group_node-faqs: 0
+              open-group_node-forum: 0
+              open-group_node-newsletter: 0
+              open-group_node-page: 0
+              open-group_node-planning_files: 0
+              open-group_node-problem: 0
+              open-group_node-quickinfo: 0
+              open-group_node-release: 0
+              quick_info-group_membership: 0
+            access: 0
+          entity---image_style:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---language_content_settings:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---configurable_language:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---migration:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---migration_group:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---node_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---node:
+            operation: view
+            multiple: '0'
+            bundles:
+              article: 0
+              book: 0
+              deployed_releases: 0
+              downtimes: 0
+              early_warnings: 0
+              event: 0
+              faq: 0
+              faqs: 0
+              forum: 0
+              group: 0
+              grouppost: 0
+              im_upload_page: 0
+              news: 0
+              newsletter: 0
+              non_production_environment: 0
+              page: 0
+              planning_files: 0
+              problem: 0
+              quickinfo: 0
+              release: 0
+              services: 0
+              service_profile: 0
+              story: 0
+            access: 0
+          entity---rdf_mapping:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---rest_resource_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_page:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_server:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_task:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_index:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---simple_block:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---action:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---menu:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---taxonomy_vocabulary:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---taxonomy_term:
+            operation: view
+            multiple: '0'
+            bundles:
+              faq_kategorie: 0
+              faq_seite: 0
+              forums: 0
+              release_type: 0
+              tags: 0
+              thema: 0
+            access: 0
+          entity---tour:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---ultimate_cron_job:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---user_role:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---user:
+            operation: view
+            multiple: '0'
+            access: 0
+            restrict_roles: 0
+            roles:
+              authenticated: 0
+              administrator: 0
+              group_member: 0
+              group_administrator: 0
+              site_administrator: 0
+          entity---menu_link_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              menu_link_content: 0
+            access: 0
+          entity---pathauto_pattern:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---view:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---base_field_override:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---date_format:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_view_display:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_view_mode:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_form_mode:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_form_display:
+            operation: view
+            multiple: '0'
+            access: 0
+          none: {  }
+          numeric: {  }
+        fail: 'not found'
+      break_phrase: 0
+      not: 0
     cache_metadata:
       max-age: 0
       contexts:
