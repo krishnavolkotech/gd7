@@ -221,7 +221,7 @@ class ReleaseFilterForm extends FormBase
         );
         
         $service = $filter_value['services'];
-        $options = array('<' . $this->t('Release')->render() . '>');
+        $options = array('<' . $this->t('Release') . '>');
         if ($service) {
             $def_releases = get_release($type, $service);
             $options = $def_releases['releases'];

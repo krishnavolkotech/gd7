@@ -268,7 +268,7 @@ function get_release($string = NULL, $service = NULL) {
     ":sid" => $service
   ))->fetchAll();
   
-  $default_release[] = t("Releases");
+  $default_release[] = '<' . t("Releases") . '>';;
   foreach ($query as $function) {
     $default_release[$function->nid] = $function->title;
   }

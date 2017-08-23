@@ -188,7 +188,7 @@ class HzdreleasemanagementHelper {
             ->orderBy('n.title', 'ASC');
 
     $result = $query->execute()->fetchAll();
-    $default_release = array('Release');
+    $default_release[] = '<' . t("Release") . '>';
     foreach ($result as $vals) {
       $default_release[$vals->nid] = $vals->title;
     }
@@ -652,11 +652,14 @@ class HzdreleasemanagementHelper {
     } else {
       $entityQuery->condition('field_archived_release', 1, '<>');
     }
-    if($request->get('limit', 'all') != 'all') {
+    $default_limit = DISPLAY_LIMIT;
+    if(!empty($request->get('limit')) && $request->get('limit') != 'all') {
         $limit = $request->get('limit');
         $result = $entityQuery->pager($limit)->execute();
-    } else {
+    } elseif($request->get('limit') == 'all') {
         $result = $entityQuery->execute();
+    } else {
+        $result = $entityQuery->pager($default_limit)->execute();
     }
 //      $entityQuery->sort('field_date_deployed','DESC');
 //      $entityQuery->addTag('debug');
