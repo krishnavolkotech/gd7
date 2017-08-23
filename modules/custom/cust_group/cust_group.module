@@ -222,12 +222,12 @@ function cust_group_group_content_update($entity) {
     }
   }
   \Drupal::service('cache_tags.invalidator')
-          ->invalidateTags(['config:block.block.hzd_local_tasks']);
+          ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
 }
 
 function cust_group_group_content_delete() {
   \Drupal::service('cache_tags.invalidator')
-          ->invalidateTags(['config:block.block.hzd_local_tasks']);
+    ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
 }
 
 function cust_group_group_content_insert($entity) {
@@ -239,6 +239,8 @@ function cust_group_group_content_insert($entity) {
       \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
       } */
   }
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
 }
 
 function cust_group_taxonomy_term_insert($term) {
@@ -977,4 +979,8 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
       && $context['bundle'] == "quickinfo" && $context['data']['node']->isPublished() == FALSE) {
     $pattern->setPattern('[node:group_raw]/rz-schnellinfos/[node:title]');
   }
+}
+
+function cust_group_menu_link_content_load($entities){
+//  exit;
 }

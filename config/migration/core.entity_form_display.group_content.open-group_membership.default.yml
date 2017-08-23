@@ -5,18 +5,20 @@ dependencies:
   config:
     - field.field.group_content.open-group_membership.group_roles
     - group.content_type.open-group_membership
+  module:
+    - cust_group
 id: group_content.open-group_membership.default
 targetEntityType: group_content
 bundle: open-group_membership
 mode: default
 content:
   entity_id:
-    type: entity_reference_autocomplete
+    type: group_user_field_widget
     weight: 1
     settings:
-      match_operator: CONTAINS
       size: 60
       placeholder: ''
+      hzd_group: ''
     third_party_settings: {  }
     region: content
   group_roles:
@@ -34,6 +36,8 @@ content:
   translation:
     weight: 10
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   path: true
   uid: true

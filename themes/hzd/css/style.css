@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
     font-size: 20px !important;
 }
-h2 {
+h2{
     font-size: 18px !important;
 }
 h3 {
@@ -2003,6 +2003,8 @@ aside .view-release-list ul li{
 .view-news-list .field-content{
   border-bottom:1px solid #ccc;
   padding-bottom: 10px;
+  width:100%;
+  float:left;
 }
 aside .view-problems-front-page ul li {
    /* background: url(../images/grey-list-arrow.png)left 9px no-repeat !important;*/
@@ -3298,4 +3300,10 @@ table.cke_dialog tr td .cke_dialog_body table.cke_dialog_contents{
 }
 table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
   width:100% !important
+}
+.view-news-list h2 a{
+    color:#004077 !important;
+    font-size:18px !important;
+    text-decoration:none;
+    padding:0 !important;
 }

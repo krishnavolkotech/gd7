@@ -1119,7 +1119,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    *
    */
   static public function releases_display_table($type = NULL, $filter_where = NULL, $limit = NULL, $service_release_type = null) {
-    $group_id = get_group_id();
+    $group_id = RELEASE_MANAGEMENT;
     $header = self::hzd_get_release_tab_headers($type);
     $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
     $filter_value = HzdreleasemanagementStorage::get_release_filters();
@@ -1305,13 +1305,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $filter_value['filter_enddate']), 'BETWEEN'); */
     }
     
-    $deployedReleases = \Drupal::database()->select('node__field_earlywarning_release', 'nd')
+    // beacause of false requirement this is added, but not necessary anymore @sandeep 23-08-2017
+/*    $deployedReleases = \Drupal::database()->select('node__field_earlywarning_release', 'nd')
             ->condition('bundle', 'deployed_releases')
             ->fields('nd', ['field_earlywarning_release_value'])
             ->execute()
             ->fetchCol();
 //    pr($deployedReleases);exit;
-    $release_node_ids->condition('nid', (array) $deployedReleases, 'NOT IN');
+    $release_node_ids->condition('nid', (array) $deployedReleases, 'NOT IN');*/
     $release_node_ids->sort('field_date', 'DESC');
     if ($filter_value['limit'] == 'all') {
       $result = $release_node_ids->execute();

@@ -670,8 +670,11 @@ class HzdreleasemanagementHelper {
     foreach ($result as $deployed_release_id) {
       $deployedRelease = Node::load($deployed_release_id);
       $serviceEntity = Node::load($deployedRelease->get('field_release_service')->value);
-
-      if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin'))) {
+      //If $serviceEntity has no node attached skip the record
+      if(!$serviceEntity){
+        continue;
+      }
+      if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin','administrator'))) {
         $buildRedirUrl = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $group_id])->toString();
         $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployedRelease->id()], array(
                     'query' => array(
