@@ -115,7 +115,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             ->condition('status', 1)
             ->condition('field_release_name', 'NULL', '!=')
             ->condition('release_type', $release_type)
-            ->sort('title')
+            ->sort('field_release_name')
             ->execute();
 
     $groupServs = array_intersect($services, $groupServs);
