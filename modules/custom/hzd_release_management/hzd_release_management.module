@@ -110,10 +110,12 @@ function non_productions_list() {
   }*/
   $environment_lists[0] = '<' . t("Umgebung") . '>';
   $environment_lists[1] = t('Produktion');
+  $environment_lists[2] = t('Pilot');
   foreach ($nodes as $vals) {
     $environment_lists[$vals->id()] = $vals->label();
   }
-  natcasesort($environment_lists);
+  //Environments do not need sort
+//  natcasesort($environment_lists);
   return $environment_lists;
 }
 

@@ -688,7 +688,9 @@ class HzdreleasemanagementHelper {
       $release = $query->execute()->fetchField();
 
       if ($deployedRelease->get('field_environment')->value == 1) {
-        $environment = 'Produktion';
+        $environment = t('Produktion');
+      } else if($deployedRelease->get('field_environment')->value == 2) {
+        $environment = t('Pilot');
       } else {
         $query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->fields('nfd', array('title'));

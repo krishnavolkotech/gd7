@@ -870,6 +870,8 @@ class HzdreleasemanagementStorage {
 
       if ($deployed_release_node->field_environment->value == 1) {
         $environment_val = t('Produktion');
+      } else if ($deployed_release_node->field_environment->value == 2) {
+          $environment_val = t('Pilot');
       } else {
         $environment_val = \Drupal\node\Entity\Node::load(
                         $deployed_release_node->field_environment->value)->getTitle();
@@ -1084,6 +1086,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   static public function get_environment_options($state = 1) {
     $environment_lists[0] = t('All');
     $environment_lists[1] = t('Produktion');
+    $environment_lists[2] = t('Pilot');
     if ($state != 1) {
   
       $entityQuery = \Drupal::entityQuery('node');
@@ -1107,7 +1110,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $environment_lists[$row->nid] = $row->title;
       }*/
     }
-    natcasesort($environment_lists);
+    //Environment do not need sort
+//    natcasesort($environment_lists);
     return $environment_lists;
   }
 
