@@ -1146,7 +1146,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                         $releases->field_documentation_link->value, $releases->field_relese_services->target_id, $releases->id());
       } else {
         if ($type == 'progress' || $type == 'released') {
-//                    $link = t('No Download link available');
+                    $link = t('No Download link available');
         } else {
           $link = '';
         }
