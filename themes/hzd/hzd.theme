@@ -378,7 +378,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
               'export_type' => 'pdf',
               'entity_type' => $entity->getEntityTypeId(),
               'entity_id' => $entity->id()
-          ]),
+          ],['attributes'=>['target'=>'_blank']]),
           '#title' => 'PDF'
       ];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
@@ -393,7 +393,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
       ];
       $pdfLink['link'] = [
           '#type' => 'link',
-          '#url' => Url::fromRouteMatch(\Drupal::routeMatch())
+          '#url' => Url::fromRouteMatch(\Drupal::routeMatch(),['attributes'=>['target'=>'_blank']])
                   ->setOption('query', $querr),
           '#title' => 'PDF'
       ];
