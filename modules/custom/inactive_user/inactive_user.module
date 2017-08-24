@@ -172,3 +172,51 @@ function _inactive_user_with_content($uid) {
   return ($node_field_data_uid || $comment_field_data_uid);
 
 }
+
+function inactive_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    if ($form_id == 'user_form') {
+        $account = $form_state->getFormObject()->getEntity();
+        $userid = $account->id();
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+            $db = \Drupal::database();
+            $result = $db->select('inactive_users', 'iu')
+                ->fields('iu', array('uid'))
+                ->condition('iu.uid', $userid);
+            $val = $result->execute()->fetchAssoc();
+            $form['inactive_container'] = [
+                '#type' => 'fieldset',
+                '#title' => t('Inactive status'),
+            ];
+            $form['inactive_container']['inactive_status'] = [
+                '#type' => 'radios',
+                '#title' => t('Inactive status'),
+                '#options' => [0 => t('Active'), 1 => t('Inactive')],
+                '#default_value' => empty($val) ? 0 : 1,
+            ];
+            $form['actions']['submit']['#submit'][] = 'inactive_users_user_form_submit';
+        }
+    }
+}
+
+function inactive_users_user_form_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $inactive = $form_state->getValue('inactive_status');
+    $account = $form_state->getFormObject()->getEntity();
+    $userid = $account->id();
+    if($inactive == 1) {
+        $db = \Drupal::database();
+        $result = $db->select('inactive_users', 'iu')
+            ->fields('iu', array('uid'))
+            ->condition('iu.uid', $userid);
+        $val = $result->execute()->fetchAssoc();
+        if(!$val) {
+            \Drupal::database()->insert('inactive_users')
+              ->fields(array(
+                'uid' => $userid,
+              ))->execute();
+        }
+    } elseif($inactive == 0) {
+        \Drupal::database()->delete('inactive_users')
+         ->condition('uid', $userid)
+         ->execute();
+    }
+}
