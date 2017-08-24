@@ -1527,4 +1527,16 @@ function hzd_customizations_preprocess_block(&$variables) {
   }
 }
 
+/**
+ * Implements hook_views_post_render().
+ */
+function hzd_customizations_views_post_render($view) {
+   if ($view->id() == 'hzd_group_members') {
+        $request = \Drupal::request();
+        if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+          $new_title = $view->getTitle();
+          $route->setDefault('_title', $new_title);
+        }
+   }
+}
 

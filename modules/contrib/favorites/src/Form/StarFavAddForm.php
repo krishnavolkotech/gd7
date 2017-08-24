@@ -39,21 +39,21 @@ class StarFavAddForm extends FormBase
      * {@inheritdoc}
      */
     public function buildForm(array $form, FormStateInterface $form_state) {
-        
+
         $request = \Drupal::request();
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-	if(is_array($title))
+	if(is_array($title)) {
             $title = \Drupal::service('renderer')->render($title);
-        if (!isset($title)) {
-//            $title = \Drupal::config('core.site_information')->get('site_name');
         }
         if ($title == '') {
             $current_path = \Drupal::service('path.current')->getPath();
             $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
         }
-        if (is_string($title))
+        if (is_string($title)) {
             $title = strip_tags($title);
+        }
+//        kint($title);
         //pr($title);exit;
         $path = \Drupal::request()->getPathInfo();
         $query = \Drupal::request()->getQueryString();
