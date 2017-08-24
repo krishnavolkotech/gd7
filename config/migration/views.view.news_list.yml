@@ -112,7 +112,7 @@ display:
           type: datetime_default
           settings:
             timezone_override: ''
-            format_type: medium
+            format_type: long
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -154,7 +154,7 @@ display:
           element_label_type: ''
           element_label_class: ''
           element_label_colon: true
-          element_wrapper_type: ''
+          element_wrapper_type: h2
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
