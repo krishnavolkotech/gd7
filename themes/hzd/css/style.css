@@ -789,11 +789,11 @@ table tr.even:hover {
     background: url(../images/warning-icon.png) left top no-repeat;
     width: 28px;
     height: 24px;
-    float: left;
+    /*float: left;*/
     line-height: 29px;
     text-align: center;
     font-size: 14px;
-    display: block;
+    display: inline-block;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -870,15 +870,14 @@ table.tablesorter thead tr .header {
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
-    padding-right: 24px;
+    padding-right: 24px !important;
 }
 table.sticky-header {
     width: auto !important;
 }
-
 table.sticky-header th{
   /*padding:15px 8px !important;*/
-  padding:10px 8px !important;
+  padding:10px 4px !important;
 }
 table th {
     vertical-align: middle !important;
@@ -950,7 +949,7 @@ input.hasDatepicker {
 }
 #released_results_wrapper {
     width: 100%;
-    overflow: auto;
+    /*overflow: auto;*/
 }
 #header-right #block-hzdheaderlinks {
     float: right;
@@ -1762,13 +1761,13 @@ strong {
     color: #d35400 !important;
 }
 section h2.block-title,
-aside .block-favorites h2.block-title,
+.block-favorites h2.block-title,
 .block-maintenance-block h2.block-title {
     color: #004077;
 }
 .block-incidents-block h2.block-title,
 section h2.block-title,
-aside .block-favorites h2.block-title,
+.block-favorites h2.block-title,
 .block-maintenance-block h2.block-title {
     margin: 0 0 10px 0!important;
     padding: 0 0 9px 0;
@@ -1777,7 +1776,7 @@ aside .block-favorites h2.block-title,
     line-height: 20px;
     border-bottom: 1px dotted rgba(0,0,0,.2);
 }
-aside .block-favorites h2.block-title {
+.block-favorites h2.block-title {
     background: url("../images/ic_star_black.png") no-repeat scroll right top;
 }
 .block-incidents-block ul {
@@ -1812,7 +1811,7 @@ aside .block-favorites h2.block-title {
     width: 100%;
 }
 section .form-group .view-content .item-list ul,
-aside .region-sidebar-first .block-favorites .item-list ul {
+.region-sidebar-first .block-favorites .item-list ul {
     margin: 0;
     padding: 0;
     float: left;
@@ -1935,19 +1934,19 @@ section.star-favorites-add form {
     background: transparent;
     margin-top: 1px;
 }
-aside .block-favorites .item-list ul li {
+.block-favorites .item-list ul li {
     float: left;
     padding: 0;
     margin: 0;
     width: 100%;
-    background: url(../images/grey-list-arrow.png)left 7px no-repeat;
+    /*background: url(../images/grey-list-arrow.png)left 7px no-repeat;*/
     list-style-type: none;
 }
-aside .block-favorites .item-list ul li span {
+.block-favorites .item-list ul li span {
     float: left;
     width: auto;
 }
-aside .block-favorites .item-list ul li span a {
+.block-favorites .item-list ul li span a {
     float: left;
     color: #222222;
     text-indent: -9999px;
@@ -1956,22 +1955,27 @@ aside .block-favorites .item-list ul li span a {
     font-size: 0;
     margin-top: 5px;
 }
-aside .block-favorites .item-list ul li:hover span a {
+.block-favorites .item-list ul li:hover span a {
     background: url(../images/trash-icon.png)right top no-repeat;
     font-size: 0;
     margin-top: 7px;
 }
-aside .block-favorites .item-list ul li > a {
+.block-favorites .item-list ul li > a {
     width: 93%;
     float: left;
     text-decoration: none;
     color: #333333;
     font-size: 14px;
-    padding: 3px 3px 3px 13px;
+    padding: 3px 3px 3px 0;
     font-weight: normal;
     line-height: 20px;
 }
-aside .block-favorites .item-list ul li > a:hover {
+.block-favorites .item-list ul{
+  width:100%;
+  display:block;
+  padding:0;
+}
+.block-favorites .item-list ul li > a:hover {
     text-decoration: underline;
 }
 aside section .form-group,
@@ -1982,35 +1986,41 @@ aside section .form-group .view-footer {
     padding: 0;
     border: none;
 }
-aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems{
+section .form-group .view-footer a.all-releases,
+section .form-group .view-footer a.all-problems{
   background: url(../images/grey-list-arrow.png)left 7px no-repeat;
 }
-aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems,
-aside .view-problems-front-page ul li,
-aside .view-release-list ul li {
+section .form-group .view-footer a.all-releases,
+section .form-group .view-footer a.all-problems,
+.view-problems-front-page ul li,
+.view-release-list ul li {
   /*  background: url(../images/grey-list-arrow.png)left 7px no-repeat;*/
     float: left;
     padding-left: 14px !important;
     color: #004077;
     margin-top: 15px;
 }
-aside .view-problems-front-page ul li,
-aside .view-release-list ul li{
+.view-problems-front-page ul li,
+.view-release-list ul li{
   padding-left:0 !important;
 }
-.view-news-list .field-content{
+.view-news-list .views-field-body .field-content{
   border-bottom:1px solid #ccc;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   width:100%;
   float:left;
 }
-aside .view-problems-front-page ul li {
+.view-news-list .view-content .views-row{
+  margin-bottom:17px !important;
+}
+.view-news-list h2{
+  margin-top:0 !important;
+}
+.view-problems-front-page ul li {
    /* background: url(../images/grey-list-arrow.png)left 9px no-repeat !important;*/
     padding-bottom: 3px;
 }
-aside .view-release-list ul li {
+.view-release-list ul li {
        /*background: url(../images/grey-list-arrow.png)left 9px no-repeat !important;*/
     padding-bottom: 3px;
 }
@@ -2375,8 +2385,8 @@ section.block-star-favorites-block form button.del-fav {
 }
 /* 20161114 r2.5.2 droy */
 
-aside section .form-group .view-footer a.all-releases,
-aside section .form-group .view-footer a.all-problems,
+section .form-group .view-footer a.all-releases,
+section .form-group .view-footer a.all-problems,
 section .form-group .more-link a,
 .block-incidents-block a {
     color: #0084bf;
@@ -2384,8 +2394,8 @@ section .form-group .more-link a,
     margin-top: 15px;
 }
 section .form-group .more-link a:hover,
-aside section .form-group .view-footer a:hover,
-aside section .form-group .more-link a:hover,
+section .form-group .view-footer a:hover,
+section .form-group .more-link a:hover,
 .block-maintenance-block a:hover,
 .block-incidents-block a:hover {
     text-decoration: underline;
@@ -2436,21 +2446,6 @@ form.node-downtimes-edit-form .form-wrapper .form-type-checkbox{
     display: inline-block;
     margin: 0 2% 5px 0;
     padding: 0;
-}
-form.downtimes-setting-form #edit-services .form-type-checkbox,
-form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
-form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
-form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
-form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
-form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
-  width: 99%;
-  display: inline-block;
-  /*margin: 0 1% 7px 0;*/
-  margin:0 0 7px 0;
-  padding: 0;
 }
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox{
@@ -2560,9 +2555,10 @@ article.quickinfo .field .field__items {
 }
 article.quickinfo .field .field--item,
 article.quickinfo .field .field--items {
-    width: 97%;
+    width: 98%;
     float: left;
-    margin: 0 0 3px 2%;
+    margin: 0 0 3px 0%;
+   padding:0;
 }
 dl dt,
 dl da {
@@ -2587,6 +2583,10 @@ article.quickinfo table {
     width: 100%;
     margin: 10px 0;
 }
+#released_results_wrapper .table-responsive table tr th:nth-child(4),
+#released_results_wrapper .table-responsive table tr td.earlywarnings-cell,
+#earlywarnings_results_wrapper .table-responsive table thead tr th.early-warnings-hdr,
+#earlywarnings_results_wrapper .table-responsive table tr td.earlywarnings-cell,
 #earlywarnings_results_wrapper .table-responsive table thead tr th.responses-hdr,
 #earlywarnings_results_wrapper .table-responsive table tr td.responses-cell {
     text-align: center;
@@ -2850,52 +2850,57 @@ body.path-group .main-container .region-content {
 /*----  16-12-16   ----*/
 
 .text-danger td a.downtimes_details_link {
-    background: url(../images/notification-icon.png) left top no-repeat;
+    background: url(../images/notification-icon.png) center top no-repeat;
     width: 22px;
     height: 22px;
     float: left;
     font-size: 0;
-    margin: 0 10px 0 0;
+    /*margin: 0 10px 0 0;*/
+    margin:0 5px 0 0;
 }
 a.downtimes_details_link {
-    background: url(../images/notification-icon.png) left top no-repeat;
+    background: url(../images/notification-icon.png) center top no-repeat;
     width: 22px;
     height: 22px;
-    float: left;
+    /*float: left;*/
+    display:table-cell;
     font-size: 0;
     margin-right: 10px;
 }
 table.archived tr td a.downtimes_details_link {
-    background: url(../images/notification-icon.png) left top no-repeat;
+    background: url(../images/notification-icon.png) center top no-repeat;
     width: 22px;
     height: 22px;
-    float: left;
+    /*float: left;*/
+    display:table-cell;
     font-size: 0;
     margin: 0;
     padding: 0;
 }
 .text-danger td a.downtimes_update_link,
 a.downtimes_update_link {
-    background: url(../images/details-icon.png) left top no-repeat;
-    width: 20px;
+    background: url(../images/details-icon.png) center top no-repeat;
+    width: 32px;
     height: 20px;
-    float: left;
+    /*float: left;*/
+    display:table-cell;
     font-size: 0;
     margin: 0 10px 0 0;
 }
 .text-danger td a.downtimes_resolve_link,
 a.downtimes_resolve_link {
-    background: url(../images/tick-icon.png) left top no-repeat;
-    width: 20px;
+    background: url(../images/tick-icon.png) center top no-repeat;
+    width: 32px;
     height: 17px;
-    float: left;
     font-size: 0;
     margin: 0;
+    /*float: left;*/
+    display:table-cell;
 }
 .text-danger td a.downtimes_cancel_link,
 a.downtimes_cancel_link {
-    background: url("../images/cancel-icon.png") left top no-repeat;
-    width: 20px;
+    background: url("../images/cancel-icon.png") center top no-repeat;
+    width: 32px;
     height: 20px;
     float: left;
     font-size: 0;
@@ -3179,9 +3184,6 @@ article.downtimes .Incident .downtimes_content_paragraph ol li {
     text-indent:-9999px;
     padding-left: 10px;
 }
-.print-action-wrapper section.block-star-favorites-block {
-    float: left;
-}
 .popup-wrapper article .downtimes {
     display: block !important;
 }
@@ -3306,4 +3308,89 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
     font-size:18px !important;
     text-decoration:none;
     padding:0 !important;
+}
+.forum-author-info{
+  width:auto;
+  display:inline-block;
+}
+.forum-author-info .quickedit-field{
+  margin:0 !important;
+}
+body.page-node-type-forum h1.page-header{
+  margin-bottom:5px !important;
+}
+body.page-node-type-forum .region-content .field--label-inline,
+body.page-node-type-forum .field--name-taxonomy-forums .field--item{
+  padding:0;
+}
+body.page-node-type-forum .field--name-taxonomy-forums .field-label{
+  padding-right:5px !important;
+}
+body.page-node-type-forum .js-comment h3{
+  width:100%;
+  float:left;
+  padding-top:10px;
+  border-top:1px solid #dddddd;
+  margin:10px 0 0 0 !important;
+}
+body.page-node-type-forum .js-comment ul.list-inline li,
+body.path-comment .js-comment ul.list-inline li{
+  float:right;
+}
+body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a,
+body.path-comment .js-comment ul.list-inline li.comment-translations a{
+  color: #ffffff;
+  font-size: 14px;
+  background: #666;
+  line-height: 25px;
+  float: left;
+  padding: 0 10px;
+}
+body.page-node-type-forum .js-comment ul.list-inline li.comment-translations,
+body.path-comment .js-comment ul.list-inline li.comment-translations{
+  padding:0;
+}
+body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:hover{
+  text-decoration:none;
+}
+.quickinfo .field--label-inline .field--label{
+  padding-right:4px !important;
+}
+.quickinfo .field--name-upload.field--type-file table thead tr th{
+  border-left: 1px solid rgb(212,231,245);
+  background: #d4eaf5;
+  text-align: left;
+  padding-right: 1em;
+  height: 45px;
+  font-family: arial,sans-serif;
+  text-indent:7px;
+  border-radius:0 !important;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr.odd td{
+  background-color: #e9f3fb;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr.even td{
+  background-color: #fff;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td{
+  border: 1px solid rgb(212,231,245) !important;
+  text-align:left;
+  padding:5px 8px 7px 8px;
+  line-height:150%;
+  border-radius:0 !important;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
+.quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
+  display:none;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
+  text-decoration:none;
+}
+.quickinfo .field--name-upload.field--type-file table .file>span{
+  border:none;
+  padding:0 !important;
+  background:transparent !important;
+}
+.quickinfo .field--name-upload.field--type-file table{
+  border-radius:0 !important;
 }

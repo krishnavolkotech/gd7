@@ -8,6 +8,7 @@ dependencies:
     - block_class
     - block_visibility_groups
     - system
+    - user
     - views
   theme:
     - hzd
@@ -38,3 +39,10 @@ visibility:
     pages: '<front>'
     negate: false
     context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
