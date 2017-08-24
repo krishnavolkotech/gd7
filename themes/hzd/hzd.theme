@@ -407,7 +407,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
         '#type' => 'link',
         '#url' => Url::fromRouteMatch(\Drupal::routeMatch())
           ->setOption('query', $querr)
-          ->mergeOptions(['attributes', ['target' => '_blank']]),
+          ->setOption('attributes', ['target' => '_blank']),
         '#title' => 'PDF'
       ];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
