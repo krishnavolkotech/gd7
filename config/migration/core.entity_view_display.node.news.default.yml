@@ -27,7 +27,7 @@ content:
     label: inline
     settings:
       timezone_override: ''
-      format_type: hzd_datetime
+      format_type: medium
     third_party_settings: {  }
     type: datetime_default
     region: content
