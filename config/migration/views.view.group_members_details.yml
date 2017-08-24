@@ -1,6 +1,6 @@
 uuid: 4b2ec103-9ef0-48ce-8dd3-fff67c39f337
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - group.content_type.closed-group_membership
