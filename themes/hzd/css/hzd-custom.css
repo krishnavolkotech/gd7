@@ -153,6 +153,9 @@ form.node-downtimes-form .panel-body .form-checkboxes {
 .datepicker table tr th{
   border-radius:0;
 }
+.datepicker table tr td{
+   word-break: normal !important;
+}
 table tr th a,
 table tr th.views-field a,
 table tr th {
@@ -237,23 +240,23 @@ a.button--danger {
 #archived_search_results_wrapper table tr.even td:first-child,
 #archived_search_results_wrapper table tr.odd td:last-child,
 #archived_search_results_wrapper table tr.even td:last-child {
-    width: 10% !important;
-    word-wrap: break-word;
+    width: 8% !important;
+    /*word-wrap: break-word;*/
 }
 #incidents_search_results_wrapper table tr.odd td:last-child,
 #incidents_search_results_wrapper table tr.even td:last-child {
-    width: 12% ;
-    word-wrap: break-word;
+    /*width: 12% ;
+    word-wrap: break-word;*/
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(2),
 #archived_search_results_wrapper table tr.even td:nth-child(2) {
-    width: 25% !important;
-    word-wrap: break-word;
+    /*width: 25% !important;
+    word-wrap: break-word;*/
 }
 #released_results_wrapper table.releases.progress {
     background: transparent;
 }
-table.releases.deployed tr.odd td.earlywarnings-cell,
+/*table.releases.deployed tr.odd td.earlywarnings-cell,
 table.releases.deployed tr.even td.earlywarnings-cell,
 table.releases.progress tr.odd td.earlywarnings-cell,
 table.releases.progress tr.even td.earlywarnings-cell,
@@ -262,54 +265,55 @@ table.releases.released tr.even td.earlywarnings-cell {
     width: 11%;
     text-align: right;
     padding: 5px 40px 5px 35px;
-}
+}*/
 #archived_search_results_wrapper table tr.odd td:nth-child(3),
 #archived_search_results_wrapper table tr.even td:nth-child(3) {
-    width: 15%;
-    word-wrap: break-word;
+    /*width: 15%;
+    word-wrap: break-word;*/
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(4),
 #archived_search_results_wrapper table tr.even td:nth-child(4) {
     width: 8%;
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(5),
 #archived_search_results_wrapper table tr.even td:nth-child(5),
 #archived_search_results_wrapper table tr.odd td:nth-child(6),
 #archived_search_results_wrapper table tr.even td:nth-child(6) {
     width: 14%;
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
 }
 #archived_search_results_wrapper table tr.odd td:nth-child(7),
 #archived_search_results_wrapper table tr.even td:nth-child(7) {
-    width: 7%;
-    word-wrap: break-word;
+    /*width: 7%;
+    word-wrap: break-word;*/
 }
 #incidents_search_results_wrapper table tr td:last-child,
 #maintenance_search_results_wrapper table tr td:last-child {
-    width: 12%;
+   width: 8%;
+   /*display:table;*/
 }
 #maintenance_search_results_wrapper table tr td:first-child,
 #incidents_search_results_wrapper table tr td:first-child {
-    width: 35%;
-    word-wrap: break-word;
+    /*width: 35%;
+    word-wrap: break-word;*/
 }
 #maintenance_search_results_wrapper table tr td:nth-child(2),
 #incidents_search_results_wrapper table tr td:nth-child(2) {
-    width: 16%;
-    word-wrap: break-word;
+    /*width: 16%;
+    word-wrap: break-word;*/
 }
 #maintenance_search_results_wrapper table tr td:nth-child(3),
 #incidents_search_results_wrapper table tr td:nth-child(3) {
-    width: 10%;
-    word-wrap: break-word;
+   width: 10%;
+     /*word-wrap: break-word;*/
 }
 #maintenance_search_results_wrapper table tr td:nth-child(4),
 #incidents_search_results_wrapper table tr td:nth-child(4),
 #maintenance_search_results_wrapper table tr td:nth-child(5),
 #incidents_search_results_wrapper table tr td:nth-child(5) {
     width: 13.5%;
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
 }
 .home-problems-date{
   width:100%;
@@ -332,16 +336,17 @@ table tr th {
 #archived_search_results_wrapper table tr td:last-child .popup-wrapper,
 #incidents_search_results_wrapper table tr td:last-child .popup-wrapper,
 #maintenance_search_results_wrapper table tr td:last-child .popup-wrapper {
-    float: left;
+    /*float: left;*/
     margin-bottom: 0 !important;
+    display:table-cell;
 }
 #incidents_search_results_wrapper table tr td p { 
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
     float: left;
 }
 .block-im-attachments-upload-block #im-attachment-files-list table tr th,
 .block-im-attachments-upload-block #im-attachment-files-list table tr td{
-  padding:8px !important;
+ /*padding:8px !important*/;
 }
 .block-im-attachments-upload-block #im-attachment-files-list table tr th:first-child,
 .block-im-attachments-upload-block #im-attachment-files-list table tr td:first-child{
@@ -351,16 +356,19 @@ table tr th {
 #im-attachment-files-list {
    clear: both;
 }
+
+table tr th,
+table tr td,
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
-  padding:8px !important;
+  padding:8px 4px;
 }
 .view-rz-schnellinfo table tr th:nth-child(6),
 .view-rz-schnellinfo table tr td:nth-child(6),
 #im-attachment-files-list table tr th:nth-child(2),
 #im-attachment-files-list table tr td:nth-child(2){
-  width:16%;
-  /*word-break:break-all;*/
+  /*width:16%;
+  word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(8),
 #problem_search_results_wrapper table#sortable tr td:nth-child(8),
@@ -374,35 +382,35 @@ table tr th {
 #problem_search_results_wrapper table#sortable tr td:nth-child(7),*/
 #im-attachment-files-list table tr th:nth-child(4),
 #im-attachment-files-list table tr td:nth-child(4){
-  width:10%;
+  /*width:10%;*/
 }
 .view-rz-schnellinfo table tr th:nth-child(4),
 .view-rz-schnellinfo table tr td:nth-child(4),
 #im-attachment-files-list table tr th:nth-child(5),
 #im-attachment-files-list table tr td:nth-child(5){
-  width:15%;
-  /*word-break:break-all;*/
+  /*width:15%;
+  word-break:break-all;*/
 }
 .view-rz-schnellinfo table tr td:first-child,
 #problem_search_results_wrapper table#sortable tr th:nth-child(6),
 #problem_search_results_wrapper table#sortable tr td:nth-child(6){
-  width:8%;
-  /*word-break:break-all;*/
+  /*width:8%;
+  word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(2),
 #problem_search_results_wrapper table#sortable tr td:nth-child(2),
 #problem_search_results_wrapper table#sortable tr th:nth-child(3),
 #problem_search_results_wrapper table#sortable tr td:nth-child(3){
-  width:11%;
-  /*word-break:break-all;*/
+  /*width:11%;
+  word-break:break-all;*/
 }
 #problem_search_results_wrapper table#sortable tr th:nth-child(4),
 #problem_search_results_wrapper table#sortable tr td:nth-child(4){
-  width:17%;
-  /*word-break:break-all;*/
+  /*width:17%;
+  word-break:break-all;*/
 }
 .view-group-nodes .views-field-uid a {
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
     /*@todo move this to hzd-custom.css*/
     /*word-break: break-all;*/
 }
@@ -410,6 +418,21 @@ table.sticky-enabled tr th,
 table.sticky-header tr th{
  /* border-radius:0*/
 }
+.view-group-members-lists table tr th:last-child,
+.view-group-members-lists table tr td:last-child{
+  width:150px;
+  overflow:auto;
+  display:block;
+}
+.view-group-members-lists table tr td.views-field-mail a{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  display:inline-block;
+  width:90%;
+}
+
+
 table tr td,
 #problem_search_results_wrapper table#sortable tr td:nth-child(8),
 #problem_search_results_wrapper table#sortable tr td:nth-child(4),
@@ -421,7 +444,7 @@ table tr td,
 #problem_search_results_wrapper table#sortable tr td:nth-child(7),
 #im-attachment-files-list table tr td:nth-child(2),
 .view-rz-schnellinfo table tr td:nth-child(6){
-  word-break:break-all;
+  /*word-break:break-all;*/
 }
 #released_results_wrapper table.view-deployed-releases tr td {
     white-space: pre;
@@ -445,9 +468,15 @@ form.archived .search.form-group{
   /*margin-top:10px;*/
   margin:0;
 }
+.node-service-profile-form .service-time .form-type-checkbox input.form-checkbox,
+.node-service-profile-edit-form .service-time .form-type-checkbox input.form-checkbox{
+  margin-top:0;
+}
+.node-service-profile-form .maintenance-window-field #downtimes-fieldset-wrapper,
 .node-service-profile-edit-form .maintenance-window-field #downtimes-fieldset-wrapper{
   margin-bottom:10px;
 }
+.node-service-profile-form .fieldset-legend,
 .node-service-profile-edit-form .fieldset-legend {
   margin:10px 0;
   display:inline-block;
@@ -524,7 +553,7 @@ table.sticky-table th.views-field-created a:hover {
 .field--name-body,
 a,
 p {
-    word-wrap: break-word;
+    /*word-wrap: break-word;*/
 }
 table.sticky-header th.views-field-changed a span,
 table.sticky-table th.views-field-created a span {
@@ -764,14 +793,11 @@ form.deployedreleases-create-form .form-item,
 
 @media only screen and (max-width:767px){
 form.downtimes-setting-form #edit-services,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
-form.node-service-profile-edit-form #edit-field-service-recipient , 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
+form.node-service-profile-edit-form .form-checkboxes,
+form.node-service-profile-form .form-checkboxes{
   -webkit-column-count:2 !important;
   -moz-column-count:2 !important;
   column-count:2 !important;
@@ -918,14 +944,11 @@ header .block-cust-group-search-block form .search-expanded{
 
 .path-frontpage .block-maintenance-block .maintenance-home-info,
 form.downtimes-setting-form #edit-services,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
-form.node-service-profile-edit-form #edit-field-service-recipient , 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator{
+form.node-service-profile-edit-form .form-checkboxes,
+form.node-service-profile-form .form-checkboxes{
   -webkit-column-count:1 !important;
   -moz-column-count:1 !important;
   column-count:1 !important;
@@ -1023,8 +1046,10 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     font-size: 13px;
    /* background: #e2e2e2;*/
     background:#004077;
-    box-shadow: 0 -1px 0 rgba(0,0,0,.2);
+   /* box-shadow: 0 -1px 0 rgba(0,0,0,.2);*/
     color:#fff;
+    width:100%;
+    float:left;
 }
 .form-group:last-child,
 .panel:last-child,
@@ -1034,9 +1059,21 @@ p:last-child {
     margin-bottom: 0 !important;
     box-shadow: none;
 }
+.print-action-wrapper section.block-star-favorites-block {
+    float: left;
+    background:transparent;
+    width:auto !important;
+    box-shadow:none;
+    padding:0;
+    margin:0;
+}
+.print-action-wrapper section.block-star-favorites-block button.add-fav-submit:focus {
+    background:transparent;
+    box-shadow:none;
+}
 .link-wrapper-downtimes,
 section.news-block,
-aside .block-favorites,
+.block-favorites,
 .block-incidents-block,
 .block-maintenance-block,
 aside section {
@@ -1055,15 +1092,18 @@ aside section {
 .block-incidents-block {
     box-shadow: inset 0px 4px 0px 0px #d0021b, 0 1px 2px grey;
 }
+/*
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
+form.node-service-profile-edit-form #edit-field-service-recipient , 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator 
+*/
+
 form.downtimes-setting-form #edit-services,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-downtimes-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
-form.node-service-profile-edit-form #edit-field-service-recipient , 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
+form.node-service-profile-edit-form .form-checkboxes,
+form.node-service-profile-form .form-checkboxes{
     -webkit-column-count:3;
     -moz-column-count:3;
     column-count:3;
@@ -1075,7 +1115,40 @@ form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator {
     -moz-column-gap: 20px; 
     position: relative;
 }
+form.downtimes-setting-form #edit-services .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox,
+form.node-service-profile-form .form-checkboxes{
+  width: 99%;
+  float:left;
+  /*margin: 0 1% 7px 0;*/
+  margin:0 0 7px 0;
+  padding: 0;
+}
+
+form.downtimes-setting-form #edit-services .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
+form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
+  /*width: 99%;
+  display: inline-block;
+  margin: 0 1% 7px 0;
+  margin:0 0 7px 0;
+  padding: 0;*/
+}
 .ckeditor-custom-wrapper blockquote{
   display:inline-block;
   /*font-size:14px;*/
+}
+table.view-deployed-releases{
+  background:#fff;
+}
+#deployed-overview .table-responsive{
+  overflow-x:initial;
 }

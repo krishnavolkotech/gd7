@@ -203,7 +203,7 @@ content:
   upload:
     label: above
     settings: {  }
-    type: file_default
+    type: file_table
     weight: 16
     third_party_settings: {  }
     region: content
