@@ -87,7 +87,9 @@
     <div class="{{ node.bundle }}-author-info">
       {# author_picture #}
       <div{{ author_attributes.addClass('author') }}>
-        {% trans %}Submitted by {{ author_name }} on {{ date }}{% endtrans %}
+        {# commenting the below for UI consitency with D6#}
+        {#{% trans %}Submitted by {{ author_name }} on {{ date }}{% endtrans %}#}
+        {% trans %} {{ author_name }} {{ date }}{% endtrans %}
         {{ metadata }}
       </div>
     </div>
