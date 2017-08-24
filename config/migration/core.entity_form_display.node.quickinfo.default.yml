@@ -34,7 +34,7 @@ third_party_settings:
   field_group:
     group_meta_data:
       label: '1 Meta-Daten'
-      weight: 1
+      weight: 0
       children:
         - field_custom_title
         - field_related_transfer_number
@@ -45,7 +45,7 @@ third_party_settings:
       parent_name: ''
     group_content_information:
       label: '2 Fachlich-inhaltliche Angaben'
-      weight: 2
+      weight: 1
       children:
         - field_intial_situation
         - field_professional_conditions
@@ -68,16 +68,24 @@ bundle: quickinfo
 mode: default
 content:
   field_additional_email_recipient:
-    weight: 5
+    weight: 3
     type: string_textarea
     settings:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
     region: content
+  field_author_name:
+    type: string_textarea
+    weight: 6
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_author_state:
     type: string_textarea
-    weight: 7
+    weight: 5
     settings:
       rows: 1
       placeholder: ''
@@ -208,7 +216,7 @@ content:
     type: text_textarea
     region: content
   field_unique_id:
-    weight: 6
+    weight: 4
     type: number
     settings:
       placeholder: ''
@@ -218,13 +226,12 @@ content:
     settings:
       progress_indicator: throbber
     type: file_generic
-    weight: 4
+    weight: 2
     third_party_settings: {  }
     region: content
 hidden:
   comment: true
   created: true
-  field_author_name: true
   langcode: true
   path: true
   promote: true

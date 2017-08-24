@@ -6,6 +6,7 @@ dependencies:
     - field.storage.group_content.group_roles
   module:
     - group
+    - inactive_user
     - user
 id: group_members
 label: 'Group members'
@@ -626,7 +627,81 @@ display:
             created: '0'
           destination: true
           plugin_id: dropbutton
-      filters: {  }
+      filters:
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: gc__user
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: is_null
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          relationship: gc__user
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
       sorts:
         group_roles_target_id:
           id: group_roles_target_id
@@ -667,6 +742,15 @@ display:
             group_membership: group_membership
           entity_type: group_content
           plugin_id: group_content_to_entity
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: gc__user
+          group_type: group
+          admin_label: ' Inactive user'
+          required: false
+          plugin_id: standard
       arguments:
         gid:
           id: gid
