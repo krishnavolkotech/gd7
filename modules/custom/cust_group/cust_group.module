@@ -44,48 +44,48 @@ function cust_group_user_view(&$build, \Drupal\user\Entity\User $account, Drupal
     $userData = get_user_fields($account);
     foreach ($userData as $key => $val) {
       $build[$key] = [
-          '#theme' => 'usercustomfield',
-          '#label' => t($val['label']),
-          '#value' => $val['value'],
+        '#theme' => 'usercustomfield',
+        '#label' => t($val['label']),
+        '#value' => $val['value'],
       ];
     }
     $build['group_list'] = array(
-        '#markup' => hzd_group_list($account->id()),
-        '#cache' => ['max-age' => 0],
+      '#markup' => hzd_group_list($account->id()),
+      '#cache' => ['max-age' => 0],
 //      '#weight' => -10
     );
   }
-
+  
   //}
 }
 
 function get_user_fields($user) {
   $db = \Drupal::database();
   $result = $db->select('cust_profile', 'cp')
-          ->fields('cp', array(
-              'firstname',
-              'lastname',
-              'phone',
-              'position',
-              'state_id'
-          ))
-          ->condition('cp.uid', $user->id());
+    ->fields('cp', array(
+      'firstname',
+      'lastname',
+      'phone',
+      'position',
+      'state_id'
+    ))
+    ->condition('cp.uid', $user->id());
   $val = $result->execute()->fetchAssoc();
   $state = $db->select('states', 's')
-          ->fields('s', array('state'))
-          ->condition('s.id', $val['state_id'], '=');
+    ->fields('s', array('state'))
+    ->condition('s.id', $val['state_id'], '=');
   $state_name = $state->execute()->fetchField();
   $variables['name'] = [
-      'label' => 'User Name',
-      'value' => $user->getUsername()
+    'label' => 'User Name',
+    'value' => $user->getUsername()
   ];
   $variables['firstname'] = [
-      'label' => 'First Name',
-      'value' => $val['firstname']
+    'label' => 'First Name',
+    'value' => $val['firstname']
   ];
   $variables['lastname'] = [
-      'label' => 'Last Name',
-      'value' => $val['lastname']
+    'label' => 'Last Name',
+    'value' => $val['lastname']
   ];
   $variables['phone'] = ['label' => 'Phone', 'value' => $val['phone']];
   $variables['position'] = ['label' => 'Position', 'value' => $val['position']];
@@ -96,9 +96,9 @@ function get_user_fields($user) {
 
 function cust_group_theme() {
   return array(
-      'usercustomfield' => array(
-          'variables' => array('label' => NULL, 'value' => NULL),
-      ),
+    'usercustomfield' => array(
+      'variables' => array('label' => NULL, 'value' => NULL),
+    ),
   );
 }
 
@@ -119,77 +119,81 @@ function cust_group_node_insert($entity) {
 
 function cust_group_group_insert($group) {
   $node = Node::create([
-              'type' => 'group',
-              'title' => $group->label(),
+    'type' => 'group',
+    'title' => $group->label(),
   ]);
   $node->save();
   $forum = Term::create([
-              'name' => $group->label(),
-              'vid' => 'forums'
+    'name' => $group->label(),
+    'vid' => 'forums'
   ]);
   $forum->save();
   $forumTerm = Term::create([
-              'name' => 'Allgemeines',
-              'vid' => 'forums',
-              'parent' => $forum->id(),
-  ]);   
+    'name' => 'Allgemeines',
+    'vid' => 'forums',
+    'parent' => $forum->id(),
+  ]);
   $forumTerm->save();
-
+  
   $faq = Term::create([
-              'name' => $group->label(),
-              'vid' => 'faq_seite',
+    'name' => $group->label(),
+    'vid' => 'faq_seite',
   ]);
   $faq->save();
   $faqterm = Term::create([
-              'name' => 'Allgemein',
-              'vid' => 'faq_seite',
-              'parent' => $faq->id(),
+    'name' => 'Allgemein',
+    'vid' => 'faq_seite',
+    'parent' => $faq->id(),
   ]);
   $faqterm->save();
   
   $faqcategory = Term::create([
-              'name' => $group->label(),
-              'vid' => 'faq_kategorie',
+    'name' => $group->label(),
+    'vid' => 'faq_kategorie',
   ]);
   $faqcategory->save();
   $faqcategoryterm = Term::create([
-              'name' => 'Allgemein',
-              'vid' => 'faq_kategorie',
-              'parent' => $faqcategory->id(),
+    'name' => 'Allgemein',
+    'vid' => 'faq_kategorie',
+    'parent' => $faqcategory->id(),
   ]);
   $faqcategoryterm->save();
   
-  \Drupal::service('path.alias_storage')->delete(['source' => '/node/' . $node->id()]);
+  \Drupal::service('path.alias_storage')
+    ->delete(['source' => '/node/' . $node->id()]);
   $group->set('field_old_reference', $node->id());
   $group->set('field_forum_containers', $forum->id());
   $group->save();
   $menu = \Drupal::entityTypeManager()
-          ->getStorage('menu')
-          ->create([
+    ->getStorage('menu')
+    ->create([
       'id' => 'menu-' . $node->id(),
       'label' => $group->label(),
       'description' => '',
-  ]);
+    ]);
   $menu->save();
-
+  
   $items = array(
-      'Allgemeines' => 'internal:/' . $group->toUrl()->getInternalPath(),
+    'Allgemeines' => 'internal:/' . $group->toUrl()->getInternalPath(),
 //Cannot create dummy menu links as the Menu link url validation fails
-      /*    'Ansprechpartner' => '/ansprechpartner',
-        'Dokumentation' => '/dokumentation',
-        'FAQs' => '/faqs',
-        'Reporting' => '/reporting', */
-      'FAQ' => 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $faqterm->id()])->getInternalPath(),
-      'Forums' => 'internal:/' . Url::fromRoute('cust_group.forums', ['group' => $group->id()])->getInternalPath(),
-      'Gruppenmitglieder' => 'internal:/' . Url::fromRoute('view.group_members_lists.page_1', ['group' => $group->id()])->getInternalPath(),
+    /*    'Ansprechpartner' => '/ansprechpartner',
+      'Dokumentation' => '/dokumentation',
+      'FAQs' => '/faqs',
+      'Reporting' => '/reporting', */
+    'FAQ' => 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $faqterm->id()])
+        ->getInternalPath(),
+    'Forums' => 'internal:/' . Url::fromRoute('cust_group.forums', ['group' => $group->id()])
+        ->getInternalPath(),
+    'Gruppenmitglieder' => 'internal:/' . Url::fromRoute('view.group_members_lists.page_1', ['group' => $group->id()])
+        ->getInternalPath(),
   );
-
+  
   foreach ($items as $title => $link) {
     $menu_link = MenuLinkContent::create([
-                'title' => $title,
-                'link' => ['uri' => $link],
-                'menu_name' => $menu->id(),
-                'expanded' => TRUE,
+      'title' => $title,
+      'link' => ['uri' => $link],
+      'menu_name' => $menu->id(),
+      'expanded' => TRUE,
     ]);
     $menu_link->save();
   }
@@ -212,9 +216,9 @@ function cust_group_group_content_update($entity) {
     $send = TRUE;
     $user = $entity->get('entity_id')->referencedEntities()[0];
     $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLink has been approved.', [
-        '@user' => $user->getDisplayName(),
-        '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
-                ->toString()
+      '@user' => $user->getDisplayName(),
+      '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
+        ->toString()
     ]);
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
@@ -222,12 +226,18 @@ function cust_group_group_content_update($entity) {
     }
   }
   \Drupal::service('cache_tags.invalidator')
-          ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
+    ->invalidateTags([
+      'config:block.block.hzd_local_tasks',
+      'config:system.menu.primary-links'
+    ]);
 }
 
 function cust_group_group_content_delete() {
   \Drupal::service('cache_tags.invalidator')
-    ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
+    ->invalidateTags([
+      'config:block.block.hzd_local_tasks',
+      'config:system.menu.primary-links'
+    ]);
 }
 
 function cust_group_group_content_insert($entity) {
@@ -240,48 +250,55 @@ function cust_group_group_content_insert($entity) {
       } */
   }
   \Drupal::service('cache_tags.invalidator')
-    ->invalidateTags(['config:block.block.hzd_local_tasks','config:system.menu.primary-links']);
+    ->invalidateTags([
+      'config:block.block.hzd_local_tasks',
+      'config:system.menu.primary-links'
+    ]);
 }
 
 function cust_group_taxonomy_term_insert($term) {
-    if($term->getVocabularyId() != 'faq_seite' || empty($term->get('parent')->referencedEntities())) {
-        return;
-    }
-    $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
-    $query = \Drupal::entityQuery('group');
-    $query->condition('label', $parentlabel);
-    $groupid = $query->execute();
-    $gid = reset($groupid);
-    $group = \Drupal\group\Entity\Group::load($gid);
-    $nodeid = $group->get('field_old_reference')->value;
-    $link = 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()])->getInternalPath();
-    
-    $menuquery = \Drupal::entityQuery('menu_link_content');
-    $menuquery->condition('title', 'FAQ');
-    $menuquery->condition('menu_name', 'menu-' . $nodeid);
-    $menuitem = $menuquery->execute();
-    $parentmenuid = reset($menuitem);
-    if(empty($parentmenuid)) {
-        return;
-    }
-    $parentmenu = MenuLinkContent::load($parentmenuid)->getPluginId();
-    $menu_link = MenuLinkContent::create([
-                'title' => $term->label(),
-                'link' => ['uri' => $link],
-                'menu_name' => 'menu-' . $nodeid,
-                'parent' => $parentmenu,
-                'expanded' => TRUE,
-    ]);
-    $menu_link->save();    
+  if ($term->getVocabularyId() != 'faq_seite' || empty($term->get('parent')
+      ->referencedEntities())
+  ) {
+    return;
+  }
+  $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
+  $query = \Drupal::entityQuery('group');
+  $query->condition('label', $parentlabel);
+  $groupid = $query->execute();
+  $gid = reset($groupid);
+  $group = \Drupal\group\Entity\Group::load($gid);
+  $nodeid = $group->get('field_old_reference')->value;
+  $link = 'internal:/' . Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()])
+      ->getInternalPath();
+  
+  $menuquery = \Drupal::entityQuery('menu_link_content');
+  $menuquery->condition('title', 'FAQ');
+  $menuquery->condition('menu_name', 'menu-' . $nodeid);
+  $menuitem = $menuquery->execute();
+  $parentmenuid = reset($menuitem);
+  if (empty($parentmenuid)) {
+    return;
+  }
+  $parentmenu = MenuLinkContent::load($parentmenuid)->getPluginId();
+  $menu_link = MenuLinkContent::create([
+    'title' => $term->label(),
+    'link' => ['uri' => $link],
+    'menu_name' => 'menu-' . $nodeid,
+    'parent' => $parentmenu,
+    'expanded' => TRUE,
+  ]);
+  $menu_link->save();
 }
 
 function sendGroupUpdateMail($entity, $isNew = 1) {
-
+  
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
     if ($entity->getEntityTypeId() == 'group') {
       $group = $entity->id();
-    } else {
+    }
+    else {
       $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
       if ($groupContentId) {
         $group = $groupContentId->getGroup()->id();
@@ -289,11 +306,11 @@ function sendGroupUpdateMail($entity, $isNew = 1) {
     }
 //    pr($group);exit;
     if (!empty($group) && $group && (in_array($entity->bundle(), [
-                'event',
-                'forum',
-                'page',
-                'faqs'
-            ]) || $entity->getEntityTypeId() == 'group')
+          'event',
+          'forum',
+          'page',
+          'faqs'
+        ]) || $entity->getEntityTypeId() == 'group')
     ) {
       $getUserMailList = getGroupMemberList($group);
       send_notifications($entity, $getUserMailList, $isNew);
@@ -304,10 +321,10 @@ function sendGroupUpdateMail($entity, $isNew = 1) {
 function getGroupMemberList($gid) {
   $group = \Drupal\group\Entity\Group::load($gid);
   $uids = \Drupal::database()->select('group_notifications', 'gnudi')
-                  ->fields('gnudi', ['uids'])
-                  ->condition('gnudi.group_id', $gid, '=')
-                  ->condition('gnudi.send_interval', '0', '=')
-                  ->execute()->fetchField();
+    ->fields('gnudi', ['uids'])
+    ->condition('gnudi.group_id', $gid, '=')
+    ->condition('gnudi.send_interval', '0', '=')
+    ->execute()->fetchField();
   $users = [];
   if (!empty($uids)) {
     $users = unserialize($uids);
@@ -315,14 +332,16 @@ function getGroupMemberList($gid) {
 //  pr($users);exit;
   $userMails = [];
   if (!empty($users)) {
-
+    
     $userEntities = User::loadMultiple($users);
-
+    
     foreach ($userEntities as $user) {
       $groupMember = $group->getMember($user);
-      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive() 
-            && $groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1
-            && !hzd_user_inactive_status_check($user->id())) {
+      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive()
+        && $groupMember && $groupMember->getGroupContent()
+          ->get('request_status')->value == 1
+        && !hzd_user_inactive_status_check($user->id())
+      ) {
         $userMails[$user->id()] = $user->getEmail();
       }
     }
@@ -348,18 +367,19 @@ function send_notifications($entity, $mails, $isNew) {
 //    global $base_url;
 //    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
 //    $params['message'] .= '<br><br>' . $url;
-
+  
   $view_builder = \Drupal::entityManager()
-          ->getViewBuilder($entity->getEntityTypeId());
+    ->getViewBuilder($entity->getEntityTypeId());
   $renderarray = $view_builder->view($entity, 'mail');
   $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $entityTypeLabel = $entity->type->entity->label();
   if ($isNew) {
     $params['subject'] = t("Erstellt - {$entityTypeLabel}: " . $entity->label());
-  } else {
+  }
+  else {
     $params['subject'] = t("Aktualisiert - {$entityTypeLabel}: " . $entity->label());
   }
-
+  
   $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
@@ -372,7 +392,7 @@ use Drupal\Component\Utility\SafeMarkup;
 
 function cust_group_mail($key, &$message, $params) {
   $options = array(
-      'langcode' => $message['langcode'],
+    'langcode' => $message['langcode'],
   );
   switch ($key) {
     case 'immediate_notifications':
@@ -404,7 +424,7 @@ function cust_group_entity_type_alter(array &$entity_types) {
   }
   } */
 
-function cust_group_entity_reference_selection_alter(&$def){
+function cust_group_entity_reference_selection_alter(&$def) {
   $def['default:user']['class'] = 'Drupal\cust_group\Plugin\EntityReferenceSelection\CustomUserSelection';
 //  pr($def);exit;
 }
@@ -426,13 +446,13 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
         }
       }
       $categoryQuery = \Drupal::entityQuery('taxonomy_term')
-              ->condition('name', $group->label())
-              ->condition('vid', 'faq_kategorie')
-              ->execute();
+        ->condition('name', $group->label())
+        ->condition('vid', 'faq_kategorie')
+        ->execute();
       $parentId = array_values($categoryQuery)[0];
       $categoryTerms = \Drupal::entityTypeManager()
-              ->getStorage('taxonomy_term')
-              ->loadTree('faq_kategorie', $parentId, 1);
+        ->getStorage('taxonomy_term')
+        ->loadTree('faq_kategorie', $parentId, 1);
       $categoryOptions['_none'] = t('Select Kategorie');
       foreach ($categoryTerms as $term) {
         $categoryOptions[$term->tid] = $term->name;
@@ -440,13 +460,13 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       natcasesort($categoryOptions);
       $form['faq_kategorie']['widget']['#options'] = $categoryOptions;
       $pageQuery = \Drupal::entityQuery('taxonomy_term')
-              ->condition('name', $group->label())
-              ->condition('vid', 'faq_seite')
-              ->execute();
+        ->condition('name', $group->label())
+        ->condition('vid', 'faq_seite')
+        ->execute();
       $parentId = array_values($pageQuery)[0];
       $pageTerms = \Drupal::entityTypeManager()
-              ->getStorage('taxonomy_term')
-              ->loadTree('faq_seite', $parentId, 1);
+        ->getStorage('taxonomy_term')
+        ->loadTree('faq_seite', $parentId, 1);
       $pageOptions['_none'] = t('Select Seite');
       foreach ($pageTerms as $pageTerm) {
         $pageOptions[$pageTerm->tid] = $pageTerm->name;
@@ -457,16 +477,16 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     case 'views_exposed_form':
       if (isset($form['state'])) {
         $states = \Drupal::database()->select('states', 's')
-                ->fields('s', ['abbr', 'state'])
-                ->condition('active', 1)
-                ->execute()
-                ->fetchAllAssoc('abbr');
+          ->fields('s', ['abbr', 'state'])
+          ->condition('active', 1)
+          ->execute()
+          ->fetchAllAssoc('abbr');
         foreach ($states as $key => $val) {
           $stateOptions[$key] = $val->state;
         }
         $form['state'] = ['#type' => 'select', '#options' => $stateOptions];
       }
-
+      
       //Adding this as the bootstrap theme just displays the descriptions as tool tips.
       if (isset($form['combine'])) {
         $form['combine']['#placeholder'] = 'Name oder Email suchen';
@@ -480,7 +500,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 //            kint($_SERVER);
       $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
       $fake_request = \Symfony\Component\HttpFoundation\Request::create($previousUrl)
-              ->getRequestUri();
+        ->getRequestUri();
 //            $url_object = \Drupal::service('path.validator')->getUrlIfValid($fake_request->getRequestUri());
 //            kint($fake_request);
       $url = \Drupal\Core\Url::fromUserInput($fake_request);
@@ -497,38 +517,43 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 function requst_submit_handler(&$form, $form_state) {
   $data['group'] = \Drupal::routeMatch()->getParameter('group');
   $form_state->setRedirect('view.all_groups.page_1');
-
-
+  
+  
   $data['message'] = $form_state->getValue('message');
-
+  
   $data['module'] = 'cust_group';
   $data['key'] = 'immediate_notifications';
-
+  
   mailToGroupAdmins($data);
 }
 
 function mailToGroupAdmins($data = []) {
   $data['subject'] = t("Membership Request for a Group - @label", ['@label' => $data['group']->label()]);
   $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
-          ->toString();
+    ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
-          ->loadByGroup($data['group'], 'group_membership', ['group_roles' => ['moderate-admin', 'moderate_private-admin']]);
+    ->loadByGroup($data['group'], 'group_membership', [
+      'group_roles' => [
+        'moderate-admin',
+        'moderate_private-admin'
+      ]
+    ]);
   $mailManager = \Drupal::service('plugin.manager.mail');
   $send = TRUE;
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $params['subject'] = $data['subject'];
   foreach ($groupAdmins as $admin) {
     $userEntity = $admin->entity_id->entity;
-    if($userEntity->isActive() && !hzd_user_inactive_status_check($userEntity->id())){
-        $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
-            '@user' => $userEntity->getDisplayName(),
-            '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
-                    ->toString(),
-            '@link' => $data['link'],
-            '@message' => $data['message']
-        ]);
-    //    pr($params);exit;
-        $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
+    if ($userEntity->isActive() && !hzd_user_inactive_status_check($userEntity->id())) {
+      $params['message'] = t('Dear @user,<br><br>There is a new Membership Request for Group @groupLink <br><br>@message<br><br>@link', [
+        '@user' => $userEntity->getDisplayName(),
+        '@groupLink' => $data['group']->toLink($data['group']->label(), 'canonical', ['absolute' => TRUE])
+          ->toString(),
+        '@link' => $data['link'],
+        '@message' => $data['message']
+      ]);
+      //    pr($params);exit;
+      $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
     }
   }
   drupal_set_message(t('Request has been sucessfully placed.'), 'status');
@@ -543,7 +568,8 @@ function cust_group_views_pre_render($view) {
 //    $group = Group::load($groupId);
     if (is_object($group)) {
       $view->build_info['title'] = $group->label() . " - " . $view->build_info['title'];
-    } else {
+    }
+    else {
       $view->build_info['title'] = $group->label . " - " . $view->build_info['title'];
     }
   }
@@ -553,14 +579,14 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 //  drupal_get_messages(null, TRUE);
   $errors = [];
   $fileName = $file->getFilename();
-
+  
   $node = \Drupal::routeMatch()->getParameter('node');
   if ($node instanceof Node && $node->bundle() == 'im_upload_page') {
     $data = [];
     $attachedFiles = \Drupal::entityQuery('node')
-            ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
-            ->condition('nid', $node->id())
-            ->execute();
+      ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
+      ->condition('nid', $node->id())
+      ->execute();
 //    if (empty($attachedFiles)) {
 //      if ($file->isNew()) {
 //        
@@ -573,10 +599,14 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 //        pr($attachedFiles);exit;
   }
   $query = \Drupal::request()->get('upload');
-  if (\Drupal::routeMatch()->getRouteName() == 'node.add' && \Drupal::routeMatch()->getParameter('node_type')->id() == 'im_upload_page') {
+  if (\Drupal::routeMatch()
+      ->getRouteName() == 'node.add' && \Drupal::routeMatch()
+      ->getParameter('node_type')
+      ->id() == 'im_upload_page'
+  ) {
     $query = \Drupal::request()->get('field_im_upload_page_files');
   }
-  if(\Drupal::request()->get('field_page_files',null)){
+  if (\Drupal::request()->get('field_page_files', NULL)) {
     $query = \Drupal::request()->get('field_page_files');
   }
 //  $check = \Drupal::entityQuery('file')
@@ -593,57 +623,56 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
       }
     }
   }
-
-
-
+  
+  
   //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
   //Todo sometimes giving true while value is one
   //if (count($check) >= 1 && $file->isNew()) {
 //    $node = \Drupal::routeMatch()->getParameter('node');
-    /* if ($node instanceof Node && $node->bundle() == 'quickinfo') {
-      $checkQuickinfo = \Drupal::entityQuery('node')
-      ->condition('upload.entity:file.fid', (array) $check, 'IN')
-      ->condition('type', 'quickinfo')
-      ->execute();
-      $query = \Drupal::request()->get('upload');
-      pr($query);exit;
-      foreach ($query as $tempFile) {
-      if (!empty($tempFile['fids'])) {
-      $file = File::load($tempFile['fids']);
-      $temporaryFileData[] = $file->getFilename();
-      }
-      }
+  /* if ($node instanceof Node && $node->bundle() == 'quickinfo') {
+    $checkQuickinfo = \Drupal::entityQuery('node')
+    ->condition('upload.entity:file.fid', (array) $check, 'IN')
+    ->condition('type', 'quickinfo')
+    ->execute();
+    $query = \Drupal::request()->get('upload');
+    pr($query);exit;
+    foreach ($query as $tempFile) {
+    if (!empty($tempFile['fids'])) {
+    $file = File::load($tempFile['fids']);
+    $temporaryFileData[] = $file->getFilename();
+    }
+    }
 
-      $route = \Drupal::routeMatch()->getRouteName();
+    $route = \Drupal::routeMatch()->getRouteName();
 
-      if (!in_array($node->id(), (array) $checkQuickinfo) && !in_array($fileName, $temporaryFileData)) {
-      return [];
-      }
-      if ($route == 'entity.group_content.create_form' && !in_array($fileName, $temporaryFileData)) {
-      return [];
-      }
-      } else {
-      $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
-      if($group instanceof \Drupal\group\Entity\Group){
-      foreach (File::loadMultiple($check) as $fileEntity) {
-      $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
-      $data = [];
-      foreach ($file_usage as $module) {
-      foreach ($module as $contentType => $type) {
-      foreach ($type as $id => $count) {
-      $groupContent = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
-      if ($groupContent instanceof \Drupal\group\Entity\GroupContent) {
-      $data[] = $groupContent->getGroup()->id();
-      }
-      }
-      }
-      }
-      }
-      if (!in_array($group->id(), $data)) {
-      return [];
-      }
-      }
-      } */
+    if (!in_array($node->id(), (array) $checkQuickinfo) && !in_array($fileName, $temporaryFileData)) {
+    return [];
+    }
+    if ($route == 'entity.group_content.create_form' && !in_array($fileName, $temporaryFileData)) {
+    return [];
+    }
+    } else {
+    $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+    if($group instanceof \Drupal\group\Entity\Group){
+    foreach (File::loadMultiple($check) as $fileEntity) {
+    $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
+    $data = [];
+    foreach ($file_usage as $module) {
+    foreach ($module as $contentType => $type) {
+    foreach ($type as $id => $count) {
+    $groupContent = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
+    if ($groupContent instanceof \Drupal\group\Entity\GroupContent) {
+    $data[] = $groupContent->getGroup()->id();
+    }
+    }
+    }
+    }
+    }
+    if (!in_array($group->id(), $data)) {
+    return [];
+    }
+    }
+    } */
 //    $errors[] = t("The file's name already exists in database.");
   //}
   return $errors;
@@ -652,21 +681,22 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
 function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   //pr($entity->bundle());exit;
   $plannigFileRef = array(
-      1048 => "mlrp",
-      658 => "test calendar",
-      1049 => "transcription pp",
-      785 => "transcription fmk"
+    1048 => "mlrp",
+    658 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
   );
-  if (in_array($entity->id(), array_keys($plannigFileRef))) {
+  if (array_key_exists($entity->id(), $plannigFileRef)) {
     $items = get_planning_file_data($plannigFileRef[$entity->id()]);
     $build['planning_file_data'] = [
-        '#prefix' => '<h1 class="js-quickedit-page-title page-header">' . t('Files') . '</h1>',
-        '#items' => $items,
-        '#theme' => 'item_list',
-        '#type' => 'ul',
-        '#weight' => 100,
+      '#prefix' => '<h1 class="js-quickedit-page-title page-header">' . t('Files') . '</h1>',
+      '#items' => $items,
+      '#theme' => 'item_list',
+      '#type' => 'ul',
+      '#weight' => 100,
     ];
-  } elseif ('planning_files' == $entity->bundle()) {
+  }
+  elseif ('planning_files' == $entity->bundle()) {
     $field_planning_file_type = $entity->get('field_planning_file_type')->value;
     $plannigFileRefFlipped = array_flip($plannigFileRef);
     $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
@@ -681,7 +711,8 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     global $base_url;
     header('Location: ' . $base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId]));
     exit;
-  } elseif ('downtimes' == $entity->bundle()) {
+  }
+  elseif ('downtimes' == $entity->bundle()) {
     $db = \Drupal::database();
     $downtimeTypeQuery = $db->select('downtimes', 'd');
     $downtimeTypeQuery->fields('d', ['scheduled_p']);
@@ -689,7 +720,8 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $downtimeType = $downtimeTypeQuery->execute()->fetchField();
     if ($downtimeType == 0) {
       $title = t('Störung');
-    } else {
+    }
+    else {
       $title = t('Blockzeit');
     }
     $build['title'] = ['#markup' => $title];
@@ -713,35 +745,35 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
 }
 
 function get_hzd_states_by_id($id = NULL) {
-    if(empty($id)) {
-        return;
-    }
-    $states = [
-        'bw' => 'Baden-Württemberg',
-        'by' => 'Bayern',
-        'be' => 'Berlin', //Berlin (BE)
-        'bb' => 'Brandenburg', //Brandenburg (BB)
-        'hb' => 'Bremen', //Bremen (HB)
-        'bu' => 'Bund', //Bund (BU)
-        'hh' => 'Hamburg', //Hamburg (HH)
-        'he' => 'Hessen', //Hessen (HE)
-        'mv' => 'Mecklenburg-Vorpommern', //Mecklenburg-Vorpommern (MV)
-        'ni' => 'Niedersachsen', //Niedersachsen (NI)
-        'nw' => 'Nordrhein-Westfalen', //Nordrhein-Westfalen (NW)
-        'rp' => 'Rheinland-Pfalz', //Rheinland-Pfalz (RP)
-        'sl' => 'Saarland', //Saarland (SL)
-        'sn' => 'Sachsen', //Sachsen (SN)
-        'st' => 'Sachsen-Anhalt', //Sachsen-Anhalt (ST)
-        'sh' => 'Schleswig-Holstein', //Schleswig-Holstein (SH)
-        'th' => 'Thüringen', //Thüringen (TH)
-    ];
-    return $states[$id];
+  if (empty($id)) {
+    return;
+  }
+  $states = [
+    'bw' => 'Baden-Württemberg',
+    'by' => 'Bayern',
+    'be' => 'Berlin', //Berlin (BE)
+    'bb' => 'Brandenburg', //Brandenburg (BB)
+    'hb' => 'Bremen', //Bremen (HB)
+    'bu' => 'Bund', //Bund (BU)
+    'hh' => 'Hamburg', //Hamburg (HH)
+    'he' => 'Hessen', //Hessen (HE)
+    'mv' => 'Mecklenburg-Vorpommern', //Mecklenburg-Vorpommern (MV)
+    'ni' => 'Niedersachsen', //Niedersachsen (NI)
+    'nw' => 'Nordrhein-Westfalen', //Nordrhein-Westfalen (NW)
+    'rp' => 'Rheinland-Pfalz', //Rheinland-Pfalz (RP)
+    'sl' => 'Saarland', //Saarland (SL)
+    'sn' => 'Sachsen', //Sachsen (SN)
+    'st' => 'Sachsen-Anhalt', //Sachsen-Anhalt (ST)
+    'sh' => 'Schleswig-Holstein', //Schleswig-Holstein (SH)
+    'th' => 'Thüringen', //Thüringen (TH)
+  ];
+  return $states[$id];
 }
 
 function get_planning_file_data($type) {
   $plannigFileNodeIds = \Drupal::entityQuery('node')
-          ->condition('field_planning_file_type', $type)
-          ->execute();
+    ->condition('field_planning_file_type', $type)
+    ->execute();
   $planningFileNodes = \Drupal\node\Entity\Node::loadMultiple(array_values($plannigFileNodeIds));
   $filenames = [];
   foreach ($planningFileNodes as $node) {
@@ -749,12 +781,12 @@ function get_planning_file_data($type) {
     if (!empty($file[0])) {
       $fileUrl = $file[0]->url();
       $date = \Drupal::service('date.formatter')
-              ->format($node->getCreatedTime(), 'short');
+        ->format($node->getCreatedTime(), 'short');
       $filenames[] = [
-          '#markup' => \Drupal::service('link_generator')
-                  ->generate($file[0]->getFilename(), Url::fromUri($fileUrl))
-                  ->__toString() . ' (' . $date . ')',
-          '#type' => 'markup'
+        '#markup' => \Drupal::service('link_generator')
+            ->generate($file[0]->getFilename(), Url::fromUri($fileUrl))
+            ->__toString() . ' (' . $date . ')',
+        '#type' => 'markup'
       ];
       //$filenames[] = ['file'=>Link::fromTextAndUrl($file[0]->getFilename(),  Url::fromUri($fileUrl)),
       //'text'=>'sjdbd'];
@@ -773,8 +805,8 @@ function cust_group_cron() {
 
 function cust_group_user_delete($user) {
   $groupContent = \Drupal::entityQuery('group_content')
-          ->condition('entity_id', $user->id())
-          ->execute();
+    ->condition('entity_id', $user->id())
+    ->execute();
   $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
   foreach ($groupUsers as $gUser) {
     $gUser->delete();
@@ -787,7 +819,7 @@ function cust_group_preprocess_node(&$variables) {
 }
 
 function cust_group_user_login() {
-  $request = \Drupal::request()->get('destination', null);
+  $request = \Drupal::request()->get('destination', NULL);
   if (!$request) {
     $response = new RedirectResponse("/");
     $response->send();
@@ -796,10 +828,10 @@ function cust_group_user_login() {
 }
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
-
+  
   if ($entity->getEntityTypeId() == 'group_content' && $entity->getContentPlugin()
-                  ->getPluginId() == 'group_membership' && $entity->getGroup()
-                  ->getMemberRequestStatus($entity->getEntity()) == 0
+      ->getPluginId() == 'group_membership' && $entity->getGroup()
+      ->getMemberRequestStatus($entity->getEntity()) == 0
   ) {
 //    pr(($entity->getGroup()->getMemberRequestStatus($entity->getEntity())));
 //    exit;
@@ -808,20 +840,20 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     $operations['edit']['#access'] = FALSE;
     unset($operations['edit']);
     $operations['approve_request'] = array(
-        'title' => t('Approve Request'),
-        'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', [
-            'group' => $group,
-            'group_content' => $group_content
-        ]),
-        'weight' => -51,
+      'title' => t('Approve Request'),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', [
+        'group' => $group,
+        'group_content' => $group_content
+      ]),
+      'weight' => -51,
     );
     $operations['reject_request'] = array(
-        'title' => t('Reject Request'),
-        'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', [
-            'group' => $group,
-            'group_content' => $group_content
-        ]),
-        'weight' => -50,
+      'title' => t('Reject Request'),
+      'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', [
+        'group' => $group,
+        'group_content' => $group_content
+      ]),
+      'weight' => -50,
     );
 //    pr(array_keys($operations));
 //    exit;
@@ -838,7 +870,8 @@ function cust_group_file_download($uri) {
   $scheme = \Drupal::service('file_system')->uriScheme($uri);
   if (\Drupal::currentUser()->isAnonymous() && $scheme == 'private') {
     return -1;
-  } else {
+  }
+  else {
 //    echo 1;exit;
     return 1;
   }
@@ -849,7 +882,7 @@ function cust_group_file_download($uri) {
  */
 function cust_group_schema() {
   $schema = [];
-
+  
   return $schema;
 }
 
@@ -921,7 +954,7 @@ function cust_group_user_format_name_alter(&$name, $account) {
   if ($account->id()) {
     $userQuery = \Drupal::database()->select('cust_profile', 'cp');
     $userQuery->condition('cp.uid', $account->id(), '=')
-            ->fields('cp', array('firstname', 'lastname'));
+      ->fields('cp', array('firstname', 'lastname'));
     $userData = $userQuery->execute()->fetchAssoc();
     $name = $userData['firstname'] . ' ' . $userData['lastname'];
   }
@@ -935,12 +968,12 @@ function cust_group_entity_base_field_info(Drupal\Core\Entity\ContentEntityTypeI
     $fields = [];
     // Add a field that shows a link to the user's current company.
     $fields['downtime_description'] = \Drupal\Core\Field\BaseFieldDefinition::create('downtime_description')
-            ->setName('Downtime Description')
-            ->setLabel(t('Downtime Description'))
-            ->setComputed(TRUE)
-            ->setClass('\Drupal\cust_group\DowntimeDescriptionItemList')
-            ->setDisplayConfigurable('view', TRUE);
-
+      ->setName('Downtime Description')
+      ->setLabel(t('Downtime Description'))
+      ->setComputed(TRUE)
+      ->setClass('\Drupal\cust_group\DowntimeDescriptionItemList')
+      ->setDisplayConfigurable('view', TRUE);
+    
     return $fields;
   }
 }
@@ -960,11 +993,14 @@ function cust_group_preprocess_views_view_table(&$variables) {
       $group = \Drupal\group\Entity\Group::load($group);
     }
     $groupMember = $group->getMember(\Drupal::currentUser());
-    if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+    if ($groupMember && $groupMember->getGroupContent()
+        ->get('request_status')->value == 1
+    ) {
       $roles = $groupMember->getRoles();
       if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
         $status = TRUE;
-      } else {
+      }
+      else {
         $status = FALSE;
       }
     }
@@ -975,12 +1011,27 @@ function cust_group_preprocess_views_view_table(&$variables) {
 }
 
 function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, array $context) {
-  if ($context['module'] == 'node'  
-      && $context['bundle'] == "quickinfo" && $context['data']['node']->isPublished() == FALSE) {
+  if ($context['module'] == 'node'
+    && $context['bundle'] == "quickinfo" && $context['data']['node']->isPublished() == FALSE
+  ) {
     $pattern->setPattern('[node:group_raw]/rz-schnellinfos/[node:title]');
   }
 }
 
-function cust_group_menu_link_content_load($entities){
-//  exit;
-}
+
+//Doesn't make any effect using this so marking @todo
+/*function cust_group_user_load(&$entities) {
+  foreach ($entities as &$entity) {
+    $status = \Drupal::database()->select('inactive_users', 'inf')
+      ->fields('inf')
+      ->condition('uid', $entity->id())
+      ->execute()
+      ->fetchCol();
+//    pr($status);exit;
+    if(!empty($status) ){
+      $entity->set('status',0);
+//      pr($entity->get('status')->value);exit;
+    }
+  }
+}*/
+
