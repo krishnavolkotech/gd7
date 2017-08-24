@@ -290,7 +290,7 @@ table.releases.released tr.even td.earlywarnings-cell {
 }
 #incidents_search_results_wrapper table tr td:last-child,
 #maintenance_search_results_wrapper table tr td:last-child {
-   width: 8%;
+   width: 9%;
    /*display:table;*/
 }
 #maintenance_search_results_wrapper table tr td:first-child,
@@ -555,6 +555,7 @@ a,
 p {
     /*word-wrap: break-word;*/
 }
+
 table.sticky-header th.views-field-changed a span,
 table.sticky-table th.views-field-created a span {
     float: right !important;
@@ -1042,7 +1043,7 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
 .footer {
     border: none !important;
     margin-top: 0 !important;
-    padding: 10px 0 !important;
+    padding: 14px 0 !important;
     font-size: 13px;
    /* background: #e2e2e2;*/
     background:#004077;
@@ -1050,6 +1051,7 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     color:#fff;
     width:100%;
     float:left;
+    
 }
 .form-group:last-child,
 .panel:last-child,
@@ -1122,12 +1124,14 @@ form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkb
 form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox,
 form.node-service-profile-form .form-checkboxes{
   width: 99%;
-  float:left;
+  display:inline-block;
   /*margin: 0 1% 7px 0;*/
   margin:0 0 7px 0;
   padding: 0;
 }
-
+form.node-downtimes-form legend{
+  margin-top:15px;
+}
 form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
@@ -1136,11 +1140,11 @@ form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
 form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
-  /*width: 99%;
+  width: 99%;
   display: inline-block;
   margin: 0 1% 7px 0;
   margin:0 0 7px 0;
-  padding: 0;*/
+  padding: 0;
 }
 .ckeditor-custom-wrapper blockquote{
   display:inline-block;
@@ -1152,3 +1156,4 @@ table.view-deployed-releases{
 #deployed-overview .table-responsive{
   overflow-x:initial;
 }
+#released_results_wrapper .table-responsive table tr td.earlywarnings-cell{}
