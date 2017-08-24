@@ -1309,6 +1309,15 @@ display:
           admin_label: ' State id'
           required: false
           plugin_id: standard
+        uid_1:
+          id: uid_1
+          table: inactive_users
+          field: uid
+          relationship: uid
+          group_type: group
+          admin_label: ' Inactive user'
+          required: false
+          plugin_id: standard
       display_description: 'Freigeschaltete Mitglieder der Gruppe'
       filters:
         type:
@@ -1486,6 +1495,42 @@ display:
           entity_type: user
           entity_field: status
           plugin_id: boolean
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: is_null
       filter_groups:
         operator: AND
         groups:
@@ -2129,6 +2174,15 @@ display:
           admin_label: ' user profile uid'
           required: false
           plugin_id: standard
+        uid_1:
+          id: uid_1
+          table: inactive_users
+          field: uid
+          relationship: gc__user
+          group_type: group
+          admin_label: ' Inactive user'
+          required: false
+          plugin_id: standard
       display_description: Freischaltungen
       filters:
         type:
@@ -2221,6 +2275,42 @@ display:
           entity_type: group_content
           entity_field: request_status
           plugin_id: numeric
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: gc__user
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: is_null
       filter_groups:
         operator: AND
         groups:
