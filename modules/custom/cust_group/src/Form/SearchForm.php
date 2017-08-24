@@ -29,7 +29,8 @@ class SearchForm extends FormBase {
     $form['expanded']['close'] = ['#type'=>'html_tag','#tag'=>'a','#attributes'=>['class'=>['close'],'onclick'=>'jQuery(".search-expanded").toggleClass("hide");return false;'],'#value'=>'Close'];
     $form['expanded']['fulltext'] = [
       '#type'=>'textfield',
-      '#default_value'=>$query->has('fulltext')?$query->get('fulltext'):null,
+// as a requirement search input is emptied after form submit
+//      '#default_value'=>$query->has('fulltext')?$query->get('fulltext'):null,
       '#size'=>15,
       '#placeholder'=>$this->t('Search site'),
     ];
