@@ -1,27 +1,51 @@
 downtimes:
-  subject: '[node:title] has been modified'
-  mail_content: "\r\n[node:url:absolute]"
+  subject_insert: '[[node:downtime_states]] New [node:downtime_type] ([node:downtime_services])'
+  subject_update: '[[node:downtime_states]] [node:downtime_status] [node:downtime_type] ([node:downtime_services])'
+  mail_content: '[node:url:absolute]'
+  mail_footer: "<p>Thi s is Fooetef</p>\r\n"
+  mail_view: 1
 problems:
   subject: Hellooooooooooooo
   mail_content: '[node:created][node:created]'
 quickinfo:
-  subject: '[node:title] has been modified'
+  subject_insert: '[[node:field_author_state]] RZ-Schnellinfo Nr.[node:field_unique_id] - [node:field_custom_title]'
+  subject_update: '[[node:field_author_state]] RZ-Schnellinfo Nr.[node:field_unique_id] - [node:field_custom_title]'
   mail_content: '[node:url:absolute]'
+  mail_footer: "<p>=============</p>\r\n\r\n<p>Foooorrrrrrrrr</p>\r\n"
+  mail_view: 1
 planning_files:
-  subject: '[node:title] has been [node:nodecreatedupdatedstatus]'
+  subject_insert: '[Release Management] New [node:content-type] : [node:title]'
+  subject_update: '[Release Management] Updated [node:content-type] : [node:title]'
   mail_content: '[node:url:absolute]'
+  mail_footer: "<p>================</p>\r\n\r\n<p>This is footer</p>\r\n"
+  mail_view: 1
 release:
-  subject: '[node:title] has been modified'
-  mail_content: "\r\n[node:url:absolute]"
+  subject_insert: '[[node:field_relese_services]] New Release : [node:title]'
+  subject_update: '[[node:field_relese_services]] Updated Release : [node:title]'
+  mail_content: '[node:url:absolute]'
+  mail_footer: "<p>=====================</p>\r\n\r\n<p>This is Footer</p>\r\n"
+  mail_view: 0
 problem:
-  subject: '[node:title] has been modified'
-  mail_content: "\r\n[node:url:absolute]"
+  subject_insert: '[[node:field_services]] New Problem : [node:title]'
+  subject_update: '[[node:field_services]] Updated Problem : [node:title]'
+  mail_content: '[node:url:absolute]'
+  mail_footer: "<p>==========================================</p>\r\n\r\n<p>This is footer</p>\r\n"
+  mail_view: 0
 group_content:
-  subject: '[node:title] has been modified'
+  subject_insert: '[[node:content_group_title]] New [node:content-type]: [node:title]'
+  subject_update: '[[node:content_group_title]] Updated [node:content-type]: [node:title]'
   mail_content: 'Group Content Updated again'
+  mail_footer: "<p>===================</p>\r\n\r\n<p>This is Foortr</p>\r\n"
+  mail_view: 1
 early_warnings:
-  subject: '[node:title] has been modified'
-  mail_content: sffsd
+  subject_insert: '[[node:field_release_service]] New Early Warning : [node:title]'
+  subject_update: '[[node:field_release_service]] Updated Early Warning : [node:title]'
+  mail_content: '[node:url:absolute]'
+  mail_footer: "<p>===============</p>\r\n\r\n<p>This is Footer</p>\r\n"
+  mail_view: 1
 group:
-  subject: '[group:title] has been updated'
+  subject_insert: '[[group:title]] New Group : [group:title]'
+  subject_update: '[[group:title]] Updated Group : [group:title]'
   mail_content: '[group:url]'
+  mail_footer: "<p>================</p>\r\n\r\n<p>This is footer</p>\r\n"
+  mail_view: 0

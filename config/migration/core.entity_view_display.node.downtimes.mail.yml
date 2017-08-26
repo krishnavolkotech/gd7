@@ -1,9 +1,10 @@
-uuid: 3bae1eda-087b-4226-b709-0aeba03d3788
+uuid: e54a365c-b2a4-4da6-852a-3d00ab2f219b
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_display.comment.comment.default
+    - core.entity_view_mode.node.mail
     - field.field.node.downtimes.body
     - field.field.node.downtimes.comment
     - field.field.node.downtimes.upload
@@ -16,10 +17,10 @@ dependencies:
 third_party_settings:
   entity_print:
     label: 'View PDF'
-id: node.downtimes.default
+id: node.downtimes.mail
 targetEntityType: node
 bundle: downtimes
-mode: default
+mode: mail
 content:
   body:
     label: hidden
@@ -44,9 +45,9 @@ content:
     region: content
   links:
     weight: 2
-    region: content
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

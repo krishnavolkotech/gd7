@@ -214,9 +214,9 @@ content:
     region: content
   links:
     weight: 23
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   upload:
     label: hidden
     settings: {  }

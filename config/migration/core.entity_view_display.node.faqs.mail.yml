@@ -1,9 +1,9 @@
-uuid: 010ebf9c-2b80-4f50-b176-88122c7b5a9e
+uuid: 4601c451-162b-4737-ab6a-a1e87ead9137
 langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_display.comment.comment.default
+    - core.entity_view_mode.node.mail
     - field.field.node.faqs.body
     - field.field.node.faqs.comment
     - field.field.node.faqs.faq_kategorie
@@ -11,49 +11,39 @@ dependencies:
     - field.field.node.faqs.upload
     - node.type.faqs
   module:
-    - comment
     - file
     - text
     - user
-id: node.faqs.default
+id: node.faqs.mail
 targetEntityType: node
 bundle: faqs
-mode: default
+mode: mail
 content:
   body:
     label: hidden
     type: text_default
-    weight: 5
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     region: content
-  comment:
-    label: hidden
-    type: comment_default
-    weight: 3
-    settings:
-      pager_id: 0
-      view_mode: default
-    third_party_settings: {  }
-    region: content
   faq_kategorie:
-    label: hidden
-    type: entity_reference_label
-    weight: 2
-    settings:
-      link: true
-    third_party_settings: {  }
-    region: content
-  faq_seite:
-    label: hidden
+    label: inline
     type: entity_reference_label
     weight: 1
     settings:
-      link: true
+      link: false
+    third_party_settings: {  }
+    region: content
+  faq_seite:
+    label: inline
+    type: entity_reference_label
+    weight: 0
+    settings:
+      link: false
     third_party_settings: {  }
     region: content
   links:
-    weight: 4
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -61,10 +51,11 @@ content:
     label: hidden
     settings: {  }
     type: file_default
-    weight: 6
+    weight: 4
     third_party_settings: {  }
     region: content
 hidden:
+  comment: true
   downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true

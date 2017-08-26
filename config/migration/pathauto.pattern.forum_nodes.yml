@@ -1,0 +1,33 @@
+uuid: e2de3cf1-9a27-4279-8ee9-cc6f2faaad1f
+langcode: de
+status: true
+dependencies:
+  module:
+    - language
+    - node
+id: forum_nodes
+label: 'Forum nodes'
+type: 'canonical_entities:node'
+pattern: '[node:group_raw]/forum/[node:title]'
+selection_criteria:
+  08ddcef4-5e45-467f-bb27-585bcaae2579:
+    id: node_type
+    bundles:
+      forum: forum
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 08ddcef4-5e45-467f-bb27-585bcaae2579
+  f387424f-3843-45bf-a9d3-df56b30c0a51:
+    id: language
+    langcodes:
+      de: de
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: f387424f-3843-45bf-a9d3-df56b30c0a51
+selection_logic: and
+weight: -1
+relationships:
+  'node:langcode:language':
+    label: Sprache
