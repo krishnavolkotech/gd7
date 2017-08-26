@@ -327,7 +327,7 @@ function getGroupMemberList($gid) {
     ->execute()->fetchField();
   $users = [];
   if (!empty($uids)) {
-    $users = unserialize($uids);
+    $users = array_filter(unserialize($uids));
   }
 //  pr($users);exit;
   $userMails = [];
@@ -354,33 +354,11 @@ function send_notifications($entity, $mails, $isNew) {
   $mailManager = \Drupal::service('plugin.manager.mail');
   $module = 'cust_group';
   $key = 'immediate_notifications';
-  //$mails = \Drupal::currentUser()->getEmail().',sandeep@azrisolutions.com';
-//    $groupContent = \Drupal\group\Entity\GroupContent::load($data['id']);
-//    $params['subject'] = "Aktualisiert - Seite: " . $groupContent->label();
-//    $params['message'] = 'Ein Inhalt im Betriebsportal KONSENS wurde aktualisiert. Sie können sich die Änderungen ansehen, indem Sie auf den folgenden Link klicken:';
-//  $token_service = \Drupal::token();
-//  $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['subject'];
-//  $params['subject'] = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
-//  $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get($entity->getEntityTypeId())['mail_content'];
-//  $params['message'] = $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity));
-//    pr($mails);echo $params['message'];exit;
-//    global $base_url;
-//    $url = $base_url . '/group/' . $data['gid'] . '/node/' . $data['id'];
-//    $params['message'] .= '<br><br>' . $url;
   
-  $view_builder = \Drupal::entityManager()
-    ->getViewBuilder($entity->getEntityTypeId());
-  $renderarray = $view_builder->view($entity, 'mail');
-  $html = \Drupal::service('renderer')->renderRoot($renderarray);
-  $entityTypeLabel = $entity->type->entity->label();
-  if ($isNew) {
-    $params['subject'] = t("Erstellt - {$entityTypeLabel}: " . $entity->label());
-  }
-  else {
-    $params['subject'] = t("Aktualisiert - {$entityTypeLabel}: " . $entity->label());
-  }
-  
-  $params['message'] = $html;
+  $mailContent = getNodeMailContentFromConfig($entity,$isNew?'insert':'update');
+  $params['subject'] = $mailContent['subject'];
+  $params['message'] = $mailContent['body'];
+//  $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
   foreach ($mails as $to) {
@@ -696,7 +674,7 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
       '#weight' => 100,
     ];
   }
-  elseif ('planning_files' == $entity->bundle()) {
+  elseif ('planning_files' == $entity->bundle() && $view_mode != 'mail') {
     $field_planning_file_type = $entity->get('field_planning_file_type')->value;
     $plannigFileRefFlipped = array_flip($plannigFileRef);
     $nodeId = $plannigFileRefFlipped[$field_planning_file_type];

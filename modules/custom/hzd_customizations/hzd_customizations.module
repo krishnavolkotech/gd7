@@ -704,18 +704,19 @@ function generate_quickinfo_pdf($node = NULL) {
 //  $fileName = "{$quickinfoId}.pdf";
 //  $uri = "private://rz-schnellinfos/" . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf";
 
-  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-  $renderarray = $view_builder->view($node, 'mail');
-  $html = \Drupal::service('renderer')->renderRoot($renderarray);
+//  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+//  $renderarray = $view_builder->view($node, 'mail');
+//  $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $files = $node->get('upload')->referencedEntities();
   $siteMail = \Drupal::config('system.site')->get('mail');
+  $mailContent = getNodeMailContentFromConfig($node, 'update');
   $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
   $params = [
       'headers' => [
           'Content-Type' => 'text/html',
       ],
       'from' => $siteMail,
-      'subject' => $subject,
+      'subject' => $mailContent['subject'],
   ];
   foreach ($files as $file) {
     $temp = new stdClass();
@@ -731,7 +732,7 @@ function generate_quickinfo_pdf($node = NULL) {
 //  $file_two->filemime = 'application/pdf';
 //  $params['files'][] = $file_two;
 //  pr(array_keys($params['files']));exit;
-  $params['message'] = $html;
+  $params['message'] = $mailContent['body'];
   $mailManager = \Drupal::service('plugin.manager.mail');
   $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
   $subscribedUsers = hzd_get_immediate_qi_notification_user_mails($node->get('field_other_services')->getValue());
@@ -831,6 +832,20 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
       }
     }
   }
+  
+  /*if($view->id() == 'user_admin_people'){
+    $status = \Drupal::request()->get('uid',null);
+    if($status) {
+      foreach ($query->where as &$condition_group) {
+        foreach ($condition_group['conditions'] as &$condition) {
+          pr($condition_group);exit;
+          if ($condition['field'] == 'inactive_users.uid') {
+            $condition['operator'] = 'IS NULL';
+          }
+        }
+      }
+    }
+  }*/
 }
 
 /**
