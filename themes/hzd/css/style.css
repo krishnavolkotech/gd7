@@ -2584,12 +2584,17 @@ article.quickinfo table {
     margin: 10px 0;
 }
 #released_results_wrapper .table-responsive table tr th:nth-child(4),
-#released_results_wrapper .table-responsive table tr td.earlywarnings-cell,
 #earlywarnings_results_wrapper .table-responsive table thead tr th.early-warnings-hdr,
 #earlywarnings_results_wrapper .table-responsive table tr td.earlywarnings-cell,
 #earlywarnings_results_wrapper .table-responsive table thead tr th.responses-hdr,
 #earlywarnings_results_wrapper .table-responsive table tr td.responses-cell {
     text-align: center;
+}
+ table.releases tr td.earlywarnings-cell{
+    text-align: right;
+}
+table.releases  tr td.earlywarnings-cell img{
+   margin-right:40px;
 }
 .quickinfo-attachments table tr.checkbox {
     margin: 0;
@@ -2897,12 +2902,18 @@ a.downtimes_resolve_link {
     /*float: left;*/
     display:table-cell;
 }
-.text-danger td a.downtimes_cancel_link,
-a.downtimes_cancel_link {
+.text-danger td a.downtimes_cancel_link{
     background: url("../images/cancel-icon.png") center top no-repeat;
     width: 32px;
     height: 20px;
     float: left;
+    font-size: 0;
+}
+a.downtimes_cancel_link {
+    background: url("../images/cancel-icon.png") center top no-repeat;
+    width: 32px;
+    height: 20px;
+    display:table-cell;
     font-size: 0;
 }
 article.popup {

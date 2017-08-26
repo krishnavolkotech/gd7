@@ -26,8 +26,11 @@ class AlteredNodeForm extends NodeForm {
       $messages = drupal_get_messages();
       if ($node->get('status')->value == 1) {
         drupal_set_message(t('@type %title has been published.', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
+      } 
+      elseif($node->custom_isnew == 1) {
+          drupal_set_message(t('@type %title has been saved', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
       } else {
-        drupal_set_message(t('@type %title has been saved.', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
+        drupal_set_message(t('@type %title has been updated', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
       }
     }
   }
