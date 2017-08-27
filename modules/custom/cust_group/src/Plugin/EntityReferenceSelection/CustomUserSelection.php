@@ -47,6 +47,10 @@ class CustomUserSelection extends DefaultSelection {
   
   
   public function getReferenceableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 10) {
+    $group = $this->configuration['handler_settings']['hzd_group'];
+    $plugin = $group->getGroupType()
+      ->getContentPlugin('group_membership')
+      ->getContentTypeConfigId();
     $userQuery = \Drupal::database()->select('users_field_data', 'u')
       ->fields('u', ['uid']);
     $userQuery->join('cust_profile', 'cp', 'cp.uid = u.uid');
@@ -56,19 +60,20 @@ class CustomUserSelection extends DefaultSelection {
       ->condition('mail', '%' . $match . '%', 'LIKE')
       ->condition('name', '%' . $match . '%', 'LIKE'));
     $userQuery->addJoin('LEFT', 'inactive_users', 'iu', 'u.uid = iu.uid');
+    $userQuery->addJoin('LEFT', 'group_content_field_data', 'gcfd', "gcfd.entity_id = u.uid AND gcfd.type = '" . (string)$plugin."' AND gcfd.gid=".$group->id());
     $userQuery->condition('status', 1);
-    $userQuery->range(0,$limit);
+    $userQuery->range(0, $limit);
     $userQuery->isNull('iu.uid');
+    $userQuery->isNull('gcfd.id');
+//    echo $userQuery->__toString();exit;
     $result = $userQuery->execute()->fetchCol();
+//    pr($result);exit;
     $target_type = $this->configuration['target_type'];
     $entities = $this->entityManager->getStorage($target_type)
       ->loadMultiple($result);
     $users = [];
-    $group = $this->configuration['handler_settings']['hzd_group'];
+    
     foreach ($entities as $entity) {
-      if ($group->getMember($entity)) {
-        continue;
-      }
       $bundle = $entity->bundle();
       $users[$bundle][$entity->id()] = $entity->getDisplayName() . '(' . $entity->getEmail() . ')';
     }
