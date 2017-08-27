@@ -291,31 +291,85 @@ function inactive_user_views_data() {
     'field' => array(
       // ID of field handler plugin to use.
       'id' => 'boolean',
-      'label'=>'Inactive Status'
+      'label' => 'Inactive Status'
     ),
-  
-    'sort' => array(
+    
+/*    'sort' => array(
       // ID of sort handler plugin to use.
       'id' => 'standard',
-    ),
-  
+    ),*/
+    
     'filter' => array(
       // ID of filter handler plugin to use.
-      'id' => 'is_null',
+      'id' => 'in_operator',
       // Override the generic field title, so that the filter uses a different
       // label in the UI.
       'label' => t('Active'),
-      // Override the default BooleanOperator filter handler's 'type' setting,
-      // to display this as a "Yes/No" filter instead of a "True/False" filter.
-      'type' => 'true-false',
-      // Override the default Boolean filter handler's 'use_equal' setting, to
-      // make the query use 'boolean_field = 1' instead of 'boolean_field <> 0'.
-//      'use_equal' => TRUE,
-//      'allow_empty' => TRUE,
-//      'accept null'=>TRUE,
+      'options callback' => 'user_status_callback',
     ),
   );
   
   return $data;
   
+}
+
+function user_status_callback() {
+  return [
+    1 => t('Active'),
+    2 => t('Inactive'),
+    3 => t('Blocked')
+  ];
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $query) {
+  if ($view->id() == 'user_admin_people') {
+    // Traverse through the 'where' part of the query.
+//    pr($query->where);exit;
+    if ($status = \Drupal::request()->get('user_status', NULL)) {
+      foreach ($query->where as &$condition_group) {
+        foreach ($condition_group['conditions'] as $key => &$condition) {
+          if ($status == 1) {
+            //Status 1 - Avive - User status 1 and Inactive id is null
+            if ($condition['field'] == 'users_field_data.status') {
+              $condition['value'] = 1;
+            }
+            if ($condition['field'] == 'inactive_users.uid') {
+              $condition['operator'] = 'IS NULL';
+            }
+          }
+          elseif ($status == 2) {
+            //Status 2 - Inactive - User status 1 and Inactive id is not null
+            if ($condition['field'] == 'users_field_data.status') {
+              $condition['value'] = 1;
+            }
+            if ($condition['field'] == 'inactive_users.uid') {
+              $condition['operator'] = 'IS NOT NULL';
+            }
+          }
+          elseif ($status == 3) {
+            //Status 3 - Blocked - User status 0
+            if ($condition['field'] == 'users_field_data.status') {
+              $condition['value'] = 0;
+            }
+            if ($condition['field'] == 'inactive_users.uid') {
+              unset($condition_group['conditions'][$key]);
+            }
+          }
+          else {
+            //Status All - No filter
+            if ($condition['field'] == 'users_field_data.status') {
+              unset($condition_group['conditions'][$key]);
+            }
+            if ($condition['field'] == 'inactive_users.uid') {
+              unset($condition_group['conditions'][$key]);
+            }
+          }
+        }
+      }
+    }
+//    pr($query->where);exit;
+  }
 }

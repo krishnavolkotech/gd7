@@ -637,7 +637,7 @@ function downtimes_set_default_values(&$form, $nid) {
     if (!empty($downtime_data->enddate_planned)) {
       $form['dates']['end']['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
     }
-    $form['reason_for_noncompliance']['#default_value'] = $downtime_data->reason;
+    $form['reason_for_noncompliance']['#default_value'] = $downtime_data->reason?$downtime_data->reason:0;
   }
   return $downtime_data;
 }
@@ -864,7 +864,7 @@ function downtimes_node_update($node) {
     $record['status'] = !empty($data['maintenance_type']) ? $data['maintenance_type'] : NULL;
     $record['email_reminder_sent'] = 1;
     $record['cancelled'] = 0;
-    $record['reason'] = $data['reason_for_noncompliance'];
+    $record['reason'] = !empty($data['reason_for_noncompliance']) ? $data['reason_for_noncompliance'] : 0;
     $record['scheduled_p'] = $data['downtime_type'];
     db_update('downtimes')
       ->fields($record)
@@ -983,8 +983,10 @@ function downtimes_theme() {
 
 function custom_maintenance_validate(&$form, &$form_state) {
   pass_maitenance_value($form);
-  check_downtime_status($form, $form_state);
-  if ($form_state->getValue('maintenance_result') && $form_state->getValue('reason_for_noncompliance') == '0') {
+  if($form['#form_id'] == 'node_downtimes_form'){
+    check_downtime_status($form, $form_state);
+  }
+  if ($form_state->getValue('maintenance_result') && $form_state->getValue('reason_for_noncompliance') == 0) {
     $form_state->setErrorByName('reason_for_noncompliance', "Reason field is required.");
   }
 }
@@ -1199,10 +1201,10 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
   
   // Reason for non compliance log.
   if ($form_values['downtime_type']['#default_value'] == 1) {
-    $new_reason = $form_values['reason_for_noncompliance']['#options'][$form_state->getValue('reason_for_noncompliance')];
+    $new_reason = $form_state->getValue('reason_for_noncompliance');
     if ($new_reason != $form_values['reason_for_noncompliance']['#default_value']) {
       $log['non_compliance']['old'] = $form_values['reason_for_noncompliance']['#default_value'];
-      $log['non_compliance']['new'] = $form_state->getValue('reason_for_noncompliance') ? $new_reason : "";
+      $log['non_compliance']['new'] = $form_state->getValue('reason_for_noncompliance') ? $form_values['reason_for_noncompliance']['#options'][$new_reason]->render() : "";
     }
   }
   
