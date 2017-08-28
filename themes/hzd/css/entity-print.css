@@ -559,8 +559,18 @@ table tr td {
   float:none;
   width:100%;
 }
+.pdf-content a.create_earlywarning,
+.pdf-content table.releases tr td.earlywarnings-cell{
+  text-align:right;
+}
+.pdf-content table.releases tr td.earlywarnings-cell a.view-earlywarning{
+  text-align:right;
+}
+.pdf-content table.releases tr td.earlywarnings-cell img{
+ margin-right: 0;
+}
 .pdf-content .warningcount{
-  float:none;
+  /*float:none;*/
 }
 .pdf-content a.create_earlywarning,
 .pdf-content a.view-earlywarning{
