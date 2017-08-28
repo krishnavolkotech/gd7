@@ -17,11 +17,11 @@ class GroupContentMailTemplatesForm extends ConfigFormBase {
   
   //put your code here
   
-  static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container) {
     return new static($container->get('config.factory'), $container->get('current_route_match'));
   }
   
-  function __construct(ConfigFactoryInterface $config_factory, $routeMatch) {
+  public function __construct(ConfigFactoryInterface $config_factory, $routeMatch) {
     parent::__construct($config_factory);
     $this->routeMatch = $routeMatch;
   }

@@ -1,9 +1,10 @@
-uuid: 1d82246a-12f7-4c56-be1c-70284c90301e
+uuid: 43ee2285-2a40-4f53-8631-dba201267bee
 langcode: en
-status: false
+status: true
 dependencies:
   config:
-    - core.entity_view_mode.node.rss
+    - core.entity_view_display.comment.comment.default
+    - core.entity_view_mode.node.mail
     - field.field.node.problem.body
     - field.field.node.problem.comment
     - field.field.node.problem.field_attachment
@@ -29,65 +30,92 @@ dependencies:
     - field.field.node.problem.upload
     - node.type.problem
   module:
+    - comment
+    - entity_print
+    - file
     - text
     - user
-id: node.problem.rss
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.problem.mail
 targetEntityType: node
 bundle: problem
-mode: rss
+mode: mail
 content:
-  field_attachment:
-    label: above
-    weight: 12
+  body:
+    label: hidden
     type: text_default
+    weight: 22
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 19
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_attachment:
+    label: inline
+    weight: 14
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_closed:
-    label: above
-    weight: 19
-    type: text_default
+    label: inline
+    weight: 17
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_comments:
-    label: above
-    weight: 9
+    label: inline
+    weight: 11
     type: text_default
     settings: {  }
     third_party_settings: {  }
     region: content
   field_diagnose:
-    label: above
-    weight: 4
-    type: text_default
+    label: inline
+    weight: 6
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_eroffnet:
-    label: above
-    weight: 10
-    type: text_default
+    label: inline
+    weight: 12
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_function:
-    label: above
-    weight: 3
-    type: text_default
+    label: inline
+    weight: 5
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_priority:
-    label: above
-    weight: 7
-    type: text_default
+    label: inline
+    weight: 9
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_problem_eroffnet:
-    label: above
-    weight: 20
+    label: inline
+    weight: 18
     type: number_integer
     settings:
       thousand_separator: ''
@@ -95,29 +123,38 @@ content:
     third_party_settings: {  }
     region: content
   field_problem_status:
-    label: above
-    weight: 1
-    type: text_default
+    label: inline
+    weight: 3
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_processing:
-    label: above
-    weight: 11
-    type: text_default
+    label: inline
+    weight: 13
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release:
-    label: above
-    weight: 17
-    type: text_default
+    label: inline
+    weight: 15
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_s_no:
-    label: above
-    weight: -3
+    label: inline
+    weight: 1
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    region: content
+  field_sdcallid:
+    label: inline
+    weight: 2
     type: number_integer
     settings:
       thousand_separator: ''
@@ -125,30 +162,30 @@ content:
     third_party_settings: {  }
     region: content
   field_services:
-    label: above
-    weight: 2
+    label: inline
+    weight: 4
     type: entity_reference_label
     settings:
       link: true
     third_party_settings: {  }
     region: content
   field_solution:
-    label: above
-    weight: 5
+    label: inline
+    weight: 7
     type: text_default
     settings: {  }
     third_party_settings: {  }
     region: content
   field_task_force:
-    label: above
-    weight: 8
-    type: text_default
+    label: inline
+    weight: 10
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_ticketstore_count:
-    label: above
-    weight: 32
+    label: inline
+    weight: 21
     type: number_integer
     settings:
       thousand_separator: ''
@@ -156,37 +193,41 @@ content:
     third_party_settings: {  }
     region: content
   field_ticketstore_link:
-    label: above
-    weight: 31
-    type: text_default
+    label: inline
+    weight: 20
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_version:
-    label: above
-    weight: 18
-    type: text_default
+    label: inline
+    weight: 16
+    type: basic_string
     settings: {  }
     third_party_settings: {  }
     region: content
   field_work_around:
-    label: above
-    weight: 6
+    label: inline
+    weight: 8
     type: text_default
     settings: {  }
     third_party_settings: {  }
     region: content
   links:
-    weight: 100
+    weight: 23
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 24
+    third_party_settings: {  }
     region: content
 hidden:
-  body: true
-  comment: true
   downtime_description: true
-  entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_sdcallid: true
   langcode: true
-  upload: true

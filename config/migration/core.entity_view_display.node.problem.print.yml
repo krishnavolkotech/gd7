@@ -1,6 +1,6 @@
 uuid: a2b241bf-da04-493c-9f44-ea9cc0c9d9fa
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - core.entity_view_mode.node.print

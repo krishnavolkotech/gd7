@@ -56,15 +56,15 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
 //
 //      $group = Group::load($groupId);
 //    }
-        
-        foreach ($tokens as $name => $original) {
+        //@todo Why does group title retun clean string? removing the code for that reason
+        /*foreach ($tokens as $name => $original) {
             switch ($name) {
                 case 'title':
                     $label = \Drupal::service('pathauto.alias_cleaner')->cleanString($group->label());
                     $replacements[$original] = isset($group) ? $label : '';
                     break;
             }
-        }
+        }*/
     }
     return $replacements;
 }

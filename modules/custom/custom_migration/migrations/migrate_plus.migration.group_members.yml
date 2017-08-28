@@ -1,8 +1,6 @@
-uuid: 581d8cec-2080-4d80-82d7-fade90a6712a
-langcode: de
-status: true
 id: group_members
-migration_tags: null
+migration_tags:
+  - Drupal 6
 migration_group: groups
 label: Group Members
 source:

@@ -5,75 +5,76 @@ use Drupal\Core\Url;
 
 
 function getErlywarningServies() {
-    $group_id = get_group_id();
-    
-    $current_url = Url::fromRoute('<current>');
-    $path = $current_url->toString();
-    $current_path = explode("/", $path);
-    $node = \Drupal::routeMatch()->getParameter('node');
-    $nid = null;
-    if ($node)
-        $nid = $node->id();
-    $query = \Drupal::database()->select('node_field_data', 'nfd');
-    $query->Fields('nfd', array('type'));
-    $query->condition('nfd.nid', $nid, '=');
-    $type = $query->execute()->fetchField();
-    
-    if ($type == 'deployed_releases') {
-        $services_releases = Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases();
-        return $services_data = $services_releases['services'];
-    }
-    
-    $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
-    
-    
-    /**
-     * $services_obj = db_query("SELECT title , n.nid FROM {node} n, {group_releases_view} grv
-     * WHERE n.nid = grv.service_id and grv.group_id = %d ORDER by title ", $group_id);
-     */
-    
-    //$services['none'] = " < " . t('Service') . ' > ';
-    
-    $query = \Drupal::database()->select('node_field_data', 'nfd');
-    $query->join('group_releases_view', 'grv', 'nfd.nid = grv.service_id');
-    $query->Fields('nfd', array('title', 'nid'));
-    $query->condition('grv.group_id', $group_id, '=');
-    $query->orderBy('title');
-    $services_obj = $query->execute()->fetchAll();
-    foreach ($services_obj as $services_data) {
-        $services[$services_data->nid] = $services_data->title;
-    }
-    
-    return $services;
+  $group_id = get_group_id();
+  
+  $current_url = Url::fromRoute('<current>');
+  $path = $current_url->toString();
+  $current_path = explode("/", $path);
+  $node = \Drupal::routeMatch()->getParameter('node');
+  $nid = NULL;
+  if ($node) {
+    $nid = $node->id();
+  }
+  $query = \Drupal::database()->select('node_field_data', 'nfd');
+  $query->Fields('nfd', array('type'));
+  $query->condition('nfd.nid', $nid, '=');
+  $type = $query->execute()->fetchField();
+  
+  if ($type == 'deployed_releases') {
+    $services_releases = Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases();
+    return $services_data = $services_releases['services'];
+  }
+  
+  $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
+  
+  
+  /**
+   * $services_obj = db_query("SELECT title , n.nid FROM {node} n, {group_releases_view} grv
+   * WHERE n.nid = grv.service_id and grv.group_id = %d ORDER by title ", $group_id);
+   */
+  
+  //$services['none'] = " < " . t('Service') . ' > ';
+  
+  $query = \Drupal::database()->select('node_field_data', 'nfd');
+  $query->join('group_releases_view', 'grv', 'nfd.nid = grv.service_id');
+  $query->Fields('nfd', array('title', 'nid'));
+  $query->condition('grv.group_id', $group_id, '=');
+  $query->orderBy('title');
+  $services_obj = $query->execute()->fetchAll();
+  foreach ($services_obj as $services_data) {
+    $services[$services_data->nid] = $services_data->title;
+  }
+  
+  return $services;
 }
 
 /**
  * implements hook_form_alter
  */
 function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-    if ($form_id == 'node_early_warnings_form') {
-        $service = \Drupal::request()->query->get('services');
-        $rel = \Drupal::request()->query->get('releases');
-        $form['field_release_service']['widget']['#default_value'] = $service;
-        $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
-        if($rel && $service){
-          $form['field_release_service']['#attributes']['readonly'] = 'readonly';
-          $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
-          $form['field_release_service']['#disabled'] = TRUE;
-          $form['field_earlywarning_release']['#disabled'] = TRUE;
-        }
-        $form['field_release_service']['widget']['#ajax'] = [
-              'callback' => 'hzd_early_warnings_service_change',
-              'wrapper' => 'hzd-release-early-warnings',
-        ];        
-        $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
-        $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
+  if ($form_id == 'node_early_warnings_form') {
+    $service = \Drupal::request()->query->get('services');
+    $rel = \Drupal::request()->query->get('releases');
+    $form['field_release_service']['widget']['#default_value'] = $service;
+    $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
+    if ($rel && $service) {
+      $form['field_release_service']['#attributes']['readonly'] = 'readonly';
+      $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
+      $form['field_release_service']['#disabled'] = TRUE;
+      $form['field_earlywarning_release']['#disabled'] = TRUE;
     }
-    
-    return $form;
+    $form['field_release_service']['widget']['#ajax'] = [
+      'callback' => 'hzd_early_warnings_service_change',
+      'wrapper' => 'hzd-release-early-warnings',
+    ];
+    $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
+    $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
+  }
+  
+  return $form;
 }
 
-function earlywarning_form_submit(&$form, FormState $formState){
+function earlywarning_form_submit(&$form, FormState $formState) {
   $group = \Drupal::routeMatch()->getParameter('group');
   
 }
@@ -81,26 +82,30 @@ function earlywarning_form_submit(&$form, FormState $formState){
 /**
  * @param \Drupal\Core\Entity\EntityInterface $entity
  */
-function hzd_earlywarnings_node_insert(EntityInterface $entity){
-  if($entity->getType() == 'early_warnings'){
+function hzd_earlywarnings_node_insert(EntityInterface $entity) {
+  if ($entity->getType() == 'early_warnings') {
     $group = \Drupal::routeMatch()->getParameter('group');
-    $plugin = $group->getGroupType()->getContentPlugin('group_node:early_warnings');
-
+    $plugin = $group->getGroupType()
+      ->getContentPlugin('group_node:early_warnings');
+    
     $values = [
       'type' => $plugin->getContentTypeConfigId(),
       'gid' => $group->id(),
-      'entity_id'=>$entity->id(),
+      'entity_id' => $entity->id(),
     ];
-    $group_content = \Drupal::entityTypeManager()->getStorage('group_content')->create($values)->save();
+    $group_content = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->create($values)
+      ->save();
   }
 }
 
-function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
-        $service = $form_state->getValue('field_release_service')[0]['value'];
-        $deployed_releses_options = released_deployed_releases($service)['releases'];
-        natcasesort($deployed_releses_options);
-        $form['field_earlywarning_release']['widget']['#options'] = $deployed_releses_options;
-    return $form['field_earlywarning_release']['widget'];
+function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $service = $form_state->getValue('field_release_service')[0]['value'];
+  $deployed_releses_options = released_deployed_releases($service)['releases'];
+  natcasesort($deployed_releses_options);
+  $form['field_earlywarning_release']['widget']['#options'] = $deployed_releses_options;
+  return $form['field_earlywarning_release']['widget'];
 }
 
 function hzd_earlywarnings_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
@@ -124,33 +129,22 @@ function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $en
 }
 
 function send_earlywarning_comment_notifications($entity) {
-    $commententity = \Drupal::entityTypeManager()->getStorage('comment')->load($entity->id());
-    $service_id = $commententity->get('entity_id')->referencedEntities()['0']->get('field_release_service')->getvalue()['0']['value'];
-    $earlywarning_title = $commententity->get('entity_id')->referencedEntities()['0']->getTitle();
-    $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
-    $comment_author = $commententity->get('name')->value;
-    $comment_email = $commententity->get('mail')->value;
-    $comment_body = $commententity->get('comment_body')->value;
-    
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of early warning comments.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_notifications.settings')->get('node_creation_subject');
-            //      $subject = $token_service->replace($token_sub, array('node' => $entity));
-            //      $token_body = \Drupal::config('hzd_notifications.settings')->get('node_creation_body')['value'];
-            //      Replace the token for subject.
-            //      $message_text = $token_service->replace($token_body, array('node' => $entity));
-            $subject = t("Commented on $earlywarning_title");
-            
-            $message_text = "Author: $comment_author";
-            $message_text .= " Email: $comment_author";
-            $message_text .= "$comment_author";
-            $message_text = t($message_text);
-//        dpm($mail);
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
+//    $commententity = \Drupal::entityTypeManager()->getStorage('comment')->load($entity->id());
+  
+  $earlywarning = $entity->getCommentedEntity();
+  $service_id = $entity->getCommentedEntity()->get('field_release_service')->value;
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+  //We are sending the early warning entity view as configured not just coment view.
+  /*    $comment_author = $commententity->get('name')->value;
+      $comment_email = $commententity->get('mail')->value;
+      $comment_body = $commententity->get('comment_body')->value;*/
+  
+  if (is_array($result) && count($result) > 0) {
+    $mailContent = getNodeMailContentFromConfig($earlywarning, 'update');
+    foreach ($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
+  }
 }

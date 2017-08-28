@@ -1,9 +1,10 @@
-uuid: 72db944b-207c-48e3-b1bf-d9e58cb730b0
+uuid: fc62f29a-3be9-4eb4-b837-9626c58190a8
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_display.comment.comment_no_subject.default
+    - core.entity_view_mode.node.full
     - field.field.node.early_warnings.body
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
@@ -18,10 +19,10 @@ dependencies:
 third_party_settings:
   entity_print:
     label: 'View PDF'
-id: node.early_warnings.default
+id: node.early_warnings.full
 targetEntityType: node
 bundle: early_warnings
-mode: default
+mode: full
 content:
   body:
     label: hidden
@@ -68,9 +69,9 @@ content:
     region: content
   links:
     weight: 3
-    region: content
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true

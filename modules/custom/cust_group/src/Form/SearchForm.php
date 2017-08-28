@@ -42,6 +42,7 @@ class SearchForm extends FormBase {
       '#name' => '',
       '#value' => t('Submit'),
     ];
+    $form['#attributes']['autocomplete'] = 'off';
 
     return $form;
   }
