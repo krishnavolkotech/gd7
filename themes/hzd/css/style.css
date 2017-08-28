@@ -2004,11 +2004,17 @@ section .form-group .view-footer a.all-problems,
 .view-release-list ul li{
   padding-left:0 !important;
 }
+.view-solr-search .view-content ul li .views-field-title,
 .view-news-list .views-field-body .field-content{
-  border-bottom:1px solid #ccc;
-  padding-bottom: 20px;
   width:100%;
   float:left;
+  border-bottom:1px solid #ccc;
+}
+.view-solr-search .view-content ul li .views-field-title{
+  margin-bottom: 5px;
+}
+.view-news-list .views-field-body .field-content{
+  padding-bottom: 20px;
 }
 .view-news-list .view-content .views-row{
   margin-bottom:17px !important;
@@ -2687,6 +2693,8 @@ article.downtimes .downtime_reason u {
 form.node-downtimes-form .reason-for-noncompliance .select-wrapper:after {
     content: " ";
 }
+.view-solr-search .view-content ul li .views-field-body,
+.view-solr-search .view-content ul li .views-field-label,
 form.node-downtimes-form .reason-for-noncompliance {
     float: left;
     width: 100%;
@@ -3213,6 +3221,7 @@ form.deployedreleases-create-form .form-group .input.hasDatepicker {
 form.deployedreleases-create-form .form-item-deployed-date label {
     margin-bottom: 3px;
 }
+.view-solr-search .view-content ul,
 .deployed_release_form_warapper,
 .currently_deployed_relesaes,
 .archived_deployed_relesaes {
@@ -3314,11 +3323,16 @@ table.cke_dialog tr td .cke_dialog_body table.cke_dialog_contents{
 table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
   width:100% !important
 }
+.view-solr-search .view-content ul li .views-field-title a,
 .view-news-list h2 a{
     color:#004077 !important;
     font-size:18px !important;
     text-decoration:none;
     padding:0 !important;
+}
+.view-solr-search .view-content ul li{
+  margin-bottom:20px !important;
+  float:left;
 }
 .forum-author-info{
   width:auto;
@@ -3405,3 +3419,4 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
 .quickinfo .field--name-upload.field--type-file table{
   border-radius:0 !important;
 }
+

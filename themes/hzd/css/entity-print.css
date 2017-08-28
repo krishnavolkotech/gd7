@@ -97,7 +97,23 @@ body {
   width:100%;
   display: inline-block;  
 }
-
+.pdf-content .view-solr-search .view-content ul {
+  display:block;
+  margin:0;
+  padding:0;
+}
+.pdf-content .view-solr-search,
+.view-solr-search .view-content ul li .views-field-body, 
+.view-solr-search .view-content ul li .views-field-label, 
+.view-solr-search .view-content ul li .views-field-title,
+.pdf-content .view-solr-search .view-content ul li{
+ /* display:inline-block;*/
+  width:100%;
+  float:none;
+}
+.pdf-content .view-solr-search .view-content ul li{
+  list-style-type:none;
+}
 .pdf-content article ol li,
 .pdf-content article ul li {
     width: 95%;
