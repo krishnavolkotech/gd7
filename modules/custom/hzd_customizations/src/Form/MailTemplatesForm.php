@@ -85,8 +85,9 @@ class MailTemplatesForm extends ConfigFormBase {
     );
     
     $form['mail_content'] = array(
-      '#type' => 'textarea',
+      '#type' => 'text_format',
       '#title' => t('Mail Content'),
+      '#format' => 'full_html',
       '#default_value' => isset($data['mail_content']) ? $data['mail_content'] : NULL,
       '#states' => [
         'visible' => array(
@@ -132,7 +133,7 @@ class MailTemplatesForm extends ConfigFormBase {
     $data = [
       'subject_insert' => $form_state->getValue('subject_insert'),
       'subject_update' => $form_state->getValue('subject_update'),
-      'mail_content' => $form_state->getValue('mail_content'),
+      'mail_content' => $form_state->getValue('mail_content')['value'],
       'mail_footer' => $form_state->getValue('mail_footer')['value'],
       'mail_view' => $form_state->getValue('mail_view'),
     ];
