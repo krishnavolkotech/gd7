@@ -413,7 +413,8 @@ class HzdStorage {
     $default_function = $default_release = [];
     foreach ($entities as $entity) {
       $default_function[$entity->get('field_function')->value] = $entity->get('field_function')->value;
-      if ($entity->hasField('field_release') && !empty($entity->get('field_release')->value)) {
+//      if ($entity->hasField('field_release') && !empty($entity->get('field_release')->value)) {
+      if ($entity->hasField('field_release')) {
         $default_release[$entity->get('field_release')->value] = $entity->get('field_release')->value;
       }
     }
@@ -485,7 +486,12 @@ class HzdStorage {
       $problem_node_ids->condition('field_function', trim($filter_parameter['function']), '=');
     }
     if (isset($filter_parameter['release']) && $filter_parameter['release'] != '0') {
-      $problem_node_ids->condition('field_release', trim($filter_parameter['release']), '=');
+        if (empty($filter_parameter['release'])) {
+            $problem_node_ids->notExists('field_release');
+        } else {
+//          $problem_node_ids->condition('field_release', trim($filter_parameter['release']), '=');
+            $problem_node_ids->condition('field_release', $filter_parameter['release'], '=');
+        }
     }
 
     if (isset($filter_parameter['string']) && t($filter_parameter['string']) != t('Search Title, Description, Cause, Workaround, Solution')) {
@@ -504,6 +510,7 @@ class HzdStorage {
     if (!empty($group_problems_view)) {
       $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
     }
+//    $problem_node_ids->addTag('debug');
     //As sort on fields with format d.m.Y cannot be supported by entity query I m using database api to achieve it.
     $ids = $problem_node_ids->execute();
     if (empty($ids)) {
