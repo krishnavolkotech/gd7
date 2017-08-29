@@ -705,7 +705,7 @@ class HzdcustomisationStorage {
     $downtimesQuery->addJoin('INNER', 'node_field_data', 'nfd', 'nfd.nid = d.downtime_id');
     $downtimesQuery->addJoin('INNER', 'group_content_field_data', 'gcfd', 'gcfd.entity_id = d.downtime_id');
     if ($type == 'archived') {
-      $downtimesQuery->addJoin('INNER', 'resolve_cancel_incident', 'rci', 'rci.downtime_id = d.downtime_id');
+      $downtimesQuery->addJoin('LEFT', 'resolve_cancel_incident', 'rci', 'rci.downtime_id = d.downtime_id');
     }
     $downtimesQuery = $downtimesQuery->condition('gcfd.type', '%group_node%', 'LIKE');
     $downtimesQuery = $downtimesQuery->condition('gcfd.gid', $group_id);
@@ -880,8 +880,8 @@ class HzdcustomisationStorage {
     $pager->fields('d');
     $pager->distinct();
     if ($type == 'archived') {
-      $pager->addField('rci', 'end_date');
-      $pager->orderby('rci.end_date', 'desc');
+//      $pager->addField('rci', 'end_date');
+      $pager->orderby('d.enddate_planned', 'desc');
     } elseif ($type == 'incident') {
         $pager->orderby('d.startdate_planned', 'desc');
     } elseif ($type == 'maintenance') {
