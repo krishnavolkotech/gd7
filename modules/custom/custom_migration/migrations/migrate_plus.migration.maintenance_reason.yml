@@ -1,0 +1,31 @@
+langcode: de
+status: true
+id: maintenance_reason
+migration_tags: null
+migration_group: custom_migration
+source:
+  plugin: source_table
+  target: migrate
+  table_name: maintenance_reason
+  fields:
+    - maintenance_id
+    - reason
+  id_fields:
+      maintenance_id:
+        type: integer
+        unsigned: FALSE
+        size: big
+process:
+  downtime_id: maintenance_id
+  reason: reason
+destination:
+  plugin: table
+  key_map:
+    maintenance_id: downtime_id
+  id_fields:
+    downtime_id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: downtimes
+migration_dependencies: {  }
