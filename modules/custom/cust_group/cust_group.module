@@ -1013,3 +1013,8 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
   }
 }*/
 
+function cust_group_preprocess_block(&$vars){
+  if(isset($vars['plugin_id']) && $vars['plugin_id'] == 'system_menu_block:primary-links'){
+    $vars['#cache'] = ['max-age'=>0];
+  }
+}
