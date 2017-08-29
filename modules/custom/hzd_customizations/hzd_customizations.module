@@ -268,7 +268,13 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
     if ($entity->isPublished()) {
       $build['quickinfoId'] = $entity->get('field_unique_id')->view();
       $build['quickinfoId']['#label_display'] = 'inline';
+      $revision_user_id = $entity->getRevisionUserId();
+      $revision_user = \Drupal\user\Entity\User::load($revision_user_id);
+      $revision_user_name = $revision_user->getDisplayName();
+      $entity->set('field_author_name',$revision_user_name);
+      
       $build['field_author_name'] = $entity->get('field_author_name')->view();
+//      $build['field_author_name'] = $revision_user_name;
       $build['field_author_name']['#label_display'] = 'inline';
       $build['modified'] = $entity->get('changed')->view();
       $build['modified']['#title'] = t('Published on');

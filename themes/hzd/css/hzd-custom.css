@@ -962,8 +962,9 @@ form.node-service-profile-form .form-checkboxes{
   column-count:2; 
 }
 .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
- display:inline-block;
-  /* float:left;*/
+ /*display:inline-block;
+ float:left;*/
+ display:table;
 }
 header .block-cust-group-search-block form {
   position: relative;
@@ -1122,15 +1123,30 @@ form.node-service-profile-form .form-checkboxes{
     position: relative;
 }
 form.downtimes-setting-form #edit-services .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
+form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
+form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
+form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
+  width: 99%;
+  display: inline-block;
+  /*margin: 0 1% 7px 0;*/
+  margin:0 0 7px 0;
+  padding: 0;
+}
+form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox{
   width: 99%;
-  float:left;
+  /*float:left;*/
   /*margin: 0 1% 7px 0;*/
   margin:0 0 7px 0;
   padding: 0;
+  display: inline-block;
 }
 form.node-downtimes-form legend{
   margin-top:15px;
@@ -1148,20 +1164,6 @@ form.node-service-profile-edit-form .field--name-field-service-recipient,
 form.node-service-profile-edit-form .field--name-field-dependent-service{
   float:left;
   width:100%;
-}
-form.downtimes-setting-form #edit-services .form-type-checkbox,
-form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
-form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
-form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
-form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
-  width: 99%;
-  display: inline-block;
-  margin: 0 1% 7px 0;
-  margin:0 0 7px 0;
-  padding: 0;
 }
 .ckeditor-custom-wrapper blockquote{
   display:inline-block;
@@ -1206,6 +1208,7 @@ table.view-deployed-releases{
 }
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
+  margin-left:7px;
 }
 .quickinfo .field--name-upload.field--type-file table .file>span{
   border:none;
@@ -1221,3 +1224,4 @@ table.view-deployed-releases{
 form.deployed-released-view-form table.view-deployed-releases tr td{
   white-space: nowrap;
 }
+
