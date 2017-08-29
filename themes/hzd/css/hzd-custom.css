@@ -962,8 +962,9 @@ form.node-service-profile-form .form-checkboxes{
   column-count:2; 
 }
 .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
- display:inline-block;
-  /* float:left;*/
+ /*display:inline-block;
+ float:left;*/
+ display:table;
 }
 header .block-cust-group-search-block form {
   position: relative;
@@ -1223,3 +1224,4 @@ table.view-deployed-releases{
 form.deployed-released-view-form table.view-deployed-releases tr td{
   white-space: nowrap;
 }
+

@@ -245,17 +245,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#type' => 'select',
         '#title' => t('Reason for scheduling outside maintenance window'),
         '#description' => t('Please select a reason'),
-        '#options' => array(
-          t('Please select a reason here'),
-          t('Urgency of the maintenance'),
-          t('No staff available during maintenance hours'),
-          t('No service partner (State) available during maintenance hours'),
-          t('External service partner required'),
-          t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
-          t('Public holiday or weekend'),
-          t('No service partner (KONSENS) available during maintenance hours'),
-          t('No service interruption planned')
-        ),
+        '#options' => maintenance_reasons(),
         '#default_value' => isset($downtime_data->reason) ? $downtime_data->reason : 0,
 //        '#size' => 5,
         '#prefix' => '<div class="reason-for-noncompliance">',
@@ -1610,4 +1600,22 @@ function downtimes_schema() {
     'primary key' => array('id'),
   ];
   return $schema;
+}
+
+function maintenance_reasons($rid = NULL){
+  $data  = [
+    0=>t('Please select a reason here'),
+    1=>t('Urgency of the maintenance'),
+    2=>t('No staff available during maintenance hours'),
+    3=>t('No service partner (State) available during maintenance hours'),
+    4=>t('External service partner required'),
+    5=>t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+    6=>t('Public holiday or weekend'),
+    7=>t('No service partner (KONSENS) available during maintenance hours'),
+    8=>t('No service interruption planned')
+  ];
+  if($rid){
+    return $data[$rid];
+  }
+  return $data;
 }

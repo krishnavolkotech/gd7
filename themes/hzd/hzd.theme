@@ -538,7 +538,10 @@ function downtimes_revisions($node) {
 //    echo 1223;exit;
       $oldData = NULL;
       if (!empty($downtimeData->reason)) {
-        $oldData[] = $labels['non_compliance'] . ' : ' . $downtimeData->reason;
+        if(is_numeric($downtimeData->reason)){
+          $res = maintenance_reasons($downtimeData->reason);
+        }
+        $oldData[] = $labels['non_compliance'] . ' : ' . $res;
       }
       
       $get_maintain_window = \Drupal::database()
