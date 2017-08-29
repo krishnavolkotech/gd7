@@ -46,10 +46,12 @@ class GroupMemberCountField extends FieldPluginBase {
   protected static function groupMemberCount($gid) {
     $gpc = \Drupal::database()->select('group_content_field_data', 'g');
     $gpc->Join('users_field_data', 'u', 'g.entity_id = u.uid');
+    $gpc->leftJoin('inactive_users','iu', 'u.uid = iu.uid');
     $gpc->condition('u.status', 1)
         ->condition('g.gid', $gid)
         //->condition('g.type', $contents, 'IN')
         ->condition('g.type', '%group_node%', 'NOT LIKE')
+         ->isNull('iu.uid')
 //      ->countQuery()
         ->fields('g');
 
