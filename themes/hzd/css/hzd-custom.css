@@ -1225,3 +1225,13 @@ form.deployed-released-view-form table.view-deployed-releases tr td{
   white-space: nowrap;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
+  display:inline-block !important;
+}
+}
+@-moz-document url-prefix() {
+  .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
+  display:inline-block !important;
+}
+}

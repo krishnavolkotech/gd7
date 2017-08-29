@@ -590,6 +590,9 @@ body.not-loggedin.path-user .region-content {
     padding: 1% 0% 1% 1%;
     border: none;
 }
+.region-content .quickinfo .field--label-inline{
+  padding:0 !important;
+}
 .user-groups .user-group-list {
     width: 100%;
     float: left;
@@ -1250,7 +1253,8 @@ table.view-deployed-releases {
 #block-primarylinks ul ul.dropdown-menu li:last-child a {
     border-bottom: none !important;
 }
-article .quickedit-field {
+article .quickedit-field,
+article.quickinfo .field {
     margin-bottom: 15px;
     width: 100%;
     float: left;
