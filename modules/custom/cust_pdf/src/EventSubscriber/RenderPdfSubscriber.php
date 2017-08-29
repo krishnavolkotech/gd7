@@ -27,7 +27,7 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  public static function getSubscribedEvents() {
     $events = [];
     $events[KernelEvents::VIEW] = ['printData', 10];
     
@@ -45,9 +45,12 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
     if ($query->has('print') && $query->get('print') == 'pdf') {
       $renderArray = $event->getControllerResult();
       $x['data'] = $this->searchNestedArrayKey($renderArray, '#exclude_from_print');
-//      pr(array_keys($x));exit;
+//      pr($x['data'][3]);exit;
       $x['#type'] = 'container';
-      $x['#attributes'] = ['style' => 'font-size:12px;', 'class' => 'pdf-content'];
+      $x['#attributes'] = [
+        'style' => 'font-size:12px;',
+        'class' => 'pdf-content'
+      ];
       $xr['#attached']['library'][] = 'hzd/global-styling';
 //      $css_assets = \Drupal::service('asset.resolver')
 //        ->getCssAssets(AttachedAssets::createFromRenderArray($xr), 0);
@@ -61,6 +64,10 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
       if ($query->has('debug')) {
         echo $html;
         exit;
+      }
+      //Making the pdf landscaped for a particular route
+      if(\Drupal::routeMatch()->getRouteName() == 'hzd_release_management.view_deployed_releases'){
+        $print_engine->getPrintObject()->setPaper('a1', 'landscape');
       }
       $print_engine->addPage($html);
       $print_engine->send("print.pdf", 0);
