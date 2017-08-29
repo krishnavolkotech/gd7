@@ -489,40 +489,22 @@ field_settings:
         - field.storage.node.field_work_around
 datasource_settings:
   'entity:group_content':
-    plugin_id: 'entity:group_content'
-    settings:
-      bundles:
-        default: false
-        selected:
-          - closed-group_node-faq
-          - closed-group_node-forum
-          - closed-group_node-page
-          - closed_private-group_node-faq
-          - closed_private-group_node-forum
-          - closed_private-group_node-page
-          - group_content_type_466cc368a8c15
-          - group_content_type_486a744513175
-          - group_content_type_8fbe33e60f149
-          - group_content_type_aa3a511b55f8c
-          - moderate-group_node-event
-          - moderate-group_node-faqs
-          - moderate-group_node-forum
-          - moderate-group_node-page
-          - moderate-group_node-quickinfo
-          - moderate_private-group_node-faqs
-          - moderate_private-group_node-page
-          - open-group_node-downtimes
-          - open-group_node-early_warnings
-          - open-group_node-faqs
-          - open-group_node-forum
-          - open-group_node-newsletter
-          - open-group_node-page
-          - open-group_node-planning_files
-          - open-group_node-problem
-          - open-group_node-quickinfo
-      languages:
-        default: true
-        selected: {  }
+    bundles:
+      default: true
+      selected:
+        - closed-group_membership
+        - closed_private-group_membership
+        - downtimes-group_membership
+        - group_content_type_6693a40b54133
+        - group_content_type_7b308aea24fe7
+        - group_content_type_c26112f8ad4cd
+        - group_content_type_d4b06e2b6aad0
+        - moderate-group_membership
+        - open-group_membership
+        - quick_info-group_membership
+    languages:
+      default: true
+      selected: {  }
 processor_settings:
   group_access:
     plugin_id: group_access
@@ -538,6 +520,7 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -4
+    all_fields: false
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
@@ -579,6 +562,17 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
+    all_fields: false
+    title: true
+    alt: true
+    tags:
+      h1: 5
+      h2: 3
+      h3: 2
+      strong: 2
+      b: 2
+      em: 1
+      u: 1
   highlight:
     plugin_id: highlight
     settings:
@@ -590,6 +584,13 @@ processor_settings:
       suffix: '</strong>'
       weights:
         postprocess_query: 0
+    prefix: '<strong>'
+    suffix: '</strong>'
+    excerpt: true
+    excerpt_length: 256
+    highlight: always
+    highlight_partial: false
+    exclude_fields: {  }
   add_url:
     plugin_id: add_url
     settings: {  }
@@ -606,10 +607,9 @@ processor_settings:
       weights:
         preprocess_index: -10
         preprocess_query: -10
+    all_fields: false
 tracker_settings:
-  default:
-    plugin_id: default
-    settings: {  }
+  default: {  }
 options:
   index_directly: true
   cron_limit: 50
