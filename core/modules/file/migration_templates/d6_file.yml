@@ -37,6 +37,7 @@ process:
       - is_public
   uri:
     plugin: file_copy
+    move: TRUE
     source:
       - '@source_full_path'
       - '@destination_full_path'

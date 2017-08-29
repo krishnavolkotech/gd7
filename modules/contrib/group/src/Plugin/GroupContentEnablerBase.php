@@ -3,6 +3,8 @@
 namespace Drupal\group\Plugin;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityMalformedException;
 use Drupal\group\Access\GroupAccessResult;
 use Drupal\group\Entity\GroupType;
 use Drupal\group\Entity\GroupInterface;
@@ -145,6 +147,9 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    * {@inheritdoc}
    */
   public function getContentLabel(GroupContentInterface $group_content) {
+    if(!$group_content->getEntity() instanceof EntityInterface){
+      throw new EntityMalformedException('Invalid Entity:'.$group_content->id());
+    }
     return $group_content->getEntity()->label();
   }
 
