@@ -27,7 +27,8 @@ display:
         options:
           perm: 'administer users'
       cache:
-        type: tag
+        type: none
+        options: {  }
       query:
         type: views_query
         options:
@@ -1400,7 +1401,8 @@ display:
       defaults:
         show_admin_links: false
         arguments: false
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       arguments: {  }
     cache_metadata:
       contexts:
