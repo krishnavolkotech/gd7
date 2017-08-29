@@ -1441,7 +1441,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
     $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
 
-    $release_earlywarning = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
+    $release_earlywarning = t('@view @create', array('@view' => $create_warning, '@create' => $view_warning));
     return $release_earlywarning;
   }
 
