@@ -83,16 +83,21 @@ class MailTemplatesForm extends ConfigFormBase {
       '#description' => $this->t('Check if mail content is going to be the same way it is shown on the details page'),
       '#default_value' => isset($data['mail_view']) ? $data['mail_view'] : NULL,
     );
-    
-    $form['mail_content'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Mail Content'),
-      '#default_value' => isset($data['mail_content']) ? $data['mail_content'] : NULL,
+    $form['mail_content_wrapper'] = [
+      '#type'=>'container',
       '#states' => [
         'visible' => array(
           ':input[name="mail_view"]' => array('checked' => FALSE),
         ),
       ],
+    ];
+    $form['mail_content_wrapper']['mail_content'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Mail Content'),
+      '#base_type' => 'textarea',
+      '#format' => 'full_html',
+      '#default_value' => isset($data['mail_content']) ? $data['mail_content'] : NULL,
+      
     );
     $form['mail_footer'] = array(
       '#type' => 'text_format',
@@ -132,7 +137,7 @@ class MailTemplatesForm extends ConfigFormBase {
     $data = [
       'subject_insert' => $form_state->getValue('subject_insert'),
       'subject_update' => $form_state->getValue('subject_update'),
-      'mail_content' => $form_state->getValue('mail_content'),
+      'mail_content' => $form_state->getValue('mail_content')['value'],
       'mail_footer' => $form_state->getValue('mail_footer')['value'],
       'mail_view' => $form_state->getValue('mail_view'),
     ];

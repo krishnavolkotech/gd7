@@ -75,18 +75,40 @@ display:
           default_row_class: true
           override: true
           sticky: false
+          caption: ''
           summary: ''
+          description: ''
           columns:
             user_bulk_form: user_bulk_form
+            lastname: lastname
+            firstname: firstname
             name: name
+            uid: uid
             status: status
-            rid: rid
+            roles_target_id: roles_target_id
             created: created
             access: access
-            edit_node: edit_node
-            dropbutton: dropbutton
+            mail: mail
+            phone: phone
+            position: position
+            abbr: abbr
+            operations: operations
           info:
             user_bulk_form:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            lastname:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            firstname:
+              sortable: false
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
@@ -98,20 +120,27 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            status:
-              sortable: true
+            uid:
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: priority-low
-            rid:
+              responsive: ''
+            status:
               sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: priority-low
+            roles_target_id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             created:
               sortable: true
               default_sort_order: desc
@@ -126,14 +155,35 @@ display:
               separator: ''
               empty_column: false
               responsive: priority-low
-            edit_node:
+            mail:
+              sortable: false
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: priority-low
-            dropbutton:
+              responsive: ''
+            phone:
               sortable: false
               default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            position:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            abbr:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            operations:
               align: ''
               separator: ''
               empty_column: false
@@ -1038,7 +1088,7 @@ display:
           operator: '='
           value: '1'
           group: 1
-          exposed: true
+          exposed: false
           expose:
             operator_id: ''
             label: ''
@@ -1161,17 +1211,21 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
-          value: '0'
+          operator: in
+          value:
+            all: all
+            1: '1'
+            2: '2'
+            3: '3'
           group: 1
           exposed: true
           expose:
-            operator_id: ''
-            label: 'Inactive Status'
+            operator_id: uid_op
+            label: Status
             description: ''
             use_operator: false
             operator: uid_op
-            identifier: uid
+            identifier: user_status
             required: false
             remember: false
             multiple: false
@@ -1182,6 +1236,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -1194,7 +1249,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: is_null
+          plugin_id: in_operator
       sorts:
         created:
           id: created
@@ -1381,7 +1436,8 @@ display:
         weight: 0
       defaults:
         show_admin_links: false
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
     cache_metadata:
       contexts:
         - 'languages:language_content'

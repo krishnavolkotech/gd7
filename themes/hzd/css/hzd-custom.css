@@ -961,6 +961,10 @@ form.node-service-profile-form .form-checkboxes{
   -moz-column-count:2;
   column-count:2; 
 }
+.path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
+  /*display:inline-block;*/
+  float:left;
+}
 header .block-cust-group-search-block form {
   position: relative;
 }
@@ -1121,16 +1125,29 @@ form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
-form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox,
-form.node-service-profile-form .form-checkboxes{
+form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox{
   width: 99%;
-  display:inline-block;
+  float:left;
   /*margin: 0 1% 7px 0;*/
   margin:0 0 7px 0;
   padding: 0;
 }
 form.node-downtimes-form legend{
   margin-top:15px;
+}
+form.node-service-profile-edit-form .form-checkboxes,
+form.node-service-profile-form .form-checkboxes{
+  /*display:inline-block;*/
+}
+ 
+form.node-service-profile-form .field--name-field-service-operator,
+form.node-service-profile-form .field--name-field-service-recipient,
+form.node-service-profile-form .field--name-field-dependent-service,
+form.node-service-profile-edit-form .field--name-field-service-operator,
+form.node-service-profile-edit-form .field--name-field-service-recipient,
+form.node-service-profile-edit-form .field--name-field-dependent-service{
+  float:left;
+  width:100%;
 }
 form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
@@ -1157,3 +1174,48 @@ table.view-deployed-releases{
   overflow-x:initial;
 }
 #released_results_wrapper .table-responsive table tr td.earlywarnings-cell{}
+.quickinfo .field--label-inline .field--label{
+  padding-right:4px !important;
+}
+.quickinfo .field--name-upload.field--type-file table thead tr th{
+  border-left: 1px solid rgb(212,231,245);
+  background: #d4eaf5;
+  text-align: left;
+  padding-right: 1em;
+  height: 45px;
+  font-family: arial,sans-serif;
+  text-indent:7px;
+  border-radius:0 !important;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr.odd td{
+  background-color: #e9f3fb;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr.even td{
+  background-color: #fff;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td{
+  border: 1px solid rgb(212,231,245) !important;
+  text-align:left;
+  padding:5px 8px 7px 8px;
+  line-height:150%;
+  border-radius:0 !important;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
+.quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
+  display:none;
+}
+.quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
+  text-decoration:none;
+}
+.quickinfo .field--name-upload.field--type-file table .file>span{
+  border:none;
+  padding:0 !important;
+  background:transparent !important;
+}
+.quickinfo .field--name-upload.field--type-file table{
+  border-radius:0 !important;
+}
+.view-news-list .views-row .views-field-field-news-date{
+  margin-bottom:5px;
+}
+

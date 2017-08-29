@@ -57,7 +57,7 @@
                     var present = present_date();
                     var diff = toTimestamp(start_date) - toTimestamp(today);
                     var max_adv_time = new Array();
-                    if (toTimestamp(start_date) < toTimestamp(today)) {
+                    if (toTimestamp(start_date) < toTimestamp(today) && $(this).parents('form#node-downtimes-form').length) {
                         $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                         $('.downtimes-date-wrapper p.text-danger, .downtimes-date-wrapper p.text-warning').remove();
                         $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
@@ -80,6 +80,7 @@
 
                     $("#edit-services-effected input:checkbox:checked").each(function () {
                         var service_id = $(this).val();
+                        if($(this).parents('form#node-downtimes-form').length){
                         if (a.advance_time[service_id].adv_time) {
                             var adv_in_seconds = a.advance_time[service_id].adv_time * 60 * 60;
                             if (diff >= adv_in_seconds) {
@@ -125,6 +126,7 @@
                                 $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
+                    }
                     });
 
                 }
