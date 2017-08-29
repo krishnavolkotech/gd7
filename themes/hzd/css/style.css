@@ -793,7 +793,7 @@ table tr.even:hover {
     line-height: 29px;
     text-align: center;
     font-size: 14px;
-    display: inline-block;
+    display:inline-block;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -2594,13 +2594,17 @@ article.quickinfo table {
     text-align: center;
 }
  table.releases tr td.earlywarnings-cell{
-    text-align: right;
+    /*text-align: right;*/
 }
 table.releases tr td.earlywarnings-cell a.view-earlywarning:hover{
   text-decoration:none !important;
 }
 table.releases  tr td.earlywarnings-cell img{
    margin-right:40px;
+}
+table.releases tr td.earlywarnings-cell a.view-earlywarning,
+table.releases tr td.earlywarnings-cell a.create_earlywarning{
+  float:right;
 }
 .quickinfo-attachments table tr.checkbox {
     margin: 0;
