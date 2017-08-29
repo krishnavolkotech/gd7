@@ -1604,15 +1604,15 @@ function downtimes_schema() {
 
 function maintenance_reasons($rid = NULL){
   $data  = [
-    1=>t('Please select a reason here'),
-    2=>t('Urgency of the maintenance'),
-    3=>t('No staff available during maintenance hours'),
-    4=>t('No service partner (State) available during maintenance hours'),
-    5=>t('External service partner required'),
-    6=>t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
-    7=>t('Public holiday or weekend'),
-    8=>t('No service partner (KONSENS) available during maintenance hours'),
-    9=>t('No service interruption planned')
+    0=>t('Please select a reason here'),
+    1=>t('Urgency of the maintenance'),
+    2=>t('No staff available during maintenance hours'),
+    3=>t('No service partner (State) available during maintenance hours'),
+    4=>t('External service partner required'),
+    5=>t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
+    6=>t('Public holiday or weekend'),
+    7=>t('No service partner (KONSENS) available during maintenance hours'),
+    8=>t('No service interruption planned')
   ];
   if($rid){
     return $data[$rid];
