@@ -138,6 +138,7 @@ body {
 }
 .pdf-content article.quickinfo .field .field--item {
     word-wrap: break-word;
+    /*word-break:keep-all;*/
 }
 .pdf-content article.quickinfo .field p {
     width: 100%;
@@ -278,20 +279,6 @@ div[style] {
     width: 100%;
     margin: 0 !important;
 }
-/*#header table tr td{
-   width:45%;
-  
- }
-#header table tr td:first-child{
-   width:20%;
-}
-#header table tr td:last-child{
-  width:35%;
-}
- #header table tr td{
-  vertical-align:middle;
-  text-align:center;
- }*/
 .pdf-content #edit-services-effected .form-checkbox .published-services{
    margin-top:-20px !important;
  }
@@ -323,6 +310,9 @@ div[style] {
 .pdf-content table{
  width:100%;
 }
+ /*.pdf-content table{
+   border:1px solid #ddd;*/
+ }
  .pdf-content #problem_search_results_wrapper table#sortable tr td{
   border-top: 1px solid #ddd !important;
 }
@@ -395,6 +385,14 @@ table.incident,
 table.archived{
     margin: 40px 0 20px !important;
 }
+.pdf-content .views-element-container,
+.pdf-content .ckeditor-custom-wrapper p,
+.pdf-content .ckeditor-custom-wrapper,
+.view-groups-faq .view-content .views-row .views-field-body,
+.pdf-content .view-groups-faq h3,
+.pdf-content .view-groups-faq .views-field,
+.pdf-content .view-groups-faq .view-content .views-row,
+.pdf-content .view-groups-faq .view-content .views-row .views-field-title .field-content,
 table.incident thead,
 table.incident thead tr{
   width:100%;
@@ -548,29 +546,39 @@ table tr td {
 .pdf-content br{
   display:none;
 }
-.pdf-content .views-element-container,
-.pdf-content .ckeditor-custom-wrapper p,
-.pdf-content .ckeditor-custom-wrapper,
-.view-groups-faq .view-content .views-row .views-field-body,
-.pdf-content .view-groups-faq h3,
-.pdf-content .view-groups-faq .views-field,
-.pdf-content .view-groups-faq .view-content .views-row,
-.pdf-content .view-groups-faq .view-content .views-row .views-field-title .field-content{
-  float:none;
-  width:100%;
+
+.pdf-content table.releases tr td.earlywarnings-cell a.view-earlywarning,
+.pdf-content table.releases tr td.earlywarnings-cell a.create_earlywarning{
+  float:right;
+  width:32px;
 }
-.pdf-content a.create_earlywarning,
 .pdf-content table.releases tr td.earlywarnings-cell{
-  text-align:right;
-}
-.pdf-content table.releases tr td.earlywarnings-cell a.view-earlywarning{
-  text-align:right;
+  height:25px;
 }
 .pdf-content table.releases tr td.earlywarnings-cell img{
- margin-right: 0;
+ margin-right:0;
+ margin-top:3px;
+}
+.pdf-content form.deployed-released-view-form,
+.pdf-content form.deployed-released-view-form .hzd-form-element,
+.pdf-content form.deployed-released-view-form #deployed-overview{
+  width:100%;
+  display:block;
+  clear:both;
+}
+.pdf-content form.deployed-released-view-form table.view-deployed-releases tr td{
+  white-space: nowrap;
+  padding:0 5px !important;
+  vertical-align:top;
+}
+.pdf-content form.deployed-released-view-form table.view-deployed-releases tr td ul li{
+  page-break-inside: avoid !important;
 }
 .pdf-content .warningcount{
-  /*float:none;*/
+ /*float:right;
+  display:inline-block;
+    border:1px solid #ff6600;
+    margin-right:20px;*/
 }
 .pdf-content a.create_earlywarning,
 .pdf-content a.view-earlywarning{
