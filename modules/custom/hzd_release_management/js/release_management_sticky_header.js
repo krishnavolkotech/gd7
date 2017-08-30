@@ -12,18 +12,17 @@
    */
   Drupal.behaviors.release_management_sticky_header = {
     attach: function (context) {
-        
-	var stickySidebar = jQuery('#released_results_wrapper > table > thead > tr').offset().top;
-
-	jQuery(window).scroll(function() {  
-	    if (jQuery(window).scrollTop() > stickySidebar) {
-		jQuery('#released_results_wrapper > table > thead ').addClass('sticky_do_header');
-	    }
-	    else {
-		jQuery('#released_results_wrapper > table > thead ').removeClass('sticky_do_header');
-	    }  
-	});
-
+        if(jQuery('#released_results_wrapper > table > thead > tr').length) {
+            var stickySidebar = jQuery('#released_results_wrapper > table > thead > tr').offset().top;
+            jQuery(window).scroll(function () {
+                if (jQuery(window).scrollTop() > stickySidebar) {
+                    jQuery('#released_results_wrapper > table > thead ').addClass('sticky_do_header');
+                }
+                else {
+                    jQuery('#released_results_wrapper > table > thead ').removeClass('sticky_do_header');
+                }
+            });
+        }
      }
   };
 
