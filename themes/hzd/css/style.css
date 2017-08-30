@@ -2801,9 +2801,10 @@ form.archive-data-export .container-inline {
     background: #004077 !important;
     color: #fff !important;
 }
-a.button--danger,
-a#edit-cancel {
+a.button--danger:hover,
+a#edit-cancel:hover {
    /* margin: 0 0 0 5px !important;*/
+   background: #004077 !important;
 }
 .form-actions button {
      margin: 0 5px 5px 0;

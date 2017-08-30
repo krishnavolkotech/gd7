@@ -386,17 +386,29 @@ table.archived{
     margin: 40px 0 20px !important;
 }
 .pdf-content .views-element-container,
-.pdf-content .ckeditor-custom-wrapper p,
-.pdf-content .ckeditor-custom-wrapper,
+
 .view-groups-faq .view-content .views-row .views-field-body,
 .pdf-content .view-groups-faq h3,
-.pdf-content .view-groups-faq .views-field,
-.pdf-content .view-groups-faq .view-content .views-row,
 .pdf-content .view-groups-faq .view-content .views-row .views-field-title .field-content,
 table.incident thead,
 table.incident thead tr{
   width:100%;
   float:none;
+}
+.pdf-content .view-groups-faq .view-content .views-row .views-field-edit-node,
+.pdf-content .view-groups-faq .view-content .views-row .views-field-delete-node,
+.pdf-content .view-groups-faq .view-content .views-row .views-field-body,
+.pdf-content .view-groups-faq .view-content .views-row .views-field-title,
+.pdf-content .view-groups-faq .views-row .views-field,
+.pdf-content .view-groups-faq .view-content .views-row,
+.pdf-content .ckeditor-custom-wrapper p{
+  width:100% !important;
+  float:none;
+  display:block;
+}
+.pdf-content .ckeditor-custom-wrapper{
+  width:100% !important;
+  float:left;
 }
 table.incident caption h2,
 table.maintenance caption h2 {
@@ -503,7 +515,7 @@ table tr td {
 .pdf-content .ckeditor-custom-wrapper table{
  float:none;
  display:table;
- width:100%;
+ width:100% !important;
 }
 .pdf-content .ckeditor-custom-wrapper .field strong{
   float:none;
@@ -542,11 +554,14 @@ table tr td {
   float:none;
   color:#fff;
   width:100%;
+  padding-right:0
 }
 .pdf-content br{
   display:none;
 }
-
+.pdf-content .ckeditor-custom-wrapper br{
+  /*display:block;*/
+}
 .pdf-content table.releases tr td.earlywarnings-cell a.view-earlywarning,
 .pdf-content table.releases tr td.earlywarnings-cell a.create_earlywarning{
   float:right;
@@ -638,4 +653,11 @@ button .dropdown-toggle{
 }
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
+}
+.pdf-content .form-actions button,
+.pdf-content a#edit-cancel{
+  /*background:#0e9e57 !important;
+  width:auto ;
+  border:none;
+  color:#fff;*/
 }

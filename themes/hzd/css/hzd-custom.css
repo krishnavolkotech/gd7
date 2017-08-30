@@ -1109,6 +1109,8 @@ form.downtimes-setting-form #edit-services,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-edit-form .form-checkboxes,
+form.node-downtimes-form .form-checkboxes,
 form.node-service-profile-edit-form .form-checkboxes,
 form.node-service-profile-form .form-checkboxes{
     -webkit-column-count:3;
@@ -1122,6 +1124,8 @@ form.node-service-profile-form .form-checkboxes{
     -moz-column-gap: 20px; 
     position: relative;
 }
+form.node-downtimes-edit-form .form-checkboxes .form-type-checkbox,
+form.node-downtimes-form .form-checkboxes .form-type-checkbox,
 form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
