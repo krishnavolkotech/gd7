@@ -973,9 +973,7 @@ function downtimes_theme() {
 
 function custom_maintenance_validate(&$form, &$form_state) {
   pass_maitenance_value($form);
-  if($form['#form_id'] == 'node_downtimes_form'){
-    check_downtime_status($form, $form_state);
-  }
+  check_downtime_status($form, $form_state);
   if ($form_state->getValue('maintenance_result') && $form_state->getValue('reason_for_noncompliance') == 0) {
     $form_state->setErrorByName('reason_for_noncompliance', "Reason field is required.");
   }
@@ -1084,6 +1082,16 @@ function dependent_service_list() {
  * validate function to check downtime status.
  */
 function check_downtime_status(&$form, &$form_state) {
+  if($form['#form_id'] == 'node_downtimes_edit_form') {
+      $startdate_original = $form['dates']['start']['startdate_planned']['#default_value'];
+      $startdate_original = get_maintenance_strtdate_timestamp($startdate_original);
+      $startdate_update = $form_state->getValue('startdate_planned');
+      $startdate_update = get_maintenance_strtdate_timestamp($startdate_update);
+      if($startdate_original == $startdate_update) {
+          return;
+      }
+  }
+    
   $start_date = get_maintenance_strtdate_timestamp($form_state->getValue('startdate_planned'));
   $current_date = time();
   $diff = $start_date - $current_date;
