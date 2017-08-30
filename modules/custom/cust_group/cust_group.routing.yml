@@ -138,6 +138,12 @@ cust_group.notifications_update:
     _controller: '\Drupal\cust_group\Controller\CustNodeController::updateNotifications'
   requirements:
     _permission: 'administer site'
+cust_group.service_notifications_update:
+  path: '/update-service-notifications'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::migrateServiceSpecificNotifications'
+  requirements:
+    _permission: 'administer site'
 cust_group.url_alias_update:
   path: '/update-all-urls'
   defaults:
