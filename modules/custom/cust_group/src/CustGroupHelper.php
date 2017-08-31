@@ -48,6 +48,9 @@ class CustGroupHelper {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
     $node = $routeMatch->getParameter('node');
+    if(!is_object($node)) {
+        $node = \Drupal\node\Entity\Node::load($node);
+    }
     if (!empty($node) && empty($group)) {
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       if (!empty($groupContent)) {
