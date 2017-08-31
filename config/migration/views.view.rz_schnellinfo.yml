@@ -31,7 +31,7 @@ display:
       access:
         type: group_permission
         options:
-          group_permission: 'view group'
+          group_permission: 'leave group'
       cache:
         type: tag
         options: {  }
