@@ -476,11 +476,6 @@ form.archived .search.form-group{
 .node-service-profile-edit-form .maintenance-window-field #downtimes-fieldset-wrapper{
   margin-bottom:10px;
 }
-.node-service-profile-form .fieldset-legend,
-.node-service-profile-edit-form .fieldset-legend {
-  margin:10px 0;
-  display:inline-block;
-}
 form.im-attachments-upload-form .form-item,
 form.im-attachments-upload-form .form-group{
   width:100%;
@@ -793,6 +788,7 @@ form.deployedreleases-create-form .form-item,
 }  
 
 @media only screen and (max-width:767px){
+form.problem-settings-form .form-checkboxes,
 form.downtimes-setting-form #edit-services,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
@@ -942,7 +938,7 @@ header .block-cust-group-search-block form .search-expanded{
 }
 
 @media only screen and (max-width:480px){
-
+form.problem-settings-form .form-checkboxes,
 .path-frontpage .block-maintenance-block .maintenance-home-info,
 form.downtimes-setting-form #edit-services,
 form.node-downtimes-form .form-wrapper #edit-states,
@@ -963,8 +959,9 @@ form.node-service-profile-form .form-checkboxes{
 }
 .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
  /*display:inline-block;
- float:left;*/
- display:table;
+ float:left;
+ display:table;*/
+ display:table-footer-group;
 }
 header .block-cust-group-search-block form {
   position: relative;
@@ -1104,11 +1101,13 @@ form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
 form.node-service-profile-edit-form #edit-field-service-recipient , 
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator 
 */
-
+form.problem-settings-form .form-checkboxes,
 form.downtimes-setting-form #edit-services,
 form.node-downtimes-form .form-wrapper #edit-states,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected,
 form.node-downtimes-form .form-wrapper #edit-services-effected,
+form.node-downtimes-edit-form .form-checkboxes,
+form.node-downtimes-form .form-checkboxes,
 form.node-service-profile-edit-form .form-checkboxes,
 form.node-service-profile-form .form-checkboxes{
     -webkit-column-count:3;
@@ -1122,6 +1121,9 @@ form.node-service-profile-form .form-checkboxes{
     -moz-column-gap: 20px; 
     position: relative;
 }
+form.problem-settings-form .form-checkboxes .form-type-checkbox,
+form.node-downtimes-edit-form .form-checkboxes .form-type-checkbox,
+form.node-downtimes-form .form-checkboxes .form-type-checkbox,
 form.downtimes-setting-form #edit-services .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkbox,
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
@@ -1148,20 +1150,22 @@ form.node-service-profile-edit-form .form-checkboxes .form-type-checkbox{
   padding: 0;
   display: inline-block;
 }
+form fieldset.form-item legend{
+  padding-bottom:5px;
+  margin:15px 0 10px 0 ;
+}
 form.node-downtimes-form legend{
   margin-top:15px;
 }
-form.node-service-profile-edit-form .form-checkboxes,
-form.node-service-profile-form .form-checkboxes{
-  /*display:inline-block;*/
-}
- 
-form.node-service-profile-form .field--name-field-service-operator,
-form.node-service-profile-form .field--name-field-service-recipient,
-form.node-service-profile-form .field--name-field-dependent-service,
-form.node-service-profile-edit-form .field--name-field-service-operator,
-form.node-service-profile-edit-form .field--name-field-service-recipient,
-form.node-service-profile-edit-form .field--name-field-dependent-service{
+
+form.node-service-profile-form .field--name-field-service-operator, 
+form.node-service-profile-form .field--name-field-service-recipient, 
+form.node-service-profile-form .field--name-field-dependent-service, 
+form.node-service-profile-edit-form .field--name-field-service-operator, 
+form.node-service-profile-edit-form .field--name-field-service-recipient, 
+form.node-service-profile-edit-form .field--name-field-dependent-service,
+form.node-service-profile-form .form-checkboxes,
+form.node-service-profile-edit-form .form-checkboxes{
   float:left;
   width:100%;
 }

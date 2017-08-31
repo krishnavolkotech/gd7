@@ -73,26 +73,28 @@ view_mode ? view_mode|clean_class,
 'clearfix',
 ]
 %}
+
 {% if view_mode == 'mail' %}
+
     <table width="100%" cellpadding="0" cellspacing="0" border="1">
         <tr>
             <td rowspan="2">
-                <img alt="Home" src="{{ base_url }}/themes/hzd/images/hzd_pdf_logo.png"></td>
+                <img alt="Home" src="{{ base_url }}/themes/hzd/images/hzd_pdf_logo.png">
             </td>
-            <td rowspan="2">
+            <td rowspan="2" align="center">
                 {{ quickinfo_field_unique_id }}
                 <br>
                 {{ node.getTitle() }}
             </td>
-            <td> &nbsp;
+            <td>
                 {{ 'Veröffentlicht am'|trans }}:
-                {{ node.getCreatedTime|format_date('hzd_datetime') }}
+                {{ publishedTime|format_date('hzd_datetime') }}
             </td>
         </tr>
         <tr>
             <td>
                 {{ 'Veröffentlicht von'|trans }}:
-                {{ node.getOwner().getDisplayName() }}
+                {{ publisher }}
             </td>
         </tr>
     </table>
