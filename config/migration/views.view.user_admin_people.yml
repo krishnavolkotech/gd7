@@ -1089,21 +1089,19 @@ display:
           operator: '='
           value: '1'
           group: 1
-          exposed: false
+          exposed: true
           expose:
             operator_id: ''
-            label: ''
-            description: ''
+            label: Aktiv
+            description: null
             use_operator: false
             operator: status_op
             identifier: status
-            required: false
+            required: true
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
           is_grouped: true
           group_info:
             label: Status
@@ -1117,11 +1115,15 @@ display:
             default_group_multiple: {  }
             group_items:
               1:
-                title: Aktiv
+                title: Active
                 operator: '='
                 value: '1'
               2:
-                title: Gesperrt
+                title: Inactive
+                operator: '='
+                value: '1'
+              3:
+                title: Blocked
                 operator: '='
                 value: '0'
           plugin_id: boolean
@@ -1209,35 +1211,25 @@ display:
           id: uid
           table: inactive_users
           field: uid
-          relationship: none
+          relationship: uid
           group_type: group
           admin_label: ''
-          operator: in
-          value:
-            all: all
-            1: '1'
-            2: '2'
-            3: '3'
+          operator: '='
+          value: '1'
           group: 1
-          exposed: true
+          exposed: false
           expose:
-            operator_id: uid_op
-            label: Status
-            description: ''
+            operator_id: ''
+            label: Aktiv
+            description: null
             use_operator: false
             operator: uid_op
-            identifier: user_status
-            required: false
+            identifier: uid
+            required: true
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -1250,7 +1242,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: in_operator
+          plugin_id: is_null
       sorts:
         created:
           id: created

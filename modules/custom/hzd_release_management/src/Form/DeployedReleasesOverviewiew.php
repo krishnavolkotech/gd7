@@ -51,7 +51,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             'method' => 'replace',
             'progress' => array(
                 'type' => 'throbber',
-                'message' => NULL,
+                'message' => 'Please wait',
             ),
         ),
         "#prefix" => "<div class = 'release_type_dropdown hzd-form-element'>",
@@ -184,7 +184,7 @@ class DeployedReleasesOverviewiew extends FormBase {
                   '#header' => $headers,
                   '#rows' => $depReleases,
                   '#attributes' => [
-                      'style' => ['width:2500px'],
+//                      'style' => ['width:2500px'],
                       'class' => ['view-deployed-releases']
                   ]
       ];
