@@ -36,7 +36,7 @@ display:
             group_administrator: group_administrator
             site_administrator: site_administrator
       cache:
-        type: tag
+        type: none
         options: {  }
       query:
         type: views_query

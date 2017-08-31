@@ -49,6 +49,7 @@ class GroupMemberCountField extends FieldPluginBase {
     $gpc->leftJoin('inactive_users','iu', 'u.uid = iu.uid');
     $gpc->condition('u.status', 1)
         ->condition('g.gid', $gid)
+        ->condition('g.request_status', 1)
         //->condition('g.type', $contents, 'IN')
         ->condition('g.type', '%group_node%', 'NOT LIKE')
          ->isNull('iu.uid')
