@@ -192,3 +192,10 @@ cust_group.clean_file_paths_test:
     _title: 'Migrating file paths'
   requirements:
     _permission: 'administer site'
+cust_group.attach_quickinfo_files:
+  path: '/quickinfo-files-migrate'
+  defaults:
+    _form: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController'
+    _title: 'Migrating Quickinfo Files'
+  requirements:
+    _permission: 'administer site'
