@@ -65,12 +65,19 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
         echo $html;
         exit;
       }
+      $request = \Drupal::request();
+      $route = \Drupal::routeMatch()->getRouteObject();
+      $title = \Drupal::service('title_resolver')->getTitle($request, $route);
+      $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title->render());
+//      pr($title->render());exit;
       //Making the pdf landscaped for a particular route
       if(\Drupal::routeMatch()->getRouteName() == 'hzd_release_management.view_deployed_releases'){
-        $print_engine->getPrintObject()->setPaper('a1', 'landscape');
+        $print_engine->getPrintObject()->setPaper('2a0', 'landscape');
+        $date = \Drupal::service('date.formatter')->format(REQUEST_TIME, 'hzd_date');
+        $clean_string = 'Eingesetzte-Releases_BpK-'.$date;
       }
       $print_engine->addPage($html);
-      $print_engine->send("print.pdf", 0);
+      $print_engine->send("$clean_string.pdf", 0);
       exit;
     }
   }
