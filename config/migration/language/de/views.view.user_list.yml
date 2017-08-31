@@ -17,13 +17,6 @@ display:
   address:
     display_title: Seite
     display_options:
-      filters:
-        combine:
-          expose:
-            label: 'Name oder E-Mail'
-        abbr:
-          expose:
-            label: Land
       fields:
         lastname:
           label: Nachname
@@ -53,15 +46,3 @@ display:
           exposed_sorts_label: 'Sortieren nach'
           sort_asc_label: Aufsteigend
           sort_desc_label: Absteigend
-  entity_reference_1:
-    display_options:
-      pager:
-        options:
-          tags:
-            first: '« Erste'
-            last: 'Letzte »'
-          expose:
-            items_per_page_label: 'Einträge pro Seite'
-            items_per_page_options_all_label: '- Alle -'
-  page_1:
-    display_title: Seite

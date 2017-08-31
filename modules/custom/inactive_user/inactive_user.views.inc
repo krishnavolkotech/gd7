@@ -301,11 +301,19 @@ function inactive_user_views_data() {
     
     'filter' => array(
       // ID of filter handler plugin to use.
-      'id' => 'in_operator',
+      'id' => 'is_null',
       // Override the generic field title, so that the filter uses a different
       // label in the UI.
       'label' => t('Active'),
-      'options callback' => 'user_status_callback',
+      // Override the default BooleanOperator filter handler's 'type' setting,
+      // to display this as a "Yes/No" filter instead of a "True/False" filter.
+      'type' => 'true-false',
+      // Override the default Boolean filter handler's 'use_equal' setting, to
+      // make the query use 'boolean_field = 1' instead of 'boolean_field <> 0'.
+//      'use_equal' => TRUE,
+//      'allow_empty' => TRUE,
+//      'accept null'=>TRUE,
+        'options callback' => 'inactive_users_filter_options',
     ),
   );
   
@@ -313,12 +321,8 @@ function inactive_user_views_data() {
   
 }
 
-function user_status_callback() {
-  return [
-    1 => t('Active'),
-    2 => t('Inactive'),
-    3 => t('Blocked')
-  ];
+function inactive_users_filter_options() {
+    return [1=>'Active',2=>'Inactive',3=>'Blocked'];
 }
 
 /**
@@ -327,8 +331,8 @@ function user_status_callback() {
 function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $query) {
   if ($view->id() == 'user_admin_people') {
     // Traverse through the 'where' part of the query.
-//    pr($query->where);exit;
-    if ($status = \Drupal::request()->get('user_status', NULL)) {
+//    kint($query->where);
+    if ($status = \Drupal::request()->get('status', NULL)) {
       foreach ($query->where as &$condition_group) {
         foreach ($condition_group['conditions'] as $key => &$condition) {
           if ($status == 1) {
@@ -336,8 +340,8 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
             if ($condition['field'] == 'users_field_data.status') {
               $condition['value'] = 1;
             }
-            if ($condition['field'] == 'inactive_users.uid') {
-              $condition['operator'] = 'IS NULL';
+            if (strpos($condition['field'], 'inactive_users.uid')) {
+                $condition['field'] = 'users_field_data_inactive_users__inactive_users.uid IS NULL';
             }
           }
           elseif ($status == 2) {
@@ -345,8 +349,8 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
             if ($condition['field'] == 'users_field_data.status') {
               $condition['value'] = 1;
             }
-            if ($condition['field'] == 'inactive_users.uid') {
-              $condition['operator'] = 'IS NOT NULL';
+            if (strpos($condition['field'], 'inactive_users.uid')) {
+              $condition['field'] = 'users_field_data_inactive_users__inactive_users.uid IS NOT NULL';
             }
           }
           elseif ($status == 3) {
@@ -354,7 +358,7 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
             if ($condition['field'] == 'users_field_data.status') {
               $condition['value'] = 0;
             }
-            if ($condition['field'] == 'inactive_users.uid') {
+            if (strpos($condition['field'], 'inactive_users.uid')) {
               unset($condition_group['conditions'][$key]);
             }
           }
@@ -363,13 +367,22 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
             if ($condition['field'] == 'users_field_data.status') {
               unset($condition_group['conditions'][$key]);
             }
-            if ($condition['field'] == 'inactive_users.uid') {
+            if (strpos($condition['field'], 'inactive_users.uid')) {
               unset($condition_group['conditions'][$key]);
             }
           }
         }
       }
+    } else {
+      foreach ($query->where as &$condition_group) {
+        foreach ($condition_group['conditions'] as $key => &$condition) {
+            if (strpos($condition['field'], 'inactive_users.uid')) {
+             unset($condition_group['conditions'][$key]);
+            }
+        }
+      }
     }
-//    pr($query->where);exit;
+    
   }
+//  pr($query->where);exit;
 }
