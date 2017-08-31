@@ -17,7 +17,7 @@ process:
     # migration and executing migrations incrementally, it is strongly
     # recommended that you remove the fid mapping to avoid potential ID
     # conflicts. For that reason, this mapping is commented out by default.
-    # fid: fid
+  fid: fid
   filename: filename
   source_full_path:
     -
@@ -43,7 +43,7 @@ process:
       - '@destination_full_path'
   filemime: filemime
   # No need to migrate filesize, it is computed when file entities are saved.
-  # filesize: filesize
+  filesize: filesize
   status: status
   changed: timestamp
   uid: uid

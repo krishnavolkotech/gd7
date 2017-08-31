@@ -178,3 +178,17 @@ cust_group.imablageattachments_stateinsert:
     _title: 'Störungslogs der Länder'
   requirements:
     _access: 'TRUE'
+cust_group.clean_file_paths:
+  path: '/cleanup-file-paths'
+  defaults:
+    _form: '\Drupal\cust_group\Controller\FilePathsCleanupController'
+    _title: 'Migrating file paths'
+  requirements:
+    _permission: 'administer site'
+cust_group.clean_file_paths_test:
+  path: '/cleanup-test'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\FilePathsCleanupController::checkFiles'
+    _title: 'Migrating file paths'
+  requirements:
+    _permission: 'administer site'
