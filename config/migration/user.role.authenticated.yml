@@ -51,6 +51,7 @@ permissions:
   - 'manage favorites'
   - 'manage own subscriptions'
   - 'post comments'
+  - 'revert quickinfo revisions'
   - 'search content'
   - 'skip comment approval'
   - 'skip notifications'
