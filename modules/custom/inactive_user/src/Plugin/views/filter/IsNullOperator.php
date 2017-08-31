@@ -24,13 +24,10 @@ class IsNullOperator extends BooleanOperator {
     $where = "$this->tableAlias.$this->realField ";
 
     if (empty($this->value)) {
-//      $where .= "= ''";
-//      if ($this->accept_null) {
-        $where = "( $this->tableAlias.$this->realField IS NULL)";
-//      }
+        $where = " $this->tableAlias.$this->realField IS NULL";
     }
     else {
-      $where = "( $this->tableAlias.$this->realField IS NOT NULL)";
+        $where = " $this->tableAlias.$this->realField IS NOT NULL";
     }
     $this->query->addWhereExpression($this->options['group'], $where);
   }
