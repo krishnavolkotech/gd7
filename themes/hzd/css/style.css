@@ -221,6 +221,25 @@ header .block-cust-group-search-block form span.glyphicon-search{
   z-index:10000;  
   margin:0 0 10px 0;   
 }
+@media only screen and (max-width: 600px) {
+form.node-service-profile-form .service-time .form-type-checkbox, 
+form.node-service-profile-edit-form .service-time .form-type-checkbox{
+  width:100% !important;
+}
+form.node-service-profile-form .service-time .service--profile-field,
+form.node-service-profile-edit-form .service-time .service--profile-field{
+ display:inline-block;
+}
+form.node-service-profile-form .service-time .form-type-checkbox,
+form.node-service-profile-form .service-time .control-label,
+form.node-service-profile-form .service-time .container-inline,
+form.node-service-profile-edit-form .service-time .form-type-checkbox,
+form.node-service-profile-edit-form .service-time .control-label,
+form.node-service-profile-edit-form .service-time .container-inline {
+   float:left;
+ margin-right:5px; 
+}
+}
 @media only screen and (min-width: 768px) {
     #block-primarylinks ul ul {
         width: auto !important;
@@ -1063,6 +1082,7 @@ button.button--reset:hover {
     width: 31%;
     float: left;
     margin: 0 10px 10px 0;
+    height:35px;
 }
 .hzd-form-element-auto {
     width: auto;
@@ -3301,6 +3321,9 @@ header .block-cust-group-search-block button {
 }
 span.form-required:after{
     background-image: none;
+}
+.form-required .form-required:after{
+  content:unset !important;
 }
 .form-required:after,
 .form-wrapper .panel-title.form-required:after {
