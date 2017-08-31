@@ -183,6 +183,8 @@ function hzd_preprocess_node(&$variables) {
       $variables['pdf_priview'] = array('#markup' => $urldata); */
   }
   elseif ($variables['node']->getType() == 'quickinfo' && $viewMode == 'mail' && $variables['node']->hasField('field_unique_id')) {
+    $variables['publisher'] = $variables['node']->get('field_author_name')->value;
+    $variables['publishedTime'] = $variables['node']->get('changed')->value;
     $variables['quickinfo_field_unique_id'] = $variables['node']->get('field_unique_id')
         ->getFieldDefinition()
         ->getLabel() . $variables['node']->get('field_unique_id')->value;
