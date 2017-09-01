@@ -638,12 +638,13 @@ class HzdreleasemanagementHelper {
     if ($request->get('release', 0)) {
       $entityQuery->condition('field_earlywarning_release', $request->get('release'));
     }
-    if ($request->get('startdate', '') != '') {
-      $startDate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('startdate', ''), null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
+    if ($request->get('startdate', '') != '' && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $request->get('startdate'))) {
+      $startDate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('startdate', ''), null, ['validate_format' => FALSE])->format('Y-m-d');
       $entityQuery->condition('field_date_deployed', $startDate, '>=');
     }
-    if ($request->get('enddate', '') != '') {
-      $enddate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('enddate', ''), null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
+    if ($request->get('enddate', '') != '' && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $request->get('enddate'))) {
+      $date = $request->get('enddate', '') . ' 23:59:59';
+      $enddate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y H:i:s', $date, null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
       $entityQuery->condition('field_date_deployed', $enddate, '<=');
     }
 

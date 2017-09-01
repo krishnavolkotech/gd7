@@ -57,9 +57,20 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
 
-      if ($route = $collection->get('entity.group_content.delete_form')) {
-          $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdministratorValidation');
-      }
+    if ($route = $collection->get('entity.node.version_history')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    
+    if ($route = $collection->get('node.revision_revert_confirm')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    if ($route = $collection->get('entity.node.revision')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    
+    if ($route = $collection->get('entity.group_content.delete_form')) {
+        $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdministratorValidation');
+    }
 
     if ($route = $collection->get('entity.group_content.collection')) {
       $route->setRequirement('_role', 'administrator');

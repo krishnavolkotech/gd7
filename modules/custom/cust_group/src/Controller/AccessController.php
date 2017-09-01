@@ -87,6 +87,22 @@ class AccessController extends ControllerBase
         return AccessResult::allowed();
     }
 
+    public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if(!is_object($node)) {
+            $node = \Drupal\node\Entity\Node::load($node);
+        }
+        if (is_object($node)) {
+            if ($node->getType() == 'quickinfo' && $node->isPublished()) {
+                return AccessResult::forbidden();
+            }
+            if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
+                return AccessResult::allowed();
+            }
+        }
+        return AccessResult::allowed();   
+    }
+
     public function groupAdministratorValidation(Route $route, RouteMatch $route_match, AccountInterface $user) {
         // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
        // $group_content = $route_match->getRawParameter('group_content');

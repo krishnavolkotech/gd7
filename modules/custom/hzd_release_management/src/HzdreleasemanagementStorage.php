@@ -799,18 +799,18 @@ class HzdreleasemanagementStorage {
     if ($filter_value['releases']) {
       $deployed_releases_node_ids->condition('field_earlywarning_release', $filter_value['releases'], '=');
     }
-    if ($filter_value['filter_startdate']) {
+    if ($filter_value['filter_startdate'] && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $filter_value['filter_startdate'])) {
       $startdate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'], null, ['validate_format' => FALSE])->format('Y-m-d');
 //            $startdate = mktime(0, 0, 0, date('m', $filter_value['filter_startdate']),
 //                date('d', $filter_value['filter_startdate']), date('y', $filter_value['filter_startdate']));
       $deployed_releases_node_ids->condition('field_date_deployed', $startdate, '>=');
 //            pr($startdate);exit;
     }
-    if ($filter_value['filter_enddate']) {
+    if ($filter_value['filter_enddate'] && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $filter_value['filter_enddate'])) {
 //            $enddate = mktime(23, 59, 59,
 //                date('m', $filter_value['filter_enddate']), date('d', $filter_value['filter_enddate']),
 //                date('y', $filter_value['filter_enddate']));
-      $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'], null, ['validate_format' => FALSE])->format('Y-m-d');
+      $endDate = DateTimePlus::createFromFormat('d.m.Y H:i:s|', $filter_value['filter_enddate'] . ' 23:59:59', null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
 //            $deployed_releases_node_ids->condition('field_date_deployed',
 //                array($filter_value['filter_startdate'], $filter_value['filter_enddate']), 'BETWEEN');
       $deployed_releases_node_ids->condition('field_date_deployed', $endDate, '<=');
@@ -1293,11 +1293,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $release_node_ids->condition('field_date', $filter_value['filter_startdate'], '>');
       // $filter_where .= " and field_date_value > ". $start_date;.
     }
-    if ($filter_value['filter_startdate']) {
+    if ($filter_value['filter_startdate'] && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $filter_value['filter_startdate'])) {
       $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'], null, ['validate_format' => FALSE])->getTimestamp();
       $release_node_ids->condition('field_date', $startDate, '>=');
     }
-    if ($filter_value['filter_enddate']) {
+    if ($filter_value['filter_enddate'] && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $filter_value['filter_enddate'])) {
       $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'], null, ['validate_format' => FALSE])->getTimestamp() + 86399;
       $release_node_ids->condition('field_date', $endDate, '<=');
       /* $release_node_ids->condition('field_date',
