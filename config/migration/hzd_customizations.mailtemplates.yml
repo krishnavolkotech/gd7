@@ -1,7 +1,9 @@
 downtimes:
   subject_insert: '[[node:downtime_states]] New [node:downtime_type] ([node:downtime_services])'
   subject_update: '[[node:downtime_states]] [node:downtime_status] [node:downtime_type] ([node:downtime_services])'
-  mail_content: '[node:url:absolute]'
+  subject_cancel: '[[node:downtime_states]] Storniere [node:downtime_type] ([node:downtime_services])'
+  subject_resolve: '[[node:downtime_states]] Behobene [node:downtime_type] ([node:downtime_services])'
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
   mail_footer: "<p>Thi s is Fooetef</p>\r\n"
   mail_view: 1
 problems:
