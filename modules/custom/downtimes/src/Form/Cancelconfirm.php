@@ -168,7 +168,7 @@ class Cancelconfirm extends ConfirmFormBase {
     if(!isset($downtimes_resolve['notifications_content_disable']) || $downtimes_resolve['notifications_content_disable'] != 1) {
       $downtime_node =  \Drupal\node\Entity\Node::load($nid);
       if ($downtime_node instanceof \Drupal\node\Entity\Node){
-        send_downtime_notifications($downtime_node);
+        send_downtime_notifications($downtime_node, 'cancel');
         //exit;
         //capture the notification for the users to send daily and weekly
 //        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');

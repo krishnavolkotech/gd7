@@ -77,6 +77,20 @@ class MailTemplatesForm extends ConfigFormBase {
       '#description' => $this->t('Mail subject when content is updated'),
       '#default_value' => isset($data['subject_update']) ? $data['subject_update'] : NULL,
     );
+    if($this->mailType == 'downtimes'){
+      $form['subject_cancel'] = array(
+        '#type' => 'textfield',
+        '#title' => $this->t('Subject Cancel'),
+        '#description' => $this->t('Mail subject when content is canceled'),
+        '#default_value' => isset($data['subject_cancel']) ? $data['subject_cancel'] : NULL,
+      );
+      $form['subject_resolve'] = array(
+        '#type' => 'textfield',
+        '#title' => $this->t('Subject Resolve'),
+        '#description' => $this->t('Mail subject when content is resolved'),
+        '#default_value' => isset($data['subject_resolve']) ? $data['subject_resolve'] : NULL,
+      );
+    }
     $form['mail_view'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Send details page display as mail content'),
@@ -137,6 +151,8 @@ class MailTemplatesForm extends ConfigFormBase {
     $data = [
       'subject_insert' => $form_state->getValue('subject_insert'),
       'subject_update' => $form_state->getValue('subject_update'),
+      'subject_cancel' => $form_state->getValue('subject_cancel'),
+      'subject_resolve' => $form_state->getValue('subject_resolve'),
       'mail_content' => $form_state->getValue('mail_content')['value'],
       'mail_footer' => $form_state->getValue('mail_footer')['value'],
       'mail_view' => $form_state->getValue('mail_view'),

@@ -810,7 +810,7 @@ class HzdreleasemanagementStorage {
 //            $enddate = mktime(23, 59, 59,
 //                date('m', $filter_value['filter_enddate']), date('d', $filter_value['filter_enddate']),
 //                date('y', $filter_value['filter_enddate']));
-      $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'], null, ['validate_format' => FALSE])->format('Y-m-d');
+      $endDate = DateTimePlus::createFromFormat('d.m.Y H:i:s|', $filter_value['filter_enddate'] . ' 23:59:59', null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
 //            $deployed_releases_node_ids->condition('field_date_deployed',
 //                array($filter_value['filter_startdate'], $filter_value['filter_enddate']), 'BETWEEN');
       $deployed_releases_node_ids->condition('field_date_deployed', $endDate, '<=');

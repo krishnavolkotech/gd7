@@ -643,7 +643,8 @@ class HzdreleasemanagementHelper {
       $entityQuery->condition('field_date_deployed', $startDate, '>=');
     }
     if ($request->get('enddate', '') != '' && preg_match ("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/", $request->get('enddate'))) {
-      $enddate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y|', $request->get('enddate', ''), null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
+      $date = $request->get('enddate', '') . ' 23:59:59';
+      $enddate = \Drupal\Component\Datetime\DateTimePlus::createFromFormat('d.m.Y H:i:s', $date, null, ['validate_format' => FALSE])->format('Y-m-d H:i:s');
       $entityQuery->condition('field_date_deployed', $enddate, '<=');
     }
 

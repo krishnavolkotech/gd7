@@ -68,13 +68,20 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
       $request = \Drupal::request();
       $route = \Drupal::routeMatch()->getRouteObject();
       $title = \Drupal::service('title_resolver')->getTitle($request, $route);
-      $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title->render());
+      if($title instanceof \Drupal\Core\StringTranslation\TranslatableMarkup){
+	  $title = $title->render();
+      }else{
+	  $title = \Drupal::service('renderer')->renderRoot($title);
+      }
+
+      $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title);
 //      pr($title->render());exit;
       //Making the pdf landscaped for a particular route
       if(\Drupal::routeMatch()->getRouteName() == 'hzd_release_management.view_deployed_releases'){
         $print_engine->getPrintObject()->setPaper('2a0', 'landscape');
-        $date = \Drupal::service('date.formatter')->format(REQUEST_TIME, 'hzd_date');
-        $clean_string = 'Eingesetzte-Releases_BpK-'.$date;
+//        $date = \Drupal::service('date.formatter')->format(REQUEST_TIME, 'hzd_date');
+	$date = date('Ymdhis');
+        $clean_string = 'Eingesetzte-Releases_BpK_'.$date;
       }
       $print_engine->addPage($html);
       $print_engine->send("$clean_string.pdf", 0);

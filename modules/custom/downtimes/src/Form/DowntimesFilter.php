@@ -262,7 +262,7 @@ class DowntimesFilter extends FormBase
             '#description' => date($date_format, time()),
             '#states' => [
                 'enabled' => [
-                    ':input[name="time_period"]' => array('value' => 0),
+                    ':input[name="time_period"]' => array('value' => '0'),
                 ]
             ],
 //      '#ajax' => array(
@@ -291,7 +291,7 @@ class DowntimesFilter extends FormBase
             '#description' => date($date_format, time()),
             '#states' => [
                 'enabled' => [
-                    ':input[name="time_period"]' => array('value' => 0),
+                    ':input[name="time_period"]' => array('value' => '0'),
                 ]
             ],
 //      '#ajax' => array(
