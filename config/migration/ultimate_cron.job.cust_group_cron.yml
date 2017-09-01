@@ -1,6 +1,6 @@
 uuid: 658111c9-f146-40fa-a5fb-b8091a558f81
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - cust_group
