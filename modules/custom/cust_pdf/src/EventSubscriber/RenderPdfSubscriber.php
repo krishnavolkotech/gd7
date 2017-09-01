@@ -81,7 +81,7 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
         $print_engine->getPrintObject()->setPaper('2a0', 'landscape');
 //        $date = \Drupal::service('date.formatter')->format(REQUEST_TIME, 'hzd_date');
 	$date = date('Ymdhis');
-        $clean_string = 'Eingesetzte-Releases_BpK-'.$date;
+        $clean_string = 'Eingesetzte-Releases_BpK_'.$date;
       }
       $print_engine->addPage($html);
       $print_engine->send("$clean_string.pdf", 0);
