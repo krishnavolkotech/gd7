@@ -68,7 +68,8 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
       $request = \Drupal::request();
       $route = \Drupal::routeMatch()->getRouteObject();
       $title = \Drupal::service('title_resolver')->getTitle($request, $route);
-      $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title->render());
+      $title = \Drupal::service('renderer')->renderRoot($title);
+      $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title);
 //      pr($title->render());exit;
       //Making the pdf landscaped for a particular route
       if(\Drupal::routeMatch()->getRouteName() == 'hzd_release_management.view_deployed_releases'){
