@@ -12,6 +12,7 @@ namespace Drupal\cust_group\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\Node;
 
@@ -19,7 +20,7 @@ class QuickinfoFilesMigrateController extends FormBase {
   
   public function buildForm(array $form, FormStateInterface $form_state) {
     // TODO: Implement buildForm() method.
-    $form['submit'] = ['#type' => 'submit', '#value' => 'Migrate Quickinfo'];
+    $form['submit'] = ['#type' => 'submit', '#value' => 'Migrate Quickinfo Files'];
     return $form;
   }
   
@@ -56,7 +57,6 @@ class QuickinfoFilesMigrateController extends FormBase {
   }
   
   public function updateQuickinfo($quickinfos, $context) {
-    $db = \Drupal::database();
     foreach ($quickinfos as $quickinfo) {
       $node = Node::load($quickinfo);
       
@@ -76,44 +76,43 @@ class QuickinfoFilesMigrateController extends FormBase {
       
       foreach ($files as $file) {
         if (!in_array($file, $attachedFiles)) {
-          /*$db->insert('node__upload')
-            ->fields([
-              'bundle' => 'quickinfo',
-              'deleted' => 0,
-              'entity_id' => $node->id(),
-              'revision_id' => $node->getRevisionId(),
-              'langcode' => 'de',
-              'delta' => $i++,
-              'upload_target_id' => $file,
-              'upload_display' => 1,
-              'upload_description' => ''
-            ])
-            ->execute();
-          echo $node->id();
-          exit;*/
+          
           $node->revision = FALSE;
-          $time = $node->getChangedTime();
-//          $node->setChangedTime($time);
+          $time = $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->getChangedTime();
+          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->setChangedTime($time);
           
           $node->upload->appendItem([
             'target_id' => $file,
             'display' => 1,
             'description' => '',
           ]);
-//          $node->set('changed', $time);
+          $node->auto_nodetitle_applied = 1;
           $node->save();
-          $db->update('node_field_revision')
-            ->fields(['changed' => $time])
-            ->condition('vid', $node->getRevisionId())
-            ->execute();
-          $db->update('node_field_data')
-            ->fields(['changed' => $time])
-            ->condition('vid', $node->getRevisionId())
-            ->execute();
+          //Changed timestamp to be retained.
+          $node->revision = FALSE;
+          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->setChangedTime($time);
+          $node->save();
         }
       }
       
+      
     }
+    $context['message'] = 'Attaching Quickinfo files';
+  }
+  
+  public function finishedCallBack($success, $results, $operations){
+    // The 'success' parameter means no fatal PHP errors were detected. All
+    // other error management should be handled using 'results'.
+    if ($success) {
+      $message = \Drupal::translation()->formatPlural(
+        count($results),
+        'One Node processed.', '@count file processed.'
+      );
+    }
+    else {
+      $message = t('Finished with an error.');
+    }
+    drupal_set_message($message);
   }
   
   
