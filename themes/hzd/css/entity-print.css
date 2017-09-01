@@ -419,7 +419,7 @@ table.incident thead tr{
 }
 .pdf-content .ckeditor-custom-wrapper{
   width:100% !important;
-  display:inline-block;
+  display:block;
 }
 table.incident caption h2,
 table.maintenance caption h2 {
