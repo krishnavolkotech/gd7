@@ -1,5 +1,5 @@
 problem_management.read_problem_csv:
-  path: 'admin/import-problems'
+  path: '/import-problems'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ReadexcelController::read_problem_csv'
     _title: 'Import Problems'
