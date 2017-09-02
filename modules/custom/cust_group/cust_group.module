@@ -354,14 +354,15 @@ function send_notifications($entity, $mails, $isNew) {
   $mailManager = \Drupal::service('plugin.manager.mail');
   $module = 'cust_group';
   $key = 'immediate_notifications';
-  
-  $mailContent = getNodeMailContentFromConfig($entity, $isNew ? 'insert' : 'update');
-  $params['subject'] = $mailContent['subject'];
-  $params['message'] = $mailContent['body'];
 //  $params['message'] = $html;
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
   foreach ($mails as $to) {
+    $data['user'] = user_load_by_mail($to);
+    $data['node'] = $entity;
+    $mailContent = getNodeMailContentFromConfig($data, $isNew ? 'insert' : 'update');
+    $params['subject'] = $mailContent['subject'];
+    $params['message'] = $mailContent['body'];
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
   }
 }

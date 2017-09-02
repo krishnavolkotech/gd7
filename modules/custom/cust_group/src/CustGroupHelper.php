@@ -10,6 +10,7 @@ namespace Drupal\cust_group;
 
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Description of CustGroupHelper
@@ -17,7 +18,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
  * @author sandeep
  */
 class CustGroupHelper {
-
+  
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
     $node = \Drupal\node\Entity\Node::load($nodeId);
@@ -34,53 +35,58 @@ class CustGroupHelper {
 //    exit;
     if (!empty($types)) {
       $groupContentIds = \Drupal::entityQuery('group_content')
-              ->condition('type', $types, 'IN')
-              ->condition('entity_id', $nodeId)
-              ->execute();
-
-      if (!empty($groupContentIds))
+        ->condition('type', $types, 'IN')
+        ->condition('entity_id', $nodeId)
+        ->execute();
+      
+      if (!empty($groupContentIds)) {
         return GroupContent::load(reset($groupContentIds));
+      }
     }
-    return null;
+    return NULL;
   }
-
-  static function getGroupFromRouteMatch() {
+  
+  public static function getGroupFromRouteMatch() {
     $routeMatch = \Drupal::routeMatch();
     $group = $routeMatch->getParameter('group');
     $node = $routeMatch->getParameter('node');
-    if(!is_object($node)) {
-        $node = \Drupal\node\Entity\Node::load($node);
+    
+    if (!empty($node) && !$node instanceof Node) {
+      $node = Node::load($node);
     }
     if (!empty($node) && empty($group)) {
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       if (!empty($groupContent)) {
         $group = $groupContent->getGroup();
       }
-    } elseif ($term = $routeMatch->getParameter('taxonomy_term')) {
+    }
+    elseif ($term = $routeMatch->getParameter('taxonomy_term')) {
       $storage = \Drupal::service('entity_type.manager')
-              ->getStorage('taxonomy_term');
+        ->getStorage('taxonomy_term');
       $parents = $storage->loadParents($term->id());
 //        pr($parents);exit;
       if ($routeMatch->getRouteName() == 'forum.page') {
         if (empty($parents)) {
           $parents = $term;
-        } else {
+        }
+        else {
           $parents = reset($parents);
         }
         $group = \Drupal::service('entity_type.manager')
-                ->getStorage('group')
-                ->loadByProperties(['field_forum_containers' => $parents->id()]);
-      } elseif ($routeMatch->getRouteName() == 'entity.taxonomy_term.canonical') {
+          ->getStorage('group')
+          ->loadByProperties(['field_forum_containers' => $parents->id()]);
+      }
+      elseif ($routeMatch->getRouteName() == 'entity.taxonomy_term.canonical') {
         if (!(reset($parents) instanceof \Drupal\taxonomy\Entity\Term)) {
           return FALSE;
         }
         $group = \Drupal::service('entity_type.manager')
-                ->getStorage('group')
-                ->loadByProperties(['label' => reset($parents)->label()]);
+          ->getStorage('group')
+          ->loadByProperties(['label' => reset($parents)->label()]);
       }
       $group = reset($group);
     }
     return $group;
   }
-
+  
 }

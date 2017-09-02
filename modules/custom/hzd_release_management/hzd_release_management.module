@@ -364,10 +364,13 @@ function send_release_notifications($entity,$action = 'update') {
   // Get immediate notifications user mails.
   $result = hzd_get_immediate_notification_user_mails($service_id, 'release');
   if (is_array($result) && count($result) > 0) {
-    $mailContent = getNodeMailContentFromConfig($entity,$action);
+    
     foreach ($result as $values) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
   }
@@ -382,18 +385,21 @@ function send_downtime_notifications($entity, $action = 'update') {
     ->condition('d.downtime_id', $entity->id(), '=')
     ->execute()
     ->fetchField();
-  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+//  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
   // Get immediate notifications user mails.
   $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
-  $subjectKey = 'subject_' . $action;
+//  $subjectKey = 'subject_' . $action;
 
   
   if (is_array($result) && count($result) > 0) {
-    $mailContent = getNodeMailContentFromConfig($entity,$action);
     foreach ($result as $values) {
       $body = [];
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+//      pr($data['user']);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
   }
@@ -410,10 +416,13 @@ function send_problem_notifications($entity, $action = 'update') {
   $result = hzd_get_immediate_notification_user_mails($service_id, 'problem');
   if (is_array($result) && count($result) > 0) {
     //Fetching the mail body of a problem
-    $mailContent = getNodeMailContentFromConfig($entity,$action);
     foreach ($result as $values) {
+      //@todo user object has to be passed here for notifications with user.
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -421,34 +430,34 @@ function send_problem_notifications($entity, $action = 'update') {
 }
 
 
-function getNodeMailContentFromConfig($entity, $action){
-  if($entity->getEntityTypeId() == 'group'){
+function getNodeMailContentFromConfig($data, $action){
+  if($data['node']->getEntityTypeId() == 'group'){
     $type = 'group';
-  }elseif(in_array($entity->bundle(),['event','forum','page','faqs'])){
+  }elseif(in_array($data['node']->bundle(),['event','forum','page','faqs'])){
     $type = 'group_content';
   }else{
-    $type = $entity->bundle();
+    $type = $data['node']->bundle();
   }
   $config = \Drupal::config('hzd_customizations.mailtemplates')
     ->get($type);
-  $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder($data['node']->getEntityTypeId());
   $token_service = \Drupal::token();
   // Replace the token for subject.
   $token_sub = $config['subject_' . $action];
-  $subject = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
+  $subject = $token_service->replace($token_sub, array($data['node']->getEntityTypeId() => $data['node']));
   if ($config['mail_view']) {
-    $body[] = $view_builder->view($entity, 'mail', 'de');
+    $body[] = $view_builder->view($data['node'], 'mail', 'de');
     $body[] = [
-      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $entity))
+      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
     ];
   }
   else {
     $token_body = $config['mail_content'];
     $body[] = [
-      '#markup' => $token_service->replace($token_body, array($entity->getEntityTypeId() => $entity))
+      '#markup' => $token_service->replace($token_body, array($data['node']->getEntityTypeId() => $data['node'],'user'=>$data['user']))
     ];
     $body[] = [
-      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $entity))
+      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
     ];
   }
   $message_text = \Drupal::service('renderer')->render($body);
@@ -463,11 +472,14 @@ function send_pf_notifications($entity,$action = 'update') {
 //  pr($result);exit;
   if (is_array($result) && count($result) > 0) {
 //    pr($result);exit;
-    $mailContent = getNodeMailContentFromConfig($entity,$action);
+
 //    pr($result);exit;
     foreach ($result as $values) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
   }
@@ -484,10 +496,12 @@ function send_earlywarning_notifications($entity,$action = 'update') {
   // Get immediate notifications user mails.
   $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
   if (is_array($result) && count($result) > 0) {
-    $mailContent = getNodeMailContentFromConfig($entity,$action);
     foreach ($result as $values) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -714,6 +728,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   $params['preference'] = $preference ? $preference : 'html';
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
+  $token_service = \Drupal::token();
 //    $i = 0;
   foreach (explode(',', trim($to, ',')) as $userMail) {
     $userEntity = \Drupal::entityTypeManager()->getStorage('user')
@@ -721,6 +736,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
     if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
       && !hzd_user_inactive_status_check(reset($userEntity)->id())
     ) {
+      $params['message'] = $token_service->replace( $params['message'], array('user' => $userEntity));
       $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
   }

@@ -10,6 +10,7 @@ namespace Drupal\cust_group\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\group\Entity\Group;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 
 /**
  * Provides a 'cust_group' block.
@@ -72,8 +73,8 @@ class GroupMenuBlock extends BlockBase {
       }
       $routeMatch = \Drupal::routeMatch();
       $node = $routeMatch->getParameter('node');
-      if(!is_object($node)) {
-          $node = \Drupal\node\Entity\Node::load($node);
+      if (!empty($node) && !$node instanceof Node) {
+        $node = Node::load($node);
       }
       if($node && $node->getType() == 'quickinfo' && $node->isPublished()) {
           $group = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
