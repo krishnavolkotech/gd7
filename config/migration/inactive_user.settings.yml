@@ -1,10 +1,10 @@
 inactive_user_notify: '0'
 inactive_user_notify_admin: '0'
-inactive_user_notify_text: 'Hello %username,\n\n  We haven''t seen you at %sitename since %lastaccess, and we miss you!  Please come back and visit us soon at %siteurl.\n\nSincerely,\n  %sitename team'
+inactive_user_notify_text: "Guten Tag %username,\r\n\r\nleider konnten wir Sie seit %lastaccess nicht mehr im %sitename begrüßen! Bitte besuchen Sie uns nach Erhalt dieser Email innerhalb der nächsten drei Monate wieder unter %siteurl und aktualisieren Sie ggf. Ihr Benutzerprofil. Andernfalls wird Ihr Account gesperrt, der Empfang von Benachrichtigungsemails aus dem Betriebsportal KONSENS ist dann nicht mehr möglich.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
 inactive_user_auto_block_warn: '0'
-inactive_user_block_warn_text: 'Hello %username,\n\n  We haven''t seen you at %sitename since %lastaccess, and we miss you!  This automatic message is to warn you that your account will be disabled in %period unless you come back and visit us before that time.\n\n  Please visit us at %siteurl.\n\nSincerely,\n  %sitename team'
-inactive_user_auto_block: '31536000'
-inactive_user_block_notify_text: 'Hello %username,\n\n  This automatic message is to notify you that your account on %sitename has been automatically disabled due to no activity for more than %period.\n\n  Please visit us at %siteurl to have your account re-enabled.\n\nSincerely,\n  %sitename team'
+inactive_user_block_warn_text: "Guten Tag %username,\r\nSie haben sich seit %lastaccess nicht mehr im %sitename angemeldet. Mit dieser Nachricht möchten wir Sie darauf hinweisen, dass Ihr Account in %period deaktiviert werden wird, sofern Sie sich nicht vor Ablauf dieser Frist erneut auf %siteurl anmelden.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
+inactive_user_auto_block: '0'
+inactive_user_block_notify_text: "Guten Tag %username,\r\ndiese Nachricht informiert Sie darüber, dass Ihr Account im %sitename deaktiviert wurde, da er seit %period nicht mehr genutzt wurde. Ihre Benutzereinstellungen wurden erhalten. Um Ihren Account wieder nutzen zu können, müssen Sie sich mit Ihrem bekannten Benutzernamen und Passwort erneut am %siteurl anmelden.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
 inactive_user_notify_block: 1
 inactive_user_notify_block_admin: 1
 inactive_user_delete_warn_text: null
@@ -16,6 +16,6 @@ inactive_user_notify_delete_admin: 1
 inactive_user_auto_delete_warn: null
 _core:
   default_config_hash: tk7Ljnk3c1LFBgG3JuMZw_ifzsgUCLlhZtxU-co0vvI
-inactive_user_admin_email: denis.roy@hzd.hessen.de
+inactive_user_admin_email: betriebsportal-konsens@hzd.hessen.de
 inactive_user_timestamp: 1480053191
 langcode: de

@@ -55,8 +55,8 @@ display:
           id: 0
           total_pages: 0
           tags:
-            previous: '‹ Previous'
-            next: 'Weiter >'
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
           expose:
@@ -512,8 +512,8 @@ display:
           type: boolean
           settings:
             format: boolean
-            format_custom_true: 'TRUE'
-            format_custom_false: 'FALSE'
+            format_custom_true: Active
+            format_custom_false: Inactive
           group_column: value
           group_columns: {  }
           group_rows: true

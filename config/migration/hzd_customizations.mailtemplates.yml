@@ -1,53 +1,67 @@
 downtimes:
   subject_insert: '[[node:downtime_states]] Neue [node:downtime_type] ([node:downtime_services])'
   subject_update: '[[node:downtime_states]] Aktualisierte [node:downtime_type] ([node:downtime_services])'
-  subject_cancel: '[[node:downtime_states]] Storniere [node:downtime_type] ([node:downtime_services])'
+  subject_cancel: '[[node:downtime_states]] Stornierte [node:downtime_type] ([node:downtime_services])'
   subject_resolve: '[[node:downtime_states]] Behobene [node:downtime_type] ([node:downtime_services])'
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>Thi s is Fooetef</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 problems:
   subject: Hellooooooooooooo
   mail_content: '[node:created][node:created]'
 quickinfo:
-  subject_insert: '[[node:field_author_state]] RZ-Schnellinfo Nr.[node:field_unique_id] - [node:field_custom_title]'
-  subject_update: '[[node:field_author_state]] RZ-Schnellinfo Nr.[node:field_unique_id] - [node:field_custom_title]'
-  mail_content: '[node:url:absolute]'
-  mail_footer: "<p>=============</p>\r\n\r\n<p>Foooorrrrrrrrr</p>\r\n"
+  subject_insert: '[[node:field_author_state]] RZ-Schnellinfo Nr. [node:field_unique_id] - [node:field_custom_title]'
+  subject_update: '[[node:field_author_state]] RZ-Schnellinfo Nr. [node:field_unique_id] - [node:field_custom_title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 planning_files:
-  subject_insert: '[Release Management] New [node:content-type] : [node:title]'
-  subject_update: '[Release Management] Updated [node:content-type] : [node:title]'
-  mail_content: '[node:url:absolute]'
-  mail_footer: "<p>================</p>\r\n\r\n<p>This is footer</p>\r\n"
+  subject_insert: '[Release Management] Neue Planungsdatei: [node:title]'
+  subject_update: '[Release Management] Aktualisierte Planungsdatei: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 release:
-  subject_insert: '[[node:field_relese_services]] New Release : [node:title]'
-  subject_update: '[[node:field_relese_services]] Updated Release : [node:title]'
-  mail_content: '[node:url:absolute]'
-  mail_footer: "<p>=====================</p>\r\n\r\n<p>This is Footer</p>\r\n"
-  mail_view: 0
+  subject_insert: '[[node:field_relese_services]] Neues Release: [node:title]'
+  subject_update: '[[node:field_relese_services]] Aktualisiertes Release: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_view: 1
 problem:
-  subject_insert: '[[node:field_services]] New Problem : [node:title]'
-  subject_update: '[[node:field_services]] Updated Problem : [node:title]'
-  mail_content: '[node:url:absolute]'
-  mail_footer: "<p>==========================================</p>\r\n\r\n<p>This is footer</p>\r\n"
-  mail_view: 0
+  subject_insert: '[[node:field_services]] Neues Problem: [node:title]'
+  subject_update: '[[node:field_services]] Aktualisiertes Problem: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_view: 1
 group_content:
-  subject_insert: '[[node:content_group_title]] New [node:content-type]: [node:title]'
-  subject_update: '[[node:content_group_title]] Updated [node:content-type]: [node:title]'
-  mail_content: 'Group Content Updated again'
-  mail_footer: "<p>===================</p>\r\n\r\n<p>This is Foortr</p>\r\n"
+  subject_insert: '[[node:content_group_title]] Neu - [node:content-type]: [node:title]'
+  subject_update: '[[node:content_group_title]] Aktualisiert - [node:content-type]: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>Group Content Updated again</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 early_warnings:
-  subject_insert: '[[node:field_release_service]] New Early Warning : [node:title]'
-  subject_update: '[[node:field_release_service]] Updated Early Warning : [node:title]'
-  mail_content: '[node:url:absolute]'
-  mail_footer: "<p>===============</p>\r\n\r\n<p>This is Footer</p>\r\n"
+  subject_insert: '[[node:field_release_service]] Neue Early Warning: [node:title]'
+  subject_update: '[[node:field_release_service]] Aktualisierte Early Warning: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[node:url:absolute]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 group:
-  subject_insert: '[[group:title]] New Group : [group:title]'
-  subject_update: '[[group:title]] Updated Group : [group:title]'
-  mail_content: '[group:url]'
-  mail_footer: "<p>================</p>\r\n\r\n<p>This is footer</p>\r\n"
-  mail_view: 0
+  subject_insert: '[[group:title]] Neue Gruppe'
+  subject_update: '[[group:title]] Aktualisierte Gruppe'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: "<p>[group:url]</p>\r\n"
+  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[site:url]/users/[user:account-name]/notifications\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_view: 1

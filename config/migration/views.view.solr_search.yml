@@ -54,10 +54,10 @@ display:
           id: 0
           total_pages: null
           tags:
-            previous: '‹ Previous'
-            next: 'Weiter >'
-            first: '« Anfang'
-            last: 'Ende »'
+            previous: Vorherige
+            next: Nächste
+            first: Erste
+            last: Letzte
           expose:
             items_per_page: false
             items_per_page_label: 'Elemente pro Seite'
@@ -615,10 +615,11 @@ display:
       display_extenders: {  }
       use_ajax: false
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - url
         - url.query_args
       tags:
         - 'config:field.storage.node.body'
@@ -628,13 +629,15 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: suche
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - url
         - url.query_args
       tags:
         - 'config:field.storage.node.body'

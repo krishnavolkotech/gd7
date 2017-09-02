@@ -42,8 +42,8 @@ display:
         options:
           items_per_page: 50
           tags:
-            previous: '‹ Previous'
-            next: 'Weiter >'
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
       style:
@@ -279,8 +279,8 @@ display:
           type: boolean
           settings:
             format: custom
-            format_custom_true: Published
-            format_custom_false: Unpublished
+            format_custom_true: Veröffentlicht
+            format_custom_false: Unveröffentlicht
           plugin_id: field
           entity_type: node
           entity_field: status

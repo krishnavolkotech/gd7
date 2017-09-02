@@ -55,8 +55,8 @@ display:
           id: 0
           total_pages: 0
           tags:
-            previous: '‹ Previous'
-            next: 'Weiter >'
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
           expose:
             items_per_page: false
             items_per_page_label: 'Elemente pro Seite'
@@ -796,8 +796,8 @@ display:
           id: 0
           total_pages: 0
           tags:
-            previous: '‹ Previous'
-            next: 'Weiter >'
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
           expose:
             items_per_page: false
             items_per_page_label: 'Elemente pro Seite'
