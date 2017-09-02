@@ -439,7 +439,7 @@ function getNodeMailContentFromConfig($entity, $action){
   if ($config['mail_view']) {
     $body[] = $view_builder->view($entity, 'mail', 'de');
     $body[] = [
-      '#markup' => $config['mail_footer']
+      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $entity))
     ];
   }
   else {
