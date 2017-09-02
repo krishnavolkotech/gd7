@@ -68,7 +68,7 @@ hzd_release_management.release_management_settings:
 #     'access arguments' => array('administer problems'),
 
 hzd_release_management.read_release_csv:
-  path: 'admin/import-releases'
+  path: 'import-releases'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\ReadexcelController::read_release_csv'
     _title: 'Import Releases'
