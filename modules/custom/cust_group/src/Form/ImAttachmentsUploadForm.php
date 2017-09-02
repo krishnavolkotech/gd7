@@ -37,7 +37,7 @@ class ImAttachmentsUploadForm extends FormBase {
     );
     $form['upload_file'] = array(
         '#type' => 'managed_file',
-        '#title' => 'Upload file',
+        '#title' => t('File'),
         '#upload_location' => 'private://',
         '#upload_validators' => $validators,
 //        '#description' => 'jsdbfjksdbfjbsdkjfsj',

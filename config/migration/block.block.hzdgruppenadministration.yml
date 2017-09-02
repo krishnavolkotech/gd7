@@ -18,7 +18,7 @@ third_party_settings:
 id: hzdgruppenadministration
 theme: hzd
 region: sidebar_first
-weight: -24
+weight: -27
 provider: null
 plugin: hzd_group_admin
 settings:
