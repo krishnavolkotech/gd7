@@ -431,7 +431,7 @@ function getNodeMailContentFromConfig($entity, $action){
   }
   $config = \Drupal::config('hzd_customizations.mailtemplates')
     ->get($type);
-  $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
   $token_service = \Drupal::token();
   // Replace the token for subject.
   $token_sub = $config['subject_' . $action];
