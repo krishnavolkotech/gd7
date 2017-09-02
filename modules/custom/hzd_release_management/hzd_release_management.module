@@ -736,7 +736,6 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
     if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
       && !hzd_user_inactive_status_check(reset($userEntity)->id())
     ) {
-      $params['message'] = $token_service->replace( $params['message'], array('user' => $userEntity));
       $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
   }
