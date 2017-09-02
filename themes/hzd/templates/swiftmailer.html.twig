@@ -33,9 +33,20 @@
 <html>
 <head>
 <style type="text/css">
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url({{ base_url }}/themes/hzd/fonts/roboto/roboto-500-normal-ext.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
 table tr td {
-  font-family: Arial;
-  font-size: 12px;
+    font-family: Roboto, sans-serif !important;
+    padding: 0;
+    margin: 0;
+    color: #222 !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
 }
 .quickinfo ul,
 .quickinfo ol,
@@ -45,32 +56,30 @@ table tr td {
   padding-left: 0 !important;
   width: 100%;
 }
-.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
-.quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
+.field--type-file table tbody tr td .hzd-file-created,
+.field--type-file table tbody tr td .file-size{
   display:none;
 }
-.quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
+.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
 }
-.quickinfo .field--name-upload.field--type-file table,
-.quickinfo table {
+.field--type-file table {
   border-collapse: collapse;
   color: #000;
   font-size: 11px;
   line-height: 20px;
   margin-bottom: 10px;
   width: 100% !important;
-}
-.quickinfo table{
   border:1px solid #000;
 }
-.quickinfo .field--name-upload.field--type-file table tr.odd {
+
+.field--type-file table tr.odd {
   background-color: #e9f3fb;
 }
-.quickinfo .field--name-upload.field--type-file table thead {
+.field--type-file table thead {
     background: #f5f5f5 none repeat scroll 0 0;
 }
-.quickinfo table tbody tr td {
+.field--type-file table tbody tr td {
     border: 1px solid rgb(212, 231, 245);
     border-radius: 0;
     line-height: 150%;
@@ -114,7 +123,7 @@ article.quickinfo .field .field--items {
   margin: 0 0 3px 0%;
   padding: 0;
 }
-.quickinfo .field--name-upload.field--type-file table thead tr th {
+.field--type-file table thead tr th {
   border-left: 1px solid rgb(212,231,245);
   background: #d4eaf5;
   text-align: left;
@@ -124,19 +133,191 @@ article.quickinfo .field .field--items {
   text-indent: 7px;
   border-radius: 0 !important;
 }
-.quickinfo .field--name-upload.field--type-file table tbody tr.odd td {
+.field--type-file table tbody tr.odd td {
   background-color: #e9f3fb;
 }
-.quickinfo .field--name-upload.field--type-file table tbody tr.even td {
+.field--type-file table tbody tr.even td {
   background-color: #fff;
 }
-.quickinfo .field--name-upload.field--type-file table,
-.quickinfo .field--name-upload.field--type-file table tbody tr{
+.field--type-file table,
+.field--type-file table tbody tr{
   border:0;
 }
 table.header-table tr td{
   padding:10px;
 }
+h3 {
+    font-size: 16px !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #004070 !important;
+    font-weight: 500 !important;
+}
+h1 {
+    font-size: 20px !important;
+}
+h2 {
+    font-size: 18px !important;
+}
+h3 {
+    font-size: 16px !important;
+}
+h4, h5, h6 {
+    font-size: 14px !important;
+}
+strong {
+    font-weight: 700;
+}
+a {
+    color: #0084bf;
+}
+p {
+    margin: 0 0 10px;
+}
+p:last-child {
+    margin-bottom: 0 !important;
+    box-shadow: none;
+}
+article.downtimes .downtime-view-wrapper {
+    background: #f5f7fa;
+    padding: 20px;
+    width: 100%;
+    float: left;
+    margin: 0px;
+    text-align: left;
+}
+article.downtimes .Incident {
+    width: 100%;
+    float: left;
+    margin-bottom: 10px;
+}
+article.downtimes .Incident .downtimes_title {
+    font-weight: 600;
+    float: left;
+    width: 24%;
+    margin: 0 2% 3px 0;
+}
+article.downtimes .Incident .downtimes_content {
+    width: 73%;
+    float: left;
+}
+article.downtimes .downtime-view-history {
+    width: 100%;
+    float: left;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #004077;
+}
+article.downtimes h3 {
+    width: 100%;
+    float: left;
+    margin: 10px 0 !important;
+}
+article.downtimes ul {
+    width: 100%;
+    margin: 0 0 0 17px !important;
+    padding: 0 !important;
+}
+article.downtimes ol li, article.downtimes ul li {
+    width: 100%;
+    float: left;
+    margin: 0 1% 10px 0;
+    padding: 0;
+}
+article.downtimes .form-group {
+    width: 100%;
+    float: left;
+}
+
+
+
+.problems-backto-search {
+  display: none;
+}
+table.problem_info {
+    width: 100% !important;
+    float: left;
+    margin: 10px 0 30px 0 !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+    border-collapse: inherit !important;
+}
+table.problem_info tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+table.problem_info tr td {
+      padding: 8px 4px;
+}
+
+
+.field--label-inline {
+    width: 100%;
+    float: left;
+    background: #fff;
+    line-height: 22px;
+    padding: 0% 0% 1% 0%;
+    border: none;
+}
+.field--label-inline .field--label, 
+.field--label-inline .field--item {
+    width: auto !important;
+    float: left;
+}
+.field--label-inline .field--label {
+  padding-right: 0.5em;
+}
+.field--label {
+    font-weight: 700;
+}
+.field--label-inline .field--label::after {
+    content: ':';
+}
+.field--label-inline .field--item {
+    margin-left: 0 !important;
+}
+
+.table-responsive {
+    width: 100%;
+    float: left;
+}
+.field--type-text-long ul {
+    width: 100%;
+    float: left;
+    padding-left: 20px;
+}
+ ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+article .quickedit-field h3 {
+    font-size: 16px !important;
+}
+.field--name-body.field--type-text-with-summary ul li {
+    background: url({{ base_url }}/themes/hzd/images/list-bullet.jpg) left 7px no-repeat;
+    list-style-type: none;
+    padding-left: 16px;
+    width: 100%;
+    float: left;
+}
+h1.page-header {
+  margin: 0 0 20px 0 !important;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 9px;
+}
+.ckeditor-custom-wrapper table {
+    border-spacing: 0;
+    float: left;
+    margin: 10px 0 30px 0 !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+    border-collapse: inherit !important;
+}
+article.page .content table {
+    width: 100% !important;
+}
+
 
 </style>
   <link type="text/css" rel="stylesheet" href="{{ base_url }}/themes/hzd/css/style.css"/>
