@@ -357,14 +357,14 @@ class HzdEarlyWarnings extends ControllerBase {
     }
     if (!$page_limit) {
       
-      $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
-      $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
-      $releasesNewFinal = $releasesNewFinal->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
-      $releasesNewFinal->fields('nfer', ['field_earlywarning_release_value']);
-      $releasesNewFinal->groupBy('field_earlywarning_release_value')
-        ->orderBy('nfd.changed', 'desc');
-      $results = $releasesNewFinal->execute()
-        ->fetchCol();
+//      $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
+//      $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
+//      $releasesNewFinal = $releasesNewFinal->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+//      $releasesNewFinal->fields('nfer', ['field_earlywarning_release_value']);
+//      $releasesNewFinal->groupBy('field_earlywarning_release_value')
+//        ->orderBy('nfd.changed', 'desc');
+//      $results = $releasesNewFinal->execute()
+//        ->fetchCol();
   
       $subQuery = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');;
       $subQuery->fields('nfer', ['field_earlywarning_release_value']);
@@ -427,8 +427,8 @@ class HzdEarlyWarnings extends ControllerBase {
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
         $release = \Drupal\node\Entity\Node::load($value);
-        $warnings_lastpost = HzdEarlyWarnings::get_early_warning_lastposting_count(
-          $value);
+//        $warnings_lastpost = HzdEarlyWarnings::get_early_warning_lastposting_count(
+//          $value);
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {

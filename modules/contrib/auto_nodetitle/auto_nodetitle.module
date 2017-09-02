@@ -84,7 +84,7 @@ function auto_nodetitle_set_title(&$node) {
   $title   = $node->getTitle();
   $pattern = \Drupal::config('auto_nodetitle.node.' . $type)->get('pattern') ?: '';
   if (trim($pattern)) {
-    $node->changed = REQUEST_TIME;
+//    $node->changed = $node->getChangedTime()?:REQUEST_TIME;
     $title = _auto_nodetitle_patternprocessor($pattern, $node);
   }
   elseif ($node->nid) {

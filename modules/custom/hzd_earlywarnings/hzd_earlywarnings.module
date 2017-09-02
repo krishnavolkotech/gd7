@@ -140,10 +140,12 @@ function send_earlywarning_comment_notifications($entity) {
       $comment_body = $commententity->get('comment_body')->value;*/
   
   if (is_array($result) && count($result) > 0) {
-    $mailContent = getNodeMailContentFromConfig($earlywarning, 'update');
     foreach ($result as $values) {
       $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
       $mail = $values->mail;
+      $data['node'] = $earlywarning;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,'update');
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
   }
