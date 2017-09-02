@@ -1,6 +1,6 @@
 uuid: b2c57a1f-f39d-4e10-bd39-6aea28f2e90b
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - cust_user
