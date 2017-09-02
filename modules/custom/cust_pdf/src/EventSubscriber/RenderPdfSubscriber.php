@@ -80,7 +80,7 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
       if(\Drupal::routeMatch()->getRouteName() == 'hzd_release_management.view_deployed_releases'){
         $print_engine->getPrintObject()->setPaper('2a0', 'landscape');
 //        $date = \Drupal::service('date.formatter')->format(REQUEST_TIME, 'hzd_date');
-	$date = date('Ymdhis');
+	$date = date('YmdHis');
         $clean_string = 'Eingesetzte-Releases_BpK_'.$date;
       }
       $print_engine->addPage($html);
