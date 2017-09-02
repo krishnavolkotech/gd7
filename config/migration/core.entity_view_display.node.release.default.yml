@@ -49,7 +49,7 @@ content:
   field_release_type:
     label: inline
     weight: 1
-    type: list_key
+    type: list_default
     settings: {  }
     third_party_settings: {  }
     region: content
