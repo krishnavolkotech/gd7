@@ -3,7 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_display.comment.comment.default
     - field.field.node.release.comment
     - field.field.node.release.field_date
     - field.field.node.release.field_documentation_link
@@ -15,9 +14,8 @@ dependencies:
     - field.field.node.release.upload
     - node.type.release
   module:
-    - comment
+    - cust_group
     - entity_print
-    - file
     - options
     - text
     - user
@@ -29,15 +27,6 @@ targetEntityType: node
 bundle: release
 mode: default
 content:
-  comment:
-    label: hidden
-    type: comment_default
-    weight: 6
-    settings:
-      pager_id: 0
-      view_mode: default
-    third_party_settings: {  }
-    region: content
   entity_print_view:
     weight: 0
     settings: {  }
@@ -45,30 +34,14 @@ content:
     region: content
   field_date:
     label: inline
-    weight: 3
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    region: content
-  field_documentation_link:
-    label: inline
-    weight: 8
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-    region: content
-  field_link:
-    label: inline
-    weight: 7
-    type: basic_string
+    weight: 2
+    type: date_from_timestamp_formatter
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release_comments:
     label: inline
-    weight: 4
+    weight: 3
     type: text_default
     settings: {  }
     third_party_settings: {  }
@@ -82,34 +55,21 @@ content:
     region: content
   field_relese_services:
     label: inline
-    weight: 2
+    weight: 0
     type: entity_reference_label
     settings:
       link: true
     third_party_settings: {  }
     region: content
-  field_status:
-    label: inline
-    weight: 5
-    type: basic_string
-    settings: {  }
-    third_party_settings: {  }
-    region: content
-  links:
-    weight: 9
-    settings: {  }
-    third_party_settings: {  }
-    region: content
-  upload:
-    label: hidden
-    settings: {  }
-    type: file_default
-    weight: 10
-    third_party_settings: {  }
-    region: content
 hidden:
+  comment: true
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_documentation_link: true
+  field_link: true
+  field_status: true
   langcode: true
+  links: true
+  upload: true
