@@ -721,7 +721,7 @@ function generate_quickinfo_pdf($node = NULL) {
 //  $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $files = $node->get('upload')->referencedEntities();
   $siteMail = \Drupal::config('system.site')->get('mail');
-//  $data['node'] = $node;
+  $data['node'] = $node;
 //  $mailContent = getNodeMailContentFromConfig($node, 'update');
   
   
