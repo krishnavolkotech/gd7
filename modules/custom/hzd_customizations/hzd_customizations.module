@@ -721,10 +721,11 @@ function generate_quickinfo_pdf($node = NULL) {
 //  $html = \Drupal::service('renderer')->renderRoot($renderarray);
   $files = $node->get('upload')->referencedEntities();
   $siteMail = \Drupal::config('system.site')->get('mail');
-  $mailContent = getNodeMailContentFromConfig($node, 'update');
-  $data['node'] = $node;
+//  $data['node'] = $node;
+//  $mailContent = getNodeMailContentFromConfig($node, 'update');
   
-  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
+  
+//  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
   $params = [
       'headers' => [
           'Content-Type' => 'text/html',
