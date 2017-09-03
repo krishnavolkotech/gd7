@@ -11,7 +11,7 @@ id: node.release.field_release_type
 field_name: field_release_type
 entity_type: node
 bundle: release
-label: 'Release Type'
+label: Status
 description: ''
 required: false
 translatable: true

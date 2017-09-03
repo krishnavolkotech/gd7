@@ -1,20 +1,23 @@
-uuid: da3b8088-2499-4c43-bc77-8f33d0b73f67
-langcode: en
+uuid: 64176700-159c-47b7-b31e-4b2b02ade69a
+langcode: de
 status: true
 dependencies:
   module:
+    - computed_field
     - field_permissions
     - node
 third_party_settings:
   field_permissions:
     permission_type: public
-id: node.field_relese_services
-field_name: field_relese_services
+id: node.field_calculated_title
+field_name: field_calculated_title
 entity_type: node
-type: entity_reference
+type: computed_string
 settings:
-  target_type: node
-module: core
+  max_length: '255'
+  is_ascii: false
+  case_sensitive: false
+module: computed_field
 locked: false
 cardinality: 1
 translatable: true

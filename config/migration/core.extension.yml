@@ -17,6 +17,7 @@ module:
   color: 0
   comment: 0
   composer_manager: 0
+  computed_field: 0
   config: 0
   config_direct_save: 0
   config_translation: 0

@@ -1,8 +1,9 @@
-uuid: d6972c48-5a05-4e34-a184-268dfd95dc31
+uuid: d39d3748-2b46-4685-9fca-016bf1ea2961
 langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.node.mail
     - field.field.node.release.comment
     - field.field.node.release.field_calculated_title
     - field.field.node.release.field_date
@@ -24,10 +25,10 @@ dependencies:
 third_party_settings:
   entity_print:
     label: 'View PDF'
-id: node.release.default
+id: node.release.mail
 targetEntityType: node
 bundle: release
-mode: default
+mode: mail
 content:
   entity_print_view:
     weight: 0
@@ -35,15 +36,15 @@ content:
     third_party_settings: {  }
     region: content
   field_calculated_title:
+    type: computed_string
     weight: 1
+    region: content
     label: inline
     settings:
-      sanitized: '1'
-      cache_unit: '-1'
-      cache_duration: '1'
+      sanitized: true
+      cache_unit: -1
+      cache_duration: 1
     third_party_settings: {  }
-    type: computed_string
-    region: content
   field_date:
     label: inline
     weight: 3

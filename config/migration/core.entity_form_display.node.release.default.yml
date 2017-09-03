@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.release.comment
+    - field.field.node.release.field_calculated_title
     - field.field.node.release.field_date
     - field.field.node.release.field_documentation_link
     - field.field.node.release.field_link
@@ -15,6 +16,7 @@ dependencies:
     - node.type.release
   module:
     - comment
+    - computed_field
     - text
 id: node.release.default
 targetEntityType: node
@@ -32,6 +34,12 @@ content:
     weight: 10
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_calculated_title:
+    weight: 33
+    settings: {  }
+    third_party_settings: {  }
+    type: computed_string_widget
     region: content
   field_date:
     weight: -2
