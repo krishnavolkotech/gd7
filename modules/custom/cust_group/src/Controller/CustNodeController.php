@@ -352,15 +352,86 @@ class CustNodeController extends ControllerBase {
     echo 'Successufully updated all users notification';
     exit;
   }
-
-  function updateServiceNotifications() {
-
+  
+  public function updateServiceNotifications() {
+    ini_set('max_execution_time', -1);
     //As users data is not properly saved in drupal 6 we were stuck for service update notifications.
-
-    $gi = $this->db->select('service_notifications_override', 'base_table')
-            ->fields('base_table')
+    $types[459] = ['release', 'downtimes', 'problem', 'early_warnings'];
+    $types[460] = ['release', 'early_warnings'];
+    $services = $this->db->select('node_field_data', 'n')
+      ->fields('n', ['nid'])
+      ->condition('type', 'services')
+      ->execute()
+      ->fetchCol();
+    
+    foreach ($services as $service) {
+      $serviceEntity = Node::load($service);
+      $relType = $serviceEntity->get('release_type')->target_id;
+      if ($relType) {
+        $users = [];
+        foreach ($types[$relType] as $type) {
+          $users = $this->db->select('service_notifications_user_default_interval', 'su')
+            ->fields('su', ['uid', 'default_send_interval'])
+            ->distinct('su.uid')
+            ->condition('service_type', $type)
+            ->condition('rel_type', $relType)
             ->execute()
-            ->fetchAll();
+            ->fetchAll()
+          ;
+//          pr($users);exit;
+//          echo $users->__toString();exit;
+          $userData = [];
+          foreach ($users as $user) {
+            if($user->uid == 0){
+              continue;
+            }
+            if($user->default_send_interval === null){
+              $user->default_send_interval = -1;
+            }
+//            $overiddenValue =null;
+            $overiddenValue = $this->db->select('service_notifications_override', 'base_table')
+              ->fields('base_table', ['send_interval'])
+              ->condition('uid', $user->uid)
+              ->condition('service_id', $service)
+              ->condition('type', $type)
+              ->execute()
+              ->fetchField();
+            if ($overiddenValue !== FALSE) {
+              $userData[$overiddenValue][] = $user->uid;
+            }else{
+              $userData[$user->default_send_interval][] = $user->uid;
+            }
+          }
+          foreach ($this->intervals as $interval) {
+            $check = $this->db->select('service_notifications', 'base_table')
+              ->fields('base_table', ['sid'])
+              ->condition('service_id', $service)
+              ->condition('type', $type)
+              ->condition('send_interval', $interval)
+              ->execute()
+              ->fetchField();
+            $users = serialize(array_unique($userData[$interval]));
+            if(empty($check)){
+              $this->db->insert('service_notifications')
+                ->fields(['service_id'=>$service,'type'=>$type,'send_interval'=>$interval,'uids'=>$users])
+                ->execute();
+            }else {
+              $this->db->update('service_notifications')
+                ->fields(['service_id'=>$service,'type'=>$type,'send_interval'=>$interval,'uids'=>$users])
+                ->condition('sid', $check)
+                ->execute();
+            }
+          }
+          
+        }
+      }
+//      exit;
+    }
+    
+    /*$gi = $this->db->select('service_notifications_override', 'base_table')
+      ->fields('base_table')
+      ->execute()
+      ->fetchAll();
     $preparedArray = [];
     foreach ($gi as $item) {
       $preparedArray[$item->service_id][$item->type][$item->send_interval][] = $item->uid;
@@ -369,34 +440,35 @@ class CustNodeController extends ControllerBase {
       foreach ($values as $type => $value) {
         foreach ($this->intervals as $interval) {
           $finalArray[] = [
-              'service_id' => $item,
-              'type' => $type,
-              'send_interval' => $interval,
-              'uids' => @serialize($value[$interval])
+            'service_id' => $item,
+            'type' => $type,
+            'send_interval' => $interval,
+            'uids' => @serialize($value[$interval])
           ];
         }
       }
     }
-
+    
     foreach ($finalArray as $value) {
       $check = $this->db->select('service_notifications', 'base_table')
-              ->fields('base_table', ['sid'])
-              ->condition('service_id', $value['service_id'])
-              ->condition('type', $value['type'])
-              ->condition('send_interval', $value['send_interval'])
-              ->execute()
-              ->fetchField();
+        ->fields('base_table', ['sid'])
+        ->condition('service_id', $value['service_id'])
+        ->condition('type', $value['type'])
+        ->condition('send_interval', $value['send_interval'])
+        ->execute()
+        ->fetchField();
       if (empty($check)) {
         $this->db->insert('service_notifications')
-                ->fields($value)
-                ->execute();
-      } else {
-        $this->db->update('service_notifications')
-                ->fields($value)
-                ->condition('sid', $check)
-                ->execute();
+          ->fields($value)
+          ->execute();
       }
-    }
+      else {
+        $this->db->update('service_notifications')
+          ->fields($value)
+          ->condition('sid', $check)
+          ->execute();
+      }
+    }*/
   }
 
   function updateGroupNotifications() {
