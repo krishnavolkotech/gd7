@@ -1,0 +1,240 @@
+uuid: 4db1a4b2-1c72-4c26-baea-507353559a00
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.mail
+    - field.field.node.quickinfo.comment
+    - field.field.node.quickinfo.field_additional_email_recipient
+    - field.field.node.quickinfo.field_author_name
+    - field.field.node.quickinfo.field_author_state
+    - field.field.node.quickinfo.field_business_impact
+    - field.field.node.quickinfo.field_business_impact_services
+    - field.field.node.quickinfo.field_contact
+    - field.field.node.quickinfo.field_creators
+    - field.field.node.quickinfo.field_custom_title
+    - field.field.node.quickinfo.field_dates
+    - field.field.node.quickinfo.field_depend_other_services
+    - field.field.node.quickinfo.field_intial_situation
+    - field.field.node.quickinfo.field_other_services
+    - field.field.node.quickinfo.field_professional_conditions
+    - field.field.node.quickinfo.field_recipients
+    - field.field.node.quickinfo.field_related_transfer_number
+    - field.field.node.quickinfo.field_special_notes
+    - field.field.node.quickinfo.field_tech_requirements
+    - field.field.node.quickinfo.field_technical_impact
+    - field.field.node.quickinfo.field_technical_impact_services
+    - field.field.node.quickinfo.field_unique_id
+    - field.field.node.quickinfo.upload
+    - node.type.quickinfo
+  module:
+    - field_group
+    - file
+    - options
+    - text
+    - user
+third_party_settings:
+  field_group:
+    group_meta_data:
+      label: '1 Meta-Daten'
+      weight: 1
+      children:
+        - field_custom_title
+        - field_related_transfer_number
+        - field_other_services
+        - field_recipients
+      format_type: html_element
+      format_settings:
+        label: '1 Meta-Daten'
+        element: div
+        show_label: true
+        label_element: h3
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+      parent_name: group_quickinfo_mail_w
+    group_content_information:
+      label: '2 Fachlich-inhaltliche Angaben'
+      weight: 2
+      children:
+        - field_intial_situation
+        - field_professional_conditions
+        - field_tech_requirements
+        - field_depend_other_services
+        - field_business_impact
+        - field_technical_impact
+        - field_business_impact_services
+        - field_technical_impact_services
+        - field_special_notes
+        - field_dates
+        - field_creators
+        - field_contact
+        - upload
+      format_type: html_element
+      format_settings:
+        label: '2 Fachlich-inhaltliche Angaben'
+        element: div
+        show_label: true
+        label_element: h3
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+      parent_name: group_quickinfo_mail_w
+    group_quickinfo_mail_w:
+      children:
+        - group_meta_data
+        - group_content_information
+      parent_name: ''
+      weight: 0
+      format_type: html_element
+      format_settings:
+        id: ''
+        classes: quickinfo-mail-wrapper
+        element: div
+        show_label: false
+        label_element: h3
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Quickinfo mail wrapper'
+id: node.quickinfo.mail
+targetEntityType: node
+bundle: quickinfo
+mode: mail
+content:
+  field_business_impact:
+    label: above
+    weight: 8
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_business_impact_services:
+    label: above
+    weight: 10
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_contact:
+    label: above
+    weight: 15
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_creators:
+    label: above
+    weight: 14
+    type: basic_string
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_custom_title:
+    weight: 0
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_dates:
+    label: above
+    weight: 13
+    type: basic_string
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_depend_other_services:
+    label: above
+    weight: 7
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_intial_situation:
+    label: above
+    weight: 4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_other_services:
+    label: above
+    weight: 2
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_professional_conditions:
+    label: above
+    weight: 5
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_recipients:
+    label: above
+    weight: 3
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_related_transfer_number:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_special_notes:
+    label: above
+    weight: 12
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_tech_requirements:
+    label: above
+    weight: 6
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_technical_impact:
+    label: above
+    weight: 9
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_technical_impact_services:
+    label: above
+    weight: 11
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: above
+    settings: {  }
+    type: file_table
+    weight: 16
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_additional_email_recipient: true
+  field_author_name: true
+  field_author_state: true
+  field_unique_id: true
+  langcode: true
+  links: true
