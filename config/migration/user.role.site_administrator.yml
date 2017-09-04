@@ -92,6 +92,7 @@ permissions:
   - 'administer organic groups'
   - 'administer pathauto'
   - 'administer permissions'
+  - 'administer piwik'
   - 'administer print'
   - 'administer printable'
   - 'administer problems'

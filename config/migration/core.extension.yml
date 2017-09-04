@@ -88,6 +88,7 @@ module:
   page_cache: 0
   path: 0
   pdf_api: 0
+  piwik: 0
   printable: 0
   printable_pdf: 0
   prlp: 0
