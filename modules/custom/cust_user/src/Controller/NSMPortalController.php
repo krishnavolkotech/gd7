@@ -117,7 +117,7 @@ class NSMPortalController extends ControllerBase {
   }
 
   function login(){
-    $id = session_id();
+    $id = \Drupal::service('session')->getId();
     $user = \Drupal::currentUser();
     $user_bp = $user->getAccountName();
     $user_nsm = \Drupal::database()->select('nsm_user','nu')
