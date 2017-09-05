@@ -74,7 +74,7 @@ view_mode ? view_mode|clean_class,
 ]
 %}
 <article{{ attributes.addClass(classes) }}>
-
+ <div class = 'downtimes-email-wrapper'>
     {{ title_prefix }}
     {% if not page and 0 %}
     <h2{{ title_attributes }}>
@@ -185,4 +185,5 @@ view_mode ? view_mode|clean_class,
    {{ revisions|raw }}
    <div style = "clear:both" ></div>
   {% endif %}
+ <div>
 </article>
