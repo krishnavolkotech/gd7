@@ -124,7 +124,7 @@ class Deployedreleasecreateform extends FormBase {
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
-  function deployed_dependent_services(array &$form, FormStateInterface $form_state){
+  public function deployed_dependent_services(array &$form, FormStateInterface $form_state){
     $environment = $form_state->getValue('deployed_environment');
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
 //    $form['deployed_services']['#options'] = $services_releases['services'];
@@ -133,7 +133,7 @@ class Deployedreleasecreateform extends FormBase {
     natcasesort($deployed_options);
     $form['deployed_services'] = array(
       '#type' => 'select',
-      '#default_value' => $form_state->getValue('ser'),
+      '#default_value' => $form_state->getValue('deployed_services',NULL),
       '#options' => $deployed_options,
       '#weight' => -5,
       '#ajax' => array(

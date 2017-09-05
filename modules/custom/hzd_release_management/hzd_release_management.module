@@ -198,8 +198,15 @@ function get_earlywarning_release($service = NULL) {
  * @returns: the releases which are not deployed
  */
 function get_undeployed_dependent_release($service = NULL, $environment = NULL, $release = NULL) {
-  $releases = HzdreleasemanagementHelper::released_deployed_releases($service);
-//  pr($releases);exit;
+  /*$releases = HzdreleasemanagementHelper::released_deployed_releases($service);
+  pr($releases);exit;*/
+  $releases = \Drupal::entityQuery('node')
+    ->condition('field_relese_services', $service)
+    //Querying for released and in progressed releases
+    ->condition('field_release_type', [1, 2], 'IN')
+    ->condition('type', 'release')
+    ->execute();
+  $nodes = Node::loadMultiple($releases);
   $state_id = hzd_user_state();
   $entityQuery = \Drupal::entityQuery('node')
     ->condition('type', 'deployed_releases')
@@ -231,9 +238,9 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
   }*/
   
   $undeployed_releases[0] = t("< Release >");
-  foreach ($releases['releases'] as $key => $value) {
+  foreach ($nodes as $key => $value) {
     if (!in_array($key, $releaseData)) {
-      $undeployed_releases[$key] = $value;
+      $undeployed_releases[$key] = $value->label();
     }
   }
   // print_r($undeployed_releases); exit;.
@@ -644,7 +651,7 @@ function hzd_get_immediate_notification_user_mails($service_id, $type) {
   $query->condition('sn.send_interval', 0, '=');
   $query->condition('sn.type', $type, 'like');
   $get_immediate_notifications_users = $query->execute()->fetchAll();
-  
+//  pr($get_immediate_notifications_users);exit;
   $user_mails = array();
   $user_ids = array();
   foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
@@ -715,7 +722,9 @@ function hzd_user_mails($uids) {
     ->isNull('iu.uid')
     ->groupBy('ufmp.field_message_preference_value');
   $query->addExpression("GROUP_CONCAT(u.mail separator ', ')", "mail");
+//  pr($query->__toString());exit;
   $result = $query->execute()->fetchAll();
+  pr($result);exit;
   return $result;
 }
 
@@ -1178,7 +1187,7 @@ function add_ajax_service_filter(&$form) {
     );
   }
   
-  $ahah_binding_state = array(
+/*  $ahah_binding_state = array(
     "button" => FALSE,
     "keypress" => NULL,
     'url' => Url::fromRoute($path),
@@ -1192,7 +1201,7 @@ function add_ajax_service_filter(&$form) {
   
   $form['#attached']['drupalSettings']['ajax'] = array(
     'edit-field-release-service-value' => $ahah_binding_state,
-  );
+  );*/
 }
 
 /**
