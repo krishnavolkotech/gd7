@@ -724,7 +724,7 @@ function hzd_user_mails($uids) {
   $query->addExpression("GROUP_CONCAT(u.mail separator ', ')", "mail");
 //  pr($query->__toString());exit;
   $result = $query->execute()->fetchAll();
-  pr($result);exit;
+//  pr($result);exit;
   return $result;
 }
 
