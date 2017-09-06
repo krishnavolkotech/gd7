@@ -21,3 +21,5 @@ cust_user.nsm_login:
     _title: 'NSM Portal Login'
   requirements:
     _permission: "access content"
+  options:
+    no_cache: 'TRUE'
