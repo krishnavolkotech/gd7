@@ -95,12 +95,12 @@ class NSMPortalController extends ControllerBase {
       $drupalUser = \Drupal\user\Entity\User::load($uid);
       $userState = \Drupal::database()->select('cust_profile','cp')
 	->fields('cp',['state_id'])
-	->condition('cp.uid',$uid)   
+	->condition('cp.uid',$uid)
 	->execute()
 	->fetchField();
       $userNSMRole = \Drupal::database()->select('nsm_user_role','nur')
 	->fields('nur',['nsm_role_id'])
-	->condition('nur.user_id',$uid)   
+	->condition('nur.user_id',$uid)
 	->execute()
 	->fetchField();
       $nsm_username = \Drupal::database()->select('nsm_user','nu')
@@ -117,8 +117,11 @@ class NSMPortalController extends ControllerBase {
   }
 
   public function login(){
-    $id = \Drupal::service('session')->getId();
     $user = \Drupal::currentUser();
+    $id = \Drupal::database()->select('sessions','s')
+      ->fields('s',['sid'])
+      ->condition('s.uid',$user->id())
+      ->execute()->fetchField();
     $state = hzd_user_state($user->id());
     $user_bp = $user->getAccountName();
     $user_nsm = \Drupal::database()->select('nsm_user','nu')
@@ -127,7 +130,7 @@ class NSMPortalController extends ControllerBase {
     $user_nsm = $user_nsm->condition('nur.user_id',$user->id());
     $user_nsm = $user_nsm->condition('nu.state_id',$state)
       ->execute()
-      ->fetchField();    
+      ->fetchField();
     $params = ['id='.$id,'user_bp='.$user_bp,'user_nsm='.$user_nsm];
     $preparedAuthUrl = $this->nsmDomain.'?'.implode('&',$params);
     return new TrustedRedirectResponse($preparedAuthUrl);
