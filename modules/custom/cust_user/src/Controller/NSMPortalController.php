@@ -116,14 +116,16 @@ class NSMPortalController extends ControllerBase {
     exit;
   }
 
-  function login(){
+  public function login(){
     $id = \Drupal::service('session')->getId();
     $user = \Drupal::currentUser();
+    $state = hzd_user_state($user->id());
     $user_bp = $user->getAccountName();
     $user_nsm = \Drupal::database()->select('nsm_user','nu')
       ->fields('nu',['nsm_username']);
     $user_nsm->addJoin('INNER','nsm_user_role','nur','nu.nsm_role_id=nur.nsm_role_id');
-    $user_nsm = $user_nsm->condition('nur.user_id',$user->id())
+    $user_nsm = $user_nsm->condition('nur.user_id',$user->id());
+    $user_nsm = $user_nsm->condition('nu.state_id',$state)
       ->execute()
       ->fetchField();    
     $params = ['id='.$id,'user_bp='.$user_bp,'user_nsm='.$user_nsm];
