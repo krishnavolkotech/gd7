@@ -13,7 +13,9 @@ cust_user.nsm_auth:
     _controller: '\Drupal\cust_user\Controller\NSMPortalController::authentication'
     _title: 'NSM Portal Authentication'
   requirements:
-    _permission: "access content"
+    _access: "TRUE"
+  options:
+      no_cache: 'TRUE'
 cust_user.nsm_login:
   path: '/login_from_bp'
   defaults: 
