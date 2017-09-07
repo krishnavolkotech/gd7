@@ -89,7 +89,7 @@ class AccessController extends ControllerBase
 
     public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
         $node = \Drupal::routeMatch()->getParameter('node');
-        if(!is_object($node)) {
+        if(!empty($node) && !is_object($node)) {
             $node = \Drupal\node\Entity\Node::load($node);
         }
         if (is_object($node)) {

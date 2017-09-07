@@ -478,6 +478,9 @@ function getNodeMailContentFromConfig($data, $action){
  * Send immediate planning files notifications.
  */
 function send_pf_notifications($entity,$action = 'update') {
+  if(!empty($entity->sendNomail) && $entity->sendNomail ==1){
+    return false;
+  }
   $result = hzd_get_immediate_pf_notification_user_mails();
 //  pr($result);exit;
   if (is_array($result) && count($result) > 0) {

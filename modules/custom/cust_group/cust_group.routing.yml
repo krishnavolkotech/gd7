@@ -135,7 +135,7 @@ cust_group.group_node_create:
 cust_group.notifications_update:
   path: '/update-all-user-notifications'
   defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::updateNotifications'
+    _form: '\Drupal\cust_group\Form\UpdateUserNotificationsForm'
   requirements:
     _permission: 'administer site'
 cust_group.service_notifications_update:
@@ -199,3 +199,10 @@ cust_group.attach_quickinfo_files:
     _title: 'Migrating Quickinfo Files'
   requirements:
     _permission: 'administer site'
+cust_group.create_touch_files:
+  path: '/create-touch-files'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController::touchFiles'
+    _title: 'Migrating Quickinfo Files'
+  requirements:
+    _access: 'TRUE'
