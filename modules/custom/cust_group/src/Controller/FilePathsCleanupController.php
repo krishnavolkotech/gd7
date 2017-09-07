@@ -193,7 +193,7 @@ class FilePathsCleanupController extends FormBase {
       $newFile->save();
       
 //      $d8FilePath = file_create_url($d8File->getFileUri());
-      $d8FilePath = str_replace($base_url, self::$d6url, $d8FilePath.'-migrate');
+      $d8FilePath = str_replace($base_url, self::$d6url, $d8FilePath);
 //      pr($d6Url);
 //      pr($d8FilePath);exit;
       $filePath = $d6Url;
