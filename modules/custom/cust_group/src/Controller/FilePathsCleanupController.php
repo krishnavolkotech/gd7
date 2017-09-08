@@ -9,6 +9,7 @@
 namespace Drupal\cust_group\Controller;
 
 
+use Dompdf\Exception;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -32,7 +33,8 @@ class FilePathsCleanupController extends FormBase {
       ->execute()
       ->fetchAll();*/
     $files = \Drupal::entityQuery('file')
-//      ->range(114, 5)
+//      ->range(0, 50)
+//        ->condition('fid',9000,'>')
       ->execute();
 //    pr($files);exit;
 //    $d8Files = File::loadMultiple($files);
@@ -84,6 +86,7 @@ class FilePathsCleanupController extends FormBase {
     $d8Db = \Drupal::database();
     $d6Db = \Drupal\Core\Database\Database::getConnection('default', 'migrate');
     foreach ($d8Files as $d8FileId) {
+      $filesMigr[] = $d8FileId;
       $d8File = File::load($d8FileId);
       $d6Fid = $d8Db->select('migrate_map_d6_file', 'map')
         ->fields('map', ['sourceid1'])
@@ -101,6 +104,7 @@ class FilePathsCleanupController extends FormBase {
         ->fetchAll();
       
       $field = 'field_page_files';
+      $d6DisplayField = 'field_page_files_list';
       if (empty($nid)) {
         $nid = $d6Db->select('content_type_planning_files', 'c')
           ->fields('c', ['nid', 'vid', 'field_upload_planning_file_list'])
@@ -108,8 +112,9 @@ class FilePathsCleanupController extends FormBase {
           ->execute()
           ->fetchAll();
         $field = 'field_upload_planning_file';
+        $d6DisplayField = 'field_upload_planning_file_list';
         if (empty($nid)) {
-          continue;
+          return FALSE;
         }
       }
       $vid = NULL;
@@ -117,7 +122,7 @@ class FilePathsCleanupController extends FormBase {
         if (!$vid || ($vid && $vid < $item->vid)) {
           $vid = $item->vid;
           $nodeId = $item->nid;
-          $display = $item->field_page_files_list;
+          $display = $item->{$d6DisplayField};
         }
       }
 //      pr($vid);
@@ -126,13 +131,18 @@ class FilePathsCleanupController extends FormBase {
 //      pr($d6Fid);
 //      pr($nid);
 //      exit;
-      $node = Node::load($nodeId);
+      $controller = \Drupal::entityManager()->getStorage('node');
+      $controller->resetCache();
+      $node = $controller->load($nodeId);
       if($node->getRevisionId() != $vid){
-        continue;
+        $display = 0;
       }
       $time = $node->getChangedTime();
       $node->revision = FALSE;
-      $uploads = $node->get('field_page_files')->getValue();
+      if(!$node->hasField($field)){
+        return FALSE;
+      }
+      $uploads = $node->get($field)->getValue();
       $attachedFiles = [];
       foreach ($uploads as $item) {
         $attachedFiles[] = $item['target_id'];
@@ -153,24 +163,48 @@ class FilePathsCleanupController extends FormBase {
         \Drupal::logger('files_migration')
           ->debug($node->id() . '==' . $d8File->id(), ['files_migration']);
       }
-      /*$body = $node->get('body')->value;
+  
+      $d6FileEntity = $d6Db->select('files','f')
+        ->fields('f')
+        ->condition('fid',$d6Fid)
+        ->execute()
+        ->fetchAssoc();
+  
+      $d6Url = str_replace(self::$d6BasePath, '/system/files', $d6FileEntity['filepath']);
       $newFile = File::load($d8File->id());
       $d8FilePath = $newFile->url();
-      $d6Url = str_replace($base_url, self::$d6url, $d8FilePath);
+      //Restore file created timestamp from d6
+  
+      $newFile->set('created',$d6FileEntity['timestamp']);
+      $newFile->save();
+
+//      $d8FilePath = file_create_url($d8File->getFileUri());
+      $d8FilePath = str_replace($base_url, '', $d8FilePath);
+//      pr($d6Url);
+//      pr($d8FilePath);exit;
+      $filePath = $d6Url;
+      
+      if($field == 'field_page_files') {
+        $body = $node->get('body')->value;
+//      $newFile = File::load($d8File->id());
+//      $d8FilePath = $newFile->url();
+//      $d6Url = str_replace($base_url, self::$d6url, $d8FilePath);
 //      pr($d6Url);exit;
 //      $replaced = substr_compare($body, self::$d6url);
-      $linkExists = strpos($body, $d6Url);
-      $replacedBody = '';
-      if ($linkExists !== FALSE) {
-        $replacedBody = str_replace($d6Url, $d8FilePath . 'migrated', $body);
-        $node->body->value = $replacedBody;
-        $node->setChangedTime($time);
-        $node->sendNomail = 1;
-        $node->save();
-        \Drupal::logger('files_migration')
-          ->debug($node->id() . '==' . $d6Url . '==' . $d8FilePath, ['migr-upd-link']);
-      }*/
-      /* echo 12;
+        $linkExists = strpos($body, $d6Url);
+        $replacedBody = '';
+        if ($linkExists !== FALSE) {
+          $replacedBody = str_replace($d6Url, $d8FilePath, $body);
+          $node->body->value = $replacedBody;
+          $node->setChangedTime($time);
+          $node->revision = FALSE;
+          $node->sendNomail = 1;
+          $node->save();
+          \Drupal::logger('files_migration')
+            ->debug($node->id() . '==' . $d6Url . '==' . $d8FilePath, ['migr-upd-link']);
+        }
+      }
+      /*echo 12;
        pr($replacedBody);
        exit;
  //      $node->save();
@@ -178,35 +212,28 @@ class FilePathsCleanupController extends FormBase {
 
 
 //      $node->
-      $d6FileEntity = $d6Db->select('files','f')
-        ->fields('f')
-        ->condition('fid',$d6Fid)
-        ->execute()
-        ->fetchAssoc();
       
-      $d6Url = self::$d6url . str_replace(self::$d6BasePath, '/system/files', $d6FileEntity['filepath']);
-      $newFile = File::load($d8File->id());
-      $d8FilePath = $newFile->url();
-      //Restore file created timestamp from d6
-      
-      $newFile->set('created',$d6FileEntity['timestamp']);
-      $newFile->save();
-      
-//      $d8FilePath = file_create_url($d8File->getFileUri());
-      $d8FilePath = str_replace($base_url, self::$d6url, $d8FilePath);
-//      pr($d6Url);
-//      pr($d8FilePath);exit;
-      $filePath = $d6Url;
-      $nodesQuery = $d8Db->select('node__body', 'nb')
+      try{
+        $d8Db->query("UPDATE node__body set body_value = REPLACE(body_value,'{$filePath}','{$d8FilePath}')")->execute();
+//        $d8Db->query("UPDATE node_revision__body set body_value = REPLACE(body_value,'{$filePath}','{$d8FilePath}')")->execute();
+      }
+      catch (\Exception $ex){
+        \Drupal::logger('files_migration_error')
+          ->debug($node->id().'=='.$filePath . '==' . $d8FilePath, ['files_migration_error']);
+      }
+    
+//    exit;
+      /*$nodesQuery = $d8Db->select('node__body', 'nb')
         ->condition('body_value', '%' . $filePath . '%', 'LIKE')
         ->fields('nb', ['entity_id', 'body_value', 'bundle'])
         ->execute()
         ->fetchAll();
 //      pr($nodesQuery);exit;
+    
       foreach ((array) $nodesQuery as $item) {
         $bodyData = $item->body_value;
         $replacedData = str_replace($filePath, $d8FilePath, $bodyData);
-        
+        pr($replacedData);exit;
         $update = $d8Db->update('node__body')
           ->fields(['body_value' => $replacedData])
           ->condition('entity_id', $item->entity_id)
@@ -214,8 +241,8 @@ class FilePathsCleanupController extends FormBase {
           ->execute();
         \Drupal::logger('clean-body')
           ->debug($item->entity_id . '==' . $d8FilePath, ['clean-body']);
-      }
-      $nodeRevisionQuery = $d8Db->select('node_revision__body', 'nb')
+      }*/
+      /*$nodeRevisionQuery = $d8Db->select('node_revision__body', 'nb')
         ->condition('body_value', '%' . $filePath . '%', 'LIKE')
         ->fields('nb', ['revision_id', 'body_value'])
         ->execute()
@@ -231,9 +258,9 @@ class FilePathsCleanupController extends FormBase {
           ->execute();
         \Drupal::logger('clean-revision')
           ->debug($item->revision_id . '==' . $d8FilePath, ['clean-revision']);
-      }
+      }*/
     }
-    $context['message'] = 'Cleaning files';
+    $context['message'] = 'Cleaning files - '.implode(',', $filesMigr);
 //    $context['results'] = ;
   }
   

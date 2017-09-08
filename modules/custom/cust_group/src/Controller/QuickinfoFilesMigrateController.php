@@ -137,6 +137,7 @@ class QuickinfoFilesMigrateController extends FormBase {
       
       if (!file_exists($path)) {
         touch($path);
+        chmod($path,0777);
       }
 //      echo $path;
 //      exit;
