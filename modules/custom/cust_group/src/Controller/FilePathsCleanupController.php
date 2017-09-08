@@ -186,11 +186,6 @@ class FilePathsCleanupController extends FormBase {
       
       if($field == 'field_page_files') {
         $body = $node->get('body')->value;
-//      $newFile = File::load($d8File->id());
-//      $d8FilePath = $newFile->url();
-//      $d6Url = str_replace($base_url, self::$d6url, $d8FilePath);
-//      pr($d6Url);exit;
-//      $replaced = substr_compare($body, self::$d6url);
         $linkExists = strpos($body, $d6Url);
         $replacedBody = '';
         if ($linkExists !== FALSE) {
@@ -198,6 +193,9 @@ class FilePathsCleanupController extends FormBase {
           $node->body->value = $replacedBody;
           $node->setChangedTime($time);
           $node->revision = FALSE;
+          $node->sendNomail = 1;
+          $node->save();
+          $node->setChangedTime($time);
           $node->sendNomail = 1;
           $node->save();
           \Drupal::logger('files_migration')
@@ -215,7 +213,7 @@ class FilePathsCleanupController extends FormBase {
       
       try{
         $d8Db->query("UPDATE node__body set body_value = REPLACE(body_value,'{$filePath}','{$d8FilePath}')")->execute();
-//        $d8Db->query("UPDATE node_revision__body set body_value = REPLACE(body_value,'{$filePath}','{$d8FilePath}')")->execute();
+        $d8Db->query("UPDATE node_revision__body set body_value = REPLACE(body_value,'{$filePath}','{$d8FilePath}')")->execute();
       }
       catch (\Exception $ex){
         \Drupal::logger('files_migration_error')
