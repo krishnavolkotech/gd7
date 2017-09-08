@@ -160,8 +160,8 @@ class FilePathsCleanupController extends FormBase {
         $isNodeSaved = 1;
         $node->revision = FALSE;
         
-        \Drupal::logger('files_migration')
-          ->debug($node->id() . '==' . $d8File->id(), ['files_migration']);
+//        \Drupal::logger('files_migration')
+//          ->debug($node->id() . '==' . $d8File->id(), ['files_migration']);
       }
   
       $d6FileEntity = $d6Db->select('files','f')
@@ -196,8 +196,8 @@ class FilePathsCleanupController extends FormBase {
           $node->sendNomail = 1;
           $node->save();
           $isNodeSaved = 1;
-          \Drupal::logger('files_migration')
-            ->debug($node->id() . '==' . $d6Url . '==' . $d8FilePath, ['migr-upd-link']);
+//          \Drupal::logger('files_migration')
+//            ->debug($node->id() . '==' . $d6Url . '==' . $d8FilePath, ['migr-upd-link']);
         }
       }
       if($isNodeSaved){
