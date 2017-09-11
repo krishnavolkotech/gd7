@@ -755,6 +755,7 @@ function get_hzd_states_by_id($id = NULL) {
 function get_planning_file_data($type) {
   $plannigFileNodeIds = \Drupal::entityQuery('node')
     ->condition('field_planning_file_type', $type)
+    ->sort('changed', 'ASC')
     ->execute();
   $planningFileNodes = \Drupal\node\Entity\Node::loadMultiple(array_values($plannigFileNodeIds));
   $filenames = [];
@@ -763,7 +764,7 @@ function get_planning_file_data($type) {
     if (!empty($file[0])) {
       $fileUrl = $file[0]->url();
       $date = \Drupal::service('date.formatter')
-        ->format($node->getCreatedTime(), 'short');
+        ->format($node->getChangedTime(), 'short');
       $filenames[] = [
         '#markup' => \Drupal::service('link_generator')
             ->generate($file[0]->getFilename(), Url::fromUri($fileUrl))

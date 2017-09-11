@@ -2054,7 +2054,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Published on'
+          label: 'Veröffentlicht am'
           exclude: false
           alter:
             alter_text: false

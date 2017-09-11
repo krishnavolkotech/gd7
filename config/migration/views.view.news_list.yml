@@ -299,6 +299,21 @@ display:
             label: ''
           granularity: second
           plugin_id: datetime
+        changed:
+          id: changed
+          table: node_field_revision
+          field: changed
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: false
+          expose:
+            label: ''
+          granularity: second
+          entity_type: node
+          entity_field: changed
+          plugin_id: date
       title: 'Aktuelles im BpK'
       header: {  }
       footer: {  }
@@ -327,7 +342,7 @@ display:
       pager:
         type: some
         options:
-          items_per_page: 2
+          items_per_page: 3
           offset: 0
       defaults:
         pager: false
