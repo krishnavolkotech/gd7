@@ -206,3 +206,10 @@ cust_group.create_touch_files:
     _title: 'Migrating Quickinfo Files'
   requirements:
     _access: 'TRUE'
+cust_group.migrate_url_alias:
+  path: '/migrate-url-alias'
+  defaults:
+    _form: '\Drupal\cust_group\Form\MigrateUrlAliasForm'
+    _title: 'Migrating Url Alias'
+  requirements:
+    _permission: 'administer site'
