@@ -1,0 +1,8 @@
+uuid: 02091696-d409-4d54-84ce-9d31580e8efb
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59896
+label: 'DaSi BIENE'
+description: 'DaSi BIENE'
+locked: false

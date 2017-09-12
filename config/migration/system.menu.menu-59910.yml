@@ -1,0 +1,8 @@
+uuid: fa0f1308-9fea-42e7-a576-6096bdfa378a
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59910
+label: 'DaSi SESAM'
+description: 'DaSi SESAM'
+locked: false

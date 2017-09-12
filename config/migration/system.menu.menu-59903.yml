@@ -1,0 +1,8 @@
+uuid: 77e98120-016a-4319-9091-f602f4ae2a89
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59903
+label: 'DaSi GINSTER'
+description: 'DaSi GINSTER'
+locked: false

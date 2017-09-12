@@ -1,0 +1,8 @@
+uuid: 8ed826eb-8ec8-4faa-b748-01b173bff268
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59897
+label: 'DaSi BuStra'
+description: 'DaSi BuStra'
+locked: false
