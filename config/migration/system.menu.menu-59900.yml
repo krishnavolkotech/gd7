@@ -1,0 +1,8 @@
+uuid: 339f6840-c9cc-4336-9561-be27a7fab09f
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59900
+label: 'DaSi ELSTER'
+description: 'DaSi ELSTER'
+locked: false

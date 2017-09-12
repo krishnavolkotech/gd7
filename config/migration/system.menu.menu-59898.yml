@@ -1,0 +1,8 @@
+uuid: 8cb12920-ffb0-4554-87ea-75ca39ae76c9
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59898
+label: 'DaSi DAME'
+description: 'DaSi DAME'
+locked: false

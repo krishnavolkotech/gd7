@@ -1,0 +1,8 @@
+uuid: b1e4f406-0313-43b3-b246-7a870904eb81
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59904
+label: 'DaSi InKA'
+description: 'DaSi InKA'
+locked: false

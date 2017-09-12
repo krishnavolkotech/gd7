@@ -3,19 +3,19 @@ import_path_csv_released: ../imports/releases/DSL-KONSENS_Historie_aller_Bereits
 import_path_csv_locked: ../imports/releases/DSL-KONSENS_Gesamtuebersicht_gesperrter_Release.csv
 import_path_csv_progress: ../imports/releases/DSL-KONSENS_Gesamtuebersicht_in_Bearbeitung_befindlicher_Release_mit_Links.csv
 import_time_releases: '03:40'
-import_mail_releases: denis.roy@hzd.hessen.de
+import_mail_releases: betriebsportal-konsens@hzd.hessen.de
 import_alias_releases: release
 import_path_csv_initial_released: /srv/www/betriebsportal/prd/imports/release/DSL-KONSENS_Gesamtuebersicht_in_Bearbeitung_befindlicher_Release_mit_Links.csv
 secure_download_text:
   value: "<p>Die Dokumentation für dieses Release ist nicht im Betriebsportal verfügbar, da es sich hierbei um ein geschütztes Release handelt.<br />\r\n<br />\r\nFalls Sie die erforderlichen Berechtigungen besitzen, können Sie diese mit dem folgenden Link direkt aus der DSL herunterladen.</p>\r\n"
-  format: basic_html
+  format: full_html
 failed_download_text:
   value: "<p>Die Dokumentation für dieses Release ist momentan leider nicht&nbsp;im Betriebsportal verfügbar. Falls Sie die erforderlichen Berechtigungen besitzen, können Sie diese mit dem folgenden Link direkt aus der DSL herunterladen.</p>\r\n"
-  format: basic_html
+  format: full_html
 release_mail_body:
   value: "<p>Der Download der Release-Dokumentation ist drei Mal fehlgeschlagen.</p>\r\n"
-  format: basic_html
-release_not_import: denis.roy@hzd.hessen.de
+  format: full_html
+release_not_import: betriebsportal-konsens@hzd.hessen.de
 release_import_username: HE
 release_import_password: gisrv789
 release_vocabulary_id: '8'

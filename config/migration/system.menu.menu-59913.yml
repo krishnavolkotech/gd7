@@ -1,0 +1,8 @@
+uuid: 4b5fcfb7-ac92-4d98-976b-50d2f9b40f94
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59913
+label: 'DaSi ZANS'
+description: 'DaSi ZANS'
+locked: false

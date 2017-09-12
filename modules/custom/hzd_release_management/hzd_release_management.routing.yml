@@ -206,7 +206,7 @@ hzd_release_management.deployedreleases_create_form:
 #   cust_og_is_admin: 'TRUE' 
 
 hzd_release_management.display_planning_files:
-  path: '/group/{group}/planning-files'
+  path: '/group/{group}/planungsdateien'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\DisplayplanningfilesController::display_planning_files'
     _title: 'Planning Files (Overview)'
