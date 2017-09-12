@@ -8,7 +8,7 @@ id: node.planning_files.title
 field_name: title
 entity_type: node
 bundle: planning_files
-label: Title
+label: Titel
 description: ''
 required: true
 translatable: true

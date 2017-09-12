@@ -4,7 +4,7 @@ downtimes:
   subject_cancel: '[[node:downtime_states]] Stornierte [node:downtime_type] ([node:downtime_services])'
   subject_resolve: '[[node:downtime_states]] Behobene [node:downtime_type] ([node:downtime_services])'
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 problems:
   subject: Hellooooooooooooo
@@ -15,7 +15,7 @@ quickinfo:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 planning_files:
   subject_insert: '[Release Management] Neue Planungsdatei: [node:title]'
@@ -23,7 +23,7 @@ planning_files:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 release:
   subject_insert: '[[node:field_relese_services]] Neues Release: [node:title]'
@@ -31,7 +31,7 @@ release:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 problem:
   subject_insert: '[[node:field_services]] Neues Problem: [node:title]'
@@ -39,7 +39,7 @@ problem:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>"
   mail_view: 1
 group_content:
   subject_insert: '[[node:content_group_title]] Neu - [node:content-type]: [node:title]'
@@ -47,7 +47,7 @@ group_content:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>Group Content Updated again</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 early_warnings:
   subject_insert: '[[node:field_release_service]] Neue Early Warning: [node:title]'
@@ -55,7 +55,7 @@ early_warnings:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 group:
   subject_insert: '[[group:title]] Neue Gruppe'
@@ -63,5 +63,5 @@ group:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[group:url]</p>\r\n"
-  mail_footer: "<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
