@@ -101,7 +101,7 @@ class DetachOldFilesForm extends FormBase {
       }
 //        $index = array_search($oldD8File, $values);
 //        pr($values);exit;
-      if (!$index) {
+      if (is_null($index)) {
         continue;
       }
       $d8Node->get('field_page_files')->removeItem($index);
