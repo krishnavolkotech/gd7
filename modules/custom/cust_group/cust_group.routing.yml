@@ -213,3 +213,10 @@ cust_group.migrate_url_alias:
     _title: 'Migrating Url Alias'
   requirements:
     _permission: 'administer site'
+cust_group.migrate_menu:
+  path: '/detach-old-files'
+  defaults:
+    _form: '\Drupal\cust_group\Form\DetachOldFilesForm'
+    _title: 'Detach Old Files'
+  requirements:
+    _permission: 'administer site'
