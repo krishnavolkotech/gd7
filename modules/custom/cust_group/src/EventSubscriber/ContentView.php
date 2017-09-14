@@ -44,6 +44,7 @@ class ContentView implements EventSubscriberInterface {
     if(\Drupal::service('module_handler')->moduleExists('reroute_email')){
       module_set_weight('reroute_email', 19);
     }
+    /**
     if ($request->attributes->get('_route') == 'hzd_customizations.front') {
       //$response = new RedirectResponse(Url::fromRoute('front_page.front',['tour'=> TRUE])->toString());
       $user = \Drupal::currentUser()->id();
@@ -61,7 +62,7 @@ class ContentView implements EventSubscriberInterface {
         }
       }
     }
-
+    */
     if ($request->attributes->get('_route') !== 'entity.node.canonical') {
       return;
     }
