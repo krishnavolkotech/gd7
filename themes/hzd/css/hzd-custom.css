@@ -446,6 +446,9 @@ table tr td,
 .view-rz-schnellinfo table tr td:nth-child(6){
   /*word-break:break-all;*/
 }
+#im-attachment-files-list table tr td.filename-cell {
+    word-break:break-all;
+}
 #released_results_wrapper table.view-deployed-releases tr td {
     white-space: pre;
     vertical-align: top;
