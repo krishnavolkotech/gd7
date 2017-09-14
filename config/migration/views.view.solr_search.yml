@@ -511,7 +511,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: and
+          operator: or
           value: ''
           group: 1
           exposed: true
@@ -553,7 +553,6 @@ display:
             uid: uid
             created: created
             body: body
-            gid: gid
             entity_id: entity_id
             field_additional_email_recipient: field_additional_email_recipient
             field_business_impact: field_business_impact
