@@ -777,6 +777,9 @@ function hzd_getmenucontent_menuid($node) {
   
   $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
   $result = $menu_link_manager->loadLinksByRoute('entity.node.canonical', array('node' => $node->id()));
+  if(empty($result)){
+    return false;
+  }
   $linkUuid = explode(':', reset($result)->getPluginId())[1];
   return \Drupal::service('entity.repository')->loadEntityByUuid('menu_link_content', $linkUuid);
   
