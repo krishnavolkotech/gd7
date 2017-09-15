@@ -1,19 +1,19 @@
-uuid: 4733776b-c518-4356-949d-ddcc082787a4
+uuid: 22cb4d27-a3c6-4a13-86f4-f0f8250a04b6
 langcode: de
 status: true
 dependencies:
   config:
     - comment.type.comment_forum
+    - core.entity_view_mode.comment.mail
     - field.field.comment.comment_forum.comment_body
-    - field.field.comment.comment_forum.field_do_not_send_notifications
   module:
     - text
 _core:
   default_config_hash: eh8_QYaTLHjPm6GwXHI8xLgIYeV4ZEZvCBdViQT-JDA
-id: comment.comment_forum.default
+id: comment.comment_forum.mail
 targetEntityType: comment
 bundle: comment_forum
-mode: default
+mode: mail
 content:
   comment_body:
     label: hidden
@@ -27,6 +27,5 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_do_not_send_notifications: true
   langcode: true
   links: true

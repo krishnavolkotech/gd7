@@ -1,0 +1,10 @@
+uuid: ccdd459b-2aae-4d79-8dd4-bced7d77eaa5
+langcode: de
+status: true
+dependencies:
+  module:
+    - comment
+id: comment.mail
+label: Mail
+targetEntityType: comment
+cache: true
