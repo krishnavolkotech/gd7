@@ -18,7 +18,7 @@ third_party_settings:
 id: views_block__release_list_block_1
 theme: hzd
 region: content
-weight: -31
+weight: -29
 provider: null
 plugin: 'views_block:release_list-block_1'
 settings:

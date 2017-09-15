@@ -6,14 +6,25 @@ cust_user.nsm_portal:
   requirements:
     _permission: "administer users"
   options:
-    _admin_route: FALSE
+    _admin_route: 'FALSE'
+cust_user.nsm_data_form:
+  path: '/admin/user/nsmroles/edit/{state}'
+  defaults:
+    _form: '\Drupal\cust_user\Form\NsmStateConfigForm'
+    _title: 'NSM Data edit'
+  requirements:
+    _permission: "administer users"
+  options:
+    _admin_route: 'TRUE'
 cust_user.nsm_auth:
   path: '/auth_bp'
   defaults: 
     _controller: '\Drupal\cust_user\Controller\NSMPortalController::authentication'
     _title: 'NSM Portal Authentication'
   requirements:
-    _permission: "access content"
+    _access: "TRUE"
+  options:
+      no_cache: 'TRUE'
 cust_user.nsm_login:
   path: '/login_from_bp'
   defaults: 

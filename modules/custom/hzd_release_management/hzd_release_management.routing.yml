@@ -73,7 +73,8 @@ hzd_release_management.read_release_csv:
     _controller: '\Drupal\hzd_release_management\Controller\ReadexcelController::read_release_csv'
     _title: 'Import Releases'
   requirements:
-    _permission: 'administer releases'
+    _access: 'TRUE'
+#    _permission: 'administer releases'
 #   _csrf_token: 'TRUE'
 
 hzd_release_management.release_type_settings:
@@ -206,7 +207,7 @@ hzd_release_management.deployedreleases_create_form:
 #   cust_og_is_admin: 'TRUE' 
 
 hzd_release_management.display_planning_files:
-  path: '/group/{group}/planning-files'
+  path: '/group/{group}/planungsdateien'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\DisplayplanningfilesController::display_planning_files'
     _title: 'Planning Files (Overview)'

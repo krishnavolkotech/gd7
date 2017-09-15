@@ -1,0 +1,8 @@
+uuid: d6654502-1c39-4bcd-8884-b0e3eda1ca50
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59905
+label: 'DaSi KDialog'
+description: 'DaSi KDialog'
+locked: false

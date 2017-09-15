@@ -1,0 +1,8 @@
+uuid: 3b91218c-0cfe-4851-aba2-4f2624cb6dff
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59912
+label: 'DaSi VO'
+description: 'DaSi VO'
+locked: false

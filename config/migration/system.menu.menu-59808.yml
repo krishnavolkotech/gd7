@@ -1,0 +1,8 @@
+uuid: e6fc06c1-e4eb-4d44-8301-b7a7b4c7e833
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59808
+label: 'Datenschutzrechtliche Sicherheitsdokumentationen'
+description: 'Datenschutzrechtliche Sicherheitsdokumentationen'
+locked: false

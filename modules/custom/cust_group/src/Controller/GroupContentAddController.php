@@ -10,6 +10,7 @@ use Drupal\group\Entity\Controller\GroupContentController;
 use Drupal\group\Entity\GroupInterface;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GroupContentAddController extends GroupContentController {
   
@@ -32,6 +33,9 @@ class GroupContentAddController extends GroupContentController {
   
   public function addPage(GroupInterface $group, $create_mode = FALSE) {
     $build = parent::addPage($group,true);
+    if($build instanceof RedirectResponse){
+      return $build;
+    }
 //    $contentTypes = ['page','faqs','newsletter','forum'];
     //removed newsletter content type from content being created
     $contentTypes = ['page','faqs','forum'];

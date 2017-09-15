@@ -20,7 +20,10 @@ class QuickinfoFilesMigrateController extends FormBase {
   
   public function buildForm(array $form, FormStateInterface $form_state) {
     // TODO: Implement buildForm() method.
-    $form['submit'] = ['#type' => 'submit', '#value' => 'Migrate Quickinfo Files'];
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => 'Migrate Quickinfo Files'
+    ];
     return $form;
   }
   
@@ -50,7 +53,7 @@ class QuickinfoFilesMigrateController extends FormBase {
         [$quickinfo]
       );
     }
-    
+
 //    pr(count($quickinfos));
 //    exit;
     return batch_set($batch);
@@ -78,8 +81,10 @@ class QuickinfoFilesMigrateController extends FormBase {
         if (!in_array($file, $attachedFiles)) {
           
           $node->revision = FALSE;
-          $time = $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->getChangedTime();
-          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->setChangedTime($time);
+          $time = $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)
+            ->getChangedTime();
+          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)
+            ->setChangedTime($time);
           
           $node->upload->appendItem([
             'target_id' => $file,
@@ -90,7 +95,8 @@ class QuickinfoFilesMigrateController extends FormBase {
           $node->save();
           //Changed timestamp to be retained.
           $node->revision = FALSE;
-          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)->setChangedTime($time);
+          $node->getTranslation(LanguageInterface::LANGCODE_DEFAULT)
+            ->setChangedTime($time);
           $node->save();
         }
       }
@@ -100,7 +106,7 @@ class QuickinfoFilesMigrateController extends FormBase {
     $context['message'] = 'Attaching Quickinfo files';
   }
   
-  public function finishedCallBack($success, $results, $operations){
+  public function finishedCallBack($success, $results, $operations) {
     // The 'success' parameter means no fatal PHP errors were detected. All
     // other error management should be handled using 'results'.
     if ($success) {
@@ -115,5 +121,27 @@ class QuickinfoFilesMigrateController extends FormBase {
     drupal_set_message($message);
   }
   
+  
+  public function touchFiles() {
+    $files = \Drupal::entityQuery('file')
+//      ->range(0, 50)
+      ->execute();
+    $d8Files = File::loadMultiple($files);
+    $fileSystem = \Drupal::service('file_system');
+    foreach ($d8Files as $d8File) {
+      $path = $fileSystem->realpath($d8File->getFileUri());
+  
+      if(!file_exists($fileSystem->dirname($path))){
+        $fileSystem->mkdir(dirname($path), 0777, true);
+      }
+      
+      if (!file_exists($path)) {
+        touch($path);
+        chmod($path,0777);
+      }
+//      echo $path;
+//      exit;
+    }
+  }
   
 }

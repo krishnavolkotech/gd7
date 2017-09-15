@@ -723,21 +723,21 @@ function hzd_form_node_form_alter(&$form, FormStateInterface $form_state) {
     isset($form['menu']) && $form['menu']['enabled']['#default_value'] == FALSE
   ) {
     $node = $form_state->getFormObject()->getEntity();
-    
-    $id = hzd_getmenucontent_menuid($node);
-    if ($id) {
-      $menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::load($id);
-      $menu_link = \Drupal::service('entity.repository')
-        ->getTranslationFromContext($menu_link);
-      
-      $node_type = $node->type->entity;
+  
+    $menu_link = hzd_getmenucontent_menuid($node);
+    if ($menu_link) {
+//      $menu_link = \Drupal\menu_link_content\Entity\MenuLinkContent::load($id);
+//      $menu_link = \Drupal::service('entity.repository')
+//        ->getTranslationFromContext($menu_link);
+//      pr($menu_link);exit;
+      /*$node_type = $node->type->entity;
       $menu_parent_selector = \Drupal::service('menu.parent_form_selector');
       $menu_names = menu_ui_get_menus();
       $type_menus = $node_type->getThirdPartySetting('menu_ui', 'available_menus', ['main']);
       $available_menus = [];
       foreach ($type_menus as $menu) {
         $available_menus[$menu] = $menu_names[$menu];
-      }
+      }*/
       $default = $menu_link->getMenuName() . ':' . $menu_link->getParentId();
 //        $parent_element = $menu_parent_selector->parentSelectElement($default, $menu_link->getPluginId(), $available_menus);
       
@@ -772,9 +772,21 @@ function custom_menu_ui_form_node_form_submit($form, FormStateInterface $form_st
   }
 }
 
-// Getting menu id using node
+// Getting menu link entity using node
+
 function hzd_getmenucontent_menuid($node) {
-  $query = \Drupal::entityQuery('menu_link_content')
+  
+  $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
+  $result = $menu_link_manager->loadLinksByRoute('entity.node.canonical', array('node' => $node->id()));
+  if(empty($result)){
+    return false;
+  }
+  $linkUuid = explode(':', reset($result)->getPluginId())[1];
+  return \Drupal::service('entity.repository')->loadEntityByUuid('menu_link_content', $linkUuid);
+  
+  //@todo Do we really need the menu link id when we already have menu link entity.
+  
+/*  $query = \Drupal::entityQuery('menu_link_content')
     ->condition('link.uri', 'internal:/node/' . $node->id())
     ->sort('id', 'ASC')
     ->range(0, 1);
@@ -789,9 +801,10 @@ function hzd_getmenucontent_menuid($node) {
       ->sort('id', 'ASC')
       ->range(0, 1);
     $result = $query->execute();
+//    pr($urlalias);exit;
     $id = (!empty($result)) ? reset($result) : FALSE;
   }
-  return $id;
+  return $id;*/
 }
 
 function hzd_preprocess_page_title(&$vars) {
