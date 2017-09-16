@@ -15,6 +15,7 @@ use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 
 /**
  * @param $variables
@@ -816,4 +817,23 @@ function hzd_preprocess_page_title(&$vars) {
 function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
   $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
+}
+
+function hzd_preprocess_field(&$variables) {
+  $element = $variables['element'];
+  if ($element['#field_type'] == 'comment') {
+      $variables['comment_view_mode'] = $element['#view_mode'];
+  }
+}
+
+function hzd_preprocess_comment(&$variables) {
+  /** @var \Drupal\comment\CommentInterface $comment */
+  // $comment = $variables['elements'];
+  $comment = $variables['elements']['#comment'];
+  if($variables['elements']['#view_mode'] == 'mail') {
+    $variables['title'] = $comment->getSubject();
+    $variables['submitted'] = t('Submitted by @username on @datetime', ['@username' => $comment->getOwner()->getDisplayName(), '@datetime' => $variables['created']]);
+
+    $variables['permalink'] = '';
+  }
 }

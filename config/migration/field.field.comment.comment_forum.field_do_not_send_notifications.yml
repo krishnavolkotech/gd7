@@ -1,0 +1,23 @@
+uuid: 8bec5eb2-9a4f-42dd-94e1-fca59c8715c4
+langcode: de
+status: true
+dependencies:
+  config:
+    - comment.type.comment_forum
+    - field.storage.comment.field_do_not_send_notifications
+id: comment.comment_forum.field_do_not_send_notifications
+field_name: field_do_not_send_notifications
+entity_type: comment
+bundle: comment_forum
+label: 'Senden Sie keine Benachrichtigungen für dieses Update.'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Auf
+  off_label: Aus
+field_type: boolean

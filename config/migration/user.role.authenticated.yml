@@ -33,6 +33,7 @@ permissions:
   - 'edit any im_upload_page content'
   - 'edit any quickinfo content'
   - 'edit any service_profile content'
+  - 'edit own comments'
   - 'edit own deployed_releases content'
   - 'edit own im_upload_page content'
   - 'edit own service_profile content'

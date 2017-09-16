@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment_no_subject.mail
     - core.entity_view_mode.node.mail
     - field.field.node.early_warnings.body
     - field.field.node.early_warnings.comment_no_subject
@@ -10,6 +11,7 @@ dependencies:
     - field.field.node.early_warnings.field_release_service
     - node.type.early_warnings
   module:
+    - comment
     - entity_print
     - options
     - text
@@ -37,6 +39,15 @@ content:
       view_mode: default
     third_party_settings: {  }
     region: content
+  comment_no_subject:
+    type: comment_default
+    weight: 3
+    region: content
+    label: above
+    settings:
+      view_mode: mail
+      pager_id: 0
+    third_party_settings: {  }
   entity_print_view:
     weight: 0
     settings: {  }
@@ -57,7 +68,6 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
-  comment_no_subject: true
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

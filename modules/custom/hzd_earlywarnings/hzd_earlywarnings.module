@@ -112,7 +112,7 @@ function hzd_earlywarnings_comment_update(Drupal\Core\Entity\EntityInterface $en
   if ($entity->hasField('field_do_not_send_notifications')) {
     $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
     if (!$do_not_send_notifications) {
-      send_earlywarning_comment_notifications($entity);
+      send_earlywarning_comment_notifications($entity, 'update');
     }
   }
   // Update the entity's entry in a fictional table of this type of entity.
@@ -122,31 +122,86 @@ function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $en
   if ($entity->hasField('field_do_not_send_notifications')) {
     $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
     if (!$do_not_send_notifications) {
-      send_earlywarning_comment_notifications($entity);
+      send_earlywarning_comment_notifications($entity, 'insert');
     }
   }
   // Insert the new entity into a fictional table of all entities.
 }
 
-function send_earlywarning_comment_notifications($entity) {
+function send_earlywarning_comment_notifications($entity, $action) {
 //    $commententity = \Drupal::entityTypeManager()->getStorage('comment')->load($entity->id());
   
-  $earlywarning = $entity->getCommentedEntity();
-  $service_id = $entity->getCommentedEntity()->get('field_release_service')->value;
-  $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
-  //We are sending the early warning entity view as configured not just coment view.
-  /*    $comment_author = $commententity->get('name')->value;
-      $comment_email = $commententity->get('mail')->value;
-      $comment_body = $commententity->get('comment_body')->value;*/
-  
-  if (is_array($result) && count($result) > 0) {
-    foreach ($result as $values) {
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
-      $data['node'] = $earlywarning;
-      $data['user'] = user_load_by_mail($mail);
-      $mailContent = getNodeMailContentFromConfig($data,'update');
-      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
+  $nodeentity = $entity->getCommentedEntity();
+  $entity_bundle = $nodeentity->bundle();
+  if($entity_bundle == 'early_warnings') {
+    $service_id = $entity->getCommentedEntity()->get('field_release_service')->value;
+    $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+    // kint($result);exit;
+      $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+      $body[] = $view_builder->view($entity, 'mail', 'de');
+
+
+      // sendCommentNotificationMail($message_body, $result, $action);
+    //We are sending the early warning entity view as configured not just coment view.
+    /*    $comment_author = $commententity->get('name')->value;
+        $comment_email = $commententity->get('mail')->value;
+        $comment_body = $commententity->get('comment_body')->value;*/
+    
+    if (is_array($result) && count($result) > 0) {
+      foreach ($result as $values) {
+        $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+        $mail = $values->mail;
+        $data['node'] = $nodeentity;
+        $data['user'] = user_load_by_mail($mail);
+        // $mailContent = getNodeMailContentFromConfig($data,'update');
+
+        $config = \Drupal::config('hzd_customizations.mailtemplates')->get($entity_bundle);
+        $token_service = \Drupal::token();
+        // Replace the token for subject.
+        $token_sub = $config['subject_update'];
+        $subject = $token_service->replace($token_sub, array( 'node' => $nodeentity));  
+        $body[] = [
+        '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
+        ];
+      
+        $message_body = \Drupal::service('renderer')->render($body);
+        send_immediate_notifications($subject, $message_body, $mail, $preference);
+      }
+    }
+  } else if($entity_bundle == 'forum') {
+
+    $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
+    if ($groupContentId) {
+      $group = $groupContentId->getGroup()->id();
+    }
+    if (!empty($group) && $group && (in_array($nodeentity->bundle(), ['forum']))) {
+      $getUserMailList = getGroupMemberList($group);
+      $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+      foreach ($getUserMailList as $to) {
+        $body = [];
+        $body[] = $view_builder->view($entity, 'mail', 'de');
+        $data['node'] = $nodeentity;
+        
+        $config = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content');
+        $token_service = \Drupal::token();
+        // Replace the token for subject.
+        $token_sub = $config['subject_update'];
+        $params['subject'] = $token_service->replace($token_sub, array( 'node' => $nodeentity));  
+        $result = array();
+        $mailManager = \Drupal::service('plugin.manager.mail');
+        $module = 'cust_group';
+        $key = 'immediate_notifications';
+        $langcode = \Drupal::currentUser()->getPreferredLangcode();
+        $send = TRUE;
+        $data['user'] = user_load_by_mail($to);
+        $body[] = [
+        '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
+        ];
+        $params['message'] = \Drupal::service('renderer')->render($body);
+        $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+      }
     }
   }
 }
+
+

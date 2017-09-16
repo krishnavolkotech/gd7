@@ -44,8 +44,8 @@ content:
     weight: 6
     label: visually_hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
     region: content
   entity_print_view:
@@ -69,9 +69,9 @@ content:
     region: content
   links:
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true
