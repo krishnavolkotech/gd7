@@ -880,8 +880,8 @@ class HzdcustomisationStorage {
     $pager->fields('d');
     $pager->distinct();
     if ($type == 'archived') {
-//      $pager->addField('rci', 'end_date');
-      $pager->orderby('d.enddate_planned', 'desc');
+      $pager->addField('rci', 'end_date');
+      $pager->orderby('rci.end_date', 'desc');
     } elseif ($type == 'incident') {
         $pager->orderby('d.startdate_planned', 'desc');
     } elseif ($type == 'maintenance') {
