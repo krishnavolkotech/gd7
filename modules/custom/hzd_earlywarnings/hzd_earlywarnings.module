@@ -136,9 +136,9 @@ function send_earlywarning_comment_notifications($entity, $action) {
   if($entity_bundle == 'early_warnings') {
     $service_id = $entity->getCommentedEntity()->get('field_release_service')->value;
     $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
-    // kint($result);exit;
+    // pr($result);exit;
       $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
-      $body[] = $view_builder->view($entity, 'mail', 'de');
+
 
 
       // sendCommentNotificationMail($message_body, $result, $action);
@@ -149,6 +149,8 @@ function send_earlywarning_comment_notifications($entity, $action) {
     
     if (is_array($result) && count($result) > 0) {
       foreach ($result as $values) {
+        $body = [];
+      $body[] = $view_builder->view($entity, 'mail', 'de');
         $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
         $mail = $values->mail;
         $data['node'] = $nodeentity;
