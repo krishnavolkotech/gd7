@@ -34,20 +34,24 @@ class ImAttachmentsUploadBlock extends BlockBase {
         $exposedFilterData = \Drupal::request()->query->all();
         $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? $exposedFilterData['state'] : '';
 
-        $query = \Drupal::database()->select('node', 'n');
+        $query = \Drupal::database()->select('node_field_data', 'n');
         $query->join('node__field_im_upload_page_files', 'imuf', 'n.nid = imuf.entity_id');
         $query->join('node__field_state', 'fs', 'fs.entity_id = imuf.entity_id');
+        $query->leftJoin('im_attachments_data', 'imd', 'imd.fid = imuf.field_im_upload_page_files_target_id');
         $query->condition('imuf.bundle', 'im_upload_page', '=');
         if (!empty($statename)) {
             $query->condition('fs.field_state_value', $statename, '=');
         }
-        
+      
         $count_query = clone $query;
+        $query->orderBy('imd.created','desc');
         $count_query->addExpression('Count(n.nid)');
         $pager = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
         $pager->setCountQuery($count_query);
         $pager->limit(20);
+        
         $pager->fields('imuf', ['entity_id', 'field_im_upload_page_files_target_id']);
+        $pager->fields('imd', ['created']);
         $pager->distinct();
         $fileids = $pager->execute()->fetchAll();
         $files = [];
