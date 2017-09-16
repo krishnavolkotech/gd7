@@ -177,21 +177,22 @@ function send_earlywarning_comment_notifications($entity, $action) {
     if (!empty($group) && $group && (in_array($nodeentity->bundle(), ['forum']))) {
       $getUserMailList = getGroupMemberList($group);
       $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
-      $body[] = $view_builder->view($entity, 'mail', 'de');
-      $data['node'] = $nodeentity;
-      
-      $config = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content');
-      $token_service = \Drupal::token();
-      // Replace the token for subject.
-      $token_sub = $config['subject_update'];
-      $params['subject'] = $token_service->replace($token_sub, array( 'node' => $nodeentity));  
-      $result = array();
-      $mailManager = \Drupal::service('plugin.manager.mail');
-      $module = 'cust_group';
-      $key = 'immediate_notifications';
-      $langcode = \Drupal::currentUser()->getPreferredLangcode();
-      $send = TRUE;
       foreach ($getUserMailList as $to) {
+        $body = [];
+        $body[] = $view_builder->view($entity, 'mail', 'de');
+        $data['node'] = $nodeentity;
+        
+        $config = \Drupal::config('hzd_customizations.mailtemplates')->get('group_content');
+        $token_service = \Drupal::token();
+        // Replace the token for subject.
+        $token_sub = $config['subject_update'];
+        $params['subject'] = $token_service->replace($token_sub, array( 'node' => $nodeentity));  
+        $result = array();
+        $mailManager = \Drupal::service('plugin.manager.mail');
+        $module = 'cust_group';
+        $key = 'immediate_notifications';
+        $langcode = \Drupal::currentUser()->getPreferredLangcode();
+        $send = TRUE;
         $data['user'] = user_load_by_mail($to);
         $body[] = [
         '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))

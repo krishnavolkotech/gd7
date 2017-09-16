@@ -22,6 +22,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  links:
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   entity_print_view: true
   entity_print_view_epub: true
@@ -29,4 +34,3 @@ hidden:
   entity_print_view_word_docx: true
   field_do_not_send_notifications: true
   langcode: true
-  links: true
