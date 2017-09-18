@@ -1576,3 +1576,9 @@ function hzd_customizations_views_post_render($view) {
    }
 }
 
+function hzd_customizations_preprocess_table(&$variables) {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if(is_object($node)) {
+        $variables['node_type'] = $node->bundle();
+    }
+}
