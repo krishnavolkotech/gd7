@@ -90,43 +90,43 @@ view_mode ? view_mode|clean_class,
         {% endif %}
         <table class="downtime-view-wrapper">
             <tr>
-                <td style="font-weight: 600;">{{ 'Verfahren'|trans }}:</td>
+                <td style="font-weight: 600;width: 28%;">{{ 'Verfahren'|trans }}:</td>
                 <td> {{ incident.service_name }}</td>
             </tr>
             <tr>
-                <td style="font-weight: 600;">{{ 'Land/System'|trans }}:</td>
+                <td style="font-weight: 600;width: 28%;">{{ 'Land/System'|trans }}:</td>
                 <td>{{ incident.state }}</td>
             </tr>
             {% if incident.startdate_planned %}
                 <tr>
-                    <td style="font-weight: 600;">{{ 'Beginn'|trans }}:</td>
+                    <td style="font-weight: 600;width: 28%;">{{ 'Beginn'|trans }}:</td>
                     <td> {{ incident.startdate_planned }} </td>
                 </tr>
             {% endif %}
             {% if incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
                 <tr>
-                    <td style="font-weight: 600;">{{ incident.enddate_planned_label }}:</td>
+                    <td style="font-weight: 600;width: 28%;">{{ incident.enddate_planned_label }}:</td>
                     <td>{{ incident.enddate_planned }}</td>
                 </tr>
             {% endif %}
 
             <tr>
-                <td style="font-weight: 600;">{{ 'Gemeldet von'|trans }}:</td>
+                <td style="font-weight: 600;width: 28%;">{{ 'Gemeldet von'|trans }}:</td>
                 <td>{{ incident.reported_by }}</td>
             </tr>
             <tr>
-                <td style="font-weight: 600;">{{ 'Gemeldet am'|trans }}:</td>
+                <td style="font-weight: 600;width: 28%;">{{ 'Gemeldet am'|trans }}:</td>
                 <td>{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr</td>
             </tr>
             {% if incident.reason %}
                 <tr>
-                    <td style="font-weight: 600;">{{ 'Grund für die Wartung der Wartungsfenster'|trans }}:</td>
+                    <td style="font-weight: 600;width: 28%;">{{ 'Grund für die Wartung der Wartungsfenster'|trans }}:</td>
                     <td>{{ incident.reason }}</td>
                 </tr>
             {% endif %}
             {% if incident.description %}
                 <tr>
-                    <td style="font-weight: 600;">{{ 'Ausführliche Beschreibung'|trans }}:</td>
+                    <td style="font-weight: 600;width: 28%;">{{ 'Ausführliche Beschreibung'|trans }}:</td>
                     <td>{{ incident.description }}</td>
                 </tr>
             {% endif %}
