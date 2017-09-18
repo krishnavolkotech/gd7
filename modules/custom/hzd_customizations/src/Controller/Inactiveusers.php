@@ -138,10 +138,10 @@ class Inactiveusers extends ControllerBase {
          * insert user to inactive_users table.
          */
         $query = \Drupal::database()->select('inactive_users', 'iu');
-        $query->addField('iu', 'uid');
+        $query->addField('iu', 'notified_admin');
         $query->condition('iu.uid', $user->uid, '=');
         $query->condition('iu.notified_admin', 1, '=');
-        $notified_admin = $query->execute()->fetchAll();
+        $notified_admin = $query->execute()->fetchField();
         /**
          * If inactive user flag value is 1 (don't auto block user)  and
          * if not notified_admin
@@ -219,10 +219,10 @@ class Inactiveusers extends ControllerBase {
         $donotblock = $query->execute()->fetchField();
         
         $query = \Drupal::database()->select('inactive_users', 'iu');
-        $query->addField('iu', 'uid');
+        $query->addField('iu', 'notified_user');
         $query->condition('iu.uid', $user->uid, '=');
         $query->condition('iu.notified_user', 1, '=');
-        $notified_user = $query->execute()->fetchAll();
+        $notified_user = $query->execute()->fetchField();
 
         if ($donotblock != 1 && $user->uid && !$notified_user
           && ($user->created < (time() - $notify_time))) {
@@ -308,10 +308,9 @@ class Inactiveusers extends ControllerBase {
 
         // $inactive_flag = db_result(db_query("SELECT value from {inactive_user_flag} WHERE user_id = %d", $user->uid));.
         $query = \Drupal::database()->select('inactive_users', 'iu');
-        $query->addField('iu', 'uid');
+        $query->addField('iu', 'warned_user_block_timestamp');
         $query->condition('iu.uid', $user->uid, '=');
         $query->condition('iu.warned_user_block_timestamp', 0, '>');
-        $query->range(0, 1);
         $warned_user_block_timestamp = $query->execute()->fetchField();
 
         if ($donot_block != 1 && $user->uid &&  !$warned_user_block_timestamp &&
@@ -417,10 +416,9 @@ class Inactiveusers extends ControllerBase {
               ->get('inactive_user_notify_block');
             if ($inactive_user_notify_block) {
               $query = \Drupal::database()->select('inactive_users', 'iu');
-              $query->addField('iu', 'uid');
+              $query->addField('iu', 'notified_user_block');
               $query->condition('iu.uid', $user->uid, '=');
               $query->condition('iu.notified_user_block', 1, '=');
-              $query->range(0, 1);
               $notified_user_block = $query->execute()->fetchField();
 
               if (!$notified_user_block) {
@@ -509,10 +507,9 @@ class Inactiveusers extends ControllerBase {
             // Notify user.
             if ($inactive_user_notify_block) {
               $query = \Drupal::database()->select('inactive_users', 'iuf');
-              $query->addField('iuf', 'uid');
+              $query->addField('iuf', 'notified_user_block');
               $query->condition('iuf.uid', $user->uid, '=');
               $query->condition('iuf.notified_user_block', 1, '=');
-              $query->range(0, 1);
               $notified_user_block = $query->execute()->fetchField();
 
               if (!$notified_user_block) {
@@ -567,10 +564,9 @@ class Inactiveusers extends ControllerBase {
               ->get('inactive_user_notify_block_admin');
             if ($inactive_user_notify_block_admin) {
               $query = \Drupal::database()->select('inactive_users', 'iuf');
-              $query->addField('iuf', 'uid');
+              $query->addField('iuf', 'notified_admin_block');
               $query->condition('iuf.uid', $user->uid, '=');
               $query->condition('iuf.notified_admin_block', 1, '=');
-              $query->range(0, 1);
               $notified_admin_block = $query->execute()->fetchField();
               if (!$notified_admin_block) {
                 $query = \Drupal::database()->update('inactive_users');
