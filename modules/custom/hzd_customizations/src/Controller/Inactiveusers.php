@@ -92,7 +92,7 @@ class Inactiveusers extends ControllerBase {
      * If notify time is set.
      */
     if ($notify_time) {
-      $user_list = '';
+      $user_list = [];
       /**
        * Fetch user details who were not new user,
        * and user access time is less than notify time - (time() - $notify_time).
@@ -168,12 +168,15 @@ class Inactiveusers extends ControllerBase {
               ))->execute();
             // Must create a new row.
           }
-          $user_list .= "$user->name ($user->mail) last active on " .
-            \Drupal::service('date.formatter')->format($user->access, 'long') . ".\n";
+          $user_list[] = "$user->name ($user->mail) last active on " .
+            \Drupal::service('date.formatter')->format($user->access, 'long');
         }
       }
 
-      if (isset($user_list)) {
+      if (!empty($user_list)) {
+	$data = ['#theme'=>'item_list','#type'=>'ul','#items'=>$user_list];
+        $user_list =  \Drupal::service('renderer')->render($data);
+
         Inactiveuserhelper::inactive_user_mail(
             t(\Drupal::config('system.site')->get('site_name') . ' Inactive users'),
             Inactiveuserhelper::inactive_user_mail_text('notify_admin_text'),
