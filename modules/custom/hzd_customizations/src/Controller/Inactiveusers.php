@@ -184,7 +184,7 @@ class Inactiveusers extends ControllerBase {
 
       if (!empty($user_list)) {
 	$data = ['#theme'=>'item_list','#type'=>'ul','#items'=>$user_list];
-        $user_list =  \Drupal::service('renderer')->render($data);
+        $user_list =  \Drupal::service('renderer')->renderRoot($data);
 
         Inactiveuserhelper::inactive_user_mail(
             t(\Drupal::config('system.site')->get('site_name') . ' Inactive users'),
