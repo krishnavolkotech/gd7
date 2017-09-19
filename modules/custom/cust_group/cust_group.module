@@ -500,7 +500,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     // signifies empty alt text.
     // For more details, see Drupal\editor\Form\EditorImageDialog::buildForm
     //$form['attributes']['alt']['#default_value'] = '""';
-    $form['attributes']['alt']['#required'] = FALSE;
+    //$form['attributes']['alt']['#required'] = FALSE;
 
     // Retrieve the image element's attributes from form state.
     $image_element = $form_state->get('image_element') ?: [];
