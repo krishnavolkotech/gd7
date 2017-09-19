@@ -12,10 +12,15 @@ audience: member
 group_type: closed_private
 permissions_ui: true
 permissions:
-  - 'view group'
-  - 'access group_membership overview'
-  - 'view group_membership content'
-  - 'leave group'
-  - 'access group_node overview'
-  - 'view group_node:page content'
-  - 'view group_node:page entity'
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'leave group'
+  4: 'access group_node overview'
+  5: 'view group_node:page content'
+  6: 'view group_node:page entity'
+  11: 'create group_node:forum entity'
+  12: 'update own group_node:forum entity'
+  13: 'view group_node:forum entity'
+  14: 'create group_node:forum content'
+  15: 'view group_node:forum content'

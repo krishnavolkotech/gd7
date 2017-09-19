@@ -46,7 +46,7 @@ class GroupContentAddController extends GroupContentController {
       $contentTypes[] = 'planning_files';
     }
     foreach($build['#bundles'] as $key=>$type){
-      if($this->isContentCreatable($key,$contentTypes)){
+      if(!$this->isContentCreatable($key,$contentTypes)){
 //      if((strpos($key,'page') === false) && (strpos($key,'faqs') === false) && (strpos($key,'newsletter') === false)){
 //        pr(());exit;
         unset($build['#bundles'][$key]);
@@ -56,13 +56,14 @@ class GroupContentAddController extends GroupContentController {
     return $build;
   }
   
-  function isContentCreatable($type,$types){
-    $count = 0;
+protected function isContentCreatable($type,$types){
+    $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
     foreach ($types as $val){
-      if(strpos($type,$val) === false){
-        $count++;
+      $allPlugins = $contentEnablerManager->getGroupContentTypeIds('group_node:'.$val);
+      if(in_array($type, $allPlugins)){
+        return true;
       }
     }
-    return count($types) == $count;
+    return false;
   }
 }
