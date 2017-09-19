@@ -513,7 +513,7 @@ display:
           settings:
             format: boolean
             format_custom_true: Active
-            format_custom_false: Inactive
+            format_custom_false: Gesperrt
           group_column: value
           group_columns: {  }
           group_rows: true

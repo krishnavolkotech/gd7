@@ -17,7 +17,6 @@ permissions:
   - 'assign forum containers to groups'
   - 'create deployed_releases content'
   - 'create early_warnings content'
-  - 'create field_do_not_send_notifications'
   - 'create forum content'
   - 'create service_profile content'
   - 'delete own forum content'

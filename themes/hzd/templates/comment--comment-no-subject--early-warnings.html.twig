@@ -75,9 +75,9 @@
   #}
   <mark class="hidden" data-comment-timestamp="{{ new_indicator_timestamp }}"></mark>
 
-  <footer>
+  <div class="comment__meta">
     {# user_picture #}
-    <p>{{ submitted }}</p>
+    
 
     {#
       Indicate the semantic relationship between parent and child comments for
@@ -88,15 +88,18 @@
       <p class="visually-hidden">{{ parent }}</p>
     {% endif %}
 
-    {{ permalink }}
-  </footer>
-
-  <div{{ content_attributes }}>
-    {% if title %}
-      {{ title_prefix }}
-      {#<h3{{ title_attributes }}>{{ title }}</h3>#}
-      {{ title_suffix }}
-    {% endif %}
-    {{ content }}
+    {# {{ permalink }} #}
+  </div>
+  <div class="early_warning_comment_wrapper">
+    <div{{ content_attributes.addClass('comment__content') }}>
+      {% if title %}
+        {{ title_prefix }}
+        {#<h3{{ title_attributes }}>{{ title }}</h3>#}
+        {{ title_suffix }}
+      {% endif %}
+      <div class="top-bar"></div>
+      <p class="comment__author">{{ submitted }}</p>
+      {{ content }}
+    </div>
   </div>
 </article>

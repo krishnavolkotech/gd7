@@ -190,6 +190,12 @@ function hzd_preprocess_node(&$variables) {
         ->getFieldDefinition()
         ->getLabel() . $variables['node']->get('field_unique_id')->value;
   }
+  if ($variables['node']->getType() == 'quickinfo' && $variables['node']->hasField('field_unique_id')) {
+    foreach($variables['node']->get('upload')->referencedEntities() as $key => $value) {
+        $fileentity = \Drupal\file\Entity\File::load($value->id());
+        $fileentity->node_view_mode= $viewMode;
+    }
+  }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
     $reasons = array(
@@ -817,6 +823,7 @@ function hzd_preprocess_page_title(&$vars) {
 function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
   $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
+  $variables['node_view_mode'] = $file->node_view_mode;
 }
 
 function hzd_preprocess_field(&$variables) {
@@ -835,5 +842,10 @@ function hzd_preprocess_comment(&$variables) {
     $variables['submitted'] = t('Submitted by @username on @datetime', ['@username' => $comment->getOwner()->getDisplayName(), '@datetime' => $variables['created']]);
 
     $variables['permalink'] = '';
+    if ($comment->hasParentComment()) {
+      $comment_parent = $comment->getParentComment();
+      $variables['parent'] = t('In reply to @parent_title by @parent_username',
+          ['@parent_username' => $comment->getOwner()->getDisplayName(), '@parent_title' => $comment_parent->getSubject()]);
+    }
   }
 }

@@ -1186,7 +1186,7 @@ table.view-deployed-releases{
 .quickinfo .field--label-inline .field--label{
   padding-right:4px !important;
 }
-.quickinfo .field--name-upload.field--type-file table thead tr th{
+/*.quickinfo .field--name-upload.field--type-file table thead tr th{
   border-left: 1px solid rgb(212,231,245);
   background: #d4eaf5;
   text-align: left;
@@ -1208,7 +1208,7 @@ table.view-deployed-releases{
   padding:5px 8px 7px 8px;
   line-height:150%;
   border-radius:0 !important;
-}
+}*/
 .quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
   display:none;

@@ -3384,19 +3384,28 @@ body.page-node-type-forum .field--name-taxonomy-forums .field--item{
 body.page-node-type-forum .field--name-taxonomy-forums .field-label{
   padding-right:5px !important;
 }
-body.page-node-type-forum .js-comment h3{
+body.page-node-type-forum .js-comment h3,
+.early_warning_comment_wrapper .top-bar{
   width:100%;
   float:left;
   padding-top:10px;
   border-top:1px solid #dddddd;
   margin:10px 0 0 0 !important;
 }
-body.page-node-type-forum .js-comment ul.list-inline li,
+.indented {
+  margin-left: 40px;
+}
+/*body.page-node-type-forum .js-comment ul.list-inline li,
 body.path-comment .js-comment ul.list-inline li{
   float:right;
+}*/
+.comment__content ul.list-inline li {
+    float: right;
+    margin-right: 5px !important;
 }
 body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a,
-body.path-comment .js-comment ul.list-inline li.comment-translations a{
+body.path-comment .js-comment ul.list-inline li.comment-translations a,
+.early_warning_comment_wrapper ul.list-inline li.comment-translations a{
   color: #ffffff;
   font-size: 14px;
   background: #666;
@@ -3405,7 +3414,8 @@ body.path-comment .js-comment ul.list-inline li.comment-translations a{
   padding: 0 10px;
 }
 body.page-node-type-forum .js-comment ul.list-inline li.comment-translations,
-body.path-comment .js-comment ul.list-inline li.comment-translations{
+body.path-comment .js-comment ul.list-inline li.comment-translations,
+.early_warning_comment_wrapper ul.list-inline li.comment-translations{
   padding:0;
 }
 body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:hover{
@@ -3415,7 +3425,7 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
 .quickinfo .field--label-inline .field--label{
   padding-right:4px !important;
 }
-.quickinfo .field--name-upload.field--type-file table thead tr th{
+/*.quickinfo .field--name-upload.field--type-file table thead tr th{
   border-left: 1px solid rgb(212,231,245);
   background: #d4eaf5;
   text-align: left;
@@ -3437,7 +3447,7 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
   padding:5px 8px 7px 8px;
   line-height:150%;
   border-radius:0 !important;
-}
+}*/
 .quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
   display:none;

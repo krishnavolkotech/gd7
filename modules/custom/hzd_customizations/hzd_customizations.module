@@ -54,8 +54,8 @@ function hzd_customizations_mail($key, &$message, $params) {
     case 'inactive_user':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = $params['subject'];
-      $message['body'][] = Html::escape($params['message']);
-      $message['headers']['Content-Type'] = (isset($params['preference']) == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
       break;
 
     case 'hzd_customizations_additional_email':
@@ -801,6 +801,26 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
 //      }
 //    }
 //  }
+// Check quickinfo files writtable in private://rz-schnellinfos/ directory
+  $triggeredButton = $form_state->getTriggeringElement()['#id'];
+  if ( $triggeredButton == "edit-publish"  ) {
+    $path = 'private://rz-schnellinfos/';
+    // Check $path directory can allow creating sub directory.
+    if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
+      $form_state->setError($form['upload'], t("File directory don't have permission
+      to create sub directories. Please contact admin."));
+    }
+    // Check $path directory allow creating files.
+    if (!file_prepare_directory($path)) {
+      $form_state->setError($form['upload'], t("Files directory don't
+      have permission to create file. Please contact admin."));
+    }
+    $directory = \Drupal::service('file_system')->realpath($path );
+    if (!is_writable($directory)) {
+      $form_state->setError($form['upload'], t("Files directory don't 
+      have permission to create directory/file. Please contact admin."));
+    }
+  }
 }
 
 /**
@@ -1576,3 +1596,9 @@ function hzd_customizations_views_post_render($view) {
    }
 }
 
+function hzd_customizations_preprocess_table(&$variables) {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if(is_object($node)) {
+        $variables['node_type'] = $node->bundle();
+    }
+}
