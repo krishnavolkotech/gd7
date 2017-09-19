@@ -22,10 +22,13 @@ class Inactiveusers extends ControllerBase {
      * last access. if inactive user logged in past one week. Then delete
      * inactive user row from inactive_users table.
      */
+    /**
+    //   deleting inactive users from cron commented.
     $query = \Drupal::database()->select('inactive_users', 'iu');
     $query->addField('iu', 'uid');
     $query->condition('iu.uid', 1, '!=');
     $inactive_users = $query->execute()->fetchAll();
+    */
     /**
      * [0] => disabled
      * [604800] => 1 week
@@ -40,11 +43,14 @@ class Inactiveusers extends ControllerBase {
      * [47088000] => 1 year 6 months
      * [63072000] => 2 years
      */
+    /**
     if ($inactive_users) {
       foreach ($inactive_users as $user) {
+    */
         /**
          * Foreach users fetch access, name.
          */
+    /** 
         $query = \Drupal::database()->select('users_field_data', 'ufd');
         $query->Fields('ufd', array('access', 'name', 'uid'));
         $query->condition('ufd.uid', $user->uid, '=');
@@ -58,9 +64,11 @@ class Inactiveusers extends ControllerBase {
             $query = \Drupal::database()->delete('inactive_users');
             $query->condition('uid', $user->uid, '=');
             $query->execute();
+    */ 
             /**
              * Log message - 'user removed from inactive user list'.
              */
+    /**
             $url = Url::fromRoute('entity.user.edit_form', array('user' =>  $user_detail->uid));
             $link = \Drupal::l(t('edit user'), $url);
             $message = 'recent user activity: ' .  $user_detail->name . 'removed from inactivity list. ' . $link;
@@ -69,6 +77,7 @@ class Inactiveusers extends ControllerBase {
         }
       }
     }
+    */
     // Notify administrator of inactive user accounts.
     self::notify_admin_inactive_accounts();
     // Notify users that their account has been inactive.
