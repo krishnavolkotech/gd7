@@ -344,8 +344,8 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
                 $condition['field'] = 'users_field_data_inactive_users__inactive_users.uid IS NULL';
             }
           }
-          elseif ($status == 2) {
-            //Status 2 - Inactive - User status 1 and Inactive id is not null
+          elseif ($status == 3) {
+            //Status 3 - Blocked - User status 0
             if ($condition['field'] == 'users_field_data.status') {
               $condition['value'] = 1;
             }
@@ -353,8 +353,8 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
               $condition['field'] = 'users_field_data_inactive_users__inactive_users.uid IS NOT NULL';
             }
           }
-          elseif ($status == 3) {
-            //Status 3 - Blocked - User status 0
+          elseif ($status == 2) {
+            //Status 2 - Inactive - User status 1 and Inactive id is not null
             if ($condition['field'] == 'users_field_data.status') {
               $condition['value'] = 0;
             }

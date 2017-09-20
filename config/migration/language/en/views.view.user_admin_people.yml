@@ -12,11 +12,6 @@ display:
                 title: Inactive
               3:
                 title: Blocked
-          expose:
-            description: ''
-        uid:
-          expose:
-            description: ''
       fields:
         status:
           alter:
