@@ -17,6 +17,8 @@ use Drupal\inactive_user\InactiveuserStorage;
 class Inactiveusers extends ControllerBase {
 
   public static function inactive_users() {
+    $sitename = \Drupal::config('system.site')->get('name');
+    global $base_url;
     /**
      * fetch inactive users from inactive users table and check each users
      * last access. if inactive user logged in past one week. Then delete
@@ -79,13 +81,13 @@ class Inactiveusers extends ControllerBase {
     }
     */
     // Notify administrator of inactive user accounts.
-    self::notify_admin_inactive_accounts();
+    self::notify_admin_inactive_accounts($sitename, $base_url);
     // Notify users that their account has been inactive.
-    self::notify_user_inactive_accounts();
+    self::notify_user_inactive_accounts($sitename, $base_url);
     // Warn users when they are about to be blocked.
-    self::warn_to_block_inactive_accounts();
+    self::warn_to_block_inactive_accounts($sitename, $base_url);
     // Block inactive user.
-    self::block_inactive_accounts();
+    self::block_inactive_accounts($sitename, $base_url);
 //    $result['#markup'] = t("Checked inactive users");
 //    return $result;
   }
@@ -93,7 +95,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Notify administrator of inactive user accounts.
    */
-  public static function notify_admin_inactive_accounts() {
+  public static function notify_admin_inactive_accounts($sitename, $base_url) {
     // Admin notify time.
     $notify_time = \Drupal::config('inactive_user.settings')
       ->get('inactive_user_notify_admin');
@@ -181,16 +183,14 @@ class Inactiveusers extends ControllerBase {
             \Drupal::service('date.formatter')->format($user->access, 'long');
         }
       }
-
       if (!empty($user_list)) {
 	$data = ['#theme'=>'item_list','#type'=>'ul','#items'=>$user_list];
         $user_list =  \Drupal::service('renderer')->renderRoot($data);
-
         Inactiveuserhelper::inactive_user_mail(
-            t(\Drupal::config('system.site')->get('site_name') . ' Inactive users'),
+            t($sitename . ' Inactive users'),
             Inactiveuserhelper::inactive_user_mail_text('notify_admin_text'),
             $notify_time, NULL, $user_list);
-        unset($user_list);
+        $user_list = [];
       }
     }
   }
@@ -198,7 +198,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Notify users that their account has been inactive.
    */
-  public static function notify_user_inactive_accounts() {
+  public static function notify_user_inactive_accounts($sitename, $base_url) {
     // User notify time.
     $notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify');
     if ($notify_time) {
@@ -253,13 +253,28 @@ class Inactiveusers extends ControllerBase {
           $inactive_user_notify_mail_subject = \Drupal::config('inactive_user.settings')
             ->get('inactive_user_notify_mail_subject');
           if (!$inactive_user_notify_mail_subject) {
-            $inactive_user_notify_mail_subject = \Drupal::config('system.site')
-                ->get('site_name') . 'Account inactivity';
+            $inactive_user_notify_mail_subject = $site_name . ' Account inactivity';
           }
           $inactive_user_notify_text = \Drupal::config('inactive_user.settings')
             ->get('inactive_user_notify_text');
           if (!$inactive_user_notify_text) {
             $inactive_user_notify_text = Inactiveuserhelper::inactive_user_mail_text('notify_text');
+          }
+	  else {
+	    $member = User::load($user->uid);
+	    $tokens = [
+	      '%username',
+              '%lastaccess',
+              '%sitename',
+              '%siteurl'
+            ];
+	    $token_values = [
+    	      $member->getDisplayName(),
+	      \Drupal::service('date.formatter')->format($member->getLastAccessedTime(), 'long'),
+	      $sitename,
+	      $base_url,
+            ];
+            $inactive_user_notify_text = str_replace($tokens, $token_values, $inactive_user_notify_text);
           }
           Inactiveuserhelper::inactive_user_mail($inactive_user_notify_mail_subject,
             $inactive_user_notify_text, $notify_time, $user, NULL);
@@ -281,7 +296,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Warn users when they are about to be blocked.
    */
-  public static function warn_to_block_inactive_accounts() {
+  public static function warn_to_block_inactive_accounts($sitename, $base_url) {
     $warn_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block_warn');
     $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block');
     if ($warn_time && $block_time) {
@@ -344,18 +359,34 @@ class Inactiveusers extends ControllerBase {
                 'warned_user_block_timestamp' => time() + $warn_time,
               ))->execute();
           }
-
           $inactive_user_block_warn_mail_subject = \Drupal::config('inactive_user.settings')
             ->get('inactive_user_block_warn_mail_subject');
           if (!$inactive_user_block_warn_mail_subject) {
             $inactive_user_block_warn_mail_subject = \Drupal::config('system.site')
                 ->get('site_name') . 'Account inactivity';
           }
-
           $inactive_user_block_warn_text = \Drupal::config('inactive_user.settings')
             ->get('inactive_user_block_warn_text');
           if (!$inactive_user_block_warn_text) {
             $inactive_user_block_warn_text = Inactiveuserhelper::inactive_user_mail_text('block_warn_text');
+          }
+          else {
+	    $member = User::load($user->uid);
+                  $tokens = [
+			     '%username',
+                             '%lastaccess',
+			     '%sitename',
+			     '%period',
+                             '%siteurl',
+		  ];
+                  $token_values = [
+                                   $member->getDisplayName(),
+                                   \Drupal::service('date.formatter')->format($member->getLastAccessedTime(), 'long'),
+				   $sitename,
+				   \Drupal::service('date.formatter')->formatInterval($block_time),
+                                   $base_url,
+				   ];
+                  $inactive_user_block_warn_text = str_replace($tokens, $token_values, $inactive_user_block_warn_text);
           }
           Inactiveuserhelper::inactive_user_mail($inactive_user_block_warn_mail_subject,
             $inactive_user_block_warn_text, $warn_time, $user, NULL);
@@ -377,7 +408,7 @@ class Inactiveusers extends ControllerBase {
   /**
    * Automatically block users.
    */
-  public static function block_inactive_accounts() {
+  public static function block_inactive_accounts($site_name, $base_url) {
     $block_time = \Drupal::config('inactive_user.settings')->get('inactive_user_auto_block');
     if ($block_time) {
       $query = \Drupal::database()->select('users_field_data', 'ufd');
@@ -455,13 +486,26 @@ class Inactiveusers extends ControllerBase {
 
                 $inactive_user_block_notify_text = \Drupal::config('inactive_user.settings')
                   ->get('inactive_user_block_notify_text');
-                if ($inactive_user_block_notify_text) {
+                if (!$inactive_user_block_notify_text) {
                   $inactive_user_block_notify_text = Inactiveuserhelper::inactive_user_mail_text('block_notify_text');
+                }
+                else {
+                  $tokens = [
+			    '%username',
+			    '%period',
+			    '%sitename',
+                    '%siteurl'
+			    ];
+                  $token_values = [
+				   $user_block->getDisplayName(),
+				   \Drupal::service('date.formatter')->format($user_block->getLastAccessedTime(), 'long'),
+				   $site_name,
+				   $base_url,
+				   ];
+                  $inactive_user_block_notify_text = str_replace($tokens, $token_values, $inactive_user_block_notify_text);
                 }
 
                 Inactiveuserhelper::inactive_user_mail($inactive_user_block_mail_subject, $inactive_user_block_notify_text, $block_time, $user, NULL);
-
-
                 $url = Url::fromRoute('entity.user.edit_form', array(
                   'user' => $user->uid
                 ));
@@ -501,9 +545,9 @@ class Inactiveusers extends ControllerBase {
                       'notified_admin_block' => 1,
                     ))->execute();
                 }
-                $user_list = '';
-                $user_list .= "user $user->name ($user->mail) last active on " .
-                  \Drupal::service('date.formatter')->format($user->access, 'long') . ".\n";
+                $user_list = [];
+                $user_list[] = "user $user->name ($user->mail) last active on " .
+                  \Drupal::service('date.formatter')->format($user->access, 'long');
               }
             }
           }
@@ -547,10 +591,24 @@ class Inactiveusers extends ControllerBase {
 
                 $inactive_user_block_notify_text = \Drupal::config('inactive_user.settings')
                   ->get('inactive_user_block_notify_text');
-                if ($inactive_user_block_notify_text) {
+                if (!$inactive_user_block_notify_text) {
                   $inactive_user_block_notify_text = Inactiveuserhelper::inactive_user_mail_text('block_notify_text');
                 }
-
+                else {
+		  $tokens = [
+	            '%username',
+	            '%period',
+	            '%sitename',
+                    '%siteurl'
+	          ];
+                  $token_values = [
+		    $user_block->getDisplayName(),
+		    \Drupal::service('date.formatter')->format($user_block->getLastAccessedTime(), 'long'),
+		    $site_name,
+		    $base_url,
+		  ];
+                  $inactive_user_block_notify_text = str_replace($tokens, $token_values, $inactive_user_block_notify_text);
+                }
                 Inactiveuserhelper::inactive_user_mail(
                   $inactive_user_block_mail_subject,
                   $inactive_user_block_notify_text,
@@ -593,19 +651,21 @@ class Inactiveusers extends ControllerBase {
                       'notified_admin_block' => 1,
                     ))->execute();
                 }
-                $user_list = '';
-                $user_list .= "user $user->name ($user->mail) last active on " .
-                  \Drupal::service('date.formatter')->format($user->access, 'long') . ".\n";
+                $user_list = [];
+                $user_list[] = "user $user->name ($user->mail) last active on " .
+                  \Drupal::service('date.formatter')->format($user->access, 'long');
               }
             }
           }
         }
       }
 
-      if (isset($user_list)) {
+      if (!empty($user_list)) {
+	$data = ['#theme'=>'item_list','#type'=>'ul','#items'=>$user_list];
+        $user_list =  \Drupal::service('renderer')->renderRoot($data);
         Inactiveuserhelper::inactive_user_mail(
-            t(\Drupal::config('system.site')->get('site_name') . ' Blocked users'), Inactiveuserhelper::inactive_user_mail_text('block_notify_admin_text'), $block_time, NULL, $user_list);
-        unset($user_list);
+            t($site_name . ' Blocked users'), Inactiveuserhelper::inactive_user_mail_text('block_notify_admin_text'), $block_time, NULL, $user_list);
+        $user_list = [];
       }
     }
   }
