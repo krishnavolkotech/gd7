@@ -24,7 +24,7 @@
                 <td>{{ content.field_date }}</td>
             </tr>
         {% endif %}
-        {% if content.field_release_comments %}
+        {% if node.field_release_comments.value %}
             <tr>
                 <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_release_comments.fieldDefinition.label }}</td>
                 <td>{{ content.field_release_comments }}</td>
