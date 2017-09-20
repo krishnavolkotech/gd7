@@ -63,6 +63,7 @@ module:
   hzd_services: 0
   hzd_user_customizations: 0
   image: 0
+  imce: 0
   inactive_user: 0
   inline_entity_form: 0
   kint: 0
