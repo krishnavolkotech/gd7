@@ -1,0 +1,34 @@
+<div class="release-info">
+    <table>
+        {% if content.field_relese_services %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_relese_services.fieldDefinition.label }}</td>
+                <td>{{ content.field_relese_services }}</td>
+            </tr>
+        {% endif %}
+        {% if content.field_calculated_title %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_calculated_title.fieldDefinition.label }}</td>
+                <td>{{ content.field_calculated_title }}</td>
+            </tr>
+        {% endif %}
+        {% if content.field_release_type %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_release_type.fieldDefinition.label }}</td>
+                <td>{{ content.field_release_type }}</td>
+            </tr>
+        {% endif %}
+        {% if content.field_date %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_date.fieldDefinition.label }}</td>
+                <td>{{ content.field_date }}</td>
+            </tr>
+        {% endif %}
+        {% if content.field_release_comments %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_release_comments.fieldDefinition.label }}</td>
+                <td>{{ content.field_release_comments }}</td>
+            </tr>
+        {% endif %}
+    </table>
+</div>    

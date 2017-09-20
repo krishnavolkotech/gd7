@@ -39,35 +39,35 @@ content:
     type: computed_string
     weight: 1
     region: content
-    label: inline
+    label: hidden
     settings:
       sanitized: true
       cache_unit: -1
       cache_duration: 1
     third_party_settings: {  }
   field_date:
-    label: inline
+    label: hidden
     weight: 3
     type: date_from_timestamp_formatter
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release_comments:
-    label: inline
+    label: hidden
     weight: 4
     type: text_default
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release_type:
-    label: inline
+    label: hidden
     weight: 2
     type: list_default
     settings: {  }
     third_party_settings: {  }
     region: content
   field_relese_services:
-    label: inline
+    label: hidden
     weight: 0
     type: entity_reference_label
     settings:

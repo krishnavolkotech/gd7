@@ -85,7 +85,7 @@
               cell.active_table_sort ? 'active',
             ]
             %}
-            <{{ cell.tag }}{{ cell.attributes.addClass(cell_classes) }} style= 'border-left: 1px solid rgb(212,231,245);background: #d4eaf5;text-align: left;padding-right: 1em;height: 45px;font-family: arial,sans-serif;text-indent: 7px;border-radius: 0 !important;'>
+            <{{ cell.tag }}{{ cell.attributes.addClass(cell_classes) }} style= 'border-left: 1px solid rgb(212,231,245);background: #d4eaf5;text-align: left;padding-right: 1em;height: 45px;text-indent: 7px;border-radius: 0 !important;'>
             {{- cell.content -}}
           </{{ cell.tag }}>
           {% endfor %}
