@@ -1119,13 +1119,13 @@ display:
                 operator: '='
                 value: '1'
               2:
-                title: Inaktiv
-                operator: '='
-                value: '1'
-              3:
                 title: Gesperrt
                 operator: '='
                 value: '0'
+              3:
+                title: Inaktiv
+                operator: '='
+                value: '1'
           plugin_id: boolean
           entity_type: user
           entity_field: status
