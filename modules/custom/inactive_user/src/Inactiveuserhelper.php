@@ -73,7 +73,7 @@ class Inactiveuserhelper {
         $key = 'inactive_user';
         $to = $recipient;
         $params['subject'] = $subject;
-        $params['message'] = strtr($message, $variables);
+        $params['message'] = \Drupal\Core\Render\Markup::create(strtr($message, $variables));
         $user = user_load_by_mail($recipient);
         $language = \Drupal::service('language.default')->get();
         $langcode = isset($user->uid) ? $user->getPreferredLangcode() : $language->getId();
