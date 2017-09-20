@@ -203,7 +203,6 @@ function inactive_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
                 '#type' => 'radios',
                 '#title' => t('Status'),
                 '#options' => [0 => t('Active'), 1 => t('Inactive'), 2 => t('Blocked')],
-//                '#default_value' => empty($val) ? 0 : 1,
                 '#default_value' => $statusdefault,
             ];
             $form['actions']['submit']['#submit'][] = 'inactive_users_user_form_submit';
