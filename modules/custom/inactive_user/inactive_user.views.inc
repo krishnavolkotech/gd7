@@ -384,5 +384,4 @@ function inactive_user_views_query_alter(\Drupal\views\ViewExecutable $view, $qu
     }
     
   }
-//  pr($query->where);exit;
 }
