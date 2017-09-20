@@ -471,7 +471,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if uid == 1 and status__value == 1 %}\nInactive\n{% elseif uid == 0 and status__value == 1 %}\nActive\n{% elseif uid == 1 and status__value == 0 %}\nBlocked\n{% elseif uid == 0 and status__value == 0 %}\nBlocked\n{% endif %}\n"
+            text: "{% if uid == 1 and status__value == 1 %}\nInaktiv\n{% elseif uid == 0 and status__value == 1 %}\nAktiv\n{% elseif uid == 1 and status__value == 0 %}\nGesperrt\n{% elseif uid == 0 and status__value == 0 %}\nGesperrt\n{% endif %}\n"
             make_link: false
             path: ''
             absolute: false
@@ -513,7 +513,7 @@ display:
           settings:
             format: boolean
             format_custom_true: Active
-            format_custom_false: Inactive
+            format_custom_false: Gesperrt
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -1115,15 +1115,15 @@ display:
             default_group_multiple: {  }
             group_items:
               1:
-                title: Active
+                title: Aktiv
                 operator: '='
                 value: '1'
               2:
-                title: Inactive
+                title: Inaktiv
                 operator: '='
                 value: '1'
               3:
-                title: Blocked
+                title: Gesperrt
                 operator: '='
                 value: '0'
           plugin_id: boolean
