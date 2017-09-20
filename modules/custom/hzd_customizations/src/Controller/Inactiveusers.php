@@ -257,7 +257,7 @@ class Inactiveusers extends ControllerBase {
                 ->get('site_name') . 'Account inactivity';
           }
           $inactive_user_notify_text = \Drupal::config('inactive_user.settings')
-            ->get('inactive_user_notify_mail_subject');
+            ->get('inactive_user_notify_text');
           if (!$inactive_user_notify_text) {
             $inactive_user_notify_text = Inactiveuserhelper::inactive_user_mail_text('notify_text');
           }
