@@ -56,12 +56,17 @@ class RouteSubscriber extends RouteSubscriberBase {
    * Code that should be triggered on event $events[KernelEvents::RESPONSE].
    */
   public function onRespond(FilterResponseEvent $event) {
-    $key = "node";
+      /*$key = "node";
     $response = $event->getResponse();
     $request = $event->getRequest();
     $node = $request->get($key);
-    if ($node && $node instanceof \Drupal\node\NodeInterface && $node->getType() == "downtimes") {
+    $route = \Drupal::routeMatch()->getRouteName();
+    if(in_array($route,['downtimes.new_downtimes_controller_newDowntimes','downtimes.archived_downtimes_controller'])) {
+	$response->headers->set('X-Frame-Options', 'ALLOWALL');
+    }elseif ($node && $node instanceof \Drupal\node\NodeInterface && $node->getType() == "downtimes") {
       $response->headers->set('X-Frame-Options', 'ALLOWALL');
-    }
+    }*/
+    $response = $event->getResponse();
+    $response->headers->set('X-Frame-Options', 'ALLOWALL');
   }
 }

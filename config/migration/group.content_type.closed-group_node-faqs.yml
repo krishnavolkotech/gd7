@@ -1,0 +1,19 @@
+uuid: a99926db-1579-4b4a-862a-fc56eccd35c5
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+    - node.type.faqs
+  module:
+    - gnode
+    - node
+id: closed-group_node-faqs
+label: 'Geschlossen: Gruppeninhalt (FAQ)'
+description: '<em class="placeholder">FAQ</em> in der Gruppe erstellen'
+group_type: closed
+content_plugin: 'group_node:faqs'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false
