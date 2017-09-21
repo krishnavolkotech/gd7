@@ -22,20 +22,20 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
         'length' => 255,
       ),
-      
+
       'send_interval' => array(
         'type' => 'int',
       ),
-      
+
       'uids' => array(
         'type' => 'blob',
         'not null' => TRUE,
       ),
-      
+
     ),
     'primary key' => array('sid'),
   );
-  
+
   $schema['planning_files_notifications'] = array(
     'description' => 'Stores the planning files notifications',
     'fields' => array(
@@ -124,11 +124,11 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       //group id is sufficient as this doesnt trigger on group update
-/*      'group_name' => array(
-        'type' => 'varchar_ascii',
-        'length' => 255,
-        'not null' => TRUE,
-      ),*/
+      /*      'group_name' => array(
+              'type' => 'varchar_ascii',
+              'length' => 255,
+              'not null' => TRUE,
+            ),*/
       'default_send_interval' => array(
         'type' => 'int',
       ),
@@ -153,21 +153,21 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
         'length' => 255,
       ),
-      
+
       'send_interval' => array(
         'type' => 'int',
       ),
-      
+
       'uid' => array(
         'type' => 'int',
         'not null' => TRUE,
       ),
-      
+
       'rel_type' => array(
         'type' => 'int',
         'not null' => TRUE,
       ),
-      
+
     ),
     'primary key' => array('sid'),
   );
@@ -262,43 +262,48 @@ function hzd_notifications_schema() {
 
 function hzd_notifications_update_8008() {
   $query = db_select('node_field_data', 'n');
-    $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
-    $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
-    $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
-    $query->leftJoin('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
-    $query->condition('n.type', 'services', '=')
-          ->fields('n', array('nid'))
-          ->fields('nfrn', array('field_release_name_value'))
-          ->fields('nfpn', array('field_problem_name_value'))
-          ->fields('nrt', array('release_type_target_id'))
-          ->fields('nfed', array('field_enable_downtime_value'));
-    $result = $query->execute()->fetchAll();
-    foreach($result as $services_info) {
-      if($services_info->field_enable_downtime_value && $services_info->release_type_target_id == 459) {
-          insert_service_notifications('downtimes', $services_info->nid);
-      }
-      if($services_info->field_problem_name_value && $services_info->release_type_target_id == 459) {
-          //$problem_record = array('service_id' => $services_info->nid, 'type' => 'problem', 'send_interval' => 0, 'uids' => 0);
-	        //db_insert('service_immediate_notifications')->fields($problem_record)->execute();
-	        insert_service_notifications('problem', $services_info->nid);
-      }
-      if($services_info->field_release_name_value) {
-        //$release_record = array('service_id' => $services_info->nid, 'type' => 'release', 'send_interval' => 0, 'uids' => 0);
-        //db_insert('service_immediate_notifications')->fields($release_record)->execute();
-        insert_service_notifications('release', $services_info->nid);
-      }
-      insert_service_notifications('early_warnings', $services_info->nid);
-      //$early_warnings_record = array('service_id' => $services_info->nid, 'type' => 'early_warnings', 'send_interval' => 0, 'uids' => 0);
-      //db_insert('service_immediate_notifications')->fields($early_warnings_record)->execute();
+  $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
+  $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
+  $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
+  $query->leftJoin('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
+  $query->condition('n.type', 'services', '=')
+    ->fields('n', array('nid'))
+    ->fields('nfrn', array('field_release_name_value'))
+    ->fields('nfpn', array('field_problem_name_value'))
+    ->fields('nrt', array('release_type_target_id'))
+    ->fields('nfed', array('field_enable_downtime_value'));
+  $result = $query->execute()->fetchAll();
+  foreach ($result as $services_info) {
+    if ($services_info->field_enable_downtime_value && $services_info->release_type_target_id == 459) {
+      insert_service_notifications('downtimes', $services_info->nid);
     }
+    if ($services_info->field_problem_name_value && $services_info->release_type_target_id == 459) {
+      //$problem_record = array('service_id' => $services_info->nid, 'type' => 'problem', 'send_interval' => 0, 'uids' => 0);
+      //db_insert('service_immediate_notifications')->fields($problem_record)->execute();
+      insert_service_notifications('problem', $services_info->nid);
+    }
+    if ($services_info->field_release_name_value) {
+      //$release_record = array('service_id' => $services_info->nid, 'type' => 'release', 'send_interval' => 0, 'uids' => 0);
+      //db_insert('service_immediate_notifications')->fields($release_record)->execute();
+      insert_service_notifications('release', $services_info->nid);
+    }
+    insert_service_notifications('early_warnings', $services_info->nid);
+    //$early_warnings_record = array('service_id' => $services_info->nid, 'type' => 'early_warnings', 'send_interval' => 0, 'uids' => 0);
+    //db_insert('service_immediate_notifications')->fields($early_warnings_record)->execute();
+  }
 }
 
 function insert_service_notifications($type, $nid) {
-  
+
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
-  foreach($interval as $vals) {
-    $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $vals, 'uids' => 0);
-	  db_insert('service_notifications')->fields($record)->execute();
+  foreach ($interval as $vals) {
+    $record = array(
+      'service_id' => $nid,
+      'type' => $type,
+      'send_interval' => $vals,
+      'uids' => 0
+    );
+    db_insert('service_notifications')->fields($record)->execute();
   }
 }
 
@@ -314,24 +319,35 @@ function insert_service_notifications($type, $nid) {
 function hzd_notifications_update_8010() {
   // migrate quickinfo notifications.
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
-  foreach($interval as $vals) {
-    $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(":val" => 'planning_files', "intval" => $vals))->fetchCol();
+  foreach ($interval as $vals) {
+    $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(
+      ":val" => 'planning_files',
+      "intval" => $vals
+    ))->fetchCol();
     $serialized_uids = serialize($uids);
     $record = array('send_interval' => $vals, 'uids' => $serialized_uids);
-	  db_insert('planning_files_notifications')->fields($record)->execute();
+    db_insert('planning_files_notifications')->fields($record)->execute();
   }
 }
 
 // migrate quickinfo notifications
 function hzd_notifications_update_8012() {
-  $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
+  $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', 'field_other_services')
+    ->getSetting('allowed_values');
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
-  foreach($options as $content_key => $content) {
-    foreach($interval as $vals) {
-      $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(":val" => $content, ":intval" => $vals))->fetchCol();
+  foreach ($options as $content_key => $content) {
+    foreach ($interval as $vals) {
+      $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(
+        ":val" => $content,
+        ":intval" => $vals
+      ))->fetchCol();
       $serialized_uids = serialize($uids);
-      $record = array('cck' => $content, 'send_interval' => $vals, 'uids' => $serialized_uids);
-	    db_insert('quickinfo_notifications')->fields($record)->execute();
+      $record = array(
+        'cck' => $content,
+        'send_interval' => $vals,
+        'uids' => $serialized_uids
+      );
+      db_insert('quickinfo_notifications')->fields($record)->execute();
     }
   }
 }
@@ -339,30 +355,40 @@ function hzd_notifications_update_8012() {
 // update user group notifications default interval
 function hzd_notifications_update_8015() {
   $user_ids = db_query("SELeCT uid FROM users where uid <>0")->fetchCol();
-  foreach($user_ids as $uid) {
+  foreach ($user_ids as $uid) {
     $default_groups_send_interval = array();
-    $default_groups_query  = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
-                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(":field" => 'group', ":uid" => $uid))->fetchAll();
-    foreach($default_groups_query as $default_groups_info) {
+    $default_groups_query = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
+                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(
+      ":field" => 'group',
+      ":uid" => $uid
+    ))->fetchAll();
+    foreach ($default_groups_query as $default_groups_info) {
       $default_groups_send_interval[$default_groups_info->value] = $default_groups_info->send_interval;
     }
-    
+
     $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
                    WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
     $user_groups = array();
-    foreach($user_groups_query as $groups_list) {
+    foreach ($user_groups_query as $groups_list) {
       $user_groups[$groups_list->id] = $groups_list->label;
     }
-    
-    if(count($user_groups) > 0) {
-      foreach($user_groups as $gid => $label) {
+
+    if (count($user_groups) > 0) {
+      foreach ($user_groups as $gid => $label) {
         // old ref
         $old_ref = db_query("SELECT field_old_reference_value FROM {group__field_old_reference} 
                    WHERE entity_id = :eid", array(":eid" => $gid))->fetchField();
-        if($old_ref && $default_groups_send_interval[$old_ref]) {
+        if ($old_ref && $default_groups_send_interval[$old_ref]) {
           $int_val = $default_groups_send_interval[$old_ref] ? $default_groups_send_interval[$old_ref] : 0;
-          $record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
-	        db_insert('group_notifications_user_default_interval')->fields($record)->execute();
+          $record = array(
+            'uid' => $uid,
+            'group_id' => $gid,
+            'group_name' => $label,
+            'default_send_interval' => $int_val
+          );
+          db_insert('group_notifications_user_default_interval')
+            ->fields($record)
+            ->execute();
         }
       }
     }
@@ -380,3 +406,47 @@ function hzd_notifications_update_8015() {
     }
   }
 }*/
+
+
+/**
+ * Adds new table notifications_scheduled into database. This stores the
+ * nodes and user list, for which notifications are to be sent.
+ */
+function hzd_notifications_update_8016() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $table_name = 'notifications_scheduled';
+  $table_schema = [
+    'fields' => [
+      'sid' => [
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'entity_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'entity_type' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'action' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'user_data' => [
+        'type' => 'blob',
+        'not null' => TRUE,
+      ],
+
+    ],
+    'primary key' => ['sid'],
+  ];
+
+  $schema->createTable($table_name, $table_schema);
+
+}

@@ -1,0 +1,4 @@
+services:
+  hzd_notifications.scheduler:
+    class: Drupal\hzd_notifications\NotificationScheduler
+    arguments: ['@database']
