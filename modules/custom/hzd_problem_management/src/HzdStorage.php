@@ -214,11 +214,19 @@ class HzdStorage {
             'value' => $values['workaround'],
             'format' => 'basic_html',
         ));
-        $problem_node->save();
+        try {
+          $problem_node->save();
+        }
+        catch (Exception $e) {
+          $body = t("Problems node couldn't updated. Error in csv row titled @title" , ['@title' =>  $values['title']]);
+          \Drupal::logger('problem_management')->error($body);
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+          HzdStorage::insert_import_status($status, $body);
+          return FALSE;
+        }
         return TRUE;
       }
     } else {
-
       $node_array = array(
           'nid' => array(''),
           'vid' => array(''),
@@ -283,9 +291,19 @@ class HzdStorage {
       );
 
       $node = Node::create($node_array);
-      $node->save();
-      $nid = $node->id();
-
+      try {
+        $node->save();
+        $nid = $node->id();
+      }
+      catch (Exception $e) {
+        $body = t("Problems node couldn't created. Error in csv row titled @title" , [
+          '@title' =>  $values['title']
+        ]);
+        \Drupal::logger('problem_management')->error($body);
+        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+        HzdStorage::insert_import_status($status, $body);
+        return FALSE;
+      }
       if ($nid) {
         // $group_id = \Drupal::routeMatch()->getParameter('group');
         $group = Group::load($group_id['0']);
@@ -298,7 +316,19 @@ class HzdStorage {
                     'label' => $values['title'],
                     'uid' => 1,
         ]);
-        $group_content->save();
+        try {
+          $group_content->save();
+        }
+        catch (Exception $e) {
+          $body = t("Problems node coudn't be attached to group. Error in csv row titled @title",
+            [
+              '@title' =>  $values['title']
+            ]);
+          \Drupal::logger('problem_management')->error($body);
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+          HzdStorage::insert_import_status($status, $body);
+          return FALSE;
+        }
       }
       return TRUE;
     }
