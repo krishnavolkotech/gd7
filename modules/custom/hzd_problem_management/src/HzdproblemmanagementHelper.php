@@ -4,7 +4,6 @@ namespace Drupal\problem_management;
 
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
-use Drupal\Core\Url;
 use Drupal\problem_management\Exception\CustomException;
 
 if (!defined('DISPLAY_LIMIT')) {
