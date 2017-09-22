@@ -173,7 +173,7 @@ class HzdproblemmanagementHelper {
       }
       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
       HzdStorage::insert_import_status($status, $msg);
-      \Drupal::logger('hzd_problem_management')->error($e->getMessage());
+      \Drupal::logger('problem_management')->error($e->getMessage());
     }
     return TRUE;
   }
