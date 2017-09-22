@@ -1,0 +1,5 @@
+services:
+  hzd_problem_management.problem_service_resolver:
+      class: Drupal\hzd_problem_management\Resolver\ProblemServiceResolver
+      tags:
+        - { name: hzd_notifications.service_resolver, priority: -90 }

@@ -410,7 +410,7 @@ function hzd_notifications_update_8015() {
 
 /**
  * Adds new table notifications_scheduled into database. This stores the
- * nodes and user list, for which notifications are to be sent.
+ * entities and user data, for which notifications are to be sent.
  */
 function hzd_notifications_update_8016() {
   $database = \Drupal::database();
@@ -428,9 +428,14 @@ function hzd_notifications_update_8016() {
         'type' => 'int',
         'not null' => TRUE,
       ],
-      'entity_type' => [
+      'entity' => [
         'type' => 'varchar',
         'not null' => TRUE,
+        'length' => 25,
+      ],
+      'bundle' => [
+        'type' => 'varchar',
+        'not null' => FALSE,
         'length' => 25,
       ],
       'action' => [

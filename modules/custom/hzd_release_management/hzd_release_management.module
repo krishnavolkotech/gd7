@@ -552,42 +552,6 @@ function send_qi_notifications($entity) {
 }
 
 /**
- * Get user mail ids.
- */
-function hzd_get_immediate_notification_user_mails($service_id, $type) {
-  $service_id = explode(',', $service_id);
-  $query = \Drupal::database()->select('service_notifications', 'sn');
-  $query->addField('sn', 'uids');
-  $query->condition('sn.service_id', $service_id, 'IN');
-  $query->condition('sn.send_interval', 0, '=');
-  $query->condition('sn.type', $type, 'like');
-  $get_immediate_notifications_users = $query->execute()->fetchAll();
-//  pr($get_immediate_notifications_users);exit;
-  $user_mails = array();
-  $user_ids = array();
-  foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
-    $unserialized_user_array = unserialize($serialized_uids->uids);
-    $user_ids = array_unique(array_merge($user_ids, $unserialized_user_array), SORT_REGULAR);
-  }
-  if (is_array($user_ids) && count($user_ids) > 0) {
-    return hzd_user_mails($user_ids);
-  }
-  return '';
-}
-
-/**
- *
- */
-function hzd_get_immediate_pf_notification_user_mails() {
-  $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
-  $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
-  if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
-    return hzd_user_mails($unserialized_user_array);
-  }
-  return '';
-}
-
-/**
  *
  */
 function hzd_get_immediate_qi_notification_user_mails($services) {
@@ -1013,7 +977,8 @@ function earlywarning_service_dependent_releases() {
   
   form_set_cache($form_build_id, $form, $form_state);
   $form = form_builder($_POST['form_id'], $form, $form_state);
-  
+
+  $output = '';
   $output .= drupal_render($form['field_earlywarning_release']);
   
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
@@ -1048,7 +1013,8 @@ function deployed_environment_service_dependent_releases() {
   
   form_set_cache($form_build_id, $form, $form_state);
   $form = form_builder($_POST['form_id'], $form, $form_state);
-  
+
+  $output = '';
   $output .= drupal_render($form['field_earlywarning_release']);
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();

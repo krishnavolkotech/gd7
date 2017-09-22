@@ -33,10 +33,10 @@ class NotificationScheduler implements NotificationSchedulerInterface {
     $table = 'notifications_scheduled';
     $fields = [
       'entity_id' => $entity->id(),
-      'entity_type' => $entity->getEntityTypeId(),
+      'entity' => $entity->getEntityTypeId(),
+      'bundle' => $entity->bundle(),
       'action' => $action,
-      //@todo Need to serialise data before inserting, we just have array now.
-      'user_data' => $userData,
+      'user_data' => serialize($userData),
     ];
 
     //@todo Check need for try catch block here, transaction already happens in insert.
