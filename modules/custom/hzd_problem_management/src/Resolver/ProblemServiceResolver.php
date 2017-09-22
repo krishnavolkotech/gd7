@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\hzd_problem_management\Resolver;
+namespace Drupal\problem_management\Resolver;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\hzd_notifications\Resolver\ServiceResolverInterface;

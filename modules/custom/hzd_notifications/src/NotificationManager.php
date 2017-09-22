@@ -46,6 +46,7 @@ class NotificationManager implements NotificationManagerInterface {
    * @inheritdoc
    */
   public function getUserDataForServices(array $services, EntityInterface $entity) {
+    // @Todo check if the services can be empty.
     $user_data = [];
 
     if(empty($services)){

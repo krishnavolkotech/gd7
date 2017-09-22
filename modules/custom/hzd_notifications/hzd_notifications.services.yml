@@ -7,6 +7,10 @@ services:
     class: Drupal\hzd_notifications\NotificationManager
     arguments: ['@database','@hzd_notifications.chain_price_resolver']
 
+  hzd_notifications.mail_dispatcher:
+    class: Drupal\hzd_notifications\MailNotificationDispatcher
+    arguments: ['@database','@plugin.manager.mail']
+
   hzd_notifications.chain_price_resolver:
     class: Drupal\hzd_notifications\Resolver\ChainServiceResolver
     tags:

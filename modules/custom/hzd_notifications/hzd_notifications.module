@@ -741,6 +741,7 @@ function hzd_notifications_node_insert($entity) {
  */
 function hzd_notifications_node_update($entity) {
 
+  /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager*/
   $notification_manager = \Drupal::service('hzd_notifications.manager');
   $services = $notification_manager->getServicesForEntity($entity);
   $user_data = $notification_manager->getUserDataForServices($services, $entity);
