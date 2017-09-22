@@ -5,7 +5,6 @@ namespace Drupal\problem_management;
 use Drupal\Core\Link;
 use Drupal\group\Entity\Group;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Url;
 use Drupal\group\Entity\GroupContent;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\node\Entity\Node;
@@ -54,283 +53,259 @@ class HzdStorage {
    * Function for saving problem node.
    */
   static public function saving_problem_node($values) {
-    if (($values['title'] == '') || ($values['status'] == '')) {
-      $message = t('Required Field Values Are Missing');
-      \Drupal::logger('problem_management')->error($message);
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-      $subject = 'Error while import';
-      $body = t("There is an issue while importing of the file. Required field values are missing.");
-      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-      $status = t('Error');
-      $msg = t('Required Field Values Are Missing');
-      HzdStorage::insert_import_status($status, $msg);
-      return FALSE;
-    }
-    /**
-     * if (!is_int($values['sno'])) {
-     * $message = t(' sno must be integer');
-     * \Drupal::logger('problem_management')->error($message);
-     * $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-     * $subject = 'Error while import';
-     * $body = t("There is an issue while importing of the file. sno must be integer.");
-     * HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-     * $status = t('Error');
-     * $msg = t('sno must be integer.');
-     * HzdStorage::insert_import_status($status, $msg);
-     * return FALSE;
-     * }
-     */
-    $values['sno'] = (int) $values['sno'];
-    $query = \Drupal::database()->select('groups_field_data', 'gfd');
-    $query->Fields('gfd', array('id'));
-    $query->condition('label', 'problem management', '=');
-    $group_id = $query->execute()->fetchCol();
-
-    $query = \Drupal::entityQuery('node')
-            ->condition('type', 'problem')
-            ->condition('field_s_no', $values['sno'])
-            ->execute();
-
-    $node = \Drupal\node\Entity\Node::load(reset($query));
-
-    if ($node) {
-      $nid = $node->id();
-      $created = $node->getCreatedTime();
-    }
-    /*        pr($node);exit;
-      $query = \Drupal::database()->select('node_field_data', 'n');
-      $query->join('node__field_s_no', 'nfsn', 'n.nid = nfsn.entity_id');
-      $query->Fields('n', array('nid', 'vid', 'created'));
-      $query->condition('field_s_no_value', $values['sno'], '=');
-      $node_infos = $query->execute()->fetchAll();
-      pr($node_info);exit;
-      foreach ($node_infos as $node_info) {
-      $nid = $node_info->nid;
-      $vid = $node_info->vid;
-      $created = $node_info->created;
-      } */
-    // The erofnet date field conversion.
-    $replace = array('/' => '.', '-' => '.');
-    $formatted_date = strtr($values['eroffnet'], $replace);
-
-    $date_time = explode(" ", $formatted_date);
-
-    if (isset($date_time['0'])) {
-      $date_format = explode(".", $date_time['0']);
-    }
-    if (isset($date_time['1'])) {
-      $time_format = explode(":", $date_time['1']);
-    }
-
-    if (isset($date_format['1']) && isset($date_format['0']) && isset($date_format['2'])) {
-      if (isset($time_format['0']) && isset($time_format['1']) && isset($time_format['2'])) {
-        $date = mktime((int) $time_format['0'], (int) $time_format['1'], (int) $time_format['2'], (int) $date_format['1'], (int) $date_format['0'], (int) $date_format['2']);
+    $status = t('Error');
+    $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+    $subject = 'Error while problem csv import';
+    $msg = t('Required Field Values Are Missing');
+    try {
+      if (($values['title'] == '') || ($values['status'] == '')) {
+        $message = t('Required Field Values Are Missing');
+        \Drupal::logger('problem_management')->error($message);
+        $body = t("There is an issue while importing of the file. Required field values are missing.");
+        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+        HzdStorage::insert_import_status($status, $msg);
+        return FALSE;
       }
-    }
-
-
-    $eroffnet = (isset($date) ? $date : time());
-    // Generate notifications for updated problems.
-    if (isset($nid)) {
-      unset($values['sno']);
-      $exist_node = $node;
-      $existing_node_vals = array();
-
-      $existing_node_vals['status'] = $exist_node->field_problem_status->value;
-      $existing_node_vals['service'] = $exist_node->field_services->target_id;
-      $existing_node_vals['function'] = $exist_node->field_function->value;
-      $existing_node_vals['release'] = $exist_node->field_release->value;
-      $existing_node_vals['title'] = $exist_node->getTitle();
-      $existing_node_vals['body'] = $exist_node->body->value;
-      $existing_node_vals['diagnose'] = $exist_node->field_diagnose->value;
-      $existing_node_vals['solution'] = $exist_node->field_solution->value;
-      $existing_node_vals['workaround'] = $exist_node->field_work_around->value;
-      $existing_node_vals['version'] = $exist_node->field_version->value;
-      $existing_node_vals['priority'] = $exist_node->field_priority->value;
-      $existing_node_vals['taskforce'] = $exist_node->field_task_force->value;
-      $existing_node_vals['comment'] = $exist_node->field_comments->value;
-      $existing_node_vals['processing'] = $exist_node->field_processing->value;
-      $existing_node_vals['attachment'] = $exist_node->field_attachment->value;
-      $existing_node_vals['eroffnet'] = $exist_node->field_eroffnet->value;
-      $existing_node_vals['timezone'] = 'Europe/Berlin';
-      $existing_node_vals['closed'] = $exist_node->field_closed->value;
-      $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
       /**
-       * $existing_node_vals['problem_eroffnet'] = $exist_node->field_problem_eroffnet->value;
-       * // $existing_node_vals['problem_status'] = $exist_node->field_problem_status->value;
-       * $existing_node_vals['ticketstore_count'] = $exist_node->field_ticketstore_count->value;
-       * $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
+       * if (!is_int($values['sno'])) {
+       * $message = t(' sno must be integer');
+       * \Drupal::logger('problem_management')->error($message);
+       * $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+       * $subject = 'Error while import';
+       * $body = t("There is an issue while importing of the file. sno must be integer.");
+       * HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+       * $status = t('Error');
+       * $msg = t('sno must be integer.');
+       * HzdStorage::insert_import_status($status, $msg);
+       * return FALSE;
+       * }
        */
-      if (count(array_diff($existing_node_vals, $values)) != 0) {
-        // $node_array['status'] = 1;.
-        $problem_node = $node;
-        $problem_node->setTitle(Html::escape($values['title']));
-        $problem_node->set('status', 1);
-        $problem_node->set('created', $created ? $created : time());
-        $problem_node->set('body', $values['body']);
-        $problem_node->set('comment', array(
-            'status' => 2,
-            'cid' => 0,
-            'last_comment_timestamp' => 0,
-            'last_comment_name' => '',
-            'last_comment_uid' => 0,
-            'comment_count' => 0,
-                )
-        );
-        $problem_node->set('field_attachment', Html::escape($values['attachment']));
-        $problem_node->set('field_closed', $values['closed']);
-        $problem_node->set('field_comments', array(
-            'value' => $values['comment'],
-            'format' => 'basic_html',
-                )
-        );
-        $problem_node->set('field_services', array(
-            'target_id' => $values['service'],
-                )
-        );
-        $problem_node->set('field_diagnose', $values['diagnose']);
-        $problem_node->set('field_eroffnet', $values['eroffnet']);
-        $problem_node->set('field_function', $values['function']);
-        $problem_node->set('field_priority', $values['priority']);
-        $problem_node->set('field_problem_eroffnet', $eroffnet);
-        $problem_node->set('field_problem_status', $values['status']);
-        $problem_node->set('field_processing', $values['processing']);
-        $problem_node->set('field_release', $values['release']);
-        // $problem_node->set('field_sdcallid', $values['sdcallid']);.
-        $problem_node->set('field_solution', array(
-            'value' => $values['solution'],
-            'format' => 'basic_html',
-        ));
-        // $problem_node->set('field_s_no', $values['sno']);
-        // $problem_node->set('field_release', $values['release']);.
-        $problem_node->set('field_task_force', array($values['taskforce']));
-        // $problem_node->set('field_release', $values['release']);
-        // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
-        // $problem_node->set('field_release', $values['release']);
-        $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
-        // $problem_node->set('field_timezone', $values['timezone']);.
-        $problem_node->set('field_version', $values['version']);
-        $problem_node->set('field_work_around', array(
-            'value' => $values['workaround'],
-            'format' => 'basic_html',
-        ));
-        try {
-          $problem_node->save();
-        }
-        catch (Exception $e) {
-          $body = t("Problems node couldn't updated. Error in csv row titled @title" , ['@title' =>  $values['title']]);
-          \Drupal::logger('problem_management')->error($body);
-          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-          HzdStorage::insert_import_status($status, $body);
-          return FALSE;
-        }
-        return TRUE;
+      $values['sno'] = (int) $values['sno'];
+      $query = \Drupal::database()->select('groups_field_data', 'gfd');
+      $query->Fields('gfd', array('id'));
+      $query->condition('label', 'problem management', '=');
+      $group_id = $query->execute()->fetchCol();
+
+      $query = \Drupal::entityQuery('node')
+              ->condition('type', 'problem')
+              ->condition('field_s_no', $values['sno'])
+              ->execute();
+
+      $node = \Drupal\node\Entity\Node::load(reset($query));
+
+      if ($node) {
+        $nid = $node->id();
+        $created = $node->getCreatedTime();
       }
-    } else {
-      $node_array = array(
-          'nid' => array(''),
-          'vid' => array(''),
-          'type' => 'problem',
-          'title' => Html::escape($values['title']),
-          'uid' => 1,
-          'status' => 1,
-          'created' => time(),
-          'body' => array(
-              'summary' => '',
-              'value' => $values['body'],
-              'format' => 'basic_html',
-          ),
-          'comment' => array(
+      /*        pr($node);exit;
+        $query = \Drupal::database()->select('node_field_data', 'n');
+        $query->join('node__field_s_no', 'nfsn', 'n.nid = nfsn.entity_id');
+        $query->Fields('n', array('nid', 'vid', 'created'));
+        $query->condition('field_s_no_value', $values['sno'], '=');
+        $node_infos = $query->execute()->fetchAll();
+        pr($node_info);exit;
+        foreach ($node_infos as $node_info) {
+        $nid = $node_info->nid;
+        $vid = $node_info->vid;
+        $created = $node_info->created;
+        } */
+      // The erofnet date field conversion.
+      $replace = array('/' => '.', '-' => '.');
+      $formatted_date = strtr($values['eroffnet'], $replace);
+
+      $date_time = explode(" ", $formatted_date);
+
+      if (isset($date_time['0'])) {
+        $date_format = explode(".", $date_time['0']);
+      }
+      if (isset($date_time['1'])) {
+        $time_format = explode(":", $date_time['1']);
+      }
+
+      if (isset($date_format['1']) && isset($date_format['0']) && isset($date_format['2'])) {
+        if (isset($time_format['0']) && isset($time_format['1']) && isset($time_format['2'])) {
+          $date = mktime((int) $time_format['0'], (int) $time_format['1'], (int) $time_format['2'], (int) $date_format['1'], (int) $date_format['0'], (int) $date_format['2']);
+        }
+      }
+
+
+      $eroffnet = (isset($date) ? $date : time());
+      // Generate notifications for updated problems.
+      if (isset($nid)) {
+        unset($values['sno']);
+        $exist_node = $node;
+        $existing_node_vals = array();
+
+        $existing_node_vals['status'] = $exist_node->field_problem_status->value;
+        $existing_node_vals['service'] = $exist_node->field_services->target_id;
+        $existing_node_vals['function'] = $exist_node->field_function->value;
+        $existing_node_vals['release'] = $exist_node->field_release->value;
+        $existing_node_vals['title'] = $exist_node->getTitle();
+        $existing_node_vals['body'] = $exist_node->body->value;
+        $existing_node_vals['diagnose'] = $exist_node->field_diagnose->value;
+        $existing_node_vals['solution'] = $exist_node->field_solution->value;
+        $existing_node_vals['workaround'] = $exist_node->field_work_around->value;
+        $existing_node_vals['version'] = $exist_node->field_version->value;
+        $existing_node_vals['priority'] = $exist_node->field_priority->value;
+        $existing_node_vals['taskforce'] = $exist_node->field_task_force->value;
+        $existing_node_vals['comment'] = $exist_node->field_comments->value;
+        $existing_node_vals['processing'] = $exist_node->field_processing->value;
+        $existing_node_vals['attachment'] = $exist_node->field_attachment->value;
+        $existing_node_vals['eroffnet'] = $exist_node->field_eroffnet->value;
+        $existing_node_vals['timezone'] = 'Europe/Berlin';
+        $existing_node_vals['closed'] = $exist_node->field_closed->value;
+        $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
+        /**
+         * $existing_node_vals['problem_eroffnet'] = $exist_node->field_problem_eroffnet->value;
+         * // $existing_node_vals['problem_status'] = $exist_node->field_problem_status->value;
+         * $existing_node_vals['ticketstore_count'] = $exist_node->field_ticketstore_count->value;
+         * $existing_node_vals['ticketstore_link'] = $exist_node->field_ticketstore_link->value;
+         */
+        if (count(array_diff($existing_node_vals, $values)) != 0) {
+          // $node_array['status'] = 1;.
+          $problem_node = $node;
+          $problem_node->setTitle(Html::escape($values['title']));
+          $problem_node->set('status', 1);
+          $problem_node->set('created', $created ? $created : time());
+          $problem_node->set('body', $values['body']);
+          $problem_node->set('comment', array(
               'status' => 2,
               'cid' => 0,
               'last_comment_timestamp' => 0,
               'last_comment_name' => '',
               'last_comment_uid' => 0,
               'comment_count' => 0,
-          ),
-          'field_attachment' => $values['attachment'],
-          'field_closed' => $values['closed'],
-          'field_comments' => array(
+                  )
+          );
+          $problem_node->set('field_attachment', Html::escape($values['attachment']));
+          $problem_node->set('field_closed', $values['closed']);
+          $problem_node->set('field_comments', array(
               'value' => $values['comment'],
               'format' => 'basic_html',
-          ),
-          'field_diagnose' => $values['diagnose'],
-          'field_eroffnet' => $values['eroffnet'],
-          'field_function' => array(
-              'value' => $values['function'],
-          ),
-          'field_priority' => $values['priority'],
-          'field_problem_eroffnet' => $eroffnet,
-          'field_problem_status' => Html::escape($values['status']),
-          'field_processing' => $values['processing'],
-          'field_release' => $values['release'],
-          // 'field_sdcallid' => $values['sdcallid'],.
-          'field_services' => array(
+                  )
+          );
+          $problem_node->set('field_services', array(
               'target_id' => $values['service'],
-          ),
-          // 'field_timezone' => $values['timezone'],.
-          'field_solution' => array(
+                  )
+          );
+          $problem_node->set('field_diagnose', $values['diagnose']);
+          $problem_node->set('field_eroffnet', $values['eroffnet']);
+          $problem_node->set('field_function', $values['function']);
+          $problem_node->set('field_priority', $values['priority']);
+          $problem_node->set('field_problem_eroffnet', $eroffnet);
+          $problem_node->set('field_problem_status', $values['status']);
+          $problem_node->set('field_processing', $values['processing']);
+          $problem_node->set('field_release', $values['release']);
+          // $problem_node->set('field_sdcallid', $values['sdcallid']);.
+          $problem_node->set('field_solution', array(
               'value' => $values['solution'],
               'format' => 'basic_html',
-          ),
-          'field_s_no' => $values['sno'],
-          'field_task_force' => $values['taskforce'],
-          // 'field_ticketstore_count' => $values['ticketstore_count'],
-          'field_ticketstore_link' => array(
-              'value' => $values['ticketstore_link'],
-              'format' => 'basic_html',
-          ),
-//                'field_ticketstore_link' => $values['ticketstore_link'],
-          'field_version' => $values['version'],
-          'field_work_around' => array(
+          ));
+          // $problem_node->set('field_s_no', $values['sno']);
+          // $problem_node->set('field_release', $values['release']);.
+          $problem_node->set('field_task_force', array($values['taskforce']));
+          // $problem_node->set('field_release', $values['release']);
+          // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
+          // $problem_node->set('field_release', $values['release']);
+          $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
+          // $problem_node->set('field_timezone', $values['timezone']);.
+          $problem_node->set('field_version', $values['version']);
+          $problem_node->set('field_work_around', array(
               'value' => $values['workaround'],
-              // 'timezone' =>  $values['timezone'],.
               'format' => 'basic_html',
-          ),
-          'status' => 1,
-      );
+          ));
+          $problem_node->save();
+          return TRUE;
+        }
+      } else {
+        $node_array = array(
+            'nid' => array(''),
+            'vid' => array(''),
+            'type' => 'problem',
+            'title' => Html::escape($values['title']),
+            'uid' => 1,
+            'status' => 1,
+            'created' => time(),
+            'body' => array(
+                'summary' => '',
+                'value' => $values['body'],
+                'format' => 'basic_html',
+            ),
+            'comment' => array(
+                'status' => 2,
+                'cid' => 0,
+                'last_comment_timestamp' => 0,
+                'last_comment_name' => '',
+                'last_comment_uid' => 0,
+                'comment_count' => 0,
+            ),
+            'field_attachment' => $values['attachment'],
+            'field_closed' => $values['closed'],
+            'field_comments' => array(
+                'value' => $values['comment'],
+                'format' => 'basic_html',
+            ),
+            'field_diagnose' => $values['diagnose'],
+            'field_eroffnet' => $values['eroffnet'],
+            'field_function' => array(
+                'value' => $values['function'],
+            ),
+            'field_priority' => $values['priority'],
+            'field_problem_eroffnet' => $eroffnet,
+            'field_problem_status' => Html::escape($values['status']),
+            'field_processing' => $values['processing'],
+            'field_release' => $values['release'],
+            // 'field_sdcallid' => $values['sdcallid'],.
+            'field_services' => array(
+                'target_id' => $values['service'],
+            ),
+            // 'field_timezone' => $values['timezone'],.
+            'field_solution' => array(
+                'value' => $values['solution'],
+                'format' => 'basic_html',
+            ),
+            'field_s_no' => $values['sno'],
+            'field_task_force' => $values['taskforce'],
+            // 'field_ticketstore_count' => $values['ticketstore_count'],
+            'field_ticketstore_link' => array(
+                'value' => $values['ticketstore_link'],
+                'format' => 'basic_html',
+            ),
+  //                'field_ticketstore_link' => $values['ticketstore_link'],
+            'field_version' => $values['version'],
+            'field_work_around' => array(
+                'value' => $values['workaround'],
+                // 'timezone' =>  $values['timezone'],.
+                'format' => 'basic_html',
+            ),
+            'status' => 1,
+        );
 
-      $node = Node::create($node_array);
-      try {
+        $node = Node::create($node_array);
         $node->save();
         $nid = $node->id();
-      }
-      catch (Exception $e) {
-        $body = t("Problems node couldn't created. Error in csv row titled @title" , [
-          '@title' =>  $values['title']
-        ]);
-        \Drupal::logger('problem_management')->error($body);
-        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-        HzdStorage::insert_import_status($status, $body);
-        return FALSE;
-      }
-      if ($nid) {
-        // $group_id = \Drupal::routeMatch()->getParameter('group');
-        $group = Group::load($group_id['0']);
-        // Adding node to group.
-        $group_content = GroupContent::create([
-                    'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
-                    'gid' => $group_id,
-                    'entity_id' => $node->id(),
-                    'request_status' => 1,
-                    'label' => $values['title'],
-                    'uid' => 1,
-        ]);
-        try {
+        if ($nid) {
+          // $group_id = \Drupal::routeMatch()->getParameter('group');
+          $group = Group::load($group_id['0']);
+          // Adding node to group.
+          $group_content = GroupContent::create([
+                      'type' => $group->getGroupType()->getContentPlugin('group_node:problem')->getContentTypeConfigId(),
+                      'gid' => $group_id,
+                      'entity_id' => $node->id(),
+                      'request_status' => 1,
+                      'label' => $values['title'],
+                      'uid' => 1,
+          ]);
           $group_content->save();
         }
-        catch (Exception $e) {
-          $body = t("Problems node coudn't be attached to group. Error in csv row titled @title",
-            [
-              '@title' =>  $values['title']
-            ]);
-          \Drupal::logger('problem_management')->error($body);
-          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-          HzdStorage::insert_import_status($status, $body);
-          return FALSE;
-        }
+        return TRUE;
       }
-      return TRUE;
+    }
+    catch (Exception $e) {
+      $body = $e->getMessage();
+      \Drupal::logger('problem_management')->error($body);
+      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+      HzdStorage::insert_import_status($status, $body);
     }
     return FALSE;
   }
