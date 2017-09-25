@@ -520,6 +520,25 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     ];
 
   }
+
+  // Altering the actions available for a node form, either add or edit.
+  $build_info = $form_state->getBuildInfo();
+  if (isset($build_info['base_form_id']) && $build_info['base_form_id'] == 'node_form') {
+    $form_object = $form_state->getFormObject();
+    $entity = $form_object->getEntity();
+    $bundle = $entity->bundle();
+
+    // Any bundle key added here will have unpublish option, else action is removed.
+    $allowed_bundles = [
+      'quickinfo',
+    ];
+
+    if (!in_array($bundle, $allowed_bundles)) {
+      unset($form['actions']['unpublish']);
+    }
+  }
+
+
 }
 
 function requst_submit_handler(&$form, $form_state) {
