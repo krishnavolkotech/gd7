@@ -3384,8 +3384,7 @@ body.page-node-type-forum .field--name-taxonomy-forums .field--item{
 body.page-node-type-forum .field--name-taxonomy-forums .field-label{
   padding-right:5px !important;
 }
-body.page-node-type-forum .js-comment h3,
-.early_warning_comment_wrapper .top-bar{
+.comment__content .top-bar{
   width:100%;
   float:left;
   padding-top:10px;

@@ -32,4 +32,7 @@ permissions:
   17: 'create group_node:deployed_releases content'
   18: 'update own group_node:deployed_releases content'
   19: 'view group_node:forum entity'
-  32: 'view group_node:forum content'
+  20: 'view group_node:forum content'
+  32: 'create group_node:forum entity'
+  33: 'update own group_node:forum entity'
+  35: 'create group_node:forum content'

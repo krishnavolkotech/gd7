@@ -90,8 +90,11 @@ class ReleaseFilterForm extends FormBase
 //    else {
 //      $rel_path = '::releases_search_results';
 //    }
-        
+
         if ($type == 'deployed') {
+          if (!$filter_value['deployed_type']) {
+            $filter_value['deployed_type'] = "current";
+          }
             $states = get_all_user_state();
             $form['states'] = array(
                 '#type' => 'select',
@@ -116,7 +119,7 @@ class ReleaseFilterForm extends FormBase
                     'onchange' => 'this.form.submit()',
                 ),
             );
-            
+
             $types = array(
                 'all' => t('All'),
                 'current' => t('Current'),
