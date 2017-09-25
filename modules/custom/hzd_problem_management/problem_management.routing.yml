@@ -4,7 +4,8 @@ problem_management.read_problem_csv:
     _controller: '\Drupal\problem_management\Controller\ReadexcelController::read_problem_csv'
     _title: 'Import Problems'
   requirements:
-    _permission: 'administer problems'
+    _access: 'TRUE'
+#    _permission: 'administer problems'
 
 problem_management.problem_settings:
   path: 'group/{group}/problem_settings'

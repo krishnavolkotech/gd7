@@ -3,6 +3,7 @@ langcode: de
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment_forum.mail
     - core.entity_view_mode.node.mail
     - field.field.node.forum.body
     - field.field.node.forum.comment
@@ -11,6 +12,7 @@ dependencies:
     - field.field.node.forum.upload
     - node.type.forum
   module:
+    - comment
     - entity_print
     - text
     - user
@@ -31,6 +33,15 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  comment_forum:
+    type: comment_default
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      view_mode: mail
+      pager_id: 0
+    third_party_settings: {  }
   entity_print_view:
     weight: 0
     settings: {  }
@@ -46,7 +57,6 @@ content:
     region: content
 hidden:
   comment: true
-  comment_forum: true
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

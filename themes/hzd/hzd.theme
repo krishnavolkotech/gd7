@@ -15,6 +15,7 @@ use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 
 /**
  * @param $variables
@@ -188,6 +189,12 @@ function hzd_preprocess_node(&$variables) {
     $variables['quickinfo_field_unique_id'] = $variables['node']->get('field_unique_id')
         ->getFieldDefinition()
         ->getLabel() . $variables['node']->get('field_unique_id')->value;
+  }
+  if ($variables['node']->getType() == 'quickinfo' && $variables['node']->hasField('field_unique_id')) {
+    foreach($variables['node']->get('upload')->referencedEntities() as $key => $value) {
+        $fileentity = \Drupal\file\Entity\File::load($value->id());
+        $fileentity->node_view_mode= $viewMode;
+    }
   }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
@@ -816,4 +823,29 @@ function hzd_preprocess_page_title(&$vars) {
 function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
   $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
+  $variables['node_view_mode'] = $file->node_view_mode;
+}
+
+function hzd_preprocess_field(&$variables) {
+  $element = $variables['element'];
+  if ($element['#field_type'] == 'comment') {
+      $variables['comment_view_mode'] = $element['#view_mode'];
+  }
+}
+
+function hzd_preprocess_comment(&$variables) {
+  /** @var \Drupal\comment\CommentInterface $comment */
+  // $comment = $variables['elements'];
+  $comment = $variables['elements']['#comment'];
+  if($variables['elements']['#view_mode'] == 'mail') {
+    $variables['title'] = $comment->getSubject();
+    $variables['submitted'] = t('Submitted by @username on @datetime', ['@username' => $comment->getOwner()->getDisplayName(), '@datetime' => $variables['created']]);
+
+    $variables['permalink'] = '';
+    if ($comment->hasParentComment()) {
+      $comment_parent = $comment->getParentComment();
+      $variables['parent'] = t('In reply to @parent_title by @parent_username',
+          ['@parent_username' => $comment->getOwner()->getDisplayName(), '@parent_title' => $comment_parent->getSubject()]);
+    }
+  }
 }

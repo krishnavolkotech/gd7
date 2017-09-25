@@ -1,0 +1,30 @@
+uuid: 9fa6f27b-394b-4cf8-83d7-83fd19a8856f
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_no_subject
+    - core.entity_view_mode.comment.mail
+    - field.field.comment.comment_no_subject.comment_body
+    - field.field.comment.comment_no_subject.field_do_not_send_notifications
+  module:
+    - text
+id: comment.comment_no_subject.mail
+targetEntityType: comment
+bundle: comment_no_subject
+mode: mail
+content:
+  comment_body:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_do_not_send_notifications: true
+  langcode: true
+  links: true

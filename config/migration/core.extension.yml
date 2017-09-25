@@ -63,6 +63,7 @@ module:
   hzd_services: 0
   hzd_user_customizations: 0
   image: 0
+  imce: 0
   inactive_user: 0
   inline_entity_form: 0
   kint: 0
@@ -110,9 +111,6 @@ module:
   text: 0
   token: 0
   toolbar: 0
-  tour: 0
-  tour_builder: 0
-  tour_ui: 0
   ultimate_cron: 0
   update: 0
   user: 0

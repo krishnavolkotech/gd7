@@ -32,6 +32,11 @@
 #}
 <html>
 <head>
+<!--[if mso]>
+<style type="text/css">
+table tr td {font-family: arial,sans-serif !important;}
+</style>
+<![endif]-->
 <style type="text/css">
 @font-face {
   font-family: 'Roboto';
@@ -40,6 +45,7 @@
   src: local('Roboto Medium'), local('Roboto-Medium'), url({{ base_url }}/themes/hzd/fonts/roboto/roboto-500-normal-ext.woff2) format('woff2');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
+
 table tr td {
     font-family: Roboto, sans-serif !important;
     padding: 0;
@@ -129,7 +135,6 @@ h1{
   text-align: left;
   padding-right: 1em;
   height: 45px;
-  font-family: arial,sans-serif;
   text-indent: 7px;
   border-radius: 0 !important;
 }
@@ -186,20 +191,14 @@ p:last-child {
     margin: 0px;
     text-align: left;
 }
-.downtimes-email-wrapper .Incident {
-    width: 100%;
-    float: left;
-    margin-bottom: 10px;
+.downtimes-email-wrapper tr td,
+.release-info tr td {
+  padding: 0 2% 3px 0 !important;
+  vertical-align: top;
 }
-.downtimes-email-wrapper .Incident .downtimes_title {
-    font-weight: 600;
-    float: left;
-    width: 24%;
-    margin: 0 2% 3px 0;
-}
-.downtimes-email-wrapper .Incident .downtimes_content {
-    width: 73%;
-    float: left;
+
+.downtimes-email-wrapper tr {
+  padding-bottom: 10px !important; 
 }
 .downtimes-email-wrapper .downtime-view-history {
     width: 100%;
@@ -318,9 +317,18 @@ h1.page-header {
     border-radius: 5px !important;
     border-collapse: inherit !important;
 }
-article.page .content table {
+.page .content table {
     width: 100% !important;
 }
+.top-bar {
+    width: 100%;
+    float: left;
+    padding-top: 10px;
+    border-top: 1px solid #dddddd;
+    margin: 10px 0 0 0 !important;
+}
+
+
 </style>
 
 </head>

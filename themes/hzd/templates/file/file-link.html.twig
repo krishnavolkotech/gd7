@@ -27,14 +27,26 @@
       <span class="file-icon">{{ icon }}</span>
       <span class="sr-only">
         <span class="file-link">{{ link }}</span>
+        {% if node_view_mode != 'mail' %}
         <span class='hzd-file-created'>{{ file_created }}</span>
         <span class="file-size">{{ file_size }}</span>
+        {% endif %}
       </span>
     {% else %}
       {% if icon_position == 'after' %}
-        <span class="file-link">{{ link }}</span><span class='hzd-file-created'>{{ file_created }}</span><span class="file-size">{{ file_size }}</span><span class="file-icon">{{ icon }}</span>
+        <span class="file-link">{{ link }}</span>
+        {% if node_view_mode != 'mail' %}
+        <span class='hzd-file-created'>{{ file_created }}</span>
+        <span class="file-size">{{ file_size }}</span>
+        {% endif %}
+        <span class="file-icon">{{ icon }}</span>
       {% else %}
-        <span class="file-icon">{{ icon }}</span><span class="file-link">{{ link }}</span><span class='hzd-file-created'>{{ file_created }}</span><span class="file-size">{{ file_size }}</span>
+        <span class="file-icon">{{ icon }}</span>
+        <span class="file-link">{{ link }}</span>
+        {% if node_view_mode != 'mail' %}
+        <span class='hzd-file-created'>{{ file_created }}</span>
+        <span class="file-size">{{ file_size }}</span>
+        {% endif %}
       {% endif %}
     {% endif %}
   </span>

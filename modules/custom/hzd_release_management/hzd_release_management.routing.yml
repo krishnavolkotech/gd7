@@ -73,7 +73,8 @@ hzd_release_management.read_release_csv:
     _controller: '\Drupal\hzd_release_management\Controller\ReadexcelController::read_release_csv'
     _title: 'Import Releases'
   requirements:
-    _permission: 'administer releases'
+    _access: 'TRUE'
+#    _permission: 'administer releases'
 #   _csrf_token: 'TRUE'
 
 hzd_release_management.release_type_settings:
