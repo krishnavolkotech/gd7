@@ -538,7 +538,7 @@ function requst_submit_handler(&$form, $form_state) {
 function mailToGroupAdmins($data = []) {
 
   $data['subject'] = t("Membership Request for a Group - @label", ['@label' => $data['group']->label()]);
-  $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
+  $data['link'] = \Drupal\Core\Link::createFromRoute(t('View Pending Requests'), 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
     ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
     ->loadByGroup($data['group'], 'group_membership', [
