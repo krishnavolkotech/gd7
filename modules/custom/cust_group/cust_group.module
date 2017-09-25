@@ -28,6 +28,7 @@ use Drupal\Core\Link;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\pathauto\PathautoPatternInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -1055,6 +1056,20 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
   ) {
     $pattern->setPattern('[node:group_raw]/rz-schnellinfos/[node:title]');
   }
+}
+
+/**
+ * Implements hook_entity_update().
+ * Updating quick info node path alias when node update
+ */
+function cust_group_entity_update(EntityInterface $entity) {
+    if($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
+        $source = '/' . $entity->toUrl()->getInternalPath();
+        \Drupal::service('path.alias_storage')->delete(array('source' => $source, 'langcode' => 'de'));
+
+        $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+    }
 }
 
 
