@@ -812,6 +812,7 @@ function get_hzd_states_by_id($id = NULL) {
 function get_planning_file_data($type) {
   $plannigFileNodeIds = \Drupal::entityQuery('node')
     ->condition('field_planning_file_type', $type)
+    ->condition('field_upload_planning_file.%delta.display', 1)
     ->sort('changed', 'ASC')
     ->execute();
   $planningFileNodes = \Drupal\node\Entity\Node::loadMultiple(array_values($plannigFileNodeIds));
