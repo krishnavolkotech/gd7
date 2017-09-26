@@ -1,0 +1,8 @@
+uuid: 1b1ddf63-bd28-4b77-9cb7-3a07f1bb3ea7
+langcode: de
+status: true
+dependencies: {  }
+id: menu-60906
+label: 'Testgruppe moderiert'
+description: ''
+locked: false

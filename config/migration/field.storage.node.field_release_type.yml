@@ -17,16 +17,16 @@ settings:
   allowed_values:
     -
       value: '1'
-      label: Released
+      label: Bereitgestellt
     -
       value: '2'
-      label: Progress
+      label: 'In Bearbeitung'
     -
       value: '3'
-      label: Locked
+      label: Gesperrt
     -
       value: '4'
-      label: Ex_eoss
+      label: Best/Fakt
   allowed_values_function: ''
 module: options
 locked: false

@@ -8,7 +8,7 @@ id: node.early_warnings.title
 field_name: title
 entity_type: node
 bundle: early_warnings
-label: Title
+label: Titel
 description: ''
 required: true
 translatable: true

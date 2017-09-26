@@ -807,18 +807,15 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
     $path = 'private://rz-schnellinfos/';
     // Check $path directory can allow creating sub directory.
     if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
-      $form_state->setError($form['upload'], t("File directory don't have permission
-      to create sub directories. Please contact admin."));
+      $form_state->setError($form['upload'], t("Not able to create a subdirectory in the file system. Please contact the administrator."));
     }
     // Check $path directory allow creating files.
     if (!file_prepare_directory($path)) {
-      $form_state->setError($form['upload'], t("Files directory don't
-      have permission to create file. Please contact admin."));
+      $form_state->setError($form['upload'], t("Note able to create a file. Please contact the administrator."));
     }
     $directory = \Drupal::service('file_system')->realpath($path );
     if (!is_writable($directory)) {
-      $form_state->setError($form['upload'], t("Files directory don't 
-      have permission to create directory/file. Please contact admin."));
+      $form_state->setError($form['upload'], t("Not able to create a directory or file. Please contact the administrator."));
     }
   }
 }
