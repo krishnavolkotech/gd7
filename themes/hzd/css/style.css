@@ -2522,7 +2522,7 @@ form.node-downtimes-edit-form > .form-group {
 article.quickinfo .unpublished-quickinfo-pdf-preview,
 article.quickinfo .unpublished-quickinfo-edit-link {
     width: auto;
-    float: left;
+    /*float: left; */
     margin: 0 10px 0 0 !important;
 }
 article.quickinfo {
