@@ -196,6 +196,12 @@ function hzd_preprocess_node(&$variables) {
         $fileentity->node_view_mode= $viewMode;
     }
   }
+  if ($variables['node']->getType() == 'planning_files' && $variables['node']->hasField('field_upload_planning_file')) {
+    foreach($variables['node']->get('field_upload_planning_file')->referencedEntities() as $key => $value) {
+        $fileentity = \Drupal\file\Entity\File::load($value->id());
+        $fileentity->node_view_mode= $viewMode;
+    }
+  }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
     $reasons = array(

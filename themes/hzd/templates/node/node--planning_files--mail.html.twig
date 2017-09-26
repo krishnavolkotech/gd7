@@ -1,0 +1,17 @@
+<div class="planning-files-info">
+    <table>
+        {% if content.field_planning_file_type %}
+            <tr>
+                <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_planning_file_type.fieldDefinition.label }}</td>
+                <td>{{ content.field_planning_file_type }}</td>
+            </tr>
+        {% endif %}
+
+        {% if content.field_upload_planning_file %}
+            <tr>
+                <td  colspan="2">{{ content.field_upload_planning_file }}</td>
+            </tr>
+        {% endif %}
+    </table>
+
+</div>    
