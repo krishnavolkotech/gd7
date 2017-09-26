@@ -834,7 +834,9 @@ class HzdreleasemanagementStorage {
         $default_type = KONSONS;
       }
     }
-
+    if (!$filter_value['deployed_type']) {
+      $filter_value['deployed_type'] = "current";
+    }
     if ($filter_value['services']) {
       $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
     } else {
