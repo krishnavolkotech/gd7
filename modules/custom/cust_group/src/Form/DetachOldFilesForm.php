@@ -86,6 +86,11 @@ class DetachOldFilesForm extends FormBase {
       ->fetchCol();
 //      pr($oldD8Files);exit;
     $d8Node = Node::load($d6Node->nid);
+    if(!$d8Node){
+      \Drupal::logger('files_detach_error')
+        ->debug($d6Node->nid.'--Unable to find the node', ['files_detach_error']);
+      return false;
+    }
     $fileRemoved = 0;
 //      $removedIndexes = [];
 //      pr($d8Node->get('field_page_files')->getIterator());exit;

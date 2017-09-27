@@ -4,7 +4,7 @@ namespace Drupal\problem_management;
 
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\hzd_services\HzdservicesHelper;
-use Drupal\Core\Url;
+use Drupal\problem_management\Exception\CustomException;
 
 if (!defined('DISPLAY_LIMIT')) {
   define('DISPLAY_LIMIT', 20);
@@ -14,7 +14,7 @@ if (!defined('DISPLAY_LIMIT')) {
  * problem management common functions defined in this class
  */
 class HzdproblemmanagementHelper {
-  
+
 /**
  * Return the problems listing view (ProblemFilterFrom and table).
  * @param array $type
@@ -36,13 +36,13 @@ class HzdproblemmanagementHelper {
     );
     /**
      * send php variables to javascript file
-     */    
+     */
     $result['#attached']['drupalSettings']['search_string'] = t('Search Title, '
         . 'Description, cause, Workaround, solution');
     $result['#attached']['drupalSettings']['group_id'] = $group;
     $result['#attached']['drupalSettings']['type'] = $type;
     $result['#attached']['drupalSettings']['base_url'] = $base_url;
-    
+
     /**
      * add ProblemFilterFrom
      */
@@ -52,7 +52,7 @@ class HzdproblemmanagementHelper {
     $result['problems_default_display'] =
         HzdStorage::problems_default_display( $type, DISPLAY_LIMIT);
     $result['#suffix'] = "</div>";
-// sid load 
+// sid load
     return $result;
   }
 
@@ -69,112 +69,111 @@ class HzdproblemmanagementHelper {
    */
   static public function importing_problem_csv($path, $header_values) {
     setlocale(LC_ALL, 'de_DE.UTF-8');
-    $handle = fopen($path, "r");
-    if (fopen($path, "r")) {
-      $count = 1;
-      $readdata = fgetcsv($handle, 5000, ";");
-
-      if ($readdata) {
-        while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
-          if ($count == 0) {
-            $heading = $data;
-
-          }
-          else {
-
-            foreach ($data as $key => $value) {
-              $values[$header_values[$key]] = $data[$key];
-
-            }
-//            pr($header_values);
-//pr($data);exit;
-            if (count($values) == 1) {
-              // $mail = variable_get('import_mail', ' ');.
-              $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-              $subject = 'Error while import';
-              $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-              HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-              $status = t('Error');
-              $msg = t('Import file could not be parsed.');
-              HzdStorage::insert_import_status($status, $msg);
-              // watchdog('problem', $message, array(), 'error');.
-              \Drupal::logger('problem')->error($msg);
-              return t('Error with file either permissions denied or file corrupted');
-            }
-
-            $validation = self::validate_csv($values);
-
-            if ($validation) {
-
-              $insert = HzdStorage::saving_problem_node($values);
-              if ($insert) {
-                // TO DO :  New Node Inserted.
-                $output = 'New Node Inserted';
+    $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+    $subject = t('Error while import');
+    $body = t("There is an issue while importing of the file" . $path . "file coudn't be opened");
+    $msg = t('Import file handler not found');
+    $status = t('Error');
+    try {
+      $handle = fopen($path, "r");
+      if (!$handle) {
+        throw new CustomException("file handler not found. Error while importing problems.");
+      }
+      $msg = t("Import file couldn't not be found");
+      if (fopen($path, "r")) {
+        $count = 1;
+        $readdata = fgetcsv($handle, 5000, ";");
+        if (!$readdata) {
+          throw new CustomException("No data found. Error while importing problems.");
+        }
+        if ($readdata) {
+          while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+            if ($count == 0) {
+              $heading = $data;
+            } else {
+              foreach ($data as $key => $value) {
+                $values[$header_values[$key]] = $data[$key];
               }
-              else {
-                // $mail = variable_get('import_mail', ' ');.
-                $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-                $subject = 'Error while import';
+              if (count($values) == 1) {
                 $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
                 HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-                $status = t('Error');
-                $msg = t('Import file could not be parsed.');
+                HzdStorage::insert_import_status($status, $msg);
+                \Drupal::logger('problem')->error($msg);
+                return t('Error with file either permissions denied or file corrupted');
+              }
+
+              $validation = self::validate_csv($values);
+              if ($validation) {
+                $insert = HzdStorage::saving_problem_node($values);
+                if ($insert) {
+                  $output = 'New Node Inserted';
+                }
+                else {
+                  $body = t("There is an issue while importing of the file" . $path . ". Please check db log for error.");
+                  HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+                  HzdStorage::insert_import_status($status, $msg);
+                  // watchdog('problem', $message, array(), 'error');.
+                  \Drupal::logger('problem')->error($msg);
+                  return t('Error with file either permissions denied or file corrupted');
+                }
+              }
+              else {
+                $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
+                HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
                 HzdStorage::insert_import_status($status, $msg);
                 // watchdog('problem', $message, array(), 'error');.
                 \Drupal::logger('problem')->error($msg);
                 return t('Error with file either permissions denied or file corrupted');
               }
             }
-            else {
-              // $mail = variable_get('import_mail', ' ');.
-              $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-              $subject = 'Error while import';
-              $body = t("There is an issue while importing of the file" . $path . ". The details of error is provided below.");
-              HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-              $status = t('Error');
-              $msg = t('Import file could not be parsed.');
-              HzdStorage::insert_import_status($status, $msg);
-              // watchdog('problem', $message, array(), 'error');.
-              \Drupal::logger('problem')->error($msg);
-              return t('Error with file either permissions denied or file corrupted');
-            }
+            $count++;
           }
-          $count++;
+          if ( $count > 1) {
+            $status = t('OK');
+            $msg = t('File imported sucessfully.');
+            HzdStorage::insert_import_status($status, $msg);
+            // watchdog('problem', $message, array(), 'error');.
+            \Drupal::logger('problem')->info($msg);
+            return $msg;
+          }
+          else {
+            $status = t('Error');
+            $msg = t("File don't have records to import.");
+            HzdStorage::insert_import_status($status, $msg);
+            // watchdog('problem', $message, array(), 'error');.
+            \Drupal::logger('problem')->error($msg);
+            return $msg;
+          }
+        } else {
+          $body = t("There is an issue while importing of the file" . $path . ". No Data Found in imported csv");
+          HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+          $msg = t('No Data Found in imported csv');
+          HzdStorage::insert_import_status($status, $msg);
+          \Drupal::logger('problem')->error($msg);
+          return $msg;
         }
-        $status = t('OK');
-        $msg = t('File imported sucessfully.');
-        HzdStorage::insert_import_status($status, $msg);
-        // watchdog('problem', $message, array(), 'error');.
-        \Drupal::logger('problem')->error($msg);
-        return $msg;
       }
       else {
         // $mail = variable_get('import_mail', ' ');.
-        $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-        $subject = t('Error while import');
-        $body = t("There is an issue while importing of the file" . $path . ". No Data Found in imported csv");
+        // $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+        // $subject = t('Error while import');
+        $body = t("There is an issue while importing of the file" . $path . ". Error with file either permissions denied or file corrupted or No data in file.");
         HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-        $status = t('Error');
-        $msg = t('No Data Found in imported csv');
         HzdStorage::insert_import_status($status, $msg);
         // watchdog('problem', $message, array(), 'error');.
         \Drupal::logger('problem')->error($msg);
-        return t('No Data Found in imported csv');
+        return $body;
       }
     }
-    else {
-      // $mail = variable_get('import_mail', ' ');.
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-      $subject = t('Error while import');
-      $body = t("There is an issue while importing of the file" . $path . ". Error with file either permissions denied or file corrupted or No data in file.");
+    catch  (CustomException $e) {
+    }
+    catch (Exception $e) {
+      if (!$body) {
+        $body = $e->getMessage();
+      }
       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-
-      $status = t('Error');
-      $msg = t('Import file could not be parsed.');
       HzdStorage::insert_import_status($status, $msg);
-      // watchdog('problem', $message, array(), 'error');.
-      \Drupal::logger('problem')->error($msg);
-      return t('Error with file either permissions denied or file corrupted or No data in file');
+      \Drupal::logger('problem_management')->error($e->getMessage());
     }
     return TRUE;
   }
@@ -188,51 +187,25 @@ class HzdproblemmanagementHelper {
    * returns TRUE if the service exists.
    */
   static public function validate_csv(&$values) {
-
+    $mail = \Drupal::config('problem_management.settings')->get('import_mail');
     $type = 'problems';
     $service = $values['service'];
-
     if (!trim($values['sno'])) {
-
       return FALSE;
     }
-
     if (HzdservicesHelper::service_exist(trim($service), $type)) {
       $services = HzdservicesStorage::get_related_services($type);
       $service_id = array_keys(array_map('strtoupper', $services), strtoupper($service));
       $values['service'] = $service_id[0];
-
       return TRUE;
     }
     else {
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
       $subject = 'New service found while importing problems';
       $body = t(" We have found a new service " . $service . " which does not match the service in our database.");
       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
       return FALSE;
     }
-
     return FALSE;
-    /*
-    $service = db_result(db_query("select nid from {node} where title = '%s' and type = '%s'", $values['service'], 'services'));
-    if ($service) {
-    $values['service'] = $service;
-    return TRUE;
-    }
-    else {
-    $sucess = save_problem_services($values);
-    if ($sucess) {
-    $nid = db_result(db_query("select max(nid) from node where type = '%s'", 'services'));
-    drupal_set_message($nid);
-    $values['service'] = $nid;
-    return TRUE;
-    }
-    else {
-    return FALSE;
-    }
-    }
-    return FALSE;
-     */
   }
 
   /**

@@ -2,6 +2,7 @@
 
 namespace Drupal\hzd_release_management;
 
+use Dompdf\Exception;
 use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
@@ -29,82 +30,91 @@ class HzdreleasemanagementStorage {
    * @returns the status.
    */
   static public function release_reading_csv($handle, $header_values, $type, $file_path) {
-    setlocale(LC_ALL, 'de_DE.UTF-8');
-    // Delete the nodes if the release type is locked or in progress.
-    $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-    $release_type = $types[$type];
+    try {
+      setlocale(LC_ALL, 'de_DE.UTF-8');
+      // Delete the nodes if the release type is locked or in progress.
+      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
+      $release_type = $types[$type];
 
-    // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
-    // in-progress release will not get deleted.
-    if ($release_type == 3) {
-      /* db_query("DELETE FROM {node} WHERE nid in (SELECT nid FROM {content_type_release} ctr WHERE ctr.field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen')", $release_type);
-        db_query("DELETE FROM {content_type_release} WHERE field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen'", $release_type); */
-      $node_ids = db_select('node__field_release_type', 'nfrt');
-      $node_ids->join('node__field_status', 'nfs', 'nfrt.entity_id = nfs.entity_id');
-      $node_ids->Fields('nfrt', array('entity_id'));
-      $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
-      $nids = $node_ids->execute()->fetchCol();
+      // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
+      // in-progress release will not get deleted.
+      if ($release_type == 3) {
+        /* db_query("DELETE FROM {node} WHERE nid in (SELECT nid FROM {content_type_release} ctr WHERE ctr.field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen')", $release_type);
+          db_query("DELETE FROM {content_type_release} WHERE field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen'", $release_type); */
+        $node_ids = db_select('node__field_release_type', 'nfrt');
+        $node_ids->join('node__field_status', 'nfs', 'nfrt.entity_id = nfs.entity_id');
+        $node_ids->Fields('nfrt', array('entity_id'));
+        $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
+        $nids = $node_ids->execute()->fetchCol();
 
-      //Not sure is this is really necessary here.
-      $query = db_select('node', 'n');
-      $query->Fields('n', array('nid'));
-      $query->condition('nid', $nids, 'IN');
-      $locked_values = $query->execute()->fetchAll();
-      // $release_management_group_id = $query->execute()->fetchCol();
-      foreach ($locked_values as $locked_value) {
-        if (isset($locked_value)) {
-          $locked_nid_values[] = $locked_value->nid;
-        }
-      }
-      if (fopen($file_path, "r")) {
-        $file = fopen($file_path, "r");
-        if ($release_type == 3) {
-          $header_values['4'] = 'comment';
-        }
-        self::release_inprogress_reading_csv($file, $header_values, $locked_nid_values, $release_type);
-      }
-    }
-
-    // Removed releases from "in progress" that do not appear in the release database anymore.
-    if ($release_type == 2) {
-      $inprogress_values = db_select('node__field_release_type', 'nfrt')
-                      ->Fields('nfrt', array('entity_id'))
-                      ->condition('nfrt.field_release_type_value', '2', '=')
-                      ->execute()->fetchAll();
-
-      foreach ($inprogress_values as $inprogress_value) {
-        $inprogress_nid_values[] = $inprogress_value->entity_id;
-      }
-      if (fopen($file_path, "r")) {
-        $file = fopen($file_path, "r");
-        self::release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values);
-      }
-    }
-    $count = 0;
-    $sucess = false;
-    while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
-      $explodedData = explode(',', $data[0]);
-//            pr($explodedData);exit;
-      if ($count == 0) {
-        $heading = $data;
-      } else {
-        foreach ($explodedData as $key => $value) {
-          // droy: removed utf8_encode since it gives problems with data which is already utf8
-          // $values[$header_values[$key]] = utf8_encode($data[$key]);.
-//                    pr($value);
-          $values[$header_values[$key]] = $explodedData[$key];
-        }
-//                pr($values);exit;
-        // $values['type'] = SafeMarkup::checkPlain($type);
-        $values['type'] = $type;
-        if ($values['title']) {
-          $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
-          if ($validation) {
-            $sucess = self::saving_release_node($values);
+        //Not sure is this is really necessary here.
+        $query = db_select('node', 'n');
+        $query->Fields('n', array('nid'));
+        $query->condition('nid', $nids, 'IN');
+        $locked_values = $query->execute()->fetchAll();
+        // $release_management_group_id = $query->execute()->fetchCol();
+        foreach ($locked_values as $locked_value) {
+          if (isset($locked_value)) {
+            $locked_nid_values[] = $locked_value->nid;
           }
         }
+        if (fopen($file_path, "r")) {
+          $file = fopen($file_path, "r");
+          if ($release_type == 3) {
+            $header_values['4'] = 'comment';
+          }
+          self::release_inprogress_reading_csv($file, $header_values, $locked_nid_values, $release_type);
+        }
       }
-      $count++;
+
+      // Removed releases from "in progress" that do not appear in the release database anymore.
+      if ($release_type == 2) {
+        $inprogress_values = db_select('node__field_release_type', 'nfrt')
+          ->Fields('nfrt', array('entity_id'))
+          ->condition('nfrt.field_release_type_value', '2', '=')
+          ->execute()->fetchAll();
+
+        foreach ($inprogress_values as $inprogress_value) {
+          $inprogress_nid_values[] = $inprogress_value->entity_id;
+        }
+        if (fopen($file_path, "r")) {
+          $file = fopen($file_path, "r");
+          self::release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values);
+        }
+      }
+      $count = 0;
+      $sucess = false;
+      while (($data = fgetcsv($handle, 5000, ";")) !== FALSE) {
+        $explodedData = explode(',', $data[0]);
+//            pr($explodedData);exit;
+        if ($count == 0) {
+          $heading = $data;
+        } else {
+          foreach ($explodedData as $key => $value) {
+            // droy: removed utf8_encode since it gives problems with data which is already utf8
+            // $values[$header_values[$key]] = utf8_encode($data[$key]);.
+//                    pr($value);
+            $values[$header_values[$key]] = $explodedData[$key];
+          }
+//                pr($values);exit;
+          // $values['type'] = SafeMarkup::checkPlain($type);
+          $values['type'] = $type;
+          if ($values['title']) {
+            $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
+            if ($validation) {
+              $sucess = self::saving_release_node($values);
+            }
+          }
+        }
+        $count++;
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
     if ($sucess) {
       return TRUE;
@@ -117,95 +127,96 @@ class HzdreleasemanagementStorage {
    * Function for saving release node.
    */
   static public function saving_release_node($values) {
-    global $user;
-    if (!$values['title']) {
-      // @sending mail to user when file need permissions or when file is corrupted
-      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
-      $subject = 'Error while import';
-      $body = t("Required fields not found");
-      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-      $response = $type . t(' ERROR WHILE READING');
-    }
-
-    $query = \Drupal::database()->select('groups_field_data', 'gfd');
-    $query->Fields('gfd', array('id'));
-    $query->condition('label', 'release management', '=');
-    $group_id = $query->execute()->fetchCol();
-
-    $query = db_select('node_field_data', 'n');
-    $query->Fields('n', array('nid', 'vid', 'created'));
-    $query->condition('n.type', 'release', '=');
-    $query->condition('n.title', $values['title'], '=');
-    $node_info = $query->execute()->fetchAll();
-
-    foreach ($node_info as $info) {
-      $nid = $info->nid;
-      $vid = $info->vid;
-      $created = $info->created;
-    }
-
-    $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-
-
-    if (isset($nid) && $nid) {
-      // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
-      $field_date_value_query = db_select('node__field_date', 'ntr')
-              ->Fields('ntr', array('field_date_value'))
-              ->condition('entity_id', $nid, '=');
-
-      $field_date_value = $field_date_value_query->execute()->fetchAssoc();
-      // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
-      $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
-
-      $field_release_value = $field_release_value_query->execute()->fetchAssoc();
-      // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
-      //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
-      $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
-
-      $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
-    } else {
-      $field_date_value = ['field_date_value' => null];
-      $field_release_value = ['field_release_type_value' => null];
-      $field_documentation_link_value = ['field_documentation_link_value' => null];
-    }
-    if (isset($nid) && $nid) {
-      $node = Node::load($nid);
-      $node->set("vid", $vid);
-      $node->set("uid", 1);
-      $node->set("created", time());
-      $node->set("type", 'release');
-      $node->setTitle($values['title']);
-      // $node->set("submit", 'Save');
-      // $node->set("preview", 'Preview');
-      //  $node->set("form_id", 'release_node_form');.
-      $node->set("comment", 2);
-      $node->set("field_status", $values['status']);
-      $node->set("field_relese_services", $values['service']);
-      $node->set("field_date", $values['datum']);
-      if ($values['type'] == 'locked') {
-        $node->set("field_release_comments", $values['comment']);
-      } else {
-        $node->set("field_link", $values['link']);
-        $node->set("field_documentation_link", $values['documentation_link']);
+    try {
+      global $user;
+      if (!$values['title']) {
+        // @sending mail to user when file need permissions or when file is corrupted
+        $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+        $subject = 'Error while import';
+        $body = t("Required fields not found");
+        HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+        $response = $type . t(' ERROR WHILE READING');
       }
 
-      $node->set("field_release_type", $types[$values['type']]);
-      /**
-       * $node->set("og_initial_groups", Array(
-       * '0' => $release_management_group_id['0'],
-       * ));
-       * $node->set("og_public", 0);
-       * $node->set("og_groups", Array(
-       * $release_management_group_id => $release_management_group_id['0'],
-       * ));
-       */
-      // $node->set("notifications_content_disable", 0);
-      // $node->set("teaser", '');
-      //  $node->set("validated", 1);.
-      $node->set("status", 1);
-      $node->save();
-    } else {
-      $node_array = array(
+      $query = \Drupal::database()->select('groups_field_data', 'gfd');
+      $query->Fields('gfd', array('id'));
+      $query->condition('label', 'release management', '=');
+      $group_id = $query->execute()->fetchCol();
+
+      $query = db_select('node_field_data', 'n');
+      $query->Fields('n', array('nid', 'vid', 'created'));
+      $query->condition('n.type', 'release', '=');
+      $query->condition('n.title', $values['title'], '=');
+      $node_info = $query->execute()->fetchAll();
+
+      foreach ($node_info as $info) {
+        $nid = $info->nid;
+        $vid = $info->vid;
+        $created = $info->created;
+      }
+
+      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
+
+
+      if (isset($nid) && $nid) {
+        // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
+        $field_date_value_query = db_select('node__field_date', 'ntr')
+          ->Fields('ntr', array('field_date_value'))
+          ->condition('entity_id', $nid, '=');
+
+        $field_date_value = $field_date_value_query->execute()->fetchAssoc();
+        // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
+        $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
+
+        $field_release_value = $field_release_value_query->execute()->fetchAssoc();
+        // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
+        //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
+        $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
+
+        $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
+      } else {
+        $field_date_value = ['field_date_value' => null];
+        $field_release_value = ['field_release_type_value' => null];
+        $field_documentation_link_value = ['field_documentation_link_value' => null];
+      }
+      if (isset($nid) && $nid) {
+        $node = Node::load($nid);
+        $node->set("vid", $vid);
+        $node->set("uid", 1);
+        $node->set("created", time());
+        $node->set("type", 'release');
+        $node->setTitle($values['title']);
+        // $node->set("submit", 'Save');
+        // $node->set("preview", 'Preview');
+        //  $node->set("form_id", 'release_node_form');.
+        $node->set("comment", 2);
+        $node->set("field_status", $values['status']);
+        $node->set("field_relese_services", $values['service']);
+        $node->set("field_date", $values['datum']);
+        if ($values['type'] == 'locked') {
+          $node->set("field_release_comments", $values['comment']);
+        } else {
+          $node->set("field_link", $values['link']);
+          $node->set("field_documentation_link", $values['documentation_link']);
+        }
+
+        $node->set("field_release_type", $types[$values['type']]);
+        /**
+         * $node->set("og_initial_groups", Array(
+         * '0' => $release_management_group_id['0'],
+         * ));
+         * $node->set("og_public", 0);
+         * $node->set("og_groups", Array(
+         * $release_management_group_id => $release_management_group_id['0'],
+         * ));
+         */
+        // $node->set("notifications_content_disable", 0);
+        // $node->set("teaser", '');
+        //  $node->set("validated", 1);.
+        $node->set("status", 1);
+        $node->save();
+      } else {
+        $node_array = array(
           // 'nid' => ($nid ? $nid : ''),
           // 'vid' => ($vid ? $vid : ''),.
           'uid' => 1,
@@ -219,29 +230,29 @@ class HzdreleasemanagementStorage {
           'form_id' => 'release_node_form',
           'comment' => 2,
           'field_status' => array(
-              '0' => array(
-                  'value' => $values['status'],
-              ),
+            '0' => array(
+              'value' => $values['status'],
+            ),
           ),
           'field_relese_services' => array(
-              '0' => array(
-                  'target_id' => $values['service'],
-              ),
+            '0' => array(
+              'target_id' => $values['service'],
+            ),
           ),
           'field_date' => array(
-              '0' => array(
-                  'value' => $values['datum'],
-              ),
+            '0' => array(
+              'value' => $values['datum'],
+            ),
           ),
           'field_release_type' => array(
-              '0' => array(
-                  'value' => $types[$values['type']],
-              ),
+            '0' => array(
+              'value' => $types[$values['type']],
+            ),
           ),
           'field_release_type' => array(
-              '0' => array(
-                  'value' => $types[$values['type']],
-              ),
+            '0' => array(
+              'value' => $types[$values['type']],
+            ),
           ),
           /**
            * 'og_initial_groups' => Array(
@@ -255,63 +266,71 @@ class HzdreleasemanagementStorage {
           'notifications_content_disable' => 0,
           'teaser' => '',
           'validated' => 1,
-      );
-
-      if ($values['type'] == 'locked') {
-        $node_array['field_release_comments'] = array(
-            '0' => array(
-                'value' => $values['comment'],
-            ),
-        );
-      } else {
-        $node_array['field_link'] = array(
-            '0' => array(
-                'value' => $values['link'],
-            ),
         );
 
-        $node_array['field_documentation_link'] = array(
+        if ($values['type'] == 'locked') {
+          $node_array['field_release_comments'] = array(
             '0' => array(
-                'value' => $values['documentation_link'],
+              'value' => $values['comment'],
             ),
-        );
+          );
+        } else {
+          $node_array['field_link'] = array(
+            '0' => array(
+              'value' => $values['link'],
+            ),
+          );
+
+          $node_array['field_documentation_link'] = array(
+            '0' => array(
+              'value' => $values['documentation_link'],
+            ),
+          );
+        }
+
+        $node = Node::create($node_array);
+        $node->save();
+        $nid = $node->id();
+        if ($node->id()) {
+          // $group_id = \Drupal::routeMatch()->getParameter('group');
+          $group = Group::load($group_id['0']);
+          $group_content = GroupContent::create([
+            'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
+            'gid' => $group_id['0'],
+            'entity_id' => $node->id(),
+            'request_status' => 1,
+            'label' => $values['title'],
+            'uid' => 1,
+          ]);
+          $group_content->save();
+        }
       }
 
-      $node = Node::create($node_array);
-      $node->save();
-      $nid = $node->id();
-      if ($node->id()) {
-        // $group_id = \Drupal::routeMatch()->getParameter('group');
-        $group = Group::load($group_id['0']);
-        $group_content = GroupContent::create([
-                    'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
-                    'gid' => $group_id['0'],
-                    'entity_id' => $node->id(),
-                    'request_status' => 1,
-                    'label' => $values['title'],
-                    'uid' => 1,
-        ]);
-        $group_content->save();
-      }
-    }
+      // $title = db_result(db_query("select title from {node} where title = '%s' ", $values['title']));.
+      $title_query = db_select('node_field_data', 'nfd')
+        ->Fields('nfd', array('title'))
+        ->condition('title', $values['title'], '=')->execute()->fetchAssoc();
 
-    // $title = db_result(db_query("select title from {node} where title = '%s' ", $values['title']));.
-    $title_query = db_select('node_field_data', 'nfd')
-                    ->Fields('nfd', array('title'))
-                    ->condition('title', $values['title'], '=')->execute()->fetchAssoc();
-
-    $title = $title_query['title'];
-    // Downloading the documentation link.
-    $params = array(
+      $title = $title_query['title'];
+      // Downloading the documentation link.
+      $params = array(
         "title" => $title,
         "date_value" => $field_date_value['field_date_value'] ?: null,
         "release_value" => $field_release_value['field_release_type_value'] ?: null,
         "doku_link" => $field_documentation_link_value['field_documentation_link_value'] ?: null,
-    );
+      );
 
-    if ($values['type'] != 'locked')
-      self::documentation_link_download($params, $values);
-
+      if ($values['type'] != 'locked')
+        self::documentation_link_download($params, $values);
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+      return FALSE;
+    }
     return TRUE;
   }
 
@@ -323,40 +342,50 @@ class HzdreleasemanagementStorage {
    * @inprogress_nid_values: nids where the release type is progress.
    */
   static public function release_inprogress_reading_csv($file, $header_values, $inprogress_nid_values, $type = '') {
-    setlocale(LC_ALL, 'de_DE.UTF-8');
-    $count_data = 0;
-    while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
-      if ($count_data == 0) {
-        $heading = $data;
-      } else {
-        if ($type == 3) {
-          $header_values['4'] = 'comment';
-        }
-        foreach ($data as $key => $value) {
-          // droy: removed utf8_encode since it gives issues when data is already in utf8 (setlocale above).
-          // $values[$header_values[$key]] = utf8_encode($data[$key]);.
-          $values[$header_values[$key]] = $data[$key];
-        }
+    try {
+      setlocale(LC_ALL, 'de_DE.UTF-8');
+      $count_data = 0;
+      while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
+        if ($count_data == 0) {
+          $heading = $data;
+        } else {
+          if ($type == 3) {
+            $header_values['4'] = 'comment';
+          }
+          foreach ($data as $key => $value) {
+            // droy: removed utf8_encode since it gives issues when data is already in utf8 (setlocale above).
+            // $values[$header_values[$key]] = utf8_encode($data[$key]);.
+            $values[$header_values[$key]] = $data[$key];
+          }
 
-        $query = db_select('node_field_data', 'n');
-        $query->Fields('n', array('nid'));
-        $query->condition('title', $values['title'], '=');
-        $inprogress_csv_nid = $query->execute()->fetchCol();
-        $inprogress_csv_nid_values[] = $inprogress_csv_nid;
+          $query = db_select('node_field_data', 'n');
+          $query->Fields('n', array('nid'));
+          $query->condition('title', $values['title'], '=');
+          $inprogress_csv_nid = $query->execute()->fetchCol();
+          $inprogress_csv_nid_values[] = $inprogress_csv_nid;
+        }
+        $count_data++;
       }
-      $count_data++;
+      if ($type == 3) {
+        // Unpublish releases that are not present in locked csv file.
+        self::locked_release_node($inprogress_csv_nid_values, $inprogress_nid_values);
+      } else {
+        // Remove releases that are not present in inprogress csv file.
+        self::inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values);
+      }
     }
-    if ($type == 3) {
-      // Unpublish releases that are not present in locked csv file.
-      self::locked_release_node($inprogress_csv_nid_values, $inprogress_nid_values);
-    } else {
-      // Remove releases that are not present in inprogress csv file.
-      self::inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values);
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
   }
 
   /**
-   *
+   * @param $locked_csv_nid_values
+   * @param $locked_nid_values
    */
   static public function locked_release_node($locked_csv_nid_values, $locked_nid_values) {
     if (is_array($locked_nid_values)) {
@@ -391,148 +420,157 @@ class HzdreleasemanagementStorage {
    * Function for documentation link.
    */
   static public function documentation_link_download($params, $values) {
-    $title = $params['title'];
-    $field_release_value = $params['release_value'];
-    $field_date_value = $params['date_value'];
-    $field_documentation_link_value = $params['doku_link'];
-    $values_service = $values['service'];
-    $values_title = $values['title'];
+    try {
+      $title = $params['title'];
+      $field_release_value = $params['release_value'];
+      $field_date_value = $params['date_value'];
+      $field_documentation_link_value = $params['doku_link'];
+      $values_service = $values['service'];
+      $values_title = $values['title'];
 
-    $link = $values['documentation_link'];
+      $link = $values['documentation_link'];
 
-    $values_date = $values['datum'];
+      $values_date = $values['datum'];
 
-    // $service = strtolower(db_result(db_query("SELECT title FROM {node} where nid= %d", $values_service)));.
-    $service_query = db_select('node_field_data', 'nfd')
-            ->Fields('nfd', array('title'))
-            ->condition('nid', $values_service, '=');
-    $service_query = $service_query->execute()->fetchAssoc();
-    $service = $service_query['title'];
-    // $nid = db_result(db_query("SELECT nid FROM {node} where title = '%s' ", $values_title));.
-    $db = \Drupal::database();
-    $query = $db->select('node_field_data', 'nfd');
-    $query->fields('nfd', array('nid'));
-    $query->condition('title', $values_title, '=');
-    $nid_query = $query->execute()->fetchAssoc();
+      // $service = strtolower(db_result(db_query("SELECT title FROM {node} where nid= %d", $values_service)));.
+      $service_query = db_select('node_field_data', 'nfd')
+        ->Fields('nfd', array('title'))
+        ->condition('nid', $values_service, '=');
+      $service_query = $service_query->execute()->fetchAssoc();
+      $service = $service_query['title'];
+      // $nid = db_result(db_query("SELECT nid FROM {node} where title = '%s' ", $values_title));.
+      $db = \Drupal::database();
+      $query = $db->select('node_field_data', 'nfd');
+      $query->fields('nfd', array('nid'));
+      $query->condition('title', $values_title, '=');
+      $nid_query = $query->execute()->fetchAssoc();
 
-    $nid = $nid_query['nid'];
-    // Create url alias.
-    /**
-     * $release_value_type = db_result(db_query("SELECT field_release_type_value
-     * FROM {content_type_release} WHERE nid = %d ", $nid));
-     */
-    $release_value_type_query = db_select('node__field_release_type', 'nfrt')
-            ->Fields('nfrt', array('field_release_type_value'))
-            ->condition('entity_id', $nid, '=');
-    $release_value_type_q = $release_value_type_query->execute()->fetchAssoc();
-    $release_value_type = $release_value_type_q['field_release_type_value'];
-
-    if (isset($release_value_type['field_release_type_value']) && $release_value_type['field_release_type_value'] != 3) {
-      $url_alias = create_url_alias($nid, $service, $values);
-    }
-    /**
-     * $count_nid = db_result(db_query("SELECT count(*)
-     * FROM {release_doc_failed_download_info}
-     * WHERE nid = %d", $nid));
-     */
-    $count_nid_query = db_select('release_doc_failed_download_info', 'rdfdi')
-            ->Fields('rdfdi', array('nid'))
-            ->condition('nid', $nid, '=');
-
-    $count_nid = $count_nid_query->countQuery()->execute()->fetchField();
-
-    $field_release_type = db_select('node__field_release_type', 'nfrt')
-                    ->Fields('nfrt', array('field_release_type_value'))
-                    ->condition('entity_id', $nid, '=')->execute()->fetchAssoc();
-
-    /**
-     * $field_release_type_value = db_result(db_query("SELECT field_release_type_value
-     * FROM {content_type_release}
-     * WHERE nid=%d", $nid));
-     */
-    $field_release_type_value = $field_release_type['field_release_type_value'];
-
-    // Checked documentation link empty or not.
-    if ($link != '') {
-      /* Check It is new release or not
-       * Check Release status changes from inprogress to released
-       * Check how many times release import attempted.If three attempts unsuccesssful failure is perment.
-       * Check released release date/time changed or not.
+      $nid = $nid_query['nid'];
+      // Create url alias.
+      /**
+       * $release_value_type = db_result(db_query("SELECT field_release_type_value
+       * FROM {content_type_release} WHERE nid = %d ", $nid));
        */
+      $release_value_type_query = db_select('node__field_release_type', 'nfrt')
+        ->Fields('nfrt', array('field_release_type_value'))
+        ->condition('entity_id', $nid, '=');
+      $release_value_type_q = $release_value_type_query->execute()->fetchAssoc();
+      $release_value_type = $release_value_type_q['field_release_type_value'];
 
-      if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
+      if (isset($release_value_type['field_release_type_value']) && $release_value_type['field_release_type_value'] != 3) {
+        $url_alias = create_url_alias($nid, $service, $values);
+      }
+      /**
+       * $count_nid = db_result(db_query("SELECT count(*)
+       * FROM {release_doc_failed_download_info}
+       * WHERE nid = %d", $nid));
+       */
+      $count_nid_query = db_select('release_doc_failed_download_info', 'rdfdi')
+        ->Fields('rdfdi', array('nid'))
+        ->condition('nid', $nid, '=');
 
-        list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
+      $count_nid = $count_nid_query->countQuery()->execute()->fetchField();
 
-        // Check secure-download string is in documentation link. If yes excluded from documentation download.
-        if (empty($link_search)) {
-          $root_path = \Drupal::service('file_system')->realpath("private://");
-          $path = \Drupal::service('file_system')->realpath("private://") . "/releases";
-          // $service = "'" . $service . "'";.
-          $release_title = strtolower($release_title);
-          $service = strtolower($service);
-          $product = strtolower($product);
-          $paths = $path . "/" . $service . "/" . $product . "/" . $release_title . "/dokumentation";
+      $field_release_type = db_select('node__field_release_type', 'nfrt')
+        ->Fields('nfrt', array('field_release_type_value'))
+        ->condition('entity_id', $nid, '=')->execute()->fetchAssoc();
 
-          // Check the directory exist or not.
-          if (!is_dir(str_replace("'", "", $paths))) {
-            shell_exec("mkdir -p " . $path . "/" . $service . "/" . $product . "/" . $release_title . "/dokumentation");
-          }
-          $existing_zip_file = $paths . "/" . $compressed_file;
+      /**
+       * $field_release_type_value = db_result(db_query("SELECT field_release_type_value
+       * FROM {content_type_release}
+       * WHERE nid=%d", $nid));
+       */
+      $field_release_type_value = $field_release_type['field_release_type_value'];
 
-          /*
-           * Remove Documentation directory folders.
-           * Check Release status changes from inprogress to released.
-           * Check released release date/time changed or not.
-           */
-          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+      // Checked documentation link empty or not.
+      if ($link != '') {
+        /* Check It is new release or not
+         * Check Release status changes from inprogress to released
+         * Check how many times release import attempted.If three attempts unsuccesssful failure is perment.
+         * Check released release date/time changed or not.
+         */
 
-            $dokument_zip = explode("/", $field_documentation_link_value);
-            $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
-            $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-            $zip_version_path = $root_path . "/releases/downloads/" . $title . "_doku.zip";
-            if (!empty($dokument_zip_file_name)) {
-              if (file_exists($zip_version_path)) {
-                shell_exec("rm -rf " . $zip_version_path);
+        if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
+
+          list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
+
+          // Check secure-download string is in documentation link. If yes excluded from documentation download.
+          if (empty($link_search)) {
+            $root_path = \Drupal::service('file_system')->realpath("private://");
+            $path = \Drupal::service('file_system')->realpath("private://") . "/releases";
+            // $service = "'" . $service . "'";.
+            $release_title = strtolower($release_title);
+            $service = strtolower($service);
+            $product = strtolower($product);
+            $paths = $path . "/" . $service . "/" . $product . "/" . $release_title . "/dokumentation";
+
+            // Check the directory exist or not.
+            if (!is_dir(str_replace("'", "", $paths))) {
+              shell_exec("mkdir -p " . $path . "/" . $service . "/" . $product . "/" . $release_title . "/dokumentation");
+            }
+            $existing_zip_file = $paths . "/" . $compressed_file;
+
+            /*
+             * Remove Documentation directory folders.
+             * Check Release status changes from inprogress to released.
+             * Check released release date/time changed or not.
+             */
+            if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+
+              $dokument_zip = explode("/", $field_documentation_link_value);
+              $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
+              $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+              $zip_version_path = $root_path . "/releases/downloads/" . $title . "_doku.zip";
+              if (!empty($dokument_zip_file_name)) {
+                if (file_exists($zip_version_path)) {
+                  shell_exec("rm -rf " . $zip_version_path);
+                }
               }
-            }
-            $remove_docs = scandir(str_replace("'", "", $paths));
-            unset($remove_docs[0]);
-            unset($remove_docs[1]);
-            foreach ($remove_docs as $doc_files) {
-              shell_exec("rm -rf " . $paths . "/" . $doc_files);
-            }
-            // cache_clear_all('release_doc_import_'.$nid, 'cache');.
+              $remove_docs = scandir(str_replace("'", "", $paths));
+              unset($remove_docs[0]);
+              unset($remove_docs[1]);
+              foreach ($remove_docs as $doc_files) {
+                shell_exec("rm -rf " . $paths . "/" . $doc_files);
+              }
+              // cache_clear_all('release_doc_import_'.$nid, 'cache');.
 //                        drupal_flush_all_caches();
-          }
-          $existing_paths_replace = str_replace("'", "", $paths);
-          $scan_docu = scandir($existing_paths_replace);
-          unset($scan_docu[0]);
-          unset($scan_docu[1]);
-          // Check Documentation directory empty or not.
-          if (empty($scan_docu[2])) {
-            if (is_dir($paths)) {
-              $scan_dir = scandir($paths);
             }
+            $existing_paths_replace = str_replace("'", "", $paths);
+            $scan_docu = scandir($existing_paths_replace);
+            unset($scan_docu[0]);
+            unset($scan_docu[1]);
+            // Check Documentation directory empty or not.
+            if (empty($scan_docu[2])) {
+              if (is_dir($paths)) {
+                $scan_dir = scandir($paths);
+              }
 
-            $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
-            $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
+              $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
+              $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
 
-            self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
-            // $nid_count = db_result(db_query("SELECT count(*)
-            //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
-            $query = db_select('release_doc_failed_download_info', 'rdfdi')
-                    ->Fields('rdfi', array('nid'))
-                    ->condition('rdfdi.nid', $nid, '=');
+              self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
+              // $nid_count = db_result(db_query("SELECT count(*)
+              //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
+              $query = db_select('release_doc_failed_download_info', 'rdfdi')
+                ->Fields('rdfi', array('nid'))
+                ->condition('rdfdi.nid', $nid, '=');
 
-            $nid_count = $query->countQuery()->execute()->fetchField();
+              $nid_count = $query->countQuery()->execute()->fetchField();
 
-            if ($nid_count == 3) {
-              self::release_not_import_mail($nid);
+              if ($nid_count == 3) {
+                self::release_not_import_mail($nid);
+              }
             }
           }
         }
       }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
   }
 
@@ -572,10 +610,19 @@ class HzdreleasemanagementStorage {
    * Copy subfolders to Sonstige foldes.
    */
   public static function copy_subfolders_to_sonstige($dokument_path) {
-    $sonstige_docs_path = $dokument_path . "/sonstige";
-    $sonstige_path = $dokument_path . "/sonstige";
-    if (is_dir(str_replace("'", "", $sonstige_path))) {
-      $dockument_subfolders = self::move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonstige_path);
+    try {
+      $sonstige_docs_path = $dokument_path . "/sonstige";
+      $sonstige_path = $dokument_path . "/sonstige";
+      if (is_dir(str_replace("'", "", $sonstige_path))) {
+        $dockument_subfolders = self::move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonstige_path);
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
   }
 
@@ -583,30 +630,39 @@ class HzdreleasemanagementStorage {
    * Move subfolders to sonstige and remove subfolders of sonstige.
    */
   public static function move_subfolders_to_sonstige($sonstige_docs_path, $dokument_path, $sonstige_path) {
-    $sonstige_docs_path_scandir = scandir(str_replace("'", "", $sonstige_docs_path));
-    unset($sonstige_docs_path_scandir[0]);
-    unset($sonstige_docs_path_scandir[1]);
-    $remove_sonstige_sub_folders = null;
-    foreach ($sonstige_docs_path_scandir as $sonstige_docs_path_values) {
-      $subfolders_of_sontige = str_replace("'", "", $sonstige_docs_path . "/" . $sonstige_docs_path_values);
-      $sontige_sub_docs = $sonstige_path . "/'" . $sonstige_docs_path_values . "'";
-      if (is_dir($subfolders_of_sontige)) {
-        $remove_sonstige_sub_folders = $subfolders_of_sontige;
-        $remove_sub_doc = $sontige_sub_docs;
-        self::move_subfolders_to_sonstige($subfolders_of_sontige, $dokument_path, $sontige_sub_docs);
-      } else {
-        $release_sonstige_doku = str_replace("'", "", $sonstige_docs_path . "/" . $sonstige_docs_path_values);
-        $release_sonstige_path = $dokument_path . "/sonstige";
-        shell_exec("mv " . $sontige_sub_docs . " " . $release_sonstige_path);
+    try {
+      $sonstige_docs_path_scandir = scandir(str_replace("'", "", $sonstige_docs_path));
+      unset($sonstige_docs_path_scandir[0]);
+      unset($sonstige_docs_path_scandir[1]);
+      $remove_sonstige_sub_folders = null;
+      foreach ($sonstige_docs_path_scandir as $sonstige_docs_path_values) {
+        $subfolders_of_sontige = str_replace("'", "", $sonstige_docs_path . "/" . $sonstige_docs_path_values);
+        $sontige_sub_docs = $sonstige_path . "/'" . $sonstige_docs_path_values . "'";
+        if (is_dir($subfolders_of_sontige)) {
+          $remove_sonstige_sub_folders = $subfolders_of_sontige;
+          $remove_sub_doc = $sontige_sub_docs;
+          self::move_subfolders_to_sonstige($subfolders_of_sontige, $dokument_path, $sontige_sub_docs);
+        } else {
+          $release_sonstige_doku = str_replace("'", "", $sonstige_docs_path . "/" . $sonstige_docs_path_values);
+          $release_sonstige_path = $dokument_path . "/sonstige";
+          shell_exec("mv " . $sontige_sub_docs . " " . $release_sonstige_path);
 
-        if (isset($remove_sonstige_sub_folders) && is_dir($remove_sonstige_sub_folders)) {
-          shell_exec("rm -rf " . $remove_sub_doc);
+          if (isset($remove_sonstige_sub_folders) && is_dir($remove_sonstige_sub_folders)) {
+            shell_exec("rm -rf " . $remove_sub_doc);
+          }
         }
       }
-    }
 
-    if (is_dir($remove_sonstige_sub_folders)) {
-      shell_exec("rm -rf " . $remove_sub_doc);
+      if (is_dir($remove_sonstige_sub_folders)) {
+        shell_exec("rm -rf " . $remove_sub_doc);
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
   }
 
@@ -624,107 +680,117 @@ class HzdreleasemanagementStorage {
    * @return nothing
    */
   static public function release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid) {
+    try {
+      shell_exec("chmod -R 777 " . $paths);
 
-    shell_exec("chmod -R 777 " . $paths);
-
-    shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
+      shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
 //dpm($paths);
 //dpm("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
-    $dokument_path = $paths;
-    $remove_quotes = str_replace("'", "", $paths);
-    $download_directory = scandir($remove_quotes);
-    unset($download_directory[0]);
-    unset($download_directory[1]);
+      $dokument_path = $paths;
+      $remove_quotes = str_replace("'", "", $paths);
+      $download_directory = scandir($remove_quotes);
+      unset($download_directory[0]);
+      unset($download_directory[1]);
 
-    // Check documentation link downloaded or not.
-    if (!empty($download_directory[2])) {
-      shell_exec("chmod -R 777 " . $paths . "/" . $compressed_file);
-      shell_exec("unzip " . $paths . "/" . $compressed_file . " -d " . $paths);
-      shell_exec("convmv -f latin1 -t utf8 -r --notest " . $paths);
-      $zip_root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-      $zip_lowcaps = strtolower($compressed_file);
-      shell_exec("rm -rf " . $paths . "/" . $compressed_file);
+      // Check documentation link downloaded or not.
+      if (!empty($download_directory[2])) {
+        shell_exec("chmod -R 777 " . $paths . "/" . $compressed_file);
+        shell_exec("unzip " . $paths . "/" . $compressed_file . " -d " . $paths);
+        shell_exec("convmv -f latin1 -t utf8 -r --notest " . $paths);
+        $zip_root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $zip_lowcaps = strtolower($compressed_file);
+        shell_exec("rm -rf " . $paths . "/" . $compressed_file);
 
-      $extracted_file = scandir($remove_quotes);
-      unset($extracted_file[0]);
-      unset($extracted_file[1]);
-      //    shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/');
-      // shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/ginster/risrv/');
-      // Check documentation zip file extracted or not.
-      if (!empty($extracted_file[2])) {
-        $compressed_file_ex = explode(".zip", $compressed_file);
-        $upper = strtolower($compressed_file_ex[0]);
-        $paths = str_replace("'", "", $paths);
-        $paths = trim($paths, "'");
-        $extract_file = scandir($paths);
-        // Check documentation folder exist or not.
-        if ((is_dir($paths . "/" . $extract_file[2])) && (!empty($extract_file[2]))) {
-          rename($paths . "/" . $extract_file[2], $paths . "/" . $upper);
-          $new_file = $paths . "/" . $upper;
-          $sonstige_content = array();
-          // $list_scandir = scandir($new_file);
-          $list_scandir = array();
-          if ($dh = opendir($new_file)) {
-            while (($file = readdir($dh)) !== FALSE) {
-              if (!is_dir($new_file . DIRECTORY_SEPARATOR . $file)) {
-                array_push($list_scandir, $file);
+        $extracted_file = scandir($remove_quotes);
+        unset($extracted_file[0]);
+        unset($extracted_file[1]);
+        //    shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/');
+        // shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/ginster/risrv/');
+        // Check documentation zip file extracted or not.
+        if (!empty($extracted_file[2])) {
+          $compressed_file_ex = explode(".zip", $compressed_file);
+          $upper = strtolower($compressed_file_ex[0]);
+          $paths = str_replace("'", "", $paths);
+          $paths = trim($paths, "'");
+          $extract_file = scandir($paths);
+          // Check documentation folder exist or not.
+          if ((is_dir($paths . "/" . $extract_file[2])) && (!empty($extract_file[2]))) {
+            rename($paths . "/" . $extract_file[2], $paths . "/" . $upper);
+            $new_file = $paths . "/" . $upper;
+            $sonstige_content = array();
+            // $list_scandir = scandir($new_file);
+            $list_scandir = array();
+            if ($dh = opendir($new_file)) {
+              while (($file = readdir($dh)) !== FALSE) {
+                if (!is_dir($new_file . DIRECTORY_SEPARATOR . $file)) {
+                  array_push($list_scandir, $file);
+                }
+              }
+              closedir($dh);
+            }
+            // unset($list_scandir[0]);
+            //   unset($list_scandir[1]);.
+            $root_folders = array("afb", "benutzerhandbuch", "betriebshandbuch", "releasenotes", "sonstige", "zertifikat");
+            // Move root level documents to sonstige folder.
+            foreach ($list_scandir as $list_values) {
+              if (!in_array($list_values, $root_folders)) {
+                $new_path = $dokument_path . "/" . $upper;
+                shell_exec("mkdir " . $new_path . "/sonstige");
+                shell_exec("chmod 777 -R " . $new_path . "/sonstige");
+//                            echo "mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige";exit;
+                shell_exec("mv " . $new_path . "/" . $list_values . " " . $new_path . "/sonstige");
               }
             }
-            closedir($dh);
           }
-          // unset($list_scandir[0]);
-          //   unset($list_scandir[1]);.
-          $root_folders = array("afb", "benutzerhandbuch", "betriebshandbuch", "releasenotes", "sonstige", "zertifikat");
-          // Move root level documents to sonstige folder.
-          foreach ($list_scandir as $list_values) {
-            if (!in_array($list_values, $root_folders)) {
-              $new_path = $dokument_path . "/" . $upper;
-              shell_exec("mkdir " . $new_path . "/sonstige");
-              shell_exec("chmod 777 -R " . $new_path . "/sonstige");
-//                            echo "mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige";exit;
-              shell_exec("mv " . $new_path . "/" . $list_values . " " . $new_path . "/sonstige");
-            }
-          }
-        }
-        $doc_path = str_replace("'", "", $paths);
-        $sub_dir_path = $doc_path . "/" . $upper;
-        if (is_dir($sub_dir_path)) {
-          $sub_dir = scandir($sub_dir_path);
-          unset($sub_dir[0]);
-          unset($sub_dir[1]);
-          $new_path = $dokument_path . "/" . $upper;
+          $doc_path = str_replace("'", "", $paths);
+          $sub_dir_path = $doc_path . "/" . $upper;
+          if (is_dir($sub_dir_path)) {
+            $sub_dir = scandir($sub_dir_path);
+            unset($sub_dir[0]);
+            unset($sub_dir[1]);
+            $new_path = $dokument_path . "/" . $upper;
 
-          // Move all document sub folders to dokumentation folder.
-          foreach ($sub_dir as $docs) {
-            shell_exec("mv " . $new_path . "/" . $docs . " " . $dokument_path);
+            // Move all document sub folders to dokumentation folder.
+            foreach ($sub_dir as $docs) {
+              shell_exec("mv " . $new_path . "/" . $docs . " " . $dokument_path);
+            }
+            // Copy all subfolders into sonstige.
+            self::copy_subfolders_to_sonstige($dokument_path);
           }
-          // Copy all subfolders into sonstige.
-          self::copy_subfolders_to_sonstige($dokument_path);
-        }
-        shell_exec("rm -rf " . $new_path);
-      } else {
-        // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
-        $failed_link = "Download file was not extracted";
-        $failed_info = array(
+          shell_exec("rm -rf " . $new_path);
+        } else {
+          // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
+          $failed_link = "Download file was not extracted";
+          $failed_info = array(
             'nid' => $nid,
             'created' => time(),
             'reason' => $failed_link,
-        );
-        db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-        // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
-        //          VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
-      }
-    } else {
-      // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
-      $failed_link = "Documentation link was not downloaded";
-      $failed_info = array(
+          );
+          db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
+          // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
+          //          VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
+        }
+      } else {
+        // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
+        $failed_link = "Documentation link was not downloaded";
+        $failed_info = array(
           'nid' => $nid,
           'created' => time(),
           'reason' => $failed_link,
-      );
-      db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-      // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
-      //             VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
+        );
+        db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
+        // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
+        //             VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      \Drupal::logger('hzd_release_management')->error("Error occurred in release download documentation link 
+       generate. For the node " . $nid);
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
     }
   }
 
@@ -768,7 +834,9 @@ class HzdreleasemanagementStorage {
         $default_type = KONSONS;
       }
     }
-
+    if (!$filter_value['deployed_type']) {
+      $filter_value['deployed_type'] = "current";
+    }
     if ($filter_value['services']) {
       $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
     } else {
@@ -823,13 +891,12 @@ class HzdreleasemanagementStorage {
     if ($filter_value['deployed_type']) {
       if ($filter_value['deployed_type'] == 'current') {
         $filter_type = $deployed_releases_node_ids->orConditionGroup();
-        $filter_type->condition('field_archived_release', 0, '=');
+        $filter_type->condition('field_archived_release', 1, '<>');
         $filter_type->condition('field_archived_release', NULL, 'IS');
         $deployed_releases_node_ids->condition($filter_type);
       } elseif ($filter_value['deployed_type'] == 'archived') {
         $deployed_releases_node_ids->condition('field_archived_release', 1, '=');
       } elseif ($filter_value['deployed_type'] == 'all') {
-
         $archive = $deployed_releases_node_ids->orConditionGroup();
         $archive->condition('field_archived_release', array('0' => 0, '1' => 1), 'IN');
         $archive->condition('field_archived_release', NULL, 'IS');
@@ -955,7 +1022,7 @@ class HzdreleasemanagementStorage {
         );
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
 
-        $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
+        $earlywarnings_cell = t('@create @view', array( '@create' => $create_warning, '@view' => $view_warning ));
 
         $elements[] = ['data' => $earlywarnings_cell, 'class' => 'earlywarnings-cell'];
       }

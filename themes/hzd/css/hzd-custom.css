@@ -1231,6 +1231,10 @@ table.view-deployed-releases{
 form.deployed-released-view-form table.view-deployed-releases tr td{
   white-space: nowrap;
 }
+article.quickinfo .unpublished-quickinfo-pdf-preview,
+article.quickinfo .unpublished-quickinfo-edit-link {
+    float: left;
+}
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{

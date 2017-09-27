@@ -28,6 +28,7 @@ use Drupal\Core\Link;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\pathauto\PathautoPatternInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -520,6 +521,25 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     ];
 
   }
+
+  // Altering the actions available for a node form, either add or edit.
+  $build_info = $form_state->getBuildInfo();
+  if (isset($build_info['base_form_id']) && $build_info['base_form_id'] == 'node_form') {
+    $form_object = $form_state->getFormObject();
+    $entity = $form_object->getEntity();
+    $bundle = $entity->bundle();
+
+    // Any bundle key added here will have unpublish option, else action is removed.
+    $allowed_bundles = [
+      'quickinfo',
+    ];
+
+    if (!in_array($bundle, $allowed_bundles)) {
+      unset($form['actions']['unpublish']);
+    }
+  }
+
+
 }
 
 function requst_submit_handler(&$form, $form_state) {
@@ -538,7 +558,7 @@ function requst_submit_handler(&$form, $form_state) {
 function mailToGroupAdmins($data = []) {
 
   $data['subject'] = t("Membership Request for a Group - @label", ['@label' => $data['group']->label()]);
-  $data['link'] = \Drupal\Core\Link::createFromRoute('View Pending Requests', 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
+  $data['link'] = \Drupal\Core\Link::createFromRoute(t('View Pending Requests'), 'view.hzd_group_members.pending', ['group' => $data['group']->id()], ['absolute' => TRUE])
     ->toString();
   $groupAdmins = \Drupal::entityTypeManager()->getStorage('group_content')
     ->loadByGroup($data['group'], 'group_membership', [
@@ -792,6 +812,7 @@ function get_hzd_states_by_id($id = NULL) {
 function get_planning_file_data($type) {
   $plannigFileNodeIds = \Drupal::entityQuery('node')
     ->condition('field_planning_file_type', $type)
+    ->condition('field_upload_planning_file.%delta.display', 1)
     ->sort('changed', 'ASC')
     ->execute();
   $planningFileNodes = \Drupal\node\Entity\Node::loadMultiple(array_values($plannigFileNodeIds));
@@ -1036,6 +1057,20 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
   ) {
     $pattern->setPattern('[node:group_raw]/rz-schnellinfos/[node:title]');
   }
+}
+
+/**
+ * Implements hook_entity_update().
+ * Updating quick info node path alias when node update
+ */
+function cust_group_entity_update(EntityInterface $entity) {
+    if($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
+        $source = '/' . $entity->toUrl()->getInternalPath();
+        \Drupal::service('path.alias_storage')->delete(array('source' => $source, 'langcode' => 'de'));
+
+        $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+    }
 }
 
 

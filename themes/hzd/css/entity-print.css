@@ -310,9 +310,11 @@ div[style] {
 .pdf-content table{
  width:100%;
 }
- /*.pdf-content table{
-   border:1px solid #ddd;*/
+/*
+.pdf-content table{
+   border:1px solid #ddd;
  }
+ */
  .pdf-content #problem_search_results_wrapper table#sortable tr td{
   border-top: 1px solid #ddd !important;
 }
