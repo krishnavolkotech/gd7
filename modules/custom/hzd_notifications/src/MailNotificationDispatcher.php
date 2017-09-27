@@ -3,8 +3,8 @@
 namespace Drupal\hzd_notifications;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\user\Entity\User;
 
 class MailNotificationDispatcher implements NotificationDispatcherInterface {
 
@@ -49,7 +49,8 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       'action',
       'user_data',
     ];
-    $query = $connection->select('notifications_scheduled', 'ns');
+
+    $query = $connection->select(NOTIFICATION_SCHEDULE_TABLE, 'ns');
     $notifications = $query->fields('ns', $fields)
       ->execute()->fetchAllAssoc('sid', \PDO::FETCH_ASSOC);
 
@@ -64,21 +65,56 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
 
     // Multiple notifications.
     foreach ($notifications as $notification_id => $notification) {
-      $user_ids = unserialize($notification['user_data']);
-      $user_mails = hzd_user_mails($user_ids);
+      $failed_user_data = [];
 
-      if (is_array($user_mails) && count($user_mails) > 0) {
+      $user_ids = unserialize($notification['user_data']);
+
+      // hzd_user_mails checks for inactive user and if field_notifications_status_value
+      // != disable , gets mail and mail preference.
+      //$user_mails = hzd_user_mails($user_ids);
+
+      if (is_array($user_ids) && count($user_ids) > 0) {
 
         $entity = \Drupal::entityTypeManager()
           ->getStorage($notification['entity'])
           ->load($notification['entity_id']);
 
         // Each notification subscribed by multiple users.
-        foreach ($user_mails as $values) {
-          $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-          $mail = $values->mail;
+        foreach ($user_ids as $user_id) {
+          $user = User::load($user_id);
+
+          // For some reason, user subscribed and is deleted from system.
+          if (!is_object($user)) {
+            continue;
+          }
+
+          $user_active = $user->isActive();
+          $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+          $user_notif_status = $user->get('field_notifications_status')->value;
+
+          if($user_id == 1 || $user_id == 4498){
+            dpm($user_id);
+          }
+          /**
+           * Mail is not sent for following :
+           *  - If user is in blocked state.
+           *  - Is user has disabled notifications.
+           *  - If user is in Inactive state.
+           */
+          if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+            continue;
+          }
+
+          $preference = '';
+          $preference = $user->get('field_message_preference')->value;
+
+          if (empty($preference)) {
+            $preference = 'html';
+          }
+
+          $mail = $user->getEmail();
           $data['node'] = $entity;
-          $data['user'] = user_load_by_mail($mail);
+          $data['user'] = $user;
           $mailContent = getNodeMailContentFromConfig($data, $notification['action']);
 
           $dispatch_data['subject'] = $mailContent['subject'];
@@ -87,8 +123,31 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           $dispatch_data['preference'] = $preference;
           $dispatch_data['attachment'] = '';
 
-          $this->dispatch($dispatch_data);
+          $notification_dispatched = $this->dispatch($dispatch_data);
+
+          if (!$notification_dispatched) {
+            // This is not required because , we use queue which does this error
+            // handling implicitly.
+            //$failed_user_data[] = $user->id();
+          }
         }
+
+      }
+
+      // Currently, any notifications fail to user, their mail id is stored back
+      // into same row. Hence we get to retry the notifications to same user once again.
+      // UPDATE: This part is not used because mails are queued and it takes care of this.
+      if (empty($failed_user_data)) {
+        $this->markAsDispatched([$notification_id]);
+      }
+      else {
+        $update_data = [
+          $notification_id => [
+            'user_data' => serialize($failed_user_data)
+          ],
+        ];
+
+        $this->markAsFailed($update_data);
       }
 
     }
@@ -105,7 +164,9 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $preference = $dispatch_data['preference'];
     $attachment = $dispatch_data['attachment'];
 
-    $this->send_immediate_notifications($subject, $message_text, $to, $preference, $attachment);
+    $status = $this->send_immediate_notifications($subject, $message_text, $to, $preference, $attachment);
+
+    return $status;
   }
 
   /**
@@ -113,27 +174,40 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
    */
   public function send_immediate_notifications($subject, $message_text, $to, $preference, $attachment = NULL) {
     $mailManager = $this->mailManager;
-    $module = 'hzd_release_management';
+    $module = 'hzd_notifications';
     $key = 'immediate_notifications';
     $params['message'] = $message_text;
     $params['subject'] = $subject;
     $params['preference'] = $preference ? $preference : 'html';
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
     $send = TRUE;
-    $token_service = \Drupal::token();
 
     foreach (explode(',', trim($to, ',')) as $userMail) {
-      $userEntity = \Drupal::entityTypeManager()->getStorage('user')
-        ->loadByProperties(['mail' => trim($userMail)]);
-      if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
-        && !hzd_user_inactive_status_check(reset($userEntity)->id())
-      ) {
-        $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
-      }
+      $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
-    /*if ($result['result'] != TRUE) {
-      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-    }*/
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function markAsDispatched(array $notifications) {
+    $query = $this->connection->delete(NOTIFICATION_SCHEDULE_TABLE);
+
+    $query->condition('sid', $notifications, 'IN');
+    $query->execute();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function markAsFailed(array $notifications_data) {
+    foreach ($notifications_data as $notification_id => $notification_data) {
+      $query = $this->connection->update(NOTIFICATION_SCHEDULE_TABLE);
+      $fields_to_be_updated = $notification_data;
+      $query->fields($fields_to_be_updated);
+      $query->condition('sid', $notification_id, '=');
+      $query->execute();
+    }
   }
 
 }

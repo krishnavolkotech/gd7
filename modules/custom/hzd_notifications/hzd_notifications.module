@@ -10,6 +10,7 @@ use Drupal\node\Entity\Node;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
+define('NOTIFICATION_SCHEDULE_TABLE', 'notifications_scheduled');
 
 /**
  * Implements callback_batch_operation().
@@ -741,7 +742,7 @@ function hzd_notifications_node_insert($entity) {
  */
 function hzd_notifications_node_update($entity) {
 
-  /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager*/
+  /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
   $notification_manager = \Drupal::service('hzd_notifications.manager');
   $services = $notification_manager->getServicesForEntity($entity);
   $user_data = $notification_manager->getUserDataForServices($services, $entity);
@@ -782,24 +783,24 @@ function hzd_notifications_node_update($entity) {
     $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);
   }
 
-  /*
-    if ($entity->getType() == 'problem') {
-      send_problem_notifications($entity);
-    }
 
-    if ($entity->getType() == 'planning_files') {
-      send_pf_notifications($entity);
-    }
-    if ($entity->getType() == 'early_warnings') {
-      send_earlywarning_notifications($entity);
-    }
+  /*if ($entity->getType() == 'problem') {
+    send_problem_notifications($entity);
+  }
 
-    if ($entity->getType() == 'quickinfo') {
-  //    if ($entity->get('status')->value) {
-  //      send_qi_notifications($entity);
-  //    }
-    }
-  */
+  if ($entity->getType() == 'planning_files') {
+    send_pf_notifications($entity);
+  }
+  if ($entity->getType() == 'early_warnings') {
+    send_earlywarning_notifications($entity);
+  }*/
+
+  if ($entity->getType() == 'quickinfo') {
+    //    if ($entity->get('status')->value) {
+    //      send_qi_notifications($entity);
+    //    }
+  }
+
   // Services bundle is not altered for now.
   if ($entity->getType() == 'services') {
     update_service_notifications($entity);
@@ -816,7 +817,7 @@ function hzd_notifications_node_update($entity) {
 function hzd_get_immediate_notification_user_mails($service_ids, $type) {
   $service_id = explode(',', $service_ids);
 
-  $query = $this->connection->select('service_notifications', 'sn');
+  $query = \Drupal::database()->select('service_notifications', 'sn');
   $query->addField('sn', 'uids');
   $query->condition('sn.service_id', $service_id, 'IN');
   $query->condition('sn.send_interval', 0, '=');
@@ -845,7 +846,7 @@ function hzd_get_immediate_pf_notification_user_mails() {
   // Previous query, delete this if new query works fine.
   // $query = "SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval";
 
-  $query = $this->connection->select('planning_files_notifications', 'pfn');
+  $query = \Drupal::database()->select('planning_files_notifications', 'pfn');
   $query->addField('pfn', 'uids');
   $query->condition('pfn.send_interval', 0, '=');
   $get_pf_immediate_notifications_users = $query->execute()->fetchField();
@@ -856,4 +857,39 @@ function hzd_get_immediate_pf_notification_user_mails() {
   }
 
   return '';
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function hzd_notifications_cron() {
+  /* @var \Drupal\hzd_notifications\MailNotificationDispatcher $notification_dispatcher */
+  $notification_dispatcher = \Drupal::service('hzd_notifications.mail_dispatcher');
+  $notification_dispatcher->getNotificationsAndDispatch();
+}
+
+
+/**
+ * Implements hook_mail.
+ */
+function hzd_notifications_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+
+      //@todo for now sending all html mails only
+//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
+
+
+//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+
+      break;
+  }
 }

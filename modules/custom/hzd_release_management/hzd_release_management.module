@@ -660,30 +660,6 @@ function hzd_user_inactive_status_check($uid = NULL) {
 }
 
 /**
- * Implements hook_mail.
- */
-function hzd_release_management_mail($key, &$message, $params) {
-  $options = array(
-    'langcode' => $message['langcode'],
-  );
-  switch ($key) {
-    case 'immediate_notifications':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = $params['subject'];
-
-      //@todo for now sending all html mails only
-//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
-
-
-//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
-      $message['body'][] = $params['message'];
-
-      break;
-  }
-}
-
-/**
  * Implements hook_ENTITY_TYPE_delete()
  */
 function hzd_release_management_node_delete($entity) {

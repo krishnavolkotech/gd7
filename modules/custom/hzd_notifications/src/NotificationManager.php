@@ -45,15 +45,9 @@ class NotificationManager implements NotificationManagerInterface {
   /**
    * @inheritdoc
    */
-  public function getUserDataForServices(array $services, EntityInterface $entity) {
+  public function getUserDataForServices(array $services = NULL, EntityInterface $entity) {
     // @Todo check if the services can be empty.
     $user_data = [];
-
-    if(empty($services)){
-      return [];
-    }
-
-    $service_ids = EntityHelper::extractIds($services);
 
     // Bundle categories are divided here just because of source to get user data,
     // no other special logic.
@@ -65,15 +59,20 @@ class NotificationManager implements NotificationManagerInterface {
       'early_warnings',
     ];
 
+    // Special bundles doesn't require services.
     $special_bundles = [
       'planning_files',
     ];
 
     $bundle = $entity->bundle();
-    if (in_array($bundle,$generic_bundles)) {
+    if (!in_array($bundle, $special_bundles)) {
+      $service_ids = EntityHelper::extractIds($services);
+    }
+
+    if (in_array($bundle, $generic_bundles)) {
       $user_data = $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
     }
-    elseif (isset($special_bundles[$entity->bundle()])) {
+    elseif (in_array($bundle, $special_bundles)) {
       $user_data = $this->hzd_get_immediate_pf_notification_user_mails();
     }
 

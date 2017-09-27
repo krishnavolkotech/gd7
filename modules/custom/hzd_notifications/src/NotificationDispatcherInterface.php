@@ -33,4 +33,36 @@ interface NotificationDispatcherInterface {
    *  The data for pending notifications.
    */
   public function getPendingNotifications();
+
+  /**
+   * Marks the notifications as read. The action can be anything like status update
+   * or record deletion from database.
+   *
+   * @param array $notifications
+   *  The notification ID's which needs to be marked as dispatched.
+   */
+  public function markAsDispatched(array $notifications);
+
+  /**
+   * Marks the notifications as failed. The action can be anything like status update
+   * or record deletion from database.
+   *
+   * @param array $notifications_data
+   *  The array of notification ID as key and  value as 'key' => 'value' sub array
+   *  which has additional data be marked as failed.
+   *
+   * Structure of $notifications_data:
+   *
+   * [
+   *   '1' => [
+   *     'field1' => 'value',
+   *     'field2' => 'value',
+   *   ],
+   *   '2' => [
+   *     'field1' => 'value',
+   *     'field2' => 'value',
+   *   ],
+   * ]
+   */
+  public function markAsFailed(array $notifications_data);
 }

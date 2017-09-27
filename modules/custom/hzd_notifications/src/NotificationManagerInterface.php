@@ -23,7 +23,7 @@ interface NotificationManagerInterface {
   /**
    * Returns the user data for the provided service and entity.
    *
-   * @param array $services
+   * @param array $services|null
    *  The service entities.
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *  The entity on which action has been performed.
@@ -31,5 +31,5 @@ interface NotificationManagerInterface {
    * @return mixed
    *  The user data which is used to send the notifications.
    */
-  public function getUserDataForServices(array $services, EntityInterface $entity);
+  public function getUserDataForServices(array $services = NULL, EntityInterface $entity);
 }
