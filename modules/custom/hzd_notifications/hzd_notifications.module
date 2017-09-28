@@ -659,8 +659,17 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
  */
 function hzd_notifications_node_insert($entity) {
 
+  $notification_bundles = [
+    'release',
+    'downtimes',
+    'problem',
+    'planning_files',
+    'early_warnings',
+    'quickinfo'
+  ];
+
   // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished()) {
+  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
 
     $notification_manager = \Drupal::service('hzd_notifications.manager');
     $services = $notification_manager->getServicesForEntity($entity);
@@ -746,8 +755,17 @@ function hzd_notifications_node_insert($entity) {
  */
 function hzd_notifications_node_update($entity) {
 
+  $notification_bundles = [
+    'release',
+    'downtimes',
+    'problem',
+    'planning_files',
+    'early_warnings',
+    'quickinfo'
+  ];
+
   // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished()) {
+  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
     /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
     $notification_manager = \Drupal::service('hzd_notifications.manager');
     $services = $notification_manager->getServicesForEntity($entity);
@@ -807,7 +825,7 @@ function hzd_notifications_node_update($entity) {
       //    }
     }
   }
-  
+
   // Services bundle is not altered for now.
   if ($entity->getType() == 'services') {
     update_service_notifications($entity);
