@@ -46,14 +46,15 @@
     // The handles around doesn't appear on webkit browsers(chrome).
     // Uses code from: http://www.editorboost.net/Webkitresize/Demos
     // Remove once https://www.drupal.org/node/2909023 lands.
-    CKEDITOR.on('instanceReady', function (evt) {
-      /*simple initialization*/
-      $("iframe.cke_wysiwyg_frame")
-        .webkitimageresize()
-        .webkittableresize()
-        .webkittdresize();
-    });
-
+    if(window.CKEDITOR && typeof window.CKEDITOR != 'undefined') {
+      CKEDITOR.on('instanceReady', function (evt) {
+        /*simple initialization*/
+        $("iframe.cke_wysiwyg_frame")
+          .webkitimageresize()
+          .webkittableresize()
+          .webkittdresize();
+      });
+    }
     // $("#block-maintenance .downtime-hover").css('display', 'none');
     // Control hover on front page downtimes blocks
     // $("ul.incidents-home-block>li>a").hover(handlerInIncident, handlerOutIncident);
