@@ -529,12 +529,12 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     $entity = $form_object->getEntity();
     $bundle = $entity->bundle();
 
-    // Any bundle key added here will have unpublish option, else action is removed.
-    $allowed_bundles = [
-      'quickinfo',
+    // Any bundle key added here will not have unpublish option.
+    $disallowed_bundles = [
+      'planning_files',
     ];
 
-    if (!in_array($bundle, $allowed_bundles)) {
+    if (in_array($bundle, $disallowed_bundles)) {
       unset($form['actions']['unpublish']);
     }
   }
