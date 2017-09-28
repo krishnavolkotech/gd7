@@ -529,12 +529,12 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     $entity = $form_object->getEntity();
     $bundle = $entity->bundle();
 
-    // Any bundle key added here will have unpublish option, else action is removed.
-    $allowed_bundles = [
-      'quickinfo',
+    // Any bundle key added here will not have unpublish option.
+    $disallowed_bundles = [
+      'planning_files',
     ];
 
-    if (!in_array($bundle, $allowed_bundles)) {
+    if (in_array($bundle, $disallowed_bundles)) {
       unset($form['actions']['unpublish']);
     }
   }
@@ -1064,13 +1064,17 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
  * Updating quick info node path alias when node update
  */
 function cust_group_entity_update(EntityInterface $entity) {
-    if($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
-        $source = '/' . $entity->toUrl()->getInternalPath();
-        \Drupal::service('path.alias_storage')->delete(array('source' => $source, 'langcode' => 'de'));
+  if ($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
+    $source = '/' . $entity->toUrl()->getInternalPath();
+    \Drupal::service('path.alias_storage')->delete(array(
+      'source' => $source,
+      'langcode' => 'de'
+    ));
 
-        $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
-        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
-    }
+    $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+    \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()
+        ->getInternalPath(), $path_alias, 'de');
+  }
 }
 
 
