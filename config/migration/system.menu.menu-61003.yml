@@ -1,0 +1,8 @@
+uuid: 29f88711-b350-491a-93e6-3dc2ee24dab8
+langcode: de
+status: true
+dependencies: {  }
+id: menu-61003
+label: 'Test moderiert privat'
+description: ''
+locked: false

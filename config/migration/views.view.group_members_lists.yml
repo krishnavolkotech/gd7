@@ -715,7 +715,7 @@ display:
           exposed: true
           expose:
             operator_id: abbr_op
-            label: State
+            label: Land
             description: ''
             use_operator: false
             operator: abbr_op

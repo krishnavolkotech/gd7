@@ -23,12 +23,17 @@ howmany: 7
 sitewide_maintenance_windows:
   -
     day_from: Tue
-    day_to: Tue
-    time_from: '18:00:00'
-    time_to: '23:59:59'
-  -
-    day_from: Wed
     day_to: Wed
     time_from: '18:00:00'
+    time_to: '05:59:59'
+  -
+    day_from: Wed
+    day_to: Thu
+    time_from: '18:00:00'
+    time_to: '05:59:59'
+  -
+    day_from: Sat
+    day_to: Sun
+    time_from: '00:00:00'
     time_to: '23:59:59'
 langcode: de
