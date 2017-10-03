@@ -107,8 +107,24 @@ class Gruppenadministration extends BlockBase {
 //    }
     return $menuHtml;
   }
-  
-  function getCacheMaxAge(){
+
+  function getCacheMaxAge() {
     return 0;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  function access(AccountInterface $account, $return_as_object = FALSE) {
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+
+    if (!empty($group)) {
+      $access = AccessResult::allowed('Group context available.');
+    }
+    else {
+      $access = AccessResult::forbidden('Group context not available.');
+    }
+
+    return $return_as_object ? $access : $access->isAllowed();
   }
 }
