@@ -659,7 +659,8 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
             'user' => $user->id(),
           ];
           $options = ['absolute' => TRUE];
-          $text = t('Einstellungen für Benachrichtigungen ändern');
+          $t_options = ['langcode' => 'en'];
+          $text = t('Change settings for notifications', $t_options);
 
           $notif_change_link = Link::createFromRoute($text, $route, $route_params, $options)
             ->toString();
