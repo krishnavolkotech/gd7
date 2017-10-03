@@ -16,7 +16,7 @@ inactive_user_notify_delete_admin: 1
 inactive_user_auto_delete_warn: null
 _core:
   default_config_hash: tk7Ljnk3c1LFBgG3JuMZw_ifzsgUCLlhZtxU-co0vvI
-inactive_user_admin_email: betriebsportal-konsens@hzd.hessen.de
+inactive_user_admin_email: noreply-betriebsportal-konsens@hzd.hessen.de
 inactive_user_timestamp: 1480053191
 langcode: de
 inactive_user_notify_mail_subject: '[Betriebsportal KONSENS] Benutzer-Account ist inaktiv'
