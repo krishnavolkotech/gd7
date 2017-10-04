@@ -570,7 +570,7 @@ function downtimes_set_default_values(&$form, $nid) {
 
     $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
 
-/*    $node = \Drupal::routeMatch()->getParameter('node');
+  /*  $node = \Drupal::routeMatch()->getParameter('node');
     if (isset($node)) {
       if (is_object($node)) {
         $node_id = $node->id();
@@ -581,7 +581,8 @@ function downtimes_set_default_values(&$form, $nid) {
       if ($group_content) {
         $group = $group_content->getgroup();
       }
-    }
+    } */
+    $group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN);
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
     $restict = FALSE;
@@ -603,14 +604,13 @@ function downtimes_set_default_values(&$form, $nid) {
             }
 
         }
-    } */
+    }
     //For maintanences
-//    if($restict && $downtime_data->scheduled_p == 1) {
     if($downtime_data->scheduled_p == 1) {
         if($downtime_data->startdate_planned <= REQUEST_TIME ) {
             $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
         }
-        if(REQUEST_TIME > $downtime_data->enddate_planned) {
+        if($restict && REQUEST_TIME > $downtime_data->enddate_planned) {
             $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
         }
     }
