@@ -582,7 +582,7 @@ function downtimes_set_default_values(&$form, $nid) {
         $group = $group_content->getgroup();
       }
     } */
-    $group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN);
+    $group = \Drupal\group\Entity\Group::load(GEPLANTE_BLOCKZEITEN);
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
     $restict = FALSE;
