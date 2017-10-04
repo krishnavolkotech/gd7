@@ -197,7 +197,7 @@ function cust_group_group_insert($group) {
       'title' => $title,
       'link' => ['uri' => $link],
       'menu_name' => $menu->id(),
-      'expanded' => TRUE,
+//      'expanded' => TRUE,
     ]);
     $menu_link->save();
   }
