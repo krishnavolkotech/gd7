@@ -658,11 +658,23 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           $route_params = [
             'user' => $user->id(),
           ];
-          $options = ['absolute' => TRUE];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          global $base_url;
+
+          $full_path = $base_url . $url;
+          $full_url_obj = \Drupal\Core\Url::fromUri($full_path);
+
           $t_options = ['langcode' => 'en'];
           $text = t('Change settings for notifications', $t_options);
 
-          $notif_change_link = Link::createFromRoute($text, $route, $route_params, $options)
+          $notif_change_link = Link::fromTextAndUrl($text, $full_url_obj)
             ->toString();
           $replacements[$original] = $notif_change_link;
           break;
