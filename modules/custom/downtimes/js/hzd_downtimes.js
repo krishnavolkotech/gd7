@@ -190,7 +190,7 @@
                             $('.reason-for-noncompliance').hide();
                             $('#edit-maintenance-result').val(0);
                             $('#edit-reason-for-noncompliance option').removeAttr('selected', 'selected');
-                            $('#edit-reason-for-noncompliance option:[value = "0"]').attr('selected', 'selected');
+                            $('#edit-reason-for-noncompliance option[value = "0"]').attr('selected', 'selected');
                         }
                         // return true;
 
