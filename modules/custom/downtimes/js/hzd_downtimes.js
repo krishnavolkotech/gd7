@@ -37,7 +37,7 @@
                 var present = present_month + "/" + present_day + "/" + present_year + " 23:59";
                 return present;
             }
-            $('form.node-downtimes-form').submit(function () {
+            $('form.node-downtimes-form,form.node-downtimes-edit-form').submit(function () {
                 if ($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0) {
                     $('.reason-for-noncompliance').find('.reason-error').show();
                     $('#edit-reason-for-noncompliance').focus();
@@ -149,7 +149,8 @@
 
 
             // Maintenance window validations.
-            $('input#edit-enddate-planned').focusout(function () {
+            //$('input#edit-enddate-planned').focusout(function () {
+            $("#edit-enddate-planned").on("dp.change", function(e) {
                 if ($(this).val()) {
                     var end_date = $(this).val().split('-');
                     end_date = end_date[1];

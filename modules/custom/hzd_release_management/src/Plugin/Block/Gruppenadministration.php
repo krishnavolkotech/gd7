@@ -118,7 +118,7 @@ class Gruppenadministration extends BlockBase {
   function access(AccountInterface $account, $return_as_object = FALSE) {
     $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
 
-    if (!empty($group)) {
+    if (!empty($group) && CustNodeController::isGroupAdmin($group->id())) {
       $access = AccessResult::allowed('Group context available.');
     }
     else {
