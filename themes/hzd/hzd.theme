@@ -501,7 +501,9 @@ function downtimes_revisions($node) {
           }
         }
         if (in_array($name, ['non_compliance', 'services', 'states'])) {
-          $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'];
+          if (!empty($field_value['new'])) {
+            $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'];
+          }
           if (!empty($field_value['old']) && $itemCount == count($query)) {
             $hasFirstLog = FALSE;
             $oldData[$order[$name]] = $labels[$name] . ': ' . $field_value['old'];
