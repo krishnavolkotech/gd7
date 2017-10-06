@@ -511,22 +511,44 @@ processor_settings:
     settings:
       weights:
         preprocess_query: -10
-  transliteration:
-    plugin_id: transliteration
+  ignorecase:
+    plugin_id: ignorecase
     settings:
       fields:
+        - id
         - title
+        - created
         - body
+        - gid
+        - entity_id
       weights:
         preprocess_index: -10
-        preprocess_query: -4
+        preprocess_query: -10
     all_fields: false
+  add_url:
+    plugin_id: add_url
+    settings: {  }
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
-  rendered_item:
-    plugin_id: rendered_item
-    settings: {  }
+  highlight:
+    plugin_id: highlight
+    settings:
+      highlight: always
+      excerpt: true
+      excerpt_length: 256
+      exclude_fields: {  }
+      prefix: '<strong>'
+      suffix: '</strong>'
+      weights:
+        postprocess_query: 0
+    prefix: '<strong>'
+    suffix: '</strong>'
+    excerpt: true
+    excerpt_length: 256
+    highlight: always
+    highlight_partial: false
+    exclude_fields: {  }
   html_filter:
     plugin_id: html_filter
     settings:
@@ -573,44 +595,22 @@ processor_settings:
       b: 2
       em: 1
       u: 1
-  highlight:
-    plugin_id: highlight
-    settings:
-      highlight: always
-      excerpt: true
-      excerpt_length: 256
-      exclude_fields: {  }
-      prefix: '<strong>'
-      suffix: '</strong>'
-      weights:
-        postprocess_query: 0
-    prefix: '<strong>'
-    suffix: '</strong>'
-    excerpt: true
-    excerpt_length: 256
-    highlight: always
-    highlight_partial: false
-    exclude_fields: {  }
-  add_url:
-    plugin_id: add_url
+  rendered_item:
+    plugin_id: rendered_item
     settings: {  }
-  ignorecase:
-    plugin_id: ignorecase
+  transliteration:
+    plugin_id: transliteration
     settings:
       fields:
-        - id
         - title
-        - created
         - body
-        - gid
-        - entity_id
       weights:
         preprocess_index: -10
-        preprocess_query: -10
+        preprocess_query: -4
     all_fields: false
 tracker_settings:
   default: {  }
 options:
-  index_directly: true
-  cron_limit: 50
+  index_directly: false
+  cron_limit: 100
 server: solr_bpk_migration

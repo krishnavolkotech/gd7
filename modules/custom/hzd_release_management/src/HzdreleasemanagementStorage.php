@@ -1022,7 +1022,7 @@ class HzdreleasemanagementStorage {
         );
         $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
 
-        $earlywarnings_cell = t('@view @create', array('@view' => $view_warning, '@create' => $create_warning));
+        $earlywarnings_cell = t('@create @view', array( '@create' => $create_warning, '@view' => $view_warning ));
 
         $elements[] = ['data' => $earlywarnings_cell, 'class' => 'earlywarnings-cell'];
       }

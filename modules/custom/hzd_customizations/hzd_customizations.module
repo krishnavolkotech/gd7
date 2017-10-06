@@ -436,10 +436,24 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $db = \Drupal::database();
     $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
     $glossarydata = array();
+    
+    $current_path = \Drupal::service('path.current')->getPath();
+    $path_values = explode('/', $current_path);
+    $lastElement = array_slice($path_values, -1)[0];
+    $active = '';
     foreach ($result as $gloss) {
+      if(strtolower($gloss->lname) == $lastElement) {
+          $active = 'active';
+      }
       $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
-      $glossarydata[] = '<span class="user-group-list">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $active = '';
     }
+    if('all' == $lastElement) {
+        $active = 'active';
+    }
+    $allurl = Url::fromUserInput('/admin/people/list/all');
+    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
     $glossary = implode(' | ', $glossarydata);
     $form['glossarylist'] = array(
         '#markup' => $glossary,

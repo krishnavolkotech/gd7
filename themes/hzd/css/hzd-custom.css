@@ -1246,3 +1246,32 @@ article.quickinfo .unpublished-quickinfo-edit-link {
   display:inline-block !important;
 }
 }
+.ui-dialog--narrow,
+table.cke_dialog {
+  max-width: 615px;
+}
+
+@media screen and (max-width: 600px) {
+  .ui-dialog--narrow,
+  table.cke_dialog {
+    max-width: 95%;
+    min-width: 95%;
+  }
+}
+a.cke_dialog_tab {
+    padding: 2px 8px !important;
+}
+.cke_dialog_tabs {
+  margin: 0px 0 0 !important;
+}
+.cke_ltr table.cke_dialog_footer_buttons tr.cke_dialog_ui_hbox td {
+    float: left;
+    text-align: left;
+}
+.cke_ltr table.cke_dialog_footer_buttons .cke_dialog_ui_hbox_first {
+    padding-left: 10px;
+}
+.cke_ltr .cke_dialog_contents_body .cke_dialog_page_contents table {
+   margin-top: 0px !important; 
+   margin-bottom: 0px !important; /*  in ckeditor table popup table */
+}

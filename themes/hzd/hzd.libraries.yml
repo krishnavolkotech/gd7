@@ -11,6 +11,8 @@ global-styling:
     js/3.3.5/bootstrap.js: {}
     js/3.3.5/bootstrap.min.js: {}
     js/tableresponsive.js: {}    
+    js/jquery.mb.browser.min.js: {}
+    js/jquery.webkitresize.js: {}
 
 quickinfo:
   css:
