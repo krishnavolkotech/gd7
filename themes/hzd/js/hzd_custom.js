@@ -1,8 +1,87 @@
 (function ($) {
     Drupal.behaviors.hzd = {
         attach: function (context, settings) {
+// group node tables sortable
+jQuery("div.group-nodes-sortable > div.view-content > div > table.table").tablesorter({
+        headers: {
+	    1: { 
+                sorter: false 
+            }, 
+            2: { 
+                sorter: false 
+            },            3: { 
+                sorter: false 
+            },            4: { 
+                sorter: false 
+            },
+        }
+      });
+// mitglieder page sorting functionality
+jQuery("div.sort-user-list > div.view-content > div > table.table").tablesorter({
+        headers: { 
+            2: { 
+                sorter: false 
+            }, 3: { 
+                sorter: false 
+            }, 
+           5: { 
+                sorter: false 
+            },
+        }
+      });
+// all group page sorting functionality
+jQuery("div.all-groups-sortable > div.view-content > div > table.table").tablesorter({
+        headers: {
+	    1: { 
+                sorter: false 
+            }, 
+            2: { 
+                sorter: false 
+            }, 3: { 
+                sorter: false 
+            }, 
+           4: { 
+                sorter: false 
+            },
+        }
+      });
+
+ jQuery.tablesorter.addParser({
+          // set a unique id
+          id: 'quickinfo_date_sorting',
+          is: function(s) {
+            // return false so this parser is not auto detected
+            return false;
+          },
+           format: function(s,table) { 
+                      s = s.replace(/\-/g,"/"); 
+                      s = s.replace(/(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{4})/, "$3/$2/$1");                            
+                      return jQuery.tablesorter.formatFloat(new Date(s).getTime()); 
+                  },
+          // set type, either numeric or text
+          type: 'numeric'
+        });
+
+
+jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").tablesorter({
+        headers: {
+          5: {
+            sorter: 'quickinfo_date_sorting'
+          }
+        }
+      });
+//}
+// /release-management/rz-schnellinfos  page sorting function
+/**
+jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").tablesorter({
+        headers: {
+          5: {
+            sorter: 'date_sorting'
+          }
+        }
+      });*/
 //  $(document).ready(function(){
-// $.fn.datepicker.defaults.language = 'de';
+// $.fn.datepicker.d
 // $.fn.datepicker.defaults.regional = 'INDIA';
 // });
             if (jQuery('.start_date').length > 0) {

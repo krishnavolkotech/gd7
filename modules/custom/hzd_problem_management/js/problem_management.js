@@ -33,6 +33,7 @@
            
          // #pagination > nav > ul > li > a
          // $('body').once('problem_management').each(function () {
+/**
         $.tablesorter.addParser({
           // set a unique id
           id: 'date_sorting',
@@ -57,6 +58,7 @@
           // set type, either numeric or text
           type: 'numeric'
         });
+*/
         var options = {
           beforeSubmit: function(formData, jqForm, options) {
             $('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>').prependTo($('.search_string_submit'));

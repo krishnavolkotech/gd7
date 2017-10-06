@@ -8,6 +8,45 @@
                var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
                $( this ).attr('href', new_href);
              });
+
+           $("#earlywarnings_release_sortable").tablesorter({
+               headers: {
+                   3: {sorter: false }
+		          },
+               widgets: ['zebra']
+           });
+ $.tablesorter.addParser({
+                // set a unique id                                                                                                             
+                id: 'created_on',
+                is: function(s) {
+                    // return false so this parser is not auto detected                                                                        
+                    return false;
+                },
+                format: function(s) {
+                    // format your data for normalization                                                                                      
+                   if (s) {
+                     var date_info = s.split(' ');
+                     var dateele = date_info[0].split('.');
+                    //adding 20 if date is formatted in only YY format.                                                                        
+                      if (dateele[2].length == 2) {
+                       dateele[2] = '20' + dateele[2];
+                     }
+                     var date = dateele[2] + dateele[1] + dateele[0];
+                     return parseInt(date,10);
+                   }
+                },
+                // set type, either numeric or text                                                                                            
+                type: 'numeric'
+            });
+
+	$("#viewearlywarnings_sortable").tablesorter({
+	    headers: {
+		3: {sorter: false },
+		1: {sorter: 'created_on'}
+	    },
+	    widgets: ['zebra']
+	});
+
              
        $(context).find('table#sortable').once('earlywarnings').each(function () {
 	   if ( jQuery('.end_date').length>0) {
@@ -17,41 +56,12 @@
 	     jQuery('.start_date').datepicker();
 	   }
            
-
-	  $.tablesorter.addParser({
-		// set a unique id
-		id: 'created_on',
-		is: function(s) {
-		    // return false so this parser is not auto detected
-		    return false;
-		},
-		format: function(s) {
-		    // format your data for normalization 
-		   if (s) {
-		     var date_info = s.split(' ');
-		     var dateele = date_info[0].split('.');
-		    //adding 20 if date is formatted in only YY format.
-		      if (dateele[2].length == 2) {
-		       dateele[2] = '20' + dateele[2];
-		     }
-		     var date = dateele[2] + dateele[1] + dateele[0];
-		     return parseInt(date,10);
-		     
-		   }
-		},
-		// set type, either numeric or text
-		type: 'numeric'
-	    });
-
-
-
 	  $("#public_earlywarnings_release_sortable").tablesorter({
 	    headers: {
 		3: {sorter: false }
 		  },
 	    widgets: ['zebra']
 	    });
-
 	  $("#viewearlywarnings_sortable").tablesorter({
 	    headers: {
 		3: {sorter: false },
@@ -59,9 +69,6 @@
 		  },
 	    widgets: ['zebra']
 	    });
-
-
-
 
 	  $('#public_earlywarnings_results_wrapper .pager li a').click(function() {
 	    var ele = $(this);

@@ -271,7 +271,7 @@ class HzdearlywarningsStorage
             '#header' => $header,
             '#rows' => $rows,
             '#empty' => t('No Data Created Yet'),
-            '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+            '#attributes' => ['id' => "viewearlywarnings_sortable", 'class' => "tablesorter"],
             '#cache'=>['tags'=>['node_list']],
         );
         

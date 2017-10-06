@@ -31,7 +31,7 @@ class HzdproblemmanagementHelper {
      * Attach javascript files to be rendered in problems listing view page
      */
     $result['#attached']['library'] = array(
-//      'problem_management/problem_management',
+      'problem_management/problem_management',
       'hzd_customizations/hzd_customizations',
     );
     /**

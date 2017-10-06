@@ -3463,3 +3463,15 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
   border-radius:0 !important;
 }
 
+
+div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .header,
+div.sort-user-list > div.view-content > div > table.table thead tr .header,
+div.all-groups-sortable > div.view-content > div > table.table thead tr .header,
+div.group-nodes-sortable > div.view-content > div > table.table thead tr .header
+  {
+    background-image: url(/themes/hzd/images/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 24px !important;
+}
