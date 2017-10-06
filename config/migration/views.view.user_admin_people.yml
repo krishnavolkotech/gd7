@@ -1318,7 +1318,7 @@ display:
           default_action: ignore
           exception:
             value: all
-            title_enable: false
+            title_enable: true
             title: All
           title_enable: false
           title: ''
@@ -1358,6 +1358,29 @@ display:
           admin_label: ''
           empty: true
           plugin_id: messages
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: '<div class=''user-admin-people-count''>Matching user Count: @total</div>'
+          plugin_id: result
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: "<style>\n.user-admin-people-count { color:#ff0000; }\n.user-group-list.active a { color: #333; text-decoration: underline; cursor: default; }\n</style>"
+            format: full_html
+          plugin_id: text
     cache_metadata:
       contexts:
         - 'languages:language_content'
