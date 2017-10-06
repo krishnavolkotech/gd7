@@ -1107,6 +1107,7 @@ display:
         operator: AND
         groups:
           1: AND
+      css_class: group-nodes-sortable
     cache_metadata:
       max-age: 0
       contexts:
@@ -1123,7 +1124,8 @@ display:
     display_title: Page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/nodes
       menu:
         type: tab

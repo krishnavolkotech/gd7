@@ -1727,6 +1727,7 @@ display:
         sorts: false
         exposed_form: false
         pager: false
+        css_class: false
       filter_groups:
         operator: AND
         groups:
@@ -2292,6 +2293,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+      css_class: rz-schnellinfos-sortable
     cache_metadata:
       max-age: 0
       contexts:
