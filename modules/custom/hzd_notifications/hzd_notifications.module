@@ -653,7 +653,7 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
 
     foreach ($tokens as $name => $original) {
       switch ($name) {
-        case 'user_notification_settings':
+        case 'user-notification-settings':
           $route = 'hzd_notifications.notifications';
           $route_params = [
             'user' => $user->id(),
@@ -667,15 +667,7 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
 
           global $base_url;
-
-          $full_path = $base_url . $url;
-          $full_url_obj = \Drupal\Core\Url::fromUri($full_path);
-
-          $t_options = ['langcode' => 'en'];
-          $text = t('Change settings for notifications', $t_options);
-
-          $notif_change_link = Link::fromTextAndUrl($text, $full_url_obj)
-            ->toString();
+          $notif_change_link = $base_url . $url;
           $replacements[$original] = $notif_change_link;
           break;
       }
@@ -688,7 +680,7 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
  * Implements hook_token_info_alter().
  */
 function hzd_notifications_token_info_alter(&$data) {
-  $data['tokens']['user']['user_notification_settings'] = [
+  $data['tokens']['user']['user-notification-settings'] = [
     'name' => t("user notification settings"),
     'description' => t("The link to change user notification settings."),
   ];
