@@ -576,7 +576,7 @@ class HzdStorage {
           'service' => $service,
           'function' => $problems_node->field_function->value,
           'release' => $problems_node->field_release->value,
-          'title' => $problems_node->title->value,
+          'title' => Html::decodeEntities($problems_node->title->value),
           'status' => $problems_node->field_problem_status->value,
           'priority' => $problems_node->field_priority->value,
           'closed' => $last_update,
