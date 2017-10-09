@@ -539,6 +539,17 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+  if($form_id == 'node_revision_revert_confirm'){
+    // Provide a control to send notifications for revert operation.
+    $form['notification'] = array(
+      '#type' => 'fieldset',
+      '#weight' => 99,
+    );
+    $form['notification']['node_notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not send notifications for this update.'),
+    );
+  }
 
 }
 
