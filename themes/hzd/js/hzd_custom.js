@@ -80,8 +80,6 @@ jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").ta
           }
         }
       });*/
-  Drupal.behaviors.hzd = {
-    attach: function (context, settings) {
 //  $(document).ready(function(){
 // $.fn.datepicker.d
 // $.fn.datepicker.defaults.regional = 'INDIA';
@@ -114,8 +112,6 @@ jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").ta
 
       });
 
-    }
-  }
   jQuery('.dummy_selects input[type="radio"]').click(function () {
     var checked_value = jQuery(this).attr('value');
     jQuery(".subscription_vals .form-radio[value=" + checked_value + "]")
@@ -335,6 +331,8 @@ jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").ta
     $(element).wrap("<div class='table-responsive'></div>");
     //}
   });
+    }
+  }
 })
 (jQuery);
 
