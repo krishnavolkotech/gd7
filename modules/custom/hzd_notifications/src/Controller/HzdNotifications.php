@@ -95,7 +95,7 @@ class HzdNotifications extends ControllerBase {
     $items = [
       $this->t('Sie haben Benachrichtigungen abonniert.'),
       $this->t('Ihre Benachrichtigungen werden versandt via HTML Mail.'),
-      $this->t('Ihr Standardintervall zum Versenden von Benachrichtigungen ist Sofort.'),
+      //$this->t('Ihr Standardintervall zum Versenden von Benachrichtigungen ist Sofort.'),
     ];
     $markup[] = [
       '#title' => $this->t('Aktuelle Einstellungen:'),
