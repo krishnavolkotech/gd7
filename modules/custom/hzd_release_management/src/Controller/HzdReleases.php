@@ -326,7 +326,7 @@ class HzdReleases extends ControllerBase {
       $output['node_body']['#markup'] = $node->body->value;
       $output['newdeployrelease']['#prefix'] = '<h2 class="konsens">';
       $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
-      $output['newdeployrelease']['#suffix'] = "</h2>";
+      $output['newdeployrelease']['#suffix'] = "</h2><p>Bei der Meldung bitte die Felder in der Reihenfolge von links nach rechts auswählen.</p>";
       $output['newdeployrelease']['#exclude_from_print'] = 1;
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $output['deploy_release_form']['form'] = ['#type' => 'container'];

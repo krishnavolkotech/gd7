@@ -1617,11 +1617,12 @@ function maintenance_reasons($rid = NULL){
     1=>t('Urgency of the maintenance'),
     2=>t('No staff available during maintenance hours'),
     3=>t('No service partner (State) available during maintenance hours'),
-    4=>t('External service partner required'),
+    // 4=>t('External service partner required'),
     5=>t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
     6=>t('Public holiday or weekend'),
     7=>t('No service partner (KONSENS) available during maintenance hours'),
-    8=>t('No service interruption planned')
+    8=>t('No service interruption planned'),
+    9=>t('Keine Auswirkung auf Abläufe in den Finanzämtern')
   ];
   if($rid){
     return $data[$rid];
