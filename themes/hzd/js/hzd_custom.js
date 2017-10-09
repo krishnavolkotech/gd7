@@ -325,10 +325,10 @@ jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").ta
     window.onload = imAttachmentScrooltop;
   });
 
-  $('#user-register-form .form-email,[type="password"]')
-    .bind("cut copy paste", function (e) {
-      e.preventDefault();
-    });
+//  $('#user-register-form .form-email,[type="password"]')
+//    .bind("cut copy paste", function (e) {
+//      e.preventDefault();
+//    });
 
   $("div.ckeditor-custom-wrapper table").each(function (index, element) {
     //if (!$( element ).hasClass( "ckeditor-table-responsive" )) {
