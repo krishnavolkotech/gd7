@@ -14,6 +14,12 @@ jQuery("div.group-nodes-sortable > div.view-content > div > table.table").tables
             },            4: { 
                 sorter: false 
             },
+	      5: {
+	        sorter: false
+     	   },
+              6: {
+                sorter:false
+           },
         }
       });
 // mitglieder page sorting functionality
