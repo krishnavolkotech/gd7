@@ -1303,4 +1303,14 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
       }
     }
   }
+
+  //removing persistent link in users profile page tab menu
+  if (!empty($data['tabs'][0])) {
+      $tabmenus = $data['tabs'][0];
+      foreach($tabmenus as $key => $value) {
+          if($key == 'persistent_login.user_tokens_list') {
+              unset($data['tabs'][0]['persistent_login.user_tokens_list']); 
+          }
+      }
+  }
 }
