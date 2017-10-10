@@ -968,6 +968,13 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
       $value->_entity->set('title', Html::decodeEntities($node_title));
     }
   }
+  
+  if($view->id() == 'content') {
+      foreach ($view->result as $value) {
+        $node_title = $value->_entity->get('title')->value;
+        $value->_entity->set('title', Html::decodeEntities($node_title));
+      }
+  }
 
   if ($view->id() == 'release_list') {
 
