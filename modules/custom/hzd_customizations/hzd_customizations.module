@@ -963,6 +963,9 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
       $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)
               ->format('d.m.Y');
       $value->_entity->set('field_problem_eroffnet', (string) $start_date);
+      
+      $node_title = $value->_entity->get('title')->value;
+      $value->_entity->set('title', Html::decodeEntities($node_title));
     }
   }
 
