@@ -872,6 +872,7 @@ class HzdcustomisationStorage {
       }
     }
 //        kint($downtimesQuery->__toString());
+    if ($type == 'archived') {
     $count_query = clone $downtimesQuery;
     $count_query->addExpression('Count(d.id)');
     $pager = $downtimesQuery->extend('Drupal\Core\Database\Query\PagerSelectExtender');
@@ -879,20 +880,25 @@ class HzdcustomisationStorage {
     $pager->limit(PAGE_LIMIT);
     $pager->fields('d');
     $pager->distinct();
+    }
     if ($type == 'archived') {
       $pager->addExpression('case when (rci.end_date = 0 OR rci.end_date is null) then d.enddate_planned else rci.end_date end','sorted_end');
       $pager->orderby('sorted_end', 'desc');
     } elseif ($type == 'incident') {
-        $pager->orderby('d.startdate_planned', 'desc');
+        $downtimesQuery->fields('d');
+        $downtimesQuery->orderby('d.startdate_planned', 'desc');
     } elseif ($type == 'maintenance') {
-        $pager->orderby('d.startdate_planned', 'asc');
-    } else {
-      $pager->orderby('d.startdate_planned', 'asc');
-    }
+        $downtimesQuery->fields('d');
+        $downtimesQuery->orderby('d.startdate_planned', 'asc');
+    } 
 
 
 //        kint($pager->__toString());
-    $result = $pager->execute()->fetchAll();
+    if ($type == 'archived') {
+        $result = $pager->execute()->fetchAll();
+    } else {
+        $result = $downtimesQuery->execute()->fetchAll();
+    }
     $renderer = \Drupal::service('renderer');
     if ($type == 'archived') {
       $enddate_label = t('Actual End Date');
@@ -1169,13 +1175,14 @@ class HzdcustomisationStorage {
       // @todo to be changed to appropiate context and tags
       '#cache' => ['max-age' => 0],
     );
-    $build['pager'] = array(
-      '#type' => 'pager',
-      '#prefix' => '<div id="pagination">',
-      '#suffix' => '</div>',
-      '#exclude_from_print' => 1,
-    );
-    
+    if ($type == 'archived') {
+        $build['pager'] = array(
+          '#type' => 'pager',
+          '#prefix' => '<div id="pagination">',
+          '#suffix' => '</div>',
+          '#exclude_from_print' => 1,
+        );
+    }
     
     return $build;
   }
