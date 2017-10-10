@@ -1,6 +1,40 @@
 (function ($) {
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
+        
+    $.tablesorter.addParser({
+      // set a unique id
+      id: 'date_sorting',
+      is: function(s) {
+        // return false so this parser is not auto detected
+        return false;
+      },
+      format: function(s) {
+        // format your data for normalization 
+        if (s) {
+          var date_info = s.split(' ');
+                var dateele = date_info[0].split('.');
+                //adding 20 if date is formatted in only YY format.
+                if (dateele[2].length == 2) {
+                  dateele[2] = '20' + dateele[2];
+                }
+                var date = dateele[2] + dateele[1] + dateele[0];
+                //console.log(date);
+                return parseInt(date,10);	     
+              }
+      },
+      // set type, either numeric or text
+      type: 'numeric'
+    });
+    $("#sortable").tablesorter({
+      headers: {
+        6: {
+              sorter: 'date_sorting'
+            }
+      }
+    });
+        
+        
 // group node tables sortable
 jQuery("div.group-nodes-sortable > div.view-content > div > table.table").tablesorter({
         headers: {
