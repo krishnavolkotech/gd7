@@ -39,7 +39,7 @@ class HzdEarlyWarnings extends ControllerBase {
   public function view_early_warnings() {
     
     $output['content']['#attached']['library'] = array(
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
 //      'downtimes/downtimes',
       'hzd_earlywarnings/hzd_earlywarnings',
     );
@@ -170,7 +170,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $user_role = get_user_role();
     $group_id = get_group_id();
     $output['content']['#attached']['library'] = array(
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
 //      'downtimes/downtimes',
       'hzd_release_management/hzd_release_management',
       'hzd_earlywarnings/hzd_earlywarnings',

@@ -33,7 +33,7 @@ class ArchivedProblemsController extends ControllerBase {
      */
     $result['#attached']['library'] = array(
       'problem_management/problem_management',
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
     );
     $result['#attached']['drupalSettings']['group_id'] = $group_id;
     $result['#attached']['drupalSettings']['type'] = $string;

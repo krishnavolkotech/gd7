@@ -887,12 +887,15 @@ h1.page-header {
 }
 /* problem management table sort css */
 
-table.tablesorter thead tr .header {
+table.tablesorter thead tr .tablesorter-header-inner {
     background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
     padding-right: 24px !important;
+}
+table.tablesorter thead tr .sorter-false .tablesorter-header-inner {
+    background-image: none;
 }
 table.sticky-header {
     width: auto !important;
@@ -3464,14 +3467,36 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
 }
 
 
-div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .header,
-div.sort-user-list > div.view-content > div > table.table thead tr .header,
-div.all-groups-sortable > div.view-content > div > table.table thead tr .header,
-div.group-nodes-sortable > div.view-content > div > table.table thead tr .header
-  {
+div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.sort-user-list > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.all-groups-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.group-nodes-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+.saved-rz-schnellinfo table thead tr .tablesorter-header-inner,
+.view-group-members-lists table thead tr .tablesorter-header-inner,
+.view-hzd-group-members table thead tr .tablesorter-header-inner{
     background-image: url(/themes/hzd/images/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
     padding-right: 24px !important;
 }
+div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.sort-user-list > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.all-groups-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.group-nodes-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+.saved-rz-schnellinfo table thead tr .sorter-false .tablesorter-header-inner,
+.view-group-members-lists table thead tr .sorter-false .tablesorter-header-inner,
+.view-hzd-group-members table thead tr .sorter-false .tablesorter-header-inner{
+    background-image: none;
+}
+table.sticky-header thead tr .tablesorter-header-inner {
+    background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 24px !important;
+}
+table.sticky-header thead tr .sorter-false .tablesorter-header-inner {
+    background-image: none;
+}
+
