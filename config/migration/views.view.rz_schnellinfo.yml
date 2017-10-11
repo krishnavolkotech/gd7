@@ -794,6 +794,7 @@ display:
         filter_groups: false
         exposed_form: false
         fields: false
+        css_class: false
       filters:
         type:
           id: type
@@ -1524,6 +1525,7 @@ display:
           entity_type: node
           entity_field: changed
           plugin_id: field
+      css_class: saved-rz-schnellinfo
     cache_metadata:
       max-age: 0
       contexts:
