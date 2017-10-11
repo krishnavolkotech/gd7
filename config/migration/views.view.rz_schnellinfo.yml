@@ -83,19 +83,43 @@ display:
           summary: ''
           description: ''
           columns:
+            path: path
+            field_unique_id: field_unique_id
+            gid: gid
             field_author_state: field_author_state
-            label: label
+            title: title
             field_other_services: field_other_services
             field_related_transfer_number: field_related_transfer_number
             changed: changed
           info:
+            path:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_unique_id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            gid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             field_author_state:
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            label:
-              sortable: true
+            title:
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -112,7 +136,7 @@ display:
               empty_column: false
               responsive: ''
             changed:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
