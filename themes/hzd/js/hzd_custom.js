@@ -27,6 +27,12 @@ Drupal.behaviors.hzd = {
       type: 'numeric'
     });
     $("#problem_search_results_wrapper table").tablesorter({
+      textExtraction: {
+          2: function (node, table, cellIndex) {
+              // only keep the first 5 letters of the alphanumeric value
+              return $(node).text().substring(0, 5);
+          }
+      },
       headers: {
         6: {
               sorter: 'date_sorting'
@@ -34,7 +40,44 @@ Drupal.behaviors.hzd = {
       }
     });
         
-        
+    
+    $('div.saved-rz-schnellinfo table').tablesorter({
+      headers: {
+        4: {
+              sorter: 'quickinfo_date_sorting'
+            }
+      }
+    });
+    
+    $('div.view-group-members-lists table').tablesorter({
+        headers: {
+            2: { sorter: false },
+            3: { sorter: false },
+            4: { sorter: false },
+            6: { sorter: false }
+        }
+    });
+    
+    $('div.view-hzd-group-members table').tablesorter({
+        headers: {
+            2: { sorter: false },
+            3: { sorter: false },
+            5: { sorter: false },
+            6: { sorter: false }
+        }
+    });
+    
+    $('#im-attachment-files-list table').tablesorter({
+        headers: {
+            1: { sorter: false },
+            2: { sorter: false },
+            5: { sorter: false },
+            6: { sorter: false },
+            7: { sorter: false },
+            4: { sorter: 'date_sorting' },
+        }
+    });
+    
 // group node tables sortable
 jQuery("div.group-nodes-sortable > div.view-content > div > table.table").tablesorter({
         headers: {

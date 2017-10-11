@@ -337,7 +337,7 @@ class DowntimesFilter extends FormBase
 //        $form['#suffix'] = "</div>";
         $form['#attached']['library'] = array(
             //     'downtimes/downtimes.newdowntimes',
-            'downtimes/downtimes.currentincidents',
+//            'downtimes/downtimes.currentincidents',
             'downtimes/downtimes',
         );
         $form['#attached']['drupalSettings'] = array(

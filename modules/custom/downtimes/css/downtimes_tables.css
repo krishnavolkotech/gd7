@@ -44,11 +44,14 @@ table.downtimes_incidents thead tr th, table.downtimes_incidents tfoot tr th {
 
 .downtimes_incidents .reason {text-align:left;}
 
-table.downtimes_incidents thead tr .header {
+table.downtimes_incidents thead tr .tablesorter-header-inner {
         background-image: url(images/bg.gif);
         background-repeat: no-repeat;
         background-position: center right;
         cursor: pointer;
+}
+table.downtimes_incidents thead tr .sorter-false .tablesorter-header-inner {
+        background-image: none;
 }
 table.downtimes_incidents tbody td {
         color: #3D3D3D;
@@ -210,11 +213,14 @@ table.downtimes_maintenance thead tr th, table.downtimes_maintenance tfoot tr th
 
 .downtimes_maintenance .reason {text-align:left;}
 
-table.downtimes_maintenance thead tr .header {
+table.downtimes_maintenance thead tr .tablesorter-header-inner {
         background-image: url(images/bg.gif);
         background-repeat: no-repeat;
         background-position: center right;
         cursor: pointer;
+}
+table.downtimes_maintenance thead tr .sorter-false .tablesorter-header-inner {
+        background-image: none;
 }
 table.downtimes_maintenance tbody td {
         color: #3D3D3D;
@@ -287,11 +293,14 @@ table.downtimes_archived thead tr th, table.downtimes_archived tfoot tr th {
 
 .downtimes_archived .reason {text-align:left;}
 
-table.downtimes_archived thead tr .header {
+table.downtimes_archived thead tr .tablesorter-header-inner {
         background-image: url(images/bg.gif);
         background-repeat: no-repeat;
         background-position: center right;
         cursor: pointer;
+}
+table.downtimes_archived thead tr .sorter-false .tablesorter-header-inner {
+        background-image: none;
 }
 table.downtimes_archived tbody td {
         color: #3D3D3D;

@@ -32,7 +32,7 @@ class HzdproblemmanagementHelper {
      */
     $result['#attached']['library'] = array(
       'problem_management/problem_management',
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
     );
     /**
      * send php variables to javascript file
