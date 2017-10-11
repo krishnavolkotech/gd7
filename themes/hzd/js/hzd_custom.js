@@ -26,7 +26,7 @@ Drupal.behaviors.hzd = {
       // set type, either numeric or text
       type: 'numeric'
     });
-    $("#sortable").tablesorter({
+    $("#problem_search_results_wrapper table").tablesorter({
       headers: {
         6: {
               sorter: 'date_sorting'
