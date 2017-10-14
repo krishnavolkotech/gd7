@@ -166,27 +166,29 @@ class ArchiveDataExport extends FormBase {
       }
       $result1['uid'] = db_query("select abbr from {node_field_data} n, {cust_profile} p, {states} s where n.uid = p.uid and state_id = id and n.uid = ?", array($result1['uid']))->fetchField();
       // Converting timestamps to Date format.
-      $result1['service_id'] = '"'.implode(',', $title).'"';
-      $result1['state_id'] = '"'.implode(',', $states_id).'"';
+      $result1['service_id'] = implode(',', $title);
+      $result1['state_id'] = implode(',', $states_id);
       $result1['created'] = date('d.m.Y - H:i', $result1['created']);
       $result1['startdate_planned'] = date('d.m.Y - H:i', $result1['startdate_planned']);
       $result1['enddate_planned'] = date('d.m.Y - H:i', $result1['enddate_planned']);
       $result1['end_date'] = date('d.m.Y - H:i', $result1['end_date']);
       //if($result1['status'] == 'R' || $result1['reason'] == 6) {
-      if (empty($result1['reason']) || $result1['reason'] == 6) {
+      if (empty($result1['reason'])) {
         $result1['within_mw'] = 1;
       }
       else {
         $result1['within_mw'] = 0;
       }
       $description = $result1['description'];
-      $result1['description'] = \Drupal\Core\Mail\MailFormatHelper::htmlToText($description);
+      unset($result1['description']);
+      
       if ($result1['reason'] > 0) {
         #$result1['reason'] = get_reason_text($result1['reason']);
       }
       else {
         $result1['reason'] = '';
       }
+      $result1['description'] = \Drupal\Core\Mail\MailFormatHelper::htmlToText($description);
      // Load all the group content for this node.
       $groupContent = \Drupal\node\Entity\Node::load($result1['nid']);
       $result1['url'] = $groupContent->toUrl()->setAbsolute()->toString();
