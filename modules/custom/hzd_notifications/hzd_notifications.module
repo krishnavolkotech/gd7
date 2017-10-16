@@ -360,6 +360,12 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_type_edit_form',
         'node_planning_files_edit_form',
         'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupadmin_formids = array(
         'node_page_form',
@@ -371,6 +377,12 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_deployed_releases_edit_form',
         'node_planning_files_edit_form',
         'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupmemeber_formids = array(
         'node_downtimes_edit_form',
