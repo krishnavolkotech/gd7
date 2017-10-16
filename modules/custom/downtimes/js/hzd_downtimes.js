@@ -150,7 +150,11 @@
 
             // Maintenance window validations.
             //$('input#edit-enddate-planned').focusout(function () {
-            $("#edit-enddate-planned").on("dp.change", function(e) {
+            $("#edit-startdate-planned, #edit-enddate-planned").on("dp.change", function(e) {
+                var end_day = $('input#edit-enddate-planned').val();
+                if(!end_day) {
+                    return;
+                }
                 if ($(this).val()) {
                     var end_date = $(this).val().split('-');
                     end_date = end_date[1];
@@ -171,7 +175,7 @@
                         var start_day_obj = new Date(convert_to_valid_format(start_day));
                         start_day = weekday[start_day_obj.getDayOveridden()];
 
-                        var end_day = $(this).val();
+                        //var end_day = $(this).val();
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDayOveridden()];
                         if (start_day_obj.getTime() >= end_day_obj.getTime()) {
