@@ -850,10 +850,9 @@ function hzd_preprocess_comment(&$variables) {
   $comment = $variables['elements']['#comment'];
   if ($variables['elements']['#view_mode'] == 'mail') {
     $variables['title'] = $comment->getSubject();
-    $variables['submitted'] = t('Submitted by @username on @datetime', [
+    $variables['submitted'] = t('Commented by: @username', [
       '@username' => $comment->getOwner()
         ->getDisplayName(),
-      '@datetime' => $variables['created']
     ]);
 
     $variables['permalink'] = '';
