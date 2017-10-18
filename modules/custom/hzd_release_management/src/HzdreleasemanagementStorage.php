@@ -201,6 +201,7 @@ class HzdreleasemanagementStorage {
         }
 
         $node->set("field_release_type", $types[$values['type']]);
+        $node->set("field_calculated_title", $values['title']);
         /**
          * $node->set("og_initial_groups", Array(
          * '0' => $release_management_group_id['0'],
