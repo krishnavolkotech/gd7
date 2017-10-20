@@ -1,0 +1,14 @@
+diff --git a/modules/contrib/group/src/Controller/GroupMembershipController.php b/modules/contrib/group/src/Controller/GroupMembershipController.php
+index 5caaa46..ed5e596 100644
+--- a/modules/contrib/group/src/Controller/GroupMembershipController.php
++++ b/modules/contrib/group/src/Controller/GroupMembershipController.php
+@@ -96,6 +96,9 @@ public function access(GroupInterface $group) {
+     ) {
+       return AccessResult::forbidden();
+     }
++    elseif($currentUser->isAnonymous()) {
++      return AccessResult::forbidden();
++    }
+     else {
+       return AccessResult::allowed();
+     }

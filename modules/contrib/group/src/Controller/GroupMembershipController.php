@@ -96,6 +96,9 @@ class GroupMembershipController extends ControllerBase {
     ) {
       return AccessResult::forbidden();
     }
+    elseif($currentUser->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
     else {
       return AccessResult::allowed();
     }
