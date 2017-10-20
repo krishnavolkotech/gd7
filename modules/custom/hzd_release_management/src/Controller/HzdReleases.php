@@ -205,7 +205,8 @@ class HzdReleases extends ControllerBase {
     if ($query_explode_search) {
       $output = \Drupal::config('hzd_release_management.settings')->get('secure_download_text')['value'];
       $output .= "<h4><a target = '_blank' href ='$query'>" . t("Please click this secure download link to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
-      return $output;
+      $build['#markup'] = $output;
+      return $build;
     } else {
       $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
       $arr = $doc_values['arr'];
