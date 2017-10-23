@@ -870,14 +870,14 @@ function cust_group_preprocess_node(&$variables) {
 //    exit;
 }
 
-function cust_group_user_login() {
+/*function cust_group_user_login() {
   $request = \Drupal::request()->get('destination', NULL);
   if (!$request) {
     $response = new RedirectResponse("/");
     $response->send();
     return;
   }
-}
+}*/
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
 
