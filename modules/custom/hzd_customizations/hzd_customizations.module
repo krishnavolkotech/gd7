@@ -1481,12 +1481,14 @@ function hzd_customizations_form_user_login_form_alter(&$form, FormStateInterfac
 /**
  *
  */
-function _hzd_customizations_user_login_form_submit() {
-  // $redirect_url = Url::fromRoute('user.page');
-  //  if(!empty($user_status) && $user_status == "active") {
-  //    $account->activate();
-  //    $form_state->setRedirectUrl($redirect_url);
-  //  }
+function _hzd_customizations_user_login_form_submit(&$form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('<front>');
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  if (!$request->request->has('destination')) {
+    $form_state->setRedirectUrl($url);
+  } else {
+    $request->query->set('destination', $request->request->get('destination'));
+  }
 }
 
 /*
