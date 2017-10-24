@@ -410,8 +410,9 @@ class HzdreleasemanagementStorage {
         if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
           // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
           // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
-          db_update('node_field_data')->fields(array('status' => '0'))
-                  ->condition('nid', $release_title_nid_values)->execute();
+          $node = Node::load($release_title_nid_values);
+          $node->set("field_release_type", 4);
+          $node->save();
         }
       }
     }
