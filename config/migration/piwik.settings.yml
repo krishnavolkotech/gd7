@@ -1,5 +1,5 @@
 site_id: '3'
-url_http: 'http://konitsmtst3.intern.hessen.de:9998/'
+url_http: 'http://betriebsportal-konsens.hessen.testa-de.net:9998/'
 url_https: ''
 domain_mode: 0
 visibility:

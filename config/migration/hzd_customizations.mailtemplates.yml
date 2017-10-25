@@ -31,7 +31,7 @@ release:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>http://betriebsportal-konsens.hessen.testa-de.net/release-management/releases</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 problem:
   subject_insert: '[[node:field_services]] Neues Problem: [node:title]'
@@ -39,7 +39,7 @@ problem:
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
-  mail_footer: "<p>[site:url]release-management/releases</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_footer: "<p>http://betriebsportal-konsens.hessen.testa-de.net[node:url:relative]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/betriebsportal-konsens/faq/benachrichtigungen#19530\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 group_content:
   subject_insert: '[[node:content_group_title]] Neu - [node:content-type]: [node:title]'
