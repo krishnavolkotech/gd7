@@ -73,7 +73,7 @@ class HzdreleasemanagementStorage {
           ->Fields('nfrt', array('entity_id'))
           ->condition('nfrt.field_release_type_value', '2', '=')
           ->execute()->fetchAll();
-
+$inprogress_nid_values = [];
         foreach ($inprogress_values as $inprogress_value) {
           $inprogress_nid_values[] = $inprogress_value->entity_id;
         }
@@ -156,7 +156,7 @@ class HzdreleasemanagementStorage {
       }
 
       $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-//      $release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
+      //$release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
         // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
@@ -348,24 +348,25 @@ class HzdreleasemanagementStorage {
       setlocale(LC_ALL, 'de_DE.UTF-8');
       $count_data = 0;
       while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
+          $explodedData = explode(',', $data[0]);
         if ($count_data == 0) {
           $heading = $data;
         } else {
           if ($type == 3) {
             $header_values['4'] = 'comment';
           }
-          foreach ($data as $key => $value) {
+          foreach ($explodedData as $key => $value) {
             // droy: removed utf8_encode since it gives issues when data is already in utf8 (setlocale above).
             // $values[$header_values[$key]] = utf8_encode($data[$key]);.
-            $values[$header_values[$key]] = $data[$key];
+            $values[$header_values[$key]] = $explodedData[$key];
           }
 
           $query = db_select('node_field_data', 'n');
           $query->Fields('n', array('nid'));
           $query->condition('title', $values['title'], '=');
-          $inprogress_csv_nid = $query->execute()->fetchCol();
+          $inprogress_csv_nid = $query->execute()->fetchField();
           $inprogress_csv_nid_values[] = $inprogress_csv_nid;
-        }
+        }        
         $count_data++;
       }
       if ($type == 3) {
