@@ -156,7 +156,7 @@ class HzdreleasemanagementStorage {
       }
 
       $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-      $release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
+//      $release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
         // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
@@ -196,8 +196,11 @@ class HzdreleasemanagementStorage {
             $existing_node_values['link'] = $node->get('field_link')->value;
             $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
-        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
-        if (count(array_diff($existing_node_values, $values)) != 0) {
+//        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
+        $csvvalues = array();
+        $csvvalues = $values;
+        unset($csvvalues['type']);
+        if (count(array_diff($csvvalues, $existing_node_values)) != 0) {
             $node->setTitle($values['title']);
             $node->set("comment", 2);
             $node->set("field_status", $values['status']);
