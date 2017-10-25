@@ -665,7 +665,7 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
 
     foreach ($tokens as $name => $original) {
       switch ($name) {
-        case 'user-notification-settings':
+        case 'user-notification-settings-url-absolute':
           $route = 'hzd_notifications.notifications';
           $route_params = [
             'user' => $user->id(),
@@ -682,6 +682,22 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           $notif_change_link = $base_url . $url;
           $replacements[$original] = $notif_change_link;
           break;
+      
+        case 'user-notification-settings-url-relative':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          $replacements[$original] = $url;
+          break;
       }
     }
   }
@@ -692,8 +708,12 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
  * Implements hook_token_info_alter().
  */
 function hzd_notifications_token_info_alter(&$data) {
-  $data['tokens']['user']['user-notification-settings'] = [
+  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
     'name' => t("user notification settings"),
-    'description' => t("The link to change user notification settings."),
+    'description' => t("The link to change user notification settings absolute url."),
+  ];
+  $data['tokens']['user']['user-notification-settings-url-relative'] = [
+    'name' => t("user notification settings"),
+    'description' => t("The link to change user notification settings relative url."),
   ];
 }
