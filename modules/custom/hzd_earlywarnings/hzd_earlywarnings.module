@@ -163,9 +163,9 @@ function send_earlywarning_comment_notifications($entity, $action) {
         // $token_sub = $config['subject_update'];
         // $subject = $token_service->replace($token_sub, array( 'node' => $nodeentity));
         if($action == 'insert') {
-          $subject = t('New comment on Early warnings.');
+          $subject = t('New Comment on Early Warning');
         } else {
-          $subject = t('Updated comment on Early warnings.');
+          $subject = t('Updated Comment on Early Warning');
         }
         
         $body[] = [
@@ -196,9 +196,9 @@ function send_earlywarning_comment_notifications($entity, $action) {
         // $token_sub = $config['subject_update'];
         // $params['subject'] = $token_service->replace($token_sub, array( 'node' => $nodeentity));
         if($action == 'insert') {
-          $params['subject'] = t('New comment on Forum.');
+          $params['subject'] = t('New Comment on Forum');
         } else {
-          $params['subject'] = t('Updated comment on Forum.');
+          $params['subject'] = t('Updated Comment on Forum');
         }
         $result = array();
         $mailManager = \Drupal::service('plugin.manager.mail');
