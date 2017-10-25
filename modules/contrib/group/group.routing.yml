@@ -32,24 +32,6 @@ entity.group.request:
     _controller: '\Drupal\group\Controller\GroupMembershipController::requestMembership'
     _title_callback: '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle'
   requirements:
-    _custom_access: '\Drupal\group\Controller\GroupMembershipController::access'
-    _group_member: 'FALSE'
-
-entity.group.request:
-  path: '/group/{group}/request'
-  defaults:
-    _controller: '\Drupal\group\Controller\GroupMembershipController::requestMembership'
-    _title_callback: '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle'
-  requirements:
-    _custom_access: '\Drupal\group\Controller\GroupMembershipController::access'
-    _group_member: 'FALSE'
-
-entity.group.request:
-  path: '/group/{group}/request'
-  defaults:
-    _controller: '\Drupal\group\Controller\GroupMembershipController::requestMembership'
-    _title_callback: '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle'
-  requirements:
     _group_permission: 'request group membership'
     _group_member: 'FALSE'
 
