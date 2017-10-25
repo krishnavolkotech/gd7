@@ -156,7 +156,7 @@ class HzdreleasemanagementStorage {
       }
 
       $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-
+      $release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
         // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
@@ -181,41 +181,39 @@ class HzdreleasemanagementStorage {
       }
       if (isset($nid) && $nid) {
         $node = Node::load($nid);
-        $node->set("vid", $vid);
-        $node->set("uid", 1);
-        $node->set("created", time());
-        $node->set("type", 'release');
-        $node->setTitle($values['title']);
-        // $node->set("submit", 'Save');
-        // $node->set("preview", 'Preview');
-        //  $node->set("form_id", 'release_node_form');.
-        $node->set("comment", 2);
-        $node->set("field_status", $values['status']);
-        $node->set("field_relese_services", $values['service']);
-        $node->set("field_date", $values['datum']);
+        //No need to set vid, uid, created, type field values
+        //$node->set("vid", $vid);
+        //$node->set("uid", 1);
+        //$node->set("created", time());
+        //$node->set("type", 'release');
+        $existing_node_values['title'] = $node->getTitle();
+        $existing_node_values['status'] = $node->get('field_status')->value;
+        $existing_node_values['service'] = $node->get('field_relese_services')->referencedEntities()[0]->id();
+        $existing_node_values['datum'] = $node->get('field_date')->value;
         if ($values['type'] == 'locked') {
-          $node->set("field_release_comments", $values['comment']);
+            $existing_node_values['comment'] = $node->get('field_release_comments')->value;
         } else {
-          $node->set("field_link", $values['link']);
-          $node->set("field_documentation_link", $values['documentation_link']);
+            $existing_node_values['link'] = $node->get('field_link')->value;
+            $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
+        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
+        if (count(array_diff($existing_node_values, $values)) != 0) {
+            $node->setTitle($values['title']);
+            $node->set("comment", 2);
+            $node->set("field_status", $values['status']);
+            $node->set("field_relese_services", $values['service']);
+            $node->set("field_date", $values['datum']);
+            if ($values['type'] == 'locked') {
+              $node->set("field_release_comments", $values['comment']);
+            } else {
+              $node->set("field_link", $values['link']);
+              $node->set("field_documentation_link", $values['documentation_link']);
+            }
 
-        $node->set("field_release_type", $types[$values['type']]);
-        $node->set("field_calculated_title", $values['title']);
-        /**
-         * $node->set("og_initial_groups", Array(
-         * '0' => $release_management_group_id['0'],
-         * ));
-         * $node->set("og_public", 0);
-         * $node->set("og_groups", Array(
-         * $release_management_group_id => $release_management_group_id['0'],
-         * ));
-         */
-        // $node->set("notifications_content_disable", 0);
-        // $node->set("teaser", '');
-        //  $node->set("validated", 1);.
-        $node->set("status", 1);
-        $node->save();
+            $node->set("field_release_type", $types[$values['type']]);
+            $node->set("status", 1);
+            $node->save();
+        }
       } else {
         $node_array = array(
           // 'nid' => ($nid ? $nid : ''),

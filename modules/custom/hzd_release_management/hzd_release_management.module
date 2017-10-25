@@ -553,8 +553,14 @@ function send_qi_notifications($entity) {
 
 /**
  * Implements hook_ENTITY_TYPE_insert()
+ * Changed from node insert to entity insert because 
+ * of pathauto module used entity insert to create pathalias
  */
-function hzd_release_management_node_insert($entity) {
+// function hzd_release_management_node_insert($entity) {
+function hzd_release_management_entity_insert($entity) {
+  if($entity->getEntityTypeId() != 'node') {
+      return;
+  }
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
     if ($entity->getType() == 'deployed_releases') {
