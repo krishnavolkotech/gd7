@@ -601,6 +601,10 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $form['#submit'][] = 'node_revisions_revert_confirm_custom';
       //kint($form['#action']);exit;
   }
+  
+  if($form_id == 'comment_comment_forum_form' || $form_id == 'comment_comment_no_subject_form') {
+      $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
+  }
 
 //  echo $form_id;exit;
 }
