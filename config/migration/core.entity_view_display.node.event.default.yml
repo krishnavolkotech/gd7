@@ -1,0 +1,55 @@
+uuid: c44d8018-844f-4829-a091-37108e3741f1
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - field.field.node.event.body
+    - field.field.node.event.comment
+    - field.field.node.event.upload
+    - node.type.event
+  module:
+    - comment
+    - file
+    - text
+    - user
+id: node.event.default
+targetEntityType: node
+bundle: event
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 4
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 2
+    third_party_settings: {  }
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

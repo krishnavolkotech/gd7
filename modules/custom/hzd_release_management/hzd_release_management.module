@@ -3,17 +3,19 @@
 /**
  * @file
  */
-if (!defined('RELEASE_MANAGEMENT')) {
-    define('RELEASE_MANAGEMENT', 32);
-}
+
 if (!defined('SITE_ADMIN')) {
-    define('SITE_ADMIN', 5);
+  define('SITE_ADMIN', 5);
 }
 
+use Drupal\Core\Render\Markup;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\hzd_release_management\Controller\ReadexcelController;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
+use Drupal\hzd_release_management\HzdreleasemanagementHelper;
+use Drupal\node\Entity\Node;
 
 // if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));.
@@ -21,113 +23,134 @@ use Drupal\Component\Utility\SafeMarkup;
  * Get deployed services list.
  */
 function hzd_get_deployed_serivces_list() {
-    $group_id = get_group_id();
-    
-    $current_url = Url::fromRoute('<current>');
-    $path = $current_url->toString();
-    $current_path = explode("/", $path);
-    
-    if (is_numeric($current_path[2])) {
-        $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
-    }
-    if ($type == 'deployed_releases') {
-        $services_releases = released_deployed_releases();
-        return $services_data = $services_releases['services'];
-    }
-    $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
-    $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
-    $services['none'] = " < " . t('Service') . ' > ';
-    
-    foreach ($services_obj as $services_data) {
-        $services[$services_data->nid] = $services_data->title;
-    }
-    return $services;
+  $group_id = get_group_id();
+  
+  $current_url = Url::fromRoute('<current>');
+  $path = $current_url->toString();
+  $current_path = explode("/", $path);
+  $type = NULL;
+  if (is_numeric($current_path[2])) {
+    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+  }
+  if ($type == 'deployed_releases') {
+    $services_releases = released_deployed_releases();
+    return $services_data = $services_releases['services'];
+  }
+  $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
+  $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
+  $services['none'] = " < " . t('Service') . ' > ';
+  
+  foreach ($services_obj as $services_data) {
+    $services[$services_data->nid] = $services_data->title;
+  }
+  return $services;
 }
 
 /**
  * Returns the released releses for the deployment .
  */
 function released_deployed_releases($service = NULL) {
-    
-    $select = "SELECT DISTINCT n.nid as release_id, n.title, nfrs.field_relese_services_target_id as service";
-    $from = " FROM {node_field_data} n , {node__field_relese_services} nfrs, {group_releases_view} GRV, {node__field_release_type} nfrt ";
-    $where = " WHERE n.nid = nfrs.entity_id AND n.nid = nfrt.entity_id AND n.status = 1 AND nfrs.field_relese_services_target_id = GRV.service_id AND GRV.group_id = :gid AND nfrt.field_release_type_value IN (1, 2) ";
-    if ($service) {
-        $where .= " AND nfrs.field_relese_services_target_id = $service";
+  
+  $select = "SELECT DISTINCT n.nid as release_id, n.title, nfrs.field_relese_services_target_id as service";
+  $from = " FROM {node_field_data} n , {node__field_relese_services} nfrs, {group_releases_view} GRV, {node__field_release_type} nfrt ";
+  $where = " WHERE n.nid = nfrs.entity_id AND n.nid = nfrt.entity_id AND nfrs.field_relese_services_target_id = GRV.service_id AND GRV.group_id = :gid AND nfrt.field_release_type_value IN (1, 2) ";
+  if ($service) {
+    $where .= " AND nfrs.field_relese_services_target_id = $service";
+  }
+  $order = " ORDER BY n.title ";
+  $sql = $select . $from . $where . $order;
+  $services = array();
+  $query = db_query($sql, array(":gid" => RELEASE_MANAGEMENT))->fetchAll();
+  $releases = [];
+  foreach ($query as $releases_info) {
+    if (!in_array($releases_info->service, $services)) {
+      $services[] = $releases_info->service;
     }
-    $order = " ORDER BY n.title ";
-    $sql = $select . $from . $where . $order;
-    $services = array();
-    $query = db_query($sql, array(":gid" => RELEASE_MANAGEMENT))->fetchAll();
-    foreach ($query as $releases_info) {
-        if (!in_array($releases_info->service, $services)) {
-            $services[] = $releases_info->service;
-        }
-        $releases[$releases_info->release_id] = $releases_info->title;
+    $releases[$releases_info->release_id] = $releases_info->title;
+  }
+  
+  $deployed_services[] = '<' . t('Service') . '>';
+  if (!empty($services)) {
+    $list = implode(", ", $services);
+    $sql = db_query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
+    foreach ($sql as $services_info) {
+      $deployed_services[$services_info->nid] = $services_info->title;
     }
-    
-    $deployed_services[] = t('Service');
-    if (!empty($services)) {
-        $list = implode(", ", $services);
-        $sql = db_query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
-        foreach ($sql as $services_info) {
-            $deployed_services[$services_info->nid] = $services_info->title;
-        }
-    }
-    return $service_releases = array('services' => $deployed_services, 'releases' => $releases);
+  }
+  return $service_releases = array(
+    'services' => $deployed_services,
+    'releases' => $releases
+  );
 }
 
 /**
  * Get all non production environment lists.
  */
 function non_productions_list() {
-    $account = \Drupal::currentUser();
-    $roles = $account->getRoles();
-    if (in_array('site_administrator', $roles)) {
-        $non_productions_lists = db_query("SELECT nid, title FROM {node_field_data} WHERE type = :type", array(":type" => 'non_production_environment'))->fetchAll();
-    } else {
-        $state = hzd_user_state();
-        $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfnps WHERE n.nid = nfnps.entity_id and nfnps.field_non_production_state_value = :state and n.type = :type", array(":state" => $state, ":type" => 'non_production_environment'))->fetchAll();
-    }
-    $environment_lists[0] = t("Bitte Umgebung auswählen");
-    $environment_lists[1] = t('Produktion');
-    foreach ($non_productions_lists as $vals) {
-        $environment_lists[$vals->nid] = $vals->title;
-    }
-    return $environment_lists;
+  $account = \Drupal::currentUser();
+  $roles = $account->getRoles();
+  
+  $entityQuery = Drupal::entityQuery('node');
+  $entityQuery->condition('type', 'non_production_environment');
+  $entityQuery->sort('field_order');
+  if (!in_array('site_administrator', $roles)) {
+    $state = hzd_user_state();
+    $entityQuery->condition('field_non_production_state', $state);
+  }
+  $nodes = Node::loadMultiple($entityQuery->execute());
+  
+  /*if (in_array('site_administrator', $roles)) {
+    $non_productions_lists = db_query("SELECT nid, title FROM {node_field_data} WHERE type = :type", array(":type" => 'non_production_environment'))->fetchAll();
+  }
+  else {
+    $state = hzd_user_state();
+    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfnps WHERE n.nid = nfnps.entity_id and nfnps.field_non_production_state_value = :state and n.type = :type", array(
+      ":state" => $state,
+      ":type" => 'non_production_environment'
+    ))->fetchAll();
+  }*/
+  $environment_lists[0] = '<' . t("Umgebung") . '>';
+  $environment_lists[1] = t('Produktion');
+  $environment_lists[2] = t('Pilot');
+  foreach ($nodes as $vals) {
+    $environment_lists[$vals->id()] = $vals->label();
+  }
+  //Environments do not need sort
+//  natcasesort($environment_lists);
+  return $environment_lists;
 }
 
 /**
  * Get user state id.
  */
 function hzd_user_state($uid = NULL) {
-    if (!$uid) {
-        $account = \Drupal::currentUser();
-        $uid = $account->id();
-    }
-    $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
-    return $state;
+  if (!$uid) {
+    $account = \Drupal::currentUser();
+    $uid = $account->id();
+  }
+  $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+  return $state;
 }
 
 /**
  * Get early warning releases.
  */
 function hzd_earlywarning_release() {
-    $type = Drupal::request()->get('type');
-    // $nid = $node->id();
-    //  if(isset($nid) && is_numeric($nid)) {
-    //    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
-    //  }
-    $current_path = \Drupal::service('path.current')->getPath();
-    $path_args = explode('/', $current_path);
-    
-    if ((isset($type) && $type == 'deployed_releases') || (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) {
-        $service = Drupal::request()->get('ser');
-        $release = Drupal::request()->get('rel');
-        return get_undeployed_dependent_release($service, NULL, $release);
-    }
-    $options = get_earlywarning_release();
-    return $options['releases'];
+  $type = Drupal::request()->get('type');
+  // $nid = $node->id();
+  //  if(isset($nid) && is_numeric($nid)) {
+  //    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
+  //  }
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+  
+  if ((isset($type) && $type == 'deployed_releases') || (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) {
+    $service = Drupal::request()->get('ser');
+    $release = Drupal::request()->get('rel');
+    return get_undeployed_dependent_release($service, NULL, $release);
+  }
+  $options = get_earlywarning_release();
+  return $options['releases'];
 }
 
 /**
@@ -136,38 +159,38 @@ function hzd_earlywarning_release() {
  * @service is service id for which releses has to be returned
  */
 function get_earlywarning_release($service = NULL) {
-    $group_id = get_group_id();
-    
-    $group = ($group_id ? $group_id : RELEASE_MANAGEMENT);
-    /**
-     *  select * from node_field_data nfd
-     * join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id
-     *  join group_releases_view  grv on grv.service_id   = nfrs.
-     * field_relese_services_target_id  where group_id = 32 ;
-     *
-     */
-    $query = db_select('node_field_data', 'nfd');
-    $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
-    $query->join('group_releases_view', 'grv',
-        'nfrs.field_relese_services_target_id = grv.service_id');
-    $query->fields('nfd', array('nid', 'title'));
-    if ($group) {
-        $query->condition('grv.group_id', $group);
-    }
-    // ->condition('grv.group_id', $group_id);.
-    if ($service) {
-        $query->condition('nfrs.field_relese_services_target_id', $service);
-    }
-    $query->orderBy('nfd.title', 'ASC');
-    $result = $query->execute()->fetchAll();
-    
-    // $default_release[] = t("Release");
-    foreach ($result as $vals) {
-        $default_release[$vals->nid] = $vals->title;
-    }
-    return array(
-        'releases' => $default_release
-    );
+  $group_id = get_group_id();
+  
+  $group = ($group_id ? $group_id : RELEASE_MANAGEMENT);
+  /**
+   *  select * from node_field_data nfd
+   * join  node__field_relese_services nfrs on nfd.nid = nfrs.entity_id
+   *  join group_releases_view  grv on grv.service_id   = nfrs.
+   * field_relese_services_target_id  where group_id = 32 ;
+   *
+   */
+  $query = db_select('node_field_data', 'nfd');
+  $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
+  $query->join('group_releases_view', 'grv',
+    'nfrs.field_relese_services_target_id = grv.service_id');
+  $query->fields('nfd', array('nid', 'title'));
+  if ($group) {
+    $query->condition('grv.group_id', $group);
+  }
+  // ->condition('grv.group_id', $group_id);.
+  if ($service) {
+    $query->condition('nfrs.field_relese_services_target_id', $service);
+  }
+  $query->orderBy('nfd.title', 'ASC');
+  $result = $query->execute()->fetchAll();
+  
+  // $default_release[] = t("Release");
+  foreach ($result as $vals) {
+    $default_release[$vals->nid] = $vals->title;
+  }
+  return array(
+    'releases' => $default_release
+  );
 }
 
 /**
@@ -175,96 +198,124 @@ function get_earlywarning_release($service = NULL) {
  * @returns: the releases which are not deployed
  */
 function get_undeployed_dependent_release($service = NULL, $environment = NULL, $release = NULL) {
-    $releases = released_deployed_releases($service);
-    $state_id = hzd_user_state();
-    $query = db_select('node_field_data', 'n');
-    $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
-    $query->join('node__field_user_state', 'nfus', 'nfus.entity_id = n.nid');
-    $query->join('node__field_environment', 'nfe', 'nfe.entity_id = n.nid');
-    $query->isNotNull('nfer.field_earlywarning_release_value');
-    $query->AddExpression('distinct nfer.field_earlywarning_release_value', 'dep_release');
-    $query->condition('nfus.field_user_state_value', $state_id)
-        ->condition('n.status', 1);
-    if ($environment) {
-        $query->condition('nfe.field_environment_value', $environment);
+  /*$releases = HzdreleasemanagementHelper::released_deployed_releases($service);
+  pr($releases);exit;*/
+  $releases = \Drupal::entityQuery('node')
+    ->condition('field_relese_services', $service)
+    //Querying for released and in progressed releases
+    ->condition('field_release_type', [1, 2], 'IN')
+    ->condition('type', 'release')
+    ->execute();
+  $nodes = Node::loadMultiple($releases);
+  $state_id = hzd_user_state();
+  $entityQuery = \Drupal::entityQuery('node')
+    ->condition('type', 'deployed_releases')
+    ->condition('field_user_state', $state_id)
+    ->condition('field_environment', $environment)
+//    ->condition('status', 1)
+    ->execute();
+  $entities = Node::loadMultiple($entityQuery);
+  foreach ($entities as $entity) {
+    $releaseData[$entity->get('field_earlywarning_release')->value] = $entity->get('field_earlywarning_release')->value;
+  }
+  
+  /*$query = db_select('node_field_data', 'n');
+  $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
+  $query->join('node__field_user_state', 'nfus', 'nfus.entity_id = n.nid');
+  $query->join('node__field_environment', 'nfe', 'nfe.entity_id = n.nid');
+  $query->isNotNull('nfer.field_earlywarning_release_value');
+  $query->AddExpression('distinct nfer.field_earlywarning_release_value', 'dep_release');
+  $query->condition('nfus.field_user_state_value', $state_id)
+    ->condition('n.status', 1);
+  if ($environment) {
+    $query->condition('nfe.field_environment_value', $environment);
+  }
+  $result = $query->execute()->fetchAll();
+  
+  $deployed_releases = array();
+  foreach ($result as $vals) {
+    $deployed_releases[$vals->dep_release] = $vals->dep_release;
+  }*/
+  
+  $undeployed_releases[0] = t("< Release >");
+  foreach ($nodes as $key => $value) {
+    if (!in_array($key, $releaseData)) {
+      $undeployed_releases[$key] = $value->label();
     }
-    $result = $query->execute()->fetchAll();
-    
-    $deployed_releases = array();
-    foreach ($result as $vals) {
-        $deployed_releases[$vals->dep_release] = $vals->dep_release;
+  }
+  // print_r($undeployed_releases); exit;.
+  if ($release) {
+    $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
+      ":env" => $environment,
+      ":eid" => $release
+    ))->fetchField();
+    if ($deployed_nid) {
+      $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
+      $undeployed_releases[$deployed_nid] = $title;
     }
-    
-    $undeployed_releases[] = t("Release");
-    foreach ($releases['releases'] as $key => $value) {
-        if (!in_array($key, $deployed_releases)) {
-            $undeployed_releases[$key] = $value;
-        }
-    }
-    // print_r($undeployed_releases); exit;.
-    if ($release) {
-        $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(":env" => $environment, ":eid" => $release))->fetchField();
-        if ($deployed_nid) {
-            $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
-            $undeployed_releases[$deployed_nid] = $title;
-        }
-    }
-    // dpm($release);
-    return $undeployed_releases;
+  }
+  natcasesort($undeployed_releases);
+  // dpm($release);
+  return $undeployed_releases;
 }
 
 /**
  *
  */
 function get_release($string = NULL, $service = NULL) {
-    $release_type = get_release_type($string);
-    $query = db_query("SELECT n.nid, n.title from {node_field_data} n, {node__field_relese_services} nfrs, 
+  $release_type = get_release_type($string);
+  $query = db_query("SELECT n.nid, n.title from {node_field_data} n, {node__field_relese_services} nfrs, 
          {group_releases_view} GRV, {node__field_release_type} nfrt 
          WHERE n.nid = nfrs.entity_id and nfrt.entity_id = n.nid 
          and nfrs.field_relese_services_target_id = GRV.service_id 
          and GRV.group_id = :gid
          and nfrt.field_release_type_value = :type
-         and nfrs.field_relese_services_target_id = :sid ORDER by title", array(":gid" => RELEASE_MANAGEMENT, ":type" => $release_type, ":sid" => $service))->fetchAll();
-    
-    $default_release[] = t("Releases");
-    foreach ($query as $function) {
-        $default_release[$function->nid] = $function->title;
-    }
+         and nfrs.field_relese_services_target_id = :sid ORDER by title", array(
+    ":gid" => RELEASE_MANAGEMENT,
+    ":type" => $release_type,
+    ":sid" => $service
+  ))->fetchAll();
+  
+  $default_release[] = '<' . t("Releases") . '>';;
+  foreach ($query as $function) {
+    $default_release[$function->nid] = $function->title;
+  }
 //    pr($default_release);
-    return array('releases' => $default_release);
+  return array('releases' => $default_release);
 }
 
 /**
  * Returns the type of release.
  */
 function get_release_type($type) {
-    $release_type = 1;
-    switch ($type) {
-        case 'released':
-            $release_type = 1;
-            break;
-        
-        case 'progress':
-            $release_type = 2;
-            break;
-        
-        case 'locked':
-            $release_type = 3;
-            break;
-        
-        case 'rejected':
-            $release_type = 4;
-            break;
-    }
-    return $release_type;
+  $release_type = 1;
+  switch ($type) {
+    case 'released':
+      $release_type = 1;
+      break;
+    
+    case 'progress':
+      $release_type = 2;
+      break;
+    
+    case 'locked':
+      $release_type = 3;
+      break;
+    
+    case 'rejected':
+      $release_type = 4;
+      break;
+  }
+  return $release_type;
 }
 
 /**
  * Implementation of hook_cron()
  */
 function hzd_release_management_cron() {
-    $readExcel = new ReadexcelController();
-    $readExcel->read_release_csv();
+  //disabling for migration purpose temporarily
+  /*  $readExcel = new ReadexcelController();
+    $readExcel->read_release_csv(); */
 }
 
 /**
@@ -272,172 +323,202 @@ function hzd_release_management_cron() {
  * @return:returns abbreviations of states from states table
  */
 function get_all_user_state($active = 0) {
-    if ($active === 1) {
-        $sql_active = "where active = 1";
-    } else {
-        $sql_active = "";
+  if ($active === 1) {
+    $sql_active = "where active = 1";
+  }
+  else {
+    $sql_active = "";
+  }
+  $user_states = db_query("select id, concat(state,' (',abbr,')') as state from {states} $sql_active ORDER BY weight ASC")->fetchAll();
+  foreach ($user_states as $states_values) {
+    // When we concat, when no abbr value is present, then it returns NULL. As of now it returns NULL for please select. so adding that value back to show in drop down.
+    if ($states_values->state == NULL || $states_values->id == 1) {
+      $states[$states_values->id] = '<Bundesland>';
     }
-    $user_states = db_query("select id, concat(state,' (',abbr,')') as state from {states} $sql_active ORDER BY weight ASC")->fetchAll();
-    foreach ($user_states as $states_values) {
-        // When we concat, when no abbr value is present, then it returns NULL. As of now it returns NULL for please select. so adding that value back to show in drop down.
-        if ($states_values->state == NULL) {
-            $states[$states_values->id] = '<Bundesland>';
-        } else {
-            $states[$states_values->id] = $states_values->state;
-        }
+    else {
+      $states[$states_values->id] = $states_values->state;
     }
-    return $states;
+  }
+  return $states;
 }
 
 /**
  * Get non production environments list when the state was selected.
  */
 function get_environment_options($state = 1) {
-    $environment_lists[0] = t('All');
-    $environment_lists[1] = t('Produktion');
-    if ($state != 1) {
-        $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfns WHERE n.nid = nfns.entity_id and nfns.field_non_production_state_value = :val and n.type = :type", array(":val" => $state, "type" => 'non_production_environment'))->fetchAll();
-        foreach ($non_productions_lists as $row) {
-            $environment_lists[$row->nid] = $row->title;
-        }
+  $environment_lists[0] = t('All');
+  $environment_lists[1] = t('Produktion');
+  if ($state != 1) {
+    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfns WHERE n.nid = nfns.entity_id and nfns.field_non_production_state_value = :val and n.type = :type", array(
+      ":val" => $state,
+      "type" => 'non_production_environment'
+    ))->fetchAll();
+    foreach ($non_productions_lists as $row) {
+      $environment_lists[$row->nid] = $row->title;
     }
-    return $environment_lists;
+  }
+  return $environment_lists;
 }
 
 /**
  * Send immediate release notifications.
  */
-function send_release_notifications($entity) {
-    $nid = $entity->id();
-    $service_field = $entity->get('field_relese_services')->getValue();
-    $service_id = $service_field[0]['target_id'];
+function send_release_notifications($entity,$action = 'update') {
+  $nid = $entity->id();
+  if($entity->get('field_release_type')->value != 1){
+    return false;
+  }
+  $service_field = $entity->get('field_relese_services')->getValue();
+  $service_id = $service_field[0]['target_id'];
+  
+  // Get immediate notifications user mails.
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'release');
+  if (is_array($result) && count($result) > 0) {
     
-    // Get immediate notifications user mails.
-    $result = hzd_get_immediate_notification_user_mails($service_id, 'release');
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('release')['subject'];
-            $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('release')['mail_content'];
-            // Replace the token for subject.
-            $message_text = $token_service->replace($token_body, array('node' => $entity));
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
+    foreach ($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
+  }
 }
 
 /**
  *
  */
 function send_downtime_notifications($entity, $action = 'update') {
-    $service_id = \Drupal::database()->select('downtimes', 'd')
-        ->fields('d', ['service_id'])
-        ->condition('d.downtime_id', $entity->id(), '=')
-        ->execute()
-        ->fetchField();
-    $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-    // Get immediate notifications user mails.
-    $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
-    if ($action == 'insert') {
-        $text = 'Inhalt erstellt';
-    } else {
-        $text = 'Inhalt aktualisiert';
+  $service_id = \Drupal::database()->select('downtimes', 'd')
+    ->fields('d', ['service_id'])
+    ->condition('d.downtime_id', $entity->id(), '=')
+    ->execute()
+    ->fetchField();
+//  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+  // Get immediate notifications user mails.
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
+//  $subjectKey = 'subject_' . $action;
+
+  
+  if (is_array($result) && count($result) > 0) {
+    foreach ($result as $values) {
+      $body = [];
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+//      pr($data['user']);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
-    $subject = t($text . ' : ' . $entity->label());
-    
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['subject'];
-            $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('downtimes')['mail_content'];
-            // Replace the token for subject.
-            $message_text = $token_service->replace($token_body, array('node' => $entity));
-//      pr($message_text);exit;
-//            $node = $view_builder->view($entity, 'full', 'de');
-//            $message_text = \Drupal::service('renderer')->render($node);
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
-    }
+  }
 }
 
 /**
  * Send immediate release notifications.
  */
-function send_problem_notifications($entity) {
-    $service_field = $entity->get('field_services')->getValue();
-    $service_id = $service_field[0]['target_id'];
-    
-    // Get immediate notifications user mails.
-    $result = hzd_get_immediate_notification_user_mails($service_id, 'problem');
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('problem')['subject'];
-            $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('problem')['mail_content'];
-            // Replace the token for subject.
-            $message_text = $token_service->replace($token_body, array('node' => $entity));
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
+function send_problem_notifications($entity, $action = 'update') {
+  $service_field = $entity->get('field_services')->getValue();
+  $service_id = $service_field[0]['target_id'];
+  
+  // Get immediate notifications user mails.
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'problem');
+  if (is_array($result) && count($result) > 0) {
+    //Fetching the mail body of a problem
+    foreach ($result as $values) {
+      //@todo user object has to be passed here for notifications with user.
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
+      // Trigger mail functionality to send immediate notifications of quickinfo.
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
+  }
+}
+
+
+function getNodeMailContentFromConfig($data, $action){
+  if($data['node']->getEntityTypeId() == 'group'){
+    $type = 'group';
+  }elseif(in_array($data['node']->bundle(),['event','forum','page','faqs'])){
+    $type = 'group_content';
+  }else{
+    $type = $data['node']->bundle();
+  }
+  $config = \Drupal::config('hzd_customizations.mailtemplates')
+    ->get($type);
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder($data['node']->getEntityTypeId());
+  $token_service = \Drupal::token();
+  // Replace the token for subject.
+  $token_sub = $config['subject_' . $action];
+  $subject = $token_service->replace($token_sub, array($data['node']->getEntityTypeId() => $data['node']));
+  if ($config['mail_view']) {
+    $body[] = $view_builder->view($data['node'], 'mail', 'de');
+    $body[] = [
+      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
+    ];
+  }
+  else {
+    $token_body = $config['mail_content'];
+    $body[] = [
+      '#markup' => $token_service->replace($token_body, array($data['node']->getEntityTypeId() => $data['node'],'user'=>$data['user']))
+    ];
+    $body[] = [
+      '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
+    ];
+  }
+  $message_text = \Drupal::service('renderer')->render($body);
+  return ['body'=>$message_text,'subject'=>$subject];
 }
 
 /**
  * Send immediate planning files notifications.
  */
-function send_pf_notifications($entity) {
-    $result = hzd_get_immediate_pf_notification_user_mails();
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('planning_files')['subject'];
-            $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('planning_files')['mail_content'];
-            // Replace the token for subject.
-            $message_text = $token_service->replace($token_body, array('node' => $entity));
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
+function send_pf_notifications($entity,$action = 'update') {
+  if(!empty($entity->sendNomail) && $entity->sendNomail ==1){
+    return false;
+  }
+  $result = hzd_get_immediate_pf_notification_user_mails();
+//  pr($result);exit;
+  if (is_array($result) && count($result) > 0) {
+//    pr($result);exit;
+
+//    pr($result);exit;
+    foreach ($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
+  }
 }
 
 /**
  * Send immediate release notifications.
  */
-function send_earlywarning_notifications($entity) {
-    $nid = $entity->id();
-    $service_id = $entity->get('field_release_service')->value;
+function send_earlywarning_notifications($entity,$action = 'update') {
+  $nid = $entity->id();
+  $service_id = $entity->get('field_release_service')->value;
 //    $service_id = $service_field[0]['target_id'];
-    
-    // Get immediate notifications user mails.
-    $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            $token_service = \Drupal::token();
-            $token_sub = \Drupal::config('hzd_customizations.mailtemplates')->get('early_warnings')['subject'];
-            $subject = $token_service->replace($token_sub, array('node' => $entity));
-            $token_body = \Drupal::config('hzd_customizations.mailtemplates')->get('early_warnings')['mail_content'];
-            // Replace the token for subject.
-            $message_text = $token_service->replace($token_body, array('node' => $entity));
-            send_immediate_notifications($subject, $message_text, $mail, $preference);
-        }
+  
+  // Get immediate notifications user mails.
+  $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+  if (is_array($result) && count($result) > 0) {
+    foreach ($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      $data['node'] = $entity;
+      $data['user'] = user_load_by_mail($mail);
+      $mailContent = getNodeMailContentFromConfig($data,$action);
+      // Trigger mail functionality to send immediate notifications of quickinfo.
+      send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
+  }
 }
 
 
@@ -446,343 +527,402 @@ function send_earlywarning_notifications($entity) {
  * TODONOTIFICATIONS.
  */
 function send_qi_notifications($entity) {
-    global $base_url;
-    $services = $entity->get('field_other_services')->getValue();
-    $result = hzd_get_immediate_qi_notification_user_mails($services);
-    if (is_array($result) && count($result) > 0) {
-        foreach ($result as $values) {
-            $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-            $mail = $values->mail;
-            // Trigger mail functionality to send immediate notifications of quickinfo.
-            //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
-            $markup = \Drupal::entityManager()->getViewBuilder($entity->getEntityTypeId())->view($entity);
-            $files = $entity->get('upload')->referencedEntities();
-            //unset($markup['printfile']);
-            $style = \Drupal::service('printable.css_include')->getCssIncludePath();
-            // Replace the token for subject.
-            $subject = $entity->label() . " has been updated.";
-            $message_text = \Drupal::service('renderer')->render($markup) . '<link rel="stylesheet" href="' . $base_url . '/' . $style . '" media="all" />';
-            send_immediate_notifications($subject, $message_text, $mail, $preference, $files);
-        }
+  global $base_url;
+  $services = $entity->get('field_other_services')->getValue();
+  $result = hzd_get_immediate_qi_notification_user_mails($services);
+  if (is_array($result) && count($result) > 0) {
+    foreach ($result as $values) {
+      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
+      $mail = $values->mail;
+      // Trigger mail functionality to send immediate notifications of quickinfo.
+      //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
+      $markup = \Drupal::entityManager()
+        ->getViewBuilder($entity->getEntityTypeId())
+        ->view($entity, 'email');///View differsfrom the normal default(full) mode
+      $files = $entity->get('upload')->referencedEntities();
+      //unset($markup['printfile']);
+//      $style = \Drupal::service('printable.css_include')->getCssIncludePath();
+      // Replace the token for subject.
+      $subject = $entity->label() . " has been updated.";
+      $markup['#attached']['library'][] = 'hzd/global-styling';
+      $message_text = \Drupal::service('renderer')->render($markup);
+      send_immediate_notifications($subject, $message_text, $mail, $preference, $files);
     }
+  }
 }
 
 /**
  * Implements hook_ENTITY_TYPE_insert()
+ * Changed from node insert to entity insert because 
+ * of pathauto module used entity insert to create pathalias
  */
-function hzd_release_management_node_insert($entity) {
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-        if ($entity->getType() == 'deployed_releases') {
+// function hzd_release_management_node_insert($entity) {
+function hzd_release_management_entity_insert($entity) {
+  if($entity->getEntityTypeId() != 'node') {
+      return;
+  }
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getType() == 'deployed_releases') {
 //            send_release_notifications($entity);
-        }
-        if ($entity->getType() == 'release') {
-            send_release_notifications($entity);
-        }
-        if ($entity->getType() == 'downtimes') {
-            send_downtime_notifications($entity, 'insert');
-        }
     }
-    if ($entity->getType() == 'problem') {
-        send_problem_notifications($entity);
+    if ($entity->getType() == 'release') {
+      send_release_notifications($entity,'insert');
     }
+    if ($entity->getType() == 'downtimes') {
+      send_downtime_notifications($entity, 'insert');
+    }
+  }
+  if ($entity->getType() == 'problem') {
+    send_problem_notifications($entity, 'insert');
+  }
+  
+  if ($entity->getType() == 'planning_files') {
+    send_pf_notifications($entity, 'insert');
+  }
+  if ($entity->getType() == 'early_warnings') {
+    send_earlywarning_notifications($entity, 'insert');
+  }
+  
+  if ($entity->getType() == 'quickinfo') {
+//    send_qi_notifications($entity);
+  }
+  
+  if ($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+    $downtime = $entity->get('field_enable_downtime')->value;
+    $problem = $entity->get('field_problem_name')->value;
+    $release = $entity->get('field_release_name')->value;
     
-    if ($entity->getType() == 'planning_files') {
-        send_pf_notifications($entity);
+    if ($downtime && $rel_type == KONSONS) {
+      insert_new_service_notifications('downtimes', $nid);
     }
-    if ($entity->getType() == 'early_warnings') {
-        send_earlywarning_notifications($entity);
+    if ($problem != '' && $rel_type == KONSONS) {
+      insert_new_service_notifications('problem', $nid);
     }
-    
-    if ($entity->getType() == 'quickinfo') {
-        send_qi_notifications($entity);
+    if ($release != '') {
+      insert_new_service_notifications('release', $nid);
     }
-    
-    if ($entity->getType() == 'services') {
-        $nid = $entity->id();
-        $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-        $downtime = $entity->get('field_enable_downtime')->value;
-        $problem = $entity->get('field_problem_name')->value;
-        $release = $entity->get('field_release_name')->value;
-        
-        if ($downtime && $rel_type == KONSONS) {
-            insert_new_service_notifications('downtimes', $nid);
-        }
-        if ($problem != '' && $rel_type == KONSONS) {
-            insert_new_service_notifications('problem', $nid);
-        }
-        if ($release != '') {
-            insert_new_service_notifications('release', $nid);
-        }
-        insert_new_service_notifications('early_warnings', $nid);
-    }
+    insert_new_service_notifications('early_warnings', $nid);
+  }
 }
 
 /**
  * Implements hook_ENTITY_TYPE_update()
  */
 function hzd_release_management_node_update($entity) {
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-    
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-        if ($entity->getType() == 'deployed_releases') {
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getType() == 'deployed_releases') {
 //            send_release_notifications($entity);
-        }
-        if ($entity->getType() == 'release') {
-            send_release_notifications($entity);
-        }
-        
-        if ($entity->getType() == 'downtimes') {
-            send_downtime_notifications($entity);
-        }
     }
-    if ($entity->getType() == 'problem') {
-        send_problem_notifications($entity);
+    if ($entity->getType() == 'release') {
+      send_release_notifications($entity);
     }
     
-    if ($entity->getType() == 'planning_files') {
-        send_pf_notifications($entity);
+    if ($entity->getType() == 'downtimes') {
+      send_downtime_notifications($entity);
     }
-    if ($entity->getType() == 'early_warnings') {
-        send_earlywarning_notifications($entity);
-    }
-    
-    if ($entity->getType() == 'quickinfo') {
-        if ($entity->get('status')->value) {
-            send_qi_notifications($entity);
-        }
-    }
-    
-    if ($entity->getType() == 'services') {
-        update_service_notifications($entity);
-        // update_service_notifications('downtimes', $nid);.
-    }
+  }
+  if ($entity->getType() == 'problem') {
+    send_problem_notifications($entity);
+  }
+  
+  if ($entity->getType() == 'planning_files') {
+    send_pf_notifications($entity);
+  }
+  if ($entity->getType() == 'early_warnings') {
+    send_earlywarning_notifications($entity);
+  }
+  
+  if ($entity->getType() == 'quickinfo') {
+//    if ($entity->get('status')->value) {
+//      send_qi_notifications($entity);
+//    }
+  }
+  
+  if ($entity->getType() == 'services') {
+    update_service_notifications($entity);
+    // update_service_notifications('downtimes', $nid);.
+  }
 }
 
 /**
  * Get user mail ids.
  */
 function hzd_get_immediate_notification_user_mails($service_id, $type) {
-    $service_id = explode(',', $service_id);
-    $query = \Drupal::database()->select('service_notifications', 'sn');
-    $query->addField('sn', 'uids');
-    $query->condition('sn.service_id', $service_id, 'IN');
-    $query->condition('sn.send_interval', 0, '=');
-    $query->condition('sn.type', $type, 'like');
-    $get_immediate_notifications_users = $query->execute()->fetchAll();
-    
-    $user_mails = array();
-    $user_ids = array();
-    foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
-        $unserialized_user_array = unserialize($serialized_uids->uids);
-        $user_ids = array_unique(array_merge($user_ids, $unserialized_user_array), SORT_REGULAR);
-    }
-    if (is_array($user_ids) && count($user_ids) > 0) {
-        return hzd_user_mails($user_ids);
-    }
-    return '';
+  $service_id = explode(',', $service_id);
+  $query = \Drupal::database()->select('service_notifications', 'sn');
+  $query->addField('sn', 'uids');
+  $query->condition('sn.service_id', $service_id, 'IN');
+  $query->condition('sn.send_interval', 0, '=');
+  $query->condition('sn.type', $type, 'like');
+  $get_immediate_notifications_users = $query->execute()->fetchAll();
+//  pr($get_immediate_notifications_users);exit;
+  $user_mails = array();
+  $user_ids = array();
+  foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
+    $unserialized_user_array = unserialize($serialized_uids->uids);
+    $user_ids = array_unique(array_merge($user_ids, $unserialized_user_array), SORT_REGULAR);
+  }
+  if (is_array($user_ids) && count($user_ids) > 0) {
+    return hzd_user_mails($user_ids);
+  }
+  return '';
 }
 
 /**
  *
  */
 function hzd_get_immediate_pf_notification_user_mails() {
-    $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
-    $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
-    if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
-        return hzd_user_mails($unserialized_user_array);
-    }
-    return '';
+  $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
+  $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
+  if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
+    return hzd_user_mails($unserialized_user_array);
+  }
+  return '';
 }
 
 /**
  *
  */
 function hzd_get_immediate_qi_notification_user_mails($services) {
-    
-    $options = FieldStorageConfig::loadByName('node', 'field_other_services')->getSetting('allowed_values');
-    $affetced_services = array();
-    foreach ($services as $val) {
-        $affetced_services[] = $options[$val['value']];
-    }
-    
-    $query = db_select('quickinfo_notifications', 'q')
-        ->fields('q', array('uids'))
-        ->condition('q.cck', $affetced_services, 'IN')
-        ->condition('q.send_interval', 0, '=');
-    
-    $results = $query->execute()->fetchCol();
-    
-    $uids_list = array();
-    foreach ($results as $serialized_uids) {
-        $uids = unserialize($serialized_uids);
-        $uids_list = array_unique(array_merge($uids_list, $uids));
-    }
-    
-    if (is_array($uids_list) && (count($uids_list) > 0)) {
-        return hzd_user_mails(array_values($uids_list));
-    }
-    return '';
+  
+  $options = FieldStorageConfig::loadByName('node', 'field_other_services')
+    ->getSetting('allowed_values');
+  $affetced_services = array();
+  foreach ($services as $val) {
+    $affetced_services[] = $options[$val['value']];
+  }
+  
+  $query = db_select('quickinfo_notifications', 'q')
+    ->fields('q', array('uids'))
+    ->condition('q.cck', $affetced_services, 'IN')
+    ->condition('q.send_interval', 0, '=');
+  
+  $results = $query->execute()->fetchCol();
+  
+  $uids_list = array();
+  foreach ($results as $serialized_uids) {
+    $uids = unserialize($serialized_uids);
+    $uids_list = array_unique(array_merge($uids_list, $uids));
+  }
+  
+  if (is_array($uids_list) && (count($uids_list) > 0)) {
+    return hzd_user_mails(array_values($uids_list));
+  }
+  return [];
 }
 
 /**
  * Get user mail ids.
  */
 function hzd_user_mails($uids) {
-    $query = db_select('users_field_data', 'u');
-    $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
-    $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
-    $query->condition('u.status', 1, '=')
-        ->condition('ufns.field_notifications_status_value', 1)
-        ->fields('ufmp', array('field_message_preference_value'))
-        ->condition('u.uid', $uids, 'IN')
-        ->groupBy('ufmp.field_message_preference_value');
-    $query->addExpression("GROUP_CONCAT(u.mail separator ', ')", "mail");
-    $result = $query->execute()->fetchAll();
-    return $result;
+  $query = db_select('users_field_data', 'u');
+  $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
+  $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
+  $query->leftjoin('inactive_users', 'iu', 'iu.uid = u.uid');
+  $query->condition('u.status', 1, '=')
+    ->condition('ufns.field_notifications_status_value', 'Disable', '<>')
+    ->fields('ufmp', array('field_message_preference_value'))
+    ->condition('u.uid', $uids, 'IN')
+    ->isNull('iu.uid')
+    ->groupBy('ufmp.field_message_preference_value');
+  $query->addExpression("GROUP_CONCAT(u.mail separator ', ')", "mail");
+//  pr($query->__toString());exit;
+  $result = $query->execute()->fetchAll();
+//  pr($result);exit;
+  return $result;
 }
 
 /**
  * Send immediate notifications.
  */
-function send_immediate_notifications($subject, $message_text, $to, $preference, $attachment = null) {
-    $mailManager = \Drupal::service('plugin.manager.mail');
-    $module = 'hzd_release_management';
-    $key = 'immediate_notifications';
-    $params['message'] = $message_text;
-    $params['subject'] = $subject;
-    $params['preference'] = $preference ? $preference : 'html';
-    $langcode = \Drupal::currentUser()->getPreferredLangcode();
-    $send = TRUE;
+function send_immediate_notifications($subject, $message_text, $to, $preference, $attachment = NULL) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'hzd_release_management';
+  $key = 'immediate_notifications';
+  $params['message'] = $message_text;
+  $params['subject'] = $subject;
+  $params['preference'] = $preference ? $preference : 'html';
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = TRUE;
+  $token_service = \Drupal::token();
 //    $i = 0;
-    foreach (explode(',', trim($to, ',')) as $userMail) {
-        $userEntity = \Drupal::entityTypeManager()->getStorage('user')
-            ->loadByProperties(['mail' => trim($userMail)]);
-        if ($userEntity && reset($userEntity)->get('field_notifications_status')->value == 1)
-            $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
+  foreach (explode(',', trim($to, ',')) as $userMail) {
+    $userEntity = \Drupal::entityTypeManager()->getStorage('user')
+      ->loadByProperties(['mail' => trim($userMail)]);
+    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
+      && !hzd_user_inactive_status_check(reset($userEntity)->id())
+    ) {
+      $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
     }
-    if ($result['result'] !== TRUE) {
-        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-    }
+  }
+  /*if ($result['result'] != TRUE) {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }*/
+}
+
+/**
+ * Check whether user is inactive or not
+ */
+function hzd_user_inactive_status_check($uid = NULL) {
+  $result = db_select('inactive_users', 'iu')
+    ->fields('iu', array('uid'))
+    ->condition('iu.uid', $uid)
+    ->range(0, 1)
+    ->execute()->fetchField();
+  return !empty($result) ? TRUE : FALSE;
 }
 
 /**
  * Implements hook_mail.
  */
 function hzd_release_management_mail($key, &$message, $params) {
-    $options = array(
-        'langcode' => $message['langcode'],
-    );
-    switch ($key) {
-        case 'immediate_notifications':
-            $message['from'] = \Drupal::config('system.site')->get('mail');
-            $message['subject'] = $params['subject'];
-            $message['body'][] = SafeMarkup::checkPlain($params['message']);
-            $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-            $message['headers']['Bcc'] = 'sandeep@azrisolutions.com';
-            break;
-    }
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      
+      //@todo for now sending all html mails only
+//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
+
+
+//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+      
+      break;
+  }
 }
 
 /**
  * Implements hook_ENTITY_TYPE_delete()
  */
 function hzd_release_management_node_delete($entity) {
-    if ($entity->getType() == 'services') {
-        $nid = $entity->id();
-        db_delete('service_notifications')->condition('service_id', $nid)->execute();
-    }
+  if ($entity->getType() == 'services') {
+    $nid = $entity->id();
+    db_delete('service_notifications')
+      ->condition('service_id', $nid)
+      ->execute();
+  }
 }
 
 /**
  *
  */
 function update_service_notifications($entity) {
-    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-    $downtime = $entity->get('field_enable_downtime')->value;
-    $problem = $entity->get('field_problem_name')->value;
-    $release = $entity->get('field_release_name')->value;
-    if ($downtime) {
-        hzd_notifications_delete_subscriptions('downtimes', $entity->id());
-        if ($rel_type == KONSONS) {
-            hzd_service_update_notifications('downtimes', $entity->id());
-        }
-    } else {
-        hzd_notifications_delete_subscriptions('downtimes', $entity->id());
+  $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+  $downtime = $entity->get('field_enable_downtime')->value;
+  $problem = $entity->get('field_problem_name')->value;
+  $release = $entity->get('field_release_name')->value;
+  if ($downtime) {
+    hzd_notifications_delete_subscriptions('downtimes', $entity->id());
+    if ($rel_type == KONSONS) {
+      hzd_service_update_notifications('downtimes', $entity->id());
     }
-    
-    // Problems insert or delete.
-    if ($problem != '') {
-        hzd_notifications_delete_subscriptions('problem', $entity->id());
-        if ($rel_type == KONSONS) {
-            hzd_service_update_notifications('problem', $entity->id());
-        }
-    } else {
-        hzd_notifications_delete_subscriptions('problem', $entity->id());
+  }
+  else {
+    hzd_notifications_delete_subscriptions('downtimes', $entity->id());
+  }
+  
+  // Problems insert or delete.
+  if ($problem != '') {
+    hzd_notifications_delete_subscriptions('problem', $entity->id());
+    if ($rel_type == KONSONS) {
+      hzd_service_update_notifications('problem', $entity->id());
     }
-    
-    // Release insert or delete.
-    if ($release != "") {
-        hzd_notifications_delete_subscriptions('release', $entity->id());
-        hzd_service_update_notifications('release', $entity->id());
-    } else {
-        hzd_notifications_delete_subscriptions('release', $entity->id());
-    }
+  }
+  else {
+    hzd_notifications_delete_subscriptions('problem', $entity->id());
+  }
+  
+  // Release insert or delete.
+  if ($release != "") {
+    hzd_notifications_delete_subscriptions('release', $entity->id());
+    hzd_service_update_notifications('release', $entity->id());
+  }
+  else {
+    hzd_notifications_delete_subscriptions('release', $entity->id());
+  }
 }
 
 /**
  *
  */
 function hzd_service_update_notifications($type, $nid) {
-    $default_interval = array('-1', 0, 86400, 604800);
-    $service_notifications = \Drupal::database()->query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
-    $result = array();
-    foreach ($service_notifications as $vals) {
-        $result[$vals->uid] = $vals->default_send_interval;
-    }
-    $override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(":sid" => $nid, ":type" => $type))->fetchAll();
-    foreach ($override as $overrides_services) {
-        $result[$overrides_services->uid] = $overrides_services->send_interval;
-    }
-    
-    // Group by interval.
-    $updated_result = array();
-    foreach ($result as $key => $interval) {
-        $updated_result[$interval][] = $key;
-    }
-    
-    foreach ($default_interval as $send_interval) {
-        $serialized_uids = serialize($updated_result[$send_interval]);
-        $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $send_interval, 'uids' => $serialized_uids);
-        db_insert('service_notifications')->fields($record)->execute();
-    }
+  $default_interval = HzdNotificationsHelper::hzd_notification_send_interval();
+  $service_notifications = \Drupal::database()
+    ->query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))
+    ->fetchAll();
+  $result = array();
+  foreach ($service_notifications as $vals) {
+    $result[$vals->uid] = $vals->default_send_interval;
+  }
+  $override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(
+    ":sid" => $nid,
+    ":type" => $type
+  ))->fetchAll();
+  foreach ($override as $overrides_services) {
+    $result[$overrides_services->uid] = $overrides_services->send_interval;
+  }
+  
+  // Group by interval.
+  $updated_result = array();
+  foreach ($result as $key => $interval) {
+    $updated_result[$interval][] = $key;
+  }
+  
+  foreach ($default_interval as $key => $send_interval) {
+    $serialized_uids = serialize($updated_result[$key]);
+    $record = array(
+      'service_id' => $nid,
+      'type' => $type,
+      'send_interval' => $key,
+      'uids' => $serialized_uids
+    );
+    db_insert('service_notifications')->fields($record)->execute();
+  }
 }
 
 /**
  *
  */
 function hzd_notifications_delete_subscriptions($type, $nid) {
-    db_delete('service_notifications')->condition('service_id', $nid, '=')->condition('type', $type, '=')->execute();
+  db_delete('service_notifications')
+    ->condition('service_id', $nid, '=')
+    ->condition('type', $type, '=')
+    ->execute();
 }
 
 /**
  *
  */
 function insert_new_service_notifications($type, $nid) {
-    $interval = array('-1', 0, 86400, 604800);
-    $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
-    $result = array();
-    foreach ($service_notifications as $vals) {
-        $result[$vals->default_send_interval][$vals->uid] = $vals->uid;
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
+  $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
+  $result = array();
+  foreach ($service_notifications as $vals) {
+    $result[$vals->default_send_interval][$vals->uid] = $vals->uid;
+  }
+  
+  foreach ($interval as $key => $each_interval) {
+    foreach ($result as $service_vals) {
+      $serialized_uids = serialize($service_vals);
     }
-    
-    foreach ($interval as $each_interval) {
-        foreach ($result as $service_vals) {
-            $serialized_uids = serialize($service_vals);
-            $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $each_interval, 'uids' => $serialized_uids);
-            db_insert('service_notifications')->fields($record)->execute();
-        }
-    }
+    $record = array(
+      'service_id' => $nid,
+      'type' => $type,
+      'send_interval' => $key,
+      'uids' => $serialized_uids
+    );
+    db_insert('service_notifications')->fields($record)->execute();
+  }
 }
 
 /*
@@ -895,14 +1035,14 @@ function insert_new_service_notifications($type, $nid) {
  * Validation function added for early warnings content type
  */
 function earlywarnings_node_validate(&$form, &$form_state) {
-    $service = $form_state['values']['field_release_service'][0]['value'];
-    $release = $form_state['values']['field_earlywarning_release'][0]['value'];
-    if ($service == 'none') {
-        $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
-    }
-    if ($release == 0) {
-        $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
-    }
+  $service = $form_state['values']['field_release_service'][0]['value'];
+  $release = $form_state['values']['field_earlywarning_release'][0]['value'];
+  if ($service == 'none') {
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
+  }
+  if ($release == 0) {
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
+  }
 }
 
 /**
@@ -910,27 +1050,27 @@ function earlywarnings_node_validate(&$form, &$form_state) {
  * After ahah filtering the releases, validations for the form done here.
  */
 function deployedreleses_node_validate(&$form, &$form_state) {
-    $service = $form_state->getValue('field_release_service');
-    $release = $form_state->getValue('field_earlywarning_release');
+  $service = $form_state->getValue('field_release_service');
+  $release = $form_state->getValue('field_earlywarning_release');
+  
+  $environment = $form_state->getValue('field_environment');
+  $entered_date = $form_state->getValue('field_date_deployed');
+  $today_date = mktime(23, 59, 59, date('m', time()), date('d', time()), date('y', time()));
+  
+  if ($service == 'none') {
     
-    $environment = $form_state->getValue('field_environment');
-    $entered_date = $form_state->getValue('field_date_deployed');
-    $today_date = mktime(23, 59, 59, date('m', time()), date('d', time()), date('y', time()));
-    
-    if ($service == 'none') {
-        
-        $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
-    }
-    if ($release == 0) {
-        $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
-    }
-    if ($environment == 0) {
-        $form_state->setErrorByName('field_environment', t('Please Select Environment.'));
-    }
-    
-    if ($entered_date > $today_date) {
-        $form_state->setErrorByName('field_date_deployed', t('Deployed date should not be greater than present date.'));
-    }
+    $form_state->setErrorByName('field_release_service', t('Please Select Service.'));
+  }
+  if ($release == 0) {
+    $form_state->setErrorByName('field_earlywarning_release', t('Please Select Release.'));
+  }
+  if ($environment == 0) {
+    $form_state->setErrorByName('field_environment', t('Please Select Environment.'));
+  }
+  
+  if ($entered_date > $today_date) {
+    $form_state->setErrorByName('field_date_deployed', t('Deployed date should not be greater than present date.'));
+  }
 }
 
 /**
@@ -938,42 +1078,44 @@ function deployedreleses_node_validate(&$form, &$form_state) {
  * Replaces the releases according to service selected.
  */
 function earlywarning_service_dependent_releases() {
-    include_once 'modules/node/node.pages.inc';
-    $form_state = array('storage' => NULL, 'submitted' => FALSE);
-    $form_build_id = $_POST['form_build_id'];
-    
-    $form = form_get_cache($form_build_id, $form_state);
-    $service = $_POST['field_release_service']['value'];
-    $release = $_POST['field_earlywarning_release']['value'];
-    
-    // Geting  release data.
-    $default_releases = get_dependent_release($service);
-    
-    $form += array(
-        '#post' => $_POST,
-        '#programmed' => FALSE,
-    );
-    
-    $type = $form['type']['#value'];
-    if ($type != 'deployed_releases') {
-        $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value'];\$default_releases = get_earlywarning_release(\$service); return \$default_releases['releases'];";
-    } else {
-        $environment = $_POST['field_environment']['value'];
-        if ($service != 0 && $environment != 0) {
-            $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release(\$service, \$environment, \$release);";
-        } else {
-            $default_release = array(0 => t('Release'));
-            $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
-        }
+  include_once 'modules/node/node.pages.inc';
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  
+  $form = form_get_cache($form_build_id, $form_state);
+  $service = $_POST['field_release_service']['value'];
+  $release = $_POST['field_earlywarning_release']['value'];
+  
+  // Geting  release data.
+  $default_releases = get_dependent_release($service);
+  
+  $form += array(
+    '#post' => $_POST,
+    '#programmed' => FALSE,
+  );
+  
+  $type = $form['type']['#value'];
+  if ($type != 'deployed_releases') {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value'];\$default_releases = get_earlywarning_release(\$service); return \$default_releases['releases'];";
+  }
+  else {
+    $environment = $_POST['field_environment']['value'];
+    if ($service != 0 && $environment != 0) {
+      $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release(\$service, \$environment, \$release);";
     }
-    
-    form_set_cache($form_build_id, $form, $form_state);
-    $form = form_builder($_POST['form_id'], $form, $form_state);
-    
-    $output .= drupal_render($form['field_earlywarning_release']);
-    
-    print drupal_to_js(array('data' => $output, 'status' => TRUE));
-    exit();
+    else {
+      $default_release = array(0 => t('Release'));
+      $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
+    }
+  }
+  
+  form_set_cache($form_build_id, $form, $form_state);
+  $form = form_builder($_POST['form_id'], $form, $form_state);
+  
+  $output .= drupal_render($form['field_earlywarning_release']);
+  
+  print drupal_to_js(array('data' => $output, 'status' => TRUE));
+  exit();
 }
 
 /**
@@ -981,90 +1123,200 @@ function earlywarning_service_dependent_releases() {
  * Replaces the releases according to environment selected.
  */
 function deployed_environment_service_dependent_releases() {
-    include_once 'modules/node/node.pages.inc';
-    $form_state = array('storage' => NULL, 'submitted' => FALSE);
-    $form_build_id = $_POST['form_build_id'];
-    
-    $form = form_get_cache($form_build_id, $form_state);
-    $service = $_POST['field_release_service']['value'];
-    $release = $_POST['field_earlywarning_release']['value'];
-    
-    $form += array(
-        '#post' => $_POST,
-        '#programmed' => FALSE,
-    );
-    $deployed_release_nid = $form['nid']['#value'] ? $form['nid']['#value'] : '';
-    $environment = $_POST['field_environment']['value'];
-    if ($service != 0 && $environment != 0) {
-        $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release('$service', '$environment', '$deployed_release_nid');";
-    } else {
-        $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
-    }
-    
-    form_set_cache($form_build_id, $form, $form_state);
-    $form = form_builder($_POST['form_id'], $form, $form_state);
-    
-    $output .= drupal_render($form['field_earlywarning_release']);
-    print drupal_to_js(array('data' => $output, 'status' => TRUE));
-    exit();
+  include_once 'modules/node/node.pages.inc';
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  
+  $form = form_get_cache($form_build_id, $form_state);
+  $service = $_POST['field_release_service']['value'];
+  $release = $_POST['field_earlywarning_release']['value'];
+  
+  $form += array(
+    '#post' => $_POST,
+    '#programmed' => FALSE,
+  );
+  $deployed_release_nid = $form['nid']['#value'] ? $form['nid']['#value'] : '';
+  $environment = $_POST['field_environment']['value'];
+  if ($service != 0 && $environment != 0) {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value']; return get_undeployed_dependent_release('$service', '$environment', '$deployed_release_nid');";
+  }
+  else {
+    $form['#field_info']['field_earlywarning_release']['allowed_values_php'] = " \$service = \$_POST['field_release_service']['value']; \$release = \$_POST['field_earlywarning_release']['value'];";
+  }
+  
+  form_set_cache($form_build_id, $form, $form_state);
+  $form = form_builder($_POST['form_id'], $form, $form_state);
+  
+  $output .= drupal_render($form['field_earlywarning_release']);
+  print drupal_to_js(array('data' => $output, 'status' => TRUE));
+  exit();
 }
 
 /**
  * Form_after_build call back to add AHAH to state field.
  */
 function earlywarnings_get_servicereleted_releases($form_element, &$form_state) {
-    add_ajax_service_filter($form_element);
-    return $form_element;
+  add_ajax_service_filter($form_element);
+  return $form_element;
 }
 
 /**
  *
  */
 function add_ajax_service_filter(&$form) {
-    $path = 'earlywarning_service_release';
-    $non_production_env_path = 'deployed_environment_release';
-    
-    $form['field_release_service']['#ajax'] = array(
-        'callback' => $path,
-        'event' => 'change',
+  $path = 'earlywarning_service_release';
+  $non_production_env_path = 'deployed_environment_release';
+  
+  $form['field_release_service']['#ajax'] = array(
+    'callback' => $path,
+    'event' => 'change',
+  );
+  
+  $type = $form['type']['#value'];
+  if ($type == 'deployed_releases') {
+    $form['field_environment']['#ajax'] = array(
+      'callback' => $non_production_env_path,
+      'event' => 'change',
     );
-    
-    $type = $form['type']['#value'];
-    if ($type == 'deployed_releases') {
-        $form['field_environment']['#ajax'] = array(
-            'callback' => $non_production_env_path,
-            'event' => 'change',
-        );
-        $ahah_binding_state = array(
-            "button" => FALSE,
-            "keypress" => NULL,
-            'url' => Url::fromRoute($non_production_env_path),
-            'event' => 'change',
-            'wrapper' => 'earlywarning_field_release_wrapper',
-            'selector' => '#edit-field-environment-value',
-            'effect' => 'fade',
-            'method' => 'replace',
-            'progress' => array('type' => 'throbber'),
-        );
-        
-        $form['#attached']['drupalSettings']['ajax'] = array(
-            'edit-field-environment-value' => $ahah_binding_state,
-        );
-    }
-    
     $ahah_binding_state = array(
-        "button" => FALSE,
-        "keypress" => NULL,
-        'url' => Url::fromRoute($path),
-        'event' => 'change',
-        'wrapper' => 'earlywarning_field_release_wrapper',
-        'selector' => '#edit-field-release-service-value',
-        'effect' => 'fade',
-        'method' => 'replace',
-        'progress' => array('type' => 'throbber'),
+      "button" => FALSE,
+      "keypress" => NULL,
+      'url' => Url::fromRoute($non_production_env_path),
+      'event' => 'change',
+      'wrapper' => 'earlywarning_field_release_wrapper',
+      'selector' => '#edit-field-environment-value',
+      'effect' => 'fade',
+      'method' => 'replace',
+      'progress' => array('type' => 'throbber'),
     );
     
     $form['#attached']['drupalSettings']['ajax'] = array(
-        'edit-field-release-service-value' => $ahah_binding_state,
+      'edit-field-environment-value' => $ahah_binding_state,
     );
+  }
+  
+/*  $ahah_binding_state = array(
+    "button" => FALSE,
+    "keypress" => NULL,
+    'url' => Url::fromRoute($path),
+    'event' => 'change',
+    'wrapper' => 'earlywarning_field_release_wrapper',
+    'selector' => '#edit-field-release-service-value',
+    'effect' => 'fade',
+    'method' => 'replace',
+    'progress' => array('type' => 'throbber'),
+  );
+  
+  $form['#attached']['drupalSettings']['ajax'] = array(
+    'edit-field-release-service-value' => $ahah_binding_state,
+  );*/
+}
+
+/**
+ * Implements hook_schema().
+ */
+function hzd_release_management_schema() {
+  $schema = [];
+  $schema['default_release_type'] = [
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'release_type' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  $schema['group_releases_view'] = [
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  
+  $schema['release_doc_failed_download_info'] = array(
+    'description' => 'Storing release doc download failed information.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing release doc download failed serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'nid' => array(
+        'description' => 'Storing release doc download failed node id value.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'Storing release doc download failed node id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'reason' => array(
+        'description' => 'Storing service maintenance id value.',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+    
+    ),
+    'primary key' => array('id'),
+  );
+  
+  return $schema;
+}
+
+
+function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
+  $routes = [
+    'hzd_release_management.release_management_release_tab',
+    'hzd_release_management.release_management_progress_tab',
+    'hzd_release_management.release_management_locked_tab',
+    'hzd_release_management.release_management_deployed_tab',
+    'hzd_release_management.release_management_overview_deployed_tab',
+    'downtimes.new_downtimes_controller_newDowntime.profiles_management',
+    'downtimes.archived_downtimes_controller',
+    'problem_management.problems_tab',
+    'problem_management.archived_problems_tab',
+  ];
+  $param = \Drupal::request()->query->all();
+  if (!empty($data['tabs'][0])) {
+    $release = $data['tabs'][0];
+    foreach ($release as $key => $value) {
+      if (in_array($key, $routes)) {
+        $value['#link']['url']->setOption('query', $param);
+        $data['cacheability']->setCacheMaxAge(0);
+      }
+    }
+  }
+
+  //removing persistent link in users profile page tab menu
+  if (!empty($data['tabs'][0])) {
+      $tabmenus = $data['tabs'][0];
+      foreach($tabmenus as $key => $value) {
+          if($key == 'persistent_login.user_tokens_list') {
+              unset($data['tabs'][0]['persistent_login.user_tokens_list']); 
+          }
+      }
+  }
 }

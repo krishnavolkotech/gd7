@@ -1,0 +1,42 @@
+uuid: b8f670e9-e02b-4900-b5f6-e65f0b2e612b
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.faqs.body
+    - field.field.node.faqs.comment
+    - field.field.node.faqs.faq_kategorie
+    - field.field.node.faqs.faq_seite
+    - field.field.node.faqs.upload
+    - node.type.faqs
+  module:
+    - text
+    - user
+id: node.faqs.teaser
+targetEntityType: node
+bundle: faqs
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  faq_kategorie: true
+  faq_seite: true
+  langcode: true
+  upload: true

@@ -1,0 +1,18 @@
+uuid: d6e1f018-b29e-4ae2-951e-d1b957e1bc9d
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.quickinfo
+id: node.quickinfo.changed
+field_name: changed
+entity_type: node
+bundle: quickinfo
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

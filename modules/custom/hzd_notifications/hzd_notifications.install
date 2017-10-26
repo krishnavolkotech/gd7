@@ -1,4 +1,5 @@
 <?php
+use Drupal\hzd_notifications\HzdNotificationsHelper;
 
 /**
  * Implements hook_schema().
@@ -63,7 +64,7 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       'cck' => array(
-        'type' => 'VARCHAR',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
       ),
@@ -91,7 +92,7 @@ function hzd_notifications_schema() {
         'not null' => TRUE,
       ),
       'group_name' => array(
-        'type' => 'VARCHAR',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
       ),
@@ -122,11 +123,12 @@ function hzd_notifications_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ),
-      'group_name' => array(
-        'type' => 'VARCHAR',
+      //group id is sufficient as this doesnt trigger on group update
+/*      'group_name' => array(
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
-      ),
+      ),*/
       'default_send_interval' => array(
         'type' => 'int',
       ),
@@ -170,6 +172,91 @@ function hzd_notifications_schema() {
     'primary key' => array('sid'),
   );
 
+  $schema['planning_files_notifications_default_interval'] = array(
+    'description' => 'Storing internal planning files notifications.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing planning notification id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'uid' => array(
+        'description' => 'Storing NSM user id value.',
+        'type' => 'int',
+      ),
+      'planning_file_type' => array(
+        'description' => 'Storing planning type file name.',
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing default send interval information.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
+  $schema['quickinfo_notifications_user_default_interval'] = array(
+    'description' => 'Storing quickinfo notifications.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing quickinfo notifications id value.',
+        'type' => 'serial',
+      ),
+      'uid' => array(
+        'description' => 'Storing quickinfo notifications user id value.',
+        'type' => 'int',
+      ),
+      'affected_service' => array(
+        'description' => 'Storing quickinfo notifiations effected value.',
+        'type' => 'varchar',
+        'length' => 50,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing quickinfo notifications default send interval value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['service_notifications_user_default_interval'] = array(
+    'description' => 'Storing service notification user values.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing service notification serial value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'Storing service notification user id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'service_type' => array(
+        'description' => 'Storing import status value.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+        'not null' => TRUE,
+      ),
+      'default_send_interval' => array(
+        'description' => 'Storing default send value.',
+        'type' => 'int',
+      ),
+      'rel_type' => array(
+        'description' => 'Storing rel value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
   return $schema;
 }
 
@@ -207,7 +294,8 @@ function hzd_notifications_update_8008() {
 }
 
 function insert_service_notifications($type, $nid) {
-  $interval = array('-1', 0, 86400, 604800);
+  
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($interval as $vals) {
     $record = array('service_id' => $nid, 'type' => $type, 'send_interval' => $vals, 'uids' => 0);
 	  db_insert('service_notifications')->fields($record)->execute();
@@ -225,7 +313,7 @@ function insert_service_notifications($type, $nid) {
 
 function hzd_notifications_update_8010() {
   // migrate quickinfo notifications.
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($interval as $vals) {
     $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(":val" => 'planning_files', "intval" => $vals))->fetchCol();
     $serialized_uids = serialize($uids);
@@ -237,7 +325,7 @@ function hzd_notifications_update_8010() {
 // migrate quickinfo notifications
 function hzd_notifications_update_8012() {
   $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach($options as $content_key => $content) {
     foreach($interval as $vals) {
       $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(":val" => $content, ":intval" => $vals))->fetchCol();

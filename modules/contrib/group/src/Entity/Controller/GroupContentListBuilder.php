@@ -1,17 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Entity\Controller\GroupContentListBuilder.
- */
-
 namespace Drupal\group\Entity\Controller;
 
-use Drupal\group\Entity\GroupInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RedirectDestinationInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,45 +25,37 @@ class GroupContentListBuilder extends EntityListBuilder {
   protected $group;
 
   /**
-   * The redirect destination service.
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Routing\RedirectDestinationInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The redirect destination.
    *
    * @var \Drupal\Core\Routing\RedirectDestinationInterface
    */
   protected $redirectDestination;
 
   /**
-   * The group content types to show in the list.
+   * Constructs a new GroupContentListBuilder object.
    *
-   * @var string[]
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Routing\RedirectDestinationInterface $redirect_destination
+   *   The redirect destination.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match.
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type definition.
    */
-  protected $bundles = [];
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, RouteMatchInterface $route_match, RedirectDestinationInterface $redirect_destination) {
-    parent::__construct($entity_type, $storage);
-
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, RedirectDestinationInterface $redirect_destination, RouteMatchInterface $route_match, EntityTypeInterface $entity_type) {
+    parent::__construct($entity_type, $entity_type_manager->getStorage($entity_type->id()));
+    $this->entityTypeManager = $entity_type_manager;
     $this->redirectDestination = $redirect_destination;
-
-    // Check if the route had a plugin_id parameter.
-    $parameters = $route_match->getParameters();
-    if ($parameters->has('plugin_id') && $plugin_ids = (array) $parameters->get('plugin_id')) {
-      // We are then able to retrieve the group content type from the group.
-      if ($parameters->has('group') && $group = $parameters->get('group')) {
-        if ($group instanceof GroupInterface) {
-          $this->group = $group;
-
-          // Retrieve the bundles by checking which plugins are enabled.
-          $group_type = $group->getGroupType();
-          foreach ($plugin_ids as $plugin_id) {
-            if ($group_type->hasContentPlugin($plugin_id)) {
-              $this->bundles[] = $group_type->getContentPlugin($plugin_id)->getContentTypeConfigId();
-            }
-          }
-        }
-      }
-    }
+    // There should always be a group on the route for group content lists.
+    $this->group = $route_match->getParameters()->get('group');
   }
 
   /**
@@ -77,10 +63,10 @@ class GroupContentListBuilder extends EntityListBuilder {
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
-      $entity_type,
-      $container->get('entity.manager')->getStorage($entity_type->id()),
+      $container->get('entity_type.manager'),
+      $container->get('redirect.destination'),
       $container->get('current_route_match'),
-      $container->get('redirect.destination')
+      $entity_type
     );
   }
 
@@ -90,19 +76,9 @@ class GroupContentListBuilder extends EntityListBuilder {
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery();
     $query->sort($this->entityType->getKey('id'));
-    $query->condition('gid', $this->group->id());
-    $current_path = explode('/', \Drupal::service('path.current')->getPath());
-    if ($current_path[3] == 'pending-members') {
-      $query->condition('request_status', 0, '=');
-    }
-    else {
-      $query->condition('request_status', 1, '=');
-    }
 
-    // Filter on bundles if they were specified by the constructor.
-    if (!empty($this->bundles)) {
-      $query->condition('type', $this->bundles, 'IN');
-    }
+    // Only show group content for the group on the route.
+    $query->condition('gid', $this->group->id());
 
     // Only add the pager if a limit is specified.
     if ($this->limit) {
@@ -116,8 +92,12 @@ class GroupContentListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['id'] = $this->t('Content ID');
-    $header['label'] = $this->t('Label');
+    $header = [
+      'id' => $this->t('ID'),
+      'label' => $this->t('Content label'),
+      'entity_type' => $this->t('Entity type'),
+      'plugin' => $this->t('Plugin used'),
+    ];
     return $header + parent::buildHeader();
   }
 
@@ -125,11 +105,16 @@ class GroupContentListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\group\Entity\GroupInterface $entity */
+    /** @var \Drupal\group\Entity\GroupContentInterface $entity */
     $row['id'] = $entity->id();
+
     // EntityListBuilder sets the table rows using the #rows property, so we
-    // need to add the render array using the 'data' key.
-    $row['name']['data'] = $entity->toLink()->toRenderable();
+    // need to add links as render arrays using the 'data' key.
+    $row['label']['data'] = $entity->toLink()->toRenderable();
+    $entity_type_id = $entity->getContentPlugin()->getEntityTypeId();
+    $row['entity_type'] = $this->entityTypeManager->getDefinition($entity_type_id)->getLabel();
+    $row['plugin'] = $entity->getContentPlugin()->getLabel();
+
     return $row + parent::buildRow($entity);
   }
 
@@ -138,7 +123,7 @@ class GroupContentListBuilder extends EntityListBuilder {
    */
   public function render() {
     $build = parent::render();
-    $build['table']['#empty'] = $this->t('There is no group content yet.');
+    $build['table']['#empty'] = $this->t('There are no entities related to this group yet.');
     return $build;
   }
 
@@ -146,32 +131,30 @@ class GroupContentListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   protected function getDefaultOperations(EntityInterface $entity) {
-    $operations = array();
-    $current_path = explode('/', \Drupal::service('path.current')->getPath());
-    if ($current_path[3] == 'pending-members') {
-      if ($entity->access('update') && $entity->hasLinkTemplate('edit-form')) {
-        $operations['approve'] = array(
-          'title' => $this->t('Approve'),
-          'weight' => 10,
-          'url' => $entity->urlInfo('approve-form'),
-        );
-      }
-      if ($entity->access('delete') && $entity->hasLinkTemplate('delete-form')) {
-        $operations['reject'] = array(
-          'title' => $this->t('Reject'),
-          'weight' => 100,
-          'url' => $entity->urlInfo('reject-form'),
-        );
-      }
+    /** @var \Drupal\group\Entity\GroupContentInterface $entity */
+    $operations = parent::getDefaultOperations($entity);
+
+    // Improve the edit and delete operation labels.
+    if (isset($operations['edit'])) {
+      $operations['edit']['title'] = $this->t('Edit relation');
     }
-    else {
-      $operations = parent::getDefaultOperations($entity);
+    if (isset($operations['delete'])) {
+      $operations['delete']['title'] = $this->t('Delete relation');
     }
 
-
+    // Slap on redirect destinations for the administrative operations.
     $destination = $this->redirectDestination->getAsArray();
     foreach ($operations as $key => $operation) {
       $operations[$key]['query'] = $destination;
+    }
+
+    // Add an operation to view the actual entity.
+    if ($entity->getEntity()->access('view') && $entity->getEntity()->hasLinkTemplate('canonical')) {
+      $operations['view'] = [
+        'title' => $this->t('View related entity'),
+        'weight' => 101,
+        'url' => $entity->getEntity()->toUrl('canonical'),
+      ];
     }
 
     return $operations;

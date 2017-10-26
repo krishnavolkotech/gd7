@@ -1,0 +1,46 @@
+uuid: 6a3c4d9a-0efe-4ff4-97ec-fa5421738257
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_upload_planning_file
+    - node.type.planning_files
+  module:
+    - file
+    - filefield_paths
+third_party_settings:
+  filefield_paths:
+    enabled: true
+    file_path:
+      value: 'gruppen/[group:title]/[node:content-type:machine-name]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+    redirect: false
+    retroactive_update: false
+    active_updating: false
+    file_name:
+      value: '[file:ffp-name-only-original].[file:ffp-extension-original]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+id: node.planning_files.field_upload_planning_file
+field_name: field_upload_planning_file
+entity_type: node
+bundle: planning_files
+label: 'Upload Planning File'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: planungsdateien
+  file_extensions: 'jpg jpeg gif png txt csv doc xls pdf ppt pps odt ods odp docx xlsx pptx zip rar mpp mm gz tar xsd'
+  max_filesize: ''
+  description_field: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

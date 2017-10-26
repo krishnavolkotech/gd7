@@ -1,0 +1,8 @@
+uuid: 15185e32-3a0b-43de-8280-b815d5b3c33d
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59911
+label: 'DaSi StundE'
+description: 'DaSi StundE'
+locked: false

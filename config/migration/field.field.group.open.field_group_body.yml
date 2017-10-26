@@ -1,0 +1,21 @@
+uuid: 8592fd8e-2144-454b-b097-ddd4b6365559
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_group_body
+    - group.type.open
+  module:
+    - text
+id: group.open.field_group_body
+field_name: field_group_body
+entity_type: group
+bundle: open
+label: Startseite
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

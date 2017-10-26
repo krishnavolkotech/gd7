@@ -1,0 +1,33 @@
+favicon:
+  mimetype: image/vnd.microsoft.icon
+  path: themes/hzd/favicon.ico
+  url: 'http://localhzd.com/themes/hzd/favicon.ico'
+  use_default: 0
+schema: '8000'
+features:
+  comment_user_picture: 1
+  comment_user_verification: 1
+  favicon: 1
+  node_user_picture: 1
+logo:
+  path: themes/hzd/images/hzd-logo.jpg
+  url: ''
+  use_default: 0
+cdn_provider_import_data: ''
+breadcrumb_home: 1
+schemas:
+  bootstrap: 8000
+  hzd: 8000
+region_wells:
+  navigation: ''
+  user_menu: ''
+  navigation_collapsible: ''
+  header: ''
+  highlighted: ''
+  help: ''
+  content: ''
+  sidebar_first: ''
+  sidebar_second: ''
+  footer: ''
+modal_enabled: 0
+table: ''

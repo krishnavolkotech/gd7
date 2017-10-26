@@ -1,0 +1,8 @@
+uuid: 8bdfd201-7cd5-42ee-9e68-c94a80f71201
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59902
+label: 'DaSi GeCo'
+description: 'DaSi GeCo'
+locked: false

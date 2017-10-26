@@ -1,0 +1,80 @@
+uuid: fc62f29a-3be9-4eb4-b837-9626c58190a8
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment_no_subject.default
+    - core.entity_view_mode.node.full
+    - field.field.node.early_warnings.body
+    - field.field.node.early_warnings.comment_no_subject
+    - field.field.node.early_warnings.field_earlywarning_release
+    - field.field.node.early_warnings.field_release_service
+    - node.type.early_warnings
+  module:
+    - comment
+    - entity_print
+    - options
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.early_warnings.full
+targetEntityType: node
+bundle: early_warnings
+mode: full
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  comment_no_subject:
+    type: comment_default
+    weight: 6
+    label: visually_hidden
+    settings:
+      view_mode: default
+      pager_id: 0
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_earlywarning_release:
+    label: inline
+    weight: 2
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_service:
+    label: inline
+    weight: 1
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

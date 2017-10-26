@@ -1,10 +1,11 @@
 problem_management.read_problem_csv:
-  path: 'read_problem_csv'
+  path: '/import-problems'
   defaults:
     _controller: '\Drupal\problem_management\Controller\ReadexcelController::read_problem_csv'
-    _title: 'Read Excel'
+    _title: 'Import Problems'
   requirements:
-    _permission: 'access content'
+    _access: 'TRUE'
+#    _permission: 'administer problems'
 
 problem_management.problem_settings:
   path: 'group/{group}/problem_settings'
@@ -32,9 +33,7 @@ problem_management.problems:
     _description: 'View Setting for Problems.'
     _entity_view: 'group.default'
   requirements:
-    _permission: 'access content'
     group: \d+
-    _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #   cust_og_is_member: 'TRUE' 
 

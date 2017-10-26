@@ -1,0 +1,43 @@
+langcode: de
+status: true
+id: group_downtimes_view
+migration_tags: null
+migration_group: custom_migration
+source:
+  plugin: source_table
+  target: migrate
+  table_name: group_downtimes_view
+  fields:
+    - id
+    - group_id
+    - service_id
+  id_fields:
+      id:
+        type: integer
+        unsigned: FALSE
+        size: big
+process:
+  id: id
+  service_id: service_id
+  group_id:
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      key: group_id
+      source: group_id
+    -
+      plugin: skip_on_empty
+      method: row
+destination:
+  plugin: table
+  key_map:
+      id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: group_downtimes_view
+migration_dependencies:
+  required:
+    - groups

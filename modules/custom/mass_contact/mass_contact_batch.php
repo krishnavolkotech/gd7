@@ -11,13 +11,13 @@ class MassMail {
 
     $module = 'mass_contact';
     $to = $mail;
-    $params['message'] = $body['value'];
+    $params['message'] = $body;
     $params['subject'] = $subject;
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
     $send = true;
-
+    $key = 'mass_contact_immediate';
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-    if ($result['result'] !== true) {
+    if ($result['result'] != true) {
       drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
     }
     else {
@@ -25,7 +25,7 @@ class MassMail {
     }
   }
 
-  function sendMailFinished($success, $operations) {
+  static function sendMailFinished($success, $operations) {
     // The 'success' parameter means no fatal PHP errors were detected. All
     // other error management should be handled using 'results'.
     /*if ($success) {
@@ -37,7 +37,7 @@ class MassMail {
       $message = t('Finished with an error.');
     }
     drupal_set_message($message);*/
-    drupal_set_message('Successfuly sent the mail\'s');
+    drupal_set_message(t('Successfuly sent mail\'s'));
   }
 
 }

@@ -27,20 +27,21 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $rel_type = NULL) {
-    $services = array(t('Service')) + HzdNotificationsHelper::_services_list($rel_type);
+    $services = array('<' . t('Service') . '>') + HzdNotificationsHelper::_services_list($rel_type);
     $uid = $uid ? $uid : \Drupal::currentUser()->id();
     $form_state_complete_form = $form_state->getCompleteForm();
     //$default_val = $form_state->getValue('services') ? $form_state->getValue('services') : '';
     if(empty($form_state_complete_form)) {
-      $options = array('0' => 'Content Type');
+      $options = array('0' => '<' . t('Content Type') . '>');
     }
     else {
-      $options = $this->service_content($form, $form_state);
+      $options = $this->service_content($form, $form_state)['#options'];
     }
 
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,
+      '#weight' => 1,
       '#ajax' => array(
           'callback' => '::service_content',
           'wrapper' =>  'service-content-types',
@@ -57,6 +58,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
 
     $form['content_type'] = array(
       '#type' => 'select',
+      '#weight' => 2,
       '#prefix' => "<div id ='service-content-types' class = 'content-type hzd-form-element'>",
       '#suffix' => '</div>',
       '#options' => $options,
@@ -73,15 +75,16 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
     );
 
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-    $intervals[''] = t('Interval');
+    $intervals[''] = '<' . t('Send notifications') . '>';
     $form['send_interval'] = array(
       '#type' => 'select',
+      '#weight' => 3,
       '#options' => $intervals,
       '#prefix' => "<div class = 'send-interval hzd-form-element'>",
       '#suffix' => '</div>',
     );
 
-    $form['submit'] = array('#type' => 'submit', '#value' => t('Save'));
+    $form['submit'] = array('#type' => 'submit','#weight' => 4, '#value' => t('Save'));
     return $form;
   }
 
@@ -108,6 +111,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    drupal_set_message(t('Service mail preferences saved successfully'));
     $service = $form_state->getValue('services');
     $content_type = $form_state->getValue('content_type');
     $send_interval = $form_state->getValue('send_interval');
@@ -122,6 +126,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
       ->condition('service_id',$service)
       ->condition('type',$types[$content_type])
       ->condition('rel_type',$rel_type)
+      ->condition('uid',$uid)
       ->execute()
       ->fetchField();
     if(!empty($checkId)){
@@ -144,7 +149,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
   }
 
   // ajax callback function
-  function service_content(array &$form, FormStateInterface $form_state) {
+  public function service_content(array &$form, FormStateInterface $form_state) {
     $service = $form_state->getValue('services');
     $rel_type = $form_state->getValue('rel_type');
     $content_types = HzdNotificationsHelper::_get_content_types($service, FALSE, $rel_type);

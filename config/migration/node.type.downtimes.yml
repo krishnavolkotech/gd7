@@ -1,0 +1,17 @@
+uuid: e2bcfc58-492a-40f5-bce5-1793b8aa67cc
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: 'Störung oder Blockzeit'
+type: downtimes
+description: 'Eine Störung oder Blockzeit melden.'
+help: ''
+new_revision: false
+preview_mode: 0
+display_submitted: false

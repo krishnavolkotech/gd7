@@ -1,16 +1,14 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Entity\Controller\GroupController.
- */
-
 namespace Drupal\group\Entity\Controller;
 
-use Drupal\group\Entity\Group;
-use Drupal\group\Entity\GroupType;
-use Drupal\group\Entity\GroupTypeInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityFormBuilderInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\group\Entity\GroupTypeInterface;
+use Drupal\user\PrivateTempStoreFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Returns responses for Group routes.
@@ -18,63 +16,112 @@ use Drupal\Core\Controller\ControllerBase;
 class GroupController extends ControllerBase {
 
   /**
-   * Displays add content links for available group types.
+   * The private store factory.
    *
-   * Redirects to group/add/[type] if only one group type is available.
-   *
-   * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-   *   A render array for a list of the group types that can be added. However,
-   *   if there is only one group type available to the user, the function will
-   *   return a RedirectResponse to the group add page for that group type.
+   * @var \Drupal\user\PrivateTempStoreFactory
    */
-  public function addPage() {
-    $group_types = GroupType::loadMultiple();
+  protected $privateTempStoreFactory;
 
-    // Only use group types the user has access to.
-    foreach (array_keys($group_types) as $group_type_id) {
-      if (!$this->entityTypeManager()->getAccessControlHandler('group')->createAccess($group_type_id)) {
-        unset($group_types[$group_type_id]);
-      }
-    }
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
 
-    // Bypass the page if only one group type is available.
-    if (count($group_types) == 1) {
-      $group_type = array_shift($group_types);
-      return $this->redirect('entity.group.add_form', ['group_type' => $group_type->id()]);
-    }
+  /**
+   * The entity form builder.
+   *
+   * @var \Drupal\Core\Entity\EntityFormBuilderInterface
+   */
+  protected $entityFormBuilder;
 
-    return [
-      '#theme' => 'group_add_list',
-      '#group_types' => $group_types,
-    ];
+  /**
+   * The renderer.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
+   * Constructs a new GroupController.
+   *
+   * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
+   *   The private store factory.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityFormBuilderInterface $entity_form_builder
+   *   The entity form builder.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer.
+   */
+  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityTypeManagerInterface $entity_type_manager, EntityFormBuilderInterface $entity_form_builder, RendererInterface $renderer) {
+    $this->privateTempStoreFactory = $temp_store_factory;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->entityFormBuilder = $entity_form_builder;
+    $this->renderer = $renderer;
   }
 
   /**
-   * Provides the group submission form.
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('user.private_tempstore'),
+      $container->get('entity_type.manager'),
+      $container->get('entity.form_builder'),
+      $container->get('renderer')
+    );
+  }
+
+  /**
+   * Provides the group creation form.
    *
    * @param \Drupal\group\Entity\GroupTypeInterface $group_type
-   *   The group type of the group to add.
+   *   The type of group to create.
    *
    * @return array
    *   A group submission form.
    */
-  public function add(GroupTypeInterface $group_type) {
-    $group = Group::create(['type' => $group_type->id()]);
-    $form = $this->entityFormBuilder()->getForm($group, 'add');
-    return $form;
-  }
+  public function addForm(GroupTypeInterface $group_type) {
+    $wizard_id = 'group_creator';
+    $store = $this->privateTempStoreFactory->get($wizard_id);
+    $store_id = $group_type->id();
 
-  /**
-   * The _title_callback for the entity.group.add_form route.
-   *
-   * @param \Drupal\group\Entity\GroupTypeInterface $group_type
-   *   The group type to base the title on.
-   *
-   * @return string
-   *   The page title.
-   */
-  public function addTitle(GroupTypeInterface $group_type) {
-    return $this->t('Create @name', ['@name' => $group_type->label()]);
+    // See if the group type is configured to ask the creator to fill out their
+    // membership details. Also pass this info to the form state.
+    $extra['group_wizard'] = $group_type->creatorMustCompleteMembership();
+    $extra['group_wizard_id'] = $wizard_id;
+
+    // Pass the group type and store ID to the form state as well.
+    $extra['group_type'] = $group_type;
+    $extra['store_id'] = $store_id;
+
+    // See if we are on the second step of the form.
+    $step2 = $extra['group_wizard'] && $store->get("$store_id:step") === 2;
+
+    // Group form, potentially as wizard step 1.
+    if (!$step2) {
+      $storage = $this->entityTypeManager()->getStorage('group');
+
+      // Only create a new group if we have nothing stored.
+      if (!$entity = $store->get("$store_id:entity")) {
+        $values['type'] = $group_type->id();
+        $entity = $storage->create($values);
+      }
+    }
+    // Wizard step 2: Group membership form.
+    else {
+      // Create an empty group membership that does not yet have a group set.
+      $values = [
+        'type' => $group_type->getContentPlugin('group_membership')->getContentTypeConfigId(),
+        'entity_id' => $this->currentUser()->id(),
+      ];
+      $entity = $this->entityTypeManager()->getStorage('group_content')->create($values);
+    }
+
+    // Return the entity form with the configuration gathered above.
+    return $this->entityFormBuilder()->getForm($entity, 'add', $extra);
   }
 
 }

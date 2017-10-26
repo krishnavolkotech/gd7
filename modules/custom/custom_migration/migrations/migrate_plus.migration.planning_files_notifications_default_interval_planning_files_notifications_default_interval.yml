@@ -1,0 +1,46 @@
+uuid: b737159f-d023-4e1f-83df-ffbe5b5f04e0
+langcode: de
+status: true
+dependencies: {  }
+id: planning_files_notifications_default_interval
+migration_tags: null
+migration_group: custom_migration
+label: 'Planning files notification default interval'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: planning_files_notifications_default_interval
+  fields:
+    - id
+    - uid
+    - planning_file_type
+    - default_send_interval
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  uid: uid
+  planning_file_type: planning_file_type
+  default_send_interval:
+    plugin: static_map
+    source: default_send_interval
+    map:
+      86400: 0
+      604800: 0
+      0: 0
+      -1: -1
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: planning_files_notifications_default_interval
+migration_dependencies: {  }
+

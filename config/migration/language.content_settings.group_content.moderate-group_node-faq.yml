@@ -1,0 +1,16 @@
+uuid: 2f0b7bbd-595c-4dc9-a488-12d57538e732
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate-group_node-faq
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.moderate-group_node-faq
+target_entity_type_id: group_content
+target_bundle: moderate-group_node-faq
+default_langcode: site_default
+language_alterable: false

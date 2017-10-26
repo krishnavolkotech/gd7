@@ -22,13 +22,13 @@ class Gruppenadministration extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return $this->hzdGroupAdminLinks();
+    return self::hzdGroupAdminLinks();
   }
 
   /**
    *
    */
-  public function access(AccountInterface $account, $return_as_object = false) {
+  /*public function access(AccountInterface $account, $return_as_object = false) {
     $routeMatch = \Drupal::routeMatch();
     if ($account->id()) {
       $group = \Drupal::routeMatch()->getParameter('group');
@@ -49,13 +49,13 @@ class Gruppenadministration extends BlockBase {
     else {
       return AccessResult::forbidden();
     }
-  }
+  }*/
 
   /**
    *
    */
-  public function hzdGroupAdminLinks() {
-    $group = \Drupal::routeMatch()->getParameter('group');
+  public static function hzdGroupAdminLinks() {
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
 //    if (empty($group)) {
 //      $group = \Drupal::routeMatch()->getParameter('arg_0');
 //    }
@@ -65,10 +65,11 @@ class Gruppenadministration extends BlockBase {
     else {
       $groupId = $group;
     }
+    $menuHtml = [];
     if (CustNodeController::isGroupAdmin($groupId)) {
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_content.page_1', ['group' => $groupId]);
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'entity.group_content.group_node.create_page', ['group' => $groupId]);
-      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'), 'view.group_members.page_1', ['group' => $groupId]);
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhaltsübersicht'), 'view.group_nodes.page_1', ['group' => $groupId]);
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Inhalt erstellen'), 'cust_group.group_node_create', ['group' => $groupId]);
+      $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Benutzer'), 'view.hzd_group_members.approved', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Störungen und Blockzeiten'), 'downtimes.DowntimessettingForm', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Bekannte Fehler und Probleme'), 'problem_management.problem_settings', ['group' => $groupId]);
       $menuItems[] = \Drupal\Core\Link::createFromRoute(t('Releases'), 'hzd_release_management.release_settings', ['group' => $groupId]);
@@ -97,14 +98,33 @@ class Gruppenadministration extends BlockBase {
         '#cache' => ['max-age' => 0]
       ];
     }
-    else {
-      $menuHtml = [
-        '#markup' => '',
-        '#title' => '',
-        '#cache' => ['max-age' => 0]
-      ];
-    }
+//    else {
+//      $menuHtml = [
+//        '#markup' => '',
+//        '#title' => '',
+//        '#cache' => ['max-age' => 0]
+//      ];
+//    }
     return $menuHtml;
   }
 
+  function getCacheMaxAge() {
+    return 0;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  function access(AccountInterface $account, $return_as_object = FALSE) {
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+
+    if (!empty($group) && CustNodeController::isGroupAdmin($group->id())) {
+      $access = AccessResult::allowed('Group context available.');
+    }
+    else {
+      $access = AccessResult::forbidden('Group context not available.');
+    }
+
+    return $return_as_object ? $access : $access->isAllowed();
+  }
 }

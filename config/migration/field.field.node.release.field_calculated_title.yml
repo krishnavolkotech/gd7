@@ -1,0 +1,24 @@
+uuid: c112d77c-f1a0-446c-94ea-0cc02b0bac74
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_calculated_title
+    - node.type.release
+  module:
+    - computed_field
+id: node.release.field_calculated_title
+field_name: field_calculated_title
+entity_type: node
+bundle: release
+label: Release
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: ''
+default_value_callback: ''
+settings:
+  code: '$value = $entity->label();'
+field_type: computed_string

@@ -41,7 +41,7 @@ class DeployedReleases extends ControllerBase {
       LEFT JOIN node__field_release_name nfrn ON nfd.nid = nfrn.entity_id AND (nfrn.deleted = '0' AND nfrn.langcode = nfd.langcode)
       INNER JOIN node__release_type nrt ON nfd.nid = nrt.entity_id AND (nrt.deleted = '0' AND nrt.langcode = nfd.langcode)
       INNER JOIN group_releases_view grv ON grv.service_id = nfd.nid
-      WHERE grv.group_id = 32 AND nrt.release_type_target_id = 459 AND nfd.status = 1 AND nfd.type = 'services' AND nfrn.field_release_name_value 
+      WHERE grv.group_id = {RELEASE_MANAGEMENT} AND nrt.release_type_target_id = 459 AND nfd.status = 1 AND nfd.type = 'services' AND nfrn.field_release_name_value 
       IS NOT NULL ORDER BY nfd.title")->fetchCol();
 
     if (count($services) > 0) {
@@ -166,7 +166,7 @@ function get_deployed_releases_list($values, $service_id, $release_type = KONSON
  */
 function get_releases_per_state($service_id, $deployed_services, $release_type) {
   $group_id = get_group_id();
-  $group_id = ($group_id ? $group_id : 32);
+  $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
   $deployed_query = db_select('node_field_data', 'n');
   $deployed_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
   $deployed_query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');

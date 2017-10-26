@@ -1,0 +1,20 @@
+uuid: 67048305-8f9e-406c-b58f-f24b44820c2f
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_user_state
+field_name: field_user_state
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

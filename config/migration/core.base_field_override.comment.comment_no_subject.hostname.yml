@@ -1,0 +1,18 @@
+uuid: 456b373b-9d6e-47a0-b2a3-cc128d59884a
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_no_subject
+id: comment.comment_no_subject.hostname
+field_name: hostname
+entity_type: comment
+bundle: comment_no_subject
+label: Hostname
+description: 'The comment author''s hostname.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

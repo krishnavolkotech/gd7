@@ -1,0 +1,54 @@
+uuid: bbbc6e9d-df51-434f-b391-faefaeabbaf2
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_no_subject
+    - field.field.comment.comment_no_subject.comment_body
+    - field.field.comment.comment_no_subject.field_do_not_send_notifications
+  module:
+    - field_group
+    - text
+third_party_settings:
+  field_group:
+    group_notifications:
+      children:
+        - field_do_not_send_notifications
+      parent_name: ''
+      weight: 2
+      label: Notifications
+      format_type: fieldset
+      format_settings:
+        description: ''
+        classes: ''
+        id: ''
+        required_fields: true
+id: comment.comment_no_subject.default
+targetEntityType: comment
+bundle: comment_no_subject
+mode: default
+content:
+  author:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  comment_body:
+    type: text_textarea
+    weight: 1
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_do_not_send_notifications:
+    type: boolean_checkbox
+    weight: 0
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true
+  subject: true
+  translation: true

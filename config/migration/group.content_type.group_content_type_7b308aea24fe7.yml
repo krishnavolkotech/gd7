@@ -1,0 +1,16 @@
+uuid: 6557e9a4-4fca-4e0a-aafd-eafe969494da
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+  module:
+    - user
+id: group_content_type_7b308aea24fe7
+label: 'Incident Managent: Group membership'
+description: 'Adds users to groups as members.'
+group_type: incident_managent
+content_plugin: group_membership
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1

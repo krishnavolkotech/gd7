@@ -1,0 +1,67 @@
+uuid: e70373da-7477-4232-ae54-884dc87e9ed5
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - field.field.node.im_upload_page.body
+    - field.field.node.im_upload_page.comment
+    - field.field.node.im_upload_page.field_im_upload_page_files
+    - field.field.node.im_upload_page.field_state
+    - field.field.node.im_upload_page.upload
+    - node.type.im_upload_page
+  module:
+    - comment
+    - entity_print
+    - file
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.im_upload_page.default
+targetEntityType: node
+bundle: im_upload_page
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 102
+    third_party_settings: {  }
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_im_upload_page_files: true
+  field_state: true
+  langcode: true

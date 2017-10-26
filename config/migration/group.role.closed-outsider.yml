@@ -1,0 +1,14 @@
+uuid: e069d463-c5ca-4529-95d7-397eb79b5f1d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-outsider
+label: Outsider
+weight: -101
+internal: true
+audience: outsider
+group_type: closed
+permissions_ui: true
+permissions: {  }

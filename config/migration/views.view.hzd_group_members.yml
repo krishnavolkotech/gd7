@@ -1,0 +1,2746 @@
+uuid: b6b78518-7e4f-4e8c-8cf9-d0a54bd570df
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group_content.group_roles
+    - group.content_type.closed-group_membership
+    - group.content_type.closed_private-group_membership
+    - group.content_type.downtimes-group_membership
+    - group.content_type.group_content_type_6693a40b54133
+    - group.content_type.group_content_type_7b308aea24fe7
+    - group.content_type.group_content_type_c26112f8ad4cd
+    - group.content_type.group_content_type_d4b06e2b6aad0
+    - group.content_type.moderate-group_membership
+    - group.content_type.open-group_membership
+    - group.content_type.quick_info-group_membership
+  module:
+    - better_exposed_filters
+    - custom_views_php
+    - group
+    - inactive_user
+    - user
+id: hzd_group_members
+label: Gruppenmitglieder
+module: views
+description: ''
+tag: ''
+base_table: group_content_field_data
+base_field: id
+core: 8.x
+display:
+  default:
+    display_plugin: default
+    id: default
+    display_title: Master
+    position: 0
+    display_options:
+      access:
+        type: group_permission
+        options:
+          group_permission: 'administer members'
+      cache:
+        type: none
+        options: {  }
+      query:
+        type: views_query
+        options:
+          disable_sql_rewrite: false
+          distinct: false
+          replica: false
+          query_comment: ''
+          query_tags: {  }
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Anwenden
+          reset_button: false
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: true
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+      pager:
+        type: some
+        options:
+          items_per_page: 50
+          offset: 0
+      style:
+        type: table
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+          override: true
+          sticky: false
+          caption: ''
+          summary: ''
+          description: ''
+          columns:
+            id: id
+            id_2: id_2
+            group_member_name: group_member_name
+            label: group_member_name
+            operations: operations
+            id_1: id_1
+          info:
+            id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            id_2:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            group_member_name:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            label:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            operations:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            id_1:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+          default: label
+          empty_table: false
+      row:
+        type: fields
+      fields:
+        id:
+          id: id
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+        label:
+          id: label
+          table: group_content_field_data
+          field: label
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Name
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: true
+            path: 'user/{{ id }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: user_name
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: null
+          entity_field: label
+          plugin_id: field
+        operations:
+          id: operations
+          table: group_content
+          field: operations
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Aktionen
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          destination: true
+          entity_type: group_content
+          plugin_id: entity_operations
+        id_1:
+          id: id_1
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Manage Admin'
+          exclude: false
+          alter:
+            alter_text: true
+            text: 'Admin: Add/Remove'
+            make_link: true
+            path: 'group/{{ arguments.gid }}/members/{{ id }}/edit'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            closed_private-group_membership: closed_private-group_membership
+            closed-group_membership: closed-group_membership
+            downtimes-group_membership: downtimes-group_membership
+            group_content_type_7b308aea24fe7: group_content_type_7b308aea24fe7
+            group_content_type_d4b06e2b6aad0: group_content_type_d4b06e2b6aad0
+            moderate-group_membership: moderate-group_membership
+            open-group_membership: open-group_membership
+            quick_info-group_membership: quick_info-group_membership
+            group_content_type_6693a40b54133: group_content_type_6693a40b54133
+            group_content_type_c26112f8ad4cd: group_content_type_c26112f8ad4cd
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+        request_status:
+          id: request_status
+          table: group_content_field_data
+          field: request_status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: request_status
+          plugin_id: numeric
+      sorts: {  }
+      title: ''
+      header: {  }
+      footer: {  }
+      empty: {  }
+      relationships: {  }
+      arguments:
+        gid:
+          id: gid
+          table: group_content_field_data
+          field: gid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: default
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: true
+          title: 'Mitglieder von {{ arguments.gid|placeholder }} '
+          default_argument_type: group_id_from_url
+          default_argument_options: {  }
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: false
+          validate:
+            type: none
+            fail: 'not found'
+          validate_options: {  }
+          break_phrase: false
+          not: false
+          entity_type: group_content
+          entity_field: gid
+          plugin_id: numeric
+      display_extenders: {  }
+      use_more: true
+      use_more_always: false
+      use_more_text: mehr
+      link_url: ''
+      link_display: page_1
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - route
+        - url
+        - url.query_args
+      tags: {  }
+  approved:
+    display_plugin: page
+    id: approved
+    display_title: approved
+    position: 2
+    display_options:
+      display_extenders:
+        views_merge_rows: {  }
+      path: group/%group/members/approved
+      use_more: false
+      defaults:
+        use_more: false
+        use_more_always: false
+        use_more_text: false
+        pager: false
+        title: false
+        fields: false
+        relationships: false
+        filters: false
+        filter_groups: false
+        sorts: false
+        exposed_form: false
+      use_more_always: false
+      use_more_text: mehr
+      pager:
+        type: full
+        options:
+          items_per_page: 50
+          offset: 0
+          id: 0
+          total_pages: null
+          tags:
+            previous: '‹ Vorherige'
+            next: 'Nächste ›'
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page: false
+            items_per_page_label: ''
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- Alle -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      title: ''
+      menu:
+        enabled: true
+        expanded: false
+      fields:
+        id:
+          id: id
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+        group_member_name:
+          id: group_member_name
+          table: views
+          field: group_member_name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Gruppenmitglieder
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: group_member_name
+        label:
+          id: label
+          table: group_content_field_data
+          field: label
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Name
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: true
+            path: 'user/{{ id }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: user_name
+          settings:
+            link_to_entity: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: null
+          entity_field: label
+          plugin_id: field
+        id_1:
+          id: id_1
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Manage Admin'
+          exclude: true
+          alter:
+            alter_text: true
+            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Bearbeiten</a><br>\r\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Entfernen</a>"
+            make_link: false
+            path: 'group/{{ id_2 }}/members/{{ id }}/edit'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_unformatted
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Nachname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        firstname:
+          id: firstname
+          table: cust_profile
+          field: firstname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Vorname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        name:
+          id: name
+          table: users_field_data
+          field: name
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          label: Benutzername
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: user_name
+          settings:
+            link_to_entity: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: user
+          entity_field: name
+          plugin_id: field
+        group_roles:
+          id: group_roles
+          table: group_content__group_roles
+          field: group_roles
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Rollen
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
+        abbr:
+          id: abbr
+          table: states
+          field: abbr
+          relationship: state_id
+          group_type: group
+          admin_label: ''
+          label: Land
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        mail:
+          id: mail
+          table: users_field_data
+          field: mail
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          label: E-Mail
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: email_mailto
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: user
+          entity_field: mail
+          plugin_id: field
+        operations:
+          id: operations
+          table: group_content
+          field: operations
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Aktionen
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          destination: true
+          entity_type: group_content
+          plugin_id: entity_operations
+      relationships:
+        state_id:
+          id: state_id
+          table: cust_profile
+          field: state_id
+          relationship: none
+          group_type: group
+          admin_label: ' State id'
+          required: false
+          plugin_id: standard
+        uid:
+          id: uid
+          table: cust_profile
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' user profile uid'
+          required: true
+          plugin_id: standard
+        uid_1:
+          id: uid_1
+          table: inactive_users
+          field: uid
+          relationship: uid
+          group_type: group
+          admin_label: ' Inactive user'
+          required: false
+          plugin_id: standard
+      display_description: 'Freigeschaltete Mitglieder der Gruppe'
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            closed_private-group_membership: closed_private-group_membership
+            closed-group_membership: closed-group_membership
+            downtimes-group_membership: downtimes-group_membership
+            group_content_type_7b308aea24fe7: group_content_type_7b308aea24fe7
+            group_content_type_d4b06e2b6aad0: group_content_type_d4b06e2b6aad0
+            moderate-group_membership: moderate-group_membership
+            open-group_membership: open-group_membership
+            quick_info-group_membership: quick_info-group_membership
+            group_content_type_6693a40b54133: group_content_type_6693a40b54133
+            group_content_type_c26112f8ad4cd: group_content_type_c26112f8ad4cd
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+        request_status:
+          id: request_status
+          table: group_content_field_data
+          field: request_status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: request_status
+          plugin_id: numeric
+        combine:
+          id: combine
+          table: views
+          field: combine
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: word
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: combine_op
+            label: Name
+            description: ''
+            use_operator: false
+            operator: combine_op
+            identifier: combine
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          fields:
+            label: label
+            lastname: lastname
+            firstname: firstname
+            name: name
+            mail: mail
+          plugin_id: combine
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: in_operator
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      sorts:
+        group_roles_target_id:
+          id: group_roles_target_id
+          table: group_content__group_roles
+          field: group_roles_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: true
+          expose:
+            label: Rollen
+          plugin_id: standard
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: uid
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: Nachname
+          plugin_id: standard
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Anwenden
+          reset_button: false
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: true
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+          bef:
+            general:
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+              autosubmit: false
+              autosubmit_hide: false
+            sort:
+              bef_format: default
+              advanced:
+                collapsible: false
+                collapsible_label: Sortierungsoptionen
+                combine: true
+                combine_rewrite: ''
+                reset: false
+                reset_label: ''
+                is_secondary: false
+            combine:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+      merge_rows: 1
+      use_grouping: 0
+      field_config:
+        id:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_2:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_member_name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        label:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_1:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        lastname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        firstname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_roles:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        abbr:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        mail:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        operations:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - route
+        - url
+        - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
+      tags:
+        - 'config:field.storage.group_content.group_roles'
+  pending:
+    display_plugin: page
+    id: pending
+    display_title: Freizuschalten
+    position: 2
+    display_options:
+      display_extenders:
+        views_merge_rows: {  }
+      path: group/%group/members/pending
+      use_more: false
+      defaults:
+        use_more: false
+        use_more_always: false
+        use_more_text: false
+        pager: false
+        title: false
+        fields: false
+        relationships: false
+        filters: false
+        filter_groups: false
+        header: false
+        empty: false
+        arguments: false
+      use_more_always: false
+      use_more_text: mehr
+      pager:
+        type: full
+        options:
+          items_per_page: 50
+          offset: 0
+          id: 0
+          total_pages: null
+          tags:
+            previous: '‹ Previous'
+            next: 'Next ›'
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page: false
+            items_per_page_label: ''
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+      menu:
+        enabled: true
+        expanded: false
+      fields:
+        id:
+          id: id
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+        id_2:
+          id: id_2
+          table: groups_field_data
+          field: id
+          relationship: gid
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group
+          entity_field: id
+          plugin_id: field
+        label:
+          id: label
+          table: group_content_field_data
+          field: label
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Name
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: true
+            path: 'user/{{ id }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: user_name
+          settings:
+            link_to_entity: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: null
+          entity_field: label
+          plugin_id: field
+        lastname:
+          id: lastname
+          table: cust_profile
+          field: lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Nachname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        firstname:
+          id: firstname
+          table: cust_profile
+          field: firstname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Vorname
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          plugin_id: standard
+        operations:
+          id: operations
+          table: group_content
+          field: operations
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Optionen
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          destination: true
+          entity_type: group_content
+          plugin_id: entity_operations
+        id_1:
+          id: id_1
+          table: group_content_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Manage Admin'
+          exclude: true
+          alter:
+            alter_text: true
+            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\r\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
+            make_link: false
+            path: 'group/{{ id_2 }}/members/{{ id }}/edit'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_unformatted
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: group_content
+          entity_field: id
+          plugin_id: field
+      relationships:
+        gid:
+          id: gid
+          table: group_content_field_data
+          field: gid
+          relationship: none
+          group_type: group
+          admin_label: Group
+          required: false
+          entity_type: group_content
+          entity_field: gid
+          plugin_id: standard
+        gc__user:
+          id: gc__user
+          table: group_content_field_data
+          field: gc__user
+          relationship: none
+          group_type: group
+          admin_label: 'Group content Benutzer'
+          required: false
+          group_content_plugins:
+            group_membership: '0'
+          entity_type: group_content
+          plugin_id: group_content_to_entity
+        uid:
+          id: uid
+          table: cust_profile
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' user profile uid'
+          required: false
+          plugin_id: standard
+        uid_1:
+          id: uid_1
+          table: inactive_users
+          field: uid
+          relationship: uid
+          group_type: group
+          admin_label: ' Inactive user'
+          required: false
+          plugin_id: standard
+      display_description: Freischaltungen
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            closed_private-group_membership: closed_private-group_membership
+            closed-group_membership: closed-group_membership
+            downtimes-group_membership: downtimes-group_membership
+            group_content_type_7b308aea24fe7: group_content_type_7b308aea24fe7
+            group_content_type_d4b06e2b6aad0: group_content_type_d4b06e2b6aad0
+            moderate-group_membership: moderate-group_membership
+            open-group_membership: open-group_membership
+            quick_info-group_membership: quick_info-group_membership
+            group_content_type_6693a40b54133: group_content_type_6693a40b54133
+            group_content_type_c26112f8ad4cd: group_content_type_c26112f8ad4cd
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+        request_status:
+          id: request_status
+          table: group_content_field_data
+          field: request_status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: group_content
+          entity_field: request_status
+          plugin_id: numeric
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          relationship: gc__user
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: gc__user
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: is_null
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      header: {  }
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content: 'Keine Daten vorhanden'
+          plugin_id: text_custom
+      arguments:
+        gid:
+          id: gid
+          table: group_content_field_data
+          field: gid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: default
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: true
+          title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+          default_argument_type: group_id_from_url
+          default_argument_options: {  }
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: false
+          validate:
+            type: none
+            fail: 'not found'
+          validate_options: {  }
+          break_phrase: false
+          not: false
+          entity_type: group_content
+          entity_field: gid
+          plugin_id: numeric
+      relationship: none
+      fieldsets:
+        - more
+        - admin_label
+      admin_label: ''
+      default_action: default
+      exception:
+        value: all
+        title_enable: 0
+        title: All
+      default_argument_skip_url: 0
+      default_argument_type: group_id_from_url
+      argument_default:
+        group_id_from_loggedin_user: {  }
+        group_id_from_url: {  }
+        node: {  }
+        taxonomy_tid:
+          term_page: '1'
+          anyall: ','
+          node: 0
+          limit: 0
+          vids:
+            faq_kategorie: 0
+            faq_seite: 0
+            forums: 0
+            release_type: 0
+            tags: 0
+            thema: 0
+        user:
+          user: 0
+        current_user: {  }
+        raw:
+          index: '0'
+          use_alias: 0
+        query_parameter:
+          query_param: ''
+          fallback: ''
+          multiple: and
+        fixed:
+          argument: ''
+      summary:
+        sort_order: asc
+        number_of_records: '0'
+        format: default_summary
+        options:
+          default_summary:
+            base_path: ''
+            count: '1'
+            items_per_page: '25'
+            override: 0
+          unformatted_summary:
+            base_path: ''
+            count: '1'
+            items_per_page: '25'
+            separator: ''
+            override: 0
+            inline: 0
+      title_enable: 1
+      specify_validation: 0
+      validate:
+        type: none
+        options:
+          taxonomy_term_name:
+            operation: view
+            bundles:
+              faq_kategorie: 0
+              faq_seite: 0
+              forums: 0
+              release_type: 0
+              tags: 0
+              thema: 0
+            access: 0
+            transform: 0
+          user_name:
+            operation: view
+            multiple: '0'
+            access: 0
+            restrict_roles: 0
+            roles:
+              authenticated: 0
+              administrator: 0
+              group_member: 0
+              group_administrator: 0
+              site_administrator: 0
+          entity---block:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---block_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              basic: 0
+            access: 0
+          entity---block_content_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---block_visibility_group:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---comment_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---comment:
+            operation: view
+            multiple: '0'
+            bundles:
+              comment: 0
+              comment_forum: 0
+              comment_no_subject: 0
+            access: 0
+          entity---contact_form:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---contact_message:
+            operation: view
+            multiple: '0'
+            bundles:
+              bpk_account_deaktivieren: 0
+              bpk_account_reaktivieren: 0
+              faq_seite_faq_kategorie_beantrag: 0
+              feedback: 0
+              frage_zum_betriebsportal: 0
+              nsm_administratoren_rolle_beantr: 0
+              personal: 0
+              sonstiges: 0
+              verbesserungsvorschlag: 0
+            access: 0
+          entity---cust_group_imattachments_data:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---editor:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---print_engine:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---field_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---field_storage_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---file:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---filter_format:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group:
+            operation: view
+            multiple: '0'
+            bundles:
+              closed: 0
+              closed_private: 0
+              downtimes: 0
+              incident_managent: 0
+              moderate: 0
+              moderate_private: 0
+              open: 0
+              quick_info: 0
+              realease_management: 0
+              zentrale_release_manag: 0
+            access: 0
+          entity---group_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_role:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_content_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---group_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              closed-group_membership: 0
+              closed-group_node-faq: 0
+              closed-group_node-forum: 0
+              closed-group_node-page: 0
+              closed_private-group_membership: 0
+              closed_private-group_node-faq: 0
+              closed_private-group_node-faqs: 0
+              closed_private-group_node-forum: 0
+              closed_private-group_node-page: 0
+              downtimes-group_membership: 0
+              group_content_type_466cc368a8c15: 0
+              group_content_type_486a744513175: 0
+              group_content_type_6693a40b54133: 0
+              group_content_type_71a6b6a92fefd: 0
+              group_content_type_7b308aea24fe7: 0
+              group_content_type_8fbe33e60f149: 0
+              group_content_type_aa3a511b55f8c: 0
+              group_content_type_b2ed3eb8d19c9: 0
+              group_content_type_c26112f8ad4cd: 0
+              group_content_type_d4b06e2b6aad0: 0
+              group_content_type_e340605cbaf90: 0
+              group_content_type_ecf0249297413: 0
+              moderate-group_membership: 0
+              moderate-group_node-event: 0
+              moderate-group_node-faq: 0
+              moderate-group_node-faqs: 0
+              moderate-group_node-forum: 0
+              moderate-group_node-newsletter: 0
+              moderate-group_node-page: 0
+              moderate-group_node-quickinfo: 0
+              moderate_private-group_node-faq: 0
+              moderate_private-group_node-faqs: 0
+              moderate_private-group_node-page: 0
+              open-group_membership: 0
+              open-group_node-downtimes: 0
+              open-group_node-early_warnings: 0
+              open-group_node-faq: 0
+              open-group_node-faqs: 0
+              open-group_node-forum: 0
+              open-group_node-newsletter: 0
+              open-group_node-page: 0
+              open-group_node-planning_files: 0
+              open-group_node-problem: 0
+              open-group_node-quickinfo: 0
+              open-group_node-release: 0
+              quick_info-group_membership: 0
+            access: 0
+          entity---image_style:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---language_content_settings:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---configurable_language:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---migration:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---migration_group:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---node_type:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---node:
+            operation: view
+            multiple: '0'
+            bundles:
+              article: 0
+              book: 0
+              deployed_releases: 0
+              downtimes: 0
+              early_warnings: 0
+              event: 0
+              faq: 0
+              faqs: 0
+              forum: 0
+              group: 0
+              grouppost: 0
+              im_upload_page: 0
+              news: 0
+              newsletter: 0
+              non_production_environment: 0
+              page: 0
+              planning_files: 0
+              problem: 0
+              quickinfo: 0
+              release: 0
+              services: 0
+              service_profile: 0
+              story: 0
+            access: 0
+          entity---rdf_mapping:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---rest_resource_config:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_page:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_server:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_task:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---search_api_index:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---simple_block:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---action:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---menu:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---taxonomy_vocabulary:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---taxonomy_term:
+            operation: view
+            multiple: '0'
+            bundles:
+              faq_kategorie: 0
+              faq_seite: 0
+              forums: 0
+              release_type: 0
+              tags: 0
+              thema: 0
+            access: 0
+          entity---tour:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---ultimate_cron_job:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---user_role:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---user:
+            operation: view
+            multiple: '0'
+            access: 0
+            restrict_roles: 0
+            roles:
+              authenticated: 0
+              administrator: 0
+              group_member: 0
+              group_administrator: 0
+              site_administrator: 0
+          entity---menu_link_content:
+            operation: view
+            multiple: '0'
+            bundles:
+              menu_link_content: 0
+            access: 0
+          entity---pathauto_pattern:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---view:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---base_field_override:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---date_format:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_view_display:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_view_mode:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_form_mode:
+            operation: view
+            multiple: '0'
+            access: 0
+          entity---entity_form_display:
+            operation: view
+            multiple: '0'
+            access: 0
+          none: {  }
+          numeric: {  }
+        fail: 'not found'
+      break_phrase: 0
+      not: 0
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - route
+        - url
+        - url.query_args
+      tags: {  }

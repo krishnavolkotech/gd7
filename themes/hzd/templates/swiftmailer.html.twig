@@ -1,0 +1,348 @@
+{#
+/**
+ * @file
+ * The default template file for e-mails.
+ *
+ * Available variables:
+ * - subject: The subject.
+ * - body: The message content.
+ * - message: The $message array created and used in the mail building
+ *   procedure. Its content varies between cases, but typically contains at
+ *   least the following elements:
+ *   - id: The message identifier.
+ *   - module: The module that handles the building of the message.
+ *   - key: The key of the message.
+ *   - to: The recipient email address.
+ *   - from: The email address of the sender.
+ *   - langcode: The langcode to use to compose the e-mail.
+ *   - params: The message parameters.
+ *
+ * This template may be overriden by module and/or mail key, using any of the
+ * following template names:
+ * - swiftmailer.html.twig: global, used by default.
+ * - swiftmailer--mymodule.html.twig: only emails sent by the module "mymodule".
+ * - swiftmailer--mymodule--test.html.twig: only emails by the module
+ *   "mymodule" with key "test".
+ *
+ * @see template_preprocess()
+ * @see template_preprocess_swiftmailer()
+ *
+ * @ingroup themeable
+ */
+#}
+<html>
+<head>
+<!--[if mso]>
+<style type="text/css">
+table tr td {font-family: arial,sans-serif !important;}
+</style>
+<![endif]-->
+<style type="text/css">
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url({{ base_url }}/themes/hzd/fonts/roboto/roboto-500-normal-ext.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+table tr td {
+    font-family: Roboto, sans-serif !important;
+    padding: 0;
+    margin: 0;
+    color: #222 !important;
+    font-size: 14px !important;
+    line-height: 20px !important;
+}
+.quickinfo-mail-wrapper ul,
+.quickinfo-mail-wrapper ol,
+.quickinfo-mail-wrapper .ckeditor-custom-wrapper .field ul,
+.quickinfo-mail-wrapper .ckeditor-custom-wrapper.field ol{
+  float: left;
+  padding-left: 0 !important;
+  width: 100%;
+}
+.field--type-file table tbody tr td .hzd-file-created,
+.field--type-file table tbody tr td .file-size{
+  display:none;
+}
+.field--type-file table tbody tr td .file-link a{
+  text-decoration:none;
+}
+.field--type-file table {
+  border-collapse: collapse;
+  color: #000;
+  font-size: 11px;
+  line-height: 20px;
+  margin-bottom: 10px;
+  width: 100% !important;
+  border:1px solid #000;
+}
+
+.field--type-file table tr.odd {
+  background-color: #e9f3fb;
+}
+.field--type-file table thead {
+    background: #f5f5f5 none repeat scroll 0 0;
+}
+.field--type-file table tbody tr td {
+    border: 1px solid rgb(212, 231, 245);
+    border-radius: 0;
+    line-height: 150%;
+    padding: 5px 8px 7px;
+    text-align: left;
+}
+h1{
+  font-size:20px;
+  color: #004070 !important;
+  font-weight: 500 !important;
+}
+.quickinfo-mail-wrapper h2 {
+  width: 100%;
+  float: left;
+  font-size: 20px !important;
+  margin: 10px 0 !important;
+  color: #004077;
+}
+.quickinfo-mail-wrapper .field .field--label{
+  margin-bottom: 3px;
+  font-weight:700;
+}
+.alert a, .field--label, .file{
+  font-weight:700;
+}
+.downtimes-email-wrapper .form-group, 
+.quickinfo-mail-wrapper .field--name-field-unique-id, 
+.quickinfo-mail-wrapper .field .field--label,
+.quickinfo-mail-wrapper .field{
+   width:100%;
+   display:block;
+ }
+.quickinfo-mail-wrapper .field{
+  margin-bottom:15px;
+}
+.quickinfo-mail-wrapper .field .field--item,
+.quickinfo-mail-wrapper .field .field--item P, 
+.quickinfo-mail-wrapper .field .field--items {
+  width: 98%;
+  display:block;
+  margin: 0 0 3px 0%;
+  padding: 0;
+}
+.field--type-file table thead tr th {
+  border-left: 1px solid rgb(212,231,245);
+  background: #d4eaf5;
+  text-align: left;
+  padding-right: 1em;
+  height: 45px;
+  text-indent: 7px;
+  border-radius: 0 !important;
+}
+.field--type-file table tbody tr.odd td {
+  background-color: #e9f3fb;
+}
+.field--type-file table tbody tr.even td {
+  background-color: #fff;
+}
+.field--type-file table,
+.field--type-file table tbody tr{
+  border:0;
+}
+table.header-table tr td{
+  padding:10px;
+}
+h3 {
+    font-size: 16px !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #004070 !important;
+    font-weight: 500 !important;
+}
+h1 {
+    font-size: 20px !important;
+}
+h2 {
+    font-size: 18px !important;
+}
+h3 {
+    font-size: 16px !important;
+}
+h4, h5, h6 {
+    font-size: 14px !important;
+}
+strong {
+    font-weight: 700;
+}
+a {
+    color: #0084bf;
+}
+p {
+    margin: 0 0 10px;
+}
+p:last-child {
+    margin-bottom: 0 !important;
+    box-shadow: none;
+}
+.downtimes-email-wrapper .downtime-view-wrapper {
+    background: #f5f7fa;
+    padding: 20px;
+    width: 100%;
+    float: left;
+    margin: 0px;
+    text-align: left;
+}
+.downtimes-email-wrapper tr td,
+.release-info tr td {
+  padding: 0 2% 3px 0 !important;
+  vertical-align: top;
+}
+
+.downtimes-email-wrapper tr {
+  padding-bottom: 10px !important; 
+}
+.downtimes-email-wrapper .downtime-view-history {
+    width: 100%;
+    float: left;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #004077;
+}
+.downtimes-email-wrapper h3 {
+    width: 100%;
+    float: left;
+    margin: 10px 0 !important;
+}
+.downtimes-email-wrapper ul {
+    width: 100%;
+    margin: 0 0 0 17px !important;
+    padding: 0 !important;
+}
+.downtimes-email-wrapper ol li, .downtimes-email-wrapper ul li {
+    width: 100%;
+    float: left;
+    margin: 0 1% 10px 0;
+    padding: 0;
+}
+.downtimes-email-wrapper .form-group {
+    width: 100%;
+    float: left;
+}
+.downtimes-email-wrapper .changed-group span.downtimes-view-updated {
+    width: 100%;
+    float: left;
+    margin: 0 0 10px 0;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #dddddd;
+}
+
+.problems-backto-search {
+  display: none;
+}
+table.problem_info {
+    width: 100% !important;
+    float: left;
+    margin: 10px 0 30px 0 !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+    border-collapse: inherit !important;
+}
+table.problem_info tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+table.problem_info tr td {
+      padding: 8px 4px;
+}
+
+.field--label-inline {
+    width: 100%;
+    float: left;
+    background: #fff;
+    line-height: 22px;
+    padding: 0% 0% 1% 0%;
+    border: none;
+}
+.field--label-inline .field--label, 
+.field--label-inline .field--item {
+    width: auto !important;
+    float: left;
+}
+.field--label-inline .field--label {
+  padding-right: 0.5em;
+}
+.field--label {
+    font-weight: 700;
+}
+.field--label-inline .field--label::after {
+    content: ':';
+}
+.field--label-inline .field--item {
+    margin-left: 0 !important;
+}
+
+.table-responsive {
+    width: 100%;
+    float: left;
+}
+.field--type-text-long ul {
+    width: 100%;
+    float: left;
+    padding-left: 20px;
+}
+ ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+article .quickedit-field h3 {
+    font-size: 16px !important;
+}
+.field--name-body.field--type-text-with-summary ul li {
+    background: url({{ base_url }}/themes/hzd/images/list-bullet.jpg) left 7px no-repeat;
+    list-style-type: none;
+    padding-left: 16px;
+    width: 100%;
+    float: left;
+}
+h1.page-header {
+  margin: 0 0 20px 0 !important;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 9px;
+}
+.ckeditor-custom-wrapper table {
+    border-spacing: 0;
+    float: left;
+    margin: 10px 0 30px 0 !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+    border-collapse: inherit !important;
+}
+.page .content table {
+    width: 100% !important;
+}
+.top-bar {
+    width: 100%;
+    float: left;
+    padding-top: 10px;
+    border-top: 1px solid #dddddd;
+    margin: 10px 0 0 0 !important;
+}
+
+
+</style>
+
+</head>
+<body>
+<div>
+  <table width="800px" border="0" cellpadding="0" cellspacing="0" class="header-table" style="margin-bottom:35px;">
+    <tr>
+      <td>
+        <div style="padding: 0px 0px 0px 0px;">
+          {{ body }}
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

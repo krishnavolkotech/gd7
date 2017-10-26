@@ -1,0 +1,46 @@
+uuid: 2bdbb999-4880-4754-819b-193f16d9b734
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.downtimes-group_membership.group_roles
+    - group.content_type.downtimes-group_membership
+  module:
+    - path
+id: group_content.downtimes-group_membership.default
+targetEntityType: group_content
+bundle: downtimes-group_membership
+mode: default
+content:
+  entity_id:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  group_roles:
+    type: options_buttons
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
+hidden:
+  uid: true

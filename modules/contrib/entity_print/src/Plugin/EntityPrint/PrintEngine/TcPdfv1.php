@@ -7,6 +7,8 @@ use Drupal\entity_print\Plugin\ExportTypeInterface;
 use Drupal\entity_print\Plugin\PrintEngineBase;
 
 /**
+ * TCPDF plugin implementation.
+ *
  * @PrintEngine(
  *   id = "tcpdfv1",
  *   label = @Translation("TCPDF (v1)"),
@@ -89,10 +91,10 @@ class TcPdfv1 extends PrintEngineBase {
   /**
    * {@inheritdoc}
    */
-  public function send($filename = NULL) {
+  public function send($filename, $force_download = TRUE) {
     // If we have a filename then we force the download otherwise we open in the
     // browser.
-    $this->tcpdf->Output($filename, $filename ? 'D' : 'I');
+    $this->tcpdf->Output($filename, $force_download ? 'D' : 'I');
   }
 
   /**
@@ -112,7 +114,7 @@ class TcPdfv1 extends PrintEngineBase {
   /**
    * {@inheritdoc}
    */
-  public function getPrintObject(){
+  public function getPrintObject() {
     return $this->tcpdf;
   }
 

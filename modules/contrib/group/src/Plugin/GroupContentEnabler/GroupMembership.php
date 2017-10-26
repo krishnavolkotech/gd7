@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Plugin\GroupContentEnabler\GroupMembership.
- */
-
 namespace Drupal\group\Plugin\GroupContentEnabler;
 
 use Drupal\group\Access\GroupAccessResult;
@@ -18,7 +13,6 @@ use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides a content enabler for users.
@@ -28,7 +22,9 @@ use Symfony\Component\Routing\Route;
  *   label = @Translation("Group membership"),
  *   description = @Translation("Adds users to groups as members."),
  *   entity_type_id = "user",
- *   path_key = "members",
+ *   pretty_path_key = "member",
+ *   reference_label = @Translation("Name"),
+ *   reference_description = @Translation("The name of the user you want to make a member"),
  *   enforced = TRUE
  * )
  */
@@ -51,7 +47,7 @@ class GroupMembership extends GroupContentEnablerBase {
       }elseif ($group->hasPermission('leave group', $account)) {
         $operations['group-leave'] = [
           'title' => $this->t('Leave group'),
-          'url' => new Url($this->getRouteName('leave-form'), ['group' => $group->id()]),
+          'url' => new Url('entity.group.leave', ['group' => $group->id()]),
           'weight' => 99,
         ];
       }
@@ -59,7 +55,21 @@ class GroupMembership extends GroupContentEnablerBase {
     elseif ($group->hasPermission('join group', $account)) {
       $operations['group-join'] = [
         'title' => $this->t('Join group'),
-        'url' => new Url($this->getRouteName('join-form'), ['group' => $group->id()]),
+        'url' => new Url('entity.group.join', ['group' => $group->id()]),
+        'weight' => 0,
+      ];
+    }
+    if ($group->hasPermission('request group membership', $account) && (!$group->getMember($account))) {
+      $operations['group-request'] = [
+        'title' => $this->t('Request group membership'),
+        'url' => new Url($this->getRouteName('request-membership-form'), ['group' => $group->id()]),
+        'weight' => 0,
+      ];
+    }
+    if ($group->hasPermission('request group membership', $account) && (!$group->getMember($account))) {
+      $operations['group-request'] = [
+        'title' => $this->t('Request group membership'),
+        'url' => new Url($this->getRouteName('request-membership-form'), ['group' => $group->id()]),
         'weight' => 0,
       ];
     }
@@ -77,225 +87,45 @@ class GroupMembership extends GroupContentEnablerBase {
   /**
    * {@inheritdoc}
    */
-  public function getEntityForms() {
-    return [
-      'group-join' => 'Drupal\group\Form\GroupJoinForm',
-      'group-leave' => 'Drupal\group\Form\GroupLeaveForm',
-      'group-request' => 'Drupal\group\Form\GroupRequestMembershipForm',
-      'group-cancel' => 'Drupal\group\Form\GroupCancelRequestMembershipForm',
-    ];
-  }
+  protected function getGroupContentPermissions() {
+    $permissions = parent::getGroupContentPermissions();
+    $defaults = ['title_args' => ['%plugin_name' => $this->getLabel()]];
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getPermissions() {
+    // Add extra permissions specific to membership group content entities.
     $permissions['administer members'] = [
-      'title' => 'Administer group members',
-      'description' => 'Administer the group members',
+      'title' => '%plugin_name: Administer group members',
       'restrict access' => TRUE,
-    ];
-
-    // @todo This can be removed once plugin permissions are autosorted.
-    $permissions += parent::getPermissions();
+    ] + $defaults;
 
     $permissions['join group'] = [
-      'title' => 'Join group',
-      'description' => 'Join a group by filling out the configured fields',
+      'title' => '%plugin_name: Join group',
       'allowed for' => ['outsider'],
-    ];
+    ] + $defaults;
 
     $permissions['leave group'] = [
-      'title' => 'Leave group',
+      'title' => '%plugin_name: Leave group',
       'allowed for' => ['member'],
-    ];
-
+    ] + $defaults;
+    
     $permissions['request group membership'] = [
       'title' => 'Request group membership',
       'allowed for' => ['outsider'],
-    ];
-
+    ] + $defaults;
+    
     // Update the labels of the default permissions.
-    $permissions['access group_membership overview']['title'] = 'Access the member overview page';
-    $permissions['view group_membership content']['title'] = 'View individual group members';
-    $permissions['edit own group_membership content'] = [
-      'title' => 'Edit own membership',
-      'allowed for' => ['member'],
-    ];
+    $permissions['view group_membership content']['title'] = '%plugin_name: View individual group members';
+    $permissions['update own group_membership content']['title'] = '%plugin_name: Edit own membership';
 
-    // These are handled by 'administer members' or 'leave group'.
+    // Only members can update their membership.
+    $permissions['update own group_membership content']['allowed for'] = ['member'];
+
+    // These are handled by 'administer members', 'join group' or 'leave group'.
     unset($permissions['create group_membership content']);
-    unset($permissions['edit any group_membership content']);
+    unset($permissions['update any group_membership content']);
     unset($permissions['delete any group_membership content']);
     unset($permissions['delete own group_membership content']);
 
     return $permissions;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPaths() {
-    return parent::getPaths() + [
-      'join-form' => '/group/{group}/join',
-      'leave-form' => '/group/{group}/leave',
-      'request-membership-form' => '/group/{group}/requestMembership',
-      'cancel-membership-form' => '/group/{group}/cancelMembership',
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getCollectionRoute() {
-    $route = parent::getCollectionRoute();
-
-    // Reset the default requirements and add our own group permissions. The '+'
-    // signifies that only one permission needs to be set for the user. We also
-    // don't set the _group_installed_content requirement again because we know
-    // this plugin will always be installed.
-    $route->setRequirements([])->setRequirement('_group_permission', 'administer members+access group_membership overview');
-
-    // Swap out the GroupContent list controller for our own.
-    // @todo Implement this after we've completed the above list controller.
-
-    return $route;
-  }
-
-  /**
-   * Gets the join form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getJoinFormRoute() {
-    if ($path = $this->getPath('join-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\group\Controller\GroupMembershipController::join',
-          '_title_callback' => '\Drupal\group\Controller\GroupMembershipController::joinTitle',
-          'plugin_id' => $this->getPluginId(),
-        ])
-        ->setRequirement('_group_permission', 'join group')
-        ->setRequirement('_group_member', 'FALSE')
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the leave form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getLeaveFormRoute() {
-    if ($path = $this->getPath('leave-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\group\Controller\GroupMembershipController::leave',
-          'plugin_id' => $this->getPluginId(),
-        ])
-        ->setRequirement('_group_permission', 'leave group')
-        ->setRequirement('_group_member', 'TRUE')
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the leave form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getRequestMembershipFormRoute() {
-    if ($path = $this->getPath('request-membership-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\group\Controller\GroupMembershipController::requestMembership',
-          '_title_callback' => '\Drupal\group\Controller\GroupMembershipController::requestMembershipTitle',
-          'plugin_id' => $this->getPluginId(),
-        ])
-        ->setRequirement('_group_permission', 'request group membership')
-        ->setRequirement('_group_member', 'FALSE')
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the cancel membership form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getCancelMembershipFormRoute() {
-    if ($path = $this->getPath('cancel-membership-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\group\Controller\GroupMembershipController::cancelMembership',
-          '_title_callback' => '\Drupal\group\Controller\GroupMembershipController::cancelMembershipTitle',
-          'plugin_id' => $this->getPluginId(),
-        ])
-        ->setRequirement('_group_member', 'TRUE')
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRoutes() {
-    $routes = parent::getRoutes();
-
-    if ($route = $this->getJoinFormRoute()) {
-      $routes[$this->getRouteName('join-form')] = $route;
-    }
-
-    if ($route = $this->getLeaveFormRoute()) {
-      $routes[$this->getRouteName('leave-form')] = $route;
-    }
-
-    if ($route = $this->getRequestMembershipFormRoute()) {
-      $routes[$this->getRouteName('request-membership-form')] = $route;
-    }
-
-    if ($route = $this->getCancelMembershipFormRoute()) {
-      $routes[$this->getRouteName('cancel-membership-form')] = $route;
-    }
-
-    return $routes;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getLocalActions() {
-    $actions = parent::getLocalActions();
-    $actions['group_membership.add']['title'] = 'Add member';
-    return $actions;
   }
 
   /**
@@ -322,7 +152,7 @@ class GroupMembership extends GroupContentEnablerBase {
 
     // Allow members to edit their own membership data.
     if ($group_content->entity_id->entity->id() == $account->id()) {
-      $permissions = ['edit own group_membership content', 'administer members'];
+      $permissions = ['update own group_membership content', 'administer members'];
       return GroupAccessResult::allowedIfHasGroupPermissions($group, $account, $permissions, 'OR');
     }
 
@@ -412,10 +242,6 @@ class GroupMembership extends GroupContentEnablerBase {
   public function defaultConfiguration() {
     $config = parent::defaultConfiguration();
     $config['entity_cardinality'] = 1;
-
-    // This string will be saved as part of the group type config entity. We do
-    // not use a t() function here as it needs to be stored untranslated.
-    $config['info_text']['value'] = '<p>By submitting this form you will become a member of the group.<br />Please fill out any available fields to complete your membership information.</p>';
     return $config;
   }
 

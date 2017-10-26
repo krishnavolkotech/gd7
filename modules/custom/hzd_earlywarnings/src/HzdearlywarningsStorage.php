@@ -3,6 +3,7 @@
 namespace Drupal\hzd_earlywarnings;
 
 use Drupal\Core\Url;
+use Drupal\cust_group\CustGroupHelper;
 
 /**
  * Use Drupal\node\Entity\Node;
@@ -240,29 +241,20 @@ class HzdearlywarningsStorage
         foreach ($result as $earlywarnings_nid) {
             $earlywarning = \Drupal\node\Entity\Node::load($earlywarnings_nid);
             
-            $user_query = db_select('cust_profile', 'cp');
+            /*$user_query = db_select('cust_profile', 'cp');
             $user_query->condition('cp.uid', $earlywarning->uid->target_id, '=')
                 ->fields('cp', array('firstname', 'lastname'));
             $author = $user_query->execute()->fetchAssoc();
             if (isset($author)) {
                 $author_name = $author['firstname'] . ' ' . $author['lastname'];
-            }
-            
+            }*/
+            $author_name = $earlywarning->getOwner()->getDisplayName();
             $total_responses = self::get_earlywarning_responses_info($earlywarning->id());
-            
-            $url = Url::fromRoute(
-                'entity.node.canonical',
-                array(
-                    'node' => $earlywarning->id()
-                ),
-                ['query'=>['destination'=>\Drupal::request()->getRequestUri()]]
-            );
-            $early_warning = \Drupal::service('link_generator')->generate(
-                $earlywarning->getTitle(), $url);
+            $early_warningTitle = $earlywarning->toLink();
             $elements = array(
-                array('data' => $early_warning, 'class' => 'earlywarningslink-cell'),
-                array('data' => date('d.m.Y', $earlywarning->created->value) . ' ' .
-                    t('by') . ' ' . $author_name, 'class' => 'created-cell'),
+                array('data' => $early_warningTitle, 'class' => 'earlywarningslink-cell'),
+                array('data' => t('@date by @username',['@date' => date('d.m.Y', $earlywarning->created->value), '@username' => $author_name]),
+                    'class' => 'created-cell'),
                 array('data' => $total_responses['total_responses'], 'class' => 'responses-cell'),
                 array('data' => $total_responses['response_lastposted'], 'class' => 'lastpostdate-cell'),
             );
@@ -279,7 +271,7 @@ class HzdearlywarningsStorage
             '#header' => $header,
             '#rows' => $rows,
             '#empty' => t('No Data Created Yet'),
-            '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
+            '#attributes' => ['id' => "viewearlywarnings_sortable", 'class' => "tablesorter"],
             '#cache'=>['tags'=>['node_list']],
         );
         
@@ -327,7 +319,7 @@ class HzdearlywarningsStorage
         
 //                $response_lastposted = $responses['last_posted'] .
 //                    ' ' . t('by') . ' ' . $author['firstname'] . ' ' . $author['lastname'];
-                $response_lastposted = t($responses['last_posted'] . ' by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname']]);
+                $response_lastposted = t('@date by @firstname @lastname',['@firstname'=>$author['firstname'], '@lastname'=>$author['lastname'],'@date'=>$responses['last_posted']]);
             }
         }
         
@@ -399,12 +391,12 @@ class HzdearlywarningsStorage
      * Display early warning text on view warly warnings page.
      */
     static public function early_warning_text() {
-        $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
-        $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
+//        $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
+//        $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
         $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
-        $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
-        $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query' => ['destination' => 'group/' . RELEASE_MANAGEMENT . '/early-warnings']]));
-        $output = "<div class = 'earlywarnings_text'>" . $body . $link;
+//        $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
+//        $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query' => ['destination' => 'group/' . RELEASE_MANAGEMENT . '/early-warnings']]));
+        $output = "<div class = 'earlywarnings_text'>" . $body;
         //$output = "<div class = 'earlywarnings_text'>" . $body .
         //"<a href='/release-management/add/early-warnings?\
         //destination=group/32/early-warnings&amp;services=0&amp;releases=0'

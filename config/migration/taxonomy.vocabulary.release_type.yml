@@ -1,0 +1,9 @@
+uuid: 4d724817-29ac-4844-af7d-7adb30557ed9
+langcode: en
+status: true
+dependencies: {  }
+name: 'Release Type'
+vid: release_type
+description: 'Type of Release'
+hierarchy: 1
+weight: 0

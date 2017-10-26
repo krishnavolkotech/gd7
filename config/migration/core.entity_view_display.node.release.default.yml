@@ -1,0 +1,87 @@
+uuid: d6972c48-5a05-4e34-a184-268dfd95dc31
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.release.comment
+    - field.field.node.release.field_calculated_title
+    - field.field.node.release.field_date
+    - field.field.node.release.field_documentation_link
+    - field.field.node.release.field_link
+    - field.field.node.release.field_release_comments
+    - field.field.node.release.field_release_type
+    - field.field.node.release.field_relese_services
+    - field.field.node.release.field_status
+    - field.field.node.release.upload
+    - node.type.release
+  module:
+    - computed_field
+    - cust_group
+    - entity_print
+    - options
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.release.default
+targetEntityType: node
+bundle: release
+mode: default
+content:
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_calculated_title:
+    weight: 1
+    label: inline
+    settings:
+      sanitized: '1'
+      cache_unit: '-1'
+      cache_duration: '1'
+    third_party_settings: {  }
+    type: computed_string
+    region: content
+  field_date:
+    label: inline
+    weight: 3
+    type: date_from_timestamp_formatter
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_comments:
+    label: inline
+    weight: 4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_type:
+    label: inline
+    weight: 2
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_relese_services:
+    label: inline
+    weight: 0
+    type: entity_reference_label
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_documentation_link: true
+  field_link: true
+  field_status: true
+  langcode: true
+  links: true
+  upload: true

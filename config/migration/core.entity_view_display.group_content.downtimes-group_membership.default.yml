@@ -1,0 +1,27 @@
+uuid: eedffe00-dbad-4872-9e3f-54ffffab4e4a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.downtimes-group_membership.group_roles
+    - group.content_type.downtimes-group_membership
+id: group_content.downtimes-group_membership.default
+targetEntityType: group_content
+bundle: downtimes-group_membership
+mode: default
+content:
+  group_roles:
+    label: above
+    type: entity_reference_label
+    settings:
+      link: false
+    weight: -4
+    third_party_settings: {  }
+    region: content
+hidden:
+  entity_id: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  uid: true

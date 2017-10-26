@@ -1,0 +1,17 @@
+uuid: 5e9fc317-f0d4-4429-b64b-0d9b6be5cd28
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Meldung
+type: news
+description: ''
+help: ''
+new_revision: false
+preview_mode: 0
+display_submitted: false

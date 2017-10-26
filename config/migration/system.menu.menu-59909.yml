@@ -1,0 +1,8 @@
+uuid: 7d24b952-c31f-47c6-b9f1-3473da4a415d
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59909
+label: 'DaSi RMS'
+description: 'DaSi RMS'
+locked: false

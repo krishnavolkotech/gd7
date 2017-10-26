@@ -1,0 +1,16 @@
+uuid: 92f1c020-e98d-4d8c-a46d-c48b3010ff01
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.non_production_environment
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: node.non_production_environment
+target_entity_type_id: node
+target_bundle: non_production_environment
+default_langcode: site_default
+language_alterable: false

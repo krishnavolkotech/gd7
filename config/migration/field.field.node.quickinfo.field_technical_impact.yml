@@ -1,0 +1,31 @@
+uuid: 011eefb4-d0fe-45b9-98e4-9c71d829c8a6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_technical_impact
+    - node.type.quickinfo
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.quickinfo.field_technical_impact
+field_name: field_technical_impact
+entity_type: node
+bundle: quickinfo
+label: '2.6 Technische Auswirkungen'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

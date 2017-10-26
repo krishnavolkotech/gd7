@@ -1,0 +1,18 @@
+uuid: 438bfa2c-f59f-44b3-8b59-c4f0a2dcf687
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: group.closed.created
+field_name: created
+entity_type: group
+bundle: closed
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

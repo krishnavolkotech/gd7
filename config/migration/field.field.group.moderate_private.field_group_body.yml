@@ -1,0 +1,21 @@
+uuid: 309084aa-aa99-4cb7-8b47-de76ba3346af
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_group_body
+    - group.type.moderate_private
+  module:
+    - text
+id: group.moderate_private.field_group_body
+field_name: field_group_body
+entity_type: group
+bundle: moderate_private
+label: 'Group Body'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

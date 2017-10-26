@@ -2,5 +2,5 @@ name: HZD Release Management
 type: module
 description: HZD Release Management
 core: 8.x
-package: HZD
+package: "HZD Custom"
 

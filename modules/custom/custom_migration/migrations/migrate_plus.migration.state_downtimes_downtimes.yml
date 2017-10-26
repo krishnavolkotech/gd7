@@ -1,0 +1,51 @@
+langcode: de
+status: true
+id: state_downtimes_downtimes
+migration_tags: null
+migration_group: custom_migration
+source:
+  plugin: source_table
+  target: migrate
+  table_name: state_downtimes
+  fields:
+    - id
+    - state_id
+    - reason
+    - startdate_planned
+    - enddate_planned
+    - startdate_reported
+    - enddate_reported
+    - scheduled_p
+    - down_id
+    - resolved
+    - status
+    - email_reminder
+    - cancelled
+  id_fields:
+      down_id:
+        type: integer
+        unsigned: FALSE
+        size: big
+process:
+  description: reason
+  startdate_planned: startdate_planned
+  enddate_planned: enddate_planned
+  startdate_reported: startdate_reported
+  enddate_reported: enddate_reported
+  scheduled_p: scheduled_p
+  downtime_id: down_id
+  resolved: resolved
+  status: status
+  email_reminder: email_reminder_sent
+  cancelled: cancelled
+destination:
+  plugin: table
+  key_map:
+    down_id: downtime_id
+  id_fields:
+    downtime_id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: downtimes
+migration_dependencies: {  }

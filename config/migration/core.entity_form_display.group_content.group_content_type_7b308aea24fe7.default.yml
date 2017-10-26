@@ -1,0 +1,46 @@
+uuid: 70e336ca-e7e0-4759-a1cf-9a59bff2451e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.group_content_type_7b308aea24fe7.group_roles
+    - group.content_type.group_content_type_7b308aea24fe7
+  module:
+    - path
+id: group_content.group_content_type_7b308aea24fe7.default
+targetEntityType: group_content
+bundle: group_content_type_7b308aea24fe7
+mode: default
+content:
+  entity_id:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  group_roles:
+    type: options_buttons
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
+hidden:
+  uid: true

@@ -5,6 +5,7 @@ hzd_customizations.planning_files_form:
     _title: 'Planning Files of Release Management'
   requirements:
     _permission: 'access administration pages'
+    _access: 'FALSE'
   options:
     _admin_route: TRUE
 
@@ -67,10 +68,10 @@ hzd_customizations.quickinfo_uniqueid:
 hzd_customizations.manage_non_production_environment:
   path: 'admin/config/manage-non-production-environment'
   defaults:
-    _form: '\Drupal\hzd_customizations\Form\Managenonproductionenvironment'
+    _form: 'Drupal\hzd_customizations\Form\ManagenonproductionenvironmentForm'
     _title: 'Manage Non-Production Environment'
   requirements:
-    _permission: 'access all views'
+    _role: 'administrator+site_administrator'
   options:
     _admin_route: TRUE
 
@@ -126,25 +127,31 @@ hzd_customizations.mail_templates:
   path: '/admin/messaging/templates/{type}'
   defaults:
     _form: '\Drupal\hzd_customizations\Form\MailTemplatesForm'
-    _title: 'Mail Template for Downtimes'
+    _title: 'Mail Templates'
     type: problem
   requirements:
     _permission: 'access administration pages'
-    type: problem|release|downtimes|planning_files|quickinfo|early_warnings
+    type: problem|release|downtimes|planning_files|quickinfo|early_warnings|group|group_content
   options:
     _admin_route: TRUE
-hzd_customizations.group_content_mail_templates:
-  path: '/admin/messaging/templates/{type}'
+#hzd_customizations.group_content_mail_templates:
+#  path: '/admin/messaging/templates/{type}'
+#  defaults:
+#    _form: '\Drupal\hzd_customizations\Form\GroupContentMailTemplatesForm'
+#    _title: 'Mail Template for Group content'
+#  requirements:
+#    _permission: 'access administration pages'
+#    type: group|group_content
+#  options:
+#    _admin_route: TRUE
+hzd_customizations.front:
+  path: '/home'
   defaults:
-    _form: '\Drupal\hzd_customizations\Form\GroupContentMailTemplatesForm'
-    _title: 'Mail Template for Group content'
-    type: group
+    _controller: '\Drupal\front\Controller\FrontPage::view'
+    _title: 'Willkommen beim Betriebsportal KONSENS'
   requirements:
-    _permission: 'access administration pages'
-    type: group|group_content
-  options:
-    _admin_route: TRUE
-
+    _permission: 'access content'
+    
 #hzd_customizations.problems_mail_template:
 #  path: '/admin/messaging/templates/problems'
 #  defaults:

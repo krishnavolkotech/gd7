@@ -1,0 +1,16 @@
+uuid: b24a1a1a-5754-47af-a8dc-e71fa6a7ebc0
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.early_warnings
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: node.early_warnings
+target_entity_type_id: node
+target_bundle: early_warnings
+default_langcode: site_default
+language_alterable: false

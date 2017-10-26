@@ -1,0 +1,23 @@
+uuid: 04e47fee-93b7-4916-9682-27ed05b23199
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_old_reference
+    - group.type.incident_managent
+id: group.incident_managent.field_old_reference
+field_name: field_old_reference
+entity_type: group
+bundle: incident_managent
+label: 'Old Reference'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

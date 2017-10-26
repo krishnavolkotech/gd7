@@ -1,0 +1,67 @@
+uuid: 922a9715-8751-42a6-9926-00fd0884bd5c
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - options
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_other_services
+field_name: field_other_services
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '1'
+      label: Archivierung
+    -
+      value: '2'
+      label: 'Erhebung - dezentrale Verfahren'
+    -
+      value: '3'
+      label: 'Erhebung - zentrale Verfahren'
+    -
+      value: '4'
+      label: 'Festsetzung - ESt'
+    -
+      value: '5'
+      label: 'Festsetzung - FEin'
+    -
+      value: '6'
+      label: 'Festsetzung - GewSt'
+    -
+      value: '7'
+      label: 'Festsetzung - KSt'
+    -
+      value: '8'
+      label: 'Festsetzung - USt'
+    -
+      value: '9'
+      label: 'Festsetzung - sonst. Steuerarten'
+    -
+      value: '10'
+      label: Grundinformationsdienst
+    -
+      value: '11'
+      label: MÜSt
+    -
+      value: '12'
+      label: Sonstige
+    -
+      value: '13'
+      label: Systemprogrammierung
+    -
+      value: '14'
+      label: 'Zentrales Auskunftsverfahren und Probeberechnung'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,46 @@
+uuid: 6ba0edc3-6f40-4c0f-b04b-2f6a672d8b57
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.group_content_type_c26112f8ad4cd.group_roles
+    - group.content_type.group_content_type_c26112f8ad4cd
+  module:
+    - path
+id: group_content.group_content_type_c26112f8ad4cd.default
+targetEntityType: group_content
+bundle: group_content_type_c26112f8ad4cd
+mode: default
+content:
+  entity_id:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  group_roles:
+    type: options_buttons
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
+hidden:
+  uid: true

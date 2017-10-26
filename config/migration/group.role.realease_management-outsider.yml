@@ -1,0 +1,14 @@
+uuid: 2965d4f3-1f72-4b53-b0c3-a3d346e47434
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: realease_management-outsider
+label: Outsider
+weight: -101
+internal: true
+audience: outsider
+group_type: realease_management
+permissions_ui: true
+permissions: {  }

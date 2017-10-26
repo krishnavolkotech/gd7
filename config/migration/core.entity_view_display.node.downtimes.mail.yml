@@ -1,0 +1,57 @@
+uuid: e54a365c-b2a4-4da6-852a-3d00ab2f219b
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - core.entity_view_mode.node.mail
+    - field.field.node.downtimes.body
+    - field.field.node.downtimes.comment
+    - field.field.node.downtimes.upload
+    - node.type.downtimes
+  module:
+    - comment
+    - entity_print
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.downtimes.mail
+targetEntityType: node
+bundle: downtimes
+mode: mail
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 1
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  upload: true

@@ -1,0 +1,18 @@
+uuid: 113e4e37-fb73-4f79-a82c-8cf1bce34278
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.early_warnings
+id: node.early_warnings.title
+field_name: title
+entity_type: node
+bundle: early_warnings
+label: Titel
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

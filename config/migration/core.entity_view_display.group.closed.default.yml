@@ -1,0 +1,43 @@
+uuid: 66ac36c4-73e9-45b6-acec-8986687cdda8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.closed.field_description
+    - field.field.group.closed.field_forum_containers
+    - field.field.group.closed.field_group_body
+    - field.field.group.closed.field_old_reference
+    - group.type.closed
+  module:
+    - text
+id: group.closed.default
+targetEntityType: group
+bundle: closed
+mode: default
+content:
+  field_group_body:
+    type: text_default
+    weight: 1
+    label: visually_hidden
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  label:
+    label: hidden
+    type: string
+    weight: 0
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  changed: true
+  created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_description: true
+  field_forum_containers: true
+  field_old_reference: true
+  langcode: true
+  uid: true

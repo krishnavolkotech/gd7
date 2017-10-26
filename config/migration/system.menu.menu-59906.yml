@@ -1,0 +1,8 @@
+uuid: cfad83f0-76ff-4da2-b575-f28d0447f7f7
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59906
+label: 'DaSi KapESt'
+description: 'DaSi KapESt'
+locked: false

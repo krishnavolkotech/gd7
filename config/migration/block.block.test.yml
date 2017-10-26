@@ -1,0 +1,28 @@
+uuid: f10ba7b9-ac01-4faa-9855-fd9c5a57c8cd
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.test
+  module:
+    - block_class
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: test
+theme: hzd
+region: navigation
+weight: 5
+provider: null
+plugin: 'system_menu_block:test'
+settings:
+  id: 'system_menu_block:test'
+  label: test
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility: {  }

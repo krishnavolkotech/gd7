@@ -1,0 +1,16 @@
+node_creation_subject: 'Content create: [node:content-type:name]'
+node_creation_body:
+  value: "<p>Notifications content body:</p>\r\n\r\n<p>Name: [node:content-type:name]</p>\r\n\r\n<p>Title: [node:title]</p>\r\n\r\n<p>URL:&nbsp;[node:url]</p>\r\n"
+  format: basic_html
+downtimes_subject: 'Downtimes Subject'
+downtimes_body:
+  value: "<p>Downtimes Body</p>\r\n"
+  format: basic_html
+quickinfo_subject: 'Quickinfo Subject: [node:field_custom_title]'
+quickinfo_body:
+  value: "<p>test test</p>\r\n\r\n<p>[node:field_custom_title]</p>\r\n\r\n<p>[node:field_related_transfer_number]</p>\r\n"
+  format: basic_html
+group_content_notification_subject: 'Group Content Updated'
+group_content_notification_body:
+  value: "<p>Group Name:[group:title]</p>\r\n\r\n<p>Content Title:[node:title]</p>\r\n\r\n<p>URL: {GROUP_NODE_URL}</p>"
+  format: basic_html

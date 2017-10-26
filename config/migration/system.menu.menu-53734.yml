@@ -1,0 +1,8 @@
+uuid: 06de0626-4724-4935-857c-4791ddcd318d
+langcode: de
+status: true
+dependencies: {  }
+id: menu-53734
+label: 'ZPS Zentrale Fachdienste'
+description: null
+locked: false

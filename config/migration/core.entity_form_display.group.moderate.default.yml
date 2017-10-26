@@ -1,0 +1,72 @@
+uuid: e9b28495-f12a-438d-93bd-dbe9aaef1033
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.moderate.field_description
+    - field.field.group.moderate.field_einfuehrung
+    - field.field.group.moderate.field_forum_containers
+    - field.field.group.moderate.field_group_body
+    - field.field.group.moderate.field_old_reference
+    - group.type.moderate
+  module:
+    - path
+    - text
+id: group.moderate.default
+targetEntityType: group
+bundle: moderate
+mode: default
+content:
+  field_description:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_einfuehrung:
+    weight: 6
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_group_body:
+    weight: 3
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  label:
+    type: string_textfield
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  path:
+    type: path
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_forum_containers: true
+  field_old_reference: true
+  uid: true

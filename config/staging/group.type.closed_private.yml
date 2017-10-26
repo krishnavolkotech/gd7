@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: closed_private
-label: 'Abgeschlossen Privat'
+label: 'Geschlossen Privat'
 description: 'Same as Closed, But visible to only Members.'
 content:
   group_membership:

@@ -1,0 +1,46 @@
+uuid: 9cc7492d-78b6-4281-b09f-9af76937cc55
+langcode: de
+status: true
+dependencies: {  }
+id: group_problems_view
+migration_tags: null
+migration_group: custom_migration
+label: 'Group Problems View'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: group_problems_view
+  fields:
+    - id
+    - group_id
+    - service_id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  service_id: service_id
+  group_id:
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      key: group_id
+      source: group_id
+    -
+      plugin: skip_on_empty
+      method: row
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: group_problems_view
+migration_dependencies:
+  required:
+    - groups

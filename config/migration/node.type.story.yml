@@ -1,0 +1,17 @@
+uuid: 09f81daa-ab2c-44f5-bc47-f5a3b9e68e1f
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Story
+type: story
+description: 'Stories are articles in their simplest form: they have a title, a teaser and a body, but can be extended by other modules. The teaser is part of the body too. Stories may be used as a personal blog or for news articles.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: true

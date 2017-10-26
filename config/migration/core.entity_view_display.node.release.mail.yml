@@ -1,0 +1,88 @@
+uuid: d39d3748-2b46-4685-9fca-016bf1ea2961
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.mail
+    - field.field.node.release.comment
+    - field.field.node.release.field_calculated_title
+    - field.field.node.release.field_date
+    - field.field.node.release.field_documentation_link
+    - field.field.node.release.field_link
+    - field.field.node.release.field_release_comments
+    - field.field.node.release.field_release_type
+    - field.field.node.release.field_relese_services
+    - field.field.node.release.field_status
+    - field.field.node.release.upload
+    - node.type.release
+  module:
+    - computed_field
+    - cust_group
+    - entity_print
+    - options
+    - text
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.release.mail
+targetEntityType: node
+bundle: release
+mode: mail
+content:
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_calculated_title:
+    type: computed_string
+    weight: 1
+    region: content
+    label: hidden
+    settings:
+      sanitized: true
+      cache_unit: -1
+      cache_duration: 1
+    third_party_settings: {  }
+  field_date:
+    label: hidden
+    weight: 3
+    type: date_from_timestamp_formatter
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_comments:
+    label: hidden
+    weight: 4
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_type:
+    label: hidden
+    weight: 2
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_relese_services:
+    label: hidden
+    weight: 0
+    type: entity_reference_label
+    settings:
+      link: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_documentation_link: true
+  field_link: true
+  field_status: true
+  langcode: true
+  links: true
+  upload: true

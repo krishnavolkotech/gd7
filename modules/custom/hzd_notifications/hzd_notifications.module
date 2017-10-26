@@ -3,6 +3,11 @@
 use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\cust_group\CustGroupHelper;
 use Drupal\hzd_notifications\Controller\HzdNotifications;
+use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Link;
 
 /**
  * Implements callback_batch_operation().
@@ -32,16 +37,19 @@ function migrate_each_user($uid, $rel_type, &$context) {
       $user_notifications[$services_info->nid]['early_warnings'] = $default_interval['early_warnings'];
     }
   }
-  
+
   // get priority of user services.
   $get_override_services = db_query("SELECT service_id, send_interval, type FROM {service_notifications_override} 
-                           WHERE uid = :uid and rel_type = :rel_type", array(":uid" => $uid, ":rel_type" => $rel_type))->fetchAll();
+                           WHERE uid = :uid and rel_type = :rel_type", array(
+    ":uid" => $uid,
+    ":rel_type" => $rel_type
+  ))->fetchAll();
   if (count($get_override_services) > 0) {
     foreach ($get_override_services as $get_override_services_vals) {
       $user_notifications[$get_override_services_vals->service_id][$get_override_services_vals->type] = $get_override_services_vals->send_interval;
     }
   }
-  
+
   foreach ($services as $service_vals) {
     if ($service_vals->field_enable_downtime_value && $service_vals->release_type_target_id == KONSONS) {
       insert_user_service_notifications('downtimes', $service_vals->nid, $uid, $user_notifications);
@@ -61,7 +69,10 @@ function migrate_each_user($uid, $rel_type, &$context) {
  */
 function hzd_get_default_interval($uid, $rel_type) {
   $default_intval_per_user = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} 
-                               WHERE uid = :uid and rel_type = :type", array(":uid" => $uid, ":type" => $rel_type))->fetchAll();
+                               WHERE uid = :uid and rel_type = :type", array(
+    ":uid" => $uid,
+    ":type" => $rel_type
+  ))->fetchAll();
   $default_interval = array();
   foreach ($default_intval_per_user as $val) {
     $default_interval[$val->service_type] = $val->default_send_interval;
@@ -72,7 +83,7 @@ function hzd_get_default_interval($uid, $rel_type) {
 /**
  * get all services of a release type
  */
-function hzd_get_all_services($rel_type = null) {
+function hzd_get_all_services($rel_type = NULL) {
   $query = db_select('node_field_data', 'n');
   $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
   $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
@@ -95,13 +106,17 @@ function hzd_get_all_services($rel_type = null) {
  * insert user notifications in service notifications table
  */
 function insert_user_service_notifications($type, $nid, $uid, $user_notifications) {
-  $interval = array('-1', 0, 86400, 604800);
+  $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($interval as $vals) {
     $uids_list = array();
     $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
-      array(":sid" => $nid, ":type" => $type, ":intval" => $vals))->fetchField();
+      array(
+        ":sid" => $nid,
+        ":type" => $type,
+        ":intval" => $vals
+      ))->fetchField();
     $uids_list = unserialize($uids_query);
-    if (($key = array_search($uid, $uids_list)) !== false) {
+    if (($key = array_search($uid, $uids_list)) !== FALSE) {
       unset($uids_list[$key]);
     }
     if (isset($user_notifications[$nid][$type]) && ($user_notifications[$nid][$type] == $vals)) {
@@ -113,7 +128,7 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
       ->condition('type', $type)
       ->condition('send_interval', $vals)
       ->execute();
-    
+
   }
 }
 
@@ -123,18 +138,21 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
 function migrate_group_each_user($uid, &$context) {
   $default_groups_send_interval = array();
   $default_groups_query = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
-                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(":field" => 'group', ":uid" => $uid))->fetchAll();
+                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(
+    ":field" => 'group',
+    ":uid" => $uid
+  ))->fetchAll();
   foreach ($default_groups_query as $default_groups_info) {
     $default_groups_send_interval[$default_groups_info->value] = $default_groups_info->send_interval;
   }
-  
+
   $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
                        WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
   $user_groups = array();
   foreach ($user_groups_query as $groups_list) {
     $user_groups[$groups_list->id] = $groups_list->label;
   }
-  
+
   if (count($user_groups) > 0) {
     foreach ($user_groups as $gid => $label) {
       // old ref
@@ -142,8 +160,15 @@ function migrate_group_each_user($uid, &$context) {
                  WHERE entity_id = :eid", array(":eid" => $gid))->fetchField();
       if ($old_ref && $default_groups_send_interval[$old_ref]) {
         $int_val = $default_groups_send_interval[$old_ref] ? $default_groups_send_interval[$old_ref] : 0;
-        $record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
-        db_insert('group_notifications_user_default_interval')->fields($record)->execute();
+        $record = array(
+          'uid' => $uid,
+          'group_id' => $gid,
+          'group_name' => $label,
+          'default_send_interval' => $int_val
+        );
+        db_insert('group_notifications_user_default_interval')
+          ->fields($record)
+          ->execute();
       }
     }
   }
@@ -158,7 +183,8 @@ function migrate_date_field($nid, $date, &$context) {
 function custom_date_deployed_batch_finished($success, $results, $operations) {
   if ($success) {
     drupal_set_message(t("Date field in Deployed releases content type was migrated"));
-  } else {
+  }
+  else {
     // An error occurred.
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
@@ -180,13 +206,15 @@ function hzd_notifications_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
     $form['notification'] = array(
       '#type' => 'details',
       '#title' => t('Notifications settings'),
-      '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+      '#open' => FALSE,
+      // Controls the HTML5 'open' attribute. Defaults to FALSE.
       '#group' => 'additional_settings',
     );
     $form['notification']['notification_checkbox'] = array(
       '#type' => 'checkbox',
       '#title' => t('Notifications'),
-      '#default_value' => \Drupal::config('node.settings')->get('notification_checkbox_' . $form['type']['#default_value']) ?: 0,
+      '#default_value' => \Drupal::config('node.settings')
+        ->get('notification_checkbox_' . $form['type']['#default_value']) ?: 0,
     );
     $form['actions']['submit']['#submit'][] = 'hzd_notifications_form_submit';
     $form['actions']['save_continue']['#submit'][] = 'hzd_notifications_form_submit';
@@ -241,6 +269,48 @@ function hzd_notifications_form_submit(&$form, \Drupal\Core\Form\FormStateInterf
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
+function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//echo 132;exit;
+  $current_user = \Drupal::service('current_user');
+  $current_user_roles = $current_user->getRoles();
+  $group = \Drupal::routeMatch()->getParameter('group');
+  if (!is_object($group)) {
+    $group = \Drupal\group\Entity\Group::load($group);
+  }
+  if (isset($group) && \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())
+    || in_array('site_administrator', $current_user_roles)
+  ) {
+    $form['notification'] = array(
+      '#type' => 'details',
+      '#title' => t('Notifications settings'),
+      '#open' => TRUE,
+      // Controls the HTML5 'open' attribute. Defaults to FALSE.
+      '#group' => 'advanced',
+      '#weight' => 33
+    );
+    $form['notification']['node_notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not send notifications for this update.'),
+    );
+    $form['actions']['#weight'] = 34;
+  }
+
+}
+
+function hzd_notifications_preprocess_form_element(&$variables) {
+  $element = &$variables['element'];
+  if (isset($element['#id']) && $element['#id'] == 'edit-path-0-pathauto') {
+    $current_user = \Drupal::service('current_user');
+    $current_user_roles = $current_user->getRoles();
+    if (!in_array('site_administrator', $current_user_roles)) {
+      $variables['description']['content'] = t('Uncheck this to create a custom alias below. Configure URL alias patterns.');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
 function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   //Validate content type.
   $type = $form_state->getFormObject()->getEntity()->getType();
@@ -253,7 +323,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
     if (!isset($group) && isset($node)) {
       if (is_object($node)) {
         $node_id = $node->id();
-      } else {
+      }
+      else {
         $node_id = $node;
       }
       $group_content = CustGroupHelper::getGroupNodeFromNodeId($node_id);
@@ -262,65 +333,106 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         $group_id = $group->id();
         $group = \Drupal\group\Entity\Group::load($group_id);
       }
-    } else {
+    }
+    else {
       if (is_object($group)) {
         $group_id = $group->id();
-      } else {
+      }
+      else {
         $group_id = $group;
         $group = \Drupal\group\Entity\Group::load($group_id);
       }
     }
-    
-    
+
+    /**
+     * @todo Make it configrable to enable configration access
+     */
     if (isset($group_id)) {
-      
       $for_admin_formids = array(
+        'node_page_form',
+        'node_page_edit_form',
+        'node_faqs_form',
+        'node_faqs_edit_form',
+        'node_faqs_gnode-form_form',
         'node_downtimes_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
         'node_type_edit_form',
+        'node_planning_files_edit_form',
+        'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupadmin_formids = array(
+        'node_page_form',
+        'node_page_edit_form',
+        'node_faqs_form',
+        'node_faqs_edit_form',
+        'node_faqs_gnode-form_form',
         'node_downtimes_edit_form',
         'node_deployed_releases_edit_form',
+        'node_planning_files_edit_form',
+        'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupmemeber_formids = array(
         'node_downtimes_edit_form',
       );
-      
+
       if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $for_admin_formids)) {
         $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
+          '#type' => 'fieldset',
+          '#weight' => 99,
+          //'#title' => t('Notifications settings'),
+          //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+          //'#group' => 'advanced',
         );
         $form['notification']['node_notification_checkbox'] = array(
           '#type' => 'checkbox',
           '#title' => t('Do not send notifications for this update.'),
         );
-      } else if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
-        $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
-        );
-        $form['notification']['node_notification_checkbox'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Do not send notifications for this update.'),
-        );
-      } else if ($group->getMember($current_user) && in_array($form_id, $for_groupmemeber_formids)) {
-        $form['notification'] = array(
-          '#type' => 'details',
-          '#title' => t('Notifications settings'),
-          '#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
-          '#group' => 'advanced',
-        );
-        $form['notification']['node_notification_checkbox'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Do not send notifications for this update.'),
-        );
+      }
+      else {
+        if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
+          $form['notification'] = array(
+            '#type' => 'fieldset',
+            '#weight' => 99,
+            //'#title' => t('Notifications settings'),
+            //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+            //'#group' => 'advanced',
+          );
+          $form['notification']['node_notification_checkbox'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Do not send notifications for this update.'),
+          );
+        }
+        else {
+          if (($group->getMember($current_user) && $group->getMember($current_user)
+                ->getGroupContent()
+                ->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)
+          ) {
+            $form['notification'] = array(
+              '#type' => 'fieldset',
+              '#weight' => 99,
+              //'#title' => t('Notifications settings'),
+              //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
+              //'#group' => 'advanced',
+            );
+            $form['notification']['node_notification_checkbox'] = array(
+              '#type' => 'checkbox',
+              '#title' => t('Do not send notifications for this update.'),
+            );
+          }
+        }
       }
     }
   }
@@ -359,16 +471,249 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
 
 
 function hzd_notifications_user_insert($entity) {
-  
+
 //  pr(\Drupal::request()->request->get('groups'));exit;
   $user = $entity->id();
   $data = \Drupal::state()->get('NotificationDefaults');
   $notificationController = new HzdNotifications(\Drupal::routeMatch(), \Drupal::database());
-  $notificationController->isNewUser = true;
+  $notificationController->isNewUser = TRUE;
   $notificationController->setDefaultForQuickInfoNotifications($user, $data['quickinfo']);
   $notificationController->setDefaultForGroupNotifications($user, $data['group']);
   foreach (['downtimes', 'problem', 'release', 'early_warnings'] as $type) {
     $notificationController->setDefaultForServiceTypeNotifications($type, $user, $data[$type]);
   }
 //echo $entity->id();exit;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function hzd_notifications_token_info() {
+  $type = array(
+    'name' => t('Node update status'),
+    'description' => t('Tokens related to node updated status message.'),
+    'needs-data' => 'node',
+  );
+
+  // Core tokens for nodes.
+  $node['nodecreatedupdatedstatus'] = array(
+    'name' => t("Node update status message"),
+    'description' => t('Displays node updte message as created or updated'),
+  );
+
+  $node['group_raw'] = array(
+    'name' => t("Group title"),
+    'description' => t('path aliased group title'),
+  );
+
+  $node['downtime_states'] = array(
+    'name' => t("Downtime States"),
+    'description' => t('Downtime comma seperated states '),
+  );
+
+  $node['downtime_services'] = array(
+    'name' => t("Downtime Services"),
+    'description' => t('Downtime comma seperated services'),
+  );
+  $node['downtime_type'] = array(
+    'name' => t("Downtime Type"),
+    'description' => t('Downtime type (Incident or maintenance)'),
+  );
+  $node['downtime_status'] = array(
+    'name' => t("Downtime Status"),
+    'description' => t('Downtime Status'),
+  );
+
+  $node['content_group_title'] = array(
+    'name' => t("Group content's Group title"),
+    'description' => t('Title of group of the group_content node belongs to'),
+  );
+
+  $node['field_earlywarning_release_title'] = array(
+    'name' => t("Release title"),
+    'description' => t('Release title referenced from field_earlywarning_release'),
+  );
+
+  return array(
+    'types' => array('node' => $type),
+    'tokens' => array('node' => $node),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function hzd_notifications_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $token_service = \Drupal::token();
+
+  $url_options = array('absolute' => TRUE);
+  if (isset($options['langcode'])) {
+    $url_options['language'] = \Drupal::languageManager()
+      ->getLanguage($options['langcode']);
+    $langcode = $options['langcode'];
+  }
+  else {
+    $langcode = LanguageInterface::LANGCODE_DEFAULT;
+  }
+  $replacements = array();
+
+  if ($type == 'node' && !empty($data['node'])) {
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $data['node'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        // Simple key values on the node.
+        case 'nodecreatedupdatedstatus':
+          $replacements[$original] = isset($node->original) ? 'updated' : 'created';
+          break;
+        case 'group_raw':
+          $groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id());
+          if ($groupContent) {
+            $group = $groupContent->getGroup();
+          }
+          else {
+            $group = \Drupal::routeMatch()->getParameter('group');
+          }
+          $label = NULL;
+          if ($group instanceof \Drupal\group\Entity\Group) {
+            $label = $group->label();
+          }
+          $replacements[$original] = \Drupal::service('pathauto.alias_cleaner')
+            ->cleanString($label);;
+          break;
+        //title of group of the group_content node belongs to.
+        case 'content_group_title':
+          $groupContent = CustGroupHelper::getGroupNodeFromNodeId($node->id());
+          if ($groupContent) {
+            $group = $groupContent->getGroup();
+          }
+          else {
+            $group = \Drupal::routeMatch()->getParameter('group');
+          }
+          $label = NULL;
+          if ($group instanceof \Drupal\group\Entity\Group) {
+            $label = $group->label();
+          }
+          $replacements[$original] = $label;
+          break;
+        case 'field_earlywarning_release_title':
+          $nodeId = $node->get('field_earlywarning_release')->value;
+          $release = \Drupal\node\Entity\Node::load($nodeId);
+          $label = NULL;
+          if ($release) {
+            $label = $release->label();
+          }
+          $replacements[$original] = \Drupal::service('pathauto.alias_cleaner')
+            ->cleanString($label);
+          break;
+        case 'downtime_states':
+          $statesQuery = \Drupal::database()->select('downtimes', 'd');
+          $statesQuery->fields('d', ['state_id']);
+          $statesQuery->condition('downtime_id', $node->id());
+          $states = $statesQuery->execute()->fetchField();
+          $states = explode(',', $states);
+          $stateAbbrsQuery = \Drupal::database()->select('states', 's');
+          $stateAbbrsQuery->fields('s', ['abbr']);
+          $stateAbbrsQuery->condition('id', $states, 'IN');
+          $stateAbbrs = $stateAbbrsQuery->execute()->fetchCol();
+
+          $replacements[$original] = implode(',', $stateAbbrs);
+          break;
+        case 'downtime_services':
+          $servicesQuery = \Drupal::database()->select('downtimes', 'd');
+          $servicesQuery->fields('d', ['service_id']);
+          $servicesQuery->condition('downtime_id', $node->id());
+          $services = $servicesQuery->execute()->fetchField();
+          $services = explode(',', $services);
+          $serviceEntities = Node::loadMultiple($services);
+          $servicesLabels = array_map(function ($entity) {
+            return $entity->label();
+          }, $serviceEntities);
+          $replacements[$original] = implode(',', $servicesLabels);
+          break;
+        case 'downtime_type':
+          $downtimeQuery = \Drupal::database()->select('downtimes', 'd');
+          $downtimeQuery->fields('d', ['scheduled_p']);
+          $downtimeQuery->condition('downtime_id', $node->id());
+          $type = $downtimeQuery->execute()->fetchField();
+          $replacements[$original] = $type == 0 ? t('Incident') : t('Maintenance');
+          break;
+        case 'downtime_status':
+          $downtimeQuery = \Drupal::database()->select('downtimes', 'd');
+          $downtimeQuery->fields('d', ['resolved', 'cancelled']);
+          $downtimeQuery->condition('downtime_id', $node->id());
+          $status = $downtimeQuery->execute()->fetchObject();
+          if ($status->cancelled == 1) {
+            $res = t('Cancelled');
+          }
+          elseif ($status->resolved == 1) {
+            $res = t('Resolved');
+          }
+          else {
+            $res = t('Updated');
+          }
+          $replacements[$original] = $res;
+          break;
+      }
+    }
+  }
+
+  if ($type == 'user' && !empty($data['user'])) {
+    /** @var \Drupal\user\Entity\User $user */
+    $user = $data['user'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'user-notification-settings-url-absolute':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          global $base_url;
+          $notif_change_link = $base_url . $url;
+          $replacements[$original] = $notif_change_link;
+          break;
+      
+        case 'user-notification-settings-url-relative':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          $replacements[$original] = $url;
+          break;
+      }
+    }
+  }
+  return $replacements;
+}
+
+/**
+ * Implements hook_token_info_alter().
+ */
+function hzd_notifications_token_info_alter(&$data) {
+  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
+    'name' => t("user notification settings"),
+    'description' => t("The link to change user notification settings absolute url."),
+  ];
+  $data['tokens']['user']['user-notification-settings-url-relative'] = [
+    'name' => t("user notification settings"),
+    'description' => t("The link to change user notification settings relative url."),
+  ];
 }

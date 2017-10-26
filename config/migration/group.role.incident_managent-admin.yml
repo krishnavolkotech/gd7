@@ -1,0 +1,22 @@
+uuid: a63af1b2-600d-4ae0-8bb9-1afb0f2b3c75
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+id: incident_managent-admin
+label: Admin
+weight: -95
+internal: false
+audience: member
+group_type: incident_managent
+permissions_ui: true
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'update own group_membership content'
+  - 'leave group'
+  - 'access group_node overview'

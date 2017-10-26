@@ -1,0 +1,31 @@
+uuid: baf3382d-f0d7-4b7c-8bf3-160467154b5f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_professional_conditions
+    - node.type.quickinfo
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.quickinfo.field_professional_conditions
+field_name: field_professional_conditions
+entity_type: node
+bundle: quickinfo
+label: '2.2 Fachliche / organisatorische Einsatzvoraussetzungen'
+description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -1,0 +1,276 @@
+diff --git a/src/Plugin/migrate/destination/Table.php b/src/Plugin/migrate/destination/Table.php
+new file mode 100755
+index 0000000..64a6e88
+--- /dev/null
++++ b/src/Plugin/migrate/destination/Table.php
+@@ -0,0 +1,128 @@
++<?php
++
++namespace Drupal\migrate_plus\Plugin\migrate\destination;
++
++use Drupal\Core\Database\Connection;
++use Drupal\Core\Database\Database;
++use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
++use Drupal\migrate\MigrateException;
++use Drupal\migrate\MigrateSkipProcessException;
++use Drupal\migrate\Plugin\MigrationInterface;
++use Drupal\migrate\Plugin\migrate\destination\DestinationBase;
++use Drupal\migrate\Row;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++/**
++ * Provides table destination plugin.
++ *
++ * Use this plugin for a table not registered with Drupal Schema API.
++ *
++ * @MigrateDestination(
++ *   id = "table"
++ * )
++ */
++class Table extends DestinationBase implements ContainerFactoryPluginInterface {
++
++  /**
++   * The name of the destination table.
++   *
++   * @var string
++   */
++  protected $tableName;
++
++  /**
++   * IDMap compatible array of id fields.
++   *
++   * @var array
++   */
++  protected $idFields;
++
++  /**
++   * Array of fields present on the destination table.
++   *
++   * @var array
++   */
++  protected $fields;
++
++  /**
++   * The database connection.
++   *
++   * @var \Drupal\Core\Database\Connection
++   */
++  protected $dbConnection;
++
++  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, Connection $connection) {
++    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration);
++    $this->dbConnection = $connection;
++    $this->tableName = $configuration['table_name'];
++    $this->idFields = $configuration['id_fields'];
++    $this->fields = isset($configuration['fields']) ? $configuration['fields'] : [];
++    $this->supportsRollback = TRUE;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
++    $db_key = !empty($configuration['database_key']) ? $configuration['database_key'] : NULL;
++
++    return new static(
++      $configuration,
++      $plugin_id,
++      $plugin_definition,
++      $migration,
++      Database::getConnection('default', $db_key)
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getIds() {
++    if (empty($this->idFields)) {
++      throw new MigrateException('Id fields are required for a table destination');
++    }
++    return $this->idFields;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function fields(MigrationInterface $migration = NULL) {
++    return $this->fields;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function import(Row $row, array $old_destination_id_values = []) {
++    $id = $row->getSourceIdValues();
++    if (count($id) != count($this->idFields)) {
++      throw new MigrateSkipProcessException('All the id fields are required for a table migration.');
++    }
++
++    $values = $row->getDestination();
++
++    if ($this->fields) {
++      $values = array_intersect_key($values, $this->fields);
++    }
++
++    $status = $this->dbConnection->merge($this->tableName)
++      ->key($id)
++      ->fields($values)
++      ->execute();
++
++    return $status ? $id : NULL;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function rollback(array $destination_identifier) {
++    $delete = $this->dbConnection->delete($this->tableName);
++    foreach ($destination_identifier as $field => $value) {
++      $delete->condition($field, $value);
++    }
++    $delete->execute();
++  }
++}
+diff --git a/tests/src/Kernel/MigrateTableTest.php b/tests/src/Kernel/MigrateTableTest.php
+new file mode 100755
+index 0000000..56c8b7a
+--- /dev/null
++++ b/tests/src/Kernel/MigrateTableTest.php
+@@ -0,0 +1,136 @@
++<?php
++
++namespace Drupal\Tests\migrate_plus\Kernel;
++
++use Drupal\Core\Database\Database;
++use Drupal\migrate\MigrateExecutable;
++use Drupal\migrate\Plugin\MigrationInterface;
++use Drupal\Tests\migrate\Kernel\MigrateTestBase;
++
++/**
++ * Tests migration destination table.
++ *
++ * @group migrate
++ */
++class MigrateTableTest extends MigrateTestBase {
++
++  const TABLE_NAME = 'migrate_test_destination_table';
++
++  /**
++   * @var \Drupal\Core\Database\Connection
++   */
++  protected $connection;
++
++  public static $modules = ['migrate_plus'];
++
++  protected function setUp() {
++    parent::setUp();
++
++    $this->connection = Database::getConnection();
++
++    $this->connection->schema()->createTable(static::TABLE_NAME, [
++      'description' => 'Test table',
++      'fields' => [
++        'data' => [
++          'type' => 'varchar',
++          'length' => '32',
++          'not null' => TRUE,
++        ],
++        'data2' => [
++          'type' => 'varchar',
++          'length' => '32',
++          'not null' => TRUE,
++        ],
++        'data3' => [
++          'type' => 'varchar',
++          'length' => '32',
++          'not null' => TRUE,
++        ],
++      ],
++      'primary key' => ['data'],
++    ]);
++  }
++
++  protected function tearDown() {
++    $this->connection->schema()->dropTable(static::TABLE_NAME);
++    parent::tearDown();
++  }
++
++  protected function getTableDestinationMigration() {
++    // Create a minimally valid migration with some source data.
++    $definition = [
++      'id' => 'migration_table_test',
++      'migration_tags' => ['Testing'],
++      'source' => [
++        'plugin' => 'embedded_data',
++        'data_rows' => [
++          ['data' => 'dummy value', 'data2' => 'dummy2 value', 'data3' => 'dummy3 value'],
++          ['data' => 'dummy value2', 'data2' => 'dummy2 value2', 'data3' => 'dummy3 value2'],
++          ['data' => 'dummy value3', 'data2' => 'dummy2 value3', 'data3' => 'dummy3 value3'],
++        ],
++        'ids' => [
++          'data' => ['type' => 'string'],
++        ],
++      ],
++      'destination' => [
++        'plugin' => 'table',
++        'table_name' => static::TABLE_NAME,
++        'id_fields' => ['data' => ['type' => 'string']],
++      ],
++      'process' => [
++        'data' => 'data',
++        'data2' => 'data2',
++        'data3' => 'data3',
++      ],
++    ];
++    return $definition;
++  }
++
++  /**
++   * Tests table destination.
++   */
++  public function testTableDestination() {
++    $migration = \Drupal::service('plugin.manager.migration')->createStubMigration($this->getTableDestinationMigration());
++
++    $executable = new MigrateExecutable($migration, $this);
++    $executable->import();
++
++    $values = $this->connection->select(static::TABLE_NAME)
++      ->fields(static::TABLE_NAME)
++      ->execute()
++      ->fetchAllAssoc('data');
++
++    $this->assertEquals('dummy value', $values['dummy value']->data);
++    $this->assertEquals('dummy2 value', $values['dummy value']->data2);
++    $this->assertEquals('dummy2 value2', $values['dummy value2']->data2);
++    $this->assertEquals('dummy3 value3', $values['dummy value3']->data3);
++    $this->assertEquals(3, count($values));
++  }
++
++  public function testTableRollback() {
++    $this->testTableDestination();
++
++    /** @var MigrationInterface $migration */
++    $migration = \Drupal::service('plugin.manager.migration')->createStubMigration($this->getTableDestinationMigration());
++    $executable = new MigrateExecutable($migration, $this);
++    $executable->import();
++
++    $values = $this->connection->select(static::TABLE_NAME)
++      ->fields(static::TABLE_NAME)
++      ->execute()
++      ->fetchAllAssoc('data');
++
++    $this->assertEquals('dummy value', $values['dummy value']->data);
++    $this->assertEquals(3, count($values));
++
++    // Now rollback.
++    $executable->rollback();
++    $values = $this->connection->select(static::TABLE_NAME)
++      ->fields(static::TABLE_NAME)
++      ->execute()
++      ->fetchAllAssoc('data');
++
++    $this->assertEquals(0, count($values));
++  }
++
++}

@@ -7,13 +7,15 @@ use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatch;
+use Drupal\user\Entity\User;
 use Symfony\Component\Routing\Route;
 use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\Group;
 
 if (!defined('QUICKINFO')) {
     define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
-// define('RELEASE_MANAGEMENT', 32);
+
 
 /**
  * Returns Access grants for Node edit routes.
@@ -46,7 +48,7 @@ class AccessController extends ControllerBase
                 if (array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
                     return AccessResult::allowed();
                 }
-                if ($content) {
+                if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
                     return AccessResult::allowed();
                 } else {
                     return AccessResult::forbidden();
@@ -55,6 +57,20 @@ class AccessController extends ControllerBase
             
             if ($node->getType() == 'downtimes') {
                 return AccessResult::allowed();
+            }
+            if ($node->getType() == 'im_upload_page') {
+                if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+                    return AccessResult::allowed();
+                }
+                $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+                $groupMember = $group->getMember(\Drupal::currentUser());
+                if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+                    $roles = $groupMember->getRoles();
+                    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                        return AccessResult::allowed();
+                    }
+                    return AccessResult::forbidden();
+                }
             }
             //$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
             //    ->fields('gcfd',['gid'])
@@ -70,7 +86,45 @@ class AccessController extends ControllerBase
         }
         return AccessResult::allowed();
     }
-    
+
+    public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if(!empty($node) && !is_object($node)) {
+            $node = \Drupal\node\Entity\Node::load($node);
+        }
+        if (is_object($node)) {
+            if ($node->getType() == 'quickinfo' && $node->isPublished()) {
+                return AccessResult::forbidden();
+            }
+            if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
+                return AccessResult::allowed();
+            }
+        }
+        return AccessResult::allowed();   
+    }
+
+    public function groupAdministratorValidation(Route $route, RouteMatch $route_match, AccountInterface $user) {
+        // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
+       // $group_content = $route_match->getRawParameter('group_content');
+
+        $user = \Drupal::currentUser();
+//        if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+//            return AccessResult::allowed();
+//        }
+        if ($group = $route_match->getRawParameter('group')) {
+            if (!is_object($group)) {
+                $group = Group::load($group);
+            }
+            $groupMembersCount = count($group->getMembers($group->bundle() . '-admin'));
+            if($groupMembersCount < 2) {
+                drupal_set_message(t('You cannot remove admin for this group. There should be at least one admin in the group.'), 'error');
+                return AccessResult::forbidden();
+            }
+        }
+        //return AccessResult::neutral();
+        return AccessResult::allowed();
+    }
+
     /**
      * By default all user can access all node view page
      * quickinfo group member of rz-schnellinfos and administrator can only access the quickinfo node view pages
@@ -97,26 +151,51 @@ class AccessController extends ControllerBase
                 $groupQuickInfoContentEntity = GroupContent::load(reset($groupQuickInfoContent));
                 $group = $groupQuickInfoContentEntity->getGroup();
                 $content = $group->getMember($user);
-                if (!$content) {
+                $releaseGroup = Group::load(RELEASE_MANAGEMENT);
+                $releaseMember = $releaseGroup->getMember($user);
+//                pr($releaseMember->id());exit;
+                if (!$content && !$releaseMember) {
                     return AccessResult::forbidden();
                 } else {
-                    if (!$node->isPublished()) {
+                    if (!$node->isPublished() && $content->getGroupContent()->get('request_status')->value == 1) {
                         return AccessResult::allowed();
                     }
                 }
             }
+        }elseif($node->getType() == 'downtimes'){
+          return AccessResult::allowed();
+        }elseif($node->getType() == 'im_upload_page'){
+          if($user->isAnonymous()){
+            return AccessResult::forbidden();
+          }
         }
+//        echo 12312;exit;
         return AccessResult::allowed();
     }
     
-    function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    
+    function userEditAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return AccessResult::allowed();
+    }
+
+    if ($route_match->getParameter('user')->id() == \Drupal::currentUser()->id()) {
+      return AccessResult::allowed();
+    }
+    else {
+      return AccessResult::forbidden();
+    }
+  }
+
+  function createMaintenanceAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
         if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
             return AccessResult::allowed();
         }
         $loadedGroup = $route_match->getParameter('group');
         if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
             $content = $group->getMember($user);
-            if ($content && $loadedGroup->id() == INCEDENT_MANAGEMENT) {
+            $incidentGroupMember = \Drupal\group\Entity\group::load(INCIDENT_MANAGEMENT)->getMember($user);
+            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1 && $incidentGroupMember && $incidentGroupMember->getGroupContent()->get('request_status')->value == 1) {
                 return AccessResult::allowed();
             } else {
                 return AccessResult::forbidden();
@@ -137,7 +216,7 @@ class AccessController extends ControllerBase
         return 'Members of ' . $this->t($group->label());
     }
     
-    function groupAdminAccess() {
+    static function groupAdminAccess() {
         $user = \Drupal::currentUser();
         if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
             return AccessResult::allowed();
@@ -147,7 +226,7 @@ class AccessController extends ControllerBase
                 $group = \Drupal\group\Entity\Group::load($group);
             }
             $groupMember = $group->getMember(\Drupal::currentUser());
-            if ($groupMember) {
+            if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
                 $roles = $groupMember->getRoles();
                 if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                     return AccessResult::allowed();
@@ -160,8 +239,19 @@ class AccessController extends ControllerBase
         return AccessResult::neutral();
     }
     
-    function isGroupAdminAccess() {
+    function userCreateAccess() {
         $user = \Drupal::currentUser();
+        if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+            return AccessResult::allowed();
+        }
+        return AccessResult::forbidden();
+    }
+    
+    function isGroupAdminAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+      if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+        return AccessResult::allowed();
+      }
+//        $user = \Drupal::currentUser();
         $uid = $user->id();
         $user_role = $user->getRoles();
         if (!in_array(SITE_ADMIN_ROLE, $user_role)) {
@@ -173,4 +263,35 @@ class AccessController extends ControllerBase
         return AccessResult::allowed();
     }
     
+    public function groupContentAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $groupContent = $route_match->getParameter('group_content');
+      $group = $route_match->getParameter('group');
+      $userEntity = User::load($user->id());
+      if($groupContent->getEntity()->getEntityTypeId() == 'node'){
+        return AccessResult::forbiddenIf(!$userEntity->hasRole('administrator'));
+      }
+      // @var $group = Group
+      return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
+    }
+    
+    public function deployedReleasesAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+      $group = $route_match->getParameter('group');
+      $member = $group->getMember($user);
+      $releaseManagementGroup = Group::load(RELEASE_MANAGEMENT);
+      $releaseManagementMember = $releaseManagementGroup->getMember($user);
+      if($member && $releaseManagementMember){
+        return AccessResult::allowed();
+      }
+      return AccessResult::neutral();
+    }
+    
+    function pendingMembersAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
+//        exit;
+        $group = $route_match->getParameter('group');
+        $groupTypeId = $group->getGroupType()->id();
+        if(in_array($groupTypeId, ['moderate','moderate_private'])){
+            return AccessResult::allowed();
+        }
+        return AccessResult::forbidden();
+    }
 }

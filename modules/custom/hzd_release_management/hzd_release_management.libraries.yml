@@ -6,7 +6,7 @@ hzd_release_management:
   js:
     js/jquery.datePicker.js: {}
 #    js/jquery.tablesorter.min.js: {}
-    js/jquery.tablesorter.js: {}
+#    js/jquery.tablesorter.js: {}
     js/release_management.js: {}
     js/jquery.ui.datepicker-de.js: {}
 #
@@ -33,7 +33,7 @@ deployed_releases:
     js/deployed_releases.js: {}
     js/jquery.datePicker.js: {}
 #    js/jquery.tablesorter.min.js: {}
-    js/jquery.tablesorter.js: {}
+#    js/jquery.tablesorter.js: {}
     js/jquery.ui.datepicker-de.js: {}
 #
   dependencies:

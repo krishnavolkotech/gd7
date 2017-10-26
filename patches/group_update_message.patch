@@ -1,0 +1,15 @@
+diff --git a/modules/contrib/group/src/Entity/Form/GroupForm.php b/modules/contrib/group/src/Entity/Form/GroupForm.php
+index 7e9db06..5b582fa 100644
+--- a/modules/contrib/group/src/Entity/Form/GroupForm.php
++++ b/modules/contrib/group/src/Entity/Form/GroupForm.php
+@@ -89,8 +89,8 @@ public function save(array $form, FormStateInterface $form_state) {
+     ];
+ 
+     drupal_set_message($this->operation == 'edit'
+-      ? $this->t('@type %title has been updated.', $t_args)
+-      : $this->t('@type %title has been created.', $t_args)
++      ? $this->t('%title has been updated.', $t_args)
++      : $this->t('%title has been created.', $t_args)
+     );
+ 
+     $form_state->setRedirect('entity.group.canonical', ['group' => $this->entity->id()]);

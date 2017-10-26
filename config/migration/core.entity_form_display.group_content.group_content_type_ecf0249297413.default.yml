@@ -1,0 +1,32 @@
+uuid: 19d7f83a-f670-42e5-b709-9c2c42138586
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.group_content_type_ecf0249297413
+id: group_content.group_content_type_ecf0249297413.default
+targetEntityType: group_content
+bundle: group_content_type_ecf0249297413
+mode: default
+content:
+  entity_id:
+    type: entity_reference_autocomplete
+    weight: 1
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
+hidden:
+  path: true
+  uid: true

@@ -1,0 +1,32 @@
+uuid: b8058408-5500-484b-9118-2cb56511a882
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - cust_group
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: bluebaranonymousblock
+theme: hzd
+region: navigation_collapsible
+weight: -27
+provider: null
+plugin: blue_bar_anonymous_block
+settings:
+  id: blue_bar_anonymous_block
+  label: 'Blue Bar Anonymous block'
+  provider: cust_group
+  label_display: '0'
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      anonymous: anonymous
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

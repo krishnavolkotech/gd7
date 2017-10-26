@@ -12,21 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Dompdf\Adapter\CPDF;
 
 /**
+ * A Entity Print plugin for the DomPdf library.
+ *
  * @PrintEngine(
  *   id = "dompdf",
  *   label = @Translation("Dompdf"),
  *   export_type = "pdf"
  * )
- *
- * To use this implementation you will need the DomPDF library, simply run
- *
- * @code
- *     composer require "dompdf/dompdf 0.7.0-beta3"
- * @endcode
  */
 class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
 
   /**
+   * The Dompdf instance.
+   *
    * @var \Dompdf\Dompdf
    */
   protected $dompdf;
@@ -76,7 +74,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public static function getInstallationInstructions() {
-    return t('Please install with: @command', ['@command' => 'composer require "dompdf/dompdf 0.7.0-beta3"']);
+    return t('Please install with: @command', ['@command' => 'composer require "dompdf/dompdf 0.8.0"']);
   }
 
   /**
@@ -101,7 +99,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
       '#title' => $this->t('Enable HTML5 Parser'),
       '#type' => 'checkbox',
       '#default_value' => $this->configuration['enable_html5_parser'],
-      '#description' => $this->t('Note, this library doesn\'t work without this option enabled.'),
+      '#description' => $this->t("Note, this library doesn't work without this option enabled."),
     ];
     $form['enable_remote'] = [
       '#title' => $this->t('Enable Remote URLs'),
@@ -124,13 +122,13 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
       '#title' => $this->t('Verify Peer'),
       '#type' => 'checkbox',
       '#default_value' => $this->configuration['verify_peer'],
-      '#description' => $this->t('Verify an SSL Peer\'s certificate. For development only, do not disable this in production. See https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html'),
+      '#description' => $this->t("Verify an SSL Peer's certificate. For development only, do not disable this in production. See https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html"),
     ];
     $form['ssl_configuration']['verify_peer_name'] = [
       '#title' => $this->t('Verify Peer Name'),
       '#type' => 'checkbox',
       '#default_value' => $this->configuration['verify_peer_name'],
-      '#description' => $this->t('Verify an SSL Peer\'s certificate. For development only, do not disable this in production. See https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html'),
+      '#description' => $this->t("Verify an SSL Peer's certificate. For development only, do not disable this in production. See https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html"),
     ];
 
     return $form;
@@ -149,7 +147,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function send($filename = NULL) {
+  public function send($filename, $force_download = TRUE) {
     $this->doRender();
 
     // Dompdf doesn't have a return value for send so just check the error
@@ -164,20 +162,21 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
 
     // If the filename received here is NULL, force open in the browser
     // otherwise attempt to have it downloaded.
-    $this->dompdf->stream($filename, ['Attachment' => (bool) $filename]);
+    $this->dompdf->stream($filename, ['Attachment' => $force_download]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getBlob() {
+    $this->doRender();
     return $this->dompdf->output();
   }
 
   /**
    * Tell Dompdf to render the HTML into a PDF.
    */
-  public function doRender() {
+  protected function doRender() {
     if (!$this->hasRendered) {
       $this->dompdf->render();
       $this->hasRendered = TRUE;
@@ -236,7 +235,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function getPrintObject(){
+  public function getPrintObject() {
     return $this->dompdf;
   }
 

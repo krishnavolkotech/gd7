@@ -1,0 +1,28 @@
+uuid: e990f631-d46a-4bed-96a3-cc4364d830fc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_dependent_downtimeservices
+    - node.type.service_profile
+    - node.type.services
+id: node.service_profile.field_dependent_downtimeservices
+field_name: field_dependent_downtimeservices
+entity_type: node
+bundle: service_profile
+label: 'Dependent Downtimeservices'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      services: services
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

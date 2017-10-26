@@ -27,6 +27,7 @@ class RouteSubscriber extends RouteSubscriberBase {
 
     if ($route = $collection->get('entity.node.canonical')) {
 //      $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodeviewAccess");
+      $route->setDefault('_title_callback', "\Drupal\cust_group\Controller\CustNodeController::nodeTitle");
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::downtimeAcces");
     }
 
@@ -39,49 +40,93 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
 
     // Change render content '/group/{group}/node/{group_node_id}' to '/node/{node}'.// as previous one just renders node title as content
-    if ($route = $collection->get('entity.group_content.group_node__deployed_releases.canonical')) {
-      if ($route->getPath() == '/group/{group}/node/{group_content}') {
+/*    if ($route = $collection->get('entity.group_content.canonical')) {
+//      $route->setPath('/group/{group}/node/{group_content}');
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupContentView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupContentTitle");
-      }
-    }
-    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
+        $route->setRequirement('group_content', "^[0-9]*$");
+//      }
+    }*/
+/*    if ($route = $collection->get('entity.group_content.group_membership.canonical')) {
       if ($route->getPath() == '/group/{group}/members/{group_content}') {
         $route->setDefault('_controller', '\Drupal\cust_group\Controller\CustNodeController::groupMemberView');
         $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::groupMemberTitle");
       }
-    }
+    }*/
     if ($route = $collection->get('entity.node.edit_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
-    if ($route = $collection->get('entity.group_content.group_membership.collection')) {
-      $route->setRequirement('_access', 'FALSE');
+
+    if ($route = $collection->get('entity.node.version_history')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    
+    if ($route = $collection->get('node.revision_revert_confirm')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    if ($route = $collection->get('entity.node.revision')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
+    }
+    
+    if ($route = $collection->get('entity.group_content.delete_form')) {
+        $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdministratorValidation');
+    }
+
+    if ($route = $collection->get('entity.group_content.collection')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('entity.group_content.create_page')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('entity.group_content.group_node_add_page')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('entity.group_content.group_node_relate_page')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('entity.group_content.edit_form')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentAccess');
+    }
+    if ($route = $collection->get('entity.group_content.delete_form')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentAccess');
+    }
+    if ($route = $collection->get('view.group_members.page_1')) {
+      $route->setRequirement('_role', 'administrator');
+    }
+    if ($route = $collection->get('forum.index')) {
+      $route->setRequirement('_role', 'administrator');
     }
     if ($route = $collection->get('entity.group_content.group_node.collection')) {
       // group/{group}/node is the default group content provided by contrib group module we dont need that list any more so just hiding it
-      $route->setRequirement('_access', 'FALSE');
+      $route->setRequirement('_role', 'administrator');
     }
-    if ($route = $collection->get('entity.group_content.group_membership.pending_collection')) {
-      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdminAccess');
+    if ($route = $collection->get('view.hzd_group_members.pending')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::pendingMembersAccess');
     }
-    foreach ($collection as $key => $route) {
+    //We have all acces defined seperatly using permissions and custom in few place. I feel this causes issues at sometimes.
+/*    foreach ($collection as $key => $route) {
       if (strpos($route->getPath(), '/group/{') === 0 && !in_array($key, ['entity.group_content.group_membership.join_form', 'entity.group.canonical', 'entity.group_content.group_membership.request_membership_form'])) {
-        /*if (in_array($key, $this->returnGroupViews())) {
-          //as views from UI has path of kind /group/{arg_0}/address/{arg_1}
-          $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupViewsAccess');
-        }*/
         if (!$route->getRequirement('_custom_access'))
           $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess');
       }
-    }
-    if ($route = $collection->get('view.group_members.page_1')) {
+    }*/
+/*    if ($route = $collection->get('view.group_members.page_1')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\AccessController::groupTitle");
-    }
+    }*/
 
     // Overriding the controller for front page contrib module
-    if ($route = $collection->get('front_page.front')) {
+    if ($route = $collection->get('hzd_customizations.front')) {
       $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
     }
+    
+    if (($route = $collection->get('user.admin_create')) || ($route = $collection->get('entity.user.collection'))) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::userCreateAccess');
+    }
+    if ($route = $collection->get('entity.group_content.add_form')) {
+      $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::GroupAddMemberCallback");
+    }
+    
+    
   }
 
   //retuns the views related to groups created from UI

@@ -1,0 +1,18 @@
+uuid: f8914ecc-c38d-429c-91d5-4d4c71e5f840
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.release
+id: node.release.title
+field_name: title
+entity_type: node
+bundle: release
+label: Title
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

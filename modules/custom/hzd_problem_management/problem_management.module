@@ -41,8 +41,9 @@ function problem_management_mail($key, &$message, $params = array()) {
 // Default cron-function, configurable through /admin/config/system/cron
 
 function problem_management_cron() {
-  $readExcel = new Drupal\problem_management\Controller\ReadexcelController();
-  $readExcel->read_problem_csv();
+  //Disabled as we are going to run through crontab
+/*  $readExcel = new Drupal\problem_management\Controller\ReadexcelController();
+  $readExcel->read_problem_csv();*/
 }
 
 // Define custom cron functions.
@@ -137,3 +138,64 @@ function get_group_id() {
 ////    $order = $query->getOrderBy('node__field_processing.field_processing_value','desc');
 //    debug($query);
 //}
+
+/**
+ * Implements hook_schema().
+ */
+function problem_management_schema() {
+  $schema = [];
+  $schema['group_problems_view'] = [
+    'description' => 'Table for Problems and groups mappings',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'service_id' => array(
+        'type' => 'int',
+        'length' => 11,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+
+  $schema['problem_import_history'] = array(
+    'description' => 'Storing problem import history information.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Storing planning notification id value.',
+        'type' => 'serial',
+        'not null' => FALSE,
+        'unsigned' => TRUE,
+      ),
+      'problem_date' => array(
+        'description' => 'Storing problem date value.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'import_status' => array(
+        'description' => 'Storing import status value.',
+        'type' => 'varchar',
+        'length' => 32,
+        'default' => '',
+      ),
+      'error_message' => array(
+        'description' => 'Storing import error message.',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+  
+  return $schema;
+}

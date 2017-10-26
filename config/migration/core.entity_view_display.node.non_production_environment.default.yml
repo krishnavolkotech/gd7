@@ -1,0 +1,73 @@
+uuid: e89e6180-5b89-4142-be68-22db1459cee1
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - field.field.node.non_production_environment.comment
+    - field.field.node.non_production_environment.field_non_production_state
+    - field.field.node.non_production_environment.field_order
+    - field.field.node.non_production_environment.upload
+    - node.type.non_production_environment
+  module:
+    - comment
+    - entity_print
+    - file
+    - options
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.non_production_environment.default
+targetEntityType: node
+bundle: non_production_environment
+mode: default
+content:
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_non_production_state:
+    label: above
+    weight: -4
+    type: list_key
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_order:
+    weight: 102
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 101
+    third_party_settings: {  }
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

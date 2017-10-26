@@ -4,7 +4,7 @@ problem_management:
 #    theme:
 #      css/problem_management.css: {}
   js:
-    js/jquery.tablesorter.js: {}
+#    js/jquery.tablesorter.js: {}
     js/problem_management.js: {}
     js/user_login_focus.js: {}
   dependencies:

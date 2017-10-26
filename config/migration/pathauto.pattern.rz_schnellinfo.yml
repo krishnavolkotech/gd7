@@ -1,0 +1,34 @@
+uuid: 6e56a0ab-088c-4ee6-89ff-310a2be02721
+langcode: de
+status: true
+dependencies:
+  module:
+    - language
+    - node
+id: rz_schnellinfo
+label: RZ-Schnellinfo
+type: 'canonical_entities:node'
+pattern: 'release-management/rz-schnellinfos/[node:field_unique_id]'
+selection_criteria:
+  ecedd22c-72d1-4b45-9ebb-ec01373f50fc:
+    id: node_type
+    bundles:
+      quickinfo: quickinfo
+    negate: false
+    context_mapping:
+      node: node
+    uuid: ecedd22c-72d1-4b45-9ebb-ec01373f50fc
+  64748674-7637-4669-9bc6-e80f4d6b1e34:
+    id: language
+    langcodes:
+      de: de
+      en: en
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: 64748674-7637-4669-9bc6-e80f4d6b1e34
+selection_logic: and
+weight: -10
+relationships:
+  'node:langcode:language':
+    label: Sprache

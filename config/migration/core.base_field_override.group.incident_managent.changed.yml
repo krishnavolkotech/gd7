@@ -1,0 +1,18 @@
+uuid: 51655e10-8f25-4c06-a021-db5830703a99
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+id: group.incident_managent.changed
+field_name: changed
+entity_type: group
+bundle: incident_managent
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

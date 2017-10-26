@@ -1,0 +1,16 @@
+uuid: a10d0dd3-b07a-4b88-823d-250cce28a358
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.moderate-group_node-event
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.moderate-group_node-event
+target_entity_type_id: group_content
+target_bundle: moderate-group_node-event
+default_langcode: site_default
+language_alterable: false

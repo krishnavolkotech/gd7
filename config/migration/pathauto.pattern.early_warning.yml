@@ -1,0 +1,22 @@
+uuid: d2f183b3-6dfb-428c-b3ae-430fe8c74769
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: early_warning
+label: 'Early Warning'
+type: 'canonical_entities:node'
+pattern: 'release-management/early-warnings/[node:field_earlywarning_release_title]/[node:title]'
+selection_criteria:
+  e1561cd9-9c85-4a2a-bc75-96af1628f816:
+    id: node_type
+    bundles:
+      early_warnings: early_warnings
+    negate: false
+    context_mapping:
+      node: node
+    uuid: e1561cd9-9c85-4a2a-bc75-96af1628f816
+selection_logic: and
+weight: -8
+relationships: {  }

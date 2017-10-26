@@ -1,0 +1,33 @@
+uuid: bfc11f2f-fae8-41cb-857a-e456e7c47f83
+langcode: de
+status: true
+dependencies:
+  module:
+    - language
+    - node
+id: release
+label: Release
+type: 'canonical_entities:node'
+pattern: 'release-management/release/[node:nid]'
+selection_criteria:
+  af5639df-638d-4a0b-804d-78fd2af4dc81:
+    id: node_type
+    bundles:
+      release: release
+    negate: false
+    context_mapping:
+      node: node
+    uuid: af5639df-638d-4a0b-804d-78fd2af4dc81
+  ece3fb80-b5e0-4356-82bc-6e75951d2e67:
+    id: language
+    langcodes:
+      de: de
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: ece3fb80-b5e0-4356-82bc-6e75951d2e67
+selection_logic: and
+weight: -10
+relationships:
+  'node:langcode:language':
+    label: Sprache

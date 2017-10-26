@@ -1,0 +1,64 @@
+uuid: 4601c451-162b-4737-ab6a-a1e87ead9137
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.mail
+    - field.field.node.faqs.body
+    - field.field.node.faqs.comment
+    - field.field.node.faqs.faq_kategorie
+    - field.field.node.faqs.faq_seite
+    - field.field.node.faqs.upload
+    - node.type.faqs
+  module:
+    - file
+    - text
+    - user
+id: node.faqs.mail
+targetEntityType: node
+bundle: faqs
+mode: mail
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  faq_kategorie:
+    label: inline
+    type: entity_reference_label
+    weight: 1
+    settings:
+      link: false
+    third_party_settings: {  }
+    region: content
+  faq_seite:
+    label: inline
+    type: entity_reference_label
+    weight: 0
+    settings:
+      link: false
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 4
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

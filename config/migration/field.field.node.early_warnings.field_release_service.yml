@@ -1,0 +1,21 @@
+uuid: febab402-0451-4126-bc94-67dbdc332ca5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_release_service
+    - node.type.early_warnings
+  module:
+    - options
+id: node.early_warnings.field_release_service
+field_name: field_release_service
+entity_type: node
+bundle: early_warnings
+label: Service
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

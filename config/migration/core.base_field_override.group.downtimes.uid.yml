@@ -1,0 +1,20 @@
+uuid: 46d9af93-fb00-44ec-b2f9-f4df10d51ffc
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: group.downtimes.uid
+field_name: uid
+entity_type: group
+bundle: downtimes
+label: 'Group creator'
+description: 'The username of the group creator.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: 'Drupal\group\Entity\Group::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

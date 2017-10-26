@@ -1,0 +1,51 @@
+uuid: a3e74241-546d-480a-b711-57604f60d274
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.moderate.field_description
+    - field.field.group.moderate.field_einfuehrung
+    - field.field.group.moderate.field_forum_containers
+    - field.field.group.moderate.field_group_body
+    - field.field.group.moderate.field_old_reference
+    - group.type.moderate
+  module:
+    - text
+id: group.moderate.default
+targetEntityType: group
+bundle: moderate
+mode: default
+content:
+  field_einfuehrung:
+    weight: -1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_group_body:
+    weight: -2
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  label:
+    label: hidden
+    type: string
+    weight: -5
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  changed: true
+  created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_description: true
+  field_forum_containers: true
+  field_old_reference: true
+  langcode: true
+  uid: true

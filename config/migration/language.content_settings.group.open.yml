@@ -1,0 +1,16 @@
+uuid: 24fba802-cc2e-41be-87cb-c2baef0ca14b
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group.open
+target_entity_type_id: group
+target_bundle: open
+default_langcode: site_default
+language_alterable: false

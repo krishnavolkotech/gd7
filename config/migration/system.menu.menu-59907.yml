@@ -1,0 +1,8 @@
+uuid: 9394debb-d126-4a12-a5f0-7cd8b6483291
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59907
+label: 'DaSi MÜSt'
+description: 'DaSi MÜSt'
+locked: false

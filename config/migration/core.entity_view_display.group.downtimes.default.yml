@@ -1,0 +1,56 @@
+uuid: 8ed2737b-a001-4fbe-bf43-b6286aa91171
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.downtimes.field_description
+    - field.field.group.downtimes.field_group_body
+    - field.field.group.downtimes.field_old_reference
+    - group.type.downtimes
+  module:
+    - text
+id: group.downtimes.default
+targetEntityType: group
+bundle: downtimes
+mode: default
+content:
+  field_description:
+    weight: -3
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_group_body:
+    weight: -2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_old_reference:
+    weight: -4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  label:
+    label: hidden
+    type: string
+    weight: -5
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  changed: true
+  created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  uid: true

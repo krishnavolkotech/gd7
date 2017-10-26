@@ -1,0 +1,9 @@
+uuid: fbd50905-630e-4192-ac1b-c29ca9b384fc
+langcode: de
+status: true
+dependencies: {  }
+name: FAQ-Kategorie
+vid: faq_kategorie
+description: 'Kategorie, zu der diese Frage gehört'
+hierarchy: 0
+weight: 0

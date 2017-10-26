@@ -1,0 +1,40 @@
+uuid: 0e32f7cd-98d5-4871-b57a-fe8cf7f181b0
+langcode: de
+status: true
+dependencies:
+  config:
+    - views.view.groups_faq
+  module:
+    - block_class
+    - block_visibility_groups
+    - system
+    - views
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: views_block__groups_faq_block_1
+theme: hzd
+region: content
+weight: -24
+provider: null
+plugin: 'views_block:groups_faq-block_1'
+settings:
+  id: 'views_block:groups_faq-block_1'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+  items_per_page: '40'
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: '*/taxonomy/term/*'
+    negate: false
+    context_mapping: {  }

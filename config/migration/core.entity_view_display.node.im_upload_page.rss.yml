@@ -1,0 +1,41 @@
+uuid: 0e0f177b-1a11-4675-8b85-1344300c91b4
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.rss
+    - field.field.node.im_upload_page.body
+    - field.field.node.im_upload_page.comment
+    - field.field.node.im_upload_page.field_im_upload_page_files
+    - field.field.node.im_upload_page.field_state
+    - field.field.node.im_upload_page.upload
+    - node.type.im_upload_page
+  module:
+    - file
+    - user
+id: node.im_upload_page.rss
+targetEntityType: node
+bundle: im_upload_page
+mode: rss
+content:
+  field_im_upload_page_files:
+    label: above
+    weight: 31
+    type: file_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  body: true
+  comment: true
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_state: true
+  langcode: true
+  upload: true

@@ -7,3 +7,7 @@ services:
     class: Drupal\downtimes\NodeEditBreadcrumbBuilder
     tags:
       - { name: breadcrumb_builder, priority: 1011 }
+  downtimes.group_member_add:
+    class: Drupal\downtimes\GroupMemberAddBreadcrumbBuilder
+    tags:
+      - { name: breadcrumb_builder, priority: 1012 }

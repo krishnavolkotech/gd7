@@ -1,0 +1,16 @@
+uuid: e6c985d4-d1e8-45f6-88c9-acd3f07800ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.deployed_releases
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: node.deployed_releases
+target_entity_type_id: node
+target_bundle: deployed_releases
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,14 @@
+uuid: 5f921bb6-fb45-4624-ac8f-807821abb1fa
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.quick_info
+id: quick_info-outsider
+label: Outsider
+weight: -101
+internal: true
+audience: outsider
+group_type: quick_info
+permissions_ui: true
+permissions: {  }

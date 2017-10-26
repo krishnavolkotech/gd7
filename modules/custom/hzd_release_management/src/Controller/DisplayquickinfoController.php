@@ -10,9 +10,7 @@ use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 /**
  *
  */
@@ -39,7 +37,7 @@ class DisplayquickinfoController extends ControllerBase {
         //    'locale.libraries/translations',
         //    'locale.libraries/drupal.locale.datepicker',
             'hzd_release_management/hzd_release_management',
-            'hzd_customizations/hzd_customizations',
+//            'hzd_customizations/hzd_customizations',
            // 'hzd_release_management/hzd_release_management_sort',
           //  'downtimes/downtimes',
           );
@@ -90,7 +88,7 @@ class DisplayquickinfoController extends ControllerBase {
     }
     $group = Group::load($group_id);
     $content = $group->getMember(\Drupal::currentUser());
-    if ($content) {
+    if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
       return TRUE;
     }
     return FALSE;

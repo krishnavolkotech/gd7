@@ -1,0 +1,2474 @@
+From 0da19526e0c32c2b6156c16f7fa248c55653102a Mon Sep 17 00:00:00 2001
+From: clemenstolboom <clemenstolboom@125814.no-reply.drupal.org>
+Date: Tue, 7 Feb 2017 14:24:48 +0100
+Subject: [PATCH] Issue #2182095 by clemens.tolboom, GoZ: Fix Tour UI to work
+ on latest core
+
+---
+ .../Plugin/tour/tip/TipPluginTextExtended.php      | 207 --------------
+ lib/Drupal/tour_ui/Routing/TourUIController.php    | 135 ---------
+ lib/Drupal/tour_ui/TourDeleteForm.php              |  62 ----
+ lib/Drupal/tour_ui/TourFormController.php          | 258 -----------------
+ lib/Drupal/tour_ui/TourListController.php          |  87 ------
+ lib/Drupal/tour_ui/TourTipDeleteForm.php           |  82 ------
+ lib/Drupal/tour_ui/TourTipFormController.php       |  92 ------
+ lib/Drupal/tour_ui/TourUiBundle.php                |  27 --
+ src/Controller/TourTipController.php               | 127 +++++++++
+ src/Form/TourDeleteForm.php                        |  19 ++
+ src/Form/TourForm.php                              | 313 +++++++++++++++++++++
+ src/Form/TourTipDeleteForm.php                     | 116 ++++++++
+ src/Form/TourTipForm.php                           | 186 ++++++++++++
+ src/Plugin/tour_ui/tip/TipPluginTextExtended.php   | 210 ++++++++++++++
+ {lib/Drupal/tour_ui => src}/Tests/TourUITest.php   |   0
+ src/TourAccessControlHandler.php                   |  25 ++
+ src/TourListBuilder.php                            | 122 ++++++++
+ tour_ui.links.action.yml                           |   5 +
+ tour_ui.links.menu.yml                             |   5 +
+ tour_ui.module                                     | 118 +-------
+ tour_ui.permissions.yml                            |   3 +
+ tour_ui.routing.yml                                |  34 ++-
+ tour_ui.services.yml                               |   5 -
+ 23 files changed, 1166 insertions(+), 1072 deletions(-)
+ delete mode 100644 lib/Drupal/tour_ui/Plugin/tour/tip/TipPluginTextExtended.php
+ delete mode 100644 lib/Drupal/tour_ui/Routing/TourUIController.php
+ delete mode 100644 lib/Drupal/tour_ui/TourDeleteForm.php
+ delete mode 100644 lib/Drupal/tour_ui/TourFormController.php
+ delete mode 100644 lib/Drupal/tour_ui/TourListController.php
+ delete mode 100644 lib/Drupal/tour_ui/TourTipDeleteForm.php
+ delete mode 100644 lib/Drupal/tour_ui/TourTipFormController.php
+ delete mode 100644 lib/Drupal/tour_ui/TourUiBundle.php
+ create mode 100644 src/Controller/TourTipController.php
+ create mode 100644 src/Form/TourDeleteForm.php
+ create mode 100644 src/Form/TourForm.php
+ create mode 100644 src/Form/TourTipDeleteForm.php
+ create mode 100644 src/Form/TourTipForm.php
+ create mode 100644 src/Plugin/tour_ui/tip/TipPluginTextExtended.php
+ rename {lib/Drupal/tour_ui => src}/Tests/TourUITest.php (100%)
+ create mode 100644 src/TourAccessControlHandler.php
+ create mode 100644 src/TourListBuilder.php
+ create mode 100644 tour_ui.links.action.yml
+ create mode 100644 tour_ui.links.menu.yml
+ create mode 100644 tour_ui.permissions.yml
+ delete mode 100644 tour_ui.services.yml
+
+diff --git a/lib/Drupal/tour_ui/Plugin/tour/tip/TipPluginTextExtended.php b/lib/Drupal/tour_ui/Plugin/tour/tip/TipPluginTextExtended.php
+deleted file mode 100644
+index e65b24a..0000000
+--- a/lib/Drupal/tour_ui/Plugin/tour/tip/TipPluginTextExtended.php
++++ /dev/null
+@@ -1,207 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\Plugin\tour\tip\TipPluginTextExtended.
+- */
+-
+-namespace Drupal\tour_ui\Plugin\tour\tip;
+-
+-use Drupal\Core\Annotation\Translation;
+-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+-use Drupal\Core\Utility\Token;
+-use Drupal\tour\Annotation\Tip;
+-use Drupal\tour\TipPluginBase;
+-use Drupal\tour\Plugin\tour\tip\TipPluginText;
+-use Symfony\Component\DependencyInjection\ContainerInterface;
+-  
+-/**
+- * Displays some text as a tip.
+- *
+- * @Tip(
+- *   id = "text_extended",
+- *   title = @Translation("Text")
+- * )
+- */
+-class TipPluginTextExtended extends TipPluginText {
+-
+-  /**
+-   * Overrides \Drupal\tour\Plugin\tour\tour\TourPluginBase::export();
+-   */
+-  public function export() {
+-    $names = array(
+-      'id',
+-      'plugin',
+-      'label',
+-      'weight',
+-      'attributes',
+-      'body',
+-      'location',
+-    );
+-    foreach ($names as $name) {
+-      $properties[$name] = $this->get($name);
+-    }
+-    return $properties;
+-  }
+-
+-  /**
+-   * Overrides \Drupal\tour\Plugin\tour\tour\TourPluginInterface::optionsForm().
+-   */
+-  public function optionsForm() {
+-    $form = array();
+-    $id = $this->get('id');
+-    $form['label'] = array(
+-      '#type' => 'textfield',
+-      '#title' => t('Label'),
+-      '#required' => TRUE,
+-      '#default_value' => $this->get('label'),
+-    );
+-    $form['id'] = array(
+-      '#type' => 'machine_name',
+-      '#machine_name' => array(
+-        'exists' => '_tour_load',
+-        'replace_pattern' => '[^a-z0-9-]+',
+-        'replace' => '-',
+-      ),
+-      '#default_value' => $id,
+-      '#disabled' => !empty($id),
+-    );
+-    $form['plugin'] = array(
+-      '#type' => 'value',
+-      '#value' => $this->get('plugin'),
+-    );
+-    $form['weight'] = array(
+-      '#type' => 'weight',
+-      '#title' => t('Weight'),
+-      '#default_value' => $this->get('weight'),
+-      '#attributes' => array(
+-        'class' => array('tip-order-weight'),
+-      ),
+-    );
+-    
+-    $attributes = $this->getAttributes();
+-    $form['attributes'] = array(
+-      '#type' => 'fieldset',
+-      '#title' => t('Attributes'),
+-      '#collapsible' => TRUE,
+-      '#collapsed' => FALSE,
+-      '#tree' => TRUE,
+-    );
+-
+-    // Determine the type identifier of the tip.
+-    if (!empty($attributes['data-id'])) {
+-      $tip_type = 'data-id';
+-    }
+-    else if (!empty($attributes['data-class'])) {
+-      $tip_type = 'data-class';
+-    }
+-    else {
+-      $tip_type = 'modal';
+-    }
+-    $form['attributes']['selector_type'] = array(
+-      '#type' => 'select',
+-      '#title' => t('Selector type'),
+-      '#description' => t('The type of selector that this tip will target.'),
+-      '#options' => array(
+-        'data-id' => t('Data ID'),
+-        'data-class' => t('Data Class'),
+-        'modal' => t('Modal'),
+-      ),
+-      '#default_value' => $tip_type,
+-      '#element_validate' => array(array($this, 'optionsFormValidate')),
+-    );
+-    $form['attributes']['data-id'] = array(
+-      '#type' => 'textfield',
+-      '#title' => t('Data id'),
+-      '#description' => t('Provide the ID of the page element.'),
+-      '#field_prefix' => '#',
+-      '#default_value' => !empty($attributes['data-id']) ? $attributes['data-id'] : '',
+-      '#states' => array(
+-        'visible' => array(
+-          'select[name="attributes[selector_type]"]' => array('value' => 'data-id'),
+-        ),
+-        'enabled' => array(
+-          'select[name="attributes[selector_type]"]' => array('value' => 'data-id'),
+-        ),
+-      ),
+-    );
+-    $form['attributes']['data-class'] = array(
+-      '#type' => 'textfield',
+-      '#title' => t('Data class'),
+-      '#description' => t('Provide the Class of the page element.'),
+-      '#field_prefix' => '.',
+-      '#default_value' => !empty($attributes['data-class']) ? $attributes['data-class'] : '',
+-      '#states' => array(
+-        'visible' => array(
+-          'select[name="attributes[selector_type]"]' => array('value' => 'data-class'),
+-        ),
+-        'enabled' => array(
+-          'select[name="attributes[selector_type]"]' => array('value' => 'data-class'),
+-        ),
+-      ),
+-    );
+-
+-    $form['location'] = array(
+-      '#type' => 'select',
+-      '#title' => t('Location'),
+-        '#options' => array(
+-        'top' => t('Top'),
+-        'bottom' => t('Bottom'),
+-        'left' => t('Left'),
+-        'right' => t('Right'),
+-      ),
+-      '#default_value' => $this->get('location'),
+-    );
+-    $form['body'] = array(
+-      '#type' => 'textarea',
+-      '#title' => t('Body'),
+-      '#required' => TRUE,
+-      '#default_value' => $this->get('body'),
+-    );
+-    return $form;
+-  }
+-
+-  /**
+-   * Validates the tip optionsForm().
+-   *
+-   * @param $element
+-   *   The form element that has the validate attached.
+-   *
+-   * @param $form_state
+-   *   The state of the form after submission.
+-   *
+-   * @param $form
+-   *   The form array. 
+-   */
+-  function optionsFormValidate($element, &$form_state, $form) {
+-    $values = $form_state['values'];
+-    $selector_type = $values['attributes']['selector_type'];
+-    unset($form_state['values']['attributes']['selector_type']);
+-
+-    // If modal we need to ensure that there is no data-id or data-class specified.
+-    if ($selector_type == 'modal') {
+-      unset($form_state['values']['attributes']['data-id']);
+-      unset($form_state['values']['attributes']['data-class']);
+-    }
+-
+-    // If data-id was selected and no id provided.
+-    if ($selector_type == 'data-id' && empty($values['attributes']['data-id'])) {
+-      form_error($form['attributes']['data-id'], t('Please provide a data id.'));
+-    }
+-
+-    // If data-class was selected and no class provided.
+-    if ($selector_type == 'data-class' && empty($values['attributes']['data-class'])) {
+-      form_error($form['attributes']['data-class'], t('Please provide a data class.'));
+-    }
+-
+-    // Remove the data-class value if data-id is provided.
+-    if ($selector_type == 'data-id') {
+-      unset($form_state['values']['attributes']['data-class']);
+-    }
+-
+-    // Remove the data-id value is data-class is provided.
+-    if ($selector_type == 'data-class') {
+-      unset($form_state['values']['attributes']['data-id']);
+-    }
+-  }
+-}
+diff --git a/lib/Drupal/tour_ui/Routing/TourUIController.php b/lib/Drupal/tour_ui/Routing/TourUIController.php
+deleted file mode 100644
+index 8140ce1..0000000
+--- a/lib/Drupal/tour_ui/Routing/TourUIController.php
++++ /dev/null
+@@ -1,135 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\Routing\TourUIController.
+- */
+-
+-namespace Drupal\tour_ui\Routing;
+-
+-use Drupal\Core\Entity\EntityManager;
+-use Drupal\tour\Entity\Tour;
+-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+-
+-/**
+- * Handles page returns for tour.
+- */
+-class TourUIController {
+-
+-  /**
+-   * The manager of this tour UI.
+-   *
+-   * @var \Drupal\Core\Entity\EntityManager
+-   */
+-  protected $manager;
+-
+-  /**
+-   * Construction function for the tour UI controller.
+-   */
+-  public function __construct(EntityManager $manager) {
+-    $this->manager = $manager;
+-  }
+-
+-  /**
+-   * Provides a listing form for a tour entity.
+-   *
+-   * @return array
+-   *   A renderable form array.
+-   */
+-  public function listing() {
+-    return $this->manager->getListController('tour')->render();
+-  }
+-
+-  /**
+-   * Provides a creation form for tour.
+-   *
+-   * @return array
+-   *   A renderable form array.
+-   */
+-  public function add() {
+-    $tour = $this->manager->getStorageController('tour')->create(array());
+-    return entity_get_form($tour);
+-  }
+-
+-  /**
+-   * Provides an edit form for a tour entity.
+-   *
+-   * @param $tour
+-   *   The tour that will be modified.
+-   *
+-   * @return array
+-   *   A renderable form array.
+-   */
+-  public function edit(Tour $tour) {
+-    return entity_get_form($tour);
+-  }
+-
+-  /**
+-   * Provides a creation form for a new tip to be added to a tour entity.
+-   *
+-   * @param $tour
+-   *   The tour in which the tip needs to be added to.
+-   *
+-   * @param $type
+-   *   The type of tip that will be added to the tour.
+-   *
+-   * @return array
+-   *   A renderable form array.
+-   */
+-  public function addTip(Tour $tour, $type = '') {
+-    // We need a type to build this form.
+-    if (!$type) {
+-      throw new NotFoundHttpException();
+-    }
+-
+-    // Default values.
+-    $request = \Drupal::service('request');
+-    $defaults = array(
+-      'plugin' => $type,
+-      'weight' => $request->query->get('weight'),
+-    );
+-
+-    // Build a new stub tip.
+-    $manager = \Drupal::service('plugin.manager.tour.tip');
+-    $stub = $manager->createInstance($type, $defaults);
+-
+-    // Attach the tour, tip and if it's new to the form.
+-    $form_state['#tour'] = $tour;
+-    $form_state['#tip'] = $stub;
+-    $form_state['#new'] = TRUE;
+-
+-    return entity_get_form($tour, 'tips', $form_state);
+-  }
+-
+-  /**
+-   * Provides an edit form for tip to be updated against a tour entity.
+-   *
+-   * @param $tour
+-   *   The tour in which the tip is being edited against.
+-   *
+-   * @param $tip
+-   *   The identifier of tip that will be edited against the tour.
+-   *
+-   * @return array
+-   *   A renderable form array.
+-   */
+-  public function editTip(Tour $tour, $tip = '') {
+-    // We need a tip to build this form.
+-    if (!$tip && !$tour) {
+-      throw new NotFoundHttpException();
+-    }
+-
+-    // If the tip doesn't exist return.
+-    $tips = array_keys($tour->getTips());
+-    if (!in_array($tip, $tips)) {
+-      throw new NotFoundHttpException();
+-    }
+-
+-    // Attach the tour, tip and if it's new to the form.
+-    $form_state['#tour'] = $tour;
+-    $form_state['#tip'] = $tour->getTip($tip);
+-
+-    return entity_get_form($tour, 'tips', $form_state);
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourDeleteForm.php b/lib/Drupal/tour_ui/TourDeleteForm.php
+deleted file mode 100644
+index fd3fac1..0000000
+--- a/lib/Drupal/tour_ui/TourDeleteForm.php
++++ /dev/null
+@@ -1,62 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\TourDeleteForm.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Drupal\Core\Form\FormInterface;
+-use Drupal\Core\Entity\EntityInterface;
+-
+-/**
+- * Builds the form to delete a tour.
+- */
+-class TourDeleteForm implements FormInterface {
+-
+-  /**
+-   * Stores the tour entity being deleted.
+-   *
+-   * @var \Drupal\Core\Entity\EntityInterface
+-   */
+-  protected $entity;
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::getFormID().
+-   */
+-  public function getFormID() {
+-    return 'tour_ui_confirm_delete';
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::buildForm().
+-   */
+-  public function buildForm(array $form, array &$form_state, EntityInterface $tour = NULL) {
+-    $this->entity = $tour;
+-
+-    return confirm_form($form,
+-      t('Are you sure you want to delete the %tour tour?', array('%tour' => $this->entity->label())),
+-      'admin/config/user-interface/tour',
+-      t('This action cannot be undone.'),
+-      t('Delete'),
+-      t('Cancel')
+-    );
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::validateForm().
+-   */
+-  public function validateForm(array &$form, array &$form_state) {
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::submitForm().
+-   */
+-  public function submitForm(array &$form, array &$form_state) {
+-    $this->entity->delete();
+-    $form_state['redirect'] = 'admin/config/user-interface/tour';
+-    drupal_set_message(t('Deleted the %tour tour.', array('%tour' => $this->entity->label())));
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourFormController.php b/lib/Drupal/tour_ui/TourFormController.php
+deleted file mode 100644
+index 76f5a97..0000000
+--- a/lib/Drupal/tour_ui/TourFormController.php
++++ /dev/null
+@@ -1,258 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\TourFormController.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Drupal\Core\Entity\EntityInterface;
+-use Drupal\Core\Entity\EntityFormController;
+-use \Drupal\Core\Language\Language;
+-
+-/**
+- * Form controller for the tour entity edit forms.
+- */
+-class TourFormController extends EntityFormController {
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::form().
+-   */
+-  public function form(array $form, array &$form_state) {
+-    $tour = $this->entity;
+-    $form = parent::form($form, $form_state);
+-    $form['label'] = array(
+-      '#type' => 'textfield',
+-      '#title' => t('Tour name'),
+-      '#required' => TRUE,
+-      '#default_value' => $tour->label(),
+-    );
+-    $form['id'] = array(
+-      '#type' => 'machine_name',
+-      '#machine_name' => array(
+-        'exists' => '_tour_load',
+-        'replace_pattern' => '[^a-z0-9-]+',
+-        'replace' => '-',
+-      ),
+-      '#default_value' => $tour->id(),
+-      '#disabled' => !$tour->isNew(),
+-    );
+-
+-    //TODO: language() is deprecated
+-    // @deprecated as of Drupal 8.0. Use
+-    //   Drupal::languageManager()->getLanguage($type).
+-    $form['langcode'] = array(
+-      '#type' => 'language_select',
+-      '#title' => t('Language'),
+-      '#languages' => Language::STATE_ALL,
+-      // Default to the content language opposed to und (language not specified).
+-      '#default_value' => $tour->isNew() ? language(Language::STATE_ALL)->id : $tour->langcode,
+-    );
+-    $form['module'] = array(
+-      '#type' => 'textfield',
+-      '#title' => t('Module name'),
+-      '#description' => t('Each tour needs a module.'),
+-      '#required' => TRUE,
+-      '#default_value' => $tour->get('module'),
+-    );
+-    $form['paths'] = array(
+-      '#type' => 'textarea',
+-      '#title' => t('Paths'),
+-      '#default_value' => implode("\n", $tour->getPaths()),
+-      '#rows' => 5,
+-      '#description' => t('Provide a list of paths that this tour will be displayed on.'),
+-    );
+-
+-    // Don't show the tips on the inital add.
+-    if ($tour->isNew()) {
+-      return $form;
+-    }
+-
+-    // Start building the list of tips assigned to this tour.
+-    $form['tips'] = array(
+-      '#type' => 'table',
+-      '#header' => array(
+-        t('Label'),
+-        t('Weight'),
+-        t('Operations'),
+-      ),
+-      '#caption' => t('Tips provided by this tour.'),
+-      '#tabledrag' => array(
+-        array('order', 'sibling', 'tip-order-weight'),
+-      ),
+-      '#weight' => 40,
+-    );
+-
+-    // Populate the table with the assigned tips.
+-    $tips = $tour->getTips();
+-    if (!empty($tips)) {
+-      foreach ($tips as $key => $tip) {
+-        $tip_id = $tip->get('id');
+-        $form['#data'][$tip_id] = $tip->export();
+-        $form['tips'][$tip_id]['#attributes']['class'][] = 'draggable';
+-        $form['tips'][$tip_id]['label'] = array(
+-          '#markup' => check_plain($tip->get('label')),
+-        );
+-
+-        $form['tips'][$tip_id]['weight'] = array(
+-          '#type' => 'weight',
+-          '#title' => t('Weight for @title', array('@title' => $tip->get('label'))),
+-          '#delta' => 100,
+-          '#title_display' => 'invisible',
+-          '#default_value' => $tip->get('weight'),
+-          '#attributes' => array(
+-            'class' => array('tip-order-weight'),
+-          ),
+-        );
+-
+-        // Provide operations links for the tip.
+-        $links = array();
+-        $tip_form = $tip->optionsForm();
+-        if (!empty($tip_form)) {
+-          $links['edit'] = array(
+-            'title' => t('edit'),
+-            'href' => 'admin/config/user-interface/tour/manage/' . $tour->id() . '/tip/edit/' . $tip_id,
+-          );
+-        }
+-        $links['delete'] = array(
+-          'title' => t('delete'),
+-          'href' => 'admin/config/user-interface/tour/manage/' . $tour->id() . '/tip/delete/' . $tip_id,
+-        );
+-        $form['tips'][$tip_id]['operations'] = array(
+-          '#type' => 'operations',
+-          '#links' => $links,
+-        );
+-      }
+-    }
+-
+-    // Build the new tour tip addition form and add it to the tips list.
+-    $tip_definitions = \Drupal::service('plugin.manager.tour.tip')->getDefinitions();
+-    foreach ($tip_definitions as $tip => $definition) {
+-      $tip_definition_options[$tip] = $definition['title'];
+-    }
+-
+-    // Unset the core "text" tip.
+-    unset($tip_definition_options['text']);
+-
+-    $form['tips']['new'] = array(
+-      '#tree' => FALSE,
+-      '#weight' => isset($form_state['input']['weight']) ? $form_state['input']['weight'] : NULL,
+-      '#attributes' => array(
+-        'class' => array('draggable')
+-      ),
+-    );
+-    $form['tips']['new']['new'] = array(
+-      '#type' => 'select',
+-      '#title' => t('Tip'),
+-      '#title_display' => 'invisible',
+-      '#options' => $tip_definition_options,
+-      '#empty_option' => t('Select a new tip'),
+-    );
+-    $form['tips']['new']['weight'] = array(
+-      '#type' => 'weight',
+-      '#title' => t('Weight for new tip'),
+-      '#title_display' => 'invisible',
+-      '#default_value' => count($form['tips']) - 1,
+-      '#attributes' => array(
+-        'class' => array('tip-order-weight'),
+-      ),
+-    );
+-    $form['tips']['new']['add'] = array(
+-      '#type' => 'submit',
+-      '#value' => t('Add'),
+-      '#validate' => array(array($this, 'tipValidate')),
+-      '#submit' => array(array($this, 'tipAdd')),
+-    );
+-
+-    return $form;
+-  }
+-
+-  /**
+-   * Validate handler.
+-   */
+-  public function tipValidate($form, &$form_state) {
+-    if (!$form_state['values']['new']) {
+-      form_error($form['tips']['new']['new'], t('Select a new tip.'));
+-    }
+-  }
+-
+-  /**
+-   * Submit handler.
+-   */
+-  public function tipAdd($form, &$form_state) {
+-    $tour = $this->getEntity($form_state);
+-
+-    // Merge the form values in with the current configuration.
+-    $tips = array();
+-    if (!empty($form_state['values']['tips'])) {
+-      foreach ($form_state['values']['tips'] as $key => $values) {
+-        $data = $form['#data'][$key];
+-        $tips[$key] = array_merge($data, $values);
+-      }
+-    }
+-    else {
+-      $tips = array();
+-    }
+-    $tour->set('tips', $tips);
+-    $tour->save();
+-
+-    $manager = \Drupal::service('plugin.manager.tour.tip');
+-    $stub = $manager->createInstance($form_state['values']['new'], array());
+-
+-    // If a form is available for this tip then redirect to a add page.
+-    $stub_form = $stub->optionsForm();
+-    if (isset($stub_form)) {
+-      // Redirect to the appropriate page to add this new tip.
+-      $path = 'admin/config/user-interface/tour/manage/' . $tour->id() . '/tip/add/' . $form_state['values']['new'];
+-      $form_state['redirect'] = array($path, array('query' => array('weight' => $form_state['values']['weight'])));
+-    }
+-
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::submit().
+-   */
+-  public function submit(array $form, array &$form_state) {
+-    // Filter out invalid characters and convert to an array.
+-    preg_replace('/(\r\n?|\n)/', '\n', $form_state['values']['paths']);
+-    $form_state['values']['paths'] = explode("\n", $form_state['values']['paths']);
+-    $form_state['values']['paths'] = array_map('trim', $form_state['values']['paths']);
+-    $form_state['values']['paths'] = array_filter($form_state['values']['paths']);
+-
+-    // Merge the form values in with the current configuration.
+-    if (!empty($form_state['values']['tips'])) {
+-      foreach ($form_state['values']['tips'] as $key => $values) {
+-        $data = $form['#data'][$key];
+-        $form_state['values']['tips'][$key] = array_merge($data, $values);
+-      }
+-    }
+-    else {
+-      $form_state['values']['tips'] = array();
+-    }
+-
+-    $entity = parent::submit($form, $form_state);
+-    $is_new = $entity->isNew();
+-    $entity->save();
+-
+-    if ($is_new) {
+-      drupal_set_message(t('The %tour tour has been created.', array('%tour' => $entity->label())));
+-      $form_state['redirect'] = 'admin/config/user-interface/tour/manage/' . $entity->id();
+-    }
+-    else {
+-      drupal_set_message(t('Updated the %tour tour.', array('%tour' => $entity->label())));
+-      $form_state['redirect'] = 'admin/config/user-interface/tour';
+-    }
+-
+-    return $entity;
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::delete().
+-   */
+-  public function delete(array $form, array &$form_state) {
+-    $entity = $this->getEntity($form_state);
+-    $form_state['redirect'] = 'admin/config/user-interface/tour/manage/' . $entity->id() . '/delete';
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourListController.php b/lib/Drupal/tour_ui/TourListController.php
+deleted file mode 100644
+index 4eb2ce4..0000000
+--- a/lib/Drupal/tour_ui/TourListController.php
++++ /dev/null
+@@ -1,87 +0,0 @@
+-<?php
+-
+-/**
+- * Contains \Drupal\tour_ui\TourListController.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Drupal\Core\Config\Entity\ConfigEntityListController;
+-use Drupal\Core\Entity\EntityInterface;
+-
+-/**
+- * Provides a listing of tours.
+- */
+-class TourListController extends ConfigEntityListController {
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityListController::buildHeader().
+-   */
+-  public function buildHeader() {
+-    $row['id'] = t('Id');
+-    $row['label'] = t('Label');
+-    $row['paths'] = t('Paths');
+-    $row['tips'] = t('Number of tips');
+-    $row['operations'] = t('Operations');
+-    return $row;
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityListController::buildRow().
+-   */
+-  public function buildRow(EntityInterface $entity) {
+-    $row = parent::buildRow($entity);
+-
+-    $data['id'] = check_plain($entity->id());
+-    $data['label'] = check_plain($entity->label());
+-    // Include the paths this tour is used on.
+-    $data['paths'] = implode('<br>', array_map(function($path) {
+-      // If the path contains no wildcards, output it as a link.
+-      if (strpos($path, '*') === FALSE) {
+-        $options =  array(
+-          'query' => array(
+-            'tour' => 1,
+-          )
+-        );
+-        return l($path, $path, $options);
+-      }
+-      return check_plain('/' . $path);
+-    }, $entity->get('paths')));
+-    // Count the number of tips.
+-    $data['tips'] = count($entity->getTips());
+-    $data['operations'] = $row['operations'];
+-    // Wrap the whole row so that the entity ID is used as a class.
+-    return array(
+-      'data' => $data,
+-      'class' => array(
+-        $entity->id(),
+-      ),
+-    );
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityListController::getOperations().
+-   */
+-  public function getOperations(EntityInterface $entity) {
+-    $operations = parent::getOperations($entity);
+-    $uri = $entity->uri('edit-form');
+-
+-    $operations['edit'] = array(
+-      'title' => t('Edit'),
+-      'href' => $uri['path'],
+-      'options' => $uri['options'],
+-      'weight' => 1,
+-    );
+-    $operations['delete'] = array(
+-      'title' => t('Delete'),
+-      'href' => $uri['path'] . '/delete',
+-      'options' => $uri['options'],
+-      'weight' => 2,
+-    );
+-
+-    // Tours do not support being enabled or disabled.
+-    //unset($operations['enable'], $operations['disable']);
+-    return $operations;
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourTipDeleteForm.php b/lib/Drupal/tour_ui/TourTipDeleteForm.php
+deleted file mode 100644
+index 7bde5c6..0000000
+--- a/lib/Drupal/tour_ui/TourTipDeleteForm.php
++++ /dev/null
+@@ -1,82 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\TourTipDeleteForm.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Drupal\Core\Form\FormInterface;
+-use Drupal\Core\Entity\EntityInterface;
+-
+-/**
+- * Builds the form to delete a tour tip.
+- */
+-class TourTipDeleteForm implements FormInterface {
+-
+-  /**
+-   * Stores the tour entity being deleted.
+-   *
+-   * @var \Drupal\Core\Entity\EntityInterface
+-   */
+-  protected $entity;
+-
+-  /**
+-   * Stores the tour tip candidate for deletion.
+-   *
+-   * @var \Drupal\Core\Entity\EntityInterface
+-   */
+-  protected $tip;
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::getFormID().
+-   */
+-  public function getFormID() {
+-    return 'tour_ui_tip_confirm_delete';
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::buildForm().
+-   */
+-  public function buildForm(array $form, array &$form_state, EntityInterface $tour = NULL, $tip = '') {
+-    $this->entity = $tour;
+-    $this->tip = $tour->getTip($tip);
+-
+-    return confirm_form($form,
+-      t('Are you sure you want to delete the %tour tour %tip tip?', array('%tour' => $this->entity->label(), '%tip' => $this->tip->get('label'))),
+-      'admin/config/user-interface/tour/manage/' . $this->entity->id(),
+-      t('This action cannot be undone.'),
+-      t('Delete'),
+-      t('Cancel')
+-    );
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::validateForm().
+-   */
+-  public function validateForm(array &$form, array &$form_state) {
+-  }
+-
+-  /**
+-   * Implements \Drupal\Core\Form\FormInterface::submitForm().
+-   */
+-  public function submitForm(array &$form, array &$form_state) {
+-    // Rebuild the tips and remove the irrelevant one.
+-    $candidate = $this->tip->get('id');
+-    $tips = array();
+-    foreach ($this->entity->getTips() as $tip) {
+-      $tip_id = $tip->get('id');
+-      if ($tip_id == $candidate) {
+-        continue;
+-      }
+-      $tips[$tip_id] = $tip->export();
+-    }
+-    $this->entity->set('tips', $tips);
+-    $this->entity->save();
+-
+-    $form_state['redirect'] = 'admin/config/user-interface/tour/manage/' . $this->entity->id();
+-    drupal_set_message(t('Deleted the %tour tour %tip tip.', array('%tour' => $this->entity->label(), '%tip' => $this->tip->get('label'))));
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourTipFormController.php b/lib/Drupal/tour_ui/TourTipFormController.php
+deleted file mode 100644
+index 4fb7c22..0000000
+--- a/lib/Drupal/tour_ui/TourTipFormController.php
++++ /dev/null
+@@ -1,92 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains \Drupal\tour_ui\TourTipFormController.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Drupal\Core\Entity\EntityFormController;
+-
+-/**
+- * Form controller for the tour tip plugin edit forms.
+- */
+-class TourTipFormController extends EntityFormController {
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::form().
+-   */
+-  public function form(array $form, array &$form_state) {
+-    $form = parent::form($form, $form_state);
+-    $form += $form_state['#tip']->optionsForm();
+-    return $form;
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::validate().
+-   */
+-  public function validate(array $form, array &$form_state) {
+-    // Determine if one of our tips already exist.
+-    $values = $form_state['values'];
+-    $tips = $form_state['#tour']->getTips();
+-    $tip_ids = array_map(function($data) {return $data->get('id');}, $tips);
+-    // Also if there are no initial tips then we don't need to check.
+-    if (empty($tips)) {
+-      return;
+-    }
+-    if (in_array($values['id'], $tip_ids) && !empty($form_state['#new'])) {
+-      form_error($form['label'], t('A tip with the same identifier exists.'));
+-    }
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::submit().
+-   */
+-  public function submit(array $form, array &$form_state) {
+-    $tour = $form_state['#tour'];
+-    $tip = $form_state['#tip'];
+-    $values = $form_state['values'];
+-    $exports = $tip->export();
+-
+-    // Build a new tip.
+-    $new_tip = $tip->export();
+-    foreach ($exports as $export_id => $export) {
+-      $value = $values[$export_id];
+-      $new_tip[$export_id] = is_array($value) ? array_filter($value) : $value;
+-    }
+-
+-    // Rebuild the tips.
+-    $new_tip_list = $tour->getTips();
+-    $new_tips = array();
+-    if (!empty($new_tip_list)) {
+-      foreach ($new_tip_list as $tip) {
+-        $new_tips[$tip->get('id')] = $tip->export();
+-      }
+-    }
+-
+-    // Add our tip and save.
+-    $new_tips[$new_tip['id']] = $new_tip;
+-    $tour->set('tips', $new_tips);
+-    $tour->save();
+-
+-    if (!empty($form_state['#new'])) {
+-      drupal_set_message(t('The %tip tip has been created.', array('%tip' => $new_tip['label'])));
+-    }
+-    else {
+-      drupal_set_message(t('Updated the %tip tip.', array('%tip' => $new_tip['label'])));
+-    }
+-
+-    $form_state['redirect'] = 'admin/config/user-interface/tour/manage/' . $tour->id();
+-    return $tour;
+-  }
+-
+-  /**
+-   * Overrides \Drupal\Core\Entity\EntityFormController::delete().
+-   */
+-  public function delete(array $form, array &$form_state) {
+-    $entity = $this->getEntity($form_state);
+-    $form_state['redirect'] = 'admin/config/user-interface/tour/manage/' . $entity->get('id') . '/tip/delete/' . $form_state['#tip']->get('id');
+-  }
+-
+-}
+diff --git a/lib/Drupal/tour_ui/TourUiBundle.php b/lib/Drupal/tour_ui/TourUiBundle.php
+deleted file mode 100644
+index 719757b..0000000
+--- a/lib/Drupal/tour_ui/TourUiBundle.php
++++ /dev/null
+@@ -1,27 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains Drupal\tour_ui\TourUiBundle.
+- */
+-
+-namespace Drupal\tour_ui;
+-
+-use Symfony\Component\DependencyInjection\ContainerBuilder;
+-use Symfony\Component\DependencyInjection\Reference;
+-use Symfony\Component\HttpKernel\Bundle\Bundle;
+-
+-/**
+- * Tour UI dependency injection container.
+- */
+-class TourUiBundle extends Bundle {
+-
+-  /**
+-   * Overrides Symfony\Component\HttpKernel\Bundle\Bundle::build().
+-   */
+-  public function build(ContainerBuilder $container) {
+-    $container->register('tour_ui.controller', 'Drupal\tour_ui\Routing\TourUIController')
+-      ->addArgument(new Reference('plugin.manager.entity'));
+-  }
+-
+-}
+diff --git a/src/Controller/TourTipController.php b/src/Controller/TourTipController.php
+new file mode 100644
+index 0000000..23c5f4d
+--- /dev/null
++++ b/src/Controller/TourTipController.php
+@@ -0,0 +1,127 @@
++<?php
++
++namespace Drupal\tour_ui\Controller;
++
++use Drupal\Component\Utility\Html;
++use Drupal\Core\Controller\ControllerBase;
++use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
++use Drupal\Core\Form\FormState;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\Core\Form\FormBuilderInterface;
++use Drupal\tour\Entity\Tour;
++use Drupal\tour\TipPluginManager;
++use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
++
++/**
++ * Handles page returns for tour tip.
++ */
++class TourTipController extends ControllerBase implements ContainerInjectionInterface {
++
++  /**
++   * The Tip plugin manager.
++   *
++   * @var \Drupal\tour\TipPluginManager
++   */
++  protected $tipPluginManager;
++
++  /**
++   * The form builder.
++   *
++   * @var \Drupal\Core\Form\FormBuilderInterface
++   */
++  protected $formBuilder;
++
++  /**
++   * Constructs a new TourTipController object.
++   *
++   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
++   *   The form builder.
++   */
++  public function __construct(TipPluginManager $tipPluginManager, FormBuilderInterface $form_builder) {
++    $this->tipPluginManager = $tipPluginManager;
++    $this->formBuilder = $form_builder;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container) {
++    return new static(
++      $container->get('plugin.manager.tour.tip'),
++      $container->get('form_builder')
++    );
++  }
++
++  /**
++   * Provides a creation form for a new tip to be added to a tour entity.
++   *
++   * @param $tour
++   *   The tour in which the tip needs to be added to.
++   *
++   * @param $type
++   *   The type of tip that will be added to the tour.
++   *
++   * @return array
++   *   A renderable form array.
++   */
++  public function add(Tour $tour, $type = '') {
++    // We need a type to build this form.
++    if (!$type) {
++      throw new NotFoundHttpException();
++    }
++
++    // Default values.
++    $request = \Drupal::service('request_stack');
++    $defaults = array(
++      'plugin' => Html::escape($type),
++      'weight' => $request->getCurrentRequest()->query->get('weight'),
++    );
++
++    // Build a new stub tip.
++    $manager = \Drupal::service('plugin.manager.tour.tip');
++    $stub = $manager->createInstance($type, $defaults);
++
++    // Attach the tour, tip and if it's new to the form.
++    $form_state = new FormState();
++    $form_state->setFormState([
++      '#tour' => $tour,
++      '#tip' => $stub,
++      '#new' => TRUE,
++    ]);
++    return $this->formBuilder->buildForm('\Drupal\tour_ui\Form\TourTipForm', $form_state);
++  }
++
++  /**
++   * Provides an edit form for tip to be updated against a tour entity.
++   *
++   * @param $tour
++   *   The tour in which the tip is being edited against.
++   *
++   * @param $tip
++   *   The identifier of tip that will be edited against the tour.
++   *
++   * @return array
++   *   A renderable form array.
++   */
++  public function edit(Tour $tour, $tip = '') {
++    // We need a tip to build this form.
++    if (!$tip && !$tour) {
++      throw new NotFoundHttpException();
++    }
++
++    // If the tip doesn't exist return.
++    $tips = array_keys($tour->getTips());
++    if (!in_array($tip, $tips)) {
++      throw new NotFoundHttpException();
++    }
++
++    // Attach the tour and tip.
++    $form_state = new FormState();
++    $form_state->setFormState([
++      '#tour' => $tour,
++      '#tip' => $tour->getTip($tip),
++    ]);
++    return $this->formBuilder->buildForm('\Drupal\tour_ui\Form\TourTipForm', $form_state);
++  }
++
++}
+diff --git a/src/Form/TourDeleteForm.php b/src/Form/TourDeleteForm.php
+new file mode 100644
+index 0000000..cdec37f
+--- /dev/null
++++ b/src/Form/TourDeleteForm.php
+@@ -0,0 +1,19 @@
++<?php
++
++namespace Drupal\tour_ui\Form;
++
++use Drupal\Core\Entity\EntityDeleteForm;
++use Drupal\Core\Url;
++
++/**
++ * Builds the form to delete a tour.
++ */
++class TourDeleteForm extends EntityDeleteForm {
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getCancelUrl() {
++    return Url::fromRoute('entity.tour.collection');
++  }
++}
+diff --git a/src/Form/TourForm.php b/src/Form/TourForm.php
+new file mode 100644
+index 0000000..19eb257
+--- /dev/null
++++ b/src/Form/TourForm.php
+@@ -0,0 +1,313 @@
++<?php
++
++namespace Drupal\tour_ui\Form;
++
++use Drupal\Core\Entity\EntityForm;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\Core\Form\FormStateInterface;
++use Drupal\Core\Form\FormState;
++use Drupal\Core\Language\LanguageInterface;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\Core\Url;
++
++/**
++ * Form controller for the tour entity edit forms.
++ */
++class TourForm extends EntityForm {
++
++  /**
++   * Entity manager service.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container) {
++    return new static(
++      $container->get('entity_type.manager')
++    );
++  }
++
++  /**
++   * Constructs a TourForm object.
++   *
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
++   *   The entity manager service.
++   * @param \Psr\Log\LoggerInterface $logger
++   *   A logger instance.
++   * @param \Drupal\comment\CommentManagerInterface $comment_manager
++   *   The comment manager.
++   */
++  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
++    $this->entityTypeManager = $entity_type_manager;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function form(array $form, FormStateInterface $form_state) {
++    $tour = $this->entity;
++    $form = parent::form($form, $form_state);
++    $form['label'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Tour name'),
++      '#required' => TRUE,
++      '#default_value' => $tour->label(),
++    ];
++    $form['id'] = [
++      '#type' => 'machine_name',
++      '#machine_name' => [
++        'exists' => '\Drupal\tour\Entity\Tour::load',
++        'replace_pattern' => '[^a-z0-9-]+',
++        'replace' => '-',
++      ],
++      '#default_value' => $tour->id(),
++      '#disabled' => !$tour->isNew(),
++    ];
++
++    $form['langcode'] = [
++      '#type' => 'language_select',
++      '#title' => $this->t('Language'),
++      '#languages' => LanguageInterface::STATE_ALL,
++      // Default to the content language opposed to und (language not specified).
++      '#default_value' => empty($tour->langcode) ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $tour->langcode,
++    ];
++    $form['module'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Module name'),
++      '#description' => $this->t('Each tour needs a module.'),
++      '#required' => TRUE,
++      '#default_value' => $tour->get('module'),
++    ];
++
++    $default_routes = [];
++    if ($routes = $tour->getRoutes()) {
++      foreach ($routes as $route) {
++        $default_routes[] = $route['route_name'];
++      }
++    }
++    $form['routes'] = [
++      '#type' => 'textarea',
++      '#title' => $this->t('Routes'),
++      '#default_value' => implode("\n", $default_routes),
++      '#rows' => 5,
++      '#description' => $this->t('Provide a list of routes that this tour will be displayed on. Add one route by line.'),
++    ];
++
++    // Don't show the tips on the inital add.
++    if ($tour->isNew()) {
++      return $form;
++    }
++
++    // Start building the list of tips assigned to this tour.
++    $form['tips'] = [
++      '#type' => 'table',
++      '#header' => [
++        $this->t('Label'),
++        $this->t('Weight'),
++        $this->t('Operations'),
++      ],
++      '#caption' => [['#markup' => $this->t('Tips provided by this tour. By clicking on Operations buttons, every changes which are not saved will be lost.')]],
++      '#tabledrag' => [
++        [
++          'action' => 'order',
++          'relationship' => 'sibling',
++          'group' => 'tip-order-weight'
++        ],
++      ],
++      '#weight' => 40,
++    ];
++
++    // Populate the table with the assigned tips.
++    $tips = $tour->getTips();
++    if (!empty($tips)) {
++      foreach ($tips as $key => $tip) {
++        $tip_id = $tip->get('id');
++        try {
++          $form['#data'][$tip_id] = $tip->getConfiguration();
++        }
++        catch (\Error $e) {
++          drupal_set_message($this->t('Tip %tip is not configurable. You cannot save this tour.', ['%tip' => $tip->getLabel()]), 'warning');
++        }
++        $form['tips'][$tip_id]['#attributes']['class'][] = 'draggable';
++        $form['tips'][$tip_id]['label'] = [
++          '#plain_text' => $tip->get('label'),
++        ];
++
++        $form['tips'][$tip_id]['weight'] = [
++          '#type' => 'weight',
++          '#title' => $this->t('Weight for @title', ['@title' => $tip->get('label')]),
++          '#delta' => 100,
++          '#title_display' => 'invisible',
++          '#default_value' => $tip->get('weight'),
++          '#attributes' => [
++            'class' => ['tip-order-weight'],
++          ],
++        ];
++
++        // Provide operations links for the tip.
++        $links = [];
++        if (method_exists($tip, 'buildConfigurationForm')) {
++          $links['edit'] = [
++            'title' => $this->t('Edit'),
++            'url' => Url::fromRoute('tour_ui.tip.edit', ['tour' => $tour->id(), 'tip' => $tip_id]),
++          ];
++        }
++        $links['delete'] = [
++          'title' => $this->t('Delete'),
++          'url' => Url::fromRoute('tour_ui.tip.delete', ['tour' => $tour->id(), 'tip' => $tip_id]),
++        ];
++        $form['tips'][$tip_id]['operations'] = [
++          '#type' => 'operations',
++          '#links' => $links,
++        ];
++      }
++    }
++
++    // Build the new tour tip addition form and add it to the tips list.
++    $tip_definitions = \Drupal::service('plugin.manager.tour.tip')->getDefinitions();
++    $tip_definition_options = [];
++    foreach ($tip_definitions as $tip => $definition) {
++      if (method_exists($definition['class'], 'buildConfigurationForm')) {
++        $tip_definition_options[$tip] = $definition['title'];
++      }
++    }
++
++    $user_input = $form_state->getUserInput();
++    $form['tips']['new'] = [
++      '#tree' => FALSE,
++      '#weight' => isset($user_input['weight']) ? $user_input['weight'] : 0,
++      '#attributes' => [
++        'class' => ['draggable'],
++      ],
++    ];
++    $form['tips']['new']['new'] = [
++      '#type' => 'select',
++      '#title' => $this->t('Tip'),
++      '#title_display' => 'invisible',
++      '#options' => $tip_definition_options,
++      '#empty_option' => $this->t('Select a new tip'),
++    ];
++    $form['tips']['new']['weight'] = [
++      '#type' => 'weight',
++      '#title' => $this->t('Weight for new tip'),
++      '#title_display' => 'invisible',
++      '#default_value' => count($form['tips']) - 1,
++      '#attributes' => [
++        'class' => ['tip-order-weight'],
++      ],
++    ];
++    $form['tips']['new']['add'] = [
++      '#type' => 'submit',
++      '#value' => $this->t('Add'),
++      '#validate' => [[$this, 'tipValidate']],
++      '#submit' => [[$this, 'tipAdd']],
++    ];
++
++    return $form;
++  }
++
++  /**
++   * Validate handler.
++   */
++  public function tipValidate($form, FormStateInterface $form_state) {
++    if (!$form_state->getValue('new')) {
++      $form_state->setError($form['tips']['new']['new'], $this->t('Select a new tip.'));
++    }
++  }
++
++  /**
++   * Submit handler.
++   */
++  public function tipAdd($form, FormStateInterface $form_state) {
++    $tour = $this->getEntity($form_state);
++
++    $this::submitForm($form, $form_state, FALSE);
++
++    $weight = 0;
++    if (!$form_state->isValueEmpty('tips')) {
++      // Get last weight.
++      foreach ($form_state->getValue('tips') as $tip) {
++        if ($tip['weight'] > $weight) {
++          $weight = $tip['weight'] + 1;
++        }
++      }
++    }
++
++    $manager = \Drupal::service('plugin.manager.tour.tip');
++    $stub = $manager->createInstance($form_state->getValue('new'), []);
++
++    // If a form is available for this tip then redirect to a add page.
++    $stub_form = $stub->buildConfigurationForm([], new FormState());
++    if (isset($stub_form)) {
++      // Redirect to the appropriate page to add this new tip.
++      $form_state->setRedirect('tour_ui.tip.add', ['tour' => $tour->id(), 'type' => $form_state->getValue('new')], ['query' => ['weight' => $weight]]);
++    }
++
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function validateForm(array &$form, FormStateInterface $form_state, $redirect = TRUE) {
++    // Form cannot be validated if a tip has no #data, so no way to export
++    // configuration.
++    if (!$form_state->isValueEmpty('tips')) {
++      foreach ($form_state->getValue('tips') as $key => $values) {
++        if (!isset($form['#data'][$key])) {
++          $form_state->setError($form['tips'][$key], $this->t('You cannot save the tour while %tip tip cannot be exported.', ['%tip' => $this->getEntity()->getTip($key)->getLabel()]));
++        }
++      }
++    }
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitForm(array &$form, FormStateInterface $form_state, $redirect = TRUE) {
++    // Filter out invalid characters and convert to an array.
++    $routes = [];
++    $values_routes = preg_replace("/(\r\n?|\n)/", "\n", $form_state->getValue('routes'));
++    $values_routes = explode("\n", $values_routes);
++    $values_routes = array_map('trim', $values_routes);
++    if (!empty($values_routes)) {
++      foreach (array_filter($values_routes) as $route) {
++        $routes[]['route_name'] = $route;
++      }
++    }
++
++    $form_state->setValue('routes', array_filter($routes));
++
++    // Merge the form values in with the current configuration.
++    if (!$form_state->isValueEmpty('tips')) {
++      $tips = [];
++      foreach ($form_state->getValue('tips') as $key => $values) {
++        $data = $form['#data'][$key];
++        $tips[$key] = array_merge($data, $values);
++      }
++      $form_state->setValue('tips', $tips);
++    }
++    else {
++      $form_state->setValue('tips', []);
++    }
++
++    parent::submitForm($form, $form_state);
++
++    // Redirect to Entity edition.
++    if ($redirect) {
++      $form_state->setRedirect('entity.tour.edit_form', ['tour' => $this->entity->id()]);
++    }
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function delete(array $form, FormStateInterface $form_state) {
++    $entity = $this->getEntity($form_state);
++    $form_state->setRedirect('entity.tour.delete_form',  ['tour' => $entity->id()]);
++  }
++
++}
+diff --git a/src/Form/TourTipDeleteForm.php b/src/Form/TourTipDeleteForm.php
+new file mode 100644
+index 0000000..28d84d5
+--- /dev/null
++++ b/src/Form/TourTipDeleteForm.php
+@@ -0,0 +1,116 @@
++<?php
++
++namespace Drupal\tour_ui\Form;
++
++use Drupal\Core\Form\ConfirmFormBase;
++use Drupal\Core\Form\FormStateInterface;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\Core\Url;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++
++/**
++ * Builds the form to delete a tour tip.
++ */
++class TourTipDeleteForm extends ConfirmFormBase {
++
++  /**
++   * Stores the tour entity being deleted.
++   *
++   * @var \Drupal\Core\Entity\EntityInterface
++   */
++  protected $entity;
++
++  /**
++   * Stores the tour tip candidate for deletion.
++   *
++   * @var \Drupal\Core\Entity\EntityInterface
++   */
++  protected $tip;
++
++  /**
++   * The entity manager.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * Constructs a new TourTipDeleteForm object.
++   *
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
++   *   The entity manager.
++   */
++  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
++    $this->entityTypeManager = $entity_type_manager;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container) {
++    return new static(
++      $container->get('entity_type.manager')
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getFormID() {
++    return 'tour_ui_tip_confirm_delete';
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getCancelUrl() {
++    return Url::fromRoute('entity.tour.edit_form', ['tour' => $this->entity->id()]);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getQuestion() {
++    return $this->t('Are you sure you want to delete the %tour tour %tip tip?', ['%tour' => $this->entity->label(), '%tip' => $this->tip->get('label')]);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildForm(array $form, FormStateInterface $form_state, $tour = '', $tip = '') {
++    $this->entity = $this->entityTypeManager->getStorage('tour')->load($tour);
++    $tour = $this->entity;
++    $this->tip = $tour->getTip($tip);
++
++    return parent::buildForm($form, $form_state);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function validateForm(array &$form, FormStateInterface $form_state) {
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitForm(array &$form, FormStateInterface $form_state) {
++    // Rebuild the tips and remove the irrelevant one.
++    $candidate = $this->tip->get('id');
++    $tips = array();
++    foreach ($this->entity->getTips() as $tip) {
++      $tip_id = $tip->get('id');
++      if ($tip_id == $candidate) {
++        continue;
++      }
++      $tips[$tip_id] = $tip->export();
++    }
++    $this->entity->set('tips', $tips);
++    $this->entity->save();
++
++    $form_state->setRedirect('entity.tour.edit_form', ['tour' => $this->entity->id()]);
++    drupal_set_message($this->t('Deleted the %tour tour %tip tip.', ['%tour' => $this->entity->label(), '%tip' => $this->tip->get('label')]));
++  }
++
++}
+diff --git a/src/Form/TourTipForm.php b/src/Form/TourTipForm.php
+new file mode 100644
+index 0000000..a7c8c16
+--- /dev/null
++++ b/src/Form/TourTipForm.php
+@@ -0,0 +1,186 @@
++<?php
++
++namespace Drupal\tour_ui\Form;
++
++use Drupal\Core\Render\Element;
++use Drupal\Core\Form\FormBase;
++use Drupal\Core\Form\FormStateInterface;
++use Drupal\tour\TipPluginManager;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++/**
++ * Form controller for the tour tip plugin edit forms.
++ */
++class TourTipForm extends FormBase {
++
++  /**
++   * The Tour tip plugin manager.
++   *
++   * @var \Drupal\Tour\TipPluginManager
++   */
++  protected $pluginManager;
++
++  /**
++   * Constructs a new TourTipForm object.
++   *
++   * @param \Drupal\Tour\TipPluginManager $plugin_manager
++   *   The Tour tip plugin manager.
++   */
++  public function __construct(TipPluginManager $plugin_manager) {
++    $this->pluginManager = $plugin_manager;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container) {
++    return new static(
++      $container->get('plugin.manager.tour.tip')
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getFormId() {
++    return 'tour_ui_tip_test_form';
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildForm(array $form, FormStateInterface $form_state) {
++    $storage = $form_state->getStorage();
++    $tip = $storage['#tip'];
++
++    $form += $tip->buildConfigurationForm($form, $form_state);
++
++    // Retrieve and add the form actions array.
++    $actions = $this->actionsElement($form, $form_state);
++    if (!empty($actions)) {
++      $form['actions'] = $actions;
++    }
++
++    return $form;
++  }
++
++  /**
++   * Returns the action form element for the current entity form.
++   */
++  protected function actionsElement(array $form, FormStateInterface $form_state) {
++    $element = $this->actions($form, $form_state);
++
++    if (isset($element['delete'])) {
++      // Move the delete action as last one, unless weights are explicitly
++      // provided.
++      $delete = $element['delete'];
++      unset($element['delete']);
++      $element['delete'] = $delete;
++      $element['delete']['#button_type'] = 'danger';
++    }
++
++    if (isset($element['submit'])) {
++      // Give the primary submit button a #button_type of primary.
++      $element['submit']['#button_type'] = 'primary';
++    }
++
++    $count = 0;
++    foreach (Element::children($element) as $action) {
++      $element[$action] += array(
++        '#weight' => ++$count * 5,
++      );
++    }
++
++    if (!empty($element)) {
++      $element['#type'] = 'actions';
++    }
++
++    return $element;
++  }
++
++  /**
++   * Returns an array of supported actions for the current entity form.
++   */
++  protected function actions(array $form, FormStateInterface $form_state) {
++    $actions['submit'] = array(
++      '#type' => 'submit',
++      '#value' => $this->t('Save'),
++      '#submit' => array('::submitForm'),
++    );
++
++    $actions['delete'] = array(
++      '#type' => 'link',
++      '#title' => $this->t('Delete'),
++      '#attributes' => array(
++        'class' => array('button', 'button--danger'),
++      ),
++    );
++
++    return $actions;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function validateForm(array &$form, FormStateInterface $form_state) {
++    // Determine if one of our tips already exist.
++    $storage = $form_state->getStorage();
++    $tour = $storage['#tour'];
++    $tips = $tour->getTips();
++    // If there are no initial tips then we don't need to check.
++    if (empty($tips)) {
++      return;
++    }
++
++    $tip_ids = array_map(function($data) {
++      return $data->id();
++    }, $tips);
++
++    if (in_array($form_state->getValue('id'), $tip_ids) && isset($storage['#new'])) {
++      $form_state->setError($form['label'], $this->t('A tip with the same identifier exists.'));
++    }
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitForm(array &$form, FormStateInterface $form_state) {
++    $storage = $form_state->getStorage();
++    $tour = $storage['#tour'];
++    $tip = $storage['#tip'];
++    // Get available fields from current tip plugin.
++    $configuration = $tip->getConfiguration();
++
++    // Build a new tip.
++    $new_tip = $tip->getConfiguration();
++    foreach ($configuration as $name => $configuration_value) {
++      $value = $form_state->getValue($name);
++      $new_tip[$name] = is_array($value) ? array_filter($value) : $value;
++    }
++
++    // Rebuild the tips.
++    $new_tip_list = $tour->getTips();
++    $new_tips = array();
++    if (!empty($new_tip_list)) {
++      foreach ($new_tip_list as $tip) {
++        $new_tips[$tip->id()] = $tip->getConfiguration();
++      }
++    }
++
++    // Add our tip and save.
++    $new_tips[$new_tip['id']] = $new_tip;
++    $tour->set('tips', $new_tips);
++    $tour->save();
++
++    if (isset($storage['#new'])) {
++      drupal_set_message($this->t('The %tip tip has been created.', array('%tip' => $new_tip['label'])));
++    }
++    else {
++      drupal_set_message($this->t('Updated the %tip tip.', array('%tip' => $new_tip['label'])));
++    }
++
++    $form_state->setRedirect('entity.tour.edit_form', ['tour' => $tour->id()]);
++    return $tour;
++  }
++
++}
+diff --git a/src/Plugin/tour_ui/tip/TipPluginTextExtended.php b/src/Plugin/tour_ui/tip/TipPluginTextExtended.php
+new file mode 100644
+index 0000000..9b7f076
+--- /dev/null
++++ b/src/Plugin/tour_ui/tip/TipPluginTextExtended.php
+@@ -0,0 +1,210 @@
++<?php
++
++namespace Drupal\tour_ui\Plugin\tour_ui\tip;
++
++use Drupal\Core\Form\FormStateInterface;
++use Drupal\tour\Plugin\tour\tip\TipPluginText;
++
++/**
++ * This plugin override Tour\tip\TipPluginText to add UI methods.
++ *
++ * It should not appear as tour\tip plugin because tour_ui shouldn't be
++ * installed on production. So this plugin will not be availble anymore once the
++ * module will be installed.
++ * The only goal of this plugin is to provide missing ui methods for default
++ * tip text plugin.
++ *
++ * @Tip(
++ *   id = "text_extended",
++ *   title = @Translation("Text")
++ * )
++ */
++class TipPluginTextExtended extends TipPluginText {
++
++  /**
++   * {@inheritdoc}
++   *
++   * TODO: Remove this method when
++   * https://www.drupal.org/node/2851166#comment-11925707 will be commited.
++   */
++  public function getConfiguration() {
++    $names = [
++      'id',
++      'plugin',
++      'label',
++      'weight',
++      'attributes',
++      'body',
++      'location',
++    ];
++    foreach ($names as $name) {
++      $properties[$name] = $this->get($name);
++    }
++    return $properties;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
++    $id = $this->get('id');
++    $form['label'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Label'),
++      '#required' => TRUE,
++      '#default_value' => $this->get('label'),
++    ];
++    $form['id'] = [
++      '#type' => 'machine_name',
++      '#machine_name' => [
++        'exists' => '\Drupal\tour\Entity\Tour::load',
++        'replace_pattern' => '[^a-z0-9-]+',
++        'replace' => '-',
++      ],
++      '#default_value' => $id,
++      '#disabled' => !empty($id),
++    ];
++    $form['plugin'] = [
++      '#type' => 'value',
++      '#value' => $this->get('plugin'),
++    ];
++    $form['weight'] = [
++      '#type' => 'weight',
++      '#title' => $this->t('Weight'),
++      '#default_value' => $this->get('weight'),
++      '#attributes' => [
++        'class' => ['tip-order-weight'],
++      ],
++      '#delta' => 100,
++    ];
++
++    $attributes = $this->getAttributes();
++    $form['attributes'] = [
++      '#type' => 'fieldset',
++      '#title' => $this->t('Attributes'),
++      '#collapsible' => TRUE,
++      '#collapsed' => FALSE,
++      '#tree' => TRUE,
++    ];
++
++    // Determine the type identifier of the tip.
++    if (!empty($attributes['data-id'])) {
++      $tip_type = 'data-id';
++    }
++    else if (!empty($attributes['data-class'])) {
++      $tip_type = 'data-class';
++    }
++    else {
++      $tip_type = 'modal';
++    }
++    $form['attributes']['selector_type'] = [
++      '#type' => 'select',
++      '#title' => $this->t('Selector type'),
++      '#description' => $this->t('The type of selector that this tip will target.'),
++      '#options' => [
++        'data-id' => $this->t('Data ID'),
++        'data-class' => $this->t('Data Class'),
++        'modal' => $this->t('Modal'),
++      ],
++      '#default_value' => $tip_type,
++      '#element_validate' => [[$this, 'optionsFormValidate']],
++    ];
++    $form['attributes']['data-id'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Data id'),
++      '#description' => $this->t('Provide the ID of the page element.'),
++      '#field_prefix' => '#',
++      '#default_value' => !empty($attributes['data-id']) ? $attributes['data-id'] : '',
++      '#states' => [
++        'visible' => [
++          'select[name="attributes[selector_type]"]' => ['value' => 'data-id'],
++        ],
++        'enabled' => [
++          'select[name="attributes[selector_type]"]' => ['value' => 'data-id'],
++        ],
++      ],
++    ];
++    $form['attributes']['data-class'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Data class'),
++      '#description' => $this->t('Provide the Class of the page element. You can provide more complexe jquery selection like <pre>action-links a[href="/admin/structure/forum/add/forum"]</pre>'),
++      '#field_prefix' => '.',
++      '#default_value' => !empty($attributes['data-class']) ? $attributes['data-class'] : '',
++      '#states' => [
++        'visible' => [
++          'select[name="attributes[selector_type]"]' => ['value' => 'data-class'],
++        ],
++        'enabled' => [
++          'select[name="attributes[selector_type]"]' => ['value' => 'data-class'],
++        ],
++      ],
++    ];
++
++    $form['location'] = [
++      '#type' => 'select',
++      '#title' => $this->t('Location'),
++        '#options' => [
++        'top' => $this->t('Top'),
++        'bottom' => $this->t('Bottom'),
++        'left' => $this->t('Left'),
++        'right' => $this->t('Right'),
++      ],
++      '#default_value' => $this->get('location'),
++    ];
++    $form['body'] = [
++      '#type' => 'textarea',
++      '#title' => $this->t('Body'),
++      '#required' => TRUE,
++      '#default_value' => $this->get('body'),
++    ];
++
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
++  }
++
++  /**
++   * Validates the selector_type tip optionsForm().
++   *
++   * @param $element
++   *   The form element that has the validate attached.
++   * @param \Drupal\Core\Form\FormStateInterface $form_state
++   *   The state of the form after submission.
++   * @param $form
++   *   The form array.
++   */
++  public function optionsFormValidate($element, FormStateInterface $form_state, $form) {
++    $selector_type = $form_state->get(['attributes', 'selector_type']);
++    $form_state->unsetValue(['attributes', 'selector_type']);
++
++    // If modal we need to ensure that there is no data-id or data-class specified.
++    if ($selector_type == 'modal') {
++      $form_state->unsetValue(['attributes', 'data-id']);
++      $form_state->unsetValue(['attributes', 'data-class']);
++    }
++
++    // If data-id was selected and no id provided.
++    if ($selector_type == 'data-id' && $form_state->isValueEmpty(['attributes', 'data-id'])) {
++      $form_state->setError($form['attributes']['data-id'], $this->t('Please provide a data id.'));
++    }
++
++    // If data-class was selected and no class provided.
++    if ($selector_type == 'data-class' && $form_state->isValueEmpty(['attributes', 'data-class'])) {
++      $form_state->setError($form['attributes']['data-class'], $this->t('Please provide a data class.'));
++    }
++
++    // Remove the data-class value if data-id is provided.
++    if ($selector_type == 'data-id') {
++      $form_state->unsetValue(['attributes', 'data-class']);
++    }
++
++    // Remove the data-id value is data-class is provided.
++    if ($selector_type == 'data-class') {
++      $form_state->unsetValue(['attributes', 'data-id']);
++    }
++  }
++}
+diff --git a/lib/Drupal/tour_ui/Tests/TourUITest.php b/src/Tests/TourUITest.php
+similarity index 100%
+rename from lib/Drupal/tour_ui/Tests/TourUITest.php
+rename to src/Tests/TourUITest.php
+diff --git a/src/TourAccessControlHandler.php b/src/TourAccessControlHandler.php
+new file mode 100644
+index 0000000..c82e926
+--- /dev/null
++++ b/src/TourAccessControlHandler.php
+@@ -0,0 +1,25 @@
++<?php
++
++namespace Drupal\tour_ui;
++
++use Drupal\Core\Access\AccessResult;
++use Drupal\Core\Entity\EntityAccessControlHandler;
++use Drupal\Core\Entity\EntityInterface;
++use Drupal\Core\Session\AccountInterface;
++
++class TourAccessControlHandler extends EntityAccessControlHandler {
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
++    return AccessResult::allowedIfHasPermission($account, 'administer tour');
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
++    return AccessResult::allowedIfHasPermission($account, 'administer tour');
++  }
++}
+diff --git a/src/TourListBuilder.php b/src/TourListBuilder.php
+new file mode 100644
+index 0000000..3f6cfe7
+--- /dev/null
++++ b/src/TourListBuilder.php
+@@ -0,0 +1,122 @@
++<?php
++
++namespace Drupal\tour_ui;
++
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
++use Drupal\Core\Entity\EntityListBuilder;
++use Drupal\Core\Entity\EntityInterface;
++use Drupal\Core\Entity\EntityTypeInterface;
++use Drupal\Component\Utility\Html;
++
++/**
++ * Provides a listing of tours.
++ */
++class TourListBuilder extends EntityListBuilder {
++
++  /**
++   * Constructs a new TourListBuilder object.
++   *
++   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
++   *   The entity type definition.
++   * @param \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage
++   *   The config storage class.
++   */
++  public function __construct(EntityTypeInterface $entity_type, ConfigEntityStorageInterface $storage) {
++    parent::__construct($entity_type, $storage);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
++    return new static(
++      $entity_type,
++      $container->get('entity.manager')->getStorage($entity_type->id())
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildHeader() {
++    $row['id'] = t('Id');
++    $row['label'] = t('Label');
++    $row['routes'] = t('routes');
++    $row['tips'] = t('Number of tips');
++    $row['operations'] = t('Operations');
++    return $row;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildRow(EntityInterface $entity) {
++    $row['title'] = [
++      'data' => $entity->label(),
++      'class' => ['menu-label'],
++    ];
++
++    $row = parent::buildRow($entity);
++
++    $data['id'] = Html::escape($entity->id());
++    $data['label'] = Html::escape($entity->label());
++    // Include the routes this tour is used on.
++    $routes_name = [];
++    if ($routes = $entity->getRoutes()) {
++      foreach ($routes as $route) {
++        $routes_name[] = $route['route_name'];
++      }
++    }
++    $data['routes'] = [
++      'data' => [
++        '#type' => 'inline_template',
++        '#template' => '<div class="tour-routes">{{ routes|safe_join("<br />") }}</div>',
++        '#context' => array('routes' => $routes_name),
++      ],
++    ];
++
++    // Count the number of tips.
++    $data['tips'] = count($entity->getTips());
++    $data['operations'] = $row['operations'];
++    // Wrap the whole row so that the entity ID is used as a class.
++    return [
++      'data' => $data,
++      'class' => [
++        $entity->id(),
++      ],
++    ];
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getOperations(EntityInterface $entity) {
++    $operations = parent::getOperations($entity);
++
++    $operations['edit'] = [
++      'title' => t('Edit'),
++      'url' => $entity->toUrl('edit-form'),
++      'weight' => 1,
++    ];
++    $operations['delete'] = [
++      'title' => t('Delete'),
++      'url' => $entity->toUrl('delete-form'),
++      'weight' => 2,
++    ];
++
++    return $operations;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function render() {
++    $build = parent::render();
++    $build['#empty'] = $this->t('No tours available. <a href="@link">Add tour</a>.', [
++      '@link' => 'tour_ui.tour.add',
++    ]);
++    return $build;
++  }
++
++}
+diff --git a/tour_ui.links.action.yml b/tour_ui.links.action.yml
+new file mode 100644
+index 0000000..02ee757
+--- /dev/null
++++ b/tour_ui.links.action.yml
+@@ -0,0 +1,5 @@
++tour_ui_tour_add_action:
++  route_name: tour_ui.tour.add
++  title: 'Add tour'
++  appears_on:
++    - entity.tour.collection
+diff --git a/tour_ui.links.menu.yml b/tour_ui.links.menu.yml
+new file mode 100644
+index 0000000..7a92740
+--- /dev/null
++++ b/tour_ui.links.menu.yml
+@@ -0,0 +1,5 @@
++entity.tour.collection:
++  title: Tours
++  description: 'Add and modify tours.'
++  route_name: entity.tour.collection
++  parent: system.admin_config_ui
+diff --git a/tour_ui.module b/tour_ui.module
+index 82200c1..997c9e2 100644
+--- a/tour_ui.module
++++ b/tour_ui.module
+@@ -8,109 +8,19 @@
+ use Drupal\Core\Entity\EntityInterface;
+ 
+ /**
+- * Implements hook_permission.
++ * Implements hook_entity_type_alter().
+  */
+-function tour_ui_permission() {
+-  return array(
+-    'administer tour' => array(
+-      'title' => t('Administer tour'),
+-      'description' => t('Perform administration tasks on tour module.'),
+-    ),
+-  );
+-}
+-
+-/**
+- * Implements hook_entity_info().
+- */
+-function tour_ui_entity_info(&$entity_info) {
+-  $entity_info['tour']['controllers']['list'] = 'Drupal\tour_ui\TourListController';
+-  $entity_info['tour']['controllers']['form']['default'] = 'Drupal\tour_ui\TourFormController';
+-  $entity_info['tour']['controllers']['form']['tips'] = 'Drupal\tour_ui\TourTipFormController';
+-  $entity_info['tour']['controllers']['form']['add'] = 'Drupal\tour_ui\TourTipFormController';
+-  $entity_info['tour']['controllers']['form']['edit'] = 'Drupal\tour_ui\TourTipFormController';
+-  $entity_info['tour']['controllers']['form']['delete'] = 'Drupal\tour_ui\TourTipDeleteForm';
+-  $entity_info['tour']['uri_callback'] = 'tour_ui_uri';
+-}
+-
+-function tour_ui_entity_info_alter(&$entity_info) {
+-  $entity_info['tour']['links']['edit-form'] = 'admin/config/user-interface/tour/manage/{id}';
+-}
+-
+-/**
+- * Implements hook_entity_access().
+- *
+- * TODO: This hook is not defined on d.o yet.
+- *   check for its arguments
+- *
+- *
+- * @param type $bc_entity
+- * @param type $operation
+- * @param type $account
+- * @param type $langcode
+- * @return boolean
+- *
+- * @see EntityAccessController::access()
+- * @see EntityAccessControllerInterface::access()
+- */
+-function tour_ui_tour_access($bc_entity, $operation, $account, $langcode) {
+-  $account->hasPermission('administer tour');
+-}
+-
+-/**
+- * Implements hook_menu().
+- */
+-function tour_ui_menu() {
+-  $items['admin/config/user-interface/tour'] = array(
+-    'title' => 'Tour',
+-    'description' => 'Add and modify guided tours.',
+-    'route_name' => 'tour_ui_listing',
+-  );
+-  $items['admin/config/user-interface/tour/add'] = array(
+-    'title' => 'Add tour',
+-    'type' => MENU_LOCAL_ACTION,
+-    'route_name' => 'tour_ui_add',
+-  );
+-  $items['admin/config/user-interface/tour/manage/%/edit'] = array(
+-    'title' => 'Edit tour',
+-    'route_name' => 'tour_ui_edit',
+-  );
+-  $items['admin/config/user-interface/tour/manage/%/delete'] = array(
+-    'title' => 'Delete tour',
+-    'route_name' => 'tour_ui_delete',
+-  );
+-  $items['admin/config/user-interface/tour/manage/%/tip/add/%'] = array(
+-    'title' => 'Add tour tip',
+-    'route_name' => 'tour_ui_tip_add',
+-  );
+-  $items['admin/config/user-interface/tour/manage/%/tip/edit/%'] = array(
+-    'title' => 'Edit tour tip',
+-    'route_name' => 'tour_ui_tip_edit',
+-  );
+-  $items['admin/config/user-interface/tour/manage/%/tip/delete/%'] = array(
+-    'title' => 'Edit tour tip',
+-    'route_name' => 'tour_ui_tip_delete',
+-  );
+-  return $items;
+-}
+-
+-/**
+- * Callback for the entity URI.
+- */
+-function tour_ui_uri(EntityInterface $entity) {
+-  return array(
+-    'path' => 'admin/config/user-interface/tour/manage/' . $entity->id,
+-    'options' => array(
+-      'entity_type' => $entity->entityType(),
+-      'entity' => $entity,
+-    ),
+-  );
+-}
+-
+-/**
+- * Callback for machine_name exists.
+- */
+-function _tour_load($tour) {
+-  return entity_load('tour', $tour);
++function tour_ui_entity_type_alter(array &$entity_types) {
++  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
++  $entity_types['tour']->setAccessClass('Drupal\tour_ui\TourAccessControlHandler');
++  $entity_types['tour']->setFormClass('default', 'Drupal\tour_ui\Form\TourForm');
++  $entity_types['tour']->setFormClass('add', 'Drupal\tour_ui\Form\TourForm');
++  $entity_types['tour']->setFormClass('edit', 'Drupal\tour_ui\Form\TourForm');
++  $entity_types['tour']->setFormClass('delete', 'Drupal\tour_ui\Form\TourDeleteForm');
++  $entity_types['tour']->setListBuilderClass('Drupal\tour_ui\TourListBuilder');
++  $entity_types['tour']->setLinkTemplate('add-form', '/admin/config/user-interface/tour/add');
++  $entity_types['tour']->setLinkTemplate('edit-form', '/admin/config/user-interface/tour/manage/{tour}');
++  $entity_types['tour']->setLinkTemplate('delete-form', '/admin/config/user-interface/tour/manage/{tour}/delete');
+ }
+ 
+ /**
+@@ -118,5 +28,7 @@ function _tour_load($tour) {
+  */
+ function tour_ui_tour_tips_info_alter(&$info) {
+   // Override the core text plugin.
+-  $info['text']['class'] = 'Drupal\tour_ui\Plugin\tour\tip\TipPluginTextExtended';
++  if (isset($info['text'])) {
++    $info['text']['class'] = 'Drupal\tour_ui\Plugin\tour_ui\tip\TipPluginTextExtended';
++  }
+ }
+diff --git a/tour_ui.permissions.yml b/tour_ui.permissions.yml
+new file mode 100644
+index 0000000..7e7b661
+--- /dev/null
++++ b/tour_ui.permissions.yml
+@@ -0,0 +1,3 @@
++administer tour:
++  title: 'Administer tour'
++  restrict access: true
+diff --git a/tour_ui.routing.yml b/tour_ui.routing.yml
+index 8fa9eff..3c94657 100644
+--- a/tour_ui.routing.yml
++++ b/tour_ui.routing.yml
+@@ -1,48 +1,54 @@
+-tour_ui_listing:
++entity.tour.collection:
+   path: '/admin/config/user-interface/tour'
+   defaults:
+-    _controller: 'tour_ui.controller:listing'
++    _entity_list: 'tour'
++    _title: 'Tours'
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_add:
++tour_ui.tour.add:
+   path: '/admin/config/user-interface/tour/add'
+   defaults:
+-    _controller: 'tour_ui.controller:add'
++    _entity_form: tour.default
++    _title: 'Add tour'
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_edit:
++entity.tour.edit_form:
+   path: '/admin/config/user-interface/tour/manage/{tour}'
+   defaults:
+-    _controller: 'tour_ui.controller:edit'
++    _entity_form: tour.default
++    _title: 'Edit tour'
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_delete:
++entity.tour.delete_form:
+   path: '/admin/config/user-interface/tour/manage/{tour}/delete'
+   defaults:
+-    _form: '\Drupal\tour_ui\TourDeleteForm'
++    _entity_form: tour.delete
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_tip_add:
++tour_ui.tip.add:
+   path: '/admin/config/user-interface/tour/manage/{tour}/tip/add/{type}'
+   defaults:
+-    _controller: 'tour_ui.controller:addTip'
++    _controller: '\Drupal\tour_ui\Controller\TourTipController:add'
++    _title: 'Add tip'
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_tip_edit:
++tour_ui.tip.edit:
+   path: '/admin/config/user-interface/tour/manage/{tour}/tip/edit/{tip}'
+   defaults:
+-    _controller: 'tour_ui.controller:editTip'
++    _controller: '\Drupal\tour_ui\Controller\TourTipController:edit'
++    _title: 'Edit tip'
+   requirements:
+     _permission: 'administer tour'
+ 
+-tour_ui_tip_delete:
++tour_ui.tip.delete:
+   path: '/admin/config/user-interface/tour/manage/{tour}/tip/delete/{tip}'
+   defaults:
+-    _form: '\Drupal\tour_ui\TourTipDeleteForm'
++    _form: '\Drupal\tour_ui\Form\TourTipDeleteForm'
++    _title: 'Delete tip'
+   requirements:
+     _permission: 'administer tour'
+diff --git a/tour_ui.services.yml b/tour_ui.services.yml
+deleted file mode 100644
+index 04b4140..0000000
+--- a/tour_ui.services.yml
++++ /dev/null
+@@ -1,5 +0,0 @@
+-services:
+-  tour_ui.controller:
+-    class: Drupal\tour_ui\Routing\TourUIController
+-    arguments: ['@plugin.manager.entity']
+-
+-- 
+2.8.1
+

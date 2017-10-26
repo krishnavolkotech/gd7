@@ -1,0 +1,8 @@
+uuid: 3c543d20-0b8e-4f42-851b-3ffdd95900aa
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59899
+label: 'DaSi ELFE'
+description: 'DaSi ELFE'
+locked: false

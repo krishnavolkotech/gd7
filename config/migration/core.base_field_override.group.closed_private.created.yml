@@ -1,0 +1,18 @@
+uuid: 0c79e480-9cdb-4b64-926f-d6f1adb2a8d1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: group.closed_private.created
+field_name: created
+entity_type: group
+bundle: closed_private
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

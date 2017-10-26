@@ -1,0 +1,20 @@
+uuid: cfcc3be2-3a01-4450-9c4e-b486fec415ac
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.quickinfo
+id: node.quickinfo.uid
+field_name: uid
+entity_type: node
+bundle: quickinfo
+label: 'Authored by'
+description: 'The username of the content author.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: 'Drupal\node\Entity\Node::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

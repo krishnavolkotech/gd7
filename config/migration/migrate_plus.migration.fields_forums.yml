@@ -1,0 +1,34 @@
+uuid: 57e799c5-56df-4048-a6a9-37b220fca48a
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: xqAHAfboWUfYRnZWgldJRxnhUUA4Ma-61CPWXovpNVE
+id: fields_forums
+migration_tags:
+  - 'Drupal 6'
+migration_group: fields
+label: 'Forums Taxonomy field'
+source:
+  plugin: d6_node
+  node_type: forum
+  target: migrate
+process:
+  nid: nid
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: de
+  taxonomy_forums/target_id:
+    -
+      plugin: group_mapping_from_d6
+      method: getForumTaxonomyId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
+destination:
+  plugin: 'entity:node'
+migration_dependencies:
+  required:
+    - d6_node

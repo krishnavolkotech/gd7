@@ -21,36 +21,30 @@ group.type.*:
     description:
       type: 'text'
       label: 'Description'
-    content:
+    creator_membership:
+      type: 'boolean'
+      label: 'The group creator receives a membership'
+    creator_wizard:
+      type: 'boolean'
+      label: 'The group creator must immediately complete their membership.'
+    creator_roles:
       type: 'sequence'
-      label: 'Group content enabler plugins'
+      label: 'Group creator roles'
       sequence:
-        type: 'mapping'
-        label: 'Group content plugin configuration'
-        mapping:
-          id:
-            type: 'string'
-            label: 'Plugin ID'
-          group_type:
-            type: 'string'
-            label: 'Group type ID'
-          data:
-            type: 'sequence'
-            label: 'Plugin configuration'
-            sequence:
-              type: 'group_content_enabler.config.[%key]'
+        type: 'string'
+        label: 'Group role ID'
 
 group_content_enabler.config.group_cardinality:
   type: 'integer'
-  label: 'Group Cardinality'
+  label: 'Group cardinality'
 
 group_content_enabler.config.entity_cardinality:
   type: 'integer'
-  label: 'Entity Cardinality'
+  label: 'Entity cardinality'
 
-group_content_enabler.config.info_text:
-  type: 'text_format'
-  label: 'Information to show at the top of the group content form'
+group_content_enabler.config.use_creation_wizard:
+  type: 'boolean'
+  label: 'Use creation wizard'
 
 # Follows the pattern group.role.GROUP_TYPE_ID-GROUP_ROLE_ID.
 group.role.*:
@@ -69,9 +63,15 @@ group.role.*:
     internal:
       type: 'boolean'
       label: 'Group role is used internally'
+    audience:
+      type: 'string'
+      label: 'Audience'
     group_type:
       type: 'string'
       label: 'Group type ID'
+    permissions_ui:
+      type: 'boolean'
+      label: 'Show this role in the default permissions UI'
     permissions:
       type: 'sequence'
       label: 'Permissions'
@@ -98,6 +98,11 @@ group_content_type:
     content_plugin:
       type: 'text'
       label: 'Group content plugin ID'
+    plugin_config:
+      type: 'sequence'
+      label: 'Plugin configuration'
+      sequence:
+        type: 'group_content_enabler.config.[%key]'
 
 # Follows the pattern group.content_type.GROUP_TYPE_ID-PLUGIN_ID.
 # Follows the pattern group.content_type.GROUP_TYPE_ID-PLUGIN_ID-DERIVATIVE_ID.

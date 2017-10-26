@@ -1,0 +1,31 @@
+uuid: 7fb000b6-637e-45fe-af3a-fec3f06d401b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_tech_requirements
+    - node.type.quickinfo
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.quickinfo.field_tech_requirements
+field_name: field_tech_requirements
+entity_type: node
+bundle: quickinfo
+label: '2.3 Technische Einsatzvoraussetzungen'
+description: '(vor dem Einsatz vom ÜnL zu erfüllen)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

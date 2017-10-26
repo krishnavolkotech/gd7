@@ -1,0 +1,16 @@
+uuid: fc70364a-1426-456a-9d7b-d0592235aa88
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group.realease_management
+target_entity_type_id: group
+target_bundle: realease_management
+default_langcode: site_default
+language_alterable: false

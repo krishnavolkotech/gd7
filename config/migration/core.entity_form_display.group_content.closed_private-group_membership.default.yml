@@ -1,0 +1,43 @@
+uuid: 69d26f1f-4cfd-4da7-90e1-92691579d4cf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.closed_private-group_membership.group_roles
+    - group.content_type.closed_private-group_membership
+  module:
+    - cust_group
+id: group_content.closed_private-group_membership.default
+targetEntityType: group_content
+bundle: closed_private-group_membership
+mode: default
+content:
+  entity_id:
+    type: group_user_field_widget
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+      hzd_group: ''
+    third_party_settings: {  }
+    region: content
+  group_roles:
+    type: options_buttons
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  path: true
+  uid: true

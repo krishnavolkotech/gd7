@@ -59,11 +59,11 @@ class IncidentsBlock extends BlockBase
     function access(AccountInterface $account, $return_as_object = false) {
         $routeMatch = \Drupal::routeMatch();
         $parameters = $routeMatch->getParameters();
-        if ($routeMatch->getRouteName() == 'entity.group_content.group_node__deployed_releases.canonical' && $parameters->get('group')->id() == INCEDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes') {
+        if ($routeMatch->getRouteName() == 'entity.node.canonical' && $parameters->get('node')->getType() == 'downtimes') {
             //exception for downtimes content type
             return AccessResult::allowed();
         }
-        if ($routeMatch->getRouteName() == 'front_page.front') {
+        if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
             return AccessResult::allowed();
         }
         return AccessResult::forbidden();
@@ -114,18 +114,23 @@ class IncidentsBlock extends BlockBase
                     $serviceTitles .= $serviceItem->getTitle() . ', ';
                 }
                 foreach ($stateids as $stateId) {
+                  if(isset($states[$stateId]))
                     $stateTitles .= ' [' . $states[$stateId] . ']';
                 }
                 if ($groupContent) {
                     $hoverIconHtml = $hover_markup = null;
 //          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-                    if ($routeMatch->getRouteName() == 'front_page.front') {
+                    if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
                         $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
                         $hover_markup = MaintenanceBlock::get_hover_markup($incident);
                     }
                     $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
-                    $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
+//                    $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
+//                    $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
+//                  $url = Url::fromRoute('cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),'type'=>'downtimes','group_content'=>$groupContent->id()],['attributes'=>['class' => ['text-danger']]]);
+                  $url = $incident->toUrl('canonical', ['attributes'=>['class' => ['text-danger']]]);
                     $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
+//                    $data[] = Markup::create(Link::createFromRoute($label, 'cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),['type'=>'downtimes','group_content'=>$groupContent->id()]],['attributes'])->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
                 }
 //        foreach ($serviceid as $ids) {
 //          // Loops for all services
@@ -148,10 +153,16 @@ class IncidentsBlock extends BlockBase
                 ),
             ),
         );
+        $downtime_link_options = array(
+            'attributes' => array(
+                'class' => array(
+                    'downtime-create-button',
+                ),
+            ),
+        );
 
-
-//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
-//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options);
+//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
+//    $report_link = Link::createFromRoute($this->t('Report Downtime'), 'downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
 //    foreach ($data as $sid => $item) {
         $markup['incident_list'][] = [
 //        '#title' => $serviceNames[$sid],
@@ -168,14 +179,17 @@ class IncidentsBlock extends BlockBase
         $markup['downtimes']['list'] = [
             '#title' => $this->t('Störungen und Blockzeiten'),
             '#type' => 'link',
-            '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+            '#url' => Url::fromRoute('downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options)
         ];
-        if ($routeMatch->getRouteName() == 'front_page.front') {
+        if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
+          $access = \Drupal::service('access_manager')->checkNamedRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], \Drupal::currentUser());
+          if($access) {
             $markup['downtimes']['create'] = [
-                '#title' => $this->t('Report Downtime'),
-                '#type' => 'link',
-                '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCEDENT_MANAGEMENT], $link_options)
+              '#title' => $this->t('Report Downtime'),
+              '#type' => 'link',
+              '#url' => Url::fromRoute('downtimes.create_downtimes', ['group' => INCIDENT_MANAGEMENT], $downtime_link_options)
             ];
+          }
             $markup['#attributes'] = ['class' => ['frontpage-downtime-block']];
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];

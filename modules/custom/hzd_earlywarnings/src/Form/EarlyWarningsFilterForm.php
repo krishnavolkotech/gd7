@@ -11,9 +11,7 @@ use Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings;
 if (!defined('KONSONS')) {
     define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 }
-if (!defined('RELEASE_MANAGEMENT')) {
-    define('RELEASE_MANAGEMENT', 32);
-}
+
 
 // TODO.
 // $_SESSION['Group_id'] = 339;.
@@ -89,6 +87,7 @@ class EarlyWarningsFilterForm extends FormBase
         foreach ($terms as $key => $value) {
             $release_type_list[$value->tid] = $value->name;
         }
+        natcasesort($release_type_list);
         $form['release_type'] = array(
             '#type' => 'select',
             '#default_value' => $filter_value['release_type'] ?
@@ -112,6 +111,7 @@ class EarlyWarningsFilterForm extends FormBase
         );
         
         $default_value_services = $filter_value['services'];
+        natcasesort($services);
         $form['services'] = array(
             '#type' => 'select',
             '#options' => $services,
@@ -133,7 +133,9 @@ class EarlyWarningsFilterForm extends FormBase
             '#prefix' => '<div class = "service_search_dropdown  hzd-form-element">',
             '#suffix' => '</div>',
         );
-        
+        if($default_value_services == 0){
+          $default_value_services = -1;
+        }
         $default_value_releases = $filter_value['releases'];
         $options = HzdreleasemanagementHelper::get_dependent_release($default_value_services);
         $form['releases'] = array(

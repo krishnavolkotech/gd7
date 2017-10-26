@@ -1,0 +1,18 @@
+uuid: 645cef3c-4e6c-4271-8e20-5f94edef7ded
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.deployed_releases
+id: node.deployed_releases.created
+field_name: created
+entity_type: node
+bundle: deployed_releases
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

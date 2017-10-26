@@ -1,0 +1,27 @@
+simplify_admin: false
+simplify_nodes_global:
+  author: author
+  options: options
+  comment: comment
+  format: '0'
+  revision_information: '0'
+  menu: '0'
+  path_settings: '0'
+simplify_users_global:
+  status: status
+  timezone: timezone
+  contact: contact
+  format: '0'
+simplify_comments_global:
+  format: '0'
+simplify_taxonomies_global:
+  relations: relations
+  path: path
+  format: '0'
+simplify_blocks_global:
+  revision_information: revision_information
+  format: '0'
+simplify_profiles_global: {  }
+_core:
+  default_config_hash: omWr4s_-ZB9DeG-rP5oY4s3Pm2uiK-guRhGg0_DHHpM
+langcode: de

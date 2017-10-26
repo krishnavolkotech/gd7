@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Entity\GroupRole.
- *
- * @todo Other edit/delete paths, perhaps use a route provider?
- */
-
 namespace Drupal\group\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -18,6 +11,12 @@ use Drupal\Core\Entity\EntityStorageInterface;
  * @ConfigEntityType(
  *   id = "group_role",
  *   label = @Translation("Group role"),
+ *   label_singular = @Translation("group role"),
+ *   label_plural = @Translation("group roles"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count group role",
+ *     plural = "@count group roles"
+ *   ),
  *   handlers = {
  *     "storage" = "Drupal\group\Entity\Storage\GroupRoleStorage",
  *     "access" = "Drupal\group\Entity\Access\GroupRoleAccessControlHandler",
@@ -25,6 +24,9 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *       "add" = "Drupal\group\Entity\Form\GroupRoleForm",
  *       "edit" = "Drupal\group\Entity\Form\GroupRoleForm",
  *       "delete" = "Drupal\group\Entity\Form\GroupRoleDeleteForm"
+ *     },
+ *     "route_provider" = {
+ *       "html" = "Drupal\group\Entity\Routing\GroupRoleRouteProvider",
  *     },
  *     "list_builder" = "Drupal\group\Entity\Controller\GroupRoleListBuilder",
  *   },
@@ -37,9 +39,10 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "label" = "label"
  *   },
  *   links = {
+ *     "add-form" = "/admin/group/types/manage/{group_type}/roles/add",
  *     "collection" = "/admin/group/types/manage/{group_type}/roles",
- *     "edit-form" = "/admin/group/types/manage/{group_type}/roles/{group_role}",
  *     "delete-form" = "/admin/group/types/manage/{group_type}/roles/{group_role}/delete",
+ *     "edit-form" = "/admin/group/types/manage/{group_type}/roles/{group_role}",
  *     "permissions-form" = "/admin/group/types/manage/{group_type}/roles/{group_role}/permissions"
  *   },
  *   config_export = {
@@ -47,7 +50,9 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "label",
  *     "weight",
  *     "internal",
+ *     "audience",
  *     "group_type",
+ *     "permissions_ui",
  *     "permissions"
  *   }
  * )
@@ -78,12 +83,23 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
   /**
    * Whether the group role is used internally.
    *
-   * Examples of these are the special group roles 'anonymous', 'outsider' and
-   * 'member'.
+   * Internal roles cannot be edited or assigned directly. They do not show in
+   * the list of group roles to edit or assign and do not have an individual
+   * permissions page either. Examples of these are the special group roles
+   * 'anonymous', 'outsider' and 'member'.
    *
    * @var bool
    */
   protected $internal = FALSE;
+
+  /**
+   * The audience the role is intended for.
+   *
+   * Supported values are: 'anonymous', 'outsider' or 'member'.
+   *
+   * @var string
+   */
+  protected $audience = 'member';
 
   /**
    * The ID of the group type this role belongs to.
@@ -93,6 +109,17 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
   protected $group_type;
 
   /**
+   * Whether the role shows in the default permissions UI.
+   *
+   * By default, group roles show on the permissions page regardless of their
+   * 'internal' property. If you want to hide a group role from that UI, you can
+   * do so by setting this to FALSE.
+   *
+   * @var bool
+   */
+  protected $permissions_ui = TRUE;
+
+  /**
    * The permissions belonging to the group role.
    *
    * @var string[]
@@ -100,31 +127,10 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
   protected $permissions = [];
 
   /**
-   * The part of the group role ID after the period.
-   *
-   * @var string
-   */
-  protected $strippedId;
-
-  /**
    * {@inheritdoc}
    */
   public function id() {
     return $this->id;
-  }
-
-  /**
-   * Returns just the part of the ID pertaining to the group role.
-   *
-   * @return string
-   *   The part of the group role ID after the period.
-   */
-  protected function strippedId() {
-    if (!isset($this->strippedId)) {
-      list(, $group_role) = explode('-', $this->id(), 2);
-      $this->strippedId = $group_role;
-    }
-    return $this->strippedId;
   }
 
   /**
@@ -153,20 +159,23 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
    * {@inheritdoc}
    */
   public function isAnonymous() {
-    return $this->strippedId() == 'anonymous';
+    return $this->audience == 'anonymous';
   }
 
   /**
    * {@inheritdoc}
    */
   public function isOutsider() {
-    return $this->strippedId() == 'outsider';
+    return $this->audience == 'outsider';
   }
 
   /**
    * {@inheritdoc}
    */
   public function isMember() {
+    // Instead of checking whether the audience property is set to 'member', we
+    // check whether it isn't 'anonymous' or 'outsider'. Any unsupported value
+    // will therefore default to 'member'.
     return !$this->isAnonymous() && !$this->isOutsider();
   }
 
@@ -182,6 +191,13 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
    */
   public function getGroupTypeId() {
     return $this->group_type;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function inPermissionsUI() {
+    return $this->permissions_ui;
   }
 
   /**
@@ -211,6 +227,21 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
   public function grantPermissions($permissions) {
     $this->permissions = array_unique(array_merge($this->permissions, $permissions));
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function grantAllPermissions() {
+    $permissions = $this->getPermissionHandler()->getPermissionsByGroupType($this->getGroupType());
+
+    foreach ($permissions as $permission => $info) {
+      if (!in_array($this->audience, $info['allowed for'])) {
+        unset($permissions[$permission]);
+      }
+    }
+
+    return $this->grantPermissions(array_keys($permissions));
   }
 
   /**
@@ -248,6 +279,16 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
   }
 
   /**
+   * Returns the group permission handler.
+   *
+   * @return \Drupal\group\Access\GroupPermissionHandler
+   *   The group permission handler.
+   */
+  protected function getPermissionHandler() {
+    return \Drupal::service('group.permissions');
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected function urlRouteParameters($rel) {
@@ -260,6 +301,7 @@ class GroupRole extends ConfigEntityBase implements GroupRoleInterface {
    * {@inheritdoc}
    */
   public function calculateDependencies() {
+    parent::calculateDependencies();
     $this->addDependency('config', $this->getGroupType()->getConfigDependencyName());
   }
 

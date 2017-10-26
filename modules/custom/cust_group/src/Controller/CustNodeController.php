@@ -3,6 +3,9 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupContent;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
@@ -26,11 +29,13 @@ class CustNodeController extends ControllerBase {
    *   A node submission form.
    */
   public function add($group_id, NodeTypeInterface $node_type) {
-    $maintainance_id = \Drupal::config('downtimes.settings')->get('maintenance_group_id');
-    $quickinfo_id = \Drupal::config('quickinfo.settings')->get('quickinfo_group_id');
+    $maintainance_id = \Drupal::config('downtimes.settings')
+            ->get('maintenance_group_id');
+    $quickinfo_id = \Drupal::config('quickinfo.settings')
+            ->get('quickinfo_group_id');
 
     $node = $this->entityManager()->getStorage('node')->create(array(
-      'type' => $node_type->id(),
+        'type' => $node_type->id(),
     ));
 
     $form = $this->entityFormBuilder()->getForm($node);
@@ -38,16 +43,21 @@ class CustNodeController extends ControllerBase {
     return $form;
   }
 
-  function groupContentView() {
-    $parm = \Drupal::routeMatch()->getParameter('group_content');
-    $node = $parm->get('entity_id')->referencedEntities()[0];
-    $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-    return $view_builder->view($node,'full','de');
+  function groupContentView(RouteMatchInterface $routeMatch) {
+    $parm = $routeMatch->getParameter('group_content');
+    $entity = $parm->get('entity_id')->referencedEntities()[0];
+    $view_builder = \Drupal::entityManager()
+            ->getViewBuilder($entity->getEntityTypeId());
+    return $view_builder->view($entity, 'full', 'de');
   }
-  
-  function groupContentTitle(){
-    $parm = \Drupal::routeMatch()->getParameter('group_content');
-    return $parm->get('entity_id')->referencedEntities()[0]->label();
+
+  function groupContentTitle(RouteMatchInterface $routeMatch) {
+    $parm = $routeMatch->getParameter('group_content');
+    if ($parm instanceof GroupContent && $parm->hasField('entity_id')) {
+      return $parm->get('entity_id')->referencedEntities()[0]->label();
+    } else {
+      return [];
+    }
   }
 
   function groupMemberView() {
@@ -56,17 +66,38 @@ class CustNodeController extends ControllerBase {
     $view_builder = \Drupal::entityManager()->getViewBuilder('user');
     return $view_builder->view($user);
   }
-  
-  function groupMemberTitle(){
+
+  function groupMemberTitle() {
     $parm = \Drupal::routeMatch()->getParameter('group_content');
     return $parm->get('entity_id')->referencedEntities()[0]->label();
   }
 
   static function hzdGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    if ($user->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
     if ($group = $route_match->getParameter('group')) {
-      if (!is_object($group))
-        $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+      if (!is_object($group)) {
+        $group = Group::load($group);
+      }
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      ) {
+        return AccessResult::allowed();
+      } else {
+        return AccessResult::forbidden();
+      }
+    }
+    if ($node = $route_match->getParameter('node')) {
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+      if (!$groupContent) {
+        return AccessResult::neutral();
+      }
+      $group = $groupContent->getGroup();
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()
+                      ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      ) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -76,9 +107,15 @@ class CustNodeController extends ControllerBase {
   }
 
   static function hzdCreateDowntimesAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    if ($user) {
+    if ($user->isAuthenticated()) {
       $group = $route_match->getParameter('group');
-      if ($group->id() == INCEDENT_MANAGEMENT && ($group->getMember($user) || array_intersect(['site_administrator', 'administrator'], $user->getRoles()))) {
+      $groupMember = $group->getMember($user);
+      if ($group->id() == INCIDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()
+                      ->get('request_status')->value == 1) || array_intersect([
+                  'site_administrator',
+                  'administrator'
+                      ], $user->getRoles()))
+      ) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -88,45 +125,63 @@ class CustNodeController extends ControllerBase {
   }
 
   static function hzdIncidentGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    $uid = $user->id();
-    if ($uid == 0) {
+    //Irrespective of the user is member of Incident management this is accessible
+    return AccessResult::allowed();
+    /*    $uid = $user->id();
+      if ($uid == 0) {
       return AccessResult::allowed();
-    }
-    if ($group = $route_match->getParameter('group')) {
-      if (!is_object($group))
-        $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
-        return AccessResult::allowed();
-      } else {
-        return AccessResult::forbidden();
       }
-    }
-    return AccessResult::neutral();
+      if ($group = $route_match->getParameter('group')) {
+      if (!is_object($group)) {
+      $group = \Drupal\group\Entity\Group::load($group);
+      }
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()
+      ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      ) {
+      return AccessResult::allowed();
+      }
+      else {
+      return AccessResult::forbidden();
+      }
+      }
+      return AccessResult::neutral(); */
   }
 
   static function hzdnodeConfirmAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($group = $route_match->getParameter('group')) {
-      if (!is_object($group))
+      if (!is_object($group)) {
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
+      }
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()
+                      ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      ) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
       }
-    } else if ($node = $route_match->getParameter('node')) {
-      $group_id = \Drupal::database()->select('group_content_field_data', 'gcfd')
-                      ->fields('gcfd', ['gid', 'id'])
-                      ->condition('gcfd.entity_id', $node)
-                      ->execute()->fetchAssoc();
-      if ($group_id) {
-        $group = \Drupal\group\Entity\Group::load($group_id['gid']);
-        if ($group->getMember($user) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
-          return AccessResult::allowed();
+    } else {
+      if ($node = $route_match->getParameter('node')) {
+        $group_id = \Drupal::database()
+                ->select('group_content_field_data', 'gcfd')
+                ->fields('gcfd', ['gid', 'id'])
+                ->condition('gcfd.entity_id', $node)
+                ->execute()
+                ->fetchAssoc();
+        if ($group_id) {
+          $group = \Drupal\group\Entity\Group::load($group_id['gid']);
+          $groupMember = $group->getMember($user);
+          if (($groupMember && $groupMember->getGroupContent()
+                          ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+          ) {
+            return AccessResult::allowed();
+          } else {
+            return AccessResult::forbidden();
+          }
         } else {
           return AccessResult::forbidden();
         }
-      } else {
-        return AccessResult::forbidden();
       }
     }
     return AccessResult::neutral();
@@ -135,9 +190,13 @@ class CustNodeController extends ControllerBase {
   ///added for drupal core views
   static function hzdGroupViewsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($group = $route_match->getParameter('arg_0')) {
-      if (!is_object($group))
+      if (!is_object($group)) {
         $group = \Drupal\group\Entity\Group::load($group);
-      if ($group->getMember($user) || $user->id() == 1) {
+      }
+      $groupMember = $group->getMember($user);
+      if (($groupMember && $groupMember->getGroupContent()
+                      ->get('request_status')->value == 1) || $user->id() == 1
+      ) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -146,28 +205,32 @@ class CustNodeController extends ControllerBase {
     return AccessResult::neutral();
   }
 
-  static function isGroupAdmin($group_id = null) {
+  static function isGroupAdmin($group_id = NULL) {
     if (!$group_id) {
-      return false;
+      return FALSE;
     }
-    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-      return true;
+    if (in_array('site_administrator', \Drupal::currentUser()
+                            ->getRoles()) || \Drupal::currentUser()->id() == 1
+    ) {
+      return TRUE;
     }
     $group = \Drupal\group\Entity\Group::load($group_id);
     $content = $group->getMember(\Drupal::currentUser());
-    if ($content) {
-      $contentId = $content->getGroupContent()->id();
-      $adminquery = \Drupal::database()->select('group_content__group_roles', 'gcgr')
-                      ->fields('gcgr', ['group_roles_target_id'])->condition('entity_id', $contentId)->execute()->fetchAll();
-      return (bool) !empty($adminquery);
+    if ($content && $content->getGroupContent()
+                    ->get('request_status')->value == 1
+    ) {
+      $roles = $content->getRoles();
+      if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
+        return true;
+      }
     }
 
-    return false;
+    return FALSE;
   }
 
-  static function getNodeGroupId($node = null) {
+  static function getNodeGroupId($node = NULL) {
     if (!$node) {
-      return false;
+      return FALSE;
     }
 //      $checkGroupNode = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
 //    $checkGroupNode = \Drupal::database()->select('group_content_field_data', 'gcfd')
@@ -188,14 +251,22 @@ class CustNodeController extends ControllerBase {
     $form = \Drupal::entityTypeManager()
             ->getFormObject('node', 'default')
             ->setEntity($node);
-    $url = new \Drupal\Core\Url('entity.group_content.group_node__deployed_releases.canonical', ['group' => $group->id(), 'group_content' => $group_content->id()]);
+    $url = new \Drupal\Core\Url('entity.group_content.canonical', [
+        'group' => $group->id(),
+        'group_content' => $group_content->id()
+    ]);
     return \Drupal::formBuilder()->getForm($form, ['redirect' => $url]);
   }
 
   function groupMemberCleanup() {
     $groupContent = \Drupal::entityQuery('group_content');
-    $orCondition = $groupContent->orConditionGroup()->condition('type', '%member%', 'LIKE')
-            ->condition('type', ['group_content_type_b2ed3eb8d19c9', 'group_content_type_d4b06e2b6aad0', 'group_content_type_ecf0249297413'], 'IN');
+    $orCondition = $groupContent->orConditionGroup()
+            ->condition('type', '%member%', 'LIKE')
+            ->condition('type', [
+        'group_content_type_b2ed3eb8d19c9',
+        'group_content_type_d4b06e2b6aad0',
+        'group_content_type_ecf0249297413'
+            ], 'IN');
     $groupContent = $groupContent->condition($orCondition)
             ->execute();
     //pr($groupContent);exit;
@@ -216,4 +287,355 @@ class CustNodeController extends ControllerBase {
   static public function ContactformTitle() {
     return t('Contact');
   }
+  
+  
+  public function migrateServiceSpecificNotifications(){
+    $d6Db = \Drupal\Core\Database\Database::getConnection('default','migrate');
+    
+    $query = $d6Db->query('select nf.value,nf.field, sp.uid,sp.sid, n.send_interval from notifications_fields nf, notifications n,service_notifications_priority sp where n.sid = nf.sid and sp.sid = n.sid')->fetchAll();
+//    pr($query);exit;
+    $db = \Drupal::database();
+  
+    $preparedArray = [];
+    foreach ($query as $item) {
+      $sid = $item->sid;
+      $preparedArray[$sid]['uid'] = $item->uid;
+      $preparedArray[$sid]['send_interval'] = $item->send_interval == -1 ?-1:0;
+      if($item->field == 'type'){
+        $preparedArray[$sid]['type'] = $item->value;
+      }else{
+        $preparedArray[$sid]['service_id'] = $item->value;
+      }
+      
+    }
+    
+    foreach ($preparedArray as $item=>$value){
+      $value['rel_type'] = $db->select('node__release_type','nrt')
+        ->condition('entity_id',$value['service_id'])
+        ->condition('bundle','services')
+        ->fields('nrt',['release_type_target_id'])
+        ->execute()
+        ->fetchField();
+      $checkId = $db->select('service_notifications_override','sno')
+        ->fields('sno',['sid'])
+        ->condition('service_id',$value['service_id'])
+        ->condition('type',$value['type'])
+        ->condition('uid',$value['uid'])
+        ->condition('rel_type',$value['rel_type'])
+        ->execute()
+        ->fetchField();
+      if(!empty($checkId)){
+        $update = $db->update('service_notifications_override')
+          ->fields($value)
+          ->condition('sid',$checkId)
+          ->execute();
+      }else{
+        $insert = $db->insert('service_notifications_override')
+          ->fields($value)
+          ->execute();
+      }
+    }
+    
+    echo 'Successfully imported user service specific notifications';
+    exit;
+    
+  }
+
+  function updateNotifications() {
+    $this->db = \Drupal::database();
+    $this->intervals = [-1, 0];
+
+    $this->updateServiceNotifications();
+    $this->updateGroupNotifications();
+    $this->updatePlanningFileNotifications();
+    $this->updateQuickinfoNotifications();
+    echo 'Successufully updated all users notification';
+    exit;
+  }
+  
+  public function updateServiceNotifications() {
+    ini_set('max_execution_time', -1);
+    //As users data is not properly saved in drupal 6 we were stuck for service update notifications.
+    $types[459] = ['release', 'downtimes', 'problem', 'early_warnings'];
+    $types[460] = ['release', 'early_warnings'];
+    $services = $this->db->select('node_field_data', 'n')
+      ->fields('n', ['nid'])
+      ->condition('type', 'services')
+      ->execute()
+      ->fetchCol();
+    
+    foreach ($services as $service) {
+      $serviceEntity = Node::load($service);
+      $relType = $serviceEntity->get('release_type')->target_id;
+      if ($relType) {
+        $users = [];
+        foreach ($types[$relType] as $type) {
+          $users = $this->db->select('service_notifications_user_default_interval', 'su')
+            ->fields('su', ['uid', 'default_send_interval'])
+            ->distinct('su.uid')
+            ->condition('service_type', $type)
+            ->condition('rel_type', $relType)
+            ->execute()
+            ->fetchAll()
+          ;
+//          pr($users);exit;
+//          echo $users->__toString();exit;
+          $userData = [];
+          foreach ($users as $user) {
+            if($user->uid == 0){
+              continue;
+            }
+            if($user->default_send_interval === null){
+              $user->default_send_interval = -1;
+            }
+//            $overiddenValue =null;
+            $overiddenValue = $this->db->select('service_notifications_override', 'base_table')
+              ->fields('base_table', ['send_interval'])
+              ->condition('uid', $user->uid)
+              ->condition('service_id', $service)
+              ->condition('type', $type)
+              ->execute()
+              ->fetchField();
+            if ($overiddenValue !== FALSE) {
+              $userData[$overiddenValue][] = $user->uid;
+            }else{
+              $userData[$user->default_send_interval][] = $user->uid;
+            }
+          }
+          foreach ($this->intervals as $interval) {
+            $check = $this->db->select('service_notifications', 'base_table')
+              ->fields('base_table', ['sid'])
+              ->condition('service_id', $service)
+              ->condition('type', $type)
+              ->condition('send_interval', $interval)
+              ->execute()
+              ->fetchField();
+            $users = serialize(array_unique($userData[$interval]));
+            if(empty($check)){
+              $this->db->insert('service_notifications')
+                ->fields(['service_id'=>$service,'type'=>$type,'send_interval'=>$interval,'uids'=>$users])
+                ->execute();
+            }else {
+              $this->db->update('service_notifications')
+                ->fields(['service_id'=>$service,'type'=>$type,'send_interval'=>$interval,'uids'=>$users])
+                ->condition('sid', $check)
+                ->execute();
+            }
+          }
+          
+        }
+      }
+//      exit;
+    }
+    
+    /*$gi = $this->db->select('service_notifications_override', 'base_table')
+      ->fields('base_table')
+      ->execute()
+      ->fetchAll();
+    $preparedArray = [];
+    foreach ($gi as $item) {
+      $preparedArray[$item->service_id][$item->type][$item->send_interval][] = $item->uid;
+    }
+    foreach ($preparedArray as $item => $values) {
+      foreach ($values as $type => $value) {
+        foreach ($this->intervals as $interval) {
+          $finalArray[] = [
+            'service_id' => $item,
+            'type' => $type,
+            'send_interval' => $interval,
+            'uids' => @serialize($value[$interval])
+          ];
+        }
+      }
+    }
+    
+    foreach ($finalArray as $value) {
+      $check = $this->db->select('service_notifications', 'base_table')
+        ->fields('base_table', ['sid'])
+        ->condition('service_id', $value['service_id'])
+        ->condition('type', $value['type'])
+        ->condition('send_interval', $value['send_interval'])
+        ->execute()
+        ->fetchField();
+      if (empty($check)) {
+        $this->db->insert('service_notifications')
+          ->fields($value)
+          ->execute();
+      }
+      else {
+        $this->db->update('service_notifications')
+          ->fields($value)
+          ->condition('sid', $check)
+          ->execute();
+      }
+    }*/
+  }
+
+  function updateGroupNotifications() {
+    $gi = $this->db->select('group_notifications_user_default_interval', 'base_table')
+            ->fields('base_table')
+            ->execute()
+            ->fetchAll();
+    $preparedArray = [];
+    foreach ($gi as $item) {
+      $preparedArray[$item->group_id][$item->default_send_interval][] = $item->uid;
+    }
+    foreach ($preparedArray as $item => $value) {
+      foreach ($this->intervals as $interval) {
+//        $group = Group::load($item)->label();
+        $finalArray[] = [
+            'group_id' => $item,
+            'group_name' => '',
+            'send_interval' => $interval,
+            'uids' => @serialize($value[$interval])
+        ];
+      }
+    }
+    foreach ($finalArray as $value) {
+      $check = $this->db->select('group_notifications', 'base_table')
+              ->fields('base_table', ['id'])
+              ->condition('group_id', $value['group_id'])
+              ->condition('send_interval', $value['send_interval'])
+              ->execute()
+              ->fetchField();
+      if (empty($check)) {
+        $this->db->insert('group_notifications')
+                ->fields($value)
+                ->execute();
+      } else {
+        $this->db->update('group_notifications')
+                ->fields($value)
+                ->condition('id', $check)
+                ->execute();
+      }
+    }
+  }
+
+  function updatePlanningFileNotifications() {
+    $gi = $this->db->select('planning_files_notifications_default_interval', 'base_table')
+            ->fields('base_table')
+            ->execute()
+            ->fetchAll();
+    $preparedArray = [];
+    foreach ($gi as $item) {
+      $preparedArray[$item->default_send_interval][] = $item->uid;
+    }
+    foreach ($preparedArray as $item => $value) {
+      $finalArray[] = [
+          'send_interval' => $item,
+          'uids' => @serialize($value)
+      ];
+    }
+    foreach ($finalArray as $value) {
+      $check = $this->db->select('group_notifications', 'base_table')
+              ->fields('base_table', ['id'])
+              ->condition('group_id', $value['group_id'])
+              ->condition('send_interval', $value['send_interval'])
+              ->execute()
+              ->fetchField();
+      if (empty($check)) {
+        $this->db->insert('planning_files_notifications')
+                ->fields($value)
+                ->execute();
+      } else {
+        $this->db->update('planning_files_notifications')
+                ->fields($value)
+                ->condition('id', $check)
+                ->execute();
+      }
+    }
+  }
+
+  function updateQuickinfoNotifications() {
+    $qi = $this->db->select('quickinfo_notifications_user_default_interval', 'base_table')
+            ->fields('base_table')
+            ->execute()
+            ->fetchAll();
+    $preparedArray = [];
+    foreach ($qi as $item) {
+      $preparedArray[$item->affected_service][$item->default_send_interval][] = $item->uid;
+    }
+    foreach ($preparedArray as $item => $value) {
+      foreach ($this->intervals as $interval) {
+        $finalArray[] = [
+            'cck' => $item,
+            'send_interval' => $interval,
+            'uids' => @serialize($value[$interval])
+        ];
+      }
+    }
+    $this->db->query("Alter table {quickinfo_notifications} convert to character set utf8 collate utf8_general_ci;");
+    foreach ($finalArray as $value) {
+      $check = $this->db->select('quickinfo_notifications', 'base_table')
+              ->fields('base_table', ['id'])
+              ->condition('cck', $value['cck'])
+              ->condition('send_interval', $value['send_interval'])
+              ->execute()
+              ->fetchField();
+      if (empty($check)) {
+        $this->db->insert('quickinfo_notifications')
+                ->fields($value)
+                ->execute();
+      } else {
+        $this->db->update('quickinfo_notifications')
+                ->fields($value)
+                ->condition('id', $check)
+                ->execute();
+      }
+    }
+    //Updating Quuick info notifications completed.
+  }
+
+  function updateUrlAlias() {
+    $aliasStorage = \Drupal::service('path.alias_storage');
+    $groupContent = \Drupal::entityQuery('group_content')
+            ->condition('type', '%group_node-pag%', 'LIKE')
+            ->execute();
+    $pid = [];
+    foreach ($groupContent as $item) {
+      $groupContentEntity = GroupContent::load($item);
+      $node = $groupContentEntity->getEntity();
+//      $nodeAlias = $node->get('path')->value;
+//      pr($node->toUrl()->getInternalPath());
+      $urlAlias = $aliasStorage->load([
+          'source' => '/' . $node->toUrl()
+                  ->getInternalPath()
+      ]);
+      if (!empty($urlAlias)) {
+        $aliasStorage->save('/' . $groupContentEntity->toUrl()
+                        ->getInternalPath(), $urlAlias['alias'], $urlAlias['langcode'], $urlAlias['pid']);
+        $pid[] = $urlAlias['pid'];
+      }
+    }
+    pr(($pid));
+    echo 'Success';
+    exit;
+  }
+
+  function nodeTitle(\Drupal\node\NodeInterface $node) {
+    if ($node->bundle() == 'downtimes') {
+      $db = \Drupal::database();
+      $downtimeTypeQuery = $db->select('downtimes', 'd');
+      $downtimeTypeQuery->fields('d', ['scheduled_p']);
+      $downtimeTypeQuery->condition('downtime_id', $node->id());
+      $downtimeType = $downtimeTypeQuery->execute()->fetchField();
+      if ($downtimeType == 0) {
+        $title = t('Störung');
+      } else {
+        $title = t('Blockzeit');
+      }
+      return $title;
+    } else {
+      return $node->label();
+    }
+  }
+  
+  public function GroupAddMemberCallback(RouteMatch $routeMatch){
+    $pluginId = $routeMatch->getRawParameter('plugin_id');
+    if($pluginId == 'group_membership'){
+      return $this->t('Add Member');
+    }
+    return $this->t('Add Content');
+  }
+
 }

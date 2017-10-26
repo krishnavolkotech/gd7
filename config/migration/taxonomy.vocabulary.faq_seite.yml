@@ -1,0 +1,9 @@
+uuid: b4bd55a0-dc0f-4e58-8a9b-54516042ca44
+langcode: de
+status: true
+dependencies: {  }
+name: FAQ-Seite
+vid: faq_seite
+description: 'Bitte wählen Sie aus, auf welcher FAQ-Seite Sie diese Frage '
+hierarchy: 0
+weight: 0

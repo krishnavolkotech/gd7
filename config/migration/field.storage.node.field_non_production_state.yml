@@ -1,0 +1,21 @@
+uuid: 40bc5aa6-e740-4295-a587-a6dded14abd2
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_non_production_state
+field_name: field_non_production_state
+entity_type: node
+type: list_string
+settings:
+  allowed_values: {  }
+  allowed_values_function: get_all_user_state
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

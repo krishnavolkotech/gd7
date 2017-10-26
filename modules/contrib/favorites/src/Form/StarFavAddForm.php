@@ -39,24 +39,24 @@ class StarFavAddForm extends FormBase
      * {@inheritdoc}
      */
     public function buildForm(array $form, FormStateInterface $form_state) {
-        
+
         $request = \Drupal::request();
         $route_match = \Drupal::routeMatch();
         $title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
-	if(is_array($title))
+	if(is_array($title)) {
             $title = \Drupal::service('renderer')->render($title);
-        if (!isset($title)) {
-//            $title = \Drupal::config('core.site_information')->get('site_name');
         }
         if ($title == '') {
             $current_path = \Drupal::service('path.current')->getPath();
             $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
         }
-        if (is_string($title))
+        if (is_string($title)) {
             $title = strip_tags($title);
+        }
+//        kint($title);
         //pr($title);exit;
-        $path = \Drupal::service('path.current')->getPath();
-        $query = (isset($_GET['keys'])) ? UrlHelper::buildQuery($_GET) : '';
+        $path = \Drupal::request()->getPathInfo();
+        $query = \Drupal::request()->getQueryString();
         
         $form['title'] = array(
             '#type' => 'hidden',
@@ -116,10 +116,10 @@ class StarFavAddForm extends FormBase
         return $form;
     }
     
-    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
-        $form_state->setRebuild(TRUE);
-        return $form;
-    }
+//    public function favorites_add_favorites_checkbox_form_callback(array &$form, FormStateInterface &$form_state) {
+//        $form_state->setRebuild(TRUE);
+//        return $form;
+//    }
     
     /**
      * {@inheritdoc}
@@ -148,6 +148,7 @@ class StarFavAddForm extends FormBase
             $fav->addFavJS();
         }
         \Drupal::service('cache_tags.invalidator')->invalidateTags(['config:block.block.myfavorites_2']);
+        $form_state->setRebuild();
     }
     
 }

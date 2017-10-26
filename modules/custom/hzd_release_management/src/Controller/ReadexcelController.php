@@ -28,61 +28,59 @@ class ReadexcelController extends ControllerBase {
    * Sends out emails if the file reading contains any error or if the path does not exist.
    */
   public function read_release_csv() {
-    ini_set('memory_limit', '3G');
-    ini_set('max_execution_time', 0);
+    try {
+      ini_set('memory_limit', '3G');
+      ini_set('max_execution_time', 0);
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = "Error while release csv's import";
+      $response = '';
 
-    $response = '';
+      $path_header = HzdreleasemanagementHelper::_csv_headers();
 
-    $path_header = HzdreleasemanagementHelper::_csv_headers();
+      if ($path_header['path']) {
+        $path = $path_header['path'];
 
-    if ($path_header['path']) {
-      $path = $path_header['path'];
-
-      foreach ($path as $type => $file_path) {
-        if (file_exists($file_path)) {
-          $header = $path_header['headers'][$type];
-          if (fopen($file_path, "r")) {
-            $handle = fopen($file_path, "r");
-            if ($type == 'ex_eoss') {
-              $type = 'released';
-            }
-            $sucess = HzdreleasemanagementStorage::release_reading_csv($handle, $header, $type, $file_path);
-            if ($sucess) {
-              $response .= t('files imported sucessfully') . "<br>";
-            }
-            else {
+        foreach ($path as $type => $file_path) {
+          if (file_exists($file_path)) {
+            $header = $path_header['headers'][$type];
+            if (fopen($file_path, "r")) {
+              $handle = fopen($file_path, "r");
+              if ($type == 'ex_eoss') {
+                $type = 'released';
+              }
+              $sucess = HzdreleasemanagementStorage::release_reading_csv($handle, $header, $type, $file_path);
+              if ($sucess) {
+                $response .= t('files imported sucessfully') . "<br>";
+              } else {
+                // @sending mail to user when file need permissions or when file is corrupted
+                $body = t("There is an issue while reading the file @file.", ['@file' => $file_path]);
+                HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+                $response .= $type . t(" error while reading.") . "<br>";
+              }
+            } else {
               // @sending mail to user when file need permissions or when file is corrupted
-              $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
-              $subject = 'Error while import';
-              $body = t("There is an issue while reading the file @file.",['@file'=>$file_path]);
+              $body = t("There is an issue while reading the file @file.", ['@file' => $file_path]);
               HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-              $response .= $type . t(' ERROR WHILE READING') . "<br>";
+              $response .= $type . t(" error while reading.") . "<br>";
             }
-          }
-          else {
-            // @sending mail to user when file need permissions or when file is corrupted
-            $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
-            $subject = 'Error while import';
-              $body = t("There is an issue while reading the file @file.",['@file'=>$file_path]);
+          } else {
+            // Sending mail to user when file does not exist.
+            $body = t("There is an issue while importing of the file @file. The filename does not exist or it could have been corrupted.", ['@file' => $file_path]);
             HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-            $response .= $type . t(' ERROR WHILE READING') . "<br>";
+            $status = t('Error');
+            $msg = t(' Import file not found <br>');
+            // insert_import_status($status, $msg);.
+            $response .= $type . t(' Import file not found<br>') . "<br>";
           }
-        }
-        else {
-          // Sending mail to user when file does not exist.
-          $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases');
-          $subject = 'Error while import';
-          $body = t("There is an issue while importing of the file @file. The filename does not exist or it could have been corrupted.",['@file'=>$file_path]);
-          HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-          $status = t('Error');
-          $msg = t('No import file found <br>');
-          // insert_import_status($status, $msg);.
-          $response .= $type . t(' NO import file found<br>') . "<br>";
         }
       }
-
     }
-
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+      $response = t('Error occurred while Releases import. Please check db log for error details.');
+    }
     return $output = array('#markup' => $response);
   }
 

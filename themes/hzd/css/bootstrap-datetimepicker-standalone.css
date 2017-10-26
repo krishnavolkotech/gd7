@@ -120,12 +120,12 @@
 .bootstrap-datetimepicker-widget table thead{
   border:1px solid rgb(4, 66, 95);
 }
-.downtimes-date-wrapper .form-item-startdate-planned,
-.downtimes-date-wrapper .form-item-enddate-planned,
+.form-item-startdate-planned,
+.form-item-enddate-planned,
 .form-item-date-reported{
   position:relative;
 }
-.downtimes-date-wrapper .form-item-startdate-planned .bootstrap-datetimepicker-widget,
+.form-item-startdate-planned .bootstrap-datetimepicker-widget,
 .form-item-date-reported .bootstrap-datetimepicker-widget{
   position:absolute;
   top:-335px !important;
@@ -135,15 +135,18 @@
   width:100%;
   float:left;
 }
-.downtimes-date-wrapper .bootstrap-datetimepicker-widget{
+.bootstrap-datetimepicker-widget{
   width:500px;
   padding:5px;
 }
-.downtimes-date-wrapper .datepicker table tbody,
-.downtimes-date-wrapper .timepicker table tbody{
+.datepicker table tbody,
+.timepicker table tbody{
   border:1px solid rgb(4, 66, 95);
 }
-.downtimes-date-wrapper .datepicker table thead tr th{
+.datepicker table thead tr th{
   color:#fff !important;
   background:rgb(4, 66, 95) !important;	
+}
+.form-item-date-reported .timepicker {
+    margin-top: 72px;
 }

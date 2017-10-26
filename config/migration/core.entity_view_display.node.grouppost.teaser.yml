@@ -1,0 +1,35 @@
+uuid: a35dd6cc-2906-4c7b-bd14-6af6853f5bb3
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.grouppost.body
+    - field.field.node.grouppost.comment
+    - node.type.grouppost
+  module:
+    - text
+    - user
+id: node.grouppost.teaser
+targetEntityType: node
+bundle: grouppost
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

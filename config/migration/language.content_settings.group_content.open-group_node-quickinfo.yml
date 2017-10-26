@@ -1,0 +1,16 @@
+uuid: 3da27225-eaad-4c36-a612-627086f3c710
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-quickinfo
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.open-group_node-quickinfo
+target_entity_type_id: group_content
+target_bundle: open-group_node-quickinfo
+default_langcode: site_default
+language_alterable: false

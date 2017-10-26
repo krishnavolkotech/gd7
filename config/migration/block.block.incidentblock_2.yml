@@ -1,0 +1,31 @@
+uuid: 99edda73-00af-47d8-aa9e-7265283798fd
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_class
+    - downtimes
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: incidentblock_2
+theme: hzd
+region: sidebar_first
+weight: -30
+provider: null
+plugin: incidents_block
+settings:
+  id: incidents_block
+  label: 'Aktuelle Störungen'
+  provider: downtimes
+  label_display: visible
+  number_of_posts: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }

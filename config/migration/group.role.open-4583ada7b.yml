@@ -1,0 +1,17 @@
+uuid: acaa4c2e-337c-45fc-bf27-58b5a24ccc36
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+  enforced:
+    config:
+      - user.role.group_administrator
+id: open-4583ada7b
+label: 'group administrator(Not in use)'
+weight: 4
+internal: true
+audience: outsider
+group_type: open
+permissions_ui: false
+permissions: {  }

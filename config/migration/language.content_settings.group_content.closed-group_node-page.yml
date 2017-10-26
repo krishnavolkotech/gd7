@@ -1,0 +1,16 @@
+uuid: bb910332-1214-41f4-ac53-68fdbaa804b1
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.closed-group_node-page
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.closed-group_node-page
+target_entity_type_id: group_content
+target_bundle: closed-group_node-page
+default_langcode: site_default
+language_alterable: false

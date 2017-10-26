@@ -1,0 +1,39 @@
+uuid: b98fa2d6-d9e2-4da0-bb0e-e86a08b6c4f9
+langcode: de
+status: true
+dependencies: {  }
+id: nsm_user
+migration_tags: null
+migration_group: custom_migration
+label: 'NSM user'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: nsm_user
+  fields:
+    - id
+    - state_id
+    - nsm_role_id
+    - nsm_username
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  state_id: state_id
+  nsm_role_id: nsm_role_id
+  nsm_username: nsm_username
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: nsm_user
+migration_dependencies: {  }
+

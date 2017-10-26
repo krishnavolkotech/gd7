@@ -72,7 +72,8 @@ class ServiceNotificationsUserForm extends FormBase {
       $form['subscriptions'][5]['subscriptions_interval_5'] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => ($planning_files_default_interval == 0 || $planning_files_default_interval) ? $planning_files_default_interval : -1,
+        // $planning_files_default_interval is False/0/-1 
+        '#default_value' => (empty($planning_files_default_interval) && $planning_files_default_interval !== FALSE) ? $planning_files_default_interval : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
         '#suffix' => '</div>'
       );
@@ -91,6 +92,7 @@ class ServiceNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    drupal_set_message(t('Service mail preferences saved successfully'));
     $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
@@ -118,7 +120,9 @@ class ServiceNotificationsUserForm extends FormBase {
           ->execute()->fetchAllAssoc('send_interval');
           //pr($data);exit;
           $uids = [];
-        foreach([-1,0,86400,604800] as $interval){
+        $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+        foreach($intervals as $interval=>$val){
+          
           if(isset($data[$interval])){
             $uids = unserialize($data[$interval]->uids);
             //pr($data[$interval]);exit;
@@ -135,7 +139,12 @@ class ServiceNotificationsUserForm extends FormBase {
               ->fields(['uids'=>serialize($uids)])
               ->condition('sid',$data[$interval]->sid)->execute();
           }else{
-            $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'service_id'=>$service->nid,'type'=>$types[$content_key]];
+            if($subscriptions[$content_key]['subscriptions_interval_'.$content_key] == $interval){
+              $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'service_id'=>$service->nid,'type'=>$types[$content_key]];
+              
+            }else{
+              $notifyData = ['uids'=>serialize([]),'send_interval'=>$interval,'service_id'=>$service->nid,'type'=>$types[$content_key]];
+            }
             \Drupal::database()
               ->insert('service_notifications')
               ->fields($notifyData)->execute();
@@ -158,7 +167,8 @@ class ServiceNotificationsUserForm extends FormBase {
         $userChoiceInterval = $pf_int_val;
         $uids = null;
         //pr($data);exit;
-      foreach([-1,0,86400,604800] as $interval){
+      $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+      foreach($intervals as $interval=>$val){
         if(isset($data[$interval])){
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;
@@ -173,7 +183,13 @@ class ServiceNotificationsUserForm extends FormBase {
             ->fields(['uids'=>serialize($uids)])
             ->condition('id',$data[$interval]->id)->execute();
         }else{
-          $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval];
+  
+          if($subscriptions[$content_key]['subscriptions_interval_'.$content_key] == $interval){
+            $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval];
+    
+          }else{
+            $notifyData = ['uids'=>serialize([]),'send_interval'=>$interval];
+          }
           \Drupal::database()
             ->insert('planning_files_notifications')
             ->fields($notifyData)->execute();

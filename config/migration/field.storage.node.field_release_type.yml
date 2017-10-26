@@ -1,0 +1,37 @@
+uuid: c8afbd7a-385a-4326-a311-b6a584f90757
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - options
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_release_type
+field_name: field_release_type
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '1'
+      label: Bereitgestellt
+    -
+      value: '2'
+      label: 'In Bearbeitung'
+    -
+      value: '3'
+      label: Gesperrt
+    -
+      value: '4'
+      label: Abgelehnt
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

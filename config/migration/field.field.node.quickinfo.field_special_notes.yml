@@ -1,0 +1,31 @@
+uuid: ab8bd3e8-f957-4729-acda-461f71c71718
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_special_notes
+    - node.type.quickinfo
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.quickinfo.field_special_notes
+field_name: field_special_notes
+entity_type: node
+bundle: quickinfo
+label: '2.9 Besondere Hinweise'
+description: '(z.B. auch planerische Hinweise)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

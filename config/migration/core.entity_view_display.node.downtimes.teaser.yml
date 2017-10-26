@@ -1,0 +1,38 @@
+uuid: d09b728c-d063-4fb3-8674-b39b35bb3fd0
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.downtimes.body
+    - field.field.node.downtimes.comment
+    - field.field.node.downtimes.upload
+    - node.type.downtimes
+  module:
+    - text
+    - user
+id: node.downtimes.teaser
+targetEntityType: node
+bundle: downtimes
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  upload: true

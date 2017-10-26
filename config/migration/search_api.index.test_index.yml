@@ -1,0 +1,143 @@
+uuid: 01966ff9-bbec-4b20-b409-21220a37289c
+langcode: de
+status: false
+dependencies:
+  module:
+    - group
+    - node
+    - search_api
+  config:
+    - field.storage.node.body
+    - search_api.server.hzd_solr
+id: test_index
+name: 'test index'
+description: ''
+read_only: false
+field_settings:
+  id:
+    label: ID
+    datasource_id: 'entity:group_content'
+    property_path: id
+    type: text
+  label:
+    label: 'Parent group » Gruppe » Titel'
+    datasource_id: 'entity:group_content'
+    property_path: 'gid:entity:label'
+    type: text
+    dependencies:
+      module:
+        - group
+  path:
+    label: 'Parent group » Gruppe » URL-Alias'
+    datasource_id: 'entity:group_content'
+    property_path: 'gid:entity:path'
+    type: text
+    dependencies:
+      module:
+        - group
+  nid:
+    label: 'Inhalt » Inhalt » ID'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:nid'
+    type: text
+    dependencies:
+      module:
+        - node
+  title:
+    label: 'Inhalt » Inhalt » Titel'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:title'
+    type: text
+    dependencies:
+      module:
+        - node
+  type:
+    label: 'Inhalt » Inhalt » Type'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:type'
+    type: text
+    dependencies:
+      module:
+        - node
+  created:
+    label: 'Inhalt » Inhalt » geschrieben am'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:created'
+    type: text
+    dependencies:
+      module:
+        - node
+  changed:
+    label: 'Inhalt » Inhalt » Geändert'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:changed'
+    type: text
+    dependencies:
+      module:
+        - node
+  path_1:
+    label: 'Inhalt » Inhalt » URL-Alias'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:path'
+    type: text
+    dependencies:
+      module:
+        - node
+  body:
+    label: 'Inhalt » Inhalt » Textkörper'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:body'
+    type: text
+    dependencies:
+      module:
+        - node
+      config:
+        - field.storage.node.body
+datasource_settings:
+  'entity:group_content':
+    plugin_id: 'entity:group_content'
+    settings:
+      bundles:
+        default: false
+        selected:
+          - closed-group_node-faq
+          - closed-group_node-forum
+          - closed-group_node-page
+          - closed_private-group_node-faq
+          - closed_private-group_node-forum
+          - closed_private-group_node-page
+          - group_content_type_486a744513175
+          - group_content_type_aa3a511b55f8c
+          - moderate-group_node-faqs
+          - moderate-group_node-forum
+          - moderate-group_node-page
+          - moderate-group_node-quickinfo
+          - moderate_private-group_node-faqs
+          - moderate_private-group_node-page
+          - open-group_node-downtimes
+          - open-group_node-faqs
+          - open-group_node-forum
+          - open-group_node-page
+          - open-group_node-planning_files
+          - open-group_node-problem
+      languages:
+        default: true
+        selected: {  }
+processor_settings:
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
+tracker_settings:
+  default:
+    plugin_id: default
+    settings: {  }
+options:
+  index_directly: true
+  cron_limit: 50
+server: hzd_solr

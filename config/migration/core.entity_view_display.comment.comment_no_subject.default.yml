@@ -1,0 +1,33 @@
+uuid: 0c64faca-2a03-481c-bead-c0676c02bbc1
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment_no_subject
+    - field.field.comment.comment_no_subject.comment_body
+    - field.field.comment.comment_no_subject.field_do_not_send_notifications
+  module:
+    - text
+id: comment.comment_no_subject.default
+targetEntityType: comment
+bundle: comment_no_subject
+mode: default
+content:
+  comment_body:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_do_not_send_notifications: true
+  langcode: true

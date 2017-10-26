@@ -1,0 +1,18 @@
+uuid: d5e9db6b-3185-4d59-ab49-9a737e80f61a
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.grouppost
+id: node.grouppost.created
+field_name: created
+entity_type: node
+bundle: grouppost
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

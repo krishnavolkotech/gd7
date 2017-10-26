@@ -1,0 +1,57 @@
+uuid: 6b560a61-a671-463a-b216-2cab04d9c967
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.faqs.body
+    - field.field.node.faqs.comment
+    - field.field.node.faqs.faq_kategorie
+    - field.field.node.faqs.faq_seite
+    - field.field.node.faqs.upload
+    - node.type.faqs
+  module:
+    - text
+id: node.faqs.default
+targetEntityType: node
+bundle: faqs
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 31
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  faq_kategorie:
+    type: options_select
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  faq_seite:
+    type: options_select
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  title:
+    type: string_textfield
+    weight: -5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  sticky: true
+  translation: true
+  uid: true
+  upload: true

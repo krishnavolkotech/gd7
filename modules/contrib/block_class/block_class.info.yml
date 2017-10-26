@@ -6,8 +6,8 @@ package: Other
 dependencies:
   - block
 
-# Information added by Drupal.org packaging script on 2016-03-18
-version: '8.x-1.x-dev'
+# Information added by Drupal.org packaging script on 2016-10-04
+version: '8.x-1.0-alpha1'
 core: '8.x'
 project: 'block_class'
-datestamp: 1458306524
+datestamp: 1475623440

@@ -1,0 +1,46 @@
+diff --git a/core/modules/views/src/Plugin/views/style/StylePluginBase.php b/core/modules/views/src/Plugin/views/style/StylePluginBase.php
+index a7b1917..a3fa3bf 100644
+--- a/core/modules/views/src/Plugin/views/style/StylePluginBase.php
++++ b/core/modules/views/src/Plugin/views/style/StylePluginBase.php
+@@ -85,6 +85,8 @@
+    *
+    * @see \Drupal\views\Plugin\views\style\StylePluginBase::renderFields()
+    * @see \Drupal\views\Plugin\views\style\StylePluginBase::getField()
++   * @see \Drupal\views\Plugin\views\style\StylePluginBase::getRenderedFields()
++   * @see \Drupal\views\Plugin\views\style\StylePluginBase::setRenderedFields()
+    *
+    * @var array|null
+    */
+@@ -783,6 +785,32 @@ public function getField($index, $field) {
+   }
+ 
+   /**
++   * Gets all rendered fields.
++   *
++   * @return array|null
++   *   The output of all rendered fields, or NULL if it was empty.
++   */
++  public function getRenderedFields() {
++  	return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
++  }
++
++  /**
++   * Sets a rendered field.
++   *
++   * @param $field_value
++   *   The modified value of the rendered field.
++   *
++   * @param $row_index
++   *   The index count of the row.
++   *
++   *  @param $field_name
++   *    The id of the rendered field.
++   */
++  public function setRenderedField($field_value, $row_index, $field_name) {
++    $this->rendered_fields[$row_index][$field_name] = $field_value;
++  }
++
++  /**
+    * Get the raw field value.
+    *
+    * @param $index

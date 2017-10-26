@@ -62,6 +62,15 @@ class CancelForm extends FormBase {
    */
 
   public function buildForm(array $form, FormStateInterface $form_state, $form_type = '') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    $query = Drupal::database()->select('resolve_cancel_incident','ri')
+            ->condition('downtime_id',$node)
+            ->fields('ri',['downtime_id'])
+            ->execute()
+            ->fetchField();
+    if($query){
+      throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+    }
       $group = \Drupal::routeMatch()->getParameter('group');
       if (is_object($group)) {
         $group_id = $group->id();
@@ -75,7 +84,6 @@ class CancelForm extends FormBase {
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)    
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
-    $node = \Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
     }
@@ -100,12 +108,12 @@ class CancelForm extends FormBase {
     $query = \Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['scheduled_p']);
     $query->condition('d.downtime_id', $nid, '=');
-    $query->range(1);
-    $services = $query->execute()->fetchField();
+//    $query->range(1);
+    $downtimeType = $query->execute()->fetchField();
 
-    $resolved_title = $services['scheduled_p'];
+//    $resolved_title = $services['scheduled_p'];
 
-    if ($resolved_title == 0) {
+    if ($downtimeType == 0) {
       // drupal_set_title(t('Resolve Incident'));
       $form['#title'] = t('Cancel Incident');
     }
@@ -120,9 +128,12 @@ class CancelForm extends FormBase {
       '#title' => t('Comment'),
       '#required' => TRUE,
       '#id' => 'reason',
+      '#allowed_formats'  => ['basic_html'],
+      '#format' => 'basic_html',
       '#weight' => -2,
     );
-    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || $group->getMember($user)) {
+    $groupMember = $group->getMember($user);
+    if (in_array(SITE_ADMIN_ROLE, $user_role) || (CustNodeController::isGroupAdmin($group_id) == TRUE) || ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)) {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;

@@ -1,0 +1,8 @@
+uuid: fac3e452-21c6-4368-8750-90fd45e02297
+langcode: de
+status: true
+dependencies: {  }
+id: menu-53730
+label: 'ZPS ELSTER-Kommunikation'
+description: ''
+locked: false

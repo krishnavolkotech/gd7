@@ -3,6 +3,7 @@
 namespace Drupal\hzd_earlywarnings\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Render\Markup;
 use Drupal\hzd_earlywarnings\HzdearlywarningsStorage;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\Core\Url;
@@ -23,9 +24,7 @@ if (!defined('DISPLAY_LIMIT')) {
   define('DISPLAY_LIMIT', 20);
 }
 
-if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
-}
+
 
 /**
  * Class HzdEarlyWarnings.
@@ -40,7 +39,7 @@ class HzdEarlyWarnings extends ControllerBase {
   public function view_early_warnings() {
     
     $output['content']['#attached']['library'] = array(
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
 //      'downtimes/downtimes',
       'hzd_earlywarnings/hzd_earlywarnings',
     );
@@ -171,7 +170,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $user_role = get_user_role();
     $group_id = get_group_id();
     $output['content']['#attached']['library'] = array(
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
 //      'downtimes/downtimes',
       'hzd_release_management/hzd_release_management',
       'hzd_earlywarnings/hzd_earlywarnings',
@@ -187,14 +186,24 @@ class HzdEarlyWarnings extends ControllerBase {
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $is_member = $group->getMember(\Drupal::service('current_user'));
     
-    if ($is_member || in_array($user_role, array('site_administrator'))) {
+    $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
+    $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
+    
+    if ($is_member || in_array($user_role, array('site_administrator','administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['#markup'] = t($node->body->value);
-      $output['content']['pretext']['#suffix'] = "<a href='/group/32/add/early-warnings?destination=group/32/early-warnings&amp;services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['body']['#markup'] = t($node->body->value);
+//      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['body'][] = [
+        '#type'=>'link',
+        '#title'=>Markup::create($create_icon),
+        '#url'=>$url
+      ];
+      $output['content']['pretext']['#suffix'] = '</div>';
+//      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     } else {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
       $output['content']['pretext']['#markup'] = t($node->body->value);
-      $output['content']['pretext']['#suffix'] = "<a href='/group/32/add/early-warnings?destination=group/32/early-warnings&amp;services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
+      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     }
     
     $output['content']['table_header']['#markup'] = '<h2>' .
@@ -254,19 +263,24 @@ class HzdEarlyWarnings extends ControllerBase {
       $group_id, '=');
     $group_release_view_service = $group_release_view_service_id_query
       ->execute()->fetchCol();
-    
+    if(empty($group_release_view_service)){
+    $group_release_view_service = [-1];
+    }
     $services = \Drupal::entityQuery('node')
       ->condition('type', 'services', '=')
       ->condition('release_type', $default_type, '=')
-      ->condition('nid', $group_release_view_service, 'IN')
+      ->condition('nid', (array)$group_release_view_service, 'IN')
       ->execute();
     
     $all_releases = \Drupal::entityQuery('node')
       ->condition('type', 'release', '=');
     
-    if (!empty($services)) {
-      $all_releases->condition('field_relese_services', $services, 'IN');
+    if (empty($services)) {
+      $services = [-1];
     }
+//    if (!empty($services)) {
+      $all_releases->condition('field_relese_services', $services, 'IN');
+//    }
     $ar = $all_releases->execute();
     
     $releases = array();
@@ -293,7 +307,9 @@ class HzdEarlyWarnings extends ControllerBase {
         $releases[] = $value;
       }
     }
-    
+    if (empty($releases)) {
+      $releases = [-1];
+    }
     $release_nids = \Drupal::entityQuery('node')
       ->condition('type', 'release', '=')
       ->condition('nid', $releases, 'IN');
@@ -336,16 +352,19 @@ class HzdEarlyWarnings extends ControllerBase {
     }
     $releasesFinal = $release_nids->execute();
     \Drupal::database()->query('SET sql_mode = "" ');
+    if(empty($releasesFinal)){
+      $releasesFinal = [-1];
+    }
     if (!$page_limit) {
       
-      $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
-      $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
-      $releasesNewFinal = $releasesNewFinal->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
-      $releasesNewFinal->fields('nfer', ['field_earlywarning_release_value']);
-      $releasesNewFinal->groupBy('field_earlywarning_release_value')
-        ->orderBy('nfd.changed', 'desc');
-      $results = $releasesNewFinal->execute()
-        ->fetchCol();
+//      $releasesNewFinal = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');
+//      $releasesNewFinal->leftJoin('node_field_data', 'nfd', 'nfd.nid = nfer.entity_id');
+//      $releasesNewFinal = $releasesNewFinal->condition('field_earlywarning_release_value', (array)$releasesFinal, 'IN');
+//      $releasesNewFinal->fields('nfer', ['field_earlywarning_release_value']);
+//      $releasesNewFinal->groupBy('field_earlywarning_release_value')
+//        ->orderBy('nfd.changed', 'desc');
+//      $results = $releasesNewFinal->execute()
+//        ->fetchCol();
   
       $subQuery = \Drupal::database()->select('node__field_earlywarning_release', 'nfer');;
       $subQuery->fields('nfer', ['field_earlywarning_release_value']);
@@ -408,8 +427,8 @@ class HzdEarlyWarnings extends ControllerBase {
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
         $release = \Drupal\node\Entity\Node::load($value);
-        $warnings_lastpost = HzdEarlyWarnings::get_early_warning_lastposting_count(
-          $value);
+//        $warnings_lastpost = HzdEarlyWarnings::get_early_warning_lastposting_count(
+//          $value);
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {
@@ -461,8 +480,9 @@ class HzdEarlyWarnings extends ControllerBase {
           ->execute();
         $earlyWarningNode = Node::load(reset($lastEw));
         $userName = $earlyWarningNode->getOwner()->getDisplayName();
-        $lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
-          ' ' . t('by') . ' ' . $userName;
+        //$lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
+        //  ' ' . t('by') . ' ' . $userName;
+        $lastCreated = $lastpost = t('@date by @username',['@date' => date('d.m.Y', $earlyWarningNode->created->value), '@username' => $userName]);
         $elements = array(
           array(
             'data' => $relase_title,
@@ -498,6 +518,7 @@ class HzdEarlyWarnings extends ControllerBase {
       '#type' => 'pager',
       '#prefix' => '<div id="pagination">',
       '#suffix' => '</div>',
+      '#exclude_from_print'=>1
     );
     
     return $output;

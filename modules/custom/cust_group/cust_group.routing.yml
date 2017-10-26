@@ -22,15 +22,15 @@ cust_group.quickinfo:
   requirements:
     _permission: 'access content'
 
-cust_group.faq_list:
-  path: '/group/{group}/faq'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
-    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
-    _entity_view: 'group.default'
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-    _permission: 'access content'
+#cust_group.faq_list:
+#  path: '/group/{group}/faq/{term}'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\FAQListController::faqList'
+#    _title_callback: '\Drupal\cust_group\Controller\FAQListController::title'
+#    _entity_view: 'group.default'
+#  requirements:
+#    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+#    _permission: 'access content'
 
 cust_group.menu_migrate:
   path: '/menu-migrate'
@@ -55,10 +55,168 @@ cust_group.path_alias_update:
   defaults:
     _controller: '\Drupal\cust_group\Controller\PathAlias::bulkUpdate'
   requirements:
+    _access: 'FALSE'
     _permission: 'access content'
 cust_group.forums:
   path: '/group/{group}/forum'
   defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::add'
+    _controller: '\Drupal\cust_group\Controller\Forum::forum'
   requirements:
-    _access: 'FALSE'
+    _access: 'TRUE'
+cust_group.approve_membership_request:
+  path: '/group/{group}/member/{group_content}/approve'
+  defaults:
+    _form: '\Drupal\cust_group\Form\GroupContentApproveForm'
+    _entity_view: 'group_content.default'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupAdminAccess'
+cust_group.reject_membership_request:
+  path: '/group/{group}/member/{group_content}/reject'
+  defaults:
+    _form: '\Drupal\cust_group\Form\GroupContentRejectForm'
+    _entity_view: 'group_content.default'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupAdminAccess'
+cust_group.member_view:
+  path: '/group/{group}/member/{group_content}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberView'
+    _entity_view: 'group_content.default'
+  requirements:
+#    _access: 'TRUE'
+    _permission: 'access group_node overview'
+cust_group.node_view:
+  path: '/group/{group}/node/{group_content}'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupContentView'
+    _title_callback: 'Drupal\cust_group\Controller\CustNodeController::groupContentTitle'
+    _entity_view: 'group.default'
+  requirements:
+#    _access: 'TRUE'
+    _permission: 'access group_node overview'
+  options:
+    parameters:
+      group_content:
+        type: 'entity:group_content'
+#cust_group.group_content_view:
+#  path: '/group/{group}/{type}/{group_content}'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\GroupContentViewController::viewGroupContent'
+#    _entity_view: 'group.default'
+#    _title_callback: '\Drupal\cust_group\Controller\GroupContentViewController::viewGroupContentTitle'
+#  requirements:
+#    type: downtimes|problems|rz-schnellinfos
+##    _access: 'TRUE'
+#    _group_permission: 'leave group'
+#  options:
+#      parameters:
+#        group_content:
+#          type: 'entity:group_content'
+#cust_group.group_content_edit:
+#  path: '/group/{group}/{type}/{group_content}/edit'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContent'
+#    _entity_view: 'group.default'
+#    _title_callback: '\Drupal\cust_group\Controller\GroupContentViewController::editGroupContentTitle'
+#  requirements:
+#    type: downtimes|rz-schnellinfos
+##    _access: 'TRUE'
+#    _group_permission: 'leave group'
+#  options:
+#      parameters:
+#        group_content:
+#          type: 'entity:group_content'
+cust_group.group_node_create:
+  path: '/group/{group}/group-node-create'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupContentAddController::addPage'
+  requirements:
+    _permission: 'access content'
+cust_group.notifications_update:
+  path: '/update-all-user-notifications'
+  defaults:
+    _form: '\Drupal\cust_group\Form\UpdateUserNotificationsForm'
+  requirements:
+    _permission: 'administer site'
+cust_group.service_notifications_update:
+  path: '/update-service-notifications'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::migrateServiceSpecificNotifications'
+  requirements:
+    _permission: 'administer site'
+cust_group.url_alias_update:
+  path: '/update-all-urls'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\CustNodeController::updateUrlAlias'
+  requirements:
+    _permission: 'administer site'
+cust_group.old_url_alias_delete:
+  path: '/delete-old-urls'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::deleteOldAlias'
+  requirements:
+    _permission: 'administer site'
+cust_group.faq_paths_alias_update:
+  path: '/faqs-paths-update'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::generateFaqPathAlias'
+  requirements:
+    _permission: 'administer site'
+cust_group.imattachment_delete_confirm:
+  path: '/incident-management/ablage-attachments/delete/{fid}/{nid}'
+  defaults:
+    _form: '\Drupal\cust_group\Form\ImAttachmentFileDeleteConfirm'
+  requirements:
+    _permission: 'access content'
+    
+#Inserting States values based on url in im attachments node's state field.
+#we can remove this route and fucntion after first migration go live
+cust_group.imablageattachments_stateinsert:
+  path: '/ablageattachments/stateinsert'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\ImAlageAttachmentController::defaultStatesInsert'
+    _title: 'Störungslogs der Länder'
+  requirements:
+    _access: 'TRUE'
+cust_group.clean_file_paths:
+  path: '/cleanup-file-paths'
+  defaults:
+    _form: '\Drupal\cust_group\Controller\FilePathsCleanupController'
+    _title: 'Migrating file paths'
+  requirements:
+    _permission: 'administer site'
+cust_group.clean_file_paths_test:
+  path: '/cleanup-test'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\FilePathsCleanupController::checkFiles'
+    _title: 'Migrating file paths'
+  requirements:
+    _permission: 'administer site'
+cust_group.attach_quickinfo_files:
+  path: '/quickinfo-files-migrate'
+  defaults:
+    _form: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController'
+    _title: 'Migrating Quickinfo Files'
+  requirements:
+    _permission: 'administer site'
+cust_group.create_touch_files:
+  path: '/create-touch-files'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController::touchFiles'
+    _title: 'Migrating Quickinfo Files'
+  requirements:
+    _access: 'TRUE'
+cust_group.migrate_url_alias:
+  path: '/migrate-url-alias'
+  defaults:
+    _form: '\Drupal\cust_group\Form\MigrateUrlAliasForm'
+    _title: 'Migrating Url Alias'
+  requirements:
+    _permission: 'administer site'
+cust_group.migrate_menu:
+  path: '/detach-old-files'
+  defaults:
+    _form: '\Drupal\cust_group\Form\DetachOldFilesForm'
+    _title: 'Detach Old Files'
+  requirements:
+    _permission: 'administer site'

@@ -1,0 +1,17 @@
+uuid: 078efa47-9ca3-476b-8a31-cd8946846080
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: FAQ
+type: faqs
+description: 'Eine häufig gestellte Frage und deren Antwort erstellen.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

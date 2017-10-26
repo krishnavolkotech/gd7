@@ -1,0 +1,17 @@
+uuid: e198c6ad-42b8-42bf-971c-5114c3466610
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+  enforced:
+    config:
+      - user.role.site_administrator
+id: downtimes-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: downtimes
+permissions_ui: false
+permissions: {  }

@@ -1,0 +1,19 @@
+uuid: aa5bc955-152c-4bea-a484-594fd20e2c7a
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+    - node.type.quickinfo
+  module:
+    - gnode
+    - node
+id: moderate-group_node-quickinfo
+label: 'Moderate: Group node (RZ-Schnellinfo)'
+description: 'Adds <em class="placeholder">RZ-Schnellinfo</em> content to groups both publicly and privately.'
+group_type: moderate
+content_plugin: 'group_node:quickinfo'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

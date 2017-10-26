@@ -1,0 +1,22 @@
+uuid: a7561c7a-9126-4879-9a82-0687ca060a38
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: problem
+label: Problem
+type: 'canonical_entities:node'
+pattern: 'problem-management/problem/[node:nid]'
+selection_criteria:
+  ec77216c-87df-4343-b994-ff1dfa904030:
+    id: node_type
+    bundles:
+      problem: problem
+    negate: false
+    context_mapping:
+      node: node
+    uuid: ec77216c-87df-4343-b994-ff1dfa904030
+selection_logic: and
+weight: -4
+relationships: {  }

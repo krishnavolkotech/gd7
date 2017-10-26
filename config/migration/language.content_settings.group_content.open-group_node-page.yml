@@ -1,0 +1,16 @@
+uuid: 431ed804-e7bc-47ec-9ccc-3836a0bb257f
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.open-group_node-page
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.open-group_node-page
+target_entity_type_id: group_content
+target_bundle: open-group_node-page
+default_langcode: site_default
+language_alterable: false

@@ -496,7 +496,7 @@ class NotificationsController extends ControllerBase
             ->condition('ufd.status', 1);
         $userEmails->leftJoin('inactive_users', 'iu', 'iu.uid = ufd.uid');
         $userEmails->leftJoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = ufd.uid');
-        $userEmails->condition('ufns.field_notifications_status_value', 1);
+        $userEmails->condition('ufns.field_notifications_status_value', 'Enable');
         $orCondition = $userEmails->orConditionGroup()->condition('iu.inactive_user_notification_flag', 0)->isNull('iu.inactive_user_notification_flag');
         $userEmails->condition($orCondition);
         $userEmails = $userEmails->execute()->fetchAllAssoc('uid');

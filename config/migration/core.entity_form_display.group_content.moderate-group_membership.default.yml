@@ -1,0 +1,43 @@
+uuid: a1a6046d-4bee-4cbd-a5f8-cef839c04685
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.moderate-group_membership.group_roles
+    - group.content_type.moderate-group_membership
+  module:
+    - cust_group
+id: group_content.moderate-group_membership.default
+targetEntityType: group_content
+bundle: moderate-group_membership
+mode: default
+content:
+  entity_id:
+    type: group_user_field_widget
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+      hzd_group: ''
+    third_party_settings: {  }
+    region: content
+  group_roles:
+    type: options_buttons
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  path: true
+  uid: true

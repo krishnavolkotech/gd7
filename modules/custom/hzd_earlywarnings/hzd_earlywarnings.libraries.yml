@@ -4,8 +4,10 @@ hzd_earlywarnings:
 #    theme:
 #      css/problem_management.css: {}
   js:
+#    js/jquery.tablesorter.js: {}
     js/earlywarnings.js: {}
     js/jquery.datePicker.js: {}
+
   dependencies:
     - core/jquery
     - core/jquery.once

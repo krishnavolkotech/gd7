@@ -1,0 +1,8 @@
+uuid: 4deeb4ee-9d19-44c2-ba12-e0093d593626
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59901
+label: 'DaSi GDA'
+description: 'DaSi GDA'
+locked: false

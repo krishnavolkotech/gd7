@@ -1,0 +1,18 @@
+uuid: 0d813523-ebbe-4bf4-a5bf-e55578a22b4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.quickinfo
+id: node.quickinfo.created
+field_name: created
+entity_type: node
+bundle: quickinfo
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

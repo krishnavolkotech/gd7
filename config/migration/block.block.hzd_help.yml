@@ -1,0 +1,22 @@
+uuid: c22e2119-0e0c-452d-9510-15650d2141bb
+langcode: en
+status: false
+dependencies:
+  module:
+    - help
+  theme:
+    - hzd
+_core:
+  default_config_hash: 8I8iACSa0sKO3k3jlvUG1ge52rfcKX7USJAQYnzuBgg
+id: hzd_help
+theme: hzd
+region: navigation
+weight: -20
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  provider: help
+  label_display: '0'
+visibility: {  }

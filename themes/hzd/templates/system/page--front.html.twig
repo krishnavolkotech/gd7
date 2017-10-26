@@ -93,10 +93,14 @@
             <span class="icon-bar"></span>
           </button>
         {% endif %}
+
+        {# User Account Menu #}
+        {% if page.user_menu %}
+            {{ page.user_menu }}
+        {% endif %}
 	        </div>
         </div>
       </div>
-
       {# Navigation (collapsible) #}
       {% if page.navigation_collapsible %}
         <div class="navbar-collapse collapse">

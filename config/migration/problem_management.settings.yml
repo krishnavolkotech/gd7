@@ -1,0 +1,4 @@
+import_path: ../imports/problems/problems.csv
+import_mail: betriebsportal-konsens@hzd.hessen.de
+import_alias: problems
+langcode: de

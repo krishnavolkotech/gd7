@@ -1,0 +1,8 @@
+uuid: d3cd277d-c227-4334-a2dc-bf008c7e6e9d
+langcode: de
+status: true
+dependencies: {  }
+id: menu-59908
+label: 'DaSi Prüfungsdienste'
+description: 'DaSi Prüfungsdienste'
+locked: false

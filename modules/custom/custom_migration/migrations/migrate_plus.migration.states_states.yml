@@ -1,0 +1,40 @@
+langcode: de
+status: true
+id: states
+migration_tags: null
+migration_group: custom_migration
+label: Authors
+source:
+  plugin: source_table
+  target: migrate
+  table_name: states
+  fields:
+    - id
+    - state
+    - abbr
+    - entity
+    - weight
+    - active
+  id_fields:
+    id:
+      type: integer
+      unsigned: FALSE
+      size: big
+process:
+  id: id
+  state: state
+  abbr: abbr
+  entity: entity
+  weight: weight
+  active: active
+destination:
+  plugin: table
+  key_map:
+      id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: states
+migration_dependencies: {  }

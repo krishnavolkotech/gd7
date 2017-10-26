@@ -21,6 +21,7 @@ hzd_earlywarnings.add_early_warnings:
   defaults:
     _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::add_early_warnings'
     _title: 'Early Warnings'
+    _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
     node: \d+

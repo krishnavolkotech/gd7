@@ -1,0 +1,10 @@
+uuid: d7e1660c-930b-426a-a343-c5447d752e9e
+langcode: en
+status: true
+dependencies: {  }
+id: realease_management
+label: 'Release Management'
+description: 'Same as open group.'
+creator_membership: true
+creator_wizard: true
+creator_roles: {  }

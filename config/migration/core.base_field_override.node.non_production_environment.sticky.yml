@@ -1,0 +1,22 @@
+uuid: 1a5170cb-ee10-4204-97d7-7a715fdef3f2
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.non_production_environment
+id: node.non_production_environment.sticky
+field_name: sticky
+entity_type: node
+bundle: non_production_environment
+label: 'Sticky at the top of lists'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

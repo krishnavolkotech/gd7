@@ -1,0 +1,17 @@
+uuid: dfed695d-2921-4545-81ba-1751d69136c4
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+  enforced:
+    config:
+      - user.role.group_member
+id: downtimes-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: downtimes
+permissions_ui: false
+permissions: {  }

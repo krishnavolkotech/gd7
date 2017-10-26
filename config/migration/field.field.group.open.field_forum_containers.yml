@@ -1,0 +1,28 @@
+uuid: c4af387f-bde4-40c8-905f-85ef99269ea6
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_forum_containers
+    - group.type.open
+    - taxonomy.vocabulary.forums
+id: group.open.field_forum_containers
+field_name: field_forum_containers
+entity_type: group
+bundle: open
+label: Gruppenforum
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      forums: forums
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

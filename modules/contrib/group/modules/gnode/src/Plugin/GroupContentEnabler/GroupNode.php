@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\gnode\Plugin\GroupContentEnabler\GroupNode.
- */
-
 namespace Drupal\gnode\Plugin\GroupContentEnabler;
 
 use Drupal\group\Entity\GroupInterface;
@@ -12,7 +7,6 @@ use Drupal\group\Plugin\GroupContentEnablerBase;
 use Drupal\node\Entity\NodeType;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides a content enabler for nodes.
@@ -22,7 +16,9 @@ use Symfony\Component\Routing\Route;
  *   label = @Translation("Group node"),
  *   description = @Translation("Adds nodes to groups both publicly and privately."),
  *   entity_type_id = "node",
- *   path_key = "node",
+ *   entity_access = TRUE,
+ *   reference_label = @Translation("Title"),
+ *   reference_description = @Translation("The title of the node to add to the group"),
  *   deriver = "Drupal\gnode\Plugin\GroupContentEnabler\GroupNodeDeriver"
  * )
  */
@@ -43,13 +39,15 @@ class GroupNode extends GroupContentEnablerBase {
    */
   public function getGroupOperations(GroupInterface $group) {
     $account = \Drupal::currentUser();
+    $plugin_id = $this->getPluginId();
     $type = $this->getEntityBundle();
     $operations = [];
 
-    if ($group->hasPermission("create $type node", $account)) {
+    if ($group->hasPermission("create $plugin_id entity", $account)) {
+      $route_params = ['group' => $group->id(), 'plugin_id' => $plugin_id];
       $operations["gnode-create-$type"] = [
         'title' => $this->t('Create @type', ['@type' => $this->getNodeType()->label()]),
-        'url' => new Url($this->getRouteName('create-form'), ['group' => $group->id()]),
+        'url' => new Url('entity.group_content.create_form', $route_params),
         'weight' => 30,
       ];
     }
@@ -60,150 +58,17 @@ class GroupNode extends GroupContentEnablerBase {
   /**
    * {@inheritdoc}
    */
-  public function getEntityForms() {
-    return ['gnode-form' => 'Drupal\gnode\Form\GroupNodeFormStep2'];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPermissions() {
-    $permissions = parent::getPermissions();
-
-    // Unset unwanted permissions defined by the base plugin.
+  protected function getTargetEntityPermissions() {
+    $permissions = parent::getTargetEntityPermissions();
     $plugin_id = $this->getPluginId();
-    unset($permissions["access $plugin_id overview"]);
 
-    // Add our own permissions for managing the actual nodes.
-    $type = $this->getEntityBundle();
-    $type_arg = ['%node_type' => $this->getNodeType()->label()];
-    $defaults = [
-      'title_args' => $type_arg,
-      'description' => 'Only applies to %node_type nodes that belong to this group.',
-      'description_args' => $type_arg,
-    ];
-
-    $permissions["view $type node"] = [
-      'title' => '%node_type: View content',
-    ] + $defaults;
-
-    $permissions["create $type node"] = [
-      'title' => '%node_type: Create new content',
-      'description' => 'Allows you to create %node_type nodes that immediately belong to this group.',
-      'description_args' => $type_arg,
-    ] + $defaults;
-
-    $permissions["edit own $type node"] = [
-      'title' => '%node_type: Edit own content',
-    ] + $defaults;
-
-    $permissions["edit any $type node"] = [
-      'title' => '%node_type: Edit any content',
-    ] + $defaults;
-
-    $permissions["delete own $type node"] = [
-      'title' => '%node_type: Delete own content',
-    ] + $defaults;
-
-    $permissions["delete any $type node"] = [
-      'title' => '%node_type: Delete any content',
-    ] + $defaults;
+    // Add a 'view unpublished' permission by re-using most of the 'view' one.
+    $original = $permissions["view $plugin_id entity"];
+    $permissions["view unpublished $plugin_id entity"] = [
+      'title' => str_replace('View ', 'View unpublished ', $original['title']),
+    ] + $original;
 
     return $permissions;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPaths() {
-    $paths = parent::getPaths();
-
-    $type = $this->getEntityBundle();
-    $paths['add-form'] = "/group/{group}/node/add/$type";
-    $paths['create-form'] = "/group/{group}/node/create/$type";
-
-    return $paths;
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @see \Drupal\gnode\Routing\GroupNodeRouteProvider
-   */
-  public function getRouteName($name) {
-    if ($name == 'collection') {
-      return 'entity.group_content.group_node.collection';
-    }
-    return parent::getRouteName($name);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @see \Drupal\gnode\Routing\GroupNodeRouteProvider
-   */
-  protected function getCollectionRoute() {
-  }
-
-  /**
-   * Gets the create form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getCreateFormRoute() {
-    if ($path = $this->getPath('create-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\gnode\Controller\GroupNodeController::add',
-          '_title_callback' => '\Drupal\gnode\Controller\GroupNodeController::addTitle',
-          'node_type' => $this->getEntityBundle(),
-        ])
-        ->setRequirement('_group_permission', 'create ' . $this->getEntityBundle() . ' node')
-        ->setRequirement('_group_installed_content', $this->getPluginId())
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRoutes() {
-    $routes = parent::getRoutes();
-
-    if ($route = $this->getCreateFormRoute()) {
-      $routes[$this->getRouteName('create-form')] = $route;
-    }
-
-    return $routes;
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @see \Drupal\gnode\Routing\GroupNodeRouteProvider
-   */
-  public function getLocalActions() {
-    $actions['group_node.add'] = [
-      'title' => 'Add node',
-      'route_name' => 'entity.group_content.group_node.add_page',
-      'appears_on' => [$this->getRouteName('collection')],
-    ];
-
-    $actions['group_node.create'] = [
-      'title' => 'Create node',
-      'route_name' => 'entity.group_content.group_node.create_page',
-      'appears_on' => [$this->getRouteName('collection')],
-    ];
-
-    return $actions;
   }
 
   /**
@@ -212,10 +77,6 @@ class GroupNode extends GroupContentEnablerBase {
   public function defaultConfiguration() {
     $config = parent::defaultConfiguration();
     $config['entity_cardinality'] = 1;
-
-    // This string will be saved as part of the group type config entity. We do
-    // not use a t() function here as it needs to be stored untranslated.
-    $config['info_text']['value'] = '<p>By submitting this form you will add this content to the group.<br />It will then be subject to the access control settings that were configured for the group.<br/>Please fill out any available fields to describe the relation between the content and the group.</p>';
     return $config;
   }
 
@@ -233,6 +94,15 @@ class GroupNode extends GroupContentEnablerBase {
     $form['entity_cardinality']['#description'] .= '<br /><em>' . $info . '</em>';
 
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    $dependencies = parent::calculateDependencies();
+    $dependencies['config'][] = 'node.type.' . $this->getEntityBundle();
+    return $dependencies;
   }
 
 }

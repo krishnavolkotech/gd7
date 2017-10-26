@@ -1,0 +1,18 @@
+uuid: f6ec2039-d174-49da-9d7a-d7fa5555c128
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+id: group.incident_managent.created
+field_name: created
+entity_type: group
+bundle: incident_managent
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

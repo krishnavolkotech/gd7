@@ -2,41 +2,45 @@ hzd_notifications.notifications:
   path: '/user/{user}/notifications'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::notifications'
-    _title: 'My Notifications'
+    _title: 'Benachrichtigungen'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.set_service_notifications:
   path: '/user/{user}/notifications/services'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::service_notifications'
-    _title: 'My Notifications'
+    _title: 'Service Notifications'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.set_exeoss_notifications:
   path: '/user/{user}/notifications/best-fakt'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::exeoss_notifications'
-    _title: 'My Notifications'
+    _title: 'Ex-EOSS'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.rz_schnellinfos_notifications:
   path: '/user/{user}/notifications/rz-schnellinfos'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::rz_schnellinfos_notifications'
-    _title: 'My Notifications'
+    _title: 'RZ-Schnellinfos'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.group_notifications:
   path: '/user/{user}/notifications/hzd_group'
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::group_notifications'
-    _title: 'Add Group subscription'
+    _title: 'Group Notifications'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
     _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.update_notifications:
@@ -53,7 +57,8 @@ hzd_notifications.delete_notifications:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::delete_notifications'
     _title: 'Delete Notifications'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
 hzd_notifications.notifications_template:
   path: '/admin/config/notification-templates'
@@ -86,7 +91,8 @@ hzd_notifications.update_subscriptions:
     _title: 'Disable Notifications'
     _entity_view: 'user'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 hzd_notifications.cancel_all_subscriptions:
   path: '/user/{user}/notifications/cancel'
   defaults:

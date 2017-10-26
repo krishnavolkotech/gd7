@@ -1,0 +1,25 @@
+uuid: bbe2c7ef-9872-4381-adbc-85bfd7d0e26c
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_order
+    - node.type.non_production_environment
+id: node.non_production_environment.field_order
+field_name: field_order
+entity_type: node
+bundle: non_production_environment
+label: Order
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

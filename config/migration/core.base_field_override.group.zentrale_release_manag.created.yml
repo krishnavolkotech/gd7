@@ -1,0 +1,18 @@
+uuid: b1e49ed8-40bd-4e44-948f-480bae95fcdb
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+id: group.zentrale_release_manag.created
+field_name: created
+entity_type: group
+bundle: zentrale_release_manag
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

@@ -1,0 +1,14 @@
+uuid: 236788af-e76e-4345-9f18-388b9e658e2d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: realease_management-anonymous
+label: Anonymous
+weight: -102
+internal: true
+audience: anonymous
+group_type: realease_management
+permissions_ui: true
+permissions: {  }

@@ -42,7 +42,7 @@ class Confirm extends ConfirmFormBase {
       $nid = $node;
     }
     return new static(
-            $container->get('keyvalue.expirable')->get('downtimes_resolve_' . $nid)
+            $container->get('keyvalue.expirable')->get('downtimes_resolve_')
     );
   }
 
@@ -143,7 +143,6 @@ class Confirm extends ConfirmFormBase {
     $user = Drupal::currentUser();
     // $user_role = get_user_role();
     //extract($_SESSION['form_values']);
-    $message = 'Downtime has been resolved ';
 
     /* $date_report = get_timestamp($resolved_end_date);
       $date_report = get_unix_timestamp($resolved_end_date); */
@@ -153,17 +152,19 @@ class Confirm extends ConfirmFormBase {
     } else {
       $nid = $node;
     }
-
-    $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
-    if(!isset($downtimes_resolve['notifications_content_disable'])  ||  $downtimes_resolve['notifications_content_disable'] != 1) {
-      $downtime_node =  \Drupal\node\Entity\Node::load($nid);
-      if ($downtime_node instanceof \Drupal\node\Entity\Node){
-        send_downtime_notifications($downtime_node);
-        //exit;
-        //capture the notification for the users to send daily and weekly
-        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
-      }
+    $message = 'Downtime has been resolved ';
+    $downtimeType = \Drupal::database()->select('downtimes','d')
+      ->fields('d',['scheduled_p'])
+      ->condition('downtime_id',$nid)
+      ->execute()
+      ->fetchField();
+    if($downtimeType == 1){
+      $message = 'Maintenance has been resolved';
+    }else{
+      $message = 'Incident has been resolved';
     }
+    $downtimes_resolve = $this->keyValueExpirable->get("downtimes_resolve_" . $nid);
+    
     
     $comment = $downtimes_resolve['comment']['value'];
     $nid = $downtimes_resolve['nid'];
@@ -190,6 +191,15 @@ class Confirm extends ConfirmFormBase {
     drupal_set_message(t($message));
     \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $nid));
     $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
+    if(!isset($downtimes_resolve['notifications_content_disable'])  ||  $downtimes_resolve['notifications_content_disable'] != 1) {
+      $downtime_node =  \Drupal\node\Entity\Node::load($nid);
+      if ($downtime_node instanceof \Drupal\node\Entity\Node){
+        send_downtime_notifications($downtime_node, 'resolve');
+        //exit;
+        //capture the notification for the users to send daily and weekly
+//        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
+      }
+    }
     /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
       $query = \Drupal::database()->select('downtimes', 'd');
       $query->fields('d', ['state_id']);

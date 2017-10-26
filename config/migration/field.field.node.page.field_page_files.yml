@@ -1,0 +1,46 @@
+uuid: 78bfc958-fc54-42a0-ad82-35b7d78f2992
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_page_files
+    - node.type.page
+  module:
+    - file
+    - filefield_paths
+third_party_settings:
+  filefield_paths:
+    enabled: true
+    file_path:
+      value: 'gruppen/[node:group_raw]/[node:content-type:machine-name]/[node:vid]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+    redirect: false
+    retroactive_update: false
+    active_updating: false
+    file_name:
+      value: '[file:ffp-name-only-original].[file:ffp-extension-original]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+id: node.page.field_page_files
+field_name: field_page_files
+entity_type: node
+bundle: page
+label: Files
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: ''
+  file_extensions: 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp docx xlsx pptx zip rar mpp mm'
+  max_filesize: 200MB
+  description_field: true
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

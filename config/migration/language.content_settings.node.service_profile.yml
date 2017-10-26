@@ -1,0 +1,16 @@
+uuid: 5b3b8eea-d43f-472a-8218-871b0a551697
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.service_profile
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: node.service_profile
+target_entity_type_id: node
+target_bundle: service_profile
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,19 @@
+uuid: 4742a7de-a77b-4c49-aca5-c4550ed4f8ee
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+    - node.type.forum
+  module:
+    - gnode
+    - node
+id: group_content_type_486a744513175
+label: 'Moderiert Privat: Group node (Forenthema)'
+description: 'Adds <em class="placeholder">Forenthema</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:forum'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

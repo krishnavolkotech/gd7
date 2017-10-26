@@ -1,0 +1,29 @@
+uuid: c719b009-8f09-47a8-b1e2-c7b8970fa186
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: closed
+permissions_ui: true
+permissions:
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'leave group'
+  4: 'access group_node overview'
+  5: 'view group_node:forum content'
+  6: 'create group_node:forum content'
+  7: 'update own group_node:forum content'
+  8: 'delete own group_node:forum content'
+  9: 'view group_node:forum entity'
+  10: 'create group_node:forum entity'
+  11: 'update own group_node:forum entity'
+  12: 'delete own group_node:forum entity'
+  17: 'view group_node:faqs entity'
+  18: 'view group_node:faqs content'

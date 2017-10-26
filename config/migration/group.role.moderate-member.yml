@@ -1,0 +1,42 @@
+uuid: c69d8116-64c3-4040-a46c-a5e214aade23
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: moderate-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: moderate
+permissions_ui: true
+permissions:
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'leave group'
+  4: 'view group_node:event content'
+  5: 'view group_node:event entity'
+  6: 'view group_node:faqs content'
+  7: 'view group_node:faqs entity'
+  8: 'view group_node:newsletter content'
+  9: 'view group_node:newsletter entity'
+  10: 'view group_node:page content'
+  11: 'view group_node:page entity'
+  12: 'view group_node:quickinfo content'
+  13: 'view group_node:quickinfo entity'
+  14: 'view group_node:service_profile content'
+  15: 'view group_node:service_profile entity'
+  16: 'create group_node:quickinfo content'
+  17: 'update own group_node:quickinfo content'
+  18: 'create group_node:quickinfo entity'
+  19: 'update own group_node:quickinfo entity'
+  20: 'update any group_node:quickinfo content'
+  21: 'update any group_node:quickinfo entity'
+  22: 'view unpublished group_node:quickinfo entity'
+  30: 'create group_node:forum entity'
+  31: 'update own group_node:forum entity'
+  32: 'view group_node:forum entity'
+  33: 'create group_node:forum content'
+  34: 'view group_node:forum content'

@@ -1,27 +1,22 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Plugin\GroupContentEnablerBase.
- */
-
 namespace Drupal\group\Plugin;
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityMalformedException;
 use Drupal\group\Access\GroupAccessResult;
 use Drupal\group\Entity\GroupType;
 use Drupal\group\Entity\GroupInterface;
 use Drupal\group\Entity\GroupContentInterface;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides a base class for GroupContentEnabler plugins.
- *
- * @todo Refactor the way config is set, it's causing GroupType to have ugly
- *       code in installContentPlugin() and updateContentPlugin().
  *
  * @see \Drupal\group\Annotation\GroupContentEnabler
  * @see \Drupal\group\GroupContentEnablerManager
@@ -43,10 +38,12 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
-    // We call ::setConfiguration at construction to hide all non-configurable
-    // keys such as 'id'. This causes the $configuration property to only list
-    // that which is in fact configurable. However, ::getConfiguration still
-    // returns the full configuration array.
+    // Only support setting the group type ID during construction.
+    if (!empty($configuration['group_type_id'])) {
+      $this->groupTypeId = $configuration['group_type_id'];
+    }
+
+    // Include the default configuration by calling ::setConfiguration().
     $this->setConfiguration($configuration);
   }
 
@@ -79,10 +76,27 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   }
 
   /**
+   * Returns the entity type definition the plugin supports.
+   *
+   * @return \Drupal\Core\Entity\EntityTypeInterface
+   *   The entity type definition.
+   */
+  protected function getEntityType() {
+    return \Drupal::entityTypeManager()->getDefinition($this->getEntityTypeId());
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getEntityBundle() {
     return $this->pluginDefinition['entity_bundle'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPrettyPathKey() {
+    return $this->pluginDefinition['pretty_path_key'];
   }
 
   /**
@@ -118,6 +132,13 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   /**
    * {@inheritdoc}
    */
+  public function definesEntityAccess() {
+    return $this->pluginDefinition['entity_access'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isEnforced() {
     return $this->pluginDefinition['enforced'];
   }
@@ -126,6 +147,9 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    * {@inheritdoc}
    */
   public function getContentLabel(GroupContentInterface $group_content) {
+    if(!$group_content->getEntity() instanceof EntityInterface){
+      throw new EntityMalformedException('Invalid Entity:'.$group_content->id());
+    }
     return $group_content->getEntity()->label();
   }
 
@@ -173,47 +197,100 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   }
 
   /**
-   * {@inheritdoc}
+   * Provides permissions for the group content entity; i.e. the relationship.
+   *
+   * @return array
+   *   An array of group permissions, see ::getPermissions for more info.
+   *
+   * @see GroupContentEnablerInterface::getPermissions()
    */
-  public function getEntityForms() {
-    return [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPermissions() {
+  protected function getGroupContentPermissions() {
     $plugin_id = $this->getPluginId();
-    $defaults = [
-      'title_args' => ['%plugin_name' => $this->getLabel()],
-    ];
 
-    $permissions["access $plugin_id overview"] = [
-      'title' => 'Access the %plugin_name overview page',
-    ] + $defaults;
+    // Allow permissions here and in child classes to easily use the plugin name
+    // and target entity type name in their titles and descriptions.
+    $t_args = [
+      '%plugin_name' => $this->getLabel(),
+      '%entity_type' => $this->getEntityType()->getLowercaseLabel(),
+    ];
+    $defaults = ['title_args' => $t_args, 'description_args' => $t_args];
+
+    // Use the same title prefix to keep permissions sorted properly.
+    $prefix = '%plugin_name - Relationship:';
 
     $permissions["view $plugin_id content"] = [
-      'title' => '%plugin_name: View content',
+      'title' => "$prefix View entity relations",
     ] + $defaults;
 
     $permissions["create $plugin_id content"] = [
-      'title' => '%plugin_name: Create new content',
+      'title' => "$prefix Add entity relation",
+      'description' => 'Allows you to relate an existing %entity_type entity to the group.',
     ] + $defaults;
 
-    $permissions["edit own $plugin_id content"] = [
-      'title' => '%plugin_name: Edit own content',
+    $permissions["update own $plugin_id content"] = [
+      'title' => "$prefix Edit own entity relations",
     ] + $defaults;
 
-    $permissions["edit any $plugin_id content"] = [
-      'title' => '%plugin_name: Edit any content',
+    $permissions["update any $plugin_id content"] = [
+      'title' => "$prefix Edit any entity relation",
     ] + $defaults;
 
     $permissions["delete own $plugin_id content"] = [
-      'title' => '%plugin_name: Delete own content',
+      'title' => "$prefix Delete own entity relations",
     ] + $defaults;
 
     $permissions["delete any $plugin_id content"] = [
-      'title' => '%plugin_name: Delete any content',
+      'title' => "$prefix Delete any entity relation",
+    ] + $defaults;
+
+    return $permissions;
+  }
+
+  /**
+   * Provides permissions for the actual entity being added to the group.
+   *
+   * @return array
+   *   An array of group permissions, see ::getPermissions for more info.
+   *
+   * @see GroupContentEnablerInterface::getPermissions()
+   */
+  protected function getTargetEntityPermissions() {
+    $plugin_id = $this->getPluginId();
+
+    // Allow permissions here and in child classes to easily use the plugin and
+    // target entity type labels in their titles and descriptions.
+    $t_args = [
+      '%plugin_name' => $this->getLabel(),
+      '%entity_type' => $this->getEntityType()->getLowercaseLabel(),
+    ];
+    $defaults = ['title_args' => $t_args, 'description_args' => $t_args];
+
+    // Use the same title prefix to keep permissions sorted properly.
+    $prefix = '%plugin_name - Entity:';
+
+    $permissions["view $plugin_id entity"] = [
+      'title' => "$prefix View %entity_type entities",
+    ] + $defaults;
+
+    $permissions["create $plugin_id entity"] = [
+      'title' => "$prefix Add %entity_type entities",
+      'description' => 'Allows you to create a new %entity_type entity and relate it to the group.',
+    ] + $defaults;
+
+    $permissions["update own $plugin_id entity"] = [
+      'title' => "$prefix Edit own %entity_type entities",
+    ] + $defaults;
+
+    $permissions["update any $plugin_id entity"] = [
+      'title' => "$prefix Edit any %entity_type entities",
+    ] + $defaults;
+
+    $permissions["delete own $plugin_id entity"] = [
+      'title' => "$prefix Delete own %entity_type entities",
+    ] + $defaults;
+
+    $permissions["delete any $plugin_id entity"] = [
+      'title' => "$prefix Delete any %entity_type entities",
     ] + $defaults;
 
     return $permissions;
@@ -222,320 +299,25 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   /**
    * {@inheritdoc}
    */
-  public function getPaths() {
-    $path_key = $this->pluginDefinition['path_key'];
-    return empty($path_key) ? [] : [
-      'collection' => "/group/{group}/$path_key",
-      'pending-collection' => "/group/{group}/pending-$path_key",
-      'add-form' => "/group/{group}/$path_key/add",
-      'canonical' => "/group/{group}/$path_key/{group_content}",
-      'edit-form' => "/group/{group}/$path_key/{group_content}/edit",
-      'delete-form' => "/group/{group}/$path_key/{group_content}/delete",
-      'approve-form' => "/group/{group}/$path_key/{group_content}/approve",
-      'reject-form' => "/group/{group}/$path_key/{group_content}/reject",
-    ];
+  public function getPermissions() {
+    $permissions = $this->getGroupContentPermissions();
+    if ($this->definesEntityAccess()) {
+      $permissions += $this->getTargetEntityPermissions();
+    }
+    return $permissions;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getPath($name) {
-    $paths = $this->getPaths();
-    return isset($paths[$name]) ? $paths[$name] : FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRouteName($name) {
-    $route_prefix = 'entity.group_content.' . str_replace(':', '__', $this->getPluginId());
-    return $route_prefix . '.' . str_replace(['-', 'drupal:'], ['_', ''], $name);
-  }
-
-  /**
-   * Gets the collection route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getCollectionRoute() {
-    if ($path = $this->getPath('collection')) {
-      $plugin_id = $this->getPluginId();
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_list' => 'group_content',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
-          'plugin_id' => $plugin_id,
-        ])
-        ->setRequirement('_group_permission', "access $plugin_id overview")
-        ->setRequirement('_group_installed_content', $plugin_id)
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-   /**
-   * Gets the collection route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getPendingCollectionRoute() {
-
-    if ($path = $this->getPath('pending-collection')) {
-      $plugin_id = $this->getPluginId();
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_list' => 'group_content',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
-          'plugin_id' => $plugin_id,
-        ])
-        ->setRequirement('_group_permission', "access $plugin_id overview")
-        ->setRequirement('_group_installed_content', $plugin_id)
-
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group', 'request_status' => '0'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the canonical route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getCanonicalRoute() {
-    if ($path = $this->getPath('canonical')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_view' => 'group_content.full',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
-        ])
-        ->setRequirement('_entity_access', 'group_content.view')
-        ->setRequirement('_group_owns_content', 'TRUE')
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-          'group_content' => ['type' => 'entity:group_content'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the add form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getAddFormRoute() {
-    if ($path = $this->getPath('add-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\group\Entity\Controller\GroupContentController::add',
-          '_title_callback' => '\Drupal\group\Entity\Controller\GroupContentController::addPageTitle',
-          'plugin_id' => $this->getPluginId(),
-        ])
-        ->setRequirement('_group_content_add_access', $this->getPluginId())
-        ->setRequirement('_group_installed_content', $this->getPluginId())
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the edit form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getEditFormRoute() {
-    if ($path = $this->getPath('edit-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_form' => 'group_content.edit',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::editTitle',
-        ])
-        ->setRequirement('_entity_access', 'group_content.update')
-        ->setRequirement('_group_owns_content', 'TRUE')
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-          'group_content' => ['type' => 'entity:group_content'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the delete form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getDeleteFormRoute() {
-    if ($path = $this->getPath('delete-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_form' => 'group_content.delete',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::deleteTitle',
-        ])
-        ->setRequirement('_entity_access', 'group_content.delete')
-        ->setRequirement('_group_owns_content', 'TRUE')
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-          'group_content' => ['type' => 'entity:group_content'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the delete form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getApproveFormRoute() {
-    if ($path = $this->getPath('approve-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_form' => 'group_content.approve',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::editTitle',
-        ])
-        ->setRequirement('_entity_access', 'group_content.update')
-        ->setRequirement('_group_owns_content', 'TRUE')
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-          'group_content' => ['type' => 'entity:group_content'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the reject form route.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getRejectFormRoute() {
-    if ($path = $this->getPath('reject-form')) {
-      $route = new Route($path);
-
-      $route
-        ->setDefaults([
-          '_entity_form' => 'group_content.reject',
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::deleteTitle',
-        ])
-        ->setRequirement('_entity_access', 'group_content.delete')
-        ->setRequirement('_group_owns_content', 'TRUE')
-        ->setOption('_group_operation_route', TRUE)
-        ->setOption('parameters', [
-          'group' => ['type' => 'entity:group'],
-          'group_content' => ['type' => 'entity:group_content'],
-        ]);
-
-      return $route;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRoutes() {
-    $routes = [];
-
-    if ($route = $this->getCollectionRoute()) {
-      $routes[$this->getRouteName('collection')] = $route;
+  public function createEntityAccess(GroupInterface $group, AccountInterface $account) {
+    // You cannot create target entities if the plugin does not support it.
+    if (!$this->definesEntityAccess()) {
+      return AccessResult::neutral();
     }
 
-    if ($route = $this->getPendingCollectionRoute()) {
-      $routes[$this->getRouteName('pending-collection')] = $route;
-    }
-
-    if ($route = $this->getCanonicalRoute()) {
-      $routes[$this->getRouteName('canonical')] = $route;
-    }
-
-    if ($route = $this->getAddFormRoute()) {
-      $routes[$this->getRouteName('add-form')] = $route;
-    }
-
-    if ($route = $this->getEditFormRoute()) {
-      $routes[$this->getRouteName('edit-form')] = $route;
-    }
-
-    if ($route = $this->getDeleteFormRoute()) {
-      $routes[$this->getRouteName('delete-form')] = $route;
-    }
-
-    if ($route = $this->getApproveFormRoute()) {
-      $routes[$this->getRouteName('approve-form')] = $route;
-    }
-
-    if ($route = $this->getRejectFormRoute()) {
-      $routes[$this->getRouteName('reject-form')] = $route;
-    }
-    return $routes;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getLocalActions() {
-    $actions = [];
-
-    if (($appears_on = $this->getRouteName('collection')) && ($route_name = $this->getRouteName('add-form'))) {
-      $prefix = str_replace(':', '-', $this->getPluginId());
-      $actions["$prefix.add"] = [
-        'title' => 'Add ' . $this->getLabel(),
-        'route_name' => $route_name,
-        'appears_on' => [$appears_on],
-      ];
-    }
-
-    if (($appears_on = $this->getRouteName('pending-collection')) && ($route_name = $this->getRouteName('add-form'))) {
-      $prefix = str_replace(':', '-', $this->getPluginId());
-      $actions["$prefix.add"] = [
-        'title' => 'Add ' . $this->getLabel(),
-        'route_name' => $route_name,
-        'appears_on' => [$appears_on],
-      ];
-    }
-
-    return $actions;
+    $plugin_id = $this->getPluginId();
+    return GroupAccessResult::allowedIfHasGroupPermission($group, $account, "create $plugin_id entity");
   }
 
   /**
@@ -586,10 +368,10 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
 
     // Allow members to edit their own group content.
     if ($group_content->getOwnerId() == $account->id()) {
-      return GroupAccessResult::allowedIfHasGroupPermission($group, $account, "edit own $plugin_id content");
+      return GroupAccessResult::allowedIfHasGroupPermission($group, $account, "update own $plugin_id content");
     }
 
-    return GroupAccessResult::allowedIfHasGroupPermission($group, $account, "edit any $plugin_id content");
+    return GroupAccessResult::allowedIfHasGroupPermission($group, $account, "update any $plugin_id content");
   }
 
   /**
@@ -642,6 +424,24 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
   /**
    * {@inheritdoc}
    */
+  public function getEntityReferenceLabel() {
+    return isset($this->pluginDefinition['reference_label'])
+      ? $this->pluginDefinition['reference_label']
+      : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntityReferenceDescription() {
+    return isset($this->pluginDefinition['reference_description'])
+      ? $this->pluginDefinition['reference_description']
+      : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getEntityReferenceSettings() {
     $settings['target_type'] = $this->getEntityTypeId();
     if ($bundle = $this->getEntityBundle()) {
@@ -660,23 +460,22 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return [
-      'id' => $this->getPluginId(),
-      'group_type' => $this->getGroupTypeId(),
-      'data' => $this->configuration,
-    ];
+    return $this->configuration;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setConfiguration(array $configuration) {
-    $configuration += [
-      'data' => [],
-      'group_type' => NULL,
-    ];
-    $this->configuration = $configuration['data'] + $this->defaultConfiguration();
-    $this->groupTypeId = $configuration['group_type'];
+    // Do not allow the changing of the group type ID after construction.
+    unset($configuration['group_type_id']);
+
+    // Merge in the default configuration.
+    $this->configuration = NestedArray::mergeDeep(
+      $this->defaultConfiguration(),
+      $configuration
+    );
+
     return $this;
   }
 
@@ -690,11 +489,7 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
     return [
       'group_cardinality' => 0,
       'entity_cardinality' => 0,
-      'info_text' => [
-        // This string will be saved as part of the group type config entity. We
-        // do not use a t() function here as it needs to be stored untranslated.
-        'value' => '<p>Please fill out any available fields to describe the relation between the content and the group.</p>',
-      ],
+      'use_creation_wizard' => 1
     ];
   }
 
@@ -729,16 +524,13 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
       '#required' => TRUE,
     ];
 
-    $form['info_text'] = [
-      '#type' => 'text_format',
-      '#title' => $this->t('Informational text'),
-      '#description' => $this->t('A bit of info to show atop every form that links a %entity_type entity to a %group_type group.', $replace),
-      '#default_value' => $this->configuration['info_text']['value'],
-    ];
-
-    // Only specify a default format if the data has been saved before.
-    if (!empty($this->configuration['info_text']['format'])) {
-      $form['info_text']['#format'] = $this->configuration['info_text']['format'];
+    if ($this->definesEntityAccess()) {
+      $form['use_creation_wizard'] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Use 2-step wizard when creating a new %entity_type entity within a %group_type group', $replace),
+        '#description' => $this->t('This will first show you the form to create the actual entity and then a form to create the relationship between the entity and the group.<br />You can choose to disable this wizard if you did not or will not add any fields to the relationship (i.e. this plugin).<br /><strong>Warning:</strong> If you do have fields on the relationship and do not use the wizard, you may end up with required fields not being filled out.'),
+        '#default_value' => $this->configuration['use_creation_wizard'],
+      ];
     }
 
     return $form;
@@ -764,7 +556,9 @@ abstract class GroupContentEnablerBase extends PluginBase implements GroupConten
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return [];
+    $dependencies['module'][] = $this->getProvider();
+    $dependencies['module'][] = $this->getEntityType()->getProvider();
+    return $dependencies;
   }
 
 }

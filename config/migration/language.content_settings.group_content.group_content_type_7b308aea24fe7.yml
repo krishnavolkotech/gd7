@@ -1,0 +1,16 @@
+uuid: 30b87d0d-5e50-4c4a-9c54-ba60bb05e261
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.content_type.group_content_type_7b308aea24fe7
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: group_content.group_content_type_7b308aea24fe7
+target_entity_type_id: group_content
+target_bundle: group_content_type_7b308aea24fe7
+default_langcode: site_default
+language_alterable: false

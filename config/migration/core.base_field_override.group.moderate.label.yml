@@ -1,0 +1,18 @@
+uuid: 85e4c2c0-2c48-4a5d-ae92-831d61dfec18
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: group.moderate.label
+field_name: label
+entity_type: group
+bundle: moderate
+label: Title
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

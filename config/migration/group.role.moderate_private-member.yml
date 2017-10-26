@@ -1,0 +1,38 @@
+uuid: 8bd98910-171d-48f2-bd95-46131e2a1bd6
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+id: moderate_private-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: moderate_private
+permissions_ui: true
+permissions:
+  0: 'view group'
+  1: 'access group_membership overview'
+  2: 'view group_membership content'
+  3: 'leave group'
+  4: 'access group_node overview'
+  5: 'view group_node:event content'
+  6: 'view group_node:event entity'
+  7: 'view group_node:faqs content'
+  8: 'view group_node:faqs entity'
+  9: 'view group_node:newsletter content'
+  10: 'view group_node:newsletter entity'
+  11: 'view group_node:page content'
+  12: 'view group_node:page entity'
+  13: 'view group_node:quickinfo content'
+  14: 'view group_node:service_profile content'
+  15: 'view group_node:service_profile entity'
+  16: 'view group_node:deployed_releases content'
+  17: 'create group_node:deployed_releases content'
+  18: 'update own group_node:deployed_releases content'
+  19: 'view group_node:forum entity'
+  20: 'view group_node:forum content'
+  32: 'create group_node:forum entity'
+  33: 'update own group_node:forum entity'
+  35: 'create group_node:forum content'

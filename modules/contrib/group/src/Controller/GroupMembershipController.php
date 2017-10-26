@@ -1,17 +1,14 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\group\Controller\GroupMembershipController.
- */
-
 namespace Drupal\group\Controller;
 
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityFormBuilderInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\GroupInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Provides group membership route controllers.
@@ -27,15 +24,25 @@ class GroupMembershipController extends ControllerBase {
    * @var \Drupal\Core\Session\AccountInterface
    */
   protected $currentUser;
-
+  
+  /**
+   * The entity form builder.
+   *
+   * @var \Drupal\Core\Entity\EntityFormBuilderInterface
+   */
+  protected $entityFormBuilder;
+  
   /**
    * Constructs a new GroupMembershipController.
    *
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
+   * @param \Drupal\Core\Entity\EntityFormBuilderInterface $entity_form_builder
+   *   The entity form builder.
    */
-  public function __construct(AccountInterface $current_user) {
+  public function __construct(AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder) {
     $this->currentUser = $current_user;
+    $this->entityFormBuilder = $entity_form_builder;
   }
 
   /**
@@ -43,7 +50,8 @@ class GroupMembershipController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('current_user')
+      $container->get('current_user'),
+      $container->get('entity.form_builder')
     );
   }
 
@@ -68,20 +76,32 @@ class GroupMembershipController extends ControllerBase {
       'request_status' => 1,
     ]);
 
-    return $this->entityFormBuilder()->getForm($group_content, 'group-join');
+    return $this->entityFormBuilder->getForm($group_content, 'group-join');
   }
 
   /**
-   * The _title_callback for the join form route.
+   * Provides the Request membership form for joining a group access check.
    *
    * @param \Drupal\group\Entity\GroupInterface $group
    *   The group to join.
    *
-   * @return string
-   *   The page title.
+   * @return array
+   *   A group join form access.
    */
-  public function joinTitle(GroupInterface $group) {
-    return $this->t('Join group %label', ['%label' => $group->label()]);
+  public function access(GroupInterface $group) {
+    $currentUser = \Drupal::currentUser();
+    $groupMember = $group->getMember($currentUser);
+    if (($groupMember && $groupMember->getGroupContent()
+            ->get('request_status')->value == 1)
+    ) {
+      return AccessResult::forbidden();
+    }
+    elseif($currentUser->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
+    else {
+      return AccessResult::allowed();
+    }
   }
 
   /**
@@ -94,18 +114,27 @@ class GroupMembershipController extends ControllerBase {
    *   A group join form.
    */
   public function requestMembership(GroupInterface $group) {
-    /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
     $plugin = $group->getGroupType()->getContentPlugin('group_membership');
-
-    // Pre-populate a group membership with the current user.
-    $group_content = GroupContent::create([
-      'type' => $plugin->getContentTypeConfigId(),
-      'gid' => $group->id(),
-      'entity_id' => $this->currentUser->id(),
-      'request_status' => 0,
-    ]);
-
-    return $this->entityFormBuilder()->getForm($group_content, 'group-request');
+    $check = \Drupal::entityQuery('group_content')
+      ->condition('gid',$group->id())
+      ->condition('entity_id',$this->currentUser->id())
+      ->condition('type',$plugin->getContentTypeConfigId())
+      ->execute();
+    if (!empty($check)) {
+      return ['#markup' => $this->t('Your request for membership group of %label is in queue, Please wait for approval.', ['%label' => $group->label()])];
+    }
+    else {
+      /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
+      $plugin = $group->getGroupType()->getContentPlugin('group_membership');
+      // Pre-populate a group membership with the current user.
+      $group_content = GroupContent::create([
+            'type' => $plugin->getContentTypeConfigId(),
+            'gid' => $group->id(),
+            'entity_id' => $this->currentUser->id(),
+            'request_status' => 0,
+      ]);
+      return $this->entityFormBuilder()->getForm($group_content, 'group-request');
+    }
   }
 
   /**
@@ -135,17 +164,16 @@ class GroupMembershipController extends ControllerBase {
   }
 
   /**
-   * Provides the form cancel membership for a group.
+   * The _title_callback for the join form route.
    *
    * @param \Drupal\group\Entity\GroupInterface $group
-   *   The group to leave.
+   *   The group to join.
    *
-   * @return array
-   *   A group leave form.
+   * @return string
+   *   The page title.
    */
-  public function cancelMembership(GroupInterface $group) {
-    $group_content = $group->getMember($this->currentUser)->getGroupContent();
-    return $this->entityFormBuilder()->getForm($group_content, 'group-cancel');
+  public function joinTitle(GroupInterface $group) {
+    return $this->t('Join group %label', ['%label' => $group->label()]);
   }
 
   /**
@@ -159,7 +187,7 @@ class GroupMembershipController extends ControllerBase {
    */
   public function leave(GroupInterface $group) {
     $group_content = $group->getMember($this->currentUser)->getGroupContent();
-    return $this->entityFormBuilder()->getForm($group_content, 'group-leave');
+    return $this->entityFormBuilder->getForm($group_content, 'group-leave');
   }
 
 }

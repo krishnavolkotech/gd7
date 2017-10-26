@@ -1,0 +1,17 @@
+uuid: c14977a4-8248-456a-aca0-9640474df4cf
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+  enforced:
+    config:
+      - user.role.site_administrator
+id: closed_private-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: closed_private
+permissions_ui: false
+permissions: {  }

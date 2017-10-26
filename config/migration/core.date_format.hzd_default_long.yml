@@ -1,0 +1,8 @@
+uuid: f8dc8ba3-a319-42bd-b680-86129c253737
+langcode: de
+status: true
+dependencies: {  }
+id: hzd_default_long
+label: 'Hzd default long'
+locked: false
+pattern: 'l, j F, Y'

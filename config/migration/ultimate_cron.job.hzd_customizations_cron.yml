@@ -1,0 +1,29 @@
+uuid: acaa561b-9b01-4045-96f6-21512bfdde70
+langcode: de
+status: true
+dependencies:
+  module:
+    - hzd_customizations
+title: 'Inactive User Cron'
+id: hzd_customizations_cron
+weight: 0
+module: hzd_customizations
+callback: hzd_customizations_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '0+@ 0 * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

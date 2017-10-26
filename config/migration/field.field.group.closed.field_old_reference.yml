@@ -1,0 +1,23 @@
+uuid: a0923b99-4a2b-4118-aa86-02c235c3adaf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_old_reference
+    - group.type.closed
+id: group.closed.field_old_reference
+field_name: field_old_reference
+entity_type: group
+bundle: closed
+label: 'Old Reference'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

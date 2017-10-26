@@ -1,0 +1,48 @@
+display:
+  default:
+    display_options:
+      exposed_form:
+        options:
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+      fields:
+        firstname:
+          label: Vorname
+        lastname:
+          label: Nachname
+        phone:
+          label: Telefon
+        abbr:
+          label: Land
+        mail:
+          label: E-Mail
+      use_more_text: mehr
+  page_1:
+    display_options:
+      pager:
+        options:
+          tags:
+            previous: '‹ Vorherige'
+            next: 'Nächste ›'
+            first: '« Erste'
+            last: 'Letzte »'
+          expose:
+            items_per_page_label: Einträge
+            items_per_page_options_all_label: Alle
+      fields:
+        group_member_name:
+          label: Nachname
+        lastname:
+          label: Nachname
+        firstname:
+          label: Vorname
+        group_roles:
+          label: Rollen
+        phone:
+          label: Telefon
+        abbr:
+          label: Land
+        mail:
+          label: E-Mail

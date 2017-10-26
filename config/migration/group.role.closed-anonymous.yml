@@ -1,0 +1,14 @@
+uuid: 8cc6554e-3ecd-447f-afcb-9a796d980567
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-anonymous
+label: Anonymous
+weight: -102
+internal: true
+audience: anonymous
+group_type: closed
+permissions_ui: true
+permissions: {  }

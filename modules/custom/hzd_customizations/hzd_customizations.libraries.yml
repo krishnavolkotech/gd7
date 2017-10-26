@@ -1,12 +1,12 @@
-hzd_customizations:
-  version: 1.x
+#hzd_customizations:
+#  version: 1.x
 #  css:
 #    theme:
 #      css/cuddly-slider.css: {}
-  js:
-    js/jquery.tablesorter.min.js: {}
-  dependencies:
-    - core/jquery
+#  js:
+#    js/jquery.tablesorter.min.js: {}
+#  dependencies:
+#    - core/jquery
 
 hzd_node_quickinfo:
   version: 1.x
@@ -22,3 +22,7 @@ hzd_customizations_js:
     js/hzd_customizations.js: {}
   dependencies:
     - core/jquery
+    
+hzd_customizations_dragable_remove_from_filefield:
+    js:
+        js/remove-weight-column-from-field.js: {}

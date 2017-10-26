@@ -229,11 +229,11 @@ class DowntimesFilter extends FormBase
         $services_obj = db_query($sql)->fetchAll();
         foreach ($services_obj as $services_data) {
             $services[$services_data->nid] = $services_data->title;
-        };
-        
+        }
+        natcasesort($services);
         $form['first_row']['services_effected'] = [
             '#type' => 'select',
-//      '#title' => t('Services Effected'),
+//      '#title' => t('Services Affected'),
             '#options' => $services,
 //      '#ajax' => array(
 //        'callback' => $path,
@@ -262,7 +262,7 @@ class DowntimesFilter extends FormBase
             '#description' => date($date_format, time()),
             '#states' => [
                 'enabled' => [
-                    ':input[name="time_period"]' => array('value' => 0),
+                    ':input[name="time_period"]' => array('value' => '0'),
                 ]
             ],
 //      '#ajax' => array(
@@ -291,7 +291,7 @@ class DowntimesFilter extends FormBase
             '#description' => date($date_format, time()),
             '#states' => [
                 'enabled' => [
-                    ':input[name="time_period"]' => array('value' => 0),
+                    ':input[name="time_period"]' => array('value' => '0'),
                 ]
             ],
 //      '#ajax' => array(
@@ -337,13 +337,14 @@ class DowntimesFilter extends FormBase
 //        $form['#suffix'] = "</div>";
         $form['#attached']['library'] = array(
             //     'downtimes/downtimes.newdowntimes',
-            'downtimes/downtimes.currentincidents',
+//            'downtimes/downtimes.currentincidents',
             'downtimes/downtimes',
         );
         $form['#attached']['drupalSettings'] = array(
             'search_string' => t('Search Reason'),
             'group_id' => $group_id,
         );
+        $form['#exclude_from_print'] = 1;
         
         return $form;
     }

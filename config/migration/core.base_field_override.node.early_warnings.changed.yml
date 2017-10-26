@@ -1,0 +1,18 @@
+uuid: 7eba910e-74e6-45e6-966a-131e63dc502f
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.early_warnings
+id: node.early_warnings.changed
+field_name: changed
+entity_type: node
+bundle: early_warnings
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

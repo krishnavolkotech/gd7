@@ -35,7 +35,7 @@ class ReleaseFilterForm extends FormBase
         $form['#method'] = 'get';
         
         $wrapper = 'released_results_wrapper';
-        $services[] = '<' . $this->t('Service') . '>';
+        $services[] = '<' . $this->t('Service')->render() . '>';
         
         $release_type = $filter_value['release_type'];
         if (!$release_type) {
@@ -50,7 +50,7 @@ class ReleaseFilterForm extends FormBase
             $default_type = $release_type;
         }
         
-        $services_obj = db_query("SELECT n.title, n.nid 
+        $services_obj = db_query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -62,7 +62,10 @@ class ReleaseFilterForm extends FormBase
         )->fetchAll();
         
         foreach ($services_obj as $services_data) {
-            $services[$services_data->nid] = $services_data->title;
+          $serviceNode = \Drupal\node\Entity\Node::load($services_data->nid);
+          if(!empty($serviceNode->get('field_release_name')->value)){
+            $services[$services_data->nid] = $serviceNode->get('field_release_name')->value;
+          }
         }
         
         $container = \Drupal::getContainer();
@@ -87,8 +90,11 @@ class ReleaseFilterForm extends FormBase
 //    else {
 //      $rel_path = '::releases_search_results';
 //    }
-        
+
         if ($type == 'deployed') {
+          if (!$filter_value['deployed_type']) {
+            $filter_value['deployed_type'] = "current";
+          }
             $states = get_all_user_state();
             $form['states'] = array(
                 '#type' => 'select',
@@ -113,11 +119,11 @@ class ReleaseFilterForm extends FormBase
                     'onchange' => 'this.form.submit()',
                 ),
             );
-            
+
             $types = array(
+                'all' => t('All'),
                 'current' => t('Current'),
                 'archived' => t('Archived'),
-                'all' => t('All')
             );
             $form['deployed_type'] = array(
                 '#type' => 'select',
@@ -166,6 +172,7 @@ class ReleaseFilterForm extends FormBase
                 ),
             );
         }
+        natcasesort($release_type_list);
         $form['release_type'] = array(
             '#type' => 'select',
             '#default_value' => $default_type,
@@ -193,7 +200,7 @@ class ReleaseFilterForm extends FormBase
         if (!$default_value_services) {
             $default_value_services = isset($timer) ? $timer : $form_state->getValue('services');
         }
-        
+        asort($services);
         $form['services'] = array(
             '#type' => 'select',
             '#options' => $services,
@@ -235,7 +242,7 @@ class ReleaseFilterForm extends FormBase
         if (!$default_value_releases) {
             $default_value_releases = isset($timer) ? $timer : $form_state->getValue('releases');
         }
-        
+        natcasesort($options);
         $form['releases'] = array(
             '#type' => 'select',
             '#options' => $options,
@@ -265,7 +272,7 @@ class ReleaseFilterForm extends FormBase
             '#attributes' => array(
                 'class' => array("start_date"),
                 'placeholder' => array(
-                    '<' . $this->t('Start Date') . '>',
+                    '<' . $this->t('Start Date')->render() . '>',
                 ),
                 'onchange' => 'this.form.submit()',
             ),
@@ -296,7 +303,7 @@ class ReleaseFilterForm extends FormBase
             '#attributes' => array(
                 'class' => array("end_date"),
                 'placeholder' => array(
-                    '<' . $this->t('End Date') . '>'
+                    '<' . $this->t('End Date')->render() . '>'
                 ),
                 'onchange' => 'this.form.submit()',
             ),
@@ -360,6 +367,7 @@ class ReleaseFilterForm extends FormBase
             '#prefix' => '<div class = "reset_form">',
             '#suffix' => '</div><div style = "clear:both"></div>',
         );
+        $form['#exclude_from_print']=1;
         
         return $form;
     }
@@ -368,7 +376,7 @@ class ReleaseFilterForm extends FormBase
      * {@inheritdoc}
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
-        
+    
     }
     
     /**
@@ -750,5 +758,5 @@ class ReleaseFilterForm extends FormBase
 //    $output[]['#attached']['library']['drupalSettings']['status'] = TRUE;
 //    return $output;
 //  }
-    
+
 }

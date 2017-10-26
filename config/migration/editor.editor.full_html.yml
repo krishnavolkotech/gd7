@@ -1,0 +1,95 @@
+uuid: 9db8a1df-8223-496d-870b-711ef924a040
+langcode: de
+status: true
+dependencies:
+  config:
+    - filter.format.full_html
+  module:
+    - ckeditor
+_core:
+  default_config_hash: 967ijj7p6i7rwrYl7r08WQFeCY_c23YAh0h8u-w_CXM
+format: full_html
+editor: ckeditor
+settings:
+  toolbar:
+    rows:
+      -
+        -
+          name: Tools
+          items:
+            - Source
+        -
+          name: Undo-Redo
+          items:
+            - Undo
+            - Redo
+        -
+          name: 'Text Format'
+          items:
+            - Cut
+            - Copy
+            - Paste
+        -
+          name: Media
+          items:
+            - DrupalImage
+            - Table
+            - HorizontalRule
+            - SpecialChar
+        -
+          name: Linking
+          items:
+            - Link
+            - Unlink
+            - '-'
+            - Maximize
+            - ShowBlocks
+      -
+        -
+          name: 'Block Formatting'
+          items:
+            - Format
+        -
+          name: Formatting
+          items:
+            - Bold
+            - Italic
+            - Underline
+            - Strike
+            - '-'
+            - Superscript
+            - Subscript
+            - RemoveFormat
+            - '-'
+        -
+          name: Lists
+          items:
+            - NumberedList
+            - BulletedList
+            - Outdent
+            - Indent
+            - Blockquote
+        -
+          name: 'Line alignment'
+          items:
+            - JustifyLeft
+            - JustifyCenter
+            - JustifyRight
+            - JustifyBlock
+        -
+          name: 'Text color'
+          items:
+            - Styles
+  plugins:
+    language:
+      language_list: un
+    stylescombo:
+      styles: ''
+image_upload:
+  status: false
+  scheme: public
+  directory: inline-images
+  max_size: ''
+  max_dimensions:
+    width: null
+    height: null

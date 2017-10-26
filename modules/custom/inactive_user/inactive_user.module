@@ -18,6 +18,23 @@ function inactive_user_user_cancel($edit, $account, $method) {
 }
 
 /**
+ * Hook_user_login($account)
+ */
+function inactive_user_user_login($account) {
+  $uid = $account->Id();
+
+  $query = \Drupal::database()->select('inactive_users', 'iu');
+  $query->fields('iu', array('uid'));
+  $query->condition('uid', $uid);
+  $check_inactive_user = $query->execute()->fetchAssoc();
+
+  if (!empty($check_inactive_user)) {
+    \Drupal::database()->delete('inactive_users')
+     ->condition('uid', $uid)
+     ->execute();
+  }
+}
+/**
  * Implements hook_mail().
  */
 
@@ -31,6 +48,9 @@ function inactive_user_mail($key, &$message, $params) {
 
 /**
  * Implements hook_schema().
+ *
+ * @todo to be removed this as this is already declared in inactive.install file(confirm)
+ *
  */
 function inactive_user_schema() {
   $schema['inactive_users'] = array(
@@ -99,13 +119,35 @@ function inactive_user_schema() {
       ),
       'inactive_user_notification_flag' => array(
         'description' => 'Inactive user notification flag.',
-        'type' => 'bool',
+        'type' => 'int',
         'not null' => TRUE,
         'default' => 1,
       ),
     ),
     'primary key' => array('uid'),
   );
+
+  $schema['inactive_user_flag'] = array(
+    'description' => 'Inactive user flag.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary key to store unique information.',
+        'type' => 'serial',
+        'not null' => FALSE,
+      ),
+      'user_id' => array(
+        'description' => 'Storing inactive user id.',
+        'type' => 'int',
+      ),
+      'value' => array(
+        'description' => 'Storing inacitve user value.',
+        'type' => 'int',
+      ),
+    ),
+    'primary key' => array('id'),
+
+  );
+
   return $schema;
 }
 
@@ -130,3 +172,77 @@ function _inactive_user_with_content($uid) {
   return ($node_field_data_uid || $comment_field_data_uid);
 
 }
+
+function inactive_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    if ($form_id == 'user_form') {
+        $user = \Drupal::currentUser();
+        $admin = $user->hasPermission('administer users');
+        $account = $form_state->getFormObject()->getEntity();
+        $userid = $account->id();
+        $form['account']['status']['#access'] = FALSE;
+        if (in_array('site_administrator', $user->getRoles()) || $user->id() == 1) {
+            $db = \Drupal::database();
+            $result = $db->select('inactive_users', 'iu')
+                ->fields('iu', array('uid'))
+                ->condition('iu.uid', $userid);
+            $val = $result->execute()->fetchAssoc();
+            $form['inactive_container'] = [
+                '#type' => 'fieldset',
+//                '#title' => t('Inactive status'),
+                '#access' => $admin,
+            ];
+            $status = $account->get('status')->value;
+            if(empty($val) && $status == 1) {
+                $statusdefault = 0;
+            } else if(!empty($val) && $status == 1) {
+                $statusdefault = 1;
+            } else if($status == 0) {
+                $statusdefault = 2;
+            }
+            $form['inactive_container']['inactive_status'] = [
+                '#type' => 'radios',
+                '#title' => t('Status'),
+                '#options' => [0 => t('Active'), 2 => t('Blocked'), 1 => t('Inactive')],
+                '#default_value' => $statusdefault,
+            ];
+            $form['actions']['submit']['#submit'][] = 'inactive_users_user_form_submit';
+        }
+    }
+}
+
+function inactive_users_user_form_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $inactive = $form_state->getValue('inactive_status');
+    $account = $form_state->getFormObject()->getEntity();
+    $userid = $account->id();
+    if($inactive == 1) {
+        $db = \Drupal::database();
+        $result = $db->select('inactive_users', 'iu')
+            ->fields('iu', array('uid'))
+            ->condition('iu.uid', $userid);
+        $val = $result->execute()->fetchAssoc();
+        if(!$val) {
+            \Drupal::database()->insert('inactive_users')
+              ->fields(array(
+                'uid' => $userid,
+              ))->execute();
+        }
+        $user = \Drupal\user\Entity\User::load($userid);
+        $user->set('status', 1);
+        $user->save();
+    } elseif($inactive == 0) {
+        \Drupal::database()->delete('inactive_users')
+         ->condition('uid', $userid)
+         ->execute();
+        $user = \Drupal\user\Entity\User::load($userid);
+        $user->set('status', 1);
+        $user->save();
+    } elseif($inactive == 2) {
+        \Drupal::database()->delete('inactive_users')
+         ->condition('uid', $userid)
+         ->execute();
+        $user = \Drupal\user\Entity\User::load($userid);
+        $user->set('status', 0);
+        $user->save();        
+    }
+    
+} 

@@ -1,0 +1,44 @@
+uuid: cf5a9e3a-50de-4450-9b8a-c715251d93e3
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: LD1O_zlIfeaZ33awd7mZgOZTF-pKsOvGnXvBvlh8-Po
+id: cust_profile
+migration_tags: null
+migration_group: custom_migration
+label: Authors
+source:
+  plugin: source_table
+  target: migrate
+  table_name: cust_profile
+  fields:
+    - uid
+    - firstname
+    - lastname
+    - phone
+    - position
+    - state_id
+  id_fields:
+    uid:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  uid: uid
+  firstname: firstname
+  lastname: lastname
+  phone: phone
+  position: position
+  state_id: state_id
+destination:
+  plugin: table
+  key_map:
+    uid: uid
+  id_fields:
+    uid:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: cust_profile
+migration_dependencies: {  }

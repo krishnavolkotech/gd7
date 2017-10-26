@@ -1,0 +1,19 @@
+uuid: 40d20b41-ff8f-4bd9-982d-372a0e10a47d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+    - node.type.faqs
+  module:
+    - gnode
+    - node
+id: moderate_private-group_node-faqs
+label: 'Moderate Private: Group node (FAQs)'
+description: 'Adds <em class="placeholder">FAQs</em> content to groups both publicly and privately.'
+group_type: moderate_private
+content_plugin: 'group_node:faqs'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

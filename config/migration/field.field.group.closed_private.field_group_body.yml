@@ -1,0 +1,21 @@
+uuid: 6fc0c49b-ae17-460e-be2e-c4a30901f49a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_group_body
+    - group.type.closed_private
+  module:
+    - text
+id: group.closed_private.field_group_body
+field_name: field_group_body
+entity_type: group
+bundle: closed_private
+label: 'Group Body'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

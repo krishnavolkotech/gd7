@@ -37,7 +37,7 @@
                 var present = present_month + "/" + present_day + "/" + present_year + " 23:59";
                 return present;
             }
-            $('form.node-downtimes-form').submit(function () {
+            $('form.node-downtimes-form,form.node-downtimes-edit-form').submit(function () {
                 if ($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0) {
                     $('.reason-for-noncompliance').find('.reason-error').show();
                     $('#edit-reason-for-noncompliance').focus();
@@ -57,7 +57,7 @@
                     var present = present_date();
                     var diff = toTimestamp(start_date) - toTimestamp(today);
                     var max_adv_time = new Array();
-                    if (toTimestamp(start_date) < toTimestamp(today)) {
+                    if (toTimestamp(start_date) < toTimestamp(today) && $(this).parents('form#node-downtimes-form').length) {
                         $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                         $('.downtimes-date-wrapper p.text-danger, .downtimes-date-wrapper p.text-warning').remove();
                         $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Das Startdatum muss in der Zukunft liegen.') + '</p>');
@@ -80,6 +80,7 @@
 
                     $("#edit-services-effected input:checkbox:checked").each(function () {
                         var service_id = $(this).val();
+                        if($(this).parents('form#node-downtimes-form').length){
                         if (a.advance_time[service_id].adv_time) {
                             var adv_in_seconds = a.advance_time[service_id].adv_time * 60 * 60;
                             if (diff >= adv_in_seconds) {
@@ -125,6 +126,7 @@
                                 $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
+                    }
                     });
 
                 }
@@ -147,7 +149,12 @@
 
 
             // Maintenance window validations.
-            $('input#edit-enddate-planned').focusout(function () {
+            //$('input#edit-enddate-planned').focusout(function () {
+            $("#edit-startdate-planned, #edit-enddate-planned").on("dp.change", function(e) {
+                var end_day = $('input#edit-enddate-planned').val();
+                if(!end_day) {
+                    return;
+                }
                 if ($(this).val()) {
                     var end_date = $(this).val().split('-');
                     end_date = end_date[1];
@@ -168,7 +175,7 @@
                         var start_day_obj = new Date(convert_to_valid_format(start_day));
                         start_day = weekday[start_day_obj.getDayOveridden()];
 
-                        var end_day = $(this).val();
+                        //var end_day = $(this).val();
                         var end_day_obj = new Date(convert_to_valid_format(end_day));
                         end_day = weekday[end_day_obj.getDayOveridden()];
                         if (start_day_obj.getTime() >= end_day_obj.getTime()) {
@@ -187,7 +194,7 @@
                             $('.reason-for-noncompliance').hide();
                             $('#edit-maintenance-result').val(0);
                             $('#edit-reason-for-noncompliance option').removeAttr('selected', 'selected');
-                            $('#edit-reason-for-noncompliance option:[value = "0"]').attr('selected', 'selected');
+                            $('#edit-reason-for-noncompliance option[value = "0"]').attr('selected', 'selected');
                         }
                         // return true;
 

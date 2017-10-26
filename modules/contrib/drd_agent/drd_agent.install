@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @param string $phase
+ * @return array
+ */
+function drd_agent_requirements($phase) {
+  $requirements = array();
+  if (!empty($_SERVER['HTTP_X_DRD_VERSION'])) {
+    \Drupal::service('drd_agent.library')->load();
+    $requirements = \Drupal\drd\Agent\Remote\V8\Requirements::collect($phase);
+  }
+  return $requirements;
+}

@@ -1,0 +1,30 @@
+display:
+  default:
+    display_options:
+      exposed_form:
+        options: {  }
+      pager:
+        options:
+          expose: {  }
+  address:
+    display_options:
+      fields:
+        lastname: {  }
+        name: {  }
+        abbr: {  }
+        mail: {  }
+      pager:
+        options:
+          tags: {  }
+          expose: {  }
+      empty:
+        area: {  }
+      exposed_form:
+        options: {  }
+      filters:
+        combine:
+          expose:
+            label: 'Name, E-Mail oder Benutzername'
+        abbr:
+          group_info:
+            description: ''

@@ -1,0 +1,65 @@
+uuid: 912839f6-9e68-4edb-8725-e5e40919fe88
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.realease_management.field_description
+    - field.field.group.realease_management.field_group_body
+    - field.field.group.realease_management.field_old_reference
+    - group.type.realease_management
+  module:
+    - path
+    - text
+id: group.realease_management.default
+targetEntityType: group
+bundle: realease_management
+mode: default
+content:
+  field_description:
+    weight: 4
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_group_body:
+    weight: 5
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_old_reference:
+    weight: 3
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  label:
+    type: string_textfield
+    weight: -5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  path:
+    type: path
+    weight: 30
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    region: content
+hidden:
+  uid: true

@@ -1,0 +1,36 @@
+uuid: 5e49f1c1-fd9d-41a1-be42-7c71899efe55
+langcode: de
+status: true
+dependencies: {  }
+id: release_doc_failed_download_info
+migration_tags: null
+migration_group: custom_migration
+label: 'Release doc failed download info'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: release_doc_failed_download_info
+  fields:
+    - nid
+    - created
+    - reason
+  id_fields:
+    nid:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  nid: nid
+  created: created
+  reason: reason
+destination:
+  plugin: table
+  key_map:
+    nid: nid
+  id_fields:
+    nid:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: release_doc_failed_download_info
+migration_dependencies: {  }

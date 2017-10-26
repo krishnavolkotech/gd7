@@ -1,0 +1,63 @@
+id: groups
+label: Groups
+migration_group: groups
+migration_tags:
+  - Drupal 6
+#deriver: Drupal\node\Plugin\migrate\D6NodeDeriver
+source:
+  plugin: d6_node
+  node_type: 'group'
+  target: migrate
+process:
+  # In D6, nodes always have a tnid, but it's zero for untranslated nodes.
+  # We normalize it to equal the nid in that case.
+  # @see \Drupal\node\Plugin\migrate\source\d6\Node::prepareRow().
+  # If you are using this file to build a custom migration consider removing
+  # the nid and vid fields to allow incremental migrations.
+  id: dedupe_entity
+#  vid: vid
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: "de"
+  label: title
+  uid: node_uid
+  status: status
+  created: created
+  changed: changed
+  promote: promote
+  sticky: sticky
+  field_description:
+    plugin: group_type_maintainer
+    method: groupDescription
+    source: nid
+  field_old_reference: tnid
+  field_forum_containers:
+    plugin: group_type_maintainer
+    method: forumTermRef
+    source: title
+#  field_group_body: body
+  'field_group_body/format':
+    plugin: default_value
+    default_value: 'full_html'
+  'field_group_body/value': body
+  'field_group_body/summary': teaser
+  type:
+    plugin: group_type_maintainer
+    method: iterateData
+    source: nid
+#  revision_uid: revision_uid
+#  revision_log: log
+#  revision_timestamp: timestamp
+
+#  unmapped d6 fields.
+#  tnid
+#  translate
+#  moderate
+#  comment
+
+destination:
+  plugin: entity:group
+migration_dependencies:
+  required:
+    - d6_node

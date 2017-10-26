@@ -19,7 +19,7 @@ if (!defined('QUICKINFO')) {
   define('QUICKINFO', \Drupal::config('hzd_customizations.settings')->get('quickinfo_group_id'));
 }
 if (!defined('RELEASE_MANAGEMENT')) {
-  define('RELEASE_MANAGEMENT', 32);
+  define('RELEASE_MANAGEMENT', 1);
 }
 
 /**
@@ -57,7 +57,7 @@ class QuickinfoAccessController {
         
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
             return AccessResult::allowed();
         }
         
@@ -80,7 +80,7 @@ class QuickinfoAccessController {
         
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
             return AccessResult::allowed();
         }
         
@@ -110,7 +110,7 @@ class QuickinfoAccessController {
             }
             $group = \Drupal\group\Entity\Group::load($group_id);
             $content = $group->getMember(\Drupal::currentUser());
-            if ($content) {
+            if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
               return AccessResult::allowed();
             }
             return AccessResult::forbidden();
@@ -137,7 +137,7 @@ class QuickinfoAccessController {
         $group = \Drupal\group\Entity\Group::load($group_id);
         $content = $group->getMember(\Drupal::currentUser());
         
-        if ($content) {
+        if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
           return AccessResult::allowed();
         } else {
           return AccessResult::forbidden();

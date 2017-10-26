@@ -1,0 +1,19 @@
+uuid: c03a3d5e-f037-4997-88af-dee0caf6ad08
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+    - node.type.newsletter
+  module:
+    - gnode
+    - node
+id: moderate-group_node-newsletter
+label: 'Moderate: Group node (Newsletter)'
+description: 'Adds <em class="placeholder">Newsletter</em> content to groups both publicly and privately.'
+group_type: moderate
+content_plugin: 'group_node:newsletter'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

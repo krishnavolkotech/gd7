@@ -1,0 +1,31 @@
+uuid: dda5f0a0-2e0f-4544-a6fb-e97fa2715c27
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_class
+    - downtimes
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: maintenance_2
+theme: hzd
+region: sidebar_first
+weight: -29
+provider: null
+plugin: maintenance_block
+settings:
+  id: maintenance_block
+  label: Blockzeiten
+  provider: downtimes
+  label_display: visible
+  number_of_posts: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: true
+    context_mapping: {  }

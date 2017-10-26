@@ -1,0 +1,100 @@
+uuid: b6b3ccda-b994-438f-b65b-db396194ee98
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - field.field.node.services.comment
+    - field.field.node.services.field_diff
+    - field.field.node.services.field_downtime_type
+    - field.field.node.services.field_enable_downtime
+    - field.field.node.services.field_problem_name
+    - field.field.node.services.field_release_name
+    - field.field.node.services.release_type
+    - field.field.node.services.upload
+    - node.type.services
+  module:
+    - comment
+    - entity_print
+    - file
+    - options
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.services.default
+targetEntityType: node
+bundle: services
+mode: default
+content:
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 4
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_diff:
+    label: inline
+    weight: 3
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    region: content
+  field_downtime_type:
+    label: inline
+    weight: 2
+    type: list_key
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_problem_name:
+    label: inline
+    weight: 0
+    type: basic_string
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_release_name:
+    label: inline
+    weight: 1
+    type: basic_string
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  release_type:
+    label: hidden
+    type: entity_reference_label
+    weight: 5
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+  upload:
+    label: hidden
+    settings: {  }
+    type: file_default
+    weight: 7
+    third_party_settings: {  }
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_enable_downtime: true
+  langcode: true

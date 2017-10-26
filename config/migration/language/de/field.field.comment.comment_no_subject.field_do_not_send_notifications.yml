@@ -1,0 +1,4 @@
+label: 'Senden Sie keine Benachrichtigungen für dieses Update.'
+settings:
+  on_label: Auf
+  off_label: Aus

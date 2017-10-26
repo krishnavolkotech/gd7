@@ -1,0 +1,46 @@
+uuid: de133f7c-7a60-4873-9ae3-b24e5a62d635
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.upload
+    - node.type.service_profile
+  module:
+    - file
+    - filefield_paths
+third_party_settings:
+  filefield_paths:
+    enabled: true
+    file_path:
+      value: '[group:title]/[node:content-type]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+    redirect: false
+    retroactive_update: false
+    active_updating: false
+    file_name:
+      value: '[file:ffp-name-only-original].[file:ffp-extension-original]'
+      options:
+        slashes: false
+        pathauto: false
+        transliterate: false
+id: node.service_profile.upload
+field_name: upload
+entity_type: node
+bundle: service_profile
+label: upload
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'jpg jpeg gif png txt csv doc xls pdf ppt pps odt ods odp docx xlsx pptx zip rar mpp mm gz tar xsd'
+  max_filesize: 100MB
+  description_field: true
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

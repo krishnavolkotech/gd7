@@ -1,0 +1,17 @@
+uuid: 683a1456-9c0b-4dfe-8b4c-1af89f086460
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Gruppenbeitrag
+type: grouppost
+description: 'group post'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: true

@@ -1,0 +1,22 @@
+uuid: 3be68117-fef3-41cd-8d49-a872a300284c
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: seite
+label: Seite
+type: 'canonical_entities:node'
+pattern: '[node:group_raw]/[node:menu-link:parents:join-path]/[node:title]'
+selection_criteria:
+  e2761aa0-09f6-4290-80d5-b56bdc3bc713:
+    id: node_type
+    bundles:
+      page: page
+    negate: false
+    context_mapping:
+      node: node
+    uuid: e2761aa0-09f6-4290-80d5-b56bdc3bc713
+selection_logic: and
+weight: -3
+relationships: {  }

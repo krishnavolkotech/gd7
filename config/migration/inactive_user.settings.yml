@@ -1,0 +1,24 @@
+inactive_user_notify: '31536000'
+inactive_user_notify_admin: '31536000'
+inactive_user_notify_text: "Guten Tag %username,\r\n\r\nleider konnten wir Sie seit %lastaccess nicht mehr im %sitename begrüßen! Ihr Account wurde daher automatisch deaktiviert, der Empfang von Benachrichtigungsemails aus dem Betriebsportal KONSENS ist in diesem Status nicht möglich.\r\nUm Ihren Account wieder nutzen zu können, müssen Sie sich mit Ihrem bekannten Benutzernamen und Passwort erneut am %siteurl anmelden. Bitte aktualisieren Sie ggf. Ihr Benutzerprofil.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
+inactive_user_auto_block_warn: '0'
+inactive_user_block_warn_text: "Guten Tag %username,\r\nSie haben sich seit %lastaccess nicht mehr im %sitename angemeldet. Mit dieser Nachricht möchten wir Sie darauf hinweisen, dass Ihr Account in %period deaktiviert werden wird, sofern Sie sich nicht vor Ablauf dieser Frist erneut auf %siteurl anmelden.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
+inactive_user_auto_block: '0'
+inactive_user_block_notify_text: "Guten Tag %username,\r\ndiese Nachricht informiert Sie darüber, dass Ihr Account im %sitename deaktiviert wurde, da er seit %period nicht mehr genutzt wurde. Ihre Benutzereinstellungen wurden erhalten. Um Ihren Account wieder nutzen zu können, müssen Sie sich mit Ihrem bekannten Benutzernamen und Passwort erneut am %siteurl anmelden.\r\n\r\nMit freundlichen Grüßen,\r\nIhr %sitename Team"
+inactive_user_notify_block: 1
+inactive_user_notify_block_admin: 1
+inactive_user_delete_warn_text: null
+inactive_user_auto_delete: '0'
+inactive_user_preserve_content: 1
+inactive_user_notify_delete: 1
+inactive_user_delete_notify_text: 'Hello %username,\n\n  This automatic message is to notify you that your account on %sitename has been automatically removed due to no activity for more than %period.\n\n  Please visit us at %siteurl if you would like to create a new account.\n\nSincerely,\n  %sitename team'
+inactive_user_notify_delete_admin: 1
+inactive_user_auto_delete_warn: null
+_core:
+  default_config_hash: tk7Ljnk3c1LFBgG3JuMZw_ifzsgUCLlhZtxU-co0vvI
+inactive_user_admin_email: noreply-betriebsportal-konsens@hzd.hessen.de
+inactive_user_timestamp: 1480053191
+langcode: de
+inactive_user_notify_mail_subject: '[Betriebsportal KONSENS] Benutzer-Account ist inaktiv'
+inactive_user_block_mail_subject: '[Betriebsportal KONSENS] Benutzer-Account wurde deaktiviert'
+inactive_user_block_warn_mail_subject: '[Betriebsportal KONSENS] Benutzer-Account wird deaktiviert'

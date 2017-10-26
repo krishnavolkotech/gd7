@@ -1,0 +1,33 @@
+uuid: 99618708-0b80-420c-a452-0647cef517bb
+langcode: de
+status: false
+dependencies:
+  module:
+    - search_api_solr
+id: hzd_solr
+name: 'HZD Solr'
+description: ''
+backend: search_api_solr
+backend_config:
+  connector: standard
+  connector_config:
+    scheme: http
+    host: hzd.drupalvm.dev
+    port: '8983'
+    path: /solr
+    core: hzd
+    timeout: 5
+    index_timeout: 5
+    optimize_timeout: 10
+    solr_version: '6'
+    http_method: AUTO
+  retrieve_data: true
+  highlight_data: true
+  excerpt: true
+  skip_schema_check: false
+  site_hash: true
+  autocorrect_spell: true
+  autocorrect_suggest_words: true
+  suggest_suffix: true
+  suggest_corrections: true
+  suggest_words: false

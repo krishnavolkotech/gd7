@@ -1,0 +1,26 @@
+uuid: 8f86df15-8ff0-44f6-be6f-c31011984b67
+langcode: de
+status: true
+dependencies:
+  config:
+    - simple_block.simple_block.hzdfooter_content
+  module:
+    - block_class
+    - simple_block
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: hzdfooter
+theme: hzd
+region: footer
+weight: -30
+provider: null
+plugin: 'simple_block:hzdfooter_content'
+settings:
+  id: 'simple_block:hzdfooter_content'
+  label: 'HZD Footer'
+  provider: simple_block
+  label_display: '0'
+visibility: {  }

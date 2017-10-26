@@ -1,0 +1,18 @@
+uuid: 34b31030-0d1c-4971-8308-715d8e27db1a
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.release
+id: node.release.created
+field_name: created
+entity_type: node
+bundle: release
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

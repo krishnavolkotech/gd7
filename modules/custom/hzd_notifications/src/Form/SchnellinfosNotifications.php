@@ -48,7 +48,7 @@ class SchnellinfosNotifications extends FormBase {
       $form['schnellinfos'][$content_key]['subscriptions_interval_' . $content_key] = array(
         '#type' => 'radios',
         '#options' => $intervals,
-        '#default_value' => $default_interval ? $default_interval[$content] : -1,
+        '#default_value' => isset($default_interval[$content]) ? $default_interval[$content] : -1,
         '#prefix' => "<div class = 'hzd_time_interval'>",
         '#suffix' => "</div>"
       );
@@ -91,7 +91,8 @@ class SchnellinfosNotifications extends FormBase {
         ->execute()->fetchAllAssoc('send_interval');
         //pr($data);exit;
         $uids = null;
-      foreach([-1,0,86400,604800] as $interval){
+      $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
+      foreach($intervals as $interval=>$val){
         if(isset($data[$interval])){
           $uids = unserialize($data[$interval]->uids);
           //pr($data[$interval]);exit;
@@ -108,7 +109,19 @@ class SchnellinfosNotifications extends FormBase {
             ->fields(['uids'=>serialize($uids)])
             ->condition('id',$data[$interval]->id)->execute();
         }else{
-          $notifyData = ['uids'=>serialize([$uid]),'send_interval'=>$interval,'cck'=>$content];
+          if($subscriptions[$content_key]['subscriptions_interval_'.$content_key] == $interval) {
+            $notifyData = [
+              'uids' => serialize([$uid]),
+              'send_interval' => $interval,
+              'cck' => $content
+            ];
+          }else{
+            $notifyData = [
+              'uids' => serialize([]),
+              'send_interval' => $interval,
+              'cck' => $content
+            ];
+          }
           \Drupal::database()
             ->insert('quickinfo_notifications')
             ->fields($notifyData)->execute();

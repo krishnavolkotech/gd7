@@ -1,0 +1,27 @@
+uuid: a2cb0dc6-108a-40fd-9f9e-d48303258ef6
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+  theme:
+    - hzd
+id: hzd_block_9
+theme: hzd
+region: navigation
+weight: -18
+provider: null
+plugin: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
+settings:
+  id: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
+  label: ITSM-Prozesse
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: "/*ARCO*\n/*arco*\n/*biene*\n/*BIENE*\n/*bpa-euro*\n/*BpA-EURO*\n/*bukon*\n/*BuKon*\n/*claudia*\n/*CLAUDIA*\n/*dame*\n/*DAME*\n/*elfe*\n/*ELFE*\n/*elster*\n/*elster/*\n/*ELSTER*\n/*elsterlohn*\n/*ElsterLohn*\n/*erhebung-host*\n/*gda*\n/*GDA*\n/*geco*\n/*GeCo*\n/*ginster*\n/*GINSTER*\n/*gpm*\n/*inka*\n/*INKA*\n/*kapest*\n/*KapESt*\n/*kdialog*\n/*KDialog*\n/*müst*\n/*muest*\n/*M%C3%9CSt*\n/*m%C3%9Cst*\n/*pingo*\n/*PINGO*\n/*rms*\n/*RMS*\n/*RMS*\n/*steubel*\n/*SteuBel*\n/*stunde*\n/*StundE*\n/*vosystem*\n/*VoSystem*\n/*zans*\n/*ZANS*"

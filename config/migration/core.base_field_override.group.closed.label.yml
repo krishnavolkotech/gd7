@@ -1,0 +1,18 @@
+uuid: 86306a2f-a70c-407f-b95c-ca203bdf173d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: group.closed.label
+field_name: label
+entity_type: group
+bundle: closed
+label: Title
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

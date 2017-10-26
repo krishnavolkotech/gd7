@@ -1,0 +1,17 @@
+uuid: 200a0408-e0e8-4fec-81a3-a26dc352c75b
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+  enforced:
+    config:
+      - user.role.administrator
+id: realease_management-a416e6833
+label: Administrator
+weight: 2
+internal: true
+audience: outsider
+group_type: realease_management
+permissions_ui: false
+permissions: {  }

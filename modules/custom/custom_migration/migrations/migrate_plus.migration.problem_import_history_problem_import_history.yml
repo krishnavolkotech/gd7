@@ -1,0 +1,39 @@
+uuid: 7a65a8a7-e0e4-439f-8279-40b277a0553d
+langcode: de
+status: true
+dependencies: {  }
+id: problem_import_history
+migration_tags: null
+migration_group: custom_migration
+label: 'Problem import history'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: problem_import_history
+  fields:
+    - id
+    - problem_date
+    - import_status
+    - error_message
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  id: id
+  problem_date: problem_date
+  import_status: import_status
+  error_message: error_message
+destination:
+  plugin: table
+  key_map:
+    id: id
+  id_fields:
+    id:
+      type: integer
+      unsigned: false
+      size: big
+  table_name: problem_import_history
+migration_dependencies: {  }
+

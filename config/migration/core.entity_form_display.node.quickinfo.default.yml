@@ -1,0 +1,241 @@
+uuid: c66a6b69-ff54-493f-bdd0-354be10ac308
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.quickinfo.comment
+    - field.field.node.quickinfo.field_additional_email_recipient
+    - field.field.node.quickinfo.field_author_name
+    - field.field.node.quickinfo.field_author_state
+    - field.field.node.quickinfo.field_business_impact
+    - field.field.node.quickinfo.field_business_impact_services
+    - field.field.node.quickinfo.field_contact
+    - field.field.node.quickinfo.field_creators
+    - field.field.node.quickinfo.field_custom_title
+    - field.field.node.quickinfo.field_dates
+    - field.field.node.quickinfo.field_depend_other_services
+    - field.field.node.quickinfo.field_intial_situation
+    - field.field.node.quickinfo.field_other_services
+    - field.field.node.quickinfo.field_professional_conditions
+    - field.field.node.quickinfo.field_recipients
+    - field.field.node.quickinfo.field_related_transfer_number
+    - field.field.node.quickinfo.field_special_notes
+    - field.field.node.quickinfo.field_tech_requirements
+    - field.field.node.quickinfo.field_technical_impact
+    - field.field.node.quickinfo.field_technical_impact_services
+    - field.field.node.quickinfo.field_unique_id
+    - field.field.node.quickinfo.upload
+    - node.type.quickinfo
+  module:
+    - field_group
+    - file
+    - text
+third_party_settings:
+  field_group:
+    group_meta_data:
+      label: '1 Meta-Daten'
+      weight: 0
+      children:
+        - field_custom_title
+        - field_related_transfer_number
+        - field_other_services
+        - field_recipients
+      format_type: fieldset
+      format_settings: {  }
+      parent_name: ''
+    group_content_information:
+      label: '2 Fachlich-inhaltliche Angaben'
+      weight: 1
+      children:
+        - field_intial_situation
+        - field_professional_conditions
+        - field_tech_requirements
+        - field_depend_other_services
+        - field_business_impact
+        - field_technical_impact
+        - field_business_impact_services
+        - field_technical_impact_services
+        - field_special_notes
+        - field_dates
+        - field_creators
+        - field_contact
+      format_type: fieldset
+      format_settings: {  }
+      parent_name: ''
+id: node.quickinfo.default
+targetEntityType: node
+bundle: quickinfo
+mode: default
+content:
+  field_additional_email_recipient:
+    weight: 3
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_author_name:
+    type: string_textarea
+    weight: 6
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_author_state:
+    type: string_textarea
+    weight: 5
+    settings:
+      rows: 1
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_business_impact:
+    weight: 9
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_business_impact_services:
+    weight: 11
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_contact:
+    weight: 16
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_creators:
+    weight: 15
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_custom_title:
+    weight: 1
+    settings:
+      rows: 1
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_dates:
+    weight: 14
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_depend_other_services:
+    weight: 8
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_intial_situation:
+    weight: 5
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_other_services:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
+  field_professional_conditions:
+    weight: 6
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_recipients:
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
+  field_related_transfer_number:
+    weight: 2
+    settings:
+      rows: 1
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_special_notes:
+    weight: 13
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_tech_requirements:
+    weight: 7
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_technical_impact:
+    weight: 10
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_technical_impact_services:
+    weight: 12
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_unique_id:
+    weight: 4
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  upload:
+    settings:
+      progress_indicator: throbber
+    type: file_generic
+    weight: 2
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  sticky: true
+  title: true
+  translation: true
+  uid: true

@@ -1,0 +1,20 @@
+uuid: 2cb07268-1565-47d5-a73b-fe108c8cc18d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+id: group.closed_private.uid
+field_name: uid
+entity_type: group
+bundle: closed_private
+label: 'Group creator'
+description: 'The username of the group creator.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: 'Drupal\group\Entity\Group::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

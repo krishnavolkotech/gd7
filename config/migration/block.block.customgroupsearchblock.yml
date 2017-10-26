@@ -1,0 +1,32 @@
+uuid: b9f8673e-05cb-4cd4-9003-f30e82806e3d
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_class
+    - cust_group
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: ''
+id: customgroupsearchblock
+theme: hzd
+region: user_menu
+weight: -29
+provider: null
+plugin: cust_group_search_block
+settings:
+  id: cust_group_search_block
+  label: 'Custom Group Search block'
+  provider: cust_group
+  label_display: '0'
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

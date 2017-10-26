@@ -1,0 +1,28 @@
+uuid: 6c0e1c91-7dc7-46bf-bc67-8a9533b4da19
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_relese_services
+    - node.type.release
+    - node.type.services
+id: node.release.field_relese_services
+field_name: field_relese_services
+entity_type: node
+bundle: release
+label: Service
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      services: services
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

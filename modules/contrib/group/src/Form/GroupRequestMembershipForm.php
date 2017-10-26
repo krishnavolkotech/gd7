@@ -31,10 +31,12 @@ class GroupRequestMembershipForm extends ContentEntityForm {
     }
     $form['entity_id']['#access'] = FALSE;
     $form['group_roles']['#access'] = FALSE;
+    $form['path']['#access'] = FALSE;
     $form['message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Message Body'),
       '#description' => $this->t('We will attache this message in request membership mail.'),
+      '#required'=>1,
     ];
     return $form;
   }

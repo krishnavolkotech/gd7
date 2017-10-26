@@ -1,0 +1,21 @@
+uuid: a1adcad8-50bf-4bc8-bc21-3b574ee81321
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.downtimes
+id: downtimes-admin
+label: Admin
+weight: -96
+internal: false
+audience: member
+group_type: downtimes
+permissions_ui: true
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'

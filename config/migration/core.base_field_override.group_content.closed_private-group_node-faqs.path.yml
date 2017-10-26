@@ -1,0 +1,20 @@
+uuid: 040a71ff-3346-4fd5-9c56-e44004e17a95
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.content_type.closed_private-group_node-faqs
+  module:
+    - path
+id: group_content.closed_private-group_node-faqs.path
+field_name: path
+entity_type: group_content
+bundle: closed_private-group_node-faqs
+label: URL-Alias
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

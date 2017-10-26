@@ -15,63 +15,61 @@ use Drupal\Core\Url;
  * @ViewsField("group_member_count_field")
  */
 class GroupMemberCountField extends FieldPluginBase {
-
+  
   /**
    * {@inheritdoc}
    */
   public function usesGroupBy() {
     return FALSE;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   public function query() {
     // Do nothing -- to override the parent query.
   }
-
+  
   /**
    * {@inheritdoc}
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-
+    
     $options['hide_alter_empty'] = array('default' => FALSE);
     return $options;
   }
-
+  
   /**
    * {@inheritdoc}
    */
   protected static function groupMemberCount($gid) {
-    $contents = array(
-      'closed_private-group_membership',
-      'closed-group_membership',
-      'downtimes-group_membership',
-      'group_content_type_7b308aea24fe7',
-      'group_content_type_d4b06e2b6aad0',
-      'moderate-group_membership',
-      'open-group_membership',
-      'quick_info-group_membership',
-      'group_content_type_6693a40b54133',
-      'group_content_type_c26112f8ad4cd',
-    );
-    $gpc = \Drupal::database()->select('group_content_field_data')
-        ->condition('gid', $gid)
-        ->condition('type', $contents, 'IN')
-        ->countQuery()
-        ->execute()
-        ->fetchField();
+    $gpc = \Drupal::database()->select('group_content_field_data', 'g');
+    $gpc->Join('users_field_data', 'u', 'g.entity_id = u.uid');
+    $gpc->leftJoin('inactive_users','iu', 'u.uid = iu.uid');
+    $gpc->condition('u.status', 1)
+        ->condition('g.gid', $gid)
+        ->condition('g.request_status', 1)
+        //->condition('g.type', $contents, 'IN')
+        ->condition('g.type', '%group_node%', 'NOT LIKE')
+         ->isNull('iu.uid')
+//      ->countQuery()
+        ->fields('g');
+
+    $gpc = $gpc->execute()
+        ->fetchCol();
+    $cc = count($gpc);
     // Return the result in object format.
-    return $gpc;
+    return $cc;
   }
+
   /**
    * {@inheritdoc}
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -79,12 +77,13 @@ class GroupMemberCountField extends FieldPluginBase {
     $gid = $values->_entity->id();
     $result = $this->groupMemberCount($gid);
     $res = $result;
-    if($values->_entity->getMember(\Drupal::currentUser()) || \Drupal::currentUser()->id() == 1){
+    $groupMember = $values->_entity->getMember(\Drupal::currentUser());
+    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || \Drupal::currentUser()->id() == 1) {
       $doc_options['attributes'] = array('class' => 'member-link');
-      $url = Url::fromUserInput('/group/' . $gid .'/address', $doc_options);
+      $url = Url::fromUserInput('/group/' . $gid . '/address', $doc_options);
       $res = \Drupal::service('link_generator')->generate($result, $url);
     }
     return $res;
   }
-
+  
 }

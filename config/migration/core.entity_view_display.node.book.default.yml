@@ -1,0 +1,31 @@
+uuid: c3af2beb-8eee-49ab-a3f5-17e96ed28c20
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.book.body
+    - node.type.book
+  module:
+    - text
+    - user
+id: node.book.default
+targetEntityType: node
+bundle: book
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

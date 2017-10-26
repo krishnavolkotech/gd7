@@ -1,0 +1,9 @@
+display:
+  default:
+    display_options:
+      filters:
+        status:
+          group_info:
+            group_items:
+              1:
+                value: '1'

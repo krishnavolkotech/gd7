@@ -1,0 +1,9 @@
+name: Custom Toolbar Menu
+description: Add group menu (Structure > Menu) in the Drupal Toolbar
+type: module
+dependencies:
+  - toolbar
+version: '8.x-1.0'
+core: '8.x'
+project: 'custom_toolbar_menu'
+package: "HZD Custom"

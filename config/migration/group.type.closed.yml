@@ -1,0 +1,8 @@
+uuid: 2fd415eb-4810-4e6b-891c-61fc42e15fd5
+langcode: en
+status: true
+dependencies: {  }
+id: closed
+label: Geschlossen
+description: 'Admin can add the members.'
+creator_roles: {  }

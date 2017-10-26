@@ -1,0 +1,12 @@
+uuid: 3b8ee76f-8f0d-4dc3-89b2-a41ef110e872
+langcode: en
+status: true
+dependencies: {  }
+id: frage_zum_betriebsportal
+label: 'Frage zum Betriebsportal'
+recipients:
+  - betriebsportal-konsens@hzd.hessen.de
+reply: "Vielen Dank für Ihre Nachricht. Wir bemühen uns um eine schnellstmögliche Beantwortung.\r\n\r\n-- Team Betriebsportal KONSENS"
+weight: -1
+message: 'Your message has been sent.'
+redirect: ''

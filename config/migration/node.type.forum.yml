@@ -1,0 +1,22 @@
+uuid: e4b5b32b-905c-4aed-8353-f170d41a7a6c
+langcode: de
+status: true
+dependencies:
+  enforced:
+    module:
+      - forum
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+_core:
+  default_config_hash: ERCHDVB33lub-cz7DSYR7HuBlYJjmVUdPw0IIYa3ZXc
+name: Forenthema
+type: forum
+description: 'Ein <em>Forenthema</em> beginnt eine neue Diskussion innerhalb des Forums.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: true

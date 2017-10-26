@@ -1,25 +1,14 @@
 <?php
-/**
- * @file
- * Contains \Drupal\group\Entity\GroupContent.
- */
 
 namespace Drupal\group\Entity;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\user\UserInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
-
-// @todo Remove the below when https://www.drupal.org/node/2645136 lands.
-use Drupal\Core\Url;
-use Drupal\Core\Entity\RevisionableInterface;
-use Drupal\Core\Entity\EntityMalformedException;
-use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
-
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\UserInterface;
 
 /**
  * Defines the Group content entity.
@@ -29,6 +18,13 @@ use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
  * @ContentEntityType(
  *   id = "group_content",
  *   label = @Translation("Group content"),
+ *   label_singular = @Translation("group content item"),
+ *   label_plural = @Translation("group content items"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count group content item",
+ *     plural = "@count group content items"
+ *   ),
+ *   bundle_label = @Translation("Group content type"),
  *   handlers = {
  *     "storage" = "Drupal\group\Entity\Storage\GroupContentStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -41,8 +37,11 @@ use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
  *       "add" = "Drupal\group\Entity\Form\GroupContentForm",
  *       "edit" = "Drupal\group\Entity\Form\GroupContentForm",
  *       "delete" = "Drupal\group\Entity\Form\GroupContentDeleteForm",
+ *       "group-join" = "Drupal\group\Form\GroupJoinForm",
+ *       "group-leave" = "Drupal\group\Form\GroupLeaveForm",
  *       "approve" = "Drupal\group\Entity\Form\GroupContentApproveForm",
  *       "reject" = "Drupal\group\Entity\Form\GroupContentRejectForm",
+ *       "group-request" = "Drupal\group\Form\GroupRequestMembershipForm",
  *     },
  *     "access" = "Drupal\group\Entity\Access\GroupContentAccessControlHandler",
  *   },
@@ -51,14 +50,27 @@ use Drupal\Core\Entity\Exception\UndefinedLinkTemplateException;
  *   translatable = TRUE,
  *   entity_keys = {
  *     "id" = "id",
- *     "bundle" = "type",
- *     "label" = "label",
- *     "langcode" = "langcode",
  *     "uuid" = "uuid",
+ *     "langcode" = "langcode",
+ *     "bundle" = "type",
+ *     "label" = "label"
+ *   },
+ *   links = {
+ *     "add-form" = "/group/{group}/content/add/{plugin_id}",
+ *     "add-page" = "/group/{group}/content/add",
+ *     "canonical" = "/group/{group}/content/{group_content}",
+ *     "collection" = "/group/{group}/content",
+ *     "create-form" = "/group/{group}/content/create/{plugin_id}",
+ *     "create-page" = "/group/{group}/content/create",
+ *     "delete-form" = "/group/{group}/content/{group_content}/delete",
+ *     "edit-form" = "/group/{group}/content/{group_content}/edit"
  *   },
  *   bundle_entity_type = "group_content_type",
  *   field_ui_base_route = "entity.group_content_type.edit_form",
- *   permission_granularity = "bundle"
+ *   permission_granularity = "bundle",
+ *   constraints = {
+ *     "GroupContentCardinality" = {}
+ *   }
  * )
  */
 class GroupContent extends ContentEntityBase implements GroupContentInterface {
@@ -97,15 +109,18 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
    * {@inheritdoc}
    */
   public static function loadByContentPluginId($plugin_id) {
-    $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
+    /** @var \Drupal\group\Entity\Storage\GroupContentStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('group_content');
+    return $storage->loadByContentPluginId($plugin_id);
+  }
 
-    if (empty($group_content_types)) {
-      return [];
-    }
-
-    return \Drupal::entityTypeManager()
-      ->getStorage('group_content')
-      ->loadByProperties(['type' => array_keys($group_content_types)]);
+  /**
+   * {@inheritdoc}
+   */
+  public static function loadByEntity(ContentEntityInterface $entity) {
+    /** @var \Drupal\group\Entity\Storage\GroupContentStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('group_content');
+    return $storage->loadByEntity($entity);
   }
 
   /**
@@ -113,88 +128,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
    */
   public function label() {
     return $this->getContentPlugin()->getContentLabel($this);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * Exact copy of Entity::toUrl() with the exception of one line until the
-   * patch in https://www.drupal.org/node/2645136 lands.
-   *
-   * @todo Remove this if the issue above gets resolved.
-   */
-  public function toUrl($rel = 'canonical', array $options = []) {
-    if ($this->id() === NULL) {
-      throw new EntityMalformedException(sprintf('The "%s" entity cannot have a URI as it does not have an ID', $this->getEntityTypeId()));
-    }
-
-    // The links array might contain URI templates set in annotations.
-    $link_templates = $this->linkTemplates();
-
-    // Links pointing to the current revision point to the actual entity. So
-    // instead of using the 'revision' link, use the 'canonical' link.
-    if ($rel === 'revision' && $this instanceof RevisionableInterface && $this->isDefaultRevision()) {
-      $rel = 'canonical';
-    }
-
-    if (isset($link_templates[$rel])) {
-      $route_parameters = $this->urlRouteParameters($rel);
-      $route_name = $this->urlRoute($rel);
-      $uri = new Url($route_name, $route_parameters);
-    }
-    else {
-      $bundle = $this->bundle();
-      // A bundle-specific callback takes precedence over the generic one for
-      // the entity type.
-      $bundles = $this->entityManager()->getBundleInfo($this->getEntityTypeId());
-      if (isset($bundles[$bundle]['uri_callback'])) {
-        $uri_callback = $bundles[$bundle]['uri_callback'];
-      }
-      elseif ($entity_uri_callback = $this->getEntityType()->getUriCallback()) {
-        $uri_callback = $entity_uri_callback;
-      }
-
-      // Invoke the callback to get the URI. If there is no callback, use the
-      // default URI format.
-      if (isset($uri_callback) && is_callable($uri_callback)) {
-        $uri = call_user_func($uri_callback, $this);
-      }
-      else {
-        throw new UndefinedLinkTemplateException("No link template '$rel' found for the '{$this->getEntityTypeId()}' entity type");
-      }
-    }
-
-    // Pass the entity data through as options, so that alter functions do not
-    // need to look up this entity again.
-    $uri
-      ->setOption('entity_type', $this->getEntityTypeId())
-      ->setOption('entity', $this);
-
-    // Display links by default based on the current language.
-    if ($rel !== 'collection') {
-      $options += ['language' => $this->language()];
-    }
-
-    $uri_options = $uri->getOptions();
-    $uri_options += $options;
-
-    return $uri->setOptions($uri_options);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function linkTemplates() {
-    return $this->getContentPlugin()->getPaths();
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @todo Will inherit docs once https://www.drupal.org/node/2645136 lands.
-   */
-  protected function urlRoute($rel) {
-    return $this->getContentPlugin()->getRouteName($rel);
   }
 
   /**
@@ -237,12 +170,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getRequestStatus() {
-    return $this->get('request_status')->value;
-  }
-  /**
-   * {@inheritdoc}
-   */
   public function setOwnerId($uid) {
     $this->set('uid', $uid);
     return $this;
@@ -259,14 +186,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function setRequestStatus($value) {
-    $this->set('request_status', $value);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
@@ -277,23 +196,53 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
+    if ($update === FALSE) {
+      // We want to make sure that the entity we just added to the group behaves
+      // as a grouped entity. This means we may need to update access records,
+      // flush some caches containing the entity or perform other operations we
+      // cannot possibly know about. Lucky for us, all of that behavior usually
+      // happens when saving an entity so let's re-save the added entity.
+//      $this->getEntity()->save();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+
+    // For the same reasons we re-save entities that are added to a group, we
+    // need to re-save entities that were removed from one. See ::postSave().
+    /** @var GroupContentInterface[] $entities */
+    foreach ($entities as $group_content) {
+      // We only save the entity if it still exists to avoid trying to save an
+      // entity that just got deleted and triggered the deletion of its group
+      // content entities.
+      if ($entity = $group_content->getEntity()) {
+        // @todo Revisit when https://www.drupal.org/node/2754399 lands.
+        $entity->save();
+      }
+    }
+  }
+  
+  public function getRequestStatus() {
+    return $this->get('request_status')->value;
+  }
+  
+  public function setRequestStatus($value) {
+    $this->set('request_status', $value);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Group content ID'))
-      ->setDescription(t('The ID of the Group content entity.'))
-      ->setReadOnly(TRUE)
-      ->setSetting('unsigned', TRUE);
-
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the Group content entity.'))
-      ->setReadOnly(TRUE);
-
-    $fields['type'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Type'))
-      ->setDescription(t('The group content type.'))
-      ->setSetting('target_type', 'group_content_type')
-      ->setReadOnly(TRUE);
+    $fields = parent::baseFieldDefinitions($entity_type);
 
     $fields['gid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Parent group'))
@@ -306,7 +255,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
     $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Content'))
       ->setDescription(t('The entity to add to the group.'))
-      ->addConstraint('GroupContentCardinality')
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => 5,
@@ -319,18 +267,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setRequired(TRUE);
-
-    $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language'))
-      ->setDescription(t('The group content language code.'))
-      ->setTranslatable(TRUE)
-      ->setDisplayOptions('view', [
-        'type' => 'hidden',
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'language_select',
-        'weight' => 2,
-      ]);
 
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))
@@ -362,13 +298,25 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
-
+    
     $fields['request_status'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Request Status'))
       ->setDescription(t('Request mebership status.'))
       ->setSetting('unsigned', TRUE)
       ->setDefaultValue(1)
       ->setTranslatable(TRUE);
+    
+    if (\Drupal::moduleHandler()->moduleExists('path')) {
+      $fields['path'] = BaseFieldDefinition::create('path')
+        ->setLabel(t('URL alias'))
+        ->setTranslatable(TRUE)
+        ->setDisplayOptions('form', [
+          'type' => 'path',
+          'weight' => 30,
+        ])
+        ->setDisplayConfigurable('form', TRUE)
+        ->setComputed(TRUE);
+    }
 
     return $fields;
   }
@@ -403,8 +351,8 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // up until now. This is a bug in core because we can't simply unset those
       // two properties, see: https://www.drupal.org/node/2346329
       $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')
-        ->setLabel($original->getLabel())
-        ->setDescription($original->getDescription())
+        ->setLabel($plugin->getEntityReferenceLabel() ?: $original->getLabel())
+        ->setDescription($plugin->getEntityReferenceDescription() ?: $original->getDescription())
         ->setConstraints($original->getConstraints())
         ->setDisplayOptions('view', $original->getDisplayOptions('view'))
         ->setDisplayOptions('form', $original->getDisplayOptions('form'))
@@ -420,26 +368,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
     }
 
     return [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function loadByEntity(ContentEntityInterface $entity) {
-    $group_content_types = GroupContentType::loadByEntityTypeId($entity->getEntityTypeId());
-
-    // If no responsible group content types were found, we return nothing.
-    if (empty($group_content_types)) {
-      return [];
-    }
-
-    return \Drupal::entityTypeManager()
-      ->getStorage('group_content')
-      ->loadByProperties([
-        'type' => array_keys($group_content_types),
-        'entity_id' => $entity->id(),
-        'request_status' => 0,
-      ]);
   }
 
 }

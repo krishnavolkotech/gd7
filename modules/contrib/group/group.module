@@ -2,21 +2,20 @@
 
 /**
  * @file
- * Contains Drupal\group\group.module
+ * Allows you to group users, content and other entities.
  */
 
-use Drupal\group\Entity\GroupContent;
-use Drupal\Core\Url;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Access\AccessResult;
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\group\Entity\GroupContent;
+use Drupal\user\RoleInterface;
 
 /**
  * Implements hook_help().
@@ -48,9 +47,6 @@ function group_theme() {
     ],
     'group_content' => [
       'render element' => 'elements',
-    ],
-    'group_add_list' => [
-      'variables' => ['group_types' => NULL],
     ],
   ];
 }
@@ -121,7 +117,7 @@ function template_preprocess_group(&$variables) {
   $variables['page'] = $variables['view_mode'] == 'full' && $is_page;
 
   // Helpful $content variable for templates.
-  $variables += array('content' => array());
+  $variables += ['content' => []];
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
   }
@@ -148,43 +144,16 @@ function template_preprocess_group_content(&$variables) {
 
   // See if we are rendering the group at its canonical route.
   $route_match = \Drupal::routeMatch();
-  if ($route_match->getRouteName() == $group_content->getContentPlugin()->getRouteName('canonical')) {
+  if ($route_match->getRouteName() == 'entity.group_content.canonical') {
     $page_group_content = $route_match->getParameter('group_content');
   }
   $is_page = (!empty($page_group_content) ? $page_group_content->id() == $group_content->id() : FALSE);
   $variables['page'] = $variables['view_mode'] == 'full' && $is_page;
 
   // Helpful $content variable for templates.
-  $variables += array('content' => array());
+  $variables += ['content' => []];
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
-  }
-}
-
-/**
- * Prepares variables for list of available group type templates.
- *
- * Default template: group-add-list.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - group_types: An array of group types.
- *
- * @see group_add_page()
- */
-function template_preprocess_group_add_list(&$variables) {
-  $variables['types'] = [];
-
-  if (!empty($variables['group_types'])) {
-    /** @var \Drupal\group\Entity\GroupTypeInterface $group_type */
-    foreach ($variables['group_types'] as $group_type) {
-      $variables['types'][$group_type->id()] = [
-        'type' => $group_type->id(),
-        'url' => Url::fromRoute('entity.group.add_form', ['group_type' => $group_type->id()]),
-        'label' => $group_type->label(),
-        'description' => ['#markup' => $group_type->getDescription()],
-      ];
-    }
   }
 }
 
@@ -192,70 +161,16 @@ function template_preprocess_group_add_list(&$variables) {
  * Implements hook_rebuild().
  */
 function group_rebuild() {
-  // Checks if there are any new enforced plugins to install.
-  /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $plugin_manager */
-  $plugin_manager = \Drupal::service('plugin.manager.group_content_enabler');
-  $plugin_manager->installEnforced();
+  _group_content_enabler_manager()->installEnforced();
+  _group_role_synchronizer()->createGroupRoles();
 }
 
 /**
  * Implements hook_modules_installed().
  */
 function group_modules_installed($modules) {
-  // Checks if there are any new enforced plugins to install.
-  /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $plugin_manager */
-  $plugin_manager = \Drupal::service('plugin.manager.group_content_enabler');
-  $plugin_manager->installEnforced();
-}
-
-/**
- * Implements hook_entity_type_alter().
- */
-function group_entity_type_alter(array &$entity_types) {
-  static $mute_self;
-
-  // Because we load content enabler plugins while rebuilding entity types, we
-  // need to make sure the code below does not keep triggering itself.
-  //
-  // This could happen because content enabler plugins may load entity types to
-  // create derivatives (like gnode does) and because we load all group types to
-  // see which plugins are actually installed.
-  if ($mute_self !== TRUE) {
-    $mute_self = TRUE;
-
-    // Enables extra forms for GroupContent entities as defined by plugins.
-    foreach (_group_get_additional_entity_forms() as $name => $class) {
-      /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
-      $entity_types['group_content']->setFormClass($name, $class);
-    }
-
-    $mute_self = FALSE;
-  }
-}
-
-/**
- * Returns a list of additional forms to enable for group content entities.
- *
- * @todo As soon as this gets more usage or we have more similar functionality,
- * this should be moved to a service so we can inject it as a dependency.
- *
- * @return array
- *   An associative array with form names as keys and class names as values.
- *
- * @see group_entity_type_alter()
- */
-function _group_get_additional_entity_forms() {
-  /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $plugin_manager */
-  $plugin_manager = \Drupal::service('plugin.manager.group_content_enabler');
-
-  // Retrieve all possible forms from all installed plugins.
-  $forms = [];
-  foreach ($plugin_manager->getInstalled() as $plugin_id => $plugin) {
-    /** @var \Drupal\group\Plugin\GroupContentEnablerInterface $plugin */
-    $forms = array_merge($forms, $plugin->getEntityForms());
-  }
-
-  return $forms;
+  _group_content_enabler_manager()->installEnforced();
+  _group_role_synchronizer()->createGroupRoles();
 }
 
 /**
@@ -298,39 +213,273 @@ function group_entity_delete(EntityInterface $entity) {
  *       options available to it?
  */
 function group_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemListInterface $items = NULL) {
-  // We only care about the group roles field for now.
-  if ($field_definition->getName() != 'group_roles') {
+  // Can't retrieve an entity from an empty item list.
+  if (!isset($items)) {
     return AccessResult::neutral();
   }
 
-  /** @var \Drupal\group\Entity\GroupContent $group_content */
-  $group_content = $items->getEntity();
-  $group = $group_content->getGroup();
-
-  // Just to be safe, let's check the plugin ID.
-  if ($group_content->getContentPlugin()->getPluginId() == 'group_membership') {
-    // Only group administrators should be able to change the membership roles.
-    return AccessResult::forbiddenIf(!$group->hasPermission('administer members', $account));
+  // We only care about the group_roles field when on a form.
+  if ($field_definition->getName() != 'group_roles' || $operation !== 'edit') {
+    return AccessResult::neutral();
   }
 
-  // Don't show the field if the plugin ID didn't match.
-  return AccessResult::forbidden();
+  // We only care if it is attached to a group content entity.
+  if ($items->getEntity()->getEntityTypeId() != 'group_content') {
+    return AccessResult::neutral();
+  }
+
+  /** @var \Drupal\group\Entity\GroupContentInterface $group_content */
+  $group_content = $items->getEntity();
+
+  // We only care if the group content entity is a group membership.
+  if ($group_content->getContentPlugin()->getPluginId() != 'group_membership') {
+    return AccessResult::neutral();
+  }
+
+  // Now that we know we're dealing with a group_roles field on a group
+  // membership form, we need to check whether the group membership belongs to a
+  // group yet. If not, we can't check for access and should always hide it.
+  if (!$group = $group_content->getGroup()) {
+    return AccessResult::forbidden();
+  }
+
+  // Only group administrators should be able to change the membership roles.
+  return AccessResult::forbiddenIf(!$group->hasPermission('administer members', $account));
 }
 
 /**
- * implements hook_mail
+ * Implements hook_user_cancel_methods_alter().
  */
-function group_mail($key, &$message, $params) {
-  $options = array(
-    'langcode' => $message['langcode'],
-  );
-  switch ($key) {
-    case 'immediate_notifications':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = $params['subject'];
-      $message['body'][] = SafeMarkup::checkPlain($params['message']);
-      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
-      break;
+function group_user_cancel_methods_alter(&$methods) {
+  $methods['user_cancel_block']['title'] = t('Disable the account and keep its content and groups.');
+  $methods['user_cancel_block']['description'] .= ' ' . t('Groups that were created by you will still list you as the owner.');
+  $methods['user_cancel_block_unpublish']['title'] .= ' ' . t('Does not affect groups.');
+  $methods['user_cancel_block_unpublish']['description'] .= ' ' . t('Groups that were created by you will remain visible.');
+  $methods['user_cancel_reassign']['title'] .= ' ' . t('Reassign its groups to the super administrator.');
+  $methods['user_cancel_reassign']['description'] .= ' ' . t('All of your groups will be assigned to the super administrator.');
+  $methods['user_cancel_delete']['title'] = t('Delete the account, its content and groups.');
+  $methods['user_cancel_delete']['description'] .= ' ' . t('This includes groups that were created by you, including all of their content relationships!');
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function group_user_cancel($edit, $account, $method) {
+  // Reassign all groups to the super user.
+  if ($method == 'user_cancel_reassign') {
+    $storage = \Drupal::entityTypeManager()->getStorage('group');
+    $gids = $storage->getQuery()
+      ->condition('uid', $account->id())
+      ->execute();
+
+    // Run this as a batch if there are more than 10 groups.
+    if (count($gids) > 10) {
+      batch_set(['operations' => [['_group_mass_reassign_to_super_user', [$gids]]]]);
+    }
+    // Run it immediately if not.
+    else {
+      foreach ($storage->loadMultiple($gids) as $group) {
+        /** @var \Drupal\group\Entity\GroupInterface $group */
+        $group->set('uid', 1);
+        $storage->save($group);
+      }
+    }
+  }
+}
+
+/**
+ * Implements callback_batch_operation().
+ *
+ * Mass reassigns ownership of groups to the super user.
+ *
+ * @param int[] $ids
+ *   An array of group IDs.
+ */
+function _group_mass_reassign_to_super_user(array $ids, &$context) {
+  if (!isset($context['sandbox']['progress'])) {
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['max'] = count($ids);
+    $context['sandbox']['ids'] = $ids;
+  }
+
+  // Try to update 10 groups at a time.
+  $ids = array_slice($context['sandbox']['ids'], $context['sandbox']['progress'], 10);
+
+  $storage = \Drupal::entityTypeManager()->getStorage('group');
+  foreach ($storage->loadMultiple($ids) as $group) {
+    /** @var \Drupal\group\Entity\GroupInterface $group */
+    $group->set('uid', 1);
+    $storage->save($group);
+    $context['sandbox']['progress']++;
+  }
+
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function group_user_delete(EntityInterface $account) {
+  // If a user is deleted, we delete all of their groups too.
+  $storage = \Drupal::entityTypeManager()->getStorage('group');
+  if ($groups = $storage->loadByProperties(['uid' => $account->id()])) {
+    $storage->delete($groups);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function group_user_role_insert(RoleInterface $role) {
+  _group_role_synchronizer()->createGroupRoles(NULL, [$role->id()]);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function group_user_role_update(RoleInterface $role) {
+  /** @var \Drupal\User\RoleInterface $original */
+  $original = $role->original;
+
+  // Update the group roles if the user role label changed.
+  if ($role->label() != $original->label()) {
+    _group_role_synchronizer()->updateGroupRoleLabels($role);
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function group_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // GroupContentController::createForm() tends to load entity forms for adding
+  // entities to a group. We need to add or alter the submit handlers of those
+  // forms for the process to work properly.
+  if ($form_state->has('group_wizard') && $form_state->get('group_wizard_id') == 'group_entity') {
+    if ($wizard = $form_state->get('group_wizard')) {
+      $store = \Drupal::service('user.private_tempstore')->get($form_state->get('group_wizard_id'));
+      $store_id = $form_state->get('store_id');
+
+      // Bail out if we are on step 2 of the wizard. We only want to alter the
+      // submit handlers for the first step or if we are not in a wizard.
+      if ($store->get("$store_id:step") === 2) {
+        return;
+      }
+    }
+
+    foreach (Element::children($form['actions']) as $name) {
+      // Remove preview button as it redirects back to the wrong form.
+      if ($name == 'preview') {
+        unset($form['actions'][$name]);
+        continue;
+      }
+
+      // Skip buttons without submit handlers.
+      if (empty($form['actions'][$name]['#submit'])) {
+        continue;
+      }
+
+      // Skip buttons that do not properly build and save an entity.
+      $submit = $form['actions'][$name]['#submit'];
+      if (!in_array('::submitForm', $submit) || !in_array('::save', $submit)) {
+        continue;
+      }
+
+      // If we are using the wizard, we need to substitute the entity save
+      // handler in order to add the entity to the private temp store.
+      if ($wizard) {
+        foreach ($submit as $key => $handler) {
+          if ($handler == '::save') {
+            $form['actions'][$name]['#submit'][$key] = 'group_content_wizard_store';
+          }
+        }
+      }
+      // Otherwise, we can simply add our submit handler and be done with it.
+      else {
+        $form['actions'][$name]['#submit'][] = 'group_content_entity_submit';
+      }
+    }
+
+    // If we are using the wizard, we also add a cancel button to step 1.
+    if ($wizard) {
+      $form['actions']['cancel'] = [
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#submit' => ['group_content_wizard_cancel'],
+        '#limit_validation_errors' => [],
+      ];
+    }
+  }
+}
+
+/**
+ * Stores a content entity from the wizard step 1 in the temp store.
+ *
+ * @see group_form_alter()
+ * @see \Drupal\group\Entity\Controller\GroupContentController::createForm()
+ */
+function group_content_wizard_store($form, FormStateInterface $form_state) {
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  $entity = $form_state->getFormObject()->getEntity();
+
+  // Store the unsaved entity in the temp store.
+  $store = \Drupal::service('user.private_tempstore')->get($form_state->get('group_wizard_id'));
+  $store_id = $form_state->get('store_id');
+  $store->set("$store_id:entity", $entity);
+  $store->set("$store_id:step", 2);
+
+  // Disable any URL-based redirect until the final step.
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  $form_state->setRedirect('<current>', [], ['query' => $request->query->all()]);
+  $request->query->remove('destination');
+}
+
+/**
+ * Cancels the wizard for group content creation.
+ *
+ * @see group_form_alter()
+ * @see \Drupal\group\Entity\Controller\GroupContentController::createForm()
+ */
+function group_content_wizard_cancel($form, FormStateInterface $form_state) {
+  $store = \Drupal::service('user.private_tempstore')->get($form_state->get('group_wizard_id'));
+  $store_id = $form_state->get('store_id');
+  $store->delete("$store_id:entity");
+  $store->delete("$store_id:step");
+
+  /** @var \Drupal\group\Entity\GroupInterface $group */
+  $group = $form_state->get('group');
+
+  // Redirect to the group page if no destination was set in the URL.
+  $form_state->setRedirect('entity.group.canonical', ['group' => $group->id()]);
+}
+
+/**
+ * Adds a newly saved entity to a group.
+ *
+ * @see group_form_alter()
+ * @see \Drupal\group\Entity\Controller\GroupContentController::createForm()
+ */
+function group_content_entity_submit($form, FormStateInterface $form_state) {
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  $entity = $form_state->getFormObject()->getEntity();
+
+  /** @var \Drupal\group\Entity\GroupInterface $group */
+  $group = $form_state->get('group');
+  $group->addContent($entity, $form_state->get('group_content_enabler'));
+
+  // This submit handler is only called when creating new content within a group
+  // without using the 2-step wizard. We can therefore safely assume the user
+  // wants to see the entity itself and not the relationship (group content).
+  // This only applies if there was no destination GET parameter set in the URL.
+  if ($entity->access('view')) {
+    $form_state->setRedirectUrl($entity->toUrl());
+  }
+  elseif ($group->access('view')) {
+    $form_state->setRedirectUrl($group->toUrl());
+  }
+  else {
+    $form_state->setRedirect('<front>');
   }
 }
 
@@ -365,3 +514,27 @@ function group_mail($key, &$message, $params) {
 /**
  * @} End of "defgroup group_access".
  */
+
+/**
+ * Gets the group content enabler plugin manager.
+ *
+ * @return \Drupal\group\Plugin\GroupContentEnablerManagerInterface
+ *   The group content enabler plugin manager.
+ *
+ * @internal Try to properly inject the service when possible.
+ */
+function _group_content_enabler_manager() {
+  return \Drupal::service('plugin.manager.group_content_enabler');
+}
+
+/**
+ * Gets the group role synchronizer service.
+ *
+ * @return \Drupal\group\GroupRoleSynchronizerInterface
+ *   The group role synchronizer service.
+ *
+ * @internal Try to properly inject the service when possible.
+ */
+function _group_role_synchronizer() {
+  return \Drupal::service('group_role.synchronizer');
+}

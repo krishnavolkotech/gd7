@@ -1,0 +1,30 @@
+uuid: 5d7d5c2a-219a-4364-8ef6-666410d265bb
+langcode: en
+status: false
+dependencies:
+  module:
+    - block_class
+    - cust_group
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: blue
+id: verfahren_2
+theme: hzd
+region: navigation
+weight: 3
+provider: null
+plugin: verfahren_menu_side
+settings:
+  id: verfahren_menu_side
+  label: Verfahren
+  provider: cust_group
+  label_display: visible
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }

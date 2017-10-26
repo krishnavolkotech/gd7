@@ -1,0 +1,43 @@
+uuid: 61f932fb-e154-45ce-90eb-38cf58ff8cd4
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment.default
+    - field.field.node.grouppost.body
+    - field.field.node.grouppost.comment
+    - node.type.grouppost
+  module:
+    - comment
+    - text
+    - user
+id: node.grouppost.default
+targetEntityType: node
+bundle: grouppost
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment:
+    label: hidden
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: 0
+      view_mode: default
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

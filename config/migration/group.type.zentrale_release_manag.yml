@@ -1,0 +1,8 @@
+uuid: e4180426-aea4-4204-89b4-8752bd76eced
+langcode: en
+status: true
+dependencies: {  }
+id: zentrale_release_manag
+label: 'Zentrale Release Manager der Länder'
+description: 'Same as open group.'
+creator_roles: {  }

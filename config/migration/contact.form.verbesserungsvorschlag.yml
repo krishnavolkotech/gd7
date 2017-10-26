@@ -1,0 +1,12 @@
+uuid: e27b253f-6d95-4db3-893b-2e6637c67349
+langcode: en
+status: true
+dependencies: {  }
+id: verbesserungsvorschlag
+label: Verbesserungsvorschlag
+recipients:
+  - betriebsportal-konsens@hzd.hessen.de
+reply: "Vielen Dank für Ihre Nachricht. Ihr Verbesserungsvorschlag wird uns helfen, die Qualität des Betriebsportals-KONSENS zu erhöhen. Wir bemühen uns um eine schnellstmögliche Bearbeitung.\r\n\r\n-- Team Betriebsportal KONSENS"
+weight: 1
+message: 'Your message has been sent.'
+redirect: ''

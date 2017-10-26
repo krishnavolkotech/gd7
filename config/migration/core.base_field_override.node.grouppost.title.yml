@@ -1,0 +1,18 @@
+uuid: 7673baea-2603-4ee4-907b-6fea445a1f14
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.grouppost
+id: node.grouppost.title
+field_name: title
+entity_type: node
+bundle: grouppost
+label: Title
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

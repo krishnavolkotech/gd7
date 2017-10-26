@@ -1,0 +1,27 @@
+uuid: 2493f31f-7500-4399-a595-df9407ce015f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_content.moderate-group_membership.group_roles
+    - group.content_type.moderate-group_membership
+id: group_content.moderate-group_membership.default
+targetEntityType: group_content
+bundle: moderate-group_membership
+mode: default
+content:
+  group_roles:
+    label: above
+    type: entity_reference_label
+    settings:
+      link: false
+    weight: -4
+    third_party_settings: {  }
+    region: content
+hidden:
+  entity_id: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  uid: true

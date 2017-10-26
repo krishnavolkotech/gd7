@@ -1,0 +1,17 @@
+uuid: 78c2729d-ffc5-4118-9513-250d8993bc86
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+  enforced:
+    config:
+      - user.role.group_member
+id: closed-a007929fd
+label: 'group member(Not in use)'
+weight: 3
+internal: true
+audience: outsider
+group_type: closed
+permissions_ui: false
+permissions: {  }

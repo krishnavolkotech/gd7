@@ -1,0 +1,32 @@
+uuid: ebd9b341-fe50-4c86-82aa-de968c2888d7
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.tools
+  module:
+    - system
+    - user
+  theme:
+    - bartik
+id: user_1
+theme: bartik
+region: sidebar_first
+weight: 4
+provider: null
+plugin: 'system_menu_block:tools'
+settings:
+  id: 'system_menu_block:tools'
+  label: Optionen
+  provider: system
+  label_display: visible
+  level: 1
+  depth: 0
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      site_administrator: site_administrator
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    negate: false

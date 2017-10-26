@@ -1,0 +1,49 @@
+uuid: 5b095b41-a88e-49da-a316-632b774934f7
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: SCZau3IjwioQg0XEgH7Fa80wxZTH_rBOU-3qPGnHBFk
+id: group_forums
+migration_tags:
+  - 'Drupal 6'
+migration_group: groups
+label: 'Groups Forums'
+source:
+  plugin: d6_node
+  node_type: forum
+  target: migrate
+process:
+  id: dedupe_entity
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: de
+  label:
+    plugin: default_value
+    source: title
+    default_value: Forum
+  uid: node_uid
+  status: status
+  created: created
+  changed: changed
+  promote: promote
+  entity_id: nid
+  gid:
+    -
+      plugin: group_mapping_from_d6
+      method: getGroupForumId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
+  type:
+    -
+      plugin: group_mapping_from_d6
+      method: getGroupContentTypeId
+      source: type
+destination:
+  plugin: 'entity:group_content'
+migration_dependencies:
+  required:
+    - d6_node

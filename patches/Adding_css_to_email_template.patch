@@ -1,0 +1,35 @@
+Index: swiftmailer.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- swiftmailer.module	(revision e2085a959dcf607f20999e0a22a01f8c8d970ab3)
++++ swiftmailer.module	(revision )
+@@ -95,6 +95,8 @@
+ function template_preprocess_swiftmailer(&$variables) {
+   $variables['subject'] = $variables['message']['subject'];
+   $variables['body'] = $variables['message']['body'];
++  global $base_url;
++  $variables['base_url'] = $base_url;
+ }
+ 
+ /**
+Index: templates/swiftmailer.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- templates/swiftmailer.html.twig	(revision e2085a959dcf607f20999e0a22a01f8c8d970ab3)
++++ templates/swiftmailer.html.twig	(revision )
+@@ -38,6 +38,11 @@
+   font-size: 12px;
+ }
+ </style>
++  <link type="text/css" rel="stylesheet"
++        href="{{ base_url }}/themes/hzd/css/style.css"/>
++  <link type="text/css" rel="stylesheet"
++        href="{{ base_url }}/themes/hzd/css/hzd-custom.css"/>
++    <link type="text/css" rel="stylesheet" href="{{ base_url }}/themes/hzd/css/3.3.5/overrides.min.css"/>
+ </head>
+ <body>
+ <div>

@@ -1,0 +1,8 @@
+uuid: e3eee204-e65c-4a94-bb98-c4ab26ae3428
+langcode: en
+status: true
+dependencies: {  }
+id: closed_private
+label: 'Geschlossen Privat'
+description: 'Same as Closed, But visible to only Members.'
+creator_roles: {  }

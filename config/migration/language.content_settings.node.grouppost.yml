@@ -1,0 +1,16 @@
+uuid: 779dcf8f-740b-44a4-b829-3dd6e37c5947
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.grouppost
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: node.grouppost
+target_entity_type_id: node
+target_bundle: grouppost
+default_langcode: site_default
+language_alterable: false

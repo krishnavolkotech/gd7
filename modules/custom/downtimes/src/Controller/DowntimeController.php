@@ -29,22 +29,22 @@ class DowntimeController extends ControllerBase {
     $samplenode = $this->entityManager()->getStorage('node')->create(array(
       'type' => $type->id(),
     ));
-    $node_create_form = $this->entityFormBuilder()->getForm($samplenode);
-
+    return $this->entityFormBuilder()->getForm($samplenode);
+/*
     return array(
       '#type' => 'markup',
       '#markup' => render($node_create_form),
-    );
+    );*/
   }
 
   function getTitle() {
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = pathinfo($current_path, PATHINFO_BASENAME);
     if ($downtime_type == 'create_maintenance') {
-      return 'Create Maintenance';
+      return $this->t('Report Maintenance');
     }
     else {
-      return 'Report an Incident';
+      return $this->t('Report Incident');
     }
   }
 

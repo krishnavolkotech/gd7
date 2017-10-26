@@ -19,12 +19,12 @@ hzd_release_management.release_documentation_credentials:
   description: 'Release Documentation Credentials'
   weight: -13
 
-hzd_release_management.release_type_settings:
-  title: 'Release Type Settings'
-  route_name: hzd_release_management.release_type_settings
-  parent: hzd_release_management.release_management_settings
-  description: 'Release Type Settings'
-  weight: -12
+#hzd_release_management.release_type_settings:
+#  title: 'Release Type Settings'
+#  route_name: hzd_release_management.release_type_settings
+#  parent: hzd_release_management.release_management_settings
+#  description: 'Release Type Settings'
+#  weight: -12
 
 hzd_release_management.release_management_settings_submenu:
   title: 'Release Database Configuration'
@@ -33,3 +33,9 @@ hzd_release_management.release_management_settings_submenu:
   description: 'Release Database Configuration'
   weight: -11
 
+hzd_release_management.read_release_csv_submenu:
+  title: 'Import Releases'
+  route_name: hzd_release_management.read_release_csv
+  parent: hzd_release_management.release_management_settings
+  description: 'Import Releases'
+  weight: -10

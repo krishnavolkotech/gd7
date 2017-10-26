@@ -1,0 +1,34 @@
+uuid: d6fd9c64-aefa-49f6-b73f-c9abcdf637d4
+langcode: de
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: boH3THxFIuxpHusf1Ti3p7dKEvyN5ahzeVMARHWqgaA
+id: field_services
+migration_tags:
+  - 'Drupal 6'
+migration_group: fields
+label: 'Problem Service Fields'
+source:
+  plugin: source_table
+  target: migrate
+  table_name: content_type_problem
+  fields:
+    - field_services_nid
+    - nid
+  id_fields:
+    nid:
+      type: integer
+      unsigned: false
+      size: big
+process:
+  field_services: field_services_nid
+  nid: nid
+  type:
+    plugin: default_value
+    default_value: problem
+destination:
+  plugin: 'entity:node'
+migration_dependencies:
+  required:
+    - d6_node

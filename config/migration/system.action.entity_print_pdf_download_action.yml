@@ -1,0 +1,13 @@
+uuid: 079479c2-67f1-457a-bccd-7569e229052b
+langcode: de
+status: true
+dependencies:
+  module:
+    - entity_print
+_core:
+  default_config_hash: MqQp80-lkCSoxmODeQu_DmxkbnM9lna_R34r28Lw4gw
+id: entity_print_pdf_download_action
+label: 'Download PDF'
+type: node
+plugin: entity_print_download_action
+configuration: {  }

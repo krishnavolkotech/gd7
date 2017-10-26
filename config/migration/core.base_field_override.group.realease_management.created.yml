@@ -1,0 +1,18 @@
+uuid: 6894a531-1ff1-4b8d-95cc-ad9dff969ae6
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: group.realease_management.created
+field_name: created
+entity_type: group
+bundle: realease_management
+label: 'Created on'
+description: 'The time that the group was created.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

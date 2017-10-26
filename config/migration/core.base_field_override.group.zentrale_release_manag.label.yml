@@ -1,0 +1,18 @@
+uuid: 81da90fd-cf13-4025-935d-3437f0278b49
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.zentrale_release_manag
+id: group.zentrale_release_manag.label
+field_name: label
+entity_type: group
+bundle: zentrale_release_manag
+label: Title
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

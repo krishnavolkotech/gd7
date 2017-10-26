@@ -1,0 +1,48 @@
+uuid: 935b888e-e784-4c8d-b6d0-a10abbfc1759
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_visibility_groups.block_visibility_group.group_menu
+  module:
+    - block_class
+    - block_visibility_groups
+    - cust_group
+    - system
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: 'blue incident-menu'
+id: customgroupmenublock
+theme: hzd
+region: sidebar_first
+weight: -28
+provider: null
+plugin: cust_group_menu_block
+settings:
+  id: cust_group_menu_block
+  label: 'Custom Group Menu block'
+  provider: cust_group
+  label_display: visible
+visibility:
+  request_path:
+    id: request_path
+    pages: "*/problems/*\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases/*\r\n*/eingesetzte-releases\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/downtimes/archive\r\n*/hilfe"
+    negate: true
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+      administrator: administrator
+      site_administrator: site_administrator
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: group_menu
+    context_mapping: {  }

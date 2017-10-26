@@ -1,0 +1,23 @@
+uuid: 1f4c1e32-7bc0-4413-a639-f0b25c454ad8
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_related_transfer_number
+field_name: field_related_transfer_number
+entity_type: node
+type: string_long
+settings:
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

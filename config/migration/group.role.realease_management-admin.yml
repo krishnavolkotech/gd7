@@ -1,0 +1,21 @@
+uuid: 0127b94e-5ec4-4b02-b092-7af6c4138401
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: realease_management-admin
+label: Admin
+weight: -91
+internal: false
+audience: member
+group_type: realease_management
+permissions_ui: true
+permissions:
+  - 'edit group'
+  - 'view group'
+  - 'administer members'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'access group_node overview'

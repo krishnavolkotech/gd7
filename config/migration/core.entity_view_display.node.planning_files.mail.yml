@@ -1,0 +1,45 @@
+uuid: 420a33ff-65c9-43bb-a369-6b8a18a08a11
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.mail
+    - field.field.node.planning_files.comment
+    - field.field.node.planning_files.field_planning_file_type
+    - field.field.node.planning_files.field_upload_planning_file
+    - field.field.node.planning_files.upload
+    - node.type.planning_files
+  module:
+    - entity_print
+    - options
+    - user
+third_party_settings:
+  entity_print:
+    label: 'View PDF'
+id: node.planning_files.mail
+targetEntityType: node
+bundle: planning_files
+mode: mail
+content:
+  entity_print_view:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_planning_file_type:
+    label: hidden
+    weight: 0
+    type: list_key
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_upload_planning_file: true
+  langcode: true
+  links: true
+  upload: true

@@ -1,0 +1,17 @@
+uuid: c1e5ec8a-8c79-47ce-9361-f5d12e74aa53
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.incident_managent
+  enforced:
+    config:
+      - user.role.site_administrator
+id: incident_managent-dafb8106a
+label: 'Site Administrator'
+weight: 5
+internal: true
+audience: outsider
+group_type: incident_managent
+permissions_ui: false
+permissions: {  }

@@ -93,7 +93,7 @@ class DowntimessettingForm extends FormBase {
     $menuItems = MenuLinkContent::loadMultiple($menuItemIds);
     $noLinkAvailable = true;
     foreach ($menuItems as $menu) {
-      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_newDowntimes') {
+      if ($menu->getUrlObject()->isRouted() && $menu->getUrlObject()->getRouteName() == 'downtimes.new_downtimes_controller_engDowntimes') {
         $noLinkAvailable = false;
         if ($counter == 0) {
           $menu->set('enabled', 0);

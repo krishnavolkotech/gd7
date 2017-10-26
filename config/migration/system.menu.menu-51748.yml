@@ -1,0 +1,8 @@
+uuid: e0a19edb-bddc-452a-a7f6-5e0422ff8968
+langcode: de
+status: true
+dependencies: {  }
+id: menu-51748
+label: Bundesverfahren
+description: ''
+locked: false

@@ -22,3 +22,17 @@ function cust_pdf_help($route_name, RouteMatchInterface $route_match) {
     default:
   }
 }
+
+
+function cust_pdf_views_post_build(Drupal\views\ViewExecutable $view){
+  $query = \Drupal::request()->query;
+  if ($query->has('print') && $query->get('print') == 'pdf') {
+    unset($view->exposed_widgets);
+    unset($view->attachment_before);
+    unset($view->attachment_after);
+    $view->pager = new \Drupal\views\Plugin\views\pager\None([], '', []);
+    $view->pager->init($view, $view->display_handler);
+    $view->execute();
+  }
+//  unset($view->);
+}

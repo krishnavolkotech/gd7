@@ -1,0 +1,45 @@
+id: group_members
+migration_tags:
+  - Drupal 6
+migration_group: groups
+label: Group Members
+source:
+  plugin: source_table
+  target: migrate
+  table_name: og_uid
+  fields:
+    - nid
+    - is_admin
+    - created
+    - changed
+    - uid
+    - is_active
+    - og_role
+  id_fields:
+    uid:
+      type: integer
+      unsigned: FALSE
+      size: big
+    nid:
+      type: integer
+      unsigned: FALSE
+      size: big
+process:
+  gid:
+    -
+      plugin: group_mapping_from_d6
+      method: getNewGroupId
+      source: nid
+    -
+      plugin: skip_on_empty
+      method: row
+  is_admin: is_admin
+  uid: uid
+  created: created
+  changed: changed
+destination:
+  plugin: group_member
+  target: default
+migration_dependencies:
+  required:
+    - groups

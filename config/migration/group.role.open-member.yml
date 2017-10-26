@@ -1,0 +1,51 @@
+uuid: 99729356-b365-4ddd-8240-305581a826ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-member
+label: Member
+weight: -100
+internal: true
+audience: member
+group_type: open
+permissions_ui: true
+permissions:
+  - 'view group'
+  - 'access group_membership overview'
+  - 'view group_membership content'
+  - 'leave group'
+  - 'view group_node:deployed_releases content'
+  - 'view group_node:deployed_releases entity'
+  - 'view group_node:downtimes content'
+  - 'view group_node:downtimes entity'
+  - 'view group_node:early_warnings content'
+  - 'view group_node:early_warnings entity'
+  - 'view group_node:faqs content'
+  - 'view group_node:faqs entity'
+  - 'view group_node:newsletter content'
+  - 'view group_node:newsletter entity'
+  - 'view group_node:page content'
+  - 'view group_node:page entity'
+  - 'view group_node:planning_files content'
+  - 'view group_node:planning_files entity'
+  - 'view group_node:problem content'
+  - 'view group_node:problem entity'
+  - 'view group_node:release content'
+  - 'view group_node:release entity'
+  - 'update own group_node:downtimes entity'
+  - 'update any group_node:downtimes entity'
+  - 'create group_node:forum entity'
+  - 'update own group_node:forum entity'
+  - 'view group_node:forum entity'
+  - 'create group_node:forum content'
+  - 'view group_node:forum content'
+  - 'create group_node:early_warnings entity'
+  - 'update any group_node:early_warnings entity'
+  - 'update own group_node:early_warnings entity'
+  - 'create group_node:early_warnings content'
+  - 'update any group_node:early_warnings content'
+  - 'update own group_node:early_warnings content'
+  - 'update any group_node:deployed_releases entity'
+  - 'update own group_node:deployed_releases entity'

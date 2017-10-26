@@ -102,11 +102,9 @@
                   type: 'numeric'
               });
 
-
-
-            if (drupalSettings.release_management.type != 'released' && drupalSettings.release_management.type != "deployed") {
+            var release_tab_type = [ "released", "deployed", "locked", "progress" ];
+            if (jQuery.inArray( drupalSettings.release_management.type,  release_tab_type) == -1) {
             // jQuery("#sortable").tablesorter();
-             
               $(context).find("#sortable").tablesorter({
           	widgets: ['zebra']
               }); 
@@ -143,8 +141,15 @@
                   });
                   
             }
+	    else if (jQuery.inArray( drupalSettings.release_management.type,  ['locked', 'progress']) != -1) {
+              $(context).find("#sortable").tablesorter({
+                    headers: {
+                        3: { sorter:'release_datesortable' },
+                    },
+                       widgets: ['zebra']
+              });
+            }
             else {
-               
               $(context).find("#sortable").tablesorter({
                     headers: {
                         2: { sorter:'release_datesortable' },

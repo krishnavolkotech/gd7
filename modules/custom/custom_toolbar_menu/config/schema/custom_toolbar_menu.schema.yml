@@ -1,0 +1,15 @@
+custom_toolbar_menu.settings:
+  type: config_object
+  label: 'Toolbar menu settings'
+  mapping:
+    menus:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          active:
+            type: boolean
+            label: 'Menu is active in toolbar'
+          weight:
+            type: integer
+            label: 'Menu weight in toolbar'

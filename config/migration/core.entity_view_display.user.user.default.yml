@@ -1,0 +1,45 @@
+uuid: 11f30494-56f9-4986-88eb-64af31609075
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.user.user.field_do_not_deactivate_automati
+    - field.field.user.user.field_message_preference
+    - field.field.user.user.field_notifications_status
+    - field.field.user.user.l10n_client_contributor_key
+    - field.field.user.user.user_picture
+  module:
+    - image
+    - user
+_core:
+  default_config_hash: L2mtwGWH_7wDRCMIR4r_Iu_jmvQ10DV1L8ht8iNZ5qY
+id: user.user.default
+targetEntityType: user
+bundle: user
+mode: default
+content:
+  masquerade:
+    weight: 50
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  user_picture:
+    label: hidden
+    settings:
+      image_style: ''
+      image_link: content
+    type: image
+    weight: 6
+    third_party_settings: {  }
+    region: content
+hidden:
+  entity_print_view: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_do_not_deactivate_automati: true
+  field_message_preference: true
+  field_notifications_status: true
+  l10n_client_contributor_key: true
+  langcode: true
+  member_for: true

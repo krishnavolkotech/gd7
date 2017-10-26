@@ -1,0 +1,257 @@
+uuid: 83de2b22-9f12-480c-b5d0-f9bbffc85b23
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.problem.body
+    - field.field.node.problem.comment
+    - field.field.node.problem.field_attachment
+    - field.field.node.problem.field_closed
+    - field.field.node.problem.field_comments
+    - field.field.node.problem.field_diagnose
+    - field.field.node.problem.field_eroffnet
+    - field.field.node.problem.field_function
+    - field.field.node.problem.field_priority
+    - field.field.node.problem.field_problem_eroffnet
+    - field.field.node.problem.field_problem_status
+    - field.field.node.problem.field_processing
+    - field.field.node.problem.field_release
+    - field.field.node.problem.field_s_no
+    - field.field.node.problem.field_sdcallid
+    - field.field.node.problem.field_services
+    - field.field.node.problem.field_solution
+    - field.field.node.problem.field_task_force
+    - field.field.node.problem.field_ticketstore_count
+    - field.field.node.problem.field_ticketstore_link
+    - field.field.node.problem.field_version
+    - field.field.node.problem.field_work_around
+    - field.field.node.problem.upload
+    - node.type.problem
+  module:
+    - comment
+    - text
+id: node.problem.default
+targetEntityType: node
+bundle: problem
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 31
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  comment:
+    type: comment_default
+    weight: 20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  created:
+    type: datetime_timestamp
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_attachment:
+    weight: 12
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_closed:
+    weight: 19
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_comments:
+    weight: 9
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_diagnose:
+    weight: 4
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_eroffnet:
+    weight: 10
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_function:
+    weight: 3
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_priority:
+    weight: 7
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_problem_eroffnet:
+    weight: 20
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_problem_status:
+    weight: 1
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_processing:
+    weight: 11
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_release:
+    weight: 17
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_s_no:
+    weight: -3
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_sdcallid:
+    weight: -1
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_services:
+    weight: 2
+    type: options_select
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_solution:
+    weight: 5
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_task_force:
+    weight: 8
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_ticketstore_count:
+    weight: 32
+    type: number
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_ticketstore_link:
+    weight: 31
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_version:
+    weight: 18
+    type: string_textarea
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+    region: content
+  field_work_around:
+    weight: 6
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  promote:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 15
+    third_party_settings: {  }
+    region: content
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 16
+    third_party_settings: {  }
+    region: content
+  title:
+    type: string_textfield
+    weight: -5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  translation:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+hidden:
+  path: true
+  upload: true

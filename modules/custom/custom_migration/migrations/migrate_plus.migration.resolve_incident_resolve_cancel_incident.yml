@@ -1,0 +1,48 @@
+uuid: 4fc47f44-f421-4163-bc46-f6167d295a66
+langcode: de
+status: true
+id: resolve_incident_resolve_cancel_incident
+label: Resolve Incidents
+migration_tags: null
+migration_group: custom_migration
+source:
+  plugin: source_table
+  target: migrate
+  table_name: resolve_incident
+  fields:
+    - id
+    - nid
+    - enddate
+    - comment
+    - date_resolved
+    - uid
+  id_fields:
+      nid:
+        type: integer
+        unsigned: FALSE
+        size: big
+process:
+  downtime_id: nid
+  end_date: end_date
+  date_reported:
+    plugin: extended_iterator
+    method: dateToTimestamp
+    source: date_resolved
+  comment: comment
+  uid: uid
+  type:
+    plugin: default_value
+    default_value: 1
+destination:
+  plugin: table
+  key_map:
+    nid: downtime_id #source: destination
+  id_fields:
+    downtime_id:
+      type: integer
+      unsigned: FALSE
+      size: big
+  table_name: resolve_cancel_incident
+migration_dependencies:
+  required:
+    - d6_node

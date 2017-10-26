@@ -1,0 +1,21 @@
+uuid: c82d27eb-4fe9-4891-b04b-3ae20b2141ba
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_einfuehrung
+    - group.type.moderate_private
+  module:
+    - text
+id: group.moderate_private.field_einfuehrung
+field_name: field_einfuehrung
+entity_type: group
+bundle: moderate_private
+label: Einfuehrung
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

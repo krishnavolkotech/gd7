@@ -1,0 +1,20 @@
+uuid: 7cbd9de3-50a8-46e6-be92-ba906acf6b5b
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: group.moderate.uid
+field_name: uid
+entity_type: group
+bundle: moderate
+label: 'Group creator'
+description: 'The username of the group creator.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: 'Drupal\group\Entity\Group::getCurrentUserId'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

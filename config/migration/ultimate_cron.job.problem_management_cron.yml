@@ -1,0 +1,29 @@
+uuid: 0e9c81a6-01f2-46b3-8e48-b88f7869c950
+langcode: en
+status: false
+dependencies:
+  module:
+    - problem_management
+title: 'Import Problems'
+id: problem_management_cron
+weight: 0
+module: problem_management
+callback: problem_management_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '*/15+@ * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

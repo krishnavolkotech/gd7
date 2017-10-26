@@ -1,0 +1,18 @@
+uuid: 78d0bc92-867a-465d-9dd0-51f1a0624830
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.realease_management
+id: group.realease_management.changed
+field_name: changed
+entity_type: group
+bundle: realease_management
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

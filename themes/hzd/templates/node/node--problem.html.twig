@@ -72,7 +72,7 @@
         </h2>
     {% endif %}
     {{ title_suffix }}
-    <div>{{ back_to_search }}</div>
+    <div class='problems-backto-search'>{{ back_to_search }}</div>
     <h4 class='problem_heading'>  {{ "Details"|trans }}</h4>
     <table class='problem_info'>
 
@@ -144,7 +144,7 @@
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Ticketstore Link'|trans }}</td>
-            <td class='problem_content'>{{ node.field_ticketstore_link.value }}</td>
+            <td class='problem_content'>{{ ticketstore_html }}</td>
         </tr>
 
         <tr class='odd'>
@@ -157,22 +157,22 @@
             <td class='problem_content'>{{ node.field_processing.value }}</td>
         </tr>
 
-        <tr class='odd'>
+{#        <tr class='odd'>
             <td class='problem_titles'>{{ 'Closed'|trans }}</td>
             <td class='problem_content'>{{ node.field_closed.value }}</td>
-        </tr>
+        </tr>#}
 
-        <tr class='even'>
+        <tr class='odd'>
             <td class='problem_titles'>{{ 'Taskforce'|trans }}</td>
             <td class='problem_content'>{{ node.field_task_force.value }}</td>
         </tr>
 
-        <tr class='odd'>
+        <tr class='even'>
             <td class='problem_titles'>{{ 'SDCallID'|trans }}</td>
             <td class='problem_content'>{{ node.field_s_no.value }}</td>
         </tr>
 
-        <tr class='even'>
+        <tr class='odd'>
             <td class='problem_titles'>{{ 'Attachments'|trans }}</td>
             <td class='problem_content'>{{ node.field_attachment.value }}</td>
         </tr>
