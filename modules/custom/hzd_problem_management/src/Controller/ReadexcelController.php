@@ -3,12 +3,14 @@
 namespace Drupal\problem_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\problem_management\Exception\ProblemImportException;
 use Drupal\problem_management\HzdStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\problem_management\ProblemImport;
 
 /**
  * Class ReadexcelController.
@@ -22,29 +24,46 @@ class ReadexcelController extends ControllerBase {
    * Use the function for the cron run.
    */
   public function read_problem_csv() {
-    /**
-    * $header_values = array(
-     * 'sno', 'status', 'service', 'function', 'release', 'title' ,
-     * 'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority',
-     * 'taskforce', 'comment', 'processing', 'attachment', 'eroffnet',
-    * 'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
-     * );
-   */
-    $header_values = array(
-      'sno', 'status', 'service', 'function', 'release', 'title',
-      'body', 'diagnose', 'solution', 'workaround', 'version', 'priority',
-      'taskforce', 'comment', 'processing','attachment', 'eroffnet','ticketstore_link','closed', 'timezone',
-      
-    );
 
-    $path = DRUPAL_ROOT . '/'.\Drupal::config('problem_management.settings')->get('import_path');
+    $path = DRUPAL_ROOT . '/' . \Drupal::config('problem_management.settings')
+        ->get('import_path');
+    $importer = new ProblemImport($path);
+    try {
+      $importer->processImport();
+    } catch (ProblemImportException $e) {
+      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+      $mail = 'sandeep@azrisolutions.com';
+      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $e->getSubject($e->type), $e->getBody($e->type));
+//      HzdStorage::insert_import_status($status, $msg);
+      // watchdog('problem', $message, array(), 'error');.
+      \Drupal::logger('problem')->error($e->getSubject($e->type));
+      echo $e->getMessage();
+      exit;
 
-    if ($path) {
+
+      echo $e->getMessageRaw();
+      exit;
+    } catch (\Exception $exception) {
+
+    }
+//pr($importer->ignored);exit;
+
+    /*try {
       if (file_exists($path)) {
         $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
       }
       else {
-        $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+        throw new CustomException('No such File exists');
+      }
+    }*/
+
+    /*if ($path) {
+      if (file_exists($path)) {
+        $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
+      }
+      else {
+        $mail = \Drupal::config('problem_management.settings')
+          ->get('import_mail');
         $subject = $this->t('Error while import');
         $body = $this->t("There is an issue while importing of the file " . $path . ". The  import file not found or it could have been corrupted.");
         HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
@@ -56,7 +75,8 @@ class ReadexcelController extends ControllerBase {
     }
     else {
       $output = $this->t('File Path Not Specified');
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+      $mail = \Drupal::config('problem_management.settings')
+        ->get('import_mail');
       $subject = 'Error while import';
       $body = $this->t("There is an issue while importing of the problems from file " . $path . "Check whether the format of problems is in proper CSV format or not.");
 
@@ -68,9 +88,9 @@ class ReadexcelController extends ControllerBase {
       $path = Link::fromTextAndUrl($text, $url);
 
       $output .= t('Set the import path at') . $path;
-    }
+    }*/
     $response = array(
-      '#markup' => $output,
+      '#markup' => 'Success',
     );
     return $response;
   }
