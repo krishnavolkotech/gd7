@@ -28,6 +28,7 @@ class ReadexcelController extends ControllerBase {
     $path = DRUPAL_ROOT . '/' . \Drupal::config('problem_management.settings')
         ->get('import_path');
     $importer = new ProblemImport($path);
+    $status = t('Success');
     try {
       $importer->processImport();
     } catch (ProblemImportException $e) {
@@ -37,12 +38,12 @@ class ReadexcelController extends ControllerBase {
 //      HzdStorage::insert_import_status($status, $msg);
       // watchdog('problem', $message, array(), 'error');.
       \Drupal::logger('problem')->error($e->getSubject($e->type));
-      echo $e->getMessage();
-      exit;
+      $status = $e->getMessage();
+      // exit;
 
 
-      echo $e->getMessageRaw();
-      exit;
+      // echo $e->getMessageRaw();
+      // exit;
     } catch (\Exception $exception) {
 
     }
@@ -90,7 +91,7 @@ class ReadexcelController extends ControllerBase {
       $output .= t('Set the import path at') . $path;
     }*/
     $response = array(
-      '#markup' => 'Success',
+      '#markup' => $status,
     );
     return $response;
   }
