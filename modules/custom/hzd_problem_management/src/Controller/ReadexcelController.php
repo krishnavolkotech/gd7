@@ -33,7 +33,6 @@ class ReadexcelController extends ControllerBase {
       $importer->processImport();
     } catch (ProblemImportException $e) {
       $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-      $mail = 'sandeep@azrisolutions.com';
       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $e->getSubject($e->type), $e->getBody($e->type));
 //      HzdStorage::insert_import_status($status, $msg);
       // watchdog('problem', $message, array(), 'error');.

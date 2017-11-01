@@ -74,6 +74,8 @@ hzd_release_management.read_release_csv:
     _title: 'Import Releases'
   requirements:
     _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
 #    _permission: 'administer releases'
 #   _csrf_token: 'TRUE'
 

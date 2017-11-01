@@ -21,18 +21,18 @@ class ProblemImportException extends Exception {
 
   protected $mailSubject = [
     'file_not_found' => 'File not found. Error while importing problems',
-    'empty_file' => 'File is empty',
+    'empty_file' => 'No Data Found in imported csv',
     'invalid_data' => 'Invalid data',
-    'new_service_found' => 'New service detected',
+    'new_service_found' => 'New service found while importing problems',
     'file_unable_to_read' => 'Unable to read the source file',
   ];
 
   protected $mailBody = [
-    'file_not_found' => 'File not found. Error while importing problems',
-    'empty_file' => 'File is empty',
-    'invalid_data' => 'Invalid data',
-    'new_service_found' => 'New service detected',
-    'file_unable_to_read' => 'Unable to read the source file',
+    'file_not_found' => 'File %path not found. Error while importing problems',
+    'empty_file' => 'There is an issue while importing of the file %path. No Data Found in imported csv',
+    'invalid_data' => 'Invalid data in file %path at Sdcallid - %sid',
+    'new_service_found' => 'We have found a new service %service which does not match the service in our database.',
+    'file_unable_to_read' => 'There is an issue while importing of the file %path. Error with file either permissions denied or file corrupted.',
   ];
   public $type = NULL;
 
@@ -59,7 +59,7 @@ class ProblemImportException extends Exception {
   }
 
   public function getBody($type) {
-    return isset($this->mailBody[$type]) ? $this->mailBody[$type] : t('Unknown Exception Occured');
+    return isset($this->mailBody[$type]) ? strtr($this->mailBody[$type], $this->options) : t('Unknown Exception Occured');
   }
 
 

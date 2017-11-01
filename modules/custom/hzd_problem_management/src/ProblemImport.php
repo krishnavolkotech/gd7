@@ -56,32 +56,32 @@ class ProblemImport {
 
   public function processImport() {
     if (!file_exists($this->importPath)) {
-      throw new ProblemImportException("file_not_found");
+      throw new ProblemImportException("file_not_found", 0, ['%path' => $this->importPath]);
     }
     setlocale(LC_ALL, 'de_DE.UTF-8');
     $this->fileHandle = fopen($this->importPath, "r");
     if (!$this->fileHandle) {
-      throw new ProblemImportException("file_unable_to_read");
+      throw new ProblemImportException("file_unable_to_read", 0, ['%path' => $this->importPath]);
     }
     $count = 1;
     $data = fgetcsv($this->fileHandle, 5000, ";");
     if (!$data) {
-      throw new ProblemImportException("empty_file");
+      throw new ProblemImportException("empty_file", 0, ['%path' => $this->importPath]);
     }
     $this->failedNodes = [];
     while (($data = fgetcsv($this->fileHandle, 5000, ";")) !== FALSE) {
       foreach ($data as $key => $value) {
         $values[$this->headers[$key]] = $data[$key];
       }
-      if (count($values) == 1) {
-        throw new ProblemImportException("invalid_data");
+      if (count($values) != count($this->headers)) {
+        throw new ProblemImportException("invalid_data", 0, ['%path' => $this->importPath, '%sid' => $values['sno']]);
       }
 //      pr($values);exit;
       if ($this->validateCsv($values)) {
         $this->saveProblemNode($values);
       }
       else {
-        throw new ProblemImportException('new_service_found');
+        
       }
       $count++;
     }
@@ -102,14 +102,14 @@ class ProblemImport {
       ->getStorage('node')
       ->loadByProperties(['title' => $service, 'type' => 'services']);
     if (!$node) {
-      return FALSE;
+        throw new ProblemImportException('new_service_found', 0, ['%service' => $service]);
+//      return FALSE;
     }
     $values['service'] = reset($node)->id();
     return reset($node)->id();
   }
 
-  protected
-  function saveProblemNode($values) {
+  protected function saveProblemNode($values) {
     if (($values['title'] == '') || ($values['status'] == '')) {
       throw new ProblemImportException('invalid_data');
     }
