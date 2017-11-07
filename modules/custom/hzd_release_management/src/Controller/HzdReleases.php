@@ -61,7 +61,7 @@ class HzdReleases extends ControllerBase {
     $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
