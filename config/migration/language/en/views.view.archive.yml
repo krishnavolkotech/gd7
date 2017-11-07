@@ -1,12 +1,6 @@
 display:
   default:
     display_options:
-      filters:
-        status:
-          group_info:
-            group_items:
-              1:
-                value: '1'
       exposed_form:
         options:
           reset_button_label: Zurücksetzen
@@ -15,8 +9,6 @@ display:
           sort_desc_label: Absteigend
       pager:
         options:
-          tags:
-            previous: '‹ Vorherige'
-            next: 'Weiter › '
-            first: '« Anfang'
-            last: 'Ende »'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'

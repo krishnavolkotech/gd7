@@ -276,10 +276,10 @@ display:
           entity_field: type
           plugin_id: bundle
       sorts:
-        field_problem_eroffnet_value:
-          id: field_problem_eroffnet_value
-          table: node__field_problem_eroffnet
-          field: field_problem_eroffnet_value
+        created:
+          id: created
+          table: node_field_data
+          field: created
           relationship: none
           group_type: group
           admin_label: ''
@@ -287,7 +287,10 @@ display:
           exposed: false
           expose:
             label: ''
-          plugin_id: standard
+          granularity: second
+          entity_type: node
+          entity_field: created
+          plugin_id: date
       title: 'Problems front page'
       header: {  }
       footer:

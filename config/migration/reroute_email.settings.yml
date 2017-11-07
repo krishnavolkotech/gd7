@@ -1,9 +1,9 @@
-reroute_email_enable: 0
+reroute_email_enable: 1
 reroute_email_address: denis.roy@hzd.hessen.de
 reroute_email_enable_message: 1
 actions: null
-form_build_id: form-aiL4_wDgS-9fxpUgXimQT-h9ad5iDufOiLZZ7liyvk8
-form_token: LDAlO7TiT3TFILRMIIiPHtTLcfSZjr-48iffsMe-5zQ
+form_build_id: form-FCFnfe5Tme3QigMCHpWGUJR-1Ena5uYjJF4rqQufuJE
+form_token: g0cvXc4qUXT7D211WxrlSSurQ72jI3irbT1U96tLwjM
 form_id: reroute_email_settings
 revision_log: null
 revision: null
