@@ -17,6 +17,8 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\Node;
 use Drupal\user\Entity\User;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Cache\Cache;
 
 // if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));.
@@ -1486,4 +1488,13 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
       }
     }
   }
+}
+
+function hzd_release_management_node_presave(NodeInterface $node) {
+  $tags = [];
+  if ($node->bundle() == 'release') {
+    $tags = ['hzd_release_management:releases'];
+    Cache::invalidateTags($tags);
+  }
+  
 }
