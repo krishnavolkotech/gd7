@@ -183,8 +183,8 @@ class DeployedReleasesOverviewiew extends FormBase {
                   '#theme' => 'table',
                   '#header' => $headers,
                   '#rows' => $depReleases,
+                  '#cache' => ['tags' => ['hzd_release_management:releases']],
                   '#attributes' => [
-//                      'style' => ['width:2500px'],
                       'class' => ['view-deployed-releases']
                   ]
       ];
