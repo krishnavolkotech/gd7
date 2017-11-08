@@ -1480,11 +1480,23 @@ nav#block-optionen ul li a {
     background: url("../images/grey-list-arrow.png") left 5px no-repeat;
 }
 .region-sidebar-first section ul.menu.nav li a {
-    padding-left: 12px !important;
+    padding-left: 12px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a {
     background: none !important;
-    padding-left: 25px !important;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li{
+    padding-left: 15px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li.expanded.active > a{
+    color: #0084bf;
+    background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat !important;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li ul li.expanded.active{
+    padding-bottom: 0px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li ul li.expanded.active a.is-active{
+    margin-bottom: 0px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul {
     padding-bottom: 0 !important;
