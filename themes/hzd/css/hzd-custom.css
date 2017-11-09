@@ -553,6 +553,9 @@ a,
 p {
     /*word-wrap: break-word;*/
 }
+p {
+  clear: both;
+}
 
 table.sticky-header th.views-field-changed a span,
 table.sticky-table th.views-field-created a span {
@@ -1274,4 +1277,8 @@ a.cke_dialog_tab {
 .cke_ltr .cke_dialog_contents_body .cke_dialog_page_contents table {
    margin-top: 0px !important; 
    margin-bottom: 0px !important; /*  in ckeditor table popup table */
+}
+.early-warnings .content .field--label-inline {
+    padding: 0% 0% 1% 0%;
+    margin-bottom: 0px;
 }
