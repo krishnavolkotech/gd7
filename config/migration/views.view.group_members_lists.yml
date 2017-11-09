@@ -78,11 +78,11 @@ display:
           description: ''
           columns:
             uid: uid
-            group_admin_check: group_admin_check
             label: label
             group_member_name: group_member_name
-            firstname: firstname
             lastname: lastname
+            firstname: firstname
+            group_roles: group_roles
             phone: phone
             position: position
             abbr: abbr
@@ -91,13 +91,6 @@ display:
             uid:
               sortable: false
               default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            group_admin_check:
-              sortable: false
-              default_sort_order: desc
               align: ''
               separator: ''
               empty_column: false
@@ -116,6 +109,13 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
+            lastname:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             firstname:
               sortable: true
               default_sort_order: asc
@@ -123,9 +123,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            lastname:
-              sortable: true
-              default_sort_order: asc
+            group_roles:
               align: ''
               separator: ''
               empty_column: false
@@ -1021,7 +1019,8 @@ display:
     display_title: Page
     position: 2
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: group/%group/address
       use_more: false
       defaults:
@@ -1154,6 +1153,18 @@ display:
           content: '@total Mitglieder insgesamt'
           plugin_id: result
       sorts:
+        group_roles_target_id:
+          id: group_roles_target_id
+          table: group_content__group_roles
+          field: group_roles_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: true
+          expose:
+            label: Roles
+          plugin_id: standard
         lastname:
           id: lastname
           table: cust_profile
@@ -1162,7 +1173,7 @@ display:
           group_type: group
           admin_label: ''
           order: ASC
-          exposed: true
+          exposed: false
           expose:
             label: Lastname
           plugin_id: standard
@@ -1730,6 +1741,8 @@ display:
           expose_sort_order: true
           sort_asc_label: Asc
           sort_desc_label: Desc
+          input_required: false
+          text_input_required: 'Wählen Sie eine beliebige Filter und klicken Sie auf Anwenden, um Ergebnisse zu sehen'
           bef:
             general:
               allow_secondary: false
@@ -1746,18 +1759,12 @@ display:
                 reset: false
                 reset_label: ''
                 is_secondary: false
-            combine:
-              bef_format: default
-              more_options:
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
             abbr:
               bef_format: default
               more_options:
                 is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
+                placeholder_text: ''
+          text_input_required_format: full_html
       empty:
         area_text_custom:
           id: area_text_custom
