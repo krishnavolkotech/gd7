@@ -100,7 +100,7 @@ class ProblemImport {
     }
     $node = \Drupal::entityTypeManager()
       ->getStorage('node')
-      ->loadByProperties(['title' => $service, 'type' => 'services']);
+      ->loadByProperties(['field_problem_name' => $service, 'type' => 'services']);
     if (!$node) {
         throw new ProblemImportException('new_service_found', 0, ['%service' => $service]);
 //      return FALSE;
