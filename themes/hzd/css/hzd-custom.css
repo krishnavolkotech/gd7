@@ -1286,3 +1286,9 @@ a.cke_dialog_tab {
   color: #ff3333;
   text-decoration: underline;
 }
+.im-attachment-upload-filter .btn-default {
+    float: none;
+}
+.im-attachment-upload-filter .btn-primary {
+    padding: 6px 12px !important;
+}
