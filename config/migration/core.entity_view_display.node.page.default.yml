@@ -13,7 +13,7 @@ dependencies:
   module:
     - comment
     - entity_print
-    - file
+    - hzd_customizations
     - text
     - user
 third_party_settings:
@@ -48,7 +48,7 @@ content:
     third_party_settings: {  }
     region: content
   field_page_files:
-    type: file_table
+    type: file_table_alter
     weight: 4
     label: above
     settings: {  }
@@ -56,9 +56,9 @@ content:
     region: content
   links:
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   downtime_description: true
   entity_print_view_epub: true
