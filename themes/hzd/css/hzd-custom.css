@@ -1212,10 +1212,10 @@ table.view-deployed-releases{
   line-height:150%;
   border-radius:0 !important;
 }*/
-.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
+/*.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
   display:none;
-}
+}*/
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
   margin-left:7px;

@@ -204,6 +204,13 @@ function hzd_preprocess_node(&$variables) {
       $fileentity->node_view_mode = $viewMode;
     }
   }
+  if ($variables['node']->getType() == 'page' && $variables['node']->hasField('field_page_files')) {
+    foreach ($variables['node']->get('field_page_files')
+               ->referencedEntities() as $key => $value) {
+      $fileentity = \Drupal\file\Entity\File::load($value->id());
+      $fileentity->node_view_mode = $viewMode;
+    }
+  }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
     $reasons = array(

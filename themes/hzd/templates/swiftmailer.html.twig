@@ -62,8 +62,7 @@ table tr td {
   padding-left: 0 !important;
   width: 100%;
 }
-.field--type-file table tbody tr td .hzd-file-created,
-.field--type-file table tbody tr td .file-size{
+.field--type-file table tbody tr td .hzd-file-created{
   display:none;
 }
 .field--type-file table tbody tr td .file-link a{
@@ -328,7 +327,20 @@ h1.page-header {
     border-top: 1px solid #dddddd;
     margin: 10px 0 0 0 !important;
 }
-
+.file .file-icon, .file .file-link, .file .file-size {
+    display: table-cell;
+    vertical-align: middle;
+}
+.file {
+    width: 100%;
+    display: table;
+}
+.file span {
+    color: #337ab7;
+}
+.file .file-size {
+ text-align: right;
+}
 
 </style>
 
