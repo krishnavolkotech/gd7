@@ -10,7 +10,7 @@ dependencies:
     - node.type.planning_files
   module:
     - entity_print
-    - file
+    - hzd_customizations
     - options
     - user
 third_party_settings:
@@ -36,7 +36,7 @@ content:
   field_upload_planning_file:
     label: above
     weight: 1
-    type: file_table
+    type: file_table_alter
     settings: {  }
     third_party_settings: {  }
     region: content

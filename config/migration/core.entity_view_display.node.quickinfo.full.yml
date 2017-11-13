@@ -31,7 +31,7 @@ dependencies:
   module:
     - comment
     - field_group
-    - file
+    - hzd_customizations
     - options
     - text
     - user
@@ -214,13 +214,13 @@ content:
     region: content
   links:
     weight: 17
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   upload:
     label: above
     settings: {  }
-    type: file_table
+    type: file_table_alter
     weight: 14
     third_party_settings: {  }
     region: content
