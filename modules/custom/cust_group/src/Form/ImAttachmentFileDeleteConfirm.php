@@ -33,7 +33,8 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
      * {@inheritdoc}
      */
     public function getCancelUrl() {
-        return new Url('entity.node.canonical', ['node' => 826]);
+        $exposedFilterData = \Drupal::request()->query->all();
+        return new Url('entity.node.canonical', ['node' => 826],['query' => $exposedFilterData]);
     }
 
     /**
