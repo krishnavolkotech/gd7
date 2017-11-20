@@ -154,10 +154,10 @@ class ProblemImport {
       $existing_node_vals['service'] = $node->field_services->target_id;
       $existing_node_vals['function'] = $node->field_function->value;
       $existing_node_vals['release'] = $node->field_release->value;
-      $existing_node_vals['title'] = $node->getTitle();
-      $existing_node_vals['body'] = $node->body->value;
+      $existing_node_vals['title'] = Html::decodeEntities($node->getTitle());
+      $existing_node_vals['body'] = Html::decodeEntities($node->body->value);
       $existing_node_vals['diagnose'] = $node->field_diagnose->value;
-      $existing_node_vals['solution'] = $node->field_solution->value;
+      $existing_node_vals['solution'] = Html::decodeEntities($node->field_solution->value);
       $existing_node_vals['workaround'] = $node->field_work_around->value;
       $existing_node_vals['version'] = $node->field_version->value;
       $existing_node_vals['priority'] = $node->field_priority->value;
@@ -170,13 +170,20 @@ class ProblemImport {
       $existing_node_vals['closed'] = $node->field_closed->value;
       $existing_node_vals['ticketstore_link'] = $node->field_ticketstore_link->value;
 
+      $diff = TRUE;
+      foreach ($values as $key => $val) {
+          if($values[$key] != $existing_node_vals[$key]) {
+              $diff = FALSE;
+              break;
+          }
+      }
       /**
        * $existing_node_vals['problem_eroffnet'] = $node->field_problem_eroffnet->value;
        * // $existing_node_vals['problem_status'] = $node->field_problem_status->value;
        * $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
        * $existing_node_vals['ticketstore_link'] = $node->field_ticketstore_link->value;
        */
-      if (count(array_diff($existing_node_vals, $values)) == 0) {
+      if ($diff) {
         $this->ignored[] = $node->get('field_s_no')->value;
         // Nothing to do when there are no changes for the node. so skipping the node.
         return TRUE;
@@ -198,7 +205,7 @@ class ProblemImport {
     $problem_node->set('status', 1);
     $problem_node->set('body', array(
       'summary' => '',
-      'value' => $values['body'],
+      'value' => Html::escape($values['body']),
       'format' => 'basic_html',
     ));
     $problem_node->set('comment', array(
@@ -231,7 +238,7 @@ class ProblemImport {
     $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_sdcallid', $values['sdcallid']);.
     $problem_node->set('field_solution', array(
-      'value' => $values['solution'],
+      'value' => Html::escape($values['solution']),
       'format' => 'basic_html',
     ));
     // $problem_node->set('field_s_no', $values['sno']);
