@@ -22,6 +22,11 @@ class ReadexcelController extends ControllerBase {
   /**
    * Callback for the read excel file
    * Use the function for the cron run.
+   * Reads csv file and saves as nodes
+   * Check the file separator,presently we are usng ';' as separator
+   * validates the csv file format, and check for the existance of service in the database in the function "validate_csv"
+   * function saving_problem_node saves the data as problems node , only if the validation returns true
+   * status of the import is stored in the "insert_import_status"
    */
   public function read_problem_csv() {
 
@@ -29,66 +34,25 @@ class ReadexcelController extends ControllerBase {
         ->get('import_path');
     $importer = new ProblemImport($path);
     $status = t('Success');
+    $mail = \Drupal::config('problem_management.settings')->get('import_mail');
     try {
-      $importer->processImport();
+      $import = $importer->processImport();
+      $importstat = t('OK');
+      HzdStorage::insert_import_status($importstat, 'File imported sucessfully.');
+      if($import) {
+        $subject = 'New service found while importing problems';
+        $import = array_unique($import);
+        $body = t(" We have found a new service " . implode(",", $import) . " which does not match the service in our database.");
+        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
+        $status = t('Import success but new services found.');
+      }
     } catch (ProblemImportException $e) {
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+      $importstat = t('Error');
       HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $e->getSubject($e->type), $e->getBody($e->type));
-//      HzdStorage::insert_import_status($status, $msg);
-      // watchdog('problem', $message, array(), 'error');.
+      HzdStorage::insert_import_status($importstat, $e->getMessage());
       \Drupal::logger('problem')->error($e->getSubject($e->type));
       $status = $e->getMessage();
-      // exit;
-
-
-      // echo $e->getMessageRaw();
-      // exit;
-    } catch (\Exception $exception) {
-
     }
-//pr($importer->ignored);exit;
-
-    /*try {
-      if (file_exists($path)) {
-        $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
-      }
-      else {
-        throw new CustomException('No such File exists');
-      }
-    }*/
-
-    /*if ($path) {
-      if (file_exists($path)) {
-        $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
-      }
-      else {
-        $mail = \Drupal::config('problem_management.settings')
-          ->get('import_mail');
-        $subject = $this->t('Error while import');
-        $body = $this->t("There is an issue while importing of the file " . $path . ". The  import file not found or it could have been corrupted.");
-        HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-        $status = $this->t('Error');
-        $msg = $this->t('Import File Not Found');
-        HzdStorage::insert_import_status($status, $msg);
-        $output = $this->t('Import File Not Found');
-      }
-    }
-    else {
-      $output = $this->t('File Path Not Specified');
-      $mail = \Drupal::config('problem_management.settings')
-        ->get('import_mail');
-      $subject = 'Error while import';
-      $body = $this->t("There is an issue while importing of the problems from file " . $path . "Check whether the format of problems is in proper CSV format or not.");
-
-      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-
-      $url = Url::fromUserInput('/admin/settings/problem');
-      // $link = Link::fromTextAndUrl($text, $url);.
-      $text = 'Set the import path at';
-      $path = Link::fromTextAndUrl($text, $url);
-
-      $output .= t('Set the import path at') . $path;
-    }*/
     $response = array(
       '#markup' => $status,
     );

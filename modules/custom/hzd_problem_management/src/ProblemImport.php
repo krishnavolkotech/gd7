@@ -69,6 +69,7 @@ class ProblemImport {
       throw new ProblemImportException("empty_file", 0, ['%path' => $this->importPath]);
     }
     $this->failedNodes = [];
+    $newservices = [];
     while (($data = fgetcsv($this->fileHandle, 5000, ";")) !== FALSE) {
       foreach ($data as $key => $value) {
         $values[$this->headers[$key]] = $data[$key];
@@ -81,16 +82,20 @@ class ProblemImport {
         $this->saveProblemNode($values);
       }
       else {
-        
+        $newservices[] = $values['service'];
       }
       $count++;
     }
 
-    if (count($this->failedNodes) === 0 && $count > 1) {
-    }
-    else {
-    }
-    return TRUE;
+//    if (count($this->failedNodes) === 0 && $count > 1) {
+//    }
+//    else {
+//    }
+    if(count($newservices) > 0) {
+        return $newservices;
+    } else {
+        return FALSE;
+    }  
   }
 
   protected function validateCsv(&$values) {
@@ -102,8 +107,8 @@ class ProblemImport {
       ->getStorage('node')
       ->loadByProperties(['field_problem_name' => $service, 'type' => 'services']);
     if (!$node) {
-        throw new ProblemImportException('new_service_found', 0, ['%service' => $service]);
-//      return FALSE;
+//        throw new ProblemImportException('new_service_found', 0, ['%service' => $service]);
+      return FALSE;
     }
     $values['service'] = reset($node)->id();
     return reset($node)->id();
