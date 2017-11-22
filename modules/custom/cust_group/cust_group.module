@@ -210,22 +210,24 @@ function cust_group_group_update($entity) {
 
 function cust_group_group_content_update($entity) {
     $group = $entity->getGroup();
-    $oldroles = $entity->original->get('group_roles')->getValue();
-    $oroles = [];
-    if(isset($oldroles) && !empty($oldroles)) {
-        foreach ($oldroles as $key => $val) {
-            $oroles[] = $val['target_id'];
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $oldroles = $entity->original->get('group_roles')->getValue();
+        $oroles = [];
+        if(isset($oldroles) && !empty($oldroles)) {
+            foreach ($oldroles as $key => $val) {
+                $oroles[] = $val['target_id'];
+            }
         }
-    }
-    $newroles = $entity->get('group_roles')->getValue();
-    $nroles = [];
-    if(isset($newroles) && !empty($newroles)) {
-        foreach ($newroles as $key => $val) {
-            $nroles[] = $val['target_id'];
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
         }
-    }
-    if(in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
-        sendGroupAdminRoleMail($group, $entity->getEntity());
+        if(in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
     }
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
     
@@ -264,15 +266,17 @@ function cust_group_group_content_delete() {
 
 function cust_group_group_content_insert($entity) {
     $group = $entity->getGroup();
-    $newroles = $entity->get('group_roles')->getValue();
-    $nroles = [];
-    if(isset($newroles) && !empty($newroles)) {
-        foreach ($newroles as $key => $val) {
-            $nroles[] = $val['target_id'];
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
         }
-    }
-    if(in_array($group->bundle() . '-admin', $nroles)) {
-        sendGroupAdminRoleMail($group, $entity->getEntity());
+        if(in_array($group->bundle() . '-admin', $nroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
     }
   $node = $entity->getEntity();
   if ($node instanceof \Drupal\node\Entity\Node) {
@@ -307,6 +311,7 @@ function sendGroupAdminRoleMail($group, $user){
       '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
         ->toString()
     ]);
+    kint($params);
     $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
 }
 
