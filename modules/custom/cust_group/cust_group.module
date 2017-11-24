@@ -311,7 +311,6 @@ function sendGroupAdminRoleMail($group, $user){
       '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
         ->toString()
     ]);
-    kint($params);
     $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
 }
 
