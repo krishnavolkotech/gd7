@@ -69,8 +69,8 @@ class BulkMailGroupMembersForm extends FormBase {
       '#type' => 'text_format',
       '#title' => $this->t('Body'),
     ];
-    
-    $form['submit'] = [
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => t('Submit'),
     ];
