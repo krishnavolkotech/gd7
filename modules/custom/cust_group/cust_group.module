@@ -295,7 +295,7 @@ function cust_group_group_content_insert($entity) {
 
 //Sending mail to user to know Group Admin role
 function sendGroupAdminRoleMail($group, $user){
-    $subject = t('Sie sind jetzt Administrator der Gruppe "@groupLabel"', ['@groupLabel' => $group->label()]);
+    $subject = t('[BpK] Sie sind jetzt Administrator der Gruppe "@groupLabel"', ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
     $key = 'immediate_notifications';
@@ -303,7 +303,7 @@ function sendGroupAdminRoleMail($group, $user){
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
     $send = TRUE;
 
-    $params['message'] = t('Hello @user,<br><br>Sie sind jetzt Administrator der '
+    $params['message'] = t('Hallo @user,<br><br>Sie sind jetzt Administrator der '
             . 'Gruppe "@groupname" und können unter dem folgenden Link '
             . 'die Gruppe besuchen und verwalten:<br><br> @groupLink<br><br>-- Team Betriebsportal KONSENS', [
       '@user' => $user->getDisplayName(),
@@ -311,7 +311,6 @@ function sendGroupAdminRoleMail($group, $user){
       '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
         ->toString()
     ]);
-    kint($params);
     $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
 }
 

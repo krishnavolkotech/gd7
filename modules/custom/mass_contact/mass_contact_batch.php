@@ -17,10 +17,7 @@ class MassMail {
     $send = true;
     $key = 'mass_contact_immediate';
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-    if ($result['result'] != true) {
-      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-    }
-    else {
+    if ($result['result']) {
       drupal_set_message(t('Your message has been sent.'));
     }
   }

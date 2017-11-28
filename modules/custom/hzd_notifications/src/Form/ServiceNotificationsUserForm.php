@@ -101,11 +101,17 @@ class ServiceNotificationsUserForm extends FormBase {
     $default_interval = hzd_get_default_interval($uid, $rel_type);
     //$types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
     //pr($content_types);exit;
-    // get all services
-    $services = hzd_get_all_services($rel_type);
-    //get default interval of each services and type
-    $user_notifications = HzdNotificationsHelper::hzd_get_user_notifications($uid, $rel_type, $services, $default_interval);
+    $services = '';
+    $user_notifications = '';
     foreach($content_types as $content_key => $content) {
+      // get all services
+      if($content_key == 2) {
+        $services = hzd_get_all_services();
+      } else {
+        $services = hzd_get_all_services($rel_type);
+      }
+      //get default interval of each services and type
+      $user_notifications = HzdNotificationsHelper::hzd_get_user_notifications($uid, $rel_type, $services, $default_interval);
       $int_val = $subscriptions[$content_key]['subscriptions_interval_' . $content_key];
       HzdNotificationsHelper::insert_default_user_intervel($types[$content_key], $int_val, $uid, $rel_type);
       if(isset($default_interval[$types[$content_key]]) && $default_interval[$types[$content_key]] != $int_val) {
