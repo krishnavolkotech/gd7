@@ -745,7 +745,20 @@ display:
           entity_field: created
           plugin_id: date
       title: RZ-Schnellinfos
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: '<p><a href="/release-management/betriebsüberführung/rz-schnellinfo">Für ältere Ausgaben (03/2012-03/2014) bitte hier klicken</a></p>'
+            format: full_html
+          plugin_id: text
       footer: {  }
       empty:
         area:
