@@ -33,16 +33,24 @@ class ImAttachmentsUploadBlock extends BlockBase {
 
         $exposedFilterData = \Drupal::request()->query->all();
         $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? $exposedFilterData['state'] : '';
+        $string = isset($exposedFilterData['string']) && $exposedFilterData['string'] != '' ? $exposedFilterData['string'] : '';
 
         $query = \Drupal::database()->select('node_field_data', 'n');
         $query->join('node__field_im_upload_page_files', 'imuf', 'n.nid = imuf.entity_id');
         $query->join('node__field_state', 'fs', 'fs.entity_id = imuf.entity_id');
         $query->leftJoin('im_attachments_data', 'imd', 'imd.fid = imuf.field_im_upload_page_files_target_id');
+        $query->leftJoin('file_managed', 'fm', 'imd.fid = fm.fid');
         $query->condition('imuf.bundle', 'im_upload_page', '=');
         if (!empty($statename)) {
             $query->condition('fs.field_state_value', $statename, '=');
         }
-      
+        if (!empty($string)) {
+            $or = db_or()->condition('fm.filename',"%" . $string . "%", 'LIKE')
+                         ->condition('imd.description__value',"%" . $string . "%", 'LIKE')
+                         ->condition('imd.ticket_id',"%" . $string . "%", 'LIKE');
+            $query->condition($or);
+        }
+
         $count_query = clone $query;
         $query->orderBy('imd.created','desc');
         $count_query->addExpression('Count(n.nid)');
@@ -68,6 +76,26 @@ class ImAttachmentsUploadBlock extends BlockBase {
 //            return $result;
 //        }
         $rows = [];
+        $currentUser = \Drupal::currentUser();
+        $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+        $incidentManagementGroupMember = $incidentManagement->getMember($currentUser);
+        if (in_array('site_administrator', $currentUser->getRoles()) || $currentUser->id() == 1) {
+          $showDelete = TRUE;
+        } else if ($incidentManagementGroupMember && $incidentManagementGroupMember->getGroupContent()
+                    ->get('request_status')->value == 1) {
+            $roles = $incidentManagementGroupMember->getRoles();
+            if (in_array($incidentManagement->getGroupType()->id() . '-admin', array_keys($roles))) {
+              $showDelete = TRUE;
+            } else {
+              $showDelete = FALSE;
+            }
+               
+        }
+        $userstateid = \Drupal::database()->select('cust_profile', 'cp')
+            ->fields('cp', array('state_id'))
+            ->condition('cp.uid', $currentUser->id())
+            ->execute()->fetchField();
+
         foreach ($files as $file) {
             $attachment = \Drupal::entityTypeManager()
                     ->getStorage('cust_group_imattachments_data')
@@ -93,9 +121,13 @@ class ImAttachmentsUploadBlock extends BlockBase {
             $deletelink = \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', [
                         'fid' => $file->id(),
                         'nid' => $nodeData[$file->id()]->id()
-            ],['attributes'=> ['class' => 'btn btn-danger']]);
-            $delete = \Drupal::service('link_generator')
-                    ->generate(t('Delete'), $deletelink);
+            ],['attributes'=> ['class' => 'btn btn-danger'], 'query' => $exposedFilterData]);
+            if($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {
+                $delete = \Drupal::service('link_generator')
+                        ->generate(t('Delete'), $deletelink);
+            } else {
+                $delete = '--';
+            }
 
             $row = array(
                 array('data' => $state, 'class' => 'state-cell'),

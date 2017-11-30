@@ -209,8 +209,28 @@ function cust_group_group_update($entity) {
 }
 
 function cust_group_group_content_update($entity) {
-  if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
     $group = $entity->getGroup();
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $oldroles = $entity->original->get('group_roles')->getValue();
+        $oroles = [];
+        if(isset($oldroles) && !empty($oldroles)) {
+            foreach ($oldroles as $key => $val) {
+                $oroles[] = $val['target_id'];
+            }
+        }
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
+        }
+        if(in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
+    }
+  if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
+    
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
@@ -228,7 +248,7 @@ function cust_group_group_content_update($entity) {
     if ($result['result']) {
       drupal_set_message(t('Mail sent.'), 'status');
     }
-  }
+  }        
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
@@ -245,6 +265,19 @@ function cust_group_group_content_delete() {
 }
 
 function cust_group_group_content_insert($entity) {
+    $group = $entity->getGroup();
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
+        }
+        if(in_array($group->bundle() . '-admin', $nroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
+    }
   $node = $entity->getEntity();
   if ($node instanceof \Drupal\node\Entity\Node) {
     sendGroupUpdateMail($node, 1);
@@ -258,6 +291,27 @@ function cust_group_group_content_insert($entity) {
       'config:block.block.hzd_local_tasks',
       'config:system.menu.primary-links'
     ]);
+}
+
+//Sending mail to user to know Group Admin role
+function sendGroupAdminRoleMail($group, $user){
+    $subject = t('[BpK] Sie sind jetzt Administrator der Gruppe "@groupLabel"', ['@groupLabel' => $group->label()]);
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'cust_group';
+    $key = 'immediate_notifications';
+    $params['subject'] = $subject;
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $send = TRUE;
+
+    $params['message'] = t('Hallo @user,<br><br>Sie sind jetzt Administrator der '
+            . 'Gruppe "@groupname" und können unter dem folgenden Link '
+            . 'die Gruppe besuchen und verwalten:<br><br> @groupLink<br><br>-- Team Betriebsportal KONSENS', [
+      '@user' => $user->getDisplayName(),
+      '@groupname' => $group->label(),
+      '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
+        ->toString()
+    ]);
+    $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
 }
 
 function cust_group_taxonomy_term_insert($term) {

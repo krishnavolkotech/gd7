@@ -1378,7 +1378,7 @@ display:
           empty: false
           tokenize: false
           content:
-            value: "<style>\n.user-admin-people-count { color:#ff0000; }\n.user-group-list.active a { color: #333; text-decoration: underline; cursor: default; }\n</style>"
+            value: "<style>\n.user-admin-people-count { color:#ff0000; }\n.user-group-list.active a { color: #ff3333; text-decoration: underline; cursor: default; }\n</style>"
             format: full_html
           plugin_id: text
     cache_metadata:

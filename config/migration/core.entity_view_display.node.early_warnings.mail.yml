@@ -54,14 +54,14 @@ content:
     third_party_settings: {  }
     region: content
   field_earlywarning_release:
-    label: inline
+    label: hidden
     weight: 1
     type: list_default
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release_service:
-    label: inline
+    label: hidden
     weight: 0
     type: list_default
     settings: {  }

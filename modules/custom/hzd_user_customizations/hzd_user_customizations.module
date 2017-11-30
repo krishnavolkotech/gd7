@@ -111,15 +111,15 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
         );
         
         if ($form_id == 'user_register_form') {
-            $gids = \Drupal::entityQuery('group')->condition('type', ['open', 'moderate'], 'IN')->condition('status',1)->sort('label')->execute();
+            $gids = \Drupal::entityQuery('group')->condition('type', ['open'], 'IN')->condition('status',1)->sort('label')->execute();
             //sort($gids);
             $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
             $groups = [];
             foreach ($groupsList as $group) {
                 $groupName = $group->label();
-                if ($group->bundle() == 'moderate') {
-                    $groupName .= " <span style='color:red'>(Freischaltung durch Admin erforderlich)</span>";
-                }
+//                if ($group->bundle() == 'moderate') {
+//                    $groupName .= " <span style='color:red'>(Freischaltung durch Admin erforderlich)</span>";
+//                }
                 $groups[$group->id()] = t($groupName);
             }
             //pr($groups);exit;

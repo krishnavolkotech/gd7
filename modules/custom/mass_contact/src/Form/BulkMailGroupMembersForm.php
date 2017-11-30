@@ -69,8 +69,8 @@ class BulkMailGroupMembersForm extends FormBase {
       '#type' => 'text_format',
       '#title' => $this->t('Body'),
     ];
-    
-    $form['submit'] = [
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => t('Submit'),
     ];
@@ -96,13 +96,12 @@ class BulkMailGroupMembersForm extends FormBase {
       $groupMembers = $group->getMembers();
       foreach ($groupMembers as $groupMember){
         $user = $groupMember->getGroupContent();
-        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 
-             && !in_array($group->getGroupType()->id().'-admin', array_keys($groupMember->getRoles()))
-             && !hzd_user_inactive_status_check($user->id())){
+        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($groupMember->getUser()->id()) == FALSE){
           $mailToGroupMember[] = $user->getEntity()->getEmail();
 //          break;
         }
       }
+
     /*$group_members_query = db_query("SELECT distinct(gcfd_mem.uid),ufd.mail FROM group_content_field_data gcfd_mem,users_field_data ufd
 WHERE ufd.uid = gcfd_mem.uid AND ufd.uid <> 0 AND gcfd_mem.request_status = 1 AND gcfd_mem.gid = $gid")->fetchAll();
   }

@@ -29,7 +29,7 @@ dependencies:
     - node.type.quickinfo
   module:
     - field_group
-    - file
+    - hzd_customizations
     - options
     - text
     - user
@@ -221,7 +221,7 @@ content:
   upload:
     label: above
     settings: {  }
-    type: file_table
+    type: file_table_alter
     weight: 16
     third_party_settings: {  }
     region: content
