@@ -14,6 +14,7 @@ dependencies:
     - field.field.node.problem.field_priority
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
+    - field.field.node.problem.field_problem_symptoms
     - field.field.node.problem.field_processing
     - field.field.node.problem.field_release
     - field.field.node.problem.field_s_no
@@ -126,6 +127,14 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
+  field_problem_symptoms:
+    weight: 33
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
     region: content
   field_processing:
     weight: 11
