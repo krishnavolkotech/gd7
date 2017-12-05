@@ -23,6 +23,7 @@ class ProblemImport {
     'status',
     'service',
     'function',
+    'symptoms',
     'release',
     'title',
     'body',
@@ -77,7 +78,6 @@ class ProblemImport {
       if (count($values) != count($this->headers)) {
         throw new ProblemImportException("invalid_data", 0, ['%path' => $this->importPath, '%sid' => $values['sno']]);
       }
-//      pr($values);exit;
       if ($this->validateCsv($values)) {
         $this->saveProblemNode($values);
       }
@@ -160,6 +160,7 @@ class ProblemImport {
       $existing_node_vals['status'] = $node->field_problem_status->value;
       $existing_node_vals['service'] = $node->field_services->target_id;
       $existing_node_vals['function'] = $node->field_function->value;
+      $existing_node_vals['symptoms'] = $node->field_problem_symptoms->value;
       $existing_node_vals['release'] = $node->field_release->value;
       $existing_node_vals['title'] = Html::decodeEntities($node->getTitle());
       $existing_node_vals['body'] = Html::decodeEntities($node->body->value);
@@ -183,12 +184,6 @@ class ProblemImport {
               break;
           }
       }
-      /**
-       * $existing_node_vals['problem_eroffnet'] = $node->field_problem_eroffnet->value;
-       * // $existing_node_vals['problem_status'] = $node->field_problem_status->value;
-       * $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
-       * $existing_node_vals['ticketstore_link'] = $node->field_ticketstore_link->value;
-       */
       if ($diff) {
         $this->ignored[] = $node->get('field_s_no')->value;
         // Nothing to do when there are no changes for the node. so skipping the node.
@@ -196,7 +191,6 @@ class ProblemImport {
       }
       $problem_node = $node;
       $nodeExists = TRUE;
-//      pr($problem_node);
     }
     else {
       $problem_node = Node::create([
@@ -236,6 +230,7 @@ class ProblemImport {
     $problem_node->set('field_diagnose', $values['diagnose']);
     $problem_node->set('field_eroffnet', $values['created']);
     $problem_node->set('field_function', $values['function']);
+    $problem_node->set('field_problem_symptoms', $values['symptoms']);
     $problem_node->set('field_priority', $values['priority']);
     $problem_node->set('field_problem_eroffnet', $eroffnet);
     $problem_node->set('field_problem_status', $values['status']);
