@@ -19,7 +19,7 @@ quickinfo:
   mail_view: 1
 planning_files:
   subject_insert: '[Release Management] Neue Planungsdatei: [node:title]'
-  subject_update: '[Release Management] Aktualisierte Planungsdatei: [node:title]'
+  subject_update: '[Release Management] Neue Planungsdatei: [node:title]'
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"

@@ -9,7 +9,7 @@ id: node.problem.field_ticketstore_link
 field_name: field_ticketstore_link
 entity_type: node
 bundle: problem
-label: 'Ticketstore link'
+label: 'Ticketstore Link'
 description: ''
 required: false
 translatable: true

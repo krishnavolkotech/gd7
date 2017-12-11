@@ -36,6 +36,7 @@ permissions:
   - 'access user profiles'
   - 'add content to books'
   - 'admin own group forums'
+  - 'admin queue_ui'
   - 'admin settings'
   - 'administer Persistent Login'
   - 'administer account settings'
