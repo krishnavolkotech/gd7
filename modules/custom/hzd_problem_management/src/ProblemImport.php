@@ -33,11 +33,11 @@ class ProblemImport {
     'priority',
     'taskforce',
     'comment',
-    'processing',
-    'attachment',
-    'eroffnet',
+    'last_update',
+    'creator',
+    'created',
     'ticketstore_link',
-    'closed',
+    'ticketstore_count',
     'timezone',
   ];
 
@@ -130,7 +130,7 @@ class ProblemImport {
     $nodeExists = FALSE;
 
     $replace = array('/' => '.', '-' => '.');
-    $formatted_date = strtr($values['eroffnet'], $replace);
+    $formatted_date = strtr($values['created'], $replace);
 
     $date_time = explode(" ", $formatted_date);
 
@@ -153,6 +153,8 @@ class ProblemImport {
     if ($node) {
 //      $created = $node->getCreatedTime();
       unset($values['sno']);
+      unset($values['timezone']);
+
       $existing_node_vals = array();
 
       $existing_node_vals['status'] = $node->field_problem_status->value;
@@ -168,12 +170,11 @@ class ProblemImport {
       $existing_node_vals['priority'] = $node->field_priority->value;
       $existing_node_vals['taskforce'] = $node->field_task_force->value;
       $existing_node_vals['comment'] = $node->field_comments->value;
-      $existing_node_vals['processing'] = $node->field_processing->value;
-      $existing_node_vals['attachment'] = $node->field_attachment->value;
-      $existing_node_vals['eroffnet'] = $node->field_eroffnet->value;
-      $existing_node_vals['timezone'] = 'Europe/Berlin';
-      $existing_node_vals['closed'] = $node->field_closed->value;
+      $existing_node_vals['last_update'] = $node->field_processing->value;
+      $existing_node_vals['creator'] = $node->field_attachment->value;
+      $existing_node_vals['created'] = $node->field_eroffnet->value;
       $existing_node_vals['ticketstore_link'] = $node->field_ticketstore_link->value;
+      $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
 
       $diff = TRUE;
       foreach ($values as $key => $val) {
@@ -222,8 +223,7 @@ class ProblemImport {
         'comment_count' => 0,
       )
     );
-    $problem_node->set('field_attachment', Html::escape($values['attachment']));
-    $problem_node->set('field_closed', $values['closed']);
+    $problem_node->set('field_attachment', Html::escape($values['creator']));
     $problem_node->set('field_comments', array(
         'value' => $values['comment'],
         'format' => 'basic_html',
@@ -234,12 +234,12 @@ class ProblemImport {
       )
     );
     $problem_node->set('field_diagnose', $values['diagnose']);
-    $problem_node->set('field_eroffnet', $values['eroffnet']);
+    $problem_node->set('field_eroffnet', $values['created']);
     $problem_node->set('field_function', $values['function']);
     $problem_node->set('field_priority', $values['priority']);
     $problem_node->set('field_problem_eroffnet', $eroffnet);
     $problem_node->set('field_problem_status', $values['status']);
-    $problem_node->set('field_processing', $values['processing']);
+    $problem_node->set('field_processing', $values['last_update']);
     $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_sdcallid', $values['sdcallid']);.
     $problem_node->set('field_solution', array(
@@ -256,6 +256,7 @@ class ProblemImport {
       'value' => $values['ticketstore_link'],
       'format' => 'basic_html',
     ));
+    $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_timezone', $values['timezone']);.
     $problem_node->set('field_version', $values['version']);
     $problem_node->set('field_work_around', array(
