@@ -809,7 +809,7 @@ function downtimes_node_insert($node) {
     $record['startdate_planned'] = get_unix_timestamp($data['startdate_planned']);
     $record['resolved'] = 0;
     $record['status'] = !empty($data['maintenance_type']) ? $data['maintenance_type'] : NULL;
-    $record['email_reminder_sent'] = 1;
+    $record['email_reminder_sent'] = 0;
     $record['cancelled'] = 0;
     $record['reason'] = !empty($data['reason_for_noncompliance']) ? $data['reason_for_noncompliance'] : 0;
     $record['scheduled_p'] = $data['downtime_type'];
@@ -853,7 +853,7 @@ function downtimes_node_update($node) {
     }
     $record['resolved'] = 0;
     $record['status'] = !empty($data['maintenance_type']) ? $data['maintenance_type'] : NULL;
-    $record['email_reminder_sent'] = 1;
+//    $record['email_reminder_sent'] = 1;
     $record['cancelled'] = 0;
     $record['reason'] = !empty($data['reason_for_noncompliance']) ? $data['reason_for_noncompliance'] : 0;
     $record['scheduled_p'] = $data['downtime_type'];
@@ -1628,4 +1628,89 @@ function maintenance_reasons($rid = NULL){
     return $data[$rid];
   }
   return $data;
+}
+
+function downtimes_cron() {
+    
+    $token_service = \Drupal::token();
+    
+    // resolve maintenance after X days of inactivity after the Expected End
+    $number_of_days = \Drupal::config('downtimes.settings')->get('number_of_days');
+    $get_maintenance_query = \Drupal::database()->select('downtimes', 'd');
+    $get_maintenance_query->addJoin('INNER', 'node_field_data', 'nfd', 'nfd.nid = d.downtime_id');
+    $get_maintenance_query->fields('d', ['downtime_id', 'enddate_planned']);
+    $get_maintenance_query->condition('d.scheduled_p', 1);
+    $get_maintenance_query->condition('d.resolved', 0);
+    $get_maintenance_query->condition('d.cancelled', 0);
+    $get_maintenance_data = $get_maintenance_query->execute()->fetchAll();
+    foreach ($get_maintenance_data as $key => $get_data) {
+        $enddate = $get_data->enddate_planned;
+        if (time() > ($enddate + ($number_of_days * 24 * 60 * 60))) {
+            $comment = t("Automatically resolved after " . $number_of_days . " days of inactivity after the expected end date.");
+            $record = array(
+              'end_date' => \Drupal::time()->getRequestTime(),
+              'date_reported' => \Drupal::time()->getRequestTime(),
+              'comment' => $comment,
+              'downtime_id' => $get_data->downtime_id,
+              'uid' => 1,
+              'type' => 0,
+            );
+            db_insert('resolve_cancel_incident')->fields($record)->execute();
+
+            $query = \Drupal::database()->update('downtimes');
+            $query->fields([
+              'cancelled' => 1,
+            ]);
+            $query->condition('downtime_id', $get_data->downtime_id, '=');
+            $query->execute();
+            
+            //resolve mail to created user.
+            $resolve_node = \Drupal\node\Entity\Node::load($get_data->downtime_id);
+            $maintanence_owner = $resolve_node->getOwner();
+            $resolve_mail_subject = \Drupal::config('downtimes.settings')->get('resolve_maintenance_mail_subject');
+            $subject = $token_service->replace($resolve_mail_subject, ['node' => $resolve_node]);
+            $resolve_mail_body = \Drupal::config('downtimes.settings')->get('resolve_maintenance_mail_body');
+            $body = $token_service->replace($resolve_mail_body, ['node' => $resolve_node]);
+            $preference = $maintanence_owner->get('field_message_preference')->value;
+            if (empty($preference)) {
+              $preference = 'html';
+            }
+            $mail = $maintanence_owner->getEmail();
+            send_immediate_notifications($subject, $body, $mail, $preference);
+        }
+    }
+    
+    //remind mail when maintenance is not resolved by expected enddate.
+    $maintenance_query = \Drupal::database()->select('downtimes', 'd');
+    $maintenance_query->addJoin('INNER', 'node_field_data', 'nfd', 'nfd.nid = d.downtime_id');
+    $maintenance_query->fields('d', ['downtime_id', 'enddate_planned']);
+    $maintenance_query->condition('d.scheduled_p', 1);
+    $maintenance_query->condition('d.enddate_planned', \Drupal::time()->getRequestTime(), '<');
+    $maintenance_query->condition('d.resolved', 0);
+    $maintenance_query->condition('d.cancelled', 0);
+    $maintenance_query->condition('d.email_reminder_sent', 0);
+    $maintenance_data = $maintenance_query->execute()->fetchAll();
+    foreach ($maintenance_data as $key => $data) {
+        $query = \Drupal::database()->update('downtimes');
+        $query->fields([
+            'email_reminder_sent' => 1,
+        ]);
+        $query->condition('downtime_id', $data->downtime_id, '=');
+        $query->execute();
+
+        //remind mail to created and updated users.
+        $maintanence_node = \Drupal\node\Entity\Node::load($data->downtime_id);
+        $maintanence_owner = $maintanence_node->getOwner();
+        $reminder_mail_subject = \Drupal::config('downtimes.settings')->get('reminder_mail_subject');
+        $subject = $token_service->replace($reminder_mail_subject, ['node' => $maintanence_node]);
+
+        $reminder_mail_body = \Drupal::config('downtimes.settings')->get('reminder_mail_body');
+        $body = $token_service->replace($reminder_mail_body, ['node' => $maintanence_node]);
+        $preference = $maintanence_owner->get('field_message_preference')->value;
+        if (empty($preference)) {
+            $preference = 'html';
+        }
+        $mail = $maintanence_owner->getEmail();
+        send_immediate_notifications($subject, $body, $mail, $preference);
+    }
 }
