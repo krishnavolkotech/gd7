@@ -322,8 +322,9 @@ $inprogress_nid_values = [];
         "doku_link" => $field_documentation_link_value['field_documentation_link_value'] ?: null,
       );
 
-      if ($values['type'] != 'locked')
+      if ($values['type'] != 'locked') {
         self::documentation_link_download($params, $values);
+      }
     }
     catch (Exception $e) {
       \Drupal::logger('hzd_release_management')->error($e->getMessage());
@@ -582,14 +583,17 @@ $inprogress_nid_values = [];
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-    global $language;
+
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
-    $module = 'release_management';
+    $module = 'hzd_release_management';
     $key = 'download';
     $from = \Drupal::config('system.site')->get('mail');
-    ;
-    $params['body'] = \Drupal::config('hzd_release_management.settings')->get('release_mail_body');
+    $message_body = [];
+    $message_body[] = [
+    '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
+    ];
+    $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
      * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
      * FROM {content_type_release}
@@ -600,12 +604,17 @@ $inprogress_nid_values = [];
             ->condition('entity_id', $nid, '=');
 
     $field_link_value = $field_link_value_query->execute()->fetchAssoc();
-    $get_release_link = explode("/", $field_link_value['']);
+    $get_release_link = explode("/", $field_link_value['field_documentation_link_value']);
     $get_release_link_value = array_pop($get_release_link);
     $params['subject'] = t('Release Documentation Failed: ') . $get_release_link_value;
     $send = TRUE;
     foreach ($to as $single_address) {
-      problem_management_mail($key, $params);
+        $mailManager = \Drupal::service('plugin.manager.mail');
+        $module  = 'hzd_release_management';
+        $langcode = \Drupal::currentUser()->getPreferredLangcode();
+        $send = true;
+        $mailManager->mail($module, $key, $single_address, $langcode, $params, NULL, $send);
+//      problem_management_mail($key, $params);
       // drupal_mail($module, $key, $single_address, $language, $params, $from, $send);.
     }
   }
