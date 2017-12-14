@@ -750,13 +750,12 @@ function hzd_release_management_entity_insert($entity) {
     if ($entity->getType() == 'early_warnings') {
       send_earlywarning_notifications($entity, 'insert');
     }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity, 'insert');
+    }
   }
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity, 'insert');
-  }
-
-  if ($entity->getType() == 'planning_files') {
-    send_pf_notifications($entity, 'insert');
   }
 
   if ($entity->getType() == 'quickinfo') {
@@ -803,13 +802,12 @@ function hzd_release_management_node_update($entity) {
     if ($entity->getType() == 'early_warnings') {
       send_earlywarning_notifications($entity);
     }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity);
+    }
   }
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity);
-  }
-
-  if ($entity->getType() == 'planning_files') {
-    send_pf_notifications($entity);
   }
 
   if ($entity->getType() == 'quickinfo') {
