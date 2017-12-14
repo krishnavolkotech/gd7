@@ -1,0 +1,29 @@
+uuid: 46f1c3ea-0ef9-4f02-badd-a631cf8401dc
+langcode: de
+status: true
+dependencies:
+  module:
+    - downtimes
+title: 'Default cron handler'
+id: downtimes_cron
+weight: 0
+module: downtimes
+callback: downtimes_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '0+@ 0 * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

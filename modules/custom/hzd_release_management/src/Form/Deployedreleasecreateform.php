@@ -46,7 +46,7 @@ class Deployedreleasecreateform extends FormBase {
     $environment_data = non_productions_list();
     $form['deployed_environment'] = array(
       '#type' => 'select',
-      '#default_value' => $form_state->getValue('deployed_environment'),
+      '#default_value' => 1,
       '#options' => $environment_data,
       '#weight' => -6,
       '#ajax' => array(
@@ -120,7 +120,7 @@ class Deployedreleasecreateform extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
   public function deployed_dependent_services(array $form, FormStateInterface $form_state) {
-    $environment = $form_state->getValue('deployed_environment');
+    $environment = $form_state->getValue('deployed_environment', 1);
 
     if ($environment != 0) {
       $services_releases = HzdreleasemanagementHelper::released_deployed_releases();

@@ -1473,6 +1473,8 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
     'downtimes.archived_downtimes_controller',
     'problem_management.problems_tab',
     'problem_management.archived_problems_tab',
+    'hzd_release_management.deployed_releases_tab',
+    'hzd_release_management.archived_deployed_releases_tab',
   ];
   $param = \Drupal::request()->query->all();
   if (!empty($data['tabs'][0])) {
