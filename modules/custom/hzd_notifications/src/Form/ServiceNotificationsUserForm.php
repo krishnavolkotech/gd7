@@ -126,6 +126,19 @@ class ServiceNotificationsUserForm extends FormBase {
           ->execute()->fetchAllAssoc('send_interval');
           //pr($data);exit;
           $uids = [];
+          
+        $checkId = \Drupal::database()->select('service_notifications_override','sno')
+          ->fields('sno',['sid'])
+          ->condition('service_id',$service->nid)
+          ->condition('type',$types[$content_key])
+          ->condition('rel_type',$rel_type)
+          ->condition('uid',$uid)
+          ->execute()
+          ->fetchField();
+        if($checkId) {
+            continue;
+        }
+          
         $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
         foreach($intervals as $interval=>$val){
           
