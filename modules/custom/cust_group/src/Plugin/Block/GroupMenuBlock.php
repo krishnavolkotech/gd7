@@ -136,8 +136,9 @@ class GroupMenuBlock extends BlockBase {
           $markup['#title'] = $title;
           $markup['link'] = $group_member_join_link;
           $groupAdmins = $group->getMembers($group->bundle() . '-admin');
+          $data = [];
           foreach ($groupAdmins as $groupadmin) {
-            if(!hzd_user_inactive_status_check($groupadmin->getUser()->id())) {
+            if(!hzd_user_inactive_status_check($groupadmin->getUser()->id()) && $groupadmin->getUser()->isActive()) {
                 $data[] = [
                   '#type' => 'link',
                   '#title' => $groupadmin->getUser()->getDisplayName(),
