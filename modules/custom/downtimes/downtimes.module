@@ -266,7 +266,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#weight' => -1,
       );
       $form['#validate'][] = 'custom_maintenance_validate';
-      pass_maitenance_value($form);
+      pass_maintenance_value($form);
       $form['#attached']['library'][] = 'downtimes/downtimes.maintenancejs';
     }
     if (isset($type) && $type == 1) {
@@ -561,7 +561,7 @@ function downtimes_validate(&$form, &$form_state) {
 
 function downtimes_set_default_values(&$form, $nid) {
   $downtime_data = \Drupal::database()->select('downtimes', 'd')
-    ->fields('d', ['state_id', 'startdate_planned', 'enddate_planned', 'service_id', 'reason', 'scheduled_p'])
+    ->fields('d', ['state_id', 'startdate_planned', 'enddate_planned', 'service_id', 'reason', 'scheduled_p','status'])
     ->condition('downtime_id', $nid, '=')
     ->execute()->fetchObject();
   if (!empty($downtime_data)) {
@@ -829,7 +829,7 @@ function downtimes_node_insert($node) {
     ]);
     $group_content->save();
   } elseif ($node->getType() == 'service_profile') {
-    saveSeviceTime($node, $_POST);
+    saveServiceTime($node, $_POST);
     saveMaintenanceWindows($node, $_POST);
   }
 }
@@ -843,7 +843,6 @@ function downtimes_node_update($node) {
     $record['state_id'] = implode(',', $data['states']);
     $record['description'] = $node->get('body')->value;
     $record['service_id'] = implode(',', $data['services_effected']);
-    //$record->downtime_id = $node->id();
     if(!empty($data['enddate_planned'])) {
         $record['enddate_planned'] = !empty($data['enddate_planned']) ? get_unix_timestamp($data['enddate_planned']) : 0;
     }
@@ -852,7 +851,12 @@ function downtimes_node_update($node) {
         $record['startdate_planned'] = get_unix_timestamp($data['startdate_planned']);
     }
     $record['resolved'] = 0;
-    $record['status'] = !empty($data['maintenance_type']) ? $data['maintenance_type'] : NULL;
+    if(empty($data['maintenance_type'])) {
+	$downtime_id = $node->get('nid')->value;
+	$query = "select status from {downtimes} where downtime_id = ?";
+	$data['maintenance_type'] = db_query($query, array($downtime_id))->fetchField();
+    }
+    $record['status'] = $data['maintenance_type'];
     $record['email_reminder_sent'] = 1;
     $record['cancelled'] = 0;
     $record['reason'] = !empty($data['reason_for_noncompliance']) ? $data['reason_for_noncompliance'] : 0;
@@ -862,7 +866,7 @@ function downtimes_node_update($node) {
       ->condition('downtime_id', $node->id())
       ->execute();
   } elseif ($node->getType() == 'service_profile') {
-    saveSeviceTime($node, $_POST);
+    saveServiceTime($node, $_POST);
     saveMaintenanceWindows($node, $_POST);
   }
   
@@ -893,7 +897,7 @@ function saveMaintenanceWindows($node, $data) {
   }
 }
 
-function saveSeviceTime($node, $data) {
+function saveServiceTime($node, $data) {
 //  pr($data);exit;
   $arr = array(
     "Mon" => "Mon",
@@ -973,14 +977,14 @@ function downtimes_theme() {
 }
 
 function custom_maintenance_validate(&$form, &$form_state) {
-  pass_maitenance_value($form);
+  pass_maintenance_value($form);
   check_downtime_status($form, $form_state);
   if ($form_state->getValue('maintenance_result') && $form_state->getValue('reason_for_noncompliance') == 0) {
     $form_state->setErrorByName('reason_for_noncompliance', "Reason field is required.");
   }
 }
 
-function pass_maitenance_value(&$form) {
+function pass_maintenance_value(&$form) {
   $service_ids = HzdservicesStorage::get_related_services('downtimes');
   //  $day = date('D');
   foreach ($service_ids as $id => $name) {
@@ -1092,7 +1096,6 @@ function check_downtime_status(&$form, &$form_state) {
           return;
       }
   }
-    
   $start_date = get_maintenance_strtdate_timestamp($form_state->getValue('startdate_planned'));
   $current_date = time();
   $diff = $start_date - $current_date;
