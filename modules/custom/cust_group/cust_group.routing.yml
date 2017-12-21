@@ -227,3 +227,10 @@ cust_group.update_noficatio_override:
     _title: 'Updating migrated notification overrides'
   requirements:
     _permission: 'administer site'
+cust_group.problem_notification_update:
+  path: '/update-problem-notifications'
+  defaults:
+    _form: '\Drupal\cust_group\Form\UpdateProblemsNotificationforAllServices'
+    _title: 'Updating problems notification'
+  requirements:
+    _permission: 'administer site'
