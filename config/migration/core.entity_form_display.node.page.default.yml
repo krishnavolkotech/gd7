@@ -11,6 +11,8 @@ dependencies:
     - node.type.page
   module:
     - file
+    - filefield_sources
+    - imce
     - path
     - text
 _core:
@@ -34,7 +36,27 @@ content:
     type: file_generic
     settings:
       progress_indicator: bar
-    third_party_settings: {  }
+    third_party_settings:
+      filefield_sources:
+        filefield_sources:
+          sources:
+            upload: true
+            imce: true
+            remote: true
+            reference: true
+            clipboard: false
+            attach: false
+          source_reference:
+            autocomplete: '0'
+            search_all_fields: '0'
+          source_imce:
+            imce_mode: 0
+          source_attach:
+            path: file_attach
+            absolute: 0
+            attach_mode: move
+      imce:
+        enabled: false
     region: content
   path:
     type: path

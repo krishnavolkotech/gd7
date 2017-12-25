@@ -11,7 +11,9 @@ dependencies:
     - node.type.article
   module:
     - comment
+    - filefield_sources
     - image
+    - imce
     - path
     - text
 _core:
@@ -46,14 +48,37 @@ content:
     type: image_image
     weight: 4
     settings:
-      progress_indicator: throbber
       preview_image_style: thumbnail
-    third_party_settings: {  }
+      progress_indicator: throbber
+    third_party_settings:
+      filefield_sources:
+        filefield_sources:
+          sources:
+            upload: true
+            imce: true
+            remote: true
+            reference: true
+            clipboard: false
+            attach: false
+          source_reference:
+            autocomplete: '0'
+            search_all_fields: '0'
+          source_imce:
+            imce_mode: 0
+          source_attach:
+            path: file_attach
+            absolute: 0
+            attach_mode: move
+      imce:
+        enabled: false
     region: content
   field_tags:
     type: entity_reference_autocomplete_tags
     weight: 3
-    settings: {  }
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
     region: content
   langcode:
@@ -93,6 +118,8 @@ content:
   translation:
     weight: 10
     region: content
+    settings: {  }
+    third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 5
