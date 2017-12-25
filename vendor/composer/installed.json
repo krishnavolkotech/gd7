@@ -7058,7 +7058,7 @@
         "version_normalized": "8.2.12.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/klausi/coder.git",
+            "url": "https://git.drupal.org/project/coder.git",
             "reference": "984c54a7b1e8f27ff1c32348df69712afd86b17f"
         },
         "dist": {
@@ -8674,6 +8674,53 @@
         "support": {
             "source": "http://cgit.drupalcode.org/persistent_login",
             "issues": "http://drupal.org/project/issues/persistent_login"
+        }
+    },
+    {
+        "name": "drupal/filefield_sources",
+        "version": "dev-1.x",
+        "version_normalized": "dev-1.x",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupal.org/project/filefield_sources",
+            "reference": "b19c6a839804f47587828d4a50e29e0720fa4c08"
+        },
+        "require": {
+            "drupal/core": "*"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "branch-alias": {
+                "dev-1.x": "1.x-dev"
+            },
+            "drupal": {
+                "version": "8.x-1.x-dev",
+                "datestamp": "1487711283",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Dev releases are not covered by Drupal security advisories."
+                }
+            }
+        },
+        "installation-source": "source",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "profak",
+                "homepage": "https://www.drupal.org/user/782534"
+            },
+            {
+                "name": "quicksketch",
+                "homepage": "https://www.drupal.org/user/35821"
+            }
+        ],
+        "description": "Extends File fields to allow referencing of existing files, remote files, and server files.",
+        "homepage": "https://www.drupal.org/project/filefield_sources",
+        "support": {
+            "source": "http://cgit.drupalcode.org/filefield_sources"
         }
     }
 ]

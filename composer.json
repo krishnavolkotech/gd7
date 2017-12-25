@@ -53,7 +53,8 @@
         "drupal/allowed_formats": "^1.1",
         "drupal/computed_field": "^2.0@alpha",
         "drupal/imce": "^1.6",
-        "drupal/persistent_login": "^1.0@alpha"
+        "drupal/persistent_login": "^1.0@alpha",
+        "drupal/filefield_sources": "1.x-dev"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

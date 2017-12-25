@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a629ab052a667d8d0129690eea6138f3",
-    "content-hash": "f4c856ce83930fa37d3cf58fffe248c7",
+    "hash": "364e67c525e02ee40df820e04463d375",
+    "content-hash": "675a1ae40240fb62ddc937a02fdeb29d",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2118,6 +2118,52 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/filefield_paths"
             }
+        },
+        {
+            "name": "drupal/filefield_sources",
+            "version": "dev-1.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/filefield_sources",
+                "reference": "b19c6a839804f47587828d4a50e29e0720fa4c08"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.x-dev",
+                    "datestamp": "1487711283",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "profak",
+                    "homepage": "https://www.drupal.org/user/782534"
+                },
+                {
+                    "name": "quicksketch",
+                    "homepage": "https://www.drupal.org/user/35821"
+                }
+            ],
+            "description": "Extends File fields to allow referencing of existing files, remote files, and server files.",
+            "homepage": "https://www.drupal.org/project/filefield_sources",
+            "support": {
+                "source": "http://cgit.drupalcode.org/filefield_sources"
+            },
+            "time": "2017-02-21 21:07:00"
         },
         {
             "name": "drupal/flood_unblock",
@@ -8415,6 +8461,7 @@
         "drupal/search_api_solr_multilingual": 10,
         "drupal/computed_field": 15,
         "drupal/persistent_login": 15,
+        "drupal/filefield_sources": 20,
         "behat/mink": 20
     },
     "prefer-stable": true,
