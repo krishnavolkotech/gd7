@@ -1643,6 +1643,7 @@ function downtimes_cron() {
     $get_maintenance_query->condition('d.resolved', 0);
     $get_maintenance_query->condition('d.cancelled', 0);
     $get_maintenance_data = $get_maintenance_query->execute()->fetchAll();
+    $body = '';
     foreach ($get_maintenance_data as $key => $get_data) {
         $enddate = $get_data->enddate_planned;
         if (time() > ($enddate + ($number_of_days * 24 * 60 * 60))) {
@@ -1669,8 +1670,13 @@ function downtimes_cron() {
             $maintanence_owner = $resolve_node->getOwner();
             $resolve_mail_subject = \Drupal::config('downtimes.settings')->get('resolve_maintenance_mail_subject');
             $subject = $token_service->replace($resolve_mail_subject, ['node' => $resolve_node]);
-            $resolve_mail_body = \Drupal::config('downtimes.settings')->get('resolve_maintenance_mail_body');
-            $body = $token_service->replace($resolve_mail_body, ['node' => $resolve_node]);
+            $reminder_mail_body = [];
+            $reminder_mail_body[] = [
+              '#markup' => $token_service->replace(\Drupal::config('downtimes.settings')->get('resolve_maintenance_mail_body')['value'], array(
+                'node' => $resolve_node
+              ))
+            ];
+            $body = \Drupal::service('renderer')->render($reminder_mail_body);
             $preference = $maintanence_owner->get('field_message_preference')->value;
             if (empty($preference)) {
               $preference = 'html';
@@ -1690,6 +1696,7 @@ function downtimes_cron() {
     $maintenance_query->condition('d.cancelled', 0);
     $maintenance_query->condition('d.email_reminder_sent', 0);
     $maintenance_data = $maintenance_query->execute()->fetchAll();
+    $reminder_mail_body = [];
     foreach ($maintenance_data as $key => $data) {
         $query = \Drupal::database()->update('downtimes');
         $query->fields([
@@ -1703,9 +1710,13 @@ function downtimes_cron() {
         $maintanence_owner = $maintanence_node->getOwner();
         $reminder_mail_subject = \Drupal::config('downtimes.settings')->get('reminder_mail_subject');
         $subject = $token_service->replace($reminder_mail_subject, ['node' => $maintanence_node]);
-
-        $reminder_mail_body = \Drupal::config('downtimes.settings')->get('reminder_mail_body');
-        $body = $token_service->replace($reminder_mail_body, ['node' => $maintanence_node]);
+        $reminder_mail_body = [];
+        $reminder_mail_body[] = [
+          '#markup' => $token_service->replace(\Drupal::config('downtimes.settings')->get('reminder_mail_body')['value'], array(
+            'node' => $maintanence_node
+          ))
+        ];
+        $body = \Drupal::service('renderer')->render($reminder_mail_body);
         $preference = $maintanence_owner->get('field_message_preference')->value;
         if (empty($preference)) {
             $preference = 'html';
