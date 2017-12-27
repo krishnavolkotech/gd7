@@ -52,7 +52,7 @@ Drupal.behaviors.hzd = {
             stickyHeaders_offset: $.fn.admin_toolbar(),
             stickyHeaders_cloneId: '-sticky',
             stickyHeaders_addResizeEvent: true,
-            stickyHeaders_includeCaption: true,
+            stickyHeaders_includeCaption: false,
             stickyHeaders_zIndex: 2,
             stickyHeaders_attachTo: null,
             stickyHeaders_xScroll: null,
