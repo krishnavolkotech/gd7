@@ -29,6 +29,7 @@ bootstrap-scripts:
     js/libraries/isotope.pkgd.min.js : {}
     js/libraries/fit-columns.js : {}
     js/jquery.tablesorter.js: {}
+    js/widget-stickyHeaders.js: {}
     js/hzd_custom.js : {}
   dependencies:
       - core/drupal.tableheader

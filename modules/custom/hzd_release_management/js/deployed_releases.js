@@ -55,13 +55,33 @@
         // set type, either numeric or text
         type: 'numeric'
       });
-
+      $.fn.admin_toolbar = function () {
+        if($('#toolbar-administration').length) {
+            return 80;
+        } else {
+            return 0;
+        }
+      }
       $(context).find("#current_deploysortable").tablesorter({
         headers: {
           4: {sorter: 'deployed_date'},
           5: {sorter: false}
         },
-        widgets: ['zebra']
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra',"pager", 'stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
       });
 
       $(context).find("#archived_deploysortable").tablesorter({
@@ -69,7 +89,21 @@
           4: {sorter: false},
           3: {sorter: 'deployed_date'}
         },
-        widgets: ['zebra']
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra',"pager", 'stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
       });
 
 

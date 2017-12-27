@@ -6,27 +6,61 @@
 
 // Drupal.behaviors.earlywarnings_view = function() {
 
-         var anchor = $("#earlywarnings_results_wrapper #pagination > nav > ul > li > a");
-         anchor.each(function( index ) {
-         var links = $( this ).attr('href'); 
-         var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
-           $( this ).attr('href', new_href);
-         });
+    var anchor = $("#earlywarnings_results_wrapper #pagination > nav > ul > li > a");
+    anchor.each(function( index ) {
+    var links = $( this ).attr('href'); 
+    var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
+      $( this ).attr('href', new_href);
+    });
+    $.fn.admin_toolbar = function () {
+      if($('#toolbar-administration').length) {
+          return 80;
+      } else {
+          return 0;
+      }
+    }
 
-
- $("#earlywarnings_release_sortable").tablesorter({
-    headers: {
-	3: {sorter: false }
-	  },
-    widgets: ['zebra']
+    $("#earlywarnings_release_sortable").tablesorter({
+        headers: {
+            3: {sorter: false}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra',"pager", 'stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
     });
 
 
-  $("#viewearlywarnings_sortable").tablesorter({
-    headers: {
-	3: {sorter: false }
-	  },
-    widgets: ['zebra']
+    $("#viewearlywarnings_sortable").tablesorter({
+        headers: {
+            3: {sorter: false}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra',"pager", 'stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
     });
 
 
