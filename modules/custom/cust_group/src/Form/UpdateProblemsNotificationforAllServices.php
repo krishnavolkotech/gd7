@@ -72,7 +72,7 @@ class UpdateProblemsNotificationforAllServices extends FormBase {
           ->fields('nfed', array('field_enable_downtime_value'));
         $services = $query->execute()->fetchAll();
         
-        $default_inter = !empty($values->default_send_interval) ? $values->default_send_interval : -1;
+        $default_inter = $values->default_send_interval;
         foreach ($services as $service) {
             $data = \Drupal::database()->select('service_notifications', 'sn')
                             ->fields('sn')
