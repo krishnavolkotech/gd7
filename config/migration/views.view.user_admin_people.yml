@@ -512,7 +512,7 @@ display:
           type: boolean
           settings:
             format: boolean
-            format_custom_true: Active
+            format_custom_true: Aktiv
             format_custom_false: Gesperrt
           group_column: value
           group_columns: {  }

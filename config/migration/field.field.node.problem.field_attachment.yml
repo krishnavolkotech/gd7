@@ -9,7 +9,7 @@ id: node.problem.field_attachment
 field_name: field_attachment
 entity_type: node
 bundle: problem
-label: Attachment
+label: Creator
 description: ''
 required: false
 translatable: true

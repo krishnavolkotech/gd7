@@ -149,7 +149,8 @@ class DeployedReleasesOverviewiew extends FormBase {
           foreach ($releases as $release) {
             $releaseNode = Node::load($release);
             $finalRelease = $releaseNode->get('field_earlywarning_release')->value;
-            $titles[] = Node::load($finalRelease)->label();
+	    $finalReleaseNode = Node::load($finalRelease);
+            if ($finalReleaseNode) { $titles[] = $finalReleaseNode->label(); }
           }
           if ($titles) {
             $x = [
