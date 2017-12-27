@@ -48,11 +48,11 @@ content:
             imce: false
             clipboard: false
             attach: false
-          source_reference:
-            autocomplete: '0'
-            search_all_fields: '1'
           source_imce:
             imce_mode: 1
+          source_reference:
+            autocomplete: '0'
+            search_all_fields: '0'
           source_attach:
             path: file_attach
             absolute: 0
