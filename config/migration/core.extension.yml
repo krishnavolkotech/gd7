@@ -94,6 +94,7 @@ module:
   printable_pdf: 0
   prlp: 0
   problem_management: 0
+  queue_ui: 0
   quickedit: 0
   rdf: 0
   rest: 0
