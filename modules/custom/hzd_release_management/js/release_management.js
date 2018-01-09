@@ -19,7 +19,13 @@
                var new_href = links.replace('ajax_form=1&_wrapper_format=drupal_ajax', '');   
                $( this ).attr('href', new_href);
              });
-           
+            $.fn.admin_toolbar = function () {
+              if($('#toolbar-administration').length) {
+                  return 80;
+              } else {
+                  return 0;
+              }
+            }
             $(context).find("#quickinfo-sortable").tablesorter({
                 5:{sorter:'deployed_date'},
                 widgets: ['zebra']
@@ -106,7 +112,21 @@
             if (jQuery.inArray( drupalSettings.release_management.type,  release_tab_type) == -1) {
             // jQuery("#sortable").tablesorter();
               $(context).find("#sortable").tablesorter({
-          	widgets: ['zebra']
+                    showProcessing: true,
+                    headerTemplate : '{content} {icon}',
+                    widgets: ['zebra','stickyHeaders'],
+                    widgetOptions: {
+                        stickyHeaders: 'sticky-header',
+                        stickyHeaders_offset: $.fn.admin_toolbar(),
+                        stickyHeaders_cloneId: '-sticky',
+                        stickyHeaders_addResizeEvent: true,
+                        stickyHeaders_includeCaption: true,
+                        stickyHeaders_zIndex: 2,
+                        stickyHeaders_attachTo: null,
+                        stickyHeaders_xScroll: null,
+                        stickyHeaders_yScroll: null,
+                        stickyHeaders_filteredToTop: true
+                    }
               }); 
             
             }
@@ -125,20 +145,30 @@
                });
                
                 $(context).find("#sortable").tablesorter({
-                dateFormat: 'dd.mm.yyyy',
-                headers: {
-                    4:{sorter:'deployed_date'},
-                    5: {
-                        sorter: false
-                            },
-                    6: {
-                        sorter: false
-                            },
-                  },
-
-              sortList: [[0,0],[1,0],[2,0],[4,0],[5,0]],
-              widgets: ['zebra']
-                  });
+                    dateFormat: 'dd.mm.yyyy',
+                    headers: {
+                        4: {sorter: 'deployed_date'},
+                        5: {sorter: false},
+                        6: {sorter: false},
+                    },
+                    sortList: [[0, 0], [1, 0], [2, 0], [4, 0], [5, 0]],
+                    widgets: ['zebra'],
+                    showProcessing: true,
+                    headerTemplate : '{content} {icon}',
+                    widgets: ['zebra',"pager", 'stickyHeaders'],
+                    widgetOptions: {
+                        stickyHeaders: 'sticky-header',
+                        stickyHeaders_offset: $.fn.admin_toolbar(),
+                        stickyHeaders_cloneId: '-sticky',
+                        stickyHeaders_addResizeEvent: true,
+                        stickyHeaders_includeCaption: true,
+                        stickyHeaders_zIndex: 2,
+                        stickyHeaders_attachTo: null,
+                        stickyHeaders_xScroll: null,
+                        stickyHeaders_yScroll: null,
+                        stickyHeaders_filteredToTop: true
+                    }
+                });
                   
             }
 	    else if (jQuery.inArray( drupalSettings.release_management.type,  ['locked', 'progress']) != -1) {
@@ -146,7 +176,21 @@
                     headers: {
                         3: { sorter:'release_datesortable' },
                     },
-                       widgets: ['zebra']
+                    showProcessing: true,
+                    headerTemplate : '{content} {icon}',
+                    widgets: ['zebra','stickyHeaders'],
+                    widgetOptions: {
+                        stickyHeaders: 'sticky-header',
+                        stickyHeaders_offset: $.fn.admin_toolbar(),
+                        stickyHeaders_cloneId: '-sticky',
+                        stickyHeaders_addResizeEvent: true,
+                        stickyHeaders_includeCaption: true,
+                        stickyHeaders_zIndex: 2,
+                        stickyHeaders_attachTo: null,
+                        stickyHeaders_xScroll: null,
+                        stickyHeaders_yScroll: null,
+                        stickyHeaders_filteredToTop: true
+                    }
               });
             }
             else {
@@ -156,8 +200,22 @@
                         3: { sorter: false },
                         4: { sorter: false },
                     },
-                       widgets: ['zebra']
-                    });
+                    showProcessing: true,
+                    headerTemplate : '{content} {icon}',
+                    widgets: ['zebra','stickyHeaders'],
+                    widgetOptions: {
+                        stickyHeaders: 'sticky-header',
+                        stickyHeaders_offset: $.fn.admin_toolbar(),
+                        stickyHeaders_cloneId: '-sticky',
+                        stickyHeaders_addResizeEvent: true,
+                        stickyHeaders_includeCaption: true,
+                        stickyHeaders_zIndex: 2,
+                        stickyHeaders_attachTo: null,
+                        stickyHeaders_xScroll: null,
+                        stickyHeaders_yScroll: null,
+                        stickyHeaders_filteredToTop: true
+                    }
+              });
             }
 
             $('.filter_submit', context).hide();

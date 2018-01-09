@@ -2,6 +2,14 @@
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
         
+    $.fn.admin_toolbar = function () {
+      if($('#toolbar-administration').length) {
+          return 80;
+      } else {
+          return 0;
+      }
+    }
+        
     $.tablesorter.addParser({
       // set a unique id
       id: 'date_sorting',
@@ -34,19 +42,46 @@ Drupal.behaviors.hzd = {
           }
       },
       headers: {
-        6: {
-              sorter: 'date_sorting'
-            }
-      }
+        6: {sorter: 'date_sorting'}
+      },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: false,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
     });
         
     
     $('div.saved-rz-schnellinfo table').tablesorter({
       headers: {
-        4: {
-              sorter: 'quickinfo_date_sorting'
-            }
-      }
+        4: {sorter: 'quickinfo_date_sorting'}
+      },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
+      
     });
     
     $('div.view-group-members-lists table').tablesorter({
@@ -55,6 +90,21 @@ Drupal.behaviors.hzd = {
             3: { sorter: false },
             4: { sorter: false },
             6: { sorter: false }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
         }
     });
     
@@ -64,6 +114,21 @@ Drupal.behaviors.hzd = {
             3: { sorter: false },
             5: { sorter: false },
             6: { sorter: false }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
         }
     });
     
@@ -75,7 +140,22 @@ Drupal.behaviors.hzd = {
             6: { sorter: false },
             7: { sorter: false },
             4: { sorter: 'date_sorting' },
-        }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }        
     });
     
 // group node tables sortable
@@ -97,7 +177,22 @@ jQuery("div.group-nodes-sortable > div.view-content > div > table.table").tables
               6: {
                 sorter:false
            },
-        }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }        
       });
 // mitglieder page sorting functionality
 jQuery("div.sort-user-list > div.view-content > div > table.table").tablesorter({
@@ -110,7 +205,22 @@ jQuery("div.sort-user-list > div.view-content > div > table.table").tablesorter(
            5: { 
                 sorter: false 
             },
-        }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }        
       });
 // all group page sorting functionality
 jQuery("div.all-groups-sortable > div.view-content > div > table.table").tablesorter({
@@ -126,7 +236,22 @@ jQuery("div.all-groups-sortable > div.view-content > div > table.table").tableso
            4: { 
                 sorter: false 
             },
-        }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }        
       });
 
  jQuery.tablesorter.addParser({
@@ -148,9 +273,22 @@ jQuery("div.all-groups-sortable > div.view-content > div > table.table").tableso
 
 jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").tablesorter({
         headers: {
-          5: {
-            sorter: 'quickinfo_date_sorting'
-          }
+          5: { sorter: 'quickinfo_date_sorting'}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
         }
       });
 //}

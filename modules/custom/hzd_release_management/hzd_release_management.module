@@ -747,16 +747,15 @@ function hzd_release_management_entity_insert($entity) {
     if ($entity->getType() == 'downtimes') {
       send_downtime_notifications($entity, 'insert');
     }
+    if ($entity->getType() == 'early_warnings') {
+      send_earlywarning_notifications($entity, 'insert');
+    }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity, 'insert');
+    }
   }
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity, 'insert');
-  }
-
-  if ($entity->getType() == 'planning_files') {
-    send_pf_notifications($entity, 'insert');
-  }
-  if ($entity->getType() == 'early_warnings') {
-    send_earlywarning_notifications($entity, 'insert');
   }
 
   if ($entity->getType() == 'quickinfo') {
@@ -800,16 +799,15 @@ function hzd_release_management_node_update($entity) {
     if ($entity->getType() == 'downtimes') {
       send_downtime_notifications($entity);
     }
+    if ($entity->getType() == 'early_warnings') {
+      send_earlywarning_notifications($entity);
+    }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity);
+    }
   }
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity);
-  }
-
-  if ($entity->getType() == 'planning_files') {
-    send_pf_notifications($entity);
-  }
-  if ($entity->getType() == 'early_warnings') {
-    send_earlywarning_notifications($entity);
   }
 
   if ($entity->getType() == 'quickinfo') {
@@ -967,6 +965,12 @@ function hzd_release_management_mail($key, &$message, $params) {
       $message['body'][] = $params['message'];
 
       break;
+    case 'download':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    break;
   }
 }
 
@@ -1467,6 +1471,8 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
     'downtimes.archived_downtimes_controller',
     'problem_management.problems_tab',
     'problem_management.archived_problems_tab',
+    'hzd_release_management.deployed_releases_tab',
+    'hzd_release_management.archived_deployed_releases_tab',
   ];
   $param = \Drupal::request()->query->all();
   if (!empty($data['tabs'][0])) {

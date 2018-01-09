@@ -26,12 +26,34 @@ Drupal.behaviors.downtimes = function () {
   }
   $('.search_string').blur(text_textfield);
   $(".expand").after("<div class='error_div'></div>");
+      $.fn.admin_toolbar = function () {
+        if($('#toolbar-administration').length) {
+            return 80;
+        } else {
+            return 0;
+        }
+      }
   $("#sortable").tablesorter({
-  headers: {
-      4: {
-      sorter: false
-	  }
-    }
+        headers: {
+            4: {
+                sorter: false
+            }
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
   });
 
 

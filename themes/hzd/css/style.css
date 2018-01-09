@@ -894,7 +894,7 @@ table.tablesorter thead tr .tablesorter-header-inner {
     cursor: pointer;
     padding-right: 24px !important;
 }
-table.tablesorter thead tr .tablesorter-headerUnSorted .tablesorter-header-inner {
+/*table.tablesorter thead tr .tablesorter-headerUnSorted .tablesorter-header-inner {
     background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
 }
 table.tablesorter thead tr .tablesorter-headerAsc .tablesorter-header-inner {
@@ -902,7 +902,7 @@ table.tablesorter thead tr .tablesorter-headerAsc .tablesorter-header-inner {
 }
 table.tablesorter thead tr .tablesorter-headerDesc .tablesorter-header-inner {
     background-image: url(/modules/custom/hzd_problem_management/images/desc.gif);
-}
+}*/
 table.tablesorter thead tr .sorter-false .tablesorter-header-inner {
     background-image: none;
 }
@@ -3495,7 +3495,7 @@ div.group-nodes-sortable > div.view-content > div > table.table thead tr .tables
 .saved-rz-schnellinfo table thead tr .tablesorter-header-inner,
 .view-group-members-lists table thead tr .tablesorter-header-inner,
 .view-hzd-group-members table thead tr .tablesorter-header-inner{
-    background-image: url(/themes/hzd/images/bg.gif);
+    /*background-image: url(/themes/hzd/images/bg.gif);*/
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
@@ -3511,7 +3511,7 @@ div.group-nodes-sortable > div.view-content > div > table.table thead tr .sorter
     background-image: none;
 }
 table.sticky-header thead tr .tablesorter-header-inner {
-    background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
+    /*background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);*/
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
@@ -3521,3 +3521,30 @@ table.sticky-header thead tr .sorter-false .tablesorter-header-inner {
     background-image: none;
 }
 
+.tablesorter-default .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+}
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	border-bottom: #000 2px solid;
+}
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+	border-bottom: #000 2px solid;
+}
+.tablesorter-default thead .sorter-false {
+	background-image: none;
+	cursor: default;
+}
+.sticky-table {
+    margin: 0px !important;
+}

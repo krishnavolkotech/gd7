@@ -121,6 +121,7 @@ module:
   xmlrpc: 0
   ctools: 1
   favorites: 1
+  filefield_sources: 1
   forum: 1
   menu_link_content: 1
   pathauto: 1
