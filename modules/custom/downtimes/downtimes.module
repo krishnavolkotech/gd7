@@ -1650,7 +1650,7 @@ function downtimes_cron() {
     foreach ($get_maintenance_data as $key => $get_data) {
         $enddate = $get_data->enddate_planned;
         if (time() > ($enddate + ($number_of_days * 24 * 60 * 60))) {
-            $comment = t("Automatically resolved after " . $number_of_days . " days of inactivity after the expected end date.");
+            $comment = t("Automatically resolved after the expected end date.");
             $record = array(
               'end_date' => \Drupal::time()->getRequestTime(),
               'date_reported' => \Drupal::time()->getRequestTime(),
@@ -1663,7 +1663,7 @@ function downtimes_cron() {
 
             $query = \Drupal::database()->update('downtimes');
             $query->fields([
-              'cancelled' => 1,
+              'resolved' => 1,
             ]);
             $query->condition('downtime_id', $get_data->downtime_id, '=');
             $query->execute();
@@ -1689,7 +1689,7 @@ function downtimes_cron() {
         }
     }
     
-    //remind mail when maintenance is not resolved by expected enddate.
+    //reminder mail when maintenance is not resolved by expected enddate.
     $maintenance_query = \Drupal::database()->select('downtimes', 'd');
     $maintenance_query->addJoin('INNER', 'node_field_data', 'nfd', 'nfd.nid = d.downtime_id');
     $maintenance_query->fields('d', ['downtime_id', 'enddate_planned']);
