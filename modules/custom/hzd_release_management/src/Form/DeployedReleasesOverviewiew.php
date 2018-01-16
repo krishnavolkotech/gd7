@@ -116,7 +116,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             ->condition('status', 1)
             ->condition('field_release_name', 'NULL', '!=')
             ->condition('release_type', $release_type)
-            ->sort('field_release_name')
+            ->sort('title')
             ->execute();
 
     $groupServs = array_intersect($services, $groupServs);
@@ -165,7 +165,8 @@ class DeployedReleasesOverviewiew extends FormBase {
             $newData[$state_details->abbr] = '';
           }
         }
-        $dep[] = $service->get('field_release_name')->value;
+        //$dep[] = $service->get('field_release_name')->value;
+	$dep[] = $service->get('title')->value;
         $dep += $newData;
         $depReleases[] = $dep;
         $newData = NULL;

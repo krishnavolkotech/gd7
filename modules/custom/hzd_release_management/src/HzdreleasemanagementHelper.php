@@ -575,9 +575,10 @@ class HzdreleasemanagementHelper {
 
     foreach ($services_infos as $services_info) {
       $serviceEntity = Node::load($services_info->nid);
-      if (!empty($serviceEntity->get('field_release_name')->value)) {
-        $deployed_services[$services_info->nid] = $serviceEntity->get('field_release_name')->value;
-      }
+//      if (!empty($serviceEntity->get('field_release_name')->value)) {
+//        $deployed_services[$services_info->nid] = $serviceEntity->get('field_release_name')->value;
+//      }
+      $deployed_services[$services_info->nid] = $serviceEntity->get('title')->value;
     }
 
 //         dpm($deployed_services);
@@ -735,7 +736,7 @@ class HzdreleasemanagementHelper {
       $data[] = array(
           $state,
           $environment,
-          $serviceEntity->get('field_release_name')->value,
+          $serviceEntity->get('title')->value,
           $release,
           date("d.m.Y", strtotime($deployedRelease->get('field_date_deployed')->value)),
           $action,

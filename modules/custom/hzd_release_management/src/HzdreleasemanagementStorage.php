@@ -942,7 +942,7 @@ $inprogress_nid_values = [];
               )
               )->fetchField();
       $service = \Drupal\node\Entity\Node::load(
-                      $deployed_release_node->field_release_service->value)->get('field_release_name')->value;
+                      $deployed_release_node->field_release_service->value)->get('title')->value;
 
       $release_node = \Drupal\node\Entity\Node::load(
                       $deployed_release_node->field_earlywarning_release->value);
@@ -1252,7 +1252,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $service = $releases->get('field_relese_services')->first()->entity;
 //          pr($releases->id());
       $row = array(
-          'service' => $service->get('field_release_name')->value,
+          'service' => $service->get('title')->value,
           'release' => $releases->getTitle()
       );
       if ($type != 'released') {

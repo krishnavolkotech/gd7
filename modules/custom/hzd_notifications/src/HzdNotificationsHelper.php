@@ -191,6 +191,9 @@ class HzdNotificationsHelper {
   // update the overrided content type interval
   static function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
     
+//pr($service . " " . $send_interval . " " . $uid . " " . $type . " " . $default_intval);
+//exit;
+
     $data = \Drupal::database()->select('service_notifications', 'sn')
       ->fields('sn')
       ->condition('service_id', $service)

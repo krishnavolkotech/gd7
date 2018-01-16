@@ -52,9 +52,10 @@ class ProblemFilterFrom extends FormBase
         $service = $query->execute()->fetchAll();
         foreach ($service as $services) {
           $serviceEntity = \Drupal\node\Entity\Node::load($services->nid);
-          if(!empty($serviceEntity->get('field_problem_name')->value)){
-            $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
-          }
+//          if(!empty($serviceEntity->get('field_problem_name')->value)){
+//            $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
+//          }
+	  $default_services[$services->nid] = $serviceEntity->get('title')->value;
         }
         // default functions
         $default_function[0] = '<' . t("Select Function")->render() . '>';
