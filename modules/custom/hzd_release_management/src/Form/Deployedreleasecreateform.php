@@ -365,6 +365,13 @@ class Deployedreleasecreateform extends FormBase {
         'uid ' => 1,
       ]);
       $group_content->save();
+
+      if ($node->field_environment->value == 1) {
+          // If environment is Production, delete cache for deployed releases overview table
+          $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+          \Drupal::cache()->deleteMultiple($cids);
+      }
+
       drupal_set_message(t('Release has been deployed sucessfully'), 'status');
     }
 

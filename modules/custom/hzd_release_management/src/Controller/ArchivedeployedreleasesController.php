@@ -19,6 +19,12 @@ class ArchivedeployedreleasesController extends ControllerBase {
       $node = Node::load($nid);
       if($node instanceof Node){
         $node->set('field_archived_release',1)->save();
+
+        if ($node->field_environment->value == 1) {
+            // If environment is Production, delete cache for deployed releases overview table
+            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            \Drupal::cache()->deleteMultiple($cids);
+        }
       }
       /*$query = \Drupal::database()->update('node__field_archived_release');
       $query->fields([
