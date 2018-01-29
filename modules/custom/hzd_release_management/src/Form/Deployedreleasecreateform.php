@@ -30,17 +30,7 @@ class Deployedreleasecreateform extends FormBase {
     $form['#attached']['library'] = array(
       'hzd_release_management/deployed_releases',
     );
-//    $group = \Drupal::routeMatch()->getParameter('group');
-//    if (is_object($group)) {
-//      $group_id = $group->id();
-//    }
-//    else {
-//      $group_id = $group;
-//    }
 
-//    $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
-//    $services_data = $services_releases['services'];
-//pr($services_data);exit;
     $wrapper = 'earlywarnings_posting';
 
     $environment_data = non_productions_list();
@@ -63,36 +53,6 @@ class Deployedreleasecreateform extends FormBase {
     $form['deployed_services'] = $this->deployed_dependent_services($form, $form_state);
     $form['deployed_releases'] = $this->deployed_dependent_releases_env($form, $form_state);
 
-    /*$form['deployed_releases'] = array(
-      '#type' => 'select',
-      '#default_value' => 0,
-      '#options' => [0=>$this->t("< Release >")],
-      '#weight' => -4,
-      "#prefix" => "<div id = 'deployed_dependent_release'>",
-      '#suffix' => '</div>',
-//      '#validated' => TRUE,
-    );*/
-    /**
-     * $form['releases'] = array(
-     * '#type' => 'select',
-     * '#options' => $options,
-     * '#default_value' => $default_value_releases,
-     * '#weight' => -6,
-     * '#ajax' => array(
-     * 'callback' => $rel_path,
-     * 'wrapper' => $wrapper,
-     * 'event' => 'change',
-     * 'method' => 'replace',
-     * 'progress' => array(
-     * 'type' => 'throbber',
-     * ),
-     * ),
-     * "#prefix" => "<div class = 'releases_search_dropdown hzd-form-element'>",
-     * '#suffix' => '</div>',
-     * '#validated' => TRUE
-     * );
-     */
-    // $date_format = 'd.m.Y';.
     $form['deployed_date'] = array(
       '#type' => 'textfield',
 //      '#title' => t('Date'),
@@ -290,11 +250,6 @@ class Deployedreleasecreateform extends FormBase {
     $query->condition('cp.uid', $user->id(), '=');
     $user_state = $query->execute()->fetchField();
 
-    // $date_array = explode('.', $form_state->getValue('deployed_date'));
-    //    $deployed_date = mktime(0, 0, 0, $date_array[1], $date_array[0], $date_array[2]);
-    // print_r($form_state->getValue());
-    // echo '<pre>'; print_r($_POST);   exit;
-    // dpm($deployed_date);
     $deployed_date = $form_state->getValue('deployed_date');
     $deployed_date = date("Y-m-d", strtotime($deployed_date));
     // Echo $deployed_date; exit;.

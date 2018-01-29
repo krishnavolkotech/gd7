@@ -25,7 +25,7 @@ class DeployedReleases extends ControllerBase {
    */
   public function display_deployed_release_table() {
     // Need to create configuration form for release type.
-    // for now giving static relese type.
+    // for now giving static release type.
     
    // $release_type = 459;
     $release_type = \Drupal::config('hzd_release_management.settings')
@@ -186,28 +186,4 @@ function get_releases_per_state($service_id, $deployed_services, $release_type) 
   $deployed_query->fields('nfer', array('field_earlywarning_release_value'));
   $result = $deployed_query->execute()->fetchAll();
   return $result;
-
-  /*$deployed_release = db_query("SELECT field_earlywarning_release_value as release_id
-  FROM {node} n, {content_field_earlywarning_release} cfer,
-  {content_field_release_service} cfrs,
-  {content_type_deployed_releases} ctds,
-  {content_field_archived_release} cfar,
-  {group_releases_view} grv,
-  {term_node} tn
-  WHERE n.nid = cfer.nid and
-  n.nid = cfrs.nid and
-  ctds.nid = n.nid and
-  cfar.nid = n.nid and
-  grv.service_id = tn.nid and
-
-  n.type = 'deployed_releases' and
-  grv.service_id = cfrs.field_release_service_value and
-
-  (field_archived_release_value = 0 or
-  field_archived_release_value IS NULL)
-
-  AND field_release_service_value = %d and field_user_state_value = %d
-  and grv.group_id = %d and tn.tid = %d AND field_environment_value = %d",
-  $service_id, $deployed_services, $group_id, $release_type, 1);
-  return $deployed_release;*/
 }

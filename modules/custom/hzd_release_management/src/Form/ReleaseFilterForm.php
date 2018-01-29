@@ -203,7 +203,7 @@ class ReleaseFilterForm extends FormBase
         if (!$default_value_services) {
             $default_value_services = isset($timer) ? $timer : $form_state->getValue('services');
         }
-        asort($services);
+        asort($services, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
         $form['services'] = array(
             '#type' => 'select',
             '#options' => $services,

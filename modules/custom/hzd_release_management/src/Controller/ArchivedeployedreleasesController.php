@@ -26,12 +26,6 @@ class ArchivedeployedreleasesController extends ControllerBase {
             \Drupal::cache()->deleteMultiple($cids);
         }
       }
-      /*$query = \Drupal::database()->update('node__field_archived_release');
-      $query->fields([
-        'field_archived_release_value' => 1,
-      ]);
-      $query->condition('entity_id', $nid);
-      $query->execute();*/
       $output = 'true';
     }
     $result['#attached']['drupalSettings']['deploy_release'] = array(
