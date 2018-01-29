@@ -112,7 +112,7 @@
        */
 
       $(context).find('.archive_deployedRelease').click(function () {
-        var is_archive = confirm("Do you really want to archive?");
+        var is_archive = confirm("Möchten Sie wirklich archivieren?");
         if (is_archive == true) {
           var nid = $(this).attr('nid');
           $(this).next().prepend('Archivierung, bitte warten.');
