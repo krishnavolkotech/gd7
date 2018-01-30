@@ -137,15 +137,30 @@ class GroupMenuBlock extends BlockBase {
           $markup['link'] = $group_member_join_link;
           $groupAdmins = $group->getMembers($group->bundle() . '-admin');
           $data = [];
+          $admin_uids = [];
           foreach ($groupAdmins as $groupadmin) {
-            if(!hzd_user_inactive_status_check($groupadmin->getUser()->id()) && $groupadmin->getUser()->isActive()) {
-                $data[] = [
+              if (!hzd_user_inactive_status_check($groupadmin->getUser()->id()) && $groupadmin->getUser()->isActive()) {
+                  $admin_uids[] = $groupadmin->getUser()->id();
+              }
+          }
+          $db = \Drupal::database();
+          $query = $db
+              ->select('users_field_data','u')
+              ->fields('u', array('name','uid'))
+              ->fields('s', array('abbr'))
+              ->fields('cp', array('firstname','lastname'))
+              ->condition('u.uid', $admin_uids, 'IN')
+              ->orderBy('abbr')
+              ->orderBy('lastname');
+          $query->join('cust_profile', 'cp', 'u.uid = cp.uid');
+          $query->join('states', 's', 's.id = cp.state_id');
+          $admin_details = $query->execute()->fetchAll();
+          foreach ($admin_details as $admin_user) {
+              $data[] = [
                   '#type' => 'link',
-                  '#title' => $groupadmin->getUser()->getDisplayName(),
-                  '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()
-                      ->getEmail())
-                ];
-            }
+                  '#title' => $admin_user->firstname . ' ' . $admin_user->lastname . ' (' . $admin_user->abbr . ')',
+                  '#url' => Url::fromUri('internal:/user/' . $admin_user->uid),
+              ];
           }
           $markup['groupadmin_list'] = [
             '#title' => $this->t('List of Group Admin'),
@@ -177,4 +192,7 @@ class GroupMenuBlock extends BlockBase {
     return $return_as_object ? $access : $access->isAllowed();
   }
 
+  /* public function cmp($a, $b) {
+      return strcmp($a->)
+  } */
 }
