@@ -58,10 +58,15 @@ class GroupActions extends FieldPluginBase {
     if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
             $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-                $link = $this->t('Group Admin');
+                $link = $this->t('<span title="Gruppenadministratoren können eine Gruppe nicht verlassen"><i>Gruppenadmin</i></span>');
             } else {
-                $url = Url::fromRoute('entity.group.leave',['group'=>$group->id()]);
-                $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);                
+                //pr($group->id());exit;
+                if (!in_array($group->id(), array("1", "2", "6", "15", "21", "39"))) {
+                    $url = Url::fromRoute('entity.group.leave', ['group' => $group->id()]);
+                    $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);
+                } else {
+                    $link = $this->t('<span title="Gruppenmitgliedschaft ist erforderlich für Kernfunktionalitäten des BpK"><i>Austreten</i></span>');
+                }
             }
 
     } else if(array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {

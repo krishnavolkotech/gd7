@@ -61,6 +61,7 @@ permissions:
   - 'upload files'
   - 'use text format basic_html'
   - 'use text format full_html'
+  - 'view any unpublished content'
   - 'view any unpublished quickinfo content'
   - 'view downtimes revisions'
   - 'view field_contact_from_pretext'

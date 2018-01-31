@@ -83,15 +83,6 @@ class MaintenanceBlock extends BlockBase
             ->condition('resolved', 0)
             ->condition('scheduled_p', 1)
             ->orderBy('startdate_planned', 'asc');
-//        ->condition('startdate_planned', REQUEST_TIME, '>=');
-//    $orGroup = $maintenance_list->orConditionGroup()
-//        ->condition('scheduled_p', 1)
-//        ->condition('resolved', 0);
-//    $andGroup = $maintenance_list->andConditionGroup()
-//        ->condition('scheduled_p', 1)
-//        ->condition('startdate_planned', REQUEST_TIME, '<=');
-//    $orGroup->condition($andGroup);
-//    $maintenance_list->condition($orGroup);
         $maintenance_list = $maintenance_list->execute()->fetchAll();
         $states = \Drupal::database()->select('states', 's')
             ->fields('s', ['id', 'abbr'])
@@ -99,7 +90,6 @@ class MaintenanceBlock extends BlockBase
             ->orderBy('id', 'asc')
             ->execute()
             ->fetchAllKeyed();
-//    $maintenance_list = \Drupal::database()->select("SELECT service_id,description, downtime_id, state_id,reason,startdate_planned,enddate_planned,scheduled_p FROM downtimes d WHERE d.service_id <> '' AND d.cancelled = 0  AND d.resolved = 0 AND (d.scheduled_p = 0 OR (d.scheduled_p = 1 AND startdate_planned <= :current_date))", array(':current_date' => REQUEST_TIME))->fetchAll();
         $result = $serviceids_list = array();
         $unResolvedServices = $data = [];
         // Get the service id's list and get respective details from service id.
@@ -120,7 +110,6 @@ class MaintenanceBlock extends BlockBase
                     foreach ($stateids as $sids) {
                         // Loops for all states
                         if ($groupContent) {
-//                            $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
                             $hoverIconHtml = $hover_markup = null;
                             if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
                                 $hover_markup = MaintenanceBlock::get_hover_markup($incident);
@@ -129,19 +118,17 @@ class MaintenanceBlock extends BlockBase
                             $class = '';
                             if ($vals->startdate_planned < REQUEST_TIME) {
                                 $class = 'text-danger';
-//                                $unResolvedServices[$ids] = $ids;
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                          $url = $incident->toUrl();
-//                          $url = Url::fromRoute('cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),'type'=>'downtimes','group_content'=>$groupContent->id()]);
+                            $url = $incident->toUrl();
                             $data[$ids][] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . $hoverIconHtml . $hover_markup);
                         }
                     }
                 }
             }
         }
-        
-        
+        # Sort services alphabetically
+        asort($serviceNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
         $link_options = array(
             'attributes' => array(
                 'class' => array(
@@ -157,23 +144,17 @@ class MaintenanceBlock extends BlockBase
             ),
         );
 
-//    $all_link = Link::createFromRoute($this->t('Störungen und Blockzeiten'), 'downtimes.new_downtimes_controller_newDowntimes', ['group' => INCIDENT_MANAGEMENT], $link_options);
-//    $report_link = Link::createFromRoute($this->t('Report Maintenance'), 'downtimes.create_maintenance', ['group' => INCIDENT_MANAGEMENT], $link_options);
         $markup['items'] = ['#type'=>'container','#attributes'=>['class'=>['maintenance-home-info']]];
         foreach ($data as $sid => $item) {
             $class = '';
-//            if (in_array($sid, $unResolvedServices)) {
-//                $class = 'text-danger';
-//            }
             $title = Markup::create('<span class="' . $class . '">' . $serviceNames[$sid] . '</span>');
-            
             $markup['items']['incident_list'][] = [
                 '#title' => $title,
                 '#prefix' => '<div class="maintenance-list">',
                 '#suffix' => '</div>',
                 '#items' => $item,
                 '#theme' => 'item_list',
-                '#weight'=> ord($serviceNames[$sid]),
+                '#weight'=> array_search($sid, array_keys($serviceNames)),
                 '#type' => 'ul',
                 '#attributes' => array(
                     'class' => array(
@@ -183,7 +164,6 @@ class MaintenanceBlock extends BlockBase
             ];
       
         }
-//        pr($markup);exit;
         $markup['downtimes'] = ['#type' => 'container', '#weight' => 100, '#attributes' => ['class' => ['link-wrapper-downtimes']]];
         $markup['downtimes']['list'] = [
             '#title' => $this->t('Störungen und Blockzeiten'),
@@ -203,9 +183,6 @@ class MaintenanceBlock extends BlockBase
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
-//    $markup['all_link'] = $all_link->toString();
-//    $markup['report_link'] = $report_link->toString();
-//    $build['incidents_block_number_of_posts']['#markup'] = render($markup['incident_list']) . render($links);
         $markup['#cache']['max-age'] = 0;
         
         return $markup;
@@ -220,27 +197,6 @@ class MaintenanceBlock extends BlockBase
      * @return markup
      */
     public static function get_hover_markup($entity) {
-        
-/*        $html = "<ul class='downtime-hover' style='display:none;'>";
-        // Getting the below start date. end date and description for hover.
-        if (!empty($start_date_planned)) {
-            $start_date_planned = DateTimePlus::createFromTimestamp((integer)$start_date_planned)->format('d.m.Y');
-            $html .= "<li>" . t('Start:') . $start_date_planned . "</li>";
-        }
-        
-        // If end date is not empty and if it is maintenance(ie., scheduled_p =1), then only display end date in hover.
-        if (!empty($end_date_planned) && $scheduled_p) {
-            $end_date_planned = DateTimePlus::createFromTimestamp((integer)$end_date_planned)->format('d.m.Y');
-            $html .= "<li>" . t('End:') . $end_date_planned . "</li>";
-        }
-        
-        if (!empty($description)) {
-            $description = strip_tags($description);
-            $description = Unicode::Truncate($description, 100, TRUE, TRUE);
-            $html .= "<li>$description</li>";
-        }
-        
-        $html .= "</ul>";*/
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
         $markup = $view_builder->view($entity, 'popup', 'de');
         $container = ['#type'=>'container','#attributes'=>['class'=>['downtime-popover-wrapper']]];

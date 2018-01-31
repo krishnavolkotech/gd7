@@ -63,9 +63,12 @@ class ReleaseFilterForm extends FormBase
         
         foreach ($services_obj as $services_data) {
           $serviceNode = \Drupal\node\Entity\Node::load($services_data->nid);
-          if(!empty($serviceNode->get('field_release_name')->value)){
-            $services[$services_data->nid] = $serviceNode->get('field_release_name')->value;
-          }
+          //if(!empty($serviceNode->get('field_release_name')->value)){
+          //  $services[$services_data->nid] = $serviceNode->get('field_release_name')->value;
+          //}
+	  //if(!empty($serviceNode->get('title')->value)){
+          $services[$services_data->nid] = $serviceNode->get('title')->value;
+          //}
         }
         
         $container = \Drupal::getContainer();
@@ -200,7 +203,7 @@ class ReleaseFilterForm extends FormBase
         if (!$default_value_services) {
             $default_value_services = isset($timer) ? $timer : $form_state->getValue('services');
         }
-        asort($services);
+        asort($services, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
         $form['services'] = array(
             '#type' => 'select',
             '#options' => $services,

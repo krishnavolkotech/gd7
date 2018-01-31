@@ -332,7 +332,7 @@ function hzd_preprocess_node(&$variables) {
     }
     else {
       $att_html = $variables['ticketstore_count'] > 1 ? "attachments" : "attachment";
-      $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']}>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
+      $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']} target='_blank'>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
     }
 
     $variables['erroffnet_value'] = date('d.m.Y', $variables['node']

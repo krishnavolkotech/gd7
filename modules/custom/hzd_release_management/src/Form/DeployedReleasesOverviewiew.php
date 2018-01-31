@@ -70,6 +70,7 @@ class DeployedReleasesOverviewiew extends FormBase {
     $form['deployed_overview']['#suffix'] = '</div>';
     $form['#cache']['tags'] = ['hzd_release_management:releases'];
     $form['#attached']['library'] = array('hzd_release_management/hzd_release_management_sticky_header');
+
     return $form;
   }
 
@@ -96,8 +97,16 @@ class DeployedReleasesOverviewiew extends FormBase {
    *
    */
   public function display_deployed_release_table($release_type) {
-    $group_id = get_group_id();
 
+    $cid = 'deployedReleasesOverview' . $release_type;
+    $build = NULL;
+
+    if ($cache = \Drupal::cache()->get($cid)) {
+      $build = $cache->data;
+      return $build;
+    }
+
+    $group_id = get_group_id();
     $db = \Drupal::database();
     $states = $db->select('states', 's')
             ->condition('s.id', 1, '!=')
@@ -116,7 +125,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             ->condition('status', 1)
             ->condition('field_release_name', 'NULL', '!=')
             ->condition('release_type', $release_type)
-            ->sort('field_release_name')
+            ->sort('title')
             ->execute();
 
     $groupServs = array_intersect($services, $groupServs);
@@ -165,7 +174,8 @@ class DeployedReleasesOverviewiew extends FormBase {
             $newData[$state_details->abbr] = '';
           }
         }
-        $dep[] = $service->get('field_release_name')->value;
+        //$dep[] = $service->get('field_release_name')->value;
+	$dep[] = $service->get('title')->value;
         $dep += $newData;
         $depReleases[] = $dep;
         $newData = NULL;
@@ -190,6 +200,9 @@ class DeployedReleasesOverviewiew extends FormBase {
                       'class' => ['view-deployed-releases']
                   ]
       ];
+
+      \Drupal::cache()->set($cid, $build);
+
       return $build;
 
 

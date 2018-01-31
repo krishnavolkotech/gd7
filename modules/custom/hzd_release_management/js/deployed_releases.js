@@ -112,10 +112,10 @@
        */
 
       $(context).find('.archive_deployedRelease').click(function () {
-        var is_archive = confirm("Do you really want to archive?");
+        var is_archive = confirm("Möchten Sie wirklich archivieren?");
         if (is_archive == true) {
           var nid = $(this).attr('nid');
-          $(this).next().prepend('Archivierung !! Warten Sie mal.');
+          $(this).next().prepend('Archivierung, bitte warten.');
           var url = drupalSettings.deploy_release.basePath + '/archive_deployedreleases';
 
           $.post(url, {'nid': nid}, function (data) {

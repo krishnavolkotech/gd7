@@ -121,7 +121,7 @@ class DeployedReleasesFilterForm extends FormBase {
     $environment = $this->request->get('environment');
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
     $services_options = $services_releases['services'];
-    asort($services_options);
+    asort($services_options, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
     $form['service'] = array(
         '#type' => 'select',
         '#default_value' => $this->request->get('service'),

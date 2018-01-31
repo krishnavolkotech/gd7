@@ -29,7 +29,7 @@ class UpdateMigratedNotificationOverridesForm extends FormBase {
     $data = \Drupal::database()->select('service_notifications_override','sno')
       ->fields('sno')
       ->execute()->fetchAll();
-    
+
     $batch = array(
       'title' => t('Updating Notification Overrides'),
       'finished' => '\Drupal\cust_group\Form\UpdateMigratedNotificationOverridesForm::finishedCallBack',
@@ -41,8 +41,6 @@ class UpdateMigratedNotificationOverridesForm extends FormBase {
       );
     }
 
-//    pr(count($data));
-//    exit;
     return batch_set($batch);
   }
   
