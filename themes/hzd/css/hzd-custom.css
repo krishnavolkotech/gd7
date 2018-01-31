@@ -553,6 +553,9 @@ a,
 p {
     /*word-wrap: break-word;*/
 }
+p {
+  clear: both;
+}
 
 table.sticky-header th.views-field-changed a span,
 table.sticky-table th.views-field-created a span {
@@ -1209,10 +1212,10 @@ table.view-deployed-releases{
   line-height:150%;
   border-radius:0 !important;
 }*/
-.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
+/*.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
   display:none;
-}
+}*/
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
   margin-left:7px;
@@ -1274,4 +1277,19 @@ a.cke_dialog_tab {
 .cke_ltr .cke_dialog_contents_body .cke_dialog_page_contents table {
    margin-top: 0px !important; 
    margin-bottom: 0px !important; /*  in ckeditor table popup table */
+}
+.early-warnings .content .field--label-inline {
+    padding: 0% 0% 1% 0%;
+    margin-bottom: 0px;
+}
+.view .attachment .views-element-container span a.is-active {
+  color: #ff3333;
+  text-decoration: underline;
+}
+.im-attachment-upload-filter .btn-default {
+    float: none;
+}
+.im-attachment-upload-filter .btn-primary {
+    padding: 6px 12px !important;
+    margin-right: 5px;
 }

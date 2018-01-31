@@ -87,6 +87,10 @@
             <td class='problem_content'>{{ node.field_function.value }}</td>
         </tr>
 
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Symptoms'|trans }}</td>
+            <td class='problem_content'>{{ node.field_problem_symptoms.value }}</td>
+        </tr>
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Affected Release'|trans }}</td>
@@ -149,7 +153,7 @@
 
         <tr class='odd'>
             <td class='problem_titles'>{{ 'Eroffnet'|trans }}</td>
-            <td class='problem_content'>{{ erroffnet_value }}</td>
+            <td class='problem_content'>{{ node.field_eroffnet.value }}</td>
         </tr>
 
         <tr class='even'>
@@ -157,22 +161,22 @@
             <td class='problem_content'>{{ node.field_processing.value }}</td>
         </tr>
 
-        <tr class='odd'>
+{#        <tr class='odd'>
             <td class='problem_titles'>{{ 'Closed'|trans }}</td>
             <td class='problem_content'>{{ node.field_closed.value }}</td>
-        </tr>
+        </tr>#}
 
-        <tr class='even'>
+        <tr class='odd'>
             <td class='problem_titles'>{{ 'Taskforce'|trans }}</td>
             <td class='problem_content'>{{ node.field_task_force.value }}</td>
         </tr>
 
-        <tr class='odd'>
+        <tr class='even'>
             <td class='problem_titles'>{{ 'SDCallID'|trans }}</td>
             <td class='problem_content'>{{ node.field_s_no.value }}</td>
         </tr>
 
-        <tr class='even'>
+        <tr class='odd'>
             <td class='problem_titles'>{{ 'Attachments'|trans }}</td>
             <td class='problem_content'>{{ node.field_attachment.value }}</td>
         </tr>

@@ -55,7 +55,7 @@ downtimes.service_data:
 downtimes.currentincidents:
     version: 1.x
     js:
-      js/jquery.tablesorter.min.js: {}
+#      js/jquery.tablesorter.min.js: {}
       js/downtimes.js: {}
     css:
       css/downtimes.css: {}

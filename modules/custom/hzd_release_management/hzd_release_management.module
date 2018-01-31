@@ -16,6 +16,9 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Cache\Cache;
 
 // if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));.
@@ -372,14 +375,40 @@ function send_release_notifications($entity, $action = 'update') {
   $service_id = $service_field[0]['target_id'];
 
   // Get immediate notifications user mails.
-  $result = hzd_get_immediate_notification_user_mails($service_id, 'release');
-  if (is_array($result) && count($result) > 0) {
+  $user_ids = hzd_get_immediate_notification_user_mails($service_id, 'release');
+  if (is_array($user_ids) && count($user_ids) > 0) {
 
-    foreach ($result as $values) {
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
+
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
       $data['node'] = $entity;
-      $data['user'] = user_load_by_mail($mail);
+      $data['user'] = $user;
       $mailContent = getNodeMailContentFromConfig($data, $action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -395,20 +424,43 @@ function send_downtime_notifications($entity, $action = 'update') {
     ->condition('d.downtime_id', $entity->id(), '=')
     ->execute()
     ->fetchField();
-//  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+
   // Get immediate notifications user mails.
-  $result = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
-//  $subjectKey = 'subject_' . $action;
+  $user_ids = hzd_get_immediate_notification_user_mails($service_id, 'downtimes');
 
+  if (is_array($user_ids) && count($user_ids) > 0) {
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
 
-  if (is_array($result) && count($result) > 0) {
-    foreach ($result as $values) {
-      $body = [];
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
       $data['node'] = $entity;
-      $data['user'] = user_load_by_mail($mail);
-//      pr($data['user']);
+      $data['user'] = $user;
+
       $mailContent = getNodeMailContentFromConfig($data, $action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -423,15 +475,40 @@ function send_problem_notifications($entity, $action = 'update') {
   $service_id = $service_field[0]['target_id'];
 
   // Get immediate notifications user mails.
-  $result = hzd_get_immediate_notification_user_mails($service_id, 'problem');
-  if (is_array($result) && count($result) > 0) {
+  $user_ids = hzd_get_immediate_notification_user_mails($service_id, 'problem');
+  if (is_array($user_ids) && count($user_ids) > 0) {
     //Fetching the mail body of a problem
-    foreach ($result as $values) {
-      //@todo user object has to be passed here for notifications with user.
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
+
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
       $data['node'] = $entity;
-      $data['user'] = user_load_by_mail($mail);
+      $data['user'] = $user;
       $mailContent = getNodeMailContentFromConfig($data, $action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
@@ -498,14 +575,42 @@ function send_pf_notifications($entity, $action = 'update') {
   if (!empty($entity->sendNomail) && $entity->sendNomail == 1) {
     return FALSE;
   }
-  $result = hzd_get_immediate_pf_notification_user_mails();
+  $user_ids = hzd_get_immediate_pf_notification_user_mails();
 
-  if (is_array($result) && count($result) > 0) {
-    foreach ($result as $values) {
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+  if (is_array($user_ids) && count($user_ids) > 0) {
+
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
+
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
       $data['node'] = $entity;
-      $data['user'] = user_load_by_mail($mail);
+      $data['user'] = $user;
+
       $mailContent = getNodeMailContentFromConfig($data, $action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -521,13 +626,39 @@ function send_earlywarning_notifications($entity, $action = 'update') {
 //    $service_id = $service_field[0]['target_id'];
 
   // Get immediate notifications user mails.
-  $result = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
-  if (is_array($result) && count($result) > 0) {
-    foreach ($result as $values) {
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+  $user_ids = hzd_get_immediate_notification_user_mails($service_id, 'early_warnings');
+  if (is_array($user_ids) && count($user_ids) > 0) {
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
+
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
       $data['node'] = $entity;
-      $data['user'] = user_load_by_mail($mail);
+      $data['user'] = $user;
       $mailContent = getNodeMailContentFromConfig($data, $action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
@@ -543,11 +674,38 @@ function send_earlywarning_notifications($entity, $action = 'update') {
 function send_qi_notifications($entity) {
   global $base_url;
   $services = $entity->get('field_other_services')->getValue();
-  $result = hzd_get_immediate_qi_notification_user_mails($services);
-  if (is_array($result) && count($result) > 0) {
-    foreach ($result as $values) {
-      $preference = $values->field_message_preference_value ? $values->field_message_preference_value : 'html';
-      $mail = $values->mail;
+  $user_ids = hzd_get_immediate_qi_notification_user_mails($services);
+  if (is_array($user_ids) && count($user_ids) > 0) {
+    foreach ($user_ids as $user_id) {
+      $user = User::load($user_id);
+
+      // For some reason, user subscribed and is deleted from system.
+      if (!is_object($user)) {
+        continue;
+      }
+
+      $user_active = $user->isActive();
+      $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+      $user_notif_status = $user->get('field_notifications_status')->value;
+
+      /**
+       * Mail is not sent for following :
+       *  - If user is in blocked state.
+       *  - Is user has disabled notifications.
+       *  - If user is in Inactive state.
+       */
+      if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+        continue;
+      }
+
+      $preference = $user->get('field_message_preference')->value;
+
+      if (empty($preference)) {
+        $preference = 'html';
+      }
+
+      $mail = $user->getEmail();
+
       // Trigger mail functionality to send immediate notifications of quickinfo.
       //$markup = ['#theme' => 'node__quickinfo__full', '#node' => $entity];
       $markup = \Drupal::entityManager()
@@ -563,6 +721,152 @@ function send_qi_notifications($entity) {
       send_immediate_notifications($subject, $message_text, $mail, $preference, $files);
     }
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert()
+ * Changed from node insert to entity insert because 
+ * of pathauto module used entity insert to create pathalias
+ */
+// function hzd_release_management_node_insert($entity) {
+function hzd_release_management_entity_insert($entity) {
+  if($entity->getEntityTypeId() != 'node') {
+      return;
+  }
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getType() == 'deployed_releases') {
+//            send_release_notifications($entity);
+    }
+    if ($entity->getType() == 'release') {
+      send_release_notifications($entity, 'insert');
+    }
+    if ($entity->getType() == 'downtimes') {
+      send_downtime_notifications($entity, 'insert');
+    }
+    if ($entity->getType() == 'early_warnings') {
+      send_earlywarning_notifications($entity, 'insert');
+    }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity, 'insert');
+    }
+  }
+  if ($entity->getType() == 'problem') {
+    send_problem_notifications($entity, 'insert');
+  }
+
+  if ($entity->getType() == 'quickinfo') {
+//    send_qi_notifications($entity);
+  }
+
+  if ($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+    $downtime = $entity->get('field_enable_downtime')->value;
+    $problem = $entity->get('field_problem_name')->value;
+    $release = $entity->get('field_release_name')->value;
+
+    if ($downtime && $rel_type == KONSONS) {
+      insert_new_service_notifications('downtimes', $nid);
+    }
+    if ($problem != '' && $rel_type == KONSONS) {
+      insert_new_service_notifications('problem', $nid);
+    }
+    if ($release != '') {
+      insert_new_service_notifications('release', $nid);
+    }
+    insert_new_service_notifications('early_warnings', $nid);
+  }
+}
+
+function hzd_release_management_node_presave(NodeInterface $node) {
+    $tags = [];
+    if ($node->bundle() == 'release') {
+        $tags = ['hzd_release_management:releases'];
+        Cache::invalidateTags($tags);
+    }
+    if ($node->getType() == 'deployed_releases') {
+        if (!isset($node->field_archived_release->value)) {
+            $node->set('field_archived_release', 0);
+        }
+
+        $current_node = node_load($node->id());
+        if ($node->field_environment->value == 1 || $current_node->field_environment->value == 1) {
+            // If environment is or was Production, delete cache for deployed releases overview table
+            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            \Drupal::cache()->deleteMultiple($cids);
+        }
+    }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update()
+ */
+function hzd_release_management_node_update($entity) {
+
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    if ($entity->getType() == 'release') {
+      send_release_notifications($entity);
+    }
+    if ($entity->getType() == 'downtimes') {
+      send_downtime_notifications($entity);
+    }
+    if ($entity->getType() == 'early_warnings') {
+      send_earlywarning_notifications($entity);
+    }
+    if ($entity->getType() == 'planning_files') {
+      send_pf_notifications($entity);
+    }
+  }
+
+  if ($entity->getType() == 'problem') {
+    send_problem_notifications($entity);
+  }
+
+  if ($entity->getType() == 'services') {
+    update_service_notifications($entity);
+  }
+
+  // if ($entity->getType() == 'deployed_releases') {
+  // }
+}
+
+/**
+ * Get user mail ids.
+ */
+function hzd_get_immediate_notification_user_mails($service_id, $type) {
+  $service_id = explode(',', $service_id);
+  $query = \Drupal::database()->select('service_notifications', 'sn');
+  $query->addField('sn', 'uids');
+  $query->condition('sn.service_id', $service_id, 'IN');
+  $query->condition('sn.send_interval', 0, '=');
+  $query->condition('sn.type', $type, 'like');
+  $get_immediate_notifications_users = $query->execute()->fetchAll();
+//  pr($get_immediate_notifications_users);exit;
+  $user_mails = array();
+  $user_ids = array();
+  foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
+    $unserialized_user_array = unserialize($serialized_uids->uids);
+    $user_ids = array_unique(array_merge($user_ids, $unserialized_user_array), SORT_REGULAR);
+  }
+  /*if (is_array($user_ids) && count($user_ids) > 0) {
+    return hzd_user_mails($user_ids);
+  }*/
+  return $user_ids;
+}
+
+/**
+ *
+ */
+function hzd_get_immediate_pf_notification_user_mails() {
+  $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
+  $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
+  /*if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
+    return hzd_user_mails($unserialized_user_array);
+  }*/
+  return $unserialized_user_array;
 }
 
 /**
@@ -590,10 +894,10 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
     $uids_list = array_unique(array_merge($uids_list, $uids));
   }
 
-  if (is_array($uids_list) && (count($uids_list) > 0)) {
+  /*if (is_array($uids_list) && (count($uids_list) > 0)) {
     return hzd_user_mails(array_values($uids_list));
-  }
-  return [];
+  }*/
+  return $uids_list;
 }
 
 /**
@@ -634,13 +938,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   $token_service = \Drupal::token();
 //    $i = 0;
   foreach (explode(',', trim($to, ',')) as $userMail) {
-    $userEntity = \Drupal::entityTypeManager()->getStorage('user')
-      ->loadByProperties(['mail' => trim($userMail)]);
-    if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
-      && !hzd_user_inactive_status_check(reset($userEntity)->id())
-    ) {
-      $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
-    }
+    $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
   }
   /*if ($result['result'] != TRUE) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
@@ -660,6 +958,36 @@ function hzd_user_inactive_status_check($uid = NULL) {
 }
 
 /**
+ * Implements hook_mail.
+ */
+function hzd_release_management_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+
+      //@todo for now sending all html mails only
+//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
+
+
+//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+
+      break;
+    case 'download':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    break;
+  }
+}
+
+/**
  * Implements hook_ENTITY_TYPE_delete()
  */
 function hzd_release_management_node_delete($entity) {
@@ -668,6 +996,13 @@ function hzd_release_management_node_delete($entity) {
     db_delete('service_notifications')
       ->condition('service_id', $nid)
       ->execute();
+  }
+  if ($entity->getType() == 'deployed_releases') {
+        if ($entity->field_environment->value == 1) {
+            // If environment is Production, delete cache for deployed releases overview table
+            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            \Drupal::cache()->deleteMultiple($cids);
+        }
   }
 }
 
@@ -1158,6 +1493,8 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
     'downtimes.archived_downtimes_controller',
     'problem_management.problems_tab',
     'problem_management.archived_problems_tab',
+    'hzd_release_management.deployed_releases_tab',
+    'hzd_release_management.archived_deployed_releases_tab',
   ];
   $param = \Drupal::request()->query->all();
   if (!empty($data['tabs'][0])) {
@@ -1169,4 +1506,15 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
       }
     }
   }
+
+  //removing persistent link in users profile page tab menu
+  if (!empty($data['tabs'][0])) {
+    $tabmenus = $data['tabs'][0];
+    foreach ($tabmenus as $key => $value) {
+      if ($key == 'persistent_login.user_tokens_list') {
+        unset($data['tabs'][0]['persistent_login.user_tokens_list']);
+      }
+    }
+  }
 }
+

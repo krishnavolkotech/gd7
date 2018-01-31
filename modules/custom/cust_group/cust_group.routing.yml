@@ -220,3 +220,17 @@ cust_group.migrate_menu:
     _title: 'Detach Old Files'
   requirements:
     _permission: 'administer site'
+cust_group.update_noficatio_override:
+  path: '/update-notification-overrides'
+  defaults:
+    _form: '\Drupal\cust_group\Form\UpdateMigratedNotificationOverridesForm'
+    _title: 'Updating migrated notification overrides'
+  requirements:
+    _permission: 'administer site'
+cust_group.problem_notification_update:
+  path: '/update-problem-notifications'
+  defaults:
+    _form: '\Drupal\cust_group\Form\UpdateProblemsNotificationforAllServices'
+    _title: 'Updating problems notification'
+  requirements:
+    _permission: 'administer site'

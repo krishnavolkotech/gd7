@@ -1,0 +1,19 @@
+uuid: 1379ecb2-3555-458e-953d-0edaf325af5e
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_problem_symptoms
+    - node.type.problem
+id: node.problem.field_problem_symptoms
+field_name: field_problem_symptoms
+entity_type: node
+bundle: problem
+label: 'Problem Symptoms'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

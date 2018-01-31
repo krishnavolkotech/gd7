@@ -9,6 +9,9 @@
  * - icon: An icon.
  * - icon_only: Flag to display only the icon and not the label.
  * - icon_position: Where an icon should be displayed.
+ * - file_created: Timestamp of file created date
+ * - node_view_mode: Current node page view mode
+ * - node_edit_page: Checks whether current page is node edit page or not(for #19514)
  *
  * @ingroup templates
  *
@@ -27,26 +30,32 @@
       <span class="file-icon">{{ icon }}</span>
       <span class="sr-only">
         <span class="file-link">{{ link }}</span>
-        {% if node_view_mode != 'mail' %}
-        <span class='hzd-file-created'>{{ file_created }}</span>
-        <span class="file-size">{{ file_size }}</span>
+        {% if node_edit_page == 'edit' %}
+          {% if node_view_mode != 'mail' %}
+            <span class='hzd-file-created'>{{ file_created }}</span>
+          {% endif %}
         {% endif %}
+        <span class="file-size">{{ file_size }}</span>
       </span>
     {% else %}
       {% if icon_position == 'after' %}
         <span class="file-link">{{ link }}</span>
-        {% if node_view_mode != 'mail' %}
-        <span class='hzd-file-created'>{{ file_created }}</span>
-        <span class="file-size">{{ file_size }}</span>
+        {% if node_edit_page == 'edit' %}
+          {% if node_view_mode != 'mail' %}
+            <span class='hzd-file-created'>{{ file_created }}</span>
+          {% endif %}
         {% endif %}
+        <span class="file-size">{{ file_size }}</span>
         <span class="file-icon">{{ icon }}</span>
       {% else %}
         <span class="file-icon">{{ icon }}</span>
         <span class="file-link">{{ link }}</span>
-        {% if node_view_mode != 'mail' %}
-        <span class='hzd-file-created'>{{ file_created }}</span>
-        <span class="file-size">{{ file_size }}</span>
+        {% if node_edit_page == 'edit' %}
+          {% if node_view_mode != 'mail' %}
+            <span class='hzd-file-created'>{{ file_created }}</span>
+          {% endif %}
         {% endif %}
+        <span class="file-size">{{ file_size }}</span>
       {% endif %}
     {% endif %}
   </span>

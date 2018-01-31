@@ -2,47 +2,29 @@ display:
   default:
     display_options:
       exposed_form:
-        options:
-          submit_button: Suchen
-          exposed_sorts_label: 'Sortieren nach'
-          sort_asc_label: Auf
-          sort_desc_label: Ab
-          reset_button_label: Zurücksetzen
+        options: {  }
       pager:
         options:
-          expose:
-            items_per_page_label: 'Einträge pro Seite'
-            items_per_page_options_all_label: '- Alle -'
-      title: Benutzer
+          expose: {  }
   address:
-    display_title: Seite
     display_options:
       fields:
-        lastname:
-          label: Nachname
-        name:
-          label: Nachname
-        abbr:
-          label: Land
-        mail:
-          label: E-Mail
+        lastname: {  }
+        name: {  }
+        abbr: {  }
+        mail: {  }
       pager:
         options:
-          tags:
-            first: '« Erste'
-            last: 'Letzte »'
-          expose:
-            items_per_page_label: 'Einträge pro Seite'
-            items_per_page_options_all_label: '- Alle -'
+          tags: {  }
+          expose: {  }
       empty:
-        area:
-          content:
-            value: "<p>Keine Ergebnisse gefunden</p>\r\n"
-            format: basic_html
+        area: {  }
       exposed_form:
-        options:
-          submit_button: Suchen
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
-          sort_asc_label: Aufsteigend
-          sort_desc_label: Absteigend
+        options: {  }
+      filters:
+        combine:
+          expose:
+            label: 'Name, E-Mail oder Benutzername'
+        abbr:
+          group_info:
+            description: ''

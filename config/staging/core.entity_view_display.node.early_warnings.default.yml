@@ -11,13 +11,9 @@ dependencies:
     - node.type.early_warnings
   module:
     - comment
-    - entity_print
     - options
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.early_warnings.default
 targetEntityType: node
 bundle: early_warnings

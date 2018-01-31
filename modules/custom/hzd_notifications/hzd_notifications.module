@@ -7,6 +7,7 @@ use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Link;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -363,6 +364,12 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_type_edit_form',
         'node_planning_files_edit_form',
         'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupadmin_formids = array(
         'node_page_form',
@@ -374,6 +381,12 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_deployed_releases_edit_form',
         'node_planning_files_edit_form',
         'node_planning_files_form',
+        'node_forum_form',
+        'node_forum_edit_form',
+        'node_planning_files_form',
+        'node_planning_files_edit_form',
+        'node_early_warnings_form',
+        'node_early_warnings_edit_form',
       );
       $for_groupmemeber_formids = array(
         'node_downtimes_edit_form',
@@ -650,158 +663,61 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
     }
   }
 
+  if ($type == 'user' && !empty($data['user'])) {
+    /** @var \Drupal\user\Entity\User $user */
+    $user = $data['user'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'user-notification-settings-url-absolute':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          global $base_url;
+          $notif_change_link = $base_url . $url;
+          $replacements[$original] = $notif_change_link;
+          break;
+        case 'user-notification-settings-url-relative':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+          
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+          $replacements[$original] = $url;
+          break;
+      }
+    }
+
+    /*if ($author_tokens = $token_service->findWithPrefix($tokens, 'author')) {
+      $replacements += $token_service->generate('user', $author_tokens, ['user' => $node->getOwner()], $options, $bubbleable_metadata);
+    }*/
+  }
   return $replacements;
 }
 
-
 /**
- * Implements hook_ENTITY_TYPE_insert()
+ * Implements hook_token_info_alter().
  */
-function hzd_notifications_node_insert($entity) {
-
-  $notification_bundles = [
-    'release',
-    'downtimes',
-    'problem',
-    'planning_files',
-    'early_warnings',
-    'quickinfo'
+function hzd_notifications_token_info_alter(&$data) {
+  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
+    'name' => t("user notification settings - absolute link"),
+    'description' => t("The absolute link to change user notification settings."),
   ];
 
-  // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
-
-    $notification_manager = \Drupal::service('hzd_notifications.manager');
-    $services = $notification_manager->getServicesForEntity($entity);
-    $user_data = $notification_manager->getUserDataForServices($services, $entity);
-
-    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
-
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
-
-    // Notification override available for the below entities.
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-
-      // These bundles have condition for notifications.
-      $allowed_bundles = [
-        'release',
-        'downtimes',
-      ];
-
-      if (in_array($entity->getType(), $allowed_bundles)) {
-        $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
-      }
-
-      /*if ($entity->getType() == 'deployed_releases') {
-        //send_release_notifications($entity);
-      }
-      if ($entity->getType() == 'release') {
-        send_release_notifications($entity, 'insert');
-      }
-      if ($entity->getType() == 'downtimes') {
-        send_downtime_notifications($entity, 'insert');
-      }*/
-    }
-
-    $allowed_bundles = [
-      'problem',
-      'planning_files',
-      'early_warnings',
-    ];
-
-    if (in_array($entity->getType(), $allowed_bundles)) {
-      $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
-    }
-
-    /*if ($entity->getType() == 'problem') {
-      send_problem_notifications($entity, 'insert');
-    }
-
-    if ($entity->getType() == 'planning_files') {
-      send_pf_notifications($entity, 'insert');
-    }
-    if ($entity->getType() == 'early_warnings') {
-      send_earlywarning_notifications($entity, 'insert');
-    }*/
-
-    /*if ($entity->getType() == 'quickinfo') {
-      //send_qi_notifications($entity);
-    }*/
-  }
-
-  // Services bundle is not altered for now.
-  if ($entity->getType() == 'services') {
-    $nid = $entity->id();
-    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-    $downtime = $entity->get('field_enable_downtime')->value;
-    $problem = $entity->get('field_problem_name')->value;
-    $release = $entity->get('field_release_name')->value;
-
-    if ($downtime && $rel_type == KONSONS) {
-      insert_new_service_notifications('downtimes', $nid);
-    }
-    if ($problem != '' && $rel_type == KONSONS) {
-      insert_new_service_notifications('problem', $nid);
-    }
-    if ($release != '') {
-      insert_new_service_notifications('release', $nid);
-    }
-    insert_new_service_notifications('early_warnings', $nid);
-  }
-}
-
-/**
- * Implements hook_ENTITY_TYPE_update()
- */
-function hzd_notifications_node_update($entity) {
-
-  $notification_bundles = [
-    'release',
-    'downtimes',
-    'problem',
-    'planning_files',
-    'early_warnings',
-    'quickinfo'
+  $data['tokens']['user']['user-notification-settings-url-relative'] = [
+    'name' => t("user notification settings - relative link"),
+    'description' => t("The relative link to change user notification settings."),
   ];
-
-  // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
-    /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
-    $notification_manager = \Drupal::service('hzd_notifications.manager');
-    $services = $notification_manager->getServicesForEntity($entity);
-    $user_data = $notification_manager->getUserDataForServices($services, $entity);
-
-    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
-
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-      /* if ($entity->getType() == 'deployed_releases') {
-   //            send_release_notifications($entity);
-       }
-       if ($entity->getType() == 'release') {
-         send_release_notifications($entity);
-       }
-
-       if ($entity->getType() == 'downtimes') {
-         send_downtime_notifications($entity);
-       }*/
-
-      // These bundles have condition for notifications.
-      $allowed_bundles = [
-        'release',
-        'downtimes',
-      ];
-
-      if (in_array($entity->getType(), $allowed_bundles)) {
-        $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);
-      }
-    }
-
-    $allowed_bundles = [
-      'problem',
-      'planning_files',
-      'early_warnings',
-    ];
 
     if (in_array($entity->getType(), $allowed_bundles)) {
       $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);

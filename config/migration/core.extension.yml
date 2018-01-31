@@ -59,7 +59,6 @@ module:
   hzd_customizations: 0
   hzd_earlywarnings: 0
   hzd_notifications: 0
-  hzd_release_management: 0
   hzd_services: 0
   hzd_user_customizations: 0
   image: 0
@@ -89,11 +88,13 @@ module:
   page_cache: 0
   path: 0
   pdf_api: 0
+  persistent_login: 0
   piwik: 0
   printable: 0
   printable_pdf: 0
   prlp: 0
   problem_management: 0
+  queue_ui: 0
   quickedit: 0
   rdf: 0
   rest: 0
@@ -120,6 +121,7 @@ module:
   xmlrpc: 0
   ctools: 1
   favorites: 1
+  filefield_sources: 1
   forum: 1
   menu_link_content: 1
   pathauto: 1
@@ -127,6 +129,7 @@ module:
   views: 10
   reroute_email: 19
   queue_mail: 20
+  hzd_release_management: 21
   standard: 1000
 theme:
   stable: 0

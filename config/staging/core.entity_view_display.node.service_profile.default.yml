@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.service_profile.body
     - field.field.node.service_profile.comment
     - field.field.node.service_profile.field_dependent_downtimeservices
@@ -15,14 +16,10 @@ dependencies:
     - node.type.service_profile
   module:
     - comment
-    - entity_print
     - file
     - options
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.service_profile.default
 targetEntityType: node
 bundle: service_profile

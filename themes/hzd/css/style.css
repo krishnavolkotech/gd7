@@ -887,12 +887,24 @@ h1.page-header {
 }
 /* problem management table sort css */
 
-table.tablesorter thead tr .header {
-    background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
+table.tablesorter thead tr .tablesorter-header-inner {
+    /*background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);*/
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
     padding-right: 24px !important;
+}
+/*table.tablesorter thead tr .tablesorter-headerUnSorted .tablesorter-header-inner {
+    background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);
+}
+table.tablesorter thead tr .tablesorter-headerAsc .tablesorter-header-inner {
+    background-image: url(/modules/custom/hzd_problem_management/images/asc.gif);
+}
+table.tablesorter thead tr .tablesorter-headerDesc .tablesorter-header-inner {
+    background-image: url(/modules/custom/hzd_problem_management/images/desc.gif);
+}*/
+table.tablesorter thead tr .sorter-false .tablesorter-header-inner {
+    background-image: none;
 }
 table.sticky-header {
     width: auto !important;
@@ -1477,11 +1489,23 @@ nav#block-optionen ul li a {
     background: url("../images/grey-list-arrow.png") left 5px no-repeat;
 }
 .region-sidebar-first section ul.menu.nav li a {
-    padding-left: 12px !important;
+    padding-left: 12px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a {
     background: none !important;
-    padding-left: 25px !important;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li{
+    padding-left: 15px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li.expanded.active > a{
+    color: #0084bf;
+    background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat !important;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li ul li.expanded.active{
+    padding-bottom: 0px;
+}
+.region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li ul li.expanded.active a.is-active{
+    margin-bottom: 0px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul {
     padding-bottom: 0 !important;
@@ -3447,10 +3471,10 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
   line-height:150%;
   border-radius:0 !important;
 }*/
-.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
+/*.quickinfo .field--name-upload.field--type-file table tbody tr td .hzd-file-created,
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-size{
   display:none;
-}
+}*/
 .quickinfo .field--name-upload.field--type-file table tbody tr td .file-link a{
   text-decoration:none;
 }
@@ -3463,3 +3487,64 @@ body.page-node-type-forum .js-comment ul.list-inline li.comment-translations a:h
   border-radius:0 !important;
 }
 
+
+div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.sort-user-list > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.all-groups-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+div.group-nodes-sortable > div.view-content > div > table.table thead tr .tablesorter-header-inner,
+.saved-rz-schnellinfo table thead tr .tablesorter-header-inner,
+.view-group-members-lists table thead tr .tablesorter-header-inner,
+.view-hzd-group-members table thead tr .tablesorter-header-inner{
+    /*background-image: url(/themes/hzd/images/bg.gif);*/
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 24px !important;
+}
+div.rz-schnellinfos-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.sort-user-list > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.all-groups-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+div.group-nodes-sortable > div.view-content > div > table.table thead tr .sorter-false .tablesorter-header-inner,
+.saved-rz-schnellinfo table thead tr .sorter-false .tablesorter-header-inner,
+.view-group-members-lists table thead tr .sorter-false .tablesorter-header-inner,
+.view-hzd-group-members table thead tr .sorter-false .tablesorter-header-inner{
+    background-image: none;
+}
+table.sticky-header thead tr .tablesorter-header-inner {
+    /*background-image: url(/modules/custom/hzd_problem_management/images/bg.gif);*/
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 24px !important;
+}
+table.sticky-header thead tr .sorter-false .tablesorter-header-inner {
+    background-image: none;
+}
+
+.tablesorter-default .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+}
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	border-bottom: #000 2px solid;
+}
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+	border-bottom: #000 2px solid;
+}
+.tablesorter-default thead .sorter-false {
+	background-image: none;
+	cursor: default;
+}
+.sticky-table {
+    margin: 0px !important;
+}

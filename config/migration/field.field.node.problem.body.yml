@@ -6,12 +6,22 @@ dependencies:
     - field.storage.node.body
     - node.type.problem
   module:
+    - allowed_formats
     - text
+third_party_settings:
+  allowed_formats:
+    full_html: '0'
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
 id: node.problem.body
 field_name: body
 entity_type: node
 bundle: problem
-label: 'Problem Text'
+label: Description
 description: ''
 required: false
 translatable: true

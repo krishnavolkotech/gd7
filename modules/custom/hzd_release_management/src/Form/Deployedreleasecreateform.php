@@ -10,9 +10,6 @@ use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContent;
 
 
-
-
-
 /**
  *
  */
@@ -33,81 +30,39 @@ class Deployedreleasecreateform extends FormBase {
     $form['#attached']['library'] = array(
       'hzd_release_management/deployed_releases',
     );
-//    $group = \Drupal::routeMatch()->getParameter('group');
-//    if (is_object($group)) {
-//      $group_id = $group->id();
-//    }
-//    else {
-//      $group_id = $group;
-//    }
 
-//    $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
-//    $services_data = $services_releases['services'];
-//pr($services_data);exit;
     $wrapper = 'earlywarnings_posting';
 
     $environment_data = non_productions_list();
     $form['deployed_environment'] = array(
       '#type' => 'select',
-      '#default_value' => $form_state->getValue('deployed_environment'),
+      '#default_value' => 1,
       '#options' => $environment_data,
       '#weight' => -6,
       '#ajax' => array(
-        'callback' => '::deployed_dependent_services',
-        'wrapper' => 'deployed_dependent_services',
+        'callback' => '::releases_ajax_callback',
+        'wrapper' => 'deployed_release_form_warapper',
         'event' => 'change',
-        'method' => 'replace',
+        'method' => 'html',
         'progress' => array(
           'type' => 'throbber',
         ),
       ),
     );
 
-    $form['deployed_services'] = $this->deployed_dependent_services($form,$form_state);
-    $form['deployed_releases'] = $this->deployed_dependent_releases_env($form,$form_state);
-    
-    
-    
-    /*$form['deployed_releases'] = array(
-      '#type' => 'select',
-      '#default_value' => 0,
-      '#options' => [0=>$this->t("< Release >")],
-      '#weight' => -4,
-      "#prefix" => "<div id = 'deployed_dependent_release'>",
-      '#suffix' => '</div>',
-//      '#validated' => TRUE,
-    );*/
-    /**
-         * $form['releases'] = array(
-         * '#type' => 'select',
-         * '#options' => $options,
-         * '#default_value' => $default_value_releases,
-         * '#weight' => -6,
-         * '#ajax' => array(
-         * 'callback' => $rel_path,
-         * 'wrapper' => $wrapper,
-         * 'event' => 'change',
-         * 'method' => 'replace',
-         * 'progress' => array(
-         * 'type' => 'throbber',
-         * ),
-         * ),
-         * "#prefix" => "<div class = 'releases_search_dropdown hzd-form-element'>",
-         * '#suffix' => '</div>',
-         * '#validated' => TRUE
-         * );
-         */
-    // $date_format = 'd.m.Y';.
+    $form['deployed_services'] = $this->deployed_dependent_services($form, $form_state);
+    $form['deployed_releases'] = $this->deployed_dependent_releases_env($form, $form_state);
+
     $form['deployed_date'] = array(
       '#type' => 'textfield',
 //      '#title' => t('Date'),
       '#size' => 15,
-     // '#date_date_format' => 'german_date',.
+      // '#date_date_format' => 'german_date',.
       '#required' => TRUE,
       '#maxlength' => '20',
-      '#attributes' => array("class" => ["deployed_date"]),
+      '#attributes' => array("class" => ["js-deployed-date"]),
       '#weight' => -3,
-        '#placeholder'=> '<'.t('Date')->render().'>',
+      '#placeholder' => '<' . t('Date')->render() . '>',
 
     );
 
@@ -119,36 +74,43 @@ class Deployedreleasecreateform extends FormBase {
 
     return $form;
   }
-  
+
   /**
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
-  public function deployed_dependent_services(array &$form, FormStateInterface $form_state){
-    $environment = $form_state->getValue('deployed_environment');
-    $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
+  public function deployed_dependent_services(array $form, FormStateInterface $form_state) {
+    $environment = $form_state->getValue('deployed_environment', 1);
+
+    if ($environment != 0) {
+      $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
 //    $form['deployed_services']['#options'] = $services_releases['services'];
 //    $form['deployed_services']['#default_value'] = 0;
-    $deployed_options = $services_releases['services'];
-    natcasesort($deployed_options);
+      $deployed_options = $services_releases['services'];
+      natcasesort($deployed_options);
+    }
+    else {
+      $deployed_options[] = '<'.t('Service')->render().'>';
+    }
+
     $form['deployed_services'] = array(
       '#type' => 'select',
-      '#default_value' => $form_state->getValue('deployed_services',NULL),
+      '#default_value' => $form_state->getValue('deployed_services', NULL),
       '#options' => $deployed_options,
       '#weight' => -5,
       '#ajax' => array(
-        'callback' => '::deployed_dependent_releases_env',
-        'wrapper' => 'deployed_dependent_release',
+        'callback' => '::releases_ajax_callback',
+        'wrapper' => 'deployed_release_form_warapper',
         'event' => 'change',
-        'method' => 'replace',
+        'method' => 'html',
         'progress' => array(
           'type' => 'throbber',
         ),
       ),
     );
-    
+
 //    $form_state->setRebuild(TRUE);
-  
+
     return $form['deployed_services'];
   }
 
@@ -160,21 +122,21 @@ class Deployedreleasecreateform extends FormBase {
     $environment = $form_state->getValue('deployed_environment');
     $services_releases = HzdreleasemanagementHelper::released_deployed_releases();
     $services_options = $services_releases['releases'];
-    $services_options[0] = t('< @release >',['@release'=>'Release']);
+    $services_options[0] = t('< @release >', ['@release' => 'Release']);
     natcasesort($services_options);
 //    array_unshift($services_releases['releases'], '');
     // $form_state->setValue('submitted', FALSE);
     // Geting  release data.
 //    if ($service != 0 && $environment != 0) {
-      $default_releases = get_undeployed_dependent_release('', $environment);
+    $default_releases = get_undeployed_dependent_release('', $environment);
 //    }
 //    else {
-      $default_releases[] = '<' . t("Release") . '>';
+    $default_releases[] = '<' . t("Release") . '>';
 //    }
 //pr($default_releases);exit;
     $form['deployed_releases']['#options'] = $services_options;
 
-    $form_state->setRebuild(TRUE);
+    //$form_state->setRebuild(TRUE);
 
     return $form['deployed_releases'];
   }
@@ -182,7 +144,7 @@ class Deployedreleasecreateform extends FormBase {
   /**
    * Ajax callback for filtering the early warnings dependent releases.
    */
-  public function deployed_dependent_releases_env(array &$form, FormStateInterface $form_state) {
+  public function deployed_dependent_releases_env(array $form, FormStateInterface $form_state) {
     $service = $form_state->getValue('deployed_services');
     $environment = $form_state->getValue('deployed_environment');
 
@@ -191,12 +153,12 @@ class Deployedreleasecreateform extends FormBase {
       $default_releases = get_undeployed_dependent_release($service, $environment);
     }
     else {
-      $default_releases = array("0" => '<'.t('Release')->render().'>');
+      $default_releases = array("0" => '<' . t('Release')->render() . '>');
     }
 
 //    $form['deployed_releases']['#options'] =$default_releases;
 //    $form['deployed_releases']['#default_value'] = 0;
-  
+
     $form['deployed_releases'] = array(
       '#type' => 'select',
       '#default_value' => 0,
@@ -204,14 +166,28 @@ class Deployedreleasecreateform extends FormBase {
       '#weight' => -4,
       "#prefix" => "<div id = 'deployed_dependent_release'>",
       '#suffix' => '</div>',
-      '#name'=>'deployed_releases'
-//      '#validated' => TRUE,
+      '#name' => 'deployed_releases',
+      '#validated' => TRUE,
     );
-    
-    
-    $form_state->setRebuild(TRUE);
+
+
+    //$form_state->setRebuild(TRUE);
 
     return $form['deployed_releases'];
+  }
+
+  public function releases_ajax_callback(array $form, FormStateInterface $form_state) {
+    $form_state->setRebuild(TRUE);
+
+    $trig_el = $form_state->getTriggeringElement()['#array_parents'][0];
+    if ($trig_el == 'deployed_environment') {
+      $default_releases = array("0" => '<' . t('Release')->render() . '>');
+      $form['deployed_services']['#value'] = 0;
+      $form['deployed_releases']['#options'] = $default_releases;
+      $form['deployed_releases']['#value'] = 0;
+    }
+
+    return $form;
   }
 
   /**
@@ -220,8 +196,8 @@ class Deployedreleasecreateform extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $deployed_date = $form_state->getValue('deployed_date');
     /**
-         *  to do date  format
-         */
+     *  to do date  format
+     */
     // 2016-09-08
     // $deployed_date = strtotime($deployed_date);
     //   $deployed_date =  \Drupal::service('date.formatter')->format($deployed_date, $type = 'medium', 'd.m.y');.
@@ -274,11 +250,6 @@ class Deployedreleasecreateform extends FormBase {
     $query->condition('cp.uid', $user->id(), '=');
     $user_state = $query->execute()->fetchField();
 
-    // $date_array = explode('.', $form_state->getValue('deployed_date'));
-    //    $deployed_date = mktime(0, 0, 0, $date_array[1], $date_array[0], $date_array[2]);
-    // print_r($form_state->getValue());
-    // echo '<pre>'; print_r($_POST);   exit;
-    // dpm($deployed_date);
     $deployed_date = $form_state->getValue('deployed_date');
     $deployed_date = date("Y-m-d", strtotime($deployed_date));
     // Echo $deployed_date; exit;.
@@ -339,7 +310,9 @@ class Deployedreleasecreateform extends FormBase {
       $group = Group::load(RELEASE_MANAGEMENT);
 
       $group_content = GroupContent::create([
-        'type' => $group->getGroupType()->getContentPlugin('group_node:release')->getContentTypeConfigId(),
+        'type' => $group->getGroupType()
+          ->getContentPlugin('group_node:release')
+          ->getContentTypeConfigId(),
         'gid' => RELEASE_MANAGEMENT,
         'entity_id' => $node->id(),
         'request_status' => 1,
@@ -347,7 +320,14 @@ class Deployedreleasecreateform extends FormBase {
         'uid ' => 1,
       ]);
       $group_content->save();
-      drupal_set_message(t('Release has been deployed sucessfully'), 'success');
+
+      if ($node->field_environment->value == 1) {
+          // If environment is Production, delete cache for deployed releases overview table
+          $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+          \Drupal::cache()->deleteMultiple($cids);
+      }
+
+      drupal_set_message(t('Release has been deployed sucessfully'), 'status');
     }
 
   }

@@ -3,12 +3,14 @@
 namespace Drupal\problem_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\problem_management\Exception\ProblemImportException;
 use Drupal\problem_management\HzdStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\problem_management\HzdproblemmanagementHelper;
 
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\problem_management\ProblemImport;
 
 /**
  * Class ReadexcelController.
@@ -20,57 +22,39 @@ class ReadexcelController extends ControllerBase {
   /**
    * Callback for the read excel file
    * Use the function for the cron run.
+   * Reads csv file and saves as nodes
+   * Check the file separator,presently we are usng ';' as separator
+   * validates the csv file format, and check for the existance of service in the database in the function "validate_csv"
+   * function saving_problem_node saves the data as problems node , only if the validation returns true
+   * status of the import is stored in the "insert_import_status"
    */
   public function read_problem_csv() {
-    /**
-    * $header_values = array(
-     * 'sno', 'status', 'service', 'function', 'release', 'title' ,
-     * 'problem_text', 'diagnose', 'solution', 'workaround', 'version', 'priority',
-     * 'taskforce', 'comment', 'processing', 'attachment', 'eroffnet',
-    * 'closed', 'problem_status', 'ticketstore_count', 'ticketstore_link'
-     * );
-   */
-    $header_values = array(
-      'sno', 'status', 'service', 'function', 'release', 'title',
-      'body', 'diagnose', 'solution', 'workaround', 'version', 'priority',
-      'taskforce', 'comment', 'processing','attachment', 'eroffnet','ticketstore_link','closed', 'timezone',
-      
-    );
 
-    $path = DRUPAL_ROOT . '/'.\Drupal::config('problem_management.settings')->get('import_path');
-
-    if ($path) {
-      if (file_exists($path)) {
-        $output = HzdproblemmanagementHelper::importing_problem_csv($path, $header_values);
-      }
-      else {
-        $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-        $subject = $this->t('Error while import');
-        $body = $this->t("There is an issue while importing of the file " . $path . ". The  import file not found or it could have been corrupted.");
+    $path = DRUPAL_ROOT . '/' . \Drupal::config('problem_management.settings')
+        ->get('import_path');
+    $importer = new ProblemImport($path);
+    $status = t('Success');
+    $mail = \Drupal::config('problem_management.settings')->get('import_mail');
+    try {
+      $import = $importer->processImport();
+      $importstat = t('OK');
+      HzdStorage::insert_import_status($importstat, 'File imported sucessfully.');
+      if($import) {
+        $subject = 'New service found while importing problems';
+        $import = array_unique($import);
+        $body = t(" We have found a new service " . implode(",", $import) . " which does not match the service in our database.");
         HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-        $status = $this->t('Error');
-        $msg = $this->t('Import File Not Found');
-        HzdStorage::insert_import_status($status, $msg);
-        $output = $this->t('Import File Not Found');
+        $status = t('Import success but new services found.');
       }
-    }
-    else {
-      $output = $this->t('File Path Not Specified');
-      $mail = \Drupal::config('problem_management.settings')->get('import_mail');
-      $subject = 'Error while import';
-      $body = $this->t("There is an issue while importing of the problems from file " . $path . "Check whether the format of problems is in proper CSV format or not.");
-
-      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $subject, $body);
-
-      $url = Url::fromUserInput('/admin/settings/problem');
-      // $link = Link::fromTextAndUrl($text, $url);.
-      $text = 'Set the import path at';
-      $path = Link::fromTextAndUrl($text, $url);
-
-      $output .= t('Set the import path at') . $path;
+    } catch (ProblemImportException $e) {
+      $importstat = t('Error');
+      HzdservicesHelper::send_problems_notification('problem_management_read_csv', $mail, $e->getSubject($e->type), $e->getBody($e->type));
+      HzdStorage::insert_import_status($importstat, $e->getMessage());
+      \Drupal::logger('problem')->error($e->getSubject($e->type));
+      $status = $e->getMessage();
     }
     $response = array(
-      '#markup' => $output,
+      '#markup' => $status,
     );
     return $response;
   }

@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_display.comment.comment.default
     - field.field.node.deployed_releases.body
     - field.field.node.deployed_releases.comment
     - field.field.node.deployed_releases.field_archived_release
@@ -16,14 +17,10 @@ dependencies:
   module:
     - comment
     - datetime
-    - entity_print
     - file
     - options
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 id: node.deployed_releases.default
 targetEntityType: node
 bundle: deployed_releases
@@ -98,4 +95,7 @@ content:
     weight: 9
     third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true

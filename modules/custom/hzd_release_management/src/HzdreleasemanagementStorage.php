@@ -73,7 +73,7 @@ class HzdreleasemanagementStorage {
           ->Fields('nfrt', array('entity_id'))
           ->condition('nfrt.field_release_type_value', '2', '=')
           ->execute()->fetchAll();
-
+$inprogress_nid_values = [];
         foreach ($inprogress_values as $inprogress_value) {
           $inprogress_nid_values[] = $inprogress_value->entity_id;
         }
@@ -156,7 +156,7 @@ class HzdreleasemanagementStorage {
       }
 
       $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
-
+      //$release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
         // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
@@ -181,40 +181,42 @@ class HzdreleasemanagementStorage {
       }
       if (isset($nid) && $nid) {
         $node = Node::load($nid);
-        $node->set("vid", $vid);
-        $node->set("uid", 1);
-        $node->set("created", time());
-        $node->set("type", 'release');
-        $node->setTitle($values['title']);
-        // $node->set("submit", 'Save');
-        // $node->set("preview", 'Preview');
-        //  $node->set("form_id", 'release_node_form');.
-        $node->set("comment", 2);
-        $node->set("field_status", $values['status']);
-        $node->set("field_relese_services", $values['service']);
-        $node->set("field_date", $values['datum']);
+        //No need to set vid, uid, created, type field values
+        //$node->set("vid", $vid);
+        //$node->set("uid", 1);
+        //$node->set("created", time());
+        //$node->set("type", 'release');
+        $existing_node_values['title'] = $node->getTitle();
+        $existing_node_values['status'] = $node->get('field_status')->value;
+        $existing_node_values['service'] = $node->get('field_relese_services')->referencedEntities()[0]->id();
+        $existing_node_values['datum'] = $node->get('field_date')->value;
         if ($values['type'] == 'locked') {
-          $node->set("field_release_comments", $values['comment']);
+            $existing_node_values['comment'] = $node->get('field_release_comments')->value;
         } else {
-          $node->set("field_link", $values['link']);
-          $node->set("field_documentation_link", $values['documentation_link']);
+            $existing_node_values['link'] = $node->get('field_link')->value;
+            $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
+//        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
+        $csvvalues = array();
+        $csvvalues = $values;
+        unset($csvvalues['type']);
+        if (count(array_diff($csvvalues, $existing_node_values)) != 0) {
+            $node->setTitle($values['title']);
+            $node->set("comment", 2);
+            $node->set("field_status", $values['status']);
+            $node->set("field_relese_services", $values['service']);
+            $node->set("field_date", $values['datum']);
+            if ($values['type'] == 'locked') {
+              $node->set("field_release_comments", $values['comment']);
+            } else {
+              $node->set("field_link", $values['link']);
+              $node->set("field_documentation_link", $values['documentation_link']);
+            }
 
-        $node->set("field_release_type", $types[$values['type']]);
-        /**
-         * $node->set("og_initial_groups", Array(
-         * '0' => $release_management_group_id['0'],
-         * ));
-         * $node->set("og_public", 0);
-         * $node->set("og_groups", Array(
-         * $release_management_group_id => $release_management_group_id['0'],
-         * ));
-         */
-        // $node->set("notifications_content_disable", 0);
-        // $node->set("teaser", '');
-        //  $node->set("validated", 1);.
-        $node->set("status", 1);
-        $node->save();
+            $node->set("field_release_type", $types[$values['type']]);
+            $node->set("status", 1);
+            $node->save();
+        }
       } else {
         $node_array = array(
           // 'nid' => ($nid ? $nid : ''),
@@ -320,8 +322,9 @@ class HzdreleasemanagementStorage {
         "doku_link" => $field_documentation_link_value['field_documentation_link_value'] ?: null,
       );
 
-      if ($values['type'] != 'locked')
+      if ($values['type'] != 'locked') {
         self::documentation_link_download($params, $values);
+      }
     }
     catch (Exception $e) {
       \Drupal::logger('hzd_release_management')->error($e->getMessage());
@@ -346,24 +349,25 @@ class HzdreleasemanagementStorage {
       setlocale(LC_ALL, 'de_DE.UTF-8');
       $count_data = 0;
       while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
+          $explodedData = explode(',', $data[0]);
         if ($count_data == 0) {
           $heading = $data;
         } else {
           if ($type == 3) {
             $header_values['4'] = 'comment';
           }
-          foreach ($data as $key => $value) {
+          foreach ($explodedData as $key => $value) {
             // droy: removed utf8_encode since it gives issues when data is already in utf8 (setlocale above).
             // $values[$header_values[$key]] = utf8_encode($data[$key]);.
-            $values[$header_values[$key]] = $data[$key];
+            $values[$header_values[$key]] = $explodedData[$key];
           }
 
           $query = db_select('node_field_data', 'n');
           $query->Fields('n', array('nid'));
           $query->condition('title', $values['title'], '=');
-          $inprogress_csv_nid = $query->execute()->fetchCol();
+          $inprogress_csv_nid = $query->execute()->fetchField();
           $inprogress_csv_nid_values[] = $inprogress_csv_nid;
-        }
+        }        
         $count_data++;
       }
       if ($type == 3) {
@@ -409,8 +413,9 @@ class HzdreleasemanagementStorage {
         if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
           // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
           // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
-          db_update('node_field_data')->fields(array('status' => '0'))
-                  ->condition('nid', $release_title_nid_values)->execute();
+          $node = Node::load($release_title_nid_values);
+          $node->set("field_release_type", 4);
+          $node->save();
         }
       }
     }
@@ -578,14 +583,17 @@ class HzdreleasemanagementStorage {
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-    global $language;
+
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
-    $module = 'release_management';
+    $module = 'hzd_release_management';
     $key = 'download';
     $from = \Drupal::config('system.site')->get('mail');
-    ;
-    $params['body'] = \Drupal::config('hzd_release_management.settings')->get('release_mail_body');
+    $message_body = [];
+    $message_body[] = [
+    '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
+    ];
+    $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
      * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
      * FROM {content_type_release}
@@ -596,12 +604,17 @@ class HzdreleasemanagementStorage {
             ->condition('entity_id', $nid, '=');
 
     $field_link_value = $field_link_value_query->execute()->fetchAssoc();
-    $get_release_link = explode("/", $field_link_value['']);
+    $get_release_link = explode("/", $field_link_value['field_documentation_link_value']);
     $get_release_link_value = array_pop($get_release_link);
     $params['subject'] = t('Release Documentation Failed: ') . $get_release_link_value;
     $send = TRUE;
     foreach ($to as $single_address) {
-      problem_management_mail($key, $params);
+        $mailManager = \Drupal::service('plugin.manager.mail');
+        $module  = 'hzd_release_management';
+        $langcode = \Drupal::currentUser()->getPreferredLangcode();
+        $send = true;
+        $mailManager->mail($module, $key, $single_address, $langcode, $params, NULL, $send);
+//      problem_management_mail($key, $params);
       // drupal_mail($module, $key, $single_address, $language, $params, $from, $send);.
     }
   }
@@ -929,7 +942,7 @@ class HzdreleasemanagementStorage {
               )
               )->fetchField();
       $service = \Drupal\node\Entity\Node::load(
-                      $deployed_release_node->field_release_service->value)->get('field_release_name')->value;
+                      $deployed_release_node->field_release_service->value)->get('title')->value;
 
       $release_node = \Drupal\node\Entity\Node::load(
                       $deployed_release_node->field_earlywarning_release->value);
@@ -1239,7 +1252,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $service = $releases->get('field_relese_services')->first()->entity;
 //          pr($releases->id());
       $row = array(
-          'service' => $service->get('field_release_name')->value,
+          'service' => $service->get('title')->value,
           'release' => $releases->getTitle()
       );
       if ($type != 'released') {

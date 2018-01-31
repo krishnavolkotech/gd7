@@ -436,10 +436,24 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $db = \Drupal::database();
     $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
     $glossarydata = array();
+    
+    $current_path = \Drupal::service('path.current')->getPath();
+    $path_values = explode('/', $current_path);
+    $lastElement = array_slice($path_values, -1)[0];
+    $active = '';
     foreach ($result as $gloss) {
+      if(strtolower($gloss->lname) == $lastElement) {
+          $active = 'active';
+      }
       $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
-      $glossarydata[] = '<span class="user-group-list">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $active = '';
     }
+    if('all' == $lastElement) {
+        $active = 'active';
+    }
+    $allurl = Url::fromUserInput('/admin/people/list/all');
+    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
     $glossary = implode(' | ', $glossarydata);
     $form['glossarylist'] = array(
         '#markup' => $glossary,
@@ -586,6 +600,10 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   if($form_id == 'node_revision_revert_confirm') {
       $form['#submit'][] = 'node_revisions_revert_confirm_custom';
       //kint($form['#action']);exit;
+  }
+  
+  if($form_id == 'comment_comment_forum_form' || $form_id == 'comment_comment_no_subject_form') {
+      $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
   }
 
 //  echo $form_id;exit;
@@ -750,16 +768,33 @@ function generate_quickinfo_pdf($node = NULL) {
   
   $mailManager = \Drupal::service('plugin.manager.mail');
   $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
-  $subscribedUsers = hzd_get_immediate_qi_notification_user_mails($node->get('field_other_services')->getValue());
-  foreach ($subscribedUsers as $key => $val) {
-    foreach (explode(',', trim($val->mail, ',')) as $usermail) {
-      $userEntity = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => trim($usermail)]);
-      if ($userEntity && reset($userEntity)->get('field_notifications_status')->value !== 'Disable' && reset($userEntity)->isActive()
-              && !hzd_user_inactive_status_check(reset($userEntity)->id())) {
-        $recepients[] = $usermail;
-      }
+  $user_ids = hzd_get_immediate_qi_notification_user_mails($node->get('field_other_services')->getValue());
+  foreach ($user_ids as $user_id) {
+    $user = \Drupal\user\Entity\User::load($user_id);
+
+    // For some reason, user subscribed and is deleted from system.
+    if (!is_object($user)) {
+      continue;
     }
+
+    $user_active = $user->isActive();
+    $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
+    $user_notif_status = $user->get('field_notifications_status')->value;
+
+    /**
+     * Mail is not sent for following :
+     *  - If user is in blocked state.
+     *  - Is user has disabled notifications.
+     *  - If user is in Inactive state.
+     */
+    if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
+      continue;
+    }
+
+    $mail = $user->getEmail();
+    $recepients[] = $mail;
   }
+
   foreach ((array) $recepients as $email) {
     if (!empty($email)) {
       $data['user'] = user_load_by_mail($email);
@@ -949,7 +984,17 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
       $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)
               ->format('d.m.Y');
       $value->_entity->set('field_problem_eroffnet', (string) $start_date);
+      
+      $node_title = $value->_entity->get('title')->value;
+      $value->_entity->set('title', Html::decodeEntities($node_title));
     }
+  }
+  
+  if($view->id() == 'content') {
+      foreach ($view->result as $value) {
+        $node_title = $value->_entity->get('title')->value;
+        $value->_entity->set('title', Html::decodeEntities($node_title));
+      }
   }
 
   if ($view->id() == 'release_list') {
@@ -1457,12 +1502,14 @@ function hzd_customizations_form_user_login_form_alter(&$form, FormStateInterfac
 /**
  *
  */
-function _hzd_customizations_user_login_form_submit() {
-  // $redirect_url = Url::fromRoute('user.page');
-  //  if(!empty($user_status) && $user_status == "active") {
-  //    $account->activate();
-  //    $form_state->setRedirectUrl($redirect_url);
-  //  }
+function _hzd_customizations_user_login_form_submit(&$form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('<front>');
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  if (!$request->request->has('destination')) {
+    $form_state->setRedirectUrl($url);
+  } else {
+    $request->query->set('destination', $request->request->get('destination'));
+  }
 }
 
 /*

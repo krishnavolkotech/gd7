@@ -1,7 +1,0 @@
-uuid: 2727db88-0388-43a0-9e58-bfbfb199511b
-langcode: en
-status: true
-dependencies: {  }
-id: phpwkhtmltopdf
-settings:
-  binary_location: /usr/local/bin/wkhtmltopdf

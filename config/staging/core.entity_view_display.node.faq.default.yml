@@ -8,12 +8,8 @@ dependencies:
     - field.field.node.faq.upload
     - node.type.faq
   module:
-    - entity_print
     - text
     - user
-third_party_settings:
-  entity_print:
-    label: 'View PDF'
 _core:
   default_config_hash: Gg4W3beAUi1mVE6gXN7UVJZjKUQHEoXLnOOHeRmq7uo
 id: node.faq.default
@@ -48,5 +44,8 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   langcode: true
   upload: true

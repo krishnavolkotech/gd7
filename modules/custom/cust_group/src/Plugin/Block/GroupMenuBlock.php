@@ -7,7 +7,9 @@
 
 namespace Drupal\cust_group\Plugin\Block;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\group\Entity\Group;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
@@ -40,16 +42,16 @@ class GroupMenuBlock extends BlockBase {
 
   static function showBlock($routeMatch = NULL) {
     $routeToHide = [
-        'downtimes.new_downtimes_controller_newDowntimes',
-        'downtimes.archived_downtimes_controller',
-        'problem_management.problems',
-        'problem_management.archived_problems',
-        'problem_management.import_history',
-        'downtimes.DowntimesnotesDisplay',
+      'downtimes.new_downtimes_controller_newDowntimes',
+      'downtimes.archived_downtimes_controller',
+      'problem_management.problems',
+      'problem_management.archived_problems',
+      'problem_management.import_history',
+      'downtimes.DowntimesnotesDisplay',
     ];
     $parameters = $routeMatch->getParameters();
     if ($routeMatch->getRouteName() == 'cust_group.node_view' && $parameters->get('group')
-                    ->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
+        ->id() == INCIDENT_MANAGEMENT && $parameters->get('group_content')->entity_id->referencedEntities()[0]->getType() == 'downtimes'
     ) {
       //exception for downtimes content type
       return FALSE;
@@ -76,18 +78,18 @@ class GroupMenuBlock extends BlockBase {
       if (!empty($node) && !$node instanceof Node) {
         $node = Node::load($node);
       }
-      if($node && $node->getType() == 'quickinfo' && $node->isPublished()) {
-          $group = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
+      if ($node && $node->getType() == 'quickinfo' && $node->isPublished()) {
+        $group = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
       }
       $user = \Drupal::currentUser();
       $groupMember = $group->getMember($user);
       $groupMember = (bool) ($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1);
+          ->get('request_status')->value == 1);
       //pr((bool)$groupMember);exit;
       if ($groupMember || array_intersect($user->getRoles(), [
-                  'admininstrator',
-                  'site_administrator'
-              ])
+          'admininstrator',
+          'site_administrator'
+        ])
       ) {
         $oldId = $group->get('field_old_reference')->value;
         $menu_name = 'menu-' . $oldId;
@@ -98,8 +100,8 @@ class GroupMenuBlock extends BlockBase {
         // Load the tree based on this set of parameters.
         $tree = $menu_tree->load($menu_name, $parameters);
         $manipulators = [
-            ['callable' => 'menu.default_tree_manipulators:checkAccess'],
-            ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']
+          ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+          ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort']
         ];
 
         $tree = $menu_tree->transform($tree, $manipulators);
@@ -110,21 +112,23 @@ class GroupMenuBlock extends BlockBase {
         //    $menu_html = drupal_render($menu);
         $title = $group->label();
         return [
-            '#title' => $title,
-            '#markup' => \Drupal::service('renderer')->render($menu),
-            '#cache' => ['max-age' => 0]
+          '#title' => $title,
+          '#markup' => \Drupal::service('renderer')->render($menu),
+          '#cache' => ['max-age' => 0]
         ];
-      } else {
+      }
+      else {
         if ($group->bundle() == 'open' || $group->bundle() == 'moderate' || $group->bundle() == 'moderate_private') {
           $title = $this->t('Actions for @group', ['@group' => $group->label()]);
           $group_member_join_link = ['#type' => 'link'];
           if ($group->bundle() == 'open') {
             $group_member_join_link['#url'] = Url::fromRoute('entity.group.join', ['group' => $group->id()]);
             $group_member_join_link['#title'] = $this->t('Join Group');
-          } elseif (in_array($group->bundle(), [
-                      'moderate',
-                      'moderate_private'
-                  ])) {
+          }
+          elseif (in_array($group->bundle(), [
+            'moderate',
+            'moderate_private'
+          ])) {
             $group_member_join_link['#url'] = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
             $group_member_join_link['#title'] = $this->t('Request Membership');
           }
@@ -132,22 +136,40 @@ class GroupMenuBlock extends BlockBase {
           $markup['#title'] = $title;
           $markup['link'] = $group_member_join_link;
           $groupAdmins = $group->getMembers($group->bundle() . '-admin');
+          $data = [];
+          $admin_uids = [];
           foreach ($groupAdmins as $groupadmin) {
-            $data[] = [
-                '#type' => 'link',
-                '#title' => $groupadmin->getUser()->getDisplayName(),
-                '#url' => Url::fromUri('mailto:' . $groupadmin->getUser()
-                                ->getEmail())
-            ];
+              if (!hzd_user_inactive_status_check($groupadmin->getUser()->id()) && $groupadmin->getUser()->isActive()) {
+                  $admin_uids[] = $groupadmin->getUser()->id();
+              }
+          }
+          $db = \Drupal::database();
+          $query = $db
+              ->select('users_field_data','u')
+              ->fields('u', array('name','uid'))
+              ->fields('s', array('abbr'))
+              ->fields('cp', array('firstname','lastname'))
+              ->condition('u.uid', $admin_uids, 'IN')
+              ->orderBy('abbr')
+              ->orderBy('lastname');
+          $query->join('cust_profile', 'cp', 'u.uid = cp.uid');
+          $query->join('states', 's', 's.id = cp.state_id');
+          $admin_details = $query->execute()->fetchAll();
+          foreach ($admin_details as $admin_user) {
+              $data[] = [
+                  '#type' => 'link',
+                  '#title' => $admin_user->firstname . ' ' . $admin_user->lastname . ' (' . $admin_user->abbr . ')',
+                  '#url' => Url::fromUri('internal:/user/' . $admin_user->uid),
+              ];
           }
           $markup['groupadmin_list'] = [
-              '#title' => $this->t('List of Group Admin'),
-              '#prefix' => '<div>',
-              '#suffix' => '</div>',
-              '#items' => $data,
-              '#theme' => 'item_list',
-              '#type' => 'ul',
-                  //'#attributes' => ['class' => ['incidents-home-block']]
+            '#title' => $this->t('List of Group Admin'),
+            '#prefix' => '<div>',
+            '#suffix' => '</div>',
+            '#items' => $data,
+            '#theme' => 'item_list',
+            '#type' => 'ul',
+            //'#attributes' => ['class' => ['incidents-home-block']]
           ];
           $markup['#cache'] = ['max-age' => 0];
           return $markup;
@@ -157,4 +179,20 @@ class GroupMenuBlock extends BlockBase {
     return ['#title' => '', '#markup' => '', '#cache' => ['max-age' => 0]];
   }
 
+  public function access(AccountInterface $account, $return_as_object = FALSE) {
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+
+    if (!empty($group)) {
+      $access = AccessResult::allowed('Group context available.');
+    }
+    else {
+      $access = AccessResult::forbidden('Group context not available.');
+    }
+
+    return $return_as_object ? $access : $access->isAllowed();
+  }
+
+  /* public function cmp($a, $b) {
+      return strcmp($a->)
+  } */
 }

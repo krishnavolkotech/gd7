@@ -11,6 +11,8 @@ global-styling:
     js/3.3.5/bootstrap.js: {}
     js/3.3.5/bootstrap.min.js: {}
     js/tableresponsive.js: {}    
+    js/jquery.mb.browser.min.js: {}
+    js/jquery.webkitresize.js: {}
 
 quickinfo:
   css:
@@ -19,7 +21,6 @@ quickinfo:
 
 bootstrap-scripts:
   js:
-    js/hzd_custom.js : {}
     js/libraries/moment.js : {}
     js/libraries/locale/de.js : {}
     js/libraries/collapse.js : {}
@@ -27,6 +28,9 @@ bootstrap-scripts:
     js/libraries/bootstrap-datetimepicker.min.js : {}
     js/libraries/isotope.pkgd.min.js : {}
     js/libraries/fit-columns.js : {}
+    js/jquery.tablesorter.js: {}
+    js/widget-stickyHeaders.js: {}
+    js/hzd_custom.js : {}
   dependencies:
       - core/drupal.tableheader
 theme:

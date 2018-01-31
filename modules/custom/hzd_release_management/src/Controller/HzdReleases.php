@@ -61,7 +61,7 @@ class HzdReleases extends ControllerBase {
     $output[] = $hzdReleaseManageStorage->release_info();
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
@@ -135,7 +135,7 @@ class HzdReleases extends ControllerBase {
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
@@ -165,7 +165,7 @@ class HzdReleases extends ControllerBase {
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
     $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
 //    $output[] = array('#markup' => '</div>');
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
@@ -189,7 +189,7 @@ class HzdReleases extends ControllerBase {
     //  dpm($_SESSION);
     $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable();
 //    $output[] = array('#markup' => '</div>');
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
@@ -205,7 +205,8 @@ class HzdReleases extends ControllerBase {
     if ($query_explode_search) {
       $output = \Drupal::config('hzd_release_management.settings')->get('secure_download_text')['value'];
       $output .= "<h4><a target = '_blank' href ='$query'>" . t("Please click this secure download link to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
-      return $output;
+      $build['#markup'] = $output;
+      return $build;
     } else {
       $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
       $arr = $doc_values['arr'];
@@ -253,7 +254,7 @@ class HzdReleases extends ControllerBase {
         $string = t('Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)');
         $output .= "<h4><a target = '_blank' href='$query'>" . t("Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
         $build['#markup'] = $output;
-        $build['#cache'] = ['tags' => ['node_list']];
+        $build['#cache'] = ['tags' => ['hzd_release_management:releases']];
         return $build;
       }
     }
@@ -326,7 +327,7 @@ class HzdReleases extends ControllerBase {
       $output['node_body']['#markup'] = $node->body->value;
       $output['newdeployrelease']['#prefix'] = '<h2 class="konsens">';
       $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
-      $output['newdeployrelease']['#suffix'] = "</h2>";
+      $output['newdeployrelease']['#suffix'] = "</h2><p>Bei der Meldung bitte die Felder in der Reihenfolge von links nach rechts auswählen.</p>";
       $output['newdeployrelease']['#exclude_from_print'] = 1;
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $output['deploy_release_form']['form'] = ['#type' => 'container'];
@@ -351,7 +352,7 @@ class HzdReleases extends ControllerBase {
     } else {
       $output['#markup'] = t('You are not authorized to access this page.');
     }
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 
@@ -367,7 +368,7 @@ class HzdReleases extends ControllerBase {
         'base_path' => $base_url,
         'basePath' => $base_url,
     );
-    $output['#cache'] = ['tags' => ['node_list']];
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
 

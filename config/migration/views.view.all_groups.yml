@@ -93,7 +93,7 @@ display:
               empty_column: false
               responsive: ''
             label:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -107,7 +107,7 @@ display:
               empty_column: false
               responsive: ''
             uid:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -141,7 +141,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-          default: '-1'
+          default: label
           empty_table: false
       row:
         type: fields
@@ -749,13 +749,46 @@ display:
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
+      css_class: ''
     cache_metadata:
       max-age: 0
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
-        - url.query_args
+        - user.roles
+      tags:
+        - 'config:field.storage.group.field_description'
+  attachment_1:
+    display_plugin: attachment
+    id: attachment_1
+    display_title: Anhang
+    position: 2
+    display_options:
+      display_extenders:
+        views_merge_rows: {  }
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - user.roles
+      tags:
+        - 'config:field.storage.group.field_description'
+  attachment_2:
+    display_plugin: attachment
+    id: attachment_2
+    display_title: 'Anhang 2'
+    position: 3
+    display_options:
+      display_extenders: {  }
+    cache_metadata:
+      max-age: 0
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
         - user.roles
       tags:
         - 'config:field.storage.group.field_description'
@@ -772,12 +805,14 @@ display:
         enabled: true
         expanded: false
       rendering_language: de
+      css_class: all_groups_sortable
+      defaults:
+        css_class: false
     cache_metadata:
       max-age: 0
       contexts:
         - 'languages:language_interface'
         - url
-        - url.query_args
         - user.roles
       tags:
         - 'config:field.storage.group.field_description'

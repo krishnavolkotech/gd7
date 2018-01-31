@@ -297,6 +297,7 @@ display:
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
+      css_class: sort-user-list
     cache_metadata:
       max-age: 0
       contexts:
@@ -1255,7 +1256,8 @@ display:
     display_title: Seite
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       path: user-list
       menu:
         enabled: true

@@ -37,7 +37,7 @@ class DisplayquickinfoController extends ControllerBase {
         //    'locale.libraries/translations',
         //    'locale.libraries/drupal.locale.datepicker',
             'hzd_release_management/hzd_release_management',
-            'hzd_customizations/hzd_customizations',
+//            'hzd_customizations/hzd_customizations',
            // 'hzd_release_management/hzd_release_management_sort',
           //  'downtimes/downtimes',
           );

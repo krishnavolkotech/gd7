@@ -83,19 +83,43 @@ display:
           summary: ''
           description: ''
           columns:
+            path: path
+            field_unique_id: field_unique_id
+            gid: gid
             field_author_state: field_author_state
-            label: label
+            title: title
             field_other_services: field_other_services
             field_related_transfer_number: field_related_transfer_number
             changed: changed
           info:
+            path:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_unique_id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            gid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             field_author_state:
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            label:
-              sortable: true
+            title:
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -112,7 +136,7 @@ display:
               empty_column: false
               responsive: ''
             changed:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -721,7 +745,20 @@ display:
           entity_field: created
           plugin_id: date
       title: RZ-Schnellinfos
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: '<p><a href="/release-management/betriebsüberführung/rz-schnellinfo">Für ältere Ausgaben (03/2012-03/2014) bitte hier klicken</a></p>'
+            format: full_html
+          plugin_id: text
       footer: {  }
       empty:
         area:
@@ -794,6 +831,7 @@ display:
         filter_groups: false
         exposed_form: false
         fields: false
+        css_class: false
       filters:
         type:
           id: type
@@ -1524,6 +1562,7 @@ display:
           entity_type: node
           entity_field: changed
           plugin_id: field
+      css_class: saved-rz-schnellinfo
     cache_metadata:
       max-age: 0
       contexts:
@@ -1727,6 +1766,7 @@ display:
         sorts: false
         exposed_form: false
         pager: false
+        css_class: false
       filter_groups:
         operator: AND
         groups:
@@ -2292,6 +2332,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+      css_class: rz-schnellinfos-sortable
     cache_metadata:
       max-age: 0
       contexts:

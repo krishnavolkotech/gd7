@@ -41,7 +41,7 @@ class ImportHistoryController extends ControllerBase {
     // drupal_add_js(drupal_get_path('module', 'problem_management') . '/problem_management.js');
     // $response['#attached']['drupalSettings']['search_string'].
     $response['#attached']['library'] = array('problem_management/problem_management',
-      'hzd_customizations/hzd_customizations',
+//      'hzd_customizations/hzd_customizations',
     );
 
     $breadcrumb = array();

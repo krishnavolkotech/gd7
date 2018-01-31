@@ -11,7 +11,6 @@ dependencies:
     - node.type.planning_files
   module:
     - entity_print
-    - file
     - options
     - user
 third_party_settings:
@@ -34,19 +33,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_upload_planning_file:
-    label: above
-    weight: 1
-    type: file_table
-    settings: {  }
-    third_party_settings: {  }
-    region: content
 hidden:
   comment: true
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_upload_planning_file: true
   langcode: true
   links: true
   upload: true

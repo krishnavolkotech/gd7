@@ -197,7 +197,7 @@ function cust_group_group_insert($group) {
       'title' => $title,
       'link' => ['uri' => $link],
       'menu_name' => $menu->id(),
-      'expanded' => TRUE,
+//      'expanded' => TRUE,
     ]);
     $menu_link->save();
   }
@@ -209,8 +209,28 @@ function cust_group_group_update($entity) {
 }
 
 function cust_group_group_content_update($entity) {
-  if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
     $group = $entity->getGroup();
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $oldroles = $entity->original->get('group_roles')->getValue();
+        $oroles = [];
+        if(isset($oldroles) && !empty($oldroles)) {
+            foreach ($oldroles as $key => $val) {
+                $oroles[] = $val['target_id'];
+            }
+        }
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
+        }
+        if(in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
+    }
+  if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
+    
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
@@ -228,7 +248,7 @@ function cust_group_group_content_update($entity) {
     if ($result['result']) {
       drupal_set_message(t('Mail sent.'), 'status');
     }
-  }
+  }        
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
@@ -245,6 +265,19 @@ function cust_group_group_content_delete() {
 }
 
 function cust_group_group_content_insert($entity) {
+    $group = $entity->getGroup();
+    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if(isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
+        }
+        if(in_array($group->bundle() . '-admin', $nroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
+    }
   $node = $entity->getEntity();
   if ($node instanceof \Drupal\node\Entity\Node) {
     sendGroupUpdateMail($node, 1);
@@ -258,6 +291,27 @@ function cust_group_group_content_insert($entity) {
       'config:block.block.hzd_local_tasks',
       'config:system.menu.primary-links'
     ]);
+}
+
+//Sending mail to user to know Group Admin role
+function sendGroupAdminRoleMail($group, $user){
+    $subject = t('[BpK] Sie sind jetzt Administrator der Gruppe "@groupLabel"', ['@groupLabel' => $group->label()]);
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'cust_group';
+    $key = 'immediate_notifications';
+    $params['subject'] = $subject;
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $send = TRUE;
+
+    $params['message'] = t('Hallo @user,<br><br>Sie sind jetzt Administrator der '
+            . 'Gruppe "@groupname" und können unter dem folgenden Link '
+            . 'die Gruppe besuchen und verwalten:<br><br> @groupLink<br><br>-- Team Betriebsportal KONSENS', [
+      '@user' => $user->getDisplayName(),
+      '@groupname' => $group->label(),
+      '@groupLink' => $group->toLink($group->label(), 'canonical', ['absolute' => 1])
+        ->toString()
+    ]);
+    $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
 }
 
 function cust_group_taxonomy_term_insert($term) {
@@ -539,6 +593,17 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+  if($form_id == 'node_revision_revert_confirm'){
+    // Provide a control to send notifications for revert operation.
+    $form['notification'] = array(
+      '#type' => 'fieldset',
+      '#weight' => 99,
+    );
+    $form['notification']['node_notification_checkbox'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Do not send notifications for this update.'),
+    );
+  }
 
 }
 
@@ -859,14 +924,14 @@ function cust_group_preprocess_node(&$variables) {
 //    exit;
 }
 
-function cust_group_user_login() {
+/*function cust_group_user_login() {
   $request = \Drupal::request()->get('destination', NULL);
   if (!$request) {
     $response = new RedirectResponse("/");
     $response->send();
     return;
   }
-}
+}*/
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
 
@@ -1064,13 +1129,17 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
  * Updating quick info node path alias when node update
  */
 function cust_group_entity_update(EntityInterface $entity) {
-    if($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
-        $source = '/' . $entity->toUrl()->getInternalPath();
-        \Drupal::service('path.alias_storage')->delete(array('source' => $source, 'langcode' => 'de'));
+  if ($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
+    $source = '/' . $entity->toUrl()->getInternalPath();
+    \Drupal::service('path.alias_storage')->delete(array(
+      'source' => $source,
+      'langcode' => 'de'
+    ));
 
-        $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
-        \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
-    }
+    $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+    \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()
+        ->getInternalPath(), $path_alias, 'de');
+  }
 }
 
 
