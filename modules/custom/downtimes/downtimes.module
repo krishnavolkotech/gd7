@@ -198,7 +198,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
                 jQuery(this).attr('disabled', true);
                 jQuery(this).parents('form').submit();
             ",
-            "title" => "Bitte nicht mehrfach klicken, sondern nach dem Speichern warten, bis die Aktion abgeschlossen wurde.",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
         );
     } else {
         $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
@@ -208,7 +208,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
                 jQuery(this).attr('disabled', true);
                 jQuery(this).parents('form').submit();
             ",
-            "title" => "Bitte nicht mehrfach klicken, sondern nach dem Speichern warten, bis die Aktion abgeschlossen wurde.",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
         );
     }
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';

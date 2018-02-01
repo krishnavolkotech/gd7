@@ -95,7 +95,7 @@ class Confirm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getConfirmText() {
+   public function getConfirmText() {
 
     return $this->t('Confirm');
   }
@@ -114,10 +114,6 @@ class Confirm extends ConfirmFormBase {
    *   (optional) The ID of the item to be deleted.
    */
   public function buildForm(array $form, FormStateInterface $form_state, $id = NULL) {
-    // $this->id = $id;
-    //  return parent::buildForm($form, $form_state);
-    /* $form['nodes'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
-      $form['operation'] = array('#type' => 'hidden', '#value' => $edit); */
     $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
@@ -129,6 +125,7 @@ class Confirm extends ConfirmFormBase {
       drupal_set_message($this->t('Invalid Resolve.'), 'error');
       return $this->redirect('<front>');
     }
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -141,11 +138,6 @@ class Confirm extends ConfirmFormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $user = Drupal::currentUser();
-    // $user_role = get_user_role();
-    //extract($_SESSION['form_values']);
-
-    /* $date_report = get_timestamp($resolved_end_date);
-      $date_report = get_unix_timestamp($resolved_end_date); */
     $node = Drupal::routeMatch()->getParameter('node');
     if (is_object($node)) {
       $nid = $node->id();
@@ -195,60 +187,7 @@ class Confirm extends ConfirmFormBase {
       $downtime_node =  \Drupal\node\Entity\Node::load($nid);
       if ($downtime_node instanceof \Drupal\node\Entity\Node){
         send_downtime_notifications($downtime_node, 'resolve');
-        //exit;
-        //capture the notification for the users to send daily and weekly
-//        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
       }
     }
-    /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
-      $query = \Drupal::database()->select('downtimes', 'd');
-      $query->fields('d', ['state_id']);
-      $query->condition('d.downtime_id', $nid, '=');
-      $query->range(1);
-      $node_resolve->state = $query->execute()->fetchField();
-
-      $query = \Drupal::database()->select('downtimes', 'd');
-      $query->fields('d', ['service_id']);
-      $query->condition('d.downtime_id', $nid, '=');
-      $query->range(1);
-
-      $node_resolve->service = $query->execute()->fetchField();
-
-
-      $mode = 'Resolve';
-      $path = $type;
-
-      if (isset($_SESSION['Group_name'])) {
-      // $path = 'node/' . $_SESSION['Group_id'] . '/downtimes';
-      $path = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/downtimes');
-      }
-      else {
-      // $path = 'downtimes';
-      $path = Url::fromUserInput('/downtimes');
-      }
-      unset($_SESSION['form_values']);
-
-      $event = array(
-      'module' => 'node',
-      'uid' => $node_resolve->uid,
-      'oid' => $node_resolve->nid,
-      'type' => 'node',
-      'action' => 'Resolve',
-      'node' => $node_resolve,
-      'params' => array('nid' => $node_resolve->nid),
-      );
-
-
-      if ($notifications_content_disable != 1) {
-      # Use custom downtimes_notifications to send immediate downtimes notifications instead of notifications module.
-      # Immediate notifications are still inserted into notifications_queue but get deleted by downtimes_notifications_notifications hook.
-      # Digested notifications are handled by the default notifications module.
-      notifications_event($event);
-      $action = "Resolve";
-
-      // downtimes_notifications_insert($node_resolve, $action);
-      }
-      $form_state->set('redirect', $path); */
   }
-
 }
