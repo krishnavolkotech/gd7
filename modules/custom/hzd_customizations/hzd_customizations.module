@@ -129,20 +129,13 @@ use Drupal\Core\Render\Element;
 function hzd_customizations_entity_display_build_alter(&$build, $context) {
   /** @var \Drupal\Core\Entity\EntityInterface $entity */
   $entity = $context['entity'];
-//    pr($context['view_mode']);exit;
   if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo') {
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
     $display = $context['display'];
     $entityManager = Drupal::service('entity.manager');
     $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
-//    kint($entity->get('upload'));
     foreach ($fields as $field_name => $definition) {
-//            $definition->setDefaultValue('Keine');
-//        kint($definition);
-//        kint($entity->get($field_name)->value);
-//            if (empty($entity->get($field_name)->value) && $definition instanceof Drupal\field\Entity\FieldConfig && $definition->get('fieldStorage') != null && !in_array($field_name, ['upload','field_unique_id','field_author_name','field_author_state','comment'])) {
       if (in_array($field_name, [
-//            'field_additional_email_recipient',
                   'field_business_impact',
                   'field_business_impact_services',
                   'field_contact',
@@ -154,7 +147,6 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
                   'field_other_services',
                   'field_professional_conditions',
                   'field_recipients',
-//          'upload',
                   'field_related_transfer_number',
                   'field_special_notes',
                   'field_technical_impact',
@@ -162,9 +154,6 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
                   'field_tech_requirements'
               ]) && empty($entity->get($field_name)->value)
       ) {
-//                if ($field_name == 'upload' || $field_name == 'field_related_transfer_number') {
-//                    kint($definition->get('fieldStorage'));
-//                }
         $component = $display->getComponent($field_name);
         $build[$field_name] = [
             '#theme' => 'field',
@@ -186,44 +175,8 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         ];
       }
     }
-    /*    if($entity->isPublished()){
-      $quickinfoId = $entity->get('field_unique_id')->value;
-      $build['upload'][100] = [
-      '#type'=>'link',
-      '#url'=>Url::fromUserInput("/system/files/rz-schnellinfos/{$quickinfoId}/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf"),
-      '#title'=>"RZ-Schnellinfo-Nr-{$quickinfoId}.pdf"];
-      } */
   }
-//    kint($build['field_custom_title']);
 }
-
-/* function hzd_customizations_preprocess_field(&$vars){
-  $entityManager = Drupal::service('entity.manager');
-  $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
-  $quickinfoCustomFields = [];
-  foreach($fields as $key=>$field){
-  if($field instanceof Drupal\field\Entity\FieldConfig)
-  $quickinfoCustomFields[] = $key;
-  }
-  $field_name = $vars['element']['#field_name'];
-  kint($field_name);
-  //    if(in_array($field_name,$quickinfoCustomFields)){
-  //    if($field_name == 'field_custom_title'){
-  //        pr($quickinfoCustomFields);exit;
-  //        $i =0;
-  //    }
-
-  //    exit;
-  //    echo 1;
-  } */
-
-//function hzd_customizations_node_view(&$build, $entity, $display, $view_mode) {
-//  if ($entity->bundle() == 'quickinfo') {
-//    $build['field_custom_title']['#prefix'] = t('<h2>1 @data</h2>', ['@data' => 'Meta-Daten']);
-//    $build['field_intial_situation']['#prefix'] = t('<h2>2 @data2</h2>', ['@data2' => 'Fachlich-inhaltliche Angaben']);
-//  }
-//    pr($build['field_custom_title']);exit;
-//}
 
 function hzd_customizations_group_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->hasField('field_forum_containers')) {
@@ -263,7 +216,6 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
  * Implements hook_ENTITY_TYPE_view().
  */
 function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
-//  pr(array_keys($build));exit;
   if ($entity->getType() == 'quickinfo' && in_array($view_mode, ['full'])) {
     if ($entity->isPublished()) {
       $build['quickinfoId'] = $entity->get('field_unique_id')->view();
@@ -274,14 +226,11 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
       $entity->set('field_author_name',$revision_user_name);
       
       $build['field_author_name'] = $entity->get('field_author_name')->view();
-//      $build['field_author_name'] = $revision_user_name;
       $build['field_author_name']['#label_display'] = 'inline';
       $build['modified'] = $entity->get('changed')->view();
       $build['modified']['#title'] = t('Published on');
       $build['modified']['#label_display'] = 'inline';
     }
-    /*    $build['field_custom_title']['#prefix'] = '<h2>1 Meta-Daten</h2>';
-      $build['field_intial_situation']['#prefix'] = '<h2>2 Fachlich-inhaltliche Angaben</h2>'; */
   }
 }
 
@@ -292,7 +241,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
   $user = \Drupal::service('current_user');
   $uid = $user->id();
-//  $formatted_name = $user->getDisplayName();
   $raw_name = $user->getDisplayName();
   if(strpos($form_id, 'views_form_groups_faq_block_1') !== FALSE){
     $status = FALSE;
@@ -318,14 +266,9 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
         unset($form['actions']['save_order']);
     }
   }
-//        pr($form['actions']['unpublish']);exit;
-//        pr(($form['actions']['submit']['#submit']));exit;
   if (($form_id == 'node_quickinfo_form' || $form_id == 'node_quickinfo_edit_form' || $form_id == 'node_quickinfo_gnode-form_form')) {
-//        pr(array_keys($form['actions']));exit;
-//        $form['actions']['publish']['#value'] = t('Publish');
     $node = $form_state->getFormObject()->getEntity();
     $form['field_custom_title']['#prefix'] = t('<h2>1 Meta-Daten</h2>');
-//        pr($form_state->getFormObject()->getEntity());exit;
     if (empty($form['field_custom_title']['#default_value'])) {
       $form_state->setValue('field_custom_title', $node->label());
     }
@@ -342,31 +285,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     if(\Drupal::currentUser()->isAuthenticated()) {
         $form['actions']['publish']['#access'] = TRUE;
     }
-//        $user = \Drupal::currentUser();
 
-//    if (array_intersect($user->getRoles(), [
-//                'administrator',
-//                'site_administrator'
-//            ])) {
-//      $form['actions']['publish']['#access'] = TRUE;
-//    } else {
-//      $group = Group::load(QUICKINFO);
-//      $groupMember = $group->getMember($user);
-//      if ($groupMember && $groupMember->getGroupContent()
-//                      ->get('request_status')->value == 1
-//      ) {
-//        $roles = $groupMember->getRoles();
-//        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-//          $form['actions']['publish']['#access'] = TRUE;
-//        } else {
-//          $form['actions']['publish']['#access'] = FALSE;
-//        }
-//      } else {
-//        $form['actions']['publish']['#access'] = FALSE;
-//      }
-//    }
-//        pr($user->getRoles());
-//        exit;
     array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
     $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Bitte bestätigen Sie die Veröffentlichung dieser RZ-Schnellinfo.")';
     unset($form['actions']['unpublish']['#dropbutton']);
@@ -374,25 +293,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
     $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
     $form['#attached']['library'][] = 'hzd_customizations/hzd_node_quickinfo';
-//    $form['field_author_name']['widget'][0]['value']['#value'] = $user->getDisplayName();
     $form['#title'] = (t("Report DC QuickInfo"));
-    // no use of the following logic so commenting for now #sandeep
-    /*    if (isset($form['nid']['#value'])) {
-      $query = \Drupal::database()->select('node__field_unique_id', 'nfui');
-      $query->Fields('nfui', array('field_unique_id_value'));
-      $query->condition('nfui.nid', $form['nid']['#value']);
-      $uniue_id_val = $query->execute()->fetchField();
-      } */
     $form['#validate'][] = 'custom_quickinfo';
 
     $form['attachments']['#title'] = t('2.13 File attachments');
     $form['attachments']['#prefix'] = '<div class="attachments quickinfo-attachments">';
     $form['field_unique_id']['#type'] = 'hidden';
-//        $form['field_unique_id']['#suffix'] = '</div>';
-
-    /*        $form['field_author_name'][0]['#default_value']['value'] = $raw_name;
-      $form['field_author_name']['#prefix'] = '<div class="uniq_id">';
-      $form['field_author_name']['#suffix'] = '</div>'; */
 
     $query = \Drupal::database()->select('cust_profile', 'cp');
     $query->addField('cp', 'state_id');
@@ -404,17 +310,15 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $query->Fields('s', array('state'));
     $query->condition('s.id', $user_state);
     $state = $query->execute()->fetchField();
-//        pr($form['field_author_state']);exit;
+
     $form['field_author_state']['widget'][0]['value']['#default_value'] = $state;
     $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
     $form['field_author_name']['widget'][0]['value']['#default_value'] = $raw_name;
     $form['field_author_name']['#access'] = FALSE;
     
     $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
-//        $form['field_author_state']['#suffix'] = '</div>';
     $form['attachments']['#collapsed'] = FALSE;
   }
-//    pr(($form['actions']['publish']));exit;
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
 
     $db = \Drupal::database();
@@ -537,18 +441,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     );
     $form['block_inactive_user']['inactive_user_block_warn_text']['#weight'] = 5;
 
-    /*    $inactive_user_delete_notify_mail_subject = \Drupal::config('inactive_user.settings')
-      ->get('inactive_user_delete_notify_mail_subject');
-      $inactive_user_delete_notify_mail_subject = $inactive_user_delete_notify_mail_subject ? $inactive_user_delete_notify_mail_subject : $account_inactivity;
-
-      $form['delete_inactive_user']['inactive_user_delete_notify_mail_subject'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Subject of deleted user account e-mail'),
-      '#default_value' => $inactive_user_delete_notify_mail_subject,
-      '#required' => TRUE,
-      '#weight' => 1,
-      );
-     */
     $form['delete_inactive_user']['inactive_user_delete_notify_text']['#weight'] = 2;
     unset($form['delete_inactive_user']['inactive_user_auto_delete_warn']);
     unset($form['delete_inactive_user']['inactive_user_delete_warn_mail_subject']);
@@ -557,16 +449,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   if ($form_id == 'node_deployed_releases_edit_form') {
     $entity = $form_state->getFormObject()->getEntity();
     $dateData = $entity->get('field_date_deployed')->value;
-//   $form['field_date_deployed']['widget'] = ['#type'=>'date','#value'=>$dateData,'#date_format'=>'Y-m-d'];
     $form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
     $form['#validate'][] = 'field_date_deployed_validate';
     $service = $form_state->getValue('field_release_service')[0]['value'];
     if (empty($service)) {
       $service = $entity->get('field_release_service')->value;
     }
-//    $environment = $form['field_environment']['widget']['#default_value'];
-//  pr($service);exit;
-    // $form_state->setValue('submitted', FALSE);.
     $releaseNode = Node::load($entity->get('field_earlywarning_release')->value);
     $default_releases = array("0" => '<' . t('Release') . '>',$releaseNode->id()=>$releaseNode->label());
     if ($service != 0) {
@@ -574,7 +462,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     }
     natcasesort($default_releases);
 
-//    $rel = \Drupal::request()->query->get('rel');
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
     $form['field_earlywarning_release']['widget']['#default_value'] = $releaseNode->id();
     $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';
@@ -606,6 +493,32 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
   }
 
+    if($form_id == 'node_page_edit_form') {
+        unset($form['actions']['unpublish']);
+        # TODO
+        # The following code does not work when editing pages, redirects to edit page again after saving.
+        # The same code works fine for node_downtimes_edit_form, though (downtimes.module).
+        /*
+        if (isset($form['actions']['publish'])) {
+            # Disable submit button after click to avoid multiple submission
+            $form['actions']['publish']['#attributes'] = array(
+                "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+                "title" => "Bitte nicht mehrfach klicken, sondern nach dem Speichern warten, bis die Aktion abgeschlossen wurde.",
+            );
+        } else {
+            # Disable submit button after click to avoid multiple submission
+            $form['actions']['submit']['#attributes'] = array(
+                "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+                "title" => "Bitte nicht mehrfach klicken, sondern nach dem Speichern warten, bis die Aktion abgeschlossen wurde.",
+            );
+        } */
+    }
 //  echo $form_id;exit;
 }
 
