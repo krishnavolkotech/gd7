@@ -967,7 +967,10 @@ form.node-service-profile-form .form-checkboxes{
  /*display:inline-block;
  float:left;
  display:table;*/
- display:table-footer-group;
+ display:table;
+ break-inside: avoid;
+ -webkit-column-break-inside: avoid;
+ page-break-inside: avoid;
 }
 header .block-cust-group-search-block form {
   position: relative;

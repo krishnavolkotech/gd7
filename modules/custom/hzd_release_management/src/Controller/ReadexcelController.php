@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Drupal\hzd_services\HzdservicesHelper;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
+use Drupal\node\Entity\Node;
 
 /**
  * Class ReadexcelController.
@@ -31,6 +32,10 @@ class ReadexcelController extends ControllerBase {
     try {
       ini_set('memory_limit', '3G');
       ini_set('max_execution_time', 0);
+
+      //Attempt downloding the previously failed documentations.
+      self::download_failed_documentations();
+
       $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
       $subject = "Error while release csv's import";
       $response = '';
@@ -74,6 +79,7 @@ class ReadexcelController extends ControllerBase {
           }
         }
       }
+      
     }
     catch (Exception $e) {
       \Drupal::logger('hzd_release_management')->error($e->getMessage());
@@ -82,6 +88,29 @@ class ReadexcelController extends ControllerBase {
       $response = t('Error occurred while Releases import. Please check db log for error details.');
     }
     return $output = array('#markup' => $response);
+  }
+
+  public function download_failed_documentations(){
+    //Get the list of all the previously failed releases.
+    $time = \Drupal::time()->getRequestTime();
+    $query = \Drupal::database()->select('release_doc_failed_download_info', 'rdfdi');
+    $query->Fields('rdfdi', array('nid'));
+    $query->addExpression('count(nid)', 'cnt');
+    $query->groupBy('nid');
+    $query->having("count(nid) < 3");
+    $query->condition("created",$time,"<");
+    $query = $query->execute()
+    ->fetchAll();
+    foreach ($query as $key => $value) {
+      $node = Node::load($value->nid);
+      //continueing the loop if node is somehow deleted from the system.
+      if(!$node){
+        continue;
+      }
+      $service = strtolower($node->get('field_relese_services')->first()->entity->label());
+      //attempt the download with the prepared data now.
+      HzdreleasemanagementStorage::do_download_documentation($node->id(), $node->label(), $node->get('field_documentation_link')->value, $service, $node->label(), $node->get('field_documentation_link')->value);
+    }
   }
 
 }
