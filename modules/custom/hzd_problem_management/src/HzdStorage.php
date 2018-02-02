@@ -333,7 +333,7 @@ class HzdStorage {
 
       $service_query = \Drupal\node\Entity\Node::load(
         $problems_node->field_services->target_id);
-      $service = $service_query->get('field_problem_name')->value;
+      $service = $service_query->get('title')->value;
       $last_update = $problems_node->field_processing->value;
       $user_input = '/node/' . $problems_node->nid->value;
       $elements = array(

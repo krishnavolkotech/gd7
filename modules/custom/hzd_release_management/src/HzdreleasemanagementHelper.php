@@ -502,7 +502,7 @@ class HzdreleasemanagementHelper {
   }
 
   /**
-   * Returns the released releses for the deployment.
+   * Returns the released releases for the deployment.
    */
   static public function released_deployed_releases($service = NULL) {
     //Retriving the data using entity query // PLease use the below code to optimize performance @sandeep
@@ -529,7 +529,6 @@ class HzdreleasemanagementHelper {
             ->condition('field_relese_services', $services, 'IN')
             ->condition('field_release_type', [1, 2], 'IN')
             ->condition('nid', $deployed, 'NOT IN')
-//            ->condition('status',1)
             ->condition('type', 'release')
             ->execute();
     $nodes = Node::loadMultiple($data);
@@ -538,49 +537,24 @@ class HzdreleasemanagementHelper {
       $releases[$node->id()] = $node->label();
     }
 
-
-    /* $query = \Drupal::database()->select('node_field_data', 'nfd');
-      $query->leftJoin('node__field_relese_services', 'nfrs', 'nfrs.entity_id = nfd.nid');
-      $query->leftJoin('group_releases_view', 'GRV', 'GRV.service_id = nfrs.field_relese_services_target_id');
-      $query->leftJoin('node__field_release_type', 'nfrt', 'nfrt.entity_id = nfrs.entity_id ');
-      $query->addExpression('nfd.nid', 'release_id');
-      $query->addExpression('nfrs.field_relese_services_target_id', 'service');
-      $query->fields('nfd', array('title'));
-      $query->condition('nfd.status', 1);
-      $query->condition('GRV.group_id', RELEASE_MANAGEMENT, '=');
-      $query->condition('field_release_type_value', array(1, 2), 'IN');
-      if ($service) {
-      $query->condition('field_relese_services_target_id', $service, '=');
-      }
-      $query->orderBy('title');
-      $releases_infos = $query->execute()->fetchAll();
-      $services = $releases = array();
-      foreach ($releases_infos as $releases_info) {
-      if (!in_array($releases_info->service, $services)) {
-      $services[] = $releases_info->service;
-      }
-      $releases[$releases_info->service] = $releases_info->title;
-      } */
     $deployed_services[] = '<'.t('Service')->render().'>';
 
     $query = \Drupal::database()->select('node_field_data', 'nfd');
+    $query->join('node__field_release_name', 'nfrn', 'nfd.nid = nfrn.entity_id');
+    $query->isNotNull('nfrn.field_release_name_value');
     $query->fields('nfd', array('nid', 'title'));
     if ($service) {
       $query->condition('nfd.nid', $services, 'IN');
     }
     $query->condition('type', 'services');
-//            $query->condition('field_downtime_type', 'Publish');
     $query->orderBy('title');
     $services_infos = $query->execute()->fetchAll();
 
     foreach ($services_infos as $services_info) {
       $serviceEntity = Node::load($services_info->nid);
-      if (!empty($serviceEntity->get('field_release_name')->value)) {
-        $deployed_services[$services_info->nid] = $serviceEntity->get('field_release_name')->value;
-      }
+      $deployed_services[$services_info->nid] = $serviceEntity->get('title')->value;
     }
 
-//         dpm($deployed_services);
     return $service_releases = array(
         'services' => $deployed_services,
         'releases' => $releases,
@@ -735,7 +709,7 @@ class HzdreleasemanagementHelper {
       $data[] = array(
           $state,
           $environment,
-          $serviceEntity->get('field_release_name')->value,
+          $serviceEntity->get('title')->value,
           $release,
           date("d.m.Y", strtotime($deployedRelease->get('field_date_deployed')->value)),
           $action,

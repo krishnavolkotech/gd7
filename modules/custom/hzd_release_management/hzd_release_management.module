@@ -782,20 +782,35 @@ function hzd_release_management_entity_insert($entity) {
   }
 }
 
+function hzd_release_management_node_presave(NodeInterface $node) {
+    $tags = [];
+    if ($node->bundle() == 'release') {
+      $tags = ['hzd_release_management:releases'];
+      Cache::invalidateTags($tags);
+    }
+    if ($node->getType() == 'deployed_releases') {
+        if (!isset($node->field_archived_release->value)) {
+          $node->set('field_archived_release', 0);
+        }
+        if ($node->field_environment->value == 1) {
+          // If environment is or was Production, delete cache for deployed releases overview table
+          $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+          \Drupal::cache()->deleteMultiple($cids);
+        }
+    }
+}
+
 /**
  * Implements hook_ENTITY_TYPE_update()
  */
 function hzd_release_management_node_update($entity) {
+
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
 
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    if ($entity->getType() == 'deployed_releases') {
-//            send_release_notifications($entity);
-    }
     if ($entity->getType() == 'release') {
       send_release_notifications($entity);
     }
-
     if ($entity->getType() == 'downtimes') {
       send_downtime_notifications($entity);
     }
@@ -806,20 +821,17 @@ function hzd_release_management_node_update($entity) {
       send_pf_notifications($entity);
     }
   }
+
   if ($entity->getType() == 'problem') {
     send_problem_notifications($entity);
   }
 
-  if ($entity->getType() == 'quickinfo') {
-//    if ($entity->get('status')->value) {
-//      send_qi_notifications($entity);
-//    }
-  }
-
   if ($entity->getType() == 'services') {
     update_service_notifications($entity);
-    // update_service_notifications('downtimes', $nid);.
   }
+
+  // if ($entity->getType() == 'deployed_releases') {
+  // }
 }
 
 /**
@@ -983,6 +995,13 @@ function hzd_release_management_node_delete($entity) {
     db_delete('service_notifications')
       ->condition('service_id', $nid)
       ->execute();
+  }
+  if ($entity->getType() == 'deployed_releases') {
+        if ($entity->field_environment->value == 1) {
+            // If environment is Production, delete cache for deployed releases overview table
+            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            \Drupal::cache()->deleteMultiple($cids);
+        }
   }
 }
 
@@ -1496,11 +1515,3 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
   }
 }
 
-function hzd_release_management_node_presave(NodeInterface $node) {
-  $tags = [];
-  if ($node->bundle() == 'release') {
-    $tags = ['hzd_release_management:releases'];
-    Cache::invalidateTags($tags);
-  }
-  
-}
