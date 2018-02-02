@@ -497,8 +497,29 @@ $inprogress_nid_values = [];
 
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
-          list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
+          self::do_download_documentation($nid, $values_title, $link, $service);
 
+        }
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+    }
+  }
+
+
+  /**
+   * Downloads documentation based on the service and release data provides
+   * 
+   * 
+   * 
+   */
+  static function do_download_documentation($nid, $values_title, $link, $service){
+          list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
           // Check secure-download string is in documentation link. If yes excluded from documentation download.
           if (empty($link_search)) {
             $root_path = \Drupal::service('file_system')->realpath("private://");
@@ -552,7 +573,6 @@ $inprogress_nid_values = [];
 
               $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
               $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
-
               self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
               // $nid_count = db_result(db_query("SELECT count(*)
               //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
@@ -568,16 +588,6 @@ $inprogress_nid_values = [];
             }
           }
         }
-      }
-    }
-    catch (Exception $e) {
-      \Drupal::logger('hzd_release_management')->error($e->getMessage());
-      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
-      $subject = 'Error while releases import';
-      $body = $e->getMessage();
-      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-    }
-  }
 
   /**
    * Function for sending mail.
@@ -771,6 +781,10 @@ $inprogress_nid_values = [];
             self::copy_subfolders_to_sonstige($dokument_path);
           }
           shell_exec("rm -rf " . $new_path);
+          //Delete the failed log record (if any)
+          \Drupal::database()->delete('release_doc_failed_download_info')
+          ->condition('nid', $nid)
+          ->execute();
         } else {
           // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
           $failed_link = "Download file was not extracted";
