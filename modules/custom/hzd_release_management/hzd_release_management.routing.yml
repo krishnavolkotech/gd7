@@ -2,7 +2,7 @@ hzd_release_management.view_deployed_releases:
   path: 'group/{group}/releases/view_deployed_releases'
   defaults:
     _title: 'Deployed Releases (Overview)'
-    _form: '\Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew'
+    _controller: '\Drupal\hzd_release_management\Controller\DeployedReleases::OverView'
     _entity_view: group.default
   requirements:
     _permission: 'access content'
