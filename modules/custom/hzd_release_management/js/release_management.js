@@ -152,7 +152,6 @@
                         6: {sorter: false},
                     },
                     sortList: [[0, 0], [1, 0], [2, 0], [4, 0], [5, 0]],
-                    widgets: ['zebra'],
                     showProcessing: true,
                     headerTemplate : '{content} {icon}',
                     widgets: ['zebra',"pager", 'stickyHeaders'],
