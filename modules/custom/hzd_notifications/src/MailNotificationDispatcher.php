@@ -68,7 +68,6 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       $failed_user_data = [];
 
       $user_ids = unserialize($notification['user_data']);
-error_log(json_encode($user_ids));
       // hzd_user_mails checks for inactive user and if field_notifications_status_value
       // != disable , gets mail and mail preference.
       //$user_mails = hzd_user_mails($user_ids);
@@ -92,9 +91,6 @@ error_log(json_encode($user_ids));
           $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
           $user_notif_status = $user->get('field_notifications_status')->value;
 
-          if($user_id == 1 || $user_id == 4498){
-            dpm($user_id);
-          }
           /**
            * Mail is not sent for following :
            *  - If user is in blocked state.
@@ -113,7 +109,7 @@ error_log(json_encode($user_ids));
           }
 
           $mail = $user->getEmail();
-          $data['node'] = $entity;
+          $data[$entity->getEntityTypeId()] = $entity;
           $data['user'] = $user;
           $mailContent = getNodeMailContentFromConfig($data, $notification['action']);
 
@@ -125,11 +121,11 @@ error_log(json_encode($user_ids));
 
           $notification_dispatched = $this->dispatch($dispatch_data);
 
-          if (!$notification_dispatched) {
+          /* if (!$notification_dispatched) {
             // This is not required because , we use queue which does this error
             // handling implicitly.
             //$failed_user_data[] = $user->id();
-          }
+          } */
         }
 
       }
@@ -180,7 +176,6 @@ error_log(json_encode($user_ids));
     $params['subject'] = $subject;
     $params['preference'] = $preference ? $preference : 'html';
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
-    error_log($to);
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
   }
 

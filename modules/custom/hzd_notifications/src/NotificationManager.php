@@ -5,6 +5,7 @@ namespace Drupal\hzd_notifications;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\hzd_notifications\Resolver\ChainServiceResolverInterface;
+use Drupal\cust_group\CustGroupHelper;
 
 class NotificationManager implements NotificationManagerInterface {
 
@@ -45,18 +46,26 @@ class NotificationManager implements NotificationManagerInterface {
   /**
    * @inheritdoc
    */
-  public function getUserDataForServices(array $services = NULL, EntityInterface $entity) {
+  public function getSubscribedUsers(EntityInterface $entity) {
+    
     // @Todo check if the services can be empty.
     $user_data = [];
 
     // Bundle categories are divided here just because of source to get user data,
     // no other special logic.
-    $generic_bundles = [
+    $service_bundles = [
       'deployed_releases',
       'release',
       'downtimes',
       'problem',
       'early_warnings',
+    ];
+
+    $groupBundles = [
+      'event',
+      'forum',
+      'page',
+      'faqs'
     ];
 
     // Special bundles doesn't require services.
@@ -65,18 +74,53 @@ class NotificationManager implements NotificationManagerInterface {
     ];
 
     $bundle = $entity->bundle();
-    if (!in_array($bundle, $special_bundles)) {
-      $service_ids = EntityHelper::extractIds($services);
-    }
 
-    if (in_array($bundle, $generic_bundles)) {
-      $user_data = $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
+    if($entity->getEntityTypeId() == 'group'){
+      return $this->getUsersForGroup($entity);
+    }
+    elseif(in_array($bundle, $groupBundles)){
+      $groupContent = CustGroupHelper::getGroupNodeFromNodeId($entity->id());
+      return $this->getUsersForGroup($groupContent->getGroup());
+    }
+    elseif (in_array($bundle, $service_bundles)) {
+      $services = $this->getServicesForEntity($entity);
+      $service_ids = EntityHelper::extractIds($services);
+      return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
     }
     elseif (in_array($bundle, $special_bundles)) {
-      $user_data = $this->hzd_get_immediate_pf_notification_user_mails();
+      return $this->hzd_get_immediate_pf_notification_user_mails();
     }
+    return [];
+  }
 
-    return $user_data;
+
+  private function getUsersForGroup($group){
+    $uids = $this->connection->select('group_notifications', 'gnudi')
+      ->fields('gnudi', ['uids'])
+      ->condition('gnudi.group_id', $group->id(), '=')
+      ->condition('gnudi.send_interval', '0', '=')
+      ->execute()->fetchField();
+    $users = [];
+    if (!empty($uids)) {
+      $users = unserialize($uids);
+    }
+    return $users;
+    /* $userMails = [];
+    if (!empty($users)) {
+
+      $userEntities = User::loadMultiple($users);
+
+      foreach ($userEntities as $user) {
+        $groupMember = $group->getMember($user);
+        if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive()
+          && $groupMember && $groupMember->getGroupContent()
+            ->get('request_status')->value == 1
+          && !hzd_user_inactive_status_check($user->id())
+        ) {
+          $userMails[$user->id()] = $user->getEmail();
+        }
+      }
+    } */
   }
 
   /**

@@ -103,24 +103,6 @@ function cust_group_theme() {
   );
 }
 
-function cust_group_node_update($entity) {
-  if (!empty($entity->sendNomail) && $entity->sendNomail == 1) {
-    return FALSE;
-  }
-  if ($entity instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($entity, 0);
-    //exit;
-    //capture the notification for the users to send daily and weekly
-//    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
-  }
-}
-
-function cust_group_node_insert($entity) {
-  //  pr($entity->getType());exit;
-  //capture the notification for the users to send daily and weekly
-//  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'insert');
-}
-
 function cust_group_group_insert($group) {
   $node = Node::create([
     'type' => 'group',
@@ -203,10 +185,6 @@ function cust_group_group_insert($group) {
   }
 }
 
-function cust_group_group_update($entity) {
-  sendGroupUpdateMail($entity, 0);
-//  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
-}
 
 function cust_group_group_content_update($entity) {
     $group = $entity->getGroup();
@@ -265,27 +243,6 @@ function cust_group_group_content_delete() {
 }
 
 function cust_group_group_content_insert($entity) {
-    $group = $entity->getGroup();
-    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
-        $newroles = $entity->get('group_roles')->getValue();
-        $nroles = [];
-        if(isset($newroles) && !empty($newroles)) {
-            foreach ($newroles as $key => $val) {
-                $nroles[] = $val['target_id'];
-            }
-        }
-        if(in_array($group->bundle() . '-admin', $nroles)) {
-            sendGroupAdminRoleMail($group, $entity->getEntity());
-        }
-    }
-  $node = $entity->getEntity();
-  if ($node instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($node, 1);
-//    \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
-    /* if ($node->getType() == 'page') {
-      \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
-      } */
-  }
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
