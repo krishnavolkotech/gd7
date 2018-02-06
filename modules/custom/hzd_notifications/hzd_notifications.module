@@ -7,7 +7,6 @@ use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
-use Drupal\Core\Link;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -663,82 +662,126 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
     }
   }
 
-  if ($type == 'user' && !empty($data['user'])) {
-    /** @var \Drupal\user\Entity\User $user */
-    $user = $data['user'];
-
-    foreach ($tokens as $name => $original) {
-      switch ($name) {
-        case 'user-notification-settings-url-absolute':
-          $route = 'hzd_notifications.notifications';
-          $route_params = [
-            'user' => $user->id(),
-          ];
-
-          /**
-           * The below approach is used instead of passing absolute true in options.
-           * passing absolute doesn't provide path alias. This is due to
-           * Drupal\subpathauto\PathProcessor in sub path auto module.
-           */
-          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
-
-          global $base_url;
-          $notif_change_link = $base_url . $url;
-          $replacements[$original] = $notif_change_link;
-          break;
-        case 'user-notification-settings-url-relative':
-          $route = 'hzd_notifications.notifications';
-          $route_params = [
-            'user' => $user->id(),
-          ];
-          
-          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
-          $replacements[$original] = $url;
-          break;
-      }
-    }
-
-    /*if ($author_tokens = $token_service->findWithPrefix($tokens, 'author')) {
-      $replacements += $token_service->generate('user', $author_tokens, ['user' => $node->getOwner()], $options, $bubbleable_metadata);
-    }*/
-  }
   return $replacements;
 }
 
+
+          /**
+ * Implements hook_ENTITY_TYPE_insert()
+           */
+function hzd_notifications_node_insert($entity) {
+
+  $notification_bundles = [
+    'release',
+    'downtimes',
+    'problem',
+    'planning_files',
+    'early_warnings',
+    // 'quickinfo'
+    ];
+          
+  // As Per Issue #21129, send notifications only for published nodes.
+  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
+
+    $notification_manager = \Drupal::service('hzd_notifications.manager');
+    $services = $notification_manager->getServicesForEntity($entity);
+    $user_data = $notification_manager->getUserDataForServices($services, $entity);
+
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+
+    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
+
+    // Notification override available for the below entities.
+    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+
+      // These bundles have condition for notifications.
+      $allowed_bundles = [
+        'release',
+        'downtimes',
+      ];
+
+      if (in_array($entity->getType(), $allowed_bundles)) {
+        $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
+      }
+    }
+
+    $allowed_bundles = [
+      'problem',
+      'planning_files',
+      'early_warnings',
+    ];
+
+    if (in_array($entity->getType(), $allowed_bundles)) {
+      $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
+    }
+  }
+
+  // Services bundle is not altered for now.
+  if ($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+    $downtime = $entity->get('field_enable_downtime')->value;
+    $problem = $entity->get('field_problem_name')->value;
+    $release = $entity->get('field_release_name')->value;
+
+    if ($downtime && $rel_type == KONSONS) {
+      insert_new_service_notifications('downtimes', $nid);
+    }
+    if ($problem != '' && $rel_type == KONSONS) {
+      insert_new_service_notifications('problem', $nid);
+    }
+    if ($release != '') {
+      insert_new_service_notifications('release', $nid);
+    }
+    insert_new_service_notifications('early_warnings', $nid);
+  }
+}
+
 /**
- * Implements hook_token_info_alter().
+ * Implements hook_ENTITY_TYPE_update()
  */
-function hzd_notifications_token_info_alter(&$data) {
-  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
-    'name' => t("user notification settings - absolute link"),
-    'description' => t("The absolute link to change user notification settings."),
+function hzd_notifications_node_update($entity) {
+
+  $notification_bundles = [
+    'release',
+    'downtimes',
+    'problem',
+    'planning_files',
+    'early_warnings',
+    // 'quickinfo'
   ];
 
-  $data['tokens']['user']['user-notification-settings-url-relative'] = [
-    'name' => t("user notification settings - relative link"),
-    'description' => t("The relative link to change user notification settings."),
+  // As Per Issue #21129, send notifications only for published nodes.
+  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
+    /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
+    $notification_manager = \Drupal::service('hzd_notifications.manager');
+    $services = $notification_manager->getServicesForEntity($entity);
+    $user_data = $notification_manager->getUserDataForServices($services, $entity);
+
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+
+    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    
+      // These bundles have condition for notifications.
+      $allowed_bundles = [
+        'release',
+        'downtimes',
+  ];
+
+      if (in_array($entity->getType(), $allowed_bundles)) {
+        $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);
+      }
+    }
+
+    $allowed_bundles = [
+      'problem',
+      'planning_files',
+      'early_warnings',
   ];
 
     if (in_array($entity->getType(), $allowed_bundles)) {
       $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);
-    }
-
-
-    /*if ($entity->getType() == 'problem') {
-      send_problem_notifications($entity);
-    }
-
-    if ($entity->getType() == 'planning_files') {
-      send_pf_notifications($entity);
-    }
-    if ($entity->getType() == 'early_warnings') {
-      send_earlywarning_notifications($entity);
-    }*/
-
-    if ($entity->getType() == 'quickinfo') {
-      //    if ($entity->get('status')->value) {
-      //      send_qi_notifications($entity);
-      //    }
     }
   }
 
@@ -750,55 +793,6 @@ function hzd_notifications_token_info_alter(&$data) {
 }
 
 
-/**
- * Get user mail ids for given service id and type.
- *
- * @deprecated use NotificationManager->hzd_get_immediate_notification_user_mails instead.
- */
-function hzd_get_immediate_notification_user_mails($service_ids, $type) {
-  $service_id = explode(',', $service_ids);
-
-  $query = \Drupal::database()->select('service_notifications', 'sn');
-  $query->addField('sn', 'uids');
-  $query->condition('sn.service_id', $service_id, 'IN');
-  $query->condition('sn.send_interval', 0, '=');
-  $query->condition('sn.type', $type, 'like');
-  $get_immediate_notifications_users = $query->execute()->fetchAll();
-
-  $user_ids = array();
-  foreach ($get_immediate_notifications_users as $key => $serialized_uids) {
-    $unserialized_user_array = unserialize($serialized_uids->uids);
-    $user_ids = array_unique(array_merge($user_ids, $unserialized_user_array), SORT_REGULAR);
-  }
-
-  if (is_array($user_ids) && count($user_ids) > 0) {
-    return hzd_user_mails($user_ids);
-  }
-
-  return '';
-}
-
-/**
- * Get user mail ids for planning files bundle.
- *
- * @deprecated use NotificationManager->hzd_get_immediate_pf_notification_user_mails instead.
- */
-function hzd_get_immediate_pf_notification_user_mails() {
-  // Previous query, delete this if new query works fine.
-  // $query = "SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval";
-
-  $query = \Drupal::database()->select('planning_files_notifications', 'pfn');
-  $query->addField('pfn', 'uids');
-  $query->condition('pfn.send_interval', 0, '=');
-  $get_pf_immediate_notifications_users = $query->execute()->fetchField();
-
-  $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
-  if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
-    return hzd_user_mails($unserialized_user_array);
-  }
-
-  return '';
-}
 
 
 /**

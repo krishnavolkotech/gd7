@@ -33,7 +33,7 @@ class NotificationScheduler implements NotificationSchedulerInterface {
     $table = 'notifications_scheduled';
     $fields = [
       'entity_id' => $entity->id(),
-      'entity' => $entity->getEntityTypeId(),
+      'entity_type' => $entity->getEntityTypeId(),
       'bundle' => $entity->bundle(),
       'action' => $action,
       'user_data' => serialize($userData),

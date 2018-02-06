@@ -44,7 +44,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $fields = [
       'sid',
       'entity_id',
-      'entity',
+      'entity_type',
       'bundle',
       'action',
       'user_data',
@@ -68,7 +68,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       $failed_user_data = [];
 
       $user_ids = unserialize($notification['user_data']);
-
+error_log(json_encode($user_ids));
       // hzd_user_mails checks for inactive user and if field_notifications_status_value
       // != disable , gets mail and mail preference.
       //$user_mails = hzd_user_mails($user_ids);
@@ -76,7 +76,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       if (is_array($user_ids) && count($user_ids) > 0) {
 
         $entity = \Drupal::entityTypeManager()
-          ->getStorage($notification['entity'])
+          ->getStorage($notification['entity_type'])
           ->load($notification['entity_id']);
 
         // Each notification subscribed by multiple users.
@@ -180,11 +180,8 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $params['subject'] = $subject;
     $params['preference'] = $preference ? $preference : 'html';
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
-    $send = TRUE;
-
-    foreach (explode(',', trim($to, ',')) as $userMail) {
-      $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
-    }
+    error_log($to);
+    $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
   }
 
   /**
@@ -194,7 +191,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $query = $this->connection->delete(NOTIFICATION_SCHEDULE_TABLE);
 
     $query->condition('sid', $notifications, 'IN');
-    $query->execute();
+    // $query->execute();
   }
 
   /**
