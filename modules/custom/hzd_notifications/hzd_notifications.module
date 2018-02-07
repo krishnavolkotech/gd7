@@ -667,54 +667,15 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
 }
 
 
-          /**
- * Implements hook_ENTITY_TYPE_insert()
-           */
-function hzd_notifications_node_insert($entity) {
+/**
+ * Implements hook_entity_insert()
+ * 
+ */
+function hzd_notifications_entity_insert($entity) {
 
-  $notification_bundles = [
-    'release',
-    'downtimes',
-    'problem',
-    'planning_files',
-    'early_warnings',
-    // 'quickinfo'
-    ];
-          
-  // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished() && in_array($entity->getType(), $notification_bundles)) {
-
-    $notification_manager = \Drupal::service('hzd_notifications.manager');
-    $services = $notification_manager->getServicesForEntity($entity);
-    $user_data = $notification_manager->getUserDataForServices($services, $entity);
-
-    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
-
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
-
-    // Notification override available for the below entities.
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-
-      // These bundles have condition for notifications.
-      $allowed_bundles = [
-        'release',
-        'downtimes',
-      ];
-
-      if (in_array($entity->getType(), $allowed_bundles)) {
-        $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
-      }
-    }
-
-    $allowed_bundles = [
-      'problem',
-      'planning_files',
-      'early_warnings',
-    ];
-
-    if (in_array($entity->getType(), $allowed_bundles)) {
-      $notification_scheduler->schedule($entity, ENTITY_OP_INSERT, $user_data);
-    }
+  $allowedEntities = ['node', 'group_content'];
+  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
+    _notify_users($entity, ENTITY_OP_INSERT);
   }
 
   // Services bundle is not altered for now.
@@ -740,22 +701,24 @@ function hzd_notifications_node_insert($entity) {
 
 /**
  * Implements hook_ENTITY_TYPE_update()
+ * 
+ * Used to queue notifications based on the user subscriptions.
  */
 function hzd_notifications_entity_update(EntityInterface $entity) {
-  $allowedEntities = ['group', 'node', 'group_content'];
-  if(!in_array($entity->getEntityTypeId(), $allowedEntities)){
-    return FALSE;
+
+  $allowedEntities = ['group', 'node'];
+  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
+    _notify_users($entity, ENTITY_OP_UPDATE);
   }
+  
 
-  $notification_bundles = [
-    'release',
-    'downtimes',
-    'problem',
-    'planning_files',
-    'early_warnings',
-    // 'quickinfo'
-  ];
+  // Services bundle is not altered for now.
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
+    update_service_notifications($entity);
+  }  
+}
 
+function _notify_users($entity, $action){
   // As Per Issue #21129, send notifications only for published nodes.
   if ($entity->isPublished()) {
     /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
@@ -768,14 +731,8 @@ function hzd_notifications_entity_update(EntityInterface $entity) {
     if (!isset($dont_send_notification) || $dont_send_notification != 1) {
     
       // These bundles have condition for notifications.
-      $notification_scheduler->schedule($entity, ENTITY_OP_UPDATE, $user_data);
+      $notification_scheduler->schedule($entity, $action, $user_data);
     }
-  }
-
-  // Services bundle is not altered for now.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
-    update_service_notifications($entity);
-    // update_service_notifications('downtimes', $nid);.
   }
 }
 
