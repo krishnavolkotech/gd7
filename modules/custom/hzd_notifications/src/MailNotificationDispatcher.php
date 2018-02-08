@@ -80,6 +80,9 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
 
         // Each notification subscribed by multiple users.
         foreach ($user_ids as $user_id) {
+          if(empty($user_id)){
+            continue;
+          }
           $user = User::load($user_id);
 
           // For some reason, user subscribed and is deleted from system.
@@ -129,7 +132,6 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
         }
 
       }
-
       // Currently, any notifications fail to user, their mail id is stored back
       // into same row. Hence we get to retry the notifications to same user once again.
       // UPDATE: This part is not used because mails are queued and it takes care of this.
@@ -186,7 +188,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $query = $this->connection->delete(NOTIFICATION_SCHEDULE_TABLE);
 
     $query->condition('sid', $notifications, 'IN');
-    // $query->execute();
+    $query->execute();
   }
 
   /**
