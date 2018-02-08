@@ -497,7 +497,12 @@ $inprogress_nid_values = [];
 
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
-          self::do_download_documentation($nid, $values_title, $link, $service);
+          $removePreviousData = 0;
+          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+            $removePreviousData = 1;
+            
+          }
+          self::do_download_documentation($nid, $values_title, $link, $service, $title, $removePreviousData);
 
         }
       }
@@ -518,7 +523,7 @@ $inprogress_nid_values = [];
    * 
    * 
    */
-  static function do_download_documentation($nid, $values_title, $link, $service){
+  static function do_download_documentation($nid, $values_title, $link, $service,$title, $field_documentation_link_value, $removePreviousData = 0){
           list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
           // Check secure-download string is in documentation link. If yes excluded from documentation download.
           if (empty($link_search)) {
@@ -541,7 +546,7 @@ $inprogress_nid_values = [];
              * Check Release status changes from inprogress to released.
              * Check released release date/time changed or not.
              */
-            if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+            if ($removePreviousData) {
 
               $dokument_zip = explode("/", $field_documentation_link_value);
               $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
@@ -593,7 +598,7 @@ $inprogress_nid_values = [];
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-
+    $node = Node::load($nid);
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
     $module = 'hzd_release_management';
@@ -603,12 +608,16 @@ $inprogress_nid_values = [];
     $message_body[] = [
     '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
     ];
+    $message_body[] = [
+    '#markup' => "Release : " . $node->label()
+    ];
     $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
      * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
      * FROM {content_type_release}
      * WHERE nid = %d ", $nid));
      */
+    
     $field_link_value_query = db_select('node__field_documentation_link', 'nfdl')
             ->Fields('nfdl', array('field_documentation_link_value'))
             ->condition('entity_id', $nid, '=');
