@@ -11,3 +11,8 @@ services:
     class: Drupal\downtimes\GroupMemberAddBreadcrumbBuilder
     tags:
       - { name: breadcrumb_builder, priority: 1012 }
+
+  downtimes.downtimes_service_resolver:
+      class: Drupal\downtimes\Resolver\DowntimesServiceResolver
+      tags:
+        - { name: hzd_notifications.service_resolver, priority: -90 }
