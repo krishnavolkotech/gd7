@@ -679,7 +679,7 @@ function hzd_notifications_entity_insert($entity) {
   }
 
   // Services bundle is not altered for now.
-  if ($entity->getType() == 'services') {
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
     $nid = $entity->id();
     $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
     $downtime = $entity->get('field_enable_downtime')->value;
