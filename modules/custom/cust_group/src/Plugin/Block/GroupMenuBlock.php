@@ -143,24 +143,26 @@ class GroupMenuBlock extends BlockBase {
                   $admin_uids[] = $groupadmin->getUser()->id();
               }
           }
-          $db = \Drupal::database();
-          $query = $db
-              ->select('users_field_data','u')
-              ->fields('u', array('name','uid'))
-              ->fields('s', array('abbr'))
-              ->fields('cp', array('firstname','lastname'))
-              ->condition('u.uid', $admin_uids, 'IN')
-              ->orderBy('abbr')
-              ->orderBy('lastname');
-          $query->join('cust_profile', 'cp', 'u.uid = cp.uid');
-          $query->join('states', 's', 's.id = cp.state_id');
-          $admin_details = $query->execute()->fetchAll();
-          foreach ($admin_details as $admin_user) {
-              $data[] = [
-                  '#type' => 'link',
-                  '#title' => $admin_user->firstname . ' ' . $admin_user->lastname . ' (' . $admin_user->abbr . ')',
-                  '#url' => Url::fromUri('internal:/user/' . $admin_user->uid),
-              ];
+          if(!empty($admin_uids)){
+            $db = \Drupal::database();
+            $query = $db
+                ->select('users_field_data','u')
+                ->fields('u', array('name','uid'))
+                ->fields('s', array('abbr'))
+                ->fields('cp', array('firstname','lastname'))
+                ->condition('u.uid', $admin_uids, 'IN')
+                ->orderBy('abbr')
+                ->orderBy('lastname');
+            $query->join('cust_profile', 'cp', 'u.uid = cp.uid');
+            $query->join('states', 's', 's.id = cp.state_id');
+            $admin_details = $query->execute()->fetchAll();
+            foreach ($admin_details as $admin_user) {
+                $data[] = [
+                    '#type' => 'link',
+                    '#title' => $admin_user->firstname . ' ' . $admin_user->lastname . ' (' . $admin_user->abbr . ')',
+                    '#url' => Url::fromUri('internal:/user/' . $admin_user->uid),
+                ];
+            }
           }
           $markup['groupadmin_list'] = [
             '#title' => $this->t('List of Group Admin'),
