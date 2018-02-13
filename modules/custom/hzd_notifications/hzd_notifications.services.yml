@@ -1,0 +1,27 @@
+services:
+  hzd_notifications.scheduler:
+    class: Drupal\hzd_notifications\NotificationScheduler
+    arguments: ['@database']
+
+  hzd_notifications.manager:
+    class: Drupal\hzd_notifications\NotificationManager
+    arguments: ['@database','@hzd_notifications.chain_service_resolver']
+
+  hzd_notifications.mail_dispatcher:
+    class: Drupal\hzd_notifications\MailNotificationDispatcher
+    arguments: ['@database','@plugin.manager.mail']
+
+  hzd_notifications.chain_service_resolver:
+    class: Drupal\hzd_notifications\Resolver\ChainServiceResolver
+    tags:
+      - { name: service_collector, call: addResolver, tag: hzd_notifications.service_resolver }
+
+  hzd_notifications.default_service_resolver:
+    class: Drupal\hzd_notifications\Resolver\DefaultServiceResolver
+    tags:
+      - { name: hzd_notifications.service_resolver, priority: -100 }
+
+  hzd_notifications.planning_files_service_resolver:
+      class: Drupal\hzd_notifications\Resolver\PlanningFilesServiceResolver
+      tags:
+        - { name: hzd_notifications.service_resolver, priority: -90 }
