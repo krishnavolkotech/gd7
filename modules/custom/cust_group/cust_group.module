@@ -664,6 +664,9 @@ function mailToGroupAdmins($data = []) {
 }
 
 use Drupal\group\Entity\Group;
+use Drupal\Core\Field\WidgetInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
@@ -1162,5 +1165,44 @@ function cust_group_entity_update(EntityInterface $entity) {
 function cust_group_preprocess_block(&$vars) {
   if (isset($vars['plugin_id']) && $vars['plugin_id'] == 'system_menu_block:primary-links') {
     $vars['#cache'] = ['max-age' => 0];
+  }
+}
+
+
+// Imce related feature starts here
+function cust_group_field_widget_third_party_settings_form(WidgetInterface $widget, FieldDefinitionInterface $field_definition, $form_mode, $form, FormStateInterface $form_state) {
+  $form['group_files'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Allow files only from the relative group directories (disable IMCE widget for this to work)'),
+    '#default_value' => $widget->getThirdPartySetting('cust_group', 'group_files'),
+  ];
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ * Alters widget forms that have groups files.
+ */
+function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+  
+  if ($context['widget']->getThirdPartySetting('cust_group', 'group_files')) {
+    // pr($context['widget']->isApplicable());
+    // exit;
+    if (1) {
+      
+      $scheme = $context['items'][$context['delta']]->getFieldDefinition()->getSetting('uri_scheme');
+      $element['#scheme'] = $scheme;
+      $class = 'Drupal\imce\ImceFileField';
+      $element['#process'][] = ['Drupal\cust_group\CustGroupHelper','process'];
+      // Make sure default value callbacks are added
+      if (empty($element['#file_value_callbacks'])) {
+        $info = \Drupal::service('element_info')->getInfo($element['#type']);
+        if (!empty($info['#file_value_callbacks'])) {
+          $element['#file_value_callbacks'] = $info['#file_value_callbacks'];
+        }
+      }
+      $element['#file_value_callbacks'][] = [$class, 'setWidgetValue'];
+    }
+    // pr($element);
   }
 }
