@@ -234,13 +234,3 @@ cust_group.problem_notification_update:
     _title: 'Updating problems notification'
   requirements:
     _permission: 'administer site'
-
-#IMCE intigration with group file structure
-cust_group.imce_page:
-  path: '/files/{group}'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\ImceController::page'
-    _title: 'File Manager'
-    group: null
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\ImceController::checkAccess'

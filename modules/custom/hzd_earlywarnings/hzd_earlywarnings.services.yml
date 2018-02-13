@@ -1,5 +1,0 @@
-services:
-  hzd_earlywarnings.earlywarnings_service_resolver:
-    class: Drupal\hzd_earlywarnings\Resolver\EarlyWarningsServiceResolver
-    tags:
-      - { name: hzd_notifications.service_resolver, priority: -90 }

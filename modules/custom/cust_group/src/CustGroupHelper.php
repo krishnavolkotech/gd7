@@ -11,8 +11,6 @@ namespace Drupal\cust_group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 
 /**
  * Description of CustGroupHelper
@@ -89,30 +87,6 @@ class CustGroupHelper {
       $group = reset($group);
     }
     return $group;
-  }
-
-
-  public static function process($element, FormStateInterface $form_state, $form) {
-    $nodeId = \Drupal::request()->get('node');
-    $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
-    if($groupContent instanceof GroupContent){
-      $group = $groupContent->getGroup()->id();
-    }
-    $element['imce_paths'] = [
-      '#type' => 'hidden',
-      '#attributes' => [
-        'class' => ['imce-filefield-paths'],
-        'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group])->toString(),
-      ],
-      // Reset value to prevent consistent errors
-      '#value' => '',
-    ];
-    // Library
-    $element['#attached']['library'][] = 'imce/drupal.imce.filefield';
-    // Set the pre-renderer to conditionally disable the elements.
-    $element['#pre_render'][] = ['Drupal\imce\ImceFileField', 'preRenderWidget'];
-    // pr($element);exit;
-    return $element;
   }
   
 }
