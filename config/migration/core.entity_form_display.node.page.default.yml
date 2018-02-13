@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.page.upload
     - node.type.page
   module:
+    - cust_group
     - file
     - filefield_sources
     - imce
@@ -37,8 +38,8 @@ content:
     settings:
       progress_indicator: bar
     third_party_settings:
-      imce:
-        enabled: true
+      cust_group:
+        group_files: '1'
       filefield_sources:
         filefield_sources:
           sources:
@@ -51,12 +52,14 @@ content:
           source_imce:
             imce_mode: 1
           source_reference:
-            autocomplete: '0'
+            autocomplete: '1'
             search_all_fields: '0'
           source_attach:
             path: file_attach
             absolute: 0
             attach_mode: move
+      imce:
+        enabled: false
     region: content
   path:
     type: path
