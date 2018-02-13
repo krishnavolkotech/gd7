@@ -20,3 +20,12 @@ display:
             next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
+      title: Inhalt
+  page_1:
+    display_options:
+      menu:
+        title: Inhalt
+      tab_options:
+        title: Inhalt
+label: Inhalt
+description: 'Die Inhalte finden und verwalten.'
