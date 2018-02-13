@@ -1,8 +1,11 @@
+label: 'Bibliothek benutzerdefinierter Blöcke'
+description: 'Benutzerdefinierte Blöcke finden und verwalten.'
 display:
   default:
     display_options:
       exposed_form:
         options:
+          submit_button: Anwenden
           reset_button_label: Zurücksetzen
           exposed_sorts_label: 'Sortieren nach'
           sort_asc_label: Aufsteigend
@@ -15,3 +18,8 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      title: 'Bibliothek benutzerdefinierter Blöcke'
+  page_1:
+    display_options:
+      menu:
+        title: 'Bibliothek benutzerdefinierter Blöcke'
