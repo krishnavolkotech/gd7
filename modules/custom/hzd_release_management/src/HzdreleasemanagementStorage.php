@@ -497,8 +497,34 @@ $inprogress_nid_values = [];
 
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
-          list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
+          $removePreviousData = 0;
+          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+            $removePreviousData = 1;
+            
+          }
+          self::do_download_documentation($nid, $values_title, $link, $service, $title, $removePreviousData);
 
+        }
+      }
+    }
+    catch (Exception $e) {
+      \Drupal::logger('hzd_release_management')->error($e->getMessage());
+      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
+      $subject = 'Error while releases import';
+      $body = $e->getMessage();
+      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+    }
+  }
+
+
+  /**
+   * Downloads documentation based on the service and release data provides
+   * 
+   * 
+   * 
+   */
+  static function do_download_documentation($nid, $values_title, $link, $service,$title, $field_documentation_link_value, $removePreviousData = 0){
+          list($release_title, $product, $release, $compressed_file, $link_search) = self::get_release_details_from_title($values_title, $link);
           // Check secure-download string is in documentation link. If yes excluded from documentation download.
           if (empty($link_search)) {
             $root_path = \Drupal::service('file_system')->realpath("private://");
@@ -520,7 +546,7 @@ $inprogress_nid_values = [];
              * Check Release status changes from inprogress to released.
              * Check released release date/time changed or not.
              */
-            if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+            if ($removePreviousData) {
 
               $dokument_zip = explode("/", $field_documentation_link_value);
               $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
@@ -552,7 +578,6 @@ $inprogress_nid_values = [];
 
               $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
               $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
-
               self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
               // $nid_count = db_result(db_query("SELECT count(*)
               //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
@@ -568,22 +593,12 @@ $inprogress_nid_values = [];
             }
           }
         }
-      }
-    }
-    catch (Exception $e) {
-      \Drupal::logger('hzd_release_management')->error($e->getMessage());
-      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases', ' ');
-      $subject = 'Error while releases import';
-      $body = $e->getMessage();
-      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-    }
-  }
 
   /**
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-
+    $node = Node::load($nid);
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
     $module = 'hzd_release_management';
@@ -593,12 +608,16 @@ $inprogress_nid_values = [];
     $message_body[] = [
     '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
     ];
+    $message_body[] = [
+    '#markup' => "Release : " . $node->label()
+    ];
     $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
      * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
      * FROM {content_type_release}
      * WHERE nid = %d ", $nid));
      */
+    
     $field_link_value_query = db_select('node__field_documentation_link', 'nfdl')
             ->Fields('nfdl', array('field_documentation_link_value'))
             ->condition('entity_id', $nid, '=');
@@ -771,6 +790,10 @@ $inprogress_nid_values = [];
             self::copy_subfolders_to_sonstige($dokument_path);
           }
           shell_exec("rm -rf " . $new_path);
+          //Delete the failed log record (if any)
+          \Drupal::database()->delete('release_doc_failed_download_info')
+          ->condition('nid', $nid)
+          ->execute();
         } else {
           // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
           $failed_link = "Download file was not extracted";

@@ -785,19 +785,17 @@ function hzd_release_management_entity_insert($entity) {
 function hzd_release_management_node_presave(NodeInterface $node) {
     $tags = [];
     if ($node->bundle() == 'release') {
-        $tags = ['hzd_release_management:releases'];
-        Cache::invalidateTags($tags);
+      $tags = ['hzd_release_management:releases'];
+      Cache::invalidateTags($tags);
     }
     if ($node->getType() == 'deployed_releases') {
         if (!isset($node->field_archived_release->value)) {
-            $node->set('field_archived_release', 0);
+          $node->set('field_archived_release', 0);
         }
-
-        $current_node = node_load($node->id());
-        if ($node->field_environment->value == 1 || $current_node->field_environment->value == 1) {
-            // If environment is or was Production, delete cache for deployed releases overview table
-            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-            \Drupal::cache()->deleteMultiple($cids);
+        if ($node->field_environment->value == 1) {
+          // If environment is or was Production, delete cache for deployed releases overview table
+          $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+          \Drupal::cache()->deleteMultiple($cids);
         }
     }
 }
