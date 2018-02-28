@@ -428,7 +428,7 @@ function hzd_notifications_update_8016() {
         'type' => 'int',
         'not null' => TRUE,
       ],
-      'entity' => [
+      'entity_type' => [
         'type' => 'varchar',
         'not null' => TRUE,
         'length' => 25,

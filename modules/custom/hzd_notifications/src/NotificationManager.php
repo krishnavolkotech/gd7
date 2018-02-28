@@ -146,7 +146,7 @@ class NotificationManager implements NotificationManagerInterface {
       return $user_ids;
     }
 
-    return '';
+    return [];
   }
 
   /**
@@ -166,7 +166,7 @@ class NotificationManager implements NotificationManagerInterface {
       return $unserialized_user_array;
     }
 
-    return '';
+    return [];
   }
 
 }

@@ -675,7 +675,12 @@ function hzd_notifications_entity_insert($entity) {
 
   $allowedEntities = ['node', 'group_content'];
   if(in_array($entity->getEntityTypeId(), $allowedEntities)){
-    _notify_users($entity, ENTITY_OP_INSERT);
+
+    //Return if group content is not a node entity
+    if($entity->getEntityTypeId() == 'group_content' && $entity->getEntity()->getEntityTypeId() != 'node'){
+      return false;
+    }
+    _notify_users($entity->getEntityTypeId() == 'group_content'?$entity->getEntity():$entity, ENTITY_OP_INSERT);
   }
 
   // Services bundle is not altered for now.
