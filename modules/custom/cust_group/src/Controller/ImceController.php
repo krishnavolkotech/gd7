@@ -6,6 +6,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\Access\AccessResult;
 use Drupal\cust_group\Imce;
 use Drupal\imce\Controller\ImceController as ImceControllerBase;
+use Drupal\group\Entity\Group;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Controller routines for imce routes.
@@ -45,4 +49,29 @@ class ImceController extends ImceControllerBase {
     return AccessResult::allowedIf(Imce::access($this->currentUser(), 'private'));
   }
 
+
+  public function fileAutocomplete(Request $request, $group, $bundle_name){
+    $group = Group::load($group);
+    $string = Unicode::strtolower($request->query->get('q'));
+    $label = \Drupal::service('pathauto.alias_cleaner')->cleanString($group->label());
+    $filesQuery = \Drupal::entityQuery('file');
+    $filesQuery->condition('uri','private://gruppen/'.$label.'/'.$bundle_name.'%', 'LIKE');
+    $filesQuery->condition('filename','%'.$string.'%', 'LIKE');
+    $filesQuery = $filesQuery->execute();
+    $matches = [];
+    $files = \Drupal\file\Entity\File::loadMultiple($filesQuery);
+    // pr(count($files));
+    foreach ($files as $entity_id => $entity) {
+      $label = $entity->label();
+      $key = "$label [fid:$entity_id]";
+      // Strip things like starting/trailing white spaces, line breaks and
+      // tags.
+      $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(Html::decodeEntities(strip_tags($key)))));
+      // Names containing commas or quotes must be wrapped in quotes.
+      $matches[] = array('value' => $key, 'label' => $label);
+    }
+    // pr(count($matches));exit;
+    return new JsonResponse($matches);
+    
+  }
 }

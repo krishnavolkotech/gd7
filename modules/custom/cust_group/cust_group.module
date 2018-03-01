@@ -1188,21 +1188,18 @@ function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_
   if ($context['widget']->getThirdPartySetting('cust_group', 'group_files')) {
     // pr($context['widget']->isApplicable());
     // exit;
-    if (1) {
-      
-      $scheme = $context['items'][$context['delta']]->getFieldDefinition()->getSetting('uri_scheme');
-      $element['#scheme'] = $scheme;
-      $class = 'Drupal\imce\ImceFileField';
-      $element['#process'][] = ['Drupal\cust_group\CustGroupHelper','process'];
-      // Make sure default value callbacks are added
-      if (empty($element['#file_value_callbacks'])) {
-        $info = \Drupal::service('element_info')->getInfo($element['#type']);
-        if (!empty($info['#file_value_callbacks'])) {
-          $element['#file_value_callbacks'] = $info['#file_value_callbacks'];
-        }
+    $scheme = $context['items'][$context['delta']]->getFieldDefinition()->getSetting('uri_scheme');
+    $element['#scheme'] = $scheme;
+    $class = 'Drupal\imce\ImceFileField';
+    $element['#process'][] = ['Drupal\cust_group\CustGroupHelper','process'];
+    // Make sure default value callbacks are added
+    if (empty($element['#file_value_callbacks'])) {
+      $info = \Drupal::service('element_info')->getInfo($element['#type']);
+      if (!empty($info['#file_value_callbacks'])) {
+        $element['#file_value_callbacks'] = $info['#file_value_callbacks'];
       }
-      $element['#file_value_callbacks'][] = [$class, 'setWidgetValue'];
     }
-    // pr($element);
+    $element['#file_value_callbacks'][] = [$class, 'setWidgetValue'];
   }
+  // pr($element);
 }

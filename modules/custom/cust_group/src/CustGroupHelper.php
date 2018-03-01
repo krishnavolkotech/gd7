@@ -111,7 +111,14 @@ class CustGroupHelper {
     $element['#attached']['library'][] = 'imce/drupal.imce.filefield';
     // Set the pre-renderer to conditionally disable the elements.
     $element['#pre_render'][] = ['Drupal\imce\ImceFileField', 'preRenderWidget'];
-    // pr($element);exit;
+
+
+    //Altering the autocomplete route here
+    //cust_group.file_autocomplete
+    $element['filefield_reference']['autocomplete']['#autocomplete_route_name'] = 'cust_group.file_autocomplete';
+    $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group;
+//    pr($element['filefield_reference']['autocomplete']);exit;
+
     return $element;
   }
   
