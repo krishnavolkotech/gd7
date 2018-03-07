@@ -701,11 +701,11 @@ function get_planning_file_data($type) {
   //$filesData =
 }
 
-function cust_group_cron() {
-  //Weekly cron was registered in ./modules/custom/cust_user/cust_user.module
-  //Daily cron to send notifications
-  \Drupal\cust_group\Controller\NotificationsController::dailyCron();
-}
+// function cust_group_cron() {
+//   //Weekly cron was registered in ./modules/custom/cust_user/cust_user.module
+//   //Daily cron to send notifications
+//   \Drupal\cust_group\Controller\NotificationsController::dailyCron();
+// }
 
 function cust_group_user_delete($user) {
   $groupContent = \Drupal::entityQuery('group_content')

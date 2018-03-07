@@ -8,6 +8,7 @@ use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\hzd_notifications\NotificationManager;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -667,24 +668,45 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
 }
 
 
-/**
- * Implements hook_entity_insert()
- * 
- */
-function hzd_notifications_entity_insert($entity) {
 
-  $allowedEntities = ['node', 'group_content'];
-  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
+function _notify_users($entity, $action, $user_data){
+  $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
 
-    //Return if group content is not a node entity
-    if($entity->getEntityTypeId() == 'group_content' && $entity->getEntity()->getEntityTypeId() != 'node'){
-      return false;
-    }
-    _notify_users($entity->getEntityTypeId() == 'group_content'?$entity->getEntity():$entity, ENTITY_OP_INSERT);
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+  
+    // These bundles have condition for notifications.
+    $notification_scheduler->schedule($entity, $action, (array)$user_data);
+  }
+  
+}
+
+function _get_subscribed_users($entity){
+  /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
+  $notification_manager = \Drupal::service('hzd_notifications.manager');
+  return $notification_manager->getSubscribedUsers($entity);
+}
+
+
+function hzd_notifications_node_update($node){
+  if($node->isPublished()){
+    $users = _get_subscribed_users($node);
+    _notify_users($node, ENTITY_OP_UPDATE, $users);
+  }
+    // Services bundle is not altered for now. 
+  if($node->getType() == 'services'){
+    update_service_notifications($node);
+  }
+}
+
+
+function hzd_notifications_node_insert($entity){
+  if($entity->isPublished() && in_array($entity->bundle(), NotificationManager::$service_bundles)){
+    $users = _get_subscribed_users($entity);
+    _notify_users($entity, ENTITY_OP_INSERT, $users);
   }
 
-  // Services bundle is not altered for now.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
+  if ($entity->getType() == 'services') {
     $nid = $entity->id();
     $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
     $downtime = $entity->get('field_enable_downtime')->value;
@@ -704,45 +726,19 @@ function hzd_notifications_entity_insert($entity) {
   }
 }
 
-/**
- * Implements hook_ENTITY_TYPE_update()
- * 
- * Used to queue notifications based on the user subscriptions.
- */
-function hzd_notifications_entity_update(EntityInterface $entity) {
 
-  $allowedEntities = ['group', 'node'];
-  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
-    _notify_users($entity, ENTITY_OP_UPDATE);
-  }
-  
-
-  // Services bundle is not altered for now.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
-    update_service_notifications($entity);
-  }  
-}
-
-function _notify_users($entity, $action){
-  // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished()) {
-    /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
-    $notification_manager = \Drupal::service('hzd_notifications.manager');
-    $user_data = $notification_manager->getSubscribedUsers($entity);
-
-    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
-
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    
-      // These bundles have condition for notifications.
-      $notification_scheduler->schedule($entity, $action, $user_data);
-    }
+function hzd_notifications_group_content_insert($groupContent){
+  if(in_array($groupContent->getEntity()->bundle(), NotificationManager::$groupBundles)){
+    $users = _get_subscribed_users($groupContent);
+    _notify_users($groupContent->getEntity(), ENTITY_OP_INSERT, $users);
   }
 }
 
 
-
+function hzd_notifications_group_update($group){
+  $users = _get_subscribed_users($group);
+  _notify_users($group, ENTITY_OP_UPDATE, $users);
+}
 
 /**
  * Implements hook_cron().

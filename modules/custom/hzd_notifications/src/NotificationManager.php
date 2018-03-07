@@ -9,6 +9,25 @@ use Drupal\cust_group\CustGroupHelper;
 
 class NotificationManager implements NotificationManagerInterface {
 
+  public static $service_bundles = [
+    'deployed_releases',
+    'release',
+    'downtimes',
+    'problem',
+    'early_warnings',
+  ];
+
+  public static $groupBundles = [
+    'event',
+    'forum',
+    'page',
+    'faqs'
+  ];
+
+  public static $special_bundles = [
+    'planning_files',
+  ];
+
   /**
    * The database connection to use.
    *
@@ -53,41 +72,26 @@ class NotificationManager implements NotificationManagerInterface {
 
     // Bundle categories are divided here just because of source to get user data,
     // no other special logic.
-    $service_bundles = [
-      'deployed_releases',
-      'release',
-      'downtimes',
-      'problem',
-      'early_warnings',
-    ];
-
-    $groupBundles = [
-      'event',
-      'forum',
-      'page',
-      'faqs'
-    ];
-
-    // Special bundles doesn't require services.
-    $special_bundles = [
-      'planning_files',
-    ];
 
     $bundle = $entity->bundle();
 
     if($entity->getEntityTypeId() == 'group'){
       return $this->getUsersForGroup($entity);
     }
-    elseif(in_array($bundle, $groupBundles)){
-      $groupContent = CustGroupHelper::getGroupNodeFromNodeId($entity->id());
-      return $this->getUsersForGroup($groupContent->getGroup());
+    elseif($entity->getEntityTypeId() == 'group_content' && in_array($entity->getEntity()->bundle(), self::$groupBundles)){
+      return $this->getUsersForGroup($entity->getGroup());
     }
-    elseif (in_array($bundle, $service_bundles)) {
+    // elseif(in_array($bundle, $groupBundles)){
+    //   $groupContent = CustGroupHelper::getGroupNodeFromNodeId($entity->id());
+
+    //   return $this->getUsersForGroup($groupContent->getGroup());
+    // }
+    elseif (in_array($bundle, self::$service_bundles)) {
       $services = $this->getServicesForEntity($entity);
       $service_ids = EntityHelper::extractIds($services);
       return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
     }
-    elseif (in_array($bundle, $special_bundles)) {
+    elseif (in_array($bundle, self::$special_bundles)) {
       return $this->hzd_get_immediate_pf_notification_user_mails();
     }
     return [];
