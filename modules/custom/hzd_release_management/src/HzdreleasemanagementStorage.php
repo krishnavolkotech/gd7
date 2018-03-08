@@ -196,10 +196,10 @@ $inprogress_nid_values = [];
             $existing_node_values['link'] = $node->get('field_link')->value;
             $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
-//        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
+       $existing_node_values['type'] = $node->get('field_release_type')->value;
         $csvvalues = array();
         $csvvalues = $values;
-        unset($csvvalues['type']);
+        // unset($csvvalues['type']);
         if (count(array_diff($csvvalues, $existing_node_values)) != 0) {
             $node->setTitle($values['title']);
             $node->set("comment", 2);
@@ -408,18 +408,22 @@ $inprogress_nid_values = [];
    * @inprogress_nid_values: nids where the release type is progress.
    */
   static public function inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values) {
-    if (is_array($inprogress_nid_values)) {
-      foreach ($inprogress_nid_values as $release_title_nid_values) {
-        if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
-          // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
-          // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
-          $node = Node::load($release_title_nid_values);
-          $node->set("field_release_type", 4);
-          $node->save();
-        }
+    //Writing an equivalent code below @sandeep 20180308
+    // if (is_array($inprogress_nid_values)) {
+      // foreach ((array)$inprogress_nid_values as $release_title_nid_values) {
+      //   if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
+      //     // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
+      //     // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
+          
+      //   }
+      // }
+    // }
+    foreach(array_diff($inprogress_nid_values, $inprogress_csv_nid_values) as $val){
+      $node = Node::load($val);
+        $node->set("field_release_type", 4);
+        $node->save();
       }
     }
-  }
 
   /**
    * Function for documentation link.
@@ -502,7 +506,7 @@ $inprogress_nid_values = [];
             $removePreviousData = 1;
             
           }
-          self::do_download_documentation($nid, $values_title, $link, $service, $title, $removePreviousData);
+          self::do_download_documentation($nid, $values_title, $link, $service, $title, $field_documentation_link_value, $removePreviousData);
 
         }
       }
