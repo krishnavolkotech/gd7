@@ -714,7 +714,7 @@ function generate_quickinfo_pdf($node = NULL) {
       $mailContent = getNodeMailContentFromConfig($data,'update');
       $params['message'] = $mailContent['body'];
       $params['subject'] = $mailContent['subject'];
-      $mailManager->mail('cust_group', 'periodic_notifications', $email, 'de', $params, NULL, 1);
+      $mailManager->mail('hzd_notifications', 'immediate_notifications', $email, 'de', $params, NULL, 1);
     }
   }
 }
@@ -738,17 +738,7 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
   // $file_upload_name = $file_info->getFilename();
   // display error message when same file upload in the attachemnts.
   $all_files = $form_state->getValue('upload');
-//  if (isset($all_files['0']['fids'])) {
-//    foreach ($all_files['0']['fids'] as $key => $fid) {
-//      $file = File::load($fid);
-//      $file_directory_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-//      $file_upload_name = $file->getFilename();
-//      $path = $file_directory_path . "/" . $file_upload_name;
-//      if (file_exists($path)) {
-//        $form_state->setError($form, t("The selected file could not be uploaded as a file with same name already exists."));
-//      }
-//    }
-//  }
+
 // Check quickinfo files writtable in private://rz-schnellinfos/ directory
   $triggeredButton = $form_state->getTriggeringElement()['#id'];
   if ( $triggeredButton == "edit-publish"  ) {
@@ -921,80 +911,6 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
   }
 }
 
-/**
- *
- */
-/* function hzd_customizations_node_quickinfo_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
-  // If ($node->type == 'page') {
-  //        $_SESSION['access_page_id'] = $node->nid;
-  //        $_SESSION['access_page_type'] = $node->type;
-  //      }
-  //      else {
-  //        unset($_SESSION['access_page_id']);
-  //        unset($_SESSION['access_page_page']);
-  //      }
-  //
-  //      $breadcrumb = array();
-  //      $breadcrumb[] = l(t('Home'), NULL);
-  //      if ($node->type == 'quickinfo') {
-  //
-  //        $uri = explode("/", $_REQUEST['q']);
-  //
-  //        if ($node->status == 0) {
-  //          if ($uri[0] == 'autoren-rz-schnellinfo' && $uri[1] == 'rz-schnellinfos' && $uri[2] != '') {
-  //            $breadcrumb[] = l(t('Autoren RZ-Schnellinfo'), 'autoren-rz-schnellinfo');
-  //            $breadcrumb[] = l(t('Entwürfe RZ-Schnellinfos'), 'autoren-rz-schnellinfo/rz-schnellinfos/entwuerfe');
-  //            $breadcrumb[] = $node->title;
-  //          }
-  //        }
-  //        else {
-  //          $breadcrumb[] = l(t('Release Management'), 'release-management');
-  //          $breadcrumb[] = l(t('RZ-Schnellinfos'), 'release-management/rz-schnellinfos');
-  //          $breadcrumb[] = t('Nr. ' . $node->field_unique_id[0]['value']);
-  //          $breadcrumb[] = $node->title;
-  //        }
-  //      }
-  //      if ($node->type == 'downtimes') {
-  //        if (isset($_SESSION['Group_name']) && $user->uid) {
-  //          $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-  //          $breadcrumb[] = l(t('Incidents and Maintenances'), 'node/' . $_SESSION['Group_id'] . '/downtimes');
-  //        }
-  //        else {
-  //          $breadcrumb[] = l(t('Incidents and Maintenances'), 'downtimes');
-  //        }
-  //        $breadcrumb[] = t('Details');
-  //      }
-  //      if ($node->type == 'problem') {
-  //        if (isset($_SESSION['Group_name'])) {
-  //          $path = variable_get('import_alias', 'problems');
-  //          $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-  //          $breadcrumb[] = l(t('Problems'), 'node/' . $_SESSION['Group_id'] . '/' . $path);
-  //        }
-  //        $breadcrumb[] = t('Details');
-  //      }
-  //      if ($node->type == 'release') {
-  //        if (isset($_SESSION['Group_name'])) {
-  //          $path = variable_get('import_alias_releases', 'releases');
-  //          $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-  //          $breadcrumb[] = l(t('Releases'), 'node/' . $_SESSION['Group_id'] . '/' . $path);
-  //        }
-  //        $breadcrumb[] = t('Details');
-  //      }
-  //      if ($node->type == 'page') {
-  //        if (isset($_SESSION['Group_name'])) {
-  //          $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-  //          $menu_active_breadcrumb = menu_get_active_breadcrumb();
-  //          array_shift($menu_active_breadcrumb);
-  //          $breadcrumb = array_merge($breadcrumb, $menu_active_breadcrumb);
-  //        }
-  //        $breadcrumb[] = t(drupal_get_title());
-  //      }
-  //
-  //      if ($node->type == 'group') {
-  //        $breadcrumb[] = t(drupal_get_title());
-  //      }
-  //      drupal_set_breadcrumb($breadcrumb);
-  } */
 
 /**
  * Hook_node_search_result(\Drupal\node\NodeInterface $node)
@@ -1052,187 +968,6 @@ function hzd_customizations_node_update_index(NodeInterface $node) {
   }
 }
 
-/*
- *  Quickinfo fileattachments table
- */
-
-/**
- * .
- */
-function quickinfo_file_attachments($files) {
-  //
-  //  $output = '<table cellspacing="1" cellpadding="2" style="font-size:11px;  width:100%; margin:0em 0em 0em 1.364em;">';
-  //  $output .= '<thead><tr>'
-  //      . '<th style=" border-left:1px solid #d4e7f5; background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">'. t("Attachment") .
-  //      '</th><'. 'th style="background:#d4e7f5;text-align:left;padding-right:1em;height:35px; font-family: arial,sans-serif;">' . t("Size") . '</th> </tr></thead>';
-  //  $output .= '<tbody style="border-top:1px solid #ccc;">';
-  //  $count = 0;
-  //  foreach ($files as $file) {
-  //    $file = (object) $file;
-  //    if ($file->list && empty($file->remove)) {
-  //      $href = file_create_url($file->filepath);
-  //    //  $text = $file->description ? $file->description : $file->filename;
-  //   //   $zebra = ($count % 2) ? 'background: #fff; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;' : 'background: #edf4fa; border-left:1px solid #d4e7f5; border-right: 1px solid #d4e7f5; border-bottom: 1px solid #d4e7f5; padding: 5px; text-align: left; font-family: arial,sans-serif;';
-  //
-  //  //    $output .= '<tr style="background-color:#eee;border-bottom:1px solid #ccc;padding:0.1em 0.6em;line-height:150%;">
-  //  //    <td style="' . $zebra  . '">' . l($text, $href, array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))) . '</td>';
-  //  //    $output .= '<td style="' . $zebra  . '">' . format_size($file->filesize) . '</td></tr>';
-  //    }
-  // //   $count++;
-  //  }
-  //  // $output .= '</tbody></table>';.
-  $header = array(t("Attachment"), t("Size"));
-
-  foreach ($files as $file) {
-    if ($file->list && empty($file->remove)) {
-      $href = file_create_url($file->filepath);
-      $text = $file->description ? $file->description : $file->filename;
-      $url = Url::fromUserInput(
-                      '/' . $href
-      );
-      // array('attributes' => array('target' => '_blank', 'style'=> 'text-decoration: none; color: #376092;'))
-      $file_attachement = Link::fromTextAndUrl($text, $url);
-
-      $size = format_size($file->filesize);
-      $elements = array(
-          'file_attachement' => $file_attachement,
-          'size' => $size,
-      );
-      $rows[] = $elements;
-    }
-  }
-  if (!isset($elements)) {
-    $output[] = t('No Data to be displayed') . "<br/>";
-  } else {
-    $output[] = array(
-        '#theme' => 'table',
-        '#header' => $header,
-        '#rows' => $rows,
-    );
-  }
-
-  return $output;
-}
-
-/**
- * Function for get quickinfo header
- * need to differentiate between immediate creation for additional recipients since
- * revision has not been created at the time nodeapi is called.
- */
-function quickinfo_mail_header($node, $additional_recipients = 0) {
-  global $base_url;
-  $user = Drupal::currentUser();
-  if (!$additional_recipients) {
-    $query = \Drupal::database()->select('cust_profile', 'cp');
-    $query->addExpression("CONCAT(firstname, ' ', lastname)");
-    $query->condition('uid', $node->revision_uid);
-    $published_by = $query->execute()->fetchField();
-  } else {
-    $query = \Drupal::database()->select('cust_profile', 'cp');
-    $query->addExpression("CONCAT(firstname, ' ', lastname)");
-    $query->condition('uid', $user->uid);
-    $published_by = $query->execute()->fetchField();
-  }
-
-  $logo_uri = $base_url . '/' . drupal_get_path('module', 'hzd_customizations')
-          . '/hzd_logo.gif';
-
-  $logo_render_array = [
-      '#theme' => 'image_style',
-      // '#width' => $variables['width'],
-      //  '#height' => $variables['height'],
-      //  '#style_name' => $variables['style_name'],.
-      '#uri' => $variables['uri'],
-  ];
-  $rows[] = array(
-      'logo_render_array' => $logo_render_array,
-      'name' => t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . t($node->title),
-      'date' => t("Published on :") . date('d.m.Y', $node->changed),
-  );
-  $rows[] = array(
-      'pb' => t("Published by :") . $published_by,
-  );
-  // $output .= "<table class='q-header' style='margin-bottom: 10px; border-collapse: collapse; line-height: 20px;' cellpadding='0' cellspacing='0'  border='1' width='100%'>";
-  //
-  //  $output .= '<tr>'
-  //      . '<td rowspan="2" style="padding:0px 20px;">'
-  //      . '<img src= "' . $base_url . '/' . drupal_get_path('module', 'hzd_customizations') . '/hzd_logo.gif" alt ="Logo">'
-  //      . '</td>';
-  //  $output .= '<td  rowspan="2" style="text-align: center; color: #000 !important; font-size: 16px; font-family: arial,sans-serif;"><b>' . t('RZ-Schnellinfo-Nr.: ') . t($node->field_unique_id[0]['value']) . '</b><br>' . t($node->title) . '</td>';
-  //  $output .= '<td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published on") . ':<br>' . date('d.m.Y', $node->changed) . '</td></tr>';
-  //
-  //  $output .= '<tr><td style="padding:0px 5px; font-size: 12px; width: 110px; font-family: arial,sans-serif;">' . t("Published by") . ':<br>' . $published_by . '</td></tr>';
-  //  $output .= "</table>";.
-  $output = array(
-      '#theme' => 'table',
-      '#rows' => $rows,
-  );
-
-  return $output;
-}
-
-/*
- * implementing hook_page_attachments to add css/js
- * Add attachments (typically assets) to a page before it is rendered.
- * Use this hook when you want to conditionally add attachments to a page.
- */
-
-// Function hzd_customizations_page_attachments(array &$attachments) {
-//   // Retrieve an array which contains the path pieces.
-// $current_path = \Drupal::service('path.current')->getPath();
-// $path_args = explode('/', $current_path);
-//
-//   if ($current_path == '/autoren-rz-schnellinfo/rz-schnellinfos/erstellen'
-//       || $current_path == '/autoren-rz-schnellinfo/add/rz-schnellinfo' ||
-//       $current_path == '/autoren-rz-schnellinfo/add/quickinfo'
-//       || ($path_args[1] == 'autoren-rz-schnellinfo' &&
-//                  ($path_args[2] == 'rz-schnellinfos' || $path_args[2] == 'quickinfo')
-//           && $path_args[4] == 'edit')) {
-//  // Unconditionally attach an asset to the page.
-//         $attachments['#attached']['library'][] = 'hzd_customizations_js';
-//   }
-//
-// }.
-/**
- * Quickinfo notification message body.
- */
-function quickinfo_custom_body($action, $node) {
-  global $base_url;
-
-  $quickinfo_url_alias = Url::fromUserInput(
-                  "/release-management/rz-schnellinfos/" . $node->field_unique_id[0]['value']
-  );
-  $link = Link::fromTextAndUrl($quickinfo_url_alias, $quickinfo_url_alias);
-  $files_attachments = quickinfo_file_attachments($node->files);
-
-  $original = \Drupal::config('hzd_customizations.settings')
-                  ->get('quick_info_content') .
-          "<p><b>" . t("2.13 File attachments") . "</b></p><p>" . $files_attachments . "</p><p style='text-align: left;'><hr><b style='text-align: left;'>" . t('Link zur RZ-Schnellinfo im BpK') . ":</b><br>" . $link . "</p>";
-
-  $token_service = \Drupal::token();
-  /*
-   * to do
-   */
-  // Replace the token for subject.
-  $body = $token_service->replace($original, $type = 'global', $object = NULL, $leading = '[', $trailing = ']', $options = array());
-  $header = quickinfo_mail_header($node);
-  return "<div style='font-family: Arial; line-height: 120%;'>" . $header . "<br>" . $body . "</div>";
-}
-
-/**
- * Quickinfo notification message subject.
- */
-function quickinfo_custom_footer($action, $node) {
-  $original_footer = \Drupal::config('hzd_customizations.settings')
-          ->get('quick_info_footer');
-  $token_service = \Drupal::token();
-  /*
-   * to do
-   */
-  // Replace the token for subject.
-  $footer = $token_service->replace($original_footer, $type = 'global', $object = NULL, $leading = '[', $trailing = ']', $options = array());
-  return $footer;
-}
 
 /**
  * Hook_queue_info.
@@ -1425,33 +1160,6 @@ function _hzd_customizations_user_login_form_submit(&$form, FormStateInterface $
   }
 }
 
-/*
- * hook_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account)
- */
-//function hzd_customizations_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
-//
-//    if (is_object($group)) {
-//      $group_id = $group->id();
-//    }
-//    else {
-//      $group_id = $group;
-//    }
-//    $allowed_group = array(QUICKINFO);
-//    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
-//      return AccessResult::allowed();
-//    }
-//    if (!$group_id || !in_array($group_id, $allowed_group)) {
-//      return \Drupal\Core\Access\AccessResultInterface::forbidden();
-//    }
-//    $group = \Drupal\group\Entity\Group::load($group_id);
-//    $content = $group->getMember(\Drupal::currentUser());
-//    if ($content) {
-//      return AccessResult::allowed();
-//    }
-//    else {
-//      return \Drupal\Core\Access\AccessResult::forbidden();
-//    }
-//  }
 
 /**
  * Implementation of hook_cron()
@@ -1489,18 +1197,7 @@ function hzd_customizations_preprocess_block(&$variables) {
                   'group' => key($groupid),
                   'plugin_id' => 'group_node:forum'
       ]);
-//      $links = [
-//          '#attributes' => ['class' => ['action-links']],
-//          '#theme' => 'menu_local_action',
-//          '#link' => [
-//              'title' => t('Add new Group Forum'),
-//              'url' => $url,
-//          ],
-//          '#cache' => ['max-age' => 0],
-//          '#weight' => -100
-//      ];
-//
-//      $variables['content']['link'] = $links;
+
       $account = \Drupal::currentUser();
 
       if ($account->hasPermission('create forum content')) {
