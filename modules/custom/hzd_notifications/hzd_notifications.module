@@ -7,11 +7,7 @@ use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
-use Drupal\Core\Entity\EntityInterface;
-
-define('ENTITY_OP_UPDATE', 'update');
-define('ENTITY_OP_INSERT', 'insert');
-define('NOTIFICATION_SCHEDULE_TABLE', 'notifications_scheduled');
+use Drupal\Core\Link;
 
 /**
  * Implements callback_batch_operation().
@@ -663,112 +659,59 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
     }
   }
 
+  if ($type == 'user' && !empty($data['user'])) {
+    /** @var \Drupal\user\Entity\User $user */
+    $user = $data['user'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'user-notification-settings-url-absolute':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          global $base_url;
+          $notif_change_link = $base_url . $url;
+          $replacements[$original] = $notif_change_link;
+          break;
+        case 'user-notification-settings-url-relative':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+          
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+          $replacements[$original] = $url;
+          break;
+      }
+    }
+
+    /*if ($author_tokens = $token_service->findWithPrefix($tokens, 'author')) {
+      $replacements += $token_service->generate('user', $author_tokens, ['user' => $node->getOwner()], $options, $bubbleable_metadata);
+    }*/
+  }
   return $replacements;
 }
 
-
 /**
- * Implements hook_entity_insert()
- * 
+ * Implements hook_token_info_alter().
  */
-function hzd_notifications_entity_insert($entity) {
+function hzd_notifications_token_info_alter(&$data) {
+  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
+    'name' => t("user notification settings - absolute link"),
+    'description' => t("The absolute link to change user notification settings."),
+  ];
 
-  $allowedEntities = ['node', 'group_content'];
-  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
-    _notify_users($entity, ENTITY_OP_INSERT);
-  }
-
-  // Services bundle is not altered for now.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
-    $nid = $entity->id();
-    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-    $downtime = $entity->get('field_enable_downtime')->value;
-    $problem = $entity->get('field_problem_name')->value;
-    $release = $entity->get('field_release_name')->value;
-
-    if ($downtime && $rel_type == KONSONS) {
-      insert_new_service_notifications('downtimes', $nid);
-    }
-    if ($problem != '' && $rel_type == KONSONS) {
-      insert_new_service_notifications('problem', $nid);
-    }
-    if ($release != '') {
-      insert_new_service_notifications('release', $nid);
-    }
-    insert_new_service_notifications('early_warnings', $nid);
-  }
-}
-
-/**
- * Implements hook_ENTITY_TYPE_update()
- * 
- * Used to queue notifications based on the user subscriptions.
- */
-function hzd_notifications_entity_update(EntityInterface $entity) {
-
-  $allowedEntities = ['group', 'node'];
-  if(in_array($entity->getEntityTypeId(), $allowedEntities)){
-    _notify_users($entity, ENTITY_OP_UPDATE);
-  }
-  
-
-  // Services bundle is not altered for now.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'services') {
-    update_service_notifications($entity);
-  }  
-}
-
-function _notify_users($entity, $action){
-  // As Per Issue #21129, send notifications only for published nodes.
-  if ($entity->isPublished()) {
-    /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
-    $notification_manager = \Drupal::service('hzd_notifications.manager');
-    $user_data = $notification_manager->getSubscribedUsers($entity);
-
-    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
-
-    $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-    if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    
-      // These bundles have condition for notifications.
-      $notification_scheduler->schedule($entity, $action, $user_data);
-    }
-  }
-}
-
-
-
-
-/**
- * Implements hook_cron().
- */
-function hzd_notifications_cron() {
-  /* @var \Drupal\hzd_notifications\MailNotificationDispatcher $notification_dispatcher */
-  $notification_dispatcher = \Drupal::service('hzd_notifications.mail_dispatcher');
-  $notification_dispatcher->getNotificationsAndDispatch();
-}
-
-
-/**
- * Implements hook_mail.
- */
-function hzd_notifications_mail($key, &$message, $params) {
-  $options = array(
-    'langcode' => $message['langcode'],
-  );
-  switch ($key) {
-    case 'immediate_notifications':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = $params['subject'];
-
-      //@todo for now sending all html mails only
-//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
-//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
-
-
-//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
-      $message['body'][] = $params['message'];
-
-      break;
-  }
+  $data['tokens']['user']['user-notification-settings-url-relative'] = [
+    'name' => t("user notification settings - relative link"),
+    'description' => t("The relative link to change user notification settings."),
+  ];
 }

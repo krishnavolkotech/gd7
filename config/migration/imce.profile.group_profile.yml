@@ -1,0 +1,21 @@
+uuid: 9163ad7d-a8de-4a6f-8b1a-dffebf215016
+langcode: en
+status: true
+dependencies: {  }
+id: group_profile
+label: 'Group profile'
+description: 'T2 Large'
+conf:
+  extensions: '*'
+  maxsize: !!float 10
+  quota: !!float 100
+  maxwidth: 10000
+  maxheight: 10000
+  replace: 2
+  folders:
+    -
+      path: gruppen
+      permissions:
+        browse_files: true
+        browse_subfolders: true
+        upload_files: true
