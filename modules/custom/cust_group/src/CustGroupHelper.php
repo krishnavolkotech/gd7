@@ -11,7 +11,7 @@ namespace Drupal\cust_group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
-use Drupal\Core\Form\FormStateInterface;
+use Drupal\group\Entity\GroupContentType;
 use Drupal\Core\Url;
 
 /**
@@ -23,29 +23,24 @@ class CustGroupHelper {
   
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
-    $node = \Drupal\node\Entity\Node::load($nodeId);
-    $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
-    $allPlugins = $contentEnablerManager->getPluginGroupContentTypeMap();
-    foreach ($allPlugins as $key => $group_content_type) {
-      if ($key == 'group_node:' . $node->bundle()) {
-        foreach ($group_content_type as $item) {
-          $types[] = $item;
-        }
-      }
+
+    $node = Node::load($nodeId);
+
+    $plugin_id = 'group_node:' . $node->bundle();
+
+    // Only act if there are group content types for this node type.
+    $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
+    if (empty($group_content_types)) {
+      return null;
     }
-//    pr($types);
-//    exit;
-    if (!empty($types)) {
-      $groupContentIds = \Drupal::entityQuery('group_content')
-        ->condition('type', $types, 'IN')
-        ->condition('entity_id', $nodeId)
-        ->execute();
-      
-      if (!empty($groupContentIds)) {
-        return GroupContent::load(reset($groupContentIds));
-      }
-    }
-    return NULL;
+    // Load all the group content for this node.
+    $group_contents = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->loadByProperties([
+        'type' => array_keys($group_content_types),
+        'entity_id' => $node->id(),
+      ]);
+    return reset($group_contents);
   }
   
   public static function getGroupFromRouteMatch() {

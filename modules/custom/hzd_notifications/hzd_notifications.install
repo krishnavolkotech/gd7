@@ -380,3 +380,52 @@ function hzd_notifications_update_8015() {
     }
   }
 }*/
+
+
+/**
+ * Adds new table notifications_scheduled into database. This stores the
+ * entities and user data, for which notifications are to be sent.
+ */
+function hzd_notifications_update_8016() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $table_name = 'notifications_scheduled';
+  $table_schema = [
+    'fields' => [
+      'sid' => [
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'entity_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'entity_type' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'bundle' => [
+        'type' => 'varchar',
+        'not null' => FALSE,
+        'length' => 25,
+      ],
+      'action' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'user_data' => [
+        'type' => 'blob',
+        'not null' => TRUE,
+      ],
+
+    ],
+    'primary key' => ['sid'],
+  ];
+
+  $schema->createTable($table_name, $table_schema);
+
+}
