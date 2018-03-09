@@ -13,7 +13,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContentType;
 use Drupal\Core\Url;
-use Drupal\Core\Form\FormState;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Description of CustGroupHelper
