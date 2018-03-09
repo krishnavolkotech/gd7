@@ -70,42 +70,18 @@ class ResolveForm extends FormBase {
     if($query){
       throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
     }
-//    $group = \Drupal::routeMatch()->getParameter('group');
-//      if (is_object($group)) {
-//        $group_id = $group->id();
-//      }
-//      else {
-//        $group_id = $group;
     $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
-//      }
-
 
     $user = Drupal::currentUser();
     $user_role = $user->getRoles();
     // User::getRoles($exclude_locked_roles = FALSE)
     $type = ($form_type == 'resolve_maintenance' ? 'Maintenance' : 'Incident');
     
-//    $node = Drupal\group\Entity\GroupContent::load($group_content_id);
-//    $node = $group_content->getEntity();
     if (is_object($node)) {
       $nid = $node->id();
     } else {
       $nid = $node;
     }
-    /**
-      $breadcrumb = array();
-      $breadcrumb[] = l(t('Home'), NULL);
-      if (isset($_SESSION['Group_name'])) {
-      $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-      $breadcrumb[] = l(t('Incidents and Maintenances'), 'node/' . $_SESSION['Group_id'] . '/downtimes');
-      }
-      else {
-      $breadcrumb[] = l(t('Incidents and Maintenances'), 'downtimes');
-      }
-      $breadcrumb[] = l(t('Downtime'), 'node/' . $nid);
-      $breadcrumb[] = t('Resolve');
-     */
-    // $resolved_title = db_result(db_query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
 
     $query = Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['scheduled_p']);
@@ -207,7 +183,14 @@ class ResolveForm extends FormBase {
         '#type' => 'submit',
         '#value' => t('submit'),
         '#id' => 'reason',
-        '#weight' => 3
+        '#weight' => 3,
+        '#attributes' => array(
+            "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
+        ),
     );
     return $form;
   }

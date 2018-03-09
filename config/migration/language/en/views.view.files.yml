@@ -1,3 +1,4 @@
+label: Dateien
 display:
   default:
     display_options:
@@ -15,6 +16,11 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      title: Dateien
+  page_1:
+    display_options:
+      menu:
+        title: Dateien
   page_2:
     display_options:
       pager:

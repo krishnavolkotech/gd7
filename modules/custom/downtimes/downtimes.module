@@ -16,68 +16,18 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
 
-//define('INCIDENT_MANAGEMENT', 2);
 if (!defined('SITE_ADMIN_ROLE')) {
   define('SITE_ADMIN_ROLE', 'site_administrator');
 }
-// Use Drupal\Core\Utility\Token;
-/*
- * get available token lists
- */
-
-/**
- * Function get_available_tokens() {
- * $token = \Drupal::token()->getInfo();
- * $return = array();
- * // pr($token);  exit;
- * foreach ($token  as $category => $token_entity_type) {
- * foreach ($token_entity_type as $token => $fields) {
- * foreach ($fields as $field_key => $description) {
- * if (is_object($description)) {
- * $return[$field_key] = $description;
- * } else {
- * $return[$field_key] = $description['description'];
- * }
- * }
- * }
- * }
- * return $return;
- * }.
- */
-/*function downtimes_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
-    //print_r($items); die();
-    $user = \Drupal::currentUser();
-    if ($user) {
-        $groups_list = hzd_group_list($user->id(), TRUE);
-        foreach ($groups_list as $group) {
-            $group_ids[] = $group->id;
-        }
-        if (!empty($group_ids)) {
-            $query->addCondition('gid', $group_ids, 'IN');
-        }
-    }
-}*/
-
 
 /**
  * Implements hook_form_alter().
  */
 function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  //pr($form['field_test']);exit;
+
   if ($form_id == 'node_downtimes_form' || $form_id == 'node_downtimes_edit_form') {
     $form['revision']['#access'] = FALSE;
-    //dsm($form['title']);
-    
-    /* $user_role = get_user_role();
-      if ($form_id == 'downtimes_node_form') {
-      if ($user_role != 'site_admin') {
-      if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == 'downtimes' && (arg(3) == 'create_downtimes' || arg(3) == 'create_maintenance')) {
-      $form['notifications']['#prefix'] = "<div class = 'hide_content'>";
-      $form['notifications']['#suffix'] = '</div>';
-      }
-      }
-      } */
-    
+
     $date_format = 'd.m.Y - H:i';
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = trim(pathinfo($current_path, PATHINFO_BASENAME));
@@ -125,12 +75,10 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $isNewlyCreated = 1;
     }
     $downtime_data = new stdClass();
-    //$node = array();
     if ($form_id == 'node_downtimes_edit_form') {
       $isNewlyCreated = 0;
       $node = \Drupal::routeMatch()->getParameter('node');
-//      $node = $group_content->getEntity();
-      
+
       if ($node) {
         $downtime_data = \Drupal::database()->select('downtimes', 'd')
           ->fields('d', ['state_id', 'startdate_reported', 'enddate_reported', 'service_id', 'reason', 'scheduled_p', 'description'])
@@ -167,38 +115,6 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '#required' => TRUE
     ];
     
-    
-    // droy: Disabling preview button due to js validation bug #11569.
-    //$form['buttons']['preview']['#access'] = FALSE;
-    /**
-     *   TO do  og
-     */
-    /* $user = Drupal::currentUser();
-      // $user_roles = $user->getRoles();
-      if (!$user->og_groups[$_SESSION['Group_id']]['is_admin'] && $user->getUid() != 1) {
-
-      $form['buttons']['delete']['#prefix'] = "<div class = 'hide_content'>";
-      $form['buttons']['delete']['#suffix'] = '</div>';
-      }
-
-      $form['menu']['#prefix'] = "<div class = 'hide_content'>";
-      $form['menu']['#suffix'] = '</div>';
-
-      $form['attachments']['#prefix'] = "<div class = 'hide_content'>";
-      $form['attachments']['#suffix'] = '</div>';
-
-      $form['path']['#prefix'] = "<div class = 'hide_content'>";
-      $form['path']['#suffix'] = '</div>';
-
-      $form['body_filter']['filter']['#prefix'] = "<div class = 'hide_content'>";
-      $form['body_filter']['filter']['#suffix'] = '</div>';
-      if ($form['downtime_type']['#default_value'] == 0) {
-      /**
-     * TO do title
-     */
-    // drupal_set_title(t("Report an Incident"));.
-    /* }
-      $form['#after_build'][] = 'add_service_data'; */
     $form['title']['#type'] = 'hidden';
     $form['downtime_type'] = array(
       '#type' => 'hidden',
@@ -213,29 +129,20 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['dates']['start']['startdate_planned'] = [
       '#type' => 'textfield',
       '#title' => t('Start Date'),
-      /* '#date_date_format' => $date_format,
-        '#date_time_format' => $time_format, */
       '#description' => "Format : " . date($date_format, $yesterday_date),
-//      '#default_value' => date($date_format, $yesterday_date),
       '#required' => TRUE,
-//      '#prefix' => '<div class="downtimes-date-wrapper">',
     ];
     $form['dates']['end']['enddate_planned'] = [
       '#type' => 'textfield',
       '#title' => t('Expected End Date'),
       '#description' => "Format : " . date($date_format, $yesterday_date),
       '#required' => ($form['downtime_type']['#default_value'] == 1) ? TRUE : FALSE,
-//      '#suffix' => '</div>',
     ];
     if ($form_id == 'node_downtimes_edit_form') {
-//      $node = \Drupal::routeMatch()->getParameter('node');
       if ($node) {
         $downtime_data = downtimes_set_default_values($form, $node->id());
       }
-//      $ftitle = $form['#title']->getArguments();
       $form['#title'] = (isset($downtime_data->scheduled_p) && $downtime_data->scheduled_p == 0) ? t('Störung bearbeiten') : t('Blockzeit bearbeiten');
-//      $stringTitle = $form['#title']->getUntranslatedString();
-//      $form['#title'] = t($stringTitle,$ftitle);
     } else {
       $title = ($downtime_type == 'create_downtimes') ? t('Störung') : t('Blockzeit');
       $form['title']['widget'][0]['value']['#default_value'] = $title;
@@ -247,7 +154,6 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#description' => t('Please select a reason'),
         '#options' => maintenance_reasons(),
         '#default_value' => isset($downtime_data->reason) ? $downtime_data->reason : 0,
-//        '#size' => 5,
         '#prefix' => '<div class="reason-for-noncompliance">',
         '#suffix' => '<p class="reason-error text-danger" style="display:none;">This field is required</p></div>',
         '#label_suffix' => '<span class="form-required"></span>'
@@ -277,7 +183,6 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['services_effected']['#description'] = $service_description;
     $form['#validate'][] = 'downtimes_validate';
     if ($form_id == 'node_downtimes_edit_form') {
-      //$form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
       foreach (array_keys($form['actions']) as $action) {
         if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
           //$form['actions'][$action]['#submit'][] = 'custom_maintenance_submit';
@@ -285,32 +190,36 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
     unset($form['actions']['unpublish']);
-//pr(array_keys($form['actions']));exit;
     if (isset($form['actions']['publish'])) {
-      $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
+        $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
+        # Disable submit button after click to avoid multiple submission
+        $form['actions']['publish']['#attributes'] = array(
+            "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
+        );
     } else {
-      $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+        $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+        # Disable submit button after click to avoid multiple submission
+        $form['actions']['submit']['#attributes'] = array(
+            "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
+        );
     }
     $form['#attached']['library'][] = 'downtimes/downtimes.service_data';
     $form['#attached']['drupalSettings']['dependantServices'] = json_encode(dependent_service_list());
+
+      //$form['actions']['submit']['#value'] = 'lalala';
   } else if ($form_id == 'node_service_profile_form' || $form_id == 'node_service_profile_edit_form') {
     
-    //$form['actions']['submit']['#submit'][] = 'downtimes_serviceProfileSubmit';
     $form['notifications']['#weight'] = 4;
-    // drupal_add_js(drupal_get_path('module', 'downtimes') . '/maintenance_windows.js');
-    // breadcrumb for service profile form.
-    /**
-     * $breadcrumb = array();
-     * $breadcrumb[] = l(t('Home'), NULL);
-     * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
-     * $breadcrumb[] = drupal_set_title();
-     * drupal_set_breadcrumb($breadcrumb);
-     */
-//    $node = \Drupal::routeMatch()->getParametergetParameter('node');
-    //pr($node);exit;
-      $node = \Drupal::routeMatch()->getParameter('node');
+    $node = \Drupal::routeMatch()->getParameter('node');
     if (empty($node)) {
-      // $service_name = db_result(db_query("SELECT title FROM {node} WHERE nid=%d", $_REQUEST['service']));.
       $service_name = \Drupal::database()->select('node_field_data', 'nfd')
         ->fields('nfd', array('title'))
         ->condition('nid', $_REQUEST['service'], '=')
@@ -327,7 +236,6 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         ->condition('nid', $node->id(), '=')
         ->execute()->fetchField();
       $serialized_data = unserialize($data);
-//pr($serialized_data);exit;
       $maintenance_windows = \Drupal::database()->select('service_profile_maintenance_windows', 'smw')
         ->fields('smw', array('id', 'day', 'day_until', 'from_time', 'to_time'))
         ->condition('nid', $node->id(), '=')
@@ -481,11 +389,9 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         'effect' => 'fade',
       ),
     );
-    // print_R($maintenance_windows_info);
     $form['#validate'][] = 'custom_service_profile_form_validate';
     $form['#redirect'] = 'group/' . INCIDENT_MANAGEMENT . '/stoerung/service-profiles';
     $dependent_service_options = get_related_downtime_services('downtimes');
-    // pr($dependent_service_options);exit;
     $form['field_dependent_downtimeservices'] = array(
       '#title' => t('Dependant Services'),
       '#type' => 'checkboxes',
@@ -570,18 +476,6 @@ function downtimes_set_default_values(&$form, $nid) {
 
     $form['dates']['start']['startdate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->startdate_planned);
 
-  /*  $node = \Drupal::routeMatch()->getParameter('node');
-    if (isset($node)) {
-      if (is_object($node)) {
-        $node_id = $node->id();
-      } else {
-        $node_id = $node;
-      }
-      $group_content = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node_id);
-      if ($group_content) {
-        $group = $group_content->getgroup();
-      }
-    } */
     $group = \Drupal\group\Entity\Group::load(GEPLANTE_BLOCKZEITEN);
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
@@ -615,16 +509,6 @@ function downtimes_set_default_values(&$form, $nid) {
         }
     }
 
-    //For insidents/downtimes
-//    if($restict && $downtime_data->scheduled_p == 0) {
-//        if($downtime_data->startdate_planned <= REUEST_TIME ) {
-//            $form['dates']['start']['startdate_planned']['#attributes']['disabled'] =  TRUE;
-//        }
-//        if(!empty($downtime_data->enddate_planned)) {
-//            $form['dates']['end']['enddate_planned']['#attributes']['disabled'] =  TRUE;
-//        }
-//    }
-    
     if (!empty($downtime_data->enddate_planned)) {
       $form['dates']['end']['enddate_planned']['#default_value'] = date('d.m.Y - H:i', $downtime_data->enddate_planned);
     }
@@ -637,9 +521,7 @@ function downtimes_set_default_values(&$form, $nid) {
  * Append hours and minutes to day form.
  */
 function append_hours_minutes(&$form, $name, $data) {
-//  pr($data);exit;
-  //$date_format = 'H:i';
-  //pr(DateTime::createFromFormat('H:i:s',$data[$name . '_until']));exit;
+
   if (!empty($data['service_time_' . $name . '_from'])) {
     if (!preg_match('/^(?:([01]?\d|2[0-3]):([0-5]?\d):)?([0-5]?\d)$/', $data['service_time_' . $name . '_from'])) {
       $data['service_time_' . $name . '_from'] .= ':00';
@@ -697,48 +579,9 @@ function field_hours_minutes(&$form, $name, $data) {
 }
 
 /**
- * Add day dropdown to maintenance window.
- */
-//function field_mw_day(&$form, $name, $options, $data, $title, $prefix) {
-//  $form['maintenancewindows'][$name] = array(
-//    '#type' => 'select',
-//    '#options' => $options,
-//    '#default_value' => $data,
-//    '#title' => t($title),
-//  );
-//  if ($prefix) {
-//    $form['maintenancewindows'][$name]['#prefix'] = '<div class=mw-item-set>';
-//  }
-//}
-
-/**
- *
- */
-//function append_remove_button(&$form, $name) {
-//  /* $form['maintenancewindows'][$name] = array(
-//    '#type' => 'button',
-//    '#title' => "Remove",
-//    '#default_value' => 'Remove',
-//    '#attributes' => array('class' => 'mw-remove')
-//    ); */
-//  $form['maintenancewindows'][$name] = array(
-//    '#value' => "<a href='' class='mw-remove' id='$name'>Remove</a></div>",
-//  );
-//}
-
-/**
  * Validate function for service profile service time and maintenance windows fields.
  */
 function custom_service_profile_form_validate(&$form, &$form_state) {
-  //pr($form_state->getValue('maintenance_windows'));exit;
-  /**
-   * // breadcrumb for service profile form
-   * $breadcrumb = array();
-   * $breadcrumb[] = l(t('Home'), NULL);
-   * $breadcrumb[] = l(t('Incidents and Maintenances'), 'incident-management/stoerungen');
-   * $breadcrumb[] = drupal_set_title();
-   * drupal_set_breadcrumb($breadcrumb);
-   */
   $arr = array(
     "Mon" => "Mon",
     "Tue" => "Tue",
@@ -760,15 +603,12 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
       ($service_time[$vals]['from'] < $service_time[$vals]['until'])
     ) {
       if (!$service_time[$vals]) {
-        // form_set_error($form_state['values']['service_time_' . $vals], t("Select day"));.
         $form_state->setErrorByName('service_time', t("Select day"));
       }
     }
     
-    // added by sandeep
     $validateDays = array(1 => "Mon", 2 => "Tue", 3 => "Wed", 4 => "Thu", 5 => "Fri", 6 => "Sat", 7 => "Sun");
     $maintenance_windows = $form_state->getValue('maintenance_windows');
-    //pr($maintenance_windows);exit;
     foreach ($maintenance_windows as $key => $field) {
       if ((string)$key != 'add' && $field['is_deleted'] == 0) {
         if (array_search($field['day'], $validateDays) > array_search($field['day_until'], $validateDays)) {
@@ -781,7 +621,6 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
     }
   }
   
-  //pr($form_state->getErrors());exit;
   if ($form_state->getErrors()) {
     // $form_idform_idform_idform_id = $_POST['form_id'];.
     //$form_state['post'] =

@@ -201,7 +201,14 @@ class CancelForm extends FormBase {
       '#type' => 'submit',
       '#value' => t('submit'),
       '#id' => 'reason',
-      '#weight' => 3
+      '#weight' => 3,
+        '#attributes' => array(
+            "onclick" => "
+                jQuery(this).attr('disabled', true);
+                jQuery(this).parents('form').submit();
+            ",
+            "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
+        ),
     );
     return $form;
   }
