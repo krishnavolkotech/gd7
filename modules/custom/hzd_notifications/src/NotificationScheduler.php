@@ -27,7 +27,7 @@ class NotificationScheduler implements NotificationSchedulerInterface {
   /**
    * {@inheritdoc}
    */
-  public function schedule(EntityInterface $entity, $action, array $userData) {
+  public function schedule(EntityInterface $entity, $action, array $userData, $body, $subject) {
     $connection = $this->connection;
 
     $table = 'notifications_scheduled';
@@ -37,10 +37,12 @@ class NotificationScheduler implements NotificationSchedulerInterface {
       'bundle' => $entity->bundle(),
       'action' => $action,
       'user_data' => serialize($userData),
+      'body' => $body,
+      'subject' => $subject
     ];
 
     //@todo Check need for try catch block here, transaction already happens in insert.
-    $connection->insert($table)->fields($fields)->execute();
+    return $connection->insert($table)->fields($fields)->execute();
 
   }
 

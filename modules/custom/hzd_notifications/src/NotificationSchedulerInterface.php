@@ -20,5 +20,5 @@ interface NotificationSchedulerInterface {
    * @param array $userData
    *  The user data to send the notifications.
    */
-  public function schedule(EntityInterface $entity, $action, array $userData);
+  public function schedule(EntityInterface $entity, $action, array $userData, $body, $subject);
 }

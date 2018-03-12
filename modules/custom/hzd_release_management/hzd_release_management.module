@@ -534,14 +534,9 @@ function getNodeMailContentFromConfig($data, $action) {
   }
   $config = \Drupal::config('hzd_customizations.mailtemplates')
     ->get($type);
-  $view_builder = \Drupal::entityTypeManager()
-    ->getViewBuilder($data['node']->getEntityTypeId());
-  $token_service = \Drupal::token();
-  // Replace the token for subject.
-  $token_sub = $config['subject_' . $action];
-  $subject = $token_service->replace($token_sub, array($data['node']->getEntityTypeId() => $data['node']));
+  $token_service = \Drupal::token();  
   if ($config['mail_view']) {
-    $body[] = $view_builder->view($data['node'], 'mail', 'de');
+    $body[] = ['#markup'=>$data['body']];
     $body[] = [
       '#markup' => $token_service->replace($config['mail_footer'], array(
         'node' => $data['node'],
@@ -565,7 +560,7 @@ function getNodeMailContentFromConfig($data, $action) {
     ];
   }
   $message_text = \Drupal::service('renderer')->render($body);
-  return ['body' => $message_text, 'subject' => $subject];
+  return ['body' => $message_text];
 }
 
 /**

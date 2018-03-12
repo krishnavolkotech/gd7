@@ -447,7 +447,12 @@ function hzd_notifications_update_8016() {
         'type' => 'blob',
         'not null' => TRUE,
       ],
-
+      'subject' => [
+        'type' => 'text',
+      ],
+      'body' => [
+        'type' => 'text',
+      ],
     ],
     'primary key' => ['sid'],
   ];

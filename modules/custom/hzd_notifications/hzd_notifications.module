@@ -674,9 +674,32 @@ function _notify_users($entity, $action, $user_data){
 
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-  
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+
+    if ($entity->getEntityTypeId() == 'group') {
+      $type = 'group';
+    }
+    elseif (in_array($entity->bundle(), [
+      'event',
+      'forum',
+      'page',
+      'faqs'
+    ])) {
+      $type = 'group_content';
+    }
+    else {
+      $type = $entity->bundle();
+    }
+    $config = \Drupal::config('hzd_customizations.mailtemplates')
+      ->get($type);
+    $token_service = \Drupal::token();
+    // Replace the token for subject.
+    $token_sub = $config['subject_' . $action];
+    $subject = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
     // These bundles have condition for notifications.
-    $notification_scheduler->schedule($entity, $action, (array)$user_data);
+    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
   }
   
 }

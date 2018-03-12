@@ -48,6 +48,8 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       'bundle',
       'action',
       'user_data',
+      'body',
+      'subject',
     ];
 
     $query = $connection->select(NOTIFICATION_SCHEDULE_TABLE, 'ns');
@@ -78,6 +80,8 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           ->getStorage($notification['entity_type'])
           ->load($notification['entity_id']);
         $data[$entity->getEntityTypeId()] = $entity;
+        $data['body'] = $notification['body'];
+        $data['subject'] = $notification['subject'];
         // Each notification subscribed by multiple users.
         foreach ($user_ids as $user_id) {
           if(empty($user_id)){
@@ -115,7 +119,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           $data['user'] = $user;
           $mailContent = getNodeMailContentFromConfig($data, $notification['action']);
 
-          $dispatch_data['subject'] = $mailContent['subject'];
+          $dispatch_data['subject'] = $data['subject'];
           $dispatch_data['message_text'] = $mailContent['body'];
           $dispatch_data['to'] = $mail;
           $dispatch_data['preference'] = $preference;
