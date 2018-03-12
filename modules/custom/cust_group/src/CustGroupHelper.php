@@ -115,7 +115,7 @@ class CustGroupHelper {
     //Altering the autocomplete route here
     //cust_group.file_autocomplete
     $element['filefield_reference']['autocomplete']['#autocomplete_route_name'] = 'cust_group.file_autocomplete';
-    $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group;
+    $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group->id();
 //    pr($element['filefield_reference']['autocomplete']);exit;
 
     return $element;
