@@ -35,7 +35,8 @@ class HZDCustomizations extends ControllerBase {
      */
   public function add_users_to_system_groups() {
       $system_groups = array("1", "2", "6", "15", "21", "39");
-      $all_user_ids = \Drupal::entityQuery('user')->execute();
+      //Excluding user 0
+      $all_user_ids = \Drupal::entityQuery('user')->condition('uid', [0], 'NOT IN')->execute();
       $all_users = User::loadMultiple($all_user_ids);
       $user_count = 0;
       foreach ($system_groups as $sysgroup) {
