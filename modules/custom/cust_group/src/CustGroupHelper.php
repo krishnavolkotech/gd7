@@ -89,16 +89,19 @@ class CustGroupHelper {
 
 
   public static function process($element, FormStateInterface $form_state, $form) {
-    $nodeId = \Drupal::request()->get('node');
-    $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
-    if($groupContent instanceof GroupContent){
-      $group = $groupContent->getGroup()->id();
+    $group = \Drupal::request()->get('group',null);
+    if(!$group){
+      $nodeId = \Drupal::request()->get('node');
+      $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
+      if($groupContent instanceof GroupContent){
+        $group = $groupContent->getGroup();
+      }
     }
     $element['imce_paths'] = [
       '#type' => 'hidden',
       '#attributes' => [
         'class' => ['imce-filefield-paths'],
-        'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group])->toString(),
+        'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group->id()])->toString(),
       ],
       // Reset value to prevent consistent errors
       '#value' => '',
