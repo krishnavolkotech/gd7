@@ -77,7 +77,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
         $entity = \Drupal::entityTypeManager()
           ->getStorage($notification['entity_type'])
           ->load($notification['entity_id']);
-
+        $data[$entity->getEntityTypeId()] = $entity;
         // Each notification subscribed by multiple users.
         foreach ($user_ids as $user_id) {
           if(empty($user_id)){
@@ -112,7 +112,6 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           }
 
           $mail = $user->getEmail();
-          $data[$entity->getEntityTypeId()] = $entity;
           $data['user'] = $user;
           $mailContent = getNodeMailContentFromConfig($data, $notification['action']);
 
