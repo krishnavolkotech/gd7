@@ -502,7 +502,7 @@ $inprogress_nid_values = [];
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
           $removePreviousData = 0;
-          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1) || $field_documentation_link_value != $link) {
             $removePreviousData = 1;
             
           }
