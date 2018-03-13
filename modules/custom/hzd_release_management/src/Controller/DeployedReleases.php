@@ -6,6 +6,8 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Render\Markup;
 use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
+
 
 if(!defined('EXEOSS'))
   define('EXEOSS', \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id'));
@@ -37,7 +39,8 @@ class DeployedReleases extends ControllerBase {
       return ['#markup' => Markup::create($this->t("Invalid input given"))];
     }
 
-    $cid = 'deployedReleasesOverview' . $release_type;
+    $group_id = $group->id();
+    $cid = 'deployedReleasesOverview:' . $group_id . ':' . $release_type;
     $build = NULL;
 
     if ($cache = \Drupal::cache()->get($cid)) {
@@ -46,7 +49,7 @@ class DeployedReleases extends ControllerBase {
     }
 
 
-    $group_id = $group->id();
+
     $db = \Drupal::database();
     $states = $db->select('states', 's')
             ->condition('s.id', 1, '!=')
@@ -135,7 +138,7 @@ class DeployedReleases extends ControllerBase {
             'class' => ['view-deployed-releases']
         ]
       ];
-      \Drupal::cache()->set($cid, $build);
+      \Drupal::cache()->set($cid, $build, CacheBackendInterface::CACHE_PERMANENT, ['deployedReleasesOverview']);
       return $build;
     } else {
       return ['#markup' => Markup::create($this->t("No data created yet"))];
