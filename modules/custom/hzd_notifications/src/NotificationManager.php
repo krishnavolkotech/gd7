@@ -98,7 +98,7 @@ class NotificationManager implements NotificationManagerInterface {
   }
 
 
-  private function getUsersForGroup($group){
+  public function getUsersForGroup($group){
     $uids = $this->connection->select('group_notifications', 'gnudi')
       ->fields('gnudi', ['uids'])
       ->condition('gnudi.group_id', $group->id(), '=')
