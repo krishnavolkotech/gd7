@@ -117,7 +117,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
 
           $mail = $user->getEmail();
           $data['user'] = $user;
-          $mailContent = getNodeMailContentFromConfig($data, $notification['action']);
+          $mailContent = $this->getMailData($data, $notification['action']);
 
           $dispatch_data['subject'] = $data['subject'];
           $dispatch_data['message_text'] = $mailContent['body'];
@@ -152,6 +152,52 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       }
 
     }
+  }
+
+  public function getMailData($data, $action) {
+    if ($data['node']->getEntityTypeId() == 'group') {
+      $type = 'group';
+    }
+    elseif (in_array($data['node']->bundle(), [
+      'event',
+      'forum',
+      'page',
+      'faqs'
+    ])) {
+      $type = 'group_content';
+    }
+    else {
+      $type = $data['node']->bundle();
+    }
+    $config = \Drupal::config('hzd_customizations.mailtemplates')
+      ->get($type);
+    $token_service = \Drupal::token();  
+    if ($config['mail_view']) {
+      $body[] = ['#markup'=>$data['body']];
+      $body[] = [
+        '#markup' => $token_service->replace($config['mail_footer'], array(
+          'node' => $data['node'],
+          'user' => $data['user']
+        ))
+      ];
+    }
+    else {
+      $token_body = $config['mail_content'];
+      $body[] = [
+        '#markup' => $token_service->replace($token_body, array(
+          $data['node']->getEntityTypeId() => $data['node'],
+          'user' => $data['user']
+        ))
+      ];
+      $body[] = [
+        '#markup' => $token_service->replace($config['mail_footer'], array(
+          'node' => $data['node'],
+          'user' => $data['user']
+        ))
+      ];
+    }
+    $message_text = \Drupal::service('renderer')->render($body);
+    return ['body' => $message_text];
   }
 
   /**
