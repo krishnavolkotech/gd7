@@ -233,7 +233,7 @@ function send_earlywarning_comment_notifications($entity, $action) {
         $key = 'immediate_notifications';
         $langcode = \Drupal::currentUser()->getPreferredLangcode();
         $send = TRUE;
-        $data['user'] = User::load($uid);
+        $data['user'] = \Drupal\user\Entity\User::load($uid);
         $to = $data['user']->getMail();
         $body[] = [
         '#markup' => $token_service->replace( $config['mail_footer'], array('node' => $data['node'],'user'=>$data['user']))
