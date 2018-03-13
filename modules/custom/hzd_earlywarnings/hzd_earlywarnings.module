@@ -206,10 +206,10 @@ function send_earlywarning_comment_notifications($entity, $action) {
 
     $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
     if ($groupContentId) {
-      $group = $groupContentId->getGroup()->id();
+      $group = $groupContentId->getGroup();
     }
     if (!empty($group) && $group && (in_array($nodeentity->bundle(), ['forum']))) {
-      $getUserMailList = getGroupMemberList($group);
+      $getUserMailList = \Drupal\hzd_notifications\NotificationManager::getUsersForGroup($group);
       $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
       foreach ($getUserMailList as $to) {
         $body = [];
@@ -228,7 +228,7 @@ function send_earlywarning_comment_notifications($entity, $action) {
         }
         $result = array();
         $mailManager = \Drupal::service('plugin.manager.mail');
-        $module = 'cust_group';
+        $module = 'hzd_notifications';
         $key = 'immediate_notifications';
         $langcode = \Drupal::currentUser()->getPreferredLangcode();
         $send = TRUE;
