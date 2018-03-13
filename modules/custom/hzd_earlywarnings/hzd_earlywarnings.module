@@ -213,6 +213,9 @@ function send_earlywarning_comment_notifications($entity, $action) {
       $getUsers = $notification_manager->getUsersForGroup($group);
       $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
       foreach ($getUsers as $uid) {
+        if(empty($uid)){
+          continue;
+        }
         $body = [];
         $body[] = $view_builder->view($entity, 'mail', 'de');
         $data['node'] = $nodeentity;
