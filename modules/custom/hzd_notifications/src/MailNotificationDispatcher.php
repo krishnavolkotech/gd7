@@ -173,7 +173,9 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       ->get($type);
     $token_service = \Drupal::token();  
     if ($config['mail_view']) {
-      $body[] = ['#markup'=>$data['body']];
+      $body[] = [
+          '#children' => $data['body']
+      ];
       $body[] = [
         '#markup' => $token_service->replace($config['mail_footer'], array(
           'node' => $data['node'],

@@ -143,7 +143,8 @@ hzd_release_management.document_page_link:
 #    _permission: 'access content'
 #    _access: 'FALSE'
     _group_permission: 'leave group'
-
+  options:
+    no_cache: 'TRUE'
 # create a zip link to download document files
 hzd_release_management.document_zip_link:
   path: 'documentation_link_zip/{service_id}/{release_id}'
