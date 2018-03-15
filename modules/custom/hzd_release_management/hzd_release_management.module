@@ -735,10 +735,12 @@ function hzd_release_management_node_presave(NodeInterface $node) {
         if (!isset($node->field_archived_release->value)) {
           $node->set('field_archived_release', 0);
         }
-        if ($node->field_environment->value == 1) {
+
+        if (($node->field_environment->value == 1) || ($node->original->field_environment->value == 1)) {
           // If environment is or was Production, delete cache for deployed releases overview table
-          $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-          \Drupal::cache()->deleteMultiple($cids);
+            // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            // \Drupal::cache()->deleteMultiple($cids);
+            \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
         }
     }
 }
@@ -910,8 +912,9 @@ function hzd_release_management_node_delete($entity) {
   if ($entity->getType() == 'deployed_releases') {
         if ($entity->field_environment->value == 1) {
             // If environment is Production, delete cache for deployed releases overview table
-            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-            \Drupal::cache()->deleteMultiple($cids);
+            // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            // \Drupal::cache()->deleteMultiple($cids);
+            \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
         }
   }
 }

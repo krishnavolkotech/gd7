@@ -22,8 +22,9 @@ class ArchivedeployedreleasesController extends ControllerBase {
 
         if ($node->field_environment->value == 1) {
             // If environment is Production, delete cache for deployed releases overview table
-            $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-            \Drupal::cache()->deleteMultiple($cids);
+            // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+            // \Drupal::cache()->deleteMultiple($cids);
+            \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
         }
       }
       $output = 'true';
