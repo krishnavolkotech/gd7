@@ -45,6 +45,7 @@ class HzdreleasemanagementStorage {
         $node_ids->join('node__field_status', 'nfs', 'nfrt.entity_id = nfs.entity_id');
         $node_ids->Fields('nfrt', array('entity_id'));
         $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
+        $node_ids->condition('nfrt.field_release_type_value',$release_type);
         $nids = $node_ids->execute()->fetchCol();
 
         //Not sure is this is really necessary here.
@@ -349,6 +350,7 @@ $inprogress_nid_values = [];
     try {
       setlocale(LC_ALL, 'de_DE.UTF-8');
       $count_data = 0;
+      $inprogress_csv_nid_values = [];
       while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
           $explodedData = explode(',', $data[0]);
         if ($count_data == 0) {
@@ -393,13 +395,21 @@ $inprogress_nid_values = [];
    * @param $locked_nid_values
    */
   static public function locked_release_node($locked_csv_nid_values, $locked_nid_values) {
-    if (is_array($locked_nid_values)) {
-      foreach ($locked_nid_values as $release_title_nid_values) {
-        if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
-          db_update('node_field_data')->fields(array('status' => '0'))
-                  ->condition('nid', $release_title_nid_values)->execute();
-        }
-      }
+    //Writing an equivalent code below @sandeep 20180315
+    // if (is_array($locked_nid_values)) {
+    //   foreach ($locked_nid_values as $release_title_nid_values) {
+    //     if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
+    //       db_update('node_field_data')->fields(array('status' => '0'))
+    //               ->condition('nid', $release_title_nid_values)->execute();
+    //     }
+    //   }
+    // }
+
+
+    foreach(array_diff((array)$locked_nid_values, (array)$locked_csv_nid_values) as $val){
+      $node = Node::load($val);
+      $node->set("status", 0);
+      $node->save();
     }
   }
 

@@ -720,6 +720,10 @@ function hzd_notifications_node_update($node){
     }else{
       $users = _get_subscribed_users($node);
     }
+    //Notify only if release is released
+    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
+      return;
+    }
     
     _notify_users($node, ENTITY_OP_UPDATE, $users);
   }
@@ -734,6 +738,10 @@ function hzd_notifications_node_update($node){
 function hzd_notifications_node_insert($entity){
   if($entity->isPublished() && in_array($entity->bundle(), NotificationManager::$service_bundles)){
     $users = _get_subscribed_users($entity);
+    //Notify only if release is released
+    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
+      return;
+    }
     _notify_users($entity, ENTITY_OP_INSERT, $users);
   }
 
