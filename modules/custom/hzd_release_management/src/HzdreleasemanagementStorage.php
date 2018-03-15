@@ -191,14 +191,15 @@ $inprogress_nid_values = [];
         $existing_node_values['service'] = $node->get('field_relese_services')->referencedEntities()[0]->id();
         $existing_node_values['datum'] = $node->get('field_date')->value;
         if ($values['type'] == 'locked') {
-            $existing_node_values['comment'] = $node->get('field_release_comments')->value;
+          $existing_node_values['comment'] = $node->get('field_release_comments')->value;
         } else {
-            $existing_node_values['link'] = $node->get('field_link')->value;
-            $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
+          $existing_node_values['link'] = $node->get('field_link')->value;
+          $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
        $existing_node_values['type'] = $node->get('field_release_type')->value;
         $csvvalues = array();
         $csvvalues = $values;
+        $csvvalues['type'] = $types[$values['type']];
         // unset($csvvalues['type']);
         if (count(array_diff($csvvalues, $existing_node_values)) != 0) {
             $node->setTitle($values['title']);
