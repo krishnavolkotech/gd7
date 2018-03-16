@@ -12,6 +12,7 @@ hzd_earlywarnings.early-warnings:
   defaults:
     _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::release_early_warnings_display'
     _title: 'Early Warnings'
+    _entity_view: 'group.default'
   requirements:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
