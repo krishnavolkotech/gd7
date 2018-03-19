@@ -814,7 +814,7 @@ function send_earlywarning_comment_notifications($entity, $action) {
     } else {
       $subject = t('Updated Comment on Early Warning');
     }
-    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
+    $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
   } else if($entity_bundle == 'forum') {
     $groupContent = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
     $users = _get_subscribed_users($groupContent);
@@ -827,7 +827,7 @@ function send_earlywarning_comment_notifications($entity, $action) {
     } else {
       $subject = t('Updated Comment on Forum');
     }
-    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
+    $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
   }
 }
 
