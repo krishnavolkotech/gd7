@@ -779,6 +779,59 @@ function hzd_notifications_group_update($group){
   _notify_users($group, ENTITY_OP_UPDATE, $users);
 }
 
+
+function hzd_notifications_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
+    $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+    if (!$do_not_send_notifications) {
+      send_earlywarning_comment_notifications($entity, 'update');
+    }
+  }
+  // Update the entity's entry in a fictional table of this type of entity.
+}
+
+function hzd_notifications_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
+    $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+    if (!$do_not_send_notifications) {
+      send_earlywarning_comment_notifications($entity, 'insert');
+    }
+  }
+  // Insert the new entity into a fictional table of all entities.
+}
+
+function send_earlywarning_comment_notifications($entity, $action) {
+  $nodeentity = $entity->getCommentedEntity();
+  $entity_bundle = $nodeentity->bundle();
+  if($entity_bundle == 'early_warnings') {
+    $users = _get_subscribed_users($nodeentity);
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+    if($action == 'insert') {
+      $subject = t('New Comment on Early Warning');
+    } else {
+      $subject = t('Updated Comment on Early Warning');
+    }
+    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
+  } else if($entity_bundle == 'forum') {
+    $groupContent = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
+    $users = _get_subscribed_users($groupContent);
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+    if($action == 'insert') {
+      $subject = t('New Comment on Forum');
+    } else {
+      $subject = t('Updated Comment on Forum');
+    }
+    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
+  }
+}
+
+
 /**
  * Implements hook_cron().
  */
