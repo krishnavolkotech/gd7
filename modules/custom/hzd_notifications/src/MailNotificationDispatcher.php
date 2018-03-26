@@ -79,7 +79,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
         $entity = \Drupal::entityTypeManager()
           ->getStorage($notification['entity_type'])
           ->load($notification['entity_id']);
-        $data[$entity->getEntityTypeId()] = $entity;
+        $data['entity'] = $entity;
         $data['body'] = $notification['body'];
         $data['subject'] = $notification['subject'];
         // Each notification subscribed by multiple users.
@@ -123,7 +123,18 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           $dispatch_data['message_text'] = $mailContent['body'];
           $dispatch_data['to'] = $mail;
           $dispatch_data['preference'] = $preference;
-          $dispatch_data['attachment'] = '';
+          if($entity->bundle() == 'quickinfo'){
+            $files = $entity->get('upload')->referencedEntities();
+            foreach ($files as $file) {
+              $temp = new \stdClass();
+              $temp->uri = $file->getFileUri();
+              $temp->filename = $file->getFilename();
+              $temp->filemime = $file->getMimeType();
+              $dispatch_data['attachment'][] = $temp;
+            }
+          }else{
+            $dispatch_data['attachment'] = '';
+          }
 
           $notification_dispatched = $this->dispatch($dispatch_data);
 
@@ -155,10 +166,10 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
   }
 
   public function getMailData($data, $action) {
-    if ($data['node']->getEntityTypeId() == 'group') {
+    if ($data['entity']->getEntityTypeId() == 'group') {
       $type = 'group';
     }
-    elseif (in_array($data['node']->bundle(), [
+    elseif (in_array($data['entity']->bundle(), [
       'event',
       'forum',
       'page',
@@ -167,7 +178,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       $type = 'group_content';
     }
     else {
-      $type = $data['node']->bundle();
+      $type = $data['entity']->bundle();
     }
     $config = \Drupal::config('hzd_customizations.mailtemplates')
       ->get($type);
@@ -178,7 +189,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       ];
       $body[] = [
         '#markup' => $token_service->replace($config['mail_footer'], array(
-          'node' => $data['node'],
+          'node' => $data['entity'],
           'user' => $data['user']
         ))
       ];
@@ -187,13 +198,13 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       $token_body = $config['mail_content'];
       $body[] = [
         '#markup' => $token_service->replace($token_body, array(
-          $data['node']->getEntityTypeId() => $data['node'],
+          $data['entity']->getEntityTypeId() => $data['entity'],
           'user' => $data['user']
         ))
       ];
       $body[] = [
         '#markup' => $token_service->replace($config['mail_footer'], array(
-          'node' => $data['node'],
+          'node' => $data['entity'],
           'user' => $data['user']
         ))
       ];
@@ -228,6 +239,9 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $params['message'] = $message_text;
     $params['subject'] = $subject;
     $params['preference'] = $preference ? $preference : 'html';
+    if($attachment){
+      $params['files'] = $attachment;
+    }
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
   }

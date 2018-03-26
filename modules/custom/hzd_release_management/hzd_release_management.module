@@ -781,36 +781,7 @@ function hzd_get_immediate_pf_notification_user_mails() {
   return $unserialized_user_array;
 }
 
-/**
- *
- */
-function hzd_get_immediate_qi_notification_user_mails($services) {
 
-  $options = FieldStorageConfig::loadByName('node', 'field_other_services')
-    ->getSetting('allowed_values');
-  $affetced_services = array();
-  foreach ($services as $val) {
-    $affetced_services[] = $options[$val['value']];
-  }
-
-  $query = db_select('quickinfo_notifications', 'q')
-    ->fields('q', array('uids'))
-    ->condition('q.cck', $affetced_services, 'IN')
-    ->condition('q.send_interval', 0, '=');
-
-  $results = $query->execute()->fetchCol();
-
-  $uids_list = array();
-  foreach ($results as $serialized_uids) {
-    $uids = unserialize($serialized_uids);
-    $uids_list = array_unique(array_merge($uids_list, $uids));
-  }
-
-  /*if (is_array($uids_list) && (count($uids_list) > 0)) {
-    return hzd_user_mails(array_values($uids_list));
-  }*/
-  return $uids_list;
-}
 
 /**
  * Get user mail ids.

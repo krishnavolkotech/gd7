@@ -3,8 +3,12 @@ services:
     class: Drupal\hzd_customizations\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+  hzd_customizations.quickinfo_resolver:
+    class: Drupal\hzd_customizations\Resolver\QuickinfoResolver
+    tags:
+      - { name: hzd_notifications.service_resolver, priority: -89 }
 
-#  hzd_breadcrumb.breadcrumb_quickinfo_create:
+      #  hzd_breadcrumb.breadcrumb_quickinfo_create:
 #    class: Drupal\hzd_customizations\Breadcrumb\QuickinfoBreadcrumbBuilder
 ##    arguments: ['@entity.manager', '@config.factory', '@forum_manager', '@string_translation']
 #    tags:

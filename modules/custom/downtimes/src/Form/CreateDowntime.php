@@ -88,7 +88,7 @@ class CreateDowntime extends FormBase {
       '#type' => 'select',
       '#title' => $this->t('Reason for scheduling outside maintenance window'),
       '#description' => $this->t('Please select a reason'),
-      '#options' => maintenance_reasons()
+      '#options' => maintenance_reasons(),
       '#size' => 5,
     ];
 
@@ -105,7 +105,6 @@ class CreateDowntime extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    print_r($form_state['values']); die();
   }
 
   /**

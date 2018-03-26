@@ -602,7 +602,7 @@ function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterfa
     if($node->get('status')->value == 1) {
         hzd_customizations_quickinfo_save($node);
         $node = node_load($node->id());
-        generate_quickinfo_pdf($node);
+        // generate_quickinfo_pdf($node);
     }
 }
 
@@ -639,84 +639,12 @@ function hzd_customizations_quickinfo_save($node) {
 
 //use \Drupal\file\Entity\File;
 
-function generate_quickinfo_pdf($node = NULL) {
-  if (is_null($node)) {
+function generate_quickinfo_pdf($entity = NULL) {
+  if (is_null($entity)) {
     return FALSE;
   }
-  $quickinfoId = $node->get('field_unique_id')->value;
-//  $fileName = "{$quickinfoId}.pdf";
-//  $uri = "private://rz-schnellinfos/" . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf";
-
-//  $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-//  $renderarray = $view_builder->view($node, 'mail');
-//  $html = \Drupal::service('renderer')->renderRoot($renderarray);
-  $files = $node->get('upload')->referencedEntities();
-  $siteMail = \Drupal::config('system.site')->get('mail');
-  $data['node'] = $node;
-//  $mailContent = getNodeMailContentFromConfig($node, 'update');
-  
-  
-//  $subject = "RZ-Schnellinfo Nr. {$quickinfoId} - " . $node->label();
-  $params = [
-      'headers' => [
-          'Content-Type' => 'text/html',
-      ],
-      'from' => $siteMail,
-//      'subject' => $mailContent['subject'],
-  ];
-  foreach ($files as $file) {
-    $temp = new stdClass();
-    $temp->uri = $file->getFileUri();
-    $temp->filename = $file->getFilename();
-    $temp->filemime = $file->getMimeType();
-
-    $params['files'][] = $temp;
-  }
-//  $file_two = new stdClass();
-//  $file_two->uri = $uri;
-//  $file_two->filename = $fileName;
-//  $file_two->filemime = 'application/pdf';
-//  $params['files'][] = $file_two;
-//  pr(array_keys($params['files']));exit;
-  
-  $mailManager = \Drupal::service('plugin.manager.mail');
-  $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
-  $user_ids = hzd_get_immediate_qi_notification_user_mails($node->get('field_other_services')->getValue());
-  foreach ($user_ids as $user_id) {
-    $user = \Drupal\user\Entity\User::load($user_id);
-
-    // For some reason, user subscribed and is deleted from system.
-    if (!is_object($user)) {
-      continue;
-    }
-
-    $user_active = $user->isActive();
-    $user_hzd_inactive = hzd_user_inactive_status_check($user_id);
-    $user_notif_status = $user->get('field_notifications_status')->value;
-
-    /**
-     * Mail is not sent for following :
-     *  - If user is in blocked state.
-     *  - Is user has disabled notifications.
-     *  - If user is in Inactive state.
-     */
-    if (!$user_active || $user_notif_status == 'Disable' || $user_hzd_inactive) {
-      continue;
-    }
-
-    $mail = $user->getEmail();
-    $recepients[] = $mail;
-  }
-
-  foreach ((array) $recepients as $email) {
-    if (!empty($email)) {
-      $data['user'] = user_load_by_mail($email);
-      $mailContent = getNodeMailContentFromConfig($data,'update');
-      $params['message'] = $mailContent['body'];
-      $params['subject'] = $mailContent['subject'];
-      $mailManager->mail('hzd_notifications', 'immediate_notifications', $email, 'de', $params, NULL, 1);
-    }
-  }
+  $users = _get_subscribed_users($entity);
+  _notify_users($entity, ENTITY_OP_UPDATE, $users);
 }
 
 /**

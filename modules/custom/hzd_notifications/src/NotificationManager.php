@@ -28,6 +28,8 @@ class NotificationManager implements NotificationManagerInterface {
     'planning_files',
   ];
 
+  public static $quickinfo = 'quickinfo';
+
   /**
    * The database connection to use.
    *
@@ -93,6 +95,9 @@ class NotificationManager implements NotificationManagerInterface {
     }
     elseif (in_array($bundle, self::$special_bundles)) {
       return $this->hzd_get_immediate_pf_notification_user_mails();
+    }elseif($bundle == self::$quickinfo){
+      $services = $this->getServicesForEntity($entity);
+      return hzd_get_immediate_qi_notification_user_mails($services);
     }
     return [];
   }

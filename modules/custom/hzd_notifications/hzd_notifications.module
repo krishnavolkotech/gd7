@@ -663,11 +663,59 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
       }
     }
   }
+  if ($type == 'user' && !empty($data['user'])) {
+    /** @var \Drupal\user\Entity\User $user */
+    $user = $data['user'];
+
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'user-notification-settings-url-absolute':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+
+          /**
+           * The below approach is used instead of passing absolute true in options.
+           * passing absolute doesn't provide path alias. This is due to
+           * Drupal\subpathauto\PathProcessor in sub path auto module.
+           */
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+
+          global $base_url;
+          $notif_change_link = $base_url . $url;
+          $replacements[$original] = $notif_change_link;
+          break;
+        case 'user-notification-settings-url-relative':
+          $route = 'hzd_notifications.notifications';
+          $route_params = [
+            'user' => $user->id(),
+          ];
+          
+          $url = \Drupal\Core\Url::fromRoute($route, $route_params)->toString();
+          $replacements[$original] = $url;
+          break;
+      }
+    }
+  }
 
   return $replacements;
 }
 
+/**
+ * Implements hook_token_info_alter().
+ */
+function hzd_notifications_token_info_alter(&$data) {
+  $data['tokens']['user']['user-notification-settings-url-absolute'] = [
+    'name' => t("user notification settings - absolute link"),
+    'description' => t("The absolute link to change user notification settings."),
+  ];
 
+  $data['tokens']['user']['user-notification-settings-url-relative'] = [
+    'name' => t("user notification settings - relative link"),
+    'description' => t("The relative link to change user notification settings."),
+  ];
+}
 
 function _notify_users($entity, $action, $user_data){
   $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
@@ -864,4 +912,32 @@ function hzd_notifications_mail($key, &$message, $params) {
 
       break;
   }
+}
+
+use Drupal\field\Entity\FieldStorageConfig;
+/**
+ *
+ */
+function hzd_get_immediate_qi_notification_user_mails($services) {
+
+  $options = FieldStorageConfig::loadByName('node', 'field_other_services')
+    ->getSetting('allowed_values');
+  $affetced_services = array();
+  foreach ($services as $val) {
+    $affetced_services[] = $options[$val['value']];
+  }
+
+  $query = db_select('quickinfo_notifications', 'q')
+    ->fields('q', array('uids'))
+    ->condition('q.cck', $affetced_services, 'IN')
+    ->condition('q.send_interval', 0, '=');
+
+  $results = $query->execute()->fetchCol();
+
+  $uids_list = array();
+  foreach ($results as $serialized_uids) {
+    $uids = unserialize($serialized_uids);
+    $uids_list = array_unique(array_merge($uids_list, $uids));
+  }
+  return $uids_list;
 }
