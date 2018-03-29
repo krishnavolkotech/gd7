@@ -1,5 +1,5 @@
 hzd_notifications.scheduled_mails:
-  title: 'Mail Templates'
+  title: 'Scheduled Mails'
   route_name: hzd_notifications.scheduled_mails
   description: 'Scheduled Mails'
   parent: hzd_customizations.notification
