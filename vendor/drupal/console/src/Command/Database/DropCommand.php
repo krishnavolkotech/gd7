@@ -10,17 +10,34 @@ namespace Drupal\Console\Command\Database;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Style\DrupalStyle;
-use Drupal\Console\Command\Database\ConnectTrait;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Core\Database\Connection;
+use Drupal\Console\Command\Shared\ConnectTrait;
 
 /**
  * Class DropCommand
+ *
  * @package Drupal\Console\Command\Database
  */
-class DropCommand extends ContainerAwareCommand
+class DropCommand extends Command
 {
     use ConnectTrait;
+
+    /**
+     * @var Connection
+     */
+    protected $database;
+
+    /**
+     * DropCommand constructor.
+     *
+     * @param Connection $database
+     */
+    public function __construct(Connection $database)
+    {
+        $this->database = $database;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -36,7 +53,8 @@ class DropCommand extends ContainerAwareCommand
                 $this->trans('commands.database.drop.arguments.database'),
                 'default'
             )
-            ->setHelp($this->trans('commands.database.drop.help'));
+            ->setHelp($this->trans('commands.database.drop.help'))
+            ->setAliases(['dbd']);
     }
 
     /**
@@ -44,26 +62,25 @@ class DropCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
         $database = $input->getArgument('database');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
+        $yes = $input->getOption('yes');
 
-        $databaseConnection = $this->resolveConnection($io, $database);
+        $databaseConnection = $this->resolveConnection($database);
 
         if (!$yes) {
-            if (!$io->confirm(
+            if (!$this->getIo()->confirm(
                 sprintf(
                     $this->trans('commands.database.drop.question.drop-tables'),
                     $databaseConnection['database']
                 ),
                 true
-            )) {
+            )
+            ) {
                 return 1;
             }
         }
 
-        $databaseService = $this->getService('database');
-        $schema = $databaseService->schema();
+        $schema = $this->database->schema();
         $tables = $schema->findTables('%');
         $tableRows = [];
 
@@ -75,11 +92,13 @@ class DropCommand extends ContainerAwareCommand
             }
         }
 
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.database.drop.messages.table-drop'),
                 count($tableRows['success'])
             )
         );
+
+        return 0;
     }
 }

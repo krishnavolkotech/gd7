@@ -2,7 +2,8 @@
 
 /**
  * @file
- * Contains \Drupal\faqfield\Plugin\field\formatter\FaqFieldDefinitionListFormatter.
+ * Contains
+ *   \Drupal\faqfield\Plugin\field\formatter\FaqFieldDefinitionListFormatter.
  */
 
 namespace Drupal\faqfield\Plugin\Field\FieldFormatter;
@@ -30,23 +31,23 @@ class FaqFieldDefinitionListFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $default_format = $this->getFieldSetting('default_format');
 
-    $element_items = array();
+    $element_items = [];
     foreach ($items as $item) {
       // Decide whether to use the default format or the custom one.
       $format = (!empty($item->answer_format) ? $item->answer_format : $default_format);
 
-      $element_items[] = array(
+      $element_items[] = [
         'question' => $item->question,
         'answer' => $item->answer,
         'answer_format' => $format,
-      );
+      ];
     }
 
-    $elements = array();
-    $elements[0] = array(
+    $elements = [];
+    $elements[0] = [
       '#theme' => 'faqfield_definition_list_formatter',
       '#items' => $element_items,
-    );
+    ];
 
     return $elements;
   }

@@ -16,4 +16,5 @@ permissions:
   - 'edit any deployed_releases content'
   - 'edit own deployed_releases content'
   - 'view field_contact_from_pretext'
+  - 'view media'
   - 'view own field_contact_from_pretext'

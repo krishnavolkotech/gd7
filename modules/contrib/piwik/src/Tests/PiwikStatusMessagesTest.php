@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikStatusMessagesTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\simpletest\WebTestBase;
@@ -21,7 +16,7 @@ class PiwikStatusMessagesTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['piwik'];
+  public static $modules = ['piwik', 'piwik_test'];
 
   /**
    * {@inheritdoc}
@@ -54,16 +49,21 @@ class PiwikStatusMessagesTest extends WebTestBase {
     $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Username field is required."]);', '[testPiwikStatusMessages]: trackEvent "Username field is required." is shown.');
     $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Password field is required."]);', '[testPiwikStatusMessages]: trackEvent "Password field is required." is shown.');
 
-    // @todo: investigate why drupal_set_message() fails.
-    //drupal_set_message('Example status message.', 'status');
-    //drupal_set_message('Example warning message.', 'warning');
-    //drupal_set_message('Example error message.', 'error');
-    //drupal_set_message('Example error <em>message</em> with html tags and <a href="http://www.example.com/">link</a>.', 'error');
-    //$this->drupalGet('');
-    //$this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);', '[testPiwikStatusMessages]: Example status message is not enabled for tracking.');
-    //$this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);', '[testPiwikStatusMessages]: Example warning message is not enabled for tracking.');
-    //$this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);', '[testPiwikStatusMessages]: Example error message is shown.');
-    //$this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);', '[testPiwikStatusMessages]: HTML has been stripped successful from Example error message with html tags and link.');
+    // Testing this drupal_set_message() requires an extra test module.
+    $this->drupalGet('piwik-test/drupal-set-message');
+    $this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);', '[testPiwikStatusMessages]: Example status message is not enabled for tracking.');
+    $this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);', '[testPiwikStatusMessages]: Example warning message is not enabled for tracking.');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);', '[testPiwikStatusMessages]: Example error message is shown.');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);', '[testPiwikStatusMessages]: HTML has been stripped successful from Example error message with html tags and link.');
+
+    // Enable logging of status, warnings and errors.
+    $this->config('piwik.settings')->set('track.messages', ['status' => 'status', 'warning' => 'warning', 'error' => 'error'])->save();
+
+    $this->drupalGet('piwik-test/drupal-set-message');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);', '[testPiwikStatusMessages]: Example status message is enabled for tracking.');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);', '[testPiwikStatusMessages]: Example warning message is enabled for tracking.');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);', '[testPiwikStatusMessages]: Example error message is shown.');
+    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);', '[testPiwikStatusMessages]: HTML has been stripped successful from Example error message with html tags and link.');
   }
 
 }

@@ -633,6 +633,8 @@ display:
           text: Ansichtsbeziehung
           entity_type: group_content
           plugin_id: entity_link
+          output_url_as_text: false
+          absolute: false
         edit_group_content:
           id: edit_group_content
           table: group_content
@@ -928,6 +930,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1109,7 +1112,7 @@ display:
           1: AND
       css_class: group-nodes-sortable
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -1137,7 +1140,7 @@ display:
         context: '0'
         menu_name: main
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'

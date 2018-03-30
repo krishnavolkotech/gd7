@@ -31,7 +31,7 @@ function piwik_token_info() {
 /**
  * Implements hook_tokens().
  */
-function piwik_tokens($type, $tokens, array $data = [], array $options = [], BubbleableMetadata $bubbleable_metadata) {
+function piwik_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $sanitize = !empty($options['sanitize']);
   $replacements = [];
 

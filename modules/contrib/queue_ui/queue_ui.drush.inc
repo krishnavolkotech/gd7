@@ -96,7 +96,10 @@ function _queue_ui_release_queue($queue_name) {
     ->condition('name', $queue_name, '=')
     ->execute();
 
-  drush_log(t('@count lease reset in queue @name', array('@count' => $num_updated, '@name' => $queue_name)), 'ok');
+  drush_log(t('@count lease reset in queue @name', array(
+    '@count' => $num_updated,
+    '@name' => $queue_name
+  )), 'ok');
 }
 
 /**

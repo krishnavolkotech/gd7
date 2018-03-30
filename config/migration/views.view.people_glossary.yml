@@ -591,6 +591,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -656,7 +657,7 @@ display:
         roles:
           id: roles
           table: user__roles
-          field: roles
+          field: roles_target_id
           relationship: none
           group_type: group
           admin_label: ''
@@ -695,7 +696,7 @@ display:
             group_items: {  }
           entity_type: user
           entity_field: roles
-          plugin_id: string
+          plugin_id: user_roles
         status_1:
           id: status_1
           table: users_field_data
@@ -1244,6 +1245,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1267,7 +1269,7 @@ display:
         groups:
           1: AND
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'

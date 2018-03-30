@@ -17,7 +17,6 @@ module:
   color: 0
   colorbutton: 0
   comment: 0
-  composer_manager: 0
   computed_field: 0
   config: 0
   config_direct_save: 0
@@ -34,7 +33,6 @@ module:
   custom_views_php: 0
   datetime: 0
   dblog: 0
-  devel: 0
   downtimes: 0
   draggableviews: 0
   dynamic_page_cache: 0
@@ -45,7 +43,6 @@ module:
   faqfield: 0
   field: 0
   field_group: 0
-  field_group_migrate: 0
   field_permissions: 0
   field_ui: 0
   file: 0
@@ -78,12 +75,6 @@ module:
   mass_contact: 0
   menu_ui: 0
   migrate: 0
-  migrate_drupal: 0
-  migrate_drupal_ui: 0
-  migrate_manifest: 0
-  migrate_plus: 0
-  migrate_tools: 0
-  migrate_upgrade: 0
   node: 0
   options: 0
   page_cache: 0
@@ -92,8 +83,6 @@ module:
   pdf_api: 0
   persistent_login: 0
   piwik: 0
-  printable: 0
-  printable_pdf: 0
   prlp: 0
   problem_management: 0
   queue_ui: 0

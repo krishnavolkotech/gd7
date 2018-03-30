@@ -7,35 +7,49 @@
 
 namespace Drupal\Console\Generator;
 
+use Drupal\Console\Core\Generator\Generator;
+use Drupal\Console\Extension\Manager;
+
 class RouteSubscriberGenerator extends Generator
 {
     /**
-     * Generator Service.
-     *
-     * @param string $module Module name
-     * @param string $name   Service name
-     * @param string $class  Class name
+     * @var Manager
      */
-    public function generate($module, $name, $class)
+    protected $extensionManager;
+
+    /**
+     * AuthenticationProviderGenerator constructor.
+     *
+     * @param Manager $extensionManager
+     */
+    public function __construct(
+        Manager $extensionManager
+    ) {
+        $this->extensionManager = $extensionManager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $parameters)
     {
-        $parameters = [
-          'module' => $module,
-          'name' => $name,
-          'class' => $class,
-          'class_path' => sprintf('Drupal\%s\Routing\%s', $module, $class),
-          'tags' => array('name' => 'event_subscriber'),
-          'file_exists' => file_exists($this->getSite()->getModulePath($module).'/'.$module.'.services.yml'),
-        ];
+        $module = $parameters['module'];
+        $class = $parameters['class'];
+        $moduleInstance = $this->extensionManager->getModule($module);
+        $moduleServiceYaml = $moduleInstance->getPath() . '/' . $module . '.services.yml';
+        $parameters['class_path'] = sprintf('Drupal\%s\Routing\%s', $module, $class);
+        $parameters['tags'] = ['name' => 'event_subscriber'];
+        $parameters['file_exists'] = file_exists($moduleServiceYaml);
 
         $this->renderFile(
             'module/src/Routing/route-subscriber.php.twig',
-            $this->getSite()->getRoutingPath($module).'/'.$class.'.php',
+            $moduleInstance->getRoutingPath() . '/' . $class . '.php',
             $parameters
         );
 
         $this->renderFile(
             'module/services.yml.twig',
-            $this->getSite()->getModulePath($module).'/'.$module.'.services.yml',
+            $moduleServiceYaml,
             $parameters,
             FILE_APPEND
         );

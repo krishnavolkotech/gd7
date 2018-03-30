@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikPhpFilterTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\Component\Utility\Html;
@@ -34,7 +29,7 @@ class PiwikPhpFilterTest extends WebTestBase {
     $permissions_admin_user = [
       'access administration pages',
       'administer piwik',
-      'use PHP for tracking visibility',
+      'use PHP for piwik tracking visibility',
     ];
     $this->admin_user = $this->drupalCreateUser($permissions_admin_user);
 
@@ -98,7 +93,8 @@ class PiwikPhpFilterTest extends WebTestBase {
     $edit['piwik_site_id'] = $site_id;
     $edit['piwik_url_http'] = 'http://www.example.com/piwik/';
     $edit['piwik_url_https'] = 'https://www.example.com/piwik/';
-    $edit['piwik_url_skiperror'] = TRUE; // Required for testing only.
+    // Required for testing only.
+    $edit['piwik_url_skiperror'] = TRUE;
     $this->drupalPostForm('admin/config/system/piwik', $edit, t('Save configuration'));
 
     // Compare saved setting with posted setting.

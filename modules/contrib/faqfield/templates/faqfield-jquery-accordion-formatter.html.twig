@@ -16,10 +16,10 @@
  */
 #}
 {% spaceless %}
-  <div id="{{ id }}">
-  {% for item in items %}
-    <h3 class="faqfield-question">{{ item.question }}</h3>
-    <div class="faqfield-answer">{{ item.answer }}</div>
-  {% endfor %}
-  </div>
+    <div id="{{ id }}">
+        {% for item in items %}
+            <h3 class="faqfield-question">{{ item.question }}</h3>
+            <div class="faqfield-answer">{{ item.answer }}</div>
+        {% endfor %}
+    </div>
 {% endspaceless %}

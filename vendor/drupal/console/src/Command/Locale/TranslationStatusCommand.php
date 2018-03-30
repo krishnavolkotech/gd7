@@ -10,12 +10,46 @@ namespace Drupal\Console\Command\Locale;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Command\Shared\LocaleTrait;
+use Drupal\Console\Utils\Site;
+use Drupal\Console\Extension\Manager;
+use Drupal\Console\Annotations\DrupalCommand;
 
-class TranslationStatusCommand extends ContainerAwareCommand
+/**
+ * @DrupalCommand(
+ *     extension = "locale",
+ *     extensionType = "module"
+ * )
+ */
+class TranslationStatusCommand extends Command
 {
     use LocaleTrait;
+
+    /**
+      * @var Site
+      */
+    protected $site;
+
+     /**
+      * @var Manager
+      */
+    protected $extensionManager;
+
+    /**
+     * TranslationStatusCommand constructor.
+     *
+     * @param Site    $site
+     * @param Manager $extensionManager
+     */
+    public function __construct(
+        Site $site,
+        Manager $extensionManager
+    ) {
+        $this->site = $site;
+        $this->extensionManager = $extensionManager;
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -27,35 +61,35 @@ class TranslationStatusCommand extends ContainerAwareCommand
                 InputArgument::OPTIONAL,
                 $this->trans('commands.locale.translation.status.arguments.language')
             );
-
-        $this->addDependency('locale');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
         $language = $input->getArgument('language');
         $tableHeader = [
-          $this->trans('commands.locale.translation.status.messages.project'),
-          $this->trans('commands.locale.translation.status.messages.version'),
-          $this->trans('commands.locale.translation.status.messages.local-age'),
-          $this->trans('commands.locale.translation.status.messages.remote-age'),
-          $this->trans('commands.locale.translation.status.messages.info'),
+            $this->trans('commands.locale.translation.status.messages.project'),
+            $this->trans('commands.locale.translation.status.messages.version'),
+            $this->trans('commands.locale.translation.status.messages.local-age'),
+            $this->trans('commands.locale.translation.status.messages.remote-age'),
+            $this->trans('commands.locale.translation.status.messages.info'),
         ];
 
+        $locale = $this->extensionManager->getModule('locale');
+        $this->site->loadLegacyFile($locale->getPath(true) . '/locale.compare.inc');
 
         $languages = locale_translatable_language_list();
         $status = locale_translation_get_status();
 
-        $this->getModuleHandler()->loadInclude('locale', 'compare.inc');
-
         if (!$languages) {
-            $io->info($this->trans('commands.locale.translation.status.messages.no-languages'));
-            return;
-        } elseif (empty($status)) {
-            $io->info($this->trans('commands.locale.translation.status.messages.no-translations'));
-            return;
+            $this->getIo()->info($this->trans('commands.locale.translation.status.messages.no-languages'));
+            return 1;
         }
+
+        if (empty($status)) {
+            $this->getIo()->info($this->trans('commands.locale.translation.status.messages.no-translations'));
+            return 1;
+        }
+
         if ($languages) {
             $projectsStatus = $this->projectsStatus();
 
@@ -64,15 +98,17 @@ class TranslationStatusCommand extends ContainerAwareCommand
                 if ($language !='' && !($language == $langcode || strtolower($language) == strtolower($languages[$langcode]->getName()))) {
                     continue;
                 }
-                $io->info($languages[$langcode]->getName());
+                $this->getIo()->info($languages[$langcode]->getName());
                 foreach ($rows as $row) {
                     if ($row[0] == 'drupal') {
                         $row[0] = $this->trans('commands.common.messages.drupal-core');
                     }
                     $tableRows[] = $row;
                 }
-                $io->table($tableHeader, $tableRows, 'compact');
+                $this->getIo()->table($tableHeader, $tableRows, 'compact');
             }
         }
+
+        return 0;
     }
 }

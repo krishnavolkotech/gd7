@@ -170,7 +170,8 @@ content:
     region: content
   upload:
     label: above
-    settings: {  }
+    settings:
+      use_description_as_link_text: false
     type: file_table
     weight: 16
     third_party_settings: {  }

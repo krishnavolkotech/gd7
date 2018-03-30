@@ -31,10 +31,10 @@ use Drupal\search_api_solr_multilingual\Utility\Utility;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "edit-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}",
- *     "delete-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}/delete",
- *     "export-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}/export",
- *     "collection" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type"
+ *     "edit-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}",
+ *     "delete-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}/delete",
+ *     "export-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}/export",
+ *     "collection" = "/admin/config/search/search-api/server/{search_api_server}/solr_field_type"
  *   }
  * )
  */
@@ -234,7 +234,7 @@ class SolrFieldType extends ConfigEntityBase implements SolrFieldTypeInterface {
    */
   public function getDynamicFields() {
     $dynamic_fields = [];
-    foreach (array('ts', 'tm') as $prefix) {
+    foreach (array('ts', 'tm', 'terms_ts', 'terms_tm') as $prefix) {
       $dynamic_fields[] = [
         'name' => SearchApiSolrUtility::encodeSolrName(
             Utility::getLanguageSpecificSolrDynamicFieldPrefix($prefix, $this->field_type_language_code)
@@ -248,6 +248,24 @@ class SolrFieldType extends ConfigEntityBase implements SolrFieldTypeInterface {
       ];
     }
     return $dynamic_fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCopyFields() {
+    $copy_fields = [];
+    foreach (array('ts' => 'terms_ts', 'tm' => 'terms_tm') as $src_prefix => $dest_prefix) {
+      $copy_fields[] = [
+        'source' => SearchApiSolrUtility::encodeSolrName(
+          Utility::getLanguageSpecificSolrDynamicFieldPrefix($src_prefix, $this->field_type_language_code)
+        ) . '*',
+        'dest' => SearchApiSolrUtility::encodeSolrName(
+          Utility::getLanguageSpecificSolrDynamicFieldPrefix($dest_prefix, $this->field_type_language_code)
+        ) . '*',
+      ];
+    }
+    return $copy_fields;
   }
 
   /**
@@ -315,7 +333,11 @@ class SolrFieldType extends ConfigEntityBase implements SolrFieldTypeInterface {
   protected function urlRouteParameters($rel) {
     $uri_route_parameters = parent::urlRouteParameters($rel);
 
-    $uri_route_parameters['search_api_server'] = \Drupal::routeMatch()->getRawParameter('search_api_server');
+    if ('collection' == $rel) {
+      $uri_route_parameters['search_api_server'] = \Drupal::routeMatch()->getRawParameter('search_api_server')
+        // To be removed when https://www.drupal.org/node/2919648 is fixed.
+        ?: 'core_issue_2919648_workaround';
+    }
 
     return $uri_route_parameters;
   }

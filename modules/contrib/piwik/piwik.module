@@ -16,12 +16,12 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use GuzzleHttp\Exception\RequestException;
+use Drupal\piwik\Component\Render\PiwikJavaScriptSnippet;
 
 /**
  * Define the default file extension list that should be tracked as download.
@@ -58,8 +58,10 @@ function piwik_page_attachments(array &$page) {
     $status = $exception->getStatusCode();
   }
   $trackable_status_codes = [
-    '403', // Forbidden
-    '404', // Not Found
+    // "Forbidden" status code.
+    '403',
+    // "Not Found" status code.
+    '404',
   ];
 
   // 1. Check if the piwik account number has a valid value.
@@ -130,7 +132,7 @@ function piwik_page_attachments(array &$page) {
       // language code does not match its source language code.
       if ($request->attributes->has('node')) {
         $node = $request->attributes->get('node');
-        if ($node instanceof NodeInterface && \Drupal::entityManager()->getTranslationFromContext($node) !== $node->getUntranslated()) {
+        if ($node instanceof NodeInterface && \Drupal::service('entity.repository')->getTranslationFromContext($node) !== $node->getUntranslated()) {
           $set_custom_url = Json::encode(Url::fromRoute('entity.node.canonical', ['node' => $node->id()], ['language' => $node->getUntranslated()->language()])->toString());
         }
       }
@@ -142,6 +144,18 @@ function piwik_page_attachments(array &$page) {
     }
     elseif ($status == '404') {
       $set_document_title = '"404/URL = " + encodeURIComponent(document.location.pathname+document.location.search) + "/From = " + encodeURIComponent(document.referrer)';
+    }
+
+    // #2693595: User has entered an invalid login and clicked on forgot
+    // password link. This link contains the username or email address and may
+    // get send to Google if we do not override it. Override only if 'name'
+    // query param exists. Last custom url condition, this need to win.
+    //
+    // URLs to protect are:
+    // - user/password?name=username
+    // - user/password?name=foo@example.com
+    if (\Drupal::routeMatch()->getRouteName() == 'user.pass' && $request->query->has('name')) {
+      $set_custom_url = Json::encode(Url::fromRoute('user.pass')->toString());
     }
 
     // Add custom variables.
@@ -299,7 +313,7 @@ function piwik_page_attachments(array &$page) {
       // browser-caching. The string changes on every update or full cache
       // flush, forcing browsers to load a new copy of the files, as the
       // URL changed.
-      $query_string = '?' . \Drupal::state()->get('system.css_js_query_string') ?: '0';
+      $query_string = '?' . (\Drupal::state()->get('system.css_js_query_string') ?: '0');
 
       $script .= 'g.src="' . $url . $query_string . '";';
     }
@@ -314,9 +328,9 @@ function piwik_page_attachments(array &$page) {
     $page['#attached']['html_head'][] = [
       [
         '#tag' => 'script',
-        '#value' => $script,
+        '#value' => new PiwikJavaScriptSnippet($script),
       ],
-      'piwik_tracking_script'
+      'piwik_tracking_script',
     ];
   }
 }
@@ -339,11 +353,11 @@ function piwik_user_id_hash($uid) {
 }
 
 /**
- * Implements hook_field_extra_fields().
+ * Implements hook_entity_extra_field_info().
  */
-function piwik_field_extra_fields() {
+function piwik_entity_extra_field_info() {
   $extra['user']['user']['form']['piwik'] = [
-    'label' => t('Piwik configuration'),
+    'label' => t('Piwik settings'),
     'description' => t('Piwik module form element.'),
     'weight' => 3,
   ];
@@ -360,7 +374,7 @@ function piwik_form_user_form_alter(&$form, FormStateInterface $form_state) {
   $config = \Drupal::config('piwik.settings');
   $account = $form_state->getFormObject()->getEntity();
 
-  if ($account->hasPermission('opt-in or out of tracking') && ($visibility_users = $config->get('visibility.user_account_mode')) != 0 && _piwik_visibility_roles($account)) {
+  if ($account->hasPermission('opt-in or out of piwik tracking') && ($visibility_users = $config->get('visibility.user_account_mode')) != 0 && _piwik_visibility_roles($account)) {
     $account_data_piwik = \Drupal::service('user.data')->get('piwik', $account->id());
 
     $form['piwik'] = [
@@ -451,7 +465,7 @@ function piwik_preprocess_item_list__search_results(&$variables) {
         '#value' => 'window.piwik_search_results = ' . intval($pager_total_items[0]) . ';',
         '#weight' => JS_LIBRARY - 1,
       ],
-      'piwik_search_script'
+      'piwik_search_script',
     ];
   }
 }
@@ -486,6 +500,10 @@ function _piwik_cache($location, $synchronize = FALSE) {
         if ($data_hash_local != $data_hash_remote && file_prepare_directory($path)) {
           // Save updated tracking code file to disk.
           file_unmanaged_save_data($data, $file_destination, FILE_EXISTS_REPLACE);
+          // Based on Drupal Core class AssetDumper.
+          if (extension_loaded('zlib') && \Drupal::config('system.performance')->get('js.gzip')) {
+            file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+          }
           \Drupal::logger('piwik')->info('Locally cached tracking code file has been updated.');
 
           // Change query-strings on css/js files to enforce reload for all
@@ -499,10 +517,14 @@ function _piwik_cache($location, $synchronize = FALSE) {
           // There is no need to flush JS here as core refreshes JS caches
           // automatically, if new files are added.
           file_unmanaged_save_data($data, $file_destination, FILE_EXISTS_REPLACE);
+          // Based on Drupal Core class AssetDumper.
+          if (extension_loaded('zlib') && \Drupal::config('system.performance')->get('js.gzip')) {
+            file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+          }
           \Drupal::logger('piwik')->info('Locally cached tracking code file has been saved.');
 
           // Return the local JS file path.
-          return file_create_url($file_destination);
+          return file_url_transform_relative(file_create_url($file_destination));
         }
       }
     }
@@ -512,7 +534,7 @@ function _piwik_cache($location, $synchronize = FALSE) {
   }
   else {
     // Return the local JS file path.
-    return file_create_url($file_destination);
+    return file_url_transform_relative(file_create_url($file_destination));
   }
 }
 
@@ -523,7 +545,7 @@ function piwik_clear_js_cache() {
   $path = 'public://piwik';
   if (file_prepare_directory($path)) {
     file_scan_directory($path, '/.*/', ['callback' => 'file_unmanaged_delete']);
-    drupal_rmdir($path);
+    \Drupal::service('file_system')->rmdir($path);
 
     // Change query-strings on css/js files to enforce reload for all users.
     _drupal_flush_css_js();

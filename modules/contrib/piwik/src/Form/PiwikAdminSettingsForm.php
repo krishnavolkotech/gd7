@@ -1,17 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Form\PiwikAdminSettingsForm.
- */
-
 namespace Drupal\piwik\Form;
 
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
 
 /**
@@ -124,7 +118,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
 
     // Page specific visibility configurations.
     $account = \Drupal::currentUser();
-    $php_access = $account->hasPermission('use PHP for tracking visibility');
+    $php_access = $account->hasPermission('use PHP for piwik tracking visibility');
     $visibility_request_path_pages = $config->get('visibility.request_path_pages');
 
     $form['tracking']['page_visibility_settings'] = [
@@ -260,13 +254,13 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
     $colorbox_dependencies .= t('Requires: @module-list', ['@module-list' => (\Drupal::moduleHandler()->moduleExists('colorbox') ? t('@module (<span class="admin-enabled">enabled</span>)', ['@module' => 'Colorbox']) : t('@module (<span class="admin-missing">disabled</span>)', ['@module' => 'Colorbox']))]);
     $colorbox_dependencies .= '</div>';
 
-    $form['tracking']['linktracking']['piwik_trackcolorbox'] = array(
+    $form['tracking']['linktracking']['piwik_trackcolorbox'] = [
       '#type' => 'checkbox',
       '#title' => t('Track content in colorbox modal dialogs'),
       '#description' => t('Enable to track the content shown in colorbox modal windows.') . $colorbox_dependencies,
       '#default_value' => $config->get('track.colorbox'),
       '#disabled' => (\Drupal::moduleHandler()->moduleExists('colorbox') ? FALSE : TRUE),
-    );
+    ];
 
     // Message specific configurations.
     $form['tracking']['messagetracking'] = [
@@ -279,7 +273,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
       '#type' => 'checkboxes',
       '#title' => $this->t('Track messages of type'),
       '#default_value' => !empty($track_messages) ? $track_messages : [],
-      '#description' => $this->t('This will track the selected message types shown to users. Tracking of form validation errors may help you identifying usability issues in your site. Every message is tracked as one individual event. Messages from excluded pages cannot tracked.'),
+      '#description' => $this->t('This will track the selected message types shown to users. Tracking of form validation errors may help you identifying usability issues in your site. Every message is tracked as one individual event. Messages from excluded pages cannot be tracked.'),
       '#options' => [
         'status' => $this->t('Status message'),
         'warning' => $this->t('Warning message'),
@@ -439,25 +433,29 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
       ];
     }
 
+    $user_access_add_js_snippets = !$this->currentUser()->hasPermission('add JS snippets for piwik');
+    $user_access_add_js_snippets_permission_warning = $user_access_add_js_snippets ? ' <em>' . $this->t('This field has been disabled because you do not have sufficient permissions to edit it.') . '</em>' : '';
     $form['advanced']['codesnippet'] = [
       '#type' => 'details',
       '#title' => $this->t('Custom JavaScript code'),
       '#open' => TRUE,
-      '#description' => $this->t('You can add custom Piwik <a href=":snippets">code snippets</a> here. These will be added to every page that Piwik appears on. <strong>Do not include the &lt;script&gt; tags</strong>, and always end your code with a semicolon (;).', [':snippets' => 'http://piwik.org/docs/javascript-tracking/'])
+      '#description' => $this->t('You can add custom Piwik <a href=":snippets">code snippets</a> here. These will be added to every page that Piwik appears on. <strong>Do not include the &lt;script&gt; tags</strong>, and always end your code with a semicolon (;).', [':snippets' => 'http://piwik.org/docs/javascript-tracking/']),
     ];
     $form['advanced']['codesnippet']['piwik_codesnippet_before'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Code snippet (before)'),
       '#default_value' => $config->get('codesnippet.before'),
+      '#disabled' => $user_access_add_js_snippets,
       '#rows' => 5,
-      '#description' => $this->t('Code in this textarea will be added <strong>before</strong> _paq.push(["trackPageView"]).'),
+      '#description' => $this->t('Code in this textarea will be added <strong>before</strong> _paq.push(["trackPageView"]).') . $user_access_add_js_snippets_permission_warning,
     ];
     $form['advanced']['codesnippet']['piwik_codesnippet_after'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Code snippet (after)'),
       '#default_value' => $config->get('codesnippet.after'),
+      '#disabled' => $user_access_add_js_snippets,
       '#rows' => 5,
-      '#description' => $this->t('Code in this textarea will be added <strong>after</strong> _paq.push(["trackPageView"]). This is useful if you\'d like to track a site in two accounts.'),
+      '#description' => $this->t('Code in this textarea will be added <strong>after</strong> _paq.push(["trackPageView"]). This is useful if you\'d like to track a site in two accounts.') . $user_access_add_js_snippets_permission_warning,
     ];
 
     return parent::buildForm($form, $form_state);
@@ -503,7 +501,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
         $form_state->setErrorByName('piwik_url_http', t('The validation of "@url" failed with error "@error" (HTTP code @code).', [
           '@url' => UrlHelper::filterBadProtocol($url),
           '@error' => $result->getReasonPhrase(),
-          '@code' => $result->getStatusCode()
+          '@code' => $result->getStatusCode(),
         ]));
       }
     }
@@ -511,7 +509,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
       $form_state->setErrorByName('piwik_url_http', t('The validation of "@url" failed with an exception "@error" (HTTP code @code).', [
         '@url' => UrlHelper::filterBadProtocol($url),
         '@error' => $exception->getMessage(),
-        '@code' => $exception->getCode()
+        '@code' => $exception->getCode(),
       ]));
     }
 
@@ -524,7 +522,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
           $form_state->setErrorByName('piwik_url_https', t('The validation of "@url" failed with error "@error" (HTTP code @code).', [
             '@url' => UrlHelper::filterBadProtocol($url),
             '@error' => $result->getReasonPhrase(),
-            '@code' => $result->getStatusCode()
+            '@code' => $result->getStatusCode(),
           ]));
         }
       }
@@ -532,7 +530,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
         $form_state->setErrorByName('piwik_url_https', t('The validation of "@url" failed with an exception "@error" (HTTP code @code).', [
           '@url' => UrlHelper::filterBadProtocol($url),
           '@error' => $exception->getMessage(),
-          '@code' => $exception->getCode()
+          '@code' => $exception->getCode(),
         ]));
       }
     }
@@ -655,7 +653,7 @@ class PiwikAdminSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * Validate if a string contains forbidden tokens not allowed by privacy rules.
+   * Validate if string contains forbidden tokens not allowed by privacy rules.
    *
    * @param string $token_string
    *   A string with one or more tokens to be validated.

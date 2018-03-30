@@ -1,8 +1,3 @@
-Index: swiftmailer.module
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 --- swiftmailer.module	(revision e2085a959dcf607f20999e0a22a01f8c8d970ab3)
 +++ swiftmailer.module	(revision )
 @@ -95,6 +95,8 @@
@@ -14,11 +9,6 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  }
  
  /**
-Index: templates/swiftmailer.html.twig
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 --- templates/swiftmailer.html.twig	(revision e2085a959dcf607f20999e0a22a01f8c8d970ab3)
 +++ templates/swiftmailer.html.twig	(revision )
 @@ -38,6 +38,11 @@
