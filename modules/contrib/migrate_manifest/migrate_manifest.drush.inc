@@ -21,17 +21,20 @@ function migrate_manifest_drush_command() {
       'legacy-db-url' => [
         'description' => 'A Drupal 6 style database URL.',
         'example-value' => 'mysql://root:pass@127.0.0.1/db',
-        'required' => TRUE,
+        'required' => FALSE,
       ],
       'legacy-db-prefix' => [
         'description' => 'A database table prefix to apply.',
         'example-value' => 'dr_',
         'required' => FALSE,
       ],
+      'legacy-db-key' => 'A database connection key from settings.php. Use as an alternative to legacy-db-url',
+      'update' => ' In addition to processing unprocessed items from the source, update previously-imported items with the current data',
+      'force' => 'Force an operation to run, even if all dependencies are not satisfied',
     ],
     'drupal dependencies' => ['migrate_manifest'],
-    // Maintained for compatibility with inital release
-    'aliases' => ['migrate-manifest2'],
+    // Maintained for compatibility with initial release.
+    'aliases' => ['migrate-manifest2', 'mm'],
   ];
   $items['migrate-template-list'] = [
     'description' => 'Lists migration templates available to run.',
@@ -47,6 +50,7 @@ function migrate_manifest_drush_command() {
       ],
     ],
     'drupal dependencies' => ['migrate_manifest'],
+    'aliases' => ['mml'],
   ];
 
   return $items;
@@ -57,14 +61,19 @@ function migrate_manifest_drush_command() {
  *
  * @param string $manifest
  *   The path to the manifest file.
+ *
  * @return array
  */
 function drush_migrate_manifest($manifest) {
   try {
-    $manifest_runner = new MigrateManifest($manifest);
+    $manifest_runner = new MigrateManifest($manifest, drush_get_option('force'), drush_get_option('update'));
+    MigrateManifest::setDbState(
+      drush_get_option('legacy-db-key'),
+      drush_get_option('legacy-db-url'),
+      drush_get_option('legacy-db-prefix')
+    );
     return $manifest_runner->import();
-  }
-  catch (\Exception $e) {
+  } catch (\Exception $e) {
     drush_set_error('MIGRATE_ERROR', $e->getMessage());
   }
 
@@ -76,6 +85,7 @@ function drush_migrate_manifest($manifest) {
  *
  * @param string $manifest
  *   The path to the manifest file.
+ *
  * @return array
  */
 function drush_migrate_manifest_migrate_template_list() {

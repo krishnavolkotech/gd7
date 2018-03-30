@@ -30,19 +30,19 @@ class FaqFieldSimpleTextFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $default_format = $this->getFieldSetting('default_format');
 
-    $elements = array();
+    $elements = [];
     foreach ($items as $delta => $item) {
       // Decide whether to use the default format or the custom one.
       $format = (!empty($item->answer_format) ? $item->answer_format : $default_format);
 
       // Add each Q&A as page element, to be rendered by the faqfield_simple_text_formatter template.
-      $elements[$delta] = array(
+      $elements[$delta] = [
         '#theme' => 'faqfield_simple_text_formatter',
         '#question' => $item->question,
         '#answer' => $item->answer,
         '#answer_format' => $format,
         '#delta' => $delta,
-      );
+      ];
     }
 
     return $elements;

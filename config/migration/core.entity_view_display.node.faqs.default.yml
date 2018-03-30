@@ -59,7 +59,8 @@ content:
     third_party_settings: {  }
   upload:
     label: hidden
-    settings: {  }
+    settings:
+      use_description_as_link_text: true
     type: file_default
     weight: 6
     third_party_settings: {  }

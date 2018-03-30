@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Plugin\migrate\process\PiwikVisibilityPages.
- */
-
 namespace Drupal\piwik\Plugin\migrate\process;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -66,12 +61,12 @@ class PiwikVisibilityPages extends ProcessPluginBase implements ContainerFactory
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
-    $migration_configuration = array(
-      'migration' => array(
+    $migration_configuration = [
+      'migration' => [
         'd6_user_role',
         'd7_user_role',
-      ),
-    );
+      ],
+    ];
     return new static(
       $configuration,
       $plugin_id,

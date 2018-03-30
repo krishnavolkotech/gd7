@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikCustomVariablesTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\Component\Serialization\Json;

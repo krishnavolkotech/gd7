@@ -72,7 +72,7 @@
         }
         if ($('input#edit-piwik-trackcolorbox', context).is(':checked')) {
           vals.push(Drupal.t('Colorbox'));
-        }        
+        }
         if (!vals.length) {
           return Drupal.t('Not tracked');
         }

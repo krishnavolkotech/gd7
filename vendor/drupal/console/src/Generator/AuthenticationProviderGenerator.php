@@ -7,49 +7,65 @@
 
 namespace Drupal\Console\Generator;
 
+use Drupal\Console\Extension\Manager;
+use Drupal\Console\Core\Generator\Generator;
+
 class AuthenticationProviderGenerator extends Generator
 {
     /**
-     * Generator Plugin Block.
-     *
-     * @param $module
-     * @param $class
-     * @param $provider_id
+     * @var Manager
      */
-    public function generate($module, $class, $provider_id)
+    protected $extensionManager;
+
+    /**
+     * AuthenticationProviderGenerator constructor.
+     *
+     * @param Manager $extensionManager
+     */
+    public function __construct(
+        Manager $extensionManager
+    ) {
+        $this->extensionManager = $extensionManager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $parameters)
     {
-        $parameters = [
-          'module' => $module,
-          'class' => $class,
-        ];
+        $module = $parameters['module'];
+        $class = $parameters['class'];
+        $provider_id = $parameters['provider_id'];
+        $moduleInstance = $this->extensionManager->getModule($module);
+        $modulePath = $moduleInstance->getPath() . '/' . $module;
 
         $this->renderFile(
             'module/src/Authentication/Provider/authentication-provider.php.twig',
-            $this->getSite()->getAuthenticationPath($module, 'Provider').'/'.$class.'.php',
+            $moduleInstance->getAuthenticationPath('Provider') . '/' . $class . '.php',
             $parameters
         );
 
-        $parameters = [
+        $parameters = array_merge($parameters, [
           'module' => $module,
           'class' => $class,
           'class_path' => sprintf('Drupal\%s\Authentication\Provider\%s', $module, $class),
-          'name' => 'authentication.'.$module,
+          'name' => 'authentication.' . $module,
           'services' => [
             ['name' => 'config.factory'],
-            ['name' => 'entity.manager'],
+            ['name' => 'entity_type.manager'],
           ],
-          'file_exists' => file_exists($this->getSite()->getModulePath($module).'/'.$module.'.services.yml'),
+          'file_exists' => file_exists($modulePath . '.services.yml'),
           'tags' => [
             'name' => 'authentication_provider',
             'provider_id' => $provider_id,
             'priority' => '100',
           ],
-        ];
+        ]);
 
         $this->renderFile(
             'module/services.yml.twig',
-            $this->getSite()->getModulePath($module).'/'.$module.'.services.yml',
-            $parameters,
+            $modulePath . '.services.yml',
+             $parameters,
             FILE_APPEND
         );
     }

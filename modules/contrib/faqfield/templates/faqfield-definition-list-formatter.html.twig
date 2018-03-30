@@ -15,10 +15,10 @@
  */
 #}
 {% spaceless %}
-  <dl class="faqfield-definition-list">
-  {% for item in items %}
-    <dt class="faqfield-question">{{ item.question }}</dt>
-    <dd class="faqfield-answer">{{ item.answer }}</dd>
-  {% endfor %}
-  </dl>
+    <dl class="faqfield-definition-list">
+        {% for item in items %}
+            <dt class="faqfield-question">{{ item.question }}</dt>
+            <dd class="faqfield-answer">{{ item.answer }}</dd>
+        {% endfor %}
+    </dl>
 {% endspaceless %}

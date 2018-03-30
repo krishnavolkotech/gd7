@@ -11,12 +11,28 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\RfcLogLevel;
-use Drupal\Console\Style\DrupalStyle;
 
-class LogClearCommand extends ContainerAwareCommand
+class LogClearCommand extends Command
 {
+    /**
+     * @var Connection
+     */
+    protected $database;
+
+    /**
+     * LogClearCommand constructor.
+     *
+     * @param Connection $database
+     */
+    public function __construct(Connection $database)
+    {
+        $this->database = $database;
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -32,22 +48,23 @@ class LogClearCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'type',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.database.log.clear.options.type')
             )
             ->addOption(
                 'severity',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.database.log.clear.options.severity')
             )
             ->addOption(
                 'user-id',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.database.log.clear.options.user-id')
-            );
+            )
+            ->setAliases(['dblc']);
     }
 
     /**
@@ -55,34 +72,30 @@ class LogClearCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $eventId = $input->getArgument('event-id');
         $eventType = $input->getOption('type');
         $eventSeverity = $input->getOption('severity');
         $userId = $input->getOption('user-id');
 
         if ($eventId) {
-            $this->clearEvent($io, $eventId);
+            $this->clearEvent($eventId);
         } else {
-            $this->clearEvents($io, $eventType, $eventSeverity, $userId);
+            $this->clearEvents($eventType, $eventSeverity, $userId);
         }
+
+        return 0;
     }
 
-
     /**
-     * @param \Drupal\Console\Style\DrupalStyle $io
      * @param $eventId
      * @return bool
      */
-    private function clearEvent(DrupalStyle $io, $eventId)
+    private function clearEvent($eventId)
     {
-        $connection = $this->getDatabase();
-
-        $result = $connection->delete('watchdog')->condition('wid', $eventId)->execute();
+        $result = $this->database->delete('watchdog')->condition('wid', $eventId)->execute();
 
         if (!$result) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.database.log.clear.messages.not-found'),
                     $eventId
@@ -92,7 +105,7 @@ class LogClearCommand extends ContainerAwareCommand
             return false;
         }
 
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.database.log.clear.messages.event-deleted'),
                 $eventId
@@ -103,18 +116,15 @@ class LogClearCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param \Drupal\Console\Style\DrupalStyle $io
      * @param $eventType
      * @param $eventSeverity
      * @param $userId
      * @return bool
      */
-    protected function clearEvents(DrupalStyle $io, $eventType, $eventSeverity, $userId)
+    protected function clearEvents($eventType, $eventSeverity, $userId)
     {
-        $connection = $this->getDatabase();
         $severity = RfcLogLevel::getLevels();
-
-        $query = $connection->delete('watchdog');
+        $query = $this->database->delete('watchdog');
 
         if ($eventType) {
             $query->condition('type', $eventType);
@@ -122,7 +132,7 @@ class LogClearCommand extends ContainerAwareCommand
 
         if ($eventSeverity) {
             if (!in_array($eventSeverity, $severity)) {
-                $io->error(
+                $this->getIo()->error(
                     sprintf(
                         $this->trans('commands.database.log.clear.messages.invalid-severity'),
                         $eventSeverity
@@ -142,14 +152,14 @@ class LogClearCommand extends ContainerAwareCommand
         $result = $query->execute();
 
         if (!$result) {
-            $io->error(
+            $this->getIo()->error(
                 $this->trans('commands.database.log.clear.messages.clear-error')
             );
 
             return false;
         }
 
-        $io->success(
+        $this->getIo()->success(
             $this->trans('commands.database.log.clear.messages.clear-sucess')
         );
 

@@ -728,6 +728,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -978,7 +979,7 @@ display:
       link_display: page_1
       use_ajax: false
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -1005,7 +1006,7 @@ display:
         filters: true
         filter_groups: true
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -1778,7 +1779,7 @@ display:
           content: 'No results found'
           plugin_id: text_custom
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_interface'

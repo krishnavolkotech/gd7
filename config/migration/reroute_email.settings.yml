@@ -1,10 +1,12 @@
-reroute_email_enable: 0
-reroute_email_address: denis.roy@hzd.hessen.de
-reroute_email_enable_message: 1
 actions: null
-form_build_id: form-DPBsUKtEeOPDtRDQEgqoO8XSj__a3fKylH_rQmBjYGY
-form_token: bfUHVdw1xZAx1XXOoxPdo975jndEd_Khagu4p38VYcg
+form_build_id: form-BlR91jgPv8mEBD5PR8KpvTWK-eeweFjOEvZyeX681OI
+form_token: HNPLXfFtlw9b0w3m0BXRpHleG3nag3uPfLhzEmjROy0
 form_id: reroute_email_settings
 revision_log: null
 revision: null
 revision_information: null
+whitelist: sandeep@azrisolutions.com
+address: sandeep@azrisolutions.com
+enable: true
+description: true
+langcode: de

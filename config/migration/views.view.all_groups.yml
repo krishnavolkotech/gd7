@@ -630,6 +630,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -751,7 +752,7 @@ display:
       display_extenders: {  }
       css_class: ''
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -768,7 +769,7 @@ display:
       display_extenders:
         views_merge_rows: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -784,7 +785,7 @@ display:
     display_options:
       display_extenders: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -809,7 +810,7 @@ display:
       defaults:
         css_class: false
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_interface'
         - url

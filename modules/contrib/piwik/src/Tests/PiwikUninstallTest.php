@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikUninstallTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\simpletest\WebTestBase;
@@ -50,18 +45,22 @@ class PiwikUninstallTest extends WebTestBase {
     $this->config('piwik.settings')->set('url_http', 'http://www.example.com/piwik/')->save();
     $this->config('piwik.settings')->set('url_https', 'https://www.example.com/piwik/')->save();
 
-    // Enable local caching of piwik.js
+    // Enable local caching of piwik.js.
     $this->config('piwik.settings')->set('cache', 1)->save();
 
     // Load front page to get the piwik.js downloaded into local cache. But
     // loading the piwik.js is not possible as "url_http" is a test dummy only.
     // Create a dummy file to complete the rest of the tests.
     file_prepare_directory($cache_path, FILE_CREATE_DIRECTORY);
-    file_unmanaged_save_data($this->randomMachineName(16), $cache_path . '/piwik.js');
+    $data = $this->randomMachineName(128);
+    $file_destination = $cache_path . '/piwik.js';
+    file_unmanaged_save_data($data, $file_destination);
+    file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
 
     // Test if the directory and piwik.js exists.
     $this->assertTrue(file_prepare_directory($cache_path), 'Cache directory "public://piwik" has been found.');
     $this->assertTrue(file_exists($cache_path . '/piwik.js'), 'Cached piwik.js tracking file has been found.');
+    $this->assertTrue(file_exists($cache_path . '/piwik.js.gz'), 'Cached piwik.js.gz tracking file has been found.');
 
     // Uninstall the module.
     $edit = [];

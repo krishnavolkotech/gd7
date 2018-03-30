@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\Crypt;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Default value of the 'prlp_destination' config varible.
@@ -25,8 +27,15 @@ function prlp_form_user_pass_reset_alter(&$form, FormStateInterface $form_state,
 }
 
 function prlp_form_user_pass_reset_submit(&$form, FormStateInterface $form_state) {
-  $account = $form_state->getBuildInfo()['args'][0];
-  $account->setPassword($form_state->getValue('pass'));
-  $account->save();
-  drupal_set_message(t('Your new password has been saved.'));
+  $args = $form_state->getBuildInfo()['args'];
+  list($user, $expiration, $timestamp, $hash) = $args;
+  // save the new password ONLY if the user and the hash are valid
+  if ($user !== NULL && $user->isActive() && Crypt::hashEquals($hash, user_pass_rehash($user, $timestamp))) {
+    $user->setPassword($form_state->getValue('pass'));
+    $user->save();
+    drupal_set_message(t('Your new password has been saved.'));
+    // set this request attribute so that we don't fail on hash check
+    // in PrlpController::prlpResetPassLogin()
+    Drupal::request()->getSession()->set('prlp_skip_hash_check', TRUE);
+  }
 }

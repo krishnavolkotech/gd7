@@ -24,7 +24,8 @@ content:
   langcode:
     type: language_select
     weight: 6
-    settings: {  }
+    settings:
+      include_locked: true
     third_party_settings: {  }
     region: content
   mail:
