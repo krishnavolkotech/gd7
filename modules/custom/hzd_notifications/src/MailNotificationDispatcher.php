@@ -74,14 +74,26 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       // != disable , gets mail and mail preference.
       //$user_mails = hzd_user_mails($user_ids);
 
+      $entity = \Drupal::entityTypeManager()
+        ->getStorage($notification['entity_type'])
+        ->load($notification['entity_id']);
+      $data['entity'] = $entity;
+      $data['body'] = $notification['body'];
+      $data['subject'] = $notification['subject'];
+      $attachments = [];
+      if($entity->bundle() == 'quickinfo'){
+        $files = $entity->get('upload')->referencedEntities();
+        foreach ($files as $file) {
+          $temp = new \stdClass();
+          $temp->uri = $file->getFileUri();
+          $temp->filename = $file->getFilename();
+          $temp->filemime = $file->getMimeType();
+          $attachments[] = $temp;
+        }
+        $this->mailToAdditionalRecepients($entity, $attachments, $data);
+      }
+      
       if (is_array($user_ids) && count($user_ids) > 0) {
-
-        $entity = \Drupal::entityTypeManager()
-          ->getStorage($notification['entity_type'])
-          ->load($notification['entity_id']);
-        $data['entity'] = $entity;
-        $data['body'] = $notification['body'];
-        $data['subject'] = $notification['subject'];
         // Each notification subscribed by multiple users.
         foreach ($user_ids as $user_id) {
           if(empty($user_id)){
@@ -123,19 +135,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
           $dispatch_data['message_text'] = $mailContent['body'];
           $dispatch_data['to'] = $mail;
           $dispatch_data['preference'] = $preference;
-          if($entity->bundle() == 'quickinfo'){
-            $files = $entity->get('upload')->referencedEntities();
-            foreach ($files as $file) {
-              $temp = new \stdClass();
-              $temp->uri = $file->getFileUri();
-              $temp->filename = $file->getFilename();
-              $temp->filemime = $file->getMimeType();
-              $dispatch_data['attachment'][] = $temp;
-            }
-          }else{
-            $dispatch_data['attachment'] = '';
-          }
-
+          $dispatch_data['attachment'] = $attachments;
           $notification_dispatched = $this->dispatch($dispatch_data);
 
           /* if (!$notification_dispatched) {
@@ -211,6 +211,22 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     }
     $message_text = \Drupal::service('renderer')->render($body);
     return ['body' => $message_text];
+  }
+
+
+  public function mailToAdditionalRecepients($node, $attachments, $data){
+    $body[] = [
+      '#children' => $data['body']
+    ];
+    $message_text = \Drupal::service('renderer')->render($body);
+    $dispatch_data['subject'] = $data['subject'];
+    $dispatch_data['message_text'] = $message_text;
+    $dispatch_data['preference'] = 'html';
+    $dispatch_data['attachment'] = $attachments;
+    $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
+    foreach($recepients as $toMail){
+      $notification_dispatched = $this->dispatch($dispatch_data+['to'=>$toMail]);
+    }
   }
 
   /**
