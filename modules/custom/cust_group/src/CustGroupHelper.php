@@ -14,6 +14,7 @@ use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContentType;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\group\Entity\Group;
 
 /**
  * Description of CustGroupHelper
