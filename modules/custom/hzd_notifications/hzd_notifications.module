@@ -764,7 +764,11 @@ function hzd_notifications_node_update($node){
     $users = [];
     if(in_array($node->bundle(), NotificationManager::$groupBundles)){
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
-      $users = _get_subscribed_users($groupContent);
+      if($groupContent instanceof GroupContent){
+        $users = _get_subscribed_users($groupContent);
+      }else{
+        return;
+      }
     }else{
       $users = _get_subscribed_users($node);
     }
@@ -784,7 +788,7 @@ function hzd_notifications_node_update($node){
 
 
 function hzd_notifications_node_insert($entity){
-  if($entity->isPublished() && in_array($entity->bundle(), NotificationManager::$service_bundles)){
+  if($entity->isPublished() && in_array($entity->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
     $users = _get_subscribed_users($entity);
     //Notify only if release is released
     if($entity->bundle() == 'release' && $entity->get('field_release_type')->value != 1){

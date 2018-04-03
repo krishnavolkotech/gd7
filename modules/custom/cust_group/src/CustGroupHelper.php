@@ -97,27 +97,28 @@ class CustGroupHelper {
         $group = $groupContent->getGroup();
       }
     }
-    $element['imce_paths'] = [
-      '#type' => 'hidden',
-      '#attributes' => [
-        'class' => ['imce-filefield-paths'],
-        'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group->id()])->toString(),
-      ],
-      // Reset value to prevent consistent errors
-      '#value' => '',
-    ];
-    // Library
-    $element['#attached']['library'][] = 'imce/drupal.imce.filefield';
-    // Set the pre-renderer to conditionally disable the elements.
-    $element['#pre_render'][] = ['Drupal\imce\ImceFileField', 'preRenderWidget'];
+    if($group instanceof Group){
+      $element['imce_paths'] = [
+        '#type' => 'hidden',
+        '#attributes' => [
+          'class' => ['imce-filefield-paths'],
+          'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group->id()])->toString(),
+        ],
+        // Reset value to prevent consistent errors
+        '#value' => '',
+      ];
+      // Library
+      $element['#attached']['library'][] = 'imce/drupal.imce.filefield';
+      // Set the pre-renderer to conditionally disable the elements.
+      $element['#pre_render'][] = ['Drupal\imce\ImceFileField', 'preRenderWidget'];
 
 
-    //Altering the autocomplete route here
-    //cust_group.file_autocomplete
-    $element['filefield_reference']['autocomplete']['#autocomplete_route_name'] = 'cust_group.file_autocomplete';
-    $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group->id();
+      //Altering the autocomplete route here
+      //cust_group.file_autocomplete
+      $element['filefield_reference']['autocomplete']['#autocomplete_route_name'] = 'cust_group.file_autocomplete';
+      $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group->id();
 //    pr($element['filefield_reference']['autocomplete']);exit;
-
+    }
     return $element;
   }
   
