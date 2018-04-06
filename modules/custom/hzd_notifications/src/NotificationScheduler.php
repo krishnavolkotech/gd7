@@ -31,6 +31,9 @@ class NotificationScheduler implements NotificationSchedulerInterface {
     $connection = $this->connection;
 
     $table = 'notifications_scheduled';
+    if($entity->getEntityTypeId() == 'comment'){
+      $entity = $entity->getCommentedEntity();
+    }
     $fields = [
       'entity_id' => $entity->id(),
       'entity_type' => $entity->getEntityTypeId(),
