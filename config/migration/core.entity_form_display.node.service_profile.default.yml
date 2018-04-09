@@ -21,7 +21,7 @@ bundle: service_profile
 mode: default
 content:
   field_dependent_downtimeservices:
-    weight: 26
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60
@@ -30,13 +30,13 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_dependent_service:
-    weight: 4
+    weight: 2
     type: options_select
     settings: {  }
     third_party_settings: {  }
     region: content
   field_impact:
-    weight: 14
+    weight: 4
     settings:
       rows: 5
       placeholder: ''
@@ -44,30 +44,23 @@ content:
     type: text_textarea
     region: content
   field_maintenance_advance_time:
-    weight: 5
+    weight: 3
     type: number
     settings:
       placeholder: ''
     third_party_settings: {  }
     region: content
   field_service_operator:
-    weight: 1
+    weight: 0
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
     region: content
   field_service_recipient:
-    weight: 2
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
-    region: content
-  status:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 121
-    third_party_settings: {  }
     region: content
 hidden:
   body: true
@@ -76,6 +69,7 @@ hidden:
   langcode: true
   path: true
   promote: true
+  status: true
   sticky: true
   title: true
   translation: true
