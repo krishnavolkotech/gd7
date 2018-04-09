@@ -43,8 +43,8 @@ class HzdReleases extends ControllerBase {
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
 
     $output[]['#attached']['library'] = array(
-        'locale.libraries/translations',
-        'locale.libraries/drupal.locale.datepicker',
+        'locale/translations',
+        'locale/drupal.locale.datepicker',
         'hzd_release_management/hzd_release_management',
             //  'hzd_customizations/hzd_customizations',
             // 'hzd_release_management/hzd_release_management_sort',
@@ -113,8 +113,8 @@ class HzdReleases extends ControllerBase {
     $output['#title'] = $this->t('In progress Releases');
     $output[] = HzdreleasemanagementStorage::release_info();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
-    $output[]['#attached']['library'] = array('locale.libraries/translations',
-        'locale.libraries/drupal.locale.datepicker',
+    $output[]['#attached']['library'] = array('locale/translations',
+        'locale/drupal.locale.datepicker',
         'hzd_release_management/hzd_release_management',
             // 'hzd_customizations/hzd_customizations',.
 //            'downtimes/downtimes',
@@ -148,8 +148,8 @@ class HzdReleases extends ControllerBase {
     $output['#title'] = $this->t('Locked Releases');
     global $base_url;
     //   $output[] = array('#markup' => '<div id = "released_results_wrapper">');
-    $output[]['#attached']['library'] = array('locale.libraries/translations',
-        'locale.libraries/drupal.locale.datepicker',
+    $output[]['#attached']['library'] = array('locale/translations',
+        'locale/drupal.locale.datepicker',
         'hzd_release_management/hzd_release_management',
             // 'hzd_customizations/hzd_customizations',.
 //            'downtimes/downtimes',
