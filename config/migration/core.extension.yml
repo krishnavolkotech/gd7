@@ -28,7 +28,6 @@ module:
   cust_pdf: 0
   cust_user: 0
   custom_script_batch: 0
-  custom_toolbar_menu: 0
   custom_views_php: 0
   datetime: 0
   dblog: 0
