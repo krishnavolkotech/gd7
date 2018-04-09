@@ -600,13 +600,13 @@ function hzd_customizations_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAs
 function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {
     $node = $form_state->getFormObject()->getEntity();
     if($node->get('status')->value == 1) {
-        hzd_customizations_quickinfo_save($node);
-        $node = node_load($node->id());
+        // hzd_customizations_quickinfo_save($node);
+        // $node = node_load($node->id());
         // generate_quickinfo_pdf($node);
     }
 }
 
-function hzd_customizations_quickinfo_save($node) {
+function hzd_customizations_node_presave($node) {
   if ($node->getEntityTypeId() == 'node' && $node->getType() == 'quickinfo') {
     // Act on the publishing of an article.
     if ($node->get('status')->value == 1) {
@@ -624,14 +624,14 @@ function hzd_customizations_quickinfo_save($node) {
                     'uid' => \Drupal::currentUser()->id(),
         ]);
         $file->save();
-        $quickinfo = Node::load($node->id());
+        // $quickinfo = Node::load($node->id());
 //      $entity = Node::load($node->id());
-        $quickinfo->upload->appendItem([
+        $node->upload->appendItem([
             'target_id' => $file->id(),
             'display' => 1,
             'description' => '',
         ]);
-        $quickinfo->save();
+        // $quickinfo->save();
       }
     }
   }
