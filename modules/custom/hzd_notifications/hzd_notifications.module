@@ -9,6 +9,7 @@ use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\hzd_notifications\NotificationManager;
+use Drupal\group\Entity\GroupContent;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -764,6 +765,7 @@ function hzd_notifications_node_update($node){
     $users = [];
     if(in_array($node->bundle(), NotificationManager::$groupBundles)){
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+      // pr($groupContent);exit;
       if($groupContent instanceof GroupContent){
         $users = _get_subscribed_users($groupContent);
       }else{
