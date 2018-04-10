@@ -109,10 +109,10 @@ hzd_notifications.notifications_config:
     _permission: 'administer content'
 #    _theme: 'hzd'
     _admin_route: 'FALSE'
-hzd_notifications.unsent_notification_list:
-  path: '/notifications-debug'
+hzd_notifications.scheduled_mails:
+  path: '/admin/messaging/scheduled'
   defaults:
-    _controller: '\Drupal\hzd_notifications\Controller\NotificationsController::listDaily'
-    _title: 'Daily Cron'
+    _controller: '\Drupal\hzd_notifications\Controller\NotificationsController::listScheduledData'
+    _title: 'Scheduled Mails'
   requirements:
-    _permission: 'access content'
+    _role: 'administrator + site_administrator'

@@ -88,7 +88,7 @@ class CreateDowntime extends FormBase {
       '#type' => 'select',
       '#title' => $this->t('Reason for scheduling outside maintenance window'),
       '#description' => $this->t('Please select a reason'),
-      '#options' => array($this->t('Please select a reason here'), $this->t('Urgency of the maintenance'), 'No staff available during maintenance hours', 'No service partner (State) available during maintenance hours', 'External service partner required', 'Internal regulations do not allow maintenances during KONSENS maintenance windows', 'Public holiday or weekend', 'No service partner (KONSENS) available during maintenance hours', 'No service interruption planned'),
+      '#options' => maintenance_reasons(),
       '#size' => 5,
     ];
 
@@ -105,7 +105,6 @@ class CreateDowntime extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    print_r($form_state['values']); die();
   }
 
   /**

@@ -254,7 +254,7 @@ class HzdReleases extends ControllerBase {
         $string = t('Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)');
         $output .= "<h4><a target = '_blank' href='$query'>" . t("Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
         $build['#markup'] = $output;
-        $build['#cache'] = ['tags' => ['hzd_release_management:releases']];
+        $build['#cache'] = ['tags' => ['node:'.$release_id]];
         return $build;
       }
     }

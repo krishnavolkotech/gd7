@@ -19,3 +19,7 @@ conf:
       path: .
       permissions:
         all: true
+    -
+      path: gruppen
+      permissions:
+        all: true

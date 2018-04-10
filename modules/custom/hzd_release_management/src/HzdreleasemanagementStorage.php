@@ -45,6 +45,7 @@ class HzdreleasemanagementStorage {
         $node_ids->join('node__field_status', 'nfs', 'nfrt.entity_id = nfs.entity_id');
         $node_ids->Fields('nfrt', array('entity_id'));
         $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
+        $node_ids->condition('nfrt.field_release_type_value',$release_type);
         $nids = $node_ids->execute()->fetchCol();
 
         //Not sure is this is really necessary here.
@@ -191,15 +192,16 @@ $inprogress_nid_values = [];
         $existing_node_values['service'] = $node->get('field_relese_services')->referencedEntities()[0]->id();
         $existing_node_values['datum'] = $node->get('field_date')->value;
         if ($values['type'] == 'locked') {
-            $existing_node_values['comment'] = $node->get('field_release_comments')->value;
+          $existing_node_values['comment'] = $node->get('field_release_comments')->value;
         } else {
-            $existing_node_values['link'] = $node->get('field_link')->value;
-            $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
+          $existing_node_values['link'] = $node->get('field_link')->value;
+          $existing_node_values['documentation_link'] = $node->get('field_documentation_link')->value;
         }
-//        $existing_node_values['type'] = $release_types[$node->get('field_release_type')->value];
+       $existing_node_values['type'] = $node->get('field_release_type')->value;
         $csvvalues = array();
         $csvvalues = $values;
-        unset($csvvalues['type']);
+        $csvvalues['type'] = $types[$values['type']];
+        // unset($csvvalues['type']);
         if (count(array_diff($csvvalues, $existing_node_values)) != 0) {
             $node->setTitle($values['title']);
             $node->set("comment", 2);
@@ -348,6 +350,7 @@ $inprogress_nid_values = [];
     try {
       setlocale(LC_ALL, 'de_DE.UTF-8');
       $count_data = 0;
+      $inprogress_csv_nid_values = [];
       while (($data = fgetcsv($file, 5000, ";")) !== FALSE) {
           $explodedData = explode(',', $data[0]);
         if ($count_data == 0) {
@@ -392,13 +395,21 @@ $inprogress_nid_values = [];
    * @param $locked_nid_values
    */
   static public function locked_release_node($locked_csv_nid_values, $locked_nid_values) {
-    if (is_array($locked_nid_values)) {
-      foreach ($locked_nid_values as $release_title_nid_values) {
-        if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
-          db_update('node_field_data')->fields(array('status' => '0'))
-                  ->condition('nid', $release_title_nid_values)->execute();
-        }
-      }
+    //Writing an equivalent code below @sandeep 20180315
+    // if (is_array($locked_nid_values)) {
+    //   foreach ($locked_nid_values as $release_title_nid_values) {
+    //     if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
+    //       db_update('node_field_data')->fields(array('status' => '0'))
+    //               ->condition('nid', $release_title_nid_values)->execute();
+    //     }
+    //   }
+    // }
+
+
+    foreach(array_diff((array)$locked_nid_values, (array)$locked_csv_nid_values) as $val){
+      $node = Node::load($val);
+      $node->set("status", 0);
+      $node->save();
     }
   }
 
@@ -408,18 +419,22 @@ $inprogress_nid_values = [];
    * @inprogress_nid_values: nids where the release type is progress.
    */
   static public function inprogress_release_node($inprogress_csv_nid_values, $inprogress_nid_values) {
-    if (is_array($inprogress_nid_values)) {
-      foreach ($inprogress_nid_values as $release_title_nid_values) {
-        if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
-          // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
-          // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
-          $node = Node::load($release_title_nid_values);
-          $node->set("field_release_type", 4);
-          $node->save();
-        }
+    //Writing an equivalent code below @sandeep 20180308
+    // if (is_array($inprogress_nid_values)) {
+      // foreach ((array)$inprogress_nid_values as $release_title_nid_values) {
+      //   if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
+      //     // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
+      //     // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
+          
+      //   }
+      // }
+    // }
+    foreach(array_diff($inprogress_nid_values, $inprogress_csv_nid_values) as $val){
+      $node = Node::load($val);
+        $node->set("field_release_type", 4);
+        $node->save();
       }
     }
-  }
 
   /**
    * Function for documentation link.
@@ -498,11 +513,11 @@ $inprogress_nid_values = [];
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
 
           $removePreviousData = 0;
-          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1)) {
+          if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1) || $field_documentation_link_value != $link) {
             $removePreviousData = 1;
             
           }
-          self::do_download_documentation($nid, $values_title, $link, $service, $title, $removePreviousData);
+          self::do_download_documentation($nid, $values_title, $link, $service, $title, $field_documentation_link_value, $removePreviousData);
 
         }
       }

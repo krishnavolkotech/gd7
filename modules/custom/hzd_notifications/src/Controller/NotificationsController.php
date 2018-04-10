@@ -5,6 +5,8 @@ namespace Drupal\hzd_notifications\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Database\Connection;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class NotificationsController
@@ -12,28 +14,35 @@ use Drupal\node\Entity\Node;
  *
  * Lists all unsent notifications.
  */
-class NotificationsController extends ControllerBase
-{
-    
-    
-    public function listDaily() {
-        $primaryKeys = ['service_notifications' => 'sid'];
-        $db = \Drupal::database()->select('periodic_notifications', 'pn')
-            ->fields('pn')
-            ->condition('pn.mail_sent', 0)
-            ->execute()->fetchAll();
-        foreach ($db as $item) {
-            $query = \Drupal::database()->select($item->type, 'base_table')
-                ->fields('base_table')
-                ->condition($primaryKeys[$item->type] ?: 'id', $item->type_id)
-                ->execute()->fetchAssoc();
-            $data[] = $query;
-        }
-//        $db = \Drupal::database()->select('periodic_notifications','pn')
-//            ->fields('pn',['type'])
-//            ->condition('pn.mail_sent',0)
-//            ->execute()->fetchAll();
-        pr($data);
-        exit;
+class NotificationsController extends ControllerBase{
+
+
+    public function __construct(Connection $connection){
+        $this->connection = $connection;
+    }
+
+    public static function create(ContainerInterface $container){
+        return new static($container->get('database'));
+    }
+    public function listScheduledData(){
+        $connection = $this->connection;
+        $fields = [
+        'sid',
+        'entity_id',
+        'entity_type',
+        'bundle',
+        'action',
+        'user_data',
+        // 'body',
+        'subject',
+        ];
+
+        $query = $connection->select(NOTIFICATION_SCHEDULE_TABLE, 'ns');
+        $notifications = $query->fields('ns', $fields)
+        ->execute()->fetchAllAssoc('sid', \PDO::FETCH_ASSOC);
+        $headers = [
+            'sid','entity_id', 'entity_type', 'bundle', 'action', 'users', 'subject'
+        ];
+        return ['#type' => 'table', '#header' => $headers, '#rows' => $notifications];
     }
 }

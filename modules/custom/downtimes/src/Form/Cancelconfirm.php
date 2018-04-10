@@ -168,60 +168,10 @@ class Cancelconfirm extends ConfirmFormBase {
     if(!isset($downtimes_resolve['notifications_content_disable']) || $downtimes_resolve['notifications_content_disable'] != 1) {
       $downtime_node =  \Drupal\node\Entity\Node::load($nid);
       if ($downtime_node instanceof \Drupal\node\Entity\Node){
-        send_downtime_notifications($downtime_node, 'cancel');
-        //exit;
-        //capture the notification for the users to send daily and weekly
-//        \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($downtime_node,'update');
+        $users = _get_subscribed_users($downtime_node);
+        _notify_users($downtime_node, 'cancel', $users);        
       }
     }
-
-    /* $node_resolve = \Drupal\node\Entity\Node::load($nid);
-
-      $query = \Drupal::database()->select('downtimes', 'd');
-      $query->fields('d', ['state_id']);
-      $query->condition('d.downtime_id', $nid, '=');
-      $query->range(1);
-      $node_cancel->state = $query->execute()->fetchField();
-
-      $query = \Drupal::database()->select('downtimes', 'd');
-      $query->fields('d', ['service_id']);
-      $query->condition('d.downtime_id', $nid, '=');
-      $query->range(1);
-      $node_cancel->service = $query->execute()->fetchField();
-
-      $mode = 'Cancel';
-      $path = $type;
-
-      if (isset($_SESSION['Group_name'])) {
-      $path = Url::fromUserInput('/node/' . $_SESSION['Group_id'] . '/downtimes');
-      }
-      else {
-      $path = Url::fromUserInput('/downtimes');
-      }
-
-      unset($_SESSION['form_values']);
-
-      $event = array(
-      'module' => 'node',
-      'uid' => $node_cancel->uid,
-      'oid' => $node_cancel->nid,
-      'type' => 'node',
-      'action' => 'Cancel',
-      'node' => $node_cancel,
-      'params' => array('nid' => $node_cancel->nid),
-      );
-
-      if ($notifications_content_disable != 1) {
-      # Use custom downtimes_notifications to send immediate downtimes notifications instead of notifications module.
-      # Immediate notifications are still inserted into notifications_queue but get deleted by downtimes_notifications_notifications hook.
-      # Digested notifications are handled by the default notifications module.
-      notifications_event($event);
-      $action = "Cancel";
-      //  downtimes_notifications_insert($node_cancel, $action);
-      }
-      //	  drupal_goto($path);
-
-      $form_state->set('redirect', $path); */
   }
 
 }

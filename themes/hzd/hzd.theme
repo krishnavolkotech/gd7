@@ -213,17 +213,7 @@ function hzd_preprocess_node(&$variables) {
   }
   if ($variables['node']->getType() == 'downtimes') {
     $id = $nid;
-    $reasons = array(
-      t('Please select a reason here'),
-      t('Urgency of the maintenance'),
-      t('No staff available during maintenance hours'),
-      t('No service partner (State) available during maintenance hours'),
-      t('External service partner required'),
-      t('Internal regulations do not allow maintenances during KONSENS maintenance windows'),
-      t('Public holiday or weekend'),
-      t('No service partner (KONSENS) available during maintenance hours'),
-      t('No service interruption planned')
-    );
+    $reasons = maintenance_reasons();
     $get_maintain_window = \Drupal::database()->select('downtimes', 'd');
     $get_maintain_window->fields('d', [
       'downtime_id',

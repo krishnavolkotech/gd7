@@ -7,7 +7,13 @@ use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\Node;
-use Drupal\Core\Link;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\hzd_notifications\NotificationManager;
+use Drupal\group\Entity\GroupContent;
+
+define('ENTITY_OP_UPDATE', 'update');
+define('ENTITY_OP_INSERT', 'insert');
+define('NOTIFICATION_SCHEDULE_TABLE', 'notifications_scheduled');
 
 /**
  * Implements callback_batch_operation().
@@ -658,7 +664,6 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
       }
     }
   }
-
   if ($type == 'user' && !empty($data['user'])) {
     /** @var \Drupal\user\Entity\User $user */
     $user = $data['user'];
@@ -693,11 +698,8 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           break;
       }
     }
-
-    /*if ($author_tokens = $token_service->findWithPrefix($tokens, 'author')) {
-      $replacements += $token_service->generate('user', $author_tokens, ['user' => $node->getOwner()], $options, $bubbleable_metadata);
-    }*/
   }
+
   return $replacements;
 }
 
@@ -714,4 +716,234 @@ function hzd_notifications_token_info_alter(&$data) {
     'name' => t("user notification settings - relative link"),
     'description' => t("The relative link to change user notification settings."),
   ];
+}
+
+function _notify_users($entity, $action, $user_data){
+  $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+
+  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
+  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+
+    if ($entity->getEntityTypeId() == 'group') {
+      $type = 'group';
+    }
+    elseif (in_array($entity->bundle(), [
+      'event',
+      'forum',
+      'page',
+      'faqs'
+    ])) {
+      $type = 'group_content';
+    }
+    else {
+      $type = $entity->bundle();
+    }
+    $config = \Drupal::config('hzd_customizations.mailtemplates')
+      ->get($type);
+    $token_service = \Drupal::token();
+    // Replace the token for subject.
+    $token_sub = $config['subject_' . $action];
+    $subject = $token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity));
+    // These bundles have condition for notifications.
+    $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
+  }
+  
+}
+
+function _get_subscribed_users($entity){
+  /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
+  $notification_manager = \Drupal::service('hzd_notifications.manager');
+  return $notification_manager->getSubscribedUsers($entity);
+}
+
+
+function hzd_notifications_node_update($node){
+  if($node->isPublished()){
+    $users = [];
+    if(in_array($node->bundle(), NotificationManager::$groupBundles)){
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+      // pr($groupContent);exit;
+      if($groupContent instanceof GroupContent){
+        $users = _get_subscribed_users($groupContent);
+      }else{
+        return;
+      }
+    }else{
+      $users = _get_subscribed_users($node);
+    }
+    //Notify only if release is released
+    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
+      return;
+    }
+    
+    _notify_users($node, ENTITY_OP_UPDATE, $users);
+  }
+  
+  // Services bundle is not altered for now. 
+  if($node->getType() == 'services'){
+    update_service_notifications($node);
+  }
+}
+
+
+function hzd_notifications_node_insert($entity){
+  if($entity->isPublished() && in_array($entity->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
+    $users = _get_subscribed_users($entity);
+    //Notify only if release is released
+    if($entity->bundle() == 'release' && $entity->get('field_release_type')->value != 1){
+      return;
+    }
+    _notify_users($entity, ENTITY_OP_INSERT, $users);
+  }
+
+  if ($entity->getType() == 'services') {
+    $nid = $entity->id();
+    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
+    $downtime = $entity->get('field_enable_downtime')->value;
+    $problem = $entity->get('field_problem_name')->value;
+    $release = $entity->get('field_release_name')->value;
+
+    if ($downtime && $rel_type == KONSONS) {
+      insert_new_service_notifications('downtimes', $nid);
+    }
+    if ($problem != '' && $rel_type == KONSONS) {
+      insert_new_service_notifications('problem', $nid);
+    }
+    if ($release != '') {
+      insert_new_service_notifications('release', $nid);
+    }
+    insert_new_service_notifications('early_warnings', $nid);
+  }
+}
+
+
+function hzd_notifications_group_content_insert($groupContent){
+  if(in_array($groupContent->getEntity()->bundle(), NotificationManager::$groupBundles)){
+    $users = _get_subscribed_users($groupContent);
+    _notify_users($groupContent->getEntity(), ENTITY_OP_INSERT, $users);
+  }
+}
+
+
+function hzd_notifications_group_update($group){
+  $users = _get_subscribed_users($group);
+  _notify_users($group, ENTITY_OP_UPDATE, $users);
+}
+
+
+function hzd_notifications_comment_update(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
+    $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+    if (!$do_not_send_notifications) {
+      send_earlywarning_comment_notifications($entity, 'update');
+    }
+  }
+  // Update the entity's entry in a fictional table of this type of entity.
+}
+
+function hzd_notifications_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->hasField('field_do_not_send_notifications')) {
+    $do_not_send_notifications = $entity->get('field_do_not_send_notifications')->value;
+    if (!$do_not_send_notifications) {
+      send_earlywarning_comment_notifications($entity, 'insert');
+    }
+  }
+  // Insert the new entity into a fictional table of all entities.
+}
+
+function send_earlywarning_comment_notifications($entity, $action) {
+  $nodeentity = $entity->getCommentedEntity();
+  $entity_bundle = $nodeentity->bundle();
+  if($entity_bundle == 'early_warnings') {
+    $users = _get_subscribed_users($nodeentity);
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+    if($action == 'insert') {
+      $subject = t('New Comment on Early Warning');
+    } else {
+      $subject = t('Updated Comment on Early Warning');
+    }
+    $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
+  } else if($entity_bundle == 'forum') {
+    $groupContent = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
+    $users = _get_subscribed_users($groupContent);
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+    if($action == 'insert') {
+      $subject = t('New Comment on Forum');
+    } else {
+      $subject = t('Updated Comment on Forum');
+    }
+    $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
+  }
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function hzd_notifications_cron() {
+  /* @var \Drupal\hzd_notifications\MailNotificationDispatcher $notification_dispatcher */
+  $notification_dispatcher = \Drupal::service('hzd_notifications.mail_dispatcher');
+  $notification_dispatcher->getNotificationsAndDispatch();
+}
+
+
+/**
+ * Implements hook_mail.
+ */
+function hzd_notifications_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'immediate_notifications':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+
+      //@todo for now sending all html mails only
+//      $message['headers']['Content-Type'] = ($params['preference'] == 'html') ? 'text/html; charset=UTF-8; format=flowed; delsp=yes' : 'text/plain; charset=UTF-8; format=flowed; delsp=yes';
+//      $message['body'][] = $params['preference'] == 'html'?$params['message']:\Drupal\Core\Mail\MailFormatHelper::htmlToText($params['message']);
+
+
+//      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+      $message['body'][] = $params['message'];
+
+      break;
+  }
+}
+
+use Drupal\field\Entity\FieldStorageConfig;
+/**
+ *
+ */
+function hzd_get_immediate_qi_notification_user_mails($services) {
+
+  $options = FieldStorageConfig::loadByName('node', 'field_other_services')
+    ->getSetting('allowed_values');
+  $affetced_services = array();
+  foreach ($services as $val) {
+    $affetced_services[] = $options[$val['value']];
+  }
+
+  $query = db_select('quickinfo_notifications', 'q')
+    ->fields('q', array('uids'))
+    ->condition('q.cck', $affetced_services, 'IN')
+    ->condition('q.send_interval', 0, '=');
+
+  $results = $query->execute()->fetchCol();
+
+  $uids_list = array();
+  foreach ($results as $serialized_uids) {
+    $uids = unserialize($serialized_uids);
+    $uids_list = array_unique(array_merge($uids_list, $uids));
+  }
+  return $uids_list;
 }

@@ -11,6 +11,10 @@ namespace Drupal\cust_group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
+use Drupal\group\Entity\GroupContentType;
+use Drupal\Core\Url;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\group\Entity\Group;
 
 /**
  * Description of CustGroupHelper
@@ -21,29 +25,24 @@ class CustGroupHelper {
   
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
-    $node = \Drupal\node\Entity\Node::load($nodeId);
-    $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
-    $allPlugins = $contentEnablerManager->getPluginGroupContentTypeMap();
-    foreach ($allPlugins as $key => $group_content_type) {
-      if ($key == 'group_node:' . $node->bundle()) {
-        foreach ($group_content_type as $item) {
-          $types[] = $item;
-        }
-      }
+
+    $node = Node::load($nodeId);
+
+    $plugin_id = 'group_node:' . $node->bundle();
+
+    // Only act if there are group content types for this node type.
+    $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
+    if (empty($group_content_types)) {
+      return null;
     }
-//    pr($types);
-//    exit;
-    if (!empty($types)) {
-      $groupContentIds = \Drupal::entityQuery('group_content')
-        ->condition('type', $types, 'IN')
-        ->condition('entity_id', $nodeId)
-        ->execute();
-      
-      if (!empty($groupContentIds)) {
-        return GroupContent::load(reset($groupContentIds));
-      }
-    }
-    return NULL;
+    // Load all the group content for this node.
+    $group_contents = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->loadByProperties([
+        'type' => array_keys($group_content_types),
+        'entity_id' => $node->id(),
+      ]);
+    return reset($group_contents);
   }
   
   public static function getGroupFromRouteMatch() {
@@ -87,6 +86,41 @@ class CustGroupHelper {
       $group = reset($group);
     }
     return $group;
+  }
+
+
+  public static function process($element, FormStateInterface $form_state, $form) {
+    $group = \Drupal::request()->get('group',null);
+    if(!$group){
+      $nodeId = \Drupal::request()->get('node');
+      $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
+      if($groupContent instanceof GroupContent){
+        $group = $groupContent->getGroup();
+      }
+    }
+    if($group instanceof Group){
+      $element['imce_paths'] = [
+        '#type' => 'hidden',
+        '#attributes' => [
+          'class' => ['imce-filefield-paths'],
+          'data-imce-url' => Url::fromRoute('cust_group.imce_page', ['group' => $group->id()])->toString(),
+        ],
+        // Reset value to prevent consistent errors
+        '#value' => '',
+      ];
+      // Library
+      $element['#attached']['library'][] = 'imce/drupal.imce.filefield';
+      // Set the pre-renderer to conditionally disable the elements.
+      $element['#pre_render'][] = ['Drupal\imce\ImceFileField', 'preRenderWidget'];
+
+
+      //Altering the autocomplete route here
+      //cust_group.file_autocomplete
+      $element['filefield_reference']['autocomplete']['#autocomplete_route_name'] = 'cust_group.file_autocomplete';
+      $element['filefield_reference']['autocomplete']['#autocomplete_route_parameters']['group']=$group->id();
+//    pr($element['filefield_reference']['autocomplete']);exit;
+    }
+    return $element;
   }
   
 }

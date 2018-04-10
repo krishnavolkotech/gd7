@@ -409,7 +409,6 @@ function send_release_notifications($entity, $action = 'update') {
       $mail = $user->getEmail();
       $data['node'] = $entity;
       $data['user'] = $user;
-
       $mailContent = getNodeMailContentFromConfig($data, $action);
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
     }
@@ -510,7 +509,6 @@ function send_problem_notifications($entity, $action = 'update') {
       $mail = $user->getEmail();
       $data['node'] = $entity;
       $data['user'] = $user;
-
       $mailContent = getNodeMailContentFromConfig($data, $action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
@@ -661,7 +659,6 @@ function send_earlywarning_notifications($entity, $action = 'update') {
       $mail = $user->getEmail();
       $data['node'] = $entity;
       $data['user'] = $user;
-
       $mailContent = getNodeMailContentFromConfig($data, $action);
       // Trigger mail functionality to send immediate notifications of quickinfo.
       send_immediate_notifications($mailContent['subject'], $mailContent['body'], $mail, $preference);
@@ -726,61 +723,7 @@ function send_qi_notifications($entity) {
   }
 }
 
-/**
- * Implements hook_ENTITY_TYPE_insert()
- * Changed from node insert to entity insert because 
- * of pathauto module used entity insert to create pathalias
- */
-// function hzd_release_management_node_insert($entity) {
-function hzd_release_management_entity_insert($entity) {
-  if($entity->getEntityTypeId() != 'node') {
-      return;
-  }
-  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    if ($entity->getType() == 'deployed_releases') {
-//            send_release_notifications($entity);
-    }
-    if ($entity->getType() == 'release') {
-      send_release_notifications($entity, 'insert');
-    }
-    if ($entity->getType() == 'downtimes') {
-      send_downtime_notifications($entity, 'insert');
-    }
-    if ($entity->getType() == 'early_warnings') {
-      send_earlywarning_notifications($entity, 'insert');
-    }
-    if ($entity->getType() == 'planning_files') {
-      send_pf_notifications($entity, 'insert');
-    }
-  }
-  if ($entity->getType() == 'problem') {
-    send_problem_notifications($entity, 'insert');
-  }
 
-  if ($entity->getType() == 'quickinfo') {
-//    send_qi_notifications($entity);
-  }
-
-  if ($entity->getType() == 'services') {
-    $nid = $entity->id();
-    $rel_type = $entity->get('release_type')->getValue()[0]['target_id'];
-    $downtime = $entity->get('field_enable_downtime')->value;
-    $problem = $entity->get('field_problem_name')->value;
-    $release = $entity->get('field_release_name')->value;
-
-    if ($downtime && $rel_type == KONSONS) {
-      insert_new_service_notifications('downtimes', $nid);
-    }
-    if ($problem != '' && $rel_type == KONSONS) {
-      insert_new_service_notifications('problem', $nid);
-    }
-    if ($release != '') {
-      insert_new_service_notifications('release', $nid);
-    }
-    insert_new_service_notifications('early_warnings', $nid);
-  }
-}
 
 function hzd_release_management_node_presave(NodeInterface $node) {
     $tags = [];
@@ -800,40 +743,6 @@ function hzd_release_management_node_presave(NodeInterface $node) {
             \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
         }
     }
-}
-
-/**
- * Implements hook_ENTITY_TYPE_update()
- */
-function hzd_release_management_node_update($entity) {
-
-  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
-
-  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    if ($entity->getType() == 'release') {
-      send_release_notifications($entity);
-    }
-    if ($entity->getType() == 'downtimes') {
-      send_downtime_notifications($entity);
-    }
-    if ($entity->getType() == 'early_warnings') {
-      send_earlywarning_notifications($entity);
-    }
-    if ($entity->getType() == 'planning_files') {
-      send_pf_notifications($entity);
-    }
-  }
-
-  if ($entity->getType() == 'problem') {
-    send_problem_notifications($entity);
-  }
-
-  if ($entity->getType() == 'services') {
-    update_service_notifications($entity);
-  }
-
-  // if ($entity->getType() == 'deployed_releases') {
-  // }
 }
 
 /**
@@ -872,36 +781,7 @@ function hzd_get_immediate_pf_notification_user_mails() {
   return $unserialized_user_array;
 }
 
-/**
- *
- */
-function hzd_get_immediate_qi_notification_user_mails($services) {
 
-  $options = FieldStorageConfig::loadByName('node', 'field_other_services')
-    ->getSetting('allowed_values');
-  $affetced_services = array();
-  foreach ($services as $val) {
-    $affetced_services[] = $options[$val['value']];
-  }
-
-  $query = db_select('quickinfo_notifications', 'q')
-    ->fields('q', array('uids'))
-    ->condition('q.cck', $affetced_services, 'IN')
-    ->condition('q.send_interval', 0, '=');
-
-  $results = $query->execute()->fetchCol();
-
-  $uids_list = array();
-  foreach ($results as $serialized_uids) {
-    $uids = unserialize($serialized_uids);
-    $uids_list = array_unique(array_merge($uids_list, $uids));
-  }
-
-  /*if (is_array($uids_list) && (count($uids_list) > 0)) {
-    return hzd_user_mails(array_values($uids_list));
-  }*/
-  return $uids_list;
-}
 
 /**
  * Get user mail ids.
@@ -926,6 +806,8 @@ function hzd_user_mails($uids) {
 
 /**
  * Send immediate notifications.
+ *
+ * @deprecated Use MailNotificationDispatcher->dispatch instead.
  */
 function send_immediate_notifications($subject, $message_text, $to, $preference, $attachment = NULL) {
   $mailManager = \Drupal::service('plugin.manager.mail');
@@ -1307,6 +1189,7 @@ function earlywarning_service_dependent_releases() {
   form_set_cache($form_build_id, $form, $form_state);
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
+  $output = '';
   $output .= drupal_render($form['field_earlywarning_release']);
 
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
@@ -1342,6 +1225,7 @@ function deployed_environment_service_dependent_releases() {
   form_set_cache($form_build_id, $form, $form_state);
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
+  $output = '';
   $output .= drupal_render($form['field_earlywarning_release']);
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();

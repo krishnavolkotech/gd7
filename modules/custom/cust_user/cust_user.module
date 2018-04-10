@@ -231,10 +231,10 @@ function __gm($object) {
   exit;
 }
 
-function cust_user_cron() {
-  //As per client request daily and weekly notifications are removed
-//    \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
-}
+// function cust_user_cron() {
+//   //As per client request daily and weekly notifications are removed
+// //    \Drupal\cust_group\Controller\NotificationsController::weeklyCron();
+// }
 
 //function cust_user_field_widget_form_alter(&$element, \Drupal\Core\Form\FormStateInterface $form_state, $context) {
 //  // Add a css class to widget form elements for all fields of type mytype.

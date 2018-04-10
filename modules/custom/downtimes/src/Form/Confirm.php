@@ -186,7 +186,9 @@ class Confirm extends ConfirmFormBase {
     if(!isset($downtimes_resolve['notifications_content_disable'])  ||  $downtimes_resolve['notifications_content_disable'] != 1) {
       $downtime_node =  \Drupal\node\Entity\Node::load($nid);
       if ($downtime_node instanceof \Drupal\node\Entity\Node){
-        send_downtime_notifications($downtime_node, 'resolve');
+        $users = _get_subscribed_users($downtime_node);
+        _notify_users($downtime_node, 'resolve', $users);
+        // send_downtime_notifications($downtime_node, 'resolve');
       }
     }
   }

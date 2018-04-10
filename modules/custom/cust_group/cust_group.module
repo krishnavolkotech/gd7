@@ -103,23 +103,6 @@ function cust_group_theme() {
   );
 }
 
-function cust_group_node_update($entity) {
-  if (!empty($entity->sendNomail) && $entity->sendNomail == 1) {
-    return FALSE;
-  }
-  if ($entity instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($entity, 0);
-    //exit;
-    //capture the notification for the users to send daily and weekly
-//    \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
-  }
-}
-
-function cust_group_node_insert($entity) {
-  //  pr($entity->getType());exit;
-  //capture the notification for the users to send daily and weekly
-//  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'insert');
-}
 
 function cust_group_group_insert($group) {
   $node = Node::create([
@@ -203,10 +186,6 @@ function cust_group_group_insert($group) {
   }
 }
 
-function cust_group_group_update($entity) {
-  sendGroupUpdateMail($entity, 0);
-//  \Drupal\cust_group\Controller\NotificationsController::recordContentAlter($entity, 'update');
-}
 
 function cust_group_group_content_update($entity) {
     $group = $entity->getGroup();
@@ -265,27 +244,6 @@ function cust_group_group_content_delete() {
 }
 
 function cust_group_group_content_insert($entity) {
-    $group = $entity->getGroup();
-    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
-        $newroles = $entity->get('group_roles')->getValue();
-        $nroles = [];
-        if(isset($newroles) && !empty($newroles)) {
-            foreach ($newroles as $key => $val) {
-                $nroles[] = $val['target_id'];
-            }
-        }
-        if(in_array($group->bundle() . '-admin', $nroles)) {
-            sendGroupAdminRoleMail($group, $entity->getEntity());
-        }
-    }
-  $node = $entity->getEntity();
-  if ($node instanceof \Drupal\node\Entity\Node) {
-    sendGroupUpdateMail($node, 1);
-//    \Drupal\cust_group\Controller\NotificationsController::recordGroupContentInsert($node, 'insert');
-    /* if ($node->getType() == 'page') {
-      \Drupal\cust_group\Controller\GroupTriggerController::addPageToGroupMenu($entity);
-      } */
-  }
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
@@ -349,81 +307,6 @@ function cust_group_taxonomy_term_insert($term) {
   $menu_link->save();
 }
 
-function sendGroupUpdateMail($entity, $isNew = 1) {
-
-  $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox');
-  if (!isset($dont_send_notification) || $dont_send_notification != 1) {
-    if ($entity->getEntityTypeId() == 'group') {
-      $group = $entity->id();
-    }
-    else {
-      $groupContentId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($entity);
-      if ($groupContentId) {
-        $group = $groupContentId->getGroup()->id();
-      }
-    }
-//    pr($group);exit;
-    if (!empty($group) && $group && (in_array($entity->bundle(), [
-          'event',
-          'forum',
-          'page',
-          'faqs'
-        ]) || $entity->getEntityTypeId() == 'group')
-    ) {
-      $getUserMailList = getGroupMemberList($group);
-      send_notifications($entity, $getUserMailList, $isNew);
-    }
-  }
-}
-
-function getGroupMemberList($gid) {
-  $group = \Drupal\group\Entity\Group::load($gid);
-  $uids = \Drupal::database()->select('group_notifications', 'gnudi')
-    ->fields('gnudi', ['uids'])
-    ->condition('gnudi.group_id', $gid, '=')
-    ->condition('gnudi.send_interval', '0', '=')
-    ->execute()->fetchField();
-  $users = [];
-  if (!empty($uids)) {
-    $users = array_filter(unserialize($uids));
-  }
-//  pr($users);exit;
-  $userMails = [];
-  if (!empty($users)) {
-
-    $userEntities = User::loadMultiple($users);
-
-    foreach ($userEntities as $user) {
-      $groupMember = $group->getMember($user);
-      if ($user->get('field_notifications_status')->value !== 'Disable' && $user->isActive()
-        && $groupMember && $groupMember->getGroupContent()
-          ->get('request_status')->value == 1
-        && !hzd_user_inactive_status_check($user->id())
-      ) {
-        $userMails[$user->id()] = $user->getEmail();
-      }
-    }
-  }
-  return $userMails;
-}
-
-function send_notifications($entity, $mails, $isNew) {
-  $result = array();
-  $mailManager = \Drupal::service('plugin.manager.mail');
-  $module = 'cust_group';
-  $key = 'immediate_notifications';
-//  $params['message'] = $html;
-  $langcode = \Drupal::currentUser()->getPreferredLangcode();
-  $send = TRUE;
-  foreach ($mails as $to) {
-    $data['user'] = user_load_by_mail($to);
-    $data['node'] = $entity;
-    $mailContent = getNodeMailContentFromConfig($data, $isNew ? 'insert' : 'update');
-    $params['subject'] = $mailContent['subject'];
-    $params['message'] = $mailContent['body'];
-    $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-  }
-}
 
 use Drupal\Component\Utility\SafeMarkup;
 
@@ -664,6 +547,9 @@ function mailToGroupAdmins($data = []) {
 }
 
 use Drupal\group\Entity\Group;
+use Drupal\Core\Field\WidgetInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 function cust_group_views_pre_render($view) {
   // && $view->getDisplay()->display['id'] == 'group_faq_block'
@@ -691,16 +577,6 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
       ->condition('field_im_upload_page_files.entity:file.filename', $fileName)
       ->condition('nid', $node->id())
       ->execute();
-//    if (empty($attachedFiles)) {
-//      if ($file->isNew()) {
-//        
-//      } else {
-//        return [t("The file's name already exists in database.")];
-//      }
-//    } else {
-//      return [t("The file's name already exists in database.")];
-//    }
-//        pr($attachedFiles);exit;
   }
   $query = \Drupal::request()->get('upload');
   if (\Drupal::routeMatch()
@@ -728,57 +604,6 @@ function cust_group_file_validate(Drupal\file\FileInterface $file) {
     }
   }
 
-
-  //drupal_set_message('<pre>'. print_r($_SESSION, true) .'</pre>');
-  //Todo sometimes giving true while value is one
-  //if (count($check) >= 1 && $file->isNew()) {
-//    $node = \Drupal::routeMatch()->getParameter('node');
-  /* if ($node instanceof Node && $node->bundle() == 'quickinfo') {
-    $checkQuickinfo = \Drupal::entityQuery('node')
-    ->condition('upload.entity:file.fid', (array) $check, 'IN')
-    ->condition('type', 'quickinfo')
-    ->execute();
-    $query = \Drupal::request()->get('upload');
-    pr($query);exit;
-    foreach ($query as $tempFile) {
-    if (!empty($tempFile['fids'])) {
-    $file = File::load($tempFile['fids']);
-    $temporaryFileData[] = $file->getFilename();
-    }
-    }
-
-    $route = \Drupal::routeMatch()->getRouteName();
-
-    if (!in_array($node->id(), (array) $checkQuickinfo) && !in_array($fileName, $temporaryFileData)) {
-    return [];
-    }
-    if ($route == 'entity.group_content.create_form' && !in_array($fileName, $temporaryFileData)) {
-    return [];
-    }
-    } else {
-    $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
-    if($group instanceof \Drupal\group\Entity\Group){
-    foreach (File::loadMultiple($check) as $fileEntity) {
-    $file_usage = \Drupal::service('file.usage')->listUsage($fileEntity);
-    $data = [];
-    foreach ($file_usage as $module) {
-    foreach ($module as $contentType => $type) {
-    foreach ($type as $id => $count) {
-    $groupContent = Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($id);
-    if ($groupContent instanceof \Drupal\group\Entity\GroupContent) {
-    $data[] = $groupContent->getGroup()->id();
-    }
-    }
-    }
-    }
-    }
-    if (!in_array($group->id(), $data)) {
-    return [];
-    }
-    }
-    } */
-//    $errors[] = t("The file's name already exists in database.");
-  //}
   return $errors;
 }
 
@@ -804,14 +629,6 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $field_planning_file_type = $entity->get('field_planning_file_type')->value;
     $plannigFileRefFlipped = array_flip($plannigFileRef);
     $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
-//    $group = Group::load(RELEASE_MANAGEMENT);
-//    $plugin = $group->getGroupType()->getContentPlugin('group_node:planning_files');
-//    $group_content = \Drupal::entityQuery('group_content')
-//      ->condition('gid',$group->id())
-//      ->condition('entity_id',$nodeId)
-//      ->condition('type','%group_node%','LIKE')
-//      ->execute();
-//    pr($group_content);exit;
     global $base_url;
     header('Location: ' . $base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId]));
     exit;
@@ -831,21 +648,6 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $build['title'] = ['#markup' => $title];
   }
 
-//  if ('im_upload_page' == $entity->bundle()) {
-//      if(empty($entity->get('field_state')->value)) {
-//            $current_path = \Drupal::service('path.current')->getPath();
-//            $result = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
-//            $statecode = substr($result, -2);
-//            $state = get_hzd_states_by_id($statecode);
-//            $node = \Drupal::routeMatch()->getParameter('node');
-//            $node->field_state->value = $state;
-//            $node->save();
-//          //kint($entity->get('field_state')->value);
-//      }
-//  }
-  /* if ($entity->getType() == 'downtimes') {
-    generate_quickinfo_pdf(Node::load(55871));
-    } */
 }
 
 function get_hzd_states_by_id($id = NULL) {
@@ -903,11 +705,11 @@ function get_planning_file_data($type) {
   //$filesData =
 }
 
-function cust_group_cron() {
-  //Weekly cron was registered in ./modules/custom/cust_user/cust_user.module
-  //Daily cron to send notifications
-  \Drupal\cust_group\Controller\NotificationsController::dailyCron();
-}
+// function cust_group_cron() {
+//   //Weekly cron was registered in ./modules/custom/cust_user/cust_user.module
+//   //Daily cron to send notifications
+//   \Drupal\cust_group\Controller\NotificationsController::dailyCron();
+// }
 
 function cust_group_user_delete($user) {
   $groupContent = \Drupal::entityQuery('group_content')
@@ -921,17 +723,8 @@ function cust_group_user_delete($user) {
 
 function cust_group_preprocess_node(&$variables) {
   $variables['page'] = 1;
-//    exit;
 }
 
-/*function cust_group_user_login() {
-  $request = \Drupal::request()->get('destination', NULL);
-  if (!$request) {
-    $response = new RedirectResponse("/");
-    $response->send();
-    return;
-  }
-}*/
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
 
@@ -995,8 +788,8 @@ function cust_group_schema() {
 /**
  * Implements hook_ENTITY_TYPE_insert to update menu link from node entity to group entity.
  */
-function cust_group_menu_link_content_insert($menu) {
-  /*  $nodeid = explode('/', $menu->link->uri)[1];
+/*function cust_group_menu_link_content_insert($menu) {
+    $nodeid = explode('/', $menu->link->uri)[1];
     $groupcontent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nodeid);
     if ($nodeid && $groupcontent) {
     $finalpath = $groupcontent->toUrl()->getInternalPath();
@@ -1033,8 +826,8 @@ function cust_group_menu_link_content_insert($menu) {
     \Drupal::service('path.alias_storage')
     ->save($system_path, $path_alias, $langcode);
     }
-    } */
-}
+    } 
+}*/
 
 /* function cust_group_preprocess_swiftmailer(&$variables) {
   global $base_url;
@@ -1044,8 +837,8 @@ function cust_group_menu_link_content_insert($menu) {
 /**
  * Implements hook_block_access().
  */
-function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
-  /*  if ($block->id() == 'views_block__groups_faq_block_1' && $operation == 'view') {
+/*function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, \Drupal\Core\Session\AccountInterface $account) {
+    if ($block->id() == 'views_block__groups_faq_block_1' && $operation == 'view') {
     $group = Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
     if($group instanceof Group){
     if(\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())){
@@ -1053,8 +846,8 @@ function cust_group_block_access(\Drupal\block\Entity\Block $block, $operation, 
     }
     }
     return \Drupal\Core\Access\AccessResult::forbidden();
-    } */
-}
+    } 
+}*/
 
 function cust_group_user_format_name_alter(&$name, $account) {
   if ($account->id()) {
@@ -1163,4 +956,40 @@ function cust_group_preprocess_block(&$vars) {
   if (isset($vars['plugin_id']) && $vars['plugin_id'] == 'system_menu_block:primary-links') {
     $vars['#cache'] = ['max-age' => 0];
   }
+}
+
+
+// Imce related feature starts here
+function cust_group_field_widget_third_party_settings_form(WidgetInterface $widget, FieldDefinitionInterface $field_definition, $form_mode, $form, FormStateInterface $form_state) {
+  $form['group_files'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Allow files only from the relative group directories (disable IMCE widget for this to work)'),
+    '#default_value' => $widget->getThirdPartySetting('cust_group', 'group_files'),
+  ];
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ * Alters widget forms that have groups files.
+ */
+function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+  
+  if ($context['widget']->getThirdPartySetting('cust_group', 'group_files')) {
+    // pr($context['widget']->isApplicable());
+    // exit;
+    $scheme = $context['items'][$context['delta']]->getFieldDefinition()->getSetting('uri_scheme');
+    $element['#scheme'] = $scheme;
+    $class = 'Drupal\imce\ImceFileField';
+    $element['#process'][] = ['Drupal\cust_group\CustGroupHelper','process'];
+    // Make sure default value callbacks are added
+    if (empty($element['#file_value_callbacks'])) {
+      $info = \Drupal::service('element_info')->getInfo($element['#type']);
+      if (!empty($info['#file_value_callbacks'])) {
+        $element['#file_value_callbacks'] = $info['#file_value_callbacks'];
+      }
+    }
+    $element['#file_value_callbacks'][] = [$class, 'setWidgetValue'];
+  }
+  // pr($element);
 }

@@ -93,22 +93,14 @@ class BulkMailGroupMembersForm extends FormBase {
 //    if (!in_array(SITE_ADMIN_ROLE, $user_role)) {
       $gid = $form_state->getValue('group');
       $group = Group::load($gid);
-      $groupMembers = $group->getMembers();
-      foreach ($groupMembers as $groupMember){
-        $user = $groupMember->getGroupContent();
-        if($groupMember->getUser()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($groupMember->getUser()->id()) == FALSE){
+      $groupMembers = $group->getContent('group_membership');
+      foreach ($groupMembers as $user){
+        // $user = $groupMember->getGroupContent();
+        if($user->getEntity()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
           $mailToGroupMember[] = $user->getEntity()->getEmail();
 //          break;
         }
       }
-
-    /*$group_members_query = db_query("SELECT distinct(gcfd_mem.uid),ufd.mail FROM group_content_field_data gcfd_mem,users_field_data ufd
-WHERE ufd.uid = gcfd_mem.uid AND ufd.uid <> 0 AND gcfd_mem.request_status = 1 AND gcfd_mem.gid = $gid")->fetchAll();
-  }
-  else {
-    $group_members_query = db_query("SELECT distinct(gcfd_mem.uid),ufd.mail FROM group_content__group_roles gcgr, group_content_field_data gcfd_mem, group_content_field_data gcfd,
-      users_field_data ufd WHERE ufd.uid = gcfd_mem.uid AND ufd.uid <> 0 AND gcfd_mem.request_status = 1 AND gcfd_mem.gid = gcfd.gid AND gcgr.entity_id = gcfd.id AND gcgr.group_roles_target_id like '%admin%' AND gcfd.entity_id = $uid")->fetchAll();
-  }*/
 //    pr($mailToGroupMember);exit;
     $subject = $form_state->getValue('subject');
     $body = Markup::create($form_state->getValue('body')['value']);

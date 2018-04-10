@@ -21,10 +21,12 @@ function __hzd($object) {
 function pr($data) {
     echo "<pre>";
     print_r($data);
+    echo "</pre>";
 }
 function prk($data) {
     echo "<pre>";
     print_r(array_keys($data));
+    echo "</pre>";
 }
 
 /**
