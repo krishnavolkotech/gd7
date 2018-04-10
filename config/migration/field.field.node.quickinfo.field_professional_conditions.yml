@@ -10,8 +10,8 @@ dependencies:
     - text
 third_party_settings:
   allowed_formats:
-    full_html: full_html
-    basic_html: '0'
+    basic_html: basic_html
+    full_html: '0'
     restricted_html: '0'
     filtered_html: '0'
     messaging_plain_text: '0'
