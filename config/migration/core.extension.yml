@@ -51,7 +51,6 @@ module:
   gforum: 0
   gnode: 0
   group: 0
-  help: 0
   history: 0
   hzd_customizations: 0
   hzd_earlywarnings: 0
@@ -61,7 +60,6 @@ module:
   image: 0
   imce: 0
   inactive_user: 0
-  inline_entity_form: 0
   kint: 0
   l10n_client_contributor: 0
   l10n_client_ui: 0
@@ -70,7 +68,6 @@ module:
   locale: 0
   login_emailusername: 0
   mailsystem: 0
-  masquerade: 0
   mass_contact: 0
   menu_ui: 0
   migrate: 0
@@ -106,7 +103,6 @@ module:
   view_unpublished: 0
   views_merge_rows: 0
   views_ui: 0
-  webprofiler: 0
   xmlrpc: 0
   ctools: 1
   favorites: 1

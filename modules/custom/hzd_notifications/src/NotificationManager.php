@@ -10,7 +10,7 @@ use Drupal\cust_group\CustGroupHelper;
 class NotificationManager implements NotificationManagerInterface {
 
   public static $service_bundles = [
-    'deployed_releases',
+//    'deployed_releases',
     'release',
     'downtimes',
     'problem',
