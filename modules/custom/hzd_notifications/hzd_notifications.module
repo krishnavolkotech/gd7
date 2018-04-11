@@ -761,7 +761,10 @@ function _get_subscribed_users($entity){
 
 
 function hzd_notifications_node_update($node){
-  if($node->isPublished()){
+  if($node->isPublished() && $node->bundle() == 'quickinfo'){
+    return;
+  }
+  elseif($node->isPublished()){
     $users = [];
     if(in_array($node->bundle(), NotificationManager::$groupBundles)){
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
