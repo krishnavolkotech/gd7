@@ -273,22 +273,24 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $form_state->setValue('field_custom_title', $node->label());
     }
 
-    $form['actions']['unpublish']['#value'] = t('Save');
+    // $form['actions']['unpublish']['#value'] = t('Save');
     $form['actions']['publish'] = $form['actions']['submit'];
-    // If the "Publish" button is clicked, we want to update the status to "published".
-    $form['actions']['publish']['#published_status'] = TRUE;
-    $form['actions']['submit']['#published_status'] = FALSE;
     $form['actions']['publish']['#value'] = t('Publish');
+    // // If the "Publish" button is clicked, we want to update the status to "published".
+    // $form['actions']['publish']['#published_status'] = TRUE;
+    // $form['actions']['submit']['#published_status'] = FALSE;
+    // $form['actions']['publish']['#value'] = t('Publish');
     
-    $form['actions']['publish']['#weight'] = 10;
-    $form['actions']['unpublish']['#weight'] = 5;
-    if(\Drupal::currentUser()->isAuthenticated()) {
-        $form['actions']['publish']['#access'] = TRUE;
-    }
+    // $form['actions']['publish']['#weight'] = 10;
+    // $form['actions']['unpublish']['#weight'] = 5;
+    // if(\Drupal::currentUser()->isAuthenticated()) {
+    //     $form['actions']['publish']['#access'] = TRUE;
+    // }
 
     array_unshift($form['actions']['publish']['#submit'], 'cust_quick_info_node_form_publish');
+    $form['actions']['publish']['#submit'][] = 'hzd_customizations_quickinfo_node_save_callback';
     $form['actions']['publish']['#attributes']['onclick'] = 'return confirm("Bitte bestätigen Sie die Veröffentlichung dieser RZ-Schnellinfo.")';
-    unset($form['actions']['unpublish']['#dropbutton']);
+    // unset($form['actions']['unpublish']['#dropbutton']);
 
 
     $form['field_intial_situation']['#prefix'] = t('<h2>2 Fachlich-inhaltliche Angaben</h2>');
@@ -577,11 +579,6 @@ function hzd_customizations_form_node_form_alter(&$form, \Drupal\Core\Form\FormS
         } else {
             $node->custom_isnew = 0;
         }
-        foreach (array_keys($form['actions']) as $action) {
-            if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-              $form['actions'][$action]['#submit'][] = 'hzd_customizations_quickinfo_node_save_callback';
-            }
-        }
     }
     if(isset($form['body']['widget'])){
         $form['body']['widget'][0]['summary']['#access'] = FALSE;
@@ -598,12 +595,9 @@ function hzd_customizations_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAs
 }
 
 function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {
-    $node = $form_state->getFormObject()->getEntity();
-    if($node->get('status')->value == 1) {
-        hzd_customizations_quickinfo_save($node);
-        // $node = node_load($node->id());
-        // generate_quickinfo_pdf($node);
-    }
+  $node = $form_state->getFormObject()->getEntity();
+  $node->set('status',1);
+  hzd_customizations_quickinfo_save($node);  
 }
 
 
@@ -625,14 +619,13 @@ function hzd_customizations_quickinfo_save($node) {
                     'uid' => \Drupal::currentUser()->id(),
         ]);
         $file->save();
-        $quickinfo = Node::load($node->id());
-//      $entity = Node::load($node->id());
-        $quickinfo->upload->appendItem([
+        // $quickinfo = Node::load($node->id());
+        $node->upload->appendItem([
             'target_id' => $file->id(),
             'display' => 1,
             'description' => '',
         ]);
-        $quickinfo->save();
+        $node->save();
         generate_quickinfo_pdf($quickinfo);
       }
     }
