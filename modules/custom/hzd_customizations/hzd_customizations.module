@@ -626,7 +626,7 @@ function hzd_customizations_quickinfo_save($node) {
             'description' => '',
         ]);
         $node->save();
-        generate_quickinfo_pdf($quickinfo);
+        generate_quickinfo_pdf($node);
       }
     }
   }
