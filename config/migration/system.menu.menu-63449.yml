@@ -1,0 +1,8 @@
+uuid: 6a5d8f8d-063f-4c04-aab2-0ece7abcb836
+langcode: de
+status: true
+dependencies: {  }
+id: menu-63449
+label: 'DaSi Betriebsportal KONSENS '
+description: 'DaSi BpK'
+locked: false
