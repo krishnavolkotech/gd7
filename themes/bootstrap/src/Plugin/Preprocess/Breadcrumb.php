@@ -46,7 +46,7 @@ class Breadcrumb extends PreprocessBase implements PreprocessInterface {
       $page_title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
       if (!empty($page_title)) {
         $breadcrumb[] = [
-          'text' => Html::decodeEntities($page_title),
+          'text' => \Drupal\Core\Render\Markup::create(Html::decodeEntities($page_title)),
           'attributes' => new Attribute(['class' => ['active']]),
         ];
       }
