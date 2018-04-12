@@ -155,7 +155,7 @@ class GroupNotifications extends FormBase {
   
           if($subscriptions[$gid]['subscriptions_interval_'.$gid] == $interval){
             $notifyData = [
-              'uids' => serialize([$uids]),
+              'uids' => serialize([$uid]),
               'send_interval' => $interval,
               'group_id' => $gid,
               'group_name'=>$gid
