@@ -774,7 +774,7 @@ function hzd_notifications_node_update($node){
       }else{
         return;
       }
-    }else{
+    }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
       $users = _get_subscribed_users($node);
     }
     //Notify only if release is released
