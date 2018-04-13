@@ -771,18 +771,18 @@ function hzd_notifications_node_update($node){
       // pr($groupContent);exit;
       if($groupContent instanceof GroupContent){
         $users = _get_subscribed_users($groupContent);
+        _notify_users($node, ENTITY_OP_UPDATE, $users);
       }else{
         return;
       }
     }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
       $users = _get_subscribed_users($node);
+      _notify_users($node, ENTITY_OP_UPDATE, $users);
     }
     //Notify only if release is released
     if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
       return;
     }
-    
-    _notify_users($node, ENTITY_OP_UPDATE, $users);
   }
   
   // Services bundle is not altered for now. 
