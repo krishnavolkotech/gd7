@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Crontab cron job scheduler for Ultimate Cron.
- */
+
 namespace Drupal\ultimate_cron\Plugin\ultimate_cron\Scheduler;
 
 use Drupal\Core\Form\FormStateInterface;

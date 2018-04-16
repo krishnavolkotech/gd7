@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Controller\JobController.
- */
 
 namespace Drupal\ultimate_cron\Controller;
 
@@ -25,7 +21,7 @@ class JobController extends ControllerBase {
    *   Redirects to the job listing after running a job.
    */
   public function runCronJob(CronJob $ultimate_cron_job) {
-    $ultimate_cron_job->run();
+    $ultimate_cron_job->run($this->t('Launched manually'));
     drupal_set_message($this->t('Cron job @job_label (@module) was successfully run.', ['@job_label' => $ultimate_cron_job->label(), '@module' => $ultimate_cron_job->getModuleName()]));
     return $this->redirect('entity.ultimate_cron_job.collection');
   }
@@ -35,7 +31,7 @@ class JobController extends ControllerBase {
    */
   public function discoverJobs() {
     \Drupal::service('ultimate_cron.discovery')->discoverCronJobs();
-    drupal_set_message($this->t('Completed discovery for now cron jobs.'));
+    drupal_set_message($this->t('Completed discovery for new cron jobs.'));
     return $this->redirect('entity.ultimate_cron_job.collection');
   }
 

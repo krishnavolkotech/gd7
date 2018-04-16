@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Contains \Drupal\ultimate_cron\Launcher\LauncherInterface.
- */
-
 namespace Drupal\ultimate_cron\Launcher;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;

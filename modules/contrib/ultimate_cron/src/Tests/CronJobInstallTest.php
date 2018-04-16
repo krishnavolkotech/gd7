@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Tests\CronJobInstallTest
- */
 
 namespace Drupal\ultimate_cron\Tests;
 
@@ -62,7 +58,7 @@ class CronJobInstallTest extends WebTestBase {
    * Tests the requirements checking of ultimate_cron.
    */
   public function testRequirements() {
-    $element = ultimate_cron_requirements('runtime')['ultimate_cron'];
+    $element = ultimate_cron_requirements('runtime')['cron_jobs'];
     $this->assertEqual($element['value'], t("Cron is running properly."));
     $this->assertEqual($element['severity'], REQUIREMENT_OK);
 
@@ -95,12 +91,12 @@ class CronJobInstallTest extends WebTestBase {
     $this->assertEqual(1, \Drupal::state()->get('ultimate_cron.cron_run_counter'), 'Job has run once.');
     $this->assertTrue($job->isBehindSchedule(), 'Job is behind schedule.');
 
-    $element = ultimate_cron_requirements('runtime')['ultimate_cron'];
+    $element = ultimate_cron_requirements('runtime')['cron_jobs'];
     $this->assertEqual($element['value'], '1 job is behind schedule', '"1 job is behind schedule." is displayed');
     $this->assertEqual($element['description'], 'Some jobs are behind their schedule. Please check if <a href="' .
       Url::fromRoute('system.cron', ['key' => \Drupal::state()->get('system.cron_key')])->toString() .
       '">Cron</a> is running properly.', 'Description is correct.');
-    $this->assertEqual($element['severity'], 2, 'Severity is of level "Error"');
+    $this->assertEqual($element['severity'], REQUIREMENT_WARNING, 'Severity is of level "Error"');
   }
 
 }

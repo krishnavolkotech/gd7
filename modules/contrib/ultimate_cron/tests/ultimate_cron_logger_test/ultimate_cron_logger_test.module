@@ -16,6 +16,11 @@ function ultimate_cron_logger_test_cron() {
   elseif ($action == 'fatal') {
     call_to_undefined_function();
   }
+  elseif ($action == 'long_message') {
+    // This long message text length is 5800 long.
+    $long_message = str_repeat('This is a very long message. ', 200);
+    \Drupal::logger('ultimate_cron_logger_test_cron')->notice($long_message);
+  }
   elseif ($action == 'log_warning') {
     \Drupal::logger('ultimate_cron_logger_test_cron')->warning('This is a warning message');
   }

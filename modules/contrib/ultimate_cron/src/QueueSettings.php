@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\QueueSettings.
- *
- * Queue settings for Ultimate Cron.
- */
-
 namespace Drupal\ultimate_cron;
 
 use Drupal\Core\Logger\RfcLogLevel;

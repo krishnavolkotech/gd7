@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\UltimateCronServiceProvider.
- */
 
 namespace Drupal\ultimate_cron;
 
@@ -11,7 +7,7 @@ use Drupal\Core\DependencyInjection\ServiceProviderBase;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Service Provider for File entity.
+ * Defines service provider for ultimate cron.
  */
 class UltimateCronServiceProvider extends ServiceProviderBase {
 
@@ -19,8 +15,10 @@ class UltimateCronServiceProvider extends ServiceProviderBase {
    * {@inheritdoc}
    */
   public function alter(ContainerBuilder $container) {
-    $definition = $container->getDefinition('cron');
-    $definition->setClass('Drupal\ultimate_cron\UltimateCron');
-    $definition->addArgument(new Reference('config.factory'));
+    // Overrides cron class to use our own cron manager.
+    $container->getDefinition('cron')
+      ->setClass('Drupal\ultimate_cron\UltimateCron')
+      ->addMethodCall('setConfigFactory', [new Reference('config.factory')]);
   }
+
 }

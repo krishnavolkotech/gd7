@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Signal\SignalCache.
- */
 
 namespace Drupal\ultimate_cron\Signal;
 

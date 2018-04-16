@@ -1,16 +1,9 @@
 <?php
-/**
- * @file
- * Serial cron job launcher for Ultimate Cron.
- */
 
 namespace Drupal\ultimate_cron\Plugin\ultimate_cron\Launcher;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Logger\RfcLogLevel;
-use Drupal\Core\Utility\Error;
 use Drupal\ultimate_cron\CronJobInterface;
-use Drupal\ultimate_cron\CronPlugin;
 use Drupal\ultimate_cron\Launcher\LauncherBase;
 use Drupal\ultimate_cron\PluginCleanupInterface;
 
@@ -174,7 +167,7 @@ class SerialLauncher extends LauncherBase implements PluginCleanupInterface {
   public function isLocked(CronJobInterface $job) {
     $lock = \Drupal::service('ultimate_cron.lock');
     $lock_id = $lock->isLocked($job->id());
-    return $lock_id ? $this->name . '-' . $lock_id : $lock_id;
+    return $lock_id ? $this->pluginId . '-' . $lock_id : $lock_id;
   }
 
   /**
@@ -188,7 +181,7 @@ class SerialLauncher extends LauncherBase implements PluginCleanupInterface {
     $lock = \Drupal::service('ultimate_cron.lock');
     $lock_ids = $lock->isLockedMultiple($names);
     foreach ($lock_ids as &$lock_id) {
-      $lock_id = $lock_id ? $this->name . '-' . $lock_id : $lock_id;
+      $lock_id = $lock_id ? $this->pluginId . '-' . $lock_id : $lock_id;
     }
     return $lock_ids;
   }
@@ -207,11 +200,6 @@ class SerialLauncher extends LauncherBase implements PluginCleanupInterface {
   public function launch(CronJobInterface $job) {
     \Drupal::moduleHandler()->invokeAll('cron_pre_launch', array($this));
 
-    $lock_id = $job->lock();
-
-    if (!$lock_id) {
-      return FALSE;
-    }
     if ($this->currentThread) {
       $init_message = t('Launched in thread @current_thread', array(
         '@current_thread' => $this->currentThread,
@@ -220,35 +208,12 @@ class SerialLauncher extends LauncherBase implements PluginCleanupInterface {
     else {
       $init_message = t('Launched manually');
     }
-    $log_entry = $job->startLog($lock_id, $init_message);
 
     // Run job.
-    try {
-      $job->run();
-    } catch (\Error $e) {
-      // PHP 7 throws Error objects in case of a fatal error. It will also call
-      // the finally block below and close the log entry. Because of that,
-      // the global fatal error catching will not work and we have to log it
-      // explicitly here instead. The advantage is that this will not
-      // interrupt the process.
-      $variables = Error::decodeException($e);
-      unset($variables['backtrace']);
-      $log_entry->log('%type: @message in %function (line %line of %file).', $variables, RfcLogLevel::ERROR);
-      return FALSE;
-    }
-    catch (\Exception $e) {
-      $variables = Error::decodeException($e);
-      unset($variables['backtrace']);
-      $log_entry->log('%type: @message in %function (line %line of %file).', $variables, RfcLogLevel::ERROR);
-      return FALSE;
-    }
-    finally {
-      $log_entry->finish();
-      $job->unlock($lock_id);
+    $job_launch = $job->run($init_message);
+    \Drupal::moduleHandler()->invokeAll('cron_post_launch', array($this));
 
-      \Drupal::moduleHandler()->invokeAll('cron_post_launch', array($this));
-    }
-    return TRUE;
+    return $job_launch;
   }
 
   /**

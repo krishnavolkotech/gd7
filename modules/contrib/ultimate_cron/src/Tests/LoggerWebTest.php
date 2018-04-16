@@ -79,8 +79,26 @@ class LoggerWebTest extends WebTestBase {
     $this->assertRaw('Call to undefined function call_to_undefined_function');
 
     // Empty the logfile, our fatal errors are expected.
-    $filename = DRUPAL_ROOT . '/sites/simpletest/' . substr($this->databasePrefix, 10) . '/error.log';
+    $filename = DRUPAL_ROOT . '/' . $this->siteDirectory . '/error.log';
     file_put_contents($filename, '');
+  }
+
+  /**
+   * Tests that the logger handles long message correctly.
+   */
+  public function testLoggerLongMessage() {
+
+    \Drupal::state()->set('ultimate_cron_logger_test_cron_action', 'long_message');
+
+    // Run cron to get a long message log from ultimate_cron_logger_test.
+    $this->cronRun();
+
+    // Check that the long log message is properly trimmed.
+    $this->drupalGet('admin/config/system/cron/jobs/logs/ultimate_cron_logger_test_cron');
+    $xpath = version_compare(\Drupal::VERSION, '8.5', '>=') ? '/html/body/div/div/main/div/div/table/tbody/tr/td[4]' : '/html/body/div/main/div/div/table/tbody/tr/td[4]';
+    // The last 2 chars from xpath are not related to the message.
+    $this->assertTrue(strlen(substr($this->xpath($xpath)[0], 0, -2)) == 5000);
+    $this->assertRaw('This is a v…');
   }
 
   /**
