@@ -299,7 +299,7 @@ display:
       display_extenders: {  }
       css_class: sort-user-list
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -345,7 +345,7 @@ display:
           exposed: true
           expose:
             operator_id: combine_op
-            label: 'Name oder E-Mail'
+            label: 'Name, E-Mail oder Benutzername'
             description: ''
             use_operator: false
             operator: combine_op
@@ -360,6 +360,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -417,10 +418,11 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: 'State abbr'
-            description: null
+            description: ''
             identifier: abbr
             optional: true
             widget: select
@@ -920,7 +922,7 @@ display:
           plugin_id: string
       display_description: ''
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -1054,7 +1056,7 @@ display:
         groups:
           1: AND
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -1070,7 +1072,7 @@ display:
     display_options:
       display_extenders: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -1441,7 +1443,7 @@ display:
         groups:
           1: AND
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'

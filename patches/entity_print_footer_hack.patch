@@ -33,7 +33,7 @@ index c90ac65..7873c66 100644
 +        $entity_path = $current_entity->toString();
 +        if($entity_path) {
 +          $result = \Drupal::service('path.alias_manager')->getAliasByPath($entity_path);
-+        } 
++        }
 +      }
        // Inject CSS from the theme info files and then render the CSS.
        $render = $this->addCss($render, $entity);

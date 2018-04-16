@@ -1,8 +1,8 @@
-diff --git a/src/PathProcessor.php b/src/PathProcessor.php
-index 9b2eb52..9af7962 100644
---- a/src/PathProcessor.php
-+++ b/src/PathProcessor.php
-@@ -157,7 +157,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
+diff --git a/modules/contrib/subpathauto/src/PathProcessor.php b/modules/contrib/subpathauto/src/PathProcessor.php
+index 9b2eb5245..9af79620c 100644
+--- a/modules/contrib/subpathauto/src/PathProcessor.php
++++ b/modules/contrib/subpathauto/src/PathProcessor.php
+@@ -157,7 +157,7 @@ protected function getPath($path_info) {
        $path_info = '/' . substr($path_info, strlen($language_prefix));
      }
  

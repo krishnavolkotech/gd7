@@ -1,17 +1,10 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\migrate_tools\MigrateManifest
- */
-
 namespace Drupal\migrate_manifest;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Database\Database;
+use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\Plugin\MigrationInterface;
-use Drupal\migrate_tools\DrushLogMigrateMessage;
-use Drupal\migrate_tools\MigrateExecutable;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -25,26 +18,38 @@ class MigrateManifest {
   protected $manifestFile;
 
   /**
+   * @var bool
+   */
+  protected $update;
+
+  /**
+   * @var bool
+   */
+  protected $force;
+
+  /**
    * Constructs a new MigrateManifest object.
+   *
    * @param string $manifest_file
    *   The location of the manifest file.
+   * @param bool $force
+   *   Force operation to regardless of dependencies.
+   * @param bool $update
+   *   Update previously imported items with current data.
    */
-  public function __construct($manifest_file) {
+  public function __construct($manifest_file, $force = FALSE, $update = FALSE) {
     $this->manifestFile = $manifest_file;
+    $this->force = $force;
+    $this->update = $update;
   }
 
   /**
    * Drush execution method. Runs imports on the supplied manifest.
    */
   public function import() {
-    if (\Drupal::hasService('migrate.template_storage')) {
-      $legacy = new MigrateManifest80($this->manifestFile);
-      return $legacy->import();
-    }
-
-    $this->setupLegacyDb();
     $migration_ids = [];
     $migrations = [];
+    $nonexistent_migrations = [];
 
     /** @var \Drupal\migrate\Plugin\MigrationPluginManager $manager */
     $manager = \Drupal::service('plugin.manager.migration');
@@ -92,6 +97,17 @@ class MigrateManifest {
     foreach ($migrations as $migration_instance) {
       $migrations_to_run = $this->injectDependencies($migration_instance, $migrations);
       foreach ($migrations_to_run as $migration) {
+
+        if (isset($run_migrations[$migration->id()])) continue;
+
+        if ($this->force) {
+          $migration->set('requirements', []);
+        }
+
+        if ($this->update) {
+          $migration->getIdMap()->prepareUpdate();
+        }
+
         $executable = $this->executeMigration($migration);
         // Store all the migrations for later.
         $run_migrations[$migration->id()] = [
@@ -136,13 +152,18 @@ class MigrateManifest {
         }
         // Otherwise, create a new instance.
         else {
-          $required_migrations += $manager->createInstances($id);
+          // TODO - add migrations to manifest list to avoid duplicate creation.
+          $required_migrations = $manager->createInstances($id) + $required_migrations;
         }
       }
-
       // Merge required migrations, using requirements as the base so they
       // bubble to the front.
       $migrations = $required_migrations + $migrations;
+
+      // Recursively add and requirements the new migrations need.
+      foreach ($required_migrations as $required_migration) {
+        $migrations = $this->injectDependencies($required_migration, $manifest_list) + $migrations;
+      }
     }
 //    $this->doInjectDependencies($migrations, $manifest_list);
     return $migrations;
@@ -186,7 +207,7 @@ class MigrateManifest {
    * @param \Drupal\migrate\Plugin\MigrationInterface $migration
    *   The migration to run.
    *
-   * @return \Drupal\migrate_tools\MigrateExecutable
+   * @return \Drupal\migrate\MigrateExecutable
    *   The migration executable.
    */
   protected function executeMigration(MigrationInterface $migration) {
@@ -201,12 +222,27 @@ class MigrateManifest {
   /**
    * Setup the legacy database connection to migrate from.
    */
-  protected function setupLegacyDb() {
-    $db_url = drush_get_option('legacy-db-url');
-    $db_spec = drush_convert_db_from_db_url($db_url);
-    $db_spec['prefix'] = drush_get_option('legacy-db-prefix');
-    Database::removeConnection('migrate');
-    Database::addConnectionInfo('migrate', 'default', $db_spec);
+  public static function setDbState($db_key, $db_url, $db_prefix) {
+    if ($db_key) {
+      $database_state['key'] = drush_get_option('legacy-db-key');
+      $database_state_key = 'default';
+      \Drupal::state()->set($database_state_key, $database_state);
+      \Drupal::state()->set('migrate.fallback_state_key', $database_state_key);
+    }
+    else if ($db_url) {
+      if (function_exists('drush_convert_db_from_db_url')) {
+        $db_spec = drush_convert_db_from_db_url($db_url);
+      }
+      elseif (class_exists('\Drush\Sql\SqlBase')) {
+        $db_spec = \Drush\Sql\SqlBase::dbSpecFromDbUrl($db_url);
+      }
+      else {
+        $db_spec = []; // support other conversion methods?
+      }
+      $db_spec['prefix'] = $db_prefix;
+      Database::removeConnection('migrate');
+      Database::addConnectionInfo('migrate', 'default', $db_spec);
+    }
   }
 
 }

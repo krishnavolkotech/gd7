@@ -26,8 +26,8 @@ planning_files:
   mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[user:user-notification-settings-url-absolute]\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
 release:
-  subject_insert: '[[node:field_relese_services]] Neues Release: [node:title]'
-  subject_update: '[[node:field_relese_services]] Aktualisiertes Release: [node:title]'
+  subject_insert: '[[node:field_relese_services:entity:title]] Neues Release: [node:title]'
+  subject_update: '[[node:field_relese_services:entity:title]] Aktualisiertes Release: [node:title]'
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"

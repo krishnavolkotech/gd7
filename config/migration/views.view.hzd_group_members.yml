@@ -490,7 +490,7 @@ display:
             title_enable: false
             title: All
           title_enable: true
-          title: 'Mitglieder von {{ arguments.gid|placeholder }} '
+          title: 'Mitglieder von {{ arguments.gid|striptags }} '
           default_argument_type: group_id_from_url
           default_argument_options: {  }
           default_argument_skip_url: false
@@ -520,7 +520,7 @@ display:
       link_url: ''
       link_display: page_1
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -1361,6 +1361,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1592,7 +1593,7 @@ display:
           separator: ', '
           suffix: ''
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -2735,7 +2736,7 @@ display:
       break_phrase: 0
       not: 0
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'

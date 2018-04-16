@@ -96,7 +96,7 @@ class CustNodeController extends ControllerBase {
       $group = $groupContent->getGroup();
       $groupMember = $group->getMember($user);
       if (($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+                      ->get('request_status')->value == 1) || array_intersect(['site_administrator','administrator'], $user->getRoles())
       ) {
         return AccessResult::allowed();
       } else {
@@ -209,9 +209,7 @@ class CustNodeController extends ControllerBase {
     if (!$group_id) {
       return FALSE;
     }
-    if (in_array('site_administrator', \Drupal::currentUser()
-                            ->getRoles()) || \Drupal::currentUser()->id() == 1
-    ) {
+    if (array_intersect(['site_administrator','administrator'], \Drupal::currentUser()->getRoles())) {
       return TRUE;
     }
     $group = \Drupal\group\Entity\Group::load($group_id);

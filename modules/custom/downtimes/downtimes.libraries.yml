@@ -58,7 +58,8 @@ downtimes.currentincidents:
 #      js/jquery.tablesorter.min.js: {}
       js/downtimes.js: {}
     css:
-      css/downtimes.css: {}
+      theme:
+        css/downtimes.css: {}
     
     dependencies:
       - core/jquery

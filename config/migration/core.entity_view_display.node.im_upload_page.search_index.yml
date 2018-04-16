@@ -22,7 +22,8 @@ content:
     label: above
     weight: 31
     type: file_default
-    settings: {  }
+    settings:
+      use_description_as_link_text: true
     third_party_settings: {  }
     region: content
   links:

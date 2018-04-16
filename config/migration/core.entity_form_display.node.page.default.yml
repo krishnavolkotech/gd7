@@ -81,6 +81,7 @@ hidden:
   field_page_links: true
   langcode: true
   promote: true
+  status: true
   sticky: true
   translation: true
   uid: true

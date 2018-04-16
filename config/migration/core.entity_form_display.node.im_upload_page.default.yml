@@ -48,6 +48,7 @@ hidden:
   langcode: true
   path: true
   promote: true
+  status: true
   sticky: true
   translation: true
   uid: true

@@ -17,7 +17,7 @@ function faqfield_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.faqfield':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The FAQ Field module defines a field for storing frequently asked questions, for use with the Field module. See the <a href="!field_ui">Field module help page</a> for more information about fields.', array('!field_ui' => \Drupal::url('help.page', array('name' => 'field_ui')))) . '</p>';
+      $output .= '<p>' . t('The FAQ Field module defines a field for storing frequently asked questions, for use with the Field module. See the <a href="!field_ui">Field module help page</a> for more information about fields.', ['!field_ui' => \Drupal::url('help.page', ['name' => 'field_ui'])]) . '</p>';
       return $output;
   }
 }
@@ -26,41 +26,41 @@ function faqfield_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_theme().
  */
 function faqfield_theme() {
-  return array(
+  return [
     // Simple text field formatter template.
-    'faqfield_simple_text_formatter' => array(
-      'variables' => array(
-        'question'      => NULL,
-        'answer'        => NULL,
+    'faqfield_simple_text_formatter' => [
+      'variables' => [
+        'question' => NULL,
+        'answer' => NULL,
         'answer_format' => NULL,
-        'delta'         => NULL,
-      ),
+        'delta' => NULL,
+      ],
       'template' => 'faqfield-simple-text-formatter',
-    ),
+    ],
     // Definition list field formatter template.
-    'faqfield_definition_list_formatter' => array(
-      'variables' => array(
-        'items' => array(),
-      ),
+    'faqfield_definition_list_formatter' => [
+      'variables' => [
+        'items' => [],
+      ],
       'template' => 'faqfield-definition-list-formatter',
-    ),
+    ],
     // Anchor list field formatter template.
-    'faqfield_anchor_list_formatter' => array(
-      'variables' => array(
-        'items'     => array(),
+    'faqfield_anchor_list_formatter' => [
+      'variables' => [
+        'items' => [],
         'list_type' => 'ul',
-      ),
+      ],
       'template' => 'faqfield-anchor-list-formatter',
-    ),
+    ],
     // jQuery Accordion field formatter template.
-    'faqfield_jquery_accordion_formatter' => array(
-      'variables' => array(
-        'items' => array(),
+    'faqfield_jquery_accordion_formatter' => [
+      'variables' => [
+        'items' => [],
         'id' => NULL,
-      ),
+      ],
       'template' => 'faqfield-jquery-accordion-formatter',
-    ),
-  );
+    ],
+  ];
 }
 
 /**

@@ -8,3 +8,8 @@ form_id: reroute_email_settings
 revision_log: null
 revision: null
 revision_information: null
+whitelist: denis@azrisolutions.com
+address: denis@azrisolutions.com
+enable: true
+description: true
+langcode: de

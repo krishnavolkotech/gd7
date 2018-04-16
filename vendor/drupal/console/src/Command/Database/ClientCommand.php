@@ -11,11 +11,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ProcessBuilder;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Command\Database\ConnectTrait;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Command\Shared\ConnectTrait;
 
-class ClientCommand extends ContainerAwareCommand
+class ClientCommand extends Command
 {
     use ConnectTrait;
 
@@ -33,7 +32,8 @@ class ClientCommand extends ContainerAwareCommand
                 $this->trans('commands.database.client.arguments.database'),
                 'default'
             )
-            ->setHelp($this->trans('commands.database.client.help'));
+            ->setHelp($this->trans('commands.database.client.help'))
+            ->setAliases(['dbc']);
     }
 
     /**
@@ -41,12 +41,10 @@ class ClientCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $database = $input->getArgument('database');
-        $learning = $input->hasOption('learning')?$input->getOption('learning'):false;
+        $learning = $input->getOption('learning');
 
-        $databaseConnection = $this->resolveConnection($io, $database);
+        $databaseConnection = $this->resolveConnection($database);
 
         $connection = sprintf(
             '%s -A --database=%s --user=%s --password=%s --host=%s --port=%s',
@@ -59,7 +57,7 @@ class ClientCommand extends ContainerAwareCommand
         );
 
         if ($learning) {
-            $io->commentBlock(
+            $this->getIo()->commentBlock(
                 sprintf(
                     $this->trans('commands.database.client.messages.connection'),
                     $connection
@@ -76,5 +74,7 @@ class ClientCommand extends ContainerAwareCommand
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());
         }
+
+        return 0;
     }
 }

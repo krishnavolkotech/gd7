@@ -18,7 +18,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 3
+    weight: 2
     settings:
       rows: 9
       summary_rows: 3
@@ -46,6 +46,7 @@ hidden:
   langcode: true
   path: true
   promote: true
+  status: true
   sticky: true
   translation: true
   uid: true

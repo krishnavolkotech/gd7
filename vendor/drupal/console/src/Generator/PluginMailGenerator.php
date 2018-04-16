@@ -7,30 +7,39 @@
 
 namespace Drupal\Console\Generator;
 
+use Drupal\Console\Core\Generator\Generator;
+use Drupal\Console\Extension\Manager;
+
 class PluginMailGenerator extends Generator
 {
     /**
-     * Generator Plugin Block.
-     *
-     * @param $module
-     * @param $class_name
-     * @param $label
-     * @param $plugin_id
-     * @param $services
+     * @var Manager
      */
-    public function generate($module, $class_name, $label, $plugin_id, $services)
+    protected $extensionManager;
+
+
+    /**
+     * PluginMailGenerator constructor.
+     *
+     * @param Manager $extensionManager
+     */
+    public function __construct(
+        Manager $extensionManager
+    ) {
+        $this->extensionManager = $extensionManager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $parameters)
     {
-        $parameters = [
-          'module' => $module,
-          'class_name' => $class_name,
-          'label' => $label,
-          'plugin_id' => $plugin_id,
-          'services' => $services,
-        ];
+        $module = $parameters['module'];
+        $class_name = $parameters['class_name'];
 
         $this->renderFile(
             'module/src/Plugin/Mail/mail.php.twig',
-            $this->getSite()->getPluginPath($module, 'Mail').'/'.$class_name.'.php',
+            $this->extensionManager->getPluginPath($module, 'Mail') . '/' . $class_name . '.php',
             $parameters
         );
     }

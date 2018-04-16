@@ -12,14 +12,62 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drupal\Component\Utility\Timer;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Annotations\DrupalCommand;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\simpletest\TestDiscovery;
+use Drupal\Core\Datetime\DateFormatter;
 
-class RunCommand extends ContainerAwareCommand
+/**
+ * @DrupalCommand(
+ *     extension = "simpletest",
+ *     extensionType = "module",
+ * )
+ */
+class RunCommand extends Command
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
+    protected $appRoot;
+
+    /**
+      * @var TestDiscovery
+      */
+    protected $test_discovery;
+
+
+    /**
+     * @var ModuleHandlerInterface
+     */
+    protected $moduleHandler;
+
+
+    /**
+     * @var DateFormatter
+     */
+    protected $dateFormatter;
+
+    /**
+     * RunCommand constructor.
+     *
+     * @param Site                   $site
+     * @param TestDiscovery          $test_discovery
+     * @param ModuleHandlerInterface $moduleHandler
+     */
+    public function __construct(
+        $appRoot,
+        TestDiscovery $test_discovery,
+        ModuleHandlerInterface $moduleHandler,
+        DateFormatter $dateFormatter
+    ) {
+        $this->appRoot = $appRoot;
+        $this->test_discovery = $test_discovery;
+        $this->moduleHandler = $moduleHandler;
+        $this->dateFormatter = $dateFormatter;
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this
@@ -37,21 +85,138 @@ class RunCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'url',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.test.run.arguments.url')
-            );
-
-
-        $this->addDependency('simpletest');
+            )
+            ->setAliases(['ter']);
     }
 
     /*
      * Set Server variable to be used in test cases.
      */
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        //Registers namespaces for disabled modules.
+        $this->test_discovery->registerTestNamespaces();
+
+        $testClass = $input->getArgument('test-class');
+        $testMethods = $input->getArgument('test-methods');
+
+        $url = $input->getOption('url');
+
+        if (!$url) {
+            $this->getIo()->error($this->trans('commands.test.run.messages.url-required'));
+            return null;
+        }
+
+        $this->setEnvironment($url);
+
+        // Create simpletest test id
+        $testId = db_insert('simpletest_test_id')
+          ->useDefaults(['test_id'])
+          ->execute();
+
+        if (is_subclass_of($testClass, 'PHPUnit_Framework_TestCase')) {
+            $this->getIo()->info($this->trans('commands.test.run.messages.phpunit-pending'));
+            return null;
+        } else {
+            if (!class_exists($testClass)) {
+                $this->getIo()->error(
+                    sprintf(
+                        $this->trans('commands.test.run.messages.invalid-class'),
+                        $testClass
+                    )
+                );
+
+                return 1;
+            }
+
+            $test = new $testClass($testId);
+            $this->getIo()->info($this->trans('commands.test.run.messages.starting-test'));
+            Timer::start('run-tests');
+
+            $test->run($testMethods);
+
+            $end = Timer::stop('run-tests');
+
+            $this->getIo()->simple(
+                $this->trans('commands.test.run.messages.test-duration') . ': ' .  $this->dateFormatter->formatInterval($end['time'] / 1000)
+            );
+            $this->getIo()->simple(
+                $this->trans('commands.test.run.messages.test-pass') . ': ' . $test->results['#pass']
+            );
+            $this->getIo()->commentBlock(
+                $this->trans('commands.test.run.messages.test-fail') . ': ' . $test->results['#fail']
+            );
+            $this->getIo()->commentBlock(
+                $this->trans('commands.test.run.messages.test-exception') . ': ' . $test->results['#exception']
+            );
+            $this->getIo()->simple(
+                $this->trans('commands.test.run.messages.test-debug') . ': ' . $test->results['#debug']
+            );
+
+            $this->moduleHandler->invokeAll(
+                'test_finished',
+                [$test->results]
+            );
+
+            $this->getIo()->newLine();
+            $this->getIo()->info($this->trans('commands.test.run.messages.test-summary'));
+            $this->getIo()->newLine();
+
+            $currentClass = null;
+            $currentGroup = null;
+            $currentStatus = null;
+
+            $messages = $this->simpletestScriptLoadMessagesByTestIds([$testId]);
+
+            foreach ($messages as $message) {
+                if ($currentClass === null || $currentClass != $message->test_class) {
+                    $currentClass = $message->test_class;
+                    $this->getIo()->comment($message->test_class);
+                }
+
+                if ($currentGroup === null || $currentGroup != $message->message_group) {
+                    $currentGroup =  $message->message_group;
+                }
+
+                if ($currentStatus === null || $currentStatus != $message->status) {
+                    $currentStatus =  $message->status;
+                    if ($message->status == 'fail') {
+                        $this->getIo()->error($this->trans('commands.test.run.messages.group') . ':' . $message->message_group . ' ' . $this->trans('commands.test.run.messages.status') . ':' . $message->status);
+                        $this->getIo()->newLine();
+                    } else {
+                        $this->getIo()->info($this->trans('commands.test.run.messages.group') . ':' . $message->message_group . ' ' . $this->trans('commands.test.run.messages.status') . ':' . $message->status);
+                        $this->getIo()->newLine();
+                    }
+                }
+
+                $this->getIo()->simple(
+                    $this->trans('commands.test.run.messages.file') . ': ' . str_replace($this->appRoot, '', $message->file)
+                );
+                $this->getIo()->simple(
+                    $this->trans('commands.test.run.messages.method') . ': ' . $message->function
+                );
+                $this->getIo()->simple(
+                    $this->trans('commands.test.run.messages.line') . ': ' . $message->line
+                );
+                $this->getIo()->simple(
+                    $this->trans('commands.test.run.messages.message') . ': ' . $message->message
+                );
+                $this->getIo()->newLine();
+            }
+            return null;
+        }
+    }
+
     protected function setEnvironment($url)
     {
-        $base_url = '';
+        $base_url = 'http://';
         $port = '80';
 
         $parsed_url = parse_url($url);
@@ -70,8 +235,6 @@ class RunCommand extends ContainerAwareCommand
 
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
             $base_url = 'https://';
-        } else {
-            $base_url = 'http://';
         }
         $base_url .= $host;
         if ($path !== '') {
@@ -84,124 +247,27 @@ class RunCommand extends ContainerAwareCommand
         $_SERVER['SERVER_PORT'] = $port;
         $_SERVER['SERVER_SOFTWARE'] = null;
         $_SERVER['SERVER_NAME'] = 'localhost';
-        $_SERVER['REQUEST_URI'] = $path .'/';
+        $_SERVER['REQUEST_URI'] = $path . '/';
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['SCRIPT_NAME'] = $path .'/index.php';
-        $_SERVER['SCRIPT_FILENAME'] = $path .'/index.php';
-        $_SERVER['PHP_SELF'] = $path .'/index.php';
+        $_SERVER['SCRIPT_NAME'] = $path . '/index.php';
+        $_SERVER['SCRIPT_FILENAME'] = $path . '/index.php';
+        $_SERVER['PHP_SELF'] = $path . '/index.php';
         $_SERVER['HTTP_USER_AGENT'] = 'Drupal Console';
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $io = new DrupalStyle($input, $output);
-
-        //Registers namespaces for disabled modules.
-        $this->getTestDiscovery()->registerTestNamespaces();
-
-        $testClass = $input->getArgument('test-class');
-        $testMethods = $input->getArgument('test-methods');
-
-        $url = $input->getOption('url');
-
-        if (!$url) {
-            $io->error($this->trans('commands.test.run.messages.url-required'));
-            return;
-        }
-
-        $this->setEnvironment($url);
-
-        // Create simpletest test id
-        $testId = db_insert('simpletest_test_id')
-          ->useDefaults(array('test_id'))
-          ->execute();
-
-        if (is_subclass_of($testClass, 'PHPUnit_Framework_TestCase')) {
-            $io->info($this->trans('commands.test.run.messages.phpunit-pending'));
-            return;
-        } else {
-            if (!class_exists($testClass)) {
-                $io->error(
-                    sprintf(
-                        $this->trans('commands.test.run.messages.invalid-class'),
-                        $testClass
-                    )
-                );
-
-                return 1;
-            }
-
-            $test = new $testClass($testId);
-            $io->info($this->trans('commands.test.run.messages.starting-test'));
-            Timer::start('run-tests');
-
-            $test->run($testMethods);
-
-            $end = Timer::stop('run-tests');
-
-            $io->simple($this->trans('commands.test.run.messages.test-duration') . ': ' .  \Drupal::service('date.formatter')->formatInterval($end['time'] / 1000));
-            $io->simple($this->trans('commands.test.run.messages.test-pass') . ': ' . $test->results['#pass']);
-            $io->commentBlock($this->trans('commands.test.run.messages.test-fail') . ': ' . $test->results['#fail']);
-            $io->commentBlock($this->trans('commands.test.run.messages.test-exception') . ': ' . $test->results['#exception']);
-            $io->simple($this->trans('commands.test.run.messages.test-debug') . ': ' . $test->results['#debug']);
-
-            $this->getModuleHandler()->invokeAll('test_finished', array($test->results));
-
-            $io->newLine();
-            $io->info($this->trans('commands.test.run.messages.test-summary'));
-            $io->newLine();
-
-            $currentClass = null;
-            $currentGroup = null;
-            $currentStatus = null;
-
-            $messages = $this->simpletestScriptLoadMessagesByTestIds(array($testId));
-
-            foreach ($messages as $message) {
-                if ($currentClass === null || $currentClass != $message->test_class) {
-                    $currentClass = $message->test_class;
-                    $io->comment($message->test_class);
-                }
-
-                if ($currentGroup === null || $currentGroup != $message->message_group) {
-                    $currentGroup =  $message->message_group;
-                }
-
-                if ($currentStatus === null || $currentStatus != $message->status) {
-                    $currentStatus =  $message->status;
-                    if ($message->status == 'fail') {
-                        $io->error($this->trans('commands.test.run.messages.group') . ':' . $message->message_group . ' ' . $this->trans('commands.test.run.messages.status') . ':' . $message->status);
-                        $io->newLine();
-                    } else {
-                        $io->info($this->trans('commands.test.run.messages.group') . ':' . $message->message_group . ' ' . $this->trans('commands.test.run.messages.status') . ':' . $message->status);
-                        $io->newLine();
-                    }
-                }
-
-                $io->simple($this->trans('commands.test.run.messages.file') . ': ' . str_replace($this->getDrupalHelper()->getRoot(), '', $message->file));
-                $io->simple($this->trans('commands.test.run.messages.method') . ': ' . $message->function);
-                $io->simple($this->trans('commands.test.run.messages.line') . ': ' . $message->line);
-                $io->simple($this->trans('commands.test.run.messages.message') . ': ' . $message->message);
-                $io->newLine();
-            }
-            return;
-        }
     }
 
     /*
      * Get Simletests log after execution
      */
+
     protected function simpletestScriptLoadMessagesByTestIds($test_ids)
     {
-        $results = array();
+        $results = [];
 
         foreach ($test_ids as $test_id) {
             $result = \Drupal::database()->query(
-                "SELECT * FROM {simpletest} WHERE test_id = :test_id ORDER BY test_class, message_group, status", array(
+                "SELECT * FROM {simpletest} WHERE test_id = :test_id ORDER BY test_class, message_group, status", [
                 ':test_id' => $test_id,
-                )
+                ]
             )->fetchAll();
             if ($result) {
                 $results = array_merge($results, $result);

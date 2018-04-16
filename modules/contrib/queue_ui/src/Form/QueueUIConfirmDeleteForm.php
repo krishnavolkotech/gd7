@@ -4,11 +4,14 @@ namespace Drupal\queue_ui\Form;
 
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class QueueUIConfirmDeleteForm
+ * @package Drupal\queue_ui\Form
+ */
 class QueueUIConfirmDeleteForm extends ConfirmFormBase {
 
   /**
@@ -16,12 +19,17 @@ class QueueUIConfirmDeleteForm extends ConfirmFormBase {
    */
   private $tempStoreFactory;
 
+  /**
+   * QueueUIConfirmDeleteForm constructor.
+   * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
+   */
   public function __construct(PrivateTempStoreFactory $temp_store_factory) {
     $this->tempStoreFactory = $temp_store_factory;
   }
 
   /**
-   * {@inheritdoc}
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @return static
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -29,10 +37,16 @@ class QueueUIConfirmDeleteForm extends ConfirmFormBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getFormId() {
     return 'queue_ui_confirm_delete_form';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Retrieve the queues to be deleted from the temp store.
     $queues = $this->tempStoreFactory
@@ -45,6 +59,9 @@ class QueueUIConfirmDeleteForm extends ConfirmFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getQuestion() {
     $queues = $this->tempStoreFactory
       ->get('queue_ui_delete_queues')
@@ -53,14 +70,23 @@ class QueueUIConfirmDeleteForm extends ConfirmFormBase {
     return $this->formatPlural(count($queues), 'Are you sure you want to delete the queue?', 'Are you sure you want to delete @count queues?');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getDescription() {
     return t('All items in each queue will be deleted, regardless of if leases exist. This operation cannot be undone.');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getCancelUrl() {
     return new Url('queue_ui.overview_form');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $queues = $this->tempStoreFactory
       ->get('queue_ui_delete_queues')

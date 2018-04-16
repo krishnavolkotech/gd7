@@ -529,7 +529,7 @@ display:
       link_url: ''
       link_display: page_1
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -956,7 +956,7 @@ display:
           entity_field: gid
           plugin_id: standard
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'

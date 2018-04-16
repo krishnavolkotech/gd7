@@ -7,11 +7,17 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Url;
+use Drupal\queue_ui\QueueUI;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Class QueueUIOverviewForm
+ * @package Drupal\queue_ui\Form
+ */
 class QueueUIOverviewForm extends FormBase {
 
   /**
@@ -45,11 +51,12 @@ class QueueUIOverviewForm extends FormBase {
   /**
    * The database connection.
    *
-   * @var \Drupal\Core\Database\Database
+   * @var \Drupal\Core\Database\Connection
    */
   protected $dbConnection;
 
   /**
+   * QueueUIOverviewForm constructor.
    * @param \Drupal\Core\Queue\QueueFactory $queue_factory
    * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
    * @param \Drupal\Core\Session\AccountInterface $current_user
@@ -63,7 +70,10 @@ class QueueUIOverviewForm extends FormBase {
     $this->dbConnection = Database::getConnection('default');
   }
 
-
+  /**
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @return static
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('queue'),
@@ -73,12 +83,17 @@ class QueueUIOverviewForm extends FormBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getFormId() {
     return 'queue_ui_overview_form';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // @todo add inspection back
     // @todo activation status
 
     $header = [
@@ -86,14 +101,13 @@ class QueueUIOverviewForm extends FormBase {
       'items' => t('Number of items'),
       'class' => t('Class'),
       'cron' => t('Time limit per cron run'),
-//      'inspect' => t('Inspect'),
+      'operations' => t('Operations'),
     ];
     // Get queues defined by plugins.
     $defined_queues = queue_ui_defined_queues();
-    // Get queues names.
-
 
     $options = [];
+    // Get queues names.
     foreach ($defined_queues as $name => $queue_definition) {
       /** @var QueueInterface $queue */
       $queue = $this->queueFactory->get($name);
@@ -101,11 +115,7 @@ class QueueUIOverviewForm extends FormBase {
       $namespace = explode('\\', get_class($queue));
       $class_name = array_pop($namespace);
 
-//      $class_info = QueueUI::get('Drupal\queue_ui\QueueUI' . $class_name);
-
-      $inspect = FALSE;
-
-      $title = (string)$queue_definition['title'];
+      $title = (string) $queue_definition['title'];
 
       if (isset($queue_definition['cron']['time']) && $queue_definition['cron']['time'] != 0) {
         $cron_time_limit = $this->formatPlural($queue_definition['cron']['time'], '@count second', '@count seconds');
@@ -114,24 +124,29 @@ class QueueUIOverviewForm extends FormBase {
         $cron_time_limit = $this->t('Off');
       }
 
-//        if (is_object($class_info) && $class_info->inspect) {
-//          $inspect = TRUE;
-//        }
+      $operations = [];
+
+      $class_info = QueueUI::get('Drupal\queue_ui\QueueUI' . $class_name);
+      // If queue inspection is enabled for this class
+      if (is_object($class_info) && $class_info->inspect) {
+        $operations['inspect'] = [
+          'title' => t('Inspect'),
+          'url' => Url::fromUserInput("/" . QUEUE_UI_BASE . "/inspect/$name"),
+        ];
+      }
 
       $options[$name] = [
         'title' => $title,
         'items' => $queue->numberOfItems(),
         'class' => $class_name,
         'cron' => $cron_time_limit,
+        'operations' => [
+          'data' => [
+            '#type' => 'dropbutton',
+            '#links' => $operations,
+          ],
+        ],
       ];
-
-//        // If queue inspection is enabled for this class, add to the options array.
-//        if ($inspect) {
-//          $options[$name]['inspect'] = array('data' => l(t('Inspect'), QUEUE_UI_BASE . "/inspect/$name"));
-//        }
-//        else {
-//          $options[$name]['inspect'] = '';
-//        }
     }
 
     $form['top'] = [
@@ -181,7 +196,11 @@ class QueueUIOverviewForm extends FormBase {
     ];
 
     // Specify our step submit callback.
-    $form['step_submit'] = ['#type' => 'value', '#value' => 'queue_ui_overview_submit'];
+    $form['step_submit'] = [
+      '#type' => 'value',
+      '#value' => 'queue_ui_overview_submit'
+    ];
+
     return $form;
   }
 
@@ -191,14 +210,20 @@ class QueueUIOverviewForm extends FormBase {
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {}
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+  }
 
   /**
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
   public function submitBulkForm(array &$form, FormStateInterface $form_state) {
-    if (in_array($form_state->getValue('operation'), ['submitBatch', 'submitCron', 'submitRelease', 'submitClear'])) {
+    if (in_array($form_state->getValue('operation'), [
+      'submitBatch',
+      'submitCron',
+      'submitRelease',
+      'submitClear'
+    ])) {
       $selected_queues = array_filter($form_state->getValue('queues'));
 
       if (!empty($selected_queues)) {
@@ -210,10 +235,10 @@ class QueueUIOverviewForm extends FormBase {
   /**
    * Process queue(s) with batch.
    *
-   * @param $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param $queues
    */
-  public function submitBatch($form_state, $queues) {
+  public function submitBatch(FormStateInterface $form_state, $queues) {
     $batch = [
       'operations' => []
     ];
@@ -223,7 +248,10 @@ class QueueUIOverviewForm extends FormBase {
 
       if ($queue->numberOfItems()) {
         foreach (range(1, $queue->numberOfItems()) as $index) {
-          $batch['operations'][] = ['\Drupal\queue_ui\QueueUIBatch::step', [$queue_name]];
+          $batch['operations'][] = [
+            '\Drupal\queue_ui\QueueUIBatch::step',
+            [$queue_name]
+          ];
         }
       }
     }
@@ -234,10 +262,10 @@ class QueueUIOverviewForm extends FormBase {
   /**
    * Option to run via cron.
    *
-   * @param $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param $queues
    */
-  public function submitCron($form_state, $queues) {
+  public function submitCron(FormStateInterface $form_state, $queues) {
     foreach ($queues as $name) {
       $this->state->set('queue_ui_cron_' . $name, 10);
     }
@@ -249,10 +277,10 @@ class QueueUIOverviewForm extends FormBase {
   /**
    * Option to remove lease timestamps.
    *
-   * @param $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param $queues
    */
-  public function submitRelease($form_state, $queues) {
+  public function submitRelease(FormStateInterface $form_state, $queues) {
     foreach ($queues as $name) {
       $num_updated = $this->dbConnection->update('queue')
         ->fields([
@@ -260,18 +288,23 @@ class QueueUIOverviewForm extends FormBase {
         ])
         ->condition('name', $name, '=')
         ->execute();
-      drupal_set_message(t('@count lease reset in queue @name', ['@count' => $num_updated, '@name' => $name]));
+
+      drupal_set_message(t('@count lease reset in queue @name', [
+        '@count' => $num_updated,
+        '@name' => $name
+      ]));
     }
   }
 
   /**
    * Option to delete queue.
    *
-   * @param $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param $queues
    */
-  public function submitClear($form_state, $queues) {
-    $this->tempStoreFactory->get('queue_ui_delete_queues')->set($this->currentUser->id(), $queues);
+  public function submitClear(FormStateInterface $form_state, $queues) {
+    $this->tempStoreFactory->get('queue_ui_delete_queues')
+      ->set($this->currentUser->id(), $queues);
 
     $form_state->setRedirect('queue_ui.confirm_delete_form');
   }

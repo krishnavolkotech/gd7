@@ -76,8 +76,12 @@ class SolrFieldTypeListBuilder extends ConfigEntityListBuilder {
       try {
         /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
         $backend = $this->getBackend();
-        $solr_version = $backend->getSolrConnector()->getSolrVersion();
         $domain = $backend->getDomain();
+        $solr_version = $backend->getSolrConnector()->getSolrVersion();
+        if (version_compare($solr_version, '0.0.0', '==')) {
+          $solr_version = '9999.0.0';
+          throw new SearchApiSolrException();
+        }
       }
       catch (SearchApiSolrException $e) {
         $operator = '<=';
@@ -232,7 +236,17 @@ class SolrFieldTypeListBuilder extends ConfigEntityListBuilder {
           foreach ($dynamic_field as $attribute => $value) {
             $xml .= $attribute . '="' . (is_bool($value) ? ($value ? 'true' : 'false') : $value) . '" ';
           }
-          $xml .= " />\n";
+          $xml .= "/>\n";
+        }
+        if (version_compare($target_solr_version, '6.0.0', '>=')) {
+          // On Solr 6 we're not in that "legacy mode" and inside an fields tag.
+          foreach ($solr_field_type->getCopyFields() as $copy_field) {
+            $xml .= $indentation . '<copyField ';
+            foreach ($copy_field as $attribute => $value) {
+              $xml .= $attribute . '="' . (is_bool($value) ? ($value ? 'true' : 'false') : $value) . '" ';
+            }
+            $xml .= "/>\n";
+          }
         }
       }
     }

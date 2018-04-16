@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikSearchTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\simpletest\WebTestBase;
@@ -80,7 +75,7 @@ class PiwikSearchTest extends WebTestBase {
 
     // Save the node.
     $this->drupalPostForm('node/add/page', $edit, t('Save'));
-    $this->assertRaw(t('@type %title has been created.', ['@type' => 'Basic page', '%title' => $edit['title[0][value]']]), 'Basic page created.');
+    $this->assertText(t('@type @title has been created.', ['@type' => 'Basic page', '@title' => $edit['title[0][value]']]), 'Basic page created.');
 
     // Index the node or it cannot found.
     $this->cronRun();
@@ -90,7 +85,7 @@ class PiwikSearchTest extends WebTestBase {
     $this->assertRaw('window.piwik_search_results = 1;', '[testPiwikSearch]: One search result found.');
 
     $this->drupalPostForm('node/add/page', $edit, t('Save'));
-    $this->assertRaw(t('@type %title has been created.', ['@type' => 'Basic page', '%title' => $edit['title[0][value]']]), 'Basic page created.');
+    $this->assertText(t('@type @title has been created.', ['@type' => 'Basic page', '@title' => $edit['title[0][value]']]), 'Basic page created.');
 
     // Index the node or it cannot found.
     $this->cronRun();

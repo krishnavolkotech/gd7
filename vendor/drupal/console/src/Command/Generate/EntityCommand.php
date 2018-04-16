@@ -10,11 +10,10 @@ namespace Drupal\Console\Command\Generate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ModuleTrait;
-use Drupal\Console\Command\GeneratorCommand;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Command\Shared\ModuleTrait;
 
-abstract class EntityCommand extends GeneratorCommand
+abstract class EntityCommand extends Command
 {
     use ModuleTrait;
     private $entityType;
@@ -95,27 +94,20 @@ abstract class EntityCommand extends GeneratorCommand
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $commandKey = str_replace(':', '.', $this->commandName);
-        $utils = $this->getStringHelper();
+        $utils = $this->stringConverter;
 
         // --module option
-        $module = $input->getOption('module');
-        if (!$module) {
-            // @see Drupal\Console\Command\ModuleTrait::moduleQuestion
-            $module = $this->moduleQuestion($io);
-            $input->setOption('module', $module);
-        }
+        $this->getModuleOption();
 
         // --entity-class option
         $entityClass = $input->getOption('entity-class');
         if (!$entityClass) {
-            $entityClass = $io->ask(
+            $entityClass = $this->getIo()->ask(
                 $this->trans('commands.'.$commandKey.'.questions.entity-class'),
                 'DefaultEntity',
                 function ($entityClass) {
-                    return $this->validateSpaces($entityClass);
+                    return $this->validator->validateSpaces($entityClass);
                 }
             );
 
@@ -125,11 +117,11 @@ abstract class EntityCommand extends GeneratorCommand
         // --entity-name option
         $entityName = $input->getOption('entity-name');
         if (!$entityName) {
-            $entityName = $io->ask(
+            $entityName = $this->getIo()->ask(
                 $this->trans('commands.'.$commandKey.'.questions.entity-name'),
                 $utils->camelCaseToMachineName($entityClass),
                 function ($entityName) {
-                    return $this->validateMachineName($entityName);
+                    return $this->validator->validateMachineName($entityName);
                 }
             );
             $input->setOption('entity-name', $entityName);
@@ -138,7 +130,7 @@ abstract class EntityCommand extends GeneratorCommand
         // --label option
         $label = $input->getOption('label');
         if (!$label) {
-            $label = $io->ask(
+            $label = $this->getIo()->ask(
                 $this->trans('commands.'.$commandKey.'.questions.label'),
                 $utils->camelCaseToHuman($entityClass)
             );
@@ -150,7 +142,7 @@ abstract class EntityCommand extends GeneratorCommand
         if (!$base_path) {
             $base_path = $this->getDefaultBasePath();
         }
-        $base_path = $io->ask(
+        $base_path = $this->getIo()->ask(
             $this->trans('commands.'.$commandKey.'.questions.base-path'),
             $base_path
         );
@@ -159,10 +151,6 @@ abstract class EntityCommand extends GeneratorCommand
             $base_path = '/' . $base_path;
         }
         $input->setOption('base-path', $base_path);
-    }
-
-    protected function createGenerator()
-    {
     }
 
     /**

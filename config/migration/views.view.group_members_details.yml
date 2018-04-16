@@ -259,7 +259,7 @@ display:
       link_url: ''
       link_display: page_1
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -309,7 +309,7 @@ display:
         enabled: true
         expanded: false
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'

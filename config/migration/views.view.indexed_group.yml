@@ -135,7 +135,7 @@ display:
             precision: 0
             decimal: .
             format_plural: false
-            format_plural_string: "1\x03@count"
+            format_plural_string: !!binary MQNAY291bnQ=
             prefix: ''
             suffix: ''
             link_to_item: false
@@ -224,7 +224,7 @@ display:
       arguments: {  }
       display_extenders: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
@@ -239,7 +239,7 @@ display:
       display_extenders: {  }
       path: indexed-group
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'

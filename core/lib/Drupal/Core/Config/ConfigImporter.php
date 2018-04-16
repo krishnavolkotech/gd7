@@ -788,9 +788,8 @@ class ConfigImporter {
       // services.
       $this->reInjectMe();
       // During a module install or uninstall the container is rebuilt and the
-      // module handler is called from drupal_get_complete_schema(). This causes
-      // the container's instance of the module handler not to have loaded all
-      // the enabled modules.
+      // module handler is called. This causes the container's instance of the
+      // module handler not to have loaded all the enabled modules.
       $this->moduleHandler->loadAll();
     }
     if ($type == 'theme') {
@@ -862,7 +861,6 @@ class ConfigImporter {
             $entity_storage = $this->configManager->getEntityManager()->getStorage($entity_type_id);
             $entity_type = $this->configManager->getEntityManager()->getDefinition($entity_type_id);
             $entity = $entity_storage->load($entity_storage->getIDFromConfigName($name, $entity_type->getConfigPrefix()));
-            if($entity)
             $entity->delete();
             $this->logError($this->t('Deleted and replaced configuration entity "@name"', ['@name' => $name]));
           }
