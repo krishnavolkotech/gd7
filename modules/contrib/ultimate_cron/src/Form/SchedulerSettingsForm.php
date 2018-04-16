@@ -1,7 +1,4 @@
 <?php
-/**
- * Contains \Drupal\ultimate_cron\Form\SchedulerSettingsForm.
- */
 
 namespace Drupal\ultimate_cron\Form;
 

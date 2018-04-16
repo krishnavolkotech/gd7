@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\CronJobListBuilder.
- */
-
 namespace Drupal\ultimate_cron;
 
 use Drupal\Core\Config\Entity\DraggableListBuilder;

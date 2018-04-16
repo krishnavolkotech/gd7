@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\CronJobInterface.
- */
 
 namespace Drupal\ultimate_cron;
 
@@ -224,8 +220,15 @@ interface CronJobInterface extends ConfigEntityInterface {
 
   /**
    * Run job.
+   *
+   * @param string $init_message
+   *   (optional) The launch message. If left NULL, a default message will be
+   *   displayed.
+   *
+   * @return bool
+   *   TRUE if the job is ran, FALSE otherwise.
    */
-  public function run();
+  public function run($init_message = NULL);
 
   /**
    * Get log entries.

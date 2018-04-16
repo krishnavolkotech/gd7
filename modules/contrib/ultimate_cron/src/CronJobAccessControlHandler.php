@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\CronJobAccessControlHandler.
- */
-
 namespace Drupal\ultimate_cron;
 
 use Drupal\Core\Access\AccessResult;

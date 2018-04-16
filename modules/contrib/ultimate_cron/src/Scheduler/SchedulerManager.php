@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Scheduler\SchedulerManager.
- */
-
 namespace Drupal\ultimate_cron\Scheduler;
 
 use Drupal\Core\Cache\CacheBackendInterface;

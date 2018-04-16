@@ -21,20 +21,19 @@ use Drupal\ultimate_cron\CronPlugin;
  */
 abstract class LoggerBase extends CronPlugin implements LoggerInterface {
   static public $log_entries = NULL;
-  public $logEntryClass = '\Drupal\ultimate_cron\Logger\LogEntry';
 
   /**
    * {@inheritdoc}
    */
   public function factoryLogEntry($name) {
-    return new $this->logEntryClass($name, $this);
+    return new LogEntry($name, $this);
   }
 
   /**
    * {@inheritdoc}
    */
   public function createEntry($name, $lock_id, $init_message = '', $log_type = ULTIMATE_CRON_LOG_TYPE_NORMAL) {
-    $log_entry = new $this->logEntryClass($name, $this, $log_type);
+    $log_entry = new LogEntry($name, $this, $log_type);
 
     $log_entry->lid = $lock_id;
     $log_entry->start_time = microtime(TRUE);
