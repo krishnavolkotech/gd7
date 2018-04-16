@@ -1,9 +1,9 @@
 reroute_email_enable: 1
-reroute_email_address: betriebsportal-konsens@hzd.hessen.de
+reroute_email_address: denis.roy@hzd.hessen.de
 reroute_email_enable_message: 1
 actions: null
-form_build_id: form-xo6R7tzMKqDpHuo8KreEL83tJGsRTs4zBV1J0vWga5Y
-form_token: rAmja9mISpCwmUBL1EbfbTqpMraFgK9KYAjCMq-8vck
+form_build_id: form-ZNAq9S55MQrL4otLemJJnAcVB-PzUeRKfK_lNrEP6k4
+form_token: l_gC_I4ljU65x3osQ2GU9pJF6KTk7QgttvP1cs8pFls
 form_id: reroute_email_settings
 revision_log: null
 revision: null
