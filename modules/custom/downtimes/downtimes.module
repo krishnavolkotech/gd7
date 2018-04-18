@@ -182,13 +182,13 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     $form['services_effected']['#description'] = $service_description;
     $form['#validate'][] = 'downtimes_validate';
-    if ($form_id == 'node_downtimes_edit_form') {
-      foreach (array_keys($form['actions']) as $action) {
-        if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-          //$form['actions'][$action]['#submit'][] = 'custom_maintenance_submit';
-        }
-      }
-    }
+    // if ($form_id == 'node_downtimes_edit_form') {
+    //   foreach (array_keys($form['actions']) as $action) {
+    //     if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+    //       //$form['actions'][$action]['#submit'][] = 'custom_maintenance_submit';
+    //     }
+    //   }
+    // }
     unset($form['actions']['unpublish']);
     if (isset($form['actions']['publish'])) {
         $form['actions']['publish']['#submit'][] = 'custom_maintenance_submit';
@@ -201,7 +201,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
             "title" => t("Please wait until the page loads after saving and do not submit the form several times."),
         );
     } else {
-        $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+        // $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
+        array_unshift($form['actions']['submit']['#submit'],'custom_maintenance_submit');
         # Disable submit button after click to avoid multiple submission
         $form['actions']['submit']['#attributes'] = array(
             "onclick" => "
@@ -704,6 +705,10 @@ function downtimes_node_update($node) {
       ->fields($record)
       ->condition('downtime_id', $node->id())
       ->execute();
+      //Handling Custom revisions. so forwarding $form, $formstate
+      global $downTimeForm;
+      global $downtimeFormState;
+      custom_maintenance_downtime_update($downTimeForm, $downtimeFormState, $node);
   } elseif ($node->getType() == 'service_profile') {
     saveServiceTime($node, $_POST);
     saveMaintenanceWindows($node, $_POST);
@@ -988,11 +993,18 @@ function check_downtime_status(&$form, &$form_state) {
   }
 }
 
+function custom_maintenance_submit(&$form, $form_state){
+  global $downTimeForm;
+  global $downtimeFormState;
+  $downTimeForm = $form;
+  $downtimeFormState = $form_state;
+}
 /*
  * Custom validation handler for maintenance node.
  */
 
-function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
+function custom_maintenance_downtime_update(&$form, FormStateInterface $form_state, $node) {
+// pr(32112);exit;
   $log = array();
   $form_values = $form;
   //Startdate log.
@@ -1094,7 +1106,7 @@ function custom_maintenance_submit(&$form, FormStateInterface $form_state) {
     $conn = \Drupal::database();
     $conn->insert('downtimes_logs')->fields(
       array(
-        'downtime_id' => $form_state->getValue('nid'),
+        'downtime_id' => $node->id(),
         'uid' => \Drupal::currentUser()->id(),
         'updated' => REQUEST_TIME,
         'log' => serialize($log),
