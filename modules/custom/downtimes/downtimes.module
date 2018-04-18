@@ -683,7 +683,7 @@ function downtimes_node_update($node) {
     $record['state_id'] = implode(',', $data['states']);
     $record['description'] = $node->get('body')->value;
     $record['service_id'] = implode(',', $data['services_effected']);
-    if(!empty($data['enddate_planned'])) {
+    if(isset($data['enddate_planned'])) {
         $record['enddate_planned'] = !empty($data['enddate_planned']) ? get_unix_timestamp($data['enddate_planned']) : 0;
     }
     
@@ -1031,7 +1031,7 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
       $enddate_old = '';
   }
 //  $enddate_old = $form_values['dates']['end']['enddate_planned']['#default_value'];
-  if (!empty($form_state->getValue('enddate_planned'))) {
+  if ($form_state->hasValue('enddate_planned')) {
     $enddate_new = $form_state->getValue('enddate_planned');
   } else {
     $enddate_new = "";
@@ -1039,7 +1039,7 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
   
   if ($enddate_old != $enddate_new) {
     $log['end_date']['old'] = !empty($enddate_old) ? $enddate_old : 0;
-    $log['end_date']['new'] = $enddate_new;
+    $log['end_date']['new'] = !empty($enddate_new) ? $enddate_new : 0;
   }
   /* if (strcmp(trim(str_replace("Uhr", "", $form['#node']->enddate_planned)), trim($form_state['values']['enddate_planned']))) {
     $log['end_date']['old'] = trim(str_replace("Uhr", "", $form['#node']->enddate_planned));

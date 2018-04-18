@@ -532,7 +532,7 @@ function downtimes_revisions($node) {
         $logData[$order['reason']] = t("@label: ", ['@label' => $labels['reason']]);
       }
       ksort($logData);
-      $items[] = [
+      $tempItem = [
         'items' => [
           '#title' => $text . " von " . custom_user_fullname($value['uid']) . ' am ' . DateTimePlus::createFromTimestamp((integer) $value['updated'])
               ->format('d.m.Y - H:i') . ' Uhr',
@@ -540,12 +540,16 @@ function downtimes_revisions($node) {
           '#theme' => 'item_list',
           '#type' => 'ul',
         ],
-        'reason' => [
+      ];
+      if(!empty($reason)){
+        $tempItem['reason'] = [
           '#type' => 'container',
           '#attributes' => ['class' => ['reason']],
           'markup' => ['#markup' => Markup::create(trim($reason))]
-        ]
-      ];
+        ];
+      }
+      $items[] = $tempItem;
+      unset($tempItem);
     }
   }
   if ($hasFirstLog === FALSE || empty($query)) {
