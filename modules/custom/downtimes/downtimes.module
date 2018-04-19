@@ -654,6 +654,9 @@ function downtimes_node_insert($node) {
     $record['reason'] = !empty($data['reason_for_noncompliance']) ? $data['reason_for_noncompliance'] : 0;
     $record['scheduled_p'] = $data['downtime_type'];
     db_insert('downtimes')->fields((array)$record)->execute();
+    global $downTimeForm;
+    global $downtimeFormState;
+    custom_maintenance_downtime_update($downTimeForm, $downtimeFormState, $node);
     
 //    $group = \Drupal::routeMatch()->getParameter('group');
 //    if(empty($group)){
