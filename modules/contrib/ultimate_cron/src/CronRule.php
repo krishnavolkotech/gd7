@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * This class parses cron rules and determines last execution time using least case integer comparison.
- */
 
 namespace Drupal\ultimate_cron;
 

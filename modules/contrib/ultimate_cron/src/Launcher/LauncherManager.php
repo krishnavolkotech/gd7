@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Launcher\LauncherManager.
- */
-
 namespace Drupal\ultimate_cron\Launcher;
 
 use Drupal\Core\Cache\CacheBackendInterface;

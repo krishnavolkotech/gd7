@@ -2,6 +2,7 @@
 
 namespace Drupal\ultimate_cron\Plugin\ultimate_cron\Logger;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseException;
@@ -27,11 +28,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, ContainerFactoryPluginInterface {
-  public $options = array();
 
   const CLEANUP_METHOD_DISABLED = 1;
   const CLEANUP_METHOD_EXPIRE = 2;
   const CLEANUP_METHOD_RETAIN = 3;
+
+  /**
+   * Max length for message and init message fields.
+   */
+  const MAX_TEXT_LENGTH = 5000;
 
   /**
    * @var \Drupal\Core\Database\Connection
@@ -43,14 +48,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, Connection $connection) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-
     $this->connection = $connection;
-
-    $this->options['method'] = array(
-      static::CLEANUP_METHOD_DISABLED => t('Disabled'),
-      static::CLEANUP_METHOD_EXPIRE => t('Remove logs older than a specified age'),
-      static::CLEANUP_METHOD_RETAIN => t('Retain only a specific amount of log entries'),
-    );
   }
 
   /**
@@ -59,7 +57,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static ($configuration, $plugin_id, $plugin_definition, $container->get('database'));
   }
-  
+
 
   /**
    * {@inheritdoc}
@@ -79,6 +77,8 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
     $jobs = CronJob::loadMultiple();
     $current = 1;
     $max = 0;
+    $counter = 0;
+    $count_deleted = [];
     foreach ($jobs as $job) {
       if ($job->getLoggerId() === $this->getPluginId()) {
         $max++;
@@ -87,13 +87,24 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
     foreach ($jobs as $job) {
       if ($job->getLoggerId() === $this->getPluginId()) {
         // Get the plugin through the job so it has the right configuration.
-        $job->getPlugin('logger')->cleanupJob($job);
+        $counter = $job->getPlugin('logger')->cleanupJob($job);
         $class = \Drupal::entityTypeManager()->getDefinition('ultimate_cron_job')->getClass();
         if ($class::$currentJob) {
           $class::$currentJob->setProgress($current / $max);
           $current++;
         }
+        if ($counter) {
+          // Store number of deleted messages for each job.
+          $count_deleted[$job->id()] = $counter;
+        }
       }
+    }
+    if ($count_deleted) {
+      \Drupal::logger('database_logger')
+        ->info('@count_entries log entries removed for @jobs_count jobs', array(
+          '@count_entries' => array_sum($count_deleted),
+          '@jobs_count' => count($count_deleted),
+        ));
     }
   }
 
@@ -152,35 +163,18 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
           ->execute();
       }
     } while ($lids && $max > 0);
-    if ($count) {
-      \Drupal::logger('database_logger')->info('@count log entries removed for job @name', array(
-        '@count' => $count,
-        '@name' => $job->id(),
-      ));
-    }
+    return $count;
   }
 
   /**
    * {@inheritdoc}
-   */
-  public function settingsLabel($name, $value) {
-    switch ($name) {
-      case 'method':
-        return $this->options[$name][$value];
-    }
-    return parent::settingsLabel($name, $value);
-
-  }
-
-  /**
-   * Settings form.
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['method'] = array(
       '#type' => 'select',
       '#title' => t('Log entry cleanup method'),
       '#description' => t('Select which method to use for cleaning up logs.'),
-      '#options' => $this->options['method'],
+      '#options' => $this->getMethodOptions(),
       '#default_value' => $this->configuration['method'],
     );
 
@@ -228,7 +222,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
         ->fields('l')
         ->condition('l.lid', $lock_id)
         ->execute()
-        ->fetchObject($this->logEntryClass, array($name, $this));
+        ->fetchObject(LogEntry::class, array($name, $this));
     }
     else {
       $log_entry = $this->connection->select('ultimate_cron_log', 'l')
@@ -239,7 +233,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
         ->orderBy('l.end_time', 'DESC')
         ->range(0, 1)
         ->execute()
-        ->fetchObject($this->logEntryClass, array($name, $this));
+        ->fetchObject(LogEntry::class, array($name, $this));
     }
     if ($log_entry) {
       $log_entry->finished = TRUE;
@@ -275,13 +269,13 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
     $log_entries = array();
     while ($object = $result->fetchObject()) {
       if (isset($jobs[$object->name])) {
-        $log_entries[$object->name] = new $this->logEntryClass($object->name, $this);
+        $log_entries[$object->name] = new LogEntry($object->name, $this);
         $log_entries[$object->name]->setData((array) $object);
       }
     }
     foreach ($jobs as $name => $job) {
       if (!isset($log_entries[$name])) {
-        $log_entries[$name] = new $this->logEntryClass($name, $this);
+        $log_entries[$name] = new LogEntry($name, $this);
       }
     }
 
@@ -302,7 +296,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
       ->execute();
 
     $log_entries = array();
-    while ($object = $result->fetchObject($this->logEntryClass, array(
+    while ($object = $result->fetchObject(LogEntry::class, array(
       $name,
       $this
     ))) {
@@ -313,7 +307,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
   }
 
   /**
-   * Save log entry.
+   * {@inheritdoc}
    */
   public function save(LogEntry $log_entry) {
     if (!$log_entry->lid) {
@@ -329,8 +323,8 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
           'start_time' => $log_entry->start_time,
           'end_time' => $log_entry->end_time,
           'uid' => $log_entry->uid,
-          'init_message' => $log_entry->init_message,
-          'message' => $log_entry->message,
+          'init_message' => Unicode::truncate((string) $log_entry->init_message, static::MAX_TEXT_LENGTH, FALSE, TRUE),
+          'message' => Unicode::truncate((string) $log_entry->message, static::MAX_TEXT_LENGTH, FALSE, TRUE),
           'severity' => $log_entry->severity,
         ])
         ->execute();
@@ -343,8 +337,8 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
           'log_type' => $log_entry->log_type,
           'start_time' => $log_entry->start_time,
           'end_time' => $log_entry->end_time,
-          'init_message' => $log_entry->init_message,
-          'message' => $log_entry->message,
+          'init_message' => Unicode::truncate((string) $log_entry->init_message, static::MAX_TEXT_LENGTH, FALSE, TRUE),
+          'message' => Unicode::truncate((string) $log_entry->message, static::MAX_TEXT_LENGTH, FALSE, TRUE),
           'severity' => $log_entry->severity,
         ])
         ->condition('lid', $log_entry->lid)
@@ -354,7 +348,7 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
         // Row was not updated, someone must have beaten us to it.
         // Let's create a new log entry.
         $lid = $log_entry->lid . '-' . uniqid('', TRUE);
-        $log_entry->message = t('Lock #@original_lid was already closed and logged. Creating a new log entry #@lid', [
+        $log_entry->message = (string) t('Lock #@original_lid was already closed and logged. Creating a new log entry #@lid', [
             '@original_lid' => $log_entry->lid,
             '@lid' => $lid,
           ]) . "\n" . $log_entry->message;
@@ -388,6 +382,19 @@ class DatabaseLogger extends LoggerBase implements PluginCleanupInterface, Conta
         throw $e;
       }
     }
+  }
+
+  /**
+   * Returns the method options.
+   *
+   * @return array
+   */
+  protected function getMethodOptions() {
+    return array(
+      static::CLEANUP_METHOD_DISABLED => t('Disabled'),
+      static::CLEANUP_METHOD_EXPIRE => t('Remove logs older than a specified age'),
+      static::CLEANUP_METHOD_RETAIN => t('Retain only a specific amount of log entries'),
+    );
   }
 
 }

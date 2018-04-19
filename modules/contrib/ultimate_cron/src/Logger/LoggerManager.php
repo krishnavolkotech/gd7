@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Logger\LoggerManager.
- */
-
 namespace Drupal\ultimate_cron\Logger;
 
 use Drupal\Core\Cache\CacheBackendInterface;

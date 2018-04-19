@@ -60,7 +60,7 @@ class CronJobDiscovery {
         continue;
       }
 
-      $job_id = CronJobInterface::QUEUE_ID_PREFIX . $id;
+      $job_id = str_replace(':', '__', CronJobInterface::QUEUE_ID_PREFIX . $id);
       if (!CronJob::load($job_id)) {
         $values = [
           'title' => t('Queue: @title', ['@title' => $definition['title']]),
@@ -68,7 +68,7 @@ class CronJobDiscovery {
           'module' => $definition['provider'],
           // Process queue jobs later by default.
           'weight' => 10,
-          'callback' => 'ultimate_cron_queue_callback',
+          'callback' => 'ultimate_cron.queue_worker:queueCallback',
           'scheduler' => [
             'id' => 'simple',
             'configuration' => [

@@ -1,14 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\ultimate_cron\ProxyClass\UltimateCron.
- */
-
-/**
- * This file was generated via php core/scripts/generate-proxy-class.php 'Drupal\ultimate_cron\UltimateCron' "modules/ultimate_cron/src".
- */
-
 namespace Drupal\ultimate_cron\ProxyClass {
 
     /**

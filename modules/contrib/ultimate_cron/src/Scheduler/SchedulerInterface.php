@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Contains \Drupal\ultimate_cron\Scheduler\SchedulerInterface.
- */
-
 namespace Drupal\ultimate_cron\Scheduler;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;

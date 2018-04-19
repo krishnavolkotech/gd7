@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\CronPlugin.
- */
 
 namespace Drupal\ultimate_cron;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;

@@ -1,13 +1,10 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Lock\Lock
- */
 
 namespace Drupal\ultimate_cron\Lock;
 
 use Drupal\Core\Database\Connection;
 use Drupal\ultimate_cron\Lock\LockInterface;
+use Drupal\Core\Database\IntegrityConstraintViolationException;
 use PDOException;
 use PDO;
 
@@ -95,6 +92,8 @@ class Lock implements LockInterface {
 
       return $lock_id;
     } catch (PDOException $e) {
+      return FALSE;
+    } catch (IntegrityConstraintViolationException $e) {
       return FALSE;
     }
   }

@@ -1,7 +1,4 @@
 <?php
-/**
- * * Contains \Drupal\ultimate_cron\Form\GeneralSettingsForm.
- */
 
 namespace Drupal\ultimate_cron\Form;
 use Drupal\Core\Config\ConfigFactoryInterface;

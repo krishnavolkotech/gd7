@@ -61,7 +61,8 @@
         "drupal/queue_ui": "2.x@dev",
         "drupal/devel": "1.2",
         "drupal/faq": "1.x@dev",
-        "drupal/faqfield": "^1.1"
+        "drupal/faqfield": "^1.1",
+        "drupal/ultimate_cron": "^2.0@alpha"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
