@@ -115,7 +115,7 @@
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Description'|trans }}</td>
-            <td class='problem_content'>{{ problem_text|raw }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ problem_text|raw }}</td>
         </tr>
 
         <tr class='odd'>
@@ -125,7 +125,7 @@
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Work Around'|trans }}</td>
-            <td class='problem_content'>{{ node.field_work_around.value|raw }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_work_around.value|raw }}</td>
         </tr>
 
 
