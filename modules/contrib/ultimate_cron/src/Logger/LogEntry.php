@@ -5,6 +5,7 @@ namespace Drupal\ultimate_cron\Logger;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\user\Entity\User;
 
 /**
  * Class for Ultimate Cron log entries.
@@ -111,7 +112,7 @@ class LogEntry {
    */
   public function log($message, $variables = array(), $level = RfcLogLevel::NOTICE) {
 
-    if ($variables !== NULL) {
+    if ($variables !== NULL && gettype($message) === 'string') {
       $message = t($message, $variables);
     }
 
@@ -188,7 +189,7 @@ class LogEntry {
   public function formatUser() {
     $username = t('anonymous') . ' (0)';
     if ($this->uid) {
-      $user = user_load($this->uid);
+      $user = User::load($this->uid);
       $username = $user ? SafeMarkup::format('@username (@uid)', array('@username' => $user->getUsername(), '@uid' => $user->id())) : t('N/A');
     }
     return $username;

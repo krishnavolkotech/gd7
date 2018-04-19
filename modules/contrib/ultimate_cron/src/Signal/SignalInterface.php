@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 08/09/14
- * Time: 15:35
- */
+
 namespace Drupal\ultimate_cron\Signal;
 
 interface SignalInterface {

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Form\CronJobForm.
- */
-
 namespace Drupal\ultimate_cron\Form;
 
 use Drupal\Core\Entity\EntityForm;

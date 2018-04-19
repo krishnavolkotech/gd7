@@ -1,13 +1,10 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\ultimate_cron\Kernel\LoggerPluginTest.php
- */
 
 namespace Drupal\Tests\ultimate_cron\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\ultimate_cron\Entity\CronJob;
+use Drupal\ultimate_cron\Logger\LogEntry;
 use Drupal\ultimate_cron\Plugin\ultimate_cron\Logger\CacheLogger;
 use Drupal\ultimate_cron\Plugin\ultimate_cron\Logger\DatabaseLogger;
 
@@ -97,6 +94,33 @@ class LoggerPluginTest extends KernelTestBase {
     // modified entry to be saved.
     $log_entries = $job->getLogEntries(ULTIMATE_CRON_LOG_TYPE_ALL, 15);
     $this->assertEquals(6, count($log_entries));
-
   }
+
+  /**
+   * Tests cache logger.
+   */
+  function testCacheLogger() {
+    // @todo Set default logger and do not enable the log table.
+    $this->installSchema('ultimate_cron', ['ultimate_cron_log', 'ultimate_cron_lock']);
+
+    \Drupal::service('ultimate_cron.discovery')->discoverCronJobs();
+
+    $job = CronJob::load('ultimate_cron_logger_test_cron');
+    $job->setLoggerId('cache');
+    $job->save();
+
+    // Launch the job twice.
+    $job->getPlugin('launcher')->launch($job);
+    $job->getPlugin('launcher')->launch($job);
+
+    // There is only one log entry.
+    $log_entries = $job->getLogEntries(ULTIMATE_CRON_LOG_TYPE_ALL, 3);
+    $this->assertEquals(1, count($log_entries));
+
+    $log_entry = reset($log_entries);
+    $this->assertTrue($log_entry instanceof LogEntry);
+    $this->assertEquals('ultimate_cron_logger_test_cron', $log_entry->name);
+    $this->assertEquals('Launched manually by anonymous (0)', (string) $log_entry->formatInitMessage());
+  }
+
 }

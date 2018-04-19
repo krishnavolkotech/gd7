@@ -1,10 +1,4 @@
 <?php
-/**
- * @file
- * A memcached-mediated implementation of a locking mechanism.
- *
- * Supports cross request persistance.
- */
 
 namespace Drupal\ultimate_cron\Lock;
 /**

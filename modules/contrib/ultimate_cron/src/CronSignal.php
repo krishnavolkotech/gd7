@@ -1,9 +1,6 @@
 <?php
+
 namespace Drupal\ultimate_cron;
-/**
- * @file
- * File containing functions for Ultimate Cron signal handling.
- */
 
 class CronSignal {
   /**

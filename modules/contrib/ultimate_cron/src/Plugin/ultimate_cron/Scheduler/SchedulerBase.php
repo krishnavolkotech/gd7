@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: berdir
- * Date: 4/4/14
- * Time: 3:02 PM
- */
+
 namespace Drupal\ultimate_cron\Plugin\ultimate_cron\Scheduler;
 use Drupal\ultimate_cron\Entity\CronJob;
 use Drupal\ultimate_cron\CronPlugin;

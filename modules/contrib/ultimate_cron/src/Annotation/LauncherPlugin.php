@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Annotation\LauncherPlugin.
- */
-
 namespace Drupal\ultimate_cron\Annotation;
 
 use Drupal\Component\Annotation\Plugin;

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\Tests\ultimate_cron\Kernel\LauncherPluginTest.php
- */
 
 namespace Drupal\Tests\ultimate_cron\Kernel;
 
