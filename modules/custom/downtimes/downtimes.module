@@ -203,6 +203,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     } else {
         // $form['actions']['submit']['#submit'][] = 'custom_maintenance_submit';
         array_unshift($form['actions']['submit']['#submit'],'custom_maintenance_submit');
+        $form['actions']['submit']['#submit'][] = 'downtimes_after_node_submit';
         # Disable submit button after click to avoid multiple submission
         $form['actions']['submit']['#attributes'] = array(
             "onclick" => "
@@ -996,6 +997,26 @@ function check_downtime_status(&$form, &$form_state) {
   }
 }
 
+
+function downtimes_after_node_submit(&$form, $form_state){
+  $downtime_type = $form_state->getValue('downtime_type');
+  $messenger = \Drupal::messenger();
+  $messenger->deleteAll();
+  $isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
+  if($isNewlyCreated){
+    $status = 'created';
+  }else{
+    $status = 'updated';
+  }
+  if($downtime_type == 0){
+    $text = 'An Incident was ' . $status;
+  }else{
+    $text = 'A Maintenance was ' . $status;
+  }
+  drupal_set_message(t($text));
+
+}
+
 function custom_maintenance_submit(&$form, $form_state){
   global $downTimeForm;
   global $downtimeFormState;
@@ -1116,20 +1137,6 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
       )
     )->execute();
   }
-  $downtime_type = $form_state->getValue('downtime_type');
-  $messages = drupal_get_messages();
-  $isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
-  if($isNewlyCreated){
-    $status = 'created';
-  }else{
-    $status = 'updated';
-  }
-  if($downtime_type == 0){
-    $text = 'An Incident was '.$status;
-  }else{
-    $text = 'A Maintenance was '.$status;
-  }
-  drupal_set_message(t($text));
 }
 
 /**
