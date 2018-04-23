@@ -19,12 +19,12 @@ class ArchivedeployedreleasesController extends ControllerBase {
       $node = Node::load($nid);
       if($node instanceof Node){
         $node->set('field_archived_release',1)->save();
-
+        \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
         if ($node->field_environment->value == 1) {
             // If environment is Production, delete cache for deployed releases overview table
             // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
             // \Drupal::cache()->deleteMultiple($cids);
-            \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
+            \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
         }
       }
       $output = 'true';
