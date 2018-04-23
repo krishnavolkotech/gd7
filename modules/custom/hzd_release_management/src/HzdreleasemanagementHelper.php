@@ -662,7 +662,6 @@ class HzdreleasemanagementHelper {
         );
       }
 
-      $archive_url = Url::fromUserInput('/archive/');
       $query = \Drupal::database()->select('node_field_data', 'nfd');
       $query->fields('nfd', array('title'));
       $query->condition('nfd.nid', $deployedRelease->get('field_earlywarning_release')->value, '=');
@@ -681,13 +680,9 @@ class HzdreleasemanagementHelper {
 
       if ($deployedRelease->get('field_archived_release')->value != 1) {
         if (!empty($edit_url)) {
-          $action = t('<a href="@edit_url">'.t('Edit')->render().'</a> | <a href="@archive_url" class = "archive_deployedRelease" nid = "@nid" 
-                  >'.t('Archive')->render().'</a>  <span class = "loader"></span>', array(
-              '@edit_url' => $edit_url->toString(),
-              '@archive_url' => $archive_url->toString(),
-              '@nid' => $deployedRelease->id(),
-                  )
-          );
+          $archive_url = Url::fromRoute('hzd_release_management.archive_deployedreleases',['node'=>$deployedRelease->id()]);
+          $action = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\ArchiveDeployedReleaseForm',$deployedRelease);
+          // exit;
         } else {
           $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >'.t('Archive')->render().'</a> <span class = "loader"></span>', array(
               '@archive_url' => $archive_url->toString(),
@@ -712,7 +707,7 @@ class HzdreleasemanagementHelper {
           $serviceEntity->get('title')->value,
           $release,
           date("d.m.Y", strtotime($deployedRelease->get('field_date_deployed')->value)),
-          $action,
+          ['data'=>$action],
       );
     }
 
