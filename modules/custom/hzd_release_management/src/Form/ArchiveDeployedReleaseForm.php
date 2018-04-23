@@ -39,7 +39,7 @@ class ArchiveDeployedReleaseForm extends FormBase {
         $form['links']['submit'] = array(
             '#type' => 'submit',
             '#value' => t('Archive'),
-            '#attributes'=>['onclick'=>'if(!confirm("dsadasda")){return false}'],
+            '#attributes'=>['onclick'=>'if(!confirm("Möchten Sie wirklich archivieren?")){return false}'],
             '#weight'=>3,
         );
         return $form;
