@@ -373,6 +373,7 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_early_warnings_form',
         'node_early_warnings_edit_form',
         'node_problem_edit_form',
+        'node_problem_form',
       );
       $for_groupadmin_formids = array(
         'node_page_form',
