@@ -649,17 +649,9 @@ class HzdreleasemanagementHelper {
       if(!$serviceEntity){
         continue;
       }
+      $access = false;
       if (CustNodeController::isGroupAdmin(zrml) || in_array($user_role, array('site_admin','administrator'))) {
-        $buildRedirUrl = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $group_id])->toString();
-        $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $deployedRelease->id()], array(
-                    'query' => array(
-                        'ser' => $deployedRelease->get('field_release_service')->value,
-                        'rel' => $deployedRelease->get('field_earlywarning_release')->value,
-                        'env' => $deployedRelease->get('field_environment')->value,
-                        'destination' => $buildRedirUrl,
-                    ),
-                        )
-        );
+        $access = true;
       }
 
       $query = \Drupal::database()->select('node_field_data', 'nfd');
@@ -678,28 +670,10 @@ class HzdreleasemanagementHelper {
         $environment = $query->execute()->fetchField();
       }
 
-      if ($deployedRelease->get('field_archived_release')->value != 1) {
-        if (!empty($edit_url)) {
-          $archive_url = Url::fromRoute('hzd_release_management.archive_deployedreleases',['node'=>$deployedRelease->id()]);
-          $action = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\ArchiveDeployedReleaseForm',$deployedRelease);
-          // exit;
-        } else {
-          $action = t('<a href="@archive_url" class = "archive_deployedRelease" nid = "@nid"  >'.t('Archive')->render().'</a> <span class = "loader"></span>', array(
-              '@archive_url' => $archive_url->toString(),
-              '@nid' => $deployedRelease->id(),
-                  )
-          );
-        }
-      } else {
-        if (!empty($edit_url)) {
-          $action = t('<a href="@edit_url">Edit</a>', array(
-              '@edit_url' => $edit_url->toString(),
-                  )
-          );
-        } else {
-          $action = '';
-        }
-      }
+      
+      $action = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\ArchiveDeployedReleaseForm',$deployedRelease,$access, $group_id);
+      // exit;
+      
       $state = isset($deployedRelease->get('field_user_state')->value) ? $states[$deployedRelease->get('field_user_state')->value] : '';
       $data[] = array(
           $state,
