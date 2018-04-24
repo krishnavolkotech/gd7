@@ -3,20 +3,32 @@ langcode: de
 status: true
 dependencies:
   module:
+    - language
     - node
 id: early_warning
 label: 'Early Warning'
 type: 'canonical_entities:node'
 pattern: 'release-management/early-warnings/[node:field_earlywarning_release_title]/[node:title]'
 selection_criteria:
-  e1561cd9-9c85-4a2a-bc75-96af1628f816:
+  eee4683b-f5d7-4bed-ab48-8217c013f9b9:
     id: node_type
     bundles:
       early_warnings: early_warnings
     negate: false
     context_mapping:
       node: node
-    uuid: e1561cd9-9c85-4a2a-bc75-96af1628f816
+    uuid: eee4683b-f5d7-4bed-ab48-8217c013f9b9
+  a30069bf-0300-4e7b-9c85-5a5d514e20a4:
+    id: language
+    langcodes:
+      de: de
+      en: en
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: a30069bf-0300-4e7b-9c85-5a5d514e20a4
 selection_logic: and
 weight: -8
-relationships: {  }
+relationships:
+  'node:langcode:language':
+    label: Language
