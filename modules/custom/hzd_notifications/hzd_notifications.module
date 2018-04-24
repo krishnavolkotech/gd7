@@ -396,7 +396,7 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_downtimes_edit_form',
       );
 
-      if (in_array('site_administrator', $current_user_roles) && in_array($form_id, $for_admin_formids)) {
+      if (array_intersect(['site_administrator','administrator'], $current_user_roles) && in_array($form_id, $for_admin_formids)) {
         $form['notification'] = array(
           '#type' => 'fieldset',
           '#weight' => 99,
