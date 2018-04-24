@@ -25,6 +25,7 @@ class ArchiveDeployedReleaseForm extends FormBase {
      */
     public function buildForm(array $form, FormStateInterface $form_state,Node $node = null, $access = false, $group_id = 5) {
         $form['#attributes'] = ['class'=>['inline-form']];
+        $this->groupId = $group_id;
         $form['deployed_release'] = [
             '#type'=>'hidden',
             '#value'=>$node->id(),
@@ -81,7 +82,7 @@ class ArchiveDeployedReleaseForm extends FormBase {
                 // \Drupal::cache()->deleteMultiple($cids);
                 \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
             }
-            $form_state->setRedirect('hzd_release_management.deployed_releases',['group'=>$group_id]);
+            $form_state->setRedirect('hzd_release_management.deployed_releases',['group'=>$this->groupId]);
             drupal_set_message(t('Release Archived'));
         }
     }
