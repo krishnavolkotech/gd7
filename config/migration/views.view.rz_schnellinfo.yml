@@ -672,6 +672,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -715,6 +716,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -803,7 +805,7 @@ display:
       arguments: {  }
       display_extenders: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'
@@ -908,6 +910,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -951,6 +954,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1193,7 +1197,7 @@ display:
         path:
           id: path
           table: node
-          field: path
+          field: view_node
           relationship: gc__node
           group_type: group
           admin_label: ''
@@ -1240,7 +1244,8 @@ display:
           hide_alter_empty: true
           absolute: false
           entity_type: node
-          plugin_id: node_path
+          plugin_id: entity_link
+          output_url_as_text: true
         label:
           id: label
           table: group_content_field_data
@@ -1564,7 +1569,7 @@ display:
           plugin_id: field
       css_class: saved-rz-schnellinfo
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_interface'
@@ -1659,6 +1664,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1702,6 +1708,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1746,6 +1753,9 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1775,7 +1785,7 @@ display:
         path:
           id: path
           table: node
-          field: path
+          field: view_node
           relationship: gc__node
           group_type: group
           admin_label: ''
@@ -1822,7 +1832,8 @@ display:
           hide_alter_empty: true
           absolute: false
           entity_type: node
-          plugin_id: node_path
+          plugin_id: entity_link
+          output_url_as_text: true
         field_unique_id:
           id: field_unique_id
           table: node__field_unique_id
@@ -2334,7 +2345,7 @@ display:
           quantity: 9
       css_class: rz-schnellinfos-sortable
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - group_membership.roles.permissions
         - 'languages:language_content'

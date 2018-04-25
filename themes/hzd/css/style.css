@@ -1219,7 +1219,7 @@ button[value="Save"],
 button[value="update"],
 button[value="Delete"] {
     margin: 0 5px 10px 0 !important;
-    padding: 3px 8px !important;
+    padding: 3px 8px;
     font-size: 14px;
     text-transform: capitalize;
 }
@@ -2606,8 +2606,8 @@ article.quickinfo .field .field__items {
 }
 article.quickinfo .field .field--item,
 article.quickinfo .field .field--items {
-    width: 98%;
-    float: left;
+    width: 100%;
+/*    float: left; */
     margin: 0 0 3px 0%;
    padding:0;
 }

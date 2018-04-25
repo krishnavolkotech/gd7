@@ -2,6 +2,7 @@
 
 namespace Drupal\prlp\Controller;
 
+use Drupal;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormState;
 use Drupal\user\Controller\UserController;
@@ -36,8 +37,14 @@ class PrlpController extends UserController {
     /** @var \Drupal\user\UserInterface $user */
     $user = $this->userStorage->load($uid);
 
+    // Check if the hash is valid, but not if you were told by prlp to
+    // skip checking it.
+    $check_hash = !Drupal::request()->getSession()->get('prlp_skip_hash_check');
+    // remove this session setting immediately to avoid security holes
+    !Drupal::request()->getSession()->remove('prlp_skip_hash_check');
+    $invalid_hash = $check_hash && !Crypt::hashEquals($hash, user_pass_rehash($user, $timestamp));
     // Verify that the user exists and is active.
-    if ($user === NULL || !$user->isActive()) {
+    if ($user === NULL || !$user->isActive() || $invalid_hash) {
       // Blocked or invalid user ID, so deny access. The parameters will be in
       // the watchdog's URL for the administrator to check.
       throw new AccessDeniedHttpException();

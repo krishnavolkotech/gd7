@@ -1,11 +1,8 @@
 <?php
-namespace Drupal\ultimate_cron\Progress;
-use Drupal\ultimate_cron\Progress;
 
-/**
- * @file
- * Pseudo namespace for progress functions.
- */
+namespace Drupal\ultimate_cron\Progress;
+
+use Drupal\ultimate_cron\Progress;
 
 class ProgressMemcache {
   public $name;

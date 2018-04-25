@@ -15,9 +15,7 @@ module:
   breakpoint: 0
   ckeditor: 0
   color: 0
-  colorbutton: 0
   comment: 0
-  composer_manager: 0
   computed_field: 0
   config: 0
   config_direct_save: 0
@@ -30,7 +28,6 @@ module:
   cust_pdf: 0
   cust_user: 0
   custom_script_batch: 0
-  custom_toolbar_menu: 0
   custom_views_php: 0
   datetime: 0
   dblog: 0
@@ -45,7 +42,6 @@ module:
   faqfield: 0
   field: 0
   field_group: 0
-  field_group_migrate: 0
   field_permissions: 0
   field_ui: 0
   file: 0
@@ -55,7 +51,6 @@ module:
   gforum: 0
   gnode: 0
   group: 0
-  help: 0
   history: 0
   hzd_customizations: 0
   hzd_earlywarnings: 0
@@ -65,7 +60,6 @@ module:
   image: 0
   imce: 0
   inactive_user: 0
-  inline_entity_form: 0
   kint: 0
   l10n_client_contributor: 0
   l10n_client_ui: 0
@@ -74,26 +68,16 @@ module:
   locale: 0
   login_emailusername: 0
   mailsystem: 0
-  masquerade: 0
   mass_contact: 0
   menu_ui: 0
   migrate: 0
-  migrate_drupal: 0
-  migrate_drupal_ui: 0
-  migrate_manifest: 0
-  migrate_plus: 0
-  migrate_tools: 0
-  migrate_upgrade: 0
   node: 0
   options: 0
   page_cache: 0
-  panelbutton: 0
   path: 0
   pdf_api: 0
   persistent_login: 0
   piwik: 0
-  printable: 0
-  printable_pdf: 0
   prlp: 0
   problem_management: 0
   queue_ui: 0
@@ -114,7 +98,6 @@ module:
   text: 0
   token: 0
   toolbar: 0
-  ultimate_cron: 0
   update: 0
   user: 0
   view_unpublished: 0
@@ -128,6 +111,7 @@ module:
   menu_link_content: 1
   pathauto: 1
   content_translation: 10
+  ultimate_cron: 10
   views: 10
   reroute_email: 19
   queue_mail: 20

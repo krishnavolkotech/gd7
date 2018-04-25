@@ -164,16 +164,10 @@ function ultimate_cron_requirements($phase) {
   $requirements = array();
 
   switch ($phase) {
-    case 'install':
-      return $requirements;
-
     case 'runtime':
-      $requirements['title'] = 'Ultimate Cron';
-      $requirements['value'] = array();
-      $requirements['description'] = array();
-      $requirements['severity'] = REQUIREMENT_OK;
+      $requirements['cron_jobs']['title'] = 'Ultimate Cron';
+      $requirements['cron_jobs']['severity'] = REQUIREMENT_OK;
 
-      // @todo: port this
       // Check if any jobs are behind.
       $jobs_behind = 0;
       $jobs = CronJob::loadMultiple();
@@ -185,29 +179,21 @@ function ultimate_cron_requirements($phase) {
       }
 
       if ($jobs_behind) {
-        $requirements['severity'] = $requirements['severity'] > REQUIREMENT_ERROR ? $requirements['severity'] : REQUIREMENT_ERROR;
-        $requirements['value'][] = \Drupal::translation()->formatPlural(
+        $requirements['cron_jobs']['severity'] = REQUIREMENT_WARNING;
+        $requirements['cron_jobs']['value'] = \Drupal::translation()->formatPlural(
           $jobs_behind,
           '@count job is behind schedule',
           '@count jobs are behind schedule'
         );
-        $requirements['description'][] = t(
+        $requirements['cron_jobs']['description'] = t(
           'Some jobs are behind their schedule. Please check if @link is running properly.', array(
           '@link' => \Drupal::l(t('Cron'), Url::fromRoute('system.cron', ['key' => \Drupal::state()->get('system.cron_key')])),
         ));
       }
-
-      // Compose result.
-      if (empty($requirements['value'])) {
-        $requirements['value'] = t('Cron is running properly.');
-        $requirements['description'] = '';
-      }
       else {
-        $requirements['value'] = implode(', ', $requirements['value']);
-        $requirements['description'] = implode('<br/>', $requirements['description']);
+        $requirements['cron_jobs']['value'] = t('Cron is running properly.');
       }
-      $result = array();
-      $result['ultimate_cron'] = $requirements;
-      return $result;
   }
+
+  return $requirements;
 }

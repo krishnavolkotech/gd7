@@ -11,14 +11,35 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ProcessBuilder;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Command\Database\ConnectTrait;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Command\Shared\ConnectTrait;
+use Drupal\Console\Core\Utils\ShellProcess;
 
-class DumpCommand extends ContainerAwareCommand
+class DumpCommand extends Command
 {
     use ConnectTrait;
+
+
+    protected $appRoot;
+    /**
+     * @var ShellProcess
+     */
+    protected $shellProcess;
+
+    /**
+     * DumpCommand constructor.
+     *
+     * @param $appRoot
+     * @param ShellProcess $shellProcess
+     */
+    public function __construct(
+        $appRoot,
+        ShellProcess $shellProcess
+    ) {
+        $this->appRoot = $appRoot;
+        $this->shellProcess = $shellProcess;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -38,9 +59,16 @@ class DumpCommand extends ContainerAwareCommand
                 'file',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.database.dump.option.file')
+                $this->trans('commands.database.dump.options.file')
             )
-            ->setHelp($this->trans('commands.database.dump.help'));
+            ->addOption(
+                'gz',
+                null,
+                InputOption::VALUE_NONE,
+                $this->trans('commands.database.dump.options.gz')
+            )
+            ->setHelp($this->trans('commands.database.dump.help'))
+            ->setAliases(['dbdu']);
     }
 
     /**
@@ -48,28 +76,28 @@ class DumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $database = $input->getArgument('database');
         $file = $input->getOption('file');
-        $learning = $input->hasOption('learning')?$input->getOption('learning'):false;
+        $learning = $input->getOption('learning');
+        $gz = $input->getOption('gz');
 
-        $databaseConnection = $this->resolveConnection($io, $database);
+        $databaseConnection = $this->resolveConnection($database);
 
         if (!$file) {
             $date = new \DateTime();
-            $siteRoot = rtrim($this->getSite()->getSiteRoot(), '/');
             $file = sprintf(
                 '%s/%s-%s.sql',
-                $siteRoot,
+                $this->appRoot,
                 $databaseConnection['database'],
-                $date->format('Y-m-d-h-i-s')
+                $date->format('Y-m-d-H-i-s')
             );
         }
 
+        $command = null;
+
         if ($databaseConnection['driver'] == 'mysql') {
             $command = sprintf(
-                'mysqldump --user=%s --password=%s --host=%s --port=%s %s > %s',
+                'mysqldump --user="%s" --password="%s" --host="%s" --port="%s" "%s" > "%s"',
                 $databaseConnection['username'],
                 $databaseConnection['password'],
                 $databaseConnection['host'],
@@ -79,7 +107,7 @@ class DumpCommand extends ContainerAwareCommand
             );
         } elseif ($databaseConnection['driver'] == 'pgsql') {
             $command = sprintf(
-                'PGPASSWORD="%s" pg_dumpall -w -U %s -h %s -p %s -l %s -f %s',
+                'PGPASSWORD="%s" pg_dumpall -w -U "%s" -h "%s" -p "%s" -l "%s" -f "%s"',
                 $databaseConnection['password'],
                 $databaseConnection['username'],
                 $databaseConnection['host'],
@@ -90,25 +118,37 @@ class DumpCommand extends ContainerAwareCommand
         }
 
         if ($learning) {
-            $io->commentBlock($command);
+            $this->getIo()->commentBlock($command);
         }
 
-        $processBuilder = new ProcessBuilder(['–lock-all-tables']);
-        $process = $processBuilder->getProcess();
-        $process->setTty('true');
-        $process->setCommandLine($command);
-        $process->run();
+        if ($this->shellProcess->exec($command, $this->appRoot)) {
+            $resultFile = $file;
+            if ($gz) {
+                if (substr($file, -3) != '.gz') {
+                    $resultFile = $file . ".gz";
+                }
+                file_put_contents(
+                    $resultFile,
+                    gzencode(
+                        file_get_contents(
+                            $file
+                        )
+                    )
+                );
+                if ($resultFile != $file) {
+                    unlink($file);
+                }
+            }
 
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
+            $this->getIo()->success(
+                sprintf(
+                    '%s %s',
+                    $this->trans('commands.database.dump.messages.success'),
+                    $resultFile
+                )
+            );
         }
 
-        $io->success(
-            sprintf(
-                '%s %s',
-                $this->trans('commands.database.dump.messages.success'),
-                $file
-            )
-        );
+        return 0;
     }
 }

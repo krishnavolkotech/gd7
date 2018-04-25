@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Tests\PiwikBasicTest.
- */
-
 namespace Drupal\piwik\Tests;
 
 use Drupal\Core\Session\AccountInterface;
@@ -16,6 +11,13 @@ use Drupal\simpletest\WebTestBase;
  * @group Piwik
  */
 class PiwikBasicTest extends WebTestBase {
+
+  /**
+   * User without permissions to use snippets.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $noSnippetUser;
 
   /**
    * Modules to enable.
@@ -36,6 +38,8 @@ class PiwikBasicTest extends WebTestBase {
     ];
 
     // User to set up piwik.
+    $this->noSnippetUser = $this->drupalCreateUser($permissions);
+    $permissions[] = 'add JS snippets for piwik';
     $this->admin_user = $this->drupalCreateUser($permissions);
     $this->drupalLogin($this->admin_user);
   }
@@ -62,6 +66,22 @@ class PiwikBasicTest extends WebTestBase {
     $this->drupalPostForm('admin/config/system/piwik', $edit, t('Save configuration'));
     $this->assertRaw('The validation of "http://www.example.com/piwik/piwik.php" failed with an exception', '[testPiwikConfiguration]: HTTP URL exception shown.');
     $this->assertRaw('The validation of "https://www.example.com/piwik/piwik.php" failed with an exception', '[testPiwikConfiguration]: HTTPS URL exception shown.');
+
+    // User should have access to code snippets.
+    $this->assertFieldByName('piwik_codesnippet_before');
+    $this->assertFieldByName('piwik_codesnippet_after');
+    $this->assertNoFieldByXPath("//textarea[@name='piwik_codesnippet_before' and @disabled='disabled']", NULL, '"Code snippet (before)" is enabled.');
+    $this->assertNoFieldByXPath("//textarea[@name='piwik_codesnippet_after' and @disabled='disabled']", NULL, '"Code snippet (after)" is enabled.');
+
+    // Login as user without JS permissions.
+    $this->drupalLogin($this->noSnippetUser);
+    $this->drupalGet('admin/config/system/piwik');
+
+    // User should *not* have access to snippets, but create fields.
+    $this->assertFieldByName('piwik_codesnippet_before');
+    $this->assertFieldByName('piwik_codesnippet_after');
+    $this->assertFieldByXPath("//textarea[@name='piwik_codesnippet_before' and @disabled='disabled']", NULL, '"Code snippet (before)" is disabled.');
+    $this->assertFieldByXPath("//textarea[@name='piwik_codesnippet_after' and @disabled='disabled']", NULL, '"Code snippet (after)" is disabled.');
   }
 
   /**
@@ -191,10 +211,11 @@ class PiwikBasicTest extends WebTestBase {
 
     // Test whether the BEFORE and AFTER code is added to the tracker.
     $this->config('piwik.settings')->set('codesnippet.before', '_paq.push(["setLinkTrackingTimer", 250]);')->save();
-    $this->config('piwik.settings')->set('codesnippet.after', '_paq.push(["t2.setSiteId", 2]);_gaq.push(["t2.trackPageView"]);')->save();
+    $this->config('piwik.settings')->set('codesnippet.after', '_paq.push(["t2.setSiteId", 2]);if(1 == 1 && 2 < 3 && 2 > 1){console.log("Piwik: Custom condition works.");}_gaq.push(["t2.trackPageView"]);')->save();
     $this->drupalGet('');
     $this->assertRaw('setLinkTrackingTimer', '[testPiwikTrackingCode]: Before codesnippet has been found with "setLinkTrackingTimer" set.');
     $this->assertRaw('t2.trackPageView', '[testPiwikTrackingCode]: After codesnippet with "t2" tracker has been found.');
+    $this->assertRaw('if(1 == 1 && 2 < 3 && 2 > 1){console.log("Piwik: Custom condition works.");}', '[testPiwikTrackingCode]: JavaScript code is not HTML escaped.');
   }
 
 }

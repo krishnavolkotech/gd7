@@ -6,8 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'org\\bovigo\\vfs\\' => array($vendorDir . '/mikey179/vfsStream/src/main/php'),
+    'WebDriver' => array($vendorDir . '/instaclick/php-webdriver/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
     'Stack' => array($vendorDir . '/stack/builder/src'),
@@ -23,5 +23,8 @@ return array(
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
     'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
+    'Dflydev\\PlaceholderResolver' => array($vendorDir . '/dflydev/placeholder-resolver/src'),
+    'Dflydev\\DotAccessData' => array($vendorDir . '/dflydev/dot-access-data/src'),
+    'Dflydev\\DotAccessConfiguration' => array($vendorDir . '/dflydev/dot-access-configuration/src'),
     'Consolidation' => array($vendorDir . '/drush/drush/lib'),
 );

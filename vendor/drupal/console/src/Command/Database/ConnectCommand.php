@@ -10,11 +10,10 @@ namespace Drupal\Console\Command\Database;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Command\Database\ConnectTrait;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Command\Shared\ConnectTrait;
 
-class ConnectCommand extends ContainerAwareCommand
+class ConnectCommand extends Command
 {
     use ConnectTrait;
 
@@ -32,7 +31,8 @@ class ConnectCommand extends ContainerAwareCommand
                 $this->trans('commands.database.connect.arguments.database'),
                 'default'
             )
-            ->setHelp($this->trans('commands.database.connect.help'));
+            ->setHelp($this->trans('commands.database.connect.help'))
+            ->setAliases(['dbco']);
     }
 
     /**
@@ -40,10 +40,8 @@ class ConnectCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $database = $input->getArgument('database');
-        $databaseConnection = $this->resolveConnection($io, $database);
+        $databaseConnection = $this->resolveConnection($database);
 
         $connection = sprintf(
             '%s -A --database=%s --user=%s --password=%s --host=%s --port=%s',
@@ -55,11 +53,13 @@ class ConnectCommand extends ContainerAwareCommand
             $databaseConnection['port']
         );
 
-        $io->commentBlock(
+        $this->getIo()->commentBlock(
             sprintf(
                 $this->trans('commands.database.connect.messages.connection'),
                 $connection
             )
         );
+
+        return 0;
     }
 }

@@ -16,6 +16,7 @@ dependencies:
     - field.field.node.problem.field_priority
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
+    - field.field.node.problem.field_problem_symptoms
     - field.field.node.problem.field_processing
     - field.field.node.problem.field_release
     - field.field.node.problem.field_s_no
@@ -215,7 +216,8 @@ content:
     region: content
   upload:
     label: hidden
-    settings: {  }
+    settings:
+      use_description_as_link_text: true
     type: file_default
     weight: 22
     third_party_settings: {  }
@@ -225,5 +227,6 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_problem_symptoms: true
   langcode: true
   links: true

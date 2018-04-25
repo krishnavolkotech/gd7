@@ -1,12 +1,8 @@
 <?php
-/**
- * @file
- * Plugin framework for Ultimate Cron.
- */
+
 namespace Drupal\ultimate_cron;
 
 use Drupal\ultimate_cron\Entity\CronJob;
-
 
 /**
  * Base class for tagged settings.

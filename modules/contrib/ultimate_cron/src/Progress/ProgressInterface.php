@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Progress\ProgressInterface.
- */
 
 namespace Drupal\ultimate_cron\Progress;
 

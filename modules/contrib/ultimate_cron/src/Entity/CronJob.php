@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Job class for Ultimate Cron.
- */
 
 namespace Drupal\ultimate_cron\Entity;
 
@@ -10,11 +6,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
+use Drupal\Core\Utility\Error;
 use Drupal\ultimate_cron\CronJobInterface;
-use Drupal\ultimate_cron\CronPlugin;
-use Drupal\ultimate_cron\Logger\LogEntry;
-use Drupal\ultimate_cron\Logger\LoggerBase;
-use Exception;
 
 /**
  * Class for handling cron jobs.
@@ -63,7 +56,6 @@ use Exception;
  *     "logs" = "/admin/config/system/cron/jobs/logs/{ultimate_cron_job}",
  *   }
  * )
- *
  */
 class CronJob extends ConfigEntityBase implements CronJobInterface {
   static public $signals;
@@ -127,6 +119,25 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
    * @var \Drupal\ultimate_cron\CronPlugin
    */
   protected $plugins = [];
+
+  /**
+   * The class resolver.
+   *
+   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
+   */
+  protected $classResolver;
+
+  /**
+   * CronJob constructor.
+   *
+   * @param array $values
+   * @param string $entity_type
+   */
+  public function __construct(array $values, $entity_type) {
+    parent::__construct($values, $entity_type);
+    $this->classResolver = \Drupal::service('class_resolver');
+
+  }
 
   /**
    * {@inheritdoc}
@@ -256,10 +267,9 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
       return ultimate_cron_plugin_load($plugin_type, $name);
     }
     // @todo: enable static cache, needs unset when values change.
-//    if (isset($this->plugins[$plugin_type])) {
-//      return $this->plugins[$plugin_type];
-//    }
-
+    //    if (isset($this->plugins[$plugin_type])) {
+    //      return $this->plugins[$plugin_type];
+    //    }
     if ($name) {
     }
     elseif (!empty($this->{$plugin_type}['id'])) {
@@ -274,8 +284,16 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
     return $this->plugins[$plugin_type];
   }
 
+  /**
+   * Gets this plugin's configuration.
+   *
+   * @param $plugin_type
+   *   The type of plugin.
+   * @return array
+   *   An array of this plugin's configuration.
+   */
   public function getConfiguration($plugin_type) {
-    if(!isset($this->{$plugin_type}['configuration'])) {
+    if (!isset($this->{$plugin_type}['configuration'])) {
       $this->{$plugin_type}['configuration'] = $this->getPlugin($plugin_type)->defaultConfiguration();
     }
 
@@ -295,7 +313,38 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
    */
   protected function invokeCallback() {
     $callback = $this->getCallback();
-    return $callback($this);
+    return call_user_func($callback, $this);
+  }
+
+  /**
+   * Returns a callable for the given controller.
+   *
+   * @param string $callback
+   *   A callback string.
+   *
+   * @return mixed
+   *   A PHP callable.
+   *
+   * @throws \InvalidArgumentException
+   *   If the callback class does not exist.
+   */
+  protected function resolveCallback($callback) {
+    // Controller in the service:method notation.
+    $count = substr_count($callback, ':');
+    if ($count == 1) {
+      list($class_or_service, $method) = explode(':', $callback, 2);
+    }
+    // Controller in the class::method notation.
+    elseif (strpos($callback, '::') !== FALSE) {
+      list($class_or_service, $method) = explode('::', $callback, 2);
+    }
+    else {
+      return $callback;
+    }
+
+    $callback = $this->classResolver->getInstanceFromDefinition($class_or_service);
+
+    return array($callback, $method);
   }
 
   /**
@@ -339,7 +388,7 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
    *
    * @param string $lock_id
    *   The lock id to unlock.
-   * @param boolean $manual
+   * @param bool $manual
    *   Whether or not this is a manual unlock.
    */
   public function unlock($lock_id = NULL, $manual = FALSE) {
@@ -382,38 +431,67 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
   }
 
   /**
-   * Run job.
+   * {@inheritdoc}
    */
-  public function run() {
-    $this->clearSignals();
-    $this->initializeProgress();
-    \Drupal::moduleHandler()->invokeAll('cron_pre_run', array($this));
+  public function run($init_message = NULL) {
+    if (!$init_message) {
+      $init_message = t('Launched manually');
+    }
 
-    // Force the current user to anonymous to ensure consistent permissions
-    // on cron runs.
+    $lock_id = $this->lock();
+    if (!$lock_id) {
+      return FALSE;
+    }
+    $log_entry = $this->startLog($lock_id, $init_message);
+
     $accountSwitcher = \Drupal::service('account_switcher');
-    $accountSwitcher->switchTo(new AnonymousUserSession());
-
-    self::$currentJob = $this;
 
     try {
-      return $this->invokeCallback();
+      $this->clearSignals();
+      $this->initializeProgress();
+      \Drupal::moduleHandler()->invokeAll('cron_pre_run', array($this));
+
+      // Force the current user to anonymous to ensure consistent permissions
+      // on cron runs.
+      $accountSwitcher->switchTo(new AnonymousUserSession());
+
+      self::$currentJob = $this;
+      $this->invokeCallback();
+    }
+    catch (\Error $e) {
+      // PHP 7 throws Error objects in case of a fatal error. It will also call
+      // the finally block below and close the log entry. Because of that,
+      // the global fatal error catching will not work and we have to log it
+      // explicitly here instead. The advantage is that this will not
+      // interrupt the process.
+      $variables = Error::decodeException($e);
+      unset($variables['backtrace']);
+      $log_entry->log('%type: @message in %function (line %line of %file).', $variables, RfcLogLevel::ERROR);
+      return FALSE;
+    }
+    catch (\Exception $e) {
+      $variables = Error::decodeException($e);
+      unset($variables['backtrace']);
+      $log_entry->log('%type: @message in %function (line %line of %file).', $variables, RfcLogLevel::ERROR);
+      return FALSE;
     }
     finally {
-
       self::$currentJob = NULL;
       \Drupal::moduleHandler()->invokeAll('cron_post_run', array($this));
       $this->finishProgress();
 
       // Restore original user account.
       $accountSwitcher->switchBack();
+      $log_entry->finish();
+      $this->unlock($lock_id);
     }
+    return TRUE;
   }
 
   /**
    * Get log entries.
    *
-   * @param integer $limit
+   * @param int $limit
    *   (optional) Number of log entries per page.
    *
    * @return \Drupal\ultimate_cron\Logger\LogEntry[]
@@ -677,11 +755,11 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
       $message = (object) array(
         'channel' => 'ultimate_cron',
         'data' => (object) array(
-            'action' => $action,
-            'job' => $build,
-            'timestamp' => microtime(TRUE),
-            'elements' => $elements,
-          ),
+          'action' => $action,
+          'job' => $build,
+          'timestamp' => microtime(TRUE),
+          'elements' => $elements,
+        ),
         'callback' => 'nodejsUltimateCron',
       );
       nodejs_send_content_channel_message($message);
@@ -710,7 +788,12 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
    * {@inheritdoc}
    */
   public function getCallback() {
-    return $this->callback;
+    if (is_callable($this->callback)) {
+      return $this->callback;
+    }
+    else {
+      return $this->resolveCallback($this->callback);
+    }
   }
 
   /**
@@ -785,7 +868,8 @@ class CronJob extends ConfigEntityBase implements CronJobInterface {
    * {@inheritdoc}
    */
   public function setLoggerId($logger_id) {
-    $this->launcher['id'] = $logger_id;
-      return $this;
+    $this->logger['id'] = $logger_id;
+    return $this;
   }
+
 }

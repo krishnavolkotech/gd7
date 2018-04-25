@@ -235,6 +235,7 @@ hidden:
   langcode: true
   path: true
   promote: true
+  status: true
   sticky: true
   title: true
   translation: true

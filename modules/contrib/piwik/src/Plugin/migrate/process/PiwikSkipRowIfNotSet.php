@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\piwik\Plugin\migrate\process\PiwikSkipRowIfNotSet.
- */
-
 namespace Drupal\piwik\Plugin\migrate\process;
 
 use Drupal\migrate\ProcessPluginBase;

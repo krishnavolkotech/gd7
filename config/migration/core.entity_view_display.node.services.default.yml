@@ -86,7 +86,8 @@ content:
     region: content
   upload:
     label: hidden
-    settings: {  }
+    settings:
+      use_description_as_link_text: true
     type: file_default
     weight: 7
     third_party_settings: {  }

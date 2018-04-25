@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\ultimate_cron\Form\CronJobEnableForm.
- */
 
 namespace Drupal\ultimate_cron\Form;
 

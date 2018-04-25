@@ -1,14 +1,14 @@
 <?php
-/**
- * @file
- * Cache logger for Ultimate Cron.
- */
 
 namespace Drupal\ultimate_cron\Plugin\ultimate_cron\Logger;
 
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\ultimate_cron\Logger\LogEntry;
 use Drupal\ultimate_cron\Logger\LoggerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Cache Logger.
@@ -19,15 +19,36 @@ use Drupal\ultimate_cron\Logger\LoggerBase;
  *   description = @Translation("Stores the last log entry (and only the last) in the cache."),
  * )
  */
-class CacheLogger extends LoggerBase {
+class CacheLogger extends LoggerBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected $cache;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, CacheBackendInterface $cache) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->cache = $cache;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)  {
+    $bin = isset($configuration['bin']) ? $configuration['bin'] : 'ultimate_cron_logger';
+    return new static ($configuration, $plugin_id, $plugin_definition, $container->get('cache.' . $bin));
+  }
 
   /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
     return array(
-      'bin' => 'cache_ultimate_cron',
-      'timeout' => 0,
+      'bin' => 'ultimate_cron_logger',
+      'timeout' => Cache::PERMANENT,
     );
   }
 
@@ -35,19 +56,15 @@ class CacheLogger extends LoggerBase {
    * {@inheritdoc}
    */
   public function load($name, $lock_id = NULL, array $log_types = [ULTIMATE_CRON_LOG_TYPE_NORMAL]) {
-    $log_entry = new $this->logEntryClass($name, $this);
-
-    $job = ultimate_cron_job_load($name);
-    $settings = $job->getSettings('logger');
-
+    $log_entry = new LogEntry($name, $this);
     if (!$lock_id) {
-      $cache = cache_get('uc-name:' . $name, $settings['bin']);
+      $cache =  $this->cache->get('uc-name:' . $name, TRUE);
       if (empty($cache) || empty($cache->data)) {
         return $log_entry;
       }
       $lock_id = $cache->data;
     }
-    $cache = cache_get('uc-lid:' . $lock_id, $settings['bin']);
+    $cache = $this->cache->get('uc-lid:' . $lock_id, TRUE);
 
     if (!empty($cache->data)) {
       $log_entry->setData((array) $cache->data);
@@ -97,17 +114,12 @@ class CacheLogger extends LoggerBase {
       return;
     }
 
-    if ($log_entry->log_type != ULTIMATE_CRON_LOG_TYPE_NORMAL) {
-      return;
-    }
+    $settings = $this->getConfiguration();
 
-    $job = ultimate_cron_job_load($log_entry->name);
+    $expire = $settings['timeout'] != Cache::PERMANENT ? REQUEST_TIME + $settings['timeout'] : $settings['timeout'];
 
-    $settings = $job->getSettings('logger');
-
-    $expire = $settings['timeout'] > 0 ? time() + $settings['timeout'] : $settings['timeout'];
-    cache_set('uc-name:' . $log_entry->name, $log_entry->lid, $settings['bin'], $expire);
-    cache_set('uc-lid:' . $log_entry->lid, $log_entry->getData(), $settings['bin'], $expire);
+    $this->cache->set('uc-name:' . $log_entry->name, $log_entry->lid, $expire);
+    $this->cache->set('uc-lid:' . $log_entry->lid, $log_entry->getData(), $expire);
   }
 
 }

@@ -28,9 +28,9 @@ class FaqFieldAnchorListFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return array(
-      'anchor_list_type' => 'ul',
-    ) + parent::defaultSettings();
+    return [
+        'anchor_list_type' => 'ul',
+      ] + parent::defaultSettings();
   }
 
   /**
@@ -40,16 +40,16 @@ class FaqFieldAnchorListFormatter extends FormatterBase {
     $elements = parent::settingsForm($form, $form_state);
 
     // HTML element type.
-    $elements['anchor_list_type'] = array(
+    $elements['anchor_list_type'] = [
       '#type' => 'select',
       '#title' => t('Anchor link list type'),
       '#default_value' => $this->getSetting('anchor_list_type'),
-      '#options' => array(
+      '#options' => [
         'ul' => t('<ul> - Bullet list'),
         'ol' => t('<ol> - Numeric list'),
-      ),
+      ],
       '#description' => t('The type of HTML list used for the anchor link list.'),
-    );
+    ];
 
     return $elements;
   }
@@ -58,7 +58,7 @@ class FaqFieldAnchorListFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary = array();
+    $summary = [];
 
     if ($this->getSetting('anchor_list_type') == 'ul') {
       $summary[] = t('Bullet list');
@@ -76,24 +76,24 @@ class FaqFieldAnchorListFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $default_format = $this->getFieldSetting('default_format');
 
-    $element_items = array();
+    $element_items = [];
     foreach ($items as $item) {
       // Decide whether to use the default format or the custom one.
       $format = (!empty($item->answer_format) ? $item->answer_format : $default_format);
 
-      $element_items[] = array(
+      $element_items[] = [
         'question' => $item->question,
         'answer' => $item->answer,
         'answer_format' => $format,
-      );
+      ];
     }
 
-    $elements = array();
-    $elements[0] = array(
+    $elements = [];
+    $elements[0] = [
       '#theme' => 'faqfield_anchor_list_formatter',
       '#items' => $element_items,
       '#list_type' => $this->getSetting('anchor_list_type'),
-    );
+    ];
 
     return $elements;
   }

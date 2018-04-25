@@ -11,19 +11,46 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
 use Drupal\Core\Database\Database;
-use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\MigrateExecutable;
 use Drupal\Console\Utils\MigrateExecuteMessageCapture;
-use Drupal\Console\Command\Database\DatabaseTrait;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Command\Shared\MigrationTrait;
+use Drupal\Console\Command\Shared\DatabaseTrait;
+use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\State\StateInterface;
+use Drupal\Console\Core\Command\Command;
+use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
+use Drupal\Console\Annotations\DrupalCommand;
 
-class ExecuteCommand extends ContainerAwareCommand
+/**
+ * @DrupalCommand(
+ *     extension = "migrate",
+ *     extensionType = "module"
+ * )
+ */
+class ExecuteCommand extends Command
 {
     use DatabaseTrait;
+    use MigrationTrait;
 
     protected $migrateConnection;
+
+    /**
+     * @var MigrationPluginManagerInterface $pluginManagerMigration
+     */
+    protected $pluginManagerMigration;
+
+    /**
+     * DebugCommand constructor.
+     *
+     * @param MigrationPluginManagerInterface $pluginManagerMigration
+     */
+    public function __construct(
+        MigrationPluginManagerInterface $pluginManagerMigration
+    ) {
+        $this->pluginManagerMigration = $pluginManagerMigration;
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -33,61 +60,67 @@ class ExecuteCommand extends ContainerAwareCommand
             ->addArgument('migration-ids', InputArgument::IS_ARRAY, $this->trans('commands.migrate.execute.arguments.id'))
             ->addOption(
                 'site-url',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.migrate.execute.options.site-url')
             )
             ->addOption(
                 'db-type',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.migrate.setup.migrations.options.db-type')
+                $this->trans('commands.migrate.execute.migrations.options.db-type')
             )
             ->addOption(
                 'db-host',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.migrate.execute.options.db-host')
             )
             ->addOption(
                 'db-name',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.migrate.execute.options.db-name')
             )
             ->addOption(
                 'db-user',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.migrate.execute.options.db-user')
             )
             ->addOption(
                 'db-pass',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.migrate.execute.options.db-pass')
             )
             ->addOption(
                 'db-prefix',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.migrate.execute.options.db-prefix')
             )
             ->addOption(
                 'db-port',
-                '',
+                null,
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.migrate.execute.options.db-port')
             )
             ->addOption(
                 'exclude',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 $this->trans('commands.migrate.execute.options.exclude'),
-                array()
-            );
-
-        $this->addDependency('migrate');
+                []
+            )
+            ->addOption(
+                'source-base_path',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.migrate.execute.options.source-base-path')
+            )
+            ->setAliases(['mie']);
+        ;
     }
 
     /**
@@ -95,8 +128,6 @@ class ExecuteCommand extends ContainerAwareCommand
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $validator_required = function ($value) {
             if (!strlen(trim($value))) {
                 throw new \Exception('The option can not be empty');
@@ -108,7 +139,7 @@ class ExecuteCommand extends ContainerAwareCommand
         // --site-url option
         $site_url = $input->getOption('site-url');
         if (!$site_url) {
-            $site_url = $io->ask(
+            $site_url = $this->getIo()->ask(
                 $this->trans('commands.migrate.execute.questions.site-url'),
                 'http://www.example.com',
                 $validator_required
@@ -119,76 +150,80 @@ class ExecuteCommand extends ContainerAwareCommand
         // --db-type option
         $db_type = $input->getOption('db-type');
         if (!$db_type) {
-            $db_type = $this->dbTypeQuestion($io);
+            $db_type = $this->dbDriverTypeQuestion();
             $input->setOption('db-type', $db_type);
         }
-
+        
         // --db-host option
         $db_host = $input->getOption('db-host');
         if (!$db_host) {
-            $db_host = $this->dbHostQuestion($io);
+            $db_host = $this->dbHostQuestion();
             $input->setOption('db-host', $db_host);
         }
 
         // --db-name option
         $db_name = $input->getOption('db-name');
         if (!$db_name) {
-            $db_name = $this->dbNameQuestion($io);
+            $db_name = $this->dbNameQuestion();
             $input->setOption('db-name', $db_name);
         }
 
         // --db-user option
         $db_user = $input->getOption('db-user');
         if (!$db_user) {
-            $db_user = $this->dbUserQuestion($io);
+            $db_user = $this->dbUserQuestion();
             $input->setOption('db-user', $db_user);
         }
 
         // --db-pass option
         $db_pass = $input->getOption('db-pass');
         if (!$db_pass) {
-            $db_pass = $this->dbPassQuestion($io);
+            $db_pass = $this->dbPassQuestion();
             $input->setOption('db-pass', $db_pass);
         }
 
         // --db-prefix
         $db_prefix = $input->getOption('db-prefix');
         if (!$db_prefix) {
-            $db_prefix = $this->dbPrefixQuestion($io);
+            $db_prefix = $this->dbPrefixQuestion();
             $input->setOption('db-prefix', $db_prefix);
         }
 
         // --db-port prefix
         $db_port = $input->getOption('db-port');
         if (!$db_port) {
-            $db_port = $this->dbPortQuestion($io);
+            $db_port = $this->dbPortQuestion();
             $input->setOption('db-port', $db_port);
         }
-
-        $this->registerMigrateDB($input, $io);
-        $this->migrateConnection = $this->getDBConnection($io, 'default', 'migrate');
+        
+        $this->registerMigrateDB();
+        $this->migrateConnection = $this->getDBConnection('default', 'upgrade');
 
         if (!$drupal_version = $this->getLegacyDrupalVersion($this->migrateConnection)) {
-            $io->error(
-                $this->trans('commands.migrate.setup.migrations.questions.not-drupal')
-            );
-            return;
+            $this->getIo()->error($this->trans('commands.migrate.setup.migrations.questions.not-drupal'));
+            return 1;
         }
-
+        
+        $database = $this->getDBInfo();
         $version_tag = 'Drupal ' . $drupal_version;
-        // Get migrations available
-        $migrations_list = $this->getMigrations($version_tag, true);
+         
+        // Get migrations
+        $migrations_list = $this->getMigrations($version_tag);
 
         // --migration-id prefix
         $migration_id = $input->getArgument('migration-ids');
+
+        if (!in_array('all', $migration_id)) {
+            $migrations = $migrations_list;
+        } else {
+            $migrations = array_keys($this->getMigrations($version_tag));
+        }
+         
         if (!$migration_id) {
-            //            $migrations_list['all'] = 'all';
             $migrations_ids = [];
-
-            //            var_export($migrations_list);
-
+ 
             while (true) {
-                $migration_id = $io->choiceNoList(
+                $migration_id = $this->getIo()->choiceNoList(
                     $this->trans('commands.migrate.execute.questions.id'),
                     array_keys($migrations_list),
                     'all'
@@ -207,20 +242,20 @@ class ExecuteCommand extends ContainerAwareCommand
 
             $input->setArgument('migration-ids', $migrations_ids);
         }
-
+        
         // --migration-id prefix
         $exclude_ids = $input->getOption('exclude');
         if (!$exclude_ids) {
             unset($migrations_list['all']);
             while (true) {
-                $exclude_id = $io->choiceNoList(
+                $exclude_id = $this->getIo()->choiceNoList(
                     $this->trans('commands.migrate.execute.questions.exclude-id'),
                     array_keys($migrations_list),
-                    null,
+                    '',
                     true
                 );
 
-                if (empty($exclude_id)) {
+                if (empty($exclude_id) || is_numeric($exclude_id)) {
                     break;
                 } else {
                     unset($migrations_list[$exclude_id]);
@@ -229,67 +264,80 @@ class ExecuteCommand extends ContainerAwareCommand
             }
             $input->setOption('exclude', $exclude_ids);
         }
-    }
 
+        // --source-base_path
+        $sourceBasepath = $input->getOption('source-base_path');
+        if (!$sourceBasepath) {
+            $sourceBasepath = $this->getIo()->ask(
+                $this->trans('commands.migrate.setup.questions.source-base-path'),
+                ''
+            );
+            $input->setOption('source-base_path', $sourceBasepath);
+        }
+    }
+    
     /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $migration_ids = $input->getArgument('migration-ids');
         $exclude_ids = $input->getOption('exclude');
-        if (!empty($exclude_ids)) {
-            // Remove exclude migration from migration script
-            $migration_ids = array_diff($migration_ids, $exclude_ids);
-        }
+
+        $sourceBasepath = $input->getOption('source-base_path');
+        $configuration['source']['constants']['source_base_path'] = rtrim($sourceBasepath, '/') . '/';
+
 
         // If migrations weren't provided finish execution
         if (empty($migration_ids)) {
-            return;
+            return 1;
         }
 
         if (!$this->migrateConnection) {
-            $this->registerMigrateDB($input, $output);
-            $this->migrateConnection = $this->getDBConnection($output, 'default', 'migrate');
+            $this->registerMigrateDB();
+            $this->migrateConnection = $this->getDBConnection('default', 'upgrade');
         }
-
+        
         if (!$drupal_version = $this->getLegacyDrupalVersion($this->migrateConnection)) {
-            $io->error($this->trans('commands.migrate.setup.migrations.questions.not-drupal'));
-            return;
+            $this->getIo()->error($this->trans('commands.migrate.setup.migrations.questions.not-drupal'));
+            return 1;
         }
-
+        
         $version_tag = 'Drupal ' . $drupal_version;
-
+        
         if (!in_array('all', $migration_ids)) {
             $migrations = $migration_ids;
         } else {
             $migrations = array_keys($this->getMigrations($version_tag));
         }
-
-        $entity_manager = $this->getEntityManager();
-        $migration_storage = $entity_manager->getStorage('migration');
-        if (count($migrations) == 0) {
-            $io->error($this->trans('commands.migrate.execute.messages.no-migrations'));
-            return;
+                
+        if (!empty($exclude_ids)) {
+            // Remove exclude migration from migration script
+            $migrations = array_diff($migrations, $exclude_ids);
         }
+        
+        if (count($migrations) == 0) {
+            $this->getIo()->error($this->trans('commands.migrate.execute.messages.no-migrations'));
+            return 1;
+        }
+
         foreach ($migrations as $migration_id) {
-            $io->info(
+            $this->getIo()->info(
                 sprintf(
                     $this->trans('commands.migrate.execute.messages.processing'),
                     $migration_id
                 )
             );
-            $migration = $migration_storage->load($migration_id);
 
-            if ($migration) {
+            $migration_service = $this->pluginManagerMigration->createInstance($migration_id, $configuration);
+
+            if ($migration_service) {
                 $messages = new MigrateExecuteMessageCapture();
-                $executable = new MigrateExecutable($migration, $messages);
+                $executable = new MigrateExecutable($migration_service, $messages);
                 $migration_status = $executable->import();
                 switch ($migration_status) {
                 case MigrationInterface::RESULT_COMPLETED:
-                    $io->info(
+                    $this->getIo()->info(
                         sprintf(
                             $this->trans('commands.migrate.execute.messages.imported'),
                             $migration_id
@@ -297,7 +345,7 @@ class ExecuteCommand extends ContainerAwareCommand
                     );
                     break;
                 case MigrationInterface::RESULT_INCOMPLETE:
-                    $io->info(
+                    $this->getIo()->info(
                         sprintf(
                             $this->trans('commands.migrate.execute.messages.importing-incomplete'),
                             $migration_id
@@ -305,7 +353,7 @@ class ExecuteCommand extends ContainerAwareCommand
                     );
                     break;
                 case MigrationInterface::RESULT_STOPPED:
-                    $io->error(
+                    $this->getIo()->error(
                         sprintf(
                             $this->trans('commands.migrate.execute.messages.import-stopped'),
                             $migration_id
@@ -313,7 +361,7 @@ class ExecuteCommand extends ContainerAwareCommand
                     );
                     break;
                 case MigrationInterface::RESULT_FAILED:
-                    $io->error(
+                    $this->getIo()->error(
                         sprintf(
                             $this->trans('commands.migrate.execute.messages.import-fail'),
                             $migration_id
@@ -321,7 +369,7 @@ class ExecuteCommand extends ContainerAwareCommand
                     );
                     break;
                 case MigrationInterface::RESULT_SKIPPED:
-                    $io->error(
+                    $this->getIo()->error(
                         sprintf(
                             $this->trans('commands.migrate.execute.messages.import-skipped'),
                             $migration_id
@@ -333,8 +381,12 @@ class ExecuteCommand extends ContainerAwareCommand
                     break;
                 }
             } else {
-                $io->error($this->trans('commands.migrate.execute.messages.fail-load'));
+                $this->getIo()->error($this->trans('commands.migrate.execute.messages.fail-load'));
+
+                return 1;
             }
         }
+
+        return 0;
     }
 }

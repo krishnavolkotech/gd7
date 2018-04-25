@@ -6,20 +6,44 @@
 
 namespace Drupal\Console\Command\Create;
 
-use Symfony\Component\Console\Input\InputOption;
+use Drupal\Console\Annotations\DrupalCommand;
+use Drupal\Console\Command\Shared\CreateTrait;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Console\Utils\Create\CommentData;
+use Drupal\node\Entity\Node;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Command\CreateTrait;
-use Drupal\Console\Style\DrupalStyle;
 
 /**
  * Class CommentsCommand
+ *
  * @package Drupal\Console\Command\Generate
+ *
+ * @DrupalCommand(
+ *     extension = "comment",
+ *     extensionType = "module"
+ * )
  */
-class CommentsCommand extends ContainerAwareCommand
+class CommentsCommand extends Command
 {
     use CreateTrait;
+
+    /**
+     * @var CommentData
+     */
+    protected $createCommentData;
+
+    /**
+     * CommentsCommand constructor.
+     *
+     * @param CommentData $createCommentData
+     */
+    public function __construct(CommentData $createCommentData)
+    {
+        $this->createCommentData = $createCommentData;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -39,20 +63,20 @@ class CommentsCommand extends ContainerAwareCommand
                 'limit',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.create.comments.arguments.limit')
+                $this->trans('commands.create.comments.options.limit')
             )
             ->addOption(
                 'title-words',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.create.comments.arguments.title-words')
+                $this->trans('commands.create.comments.options.title-words')
             )
             ->addOption(
                 'time-range',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.create.comments.arguments.time-range')
-            );
+                $this->trans('commands.create.comments.options.time-range')
+            )->setAliases(['crc']);
     }
 
     /**
@@ -60,11 +84,9 @@ class CommentsCommand extends ContainerAwareCommand
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-
         $nodeId  = $input->getArgument('node-id');
         if (!$nodeId) {
-            $nodeId = $io->ask(
+            $nodeId = $this->getIo()->ask(
                 $this->trans('commands.create.comments.questions.node-id')
             );
             $input->setArgument('node-id', $nodeId);
@@ -72,7 +94,7 @@ class CommentsCommand extends ContainerAwareCommand
 
         $limit = $input->getOption('limit');
         if (!$limit) {
-            $limit = $io->ask(
+            $limit = $this->getIo()->ask(
                 $this->trans('commands.create.comments.questions.limit'),
                 25
             );
@@ -81,7 +103,7 @@ class CommentsCommand extends ContainerAwareCommand
 
         $titleWords = $input->getOption('title-words');
         if (!$titleWords) {
-            $titleWords = $io->ask(
+            $titleWords = $this->getIo()->ask(
                 $this->trans('commands.create.comments.questions.title-words'),
                 5
             );
@@ -93,12 +115,12 @@ class CommentsCommand extends ContainerAwareCommand
         if (!$timeRange) {
             $timeRanges = $this->getTimeRange();
 
-            $timeRange = $io->choice(
+            $timeRange = $this->getIo()->choice(
                 $this->trans('commands.create.comments.questions.time-range'),
                 array_values($timeRanges)
             );
 
-            $input->setOption('time-range',  array_search($timeRange, $timeRanges));
+            $input->setOption('time-range', array_search($timeRange, $timeRanges));
         }
     }
 
@@ -107,37 +129,56 @@ class CommentsCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-        $createComments = $this->getDrupalApi()->getCreateComments();
-
         $nodeId = $input->getArgument('node-id')?:1;
+        $node = \Drupal\node\Entity\Node::load($nodeId);
+        if (empty($node)) {
+            throw new \InvalidArgumentException(
+                $this->trans(
+                    'commands.generate.controller.messages.node-id-invalid'
+                )
+            );
+        }
         $limit = $input->getOption('limit')?:25;
         $titleWords = $input->getOption('title-words')?:5;
         $timeRange = $input->getOption('time-range')?:31536000;
 
-        $comments = $createComments->createComment(
+        $result = $this->createCommentData->create(
             $nodeId,
             $limit,
             $titleWords,
             $timeRange
         );
 
-        $tableHeader = [
-            $this->trans('commands.create.comments.messages.node-id'),
-            $this->trans('commands.create.comments.messages.comment-id'),
-            $this->trans('commands.create.comments.messages.title'),
-            $this->trans('commands.create.comments.messages.created'),
-        ];
+        if ($result['success']) {
 
-        $io->table($tableHeader, $comments['success']);
+            $tableHeader = [
+                $this->trans('commands.create.comments.messages.node-id'),
+                $this->trans('commands.create.comments.messages.comment-id'),
+                $this->trans('commands.create.comments.messages.title'),
+                $this->trans('commands.create.comments.messages.created'),
+            ];
 
-        $io->success(
-            sprintf(
-                $this->trans('commands.create.comments.messages.created-comments'),
-                $limit
-            )
-        );
+            $this->getIo()->table($tableHeader, $result['success']);
 
-        return;
+            $this->getIo()->success(
+                sprintf(
+                    $this->trans('commands.create.comments.messages.created-comments'),
+                    count($result['success'])
+                )
+            );
+        }
+
+        if (isset($result['error'])) {
+            foreach ($result['error'] as $error) {
+                $this->getIo()->error(
+                    sprintf(
+                        $this->trans('commands.create.comments.messages.error'),
+                        $error
+                    )
+                );
+            }
+        }
+
+        return 0;
     }
 }

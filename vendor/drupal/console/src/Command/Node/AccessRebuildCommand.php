@@ -10,15 +10,32 @@ namespace Drupal\Console\Command\Node;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drupal\Console\Command\ContainerAwareCommand;
-use Drupal\Console\Style\DrupalStyle;
+use Drupal\Console\Core\Command\Command;
+use Drupal\Core\State\StateInterface;
 
 /**
  * Class AccessRebuildCommand
+ *
  * @package Drupal\Console\Command\Node
  */
-class AccessRebuildCommand extends ContainerAwareCommand
+class AccessRebuildCommand extends Command
 {
+    /**
+     * @var StateInterface
+     */
+    protected $state;
+
+    /**
+     * AccessRebuildCommand constructor.
+     *
+     * @param StateInterface $state
+     */
+    public function __construct(StateInterface $state)
+    {
+        $this->state = $state;
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -32,7 +49,7 @@ class AccessRebuildCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 $this->trans('commands.node.access.rebuild.options.batch')
-            );
+            )->setAliases(['nar']);
     }
 
     /**
@@ -40,9 +57,8 @@ class AccessRebuildCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
-        $io->newLine();
-        $io->comment(
+        $this->getIo()->newLine();
+        $this->getIo()->comment(
             $this->trans('commands.node.access.rebuild.messages.rebuild')
         );
 
@@ -50,19 +66,23 @@ class AccessRebuildCommand extends ContainerAwareCommand
         try {
             node_access_rebuild($batch);
         } catch (\Exception $e) {
-            $io->error($e->getMessage());
-            return;
+            $this->getIo()->error($e->getMessage());
+
+            return 1;
         }
 
-        $needs_rebuild = $this->getState()->get('node.node_access_needs_rebuild') ? : false;
+        $needs_rebuild = $this->state->get('node.node_access_needs_rebuild') ? : false;
         if ($needs_rebuild) {
-            $io->warning(
+            $this->getIo()->error(
                 $this->trans('commands.node.access.rebuild.messages.failed')
             );
-        } else {
-            $io->success(
-                $this->trans('commands.node.access.rebuild.messages.completed')
-            );
+
+            return 1;
         }
+
+        $this->getIo()->success(
+            $this->trans('commands.node.access.rebuild.messages.completed')
+        );
+        return 0;
     }
 }

@@ -13,6 +13,31 @@ targetEntityType: node
 bundle: faq
 mode: default
 content:
+  body:
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    label: hidden
+    region: content
+  field_detailed_question:
+    type: text_default
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+    label: above
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   title:
     type: string
     weight: 0
@@ -20,26 +45,4 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_detailed_question:
-    type: text_textarea
-    weight: 1
-    label: hidden
-    settings:
-      rows: 5
-      placeholder: ''
-    third_party_settings: {  }
-  path:
-    type: path
-    weight: 2
-    settings: {  }
-    third_party_settings: {  }
-  body:
-    type: text_textarea_with_summary
-    weight: 3
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
-    label: hidden
 hidden: {  }

@@ -1,7 +1,9 @@
 uuid: e76f0054-2bc5-4d13-a81b-bacb92b3c3d1
 langcode: en
 status: false
-dependencies: {  }
+dependencies:
+  module:
+    - inactive_user
 id: user_profile_test
 label: 'User profile test'
 module: views
@@ -170,7 +172,7 @@ display:
           decimal: .
           separator: ','
           format_plural: false
-          format_plural_string: "1\x03@count"
+          format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
           plugin_id: numeric
@@ -325,7 +327,7 @@ display:
           decimal: .
           separator: ','
           format_plural: false
-          format_plural_string: "1\x03@count"
+          format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
           plugin_id: numeric
@@ -437,7 +439,7 @@ display:
       arguments: {  }
       display_extenders: {  }
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_interface'
         - url.query_args
@@ -454,7 +456,7 @@ display:
         enabled: true
         expanded: false
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_interface'
         - url.query_args

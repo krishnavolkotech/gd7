@@ -22,9 +22,9 @@ use Drupal\Core\Field\FieldItemInterface;
  * @FieldType(
  *   id = "faqfield",
  *   label = @Translation("FAQ Field"),
- *   description = @Translation("Stores a question, an answer and its format to assemble a FAQ."),
- *   default_widget = "faqfield_default",
- *   default_formatter = "faqfield_accordion"
+ *   description = @Translation("Stores a question, an answer and its format to
+ *   assemble a FAQ."), default_widget = "faqfield_default", default_formatter
+ *   = "faqfield_accordion"
  * )
  */
 class FaqFieldItem extends FieldItemBase {
@@ -33,16 +33,16 @@ class FaqFieldItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function defaultFieldSettings() {
-    return array(
-      'default_format' => 'plain_text',
-    ) + parent::defaultFieldSettings();
+    return [
+        'default_format' => 'plain_text',
+      ] + parent::defaultFieldSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties = array();
+    $properties = [];
 
     $properties['question'] = DataDefinition::create('string')
       ->setLabel(t('Question value'));
@@ -60,45 +60,45 @@ class FaqFieldItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return array(
-      'columns' => array(
-        'question' => array(
+    return [
+      'columns' => [
+        'question' => [
           'description' => 'The FAQ Field question values.',
           'type' => 'varchar',
           'length' => 255,
           'not null' => FALSE,
-        ),
-        'answer' => array(
+        ],
+        'answer' => [
           'description' => 'The FAQ Field answer values.',
           'type' => 'text',
           'not null' => TRUE,
           'size' => 'medium',
-        ),
-        'answer_format' => array(
+        ],
+        'answer_format' => [
           'description' => 'The FAQ Field answer format.',
           'type' => 'varchar',
           'length' => 255,
           'not null' => FALSE,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-    $element = array();
+    $element = [];
 
     // Get a list of formats that the current user has access to.
     $formats = filter_formats();
-    $filter_options = array();
+    $filter_options = [];
     foreach ($formats as $format) {
       $filter_options[$format->get('format')] = $format->get('name');
     }
 
     // Format select input for field settings.
-    $element['default_format'] = array(
+    $element['default_format'] = [
       '#type' => 'select',
       '#title' => $this->t('Default text format'),
       '#default_value' => $this->getSetting('default_format'),
@@ -106,7 +106,7 @@ class FaqFieldItem extends FieldItemBase {
       '#access' => count($formats) > 1,
       '#required' => TRUE,
       '#description' => $this->t('Default text format to filter FAQ field answer content.'),
-    );
+    ];
 
     return $element;
   }

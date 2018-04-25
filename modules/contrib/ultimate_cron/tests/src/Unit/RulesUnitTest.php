@@ -1,9 +1,4 @@
 <?php
-/**
- * @file
- *
- * Contains \Drupal\Tests\ultimate_cron\Unit\RulesUnitTest.
- */
 
 namespace Drupal\Tests\ultimate_cron\Unit;
 
