@@ -120,7 +120,7 @@ class AccessController extends ControllerBase
             //}
             //pr($node->id());exit;
         }
-        return AccessResult::neutral();
+        return AccessResult::allowed();
     }
 
     public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
