@@ -29,9 +29,9 @@ class AccessController extends ControllerBase
      * @param \Drupal\Core\Session\AccountInterface $account
      *   Run access checks for this account.
      */
-    public function groupNodeEdit() {
+    public function groupNodeEdit(Route $route, RouteMatch $route_match, AccountInterface $user) {
         // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
-        $node = \Drupal::routeMatch()->getParameter('node');
+        $node = $route_match->getParameter('node');
         if (is_object($node)) {
             
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
@@ -42,10 +42,10 @@ class AccessController extends ControllerBase
                 /**
                  * group id has to be dynamic
                  */
-                $currentUser = \Drupal::currentUser();
+                
                 $group = \Drupal\group\Entity\Group::load(QUICKINFO);
-                $content = $group->getMember($currentUser);
-                if (array_intersect($currentUser->getRoles(), ['site_administrator', 'administrator'])) {
+                $content = $group->getMember($user);
+                if (array_intersect($user->getRoles(), ['site_administrator', 'administrator'])) {
                     return AccessResult::allowed();
                 }
                 if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
@@ -56,7 +56,43 @@ class AccessController extends ControllerBase
             }
             
             if ($node->getType() == 'downtimes') {
-                return AccessResult::allowed();
+                
+                if(array_intersect($user->getRoles(), ['site_administrator','administrator'])){
+                    return AccessResult::allowed();
+                }
+                $downtime_type = \Drupal::database()->select('downtimes','d')
+                    ->fields('d',['scheduled_p'])
+                    ->condition('downtime_id',$node->id())
+                    ->execute()
+                    ->fetchField();
+                $maintenance_group = \Drupal\group\Entity\Group::load(GEPLANTE_BLOCKZEITEN);
+                $groupMember = $maintenance_group->getMember($user);
+                $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+                $incidentManagementGroupMember = $incidentManagement->getMember($user);
+                if($downtime_type == 1){
+                    if (($groupMember && $groupMember->getGroupContent()
+                            ->get('request_status')->value == 1 && $incidentManagementGroupMember) || array_intersect($user->getRoles(), [
+                        'site_administrator',
+                        'administrator'
+                        ])
+                    ) {
+                        return AccessResult::allowed();
+                    }
+                }else{
+                    $states = \Drupal::database()->select('downtimes','d')
+                    ->fields('d',['state_id'])
+                    ->condition('downtime_id',$node->id())
+                    ->execute()
+                    ->fetchField();
+                    $states = explode(',', $states);
+                    $show_resolve = \Drupal\hzd_customizations\HzdcustomisationStorage::resolve_link_display($states, $node->getOwnerId());
+                    if($show_resolve){
+                        return AccessResult::allowed();
+                    }
+
+                }
+
+                return AccessResult::forbidden();
             }
             if ($node->getType() == 'im_upload_page') {
                 if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
@@ -84,7 +120,7 @@ class AccessController extends ControllerBase
             //}
             //pr($node->id());exit;
         }
-        return AccessResult::allowed();
+        return AccessResult::neutral();
     }
 
     public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
