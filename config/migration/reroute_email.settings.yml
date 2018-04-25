@@ -10,6 +10,8 @@ revision: null
 revision_information: null
 whitelist: denis@azrisolutions.com
 address: denis@azrisolutions.com
-enable: true
+enable: false
 description: true
 langcode: de
+message: false
+mailkeys: ''
