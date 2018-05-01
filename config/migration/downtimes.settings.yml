@@ -1,12 +1,12 @@
 maintenance_group_id: '19'
 reminder_mail_subject: '[BpK] Ihre gemeldete Blockzeit'
 reminder_mail_body:
-  value: "<p>Hallo, das Ende Ihrer geplanten Blockzeit wurde überschritten. Bitte aktualisieren Sie das voraussichtliche Ende oder schließen Sie die Blockzeit nach bereits erfolgter Beendigung, andernfalls wird die Blockzeit in einer Woche automatisch geschlossen. Sie erreichen die Blockzeit direkt unter: [node-url] Viele Grüße, Team Betriebsportal KONSENS</p>\r\n"
-  format: basic_html
+  value: "<p>Hallo, das Ende Ihrer geplanten Blockzeit wurde überschritten. Bitte aktualisieren Sie das voraussichtliche Ende oder schließen Sie die Blockzeit nach bereits erfolgter Beendigung, andernfalls wird die Blockzeit in einer Woche automatisch geschlossen. Sie erreichen die Blockzeit direkt unter: [node:url] Viele Grüße, Team Betriebsportal KONSENS</p>\r\n"
+  format: full_html
 resolve_maintenance_mail_subject: '[BpK] Ihre gemeldete Blockzeit wurde geschlossen'
 resolve_maintenance_mail_body:
-  value: "<p>Hallo, das Ende Ihrer gemeldeten Blockzeit wurde überschritten. Wie vor einer Woche per Email angekündigt, haben wir die Blockzeit für Sie automatisch geschlossen. Sie müssen nun nichts mehr weiter unternehmen. Falls Ihre Blockzeit noch andauert, wenden Sie sich bitte an die Administratoren. Sie erreichen die Blockzeit direkt unter: [node-url] Viele Grüße, Team Betriebsportal KONSENS</p>\r\n"
-  format: basic_html
+  value: "<p>Hallo, das Ende Ihrer gemeldeten Blockzeit wurde überschritten. Wie vor einer Woche per Email angekündigt, haben wir die Blockzeit für Sie automatisch geschlossen. Sie müssen nun nichts mehr weiter unternehmen. Falls Ihre Blockzeit noch andauert, wenden Sie sich bitte an die Administratoren. Sie erreichen die Blockzeit direkt unter: [node:url] Viele Grüße, Team Betriebsportal KONSENS</p>\r\n"
+  format: full_html
 number_of_day: null
 number_of_days: '7'
 current_downtimes: 'Hier werden akute und geplante Ausfallzeiten länderübergreifender Systeme bekannt gegeben. Dies dient der schnellen Kommunikation von Betriebsstörungen, während die eigentliche Störungsbehebung über die vereinbarten Meldewege im jeweiligen Landesticket dokumentiert wird.'

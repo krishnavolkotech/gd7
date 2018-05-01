@@ -1,0 +1,8 @@
+uuid: f3995892-1acd-402b-8fe4-4c28c923e567
+langcode: de
+status: true
+dependencies: {  }
+id: menu-63995
+label: Risikomanagement
+description: ''
+locked: false

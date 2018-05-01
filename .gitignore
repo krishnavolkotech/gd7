@@ -39,3 +39,4 @@ sites/simpletest
 .idea/
 config/dev/*
 config/dev-backup/*
+themes/hzd/images/*
