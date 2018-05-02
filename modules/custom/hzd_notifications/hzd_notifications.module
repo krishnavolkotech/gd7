@@ -767,6 +767,10 @@ function hzd_notifications_node_update($node){
     return;
   }
   elseif($node->isPublished()){
+    //Notify only if release is released
+    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
+      return;
+    }
     $users = [];
     if(in_array($node->bundle(), NotificationManager::$groupBundles)){
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
@@ -781,10 +785,7 @@ function hzd_notifications_node_update($node){
       $users = _get_subscribed_users($node);
       _notify_users($node, ENTITY_OP_UPDATE, $users);
     }
-    //Notify only if release is released
-    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
-      return;
-    }
+    
   }
   
   // Services bundle is not altered for now. 
