@@ -111,7 +111,7 @@
        * archive deployed releases
        */
 
-      $(context).find('.archive_deployedRelease').click(function () {
+/*      $(context).find('.archive_deployedRelease').click(function () {
         var is_archive = confirm("Möchten Sie wirklich archivieren?");
         if (is_archive == true) {
           var nid = $(this).attr('nid');
@@ -125,7 +125,7 @@
           });
         }
         return false;
-      });
+      });*/
 
 
       $(context)

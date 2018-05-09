@@ -270,12 +270,14 @@ hzd_release_management.display_planning_files:
 #    'type' => MENU_CALLBACK
 #    );
 
-hzd_release_management.archive_deployedreleases:
-  path: '/archive_deployedreleases'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\ArchivedeployedreleasesController::archive_deployedreleases'
-  requirements:
-    _permission: 'access content'
+# hzd_release_management.archive_deployedreleases:
+#   path: '/archive_deployedreleases/{node}'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\ArchivedeployedreleasesController::archive_deployedreleases'
+#   requirements:
+#     _permission: 'access content'
+#   options:
+#     no_cache: 'TRUE'
 
 
 #

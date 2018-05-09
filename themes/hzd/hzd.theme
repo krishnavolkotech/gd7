@@ -468,6 +468,7 @@ function downtimes_revisions($node) {
 //  if (empty($query)) {
 //    return;
 //  }
+// pr($query);exit;
   $downtimeData = \Drupal::database()->select('downtimes', 'd')
     ->fields('d')
     ->condition('downtime_id', $node)
@@ -532,7 +533,7 @@ function downtimes_revisions($node) {
         $logData[$order['reason']] = t("@label: ", ['@label' => $labels['reason']]);
       }
       ksort($logData);
-      $items[] = [
+      $tempItem = [
         'items' => [
           '#title' => $text . " von " . custom_user_fullname($value['uid']) . ' am ' . DateTimePlus::createFromTimestamp((integer) $value['updated'])
               ->format('d.m.Y - H:i') . ' Uhr',
@@ -540,12 +541,16 @@ function downtimes_revisions($node) {
           '#theme' => 'item_list',
           '#type' => 'ul',
         ],
-        'reason' => [
+      ];
+      if(!empty($reason)){
+        $tempItem['reason'] = [
           '#type' => 'container',
           '#attributes' => ['class' => ['reason']],
           'markup' => ['#markup' => Markup::create(trim($reason))]
-        ]
-      ];
+        ];
+      }
+      $items[] = $tempItem;
+      unset($tempItem);
     }
   }
   if ($hasFirstLog === FALSE || empty($query)) {
@@ -553,12 +558,7 @@ function downtimes_revisions($node) {
     if (empty($query) || empty($oldData)) {
 //    echo 1223;exit;
       $oldData = NULL;
-      if (!empty($downtimeData->reason)) {
-        if (is_numeric($downtimeData->reason)) {
-          $res = maintenance_reasons($downtimeData->reason);
-        }
-        $oldData[] = $labels['non_compliance'] . ' : ' . $res;
-      }
+      
 
       $get_maintain_window = \Drupal::database()
         ->select('node_field_data', 'n');
@@ -585,6 +585,12 @@ function downtimes_revisions($node) {
       if (!empty($downtimeData->enddate_planned)) {
         $oldData[] = $labels['end_date'] . ' : ' . DateTimePlus::createFromTimestamp((integer) $downtimeData->enddate_planned)
             ->format('d.m.Y - H:i') . ' Uhr';
+      }
+      if (!empty($downtimeData->reason)) {
+        if (is_numeric($downtimeData->reason)) {
+          $res = maintenance_reasons($downtimeData->reason);
+        }
+        $oldData[] = $labels['non_compliance'] . ' : ' . $res;
       }
       if (!empty($downtimeData->description)) {
         $oldData[] = $labels['reason'] . ' : ';

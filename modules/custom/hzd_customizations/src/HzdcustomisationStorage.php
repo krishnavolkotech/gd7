@@ -637,7 +637,7 @@ class HzdcustomisationStorage {
    */
   static public function resolve_link_display($content_state_id = NULL, $owner_id = NULL) {
     $user = \Drupal::currentUser();
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
     $group_id = $group->id();
     if (!$group->getMember($user)) {
       return FALSE;

@@ -8,7 +8,7 @@ title: 'Queue: Update translations'
 id: ultimate_cron_queue_locale_translation
 weight: 10
 module: locale
-callback: ultimate_cron.queue_worker:queueCallback
+callback: 'ultimate_cron.queue_worker:queueCallback'
 scheduler:
   id: simple
   configuration:

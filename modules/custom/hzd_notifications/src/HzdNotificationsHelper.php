@@ -190,6 +190,9 @@ class HzdNotificationsHelper {
   
   // update the overrided content type interval
   static function hzd_update_content_type_intval($service, $send_interval, $uid, $type, $default_intval) {
+    if(empty($type)){
+      return;
+    }
     
 //pr($service . " " . $send_interval . " " . $uid . " " . $type . " " . $default_intval);
 //exit;
