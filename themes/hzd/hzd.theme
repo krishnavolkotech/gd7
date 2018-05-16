@@ -514,6 +514,8 @@ function downtimes_revisions($node) {
 //                    $logData[$order[$name]] = $labels[$name] . ': ' . DateTimePlus::createFromTimestamp((integer)$field_value['new'])->format('d.m.Y - H:i') . ' Uhr';
             // Modifying this as the date in the migrated data comes in expected format
             $logData[$order[$name]] = $labels[$name] . ': ' . $field_value['new'] . ' Uhr';
+          }else{
+            $logData[$order[$name]] = $labels[$name] . ': ' . t("<removed>");
           }
           if (!empty($field_value['old']) && $itemCount == count($query)) {
             $hasFirstLog = FALSE;
