@@ -218,8 +218,8 @@ class HzdReleases extends ControllerBase {
       // Check the documentation link download or not. if not failed download link will display.
       if (!empty($files)) {
 
-        $host = \Drupal::request()->getHost();
-        $host_path = "http://" . $host . "/system/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
+        $host = \Drupal::request()->getSchemeAndHttpHost();
+        $host_path = $host . "/system/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
         unset($arr[0]);
         unset($arr[1]);
 
