@@ -325,7 +325,9 @@ div[style] {
 .pdf-content #problem_search_results_wrapper table tr th,
 .pdf-content #problem_search_results_wrapper table tr td{
   padding:8px 1px !important;
+  vertical-align: top;
 }
+
 .pdf-content #problem_search_results_wrapper table#sortable
 .pdf-content #problem_search_results_wrapper table#sortable th{
   color:#333;

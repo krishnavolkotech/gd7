@@ -13,11 +13,14 @@ use Drupal\Core\Url;
  */
 class ArchiveDeployedReleaseForm extends FormBase {
 
+    private static $formId = 0;
+
     /**
      * {@inheritdoc}
      */
     public function getFormId() {
-        return 'archive_deployed_release_form';
+        self::$formId++;
+        return 'archive_deployed_release_form_'.self::$formId;
     }
 
     /**

@@ -364,6 +364,10 @@ table tr td,
   padding:8px 4px;
   vertical-align: top;
 }
+table.problem_info tr th,
+table.problem_info tr td{
+  vertical-align: top;
+}
 /* .view-rz-schnellinfo table tr th:nth-child(6),
 .view-rz-schnellinfo table tr td:nth-child(6),
 #im-attachment-files-list table tr th:nth-child(2),

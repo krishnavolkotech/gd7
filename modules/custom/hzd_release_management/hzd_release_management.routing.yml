@@ -6,6 +6,8 @@ hzd_release_management.view_deployed_releases:
     _entity_view: group.default
   requirements:
     _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
 
 hzd_release_management.released:
   path: 'group/{group}/releases'

@@ -265,7 +265,7 @@ class HzdStorage {
         ->condition('field_work_around', '%' . $filter_parameter['string'] . '%', 'LIKE');
       $problem_node_ids->condition($group);
     }
-    $problem_node_ids->addTag('debug');
+    // $problem_node_ids->addTag('debug');
     // pr($problem_node_ids->execute());exit;
     if (isset($filter_parameter['limit'])) {
       $limit = $filter_parameter['limit'];
