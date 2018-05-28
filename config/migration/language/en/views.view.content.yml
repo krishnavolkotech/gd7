@@ -16,10 +16,10 @@ display:
       pager:
         options:
           tags:
-            previous: '‹ Vorherige'
-            next: 'Weiter › '
-            first: '« Anfang'
-            last: 'Ende »'
+            previous: '‹ Previous'
+            next: 'Next ›'
+            first: '« First'
+            last: 'Last »'
       title: Inhalt
   page_1:
     display_options:

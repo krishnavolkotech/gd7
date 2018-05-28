@@ -11,11 +11,11 @@ display:
       pager:
         options:
           tags:
-            previous: '‹ Vorherige'
-            next: 'Weiter › '
+            previous: '‹ Previous'
+            next: 'Next ›'
           expose:
-            items_per_page_label: 'Elemente pro Seite'
-            items_per_page_options_all_label: '- Alle -'
+            items_per_page_label: 'Items per page'
+            items_per_page_options_all_label: '- All -'
       title: Dateien
   page_1:
     display_options:
@@ -26,8 +26,8 @@ display:
       pager:
         options:
           tags:
-            previous: '‹ Vorherige'
-            next: 'Weiter › '
+            previous: '‹ Previous'
+            next: 'Next ›'
           expose:
-            items_per_page_label: 'Elemente pro Seite'
-            items_per_page_options_all_label: '- Alle -'
+            items_per_page_label: 'Items per page'
+            items_per_page_options_all_label: '- All -'

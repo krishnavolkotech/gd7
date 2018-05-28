@@ -13,8 +13,8 @@ display:
       pager:
         options:
           expose:
-            items_per_page_label: 'Elemente pro Seite'
-            items_per_page_options_all_label: '- Alle -'
+            items_per_page_label: 'Items per page'
+            items_per_page_options_all_label: '- All -'
   page_1:
     display_options:
       menu:
