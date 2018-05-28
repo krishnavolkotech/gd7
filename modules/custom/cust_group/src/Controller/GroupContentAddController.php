@@ -45,6 +45,9 @@ class GroupContentAddController extends GroupContentController {
     if($group->id() == RELEASE_MANAGEMENT){
       $contentTypes[] = 'planning_files';
     }
+    if($group->id() == PROBLEM_MANAGEMENT){
+      $contentTypes[] = 'problem';
+    }
     foreach($build['#bundles'] as $key=>$type){
       if(!$this->isContentCreatable($key,$contentTypes)){
 //      if((strpos($key,'page') === false) && (strpos($key,'faqs') === false) && (strpos($key,'newsletter') === false)){

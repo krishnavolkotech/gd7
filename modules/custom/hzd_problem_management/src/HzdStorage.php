@@ -237,6 +237,11 @@ class HzdStorage {
     }
     if (isset($filter_parameter['service']) && $filter_parameter['service'] != 0) {
       $problem_node_ids->condition('field_services', $filter_parameter['service'], '=');
+    }else{
+      $group_problems_view = self::get_problems_services($group_id);
+      if (!empty($group_problems_view)) {
+        $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
+      }
     }
 
     if (isset($filter_parameter['function']) && $filter_parameter['function'] != '0') {
@@ -254,20 +259,18 @@ class HzdStorage {
 
     if (isset($filter_parameter['string']) && t($filter_parameter['string']) != t('Search Title, Description, Cause, Workaround, Solution')) {
       $group = $problem_node_ids->orConditionGroup()
-        ->condition('field_s_no', $filter_parameter['string'], '=')
+        ->condition('field_s_no', $filter_parameter['string'], 'LIKE')
         ->condition('title', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('body', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('field_work_around', '%' . $filter_parameter['string'] . '%', 'LIKE');
       $problem_node_ids->condition($group);
     }
-
+    // $problem_node_ids->addTag('debug');
+    // pr($problem_node_ids->execute());exit;
     if (isset($filter_parameter['limit'])) {
       $limit = $filter_parameter['limit'];
     }
-    $group_problems_view = self::get_problems_services($group_id);
-    if (!empty($group_problems_view)) {
-      $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
-    }
+    
 //    $problem_node_ids->addTag('debug');
     //As sort on fields with format d.m.Y cannot be supported by entity query I m using database api to achieve it.
     $ids = $problem_node_ids->execute();
@@ -293,7 +296,7 @@ class HzdStorage {
       $pager = $conn->extend('Drupal\Core\Database\Query\PagerSelectExtender');
       $result = $pager->limit($page_limit)->execute()->fetchCol();
     }
-
+// pr($result);exit;
     $rows = array();
     $status_msgs = array(
       'Neues Problem',

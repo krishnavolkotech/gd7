@@ -125,10 +125,11 @@ class ProblemImport {
       ->condition('field_s_no', $values['sno'])
       ->accessCheck(FALSE)
       ->execute();
-
-    $node = Node::load(reset($query));
+    $node = null;
     $nodeExists = FALSE;
-
+    if($query){
+      $node = Node::load(reset($query));
+    }
     $replace = array('/' => '.', '-' => '.');
     $formatted_date = strtr($values['created'], $replace);
 
@@ -255,8 +256,8 @@ class ProblemImport {
     // $problem_node->set('field_timezone', $values['timezone']);.
     $problem_node->set('field_version', $values['version']);
     $problem_node->set('field_work_around', array(
-      'value' => $values['workaround'],
-      'format' => 'basic_html',
+      'value' => Html::escape($values['workaround']),
+      'format' => 'plain_text',
     ));
     /*    pr($problem_node->save());
         echo '=====';

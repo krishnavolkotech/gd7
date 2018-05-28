@@ -67,3 +67,9 @@ hzd_customizations.mail_templates_menu:
   route_name: hzd_customizations.mail_templates
   description: 'Mail template contents'
   parent: hzd_customizations.notification
+hzd_customizations.csv_import_ui:
+  title: 'CSV Data Upload'
+  route_name: hzd_customizations.csv_imports_upload
+  parent: hzd_customizations.custom_configurations
+  description: 'Upload CSV Data'
+  weight: 101

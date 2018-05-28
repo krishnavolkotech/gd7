@@ -293,6 +293,7 @@ $inprogress_nid_values = [];
         }
 
         $node = Node::create($node_array);
+        $node->set("status", 1);
         $node->save();
         $nid = $node->id();
         if ($node->id()) {
@@ -432,6 +433,7 @@ $inprogress_nid_values = [];
     foreach(array_diff($inprogress_nid_values, $inprogress_csv_nid_values) as $val){
       $node = Node::load($val);
         $node->set("field_release_type", 4);
+        $node->set('status',1);
         $node->save();
       }
     }
@@ -1432,6 +1434,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 //    pr($deployedReleases);exit;
     $release_node_ids->condition('nid', (array) $deployedReleases, 'NOT IN');*/
     $release_node_ids->sort('field_date', 'DESC');
+    $release_node_ids->condition('status', 1);
     if ($filter_value['limit'] == 'all') {
       $result = $release_node_ids->execute();
     } else {

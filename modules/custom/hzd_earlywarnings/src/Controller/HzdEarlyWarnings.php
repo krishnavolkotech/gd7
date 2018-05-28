@@ -234,6 +234,8 @@ class HzdEarlyWarnings extends ControllerBase {
    * posted on the early warning.
    */
   static public function release_earlywarnings_display_table($group) {
+    // pr(Node::load(60694)->get('comment_no_subject'));exit;
+
     $filter_value = HzdearlywarningsStorage::get_earlywarning_filters();
     $group_id = $group->id();
     $rows = array();
@@ -268,20 +270,21 @@ class HzdEarlyWarnings extends ControllerBase {
       'class' => 'last-posting-hdr'
     );
     $header = array($release, $earlywarnings, $responses, $lastposting);
-    $commentAlias = 'comment_count';
-    $ewAlias = 'early_warning';
-    $releasesAggQuery = \Drupal::entityQueryAggregate('comment')
-      ->condition('entity_type', 'node', '=')
-      ->condition('entity_id.entity:node.type', 'early_warnings', '=')
-      ->aggregate('cid', 'COUNT', null, $commentAlias)
-      ->aggregate('entity_id', 'MAX', null, $ewAlias)
-      ->sortAggregate('changed','MAX','desc');
-    $releasesAggQuery->accessCheck(false);
-    $releasesAggQuery->groupBy('entity_id.entity.field_earlywarning_release');
-      
-    
+    $temp = \Drupal::database()->query('SET sql_mode = \'\'');
+    $query = \Drupal::database()->select('node_field_data','nfd');
+    $query->addExpression("count(nfd.nid)",'ew_count');
+    $query->addExpression("ces.entity_id",'early_warning');
+    $query->fields('nfer',['field_earlywarning_release_value']);
+    $query->leftJoin('comment_entity_statistics','ces','nfd.nid = ces.entity_id');
+    $query->innerJoin('node__field_earlywarning_release','nfer','nfer.entity_id = nfd.nid');
+    $query->InnerJoin('node__field_release_service','nfrs','nfrs.entity_id = nfd.nid');
+    $query->groupBy('nfer.field_earlywarning_release_value');
+    // $query->groupBy('ces.entity_id');
+    $query->condition('nfd.type','early_warnings');
+    $query->orderBy('ces.last_comment_timestamp','desc');
+    // pr($query->execute()->fetchAll());exit;
     if (isset($filter_value['services']) && $filter_value['services'] != 0) {
-      $releasesAggQuery->condition('entity_id.entity:node.field_release_service', $filter_value['services'], '=');
+      $query->condition('nfrs.field_release_service_value',$filter_value['services'],'=');
     }else{
       $group_release_view_service_id_query = \Drupal::database()
         ->select('group_releases_view', 'grv');
@@ -298,37 +301,36 @@ class HzdEarlyWarnings extends ControllerBase {
         ->condition('release_type', $default_type, '=')
         ->condition('nid', (array)$group_release_view_service, 'IN')
         ->execute();
-      $releasesAggQuery->condition('entity_id.entity:node.field_release_service', $services, 'IN');
+      $query->condition('nfrs.field_release_service_value', $services, 'IN');
     }
     if (isset($filter_value['releases']) && $filter_value['releases'] != 0) {
-      $releasesAggQuery->condition('entity_id.entity:node.field_earlywarning_release', $filter_value['releases'], '=');
+      $query->condition('nfer.field_earlywarning_release_value', $filter_value['releases'], '=');
     }
     if ($filter_value['filter_startdate']) {
       $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'], null, ['validate_format' => FALSE])->getTimestamp();
-      $releasesAggQuery->condition('entity_id.entity:node.created', $startDate, '>');
+      $query->condition('nfd.created', $startDate, '>');
     }
     if ($filter_value['filter_enddate']) {
       $endDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_enddate'], null, ['validate_format' => FALSE])->getTimestamp();
-      $releasesAggQuery->condition('entity_id.entity:node.created', $endDate, '<');
+      $query->condition('nfd.created', $endDate, '<');
     }
     
-    if ($filter_value['limit'] != 'all') {
-      //@todo Pager on entity query is not working here as group by field is not associated with any field @sandeep check back again later
-      $page_limit = isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT;
-      $countQuery = clone $releasesAggQuery;
-      $count = $countQuery->count()->execute();
-      $page = pager_default_initialize($count, $page_limit);      
-      $releasesAggQuery->range($page * $page_limit, $page_limit);
+    if (isset($filter_value['limit']) && $filter_value['limit'] != 'all') {
+      $query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');$query->limit($filter_value['limit']);
+    }elseif(!isset($filter_value['limit'])){
+      $query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
+      $query->limit(DISPLAY_LIMIT);
     }
-    $results = $releasesAggQuery->execute();
+    $results = $query->execute()->fetchAll();
+    // pr($results);exit;
     foreach ($results as $key => $value) {
       $release_specifc_earlywarnings = \Drupal::entityQuery('node')
         ->condition('type', 'early_warnings', '=')
-        ->condition('field_earlywarning_release', $value['field_earlywarning_release'], '=');
+        ->condition('field_earlywarning_release', $value->field_earlywarning_release_value, '=');
       $earlywarnings_nids = $release_specifc_earlywarnings->execute();
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
-        $release = \Drupal\node\Entity\Node::load($value['field_earlywarning_release']);
+        $release = \Drupal\node\Entity\Node::load($value->field_earlywarning_release_value);
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {
@@ -347,7 +349,7 @@ class HzdEarlyWarnings extends ControllerBase {
         
         $options['query'][] = array(
 //          'services' => $release->field_relese_services->target_id,
-          'releases' => $value['field_earlywarning_release'],
+          'releases' => $value->field_earlywarning_release_value,
           'r_type' => 'released',
           'release_type' => $default_type
         );
@@ -366,11 +368,28 @@ class HzdEarlyWarnings extends ControllerBase {
         $earlywarining_link = \Drupal::service('link_generator')
           ->generate(t($earlywarining_view_link), $url);
   
-        $earlyWarningNode = Node::load($value['early_warning']);
-        $userName = $earlyWarningNode->getOwner()->getDisplayName();
-        //$lastCreated = $lastpost = date('d.m.Y', $earlyWarningNode->created->value) .
-        //  ' ' . t('by') . ' ' . $userName;
-        $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $earlyWarningNode->getCreatedTime()), '@username' => $userName]);
+        $earlyWarningNode = Node::load($value->early_warning);
+        
+        $cids = \Drupal::entityQuery('comment')
+          ->condition('entity_id', $value->early_warning)
+          ->condition('entity_type', 'node')
+          ->sort('changed', 'DESC')
+          ->range(0,1)
+          ->execute();
+          if(!empty($cids)){
+            $comment = \Drupal\comment\Entity\Comment::load(reset($cids));
+            $userName = $comment->getOwner()->getDisplayName();
+            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $comment->get('changed')->value), '@username' => $userName]);
+          }else{
+            $userName = $earlyWarningNode->getOwner()->getDisplayName();
+            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $earlyWarningNode->get('changed')->value), '@username' => $userName]);
+          }        
+        $commentsCount = \Drupal::database()->select('comment_entity_statistics', 'ces', $options);
+          $commentsCount->addExpression('SUM(ces.comment_count)','com_cnt');
+          $commentsCount->condition('ces.entity_id', $earlywarnings_nids, 'IN');
+          $commentsCount->condition('ces.entity_type', 'node');
+          $commentsCount = $commentsCount->execute()->fetch();
+          // pr($commentsCount);
         $elements = array(
           array(
             'data' => $relase_title,
@@ -381,7 +400,7 @@ class HzdEarlyWarnings extends ControllerBase {
             'class' => 'earlywarnings-cell'
           ),
           array(
-            'data' => $value['comment_count'],
+            'data' => $commentsCount->com_cnt,
             'class' => 'responses-cell'
           ),
           array(
@@ -393,7 +412,7 @@ class HzdEarlyWarnings extends ControllerBase {
         $rows[] = $elements;
       }
     }
-    
+    // exit;
     $output['release_early_warning_table'] = array(
       '#theme' => 'table',
       '#header' => $header,

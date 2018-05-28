@@ -793,7 +793,7 @@ abstract class StylePluginBase extends PluginBase {
    *   The output of all rendered fields, or NULL if it was empty.
    */
   public function getRenderedFields() {
-  	return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
+    return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
   }
 
   /**
