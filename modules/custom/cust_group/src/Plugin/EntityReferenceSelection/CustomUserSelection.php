@@ -48,6 +48,7 @@ class CustomUserSelection extends DefaultSelection {
   
   public function getReferenceableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 10) {
     $group = $this->configuration['handler_settings']['hzd_group'];
+    $exclude_members = $this->configuration['handler_settings']['exclude_members'];
     $plugin = $group->getGroupType()
       ->getContentPlugin('group_membership')
       ->getContentTypeConfigId();
@@ -64,8 +65,10 @@ class CustomUserSelection extends DefaultSelection {
     $userQuery->condition('status', 1);
     $userQuery->range(0, $limit);
     $userQuery->isNull('iu.uid');
-    $userQuery->isNull('gcfd.id');
-//    echo $userQuery->__toString();exit;
+    if($exclude_members){
+      $userQuery->isNull('gcfd.id');
+    }
+  //  echo $userQuery->__toString();exit;
     $result = $userQuery->execute()->fetchCol();
 //    pr($result);exit;
     $target_type = $this->configuration['target_type'];

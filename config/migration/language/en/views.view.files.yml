@@ -16,8 +16,30 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      fields:
+        filemime:
+          label: 'Mime type'
+        filesize:
+          label: Größe
+        created:
+          label: 'Upload Datum'
+        changed:
+          label: 'Datum geändert'
+        count:
+          label: 'Verwendet in'
+      filters:
+        filename:
+          expose:
+            label: Dateiname
+        filemime:
+          expose:
+            label: 'Mime type'
       title: Dateien
+      empty:
+        area_text_custom:
+          content: 'Keine Dateien verfügbar'
   page_1:
+    display_title: Dateiübersicht
     display_options:
       menu:
         title: Dateien
@@ -31,3 +53,15 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      fields:
+        entity_label:
+          label: Entität
+        type:
+          label: Entitätstyp
+        count:
+          label: 'Anzahl der Verwendung'
+      arguments:
+        fid:
+          exception:
+            title: Alle
+          title: 'Dateiverwendungsinformationen für {{ arguments.fid }}'

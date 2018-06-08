@@ -26,6 +26,7 @@ class GroupUserFieldWidget extends WidgetBase {
         'size' => 60,
         'placeholder' => '',
         'hzd_group' => '',
+        'exclude_members' => 1
       ) + parent::defaultSettings();
   }
   
@@ -41,6 +42,11 @@ class GroupUserFieldWidget extends WidgetBase {
       '#default_value' => $this->getSetting('size'),
       '#required' => TRUE,
       '#min' => 1,
+    );
+    $elements['exclude_members'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Exclude group members'),
+      '#default_value' => $this->getSetting('exclude_members'),
     );
     $elements['placeholder'] = array(
       '#type' => 'textfield',
@@ -72,11 +78,12 @@ class GroupUserFieldWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $entity = $items->getEntity();
     $referenced_entities = $items->referencedEntities();
-    $group = \Drupal::routeMatch()->getParameter('group');
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
     // Append the match operation to the selection settings.
     $selection_settings = $this->getFieldSetting('handler_settings') + [
         'match_operator' => $this->getSetting('match_operator'),
       ];
+    $selection_settings['exclude_members'] = $this->getSetting('exclude_members');
     if ($group) {
       $selection_settings['hzd_group'] = $group;
     }

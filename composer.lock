@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afc0f0aaf3e94914f2b3470f728dc4a8",
+    "content-hash": "c2174f5c5eec71e58c3ca367dce32b03",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2533,6 +2533,53 @@
             }
         },
         {
+            "name": "drupal/entity_reference_exposed_filters",
+            "version": "1.0.0-alpha2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/entity_reference_exposed_filters",
+                "reference": "8.x-1.0-alpha2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_reference_exposed_filters-8.x-1.0-alpha2.zip",
+                "reference": "8.x-1.0-alpha2",
+                "shasum": "2032429ff191e28dbbaed9b07f6bf14553f1be1f"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0-alpha2",
+                    "datestamp": "1524753484",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "el1_1el",
+                    "homepage": "https://www.drupal.org/user/1795292"
+                }
+            ],
+            "description": "Entity Reference Nodes displayed as exposed filters with titles in Views",
+            "homepage": "https://www.drupal.org/project/entity_reference_exposed_filters",
+            "support": {
+                "source": "http://cgit.drupalcode.org/entity_reference_exposed_filters"
+            }
+        },
+        {
             "name": "drupal/faq",
             "version": "dev-1.x",
             "source": {
@@ -4105,6 +4152,60 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/search_api_solr_multilingual"
             }
+        },
+        {
+            "name": "drupal/serial",
+            "version": "dev-1.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/serial",
+                "reference": "dec612677421de50cb5eb50dcafb04151f2e8890"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.x-dev",
+                    "datestamp": "1481038983",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "BR0kEN",
+                    "homepage": "https://www.drupal.org/user/2802285"
+                },
+                {
+                    "name": "colan",
+                    "homepage": "https://www.drupal.org/user/58704"
+                },
+                {
+                    "name": "kirsh",
+                    "homepage": "https://www.drupal.org/user/422425"
+                }
+            ],
+            "description": "Defines atomic auto increment (serial) field type.",
+            "homepage": "https://www.drupal.org/project/serial",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/serial",
+                "issues": "https://www.drupal.org/project/issues/serial"
+            },
+            "time": "2016-10-08T11:10:20+00:00"
         },
         {
             "name": "drupal/simple_block",
@@ -9573,6 +9674,8 @@
         "drupal/queue_ui": 20,
         "drupal/faq": 20,
         "drupal/ultimate_cron": 15,
+        "drupal/serial": 20,
+        "drupal/entity_reference_exposed_filters": 15,
         "behat/mink": 20,
         "behat/mink-selenium2-driver": 20
     },

@@ -1,0 +1,21 @@
+uuid: 314942f6-571a-4cb5-b7a8-e6c8d0d7f852
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_scope
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_scope
+field_name: field_scope
+entity_type: node
+bundle: risk
+label: Scope
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

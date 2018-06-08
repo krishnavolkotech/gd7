@@ -1,0 +1,22 @@
+uuid: 9bb42ef2-7fe2-4321-94fc-1dfbaca1d638
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.risk
+id: node.risk.promote
+field_name: promote
+entity_type: node
+bundle: risk
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

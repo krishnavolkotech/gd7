@@ -7,6 +7,13 @@ display:
             group_items:
               1:
                 value: '1'
+                title: Veröffentlicht
+              2:
+                title: Unveröffentlicht
+            label: 'Status „veröffentlicht“'
+        type:
+          expose:
+            label: Type
       exposed_form:
         options:
           reset_button_label: Zurücksetzen
@@ -20,7 +27,23 @@ display:
             next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
+      fields:
+        type:
+          label: Type
+        name:
+          label: Autor
+        status:
+          settings:
+            format_custom_true: Veröffentlicht
+            format_custom_false: Unveröffentlicht
+        changed:
+          label: Aktualisiert
+        operations:
+          label: Operationen
       title: Inhalt
+      empty:
+        area_text_custom:
+          content: 'Kein Inhalt verfügbar.'
   page_1:
     display_options:
       menu:

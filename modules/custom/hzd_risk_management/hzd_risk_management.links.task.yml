@@ -1,0 +1,17 @@
+hzd_risk_management.risk_cluster:
+  title: Risk Clusters
+  route_name: view.risk_clusters.clusters
+  base_route: view.risk_clusters.clusters
+  weight: 1
+
+hzd_risk_management.risks:
+  title: Risks
+  route_name: view.risks_list.risks
+  base_route: view.risk_clusters.clusters
+  weight: 2
+
+hzd_risk_management.measures:
+  title: Measures
+  route_name: view.measures.measures
+  base_route: view.risk_clusters.clusters
+  weight: 3

@@ -29,6 +29,7 @@ module:
   cust_user: 0
   custom_script_batch: 0
   custom_views_php: 0
+  date_popup: 0
   datetime: 0
   dblog: 0
   devel: 0
@@ -38,6 +39,7 @@ module:
   editor: 0
   entity_print: 0
   entity_print_views: 0
+  entity_reference_exposed_filters: 0
   faq: 0
   faqfield: 0
   field: 0
@@ -55,6 +57,7 @@ module:
   hzd_customizations: 0
   hzd_earlywarnings: 0
   hzd_notifications: 0
+  hzd_risk_management: 0
   hzd_services: 0
   hzd_user_customizations: 0
   image: 0
@@ -87,6 +90,7 @@ module:
   search: 0
   search_api: 0
   search_api_solr: 0
+  serial: 0
   serialization: 0
   simple_block: 0
   simplify: 0

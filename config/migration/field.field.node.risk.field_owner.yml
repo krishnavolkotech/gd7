@@ -1,0 +1,19 @@
+uuid: 8274d221-d76d-49bb-9721-2b51ae6771e2
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_owner
+    - node.type.risk
+id: node.risk.field_owner
+field_name: field_owner
+entity_type: node
+bundle: risk
+label: Owner
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

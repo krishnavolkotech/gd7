@@ -1,0 +1,11 @@
+uuid: b3bf222f-4b97-4a23-9f05-91d1854c6b64
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.risk
+id: node.risk
+target_entity_type_id: node
+target_bundle: risk
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,11 @@
+uuid: dd5ed85f-f2b8-467f-8683-e04c249609f3
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.risk_cluster
+id: node.risk_cluster
+target_entity_type_id: node
+target_bundle: risk_cluster
+default_langcode: site_default
+language_alterable: false

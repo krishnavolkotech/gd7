@@ -1,0 +1,21 @@
+uuid: dedd6869-c898-44b9-be69-062cfad77aa8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_order_date
+    - node.type.measure
+  module:
+    - datetime
+id: node.measure.field_order_date
+field_name: field_order_date
+entity_type: node
+bundle: measure
+label: 'Order date'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

@@ -18,6 +18,22 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      fields:
+        info:
+          label: Blockbeschreibung
+        type:
+          label: 'Art des Blocks'
+        changed:
+          label: Aktualisiert
+        operations:
+          label: Operationen
+      filters:
+        info:
+          expose:
+            label: Blockbeschreibung
+        type:
+          expose:
+            label: 'Art des Blocks'
       title: 'Bibliothek benutzerdefinierter Blöcke'
   page_1:
     display_options:

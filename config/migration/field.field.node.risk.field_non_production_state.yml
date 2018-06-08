@@ -1,0 +1,21 @@
+uuid: 8542eb67-9010-4e78-a980-a1c527c58e1d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_non_production_state
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_non_production_state
+field_name: field_non_production_state
+entity_type: node
+bundle: risk
+label: 'Responsible state'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

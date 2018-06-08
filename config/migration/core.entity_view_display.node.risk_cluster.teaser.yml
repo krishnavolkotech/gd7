@@ -1,0 +1,33 @@
+uuid: d01683d2-9342-4648-be47-c4dd17102308
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.risk_cluster.body
+    - node.type.risk_cluster
+  module:
+    - text
+    - user
+id: node.risk_cluster.teaser
+targetEntityType: node
+bundle: risk_cluster
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

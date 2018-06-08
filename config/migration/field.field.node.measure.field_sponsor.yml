@@ -1,0 +1,19 @@
+uuid: 9b3854ce-3cd3-4c63-bb68-a6ffe25c45e1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sponsor
+    - node.type.measure
+id: node.measure.field_sponsor
+field_name: field_sponsor
+entity_type: node
+bundle: measure
+label: Sponsor
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

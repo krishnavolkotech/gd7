@@ -1,0 +1,25 @@
+uuid: ea6adc37-bea4-4ab4-8d06-33097af1cba9
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-risk_manager
+label: 'Risk Manager'
+weight: 6
+internal: false
+audience: member
+group_type: open
+permissions_ui: true
+permissions:
+  0: 'access content overview'
+  1: 'leave group'
+  2: 'view group'
+  3: 'access group_node overview'
+  4: 'create group_node:measure entity'
+  6: 'update own group_node:measure entity'
+  7: 'view group_node:measure entity'
+  10: 'view group_node:risk_cluster entity'
+  11: 'create group_node:risk entity'
+  12: 'update own group_node:risk entity'
+  13: 'view group_node:risk entity'

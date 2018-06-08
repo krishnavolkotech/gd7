@@ -1,0 +1,10 @@
+uuid: a2f4d8bf-f95e-43ed-ab85-c6ba74757fc0
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.measure_risk
+label: Measure-Risk
+targetEntityType: node
+cache: true

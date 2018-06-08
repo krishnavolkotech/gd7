@@ -1,0 +1,171 @@
+<?php
+
+/**
+ * @file
+ * Contains hzd_risk_management.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\node\Entity\NodeType;
+
+
+define('RISK_MANAGEMENT',2);
+
+/**
+ * Implements hook_help().
+ */
+function hzd_risk_management_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the hzd_risk_management module.
+    case 'help.page.hzd_risk_management':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Managing group Risk Management') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+function computed_field_field_risk_category_compute($entity_type_manager, $entity, $fields, $delta){
+  $value = 'Invalid';
+  $riskValue = $entity->get('field_probability_of_occurrence')->value * $entity->get('field_risk_impact')->value;
+  // pr($entity->toArray());exit;
+  return calculateRiskCategory($riskValue);
+}
+
+function calculateRiskCategory($riskValue){
+  if($riskValue > 6){
+    return 'A';
+  }elseif($riskValue > 2 && $riskValue <= 6){
+    return 'B';
+  }elseif($riskValue > 0 && $riskValue <= 2){
+    return 'C';
+  }else{
+    return "Invalid Value";
+  }
+/*  switch($riskValue){
+    case 9:
+      $value = 'A';
+      break;
+    case 6:
+    case 4:
+    case 3:
+      $value = 'B';
+      break;
+    case 2:
+    case 1:
+      $value = 'C';
+      break;
+    default:
+      $value = "Invalid Value";
+      break;
+  }
+  return $value;*/
+}
+
+function hzd_risk_management_form_alter(array &$form, $formState, $formId){
+  if($formId == 'views_exposed_form' && isset($form['combine'])){
+    $form['combine']['#attributes']['data-bef-auto-submit-exclude'] = '';
+  }
+  if($formId == 'views_exposed_form' && isset($form['measure'])){
+    $form['measure']['#type'] = 'hidden';
+  }
+}
+
+
+function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){
+  if($display->getComponent('field_risk_category_value')){
+    $riskCategory = $entity->get('field_risk_category')->value;
+    $riskValue = $entity->get('field_risk_value')->value;
+    $build['field_risk_category_value'] = [
+      '#theme' => 'field',
+        '#title' => t('Risk Value and Category'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_risk_category',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#markup'=>$riskValue . ' - ' . $riskCategory],
+    ];
+  }
+  if($display->getComponent('field_risks_data')){
+    $risks = \Drupal::entityTypeManager()
+    ->getStorage('node')
+    ->loadByProperties(['field_risk_clusters' => $entity->id()]);
+    $items = [];
+    foreach ($risks as $risk){
+      $text = $risk->get('field_id')->value . " - " . $risk->label() . " (" . $risk->get('field_risk_value')->value . " - " . $risk->get('field_risk_category')->value . ")";
+      $items[$risk->id()] = $entity->toLink($text);
+    }
+    $build['field_risks_data'] = [
+      '#theme' => 'field',
+        '#title' => t('Risks'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#theme'=>'item_list', '#items'=>$items],
+    ];
+  }
+  if($display->getComponent('field_risks_cluster_class')){
+    $risks = \Drupal::entityTypeManager()
+    ->getStorage('node')
+    ->loadByProperties(['field_risk_clusters' => $entity->id()]);
+    $items = array_map(function($risk){
+      return $risk->get('field_risk_value')->value;
+    },$risks);
+    $value = round(array_sum($items)/count($items));
+    $build['field_risks_cluster_class'] = [
+      '#theme' => 'field',
+        '#title' => t('Risk Value and Category'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#markup'=>$value . " - " . calculateRiskCategory($value)],
+    ];
+  }
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function hzd_risk_management_entity_extra_field_info() {
+  $extra['node']['risk']['display']['field_risk_category_value'] = array(
+    'label' => t('Risk Value and Category'),
+    'description' => t('This is pseudo-field'),
+    'weight' => 100,
+    'visible' => TRUE,
+  );
+  $extra['node']['risk_cluster']['display']['field_risks_data'] = array(
+    'label' => t('Risks'),
+    'description' => t('This is pseudo-field'),
+    'visible' => TRUE,
+    'weight' => 100,
+  ); 
+  $extra['node']['risk_cluster']['display']['field_risks_cluster_class'] = array(
+    'label' => t('Risk Value and Category'),
+    'description' => t('This is pseudo-field'),
+    'visible' => TRUE,
+    'weight' => 100,
+  );
+  return $extra;
+}

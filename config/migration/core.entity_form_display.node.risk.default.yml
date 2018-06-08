@@ -1,0 +1,201 @@
+uuid: 06e3ba6a-edcd-4280-af02-1e3ba8341019
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.risk.body
+    - field.field.node.risk.field_affected_oes
+    - field.field.node.risk.field_category
+    - field.field.node.risk.field_contact_person
+    - field.field.node.risk.field_creation_date
+    - field.field.node.risk.field_follow_up
+    - field.field.node.risk.field_graduation_date
+    - field.field.node.risk.field_id
+    - field.field.node.risk.field_non_production_state
+    - field.field.node.risk.field_owner
+    - field.field.node.risk.field_probability_of_occurrence
+    - field.field.node.risk.field_remarks
+    - field.field.node.risk.field_reported_by
+    - field.field.node.risk.field_risk_category
+    - field.field.node.risk.field_risk_clusters
+    - field.field.node.risk.field_risk_impact
+    - field.field.node.risk.field_risk_status
+    - field.field.node.risk.field_risk_trend
+    - field.field.node.risk.field_risk_value
+    - field.field.node.risk.field_scope
+    - node.type.risk
+  module:
+    - computed_field
+    - cust_group
+    - datetime
+    - path
+    - serial
+    - text
+id: node.risk.default
+targetEntityType: node
+bundle: risk
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 1
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_affected_oes:
+    weight: 6
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_category:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_contact_person:
+    weight: 14
+    settings:
+      size: '60'
+      placeholder: ''
+      exclude_members: 0
+      hzd_group: ''
+    third_party_settings:
+      cust_group:
+        group_files: 0
+    type: group_user_field_widget
+    region: content
+  field_creation_date:
+    weight: 7
+    settings:
+      date_order: DMY
+      time_type: none
+      increment: 15
+    third_party_settings:
+      cust_group:
+        group_files: 0
+    type: datetime_datelist
+    region: content
+  field_follow_up:
+    weight: 15
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_graduation_date:
+    weight: 16
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_id:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: serial_default_widget
+    region: content
+  field_non_production_state:
+    weight: 12
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_owner:
+    weight: 13
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_probability_of_occurrence:
+    weight: 9
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_remarks:
+    weight: 18
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_reported_by:
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_risk_category:
+    weight: 27
+    settings: {  }
+    third_party_settings: {  }
+    type: computed_string_widget
+    region: content
+  field_risk_clusters:
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
+  field_risk_impact:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_risk_status:
+    weight: 11
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_risk_trend:
+    weight: 17
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_risk_value:
+    weight: 26
+    settings: {  }
+    third_party_settings: {  }
+    type: computed_number_widget
+    region: content
+  field_scope:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  path:
+    type: path
+    weight: 19
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  promote: true
+  status: true
+  sticky: true
+  uid: true

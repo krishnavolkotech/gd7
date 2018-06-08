@@ -4,8 +4,6 @@ display:
   default:
     display_options:
       empty:
-        area_text_custom:
-          content: 'Es wurde noch kein Inhalt für die Startseite erstellt.'
         title:
           title: 'Willkommen bei [site:name]'
       exposed_form:
@@ -25,3 +23,5 @@ display:
             next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
+  feed_1:
+    display_title: Newsfeed

@@ -1,0 +1,19 @@
+uuid: 01ba7b39-de03-46e3-ac7b-bad9eb9bc1c9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_reported_by
+    - node.type.risk
+id: node.risk.field_reported_by
+field_name: field_reported_by
+entity_type: node
+bundle: risk
+label: 'Reported by'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

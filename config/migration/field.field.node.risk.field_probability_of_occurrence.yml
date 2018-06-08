@@ -1,0 +1,21 @@
+uuid: c5dcc7c3-1ab0-46c7-95e3-75b46abd85e4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_probability_of_occurrence
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_probability_of_occurrence
+field_name: field_probability_of_occurrence
+entity_type: node
+bundle: risk
+label: 'Probability of occurrence'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

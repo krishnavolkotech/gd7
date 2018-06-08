@@ -1,0 +1,33 @@
+uuid: 7917ce15-11d0-4372-8f3d-11cf7296df22
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.measure.body
+    - node.type.measure
+  module:
+    - text
+    - user
+id: node.measure.teaser
+targetEntityType: node
+bundle: measure
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

@@ -1,0 +1,61 @@
+uuid: 62fa9ffe-7123-40ac-8483-cbb6776f0360
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.risk_cluster.body
+    - field.field.node.risk_cluster.field_comments
+    - field.field.node.risk_cluster.field_id
+    - field.field.node.risk_cluster.field_trend
+    - node.type.risk_cluster
+  module:
+    - text
+    - user
+id: node.risk_cluster.default
+targetEntityType: node
+bundle: risk_cluster
+mode: default
+content:
+  body:
+    label: inline
+    type: text_default
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_comments:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_risks:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_risks_cluster_class:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_trend:
+    weight: 4
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_id: true
+  langcode: true
