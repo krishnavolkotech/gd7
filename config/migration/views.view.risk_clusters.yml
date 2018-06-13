@@ -394,6 +394,7 @@ display:
           plugin_id: standard
       arguments: {  }
       display_extenders: {  }
+      css_class: riskcluster-list
     cache_metadata:
       max-age: -1
       contexts:

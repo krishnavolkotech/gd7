@@ -52,7 +52,7 @@ conditions:
     uuid: 8b2f3aa6-d083-450d-b812-919f4cd7d8d3
   c34304de-96f6-45d4-b175-cb4bf78d5605:
     id: request_path
-    pages: "*/taxonomy/term/*\r\n*/forum/*\r\n*/*/revisions/*/view\r\n*/group/*/risk-clusters\r\n*/group/*/risks\r\n*/group/*/measures"
+    pages: "*/taxonomy/term/*\r\n*/forum/*\r\n*/*/revisions/*/view"
     negate: false
     context_mapping: {  }
     uuid: c34304de-96f6-45d4-b175-cb4bf78d5605

@@ -853,7 +853,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Custom text'
+          label: ''
           exclude: false
           alter:
             alter_text: true
@@ -1517,6 +1517,7 @@ display:
         operator: AND
         groups:
           1: AND
+      css_class: risk-list
     cache_metadata:
       max-age: -1
       contexts:
