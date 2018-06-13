@@ -67,7 +67,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function createStorageName($entityTypeId, $entityBundle, $fieldName) {
-    // Remember about max length of MySQL tables - 64 symbols.
+    // To make sure we don't end up with table names longer than 64 characters,
+    // which is a MySQL limit we hash a combination of fields.
     // @todo Think about improvement for this.
     $tableName = 'serial_' . md5("{$entityTypeId}_{$entityBundle}_{$fieldName}");
     return Database::getConnection()->escapeTable($tableName);
@@ -201,6 +202,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     // @todo shall we assign serial id to unpublished as well?
     // $query->condition('status', 1);
     $query->condition('type', $entityBundle);
+    $query->accessCheck(FALSE);
     $entityIds = $query->execute();
 
     $updated = 0;

@@ -1,8 +1,9 @@
-uuid: e2acbfb8-30c1-49eb-9d64-51f9f8862e9a
+uuid: cbcf8445-6ba3-4f60-804e-21df5407d5ce
 langcode: en
-status: true
+status: false
 dependencies:
   config:
+    - core.entity_view_mode.node.token
     - field.field.node.risk.body
     - field.field.node.risk.field_affected_oes
     - field.field.node.risk.field_category
@@ -53,10 +54,10 @@ third_party_settings:
         id: ''
         classes: risk-table-wrapper
       label: table
-id: node.risk.default
+id: node.risk.token
 targetEntityType: node
 bundle: risk
-mode: default
+mode: token
 content:
   body:
     label: inline

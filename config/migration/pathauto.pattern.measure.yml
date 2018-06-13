@@ -1,0 +1,22 @@
+uuid: 0342700c-9992-4287-b2a3-3f145ef45e49
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: measure
+label: Measure
+type: 'canonical_entities:node'
+pattern: '/risikomanagement/massnahme/[node:field_id]'
+selection_criteria:
+  57caae08-d58b-40ca-9dbe-caa86160b41f:
+    id: node_type
+    bundles:
+      measure: measure
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 57caae08-d58b-40ca-9dbe-caa86160b41f
+selection_logic: and
+weight: -5
+relationships: {  }

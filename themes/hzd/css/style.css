@@ -3548,3 +3548,32 @@ table.sticky-header thead tr .sorter-false .tablesorter-header-inner {
 .sticky-table {
     margin: 0px !important;
 }
+/* Styles related to Risk, Risk cluster, measures*/
+div.risk-table-wrapper{
+    display: table;
+    border: 1px solid;
+    margin-bottom: 40px;
+}
+div.risk-table-wrapper div.field{
+    border: 1px solid;
+    box-sizing: border-box;
+    display: table-row;
+    padding: 0% !important;
+}
+
+div.risk-table-wrapper div.field div.field--label,
+div.risk-table-wrapper div.field div.field--item{
+    display: table-cell;
+}
+div.risk-table-wrapper div.field div.field--label{
+    width: 20% !important;
+    background-color: #cccccc;
+    vertical-align: middle;
+    padding: 2%;
+    margin: auto;
+}
+div.risk-table-wrapper div.field div.field--item{
+    width: 80% !important;
+    vertical-align: middle;
+}
+

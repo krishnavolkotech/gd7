@@ -410,7 +410,7 @@ display:
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: group/%group/risk-clusters
+      path: group/%group/risikocluster
       merge_rows: 1
       use_grouping: 0
       field_config:

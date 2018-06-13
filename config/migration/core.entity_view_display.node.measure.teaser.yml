@@ -30,4 +30,19 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_contact_person: true
+  field_creation_date: true
+  field_estimated_effort: true
+  field_expected_result: true
+  field_follow_up: true
+  field_id: true
+  field_measure_status: true
+  field_non_production_state: true
+  field_order_date: true
+  field_owner: true
+  field_remarks: true
+  field_risks: true
+  field_sponsor: true
+  field_target_date: true
+  field_type: true
   langcode: true

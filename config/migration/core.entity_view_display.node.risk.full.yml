@@ -81,6 +81,9 @@ content:
     third_party_settings: {  }
     type: computed_string
     region: content
+  field_risk_category_value:
+    weight: 100
+    region: content
   field_risk_clusters:
     weight: 104
     label: inline

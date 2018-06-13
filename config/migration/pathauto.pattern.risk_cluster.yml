@@ -1,0 +1,22 @@
+uuid: 8edf3b3d-a80d-4d6e-ac84-c0e118c3402e
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: risk_cluster
+label: 'Risk cluster'
+type: 'canonical_entities:node'
+pattern: '/risikomanagement/risikocluster/[node:field_id]'
+selection_criteria:
+  eb570813-af3c-4a7c-a4ce-384512a9b98b:
+    id: node_type
+    bundles:
+      risk_cluster: risk_cluster
+    negate: false
+    context_mapping:
+      node: node
+    uuid: eb570813-af3c-4a7c-a4ce-384512a9b98b
+selection_logic: and
+weight: -5
+relationships: {  }

@@ -77,12 +77,12 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: ''
+                  filter_rewrite_values: "- Any -|<Risk Cluster>\n- Alle -|<Risk Cluster>"
             field_risk_category_value:
               bef_format: default
               more_options:
                 is_secondary: false
-                placeholder_text: ''
+                placeholder_text: PLAce
             field_risk_value_value:
               bef_format: default
               slider_options:
@@ -100,7 +100,7 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: ''
+                  filter_rewrite_values: '- Alle -|<Status>'
             field_follow_up_value:
               bef_format: default
               more_options:
@@ -112,12 +112,22 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: ''
-            field_owner_value:
+                  filter_rewrite_values: "- Alle -|<Bundesland>\n- Any -|<Bundesland>"
+            combine:
               bef_format: default
               more_options:
                 is_secondary: false
                 placeholder_text: ''
+            nid:
+              bef_format: default
+              slider_options:
+                bef_slider_min: null
+                bef_slider_max: null
+                bef_slider_step: !!float 1
+                bef_slider_animate: ''
+                bef_slider_orientation: horizontal
+              more_options:
+                is_secondary: false
           text_input_required_format: full_html
       pager:
         type: full
@@ -467,7 +477,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Risk category'
+          label: 'Risk Category'
           exclude: false
           alter:
             alter_text: false
@@ -976,7 +986,7 @@ display:
           exposed: true
           expose:
             operator_id: ''
-            label: 'Risk cluster'
+            label: ''
             description: ''
             use_operator: false
             operator: ''
@@ -1037,25 +1047,29 @@ display:
             placeholder: null
           is_grouped: true
           group_info:
-            label: 'Risk category'
+            label: ''
             description: ''
             identifier: risk_category
-            optional: true
+            optional: false
             widget: select
             multiple: false
             remember: false
-            default_group: All
+            default_group: '1'
             default_group_multiple: {  }
             group_items:
               1:
+                title: '&lt;Risk Category&gt;'
+                operator: 'not empty'
+                value: ''
+              2:
                 title: A
                 operator: '='
                 value: A
-              2:
+              3:
                 title: B
                 operator: '='
                 value: B
-              3:
+              4:
                 title: C
                 operator: '='
                 value: C
@@ -1091,52 +1105,59 @@ display:
             max_placeholder: null
           is_grouped: true
           group_info:
-            label: 'Risk value'
+            label: ''
             description: ''
             identifier: risk_value
-            optional: true
+            optional: false
             widget: select
             multiple: false
             remember: false
-            default_group: All
+            default_group: '1'
             default_group_multiple: {  }
             group_items:
               1:
+                title: '&lt;Risk value&gt;'
+                operator: 'not empty'
+                value:
+                  value: ''
+                  min: ''
+                  max: ''
+              2:
                 title: '1'
                 operator: '='
                 value:
                   value: '1'
                   min: ''
                   max: ''
-              2:
+              3:
                 title: '2'
                 operator: '='
                 value:
                   value: '2'
                   min: ''
                   max: ''
-              3:
+              4:
                 title: '3'
                 operator: '='
                 value:
                   value: '3'
                   min: ''
                   max: ''
-              4:
+              5:
                 title: '4'
                 operator: '='
                 value:
                   value: '4'
                   min: ''
                   max: ''
-              5:
+              6:
                 title: '6'
                 operator: '='
                 value:
                   value: '6'
                   min: ''
                   max: ''
-              6:
+              7:
                 title: '9'
                 operator: '='
                 value:
@@ -1152,12 +1173,16 @@ display:
           group_type: group
           admin_label: ''
           operator: or
-          value: {  }
+          value:
+            created: created
+            accepted: accepted
+            active: active
+            in_effect: in_effect
           group: 1
           exposed: true
           expose:
             operator_id: field_risk_status_value_op
-            label: Status
+            label: ''
             description: ''
             use_operator: false
             operator: field_risk_status_value_op
@@ -1172,7 +1197,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: false
+            reduce: true
           is_grouped: false
           group_info:
             label: ''
@@ -1244,16 +1269,37 @@ display:
           admin_label: ''
           operator: or
           value:
-            '': ''
+            2: '2'
+            3: '3'
+            4: '4'
+            5: '5'
+            6: '6'
+            7: '7'
+            8: '8'
+            9: '9'
+            10: '10'
+            11: '11'
+            12: '12'
+            13: '13'
+            14: '14'
+            15: '15'
+            16: '16'
+            17: '17'
+            18: '18'
+            20: '20'
+            21: '21'
+            22: '22'
+            23: '23'
+            19: '19'
           group: 1
           exposed: true
           expose:
             operator_id: field_non_production_state_value_op
-            label: 'Responsible state'
+            label: ''
             description: ''
             use_operator: false
             operator: field_non_production_state_value_op
-            identifier: state
+            identifier: risk_state
             required: false
             remember: false
             multiple: false
@@ -1264,7 +1310,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: false
+            reduce: true
           is_grouped: false
           group_info:
             label: 'Responsible state (field_non_production_state)'
@@ -1441,7 +1487,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: 'field_risk_clusters: Inhalt'
-          required: true
+          required: false
           plugin_id: standard
         reverse__node__field_risks:
           id: reverse__node__field_risks
@@ -1450,7 +1496,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: field_risks
-          required: true
+          required: false
           entity_type: node
           plugin_id: entity_reverse
         gid:
@@ -1465,7 +1511,8 @@ display:
           entity_field: gid
           plugin_id: standard
       arguments: {  }
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       filter_groups:
         operator: AND
         groups:
@@ -1496,7 +1543,7 @@ display:
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: group/%group/risks
+      path: group/%group/risiken
       menu:
         type: none
         title: Risks
@@ -1506,6 +1553,7 @@ display:
         weight: 0
         context: '0'
         menu_name: menu-340
+      rendering_language: '***LANGUAGE_entity_translation***'
     cache_metadata:
       max-age: -1
       contexts:

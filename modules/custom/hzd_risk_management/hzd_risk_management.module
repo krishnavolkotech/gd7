@@ -11,7 +11,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\Entity\NodeType;
 
 
-define('RISK_MANAGEMENT',2);
+define('RISK_MANAGEMENT',73);
 
 /**
  * Implements hook_help().
@@ -74,6 +74,20 @@ function hzd_risk_management_form_alter(array &$form, $formState, $formId){
   if($formId == 'views_exposed_form' && isset($form['measure'])){
     $form['measure']['#type'] = 'hidden';
   }
+ /* if($formId == 'views_exposed_form' && isset($form['state'])){
+//    $form['state']['#options'][''] = $form['state']['#options'][1];
+    $form['state']['#options'] = ['' => '<Bundesland>'] + get_all_user_state();
+    
+    unset($form['state']['#options'][1]);
+  }*/
+  if($formId == 'views_exposed_form' && $form['#id']){
+    /*$items = ['risk_cluster'];
+    foreach($items as $item){
+      if(isset($form[$item]) && $form[$item]['#type'] == 'select' && isset($form[$item]['#options']['All'])){
+        $form[$item]['#options']['All'] = $form[$item]['#title'];
+      }
+    }*/
+  }
 }
 
 
@@ -103,7 +117,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     $items = [];
     foreach ($risks as $risk){
       $text = $risk->get('field_id')->value . " - " . $risk->label() . " (" . $risk->get('field_risk_value')->value . " - " . $risk->get('field_risk_category')->value . ")";
-      $items[$risk->id()] = $entity->toLink($text);
+      $items[$risk->id()] = $risk->toLink($text);
     }
     $build['field_risks_data'] = [
       '#theme' => 'field',
@@ -143,6 +157,48 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '0'=>['#markup'=>$value . " - " . calculateRiskCategory($value)],
     ];
   }
+  if($display->getComponent('last_updated')){
+    $build['last_updated'] = [
+      '#theme' => 'field',
+        '#title' => t('Last Updated'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#markup'=>\Drupal::service('date.formatter')->format($entity->getChangedTime(), 'medium')],
+    ];
+  }
+  if($display->getComponent('field_measures')){
+    $measures = \Drupal::entityTypeManager()
+      ->getStorage('node')
+      ->loadByProperties(
+        [
+          'field_risks' => $entity->id(),
+          'type' => 'measure',
+        ]);
+    $items = array_map(function($measure){
+      return $measure->toLink($measure->get('field_id')->value." - ".$measure->label());
+    },$measures); 
+    $build['field_measures'] = [
+      '#theme' => 'field',
+        '#title' => t('Measures'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#theme'=>'item_list', '#items'=>$items],
+    ];
+  }
 }
 
 /**
@@ -167,5 +223,22 @@ function hzd_risk_management_entity_extra_field_info() {
     'visible' => TRUE,
     'weight' => 100,
   );
+$extra['node']['risk_cluster']['display']['last_updated'] =
+$extra['node']['risk']['display']['last_updated'] =
+$extra['node']['measure']['display']['last_updated'] =
+    array(
+      'label' => t('Last Updated'),
+      'description' => t('This is pseudo-field'),
+      'visible' => TRUE,
+      'weight' => 100,
+  );
+$extra['node']['risk']['display']['field_measures'] =
+    array(
+      'label' => t('Measures'),
+      'description' => t('This is pseudo-field'),
+      'visible' => TRUE,
+      'weight' => 100,
+  );
+
   return $extra;
 }

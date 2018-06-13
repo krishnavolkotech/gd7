@@ -29,7 +29,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
  * @inheritdoc
  */
 function serial_field_config_create(FieldConfig $field) {
-  if ($field->getType() == 'serial' && !$field->isSyncing() && !$field->isDeleted()) {
+  if ($field->getType() == 'serial' && !$field->isDeleted()) {
     // Create the assistant storage.
     /** @var SerialStorageInterface $serialStorage */
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');

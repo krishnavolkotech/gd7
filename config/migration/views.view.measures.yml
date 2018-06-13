@@ -84,7 +84,7 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: ''
+                  filter_rewrite_values: "- Alle -|<State>\n- Any -|<State>"
             field_type_value:
               bef_format: default
               more_options:
@@ -92,7 +92,7 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: ''
+                  filter_rewrite_values: "- Alle -|<Type>\n- All -|<Type>"
             eref_node_titles:
               bef_format: bef_hidden
               more_options:
@@ -101,6 +101,11 @@ display:
                 is_secondary: false
                 rewrite:
                   filter_rewrite_values: ''
+            combine:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                placeholder_text: ''
           text_input_required_format: full_html
       pager:
         type: full
@@ -1104,12 +1109,15 @@ display:
           admin_label: ''
           operator: or
           value:
-            all: all
+            created: created
+            approved: approved
+            in_progress: in_progress
+            postponed: postponed
           group: 1
           exposed: true
           expose:
             operator_id: field_measure_status_value_op
-            label: Status
+            label: ''
             description: ''
             use_operator: false
             operator: field_measure_status_value_op
@@ -1124,7 +1132,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: false
+            reduce: true
           is_grouped: false
           group_info:
             label: ''
@@ -1153,7 +1161,7 @@ display:
           exposed: true
           expose:
             operator_id: field_type_value_op
-            label: Type
+            label: ''
             description: ''
             use_operator: false
             operator: field_type_value_op
@@ -1277,6 +1285,45 @@ display:
             body: body
             field_owner: field_owner
           plugin_id: combine
+        field_measure_status_value_1:
+          id: field_measure_status_value_1
+          table: node__field_measure_status
+          field: field_measure_status_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          operator: not
+          value:
+            completed: completed
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          plugin_id: list_field
       sorts:
         created:
           id: created
@@ -1387,7 +1434,7 @@ display:
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: group/%group/measures
+      path: group/%group/massnahme
       merge_rows: 1
       use_grouping: 0
       field_config:

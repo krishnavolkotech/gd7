@@ -30,6 +30,7 @@ third_party_settings:
     group_table:
       children:
         - body
+        - last_updated
         - field_target_date
         - field_owner
         - field_risks
@@ -37,14 +38,15 @@ third_party_settings:
       weight: 1
       format_type: html_element
       format_settings:
-        id: ''
-        classes: ''
+        label: table
         element: div
         show_label: false
         label_element: h3
         attributes: ''
         effect: none
         speed: fast
+        id: ''
+        classes: risk-table-wrapper
       label: table
 id: node.measure.default
 targetEntityType: node
@@ -59,7 +61,7 @@ content:
     third_party_settings: {  }
     region: content
   field_owner:
-    weight: 4
+    weight: 5
     label: inline
     settings:
       link_to_entity: false
@@ -74,16 +76,15 @@ content:
     type: text_default
     region: content
   field_risks:
-    weight: 5
+    weight: 6
     label: inline
     settings:
-      view_mode: measure_risk
-      link: false
+      link: true
     third_party_settings: {  }
-    type: entity_reference_entity_view
+    type: entity_reference_label
     region: content
   field_target_date:
-    weight: 3
+    weight: 4
     label: inline
     settings:
       format_type: medium
@@ -91,6 +92,11 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: content
+  last_updated:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   links:
     weight: 0
     region: content
