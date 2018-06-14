@@ -3614,6 +3614,7 @@ div.risk-table-wrapper div.field div.field--item{
 }
 .risk-table-wrapper table .risk-labels {
 	background: #e1e1e1;
+	width: 25%;
 }
 #views-exposed-form-risks-list-risks .form-item, #views-exposed-form-risks-list-risks .form-actions {
         float: none !important;

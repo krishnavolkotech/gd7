@@ -143,10 +143,13 @@ class Table extends FieldGroupFormatterBase {
     $rows = [];
     $header = [];
     foreach ($fields as $key) {
-      $row[0] = ['data'=>['#markup'=>$element[$key]['#title']],'class'=>['risk-labels']];
+      $row[0] = ['data'=>['#markup'=>isset($element[$key]['#title'])?$element[$key]['#title']:''],'class'=>['risk-labels']];
       $element[$key]['#label_display'] = 'hidden';
       $row[1] = render($element[$key]);
       unset($element[$key]);
+      if(empty($row[1])){
+        continue;
+      }
       $rows[] = $row;
     }
     if ($this->getSetting('fieldtitle') == 1) {

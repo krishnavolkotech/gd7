@@ -106,6 +106,19 @@ function risk_management_form_validate(array $form, $formState){
 }
 
 
+function hzd_risk_management_node_presave($node){
+  if($node->bundle() == 'risk'){
+    $cluster = $node->get('field_risk_clusters')
+      ->first()
+      ->get('entity')
+      ->getTarget()
+      ->getValue();
+    $tags[] = 'node:'.$cluster->id();
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags($tags);
+  }
+}
+
 function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){
   if($display->getComponent('field_risk_category_value')){
     $riskCategory = $entity->get('field_risk_category')->value;
