@@ -42,7 +42,7 @@ function calculateRiskCategory($riskValue){
     return 'A';
   }elseif($riskValue > 2 && $riskValue <= 6){
     return 'B';
-  }elseif($riskValue > 0 && $riskValue <= 2){
+  }elseif($riskValue <= 2){
     return 'C';
   }else{
     return "Invalid Value";
@@ -68,25 +68,24 @@ function calculateRiskCategory($riskValue){
 }
 
 function hzd_risk_management_form_alter(array &$form, $formState, $formId){
+//echo $formId;exit;
   if($formId == 'views_exposed_form' && isset($form['combine'])){
     $form['combine']['#attributes']['data-bef-auto-submit-exclude'] = '';
   }
   if($formId == 'views_exposed_form' && isset($form['measure'])){
     $form['measure']['#type'] = 'hidden';
   }
- /* if($formId == 'views_exposed_form' && isset($form['state'])){
-//    $form['state']['#options'][''] = $form['state']['#options'][1];
-    $form['state']['#options'] = ['' => '<Bundesland>'] + get_all_user_state();
-    
-    unset($form['state']['#options'][1]);
-  }*/
-  if($formId == 'views_exposed_form' && $form['#id']){
-    /*$items = ['risk_cluster'];
-    foreach($items as $item){
-      if(isset($form[$item]) && $form[$item]['#type'] == 'select' && isset($form[$item]['#options']['All'])){
-        $form[$item]['#options']['All'] = $form[$item]['#title'];
-      }
-    }*/
+  if($formId == 'node_risk_form'){
+    $form['#validate'][] = 'risk_management_form_validate';
+  }
+
+}
+
+
+function risk_management_form_validate(array $form, $formState){
+//pr($formState->getValue('field_scope'));exit;
+  if($formState->getValue('field_scope')[0]['value'] == 'local' && !$formState->getValue('field_affected_oes')[0]['value']){
+    $formState->setErrorByName('field_affected_oes',t('This field is required when Scope is local'));
   }
 }
 
@@ -131,7 +130,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        '0'=>['#theme'=>'item_list', '#items'=>$items],
+        '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
     ];
   }
   if($display->getComponent('field_risks_cluster_class')){
@@ -141,7 +140,11 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     $items = array_map(function($risk){
       return $risk->get('field_risk_value')->value;
     },$risks);
-    $value = round(array_sum($items)/count($items));
+    if(count($items)){
+      $value = round(array_sum($items)/count($items));
+    }else{
+      $value = 0;
+    }
     $build['field_risks_cluster_class'] = [
       '#theme' => 'field',
         '#title' => t('Risk Value and Category'),

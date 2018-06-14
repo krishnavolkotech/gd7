@@ -12,7 +12,7 @@ entity_type: node
 bundle: risk
 label: 'Risk clusters'
 description: ''
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.body
     - field.storage.node.field_follow_up
+    - field.storage.node.field_id
     - field.storage.node.field_non_production_state
     - field.storage.node.field_owner
     - field.storage.node.field_risk_category
@@ -20,6 +21,7 @@ dependencies:
     - group
     - node
     - options
+    - serial
     - text
     - view_unpublished
 id: risks_list
@@ -155,6 +157,68 @@ display:
       row:
         type: fields
       fields:
+        field_id:
+          id: field_id
+          table: node__field_id
+          field: field_id
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: ID
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: serial_default_formatter
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
         field_risk_clusters:
           id: field_risk_clusters
           table: node__field_risk_clusters
@@ -857,7 +921,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ view_node }} |  <a href=''{{  path(''view.measures.measures'', {''group'': id, ''risk'': nid}) }}''>Measures</a>'
+            text: '{# view_node #} <a href="{{ path(''entity.node.canonical'',{''node'':nid}) }}" class="risk-view"></a> <a href=''{{  path(''view.measures.measures'', {''group'': id, ''risk'': nid}) }}'' class=''risk-measures''></a>'
             make_link: false
             path: ''
             absolute: false
@@ -886,7 +950,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -1197,7 +1261,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: true
+            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -1530,6 +1594,7 @@ display:
       tags:
         - 'config:field.storage.node.body'
         - 'config:field.storage.node.field_follow_up'
+        - 'config:field.storage.node.field_id'
         - 'config:field.storage.node.field_non_production_state'
         - 'config:field.storage.node.field_owner'
         - 'config:field.storage.node.field_risk_category'
@@ -1555,6 +1620,87 @@ display:
         context: '0'
         menu_name: menu-340
       rendering_language: '***LANGUAGE_entity_translation***'
+      merge_rows: 1
+      use_grouping: 0
+      field_config:
+        field_id:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_risk_clusters:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        body:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_follow_up:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_owner:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_non_production_state:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_risk_category:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_risk_value:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_risk_status:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        view_node:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        nid:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        nothing:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
     cache_metadata:
       max-age: -1
       contexts:
@@ -1567,6 +1713,7 @@ display:
       tags:
         - 'config:field.storage.node.body'
         - 'config:field.storage.node.field_follow_up'
+        - 'config:field.storage.node.field_id'
         - 'config:field.storage.node.field_non_production_state'
         - 'config:field.storage.node.field_owner'
         - 'config:field.storage.node.field_risk_category'

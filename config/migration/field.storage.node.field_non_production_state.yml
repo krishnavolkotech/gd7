@@ -15,7 +15,7 @@ entity_type: node
 type: list_string
 settings:
   allowed_values: {  }
-  allowed_values_function: get_all_user_state
+  allowed_values_function: get_all_hzd_states
 module: options
 locked: false
 cardinality: 1

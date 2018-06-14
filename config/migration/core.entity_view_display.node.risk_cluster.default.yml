@@ -22,17 +22,15 @@ third_party_settings:
         - field_risks_data
       parent_name: ''
       weight: 1
-      format_type: html_element
+      format_type: table_field
       format_settings:
         label: table
-        element: div
-        show_label: false
-        label_element: h3
-        attributes: ''
-        effect: none
-        speed: fast
+        fieldtitle: '1'
+        wrapper: '0'
+        caption: ''
         id: ''
         classes: risk-table-wrapper
+        required_fields: false
       label: table
 id: node.risk_cluster.default
 targetEntityType: node

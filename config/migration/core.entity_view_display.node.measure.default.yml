@@ -23,6 +23,7 @@ dependencies:
   module:
     - datetime
     - field_group
+    - hzd_risk_management
     - text
     - user
 third_party_settings:
@@ -36,17 +37,15 @@ third_party_settings:
         - field_risks
       parent_name: ''
       weight: 1
-      format_type: html_element
+      format_type: table_field
       format_settings:
         label: table
-        element: div
-        show_label: false
-        label_element: h3
-        attributes: ''
-        effect: none
-        speed: fast
+        fieldtitle: '1'
+        wrapper: '0'
+        caption: ''
         id: ''
         classes: risk-table-wrapper
+        required_fields: false
       label: table
 id: node.measure.default
 targetEntityType: node
@@ -79,9 +78,9 @@ content:
     weight: 6
     label: inline
     settings:
-      link: true
+      token_data: '[node:field_id] - [node:title]'
     third_party_settings: {  }
-    type: entity_reference_label
+    type: tokenized_field_formatter
     region: content
   field_target_date:
     weight: 4

@@ -41,15 +41,12 @@ third_party_settings:
         - field_measures
       parent_name: ''
       weight: 0
-      format_type: html_element
+      format_type: table_field
       format_settings:
         label: table
-        element: div
-        show_label: false
-        label_element: h3
-        attributes: ''
-        effect: none
-        speed: fast
+        fieldtitle: '1'
+        wrapper: '0'
+        caption: ''
         id: ''
         classes: risk-table-wrapper
       label: table
