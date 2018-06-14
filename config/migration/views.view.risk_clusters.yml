@@ -1,11 +1,12 @@
-uuid: 90d23c3c-5ea4-47b2-be1d-d09392a3d147
+uuid: a214a760-ebd2-40b0-92cf-f4fbbcd2bc76
 langcode: de
 status: true
 dependencies:
   config:
     - field.storage.node.field_id
-    - group.content_type.open-group_node-risk
+    - group.content_type.open-group_node-risk_cluster
   module:
+    - custom_views_php
     - group
     - node
     - serial
@@ -62,7 +63,7 @@ display:
           id: field_id
           table: node__field_id
           field: field_id
-          relationship: field_risk_clusters
+          relationship: gc__node
           group_type: group
           admin_label: ''
           label: ID
@@ -124,7 +125,7 @@ display:
           id: title
           table: node_field_data
           field: title
-          relationship: field_risk_clusters
+          relationship: gc__node
           group_type: group
           admin_label: ''
           label: Title
@@ -189,7 +190,7 @@ display:
           id: view_node
           table: node
           field: view_node
-          relationship: field_risk_clusters
+          relationship: gc__node
           group_type: group
           admin_label: ''
           label: 'Detailed Information'
@@ -238,11 +239,11 @@ display:
           absolute: false
           entity_type: node
           plugin_id: entity_link
-        field_id_1:
-          id: field_id_1
-          table: node__field_id
-          field: field_id
-          relationship: gc__node
+        risk_cluster_risks:
+          id: risk_cluster_risks
+          table: views
+          field: risk_cluster_risks
+          relationship: none
           group_type: group
           admin_label: ''
           label: Risks
@@ -285,59 +286,15 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: serial_default_formatter
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
+          hide_alter_empty: false
+          plugin_id: risk_cluster_risks
       filters:
         type:
           id: type
           table: group_content_field_data
           field: type
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
           value:
-            open-group_node-risk: open-group_node-risk
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
+            open-group_node-risk_cluster: open-group_node-risk_cluster
           entity_type: group_content
           entity_field: type
           plugin_id: bundle
@@ -356,7 +313,7 @@ display:
           admin_label: 'Group content Inhalt'
           required: false
           group_content_plugins:
-            'group_node:risk': 'group_node:risk'
+            'group_node:risk_cluster': 'group_node:risk_cluster'
             'group_node:article': '0'
             'group_node:book': '0'
             'group_node:deployed_releases': '0'
@@ -369,6 +326,7 @@ display:
             'group_node:group': '0'
             'group_node:grouppost': '0'
             'group_node:im_upload_page': '0'
+            'group_node:measure': '0'
             'group_node:news': '0'
             'group_node:newsletter': '0'
             'group_node:non_production_environment': '0'
@@ -377,7 +335,7 @@ display:
             'group_node:problem': '0'
             'group_node:quickinfo': '0'
             'group_node:release': '0'
-            'group_node:risk_cluster': '0'
+            'group_node:risk': '0'
             'group_node:services': '0'
             'group_node:service_profile': '0'
             'group_node:story': '0'
@@ -390,7 +348,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: 'field_risk_clusters: Inhalt'
-          required: true
+          required: false
           plugin_id: standard
       arguments: {  }
       display_extenders: {  }
@@ -412,7 +370,7 @@ display:
       display_extenders:
         views_merge_rows: {  }
       path: group/%group/risikocluster
-      merge_rows: 1
+      merge_rows: 0
       use_grouping: 0
       field_config:
         field_id:
@@ -421,33 +379,24 @@ display:
           prefix: ''
           separator: ', '
           suffix: ''
-        view_node:
-          merge_option: first_value
+        title:
+          merge_option: merge_unique
           exclude_first: 0
           prefix: ''
           separator: ', '
           suffix: ''
-        title:
-          merge_option: first_value
+        view_node:
+          merge_option: merge_unique
           exclude_first: 0
           prefix: ''
           separator: ', '
           suffix: ''
         field_id_1:
-          merge_option: merge
+          merge_option: merge_unique
           exclude_first: 0
           prefix: ''
           separator: ', '
           suffix: ''
-      menu:
-        type: none
-        title: 'Risks Clusters'
-        description: ''
-        expanded: false
-        parent: 'menu_link_content:01a4a124-29f0-41a8-8576-60a674601206'
-        weight: 0
-        context: '1'
-        menu_name: menu-340
     cache_metadata:
       max-age: -1
       contexts:

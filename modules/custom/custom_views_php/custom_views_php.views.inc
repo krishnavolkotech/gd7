@@ -96,6 +96,17 @@ function custom_views_php_views_data() {
     ),
   );
 
-
+  $data['views']['risk_cluster_risks'] = array(
+    'title' => t('Risks'),
+    'help' => t('Risks of a Risk Cluster'),
+    'field' => array(
+      'id' => 'risk_cluster_risks',
+    ),
+    'sort' => array(
+      'field' => 'risk_cluster_risks',
+      // ID of sort handler plugin to use.
+      'id' => 'risk_cluster_risks',
+    ),
+  );
   return $data;
 }
