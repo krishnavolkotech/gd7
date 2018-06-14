@@ -3640,3 +3640,15 @@ div.risk-table-wrapper div.field div.field--item{
 #edit-combine {
 	width: 190px;
 }
+.riskcluster-list .views-field.views-field-view-node a {
+	background: url(../images/notification-icon.png) center top no-repeat;
+	background-size: auto auto;
+	background-size: auto auto;
+	width: 22px;
+	height: 22px;
+	float: left;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
+	background-size: contain;
+}

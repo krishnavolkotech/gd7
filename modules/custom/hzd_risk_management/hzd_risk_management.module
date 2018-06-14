@@ -78,9 +78,25 @@ function hzd_risk_management_form_alter(array &$form, $formState, $formId){
   if($formId == 'node_risk_form'){
     $form['#validate'][] = 'risk_management_form_validate';
   }
-
+  if($formId == 'node_measure_form'){
+    $form['#validate'][] = 'risk_management_measure_form_validate';
+  }
 }
 
+function risk_management_measure_form_validate(array $form, $formState){
+  if($formState->getValue('field_measure_status')[0]['value'] != 'created'){
+$status = $formState->getValue('field_measure_status')[0]['value'];
+    if(!$formState->getValue('field_order_date')[0]['value']){
+      $formState->setErrorByName('field_order_date',t('field_order_date field is required when Status is @status',['@status'=>$status]));
+    }
+    if(!$formState->getValue('field_target_date')[0]['value']){
+      $formState->setErrorByName('field_target_date',t('field_target_date field is required when Status is @status',['@status'=>$status]));
+    }
+   if(!$formState->getValue('field_sponsor')[0]['value']){
+      $formState->setErrorByName('field_sponsor',t('field_sponsor field is required when Status is @status',['@status'=>$status]));
+    }
+  }
+}
 
 function risk_management_form_validate(array $form, $formState){
 //pr($formState->getValue('field_scope'));exit;
