@@ -1200,10 +1200,7 @@ display:
           admin_label: ''
           operator: or
           value:
-            created: created
-            accepted: accepted
-            active: active
-            in_effect: in_effect
+            all: all
           group: 1
           exposed: true
           expose:

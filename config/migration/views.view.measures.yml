@@ -133,14 +133,11 @@ display:
       row:
         type: fields
       fields:
-        label:
-          table: group_content_field_data
-          field: label
-          id: label
-          entity_type: null
-          entity_field: label
-          plugin_id: field
-          relationship: none
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: gc__node
           group_type: group
           admin_label: ''
           label: Title
@@ -186,7 +183,8 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
-          settings: {  }
+          settings:
+            link_to_entity: false
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -197,6 +195,9 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+          entity_type: node
+          entity_field: title
+          plugin_id: field
         body:
           id: body
           table: node__body
@@ -1265,7 +1266,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            placeholder: 'Description, Owner ...'
+            placeholder: 'Title, ID, Description, Owner ...'
           is_grouped: false
           group_info:
             label: ''
@@ -1279,6 +1280,7 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           fields:
+            title: title
             body: body
             field_owner: field_owner
             nid: nid
@@ -1411,8 +1413,8 @@ display:
       merge_rows: 1
       use_grouping: 0
       field_config:
-        label:
-          merge_option: filter
+        title:
+          merge_option: merge_unique
           exclude_first: 0
           prefix: ''
           separator: ', '
@@ -1478,7 +1480,7 @@ display:
           separator: ', '
           suffix: ''
         nid:
-          merge_option: merge_unique
+          merge_option: filter
           exclude_first: 0
           prefix: ''
           separator: ', '
