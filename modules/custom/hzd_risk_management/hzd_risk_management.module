@@ -120,7 +120,7 @@ function hzd_risk_management_node_presave($node){
   if($node->bundle() == 'measure'){
     $risks = $node->get('field_risks')
     ->referencedEntities();
-    $tags[] = array_map(function($risk){
+    $tags = array_map(function($risk){
       return 'node:'.$risk->id();
     },$risks);
     \Drupal::service('cache_tags.invalidator')
