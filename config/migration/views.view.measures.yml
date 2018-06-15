@@ -15,7 +15,6 @@ dependencies:
   module:
     - better_exposed_filters
     - datetime
-    - entity_reference_exposed_filters
     - group
     - node
     - options
@@ -108,13 +107,13 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 20
+          items_per_page: 10
           offset: 0
           id: 0
           total_pages: null
           tags:
-            previous: ‹‹
-            next: ››
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
           expose:
@@ -1125,55 +1124,6 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: list_field
-        eref_node_titles:
-          id: eref_node_titles
-          table: node_field_data
-          field: eref_node_titles
-          relationship: field_risks
-          group_type: group
-          admin_label: ''
-          operator: or
-          value:
-            all: all
-          group: 1
-          exposed: true
-          expose:
-            operator_id: ''
-            label: 'Associated risks'
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: risk
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            reduce: 0
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          entity_type: node
-          plugin_id: eref_node_titles
-          sort_order: '0'
-          sort_by: '1'
-          get_unpublished: '1'
-          get_filter_no_results: '1'
         combine:
           id: combine
           table: views
@@ -1219,6 +1169,53 @@ display:
             title: title
             field_owner: field_owner
           plugin_id: combine
+        field_risks_target_id:
+          id: field_risks_target_id
+          table: node__field_risks
+          field: field_risks_target_id
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_risks_target_id_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: field_risks_target_id_op
+            identifier: risk
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: numeric
       sorts:
         created:
           id: created
@@ -1290,15 +1287,6 @@ display:
             'group_node:story': '0'
           entity_type: group_content
           plugin_id: group_content_to_entity
-        field_risks:
-          id: field_risks
-          table: node__field_risks
-          field: field_risks
-          relationship: gc__node
-          group_type: group
-          admin_label: 'field_risks: Inhalt'
-          required: false
-          plugin_id: standard
         gid:
           id: gid
           table: group_content_field_data
@@ -1343,16 +1331,10 @@ display:
       display_extenders:
         views_merge_rows: {  }
       path: group/%group/massnahme
-      merge_rows: 1
+      merge_rows: 0
       use_grouping: 0
       field_config:
         title:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        body:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''
@@ -1364,25 +1346,19 @@ display:
           prefix: ''
           separator: ', '
           suffix: ''
+        field_owner:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
         field_contact_person:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''
           separator: ', '
           suffix: ''
-        field_follow_up:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_order_date:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_owner:
+        field_measure_status:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''
@@ -1394,7 +1370,13 @@ display:
           prefix: ''
           separator: ', '
           suffix: ''
-        field_measure_status:
+        field_order_date:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_follow_up:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''

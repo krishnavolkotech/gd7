@@ -47,7 +47,7 @@ display:
         type: views_query
         options:
           disable_sql_rewrite: true
-          distinct: false
+          distinct: true
           replica: false
           query_comment: ''
           query_tags: {  }
@@ -1507,6 +1507,7 @@ display:
         groups:
           1: AND
       css_class: risk-list
+      group_by: true
     cache_metadata:
       max-age: -1
       contexts:
@@ -1543,7 +1544,7 @@ display:
         context: '0'
         menu_name: menu-340
       rendering_language: '***LANGUAGE_entity_translation***'
-      merge_rows: 1
+      merge_rows: 0
       use_grouping: 0
       field_config:
         field_id:
@@ -1558,25 +1559,7 @@ display:
           prefix: ''
           separator: ', '
           suffix: ''
-        body:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_follow_up:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_owner:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_non_production_state:
+        title:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''
@@ -1595,6 +1578,24 @@ display:
           separator: ', '
           suffix: ''
         field_risk_status:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_follow_up:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_owner:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_non_production_state:
           merge_option: merge_unique
           exclude_first: 0
           prefix: ''

@@ -75,6 +75,9 @@ function hzd_risk_management_form_alter(array &$form, $formState, $formId){
   if($formId == 'views_exposed_form' && isset($form['measure'])){
     $form['measure']['#type'] = 'hidden';
   }
+  if($formId == 'views_exposed_form' && isset($form['risk'])){
+    $form['risk']['#type'] = 'hidden';
+  }
   if(in_array($formId,['node_risk_form','node_risk_edit_form'])){
     $form['#validate'][] = 'risk_management_form_validate';
   }
