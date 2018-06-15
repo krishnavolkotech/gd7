@@ -61,7 +61,7 @@ class GroupContentAddController extends GroupContentController {
       }
     }
     $build['#title'] = $this->t('Create content in %group',['%group'=>$group->label()]);
-$this->renderer->addCacheableDependency($build);
+$this->renderer->addCacheableDependency($build,0);
     return $build;
   }
   
