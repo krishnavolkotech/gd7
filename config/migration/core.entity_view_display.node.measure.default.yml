@@ -78,7 +78,7 @@ content:
     weight: 6
     label: inline
     settings:
-      token_data: '[node:field_id] - [node:title]'
+      token_data: '<a href=''[node:url]''>[node:field_id] - [node:title]</a>'
     third_party_settings: {  }
     type: tokenized_field_formatter
     region: content

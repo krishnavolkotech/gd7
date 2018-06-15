@@ -10,7 +10,7 @@ id: node.risk.field_risk_clusters
 field_name: field_risk_clusters
 entity_type: node
 bundle: risk
-label: 'Risk clusters'
+label: 'Risk Cluster'
 description: ''
 required: true
 translatable: false

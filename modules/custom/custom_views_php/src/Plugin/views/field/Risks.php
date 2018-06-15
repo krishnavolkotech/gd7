@@ -58,7 +58,7 @@ class Risks extends FieldPluginBase {
     $items = array_map(function($risk){
       return $risk->get('field_id')->value;
     },$risks);
-    return implode(',',$items);
+    return implode(', ',$items);
   }
 
 }

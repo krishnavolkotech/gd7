@@ -34,9 +34,16 @@ class TokenizedFieldFormatter extends EntityReferenceFormatterBase{
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    return [
-	'token_data'=>['#type'=>'textfield','#title'=>t('Token to generate field markup'), '#default_value'=>$this->getSetting('token_data')]
-    ] + parent::settingsForm($form, $form_state);
+    $form['token_data'] = ['#type'=>'textfield','#title'=>t('Token to generate field markup'), '#default_value'=>$this->getSetting('token_data')];
+    if(\Drupal::moduleHandler()->moduleExists('token')) {
+      $form['token_tree'] = [
+        '#theme' => 'token_tree_link',
+        '#token_types' => 'all',
+        '#show_restricted' => TRUE,
+      ];
+    }
+  return $form
+     + parent::settingsForm($form, $form_state);
   }
 
   /**

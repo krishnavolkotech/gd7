@@ -117,6 +117,15 @@ function hzd_risk_management_node_presave($node){
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags($tags);
   }
+  if($node->bundle() == 'measure'){
+    $risks = $node->get('field_risks')
+    ->referencedEntities();
+    $tags[] = array_map(function($risk){
+      return 'node:'.$risk->id();
+    },$risks);
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags($tags);
+  }
 }
 
 function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){

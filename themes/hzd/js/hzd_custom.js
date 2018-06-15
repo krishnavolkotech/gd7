@@ -314,8 +314,8 @@ jQuery("div.measures-list > div.view-content > div > table.table").tablesorter({
       });
 jQuery("div.risk-list > div.view-content > div > table.table").tablesorter({
         headers: {
-          2: { sorter: 'quickinfo_date_sorting'},
-          8: { sorter: false}
+          6: { sorter: 'quickinfo_date_sorting'},
+          9: { sorter: false}
         },
         showProcessing: true,
         headerTemplate : '{content} {icon}',
