@@ -181,3 +181,13 @@ hzd_customizations.add_users_to_system_groups:
 #    _permission: 'access administration pages'
 #  options:
 #    _admin_route: TRUE
+
+hzd_customizations.csv_imports_upload:
+  path: '/admin/csv-upload'
+  defaults:
+    _form: '\Drupal\hzd_customizations\Form\CSVImportConfigForm'
+    _title: 'Add all users to system groups'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

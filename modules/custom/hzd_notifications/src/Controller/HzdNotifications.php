@@ -51,7 +51,7 @@ class HzdNotifications extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'notifications_title'>" . $this->t('Add new notification request') . "</div>");
     $output[] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_notifications\Form\ServiceSpecificNotificationsUserForm', $user, $rel_type);
-    $notifications_priority = db_query("SELECT service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
+    $notifications_priority = db_query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
       ":uid" => $user,
       ":rel_type" => $rel_type
     ))->fetchAll();
@@ -59,7 +59,7 @@ class HzdNotifications extends ControllerBase {
       $output[] = array('#markup' => "<div class = 'service_specific_notifications'><div class = 'notifications_title'>" . $this->t('My current notification requests') . "</div>");
       foreach ($notifications_priority as $vals) {
         $output[] = \Drupal::formBuilder()
-          ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type);
+          ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type, $vals->sid);
       }
       $output[] = array('#markup' => "</div>");
     }
@@ -527,6 +527,7 @@ class HzdNotifications extends ControllerBase {
     $interval = \Drupal::request()->get('interval');
     $uid = \Drupal::request()->get('uid');
     $rel_type = \Drupal::request()->get('rel_type');
+    $id = \Drupal::request()->get('id');
     $content_types = array(
       1 => 'downtimes',
       2 => 'problem',
@@ -536,12 +537,19 @@ class HzdNotifications extends ControllerBase {
     $action = \Drupal::request()->get('type');
     //pr($action);exit;
     if ($action == 'delete') {
+
+      // \Drupal::database()->delete('service_notifications_override')
+      //   ->condition('service_id', $service)
+      //   ->condition('type', $content_types[$type])
+      //   ->condition('uid', $uid)
+      //   ->condition('send_interval', $interval)
+      //   ->execute();
+      //Instead Delete by primary key
+
       \Drupal::database()->delete('service_notifications_override')
-        ->condition('service_id', $service)
-        ->condition('type', $content_types[$type])
-        ->condition('uid', $uid)
-        ->condition('send_interval', $interval)
+        ->condition('sid', $id)
         ->execute();
+
       // get user default interval of a particlural type
       $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $content_types[$type], $rel_type);
       

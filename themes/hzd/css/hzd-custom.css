@@ -362,6 +362,11 @@ table tr td,
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
   padding:8px 4px;
+  vertical-align: top;
+}
+table.problem_info tr th,
+table.problem_info tr td{
+  vertical-align: top;
 }
 /* .view-rz-schnellinfo table tr th:nth-child(6),
 .view-rz-schnellinfo table tr td:nth-child(6),

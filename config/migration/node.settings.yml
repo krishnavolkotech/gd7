@@ -14,7 +14,7 @@ notification_checkbox_forum: 1
 notification_checkbox_grouppost: 0
 notification_checkbox_non_production_environment: 0
 notification_checkbox_planning_files: 1
-notification_checkbox_problem: 0
+notification_checkbox_problem: 1
 notification_checkbox_release: 0
 notification_checkbox_story: 0
 notification_checkbox_service_profile: 0

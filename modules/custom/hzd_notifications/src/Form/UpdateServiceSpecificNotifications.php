@@ -26,7 +26,7 @@ class UpdateServiceSpecificNotifications extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $service_id = NULL, $type = NULL, $send_interval = NULL, $rel_type = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $service_id = NULL, $type = NULL, $send_interval = NULL, $rel_type = NULL, $id = NULL) {
     $services = array(t('Service')) + HzdNotificationsHelper::_services_list($rel_type);
     $content_types = HzdNotificationsHelper::_get_content_types($service_id, FALSE, $rel_type);
     $types = array('downtimes' => 1, 'problem' => 2 , 'release' => 3 , 'early_warnings' => 4);
@@ -35,6 +35,7 @@ class UpdateServiceSpecificNotifications extends FormBase {
     $form['account'] = array('#type' => 'hidden', '#value' => $uid);
     $form['rel_type'] = array('#type' => 'hidden', '#value' => $rel_type);
     $form['sid'] = array('#type' => 'hidden', '#value' => $service_id);
+    $form['id'] = array('#type' => 'hidden', '#value' => $id);
     $form['services'] = array(
       '#type' => 'select',
       '#options' => $services,

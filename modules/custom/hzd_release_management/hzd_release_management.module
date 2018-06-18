@@ -979,6 +979,10 @@ function hzd_notifications_delete_subscriptions($type, $nid) {
     ->condition('service_id', $nid, '=')
     ->condition('type', $type, '=')
     ->execute();
+  db_delete('service_notifications_override')
+    ->condition('service_id', $nid, '=')
+    ->condition('type', $type, '=')
+    ->execute();
 }
 
 /**

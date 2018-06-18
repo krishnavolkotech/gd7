@@ -7,16 +7,18 @@ display:
             group_items:
               1:
                 value: '1'
+                title: Aktiv
               3:
                 title: Blocked
               2:
-                title: Inactive
+                title: Gesperrt
       fields:
         status:
           alter:
             text: "{% if uid == 1 and status__value == 1 %}\r\nInactive\r\n{% elseif uid == 0 and status__value == 1 %}\r\nActive\r\n{% elseif uid == 1 and status__value == 0 %}\r\nBlocked\r\n{% elseif uid == 0 and status__value == 0 %}\r\nBlocked\r\n{% endif %}\r\n"
           settings:
-            format_custom_false: Inactive
+            format_custom_true: Aktiv
+            format_custom_false: Gesperrt
         user_bulk_form:
           label: Massenaktualisierung
         name:

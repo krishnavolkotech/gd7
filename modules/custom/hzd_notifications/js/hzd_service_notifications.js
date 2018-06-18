@@ -13,6 +13,7 @@
         var content_type =  this.content_type.value;
         var interval = this.send_interval.value;
         var rel_type = this.rel_type.value;
+        var id = this.id.value;
         if(type == 'delete') {
 	        if(confirm(unescape("Diese Benachrichtigung wirklich l%F6schen?"))) {
 	        
@@ -24,7 +25,7 @@
         }
         
         var url = drupalSettings.path.baseUrl + 'update_notifications';
-        $.post( url, {'uid': uid, 'type': type, 'service': service_id, 'content_type': content_type, 'interval' :interval, 'rel_type': rel_type}, function() {
+        $.post( url, {'uid': uid, 'type': type, 'service': service_id, 'content_type': content_type, 'interval' :interval, 'rel_type': rel_type, 'id': id}, function() {
 	        window.location = window.location.href;
 	      }, 'json');
         return false;

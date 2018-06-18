@@ -6,6 +6,8 @@ hzd_release_management.view_deployed_releases:
     _entity_view: group.default
   requirements:
     _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
 
 hzd_release_management.released:
   path: 'group/{group}/releases'
@@ -270,12 +272,14 @@ hzd_release_management.display_planning_files:
 #    'type' => MENU_CALLBACK
 #    );
 
-hzd_release_management.archive_deployedreleases:
-  path: '/archive_deployedreleases'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\ArchivedeployedreleasesController::archive_deployedreleases'
-  requirements:
-    _permission: 'access content'
+# hzd_release_management.archive_deployedreleases:
+#   path: '/archive_deployedreleases/{node}'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\ArchivedeployedreleasesController::archive_deployedreleases'
+#   requirements:
+#     _permission: 'access content'
+#   options:
+#     no_cache: 'TRUE'
 
 
 #
