@@ -1,0 +1,25 @@
+uuid: 452b6001-bd00-4907-ac29-44d53ba47584
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_contact_person
+    - node.type.measure
+id: node.measure.field_contact_person
+field_name: field_contact_person
+entity_type: node
+bundle: measure
+label: 'Contact Person'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

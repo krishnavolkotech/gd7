@@ -1,0 +1,31 @@
+uuid: a34b49d9-c200-47b4-b821-a62f75a4e89c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_expected_result
+    - node.type.measure
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.measure.field_expected_result
+field_name: field_expected_result
+entity_type: node
+bundle: measure
+label: 'Expected result'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -1,0 +1,420 @@
+uuid: a214a760-ebd2-40b0-92cf-f4fbbcd2bc76
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_id
+    - group.content_type.open-group_node-risk_cluster
+  module:
+    - custom_views_php
+    - group
+    - node
+    - serial
+id: risk_clusters
+label: 'Risk clusters'
+module: views
+description: ''
+tag: ''
+base_table: group_content_field_data
+base_field: id
+core: 8.x
+display:
+  default:
+    display_plugin: default
+    id: default
+    display_title: Master
+    position: 0
+    display_options:
+      access:
+        type: group_permission
+        options:
+          group_permission: 'leave group'
+      cache:
+        type: none
+        options: {  }
+      query:
+        type: views_query
+        options:
+          disable_sql_rewrite: true
+          distinct: false
+          replica: false
+          query_comment: ''
+          query_tags: {  }
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Anwenden
+          reset_button: false
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: true
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        type: none
+        options:
+          offset: 0
+      style:
+        type: table
+      row:
+        type: fields
+      fields:
+        field_id:
+          id: field_id
+          table: node__field_id
+          field: field_id
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: ID
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: serial_default_formatter
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: Title
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: title
+          plugin_id: field
+        view_node:
+          id: view_node
+          table: node
+          field: view_node
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: 'Detailed Information'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Information
+          output_url_as_text: false
+          absolute: false
+          entity_type: node
+          plugin_id: entity_link
+        risk_cluster_risks:
+          id: risk_cluster_risks
+          table: views
+          field: risk_cluster_risks
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Risks
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: risk_cluster_risks
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          value:
+            open-group_node-risk_cluster: open-group_node-risk_cluster
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+      sorts: {  }
+      title: 'Risk clusters'
+      header: {  }
+      footer: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: 'No results found.'
+            format: full_html
+          plugin_id: text
+      relationships:
+        gc__node:
+          id: gc__node
+          table: group_content_field_data
+          field: gc__node
+          relationship: none
+          group_type: group
+          admin_label: 'Group content Inhalt'
+          required: false
+          group_content_plugins:
+            'group_node:risk_cluster': 'group_node:risk_cluster'
+            'group_node:article': '0'
+            'group_node:book': '0'
+            'group_node:deployed_releases': '0'
+            'group_node:downtimes': '0'
+            'group_node:early_warnings': '0'
+            'group_node:event': '0'
+            'group_node:faq': '0'
+            'group_node:faqs': '0'
+            'group_node:forum': '0'
+            'group_node:group': '0'
+            'group_node:grouppost': '0'
+            'group_node:im_upload_page': '0'
+            'group_node:measure': '0'
+            'group_node:news': '0'
+            'group_node:newsletter': '0'
+            'group_node:non_production_environment': '0'
+            'group_node:page': '0'
+            'group_node:planning_files': '0'
+            'group_node:problem': '0'
+            'group_node:quickinfo': '0'
+            'group_node:release': '0'
+            'group_node:risk': '0'
+            'group_node:services': '0'
+            'group_node:service_profile': '0'
+            'group_node:story': '0'
+          entity_type: group_content
+          plugin_id: group_content_to_entity
+        field_risk_clusters:
+          id: field_risk_clusters
+          table: node__field_risk_clusters
+          field: field_risk_clusters
+          relationship: gc__node
+          group_type: group
+          admin_label: 'field_risk_clusters: Inhalt'
+          required: false
+          plugin_id: standard
+      arguments: {  }
+      display_extenders: {  }
+      css_class: riskcluster-list
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+      tags:
+        - 'config:field.storage.node.field_id'
+  clusters:
+    display_plugin: page
+    id: clusters
+    display_title: Page
+    position: 1
+    display_options:
+      display_extenders:
+        views_merge_rows: {  }
+      path: group/%group/risikocluster
+      merge_rows: 0
+      use_grouping: 0
+      field_config:
+        field_id:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        title:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        view_node:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        field_id_1:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+      tags:
+        - 'config:field.storage.node.field_id'

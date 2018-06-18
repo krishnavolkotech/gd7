@@ -1,0 +1,8 @@
+name: 'HZD Risk Management'
+type: module
+description: 'Managing group Risk Management'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - serial
+  - group

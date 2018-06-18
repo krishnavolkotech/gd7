@@ -19,11 +19,14 @@ conditions:
       faq: faq
       faqs: faqs
       forum: forum
+      measure: measure
       page: page
       planning_files: planning_files
       problem: problem
       quickinfo: quickinfo
       release: release
+      risk: risk
+      risk_cluster: risk_cluster
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'

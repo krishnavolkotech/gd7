@@ -1,0 +1,25 @@
+uuid: c0726b94-e57d-489a-b4ec-f22a81e5ecdf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_contact_person
+    - node.type.risk
+id: node.risk.field_contact_person
+field_name: field_contact_person
+entity_type: node
+bundle: risk
+label: 'Contact Person'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

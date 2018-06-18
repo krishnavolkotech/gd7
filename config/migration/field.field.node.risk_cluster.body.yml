@@ -1,0 +1,32 @@
+uuid: dd9747d2-6550-4e02-a2f6-906de3e91fb7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.risk_cluster
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.risk_cluster.body
+field_name: body
+entity_type: node
+bundle: risk_cluster
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+field_type: text_with_summary

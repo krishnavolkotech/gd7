@@ -62,7 +62,9 @@
         "drupal/devel": "1.2",
         "drupal/faq": "1.x@dev",
         "drupal/faqfield": "^1.1",
-        "drupal/ultimate_cron": "^2.0@alpha"
+        "drupal/ultimate_cron": "^2.0@alpha",
+        "drupal/serial": "1.x-dev",
+        "drupal/entity_reference_exposed_filters": "^1.0@alpha"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

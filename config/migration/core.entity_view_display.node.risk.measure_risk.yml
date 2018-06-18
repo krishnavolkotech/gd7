@@ -1,0 +1,78 @@
+uuid: 7fb93952-7007-404d-ad55-8cfa24311291
+langcode: en
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.node.measure_risk
+    - field.field.node.risk.body
+    - field.field.node.risk.field_affected_oes
+    - field.field.node.risk.field_category
+    - field.field.node.risk.field_contact_person
+    - field.field.node.risk.field_creation_date
+    - field.field.node.risk.field_follow_up
+    - field.field.node.risk.field_graduation_date
+    - field.field.node.risk.field_id
+    - field.field.node.risk.field_non_production_state
+    - field.field.node.risk.field_owner
+    - field.field.node.risk.field_probability_of_occurrence
+    - field.field.node.risk.field_remarks
+    - field.field.node.risk.field_reported_by
+    - field.field.node.risk.field_risk_category
+    - field.field.node.risk.field_risk_clusters
+    - field.field.node.risk.field_risk_impact
+    - field.field.node.risk.field_risk_status
+    - field.field.node.risk.field_risk_trend
+    - field.field.node.risk.field_risk_value
+    - field.field.node.risk.field_scope
+    - node.type.risk
+  module:
+    - options
+    - serial
+    - user
+id: node.risk.measure_risk
+targetEntityType: node
+bundle: risk
+mode: measure_risk
+content:
+  field_id:
+    type: serial_default_formatter
+    weight: 0
+    region: content
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+  field_risk_status:
+    type: list_default
+    weight: 1
+    region: content
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_affected_oes: true
+  field_category: true
+  field_contact_person: true
+  field_creation_date: true
+  field_follow_up: true
+  field_graduation_date: true
+  field_measures: true
+  field_non_production_state: true
+  field_owner: true
+  field_probability_of_occurrence: true
+  field_remarks: true
+  field_reported_by: true
+  field_risk_category: true
+  field_risk_category_value: true
+  field_risk_clusters: true
+  field_risk_impact: true
+  field_risk_trend: true
+  field_risk_value: true
+  field_scope: true
+  langcode: true
+  last_updated: true
+  links: true

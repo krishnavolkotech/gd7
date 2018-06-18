@@ -4,8 +4,6 @@ display:
   default:
     display_options:
       empty:
-        area_text_custom:
-          content: 'Es wurde noch kein Inhalt für die Startseite erstellt.'
         title:
           title: 'Willkommen bei [site:name]'
       exposed_form:
@@ -18,10 +16,12 @@ display:
       pager:
         options:
           expose:
-            items_per_page_label: 'Elemente pro Seite'
-            items_per_page_options_all_label: '- Alle -'
+            items_per_page_label: 'Items per page'
+            items_per_page_options_all_label: '- All -'
           tags:
             previous: '‹ Vorherige'
             next: 'Weiter › '
             first: '« Anfang'
             last: 'Ende »'
+  feed_1:
+    display_title: Newsfeed

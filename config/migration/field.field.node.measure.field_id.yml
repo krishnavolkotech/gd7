@@ -1,0 +1,22 @@
+uuid: 66f8d792-9e8a-4905-803c-300cf7f9e53e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_id
+    - node.type.measure
+  module:
+    - serial
+id: node.measure.field_id
+field_name: field_id
+entity_type: node
+bundle: measure
+label: ID
+description: ''
+required: false
+translatable: true
+default_value:
+  - {  }
+default_value_callback: ''
+settings: {  }
+field_type: serial

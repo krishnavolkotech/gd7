@@ -1,0 +1,23 @@
+uuid: 91aac6c8-ef24-48ee-895c-88887f0d6d75
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - serial
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_id
+field_name: field_id
+entity_type: node
+type: serial
+settings: {  }
+module: serial
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

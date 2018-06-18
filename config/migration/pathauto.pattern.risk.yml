@@ -1,0 +1,22 @@
+uuid: dcfd91a3-7491-4d12-bcde-e09654ef7f50
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: risk
+label: Risk
+type: 'canonical_entities:node'
+pattern: '/risikomanagement/risiko/[node:field_id]'
+selection_criteria:
+  43d53d96-6bc8-460b-8fa0-0db0e1c81460:
+    id: node_type
+    bundles:
+      risk: risk
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 43d53d96-6bc8-460b-8fa0-0db0e1c81460
+selection_logic: and
+weight: -5
+relationships: {  }

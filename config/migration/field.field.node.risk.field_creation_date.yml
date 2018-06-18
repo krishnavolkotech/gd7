@@ -1,0 +1,21 @@
+uuid: d0680670-d1d2-489c-ac57-54cd17464120
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_creation_date
+    - node.type.risk
+  module:
+    - datetime
+id: node.risk.field_creation_date
+field_name: field_creation_date
+entity_type: node
+bundle: risk
+label: 'Creation date'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

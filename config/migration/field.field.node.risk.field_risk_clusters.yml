@@ -1,0 +1,28 @@
+uuid: 77ae13f1-de97-40da-b312-b486ef71a184
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_risk_clusters
+    - node.type.risk
+    - node.type.risk_cluster
+id: node.risk.field_risk_clusters
+field_name: field_risk_clusters
+entity_type: node
+bundle: risk
+label: 'Risk Cluster'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      risk_cluster: risk_cluster
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

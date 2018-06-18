@@ -1,0 +1,21 @@
+uuid: b8b6c737-c1e4-4b29-a81e-f268c6eaa271
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_creation_date
+    - node.type.measure
+  module:
+    - datetime
+id: node.measure.field_creation_date
+field_name: field_creation_date
+entity_type: node
+bundle: measure
+label: 'Start date'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

@@ -1,0 +1,21 @@
+uuid: ade21bb3-d5a4-422f-8267-b24d41a98696
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_follow_up
+    - node.type.measure
+  module:
+    - datetime
+id: node.measure.field_follow_up
+field_name: field_follow_up
+entity_type: node
+bundle: measure
+label: Follow-up
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

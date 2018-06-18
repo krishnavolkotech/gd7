@@ -345,6 +345,10 @@ function get_all_user_state($active = 0) {
   return $states;
 }
 
+function get_all_hzd_states($definition, $entity, $cacheable){
+  return get_all_user_state();
+}
+
 /**
  * Get non production environments list when the state was selected.
  */

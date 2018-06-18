@@ -1,0 +1,31 @@
+uuid: f4506f64-7a9a-48ec-af75-aed756ddad4c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_remarks
+    - node.type.measure
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.measure.field_remarks
+field_name: field_remarks
+entity_type: node
+bundle: measure
+label: Remarks
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -3548,3 +3548,108 @@ table.sticky-header thead tr .sorter-false .tablesorter-header-inner {
 .sticky-table {
     margin: 0px !important;
 }
+/* Styles related to Risk, Risk cluster, measures*/
+/*div.risk-table-wrapper{
+    display: table;
+    border: 1px solid;
+    margin-bottom: 40px;
+}
+div.risk-table-wrapper div.field{
+    border: 1px solid;
+    box-sizing: border-box;
+    display: table-row;
+    padding: 0% !important;
+}
+
+div.risk-table-wrapper div.field div.field--label,
+div.risk-table-wrapper div.field div.field--item{
+    display: table-cell;
+}
+div.risk-table-wrapper div.field div.field--label{
+    width: 20% !important;
+    background-color: #cccccc;
+    vertical-align: middle;
+    padding: 2%;
+    margin: auto;
+}
+div.risk-table-wrapper div.field div.field--item{
+    width: 80% !important;
+    vertical-align: middle;
+}*/
+
+.risk-view,.measure-view {
+	background: url(./img/file-icon.png) center top no-repeat;
+	width: 22px;
+	height: 22px;
+	float: left;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
+	background-size: contain;
+}
+.risk-measures {
+	background: url(./img/shovel.png) center top no-repeat;
+	background-size: auto auto;
+	width: 22px;
+	height: 22px;
+	float: left;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
+	background-size: contain;
+}
+.views-field.views-field-nothing {
+	width: 73px;
+}
+.risk-table-wrapper table {
+	border: 1px solid #000;
+	border-radius: 0 !important;
+        border-top: 2px solid #000;
+}
+.risk-table-wrapper table td{
+        border: 1px solid #000;
+        border-bottom: 2px solid #000;
+        border-radius: 0 !important;
+        vertical-align: middle !important;;
+}
+.risk-table-wrapper table .risk-labels {
+	background: #e1e1e1;
+	width: 25%;
+}
+#views-exposed-form-risks-list-risks .form-item, #views-exposed-form-risks-list-risks .form-actions {
+        float: none !important;
+}
+/*#views-exposed-form-measures-measures #edit-actions {
+	display: flex;
+	flex-wrap: wrap;
+        float:none;
+}*/
+#views-exposed-form-risks-list-risks .form-item, #views-exposed-form-risks-list-risks .form-actions {
+	vertical-align: top;
+}
+.risk-list-data {
+	background: url(./img/risk-icon.png) center top no-repeat;
+	background-size: auto auto;
+	width: 22px;
+	height: 22px;
+	float: left;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
+	background-size: contain;
+}
+#edit-combine {
+	width: 190px;
+}
+.riskcluster-list .views-field.views-field-view-node a {
+	background: url(../images/notification-icon.png) center top no-repeat;
+	background-size: auto auto;
+	background-size: auto auto;
+	width: 22px;
+	height: 22px;
+	float: left;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	margin: 0 5px 0 0;
+	background-size: contain;
+}

@@ -1,0 +1,55 @@
+uuid: 9d99ac1d-f27f-4994-8db8-685fe18b521a
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.risk.body
+    - node.type.risk
+  module:
+    - text
+    - user
+id: node.risk.teaser
+targetEntityType: node
+bundle: risk
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  field_risk_category_value:
+    weight: 100
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_affected_oes: true
+  field_category: true
+  field_contact_person: true
+  field_creation_date: true
+  field_follow_up: true
+  field_graduation_date: true
+  field_id: true
+  field_non_production_state: true
+  field_owner: true
+  field_probability_of_occurrence: true
+  field_remarks: true
+  field_reported_by: true
+  field_risk_category: true
+  field_risk_clusters: true
+  field_risk_impact: true
+  field_risk_status: true
+  field_risk_trend: true
+  field_risk_value: true
+  field_scope: true
+  langcode: true

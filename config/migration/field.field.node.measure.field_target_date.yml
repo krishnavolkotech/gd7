@@ -1,0 +1,21 @@
+uuid: 5bf61214-08b1-4693-b4ab-7f2a2982c095
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_target_date
+    - node.type.measure
+  module:
+    - datetime
+id: node.measure.field_target_date
+field_name: field_target_date
+entity_type: node
+bundle: measure
+label: 'Target date'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

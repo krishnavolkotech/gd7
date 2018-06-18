@@ -1,0 +1,21 @@
+uuid: 9b5c74b4-1deb-4dda-8ce5-8d1b58d62200
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_risk_trend
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_risk_trend
+field_name: field_risk_trend
+entity_type: node
+bundle: risk
+label: Trend
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

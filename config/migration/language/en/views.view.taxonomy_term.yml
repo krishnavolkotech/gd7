@@ -15,3 +15,9 @@ display:
           expose:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
+      arguments:
+        tid:
+          exception:
+            title: Alle
+  feed_1:
+    display_title: Newsfeed

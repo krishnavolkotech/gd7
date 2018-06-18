@@ -7,9 +7,48 @@ display:
             group_items:
               1:
                 value: '1'
+                title: Aktiv
               3:
                 title: Blocked
+              2:
+                title: Gesperrt
       fields:
         status:
           alter:
             text: "{% if uid == 1 and status__value == 1 %}\r\nInactive\r\n{% elseif uid == 0 and status__value == 1 %}\r\nActive\r\n{% elseif uid == 1 and status__value == 0 %}\r\nBlocked\r\n{% elseif uid == 0 and status__value == 0 %}\r\nBlocked\r\n{% endif %}\r\n"
+          settings:
+            format_custom_true: Aktiv
+            format_custom_false: Gesperrt
+        user_bulk_form:
+          label: Massenaktualisierung
+        name:
+          label: Benutzername
+        access:
+          label: 'Letzter Zugriff'
+        operations:
+          label: Operationen
+      exposed_form:
+        options:
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        options:
+          tags:
+            previous: '‹ Vorherige'
+            next: 'Weiter › '
+            first: '« Anfang'
+            last: 'Ende »'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+      title: Benutzer
+  page_1:
+    display_options:
+      menu:
+        description: 'Menschen finden und verwalten, die mit Ihrer Website in Kontakt stehen.'
+      tab_options:
+        title: Benutzer
+label: Benutzer
+description: 'Menschen finden und verwalten, die mit Ihrer Website in Kontakt stehen.'

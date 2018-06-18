@@ -1,0 +1,22 @@
+uuid: a39b1ce2-fee6-4b5f-a56c-f88017b08601
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_id
+    - node.type.risk
+  module:
+    - serial
+id: node.risk.field_id
+field_name: field_id
+entity_type: node
+bundle: risk
+label: ID
+description: ''
+required: false
+translatable: true
+default_value:
+  - {  }
+default_value_callback: ''
+settings: {  }
+field_type: serial
