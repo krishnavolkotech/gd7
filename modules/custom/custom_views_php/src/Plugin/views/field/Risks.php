@@ -51,14 +51,20 @@ class Risks extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
+    $build = [];
     $cluster = $values->_entity;
     $risks = \Drupal::entityTypeManager()
-    ->getStorage('node')
-    ->loadByProperties(['field_risk_clusters' => $cluster->getEntity()->id(),'type'=>'risk']);
-    $items = array_map(function($risk){
-      return $risk->get('field_id')->value;
-    },$risks);
-    return implode(', ',$items);
+      ->getStorage('node')
+      ->loadByProperties(['field_risk_clusters' => $cluster->getEntity()->id(), 'type' => 'risk']);
+    $items = array_map(function ($risk) {
+        return $risk->toLink($risk->get('field_id')->value . '-' . $risk->get('title')->value)->toString();
+    }, $risks);
+    $build = [
+      '#items' => $items,
+      '#theme' => 'item_list',
+      '#type' => 'ul'
+    ];
+    return $build;
   }
 
 }
