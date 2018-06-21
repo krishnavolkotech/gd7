@@ -3636,7 +3636,7 @@ div.risk-table-wrapper div.field div.field--item{
 #edit-combine {
 	width: 190px;
 }
-.riskcluster-list .views-field.views-field-view-node a {
+.riskcluster-list .views-field.views-field-view-node a:first-child {
 	background: url(../images/notification-icon.png) center top no-repeat;
 	width: 22px;
 	height: 22px;
