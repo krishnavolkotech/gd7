@@ -3585,18 +3585,15 @@ div.risk-table-wrapper div.field div.field--item{
 	font-size: 0;
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
-	background-size: contain;
 }
 .risk-measures {
 	background: url(./img/shovel.png) center top no-repeat;
-	background-size: auto auto;
 	width: 22px;
 	height: 22px;
 	float: left;
 	font-size: 0;
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
-	background-size: contain;
 }
 .views-field.views-field-nothing {
 	width: 73px;
@@ -3629,27 +3626,22 @@ div.risk-table-wrapper div.field div.field--item{
 }
 .risk-list-data {
 	background: url(./img/risk-icon.png) center top no-repeat;
-	background-size: auto auto;
 	width: 22px;
 	height: 22px;
 	float: left;
 	font-size: 0;
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
-	background-size: contain;
 }
 #edit-combine {
 	width: 190px;
 }
-.riskcluster-list .views-field.views-field-view-node a {
+.riskcluster-list .views-field.views-field-view-node a:first-child {
 	background: url(../images/notification-icon.png) center top no-repeat;
-	background-size: auto auto;
-	background-size: auto auto;
 	width: 22px;
 	height: 22px;
 	float: left;
 	font-size: 0;
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
-	background-size: contain;
 }
