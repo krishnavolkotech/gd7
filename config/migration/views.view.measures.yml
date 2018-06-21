@@ -1045,7 +1045,10 @@ display:
           admin_label: ''
           operator: or
           value:
-            all: all
+            created: created
+            approved: approved
+            in_progress: in_progress
+            postponed: postponed
           group: 1
           exposed: true
           expose:
@@ -1065,7 +1068,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: false
+            reduce: true
           is_grouped: false
           group_info:
             label: ''
@@ -1216,6 +1219,45 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin_id: numeric
+        field_measure_status_value_1:
+          id: field_measure_status_value_1
+          table: node__field_measure_status
+          field: field_measure_status_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          operator: not
+          value:
+            completed: completed
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          plugin_id: list_field
       sorts:
         created:
           id: created
@@ -1412,6 +1454,35 @@ display:
           prefix: ''
           separator: ', '
           suffix: ''
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - group_membership.roles.permissions
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+      tags:
+        - 'config:field.storage.node.field_contact_person'
+        - 'config:field.storage.node.field_follow_up'
+        - 'config:field.storage.node.field_measure_status'
+        - 'config:field.storage.node.field_non_production_state'
+        - 'config:field.storage.node.field_order_date'
+        - 'config:field.storage.node.field_owner'
+        - 'config:field.storage.node.field_target_date'
+        - 'config:field.storage.node.field_type'
+  page_1:
+    display_plugin: page
+    id: page_1
+    display_title: Page
+    position: 2
+    display_options:
+      display_extenders:
+        views_merge_rows: {  }
+      path: group/%group/massnahme/archive
+      title: 'Archiv Maßnahmen'
+      defaults:
+        title: false
     cache_metadata:
       max-age: -1
       contexts:
