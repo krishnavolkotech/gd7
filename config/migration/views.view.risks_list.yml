@@ -157,7 +157,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Kennnummer
+          label: Nr.
           exclude: false
           alter:
             alter_text: false

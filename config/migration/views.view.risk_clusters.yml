@@ -196,7 +196,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Kennnummer
+          label: Nr.
           exclude: false
           alter:
             alter_text: false
@@ -323,7 +323,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Risks
+          label: 'Zugehörige Einzelrisiken'
           exclude: false
           alter:
             alter_text: false
@@ -372,7 +372,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Zugehörige Einzelrisiken'
+          label: Details
           exclude: false
           alter:
             alter_text: true
