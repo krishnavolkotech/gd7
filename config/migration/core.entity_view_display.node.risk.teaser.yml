@@ -22,7 +22,13 @@ content:
       trim_length: 600
     third_party_settings: {  }
     region: content
+  field_measures:
+    weight: 100
+    region: content
   field_risk_category_value:
+    weight: 100
+    region: content
+  last_updated:
     weight: 100
     region: content
   links:

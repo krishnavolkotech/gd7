@@ -21,7 +21,7 @@ id: node.risk_cluster.body
 field_name: body
 entity_type: node
 bundle: risk_cluster
-label: Description
+label: Beschreibung
 description: ''
 required: false
 translatable: true

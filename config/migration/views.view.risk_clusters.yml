@@ -66,7 +66,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: ID
+          label: Kennnummer
           exclude: false
           alter:
             alter_text: false
@@ -128,7 +128,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Title
+          label: Titel
           exclude: false
           alter:
             alter_text: false
@@ -193,7 +193,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Detailed Information'
+          label: Detailinformation
           exclude: false
           alter:
             alter_text: false
@@ -246,7 +246,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Risks
+          label: 'Zugehörige Einzelrisiken'
           exclude: false
           alter:
             alter_text: false
@@ -299,7 +299,7 @@ display:
           entity_field: type
           plugin_id: bundle
       sorts: {  }
-      title: 'Risk clusters'
+      title: Risikocluster
       header: {  }
       footer: {  }
       empty:
@@ -313,7 +313,7 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'No results found.'
+            value: 'Keine Daten vorhanden.'
             format: full_html
           plugin_id: text
       relationships:

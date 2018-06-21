@@ -21,7 +21,7 @@ id: node.measure.body
 field_name: body
 entity_type: node
 bundle: measure
-label: Description
+label: Beschreibung
 description: ''
 required: true
 translatable: true

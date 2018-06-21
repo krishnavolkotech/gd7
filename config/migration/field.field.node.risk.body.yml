@@ -21,7 +21,7 @@ id: node.risk.body
 field_name: body
 entity_type: node
 bundle: risk
-label: Description
+label: Beschreibung
 description: ''
 required: false
 translatable: true

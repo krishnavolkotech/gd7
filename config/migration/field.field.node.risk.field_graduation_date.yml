@@ -11,7 +11,7 @@ id: node.risk.field_graduation_date
 field_name: field_graduation_date
 entity_type: node
 bundle: risk
-label: 'Graduation Date'
+label: 'Completion Date'
 description: ''
 required: false
 translatable: false

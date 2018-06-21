@@ -64,6 +64,9 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_measures:
+    weight: 100
+    region: content
   field_remarks:
     weight: 1
     label: inline
@@ -102,6 +105,9 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: computed_integer
+    region: content
+  last_updated:
+    weight: 100
     region: content
 hidden:
   downtime_description: true

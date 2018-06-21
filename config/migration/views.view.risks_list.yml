@@ -76,7 +76,7 @@ display:
                 bef_collapsible: false
                 is_secondary: false
                 rewrite:
-                  filter_rewrite_values: "- Any -|<Risk Cluster>\n- Alle -|<Risk Cluster>"
+                  filter_rewrite_values: "- Alle -|<Risikocluster>\n- Alle -|<Risikocluster>"
             field_risk_category_value:
               bef_format: default
               more_options:
@@ -100,10 +100,6 @@ display:
                 is_secondary: false
                 rewrite:
                   filter_rewrite_values: '- Alle -|<Status>'
-            field_follow_up_value:
-              bef_format: default
-              more_options:
-                is_secondary: false
             field_non_production_state_value:
               bef_format: default
               more_options:
@@ -161,7 +157,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: ID
+          label: Kennnummer
           exclude: false
           alter:
             alter_text: false
@@ -223,7 +219,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Risk Cluster'
+          label: Risikocluster
           exclude: false
           alter:
             alter_text: false
@@ -286,7 +282,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Title
+          label: Titel
           exclude: false
           alter:
             alter_text: false
@@ -344,6 +340,68 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
+        field_risk_status:
+          id: field_risk_status
+          table: node__field_risk_status
+          field: field_risk_status
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: Status
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: list_default
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
         field_risk_category:
           id: field_risk_category
           table: node__field_risk_category
@@ -351,7 +409,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Risk Category'
+          label: Risikokategorie
           exclude: false
           alter:
             alter_text: false
@@ -416,7 +474,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: 'Risk Value'
+          label: Risikowert
           exclude: false
           alter:
             alter_text: false
@@ -475,68 +533,6 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_risk_status:
-          id: field_risk_status
-          table: node__field_risk_status
-          field: field_risk_status
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          label: Status
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
         field_follow_up:
           id: field_follow_up
           table: node__field_follow_up
@@ -544,7 +540,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Follow-Up
+          label: Wiedervorlage
           exclude: false
           alter:
             alter_text: false
@@ -601,6 +597,68 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
+        field_non_production_state:
+          id: field_non_production_state
+          table: node__field_non_production_state
+          field: field_non_production_state
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: 'Zuständiges Land'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: list_default
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
         field_owner:
           id: field_owner
           table: node__field_owner
@@ -608,7 +666,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Owner
+          label: Eigentümer
           exclude: false
           alter:
             alter_text: false
@@ -653,68 +711,6 @@ display:
           type: string
           settings:
             link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
-        field_non_production_state:
-          id: field_non_production_state
-          table: node__field_non_production_state
-          field: field_non_production_state
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          label: 'Responsible State'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -1084,7 +1080,7 @@ display:
             default_group_multiple: {  }
             group_items:
               1:
-                title: '&lt;Risk Category&gt;'
+                title: '&lt;Risikokategorie&gt;'
                 operator: 'not empty'
                 value: ''
               2:
@@ -1142,7 +1138,7 @@ display:
             default_group_multiple: {  }
             group_items:
               1:
-                title: '&lt;Risk value&gt;'
+                title: '&lt;Risikowert&gt;'
                 operator: 'not empty'
                 value:
                   value: ''
@@ -1331,7 +1327,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            placeholder: 'ID, Title, Owner...'
+            placeholder: '<Suchtext eingeben>'
           is_grouped: false
           group_info:
             label: ''
@@ -1414,7 +1410,7 @@ display:
           entity_type: node
           entity_field: created
           plugin_id: date
-      title: Risks
+      title: Einzelrisiken
       header: {  }
       footer: {  }
       empty:
@@ -1428,7 +1424,7 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'No results found.'
+            value: 'Keine Daten vorhanden.'
             format: full_html
           plugin_id: text
       relationships:

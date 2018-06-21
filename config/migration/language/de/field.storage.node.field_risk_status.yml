@@ -1,0 +1,12 @@
+settings:
+  allowed_values:
+    -
+      label: Aufgenommen
+    -
+      label: Akzeptiert
+    -
+      label: Aktiv
+    -
+      label: Eingetreten
+    -
+      label: Erledigt

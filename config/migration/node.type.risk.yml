@@ -9,9 +9,9 @@ third_party_settings:
     available_menus:
       - main
     parent: 'main:'
-name: Risk
+name: Einzelrisiko
 type: risk
-description: 'Individual risks are tangible, concrete problems that can or even have occurred.'
+description: 'Einzelrisiken sind greifbare, konkrete Probleme, die eintreten können oder sogar eingetreten sind. Sie sind jeweils einem Risikocluster zugeordnet und werden über Maßnahmen gezielt angegangen und verbessert.'
 help: ''
 new_revision: true
 preview_mode: 0

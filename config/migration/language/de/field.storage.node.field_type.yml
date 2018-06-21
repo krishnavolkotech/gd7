@@ -1,0 +1,12 @@
+settings:
+  allowed_values:
+    1:
+      label: Konzeption
+    3:
+      label: Gremienbeschluss
+    4:
+      label: Auftrag
+    5:
+      label: Projekt
+    6:
+      label: Daueraufgabe

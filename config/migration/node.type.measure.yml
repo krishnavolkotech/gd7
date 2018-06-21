@@ -8,9 +8,9 @@ third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
-name: Measure
+name: Maßnahme
 type: measure
-description: "Measures should specifically address and improve individual risks. They are assigned to one\r\n(or more) risks accordingly."
+description: "Maßnahmen sollen gezielt einzelne Risiken angehen und verbessern oder sogar beheben. Sie sind entsprechend einem (oder mehreren) Risiken zugeordnet.\r\n"
 help: ''
 new_revision: true
 preview_mode: 0

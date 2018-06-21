@@ -28,6 +28,9 @@ content:
   field_risks_data:
     weight: 100
     region: content
+  last_updated:
+    weight: 100
+    region: content
   links:
     weight: 100
     region: content

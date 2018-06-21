@@ -92,6 +92,9 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: content
+  last_updated:
+    weight: 100
+    region: content
   links:
     weight: 0
     region: content

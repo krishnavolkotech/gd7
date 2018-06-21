@@ -1,0 +1,8 @@
+settings:
+  allowed_values:
+    -
+      label: 3-kritisch
+    -
+      label: 2-hoch
+    -
+      label: 1-signifikant
