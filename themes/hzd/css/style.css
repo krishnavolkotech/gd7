@@ -3645,3 +3645,9 @@ div.risk-table-wrapper div.field div.field--item{
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
 }
+.riskcluster-list table tbody tr td:last-child, 
+.risk-list table tbody tr td:last-child,
+.measures-list table tbody tr td:last-child{
+  min-width: 65px;
+  padding-right: 0px;
+}

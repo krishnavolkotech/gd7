@@ -294,7 +294,7 @@ jQuery("div.measures-list > div.view-content > div > table.table").tablesorter({
         headers: {
           4: { sorter: 'quickinfo_date_sorting'},
           5: { sorter: 'quickinfo_date_sorting'},
-	  10: { sorter: false}
+	  9: { sorter: false}
         },
         showProcessing: true,
         headerTemplate : '{content} {icon}',
