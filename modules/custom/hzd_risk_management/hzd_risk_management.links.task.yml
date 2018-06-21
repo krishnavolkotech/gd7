@@ -10,6 +10,18 @@ hzd_risk_management.risks:
   base_route: view.risk_clusters.clusters
   weight: 2
 
+hzd_risk_management.risks_list:
+  title: Risks
+  route_name: view.risks_list.risks
+  parent_id: hzd_risk_management.risks
+  weight: 1
+
+hzd_risk_management.risks_archive:
+  title: Archived Risks
+  route_name: view.risks_list.page_1
+  parent_id: hzd_risk_management.risks
+  weight: 2
+
 hzd_risk_management.measures:
   title: Measures
   route_name: view.measures.measures
