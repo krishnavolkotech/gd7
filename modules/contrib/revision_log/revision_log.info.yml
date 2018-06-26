@@ -1,0 +1,11 @@
+name: 'Revision Log'
+type: module
+description: 'Shows the log with diff in a specified order'
+# core: 8.x
+package: 'Content'
+
+# Information added by Drupal.org packaging script on 2018-06-26
+version: '8.x-1.0-alpha1'
+core: '8.x'
+project: 'revision_log'
+datestamp: 1530007726
