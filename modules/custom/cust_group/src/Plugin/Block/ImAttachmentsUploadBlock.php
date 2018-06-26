@@ -97,50 +97,52 @@ class ImAttachmentsUploadBlock extends BlockBase {
             ->execute()->fetchField();
 
         foreach ($files as $file) {
-            $attachment = \Drupal::entityTypeManager()
+            if ($file) {
+                $attachment = \Drupal::entityTypeManager()
                     ->getStorage('cust_group_imattachments_data')
                     ->loadByProperties(['fid' => $file->id()]);
-            $attachment = reset($attachment);
-            $state = hzd_states_abbr()[$nodeData[$file->id()]->get('field_state')->value];
+                $attachment = reset($attachment);
+                $state = hzd_states_abbr()[$nodeData[$file->id()]->get('field_state')->value];
 
-            $filenameuri = \Drupal\Core\Url::fromUri($file->url());
-            $filename = \Drupal::service('link_generator')
+                $filenameuri = \Drupal\Core\Url::fromUri($file->url());
+                $filename = \Drupal::service('link_generator')
                     ->generate($file->getFileName(), $filenameuri);
 
-            $description = $attachment ? $attachment->get('description')->value : '';
+                $description = $attachment ? $attachment->get('description')->value : '';
 
-            $ticketid = $attachment ? $attachment->get('ticket_id')->value : '';
+                $ticketid = $attachment ? $attachment->get('ticket_id')->value : '';
 
-            $created = $attachment ? format_date($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
+                $created = $attachment ? format_date($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
 
-            $filesize = format_size($file->getSize(), NULL);
+                $filesize = format_size($file->getSize(), NULL);
 
-            $owner = \Drupal::service('link_generator')
+                $owner = \Drupal::service('link_generator')
                     ->generate($file->getOwner()->getDisplayName(), $file->getOwner()->toUrl());
 
-            $deletelink = \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', [
-                        'fid' => $file->id(),
-                        'nid' => $nodeData[$file->id()]->id()
-            ],['attributes'=> ['class' => 'btn btn-danger'], 'query' => $exposedFilterData]);
-            if($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {
-                $delete = \Drupal::service('link_generator')
+                $deletelink = \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', [
+                    'fid' => $file->id(),
+                    'nid' => $nodeData[$file->id()]->id()
+                ], ['attributes' => ['class' => 'btn btn-danger'], 'query' => $exposedFilterData]);
+                if ($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {
+                    $delete = \Drupal::service('link_generator')
                         ->generate(t('Delete'), $deletelink);
-            } else {
-                $delete = '--';
+                } else {
+                    $delete = '--';
+                }
+
+                $row = array(
+                    array('data' => $state, 'class' => 'state-cell'),
+                    array('data' => $filename, 'class' => 'filename-cell'),
+                    array('data' => $description, 'class' => 'description-cell'),
+                    array('data' => $ticketid, 'class' => 'ticketid-cell'),
+                    array('data' => $created, 'class' => 'created-cell'),
+                    array('data' => $filesize, 'class' => 'filesize-cell'),
+                    array('data' => $owner, 'class' => 'owner-cell'),
+                    array('data' => $delete, 'class' => 'delete-cell'),
+                );
+
+                $rows[] = $row;
             }
-
-            $row = array(
-                array('data' => $state, 'class' => 'state-cell'),
-                array('data' => $filename, 'class' => 'filename-cell'),
-                array('data' => $description, 'class' => 'description-cell'),
-                array('data' => $ticketid, 'class' => 'ticketid-cell'),
-                array('data' => $created, 'class' => 'created-cell'),
-                array('data' => $filesize, 'class' => 'filesize-cell'),
-                array('data' => $owner, 'class' => 'owner-cell'),
-                array('data' => $delete, 'class' => 'delete-cell'),
-            );
-
-            $rows[] = $row;
         }
         $result['files'] = [
             '#type' => 'table',
