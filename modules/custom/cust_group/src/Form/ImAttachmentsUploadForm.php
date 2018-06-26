@@ -35,12 +35,20 @@ class ImAttachmentsUploadForm extends FormBase {
         'file_validate_extensions' => array($settings['file_extensions']),
         'file_validate_size' => array(\Drupal\Component\Utility\Bytes::toInt($settings['max_filesize'])),
     );
+
+    $file_upload_help = [
+          '#theme' => 'file_upload_help',
+          '#description' => '',
+          '#upload_validators' => $validators,
+          '#cardinality' => 1,
+      ];
+
     $form['upload_file'] = array(
         '#type' => 'managed_file',
         '#title' => t('File'),
         '#upload_location' => 'private://',
         '#upload_validators' => $validators,
-//        '#description' => 'jsdbfjksdbfjbsdkjfsj',
+        '#description' => \Drupal::service('renderer')->renderPlain($file_upload_help),
         '#progress_indicator' => 'bar',
         '#progress_message' => t('Uploading File'),
         '#required' => TRUE,
