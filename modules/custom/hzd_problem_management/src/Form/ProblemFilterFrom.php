@@ -55,7 +55,7 @@ class ProblemFilterFrom extends FormBase
 //          if(!empty($serviceEntity->get('field_problem_name')->value)){
 //            $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
 //          }
-	  $default_services[$services->nid] = $serviceEntity->get('title')->value;
+         $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
         }
         // default functions
         $default_function[0] = '<' . t("Select Function")->render() . '>';
