@@ -1,0 +1,10 @@
+uuid: fd59894d-fd3e-4cd8-82e7-594b444831a5
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.log
+label: log
+targetEntityType: node
+cache: true

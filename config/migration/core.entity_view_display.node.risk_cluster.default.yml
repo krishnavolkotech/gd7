@@ -10,6 +10,7 @@ dependencies:
     - node.type.risk_cluster
   module:
     - field_group
+    - revision_log
     - text
     - user
 third_party_settings:
@@ -40,12 +41,23 @@ content:
   body:
     label: inline
     type: text_default
-    weight: 2
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     region: content
+  content_revision_log:
+    type: revision_log_formatter
+    weight: 4
+    region: content
+    label: above
+    settings:
+      order: desc
+      date_format: short
+      header_template: '@action by @user at @datetime'
+      limit: '0'
+    third_party_settings: {  }
   field_comments:
-    weight: 6
+    weight: 3
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -57,24 +69,24 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_risks_cluster_class:
-    weight: 4
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_risks_data:
-    weight: 5
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   field_trend:
-    weight: 5
+    weight: 2
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   last_updated:
-    weight: 3
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
