@@ -3,3 +3,8 @@ mass_contact.bulk_mail_group_members_form:
   description: 'Find and manage groups, group types and group settings.'
   route_name: 'mass_contact.bulk_mail_group_members_form'
   parent: 'system.admin_group'
+mass_contact.footer_config:
+  title: 'Newsletter Footer'
+  route_name: mass_contact.footer_config
+  description: 'Newsletter Footer contents'
+  parent: hzd_customizations.notification

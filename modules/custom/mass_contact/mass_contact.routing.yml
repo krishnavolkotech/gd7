@@ -6,3 +6,12 @@ mass_contact.bulk_mail_group_members_form:
     _title: 'Mass Mail to group members'
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\AccessController::isGroupAdminAccess'
+
+
+mass_contact.footer_config:
+  path: '/admin/newsletter/footer'
+  defaults:
+    _form: '\Drupal\mass_contact\Form\FooterConfigForm'
+    _title: 'Footer Configuration for Newsletter'
+  requirements:
+    _permission: 'administer site'
