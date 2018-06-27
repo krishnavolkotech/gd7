@@ -163,10 +163,10 @@ class ProblemImport {
       $existing_node_vals['function'] = $node->field_function->value;
       $existing_node_vals['symptoms'] = $node->field_problem_symptoms->value;
       $existing_node_vals['release'] = $node->field_release->value;
-      $existing_node_vals['title'] = Html::decodeEntities($node->getTitle());
-      $existing_node_vals['body'] = Html::decodeEntities($node->body->value);
+      $existing_node_vals['title'] = $node->getTitle();
+      $existing_node_vals['body'] = $node->body->value;
       $existing_node_vals['diagnose'] = $node->field_diagnose->value;
-      $existing_node_vals['solution'] = Html::decodeEntities($node->field_solution->value);
+      $existing_node_vals['solution'] = $node->field_solution->value;
       $existing_node_vals['workaround'] = $node->field_work_around->value;
       $existing_node_vals['version'] = $node->field_version->value;
       $existing_node_vals['priority'] = $node->field_priority->value;
@@ -179,10 +179,18 @@ class ProblemImport {
       $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
 
       $diff = TRUE;
+      $basic_html_fileds = ['body', 'solution', 'ticketstore_link', 'workaround', 'comment', 'field_comments'];
       foreach ($values as $key => $val) {
-          if($values[$key] != $existing_node_vals[$key]) {
-              $diff = FALSE;
-              break;
+          if(in_array($key, $basic_html_fileds)) {
+              if (check_markup($values[$key], 'plain_text') != $existing_node_vals[$key]) {
+                  $diff = FALSE;
+                  break;
+              }
+          }else {
+              if (trim($values[$key]) != trim($existing_node_vals[$key])) {
+                  $diff = FALSE;
+                  break;
+              }
           }
       }
       if ($diff) {
@@ -206,8 +214,8 @@ class ProblemImport {
     $problem_node->set('status', 1);
     $problem_node->set('body', array(
       'summary' => '',
-      'value' => Html::escape($values['body']),
-      'format' => 'basic_html',
+      'value' => check_markup($values['body'], 'plain_text'),
+      'format' => 'plain_text',
     ));
     $problem_node->set('comment', array(
         'status' => 2,
@@ -220,8 +228,8 @@ class ProblemImport {
     );
     $problem_node->set('field_attachment', Html::escape($values['creator']));
     $problem_node->set('field_comments', array(
-        'value' => $values['comment'],
-        'format' => 'basic_html',
+        'value' => check_markup($values['comment'],'plain_text'),
+        'format' => 'plain_text',
       )
     );
     $problem_node->set('field_services', array(
@@ -239,8 +247,8 @@ class ProblemImport {
     $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_sdcallid', $values['sdcallid']);.
     $problem_node->set('field_solution', array(
-      'value' => Html::escape($values['solution']),
-      'format' => 'basic_html',
+      'value' => check_markup($values['solution'],'plain_text'),
+      'format' => 'plain_text',
     ));
     // $problem_node->set('field_s_no', $values['sno']);
     // $problem_node->set('field_release', $values['release']);.
@@ -249,14 +257,14 @@ class ProblemImport {
     // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_release', $values['release']);
     $problem_node->set('field_ticketstore_link', array(
-      'value' => $values['ticketstore_link'],
-      'format' => 'basic_html',
+      'value' => check_markup($values['ticketstore_link'], 'plain_text'),
+      'format' => 'plain_text',
     ));
     $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_timezone', $values['timezone']);.
     $problem_node->set('field_version', $values['version']);
     $problem_node->set('field_work_around', array(
-      'value' => Html::escape($values['workaround']),
+      'value' => check_markup($values['workaround'], 'plain_text'),
       'format' => 'plain_text',
     ));
     /*    pr($problem_node->save());
