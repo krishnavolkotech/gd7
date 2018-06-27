@@ -93,7 +93,7 @@ class BulkMailGroupMembersForm extends FormBase {
     $group = Group::load($gid);
     $subject = $this->t('[@group_name] Newsletter: @subject', ['@group_name' => $group->label(), '@subject' => $form_state->getValue('subject')]);
     $footer = $this->config('mass_contact.settings')->get('footer');
-    $body = \Drupal::service('renderer')->render([
+    $body = [
       '#type'=>'inline_template',
       '#template' => '{% for text in items %}{{ text }}{% endfor %}',
       '#context' => [
@@ -102,7 +102,8 @@ class BulkMailGroupMembersForm extends FormBase {
           Markup::create($footer['value']),
         ]
       ]
-    ]);
+    ];
+    $body = \Drupal::service('renderer')->render($body);
     $groupMembers = $group->getContent('group_membership');
     foreach ($groupMembers as $user){
       // $user = $groupMember->getGroupContent();
