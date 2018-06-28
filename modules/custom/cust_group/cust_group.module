@@ -186,10 +186,14 @@ function cust_group_group_insert($group) {
   }
 }
 
-
-function cust_group_group_content_update($entity) {
+/**
+ * @param \Drupal\group\Entity\GroupContentInterface $entity
+ * @throws \Drupal\Core\Entity\EntityMalformedException
+ */
+function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterface $entity) {
     $group = $entity->getGroup();
-    if($entity->get('type')->target_id == $group->bundle() . '-group_membership') {
+    $plugin_id = $entity->getContentPlugin()->getPluginId();
+    if( $plugin_id == 'group_membership' ) {
         $oldroles = $entity->original->get('group_roles')->getValue();
         $oroles = [];
         if(isset($oldroles) && !empty($oldroles)) {
@@ -208,6 +212,7 @@ function cust_group_group_content_update($entity) {
             sendGroupAdminRoleMail($group, $entity->getEntity());
         }
     }
+
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
     
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
@@ -243,12 +248,31 @@ function cust_group_group_content_delete() {
     ]);
 }
 
-function cust_group_group_content_insert($entity) {
+/**
+ * @param \Drupal\group\Entity\GroupContentInterface $entity
+ */
+function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterface $entity) {
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
       'config:system.menu.primary-links'
     ]);
+
+  // Notify User while assigning Admin role
+    $group = $entity->getGroup();
+    $plugin_id = $entity->getContentPlugin()->getPluginId();
+    if( $plugin_id == 'group_membership' ) {
+        $newroles = $entity->get('group_roles')->getValue();
+        $nroles = [];
+        if (isset($newroles) && !empty($newroles)) {
+            foreach ($newroles as $key => $val) {
+                $nroles[] = $val['target_id'];
+            }
+        }
+        if (in_array($group->bundle() . '-admin', $nroles)) {
+            sendGroupAdminRoleMail($group, $entity->getEntity());
+        }
+    }
 }
 
 //Sending mail to user to know Group Admin role
