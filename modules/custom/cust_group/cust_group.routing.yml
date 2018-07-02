@@ -253,3 +253,14 @@ cust_group.file_autocomplete:
     group: null
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\ImceController::checkAccess'
+
+cust_group.im_attachment_reminder_form:
+  path: '/admin/config/imattachment/reminder'
+  defaults:
+    _form: '\Drupal\cust_group\Form\IMAttachmentReminderForm'
+    _title: 'IM Attachment ReminderForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
