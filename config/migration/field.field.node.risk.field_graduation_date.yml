@@ -1,0 +1,21 @@
+uuid: 35c724f8-bf8f-4fdc-8d8a-45d0aa3d5058
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_graduation_date
+    - node.type.risk
+  module:
+    - datetime
+id: node.risk.field_graduation_date
+field_name: field_graduation_date
+entity_type: node
+bundle: risk
+label: 'Completion Date'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

@@ -1,0 +1,133 @@
+uuid: 96216050-fb40-41a4-9f00-da51c2b5469b
+langcode: en
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.risk.body
+    - field.field.node.risk.field_affected_oes
+    - field.field.node.risk.field_category
+    - field.field.node.risk.field_contact_person
+    - field.field.node.risk.field_creation_date
+    - field.field.node.risk.field_follow_up
+    - field.field.node.risk.field_graduation_date
+    - field.field.node.risk.field_id
+    - field.field.node.risk.field_non_production_state
+    - field.field.node.risk.field_owner
+    - field.field.node.risk.field_probability_of_occurrence
+    - field.field.node.risk.field_remarks
+    - field.field.node.risk.field_reported_by
+    - field.field.node.risk.field_risk_category
+    - field.field.node.risk.field_risk_clusters
+    - field.field.node.risk.field_risk_impact
+    - field.field.node.risk.field_risk_status
+    - field.field.node.risk.field_risk_trend
+    - field.field.node.risk.field_risk_value
+    - field.field.node.risk.field_scope
+    - node.type.risk
+  module:
+    - computed_field
+    - field_group
+    - text
+    - user
+third_party_settings:
+  field_group:
+    group_table:
+      children:
+        - field_risk_clusters
+        - body
+        - field_risk_category
+        - field_risk_value
+      parent_name: ''
+      weight: 0
+      format_type: html_element
+      format_settings:
+        label: table
+        element: div
+        show_label: false
+        label_element: h3
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: ''
+      label: table
+id: node.risk.full
+targetEntityType: node
+bundle: risk
+mode: full
+content:
+  body:
+    label: inline
+    type: text_default
+    weight: 105
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_measures:
+    weight: 100
+    region: content
+  field_remarks:
+    weight: 1
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_risk_category:
+    weight: 107
+    label: inline
+    settings:
+      sanitized: true
+      cache_unit: -1
+      cache_duration: 1
+    third_party_settings: {  }
+    type: computed_string
+    region: content
+  field_risk_category_value:
+    weight: 100
+    region: content
+  field_risk_clusters:
+    weight: 104
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_risk_value:
+    weight: 108
+    label: inline
+    settings:
+      cache_unit: -1
+      cache_duration: 1
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: computed_integer
+    region: content
+  last_updated:
+    weight: 100
+    region: content
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_affected_oes: true
+  field_category: true
+  field_contact_person: true
+  field_creation_date: true
+  field_follow_up: true
+  field_graduation_date: true
+  field_id: true
+  field_non_production_state: true
+  field_owner: true
+  field_probability_of_occurrence: true
+  field_reported_by: true
+  field_risk_impact: true
+  field_risk_status: true
+  field_risk_trend: true
+  field_scope: true
+  langcode: true
+  links: true

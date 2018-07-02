@@ -1,0 +1,12 @@
+settings:
+  allowed_values:
+    -
+      label: Erfasst
+    -
+      label: Beauftragt
+    -
+      label: 'In Bearbeitung'
+    -
+      label: Zurückgestellt
+    -
+      label: Abgeschlossen

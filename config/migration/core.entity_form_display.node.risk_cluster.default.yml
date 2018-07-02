@@ -1,0 +1,71 @@
+uuid: b93d1da9-470f-4cf0-a9bd-99fcf3fefe7e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.risk_cluster.body
+    - field.field.node.risk_cluster.field_comments
+    - field.field.node.risk_cluster.field_id
+    - field.field.node.risk_cluster.field_trend
+    - node.type.risk_cluster
+  module:
+    - path
+    - serial
+    - text
+id: node.risk_cluster.default
+targetEntityType: node
+bundle: risk_cluster
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 1
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+    region: content
+  field_comments:
+    weight: 3
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_id:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    type: serial_default_widget
+    region: content
+  field_trend:
+    weight: 2
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  path:
+    type: path
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  promote: true
+  status: true
+  sticky: true
+  uid: true

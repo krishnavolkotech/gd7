@@ -1,0 +1,18 @@
+uuid: 83f49a0b-37cb-48c9-a2de-eeea0b88c48b
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: Einzelrisiko
+type: risk
+description: 'Einzelrisiken sind greifbare, konkrete Probleme, die eintreten können oder sogar eingetreten sind. Sie sind jeweils einem Risikocluster zugeordnet und werden über Maßnahmen gezielt angegangen und verbessert.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

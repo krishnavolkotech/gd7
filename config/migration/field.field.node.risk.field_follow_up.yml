@@ -1,0 +1,21 @@
+uuid: 823675ce-b83b-4beb-8168-070a25bb3131
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_follow_up
+    - node.type.risk
+  module:
+    - datetime
+id: node.risk.field_follow_up
+field_name: field_follow_up
+entity_type: node
+bundle: risk
+label: Follow-up
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

@@ -1,0 +1,21 @@
+uuid: a30170c3-f2d9-414f-8edb-ff581e7ccdee
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_risk_impact
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_risk_impact
+field_name: field_risk_impact
+entity_type: node
+bundle: risk
+label: Impact
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

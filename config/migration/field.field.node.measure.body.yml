@@ -1,0 +1,32 @@
+uuid: 1ea561e4-0efa-4254-a95a-3f08e6564171
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.measure
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.measure.body
+field_name: body
+entity_type: node
+bundle: measure
+label: Beschreibung
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+field_type: text_with_summary

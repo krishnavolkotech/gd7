@@ -362,6 +362,7 @@ table tr td,
 #problem_search_results_wrapper table tr th,
 #problem_search_results_wrapper table tr td{
   padding:8px 4px;
+  vertical-align: top;
 }
 table.problem_info tr th,
 table.problem_info tr td{
@@ -1297,4 +1298,10 @@ a.cke_dialog_tab {
 .im-attachment-upload-filter .btn-primary {
     padding: 6px 12px !important;
     margin-right: 5px;
+}
+.risk-list-data,
+.risk-measures,
+.riskcluster-list .views-field.views-field-view-node a,
+.risk-view, .measure-view{
+    background-size: contain;
 }

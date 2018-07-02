@@ -1,0 +1,17 @@
+uuid: 3188ff47-9a24-4172-ad30-9fc07ec00b35
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Risikocluster
+type: risk_cluster
+description: 'Risikocluster sind abstrakte Überbegriffe, die allgemeine Problemstellungen zusammenfassen. Sie sind der Sammelbegriff für mehrere Einzelrisiken, die zur Übersichtlichkeit und zum Verfolgen einer Entwicklung des Risikos dienen.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

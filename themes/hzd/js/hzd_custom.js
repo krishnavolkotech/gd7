@@ -9,7 +9,6 @@ Drupal.behaviors.hzd = {
           return 0;
       }
     }
-        
     $.tablesorter.addParser({
       // set a unique id
       id: 'date_sorting',
@@ -291,20 +290,76 @@ jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").ta
             stickyHeaders_filteredToTop: true
         }
       });
-//}
-// /release-management/rz-schnellinfos  page sorting function
-/**
-jQuery("div.rz-schnellinfos-sortable > div.view-content > div > table.table").tablesorter({
+jQuery("div.measures-list > div.view-content > div > table.table").tablesorter({
         headers: {
-          5: {
-            sorter: 'date_sorting'
-          }
+          4: { sorter: 'quickinfo_date_sorting'},
+          5: { sorter: 'quickinfo_date_sorting'},
+	  9: { sorter: false}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null,
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
         }
-      });*/
+      });
+jQuery("div.risk-list > div.view-content > div > table.table").tablesorter({
+        headers: {
+          6: { sorter: 'quickinfo_date_sorting'},
+          9: { sorter: false}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null, 
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
+      });
+jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorter({
+	headers: {
+          2: { sorter: false},
+          3: { sorter: false}
+        },
+        showProcessing: true,
+        headerTemplate : '{content} {icon}',
+        widgets: ['zebra','stickyHeaders'],
+        widgetOptions: {
+            stickyHeaders: 'sticky-header',
+            stickyHeaders_offset: $.fn.admin_toolbar(),
+            stickyHeaders_cloneId: '-sticky',
+            stickyHeaders_addResizeEvent: true,
+            stickyHeaders_includeCaption: true,
+            stickyHeaders_zIndex: 2,
+            stickyHeaders_attachTo: null,
+            stickyHeaders_xScroll: null, 
+            stickyHeaders_yScroll: null,
+            stickyHeaders_filteredToTop: true
+        }
+      });
+
 //  $(document).ready(function(){
 // $.fn.datepicker.d
 // $.fn.datepicker.defaults.regional = 'INDIA';
 // });
+
       if (jQuery('.start_date').length > 0) {
         jQuery('.start_date').datepicker({dateFormat: 'dd.mm.yy'});
       }

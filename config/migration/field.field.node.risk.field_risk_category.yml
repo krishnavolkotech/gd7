@@ -1,0 +1,24 @@
+uuid: 6e6df5c0-5ebb-4796-9aec-46df45ac1b32
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_risk_category
+    - node.type.risk
+  module:
+    - computed_field
+id: node.risk.field_risk_category
+field_name: field_risk_category
+entity_type: node
+bundle: risk
+label: 'Risk category'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: ''
+default_value_callback: ''
+settings:
+  code: "$riskValue = $entity->get('field_risk_value')->value;\r\n  switch($riskValue){\r\n    case 9:\r\n      $value = 'A';\r\n      break;\r\n    case 6:\r\n    case 4:\r\n    case 3:\r\n      $value = 'B';break;\r\n    case 2:\r\n    case 1:\r\n      $value = 'C';break;\r\n    default:\r\n      $value = \"Invalid Value\";\r\n  }"
+field_type: computed_string

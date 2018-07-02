@@ -1,0 +1,23 @@
+uuid: a2b4bdd2-bac4-4515-b94e-da6d7b5741cf
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_category
+    - node.type.risk
+  module:
+    - options
+id: node.risk.field_category
+field_name: field_category
+entity_type: node
+bundle: risk
+label: Category
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: production
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -13,20 +13,20 @@ use Drupal\group\Entity\Group;
  * @package Drupal\mass_contact\Form
  */
 class BulkMailGroupMembersForm extends FormBase {
-  
+
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'bulk_mail_group_members_form';
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $user = \Drupal::currentUser();
-    
+
     if (array_intersect($user->getRoles(), [
       'site_administrator',
       'administrator'
@@ -52,7 +52,7 @@ class BulkMailGroupMembersForm extends FormBase {
       }
       /*      $group_members_query = db_query("SELECT distinct(gcfd_mem.gid), gcfd_mem.label FROM group_content__group_roles gcgr, group_content_field_data gcfd_mem, group_content_field_data gcfd,
       users_field_data ufd WHERE ufd.uid = gcfd_mem.uid AND gcfd_mem.request_status = 1 AND gcfd_mem.gid = gcfd.gid AND gcgr.entity_id = gcfd.id AND gcgr.group_roles_target_id like '%admin%' AND gcfd.entity_id = $uid GROUP BY gcfd_mem.gid, gcfd_mem.label")->fetchAllKeyed();*/
-      
+
     }
     $form['group'] = [
       '#type' => 'select',
@@ -74,38 +74,45 @@ class BulkMailGroupMembersForm extends FormBase {
       '#type' => 'submit',
       '#value' => t('Submit'),
     ];
-    
+
     return $form;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $user = \Drupal::currentUser();
-//    if (!in_array(SITE_ADMIN_ROLE, $user_role)) {
-      $gid = $form_state->getValue('group');
-      $group = Group::load($gid);
-      $groupMembers = $group->getContent('group_membership');
-      foreach ($groupMembers as $user){
-        // $user = $groupMember->getGroupContent();
-        if($user->getEntity()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
-          $mailToGroupMember[] = $user->getEntity()->getEmail();
+    $gid = $form_state->getValue('group');
+    $group = Group::load($gid);
+    $subject = $this->t('[@group_name] Newsletter: @subject', ['@group_name' => $group->label(), '@subject' => $form_state->getValue('subject')]);
+    $footer = $this->config('mass_contact.settings')->get('footer');
+    $body = [
+      '#type'=>'inline_template',
+      '#template' => '{% for text in items %}{{ text }}{% endfor %}',
+      '#context' => [
+        'items'=>[
+          Markup::create($form_state->getValue('body')['value']),
+          Markup::create($footer['value']),
+        ]
+      ]
+    ];
+    $body = \Drupal::service('renderer')->render($body);
+    $groupMembers = $group->getContent('group_membership');
+    foreach ($groupMembers as $user){
+      // $user = $groupMember->getGroupContent();
+      if($user->getEntity()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
+        $mailToGroupMember[] = $user->getEntity()->getEmail();
 //          break;
-        }
       }
-//    pr($mailToGroupMember);exit;
-    $subject = $form_state->getValue('subject');
-    $body = Markup::create($form_state->getValue('body')['value']);
+    }
     foreach ($mailToGroupMember as $group_members) {
-//      $group_members_list[] = $group_members->mail;
       $operations[] = array(
         '\Drupal\mass_contact\MassMail::sendMail',
         array(

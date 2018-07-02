@@ -1,0 +1,31 @@
+uuid: d42b766f-b60b-4931-bfa1-4ae58cc8f7f0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_affected_oes
+    - node.type.risk
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.risk.field_affected_oes
+field_name: field_affected_oes
+entity_type: node
+bundle: risk
+label: 'Affected OEs'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

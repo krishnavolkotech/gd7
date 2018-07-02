@@ -1,0 +1,132 @@
+uuid: 44fcc1a2-72b7-42a4-982a-9b0f28eef189
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.measure.body
+    - field.field.node.measure.field_contact_person
+    - field.field.node.measure.field_creation_date
+    - field.field.node.measure.field_estimated_effort
+    - field.field.node.measure.field_expected_result
+    - field.field.node.measure.field_follow_up
+    - field.field.node.measure.field_id
+    - field.field.node.measure.field_measure_status
+    - field.field.node.measure.field_non_production_state
+    - field.field.node.measure.field_order_date
+    - field.field.node.measure.field_owner
+    - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risks
+    - field.field.node.measure.field_sponsor
+    - field.field.node.measure.field_target_date
+    - field.field.node.measure.field_type
+    - node.type.measure
+  module:
+    - datetime
+    - field_group
+    - hzd_risk_management
+    - revision_log
+    - text
+    - user
+third_party_settings:
+  field_group:
+    group_table:
+      children:
+        - body
+        - last_updated
+        - field_target_date
+        - field_owner
+        - field_risks
+      parent_name: ''
+      weight: 1
+      format_type: table_field
+      format_settings:
+        label: table
+        fieldtitle: '1'
+        wrapper: '0'
+        caption: ''
+        id: ''
+        classes: risk-table-wrapper
+        required_fields: false
+      label: table
+id: node.measure.default
+targetEntityType: node
+bundle: measure
+mode: default
+content:
+  body:
+    label: inline
+    type: text_default
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  content_revision_log:
+    type: revision_log_formatter
+    weight: 3
+    region: content
+    label: above
+    settings:
+      order: desc
+      date_format: short
+      header_template: '@action by @user at @datetime'
+      limit: '0'
+    third_party_settings: {  }
+  field_owner:
+    weight: 5
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_remarks:
+    weight: 2
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_risks:
+    weight: 6
+    label: inline
+    settings:
+      token_data: '<a href=''[node:url]''>[node:field_id] - [node:title]</a>'
+    third_party_settings: {  }
+    type: tokenized_field_formatter
+    region: content
+  field_target_date:
+    weight: 4
+    label: inline
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  last_updated:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_contact_person: true
+  field_creation_date: true
+  field_estimated_effort: true
+  field_expected_result: true
+  field_follow_up: true
+  field_id: true
+  field_measure_status: true
+  field_non_production_state: true
+  field_order_date: true
+  field_sponsor: true
+  field_type: true
+  langcode: true

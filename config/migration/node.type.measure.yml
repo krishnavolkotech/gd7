@@ -1,0 +1,17 @@
+uuid: e65d2805-5ced-4816-9d1f-cfe9888193fe
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Maßnahme
+type: measure
+description: "Maßnahmen sollen gezielt einzelne Risiken angehen und verbessern oder sogar beheben. Sie sind entsprechend einem (oder mehreren) Risiken zugeordnet.\r\n"
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

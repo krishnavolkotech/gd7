@@ -1,0 +1,22 @@
+uuid: e97749b1-c037-4a4d-9052-1c5ddb07024f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_id
+    - node.type.risk_cluster
+  module:
+    - serial
+id: node.risk_cluster.field_id
+field_name: field_id
+entity_type: node
+bundle: risk_cluster
+label: ID
+description: ''
+required: true
+translatable: false
+default_value:
+  - {  }
+default_value_callback: ''
+settings: {  }
+field_type: serial

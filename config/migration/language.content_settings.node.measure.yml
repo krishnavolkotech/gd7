@@ -1,0 +1,11 @@
+uuid: 518b54da-a3e3-4a22-82bc-14dd85d404d2
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.measure
+id: node.measure
+target_entity_type_id: node
+target_bundle: measure
+default_langcode: site_default
+language_alterable: false
