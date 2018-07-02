@@ -17,7 +17,7 @@ use Drupal\cust_group\Entity\ImAttachmentsData;
  */
 class ImAttachmentReminder {
 
-  static function PrepareMailsToImAuthers() {
+  static public function PrepareMailsToImAuthers() {
     $token_service = \Drupal::token();
     $ImConfig = \Drupal::config('cust_group.imattachmentreminder');
     $im_first_reminder = $ImConfig->get('im_first_reminder') ?: 1;
@@ -25,7 +25,7 @@ class ImAttachmentReminder {
     $im_reminder_subject = $ImConfig->get('im_reminder_subject');
     $im_reminder_body = $ImConfig->get('im_reminder_body');
     $query = \Drupal::entityQuery('cust_group_imattachments_data')
-        ->condition('changed', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=');
+      ->condition('changed', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=');
     $im_att_ids = $query->execute();
     foreach ($im_att_ids as $imid) {
       $sendFlag = FALSE;

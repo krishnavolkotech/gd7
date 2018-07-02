@@ -59,14 +59,14 @@ class IMAttachmentReminderForm extends ConfigFormBase {
       '#type' => 'text_format',
       '#title' => $this->t('Reminder body'),
       '#default_value' => $config->get('im_reminder_body'),
-        '#format' => 'full_html',
+      '#format' => 'full_html',
     ];
     if (\Drupal::moduleHandler()->moduleExists('token')) {
-          $form['token_tree'] = [
-              '#theme' => 'token_tree_link',
-              '#token_types' => 'all',
-              '#show_restricted' => TRUE,
-          ];
+      $form['token_tree'] = [
+        '#theme' => 'token_tree_link',
+        '#token_types' => 'all',
+        '#show_restricted' => TRUE,
+      ];
     }
     return parent::buildForm($form, $form_state);
   }
