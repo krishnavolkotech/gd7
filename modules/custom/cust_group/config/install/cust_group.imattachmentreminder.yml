@@ -1,0 +1,4 @@
+cust_group:
+  im_first_reminder: "14"
+  im_reminder_frequency: "3"
+  im_reminder_subject: "Please delete unnecessary files in IM Attachment"

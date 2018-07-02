@@ -1,0 +1,4 @@
+im_first_reminder: '14'
+im_reminder_frequency: '3'
+im_reminder_subject: '[user:display-name] Please delete  IM Attachment [file:name] created on [file:changed]'
+im_reminder_body: "<p>Hi [user:display-name],</p>\r\n\r\n<p>Please delete&nbsp; IM Attachment [file:name] created on [file:changed]</p>\r\n"

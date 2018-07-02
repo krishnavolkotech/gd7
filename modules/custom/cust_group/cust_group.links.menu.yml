@@ -1,0 +1,14 @@
+cust_group.im_attachment_settings:
+  title: 'IM Attachments'
+  route_name: cust_group.im_attachment_reminder_form
+  description: 'A description for the menu entry'
+  parent: hzd_customizations.custom_configurations
+  weight: 99
+
+cust_group.im_attachment_reminder_form:
+  title: 'Reminder Form'
+  route_name: cust_group.im_attachment_reminder_form
+  description: 'A description for the menu entry'
+  parent: cust_group.im_attachment_settings
+  weight: 99
+
