@@ -20,8 +20,13 @@ class ImAttachmentReminder {
   static public function PrepareMailsToImAuthers() {
     $token_service = \Drupal::token();
     $ImConfig = \Drupal::config('cust_group.imattachmentreminder');
-    $im_first_reminder = $ImConfig->get('im_first_reminder') ?: 1;
-    $im_reminder_frequency = $ImConfig->get('im_reminder_frequency') ?: 1;
+    $im_first_reminder = $ImConfig->get('im_first_reminder', FALSE);
+    $im_reminder_frequency = $ImConfig->get('im_reminder_frequency', FALSE);
+
+    // If Reminder days are not configured , then we will not send any notification.
+    if($im_first_reminder == FALSE || $im_reminder_frequency == FALSE) {
+      return;
+    }
     $im_reminder_subject = $ImConfig->get('im_reminder_subject');
     $im_reminder_body = $ImConfig->get('im_reminder_body');
     $query = \Drupal::entityQuery('cust_group_imattachments_data')
