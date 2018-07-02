@@ -56,7 +56,7 @@ class ImAttachmentReminder {
           'file' => $imfile,
         ]);
         $mail = $imfile->getFileOwnerEmail();
-        send_immediate_notifications($subject, $mail_body, $mail);
+        send_immediate_notifications($subject, $mail_body, $mail, 'html');
       }
     }
   }
