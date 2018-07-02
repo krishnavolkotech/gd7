@@ -128,6 +128,7 @@ class MaintenanceBlock extends BlockBase
             }
         }
         # Sort services alphabetically
+        if (!empty($serviceNames))
         asort($serviceNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
         $link_options = array(
             'attributes' => array(
