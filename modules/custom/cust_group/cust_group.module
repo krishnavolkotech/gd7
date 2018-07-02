@@ -508,6 +508,12 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       '#title' => t('Do not send notifications for this update.'),
     );
   }
+
+  //Sending the group id to browser for IMCE to request folder structure within the group
+  if(in_array($form_id,['node_page_edit_form','node_page_form'])){
+    $form['#attached']['drupalSettings']['group_context'] = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch()->id();
+  }
+
 }
 
 function requst_submit_handler(&$form, $form_state) {
@@ -1001,4 +1007,13 @@ function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_
     $element['#file_value_callbacks'][] = [$class, 'setWidgetValue'];
   }
   // pr($element);
+}
+
+
+function cust_group_library_info_alter(&$libraries, $extension){
+  if ($extension == 'imce' && isset($libraries['drupal.imce.input'])) {
+    $new_path = '/' . drupal_get_path('module', 'cust_group') . '/js/imce.input.js';
+    unset($libraries['drupal.imce.input']['js']['js/imce.input.js']);
+    $libraries['drupal.imce.input']['js'][$new_path] = [];
+  }
 }
