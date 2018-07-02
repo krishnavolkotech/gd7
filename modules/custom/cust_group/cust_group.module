@@ -511,7 +511,8 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
   //Sending the group id to browser for IMCE to request folder structure within the group
   if(in_array($form_id,['node_page_edit_form','node_page_form'])){
-    $form['#attached']['drupalSettings']['group_context'] = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch()->id();
+    $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
+    $form['#attached']['drupalSettings']['group_context'] = $group?$group->id():null;
   }
 
 }
