@@ -1,10 +1,10 @@
 uuid: 658111c9-f146-40fa-a5fb-b8091a558f81
 langcode: en
-status: false
+status: true
 dependencies:
   module:
     - cust_group
-title: 'Notification cron Daily'
+title: 'Im Attachment Notification cron Daily'
 id: cust_group_cron
 weight: 0
 module: cust_group
