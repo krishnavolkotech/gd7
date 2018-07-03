@@ -170,7 +170,7 @@ class ResolveForm extends FormBase {
     $form['date_reported'] = array(
         '#title' => t('Actual End Date'),
         '#type' => 'textfield',
-        '#default_value' => $first_month_first_day,
+        //'#default_value' => $first_month_first_day,
         '#date_format' => $date_format,
         '#size' => 60,
         '#weight' => -3,
