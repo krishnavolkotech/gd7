@@ -218,6 +218,7 @@ class HzdReleases extends ControllerBase {
       // Check the documentation link download or not. if not failed download link will display.
       if (!empty($files)) {
 
+//Host is not being processed properly for absolute urls with ports so using relative url.
         $host = '';
         $host_path = $host . "/system/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
         unset($arr[0]);
