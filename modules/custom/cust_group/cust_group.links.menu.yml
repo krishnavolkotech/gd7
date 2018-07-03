@@ -1,6 +1,6 @@
 cust_group.im_attachment_settings:
   title: 'IM Attachments'
-  route_name: cust_group.im_attachment_reminder_form
+  url: 'internal:##'
   description: 'A description for the menu entry'
   parent: hzd_customizations.custom_configurations
   weight: 99
