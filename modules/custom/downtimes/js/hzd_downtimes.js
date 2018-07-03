@@ -41,8 +41,10 @@
                 if ($('.reason-for-noncompliance').is(':visible') && $('#edit-reason-for-noncompliance').val() == 0) {
                     $('.reason-for-noncompliance').find('.reason-error').show();
                     $('#edit-reason-for-noncompliance').focus();
+                    $('.form-submit').removeAttr("disabled");
                     return false;
                 } else {
+                    $('.form-submit').attr('disabled', true);
                     $('.reason-for-noncompliance').find('reason-error').hide();
                 }
             });
