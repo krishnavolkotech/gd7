@@ -643,6 +643,11 @@ class HzdcustomisationStorage {
       return FALSE;
     }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
+
+    if ($content_state_id[0] == 19) {
+      return TRUE;
+    }
+
     if ($owner_state) {
       $current_user_state_id = $owner_state;
     }
