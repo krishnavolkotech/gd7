@@ -95,7 +95,10 @@
             </div>
         </header>
         <div class="pdf-content">
-            <span class="pdf-title">{{ pdftitle }}</span>
+            <h1 class="page-header">
+                <span property="schema:name">{{ pdftitle }}</span>
+            </h1>
+            {#<span class="pdf-title">{{ pdftitle }}</span>#}
             {{ content }}
         </div>
     </div>

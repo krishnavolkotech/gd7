@@ -96,17 +96,17 @@ function hzd_preprocess_printable(&$variables) {
 function hzd_preprocess_entity_print(&$vars) {
 //    pr(($vars));exit;
   $vars['quickinfo'] = FALSE;
-  $vars['base_url'] = 'http://' . \Drupal::request()->getHost();
+  $vars['base_url'] = 'http://' . \Drupal::request()->getHttpHost();
   $node = !empty($vars['content'][0]['#node']) ? $vars['content'][0]['#node'] : NULL;
   $group = !empty($vars['content'][0]['#group']) ? $vars['content'][0]['#group'] : NULL;
   $entity = $node ? $node : ($group ? $group : NULL);
   if ($entity) {
+    $vars['pdftitle'] = $entity->label();
     if ($entity->bundle() == 'quickinfo') {
       $vars['quickinfo'] = TRUE;
       $vars['node'] = $entity;
       $vars['publisher'] = $entity->get('field_author_name')->value;
       $vars['publishedTime'] = $entity->get('changed')->value;
-      $vars['pdftitle'] = $entity->label();
       if ($entity->hasField('field_unique_id') && $entity->get('field_unique_id')->value) {
         $vars['quickinfo_field_unique_id'] = $entity->get('field_unique_id')
             ->getFieldDefinition()
