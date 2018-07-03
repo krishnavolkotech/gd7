@@ -428,6 +428,9 @@ class HzdreleasemanagementHelper {
         $link_path = $host_path . "/" . $product . "_" . max($arr) . "/dokumentation/" . $values;
         foreach ($afb_scan as $value) {
           $new_path = $link_path . "/" . $value;
+          if(is_dir($dir.DIRECTORY_SEPARATOR.$values.DIRECTORY_SEPARATOR.$value)){
+            $new_path .= DIRECTORY_SEPARATOR . 'index.html';
+          }
           $output .= "<div><a target = '_blank' href = '$new_path'>" . $value . "</a></div>";
         }
         return $output .= "</td></tr>";

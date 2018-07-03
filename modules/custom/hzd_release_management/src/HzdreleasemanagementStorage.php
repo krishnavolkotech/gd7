@@ -806,6 +806,18 @@ $inprogress_nid_values = [];
             // Copy all subfolders into sonstige.
             self::copy_subfolders_to_sonstige($dokument_path);
           }
+          $betriebshandbuch = $dokument_path . DIRECTORY_SEPARATOR . 'betriebshandbuch';
+          $htmls = array_filter(scandir($betriebshandbuch),function($item){
+            if (strtolower(substr($item, -9)) == '_html.zip') {
+              return true;
+            }
+          });
+          foreach ((array)$htmls as $html) {
+            shell_exec('chmod -R 777 ' . $betriebshandbuch);
+            $unzipCmd = 'unzip ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html . " -d " . $betriebshandbuch;
+            shell_exec($unzipCmd);
+            shell_exec('rm -f ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html);
+          }
           shell_exec("rm -rf " . $new_path);
           //Delete the failed log record (if any)
           \Drupal::database()->delete('release_doc_failed_download_info')
