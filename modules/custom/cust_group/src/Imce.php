@@ -19,6 +19,9 @@ class Imce extends ImceBase{
     $request = \Drupal::request();
     $gid = $request->get('group');
     $group = Group::load($gid);
+    if(!$group){
+      return false;
+    }
     foreach ($folders as $folder) {
       $path = $folder['path'];
       

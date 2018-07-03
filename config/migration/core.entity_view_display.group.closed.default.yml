@@ -17,17 +17,9 @@ mode: default
 content:
   field_group_body:
     type: text_default
-    weight: 1
+    weight: 0
     label: visually_hidden
     settings: {  }
-    third_party_settings: {  }
-    region: content
-  label:
-    label: hidden
-    type: string
-    weight: 0
-    settings:
-      link_to_entity: false
     third_party_settings: {  }
     region: content
 hidden:
@@ -39,5 +31,6 @@ hidden:
   field_description: true
   field_forum_containers: true
   field_old_reference: true
+  label: true
   langcode: true
   uid: true
