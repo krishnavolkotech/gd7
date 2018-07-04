@@ -273,15 +273,20 @@ class HzdEarlyWarnings extends ControllerBase {
     $temp = \Drupal::database()->query('SET sql_mode = \'\'');
     $query = \Drupal::database()->select('node_field_data','nfd');
     $query->addExpression("count(nfd.nid)",'ew_count');
-    $query->addExpression("ces.entity_id",'early_warning');
+    $query->addExpression("nfd.nid",'early_warning');
+    $query->addExpression("max(ces.cid)",'comment_id');
+//    $query->addExpression("group_concat(cfd.changed)",'last_cmt_changed');
+//    $query->addExpression("group_concat(nfd.changed)",'last_node_changed');
+    $query->addExpression("CASE WHEN max(cfd.changed) is not null THEN max(cfd.changed) ELSE max(nfd.changed) END",'last_changed');
     $query->fields('nfer',['field_earlywarning_release_value']);
+    $query->leftJoin('comment_field_data','cfd','nfd.nid = cfd.entity_id');
     $query->leftJoin('comment_entity_statistics','ces','nfd.nid = ces.entity_id');
     $query->innerJoin('node__field_earlywarning_release','nfer','nfer.entity_id = nfd.nid');
     $query->InnerJoin('node__field_release_service','nfrs','nfrs.entity_id = nfd.nid');
     $query->groupBy('nfer.field_earlywarning_release_value');
     // $query->groupBy('ces.entity_id');
     $query->condition('nfd.type','early_warnings');
-    $query->orderBy('ces.last_comment_timestamp','desc');
+    $query->orderBy('last_changed','desc');
     // pr($query->execute()->fetchAll());exit;
     if (isset($filter_value['services']) && $filter_value['services'] != 0) {
       $query->condition('nfrs.field_release_service_value',$filter_value['services'],'=');
@@ -370,20 +375,21 @@ class HzdEarlyWarnings extends ControllerBase {
   
         $earlyWarningNode = Node::load($value->early_warning);
         
-        $cids = \Drupal::entityQuery('comment')
+/*        $cids = \Drupal::entityQuery('comment')
           ->condition('entity_id', $value->early_warning)
           ->condition('entity_type', 'node')
           ->sort('changed', 'DESC')
           ->range(0,1)
-          ->execute();
-          if(!empty($cids)){
-            $comment = \Drupal\comment\Entity\Comment::load(reset($cids));
+          ->execute();*/
+          if($value->comment_id){
+            $comment = \Drupal\comment\Entity\Comment::load($value->comment_id);
             $userName = $comment->getOwner()->getDisplayName();
-            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $comment->get('changed')->value), '@username' => $userName]);
+            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }else{
             $userName = $earlyWarningNode->getOwner()->getDisplayName();
-            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $earlyWarningNode->get('changed')->value), '@username' => $userName]);
-          }        
+            $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
+          }
+
         $commentsCount = \Drupal::database()->select('comment_entity_statistics', 'ces', $options);
           $commentsCount->addExpression('SUM(ces.comment_count)','com_cnt');
           $commentsCount->condition('ces.entity_id', $earlywarnings_nids, 'IN');
