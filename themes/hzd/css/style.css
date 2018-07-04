@@ -3651,3 +3651,20 @@ div.risk-table-wrapper div.field div.field--item{
   min-width: 65px;
   padding-right: 0px;
 }
+ul.content-revision-log li{
+  float: left;
+  width: 100%;
+  padding: 5px 0;
+  display: block;
+}
+ul.content-revision-log li::before {
+  content: "";
+  display: list-item;
+  position: absolute;
+}
+ul.content-revision-log li div.field{
+  padding-top: 0%;
+}
+ul.content-revision-log li .ckeditor-custom-wrapper {
+   /*margin-top: -20px;*/
+}
