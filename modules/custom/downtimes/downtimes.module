@@ -34,38 +34,13 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     if ($form_id == 'node_downtimes_form') {
       
       if ($downtime_type == 'create_maintenance') {
-        $help_markup = t('Geplante Wartungs- und Blockzeiten, die sich auf länderübergreifende KONSENS-Verfahren auswirken, müssen - soweit sie an Arbeitstagen durchgeführt werden - dienstags und/oder mittwochs in der Zeit nach 18:00 Uhr durchgeführt werden
-                            <em>(Beschluss AutomSt III/2011 TOP K9).</em>
-                            <br>
-                            <br>
-                            <strong>Geplante Blockzeit:</strong>
-                            Nichterreichbarkeit durch planmäßige Wartungsarbeiten
-                            <br>
-                            <strong>Land:</strong>
-                            Das Land oder System, in dem die Wartungsarbeiten ausgeführt werden.
-                            <br>
-                            <strong>Verfahren/ZPS:</strong>
-                            Verfahren oder ZPS, die durch die Wartungsarbeiten länderübergreifend nicht zur Verfügung stehen.
-                            <br>
-                            <br>
-                            Blockzeitmeldungen im BpK werden als regulär also konform mit dem
-                            <em>Beschluss AutomSt III/2011 TOP K9 </em>
-                            gewertet, wenn Beginn und Ende in der Zeit von Dienstag und Mittwoch 18:00 Uhr bis jeweils 05:59 des Folgetages liegen.
-                            <br>
-                            Bis zum Abschluss gültiger SLAs wird für alle Verfahren eine Vorlaufzeit von 2 Tagen konfiguriert.
-                            <br>
-                            Ihre Meldung wird an alle Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten" versandt.
-                            <br>
-                            <br>
-                            Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch Beheben wird die Meldung in das Archiv verschoben.');
+        $help_markup = \Drupal::config('downtimes.settings')->get('report_maintenance');
+        $states_help = \Drupal::config('downtimes.settings')->get('report_maintenance_2');
+        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_maintenance_3');
       } else {
-        $help_markup = '<strong>Aktuelle Störung:</strong>&nbsp;Akuter Ausfall bzw. Nichterreichbarkeit eines Systems<br>
-                          <strong>Land:</strong> Das Land, in dem der Betrieb eines Verfahrens oder ZPS gestört ist.<br>
-                          <strong>Verfahren/ZPS:</strong> Verfahren oder ZPS, die durch die Störung nicht zur Verfügung stehen.<br>
-                          <br>
-                          Ihre Meldung wird an alle&nbsp;Abonnenten der Benachrichtigungsoption "Störungen und Blockzeiten"&nbsp;versandt.&nbsp;<br>
-                          <br>
-                          Bitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch&nbsp;<i>Beheben</i>&nbsp;wird die Meldung in das Archiv verschoben.&nbsp;';
+        $help_markup = \Drupal::config('downtimes.settings')->get('report_downtimes');
+        $states_help = \Drupal::config('downtimes.settings')->get('report_downtimes_2');
+        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
       }
       $form['static_desc'] = [
         '#type' => 'item',
@@ -101,7 +76,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['states'] = [
       '#type' => 'checkboxes',
       '#title' => t('States'),
-      '#field_prefix' => t('Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.<br><br>'),
+      '#field_prefix' => $states_help,
       '#options' => $stateoption,
       '#required' => true
     ];
@@ -109,7 +84,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['services_effected'] = [
       '#type' => 'checkboxes',
       '#title' => t('Services Affected'),
-      '#field_prefix' => t('Wählen Sie die Verfahren oder ZPS aus, die durch die Störung länderübergreifend nicht zur Verfügung stehen. Mehrfachauswahl ist möglich.<br><br>'),
+      '#field_prefix' => $services_effected_text,
       '#options' => $list_groups,
       '#theme' => 'service_checkboxes',
       '#required' => TRUE
@@ -175,12 +150,13 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       pass_maintenance_value($form);
       $form['#attached']['library'][] = 'downtimes/downtimes.maintenancejs';
     }
-    if (isset($type) && $type == 1) {
-      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
-    } else {
-      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
-    }
-    $form['services_effected']['#description'] = $service_description;
+
+  //    if (isset($type) && $type == 1) {
+  //      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
+  //    } else {
+  //      $service_description = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
+  //    }
+    //$form['services_effected']['#description'] = $service_description;
     $form['#validate'][] = 'downtimes_validate';
     // if ($form_id == 'node_downtimes_edit_form') {
     //   foreach (array_keys($form['actions']) as $action) {

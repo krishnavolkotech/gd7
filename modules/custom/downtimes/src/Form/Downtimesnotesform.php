@@ -40,48 +40,57 @@ class Downtimesnotesform extends ConfigFormBase {
 	  $form['current_downtimes'] = array(
 	    '#type' => 'text_format',
 	    '#title' => t('Current Downtimes'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('current_downtimes')['value'],
+      '#allowed_formats' => ['full_html'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('current_downtimes'),
 	  );
 	  $form['archived_downtimes'] = array(
 	    '#type' => 'text_format',
 	    '#title' => t('Archived Downtimes'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('archived_downtimes')['value'],
+      '#allowed_formats' => ['full_html'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('archived_downtimes'),
 	  );
 	  $form['report_downtimes'] = array(
 	    '#type' => 'text_format',
 	    '#title' => t('Report  Downtime - 1'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes')['value'],
+      '#allowed_formats' => ['full_html'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes'),
 	  );
 	  $form['report_downtimes_2'] = array(
 	    '#type' => 'text_format',
 	    '#title' => t('Report  Downtime - 2'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes_2')['value'],
+      '#allowed_formats' => ['full_html'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes_2'),
 	  );
 	  $form['report_downtimes_3'] = array(
 	    '#type' => 'text_format',
+      '#allowed_formats' => ['full_html'],
 	    '#title' => t('Report  Downtime - 3'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes_3')['value'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_downtimes_3'),
 	  );
 	  $form['notes_downtimes'] = array(
 	    '#type' => 'text_format',
 	    '#title' => t('Notes'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('notes_downtimes')['value'],
+      '#allowed_formats' => ['full_html'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('notes_downtimes'),
 	  );
 	  $form['report_maintenance'] = array(
 	    '#type' => 'text_format',
+      '#allowed_formats' => ['full_html'],
 	    '#title' => t('Report  Maintenance - 1'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance')['value'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance'),
 	  );
 
 	  $form['report_maintenance_2'] = array(
 	    '#type' => 'text_format',
+      '#allowed_formats' => ['full_html'],
 	    '#title' => t('Report  Maintenance - 2'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance_2')['value'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance_2'),
 	  );
 	  $form['report_maintenance_3'] = array(
 	    '#type' => 'text_format',
+      '#allowed_formats' => ['full_html'],
 	    '#title' => t('Report  Maintenance - 3'),
-	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance_3')['value'],
+	    '#default_value' => \Drupal::config('downtimes.settings')->get('report_maintenance_3'),
 	  );
     return parent::buildForm($form, $form_state);
   }
@@ -96,15 +105,15 @@ class Downtimesnotesform extends ConfigFormBase {
 
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-     $current_downtimes = $form_state->getValue('current_downtimes');
-     $archived_downtimes = $form_state->getValue('archived_downtimes');
-     $report_downtimes = $form_state->getValue('report_downtimes');
-     $report_downtimes_2 = $form_state->getValue('report_downtimes_2');
-     $report_downtimes_3 = $form_state->getValue('report_downtimes_3');
-     $notes_downtimes = $form_state->getValue('notes_downtimes');
-     $report_maintenance = $form_state->getValue('report_maintenance');
-     $report_maintenance_2 = $form_state->getValue('report_maintenance_2');
-     $report_maintenance_3 = $form_state->getValue('report_maintenance_3');
+     $current_downtimes = $form_state->getValue('current_downtimes')['value'];
+     $archived_downtimes = $form_state->getValue('archived_downtimes')['value'];
+     $report_downtimes = $form_state->getValue('report_downtimes')['value'];
+     $report_downtimes_2 = $form_state->getValue('report_downtimes_2')['value'];
+     $report_downtimes_3 = $form_state->getValue('report_downtimes_3')['value'];
+     $notes_downtimes = $form_state->getValue('notes_downtimes')['value'];
+     $report_maintenance = $form_state->getValue('report_maintenance')['value'];
+     $report_maintenance_2 = $form_state->getValue('report_maintenance_2')['value'];
+     $report_maintenance_3 = $form_state->getValue('report_maintenance_3')['value'];
 
    //  echo '<pre>';  print_r($maintenance_group_id);  exit;
 
