@@ -58,7 +58,7 @@ class DowntimesFilter extends FormBase
 //            $type_header = "<h3 class = 'current_incidents_title'>" . t('Current Incidents') . "</h3>";
             $form['incidents_header_notes'] = [
                 '#type' => 'markup',
-                '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('current_downtimes')['value'] . "</div>"
+                '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('current_downtimes') . "</div>"
             ];
         } else if ($type == 'maintenance') {
 //            $wrapper = 'maintenance_search_results_wrapper';

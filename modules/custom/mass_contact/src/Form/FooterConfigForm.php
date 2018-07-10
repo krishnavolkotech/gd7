@@ -32,6 +32,13 @@ class FooterConfigForm extends ConfigFormBase {
       '#format' => $footer['format'],
       '#default_value' => $footer['value'],
     );
+    if (\Drupal::moduleHandler()->moduleExists('token')) {
+      $form['token_tree'] = [
+        '#theme' => 'token_tree_link',
+        '#token_types' => ['user'],
+        '#show_restricted' => TRUE,
+      ];
+    }
     return parent::buildForm($form, $form_state);
   }
 

@@ -10,16 +10,14 @@ use Drupal\Core\Controller\ControllerBase;
  */
 class DowntimesNotesDisplayController extends ControllerBase {
 
-    /*
-     * Callback function for the downtimes display
-     */
+  /*
+   * Callback function for the downtimes display
+  */
 
-    public function downtime_notes_message_display() {
-//        echo 321321;exit;
-        $downtimes = \Drupal::config('downtimes.settings')->get('current_downtimes');
+  public function downtime_notes_message_display() {
+    $downtimes = \Drupal::config('downtimes.settings')->get('notes_downtimes');
     return array(
       '#markup' => $downtimes,
     );
-    }
-
+  }
 }
