@@ -92,33 +92,23 @@ class BulkMailGroupMembersForm extends FormBase {
     $gid = $form_state->getValue('group');
     $group = Group::load($gid);
     $subject = $this->t('[@group_name] Newsletter: @subject', ['@group_name' => $group->label(), '@subject' => $form_state->getValue('subject')]);
-    $footer = $this->config('mass_contact.settings')->get('footer');
-    $body = [
-      '#type'=>'inline_template',
-      '#template' => '{% for text in items %}{{ text }}{% endfor %}',
-      '#context' => [
-        'items'=>[
-          Markup::create($form_state->getValue('body')['value']),
-          Markup::create($footer['value']),
-        ]
-      ]
-    ];
-    $body = \Drupal::service('renderer')->render($body);
+
     $groupMembers = $group->getContent('group_membership');
     foreach ($groupMembers as $user){
       // $user = $groupMember->getGroupContent();
       if($user->getEntity()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
-        $mailToGroupMember[] = $user->getEntity()->getEmail();
+        $mailToGroupMember[] = $user->getEntity()->id();
 //          break;
       }
     }
-    foreach ($mailToGroupMember as $group_members) {
+
+    foreach ($mailToGroupMember as $group_member_id) {
       $operations[] = array(
         '\Drupal\mass_contact\MassMail::sendMail',
         array(
-          $group_members,
+          $group_member_id,
           $subject,
-          $body
+          $form_state->getValue('body')['value']
         )
       );
     }
