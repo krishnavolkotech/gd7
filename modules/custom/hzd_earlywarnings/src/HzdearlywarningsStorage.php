@@ -272,7 +272,7 @@ class HzdearlywarningsStorage
             '#rows' => $rows,
             '#empty' => t('No Data Created Yet'),
             '#attributes' => ['id' => "viewearlywarnings_sortable", 'class' => "tablesorter"],
-            '#cache'=>['tags'=>['node_list']],
+            '#cache'=>['tags'=>['node_list', 'earlywarning_list']],
         );
         
         $output['pager'] = array(
