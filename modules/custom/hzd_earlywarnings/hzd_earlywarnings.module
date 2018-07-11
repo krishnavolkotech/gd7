@@ -108,3 +108,11 @@ function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormS
   return $form['field_earlywarning_release']['widget'];
 }
 
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags(['earlywarning_list']);
+}
