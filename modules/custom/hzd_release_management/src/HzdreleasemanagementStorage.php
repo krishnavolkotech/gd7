@@ -816,7 +816,8 @@ $inprogress_nid_values = [];
             shell_exec('chmod -R 777 ' . $betriebshandbuch);
             $unzipCmd = 'unzip ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html . " -d " . $betriebshandbuch;
             shell_exec($unzipCmd);
-            shell_exec('rm -f ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html);
+            // preserving the archives though.
+//            shell_exec('rm -f ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html);
           }
           shell_exec("rm -rf " . $new_path);
           //Delete the failed log record (if any)
