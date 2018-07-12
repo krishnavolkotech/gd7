@@ -179,7 +179,7 @@ class ProblemImport {
       $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
 
       $diff = TRUE;
-      $basic_html_fileds = ['body', 'solution', 'ticketstore_link', 'workaround', 'comment', 'field_comments'];
+      $basic_html_fileds = ['body', 'solution', 'taskforce', 'ticketstore_link', 'workaround', 'comment', 'field_comments'];
       foreach ($values as $key => $val) {
           if(in_array($key, $basic_html_fileds)) {
               if (check_markup($values[$key], 'plain_text') != $existing_node_vals[$key]) {
@@ -210,7 +210,7 @@ class ProblemImport {
       ]);
 
     }
-    $problem_node->setTitle(Html::escape($values['title']));
+    $problem_node->setTitle($values['title']);
     $problem_node->set('status', 1);
     $problem_node->set('body', array(
       'summary' => '',
@@ -252,7 +252,10 @@ class ProblemImport {
     ));
     // $problem_node->set('field_s_no', $values['sno']);
     // $problem_node->set('field_release', $values['release']);.
-    $problem_node->set('field_task_force', array($values['taskforce']));
+    $problem_node->set('field_task_force', array(
+      'value' => check_markup($values['taskforce'],'plain_text'),
+      'format' => 'plain_text',
+    ));
     // $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_release', $values['release']);
