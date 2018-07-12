@@ -514,10 +514,13 @@ form.im-attachments-upload-form .form-type-checkbox label.form-required .form-ch
   margin-top:0;
 }
 form.im-attachments-upload-form .form-item .form-text,
-form.im-attachments-upload-form .form-item .form-managed-file,
 form.im-attachments-upload-form .form-item .form-textarea-wrapper{
   width:80%;
   float:left;
+}
+form.im-attachments-upload-form .form-item .form-managed-file {
+    width: auto;
+    float:left;
 }
 form .form-type-vertical-tabs .tabs-left .tab-content,
 form.node-downtimes-edit-form .panel,

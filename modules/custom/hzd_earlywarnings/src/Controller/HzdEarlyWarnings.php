@@ -425,6 +425,7 @@ class HzdEarlyWarnings extends ControllerBase {
       '#rows' => $rows,
       '#empty' => t('No Data Created Yet'),
       '#attributes' => ['id' => "earlywarnings_release_sortable", 'class' => "tablesorter"],
+      '#cache'=>['tags'=>['node_list', 'earlywarning_list']],
     );
     
     $output['pager'] = array(

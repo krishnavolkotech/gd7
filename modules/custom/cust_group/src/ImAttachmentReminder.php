@@ -8,6 +8,7 @@
 
 namespace Drupal\cust_group;
 
+use Drupal\Core\Render\Markup;
 use Drupal\cust_group\Entity\ImAttachmentsData;
 
 /**
@@ -47,14 +48,15 @@ class ImAttachmentReminder {
 
       if ($sendFlag) {
         $user = $imfile->getOwner();
-        $subject = $token_service->replace($im_reminder_subject, [
+        $subject = Markup::create($token_service->replace($im_reminder_subject, [
           'user' => $user,
           'file' => $imfile,
-        ]);
-        $mail_body = $token_service->replace($im_reminder_body, [
+        ]));
+        $mail_body = Markup::create($token_service->replace($im_reminder_body, [
           'user' => $user,
           'file' => $imfile,
-        ]);
+        ]));
+
         $mail = $imfile->getFileOwnerEmail();
         send_immediate_notifications($subject, $mail_body, $mail, 'html');
       }
