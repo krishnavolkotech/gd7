@@ -140,7 +140,8 @@ class Cache
             $resolved_url = self::$broken_image;
             $type = "png";
             $message = "Image not found or type unknown";
-            Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
+            //Skipping the error recording for broken images as we are using private files in WYSIWIG editors.
+//            Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
         }
 
         return array($resolved_url, $type, $message);
