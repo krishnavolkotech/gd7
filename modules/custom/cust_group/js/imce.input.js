@@ -12,6 +12,9 @@
   Drupal.behaviors.imceUrlInput = {
     attach: function (context, settings) {
       $('.imce-url-input', context).not('.imce-url-processed').addClass('imce-url-processed').each(imceInput.processUrlInput);
+      if (window.drupalSettings.group_context === undefined) {
+          $("a.imce-url-button").remove();
+      }
     }
   };
   
