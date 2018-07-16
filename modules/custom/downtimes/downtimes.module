@@ -34,13 +34,13 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     if ($form_id == 'node_downtimes_form') {
       
       if ($downtime_type == 'create_maintenance') {
-        $help_markup = \Drupal::config('downtimes.settings')->get('report_maintenance');
-        $states_help = \Drupal::config('downtimes.settings')->get('report_maintenance_2');
-        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_maintenance_3');
+        $help_markup = \Drupal::config('downtimes.settings')->get('report_maintenance') . "<br/>";
+        $states_help = \Drupal::config('downtimes.settings')->get('report_maintenance_2') . "<br/>";
+        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_maintenance_3') . "<br/>";
       } else {
-        $help_markup = \Drupal::config('downtimes.settings')->get('report_downtimes');
-        $states_help = \Drupal::config('downtimes.settings')->get('report_downtimes_2');
-        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_downtimes_3');
+        $help_markup = \Drupal::config('downtimes.settings')->get('report_downtimes') . "<br/>";
+        $states_help = \Drupal::config('downtimes.settings')->get('report_downtimes_2') . "<br/>";
+        $services_effected_text = \Drupal::config('downtimes.settings')->get('report_downtimes_3'). "<br/>";
       }
       $form['static_desc'] = [
         '#type' => 'item',
