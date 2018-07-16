@@ -64,8 +64,11 @@ class ImAttachmentsUploadBlock extends BlockBase {
         $fileids = $pager->execute()->fetchAll();
         $files = [];
         foreach ($fileids as $key => $value) {
-            $files[] = \Drupal\file\Entity\File::load($value->field_im_upload_page_files_target_id);
-            $nodeData[$value->field_im_upload_page_files_target_id] = \Drupal\node\Entity\Node::load($value->entity_id);
+            $file_entity = \Drupal\file\Entity\File::load($value->field_im_upload_page_files_target_id);
+            if($file_entity && $file_entity->getEntityTypeId() == 'file') {
+              $files[] = $file_entity;
+              $nodeData[$value->field_im_upload_page_files_target_id] = \Drupal\node\Entity\Node::load($value->entity_id);
+            }
         }
 
 //        if (empty($files)) {
