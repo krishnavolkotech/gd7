@@ -119,8 +119,11 @@ class ImAttachmentsUploadBlock extends BlockBase {
 
                 $filesize = format_size($file->getSize(), NULL);
 
-                $owner = \Drupal::service('link_generator')
+              $owner = '-';
+                if($file->getOwner()) {
+                  $owner = \Drupal::service('link_generator')
                     ->generate($file->getOwner()->getDisplayName(), $file->getOwner()->toUrl());
+                }
 
                 $deletelink = \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', [
                     'fid' => $file->id(),
