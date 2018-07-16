@@ -521,6 +521,7 @@ form.im-attachments-upload-form .form-item .form-textarea-wrapper{
 form.im-attachments-upload-form .form-item .form-managed-file {
     width: auto;
     float:left;
+    padding-right: 10px;
 }
 form .form-type-vertical-tabs .tabs-left .tab-content,
 form.node-downtimes-edit-form .panel,
