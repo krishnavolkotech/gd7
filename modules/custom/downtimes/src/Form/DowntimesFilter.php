@@ -82,7 +82,7 @@ class DowntimesFilter extends FormBase
             
             $form['incidents_header_notes'] = [
                 '#type' => 'markup',
-                '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('archived_downtimes') . "</div>",
+                '#markup' => "<div class = 'downtime_notes'>" . \Drupal::config('downtimes.settings')->get('archived_downtimes') . "<br/></div>",
 //                '#prefix' => $form['#prefix']
             ];
             
