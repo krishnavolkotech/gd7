@@ -331,7 +331,8 @@ class HzdEarlyWarnings extends ControllerBase {
     foreach ($results as $key => $value) {
       $release_specifc_earlywarnings = \Drupal::entityQuery('node')
         ->condition('type', 'early_warnings', '=')
-        ->condition('field_earlywarning_release', $value->field_earlywarning_release_value, '=');
+        ->condition('field_earlywarning_release', $value->field_earlywarning_release_value, '=')
+        ->sort('changed', 'DESC');
       $earlywarnings_nids = $release_specifc_earlywarnings->execute();
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
@@ -373,7 +374,7 @@ class HzdEarlyWarnings extends ControllerBase {
         $earlywarining_link = \Drupal::service('link_generator')
           ->generate(t($earlywarining_view_link), $url);
   
-        $earlyWarningNode = Node::load($value->early_warning);
+        $earlyWarningNode = Node::load(reset($earlywarnings_nids));
         
 /*        $cids = \Drupal::entityQuery('comment')
           ->condition('entity_id', $value->early_warning)
