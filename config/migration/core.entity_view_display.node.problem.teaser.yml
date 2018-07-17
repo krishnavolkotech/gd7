@@ -15,6 +15,7 @@ dependencies:
     - field.field.node.problem.field_priority
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
+    - field.field.node.problem.field_problem_symptoms
     - field.field.node.problem.field_processing
     - field.field.node.problem.field_release
     - field.field.node.problem.field_s_no
@@ -203,5 +204,6 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_problem_symptoms: true
   langcode: true
   upload: true

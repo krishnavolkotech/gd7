@@ -611,7 +611,12 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
   //pr($entity->bundle());exit;
   $plannigFileRef = array(
     1048 => "mlrp",
-    658 => "test calendar",
+ /* 
+  *  Changed 2018/07/05 by Robin Schomburg <Robin.Schomburg@hzd.hessen.de>
+  *  Page Testkalender has been deleted by accident. A new Testkalender page with the node id 65101 was created.
+  *  Old value:   658 => "test calendar",
+  */ 
+    65101 => "test calendar",
     1049 => "transcription pp",
     785 => "transcription fmk"
   );
