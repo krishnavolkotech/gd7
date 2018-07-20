@@ -31,7 +31,8 @@ class ImAttachmentReminder {
     $im_reminder_subject = $ImConfig->get('im_reminder_subject');
     $im_reminder_body = $ImConfig->get('im_reminder_body');
     $query = \Drupal::entityQuery('cust_group_imattachments_data')
-      ->condition('changed', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=');
+      ->condition('changed', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=')
+      ->sort('changed' , 'DESC');
     $im_att_ids = $query->execute();
     foreach ($im_att_ids as $imid) {
       $sendFlag = FALSE;
