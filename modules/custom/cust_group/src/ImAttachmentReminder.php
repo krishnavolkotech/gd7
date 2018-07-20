@@ -43,7 +43,8 @@ class ImAttachmentReminder {
         $sendFlag = TRUE;
       }
       //Checking for Reminder frequency
-      if ($file_age % $im_reminder_frequency == 0) {
+      $frequency_days = floor((time() - ($imfile->getChangedTime() + ($im_first_reminder * 24 * 60 * 60)))/ (24 * 60 * 60) );
+      if ($frequency_days % $im_reminder_frequency == 0) {
         $sendFlag = TRUE;
       }
 
