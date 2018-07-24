@@ -1,0 +1,9 @@
+hzd_risk_management_date:
+  version: 1.x
+  js:
+    js/hzd_risk_management_date.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal.dialog
+    - core/jquery.ui.datepicker

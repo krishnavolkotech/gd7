@@ -69,6 +69,20 @@ function calculateRiskCategory($riskValue){
 
 function hzd_risk_management_form_alter(array &$form, $formState, $formId){
 //echo $formId;exit;
+  $current_path = \Drupal::service('path.current')->getPath();
+  if ($formId == 'views_exposed_form' && ($current_path == '/group/73/massnahme'
+      || $current_path == '/group/73/massnahme/archive')) {
+    $form['order_date']['#type'] = 'textfield';
+    $form['order_date']['#attributes']['class'][] = 'datepicker-text';
+    $form['order_date']['#attributes']['placeholder'] = 'dd.mm.yyyy';
+
+    $form['target_date']['#type'] = 'textfield';
+    $form['target_date']['#attributes']['class'][] = 'datepicker-text';
+    $form['target_date']['#attributes']['placeholder'] = 'dd.mm.yyyy';
+    $form['#attached']['library'][] = 'hzd_risk_management/hzd_risk_management_date';
+    $form['#validate'][] = 'reset_date_format';
+  }
+
   if($formId == 'views_exposed_form' && isset($form['combine'])){
     $form['combine']['#attributes']['data-bef-auto-submit-exclude'] = '';
   }
@@ -83,6 +97,24 @@ function hzd_risk_management_form_alter(array &$form, $formState, $formId){
   }
   if(in_array($formId,['node_measure_form','node_measure_edit_form'])){
     $form['#validate'][] = 'risk_management_measure_form_validate';
+  }
+}
+
+function reset_date_format(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  if(!empty($form['order_date']['#value'])) {
+    $dt = date_create_from_format('d.m.Y', $form['order_date']['#value']);
+    if($dt!==FALSE) {
+      $value = $dt->format("Y-m-d");
+      $form_state->setValue('order_date', $value);
+    }
+  }
+
+  if(!empty($form['target_date']['#value'])) {
+    $dt = date_create_from_format('d.m.Y', $form['target_date']['#value']);
+    if($dt!==FALSE) {
+      $value = $dt->format("Y-m-d");
+      $form_state->setValue('target_date', $value);
+    }
   }
 }
 
