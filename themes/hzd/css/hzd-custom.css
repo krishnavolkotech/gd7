@@ -1309,3 +1309,10 @@ a.cke_dialog_tab {
 .risk-view, .measure-view{
     background-size: contain;
 }
+
+form#views-exposed-form-measures-page-1 #edit-order-date,
+form#views-exposed-form-measures-page-1 #edit-target-date,
+form#views-exposed-form-measures-measures #edit-order-date,
+form#views-exposed-form-measures-measures #edit-target-date {
+    width: 110px;
+}
