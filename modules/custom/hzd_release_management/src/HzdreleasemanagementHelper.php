@@ -442,8 +442,6 @@ class HzdreleasemanagementHelper {
           else {
             $output .= "<div><a target = '_blank' href = '$new_path'>" . $value . "</a></div>";
           }
-          
-          $output .= "<div><a target = '_blank' href = '$new_path'>" . $value . "</a></div>";
         }
         return $output .= "</td></tr>";
         $true = TRUE;
