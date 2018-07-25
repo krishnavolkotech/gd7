@@ -816,6 +816,14 @@ $inprogress_nid_values = [];
             shell_exec('chmod -R 777 ' . $betriebshandbuch);
             $unzipCmd = 'unzip ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html . " -d " . $betriebshandbuch;
             shell_exec($unzipCmd);
+
+            $file_path = $betriebshandbuch . DIRECTORY_SEPARATOR . $html;
+            $unzip_file_path = substr($file_path, 0, -4);
+            $new_file_path = $betriebshandbuch . DIRECTORY_SEPARATOR . 'html';
+
+            $move_cmd = 'mv ' . $unzip_file_path . " " . $new_file_path;
+            shell_exec($move_cmd);
+
             // preserving the archives though.
 //            shell_exec('rm -f ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html);
           }
