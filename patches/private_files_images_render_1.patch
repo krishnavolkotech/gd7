@@ -1,0 +1,17 @@
+diff --git a/vendor/dompdf/dompdf/src/Image/Cache.php b/vendor/dompdf/dompdf/src/Image/Cache.php
+index 65af07c..e8749e8 100644
+--- a/vendor/dompdf/dompdf/src/Image/Cache.php
++++ b/vendor/dompdf/dompdf/src/Image/Cache.php
+@@ -137,9 +137,10 @@ static function resolve_url($url, $protocol, $host, $base_path, Dompdf $dompdf)
+                 }
+             }
+         } catch (ImageException $e) {
+-            $resolved_url = self::$broken_image;
++            //$resolved_url = self::$broken_image;
++            $resolved_url = "themes/hzd/images/broken-image.png";
+             $type = "png";
+-            $message = "Image not found or type unknown";
++            //$message = "Image removed";
+             //Skipping the error recording for broken images as we are using private files in WYSIWIG editors.
+ //            Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
+         }

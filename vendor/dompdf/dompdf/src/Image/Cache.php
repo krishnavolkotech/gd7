@@ -137,9 +137,10 @@ class Cache
                 }
             }
         } catch (ImageException $e) {
-            $resolved_url = self::$broken_image;
+            //$resolved_url = self::$broken_image;
+            $resolved_url = "themes/hzd/images/broken-image.png";
             $type = "png";
-            $message = "Image not found or type unknown";
+            //$message = "Image removed";
             //Skipping the error recording for broken images as we are using private files in WYSIWIG editors.
 //            Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
         }
