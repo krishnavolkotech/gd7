@@ -10,6 +10,7 @@ namespace Drupal\problem_management;
 
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Xss;
 use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
@@ -181,17 +182,22 @@ class ProblemImport {
       $diff = TRUE;
       $basic_html_fileds = ['body', 'solution', 'taskforce', 'ticketstore_link', 'workaround', 'comment', 'field_comments'];
       foreach ($values as $key => $val) {
-          if(in_array($key, $basic_html_fileds)) {
-              if (check_markup($values[$key], 'plain_text') != $existing_node_vals[$key]) {
-                  $diff = FALSE;
-                  break;
-              }
-          }else {
-              if (trim($values[$key]) != trim($existing_node_vals[$key])) {
-                  $diff = FALSE;
-                  break;
-              }
+        if (in_array($key, $basic_html_fileds)) {
+          if (check_markup($values[$key], 'plain_text') != $existing_node_vals[$key]) {
+            $diff = FALSE;
+            break;
           }
+        } elseif ($key == 'title') {
+          if ($existing_node_vals[$key] != Html::decodeEntities(Xss::filter($values['title']))) {
+            $diff = FALSE;
+            break;
+          }
+        } else {
+          if (trim($values[$key]) != trim($existing_node_vals[$key])) {
+            $diff = FALSE;
+            break;
+          }
+        }
       }
       if ($diff) {
         $this->ignored[] = $node->get('field_s_no')->value;
@@ -210,7 +216,7 @@ class ProblemImport {
       ]);
 
     }
-    $problem_node->setTitle($values['title']);
+    $problem_node->setTitle(Html::decodeEntities(Xss::filter($values['title'])));
     $problem_node->set('status', 1);
     $problem_node->set('body', array(
       'summary' => '',
@@ -284,7 +290,7 @@ class ProblemImport {
           'gid' => PROBLEM_MANAGEMENT,
           'entity_id' => $problem_node->id(),
           'request_status' => 1,
-          'label' => $values['title'],
+          'label' => Html::decodeEntities(Xss::filter($values['title'])),
           'uid' => 1,
         ]);
         return $group_content->save();
