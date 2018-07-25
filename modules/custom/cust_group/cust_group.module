@@ -734,7 +734,7 @@ function get_planning_file_data($type) {
 }
 
 function cust_group_cron() {
-  ImAttachmentReminder::PrepareMailsToImAuthers();
+    //ImAttachmentReminder::PrepareMailsToImAuthers();
 }
 
 function cust_group_user_delete($user) {
