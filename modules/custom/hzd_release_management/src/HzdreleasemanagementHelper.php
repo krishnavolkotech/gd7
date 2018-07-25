@@ -430,7 +430,19 @@ class HzdreleasemanagementHelper {
           $new_path = $link_path . "/" . $value;
           if(is_dir($dir.DIRECTORY_SEPARATOR.$values.DIRECTORY_SEPARATOR.$value)){
             $new_path .= DIRECTORY_SEPARATOR . 'index.html';
+            if ($value == 'html') {
+              $value = '';
+            }
           }
+
+          if ($values == 'betriebshandbuch' &&  strtolower(substr($value, -4)) == '.zip') {
+            $new_path = $link_path .DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR. 'index.html';
+            $output .=  "<div>". $value . "  <a target = '_blank' href = '$new_path'> (" . t("Show HTML Version") . ")</a></div>";
+          }
+          else {
+            $output .= "<div><a target = '_blank' href = '$new_path'>" . $value . "</a></div>";
+          }
+          
           $output .= "<div><a target = '_blank' href = '$new_path'>" . $value . "</a></div>";
         }
         return $output .= "</td></tr>";
