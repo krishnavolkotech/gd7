@@ -31,15 +31,15 @@ field_name: field_im_upload_page_files
 entity_type: node
 bundle: im_upload_page
 label: Dateien
-description: ''
+description: 'Erlaubte Dateiformate'
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
   file_directory: im-ablage-attachments
-  file_extensions: 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp docx xlsx pptx zip mpp mm tar gz xsd'
-  max_filesize: ''
+  file_extensions: 'jpg jpeg gif png txt csv doc xls pdf ppt pps odt ods odp docx xlsx pptx zip rar mpp mm gz tar xsd'
+  max_filesize: '200 MB'
   description_field: false
   handler: 'default:file'
   handler_settings: {  }

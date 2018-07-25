@@ -15,6 +15,7 @@ module:
   breakpoint: 0
   ckeditor: 0
   color: 0
+  colorbutton: 0
   comment: 0
   computed_field: 0
   config: 0
@@ -77,6 +78,7 @@ module:
   node: 0
   options: 0
   page_cache: 0
+  panelbutton: 0
   path: 0
   pdf_api: 0
   persistent_login: 0

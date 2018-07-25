@@ -47,7 +47,11 @@ class HZDCustomizations extends ControllerBase {
                   $user_count++;
               }
           }
-          $group->save();
+/* 
+ *    Changed 2018/07/06 by Robin Schomburg <Robin.Schomburg@hzd.hessen.de>
+ *    The function $group->save() is not needed and triggers unnecessary notifications.
+ *       $group->save();
+ */
       }
       return array(
           '#type' => 'markup',
