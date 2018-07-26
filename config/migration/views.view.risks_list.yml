@@ -2015,7 +2015,7 @@ display:
         operator: AND
         groups:
           1: AND
-      title: 'Archiv Einzelrisiken'
+      title: 'Archivierte Einzelrisiken'
     cache_metadata:
       max-age: -1
       contexts:
