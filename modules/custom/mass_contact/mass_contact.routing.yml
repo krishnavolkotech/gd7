@@ -14,4 +14,7 @@ mass_contact.footer_config:
     _form: '\Drupal\mass_contact\Form\FooterConfigForm'
     _title: 'Footer Configuration for Newsletter'
   requirements:
-    _permission: 'administer site'
+    _permission: 'access administration pages'
+    type: problem|release|downtimes|planning_files|quickinfo|early_warnings|group|group_content
+  options:
+    _admin_route: TRUE
