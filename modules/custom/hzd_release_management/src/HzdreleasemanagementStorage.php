@@ -730,11 +730,8 @@ $inprogress_nid_values = [];
    */
   static public function release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid) {
     try {
-      shell_exec("chmod -R 777 " . $paths);
 
       shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
-//dpm($paths);
-//dpm("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
       $dokument_path = $paths;
       $remove_quotes = str_replace("'", "", $paths);
       $download_directory = scandir($remove_quotes);
@@ -743,7 +740,6 @@ $inprogress_nid_values = [];
 
       // Check documentation link downloaded or not.
       if (!empty($download_directory[2])) {
-        shell_exec("chmod -R 777 " . $paths . "/" . $compressed_file);
         shell_exec("unzip " . $paths . "/" . $compressed_file . " -d " . $paths);
         shell_exec("convmv -f latin1 -t utf8 -r --notest " . $paths);
         $zip_root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
@@ -753,8 +749,6 @@ $inprogress_nid_values = [];
         $extracted_file = scandir($remove_quotes);
         unset($extracted_file[0]);
         unset($extracted_file[1]);
-        //    shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/');
-        // shell_exec('chmod 777 -R /var/www/html/hzdupgrd_dev1/sites/default/files/releases/ginster/risrv/');
         // Check documentation zip file extracted or not.
         if (!empty($extracted_file[2])) {
           $compressed_file_ex = explode(".zip", $compressed_file);
@@ -777,16 +771,12 @@ $inprogress_nid_values = [];
               }
               closedir($dh);
             }
-            // unset($list_scandir[0]);
-            //   unset($list_scandir[1]);.
             $root_folders = array("afb", "benutzerhandbuch", "betriebshandbuch", "releasenotes", "sonstige", "zertifikat");
             // Move root level documents to sonstige folder.
             foreach ($list_scandir as $list_values) {
               if (!in_array($list_values, $root_folders)) {
                 $new_path = $dokument_path . "/" . $upper;
                 shell_exec("mkdir " . $new_path . "/sonstige");
-                shell_exec("chmod 777 -R " . $new_path . "/sonstige");
-//                            echo "mv " . $dokument_path . "/" . $list_values . " " . $new_path . "/sonstige";exit;
                 shell_exec("mv " . $new_path . "/" . $list_values . " " . $new_path . "/sonstige");
               }
             }
@@ -813,19 +803,15 @@ $inprogress_nid_values = [];
             }
           });
           foreach ((array)$htmls as $html) {
-            shell_exec('chmod -R 777 ' . $betriebshandbuch);
-            $unzipCmd = 'unzip ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html . " -d " . $betriebshandbuch;
+	    //Extracting html.zip content into the HTML(New) folder
+	    $html_folder_path = $betriebshandbuch . DIRECTORY_SEPARATOR . "html";
+	    shell_exec('mkdir ' . $html_folder_path);
+
+            $unzipCmd = 'unzip ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html . " -d " . $html_folder_path;
             shell_exec($unzipCmd);
 
-            $file_path = $betriebshandbuch . DIRECTORY_SEPARATOR . $html;
-            $unzip_file_path = substr($file_path, 0, -4);
-            $new_file_path = $betriebshandbuch . DIRECTORY_SEPARATOR . 'html';
-
-            $move_cmd = 'mv ' . $unzip_file_path . " " . $new_file_path;
-            shell_exec($move_cmd);
-
-            // preserving the archives though.
-//            shell_exec('rm -f ' . $betriebshandbuch . DIRECTORY_SEPARATOR . $html);
+	    // Unzip only first file found
+	    break;
           }
           shell_exec("rm -rf " . $new_path);
           //Delete the failed log record (if any)
@@ -841,8 +827,6 @@ $inprogress_nid_values = [];
             'reason' => $failed_link,
           );
           db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-          // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
-          //          VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
         }
       } else {
         // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
@@ -853,8 +837,6 @@ $inprogress_nid_values = [];
           'reason' => $failed_link,
         );
         db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
-        // db_query("INSERT INTO {release_doc_failed_download_info} (nid, created,reason)
-        //             VALUES (%d, %d, '%s')", $nid, time(), $failed_link);.
       }
     }
     catch (Exception $e) {

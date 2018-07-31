@@ -1480,7 +1480,7 @@ display:
       display_extenders:
         views_merge_rows: {  }
       path: group/%group/massnahme/archive
-      title: 'Archiv Maßnahmen'
+      title: 'Archivierte Maßnahmen'
       defaults:
         title: false
         filters: false
