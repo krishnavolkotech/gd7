@@ -128,7 +128,9 @@ class ImAttachmentsData extends ContentEntityBase implements ImAttachmentInterfa
    * {@inheritdoc}
    */
   public function getFileOwnerEmail() {
-    return $this->getOwner()->getEmail();
+    if ($this->getOwner() instanceof User) {
+      return $this->getOwner()->getEmail();
+    }
   }
 
   /**
