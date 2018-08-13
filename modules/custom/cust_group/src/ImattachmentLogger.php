@@ -39,7 +39,7 @@ class ImattachmentLogger implements ImattachmentLoggerInterface {
 
     $mail = $imfile->getFileOwnerEmail();
     if (!empty($mail)) {
-      send_immediate_notifications($subject, $mail_body, $mail, 'html');
+      send_fromgroup_immediate_notifications($subject, $mail_body, $mail, 'html');
       $this->logMail($imfile->id(), $mail, $action, time(), $mail_body, $subject, $sid);
     }
   }

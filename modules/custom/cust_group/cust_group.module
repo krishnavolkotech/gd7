@@ -331,6 +331,20 @@ function cust_group_taxonomy_term_insert($term) {
   $menu_link->save();
 }
 
+function send_fromgroup_immediate_notifications($subject, $message_text, $to, $preference, $attachment = NULL) {
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'cust_group';
+  $key = 'immediate_notifications';
+  $params['message'] = $message_text;
+  $params['subject'] = $subject;
+  $params['preference'] = $preference ? $preference : 'html';
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = TRUE;
+  foreach (explode(',', trim($to, ',')) as $userMail) {
+    $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
+  }
+}
+
 use Drupal\Component\Utility\SafeMarkup;
 
 function cust_group_mail($key, &$message, $params) {
