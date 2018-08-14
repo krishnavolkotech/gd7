@@ -525,9 +525,9 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
   //Sending the group id to browser for IMCE to request folder structure within the group
   $route_name = \Drupal::routeMatch()->getRouteName();
-  if(in_array($route_name,['entity.node.edit_form', 'entity.group.edit_form','entity.group_content.create_form'])){
+  if (in_array($route_name, ['entity.node.edit_form', 'entity.group.edit_form', 'entity.group_content.create_form'])) {
     $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
-    $form['#attached']['drupalSettings']['group_context'] = $group?$group->id():null;
+    $form['#attached']['drupalSettings']['group_context'] = $group ? $group->id() : null;
   }
 
 }
@@ -652,11 +652,11 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
   //pr($entity->bundle());exit;
   $plannigFileRef = array(
     1048 => "mlrp",
- /* 
-  *  Changed 2018/07/05 by Robin Schomburg <Robin.Schomburg@hzd.hessen.de>
-  *  Page Testkalender has been deleted by accident. A new Testkalender page with the node id 65101 was created.
-  *  Old value:   658 => "test calendar",
-  */ 
+    /*
+     *  Changed 2018/07/05 by Robin Schomburg <Robin.Schomburg@hzd.hessen.de>
+     *  Page Testkalender has been deleted by accident. A new Testkalender page with the node id 65101 was created.
+     *  Old value:   658 => "test calendar",
+     */
     65101 => "test calendar",
     1049 => "transcription pp",
     785 => "transcription fmk"
@@ -689,6 +689,84 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
       $title = t('Blockzeit');
     }
     $build['title'] = ['#markup' => $title];
+  }
+}
+
+
+/**
+ * hook implementing hook_node_access()
+ */
+function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
+  $plannigFileRef = array(
+    1048 => "mlrp",
+    65101 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
+  );
+  $group_id = 1;
+  if ($node->bundle() === 'page' && $op == 'delete' && array_key_exists($node->id(), $plannigFileRef)) {
+    $items = get_planning_file_data($plannigFileRef[$node->id()]);
+    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+    if (count($items) > 0 && $is_group_admin) {
+      return Drupal\Core\Access\AccessResult::forbidden()->cachePerPermissions()->cachePerUser();
+    }
+  }
+}
+
+/**
+ * hook implementing hook_node_insert()
+ */
+function cust_group_node_insert($entity) {
+  $plannigFileRef = array(
+    1048 => "mlrp",
+    65101 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
+  );
+  if ($entity->bundle() == 'planning_files') {
+    $type = strtolower($entity->get('field_planning_file_type')->value);
+    $key = array_search($type, $plannigFileRef);
+    \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
+  }
+}
+
+
+/**
+ * hook implementing hook_node_update()
+ */
+function cust_group_node_update($entity) {
+  $plannigFileRef = array(
+    1048 => "mlrp",
+    65101 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
+  );
+  if ($entity->bundle() == 'planning_files') {
+    $oldtype = strtolower($entity->original->get('field_planning_file_type')->value);
+    $newtype = strtolower($entity->get('field_planning_file_type')->value);
+    if ($oldtype !== $newtype) {
+      $key = array_search($oldtype, $plannigFileRef);
+      \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
+      $key = array_search($newtype, $plannigFileRef);
+      \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
+    }
+  }
+}
+
+/**
+ * hook implementing hook_node_delete()
+ */
+function cust_group_node_delete($entity) {
+  $plannigFileRef = array(
+    1048 => "mlrp",
+    65101 => "test calendar",
+    1049 => "transcription pp",
+    785 => "transcription fmk"
+  );
+  if ($entity->bundle() == 'planning_files') {
+    $type = strtolower($entity->get('field_planning_file_type')->value);
+    $key = array_search($type, $plannigFileRef);
+    \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
   }
 }
 
@@ -748,7 +826,7 @@ function get_planning_file_data($type) {
 }
 
 function cust_group_cron() {
-    ImAttachmentReminder::PrepareMailsToImAuthers();
+  ImAttachmentReminder::PrepareMailsToImAuthers();
 }
 
 function cust_group_user_delete($user) {
@@ -1031,7 +1109,7 @@ function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_
 }
 
 
-function cust_group_library_info_alter(&$libraries, $extension){
+function cust_group_library_info_alter(&$libraries, $extension) {
   if ($extension == 'imce' && isset($libraries['drupal.imce.input'])) {
     $new_path = '/' . drupal_get_path('module', 'cust_group') . '/js/imce.input.js';
     unset($libraries['drupal.imce.input']['js']['js/imce.input.js']);
