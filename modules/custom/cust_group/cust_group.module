@@ -1116,3 +1116,7 @@ function cust_group_library_info_alter(&$libraries, $extension) {
     $libraries['drupal.imce.input']['js'][$new_path] = [];
   }
 }
+
+function cust_group_page_attachments_alter(array &$page) {
+    $page['#attached']['library'][] = 'cust_group/cust_group';
+}

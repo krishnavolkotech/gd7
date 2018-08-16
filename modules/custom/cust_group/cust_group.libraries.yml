@@ -1,0 +1,3 @@
+cust_group:
+  js:
+    js/cust_group.js: {}
