@@ -825,7 +825,9 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
   $token_service = \Drupal::token();
 //    $i = 0;
   foreach (explode(',', trim($to, ',')) as $userMail) {
-    $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
+    if(\Drupal::service('email.validator')->isValid(trim($userMail))) {
+      $result = $mailManager->mail($module, $key, trim($userMail), $langcode, $params, NULL, $send);
+    }
   }
   /*if ($result['result'] != TRUE) {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
