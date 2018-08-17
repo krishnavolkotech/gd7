@@ -341,7 +341,9 @@ function send_fromgroup_immediate_notifications($subject, $message_text, $to, $p
   $langcode = \Drupal::currentUser()->getPreferredLangcode();
   $send = TRUE;
   foreach (explode(',', trim($to, ',')) as $userMail) {
-    $result = $mailManager->mail($module, $key, $userMail, $langcode, $params, NULL, $send);
+    if(\Drupal::service('email.validator')->isValid(trim($userMail))) {
+      $result = $mailManager->mail($module, $key, trim($userMail), $langcode, $params, NULL, $send);
+    }
   }
 }
 
