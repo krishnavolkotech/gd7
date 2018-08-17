@@ -23,6 +23,7 @@ class Imupdateticket extends FormBase {
       $form['ticket_id'] = [
         '#type' => 'textfield',
         '#default_value' => isset($parameter['ticket']) ? $parameter['ticket'] : NULL,
+        '#required' => TRUE,
         '#size' => 60,
         ];
 
@@ -43,11 +44,15 @@ class Imupdateticket extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     $values = $form_state->getValues();
-
-      if (empty(trim($values['ticket_id']))) {
-        drupal_set_message($this->t("Please enter ticket id."), 'error');
-        $form_state->setErrorByName('ticket_id',t('Please enter ticket id.'));
+    if (empty(trim($values['ticket_id']))) {
+      $form['ticket_id']['#value'] = $form['ticket_id']['#default_value'];
+      $form_errors = $form_state->getErrors();
+      $form_state->clearErrors();
+      $form_errors['ticket_id'] = t('Ticket ID is required');
+      foreach ($form_errors as $name => $error_message) {
+        $form_state->setErrorByName($name, $error_message);
       }
+    }
 
   }
 
