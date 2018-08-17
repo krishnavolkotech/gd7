@@ -11,7 +11,7 @@
 
                 if ($.trim($data.val()) == "") {
                     $data.val('');
-                    return false;
+                    //return false;
                 }
             });
         }
