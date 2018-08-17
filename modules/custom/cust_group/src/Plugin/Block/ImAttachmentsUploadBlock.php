@@ -138,7 +138,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
                 
                 if ($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {
                     $delete = \Drupal::service('link_generator')->generate(t('Delete'), $deletelink);
-                    $edit = ['#markup' => "<a class='edit-ticket-id btn btn-default' href='#'>". $this->t('Edit')."</a>"];
+                    $edit = \Drupal\Core\Link::fromTextAndUrl(t('Edit'), \Drupal\Core\Url::fromUserInput('#', ['attributes' => ['class' => ['edit-ticket-id', 'btn' ,'btn-default']], 'fragment' => '#']));
+                    //$edit = ['#markup' => "<a class='edit-ticket-id btn btn-default' href='#'>". $this->t('Edit')."</a>"];
                 } else {
                     $edit = '';
                     $delete = '--';
