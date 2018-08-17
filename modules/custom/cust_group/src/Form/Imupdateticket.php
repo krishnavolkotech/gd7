@@ -37,6 +37,8 @@ class Imupdateticket extends FormBase {
           '#value' => 'Update'
       ];
 
+      $form['#cache'] = ['max-age' => 0];
+
       $form['#attributes'] = ['class' => ['hide', 'ticket-update-form']];
       return $form;
     }
@@ -45,7 +47,7 @@ class Imupdateticket extends FormBase {
     parent::validateForm($form, $form_state);
     $values = $form_state->getValues();
     if (empty(trim($values['ticket_id']))) {
-      $form['ticket_id']['#value'] = $form['ticket_id']['#default_value'];
+      //$form['ticket_id']['#value'] = $form['ticket_id']['#default_value'];
       $form_errors = $form_state->getErrors();
       $form_state->clearErrors();
       $form_errors['ticket_id'] = t('Ticket ID is required');
