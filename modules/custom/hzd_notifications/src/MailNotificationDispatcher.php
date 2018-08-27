@@ -225,7 +225,9 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     $dispatch_data['attachment'] = $attachments;
     $recepients = explode(',', $node->get('field_additional_email_recipient')->value);
     foreach($recepients as $toMail){
-      $notification_dispatched = $this->dispatch($dispatch_data+['to'=>$toMail]);
+      if(\Drupal::service('email.validator')->isValid(trim($toMail))) {
+        $notification_dispatched = $this->dispatch($dispatch_data + ['to' => trim($toMail)]);
+      }
     }
   }
 

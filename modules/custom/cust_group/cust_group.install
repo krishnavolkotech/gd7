@@ -131,3 +131,51 @@ function dbtng_example_schema() {
   }
   return $schema;
 }
+
+/**
+ * Adds new table to log IM Attachment Delete Notification Mail.
+ *
+ */
+function cust_group_update_8001() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $table_name = 'im_attachment_notifications_log';
+  $table_schema = [
+    'fields' => [
+      'sid' => [
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'fid' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'author_email' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 50,
+      ],
+      'action' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'time' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 25,
+      ],
+      'subject' => [
+        'type' => 'text',
+      ],
+      'body' => [
+        'type' => 'text',
+      ],
+    ],
+    'primary key' => ['sid'],
+  ];
+
+  $schema->createTable($table_name, $table_schema);
+}

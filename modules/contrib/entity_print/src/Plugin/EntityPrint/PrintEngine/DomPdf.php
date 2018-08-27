@@ -153,7 +153,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
     // Dompdf doesn't have a return value for send so just check the error
     // global it provides.
     if ($errors = $this->getError()) {
-      throw new PrintEngineException(sprintf('Failed to generate PDF: %s', $errors));
+      watchdog_exception('entity_print', new PrintEngineException(sprintf('Failed to generate PDF: %s', $errors)));
     }
 
     // The Dompdf library internally adds the .pdf extension so we remove it

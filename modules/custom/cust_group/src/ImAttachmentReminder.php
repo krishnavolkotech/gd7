@@ -8,7 +8,6 @@
 
 namespace Drupal\cust_group;
 
-use Drupal\Core\Render\Markup;
 use Drupal\cust_group\Entity\ImAttachmentsData;
 
 /**
@@ -19,50 +18,40 @@ use Drupal\cust_group\Entity\ImAttachmentsData;
 class ImAttachmentReminder {
 
   static public function PrepareMailsToImAuthers() {
-    $token_service = \Drupal::token();
     $ImConfig = \Drupal::config('cust_group.imattachmentreminder');
     $im_first_reminder = $ImConfig->get('im_first_reminder', FALSE);
     $im_reminder_frequency = $ImConfig->get('im_reminder_frequency', FALSE);
 
     // If Reminder days are not configured , then we will not send any notification.
-    if($im_first_reminder == FALSE || $im_reminder_frequency == FALSE) {
+    if ($im_first_reminder == FALSE || $im_reminder_frequency == FALSE) {
       return;
     }
     $im_reminder_subject = $ImConfig->get('im_reminder_subject');
     $im_reminder_body = $ImConfig->get('im_reminder_body');
     $query = \Drupal::entityQuery('cust_group_imattachments_data')
-      ->condition('changed', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=')
-      ->sort('changed' , 'DESC');
+      ->condition('created', (time() - ($im_first_reminder * 24 * 60 * 60)), '<=')
+      ->sort('created', 'ASC');
+
     $im_att_ids = $query->execute();
     foreach ($im_att_ids as $imid) {
-      $sendFlag = FALSE;
-      $imfile = ImAttachmentsData::load($imid);
-      $file_age = floor((time() - $imfile->getChangedTime()) / (24 * 60 * 60));
-      //Checking First Reminder
-      if ($file_age == $im_first_reminder) {
-        $sendFlag = TRUE;
-      }
-      //Checking for Reminder frequency
-      $frequency_days = floor((time() - ($imfile->getChangedTime() + ($im_first_reminder * 24 * 60 * 60)))/ (24 * 60 * 60) );
-      if ($frequency_days % $im_reminder_frequency == 0) {
-        $sendFlag = TRUE;
-      }
-
-      if ($sendFlag) {
-        $user = $imfile->getOwner();
-        $subject = Markup::create($token_service->replace($im_reminder_subject, [
-          'user' => $user,
-          'file' => $imfile,
-        ]));
-        $mail_body = Markup::create($token_service->replace($im_reminder_body, [
-          'user' => $user,
-          'file' => $imfile,
-        ]));
-
-        $mail = $imfile->getFileOwnerEmail();
-        send_immediate_notifications($subject, $mail_body, $mail, 'html');
+      $connection = \Drupal::database();
+      $result = $connection->query("SELECT * FROM {im_attachment_notifications_log} WHERE fid = :fid", [
+        ':fid' => $imid,
+      ])->fetchAssoc();
+      if (empty($result['sid'])) {
+        $imfile = ImAttachmentsData::load($imid);
+        $log = new ImattachmentLogger($connection);
+        $log->sendMail($imfile, 'First', $im_reminder_subject, $im_reminder_body, NULL);
+      } else {
+        $remtime = time() - ($im_reminder_frequency * 24 * 60 * 60);
+        if ($result['time'] <= $remtime) {
+          $imfile = ImAttachmentsData::load($imid);
+          $updatelog = new ImattachmentLogger($connection);
+          $updatelog->sendMail($imfile, 'Reminder', $im_reminder_subject, $im_reminder_body, $result['sid']);
+        }
       }
     }
+
   }
 
 }

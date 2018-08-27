@@ -113,8 +113,14 @@ class ImAttachmentsUploadBlock extends BlockBase {
 
                 $description = $attachment ? $attachment->get('description')->value : '';
 
-                $ticketid = $attachment ? $attachment->get('ticket_id')->value : '';
+                $ticketid_value = $attachment ? $attachment->get('ticket_id')->value : '';
 
+                $ticketid_form = \Drupal::formBuilder()->getForm('Drupal\cust_group\Form\Imupdateticket', ['file_id' => $file->id(), 'ticket' => $ticketid_value]);
+                $ticketid = ['ticket_id' => ['#markup' => "<div class='show-ticket-value'>". $ticketid_value . "</div>"],
+                             'update_form' => $ticketid_form
+                ];
+  
+                
                 $created = $attachment ? format_date($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
 
                 $filesize = format_size($file->getSize(), NULL);
@@ -129,10 +135,13 @@ class ImAttachmentsUploadBlock extends BlockBase {
                     'fid' => $file->id(),
                     'nid' => $nodeData[$file->id()]->id()
                 ], ['attributes' => ['class' => 'btn btn-danger'], 'query' => $exposedFilterData]);
+                
                 if ($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {
-                    $delete = \Drupal::service('link_generator')
-                        ->generate(t('Delete'), $deletelink);
+                    $delete = \Drupal::service('link_generator')->generate(t('Delete'), $deletelink);
+                    $edit = \Drupal\Core\Link::fromTextAndUrl(t('Edit'), \Drupal\Core\Url::fromUserInput('#', ['attributes' => ['class' => ['edit-ticket-id', 'btn' ,'btn-default']], 'fragment' => '#']));
+                    //$edit = ['#markup' => "<a class='edit-ticket-id btn btn-default' href='#'>". $this->t('Edit')."</a>"];
                 } else {
+                    $edit = '';
                     $delete = '--';
                 }
 
@@ -144,6 +153,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
                     array('data' => $created, 'class' => 'created-cell'),
                     array('data' => $filesize, 'class' => 'filesize-cell'),
                     array('data' => $owner, 'class' => 'owner-cell'),
+                    array('data' => $edit, 'class' => 'edit-cell'),
                     array('data' => $delete, 'class' => 'delete-cell'),
                 );
 
@@ -164,7 +174,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
                 $this->t('Date uploaded'),
                 $this->t('File size'),
                 $this->t('User'),
-                $this->t('Action')
+                ['data' => $this->t('Action'),
+                'colspan' => 2]
             ],
         ];
         $result['pager'] = array(
