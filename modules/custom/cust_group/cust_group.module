@@ -1122,3 +1122,4 @@ function cust_group_library_info_alter(&$libraries, $extension) {
 function cust_group_page_attachments_alter(array &$page) {
     $page['#attached']['library'][] = 'cust_group/cust_group';
 }
+
