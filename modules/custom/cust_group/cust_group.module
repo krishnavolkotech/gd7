@@ -1122,3 +1122,22 @@ function cust_group_library_info_alter(&$libraries, $extension) {
 function cust_group_page_attachments_alter(array &$page) {
     $page['#attached']['library'][] = 'cust_group/cust_group';
 }
+
+/**
+ * Implements hook_entity_delete().
+ */
+function cust_group_entity_delete(EntityInterface $entity) {
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.group_content.delete_form') {
+    //dsm($entity->id());
+    $uid = $entity->get('entity_id')->getValue()[0]['target_id'];
+    $gid = $entity->get('gid')->getValue()[0]['target_id'];
+    if(isset($uid) && isset($gid)) {
+      $query = \Drupal::database()
+        ->delete('group_notifications_user_default_interval')
+        ->condition('group_id', $gid)
+        ->condition('uid', $uid)
+        ->execute();
+    }
+  }
+
+}
