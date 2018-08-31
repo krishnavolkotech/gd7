@@ -63,14 +63,14 @@ class DraggableViewsField extends BulkForm {
       $form[$this->options['id']][$row_index]['id'] = array(
         '#type' => 'hidden',
         '#value' => $row->{$this->definition['entity field']},
-        '#attributes' => array('class' => 'draggableviews-id'),
+        '#attributes' => array('class' => array('draggableviews-id')),
       );
 
       // Add parent.
       $form[$this->options['id']][$row_index]['parent'] = array(
         '#type' => 'hidden',
         '#default_value' => $draggableviews->getParent($row_index),
-        '#attributes' => array('class' => 'draggableviews-parent'),
+        '#attributes' => array('class' => array('draggableviews-parent')),
       );
     }
 
