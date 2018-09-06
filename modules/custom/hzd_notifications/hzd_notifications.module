@@ -953,3 +953,40 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
   }
   return $uids_list;
 }
+
+/**
+ * Implements hook_entity_delete().
+ */
+function cust_group_entity_delete(EntityInterface $entity) {
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.group_content.delete_form') {
+    $uid = $entity->get('entity_id')->getValue()[0]['target_id'];
+    $gid = $entity->get('gid')->getValue()[0]['target_id'];
+    if (isset($uid) && isset($gid)) {
+      $query = \Drupal::database()
+        ->delete('group_notifications_user_default_interval')
+        ->condition('group_id', $gid)
+        ->condition('uid', $uid)
+        ->execute();
+    }
+
+    $groupNotifications = \Drupal::database()->select('group_notifications', 'gn')
+      ->fields('gn', ['id', 'uids'])
+      ->condition('group_id', $gid)
+      ->condition('send_interval', 0)
+      ->execute()
+      ->fetchAll();
+    foreach ($groupNotifications as $id) {
+      $users = array_values((array)unserialize($id->uids));
+      if (count($users) > 0) {
+        $key = array_search($uid, (array)$users);
+        if ($key !== FALSE) {
+          $newusers = array_diff($users, [$uid]);
+          \Drupal::database()->update('group_notifications')
+            ->fields(['uids' => serialize($newusers)])
+            ->condition('id', $id->id)
+            ->execute();
+        }
+      }
+    }
+  }
+}
