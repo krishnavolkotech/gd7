@@ -43,7 +43,8 @@ class DeployedReleases extends ControllerBase {
     $cid = 'deployedReleasesOverview:' . $group_id . ':' . $release_type;
     $build = NULL;
 
-    if ($cache = \Drupal::cache()->get($cid)) {
+    $cache = \Drupal::cache()->get($cid);
+    if (!empty($cache->data)) {
       $build = $cache->data;
       return $build;
     }
