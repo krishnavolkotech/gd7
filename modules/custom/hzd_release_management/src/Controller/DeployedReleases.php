@@ -21,7 +21,6 @@ class DeployedReleases extends ControllerBase {
    *  
    */
   public function OverView(GroupInterface $group) {
-    
     $form = \Drupal::formBuilder()
             ->getForm('Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew');
     $form['form_build_id']['#access'] = FALSE;
@@ -44,7 +43,7 @@ class DeployedReleases extends ControllerBase {
     $build = NULL;
 
     $cache = \Drupal::cache()->get($cid);
-    if (!empty($cache->data)) {
+    if (!empty($cache->data)){
       $build = $cache->data;
       return $build;
     }
@@ -74,7 +73,6 @@ class DeployedReleases extends ControllerBase {
 
     $groupServs = array_intersect($services, $groupServs);
     if (count($groupServs) > 0) {
-      $serviceEntities = Node::loadMultiple($groupServs);
       $state = array();
       $headers[0] = t('Service');
       foreach ($states as $state_details) {
@@ -83,25 +81,24 @@ class DeployedReleases extends ControllerBase {
       }
       $emptyStates = NULL;
       $count = 1;
-      foreach ($serviceEntities as $service) {
+      foreach ($groupServs as $service) {
         $dep = NULL;
         foreach ($states as $state_details) {
           $titles = NULL;
           $releases = \Drupal::entityQuery('node')
                   ->condition('type', 'deployed_releases')
-                  ->condition('field_release_service', $service->id())
+                  ->condition('field_release_service', $service)
                   ->condition('field_user_state', $state_details->id)
                   ->condition('field_archived_release', 1, '<>')
                   ->condition('status', 1)
                   ->condition('field_environment', 1)
-                  ///the database record for field_archived_release doesn't exist so cannot query it here.
-//            ->condition('field_archived_release', 1,'<>')
                   ->execute();
           foreach ($releases as $release) {
-            $releaseNode = Node::load($release);
-            $finalRelease = $releaseNode->get('field_earlywarning_release')->value;
-	    $finalReleaseNode = Node::load($finalRelease);
-            if ($finalReleaseNode) { $titles[] = $finalReleaseNode->label(); }
+            $finalRelease = node_get_field_data_fast([$release], 'field_earlywarning_release');
+            $finalReleaseNode = node_get_title_fast([$finalRelease[$release]]);
+            if ($finalReleaseNode) {
+              $titles[] = $finalReleaseNode[$finalRelease[$release]];
+            }
           }
           if ($titles) {
             $x = [
@@ -117,7 +114,7 @@ class DeployedReleases extends ControllerBase {
           }
         }
         //$dep[] = $service->get('field_release_name')->value;
-	      $dep[] = $service->get('title')->value;
+	      $dep[] = node_get_title_fast([$service])[$service];
         $dep += $newData;
         $depReleases[] = $dep;
         $newData = NULL;
