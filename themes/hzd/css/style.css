@@ -3668,3 +3668,13 @@ ul.content-revision-log li div.field{
 ul.content-revision-log li .ckeditor-custom-wrapper {
    /*margin-top: -20px;*/
 }
+
+#block-views-block-groups-faq-block-1 .alert-warning {
+    clear: both;
+    margin-top: 5%;
+    margin-left: 2%;
+}
+
+#block-views-block-groups-faq-block-1 .glyphicon-warning-sign::before {
+    content: "";
+}
