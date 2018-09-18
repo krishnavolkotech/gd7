@@ -39,7 +39,7 @@ display:
             administrator: administrator
             site_administrator: site_administrator
       cache:
-        type: none
+        type: tag
         options: {  }
       query:
         type: views_query

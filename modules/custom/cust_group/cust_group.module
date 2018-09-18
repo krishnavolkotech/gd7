@@ -184,6 +184,27 @@ function cust_group_group_insert($group) {
     ]);
     $menu_link->save();
   }
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags([
+      'config:views.view.all_groups',
+      'config:views.view.my_groups'
+    ]);
+}
+
+function cust_group_group_update($group) {
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags([
+      'config:views.view.all_groups',
+      'config:views.view.my_groups'
+    ]);
+}
+
+function cust_group_group_delete($group) {
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags([
+      'config:views.view.all_groups',
+      'config:views.view.my_groups'
+    ]);
 }
 
 /**
@@ -240,28 +261,30 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     ]);
 }
 
-function cust_group_group_content_delete() {
+function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterface $entity) {
+  $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
+  $plugin_id = $entity->getContentPlugin()->getPluginId();
+  if ($plugin_id == 'group_membership') {
+    $tags[] = 'config:views.view.all_groups';
+    $tags[] = 'config:views.view.my_groups';
+  }
   \Drupal::service('cache_tags.invalidator')
-    ->invalidateTags([
-      'config:block.block.hzd_local_tasks',
-      'config:system.menu.primary-links'
-    ]);
+    ->invalidateTags($tags);
 }
 
 /**
  * @param \Drupal\group\Entity\GroupContentInterface $entity
  */
 function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterface $entity) {
-  \Drupal::service('cache_tags.invalidator')
-    ->invalidateTags([
-      'config:block.block.hzd_local_tasks',
-      'config:system.menu.primary-links'
-    ]);
+  $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
 
   // Notify User while assigning Admin role
   $group = $entity->getGroup();
   $plugin_id = $entity->getContentPlugin()->getPluginId();
   if ($plugin_id == 'group_membership') {
+    $tags[] = 'config:views.view.all_groups';
+    $tags[] = 'config:views.view.my_groups';
+
     $newroles = $entity->get('group_roles')->getValue();
     $nroles = [];
     if (isset($newroles) && !empty($newroles)) {
@@ -273,6 +296,8 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
   }
+  \Drupal::service('cache_tags.invalidator')
+    ->invalidateTags($tags);
 }
 
 //Sending mail to user to know Group Admin role
