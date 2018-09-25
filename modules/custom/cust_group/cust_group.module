@@ -257,7 +257,9 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
-      'config:system.menu.primary-links'
+      'config:system.menu.primary-links',
+      'config:views.view.all_groups',
+      'config:views.view.my_groups'
     ]);
 }
 
