@@ -3675,4 +3675,12 @@ ul.content-revision-log li .ckeditor-custom-wrapper {
     margin-left: 2%;
 }
 
-
+.glyphicon-warning-sign:before {
+  content: url(/themes/hzd/images/warning.svg) !important;
+}
+.block-views-blockgroups-faq-block-1 .table-responsive .alert-warning {
+  background-image: none;
+  margin-left: 1% !important;
+  border: none;
+  box-shadow: none;
+}
