@@ -33,7 +33,6 @@ class UpdateGroupNotificationforAllGroup extends FormBase {
       ->fields('gndi', ['uid', 'group_id'])
       ->condition('default_send_interval', -1, '=')
       ->condition('uid', 0, '!=')
-      ->range(0, 200)
       ->execute()
       ->fetchAllKeyed(0, 1);
 
@@ -70,7 +69,7 @@ class UpdateGroupNotificationforAllGroup extends FormBase {
 
     $account = \Drupal\user\Entity\User::load($uid);
     if ($account->isActive()) {
-      $is_member = $group->getMember(\Drupal::service($uid));
+      $is_member = $group->getMember($account);
       if (!$is_member) {
         $context['results'][$uid][] = $group->label() . ':InActive:' . $gid;
         self::delete_uid_from_notification_table($uid, $gid);
