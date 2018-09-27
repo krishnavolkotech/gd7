@@ -46,7 +46,7 @@ class UpdateGroupNotificationforAllGroup extends FormBase {
             $uid,
             $group,
             $gid,
-            t('(Checking on Group @operation)', ['@operation' => $group_name]),
+            t('(Group @operation)', ['@operation' => $group_name]),
           ],
         ];
       }
@@ -68,7 +68,7 @@ class UpdateGroupNotificationforAllGroup extends FormBase {
   static public function update($uid, $group, $gid, $operation_details, &$context) {
 
     $account = \Drupal\user\Entity\User::load($uid);
-    if ($account->isActive()) {
+    if (isset($account) && $account->isActive()) {
       $is_member = $group->getMember($account);
       if (!$is_member) {
         $context['results'][$uid][] = $group->label() . ':InActive:' . $gid;
