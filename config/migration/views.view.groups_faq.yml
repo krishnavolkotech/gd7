@@ -267,14 +267,19 @@ display:
     display_title: Block
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        views_merge_rows: {  }
       query:
         type: views_query
         options: {  }
       style:
         type: table
         options:
-          grouping: {  }
+          grouping:
+            -
+              field: faq_kategorie
+              rendered: true
+              rendered_strip: false
           row_class: ''
           default_row_class: true
           override: true
@@ -283,10 +288,25 @@ display:
           summary: ''
           description: ''
           columns:
+            nid: nid
+            faq_kategorie: faq_kategorie
             title: title
             draggableviews: draggableviews
-            faq_kategorie: faq_kategorie
           info:
+            nid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            faq_kategorie:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             title:
               sortable: false
               default_sort_order: asc
@@ -295,13 +315,6 @@ display:
               empty_column: false
               responsive: ''
             draggableviews:
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            faq_kategorie:
-              sortable: false
-              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
