@@ -1,16 +1,15 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\draggableviews\Plugin\views\field\DraggableViewsField.
- */
-
 namespace Drupal\draggableviews\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\draggableviews\DraggableViews;
 use Drupal\system\Plugin\views\field\BulkForm;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a draggableviews form element.
@@ -20,18 +19,91 @@ use Drupal\Core\Render\Markup;
 class DraggableViewsField extends BulkForm {
 
   /**
+   * The entity manager.
+   *
+   * @var \Drupal\Core\Entity\EntityManagerInterface
+   */
+  protected $entityManager;
+
+  /**
+   * The action storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $actionStorage;
+
+  /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * The Current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
+   * Constructs a new DraggableViewsField object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   Current user.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager, AccountInterface $current_user) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_manager, $language_manager);
+    $this->currentUser = $current_user;
+  }
+
+  /**
    * {@inheritdoc}
    */
-  protected function defineOptions() {
-    $options = parent::defineOptions();
-    return $options;
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity.manager'),
+      $container->get('language_manager'),
+      $container->get('current_user')
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
+    $form['draggableview_help'] = [
+      '#markup' => $this->t("A draggable element will be added to the first table column. You do not have to set this field as the first column in your View."),
+    ];
     parent::buildOptionsForm($form, $form_state);
+    // Remove all the fields that would break this or are completely ignored
+    // when rendering the drag interface.
+    unset($form['custom_label']);
+    unset($form['label']);
+    unset($form['element_label_colon']);
+    unset($form['action_title']);
+    unset($form['include_exclude']);
+    unset($form['selected_actions']);
+    unset($form['exclude']);
+    unset($form['alter']);
+    unset($form['empty_field_behavior']);
+    unset($form['empty']);
+    unset($form['empty_zero']);
+    unset($form['hide_empty']);
+    unset($form['hide_alter_empty']);
   }
 
   /**
@@ -55,35 +127,39 @@ class DraggableViewsField extends BulkForm {
     $draggableviews = new DraggableViews($this->view);
 
     foreach ($this->view->result as $row_index => $row) {
-      $form[$this->options['id']][$row_index] = array(
+      $form[$this->options['id']][$row_index] = [
         '#tree' => TRUE,
-      );
+      ];
 
       // Item to keep id of the entity.
-      $form[$this->options['id']][$row_index]['id'] = array(
+      $form[$this->options['id']][$row_index]['id'] = [
         '#type' => 'hidden',
-        '#value' => $row->{$this->definition['entity field']},
-        '#attributes' => array('class' => array('draggableviews-id')),
-      );
+        '#value' => $this->getEntity($row)->id(),
+        '#attributes' => ['class' => ['draggableviews-id']],
+      ];
 
       // Add parent.
-      $form[$this->options['id']][$row_index]['parent'] = array(
+      $form[$this->options['id']][$row_index]['parent'] = [
         '#type' => 'hidden',
         '#default_value' => $draggableviews->getParent($row_index),
-        '#attributes' => array('class' => array('draggableviews-parent')),
-      );
+        '#attributes' => ['class' => ['draggableviews-parent']],
+      ];
     }
 
-    if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
-      $options = [
-        'table_id' => $draggableviews->getHtmlId(),
-        'action' => 'match',
-        'relationship' => 'parent',
-        'group' => 'draggableviews-parent',
-        'subgroup' => 'draggableviews-parent',
-        'source' => 'draggableviews-id'
-      ];
-      drupal_attach_tabledrag($form, $options);
+    if ($this->currentUser->hasPermission('access draggableviews')) {
+      // Get an array of field group titles.
+      $fieldGrouping = $draggableviews->fieldGrouping();
+      foreach ($fieldGrouping as $key => $row) {
+        $options = [
+          'table_id' => $draggableviews->getHtmlId($key),
+          'action' => 'match',
+          'relationship' => 'parent',
+          'group' => 'draggableviews-parent',
+          'subgroup' => 'draggableviews-parent',
+          'source' => 'draggableviews-id',
+        ];
+        drupal_attach_tabledrag($form, $options);
+      }
     }
   }
 
