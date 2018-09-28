@@ -3679,7 +3679,7 @@ ul.content-revision-log li .ckeditor-custom-wrapper {
     display: none;
 }
 
-#block-views-block-groups-faq-block-1 div.table-responsive .panel {
+#block-views-block-groups-faq-block-1 div.table-responsive tbody {
     overflow: hidden;
     display: none;
     transition: min-height 0.2s ease-out;

@@ -17,8 +17,6 @@
 
             var acc = document.getElementsByTagName('caption');
             var i;
-            //$( "#block-views-block-groups-faq-block-1 div.table-responsive tbody" ).wrap( "<div class='panel'></div>" );
-            //$("#block-views-block-groups-faq-block-1 div.table-responsive tbody").hide();
             for (i = 0; i < acc.length; i++) {
                 acc[i].addEventListener("click", function () {
                     this.classList.toggle("active");
