@@ -3669,59 +3669,67 @@ ul.content-revision-log li .ckeditor-custom-wrapper {
    /*margin-top: -20px;*/
 }
 
-#block-views-block-groups-faq-block-1 .alert-warning {
+form[id^="views-form-groups-faq-category-"] .alert-warning {
     clear: both;
     margin-top: 5%;
     margin-left: 2%;
 }
 
-#block-views-block-groups-faq-block-1 div.table-responsive:not(:first-child) button.tabledrag-toggle-weight {
+form[id^="views-form-groups-faq-category-"] div.table-responsive:not(:first-child) button.tabledrag-toggle-weight {
     display: none;
 }
 
-#block-views-block-groups-faq-block-1 div.table-responsive tbody {
-    overflow: hidden;
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.panel {
     display: none;
-    transition: min-height 0.2s ease-out;
-    background-color: #f1f1f1;
-
 }
 
 
-#block-views-block-groups-faq-block-1 div.table-responsive caption {
-    background-color: #777;
-    color: white;
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title {
     cursor: pointer;
-    padding: 8px;
     width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
     font-size: 15px;
 }
 
-#block-views-block-groups-faq-block-1 div.table-responsive caption:after {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row span.views-field-title span.field-content {
+    width: 98%;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row div.panel div.buttons {
+    float: right;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title:after {
     content: '\002B';
-    color: white;
+    color: black;
     font-weight: bold;
     float: right;
     margin-left: 5px;
 }
 
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-#block-views-block-groups-faq-block-1 div.table-responsive caption.active,
-#block-views-block-groups-faq-block-1 div.table-responsive caption:hover {
-    background-color: #555;
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title.active:after {
+    content: "\2212";
 }
 
-#block-views-block-groups-faq-block-1 div.table-responsive caption.active:after {
-    content: "\2212";
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row {
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+    width: 100%;
+    float: left;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive table caption {
+    margin: 10px 0 !important;
+    color: #004070 !important;
+    font-weight: 500 !important;
+    font-size: large !important;
 }
 
 .glyphicon-warning-sign:before {
   content: url(/themes/hzd/images/warning.svg) !important;
 }
-.block-views-blockgroups-faq-block-1 .table-responsive .alert-warning {
+form[id^="views-form-groups-faq-category-"] .table-responsive .alert-warning {
   background-image: none;
   margin-left: 1% !important;
 }
