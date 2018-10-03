@@ -1,0 +1,12 @@
+diff --git a/src/Plugin/CKEditorPlugin/ColorButton.php b/src/Plugin/CKEditorPlugin/ColorButton.php
+--- a/src/Plugin/CKEditorPlugin/ColorButton.php
++++ b/src/Plugin/CKEditorPlugin/ColorButton.php
+@@ -21,7 +21,7 @@
+    * Get path to library folder.
+    */
+   public function getLibraryPath() {
+-    $path = '/libraries/colorbutton';
++    $path = 'libraries/colorbutton';
+     if (\Drupal::moduleHandler()->moduleExists('libraries')) {
+       $path = libraries_get_path('colorbutton');
+     }

@@ -1412,3 +1412,70 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
   }
 }
 
+/**
+ * @param array $nids
+ * @return array
+ */
+function node_get_title_fast(array $nids) {
+  $titles = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  foreach ($nids as $nid) {
+    // Lookup static cache of self.
+    if (array_key_exists($nid, $titles)) {
+      $return[$nid] = $titles[$nid];
+    }
+    else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$nid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select('node_field_data', 'd')
+      ->fields('d', ['nid', 'title'])
+      ->condition('d.nid', array_keys($unavailable), 'IN')
+      ->execute()
+      ->fetchAllKeyed(0, 1);
+
+    if ($results) {
+      $return = $results + $unavailable;
+      $titles = $return + $titles;
+    }
+  }
+
+  return $return;
+}
+
+/**
+ * @param array $nids
+ * @param $field
+ * @return array
+ */
+function node_get_field_data_fast(array $nids, $field) {
+  $field_result = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  $field_value = $field . '_value';
+  $field_table = 'node__' . $field;
+  foreach ($nids as $nid) {
+    // Lookup static cache of self.
+    if (array_key_exists($nid, $field_result)) {
+      $return[$nid] = $field_result[$nid];
+    } else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$nid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select($field_table, 'd')
+      ->fields('d', ['entity_id', $field_value])
+      ->condition('d.entity_id', array_keys($unavailable), 'IN')
+      ->execute()->fetchAllKeyed(0, 1);
+    if ($results) {
+      $return = $results + $unavailable;
+      $field_result = $return + $field_result;
+    }
+  }
+
+  return $return;
+}

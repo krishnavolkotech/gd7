@@ -184,7 +184,11 @@ class MaintenanceBlock extends BlockBase
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
-        $markup['#cache']['max-age'] = 0;
+
+      $markup['#cache'] = array(
+        'contexts' => ['url.path'], //setting cache contexts
+        'tags' => ['node_list'] // setting cache tags
+      );
         
         return $markup;
     }

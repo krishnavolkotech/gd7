@@ -19,7 +19,7 @@ class PanelButton extends CKEditorPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    $path = '/libraries/panelbutton/plugin.js';
+    $path = 'libraries/panelbutton/plugin.js';
     if (\Drupal::moduleHandler()->moduleExists('libraries')) {
       $path = libraries_get_path('panelbutton') . '/plugin.js';
     }
