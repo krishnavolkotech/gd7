@@ -1193,7 +1193,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div class=\"views-row\">\n<span class='faq-title views-field views-field-title'><span class=\"field-content\"><span> {{ title }} </span></span></span>\n<div class = 'panel'>\n<div class = 'buttons'>\n<span class='views-field views-field-edit-node'><span class=\"field-content\"> {{ edit_node }} </span></span>\n<span class='views-field views-field-delete-node'><span class=\"field-content\"> {{ delete_node }} </span></span>\n</div>\n<div class=\"views-field views-field-body\">\n<div class=\"field-content ckeditor-custom-wrapper\">\n{{ body }}\n</div>\n</div>\n</div>\n</div>"
+            text: "<div class=\"views-row\">\n<span class='faq-title views-field'><span class=\"field-content\"><span> {{ title }} </span></span></span>\n<div class = 'panel'>\n<div class = 'buttons'>\n<span class='views-field views-field-edit-node'><span class=\"field-content\"> {{ edit_node }} </span></span>\n<span class='views-field views-field-delete-node'><span class=\"field-content\"> {{ delete_node }} </span></span>\n</div>\n<div class=\"views-field views-field-body\">\n<div class=\"field-content ckeditor-custom-wrapper\">\n{{ body }}\n</div>\n</div>\n</div>\n</div>"
             make_link: false
             path: ''
             absolute: false

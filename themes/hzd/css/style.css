@@ -3690,8 +3690,11 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     font-size: 15px;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.views-field-title span.field-content {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.field-content {
     width: 98%;
+    font-size: 16px;
+    color: #02547a;
+    line-height: 22px;
 }
 
 form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel div.buttons {
