@@ -3679,26 +3679,26 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive:not(:first-chil
     display: none;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.panel {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.panel {
     display: none;
 }
 
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-title {
     cursor: pointer;
     width: 100%;
     font-size: 15px;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row span.views-field-title span.field-content {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.views-field-title span.field-content {
     width: 98%;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row div.panel div.buttons {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel div.buttons {
     float: right;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title:after {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-title:after {
     content: '\002B';
     color: black;
     font-weight: bold;
