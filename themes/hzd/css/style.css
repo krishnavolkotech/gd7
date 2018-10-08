@@ -3707,7 +3707,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.dragga
 }
 
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable .faq-title.active:after {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-title.active:after {
     content: "\2212";
 }
 
