@@ -3711,7 +3711,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.dragga
     content: "\2212";
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row {
     margin: 0;
     padding: 0;
     border-bottom: none;
