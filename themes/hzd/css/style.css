@@ -3697,6 +3697,14 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
     line-height: 22px;
 }
 
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.faq-title span.field-content {
+   float: left;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel {
+    float: left;
+}
+
 form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel div.buttons {
     float: right;
 }
@@ -3720,6 +3728,10 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
     border-bottom: none;
     width: 100%;
     float: left;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row {
+   width: 96%;
 }
 
 form[id^="views-form-groups-faq-category-"] div.table-responsive table caption {
