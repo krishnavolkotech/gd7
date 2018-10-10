@@ -94,11 +94,12 @@ function custom_redirect($form, &$form_state){
             $load_group = \Drupal\group\Entity\Group::load($group_id);
             $group_name = $load_group->label();
         }
-        
-  $node = \Drupal\node\Entity\Node::load($form_state->getValue('nid'));
+
+  $node = $form_state->getValue('nid');
+  $type = node_get_entity_property_fast([$node], 'type')[$node];
   
   if($group_name){
-      switch($node->type){
+      switch($type){
       case 'event':
         /**
 	 * need to check  
@@ -117,7 +118,7 @@ function custom_redirect($form, &$form_state){
 //	break;
       }
     }else{
-      switch($node->type){
+      switch($type){
       case 'event':
 //    case 'downtimes':
 //      return new RedirectResponse(\Drupal::url(''));  

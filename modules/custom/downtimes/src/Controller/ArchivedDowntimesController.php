@@ -26,7 +26,7 @@ class ArchivedDowntimesController extends ControllerBase {
   public function archivedDowntimes($group) {
     $filter_value = HzdcustomisationStorage::get_downtimes_filters();
     $string = 'archived';
-    $filter_enddate = \Drupal::request()->query->get('filter_enddate');
+    //$filter_enddate = \Drupal::request()->query->get('filter_enddate');
     $archived_type = \Drupal::request()->query->get('string');
     $archived_data = \Drupal::formBuilder()->getForm('\Drupal\downtimes\Form\DowntimesFilter', $string, $group);
     $sql_where = " and resolved = 1 ";

@@ -226,10 +226,10 @@ class DowntimesFilter extends FormBase
         }
         
         $sql = $select . $from . $where;
-        $services_obj = db_query($sql)->fetchAll();
-        foreach ($services_obj as $services_data) {
-            $services[$services_data->nid] = $services_data->title;
-        }
+      $services = db_query($sql)->fetchAllKeyed(1,0);
+//        foreach ($services_obj as $services_data) {
+//            $services[$services_data->nid] = $services_data->title;
+//        }
         natcasesort($services);
         $form['first_row']['services_effected'] = [
             '#type' => 'select',

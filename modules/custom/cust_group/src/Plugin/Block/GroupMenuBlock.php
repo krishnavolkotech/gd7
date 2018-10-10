@@ -75,10 +75,16 @@ class GroupMenuBlock extends BlockBase {
       }
       $routeMatch = \Drupal::routeMatch();
       $node = $routeMatch->getParameter('node');
-      if (!empty($node) && !$node instanceof Node) {
-        $node = Node::load($node);
+      if (!empty($node)) {
+        if (!is_object($node)) {
+          $type = node_get_entity_property_fast([$node], 'type')[$node];
+          $status = node_get_entity_property_fast([$node], 'status')[$node];
+        } else {
+          $type = $node->getType();
+          $status = $node->isPublished() ?: 0;
+        }
       }
-      if ($node && $node->getType() == 'quickinfo' && $node->isPublished()) {
+      if ($node && $type == 'quickinfo' && $status == 1) {
         $group = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
       }
       $user = \Drupal::currentUser();

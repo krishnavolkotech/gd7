@@ -233,12 +233,15 @@ class NotificationsController extends ControllerBase
                 $markup = null;
                 $quickInfoNodes = [];
                 foreach ($quickInfo as $label => $nideIds) {
-                    foreach ($nideIds as $nideId) {
-                        if (!isset($quickInfoData[$nideId])) {
-                            $quickInfoData[$nideId] = \Drupal\node\Entity\Node::load($nideId);
-                        }
-                        $quickInfoNodes[] = $quickInfoData[$nideId]->toLink(NULL, 'canonical', ['absolute' => 1]);
+                  foreach ($nideIds as $nideId) {
+                    if (!isset($quickInfoData[$nideId])) {
+                      $quickInfoData[$nideId] = $nideId;
                     }
+                    $options = ['absolute' => TRUE];
+                    $url = \Drupal\Core\Url::fromRoute('entity.node.canonical', ['node' => $quickInfoData[$nideId]], $options);
+                    $url = $url->toString();
+                    $quickInfoNodes[] = $url;
+                  }
                     $markup[] = [
                         '#prefix' => '<strong>' . $label . '</strong>:',
                         '#items' => $quickInfoNodes,

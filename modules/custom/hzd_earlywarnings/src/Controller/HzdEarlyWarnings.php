@@ -180,7 +180,8 @@ class HzdEarlyWarnings extends ControllerBase {
     $output['content']['#attached']['drupalSettings']['group_id'] = $group_id;
     $output['content']['#attached']['drupalSettings']['type'] = $type;
     
-    $node = \Drupal\node\Entity\Node::load(EARLYWARNING_TEXT);
+    //$node = \Drupal\node\Entity\Node::load(EARLYWARNING_TEXT);
+    $node_body = Markup::create(node_get_field_data_fast([EARLYWARNING_TEXT], 'body')[EARLYWARNING_TEXT]);
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') .
       '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
@@ -191,7 +192,7 @@ class HzdEarlyWarnings extends ControllerBase {
     
     if ($is_member || in_array($user_role, array('site_administrator','administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['body']['#markup'] = t($node->body->value);
+      $output['content']['pretext']['body']['#markup'] = $node_body;
 //      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
       $output['content']['pretext']['body'][] = [
         '#type'=>'link',
@@ -202,7 +203,7 @@ class HzdEarlyWarnings extends ControllerBase {
 //      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     } else {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['#markup'] = t($node->body->value);
+      $output['content']['pretext']['#markup'] = $node_body;
       $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     }
     

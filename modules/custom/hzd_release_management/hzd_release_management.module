@@ -1479,3 +1479,35 @@ function node_get_field_data_fast(array $nids, $field) {
 
   return $return;
 }
+
+/**
+ * @param array $nids
+ * @return array
+ */
+function node_get_entity_property_fast(array $nids, $field_value) {
+  $field_result = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  $field_table = 'node_field_data';
+  foreach ($nids as $nid) {
+    // Lookup static cache of self.
+    if (array_key_exists($nid, $field_result)) {
+      $return[$nid] = $field_result[$nid];
+    } else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$nid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select($field_table, 'd')
+      ->fields('d', ['nid', $field_value])
+      ->condition('d.nid', array_keys($unavailable), 'IN')
+      ->execute()->fetchAllKeyed(0, 1);
+    if ($results) {
+      $return = $results + $unavailable;
+      $field_result = $return + $field_result;
+    }
+  }
+
+  return $return;
+}
