@@ -36,7 +36,7 @@ function hzd_customizations_tokens($type, $tokens, array $data, array $options, 
             $node = $data['node'];
 //            $group = null;
             $groupContentId = \Drupal::entityQuery('group_content')
-                ->condition('type', '%group_node%', 'LIKE')
+                ->condition('type', get_group_content_node_type(), 'IN')
                 ->condition('entity_id', $node->id())
                 ->execute();
             $groupContent = GroupContent::load(reset($groupContentId));

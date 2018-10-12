@@ -2,6 +2,7 @@
 
 namespace Drupal\custom_views_php\Plugin\views\field;
 
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
@@ -44,23 +45,34 @@ class GroupMemberCountField extends FieldPluginBase {
    * {@inheritdoc}
    */
   protected static function groupMemberCount($gid) {
+    $data = &drupal_static(__FUNCTION__);
+    $cid = 'cust_group:membercount';
+    $tags = array('config:views.view.all_groups');
+    if ($cache = \Drupal::cache()->get($cid)) {
+      $data = $cache->data;
+    } else {
+      $data = self::get_group_member_count();
+      \Drupal::cache()->set($cid, $data, CacheBackendInterface::CACHE_PERMANENT, $tags);
+    }
+    return empty($data[$gid]) ? 0 : $data[$gid];
+  }
+
+  /**
+   * @return mixed
+   */
+  public static function get_group_member_count() {
     $gpc = \Drupal::database()->select('group_content_field_data', 'g');
     $gpc->Join('users_field_data', 'u', 'g.entity_id = u.uid');
-    $gpc->leftJoin('inactive_users','iu', 'u.uid = iu.uid');
-    $gpc->condition('u.status', 1)
-        ->condition('g.gid', $gid)
-        ->condition('g.request_status', 1)
-        //->condition('g.type', $contents, 'IN')
-        ->condition('g.type', '%group_node%', 'NOT LIKE')
-         ->isNull('iu.uid')
-//      ->countQuery()
-        ->fields('g');
-
-    $gpc = $gpc->execute()
-        ->fetchCol();
-    $cc = count($gpc);
-    // Return the result in object format.
-    return $cc;
+    $gpc->leftJoin('inactive_users', 'iu', 'u.uid = iu.uid');
+    $gpc->fields('g', ['gid', 'type']);
+    $gpc->addExpression('COUNT(g.type)', 'type_count');
+    $gpc->condition('u.status', "1");
+    $gpc->groupBy('gid');
+    $gpc->groupBy('type');
+    $gpc->condition('g.request_status', "1");
+    $gpc->condition('g.type', get_group_content_node_type(), 'NOT IN')
+      ->isNull('iu.uid');
+    return $gpc->execute()->fetchAllKeyed(0, 2);
   }
 
   /**

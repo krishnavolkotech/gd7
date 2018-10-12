@@ -230,10 +230,10 @@ class HzdStorage {
       ->condition('type', 'problem', '=');
     $build = array();
     if ($string == 'archived_problems') {
-      $problem_node_ids->condition('field_problem_status', 'geschlossen', 'LIKE');
+      $problem_node_ids->condition('field_problem_status', 'geschlossen','=');
     }
     else {
-      $problem_node_ids->condition('field_problem_status', 'geschlossen', 'NOT LIKE');
+      $problem_node_ids->condition('field_problem_status', 'geschlossen', '!=');
     }
     if (isset($filter_parameter['service']) && $filter_parameter['service'] != 0) {
       $problem_node_ids->condition('field_services', $filter_parameter['service'], '=');
