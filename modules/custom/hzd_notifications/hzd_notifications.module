@@ -74,16 +74,12 @@ function migrate_each_user($uid, $rel_type, &$context) {
  * get default intervals of user
  */
 function hzd_get_default_interval($uid, $rel_type) {
-  $default_intval_per_user = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} 
-                               WHERE uid = :uid and rel_type = :type", array(
-    ":uid" => $uid,
-    ":type" => $rel_type
-  ))->fetchAll();
-  $default_interval = array();
-  foreach ($default_intval_per_user as $val) {
-    $default_interval[$val->service_type] = $val->default_send_interval;
-  }
-  return $default_interval;
+  return \Drupal::database()->select('service_notifications_user_default_interval', 'snudi')
+    ->fields('snudi', ['service_type', 'default_send_interval'])
+    ->condition('rel_type', $rel_type)
+    ->condition('uid', $uid)
+    ->execute()
+    ->fetchAllKeyed(0,1);
 }
 
 /**
