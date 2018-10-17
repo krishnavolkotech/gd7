@@ -337,7 +337,7 @@ class HzdEarlyWarnings extends ControllerBase {
       $earlywarnings_nids = $release_specifc_earlywarnings->execute();
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
-        $release = \Drupal\node\Entity\Node::load($value->field_earlywarning_release_value);
+        $release = node_get_title_fast([$value->field_earlywarning_release_value])[$value->field_earlywarning_release_value];
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {
@@ -345,7 +345,7 @@ class HzdEarlyWarnings extends ControllerBase {
         }
         
         if ($release) {
-          $relase_title = $release->getTitle();
+          $relase_title = $release;
         }
         
         $options = null;
@@ -374,9 +374,8 @@ class HzdEarlyWarnings extends ControllerBase {
         
         $earlywarining_link = \Drupal::service('link_generator')
           ->generate(t($earlywarining_view_link), $url);
-  
-        $earlyWarningNode = Node::load(reset($earlywarnings_nids));
-        
+
+        $nid = reset($earlywarnings_nids);
 /*        $cids = \Drupal::entityQuery('comment')
           ->condition('entity_id', $value->early_warning)
           ->condition('entity_type', 'node')
@@ -388,7 +387,11 @@ class HzdEarlyWarnings extends ControllerBase {
             $userName = $comment->getOwner()->getDisplayName();
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }else{
-            $userName = $earlyWarningNode->getOwner()->getDisplayName();
+            $uid = $earlyWarningNode_tmp = node_get_entity_property_fast([$nid], 'uid')[$nid];
+            $name = [];
+            $name[] = user_get_cust_profile_fast([$uid])[$uid]->firstname;
+            $name[] = user_get_cust_profile_fast([$uid])[$uid]->lastname;
+            $userName = implode(" ", $name);
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }
 
