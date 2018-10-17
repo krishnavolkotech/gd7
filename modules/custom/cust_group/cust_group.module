@@ -591,13 +591,10 @@ function mailToGroupAdmins($data = []) {
   $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   $params['subject'] = $data['subject'];
 
-  $current_user = \Drupal::currentUser();
-  $current_user_id = $current_user->id();
-  $name = $current_user->getDisplayName();
-  $user_obj = User::load($current_user_id);
-
-  $requester_link = $user_obj->toLink($name, 'canonical', ['absolute' => TRUE])
-    ->toString();
+  $current_user_id = \Drupal::currentUser()->id();
+  $options = ['absolute' => TRUE];
+  $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user_id], $options);
+  $requester_link = $url->toString();
 
   foreach ($groupAdmins as $admin) {
     $userEntity = $admin->entity_id->entity;

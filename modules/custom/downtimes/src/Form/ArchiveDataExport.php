@@ -190,8 +190,9 @@ class ArchiveDataExport extends FormBase {
       }
       $result1['description'] = \Drupal\Core\Mail\MailFormatHelper::htmlToText($description);
      // Load all the group content for this node.
-      $groupContent = \Drupal\node\Entity\Node::load($result1['nid']);
-      $result1['url'] = $groupContent->toUrl()->setAbsolute()->toString();
+      $options = ['absolute' => TRUE];
+      $url = Url::fromRoute('entity.node.canonical', ['node' => $result1['nid']], $options);
+      $result1['url'] = $url->toString();
       unset($result1['id']);
       unset($result1['nid']);
       unset($result1['id']);

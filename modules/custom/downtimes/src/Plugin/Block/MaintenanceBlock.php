@@ -103,10 +103,7 @@ class MaintenanceBlock extends BlockBase
                 
                 foreach ($serviceid as $ids) {
                     // Loops for all services
-                    $service = Node::load($ids);
-                    $service_name = $service->getTitle();
-                    $stateText = '';
-                    $serviceNames[$ids] = $service_name;
+                    $serviceNames = node_get_title_fast([$ids]);
                     foreach ($stateids as $sids) {
                         // Loops for all states
                         if ($groupContent) {

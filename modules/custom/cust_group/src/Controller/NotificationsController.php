@@ -3,6 +3,7 @@
 namespace Drupal\cust_group\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
 use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContent;
 use Drupal\node\NodeTypeInterface;
@@ -305,18 +306,14 @@ class NotificationsController extends ControllerBase
             }
             $markup = null;
             foreach ($service as $serviceId => $nideId) {
-                if (!isset($serviceEntity[$serviceId])) {
-                    $serviceEntity[$serviceId] = \Drupal\node\Entity\Node::load($serviceId);
-                }
                 $serviceNodes = null;
                 foreach ($nideId as $cont) {
-                    if (!isset($serviceEntity[$cont])) {
-                        $serviceEntity[$cont] = \Drupal\node\Entity\Node::load($cont);
-                    }
-                    $serviceNodes[] = $serviceEntity[$cont]->toLink(NULL, 'canonical', ['absolute' => 1]);
+                    $options = ['absolute' => TRUE];
+                    $url = Url::fromRoute('entity.node.canonical', ['node' => $cont], $options);
+                    $serviceNodes[] = $url->toString();
                 }
                 $markup[] = [
-                    '#prefix' => '<strong>' . $serviceEntity[$serviceId]->label() . '</strong>:',
+                    '#prefix' => '<strong>' . node_get_title_fast([$serviceId])[$serviceId] . '</strong>:',
                     '#items' => $serviceNodes,
                     '#theme' => 'item_list',
                     '#type' => 'ul',
@@ -454,13 +451,11 @@ class NotificationsController extends ControllerBase
             if (in_array($userId, array_keys($userEmails))) {
                 $markup = null;
                 $planningNodes = [];
-                foreach ($planningfile as $nideId) {
-                    if (!isset($planningfileData[$nideId])) {
-                        $planningfileData[$nideId] = \Drupal\node\Entity\Node::load($nideId);
-                    }
-                    $planningNodes[] = $planningfileData[$nideId]->toLink(NULL, 'canonical', ['absolute' => 1]);
-                    
-                }
+                  foreach ($planningfile as $nideId) {
+                    $options = ['absolute' => TRUE];
+                    $url = Url::fromRoute('entity.node.canonical', ['node' => $nideId], $options);
+                    $planningNodes[] = $url->toString();
+                  }
                 $markup[] = [
                     '#prefix' => '<strong>Planning Files</strong>:',
                     '#items' => $planningNodes,

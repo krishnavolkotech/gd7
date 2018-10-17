@@ -2,7 +2,7 @@
 
 namespace Drupal\hzd_release_management\Controller;
 
-use Drupal\node\Entity\Node;
+use Drupal\file\Entity\File;
 use Drupal\Core\Link;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
@@ -31,42 +31,24 @@ class DisplayplanningfilesController extends ControllerBase {
     $breadcrumb[] = $title;
     $output['#breadcrumb'] = $breadcrumb;
 
-    /*        $query = \Drupal::database()->select('node_field_data', 'nfd');
-    $query->fields('nfd', array('title', 'nid'));
-    $query->condition('nfd.type', 'planning_files', '=');
-    $planning_files = $query->execute()->fetchAll();*/
-
     $plannigFileNodeIds = \Drupal::entityQuery('node')
       ->condition('type', 'planning_files')
       ->execute();
-    $planningFileNodes = Node::loadMultiple(array_values($plannigFileNodeIds));
-
+    $plannigFileNodeTitles = node_get_title_fast($plannigFileNodeIds);
+    $upload_planning_files = node_get_field_data_target_fast($plannigFileNodeIds, 'field_upload_planning_file');
     $header = array(t('Title'), t('Filename'), t('Edit'), t('Delete'));
-
-    foreach ($planningFileNodes as $node) {
-      $files = $node->get('field_upload_planning_file')->referencedEntities();
-
-      // pr($files[0]->getFileUri());exit;
-      /*$query = \Drupal::database()->select('file_managed', 'fm');
-      $query->addfield('fm', 'filename');
-      $query->leftjoin('node__field_upload_planning_file', 'nfupf', 'fm.fid = nfupf.field_upload_planning_file_target_id');
-      $query->condition('nfupf.entity_id', $list_files->nid, '=');
-      $filename = $query->execute()->fetchField();*/
+    foreach ($plannigFileNodeTitles as $nid => $title) {
+      $files = $upload_planning_files[$nid];
       $filename = NULL;
-      if (!empty($files[0])) {
-        // $fileUrl = $files[0]->url();
-        // $filename = Link::fromTextAndUrl($files[0]->getFilename(),  Url::fromUri($fileUrl));
-        $filename = $files[0]->getFilename();
+      if (!empty($files)) {
+        $oNewFile = File::load($files);
+        $filename = $oNewFile->getFilename();
       }
-      // $url = Url::fromUserInput('/node/' . $node->id() . '/edit');
-      // $edit = \Drupal::service('link_generator')->generate('Edit', $url);
-      // $url = Url::fromUserInput('/node/' . $node->id() . '/delete');
-      // $delete = \Drupal::service('link_generator')->generate('Delete', $url);.
       $elements = array(
-        'title' => $node->label(),
+        'title' => $title,
         'filename' => $filename,
-        'edit' => \Drupal::l(t('Edit'), Url::fromRoute('entity.node.edit_form', ['node' => $node->id()])),
-        'delete' => \Drupal::l(t('Delete'), Url::fromRoute('entity.node.delete_form', ['node' => $node->id()])),
+        'edit' => \Drupal::l(t('Edit'), Url::fromRoute('entity.node.edit_form', ['node' => $nid])),
+        'delete' => \Drupal::l(t('Delete'), Url::fromRoute('entity.node.delete_form', ['node' => $nid])),
       );
       $rows[] = $elements;
     }
@@ -76,15 +58,8 @@ class DisplayplanningfilesController extends ControllerBase {
         '#title' => t('Create Planning Files'),
         '#type' => 'link',
         '#url' => $url,
-      /**
-           * 'attributes' => array(
-           * 'class' => 'planning-files-link'
-           * ),
-               */
       );
-
       $output[]['#markup'] = t('No Data to be displayed');
-
       return $output;
     }
     $url = Url::fromRoute('entity.group_content.create_form', ['group' => RELEASE_MANAGEMENT,'plugin_id'=>'group_node:planning_files']);
@@ -92,13 +67,7 @@ class DisplayplanningfilesController extends ControllerBase {
       '#title' => t('Create Planning Files'),
       '#type' => 'link',
       '#url' => $url,
-          /**
-             * 'attributes' => array(
-             * 'class' => 'planning-files-link'
-             * ),
-               */
     );
-
     $output['planning_files'] = array(
       '#theme' => 'table',
       '#header' => $header,
@@ -107,5 +76,4 @@ class DisplayplanningfilesController extends ControllerBase {
     );
     return $output;
   }
-
 }

@@ -429,12 +429,10 @@ class HzdcustomisationStorage {
     $services = \Drupal::entityQuery('node')
       ->condition('field_dependent_downtimeservices', $serviceId)
       ->execute();
-    $service = \Drupal\node\Entity\Node::loadMultiple($services);
-//    $dependantServicesList = $service->get('field_dependent_services')->getValue();
+    $service = node_get_field_data_target_fast($services, 'field_dependent_service');
     $dependantServices = [];
     foreach ($service as $val) {
-      $dependantServices[] = $val->get('field_dependent_service')
-        ->referencedEntities()[0]->id();
+      $dependantServices[] = $val;
 //      pr($dependantServices);exit;
     }
     return $dependantServices;

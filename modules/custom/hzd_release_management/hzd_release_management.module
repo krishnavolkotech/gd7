@@ -100,23 +100,14 @@ function non_productions_list() {
     $state = hzd_user_state();
     $entityQuery->condition('field_non_production_state', $state);
   }
-  $nodes = Node::loadMultiple($entityQuery->execute());
+  $nodes_nids = $entityQuery->execute();
+  $nodeTitles = node_get_title_fast($nodes_nids);
 
-  /*if (in_array('site_administrator', $roles)) {
-    $non_productions_lists = db_query("SELECT nid, title FROM {node_field_data} WHERE type = :type", array(":type" => 'non_production_environment'))->fetchAll();
-  }
-  else {
-    $state = hzd_user_state();
-    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfnps WHERE n.nid = nfnps.entity_id and nfnps.field_non_production_state_value = :state and n.type = :type", array(
-      ":state" => $state,
-      ":type" => 'non_production_environment'
-    ))->fetchAll();
-  }*/
   $environment_lists[0] = '<' . t("Umgebung") . '>';
   $environment_lists[1] = t('Produktion');
   $environment_lists[2] = t('Pilot');
-  foreach ($nodes as $vals) {
-    $environment_lists[$vals->id()] = $vals->label();
+  foreach ($nodeTitles as $nid => $vals) {
+    $environment_lists[$nid] = $vals;
   }
   //Environments do not need sort
 //  natcasesort($environment_lists);
@@ -209,7 +200,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
     ->condition('field_release_type', [1, 2], 'IN')
     ->condition('type', 'release')
     ->execute();
-  $nodes = Node::loadMultiple($releases);
+  $nodes_title = node_get_title_fast($releases);
   $state_id = hzd_user_state();
   $entityQuery = \Drupal::entityQuery('node')
     ->condition('type', 'deployed_releases')
@@ -217,9 +208,9 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
     ->condition('field_environment', $environment)
 //    ->condition('status', 1)
     ->execute();
-  $entities = Node::loadMultiple($entityQuery);
-  foreach ($entities as $entity) {
-    $releaseData[$entity->get('field_earlywarning_release')->value] = $entity->get('field_earlywarning_release')->value;
+  $entities_fer = node_get_field_data_fast($entityQuery, 'field_earlywarning_release');
+  foreach ($entities_fer as $fer_key =>$entity) {
+    $releaseData[$entity] = $entity;
   }
 
   /*$query = db_select('node_field_data', 'n');
@@ -241,9 +232,9 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
   }*/
 
   $undeployed_releases[0] = t("< Release >");
-  foreach ($nodes as $key => $value) {
+  foreach ($nodes_title as $key => $value) {
     if (!in_array($key, $releaseData)) {
-      $undeployed_releases[$key] = $value->label();
+      $undeployed_releases[$key] = $value;
     }
   }
   // print_r($undeployed_releases); exit;.
@@ -1476,7 +1467,39 @@ function node_get_field_data_fast(array $nids, $field) {
       $field_result = $return + $field_result;
     }
   }
+  return $return;
+}
 
+/**
+ * @param array $nids
+ * @param $field
+ * @return array
+ */
+function node_get_field_data_target_fast(array $nids, $field) {
+  $field_result = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  $field_value = $field . '_target_id';
+  $field_table = 'node__' . $field;
+  foreach ($nids as $nid) {
+    // Lookup static cache of self.
+    if (array_key_exists($nid, $field_result)) {
+      $return[$nid] = $field_result[$nid];
+    } else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$nid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select($field_table, 'd')
+      ->fields('d', ['entity_id', $field_value])
+      ->condition('d.entity_id', array_keys($unavailable), 'IN')
+      ->execute()->fetchAllKeyed(0, 1);
+    if ($results) {
+      $return = $results + $unavailable;
+      $field_result = $return + $field_result;
+    }
+  }
   return $return;
 }
 
@@ -1508,6 +1531,36 @@ function node_get_entity_property_fast(array $nids, $field_value) {
       $field_result = $return + $field_result;
     }
   }
+  return $return;
+}
 
+/**
+ * @param array $uids
+ * @return array
+ */
+function user_get_cust_profile_fast(array $uids) {
+  $field_result = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  $field_table = 'cust_profile';
+  foreach ($uids as $uid) {
+    // Lookup static cache of self.
+    if (array_key_exists($uid, $field_result)) {
+      $return[$uid] = $field_result[$uid];
+    } else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$uid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select($field_table, 'd')
+      ->fields('d', ['uid', 'firstname', 'lastname', 'phone', 'position', 'state_id'])
+      ->condition('d.uid', array_keys($unavailable), 'IN')
+      ->execute()->fetchAllAssoc('uid');
+    if ($results) {
+      $return = $results + $unavailable;
+      $field_result = $return + $field_result;
+    }
+  }
   return $return;
 }
