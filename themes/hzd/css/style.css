@@ -3717,6 +3717,13 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     margin-left: 5px;
 }
 
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr td {
+width: 100%;
+}
+
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr td.views-field-draggableviews {
+display:none;
+}
 
 form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-title.active:after {
     content: "\2212";
