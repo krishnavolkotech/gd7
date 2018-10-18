@@ -88,6 +88,7 @@ class ServiceNotificationsUserForm extends FormBase {
     return $form;
   }
 
+
   /**
    * {@inheritdoc}
    */
@@ -95,12 +96,18 @@ class ServiceNotificationsUserForm extends FormBase {
     drupal_set_message(t('Service mail preferences saved successfully'));
     $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
-    $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
+    $mod_type = $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
     $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $subscriptions = $form_state->getValue('subscriptions');
     $default_interval = hzd_get_default_interval($uid, $rel_type);
     //$types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
-    //pr($content_types);exit;
+
+    foreach ($subscriptions as $key => $content_value) {
+     if($content_value['subscriptions_interval_' . $key] == $default_interval[$mod_type[$key]]) {
+       unset($content_types[$key]);
+     }
+    };
+
     $services = '';
     $user_notifications = '';
     foreach($content_types as $content_key => $content) {

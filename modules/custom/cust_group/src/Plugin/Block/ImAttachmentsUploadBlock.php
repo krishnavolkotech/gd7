@@ -67,7 +67,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
             $file_entity = \Drupal\file\Entity\File::load($value->field_im_upload_page_files_target_id);
             if($file_entity && $file_entity->getOwner()) {
               $files[] = $file_entity;
-              $nodeData[$value->field_im_upload_page_files_target_id] = \Drupal\node\Entity\Node::load($value->entity_id);
+              $nodeData[$value->field_im_upload_page_files_target_id] = $value->entity_id;
             }
         }
 
@@ -105,7 +105,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
                     ->getStorage('cust_group_imattachments_data')
                     ->loadByProperties(['fid' => $file->id()]);
                 $attachment = reset($attachment);
-                $state = hzd_states_abbr()[$nodeData[$file->id()]->get('field_state')->value];
+                $field_state = node_get_field_data_fast([$nodeData[$file->id()]], 'field_state')[$nodeData[$file->id()]];
+                $state = hzd_states_abbr()[$field_state];
 
                 $filenameuri = \Drupal\Core\Url::fromUri($file->url());
                 $filename = \Drupal::service('link_generator')
@@ -130,10 +131,9 @@ class ImAttachmentsUploadBlock extends BlockBase {
                   $owner = \Drupal::service('link_generator')
                     ->generate($file->getOwner()->getDisplayName(), $file->getOwner()->toUrl());
                 }
-
                 $deletelink = \Drupal\Core\Url::fromRoute('cust_group.imattachment_delete_confirm', [
                     'fid' => $file->id(),
-                    'nid' => $nodeData[$file->id()]->id()
+                    'nid' => $nodeData[$file->id()]
                 ], ['attributes' => ['class' => 'btn btn-danger'], 'query' => $exposedFilterData]);
                 
                 if ($showDelete || $nodeData[$file->id()]->get('field_state')->value == $userstateid) {

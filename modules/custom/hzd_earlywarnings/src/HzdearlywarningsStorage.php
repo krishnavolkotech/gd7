@@ -240,14 +240,7 @@ class HzdearlywarningsStorage
         $rows = [];
         foreach ($result as $earlywarnings_nid) {
             $earlywarning = \Drupal\node\Entity\Node::load($earlywarnings_nid);
-            
-            /*$user_query = db_select('cust_profile', 'cp');
-            $user_query->condition('cp.uid', $earlywarning->uid->target_id, '=')
-                ->fields('cp', array('firstname', 'lastname'));
-            $author = $user_query->execute()->fetchAssoc();
-            if (isset($author)) {
-                $author_name = $author['firstname'] . ' ' . $author['lastname'];
-            }*/
+
             $author_name = $earlywarning->getOwner()->getDisplayName();
             $total_responses = self::get_earlywarning_responses_info($earlywarning->id());
             $early_warningTitle = $earlywarning->toLink();

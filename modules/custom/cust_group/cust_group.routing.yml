@@ -234,6 +234,13 @@ cust_group.problem_notification_update:
     _title: 'Updating problems notification'
   requirements:
     _permission: 'administer site'
+cust_group.group_default_notification_update:
+  path: '/update-default-group-notifications'
+  defaults:
+    _form: '\Drupal\cust_group\Form\UpdateGroupNotificationforAllGroup'
+    _title: 'Updating Group notification'
+  requirements:
+    _permission: 'administer site'
 
 #IMCE intigration with group file structure
 cust_group.imce_page:

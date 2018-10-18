@@ -230,10 +230,10 @@ class HzdStorage {
       ->condition('type', 'problem', '=');
     $build = array();
     if ($string == 'archived_problems') {
-      $problem_node_ids->condition('field_problem_status', 'geschlossen', 'LIKE');
+      $problem_node_ids->condition('field_problem_status', 'geschlossen','=');
     }
     else {
-      $problem_node_ids->condition('field_problem_status', 'geschlossen', 'NOT LIKE');
+      $problem_node_ids->condition('field_problem_status', 'geschlossen', '!=');
     }
     if (isset($filter_parameter['service']) && $filter_parameter['service'] != 0) {
       $problem_node_ids->condition('field_services', $filter_parameter['service'], '=');
@@ -334,9 +334,8 @@ class HzdStorage {
       }
 
 
-      $service_query = \Drupal\node\Entity\Node::load(
-        $problems_node->field_services->target_id);
-      $service = $service_query->get('field_problem_name')->value;
+      $service_query_nid = $problems_node->field_services->target_id;
+      $service = node_get_field_data_fast([$service_query_nid], 'field_problem_name')[$service_query_nid];
       $last_update = $problems_node->field_processing->value;
       $user_input = '/node/' . $problems_node->nid->value;
       $elements = array(

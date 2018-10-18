@@ -226,10 +226,10 @@ class DowntimesFilter extends FormBase
         }
         
         $sql = $select . $from . $where;
-        $services_obj = db_query($sql)->fetchAll();
-        foreach ($services_obj as $services_data) {
-            $services[$services_data->nid] = $services_data->title;
-        }
+      $services = db_query($sql)->fetchAllKeyed(1,0);
+//        foreach ($services_obj as $services_data) {
+//            $services[$services_data->nid] = $services_data->title;
+//        }
         natcasesort($services);
         $form['first_row']['services_effected'] = [
             '#type' => 'select',
@@ -468,7 +468,8 @@ class DowntimesFilter extends FormBase
             $service = $service_id;
         }
         if (isset($state_id) && $state_id > 1) {
-            $sql .= " and ( sd.state_id LIKE '" . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . "' )";
+            //$sql .= " and ( sd.state_id LIKE '" . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . ",%' or sd.state_id LIKE '%," . $state_id . "' )";
+          $sql = "AND (FIND_IN_SET( " . $state_id . ", d.state_id) > 0)";
         }
         $incidents_parameters = array();
         if (isset($sql)) {

@@ -1215,10 +1215,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $entityQuery = \Drupal::entityQuery('node');
       $entityQuery->condition('type','non_production_environment');
       $entityQuery->sort('field_order');
-        $entityQuery->condition('field_non_production_state',$state);
-      $nodes = Node::loadMultiple($entityQuery->execute());
-      foreach ($nodes as $vals) {
-        $environment_lists[$vals->id()] = $vals->label();
+      $entityQuery->condition('field_non_production_state',$state);
+      $nodes_nid = $entityQuery->execute();
+      $nodeTitles = node_get_title_fast($nodes_nid);
+      foreach ($nodeTitles as $nid => $vals) {
+        $environment_lists[$nid] = $vals;
       }
       
       /*$non_productions_lists_query = db_select('node_field_data', 'nfd');

@@ -429,12 +429,10 @@ class HzdcustomisationStorage {
     $services = \Drupal::entityQuery('node')
       ->condition('field_dependent_downtimeservices', $serviceId)
       ->execute();
-    $service = \Drupal\node\Entity\Node::loadMultiple($services);
-//    $dependantServicesList = $service->get('field_dependent_services')->getValue();
+    $service = node_get_field_data_target_fast($services, 'field_dependent_service');
     $dependantServices = [];
     foreach ($service as $val) {
-      $dependantServices[] = $val->get('field_dependent_service')
-        ->referencedEntities()[0]->id();
+      $dependantServices[] = $val;
 //      pr($dependantServices);exit;
     }
     return $dependantServices;
@@ -712,7 +710,7 @@ class HzdcustomisationStorage {
     if ($type == 'archived') {
       $downtimesQuery->addJoin('LEFT', 'resolve_cancel_incident', 'rci', 'rci.downtime_id = d.downtime_id');
     }
-    $downtimesQuery = $downtimesQuery->condition('gcfd.type', '%group_node%', 'LIKE');
+    $downtimesQuery = $downtimesQuery->condition('gcfd.type', get_group_content_node_type(), 'IN');
     $downtimesQuery = $downtimesQuery->condition('gcfd.gid', $group_id);
     
     $exposedFilterData = $filterData->all();
@@ -832,22 +830,13 @@ class HzdcustomisationStorage {
       }
     }
 //        pr($downtimesQuery->__toString());exit;
+    $where_state_value = [];
+    $where_service_value = [];
     if ($filterData->has('states') && $filterData->get('states') != 1) {
-      $orStateGroup = $downtimesQuery->orConditionGroup()
-        ->condition('d.state_id', "{$filterData->get('states')},%", 'LIKE')
-        ->condition('d.state_id', "%,{$filterData->get('states')},%", 'LIKE')
-        ->condition('d.state_id', "%,{$filterData->get('states')}", 'LIKE')
-        ->condition('d.state_id', "{$filterData->get('states')}");
-      $downtimesQuery = $downtimesQuery->condition($orStateGroup);
+      $where_state_value[] = $filterData->get("states");
     }
     if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0) {
-      $orServiceGroup = $downtimesQuery->orConditionGroup()
-        ->condition('d.service_id', "{$filterData->get('services_effected')},%", 'LIKE')
-        ->condition('d.service_id', "%,{$filterData->get('services_effected')},%", 'LIKE')
-        ->condition('d.service_id', "%,{$filterData->get('services_effected')}", 'LIKE')
-        ->condition('d.service_id', "{$filterData->get('services_effected')}");
-      $downtimesQuery = $downtimesQuery->condition($orServiceGroup);
-//            $state = " ( ds.state_id LIKE '" . $state_id . ",%' or ds.state_id LIKE '%," . $state_id . ",%' or  ds.state_id LIKE '%," . $state_id . "' ) ";
+      $where_state_value[] = $filterData->get("services_effected");
     }
     else {
       $defaultServicesList = [];
@@ -864,19 +853,21 @@ class HzdcustomisationStorage {
         foreach ($group_downtimes_view_service as $service) {
           $defaultServicesList[$service->service_id] = $service->service_id;
         }
-        $orAllServiceGroup = $downtimesQuery->orConditionGroup();
+
         foreach ($defaultServicesList as $item) {
-          $orServiceGroup = $downtimesQuery->orConditionGroup()
-            ->condition('d.service_id', "{$item},%", 'LIKE')
-            ->condition('d.service_id', "%,{$item},%", 'LIKE')
-            ->condition('d.service_id', "%,{$item}", 'LIKE')
-            ->condition('d.service_id', "{$item}");
-          $orAllServiceGroup->condition($orServiceGroup);
+          $where_service_value[] = $item;
         }
-        $downtimesQuery->condition($orAllServiceGroup);
       }
     }
-//        kint($downtimesQuery->__toString());
+    $where_data = [];
+    if(count($where_state_value) > 0) {
+      $where_data[] = "CONCAT(',', d.state_id, ',') REGEXP ',(".implode('|', $where_state_value) ."),'";
+    }
+    if(count($where_service_value) > 0) {
+      $where_data[] = "CONCAT(',', d.service_id, ',') REGEXP ',(".implode('|', $where_service_value) ."),'";
+    }
+    $downtimesQuery->where(implode(' AND ', $where_data));
+       // dump($downtimesQuery->__toString());
     if ($type == 'archived') {
     $count_query = clone $downtimesQuery;
     $count_query->addExpression('Count(d.id)');

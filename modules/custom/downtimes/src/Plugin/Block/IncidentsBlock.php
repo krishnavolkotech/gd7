@@ -108,10 +108,9 @@ class IncidentsBlock extends BlockBase
                 $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
                 $serviceid = explode(',', $vals->service_id);
                 $stateids = explode(',', $vals->state_id);
-                $serviceEntities = Node::loadMultiple($serviceid);
                 $serviceTitles = $stateTitles = null;
-                foreach ($serviceEntities as $serviceItem) {
-                    $serviceTitles .= $serviceItem->getTitle() . ', ';
+                foreach ($serviceid as $serviceItem) {
+                    $serviceTitles .= node_get_title_fast([$serviceItem])[$serviceItem] . ', ';
                 }
                 foreach ($stateids as $stateId) {
                   if(isset($states[$stateId]))

@@ -47,6 +47,18 @@ function custom_views_php_views_data() {
     ),
   );
 
+  $data['views']['group_current_user'] = array(
+    'title' => t('Group Current User'),
+    'help' => t('Show Current user id'),
+    'field' => array(
+      'id' => 'group_current_user',
+    ),
+    'sort' => array(
+      // ID of sort handler plugin to use.
+      'id' => 'group_current_user',
+    ),
+  );
+
   $data['views']['group_type_value'] = array(
     'title' => t('Group Type Value'),
     'help' => t('Enable to include and GroupType code in your modules as part of a view'),

@@ -19,7 +19,7 @@ class PathAlias extends ControllerBase {
 
   //put your code here
   static function bulkUpdate() {
-    $groupContentIds = \Drupal::entityQuery('group_content')->condition('type', '%group_node%', 'LIKE')->execute();
+    $groupContentIds = \Drupal::entityQuery('group_content')->condition('type', get_group_content_node_type(), 'IN')->execute();
     //pr($groupContentIds);exit;
     //$groupContent = \Drupal\group\Entity\GroupContent::loadMultiple($groupContentIds);
     $batch = array(

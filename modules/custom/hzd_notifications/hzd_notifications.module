@@ -74,16 +74,12 @@ function migrate_each_user($uid, $rel_type, &$context) {
  * get default intervals of user
  */
 function hzd_get_default_interval($uid, $rel_type) {
-  $default_intval_per_user = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} 
-                               WHERE uid = :uid and rel_type = :type", array(
-    ":uid" => $uid,
-    ":type" => $rel_type
-  ))->fetchAll();
-  $default_interval = array();
-  foreach ($default_intval_per_user as $val) {
-    $default_interval[$val->service_type] = $val->default_send_interval;
-  }
-  return $default_interval;
+  return \Drupal::database()->select('service_notifications_user_default_interval', 'snudi')
+    ->fields('snudi', ['service_type', 'default_send_interval'])
+    ->condition('rel_type', $rel_type)
+    ->condition('uid', $uid)
+    ->execute()
+    ->fetchAllKeyed(0,1);
 }
 
 /**
@@ -607,10 +603,10 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           break;
         case 'field_earlywarning_release_title':
           $nodeId = $node->get('field_earlywarning_release')->value;
-          $release = \Drupal\node\Entity\Node::load($nodeId);
+          $release = node_get_title_fast([$nodeId])[$nodeId];
           $label = NULL;
           if ($release) {
-            $label = $release->label();
+            $label = $release;
           }
           $replacements[$original] = \Drupal::service('pathauto.alias_cleaner')
             ->cleanString($label);
@@ -634,11 +630,8 @@ function hzd_notifications_tokens($type, $tokens, array $data, array $options, B
           $servicesQuery->condition('downtime_id', $node->id());
           $services = $servicesQuery->execute()->fetchField();
           $services = explode(',', $services);
-          $serviceEntities = Node::loadMultiple($services);
-          $servicesLabels = array_map(function ($entity) {
-            return $entity->label();
-          }, $serviceEntities);
-          $replacements[$original] = implode(',', $servicesLabels);
+          $serviceEntitiesTitle = node_get_title_fast($services);
+          $replacements[$original] = implode(',', $serviceEntitiesTitle);
           break;
         case 'downtime_type':
           $downtimeQuery = \Drupal::database()->select('downtimes', 'd');

@@ -180,7 +180,8 @@ class HzdEarlyWarnings extends ControllerBase {
     $output['content']['#attached']['drupalSettings']['group_id'] = $group_id;
     $output['content']['#attached']['drupalSettings']['type'] = $type;
     
-    $node = \Drupal\node\Entity\Node::load(EARLYWARNING_TEXT);
+    //$node = \Drupal\node\Entity\Node::load(EARLYWARNING_TEXT);
+    $node_body = Markup::create(node_get_field_data_fast([EARLYWARNING_TEXT], 'body')[EARLYWARNING_TEXT]);
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') .
       '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
@@ -191,7 +192,7 @@ class HzdEarlyWarnings extends ControllerBase {
     
     if ($is_member || in_array($user_role, array('site_administrator','administrator'))) {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['body']['#markup'] = t($node->body->value);
+      $output['content']['pretext']['body']['#markup'] = $node_body;
 //      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
       $output['content']['pretext']['body'][] = [
         '#type'=>'link',
@@ -202,7 +203,7 @@ class HzdEarlyWarnings extends ControllerBase {
 //      $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     } else {
       $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-      $output['content']['pretext']['#markup'] = t($node->body->value);
+      $output['content']['pretext']['#markup'] = $node_body;
       $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     }
     
@@ -336,7 +337,7 @@ class HzdEarlyWarnings extends ControllerBase {
       $earlywarnings_nids = $release_specifc_earlywarnings->execute();
       
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
-        $release = \Drupal\node\Entity\Node::load($value->field_earlywarning_release_value);
+        $release = node_get_title_fast([$value->field_earlywarning_release_value])[$value->field_earlywarning_release_value];
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {
@@ -344,7 +345,7 @@ class HzdEarlyWarnings extends ControllerBase {
         }
         
         if ($release) {
-          $relase_title = $release->getTitle();
+          $relase_title = $release;
         }
         
         $options = null;
@@ -373,9 +374,8 @@ class HzdEarlyWarnings extends ControllerBase {
         
         $earlywarining_link = \Drupal::service('link_generator')
           ->generate(t($earlywarining_view_link), $url);
-  
-        $earlyWarningNode = Node::load(reset($earlywarnings_nids));
-        
+
+        $nid = reset($earlywarnings_nids);
 /*        $cids = \Drupal::entityQuery('comment')
           ->condition('entity_id', $value->early_warning)
           ->condition('entity_type', 'node')
@@ -387,7 +387,11 @@ class HzdEarlyWarnings extends ControllerBase {
             $userName = $comment->getOwner()->getDisplayName();
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }else{
-            $userName = $earlyWarningNode->getOwner()->getDisplayName();
+            $uid = $earlyWarningNode_tmp = node_get_entity_property_fast([$nid], 'uid')[$nid];
+            $name = [];
+            $name[] = user_get_cust_profile_fast([$uid])[$uid]->firstname;
+            $name[] = user_get_cust_profile_fast([$uid])[$uid]->lastname;
+            $userName = implode(" ", $name);
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }
 
