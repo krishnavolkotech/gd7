@@ -615,7 +615,6 @@ $inprogress_nid_values = [];
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-    $node = Node::load($nid);
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
     $module = 'hzd_release_management';
@@ -626,7 +625,7 @@ $inprogress_nid_values = [];
     '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
     ];
     $message_body[] = [
-    '#markup' => "Release : " . $node->label()
+    '#markup' => "Release : " . node_get_title_fast([$nid])[$nid]
     ];
     $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**

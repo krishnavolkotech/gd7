@@ -356,26 +356,14 @@ class HzdcustomisationStorage {
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->fields('nfd', ['nid']);
     $query->addField('nfd', 'title', 'service');
+    $query->addField('nfds', 'entity_id');
+    $query->join('node__field_dependent_service', 'nfds', 'nfd.nid = nfds.field_dependent_service_target_id');
     $query->join('node__field_enable_downtime', 'nfed', 'nfd.nid = nfed.entity_id');
     $query->join('node__field_downtime_type', 'nfdt', 'nfed.entity_id = nfdt.entity_id');
     $query->condition('nfdt.field_downtime_type_value', 'Publish');
     $query->condition('nfed.field_enable_downtime_value', '1');
     $query->orderBy('service');
-    $services = $query->execute()->fetchAll();
-    
-    $data = array();
-    foreach ($services as $service) {
-      $query = \Drupal::database()
-        ->select('node__field_dependent_service', 'nfds');
-      $query->addField('nfds', 'entity_id');
-      $query->condition('nfds.field_dependent_service_target_id', $service->nid);
-      $query->range(0, 1);
-      $id = $query->execute()->fetchField();
-      if ($id) {
-        $data[$id] = t($service->service);
-      }
-    }
-    return $data;
+    return $query->execute()->fetchAllKeyed(2,1);
   }
   
   /**
