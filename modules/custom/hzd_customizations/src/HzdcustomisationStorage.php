@@ -836,7 +836,7 @@ class HzdcustomisationStorage {
       $where_state_value[] = $filterData->get("states");
     }
     if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0) {
-      $where_state_value[] = $filterData->get("services_effected");
+      $where_service_value[] = $filterData->get("services_effected");
     }
     else {
       $defaultServicesList = [];
