@@ -100,10 +100,9 @@ class MaintenanceBlock extends BlockBase
                 $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
                 $serviceid = explode(',', $vals->service_id);
                 $stateids = explode(',', $vals->state_id);
-                
+                $serviceNames = node_get_title_fast($serviceid); 
                 foreach ($serviceid as $ids) {
                     // Loops for all services
-                    $serviceNames = node_get_title_fast([$ids]);
                     foreach ($stateids as $sids) {
                         // Loops for all states
                         if ($groupContent) {
