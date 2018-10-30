@@ -192,7 +192,7 @@ hzd_customizations.csv_imports_upload:
   options:
     _admin_route: TRUE
 
-downtimes.archived_downtimes_controller:
+hzd_customizations.archived_downtimes_controller:
   path: '/ajaxnode/archive/{node_id}'
   defaults:
     _controller: '\Drupal\hzd_customizations\Ajax\RenderNodePopupAjaxCommand::ajaxNodeDetails'
