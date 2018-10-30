@@ -144,7 +144,7 @@ class DeployedReleasesFilterForm extends FormBase {
               ->condition('type', 'deployed_releases')
               ->execute();
       foreach ($deployedReleases as $release) {
-        $actualReleaseId = node_get_field_data_fast($release, 'field_earlywarning_release')[$release];
+        $actualReleaseId = node_get_field_data_fast([$release], 'field_earlywarning_release')[$release];
         $actualReleaseTitle = node_get_title_fast([$actualReleaseId])[$actualReleaseId];
         if ($actualReleaseTitle) {
           $deployedReleaseData[$actualReleaseId] = $actualReleaseTitle;

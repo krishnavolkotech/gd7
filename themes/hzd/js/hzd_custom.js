@@ -428,16 +428,39 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
      function handlerOutIncident() {
      $(this).next('.downtime-hover').css('display', 'none');
      }*/
-    $('.frontpage-downtime-block ul.incidents-home-block>li .service-tooltip')
-      .popover({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'left',
-        html: true,
-        content: function () {
-          return $(this).next('.downtime-popover-wrapper').html();
-        }
+     $('section#block-incidentblock div ul.incidents-home-block li div.service-tooltip', context).popover({
+          trigger: 'hover',
+          container: 'body',
+          placement: 'left',
+          html: true,
+          content: function () {
+              var current_wrapper = $(this).parent().find('.downtime-popover-wrapper');
+              var nodeid = current_wrapper.attr('id').replace('incident-', '');
+              if (current_wrapper.html() == '') {
+                  if (typeof nodeid !== "undefined") {
+                      var endpoint = Drupal.url('ajaxnode/archive/' + nodeid);
+                      var current_element = $(current_wrapper, context);
+                      $.ajax({
+                          async: false,
+                          type: 'POST',
+                          url: endpoint,
+                          dataType: 'json',
+                          success: function (data) {
+                              var node_data = data[0].data;
+                              current_element.html(node_data);
+                          },
+                          error: function (jqXHR, exception) {
+                              return false;
+                          }
+                      });
+                  }
+
+              }
+              return current_wrapper.html();
+
+          }
       });
+
 //        $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
 //            var ele = $(this);
 //            var offset = ele.offset();
@@ -467,16 +490,40 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
 //                .removeAttr('top')
 //                .hide();
 //        });
-    $('.frontpage-downtime-block .maintenance-list ul li .service-tooltip')
-      .popover({
-        trigger: 'hover',
-        container: 'body',
-        placement: 'left',
-        html: true,
-        content: function () {
-          return $(this).next('.downtime-popover-wrapper').html();
-        }
+
+     $('section#block-maintenance div.maintenance-home-info div.maintenance-list ul li div.service-tooltip', context).popover({
+          trigger: 'hover',
+          container: 'body',
+          placement: 'left',
+          html: true,
+          content: function () {
+              var current_wrapper = $(this).parent().find('.downtime-popover-wrapper');
+              var nodeid = current_wrapper.attr('id').replace('maintenance-', '');
+              if (current_wrapper.html() == '') {
+                  if (typeof nodeid !== "undefined") {
+                      var endpoint = Drupal.url('ajaxnode/archive/' + nodeid);
+                      var current_element = $(current_wrapper, context);
+                      $.ajax({
+                          async: false,
+                          type: 'POST',
+                          url: endpoint,
+                          dataType: 'json',
+                          success: function (data) {
+                              var node_data = data[0].data;
+                              current_element.html(node_data);
+                          },
+                          error: function (jqXHR, exception) {
+                              return false;
+                          }
+                      });
+                  }
+
+              }
+              return current_wrapper.html();
+
+          }
       });
+
 //        $(".frontpage-downtime-block .maintenance-list ul li .service-tooltip").hover(function () {
 //            var ele = $(this);
 //            var offset = ele.offset();
@@ -529,15 +576,38 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
       })
       .parent().css('position', 'relative');
 
-    $('div.popup-wrapper').popover({
-      trigger: 'hover',
-      container: 'body',
-      placement: 'left',
-      html: true,
-      content: function () {
-        return $(this).find('.downtime-popover-wrapper').html();
-      }
-    });
+      $('div.popup-wrapper div.details-wrapper a.downtimes_details_link', context).popover({
+          trigger: 'hover',
+          container: 'body',
+          placement: 'left',
+          html: true,
+          content: function () {
+              var current_wrapper = $(this).parent().parent().find('.downtime-popover-wrapper');
+              var nodeid = current_wrapper.attr('id');
+              if (current_wrapper.html() == '') {
+                  if (typeof nodeid !== "undefined") {
+                      var endpoint = Drupal.url('ajaxnode/archive/' + nodeid);
+                      var current_element = $(current_wrapper, context);
+                      $.ajax({
+                          async: false,
+                          type: 'POST',
+                          url: endpoint,
+                          dataType: 'json',
+                          success: function (data) {
+                              var node_data = data[0].data;
+                              current_element.html(node_data);
+                          },
+                          error: function (jqXHR, exception) {
+                              return false;
+                          }
+                      });
+                  }
+
+              }
+              return current_wrapper.html();
+          }
+      });
+
 //        $('div.popup-wrapper').hover(function () {
 //            var offset = $(this).offset();
 //            var popHeight = $(this).find('article.popup').height();

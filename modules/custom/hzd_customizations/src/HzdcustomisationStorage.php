@@ -823,7 +823,7 @@ class HzdcustomisationStorage {
     if ($filterData->has('states') && $filterData->get('states') != 1) {
       $where_state_value[] = $filterData->get("states");
     }
-    if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0) {
+    if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0 && $filterData->get('services_effected') != 474) {
       $where_service_value[] = $filterData->get("services_effected");
     }
     else {
@@ -1109,10 +1109,11 @@ class HzdcustomisationStorage {
       }
       if (!$isPrintFormat) {
         $headersNew = array_merge($headersNew, ['action' => t('Action')]);
-        $entity = Node::load($client->downtime_id);
+//        $entity = Node::load($client->downtime_id);
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-        $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['class'=>['downtime-popover-wrapper']]];
-        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
+        $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['id' => [$client->downtime_id],'class'=>['downtime-popover-wrapper']]];
+//        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
+        $links['action']['popup']['node'][] = [];
         $elements['action'] = $renderer->render($links);
       }
 //            pr(count($links));
