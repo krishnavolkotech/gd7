@@ -529,15 +529,37 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
       })
       .parent().css('position', 'relative');
 
-    $('div.popup-wrapper').popover({
-      trigger: 'hover',
-      container: 'body',
-      placement: 'left',
-      html: true,
-      content: function () {
-        return $(this).find('.downtime-popover-wrapper').html();
-      }
-    });
+      $('div.popup-wrapper', context).popover({
+          trigger: 'hover',
+          container: 'body',
+          placement: 'left',
+          html: true,
+          content: function () {
+              var nodeid = $(this).children().next().attr('id');
+              if ($(this).find('.downtime-popover-wrapper').html() == '') {
+                  if (typeof nodeid !== "undefined") {
+                      var endpoint = Drupal.url('ajaxnode/archive/' + nodeid);
+                      var current_element = $(this, context);
+                      $.ajax({
+                          async: false,
+                          type: 'POST',
+                          url: endpoint,
+                          dataType: 'json',
+                          success: function (data) {
+                              var node_data = data[0].data;
+                              current_element.find('.downtime-popover-wrapper').html(node_data);
+                          },
+                          error: function (jqXHR, exception) {
+                              return false;
+                          }
+                      });
+                  }
+
+              }
+              return $(this, context).find('.downtime-popover-wrapper').html();
+
+          }
+      });
 //        $('div.popup-wrapper').hover(function () {
 //            var offset = $(this).offset();
 //            var popHeight = $(this).find('article.popup').height();

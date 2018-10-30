@@ -191,3 +191,11 @@ hzd_customizations.csv_imports_upload:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+downtimes.archived_downtimes_controller:
+  path: '/ajaxnode/archive/{node_id}'
+  defaults:
+    _controller: '\Drupal\hzd_customizations\Ajax\RenderNodePopupAjaxCommand::ajaxNodeDetails'
+  requirements:
+    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
