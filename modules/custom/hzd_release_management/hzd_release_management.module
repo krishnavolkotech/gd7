@@ -101,7 +101,7 @@ function non_productions_list() {
     $entityQuery->condition('field_non_production_state', $state);
   }
   $nodes_nids = $entityQuery->execute();
-  $nodeTitles = node_get_title_fast($nodes_nids);
+  $nodeTitles = node_get_title_fast(array_values($nodes_nids));
 
   $environment_lists[0] = '<' . t("Umgebung") . '>';
   $environment_lists[1] = t('Produktion');
@@ -110,7 +110,7 @@ function non_productions_list() {
     $environment_lists[$nid] = $vals;
   }
   //Environments do not need sort
-//  natcasesort($environment_lists);
+  natcasesort($environment_lists);
   return $environment_lists;
 }
 
@@ -1429,12 +1429,12 @@ function node_get_title_fast(array $nids) {
       ->fetchAllKeyed(0, 1);
 
     if ($results) {
-      $return = $results + $unavailable;
-      $titles = $return + $titles;
+      $return = $results + $return;
+      $titles = $results + $titles;
     }
   }
 
-  return $titles;
+  return $return;
 }
 
 /**
@@ -1463,11 +1463,11 @@ function node_get_field_data_fast(array $nids, $field) {
       ->condition('d.entity_id', array_keys($unavailable), 'IN')
       ->execute()->fetchAllKeyed(0, 1);
     if ($results) {
-      $return = $results + $unavailable;
-      $field_result = $return + $field_result;
+      $return = $results + $return;
+      $field_result = $results + $field_result;
     }
   }
-  return $field_result;
+  return $return;
 }
 
 /**
@@ -1496,11 +1496,11 @@ function node_get_field_data_target_fast(array $nids, $field) {
       ->condition('d.entity_id', array_keys($unavailable), 'IN')
       ->execute()->fetchAllKeyed(0, 1);
     if ($results) {
-      $return = $results + $unavailable;
-      $field_result = $return + $field_result;
+      $return = $results + $return;
+      $field_result = $results + $field_result;
     }
   }
-  return $field_result;
+  return $return;
 }
 
 /**
@@ -1527,11 +1527,11 @@ function node_get_entity_property_fast(array $nids, $field_value) {
       ->condition('d.nid', array_keys($unavailable), 'IN')
       ->execute()->fetchAllKeyed(0, 1);
     if ($results) {
-      $return = $results + $unavailable;
-      $field_result = $return + $field_result;
+      $return = $results + $return;
+      $field_result = $results + $field_result;
     }
   }
-  return $field_result;
+  return $return;
 }
 
 /**
@@ -1558,9 +1558,9 @@ function user_get_cust_profile_fast(array $uids) {
       ->condition('d.uid', array_keys($unavailable), 'IN')
       ->execute()->fetchAllAssoc('uid');
     if ($results) {
-      $return = $results + $unavailable;
-      $field_result = $return + $field_result;
+      $return = $results + $return;
+      $field_result = $results + $field_result;
     }
   }
-  return $field_result;
+  return $return;
 }
