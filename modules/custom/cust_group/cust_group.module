@@ -594,7 +594,7 @@ function mailToGroupAdmins($data = []) {
   $current_user_id = \Drupal::currentUser()->id();
   $options = ['absolute' => TRUE];
   $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user_id], $options);
-  $requester_link = $url->toString();
+  $requester_link = Link::fromTextAndUrl(\Drupal::currentUser()->getDisplayName(), $url)->toString();
 
   foreach ($groupAdmins as $admin) {
     $userEntity = $admin->entity_id->entity;
