@@ -229,7 +229,9 @@ function hzd_user_customizations_user_insert($user) {
  * hook implementing hook_user_update()
  */
 function hzd_user_customizations_user_update($account) {
-  \Drupal\Core\Cache\Cache::invalidateTags(array('user:' . $account->id()));
+  \Drupal\Core\Cache\Cache::invalidateTags(array('user:' . $account->id(),
+      'grantpermission_view:' . $account->id(),
+      'grantpermission_update_delete:' . $account->id()));
 }
 
 /**

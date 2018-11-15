@@ -187,7 +187,9 @@ function cust_group_group_insert($group) {
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:views.view.all_groups',
-      'config:views.view.my_groups'
+      'config:views.view.my_groups',
+      'grantpermission_view:' . \Drupal::currentUser()->id(),
+      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
     ]);
 }
 
@@ -195,7 +197,9 @@ function cust_group_group_update($group) {
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:views.view.all_groups',
-      'config:views.view.my_groups'
+      'config:views.view.my_groups',
+      'grantpermission_view:' . \Drupal::currentUser()->id(),
+      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
     ]);
 }
 
@@ -203,7 +207,9 @@ function cust_group_group_delete($group) {
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:views.view.all_groups',
-      'config:views.view.my_groups'
+      'config:views.view.my_groups',
+      'grantpermission_view:' . \Drupal::currentUser()->id(),
+      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
     ]);
 }
 
@@ -259,7 +265,9 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
       'config:block.block.hzd_local_tasks',
       'config:system.menu.primary-links',
       'config:views.view.all_groups',
-      'config:views.view.my_groups'
+      'config:views.view.my_groups',
+      'grantpermission_view:' . \Drupal::currentUser()->id(),
+      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
     ]);
 }
 
@@ -418,6 +426,9 @@ function cust_group_entity_reference_selection_alter(&$def) {
 function cust_group_form_alter(&$form, $form_state, $form_id) {
 
   switch ($form_id) {
+    case 'group_admin_permissions':
+      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
+      break;
     case 'node_faqs_gnode-form_form':
     case 'node_faqs_edit_form':
     case 'node_faqs_form':
@@ -559,6 +570,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     $form['#attached']['drupalSettings']['group_context'] = $group ? $group->id() : null;
   }
 
+}
+
+function permission_cache_submit_handler(&$form, $form_state) {
+  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
 }
 
 function requst_submit_handler(&$form, $form_state) {

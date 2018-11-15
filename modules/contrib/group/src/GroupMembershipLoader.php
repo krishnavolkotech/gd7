@@ -22,6 +22,13 @@ use Drupal\group\Entity\GroupInterface;
 class GroupMembershipLoader implements GroupMembershipLoaderInterface {
 
   /**
+   * Static cache of group access of node types.
+   *
+   * @var array
+   */
+  protected $groupAccessNodeTypes = [];
+
+  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -130,6 +137,74 @@ class GroupMembershipLoader implements GroupMembershipLoaderInterface {
     /** @var \Drupal\group\Entity\GroupContentInterface[] $group_contents */
     $group_contents = $this->groupContentStorage()->loadByProperties($properties);
     return $this->wrapGroupContentEntities($group_contents);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function groupAccessNodeTypes(AccountInterface $account, $node_type_ids, $op) {
+    $uid = $account->id();
+    $tags = array('grant_permission_all_cached', 'grantpermission_view:' . $uid);
+    $tags_update = array('grant_permission_all_cached', 'grantpermission_update_delete:' . $uid);
+    $grants_m = [];
+
+    if($op == 'view') {
+      $grants_m_cid = 'cust_group:grantpermission_view' . $uid;
+    } else {
+      $grants_m_cid = 'cust_group:grantpermission_update' . $uid;
+    }
+    if ($grants_m_cache = \Drupal::cache()->get($grants_m_cid)) {
+      $grants_m_cache_data = $grants_m_cache->data;
+    }
+
+    if(isset($grants_m_cache_data)) {
+      return $grants_m_cache_data;
+    }
+
+    if(!isset($grants_m_cache_data)) {
+      $membership_loader = \Drupal::service('group.membership_loader');
+      foreach ($membership_loader->loadByUser($account) as $group_membership) {
+        $group = $group_membership->getGroup();
+
+        // Add the groups the user is a member of to use later on.
+        $member_gids[] = $gid = $group->id();
+
+        foreach ($node_type_ids as $node_type_id) {
+          $plugin_id = "group_node:$node_type_id";
+
+          switch ($op) {
+            case 'view':
+              if ($group->hasPermission("view $plugin_id entity", $account)) {
+                $grants_m["gnode:$node_type_id"][] = $gid;
+              }
+              if ($group->hasPermission("view unpublished $plugin_id entity", $account)) {
+                $grants_m["gnode_unpublished:$node_type_id"][] = $gid;
+              }
+              break;
+
+            case 'update':
+            case 'delete':
+              // If you can act on any node, there's no need for the author grant.
+              if ($group->hasPermission("$op any $plugin_id entity", $account)) {
+                $grants_m["gnode:$node_type_id"][] = $gid;
+              }
+              elseif ($group->hasPermission("$op own $plugin_id entity", $account)) {
+                $grants_m["gnode_author:$uid:$node_type_id"][] = $gid;
+              }
+              break;
+          }
+        }
+      }
+
+      //$this->groupAccessNodeTypes[$account->id()][$cache_id][$cache_id.'grants_m'] =  $grants_m;
+      if($op == 'view') {
+        \Drupal::cache()->set($grants_m_cid, $grants_m, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, $tags);
+      } else {
+        \Drupal::cache()->set($grants_m_cid, $grants_m, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, $tags_update);
+      }
+    }
+
+    return $grants_m;
   }
 
 }
