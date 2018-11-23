@@ -10,7 +10,7 @@ revision: null
 revision_information: null
 whitelist: denis.roy@hzd.hessen.de
 address: denis.roy@hzd.hessen.de
-enable: true
+enable: false
 description: true
 langcode: de
 message: false
