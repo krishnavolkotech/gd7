@@ -630,7 +630,6 @@ class HzdcustomisationStorage {
     }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
 
-    // Allowing Edit for AB State
     if (in_array(19, $content_state_id)) {
       return TRUE;
     }
