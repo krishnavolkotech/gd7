@@ -100,7 +100,7 @@ class MaintenanceBlock extends BlockBase
                 $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
                 $serviceid = explode(',', $vals->service_id);
                 $stateids = explode(',', $vals->state_id);
-                $serviceNames = node_get_title_fast($serviceid); 
+                $serviceNames = node_get_all_title_fast($serviceid);
                 foreach ($serviceid as $ids) {
                     // Loops for all services
                     foreach ($stateids as $sids) {
@@ -183,10 +183,7 @@ class MaintenanceBlock extends BlockBase
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
 
-      $markup['#cache'] = array(
-        'contexts' => ['url.path'], //setting cache contexts
-        'tags' => ['node_list'] // setting cache tags
-      );
+      $markup['#cache'] = ['max-age' => 0];
         
         return $markup;
     }

@@ -197,10 +197,7 @@ class IncidentsBlock extends BlockBase
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
 
-        $markup['#cache'] = array(
-        'contexts' => ['url.path'], //setting cache contexts
-        'tags' => ['node_list'] // setting cache tags
-      );
+      $markup['#cache'] = ['max-age' => 0];
 
         return $markup;
     }

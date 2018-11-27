@@ -1407,6 +1407,40 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
  * @param array $nids
  * @return array
  */
+function node_get_all_title_fast(array $nids) {
+  $titles = &drupal_static(__FUNCTION__, array());
+  $return = array();
+  $unavailable = array();
+  foreach ($nids as $nid) {
+    // Lookup static cache of self.
+    if (array_key_exists($nid, $titles)) {
+      $return[$nid] = $titles[$nid];
+    }
+    else { // Set NULL, so unavailable nodes will have NULL as their return value.
+      $unavailable[$nid] = NULL;
+    }
+  }
+
+  if ($unavailable) {
+    $results = \Drupal::database()->select('node_field_data', 'd')
+      ->fields('d', ['nid', 'title'])
+      ->condition('d.nid', array_keys($unavailable), 'IN')
+      ->execute()
+      ->fetchAllKeyed(0, 1);
+
+    if ($results) {
+      $return = $results + $return;
+      $titles = $results + $titles;
+    }
+  }
+
+  return $titles;
+}
+
+/**
+ * @param array $nids
+ * @return array
+ */
 function node_get_title_fast(array $nids) {
   $titles = &drupal_static(__FUNCTION__, array());
   $return = array();
