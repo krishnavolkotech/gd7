@@ -5,8 +5,6 @@ namespace Drupal\bootstrap\Plugin\Preprocess;
 use Drupal\bootstrap\Utility\Variables;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
-use Drupal\Component\Utility\Html;
-
 /**
  * Pre-processes variables for the "breadcrumb" theme hook.
  *
@@ -46,7 +44,7 @@ class Breadcrumb extends PreprocessBase implements PreprocessInterface {
       $page_title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
       if (!empty($page_title)) {
         $breadcrumb[] = [
-          'text' => \Drupal\Core\Render\Markup::create(Html::decodeEntities($page_title)),
+          'text' => $page_title,
           'attributes' => new Attribute(['class' => ['active']]),
         ];
       }

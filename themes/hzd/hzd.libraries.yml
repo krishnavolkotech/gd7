@@ -33,6 +33,7 @@ bootstrap-scripts:
     js/hzd_custom.js : {}
   dependencies:
       - core/drupal.tableheader
+      - core/drupal.ajax
 theme:
   js:
     js/3.3.5/bootstrap.js: {}

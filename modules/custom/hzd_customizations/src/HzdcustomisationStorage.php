@@ -356,26 +356,14 @@ class HzdcustomisationStorage {
     $query = \Drupal::database()->select('node_field_data', 'nfd');
     $query->fields('nfd', ['nid']);
     $query->addField('nfd', 'title', 'service');
+    $query->addField('nfds', 'entity_id');
+    $query->join('node__field_dependent_service', 'nfds', 'nfd.nid = nfds.field_dependent_service_target_id');
     $query->join('node__field_enable_downtime', 'nfed', 'nfd.nid = nfed.entity_id');
     $query->join('node__field_downtime_type', 'nfdt', 'nfed.entity_id = nfdt.entity_id');
     $query->condition('nfdt.field_downtime_type_value', 'Publish');
     $query->condition('nfed.field_enable_downtime_value', '1');
     $query->orderBy('service');
-    $services = $query->execute()->fetchAll();
-    
-    $data = array();
-    foreach ($services as $service) {
-      $query = \Drupal::database()
-        ->select('node__field_dependent_service', 'nfds');
-      $query->addField('nfds', 'entity_id');
-      $query->condition('nfds.field_dependent_service_target_id', $service->nid);
-      $query->range(0, 1);
-      $id = $query->execute()->fetchField();
-      if ($id) {
-        $data[$id] = t($service->service);
-      }
-    }
-    return $data;
+    return $query->execute()->fetchAllKeyed(2,1);
   }
   
   /**
@@ -429,12 +417,10 @@ class HzdcustomisationStorage {
     $services = \Drupal::entityQuery('node')
       ->condition('field_dependent_downtimeservices', $serviceId)
       ->execute();
-    $service = \Drupal\node\Entity\Node::loadMultiple($services);
-//    $dependantServicesList = $service->get('field_dependent_services')->getValue();
+    $service = node_get_field_data_target_fast($services, 'field_dependent_service');
     $dependantServices = [];
     foreach ($service as $val) {
-      $dependantServices[] = $val->get('field_dependent_service')
-        ->referencedEntities()[0]->id();
+      $dependantServices[] = $val;
 //      pr($dependantServices);exit;
     }
     return $dependantServices;
@@ -644,7 +630,7 @@ class HzdcustomisationStorage {
     }
     $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
 
-    if ($content_state_id[0] == 19) {
+    if (in_array(19, $content_state_id)) {
       return TRUE;
     }
 
@@ -712,7 +698,7 @@ class HzdcustomisationStorage {
     if ($type == 'archived') {
       $downtimesQuery->addJoin('LEFT', 'resolve_cancel_incident', 'rci', 'rci.downtime_id = d.downtime_id');
     }
-    $downtimesQuery = $downtimesQuery->condition('gcfd.type', '%group_node%', 'LIKE');
+    $downtimesQuery = $downtimesQuery->condition('gcfd.type', get_group_content_node_type(), 'IN');
     $downtimesQuery = $downtimesQuery->condition('gcfd.gid', $group_id);
     
     $exposedFilterData = $filterData->all();
@@ -832,22 +818,13 @@ class HzdcustomisationStorage {
       }
     }
 //        pr($downtimesQuery->__toString());exit;
+    $where_state_value = [];
+    $where_service_value = [];
     if ($filterData->has('states') && $filterData->get('states') != 1) {
-      $orStateGroup = $downtimesQuery->orConditionGroup()
-        ->condition('d.state_id', "{$filterData->get('states')},%", 'LIKE')
-        ->condition('d.state_id', "%,{$filterData->get('states')},%", 'LIKE')
-        ->condition('d.state_id', "%,{$filterData->get('states')}", 'LIKE')
-        ->condition('d.state_id', "{$filterData->get('states')}");
-      $downtimesQuery = $downtimesQuery->condition($orStateGroup);
+      $where_state_value[] = $filterData->get("states");
     }
-    if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0) {
-      $orServiceGroup = $downtimesQuery->orConditionGroup()
-        ->condition('d.service_id', "{$filterData->get('services_effected')},%", 'LIKE')
-        ->condition('d.service_id', "%,{$filterData->get('services_effected')},%", 'LIKE')
-        ->condition('d.service_id', "%,{$filterData->get('services_effected')}", 'LIKE')
-        ->condition('d.service_id', "{$filterData->get('services_effected')}");
-      $downtimesQuery = $downtimesQuery->condition($orServiceGroup);
-//            $state = " ( ds.state_id LIKE '" . $state_id . ",%' or ds.state_id LIKE '%," . $state_id . ",%' or  ds.state_id LIKE '%," . $state_id . "' ) ";
+    if ($filterData->has('services_effected') && $filterData->get('services_effected') != 0 && $filterData->get('services_effected') != 474) {
+      $where_service_value[] = $filterData->get("services_effected");
     }
     else {
       $defaultServicesList = [];
@@ -864,19 +841,21 @@ class HzdcustomisationStorage {
         foreach ($group_downtimes_view_service as $service) {
           $defaultServicesList[$service->service_id] = $service->service_id;
         }
-        $orAllServiceGroup = $downtimesQuery->orConditionGroup();
+
         foreach ($defaultServicesList as $item) {
-          $orServiceGroup = $downtimesQuery->orConditionGroup()
-            ->condition('d.service_id', "{$item},%", 'LIKE')
-            ->condition('d.service_id', "%,{$item},%", 'LIKE')
-            ->condition('d.service_id', "%,{$item}", 'LIKE')
-            ->condition('d.service_id', "{$item}");
-          $orAllServiceGroup->condition($orServiceGroup);
+          $where_service_value[] = $item;
         }
-        $downtimesQuery->condition($orAllServiceGroup);
       }
     }
-//        kint($downtimesQuery->__toString());
+    $where_data = [];
+    if(count($where_state_value) > 0) {
+      $where_data[] = "CONCAT(',', d.state_id, ',') REGEXP ',(".implode('|', $where_state_value) ."),'";
+    }
+    if(count($where_service_value) > 0) {
+      $where_data[] = "CONCAT(',', d.service_id, ',') REGEXP ',(".implode('|', $where_service_value) ."),'";
+    }
+    $downtimesQuery->where(implode(' AND ', $where_data));
+       // dump($downtimesQuery->__toString());
     if ($type == 'archived') {
     $count_query = clone $downtimesQuery;
     $count_query->addExpression('Count(d.id)');
@@ -1130,10 +1109,11 @@ class HzdcustomisationStorage {
       }
       if (!$isPrintFormat) {
         $headersNew = array_merge($headersNew, ['action' => t('Action')]);
-        $entity = Node::load($client->downtime_id);
+//        $entity = Node::load($client->downtime_id);
         $view_builder = \Drupal::entityManager()->getViewBuilder('node');
-        $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['class'=>['downtime-popover-wrapper']]];
-        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
+        $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['id' => [$client->downtime_id],'class'=>['downtime-popover-wrapper']]];
+//        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
+        $links['action']['popup']['node'][] = [];
         $elements['action'] = $renderer->render($links);
       }
 //            pr(count($links));

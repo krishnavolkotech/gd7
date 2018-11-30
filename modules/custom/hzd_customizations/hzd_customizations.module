@@ -457,15 +457,15 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     if (empty($service)) {
       $service = $entity->get('field_release_service')->value;
     }
-    $releaseNode = Node::load($entity->get('field_earlywarning_release')->value);
-    $default_releases = array("0" => '<' . t('Release') . '>',$releaseNode->id()=>$releaseNode->label());
+    $releaseNode_nid = $entity->get('field_earlywarning_release')->value;
+    $default_releases = array("0" => '<' . t('Release') . '>',$releaseNode_nid => node_get_title_fast([$releaseNode_nid])[$releaseNode_nid]);
     if ($service != 0) {
       $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
     }
     natcasesort($default_releases);
 
     $form['field_earlywarning_release']['widget']['#options'] = $default_releases;
-    $form['field_earlywarning_release']['widget']['#default_value'] = $releaseNode->id();
+    $form['field_earlywarning_release']['widget']['#default_value'] = $releaseNode_nid;
     $form['field_earlywarning_release']['#attributes']['id'] = 'edit-field-earlywarning-release-wrapper-one';
     $form['field_release_service']['widget']['#ajax'] = [
         'callback' => 'releaseData',
@@ -1178,4 +1178,27 @@ function hzd_customizations_preprocess_table(&$variables) {
     if(is_object($node)) {
         $variables['node_type'] = $node->bundle();
     }
+}
+
+/**
+ * @return mixed
+ */
+function get_group_content_node_type() {
+//  $cid = 'hzdcustomization:group_content_node';
+//  $build = NULL;
+//
+//  $cache = \Drupal::cache()->get($cid);
+//  if (!empty($cache->data)){
+//    $build = $cache->data;
+//    return $build;
+//  }
+
+  $db = \Drupal::database();
+  $query = $db->select('group_content_field_data', 'd')
+    ->distinct()
+    ->fields('d',['type'])
+    ->condition('d.type', '%group_node%','LIKE');
+  $res = $query->execute()->fetchCol();
+//  \Drupal::cache()->set($cid, $res, CacheBackendInterface::CACHE_PERMANENT, ['hzdcustomization']);
+  return $res;
 }

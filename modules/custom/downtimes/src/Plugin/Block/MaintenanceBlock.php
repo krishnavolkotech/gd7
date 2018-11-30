@@ -94,25 +94,23 @@ class MaintenanceBlock extends BlockBase
         $unResolvedServices = $data = [];
         // Get the service id's list and get respective details from service id.
         foreach ($maintenance_list as $key => $vals) {
-            $incident = Node::load($vals->downtime_id);
+           // $incident = Node::load($vals->downtime_id);
             
-            if ($incident) {
+           // if ($incident) {
                 $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
                 $serviceid = explode(',', $vals->service_id);
                 $stateids = explode(',', $vals->state_id);
-                
+                $serviceNames = node_get_all_title_fast($serviceid);
                 foreach ($serviceid as $ids) {
                     // Loops for all services
-                    $service = Node::load($ids);
-                    $service_name = $service->getTitle();
-                    $stateText = '';
-                    $serviceNames[$ids] = $service_name;
                     foreach ($stateids as $sids) {
                         // Loops for all states
                         if ($groupContent) {
                             $hoverIconHtml = $hover_markup = null;
                             if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
-                                $hover_markup = MaintenanceBlock::get_hover_markup($incident);
+                              $renderer = \Drupal::service('renderer');
+                                $markupdata = ['#type'=>'container','#attributes'=>['id' => 'maintenance-' . $vals->downtime_id, 'class'=>['downtime-popover-wrapper']]];
+                                $hover_markup = $renderer->render($markupdata);
                                 $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
                             }
                             $class = '';
@@ -120,12 +118,12 @@ class MaintenanceBlock extends BlockBase
                                 $class = 'text-danger';
                             }
                             $label = Markup::create('<span class="state-item ' . $class . '">[' . $states[$sids] . '] ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr </span>');
-                            $url = $incident->toUrl();
+                            $url = Url::fromUserInput('/node/' . $vals->downtime_id);
                             $data[$ids][] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . $hoverIconHtml . $hover_markup);
                         }
                     }
                 }
-            }
+            //}
         }
         # Sort services alphabetically
         if (!empty($serviceNames))
@@ -184,7 +182,8 @@ class MaintenanceBlock extends BlockBase
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
-        $markup['#cache']['max-age'] = 0;
+
+      $markup['#cache'] = ['max-age' => 0];
         
         return $markup;
     }

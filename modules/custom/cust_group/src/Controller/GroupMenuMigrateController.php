@@ -71,7 +71,7 @@ class GroupMenuMigrateController extends ControllerBase {
     $oldNode = explode('/', trim(str_replace('internal:/', '', $oldUri), '/'));
     $node = $oldNode[1];
     $groupContent = \Drupal::entityQuery('group_content')
-      ->condition('type', '%group_node%', 'LIKE')
+      ->condition('type', get_group_content_node_type(), 'IN')
       ->condition('entity_id', $node)
       ->execute();
 //      $groupData = \Drupal::database()->select('group_content_field_data','gcfd')

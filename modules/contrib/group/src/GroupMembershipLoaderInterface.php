@@ -52,4 +52,13 @@ interface GroupMembershipLoaderInterface {
    */
   public function loadByUser(AccountInterface $account = NULL, $roles = NULL);
 
+  /**
+   * Check Group permissions of Node types
+   *
+   * @param \Drupal\group\Entity\GroupInterface $group
+   * @param $node_type_ids
+   * @param $op
+   */
+  public function groupAccessNodeTypes(AccountInterface $account, $node_type_ids, $op);
+
 }

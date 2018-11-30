@@ -3,6 +3,7 @@
 namespace Drupal\custom_views_php\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 use Drupal\Core\Url;
@@ -51,22 +52,24 @@ class Risks extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    $build = [];
+    $item_list = [];
     $cluster = $values->_entity;
-//    $risks = \Drupal::entityTypeManager()
-//      ->getStorage('node')
-//      ->loadByProperties(['field_risk_clusters' => $cluster->getEntity()->id(), 'type' => 'risk']);
     $riskItems = \Drupal::entityQuery('node')
       ->condition('field_risk_clusters',$cluster->getEntity()->id())
       ->condition('type','risk')
       ->sort('created','desc')
       ->execute();
-    $risks = \Drupal\node\Entity\Node::loadMultiple($riskItems);
-    $items = array_map(function ($risk) {
-        return $risk->toLink($risk->get('field_id')->value . '-' . $risk->get('title')->value)->toString();
-    }, $risks);
+    if(count($riskItems) > 0) {
+      $risk_title = node_get_title_fast($riskItems);
+      $risk_ids = node_get_field_data_fast($riskItems, 'field_id');
+      $item_list = array_map(function ($key, $title, $field_id) {
+        $options = ['absolute' => TRUE];
+        $url = Url::fromRoute('entity.node.canonical', ['node' => $key], $options);
+        return Link::fromTextAndUrl($field_id . '-' . $title, $url);
+      }, array_keys($risk_title), $risk_title, $risk_ids);
+    }
     $build = [
-      '#items' => $items,
+      '#items' => $item_list,
       '#theme' => 'item_list',
       '#type' => 'ul'
     ];

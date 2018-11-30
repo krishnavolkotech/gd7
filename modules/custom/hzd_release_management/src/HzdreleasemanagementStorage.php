@@ -615,7 +615,6 @@ $inprogress_nid_values = [];
    * Function for sending mail.
    */
   public static function release_not_import_mail($nid) {
-    $node = Node::load($nid);
     $get_mails = \Drupal::config('hzd_release_management.settings')->get('release_not_import');
     $to = explode(',', $get_mails);
     $module = 'hzd_release_management';
@@ -626,7 +625,7 @@ $inprogress_nid_values = [];
     '#markup' => \Drupal::config('hzd_release_management.settings')->get('release_mail_body')['value']
     ];
     $message_body[] = [
-    '#markup' => "Release : " . $node->label()
+    '#markup' => "Release : " . node_get_title_fast([$nid])[$nid]
     ];
     $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
@@ -1215,10 +1214,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $entityQuery = \Drupal::entityQuery('node');
       $entityQuery->condition('type','non_production_environment');
       $entityQuery->sort('field_order');
-        $entityQuery->condition('field_non_production_state',$state);
-      $nodes = Node::loadMultiple($entityQuery->execute());
-      foreach ($nodes as $vals) {
-        $environment_lists[$vals->id()] = $vals->label();
+      $entityQuery->condition('field_non_production_state',$state);
+      $nodes_nid = $entityQuery->execute();
+      $nodeTitles = node_get_title_fast($nodes_nid);
+      foreach ($nodeTitles as $nid => $vals) {
+        $environment_lists[$nid] = $vals;
       }
       
       /*$non_productions_lists_query = db_select('node_field_data', 'nfd');

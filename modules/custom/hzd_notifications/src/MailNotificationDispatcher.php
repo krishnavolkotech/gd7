@@ -81,7 +81,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
       $data['body'] = $notification['body'];
       $data['subject'] = $notification['subject'];
       $attachments = [];
-      if($entity->bundle() == 'quickinfo'){
+      if($entity !== NULL && $entity->bundle() == 'quickinfo'){
         $files = $entity->get('upload')->referencedEntities();
         foreach ($files as $file) {
           $temp = new \stdClass();

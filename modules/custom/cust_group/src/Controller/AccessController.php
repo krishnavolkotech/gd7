@@ -123,21 +123,27 @@ class AccessController extends ControllerBase
         return AccessResult::allowed();
     }
 
-    public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-        $node = \Drupal::routeMatch()->getParameter('node');
-        if(!empty($node) && !is_object($node)) {
-            $node = \Drupal\node\Entity\Node::load($node);
-        }
-        if (is_object($node)) {
-            if ($node->getType() == 'quickinfo' && $node->isPublished()) {
-                return AccessResult::forbidden();
-            }
-            if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
-                return AccessResult::allowed();
-            }
-        }
-        return AccessResult::allowed();   
+  public function nodeRevisionsAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if (!empty($node)) {
+      if (!is_object($node)) {
+        $type = node_get_entity_property_fast([$node], 'type')[$node];
+        $status = node_get_entity_property_fast([$node], 'status')[$node];
+      } else {
+        $type = $node->getType();
+        $status = $node->isPublished() ?: 0;
+      }
     }
+    if (!empty($type) && !empty($status)) {
+      if ($type == 'quickinfo' && $status == 1) {
+        return AccessResult::forbidden();
+      }
+      if ($type == 'quickinfo' && $status == 0) {
+        return AccessResult::allowed();
+      }
+    }
+    return AccessResult::allowed();
+  }
 
     public function groupAdministratorValidation(Route $route, RouteMatch $route_match, AccountInterface $user) {
         // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check

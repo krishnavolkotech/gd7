@@ -25,10 +25,8 @@ class CustGroupHelper {
   
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
-
-    $node = Node::load($nodeId);
-
-    $plugin_id = 'group_node:' . $node->bundle();
+    $bundle_type = node_get_entity_property_fast([$nodeId], 'type')[$nodeId];
+    $plugin_id = 'group_node:' . $bundle_type;
 
     // Only act if there are group content types for this node type.
     $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
@@ -40,7 +38,7 @@ class CustGroupHelper {
       ->getStorage('group_content')
       ->loadByProperties([
         'type' => array_keys($group_content_types),
-        'entity_id' => $node->id(),
+        'entity_id' => $nodeId,
       ]);
     return reset($group_contents);
   }
@@ -50,11 +48,16 @@ class CustGroupHelper {
     $group = $routeMatch->getParameter('group');
     $node = $routeMatch->getParameter('node');
     
-    if (!empty($node) && !$node instanceof Node) {
-      $node = Node::load($node);
+    if (!empty($node)) {
+      if($node instanceof Node) {
+        $nid = $node->id();
+      }else {
+        $nid = $node;
+      }
     }
+
     if (!empty($node) && empty($group)) {
-      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
+      $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($nid);
       if (!empty($groupContent)) {
         $group = $groupContent->getGroup();
       }

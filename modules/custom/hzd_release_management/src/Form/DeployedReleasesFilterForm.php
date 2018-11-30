@@ -144,10 +144,10 @@ class DeployedReleasesFilterForm extends FormBase {
               ->condition('type', 'deployed_releases')
               ->execute();
       foreach ($deployedReleases as $release) {
-        $deployedReleasesEntity = \Drupal\node\Entity\Node::load($release);
-        $actualRelease = \Drupal\node\Entity\Node::load($deployedReleasesEntity->get('field_earlywarning_release')->value);
-        if ($actualRelease instanceof \Drupal\node\Entity\Node) {
-          $deployedReleaseData[$actualRelease->id()] = $actualRelease->label();
+        $actualReleaseId = node_get_field_data_fast([$release], 'field_earlywarning_release')[$release];
+        $actualReleaseTitle = node_get_title_fast([$actualReleaseId])[$actualReleaseId];
+        if ($actualReleaseTitle) {
+          $deployedReleaseData[$actualReleaseId] = $actualReleaseTitle;
         }
       }
       natcasesort($deployedReleaseData);

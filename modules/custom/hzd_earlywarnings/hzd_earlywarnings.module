@@ -40,11 +40,7 @@ function getErlywarningServies() {
   $query->Fields('nfd', array('title', 'nid'));
   $query->condition('grv.group_id', $group_id, '=');
   $query->orderBy('title');
-  $services_obj = $query->execute()->fetchAll();
-  foreach ($services_obj as $services_data) {
-    $services[$services_data->nid] = $services_data->title;
-  }
-  
+  $services = $query->execute()->fetchAllKeyed(1,0);
   return $services;
 }
 

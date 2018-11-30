@@ -102,16 +102,15 @@ class IncidentsBlock extends BlockBase
         $data = [];
         // Get the service id's list and get respective details from service id.
         foreach ($maintenance_list as $key => $vals) {
-            $incident = Node::load($vals->downtime_id);
+          //  $incident = Node::load($vals->downtime_id);
             
-            if ($incident) {
+          //  if ($incident) {
                 $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($vals->downtime_id);
                 $serviceid = explode(',', $vals->service_id);
                 $stateids = explode(',', $vals->state_id);
-                $serviceEntities = Node::loadMultiple($serviceid);
                 $serviceTitles = $stateTitles = null;
-                foreach ($serviceEntities as $serviceItem) {
-                    $serviceTitles .= $serviceItem->getTitle() . ', ';
+                foreach ($serviceid as $serviceItem) {
+                    $serviceTitles .= node_get_title_fast([$serviceItem])[$serviceItem] . ', ';
                 }
                 foreach ($stateids as $stateId) {
                   if(isset($states[$stateId]))
@@ -120,15 +119,18 @@ class IncidentsBlock extends BlockBase
                 if ($groupContent) {
                     $hoverIconHtml = $hover_markup = null;
 //          $hover_markup = MaintenanceBlock::get_hover_markup($vals->startdate_planned, $vals->enddate_planned, $vals->description, $vals->scheduled_p);
-                    if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
-                        $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
-                        $hover_markup = MaintenanceBlock::get_hover_markup($incident);
-                    }
+                  if ($routeMatch->getRouteName() == 'hzd_customizations.front') {
+                    $hoverIconHtml = '<div class="service-tooltip"><img height="10" src="/themes/hzd/images/i-icon-26.png"></div>';
+                    $markupdata = ['#type' => 'container', '#attributes' => ['id' => 'incident-' . $vals->downtime_id, 'class' => ['downtime-popover-wrapper']]];
+                    $renderer = \Drupal::service('renderer');
+                    $hover_markup = $renderer->render($markupdata);
+                  }
                     $label = Markup::create(trim($serviceTitles, ', ') . $stateTitles);
 //                    $url = $groupContent->toUrl()->setOption('attributes', ['class' => ['text-danger']]);
 //                    $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
 //                  $url = Url::fromRoute('cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),'type'=>'downtimes','group_content'=>$groupContent->id()],['attributes'=>['class' => ['text-danger']]]);
-                  $url = $incident->toUrl('canonical', ['attributes'=>['class' => ['text-danger']]]);
+                  //$url = $incident->toUrl('canonical', ['attributes'=>['class' => ['text-danger']]]);
+                  $url = Url::fromUserInput('/node/' . $vals->downtime_id, ['attributes'=>['class' => ['text-danger']]] );
                     $data[] = Markup::create(Link::fromTextAndUrl($label, $url)->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
 //                    $data[] = Markup::create(Link::createFromRoute($label, 'cust_group.group_content_view',['group'=>$groupContent->getGroup()->id(),['type'=>'downtimes','group_content'=>$groupContent->id()]],['attributes'])->toString() . ' ' . date('d.m.Y H:i', $vals->startdate_planned) . ' Uhr ' . $hoverIconHtml . $hover_markup);
                 }
@@ -142,7 +144,7 @@ class IncidentsBlock extends BlockBase
 //            // Loops for all states
 //          }
 //        }
-            }
+            //}
         }
         
         
@@ -194,7 +196,9 @@ class IncidentsBlock extends BlockBase
         } else {
             $markup['#attributes'] = ['class' => ['view-downtime-block']];
         }
-        $markup['#cache']['max-age'] = 0;
+
+      $markup['#cache'] = ['max-age' => 0];
+
         return $markup;
     }
     

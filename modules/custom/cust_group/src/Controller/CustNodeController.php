@@ -363,8 +363,7 @@ class CustNodeController extends ControllerBase {
       ->fetchCol();
     
     foreach ($services as $service) {
-      $serviceEntity = Node::load($service);
-      $relType = $serviceEntity->get('release_type')->target_id;
+      $relType = node_get_field_data_target_fast([$service],'release_type')[$service];
       if ($relType) {
         $users = [];
         foreach ($types[$relType] as $type) {

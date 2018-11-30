@@ -531,11 +531,11 @@ class HzdreleasemanagementHelper {
             ->condition('field_release_service', $services, 'IN')
             ->condition('type', 'deployed_releases')
             ->execute();
-    $deployedReleasesEntities = Node::loadMultiple($deployedReleases);
+    $deployedReleasesEntities = node_get_field_data_fast($deployedReleases, 'field_earlywarning_release');
     $deployed = [-1];
-    if ($deployedReleasesEntities) {
-      foreach ($deployedReleasesEntities as $node) {
-        $deployed[] = $node->get('field_earlywarning_release')->value;
+    if (count($deployedReleasesEntities) > 0) {
+      foreach ($deployedReleasesEntities as $earlywarning_release) {
+        $deployed[] = $earlywarning_release;
       }
     }
     $data = \Drupal::entityQuery('node')
@@ -544,10 +544,10 @@ class HzdreleasemanagementHelper {
             ->condition('nid', $deployed, 'NOT IN')
             ->condition('type', 'release')
             ->execute();
-    $nodes = Node::loadMultiple($data);
+    $nodes_title = node_get_title_fast($data);
     $releases = [];
-    foreach ($nodes as $node) {
-      $releases[$node->id()] = $node->label();
+    foreach ($nodes_title as $nid => $nodeTitle) {
+      $releases[$nid] = $nodeTitle;
     }
 
     $deployed_services[] = '<'.t('Service')->render().'>';
@@ -564,8 +564,8 @@ class HzdreleasemanagementHelper {
     $services_infos = $query->execute()->fetchAll();
 
     foreach ($services_infos as $services_info) {
-      $serviceEntity = Node::load($services_info->nid);
-      $deployed_services[$services_info->nid] = $serviceEntity->get('title')->value;
+      $serviceEntityTitle = node_get_title_fast([$services_info->nid])[$services_info->nid];
+      $deployed_services[$services_info->nid] = $serviceEntityTitle;
     }
 
     return $service_releases = array(
@@ -657,9 +657,10 @@ class HzdreleasemanagementHelper {
     $states = get_all_user_state();
     foreach ($result as $deployed_release_id) {
       $deployedRelease = Node::load($deployed_release_id);
-      $serviceEntity = Node::load($deployedRelease->get('field_release_service')->value);
+      $releaseService = $deployedRelease->get('field_release_service')->value;
+      $serviceEntityTitle = node_get_title_fast([$releaseService])[$releaseService];
       //If $serviceEntity has no node attached skip the record
-      if(!$serviceEntity){
+      if(!$serviceEntityTitle){
         continue;
       }
       $access = false;
@@ -691,7 +692,7 @@ class HzdreleasemanagementHelper {
       $data[] = array(
           $state,
           $environment,
-          $serviceEntity->get('title')->value,
+          $serviceEntityTitle,
           $release,
           date("d.m.Y", strtotime($deployedRelease->get('field_date_deployed')->value)),
           ['data'=>$action],

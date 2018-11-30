@@ -14,6 +14,16 @@
                     //return false;
                 }
             });
+
+            var acc = document.getElementsByClassName('faq-title');
+            var i;
+            for (i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    $(panel).slideToggle("slow");
+                });
+            }
         }
     }
 })(jQuery, Drupal, drupalSettings);

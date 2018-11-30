@@ -4,7 +4,6 @@ namespace Drupal\hzd_release_management\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Render\Markup;
-use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 
@@ -21,7 +20,6 @@ class DeployedReleases extends ControllerBase {
    *  
    */
   public function OverView(GroupInterface $group) {
-    
     $form = \Drupal::formBuilder()
             ->getForm('Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew');
     $form['form_build_id']['#access'] = FALSE;
@@ -43,7 +41,8 @@ class DeployedReleases extends ControllerBase {
     $cid = 'deployedReleasesOverview:' . $group_id . ':' . $release_type;
     $build = NULL;
 
-    if ($cache = \Drupal::cache()->get($cid)) {
+    $cache = \Drupal::cache()->get($cid);
+    if (!empty($cache->data)){
       $build = $cache->data;
       return $build;
     }
@@ -73,7 +72,6 @@ class DeployedReleases extends ControllerBase {
 
     $groupServs = array_intersect($services, $groupServs);
     if (count($groupServs) > 0) {
-      $serviceEntities = Node::loadMultiple($groupServs);
       $state = array();
       $headers[0] = t('Service');
       foreach ($states as $state_details) {
@@ -82,45 +80,63 @@ class DeployedReleases extends ControllerBase {
       }
       $emptyStates = NULL;
       $count = 1;
-      foreach ($serviceEntities as $service) {
+      $query = \Drupal::database()->select('node_field_data', 'n')
+        ->condition('type', 'deployed_releases')
+        ->condition('status', 1);
+      $query->leftjoin('node__field_release_service', 'ufrs', 'n.nid = ufrs.entity_id');
+      $query->leftjoin('node__field_user_state', 'ufus', 'n.nid = ufus.entity_id');
+
+      $query->leftjoin('node__field_archived_release', 'ufar', 'n.nid = ufar.entity_id');
+      $query->condition('ufar.field_archived_release_value', 1, '<>');
+
+      $query->leftjoin('node__field_environment', 'ufe', 'n.nid = ufe.entity_id');
+      $query->condition('ufe.field_environment_value', 1);
+
+      $query->fields('n', ['nid', 'title']);
+      $query->fields('ufrs', ['field_release_service_value']);
+      $query->fields('ufus', ['field_user_state_value']);
+      $query_results = $query->execute()->fetchAll();
+      $cus_results = [];
+      foreach ($query_results as $row) {
+        $cus_results[$row->field_release_service_value][$row->field_user_state_value][] = $row;
+      }
+      foreach ($groupServs as $service) {
         $dep = NULL;
-        foreach ($states as $state_details) {
-          $titles = NULL;
-          $releases = \Drupal::entityQuery('node')
-                  ->condition('type', 'deployed_releases')
-                  ->condition('field_release_service', $service->id())
-                  ->condition('field_user_state', $state_details->id)
-                  ->condition('field_archived_release', 1, '<>')
-                  ->condition('status', 1)
-                  ->condition('field_environment', 1)
-                  ///the database record for field_archived_release doesn't exist so cannot query it here.
-//            ->condition('field_archived_release', 1,'<>')
-                  ->execute();
-          foreach ($releases as $release) {
-            $releaseNode = Node::load($release);
-            $finalRelease = $releaseNode->get('field_earlywarning_release')->value;
-	    $finalReleaseNode = Node::load($finalRelease);
-            if ($finalReleaseNode) { $titles[] = $finalReleaseNode->label(); }
-          }
-          if ($titles) {
-            $x = [
+        $results = $cus_results[$service];
+        if ($results) {
+          foreach ($states as $state_details) {
+            $titles = NULL;
+            $releases = $results[$state_details->id];
+            if ($releases) {
+              foreach ($releases as $release) {
+                $release_service_value = $release->nid;
+                $finalRelease = node_get_field_data_fast([$release_service_value], 'field_earlywarning_release');
+                $finalReleaseNode = node_get_title_fast([$finalRelease[$release_service_value]]);
+                if ($finalReleaseNode) {
+                  $titles[] = $finalReleaseNode[$finalRelease[$release_service_value]];
+                }
+              }
+            }
+            if ($titles) {
+              $x = [
                 '#items' => $titles,
                 '#theme' => 'item_list',
                 '#type' => 'ul',
-            ];
-            $newData[$state_details->abbr] = render($x);
-          } else {
-            !isset($emptyStates[$state_details->abbr]) ? $emptyStates[$state_details->abbr] = 0 : null;
-            $emptyStates[$state_details->abbr] += 1;
-            $newData[$state_details->abbr] = '';
+              ];
+              $newData[$state_details->abbr] = render($x);
+            } else {
+              !isset($emptyStates[$state_details->abbr]) ? $emptyStates[$state_details->abbr] = 0 : null;
+              $emptyStates[$state_details->abbr] += 1;
+              $newData[$state_details->abbr] = '';
+            }
           }
+          //$dep[] = $service->get('field_release_name')->value;
+          $dep[] = node_get_title_fast([$service])[$service];
+          $dep += $newData;
+          $depReleases[] = $dep;
+          $newData = NULL;
+          $count++;
         }
-        //$dep[] = $service->get('field_release_name')->value;
-	      $dep[] = $service->get('title')->value;
-        $dep += $newData;
-        $depReleases[] = $dep;
-        $newData = NULL;
-        $count++;
       }
       foreach ($depReleases as $key => $depRelease) {
         foreach ($depRelease as $state => $stateData) {

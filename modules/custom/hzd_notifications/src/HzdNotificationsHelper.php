@@ -23,9 +23,9 @@ class HzdNotificationsHelper {
    */
   static function service_notifications_content_type($rel_type = KONSONS) {
     if ($rel_type == KONSONS) {
-      return array(1 => t('Incidents and Maintenances'), 2 => 'Problems', 3 => 'Releases', 4 => 'Early Warnings');
+      return array(1 => t('Incidents and Maintenances'), 2 => t('Problems'), 3 => t('Releases'), 4 => t('Early Warnings'));
     } else {
-      return array(3 => 'Releases', 4 => 'Early Warnings');
+      return array(3 => t('Releases'), 4 => t('Early Warnings'));
     }
   }
   
@@ -92,12 +92,12 @@ class HzdNotificationsHelper {
   
   // get default interval of user
   static function _get_default_timeintervals($uid, $rel_type) {
-    $time_interval = [];
-    $default_vals = \Drupal::database()->query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} WHERE uid = :uid AND rel_type = :rel_type", array(':uid' => $uid, ':rel_type' => $rel_type))->fetchAll();
-    foreach ($default_vals as $val) {
-      $time_interval[$val->service_type] = $val->default_send_interval;
-    }
-    return $time_interval;
+    return \Drupal::database()->select('service_notifications_user_default_interval', 'snudi')
+      ->fields('snudi', ['service_type', 'default_send_interval'])
+      ->condition('rel_type', $rel_type)
+      ->condition('uid', $uid)
+      ->execute()
+      ->fetchAllKeyed(0,1);
   }
   
   // get list of all services of a release type
@@ -153,12 +153,8 @@ class HzdNotificationsHelper {
    * Returns the default time intervals
    */
   static function get_default_quickinfo_timeintervals($uid) {
-    $time_interval = [];
-    $query = \Drupal::database()->query("SELECT default_send_interval as send_interval, affected_service as value 
-             FROM {quickinfo_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAll();
-    foreach ($query as $default_values) {
-      $time_interval[$default_values->value] = $default_values->send_interval;
-    }
+    $time_interval = \Drupal::database()->query("SELECT default_send_interval as send_interval, affected_service as value 
+             FROM {quickinfo_notifications_user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAllKeyed(1, 0);
     return $time_interval;
   }
   
