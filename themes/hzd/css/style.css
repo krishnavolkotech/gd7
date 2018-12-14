@@ -3717,7 +3717,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     margin-left: 5px;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr + td {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td {
 width: 100%;
 }
 
@@ -3729,7 +3729,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     content: "\2212";
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr div.views-row {
     margin: 0;
     padding: 0;
     border-bottom: none;
@@ -3737,7 +3737,11 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
     float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td > div.views-row > div.panel {
+   width: 100%;
+}
+
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr.draggable div.views-row {
    width: 96%;
 }
 
@@ -3767,4 +3771,6 @@ form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul li {
 form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td:first-child {
     width: 1em !important;
     padding-right: 0px;
+    padding-bottom: 0px;
 }
+
