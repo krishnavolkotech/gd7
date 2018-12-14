@@ -3679,7 +3679,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive:not(:first-chil
     display: none;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.panel {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.faq-panel {
     display: none;
 }
 
@@ -3701,11 +3701,11 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
    float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.faq-panel {
     float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel div.buttons {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.faq-panel div.buttons {
     float: right;
 }
 
@@ -3737,7 +3737,7 @@ form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbo
     float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td > div.views-row > div.panel {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td > div.views-row > div.faq-panel {
    width: 100%;
 }
 
@@ -3765,7 +3765,9 @@ form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul {
 }
 
 form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul li {
-    list-style-type: circle;
+  background: url(/themes/hzd/images/list-bullet.jpg) left 7px no-repeat;
+  list-style-type: none;
+  padding-left: 16px;
 }
 
 form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td:first-child {
