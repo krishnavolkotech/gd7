@@ -677,6 +677,10 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
     $(element).wrap("<div class='table-responsive'></div>");
     //}
   });
+
+$($('form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td:first-child')).each(function(){
+    $(this).html($(this).children());
+});
     }
   }
 })
