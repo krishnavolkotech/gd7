@@ -1298,9 +1298,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           'service' => $service->get('title')->value,
           'release' => $releases->getTitle()
       );
-      if ($type != 'released') {
-        $row[] = $releases->field_status->value;
-      }
+
+      $row[] = $releases->field_status->value;
+
       $row[] = $releases->field_date->value != NULL ?
               date('d.m.Y H:i:s', $releases->field_date->value) : '';
 
@@ -1469,7 +1469,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   static public function hzd_get_release_tab_headers($type) {
     $group_id = get_group_id();
     if ($type == 'released') {
-      $header = array(t('Service'), t('Release'), t('Date'));
+      $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
       if (isset($group_id)) {
         $header[] = t('Early Warnings');
       }
