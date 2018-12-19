@@ -43,11 +43,13 @@ content:
   field_contact_person:
     weight: 13
     settings:
-      size: 60
+      size: '60'
       placeholder: ''
+      exclude_members: 0
       hzd_group: ''
-      exclude_members: 1
-    third_party_settings: {  }
+    third_party_settings:
+      cust_group:
+        group_files: 0
     type: group_user_field_widget
     region: content
   field_creation_date:

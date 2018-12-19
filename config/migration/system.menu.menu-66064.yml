@@ -1,0 +1,8 @@
+uuid: 518a30fc-854b-4797-aef9-9b5e9f183e20
+langcode: de
+status: true
+dependencies: {  }
+id: menu-66064
+label: 'ZPS Betrieb Fachdienste'
+description: ''
+locked: false

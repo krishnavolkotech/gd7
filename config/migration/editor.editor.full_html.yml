@@ -81,10 +81,6 @@ settings:
             - JustifyCenter
             - JustifyRight
             - JustifyBlock
-        -
-          name: 'Text color'
-          items:
-            - Styles
   plugins:
     language:
       language_list: un

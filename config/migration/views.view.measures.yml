@@ -389,7 +389,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Auftragsdatum
+          label: Auftrags-datum
           exclude: false
           alter:
             alter_text: false
