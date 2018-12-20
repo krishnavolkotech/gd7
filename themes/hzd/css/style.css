@@ -3679,7 +3679,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive:not(:first-chil
     display: none;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.panel {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.faq-panel {
     display: none;
 }
 
@@ -3701,11 +3701,11 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
    float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.faq-panel {
     float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.panel div.buttons {
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row div.faq-panel div.buttons {
     float: right;
 }
 
@@ -3717,7 +3717,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     margin-left: 5px;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr td {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td {
 width: 100%;
 }
 
@@ -3729,7 +3729,7 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-t
     content: "\2212";
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr div.views-row {
     margin: 0;
     padding: 0;
     border-bottom: none;
@@ -3737,7 +3737,11 @@ form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.vi
     float: left;
 }
 
-form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr.draggable div.views-row {
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td > div.views-row > div.faq-panel {
+   width: 100%;
+}
+
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr.draggable div.views-row {
    width: 96%;
 }
 
@@ -3755,3 +3759,20 @@ form[id^="views-form-groups-faq-category-"] .table-responsive .alert-warning {
   background-image: none;
   margin-left: 1% !important;
 }
+
+form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul {
+   padding-left: 1.5em !important;
+}
+
+form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul li {
+  background: url(/themes/hzd/images/list-bullet.jpg) left 7px no-repeat;
+  list-style-type: none;
+  padding-left: 16px;
+}
+
+form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td:first-child {
+    width: 1em !important;
+    padding-right: 0px;
+    padding-bottom: 0px;
+}
+

@@ -677,6 +677,7 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
     $(element).wrap("<div class='table-responsive'></div>");
     //}
   });
+
     }
   }
 })

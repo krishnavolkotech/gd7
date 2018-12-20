@@ -399,7 +399,8 @@ abstract class PluginBase extends ComponentPluginBase implements ContainerFactor
         '#context' => $twig_tokens,
         '#post_render' => [
           function ($children, $elements) {
-            return Xss::filterAdmin($children);
+            return $children;
+           // return Xss::filterAdmin($children);
           }
         ],
       ];
