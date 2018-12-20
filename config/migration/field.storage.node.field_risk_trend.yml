@@ -17,13 +17,13 @@ settings:
   allowed_values:
     -
       value: green
-      label: Better
+      label: Besser
     -
       value: yellow
-      label: Unchanged
+      label: Unverändert
     -
       value: red
-      label: Worse
+      label: Schlechter
   allowed_values_function: ''
 module: options
 locked: false

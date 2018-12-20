@@ -1,0 +1,8 @@
+uuid: 32473d60-304e-4912-a39b-fb838de31c5a
+langcode: de
+status: true
+dependencies: {  }
+id: menu-65994
+label: 'GINSTER Überwachungskonto'
+description: ''
+locked: false

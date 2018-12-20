@@ -15,6 +15,7 @@ dependencies:
     - field.field.node.deployed_releases.upload
     - node.type.deployed_releases
   module:
+    - options
     - text
     - user
 id: node.deployed_releases.teaser
@@ -33,35 +34,29 @@ content:
   field_archived_release:
     label: above
     weight: 16
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    type: list_key
+    settings: {  }
     third_party_settings: {  }
     region: content
   field_earlywarning_release:
     label: above
     weight: 15
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    type: list_key
+    settings: {  }
     third_party_settings: {  }
     region: content
   field_environment:
     label: above
     weight: 13
-    type: text_default
+    type: list_key
     settings: {  }
     third_party_settings: {  }
     region: content
   field_release_service:
     label: above
     weight: 14
-    type: number_integer
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    type: list_key
+    settings: {  }
     third_party_settings: {  }
     region: content
   field_user_state:
@@ -76,8 +71,11 @@ content:
   links:
     weight: 100
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   comment: true
+  content_revision_log: true
   downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true

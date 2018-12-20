@@ -409,7 +409,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Risikokategorie
+          label: Risiko-kategorie
           exclude: false
           alter:
             alter_text: false
@@ -474,7 +474,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          label: Risikowert
+          label: Risiko-wert
           exclude: false
           alter:
             alter_text: false
