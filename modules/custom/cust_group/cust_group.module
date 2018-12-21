@@ -427,7 +427,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
   switch ($form_id) {
     case 'group_admin_permissions':
-      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
+//      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
       break;
     case 'node_faqs_gnode-form_form':
     case 'node_faqs_edit_form':
@@ -572,9 +572,9 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
 }
 
-function permission_cache_submit_handler(&$form, $form_state) {
-  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
-}
+//function permission_cache_submit_handler(&$form, $form_state) {
+//  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
+//}
 
 function requst_submit_handler(&$form, $form_state) {
   $data['group'] = \Drupal::routeMatch()->getParameter('group');
