@@ -195,9 +195,9 @@
             else {
               $(context).find("#sortable").tablesorter({
                     headers: {
-                        2: { sorter:'release_datesortable' },
-                        3: { sorter: false },
+                        3: { sorter:'release_datesortable' },
                         4: { sorter: false },
+                        5: { sorter: false },
                     },
                     showProcessing: true,
                     headerTemplate : '{content} {icon}',
