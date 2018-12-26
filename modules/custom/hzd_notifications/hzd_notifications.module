@@ -720,8 +720,11 @@ function _notify_users($entity, $action, $user_data){
   if (!isset($dont_send_notification) || $dont_send_notification != 1) {
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
     $enView = $view_builder->view($entity, 'mail', 'de');
-    $body = \Drupal::service('renderer')->render($enView);
-
+    if($entity->bundle() == 'quickinfo') {
+      $body = \Drupal\Component\Utility\Html::decodeEntities(\Drupal::service('renderer')->render($enView));
+    } else {
+      $body = \Drupal::service('renderer')->render($enView);
+    } 
     if ($entity->getEntityTypeId() == 'group') {
       $type = 'group';
     }
