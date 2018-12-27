@@ -25,22 +25,27 @@ class CustGroupHelper {
   
   //returns the group content id from the node id.
   static function getGroupNodeFromNodeId($nodeId) {
-    $bundle_type = node_get_entity_property_fast([$nodeId], 'type')[$nodeId];
-    $plugin_id = 'group_node:' . $bundle_type;
+    if($nodeId) {
+      $types = node_get_entity_property_fast([$nodeId], 'type');
+      if(array_key_exists($nodeId, $types)) {
+        $bundle_type = node_get_entity_property_fast([$nodeId], 'type')[$nodeId];
+        $plugin_id = 'group_node:' . $bundle_type;
 
-    // Only act if there are group content types for this node type.
-    $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
-    if (empty($group_content_types)) {
-      return null;
+        // Only act if there are group content types for this node type.
+        $group_content_types = GroupContentType::loadByContentPluginId($plugin_id);
+        if (empty($group_content_types)) {
+          return null;
+        }
+        // Load all the group content for this node.
+        $group_contents = \Drupal::entityTypeManager()
+          ->getStorage('group_content')
+          ->loadByProperties([
+            'type' => array_keys($group_content_types),
+            'entity_id' => $nodeId,
+          ]);
+        return reset($group_contents);
+      }
     }
-    // Load all the group content for this node.
-    $group_contents = \Drupal::entityTypeManager()
-      ->getStorage('group_content')
-      ->loadByProperties([
-        'type' => array_keys($group_content_types),
-        'entity_id' => $nodeId,
-      ]);
-    return reset($group_contents);
   }
   
   public static function getGroupFromRouteMatch() {
