@@ -829,6 +829,11 @@ $inprogress_nid_values = [];
         }
       } else {
         // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
+        $download_directory = scandir($remove_quotes);
+        \Drupal::logger('hzd_release_management')->error("Error occurred in release download documentation link generate. For the node " . $nid);
+        $doc_download_url = "wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link;
+        \Drupal::logger('hzd_release_management')->error($doc_download_url);
+        \Drupal::logger('hzd_release_management')->error(print_r($download_directory, TRUE));
         $failed_link = "Documentation link was not downloaded";
         $failed_info = array(
           'nid' => $nid,
