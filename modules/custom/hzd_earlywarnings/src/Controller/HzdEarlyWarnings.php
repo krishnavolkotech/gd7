@@ -173,7 +173,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $output['content']['#attached']['library'] = array(
 //      'hzd_customizations/hzd_customizations',
 //      'downtimes/downtimes',
-      'hzd_release_management/hzd_release_management',
+//      'hzd_release_management/hzd_release_management',
       'hzd_earlywarnings/hzd_earlywarnings',
     );
     
