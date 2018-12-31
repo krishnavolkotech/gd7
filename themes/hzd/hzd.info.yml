@@ -23,6 +23,7 @@ regions:
 libraries:
   - 'hzd/global-styling'
   - 'hzd/bootstrap-scripts'
+  - 'core/jquery.ui.datepicker'
 
 entity_print:
  node:
