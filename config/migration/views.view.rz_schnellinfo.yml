@@ -2035,8 +2035,8 @@ display:
           label: Titel
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: '{{ title__value|raw }}'
             make_link: true
             path: '{{ path }}'
             absolute: false
