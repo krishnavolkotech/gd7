@@ -238,6 +238,10 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     if (in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'config:block.block.hzdgruppenadministration'
+      ]);
   }
 
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
