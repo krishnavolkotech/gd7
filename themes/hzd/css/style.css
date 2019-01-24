@@ -36,7 +36,7 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #004070 !important;
+    color: #027596 !important;
     font-weight: 500 !important;
 }
 h1 {
@@ -571,7 +571,7 @@ body.not-loggedin.path-user .region-content {
     padding: 0 !important;
     width: 100%;
     border-bottom: 0 !important;
-    background: #004077;
+    background: #027596;
 }
 .path-user .region-content nav.tabs .nav-tabs {
     border: none !important;
@@ -584,7 +584,7 @@ body.not-loggedin.path-user .region-content {
     border: none !important;
     color: #ffffff !important;
     margin-right: 0 !important;
-    background: #004077 !important;
+    background: #027596 !important;
     font-size: 14px;
 }
 
@@ -594,7 +594,7 @@ body.not-loggedin.path-user .region-content {
     background: transparent !important;
 }
 .path-user .region-content nav.tabs li.active a {
-    color: #004077 !important;
+    color: #027596 !important;
     background: #fafafa !important;
 }
 .path-user .region-content .tabs--primary.nav-tabs li {
@@ -1181,7 +1181,7 @@ body.not-loggedin.path-user .region-content h1 {
 .hzd-secondary-tabs.path-user ul.tabs--secondary {
     width: 100%;
     float: left;
-    border-bottom: 1px solid #004077;
+    border-bottom: 1px solid #027596;
     padding-bottom: 5px;
     margin-bottom: 20px;
 }
@@ -1196,7 +1196,7 @@ body.not-loggedin.path-user .region-content h1 {
     background: transparent !important;
     margin: 0;
     padding: 0px 15px !important;
-    border-right: 1px solid #004077 !important;
+    border-right: 1px solid #027596 !important;
     color: #424241 !important;
     font-size: 14px;
 }
@@ -1204,7 +1204,7 @@ body.not-loggedin.path-user .region-content h1 {
 .hzd-secondary-tabs.path-user ul.tabs--secondary li active.a,
 .hzd-secondary-tabs.path-user ul.tabs--secondary li a:focus {
     background: transparent !important;
-    color: #004077 !important;
+    color: #027596 !important;
 }
 .hzd-secondary-tabs.path-user ul.tabs--secondary li:last-child a {
     border: none !important;
@@ -1276,7 +1276,7 @@ table.view-deployed-releases {
     float: left;
     padding-bottom: 5px;
     padding-top: 5px;
-    color: #004077;
+    color: #027596;
     font-size: 14px;
 }
 #block-primarylinks ul ul.dropdown-menu li a:hover {
@@ -1652,7 +1652,7 @@ form#downtimes-filter .string_search.hzd-form-element {
 .view-groups-faq .view-content .views-row .views-field-delete-node a {
     float: left;
     margin-bottom: 5px;
-    background: #004077;
+    background: #027596;
     padding: 6px 12px;
     border-left: 1px solid #fff;
     cursor: pointer;
@@ -1803,10 +1803,10 @@ strong {
     /*background: url(../images/blue-list-arrow.png)left 8px no-repeat;*/
 }
 .block-incidents-block h2.block-title {
-    color: #d0021b !important;
+    color: #ed2551 !important;
 }
 .block-maintenance-block h2.block-title {
-    color: #d35400 !important;
+    color: #be214b !important;
 }
 section h2.block-title,
 .block-favorites h2.block-title,
@@ -1942,7 +1942,7 @@ section .form-group .view-content .item-list ul li {
     text-indent: 2px;
 }
 .block-incidents-block ul li a.text-danger {
-    color: #d0021b;
+    color: #ed2551;
     width: auto;
     margin: 0;
     text-indent: 2px;
@@ -1950,10 +1950,10 @@ section .form-group .view-content .item-list ul li {
     line-height: 20px;
 }
 .text-danger {
-    color: #d0021b !important;
+    color: #ed2551 !important;
 }
 .maintenance-list .front-page-link .text-danger {
-    color: #d35400 !important;
+    color: #be214b !important;
 }
 .user-logged-in ul.contextual-links li a {
     color: #004077 !important;
@@ -2396,7 +2396,7 @@ a {
     color: #0084bf;
 }
 h2 {
-    color: #004077 !important;
+    color: #027596 !important;
 }
 section form#favorites-add .form-wrapper form#masquerade-block-form button {
     margin-top: 5px;
@@ -2842,13 +2842,13 @@ form.archive-data-export .container-inline {
 .form-actions button:hover {
     text-decoration: none;
     border: none !important;
-    background: #004077 !important;
+    background: #027596 !important;
     color: #fff !important;
 }
 a.button--danger:hover,
 a#edit-cancel:hover {
    /* margin: 0 0 0 5px !important;*/
-   background: #004077 !important;
+   background: #027596 !important;
 }
 .form-actions button {
      margin: 0 5px 5px 0;
@@ -3207,7 +3207,7 @@ form .form-type-vertical-tabs .tabs-left ul {
     float: left;
 }
 .primary-navigation {
-    background: #004077 none repeat scroll 0 0;
+    background: #027596 none repeat scroll 0 0;
     float: left;
     width: 100%;
 }
@@ -3747,7 +3747,7 @@ form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbo
 
 form[id^="views-form-groups-faq-category-"] div.table-responsive table caption {
     margin: 10px 0 !important;
-    color: #004070 !important;
+    color: #027596 !important;
     font-weight: 500 !important;
     font-size: large !important;
 }
