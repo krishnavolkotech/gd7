@@ -1,0 +1,8 @@
+uuid: 6f205ea8-cafb-4dbe-b2e0-d535e37d68b9
+langcode: de
+status: true
+dependencies: {  }
+id: menu-67955
+label: Verfügbarkeitsmanagement
+description: ''
+locked: false
