@@ -1064,7 +1064,7 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     padding: 14px 0 !important;
     font-size: 13px;
    /* background: #e2e2e2;*/
-    background:#004077;
+    background:#027596;
    /* box-shadow: 0 -1px 0 rgba(0,0,0,.2);*/
     color:#fff;
     width:100%;
@@ -1107,10 +1107,10 @@ aside section {
 }
 .block-maintenance-block {
     margin-bottom: 10px;
-    box-shadow: inset 0px 4px 0px 0px #d35400, 0 1px 2px grey;
+    box-shadow: inset 0px 4px 0px 0px #be214b, 0 1px 2px grey;
 }
 .block-incidents-block {
-    box-shadow: inset 0px 4px 0px 0px #d0021b, 0 1px 2px grey;
+    box-shadow: inset 0px 4px 0px 0px #ed2551, 0 1px 2px grey;
 }
 /*
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
