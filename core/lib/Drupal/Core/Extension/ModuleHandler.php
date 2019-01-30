@@ -403,7 +403,7 @@ class ModuleHandler implements ModuleHandlerInterface {
       if (isset($result) && is_array($result)) {
         $return = NestedArray::mergeDeep($return, $result);
       }
-      elseif (isset($result) && $result !== FALSE) {
+      elseif (isset($result)) {
         $return[] = $result;
       }
     }
