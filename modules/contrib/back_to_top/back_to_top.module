@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Back To Top link using JQuery.
- * Requires javascript as enabled
- */
 
 /**
  * Implements hook_page_attachments().
@@ -206,5 +201,31 @@ function is_mobile() {
 function is_adminpage() {
   $route = \Drupal::routeMatch()->getRouteObject();
   $is_admin = \Drupal::service('router.admin_context')->isAdminRoute($route);
+
+  // Alter for admin prevent check.
+  \Drupal::moduleHandler()->alter('back_to_top_admin_prevent', $is_admin);
+
   return $is_admin;
+}
+
+/**
+ * Implements hook_help().
+ */
+function back_to_top_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.back_to_top':
+      $text = file_get_contents(dirname(__FILE__) . "/README.txt");
+      if (! \Drupal::moduleHandler()->moduleExists('markdown')) {
+        return '<pre>' . $text . '</pre>';
+      }
+      else {
+        // Use the Markdown filter to render the README.
+        $filter_manager = \Drupal::service('plugin.manager.filter');
+        $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
+        $config = ['settings' => $settings];
+        $filter = $filter_manager->createInstance('markdown', $config);
+        return $filter->process($text, 'en');
+      }
+  }
+  return NULL;
 }

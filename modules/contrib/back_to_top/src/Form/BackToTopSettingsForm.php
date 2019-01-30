@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\back_to_top\Form\BackToTopSettingsForm.
- */
-
 namespace Drupal\back_to_top\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -40,110 +35,110 @@ class BackToTopSettingsForm extends ConfigFormBase {
     $form['#attached']['library'][] = 'core/jquery.farbtastic';
     $form['#attached']['library'][] = 'back_to_top/back_to_top';
 
-    $form['back_to_top_prevent_on_mobile'] = array(
+    $form['back_to_top_prevent_on_mobile'] = [
       '#type' => 'checkbox',
-      '#title' => t('Prevent on mobile and touch devices'),
-      '#description' => t('Do you want to prevent Back To Top on touch devices?'),
+      '#title' => $this->t('Prevent on mobile and touch devices'),
+      '#description' => $this->t('Do you want to prevent Back To Top on touch devices?'),
       '#default_value' => $settings['back_to_top_prevent_on_mobile'],
-    );
-    $form['back_to_top_prevent_in_admin'] = array(
+    ];
+    $form['back_to_top_prevent_in_admin'] = [
       '#type' => 'checkbox',
-      '#title' => t('Prevent on administration pages and node edit'),
-      '#description' => t('Do you want to prevent Back To Top on admin pages?'),
+      '#title' => $this->t('Prevent on administration pages and node edit'),
+      '#description' => $this->t('Do you want to prevent Back To Top on admin pages?'),
       '#default_value' => $settings['back_to_top_prevent_in_admin'],
-    );
-    $form['back_to_top_prevent_in_front'] = array(
+    ];
+    $form['back_to_top_prevent_in_front'] = [
       '#type' => 'checkbox',
-      '#title' => t('Prevent on front page'),
-      '#description' => t('Do you want to prevent Back To Top on front page?'),
+      '#title' => $this->t('Prevent on front page'),
+      '#description' => $this->t('Do you want to prevent Back To Top on front page?'),
       '#default_value' => $settings['back_to_top_prevent_in_front'],
-    );
-    $form['back_to_top_button_trigger'] = array(
+    ];
+    $form['back_to_top_button_trigger'] = [
       '#type' => 'textfield',
-      '#title' => t('Trigger'),
-      '#description' => t('Set the number of pixel which trigger the Back To Top button default 100'),
+      '#title' => $this->t('Trigger'),
+      '#description' => $this->t('Set the number of pixel which trigger the Back To Top button default 100'),
       '#default_value' => $settings['back_to_top_button_trigger'],
       '#size' => 10,
       '#maxlength' => 4,
-    );
-    $form['back_to_top_button_place'] = array(
-      '#title' => t('Placement'),
-      '#description' => t('Where should the Back To Top button appear?'),
+    ];
+    $form['back_to_top_button_place'] = [
+      '#title' => $this->t('Placement'),
+      '#description' => $this->t('Where should the Back To Top button appear?'),
       '#type' => 'select',
-      '#options' => array(
-        1 => t('Bottom right'),
-        2 => t('Bottom left'),
-        3 => t('Botton center'),
-        4 => t('Top right'),
-        5 => t('Top left'),
-        6 => t('Top center'),
-        7 => t('Mid right'),
-        8 => t('Mid left'),
-        9 => t('Mid center'),
-      ),
+      '#options' => [
+        1 => $this->t('Bottom right'),
+        2 => $this->t('Bottom left'),
+        3 => $this->t('Botton center'),
+        4 => $this->t('Top right'),
+        5 => $this->t('Top left'),
+        6 => $this->t('Top center'),
+        7 => $this->t('Mid right'),
+        8 => $this->t('Mid left'),
+        9 => $this->t('Mid center'),
+      ],
       '#default_value' => $settings['back_to_top_button_place'],
-    );
-    $form['back_to_top_button_text'] = array(
+    ];
+    $form['back_to_top_button_text'] = [
       '#type' => 'textfield',
       '#title' => 'Button text',
       '#description' => 'Set the text of the Back To Top button',
       '#default_value' => $settings['back_to_top_button_text'],
       '#size' => 30,
       '#maxlength' => 30,
-    );
-    $form['back_to_top_button_type'] = array(
+    ];
+    $form['back_to_top_button_type'] = [
       '#type' => 'radios',
-      '#title' => t('Do you want Back To Top to use a PNG-24 image or a Text/Css button?'),
-      '#options' => array(
-        'image' => t('Image (default)'),
-        'text' => t('Text/Css')
-      ),
+      '#title' => $this->t('Do you want Back To Top to use a PNG-24 image or a Text/Css button?'),
+      '#options' => [
+        'image' => $this->t('Image (default)'),
+        'text' => $this->t('Text/Css'),
+      ],
       '#default_value' => $settings['back_to_top_button_type'],
-    );
+    ];
 
     // Wrap Text/Css button settings in a fieldset.
-    $form['text_button'] = array(
+    $form['text_button'] = [
       '#type' => 'fieldset',
-      '#title' => t('Text/Css button settings'),
+      '#title' => $this->t('Text/Css button settings'),
       '#collapsible' => TRUE,
       '#collapsed' => ($form['back_to_top_button_type']['#default_value'] == 'image' ? TRUE : FALSE),
-    );
-    $form['text_button']['back_to_top_bg_color'] = array(
+    ];
+    $form['text_button']['back_to_top_bg_color'] = [
       '#type' => 'textfield',
-      '#title' => t('Background color'),
-      '#description' => t('Button background color default #F7F7F7'),
+      '#title' => $this->t('Background color'),
+      '#description' => $this->t('Button background color default #F7F7F7'),
       '#default_value' => $settings['back_to_top_bg_color'],
       '#size' => 10,
       '#maxlength' => 7,
       '#suffix' => '<div class="color-field" id="back_to_top_bg_color"></div>',
-    );
-    $form['text_button']['back_to_top_border_color'] = array(
+    ];
+    $form['text_button']['back_to_top_border_color'] = [
       '#type' => 'textfield',
-      '#title' => t('Border color'),
-      '#description' => t('Border color default #CCCCCC'),
+      '#title' => $this->t('Border color'),
+      '#description' => $this->t('Border color default #CCCCCC'),
       '#default_value' => $settings['back_to_top_border_color'],
       '#size' => 10,
       '#maxlength' => 7,
       '#suffix' => '<div class="color-field" id="back_to_top_border_color"></div>',
-    );
-    $form['text_button']['back_to_top_hover_color'] = array(
+    ];
+    $form['text_button']['back_to_top_hover_color'] = [
       '#type' => 'textfield',
-      '#title' => t('Hover color'),
-      '#description' => t('Hover color default #EEEEEE'),
+      '#title' => $this->t('Hover color'),
+      '#description' => $this->t('Hover color default #EEEEEE'),
       '#default_value' => $settings['back_to_top_hover_color'],
       '#size' => 10,
       '#maxlength' => 7,
       '#suffix' => '<div class="color-field" id="back_to_top_hover_color"></div>',
-    );
-    $form['text_button']['back_to_top_text_color'] = array(
+    ];
+    $form['text_button']['back_to_top_text_color'] = [
       '#type' => 'textfield',
-      '#title' => t('Text color'),
-      '#description' => t('Text color default #333333'),
+      '#title' => $this->t('Text color'),
+      '#description' => $this->t('Text color default #333333'),
       '#default_value' => $settings['back_to_top_text_color'],
       '#size' => 10,
       '#maxlength' => 7,
       '#suffix' => '<div class="color-field" id="back_to_top_text_color"></div>',
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }
@@ -175,4 +170,5 @@ class BackToTopSettingsForm extends ConfigFormBase {
       ->save();
     parent::submitForm($form, $form_state);
   }
+
 }
