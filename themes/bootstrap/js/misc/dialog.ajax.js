@@ -41,7 +41,7 @@
       });
       var classes = $originalButton.attr('class').replace('use-ajax-submit', '');
       buttons.push({
-        html: $originalButton.html() || $originalButton.attr('value'),
+        text: $originalButton.html() || $originalButton.attr('value'),
         class: classes,
         click: function click(e) {
           dialogAjaxCurrentButton = $(e.target);

@@ -7,7 +7,6 @@
  * All Drupal code is released under the GNU General Public License.
  * See COPYRIGHT.txt and LICENSE.txt files in the "core" directory.
  */
-// ini_set('max_execution_time', 1000);
 
 use Drupal\Core\DrupalKernel;
 use Symfony\Component\HttpFoundation\Request;
