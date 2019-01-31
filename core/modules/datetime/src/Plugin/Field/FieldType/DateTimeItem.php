@@ -41,6 +41,11 @@ class DateTimeItem extends FieldItemBase implements DateTimeItemInterface {
    * Value for the 'datetime_type' setting: store a date and time.
    */
   const DATETIME_TYPE_DATETIME = 'datetime';
+  
+   /**
+   * Value for the 'datetime_type' setting: store a date and time.
+   */
+  const DATETIME_TYPE_TIME = 'time';
 
   /**
    * {@inheritdoc}
@@ -92,6 +97,7 @@ class DateTimeItem extends FieldItemBase implements DateTimeItemInterface {
       '#options' => [
         static::DATETIME_TYPE_DATETIME => t('Date and time'),
         static::DATETIME_TYPE_DATE => t('Date only'),
+        static::DATETIME_TYPE_TIME => t('Time only'),
       ],
       '#disabled' => $has_data,
     ];
@@ -110,8 +116,9 @@ class DateTimeItem extends FieldItemBase implements DateTimeItemInterface {
     $timestamp = REQUEST_TIME - mt_rand(0, 86400 * 365);
     if ($type == DateTimeItem::DATETIME_TYPE_DATE) {
       $values['value'] = gmdate(static::DATE_STORAGE_FORMAT, $timestamp);
-    }
-    else {
+    } elseif ($type == DateTimeItem::DATETIME_TYPE_TIME) {
+      $values['value'] = gmdate(DATETIME_TIME_STORAGE_FORMAT, $timestamp);
+    } else {
       $values['value'] = gmdate(static::DATETIME_STORAGE_FORMAT, $timestamp);
     }
     return $values;
