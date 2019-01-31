@@ -59,6 +59,21 @@ class Cache
      */
     static function resolve_url($url, $protocol, $host, $base_path, Dompdf $dompdf)
     {
+      $pp = explode('/', $url);
+
+      if ($pp[1] == 'system' && $pp[2] == 'files') {
+        $temp_path = 'sites/default/files/temp/';
+        if (!is_dir($temp_path)) {
+          mkdir($temp_path);
+        }
+        $private_path = \Drupal::service('file_system')->realpath("private://");
+        $private_path = substr($private_path, strpos($private_path, 'sites'));
+        $final_path = str_replace("/system/files", $private_path, $url);
+        $filename = end(explode('/', $final_path));
+        copy($final_path, $temp_path . $filename);
+        $filename = end(explode('/', $final_path));
+        $url = '/' . $temp_path . $filename;
+      }
         self::$_dompdf = $dompdf;
         
         $protocol = mb_strtolower($protocol);
@@ -141,7 +156,7 @@ class Cache
         } catch (ImageException $e) {
             $resolved_url = self::$broken_image;
             $type = "png";
-            $message = self::$error_message;
+            $message = "Image removed";
             Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
         }
 
