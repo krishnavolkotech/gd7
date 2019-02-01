@@ -320,6 +320,16 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
   }
+
+  if ($entity->request_status->value == 1) {
+    $user = $entity->get('entity_id')->referencedEntities()[0];
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'grantpermission_view:' . $user->id(),
+        'grantpermission_update_delete:' . $user->id()
+      ]);
+  }
+
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags($tags);
 }
