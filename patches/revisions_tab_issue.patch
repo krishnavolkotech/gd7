@@ -1,0 +1,15 @@
+diff --git a/core/modules/node/src/Controller/NodeController.php b/core/modules/node/src/Controller/NodeController.php
+index e873f91..a84c571 100644
+--- a/core/modules/node/src/Controller/NodeController.php
++++ b/core/modules/node/src/Controller/NodeController.php
+@@ -193,7 +193,9 @@ public function revisionOverview(NodeInterface $node) {
+         // revision, if it was the default revision, as its values for the
+         // current language will be the same of the current default revision in
+         // this case.
+-        $is_current_revision = $vid == $default_revision || (!$current_revision_displayed && $revision->wasDefaultRevision());
++        // Reported Issue on https://www.drupal.org/project/drupal/issues/3021671
++//        $is_current_revision = $vid == $default_revision || (!$current_revision_displayed && $revision->wasDefaultRevision());
++        $is_current_revision = $vid == $default_revision;
+         if (!$is_current_revision) {
+           $link = $this->l($date, new Url('entity.node.revision', ['node' => $node->id(), 'node_revision' => $vid]));
+         }

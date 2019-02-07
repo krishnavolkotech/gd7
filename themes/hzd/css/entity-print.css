@@ -534,9 +534,7 @@ table tr td {
  width:100% !important;
 }
 .pdf-content .ckeditor-custom-wrapper .field strong{
-  float:none;
-  display:block;
-  width:100%;
+ font-weight: bold;
 }
 .pdf-content .ckeditor-custom-wrapper .field,
 .pdf-content article.quickinfo .field,

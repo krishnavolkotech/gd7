@@ -77,7 +77,14 @@ class DateTimeDefaultWidget extends DateTimeWidgetBase implements ContainerFacto
         $date_format = $this->dateStorage->load('html_date')->getPattern();
         $time_format = '';
         break;
-
+      
+      case DateTimeItem::DATETIME_TYPE_TIME:
+        $date_type = 'none';
+        $time_type = 'time';
+        $date_format = $this->dateStorage->load('html_date')->getPattern();
+        $time_format = '';
+        break;
+      
       default:
         $date_type = 'date';
         $time_type = 'time';

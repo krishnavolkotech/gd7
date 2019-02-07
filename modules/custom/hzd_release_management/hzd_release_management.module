@@ -1562,10 +1562,10 @@ function node_get_entity_property_fast(array $nids, $field_value) {
       ->execute()->fetchAllKeyed(0, 1);
     if ($results) {
       $return = $results + $return;
-      $field_result = $results + $field_result;
+      $field_result = $return + $field_result;
     }
   }
-  return $return;
+  return $field_result;
 }
 
 /**

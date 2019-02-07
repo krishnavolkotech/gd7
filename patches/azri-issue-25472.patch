@@ -1,0 +1,13 @@
+diff --git a/core/modules/views/src/Plugin/views/PluginBase.php b/core/modules/views/src/Plugin/views/PluginBase.php
+index 7c17d2b..af357da 100644
+--- a/core/modules/views/src/Plugin/views/PluginBase.php
++++ b/core/modules/views/src/Plugin/views/PluginBase.php
+@@ -399,7 +399,7 @@ protected function viewsTokenReplace($text, $tokens) {
+         '#context' => $twig_tokens,
+         '#post_render' => [
+           function ($children, $elements) {
+-            return Xss::filterAdmin($children);
++            return $children;
+           }
+         ],
+       ];

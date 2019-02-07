@@ -24,6 +24,14 @@
                     $(panel).slideToggle("slow");
                 });
             }
+
+            $gpath = $("#deployed-releases-filter-form").attr('action');
+            if (typeof $gpath === 'undefined' || $gpath === null) {
+            } else {
+                $("#deployed-releases-filter-form").attr('action', $gpath + '#deployedreleases_posting');
+                $rpath = $("#deployed-releases-filter-form a#edit-link").attr('href');
+                $("#deployed-releases-filter-form a#edit-link").attr("href", $rpath + '#deployedreleases_posting');
+            }
         }
     }
 })(jQuery, Drupal, drupalSettings);

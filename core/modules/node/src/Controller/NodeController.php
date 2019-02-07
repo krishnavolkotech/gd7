@@ -122,7 +122,7 @@ class NodeController extends ControllerBase implements ContainerInjectionInterfa
    *   The node revision ID.
    *
    * @return array
-   *   An array suitable for drupal_render().
+   *   An array suitable for \Drupal\Core\Render\RendererInterface::render().
    */
   public function revisionShow($node_revision) {
     $node = $this->entityManager()->getStorage('node')->loadRevision($node_revision);
@@ -154,7 +154,7 @@ class NodeController extends ControllerBase implements ContainerInjectionInterfa
    *   A node object.
    *
    * @return array
-   *   An array as expected by drupal_render().
+   *   An array as expected by \Drupal\Core\Render\RendererInterface::render().
    */
   public function revisionOverview(NodeInterface $node) {
     $account = $this->currentUser();
@@ -193,7 +193,9 @@ class NodeController extends ControllerBase implements ContainerInjectionInterfa
         // revision, if it was the default revision, as its values for the
         // current language will be the same of the current default revision in
         // this case.
-        $is_current_revision = $vid == $default_revision || (!$current_revision_displayed && $revision->wasDefaultRevision());
+        // Reported Issue on https://www.drupal.org/project/drupal/issues/3021671
+//        $is_current_revision = $vid == $default_revision || (!$current_revision_displayed && $revision->wasDefaultRevision());
+        $is_current_revision = $vid == $default_revision;
         if (!$is_current_revision) {
           $link = $this->l($date, new Url('entity.node.revision', ['node' => $node->id(), 'node_revision' => $vid]));
         }

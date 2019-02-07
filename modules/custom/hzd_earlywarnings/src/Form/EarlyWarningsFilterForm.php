@@ -58,7 +58,7 @@ class EarlyWarningsFilterForm extends FormBase
             $default_type = $release_type ? $release_type : KONSONS;
         }
 
-      $services = db_query("SELECT n.title, n.nid 
+      $services_obj = db_query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -67,7 +67,12 @@ class EarlyWarningsFilterForm extends FormBase
                 ":gid" => $group_id,
                 ":tid" => $default_type
             )
-        )->fetchAllKeyed(1,0);
+        )->fetchAll();
+
+        foreach ($services_obj as $services_data) {
+          $services[$services_data->nid] = $services_data->title;
+        }
+
 
         
         $form['type'] = array(
