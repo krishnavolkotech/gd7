@@ -102,18 +102,26 @@ class DeployedReleases extends ControllerBase {
       }
       foreach ($groupServs as $service) {
         $dep = NULL;
-        $results = $cus_results[$service];
+        if(key_exists($service, $cus_results)) {
+          $results = $cus_results[$service];
+        }
         if ($results) {
           foreach ($states as $state_details) {
-            $titles = NULL;
-            $releases = $results[$state_details->id];
+            $titles = $releases = NULL;
+            if(key_exists($state_details->id, $results)) {
+              $releases = $results[$state_details->id];
+            }
             if ($releases) {
               foreach ($releases as $release) {
                 $release_service_value = $release->nid;
                 $finalRelease = node_get_field_data_fast([$release_service_value], 'field_earlywarning_release');
-                $finalReleaseNode = node_get_title_fast([$finalRelease[$release_service_value]]);
+                if(key_exists($release_service_value, $finalRelease)) {
+                  $finalReleaseNode = node_get_title_fast([$finalRelease[$release_service_value]]);
+                }
                 if ($finalReleaseNode) {
-                  $titles[] = $finalReleaseNode[$finalRelease[$release_service_value]];
+                  if(key_exists($release_service_value, $finalRelease)) {
+                    $titles[] = $finalReleaseNode[$finalRelease[$release_service_value]];
+                  }
                 }
               }
             }
