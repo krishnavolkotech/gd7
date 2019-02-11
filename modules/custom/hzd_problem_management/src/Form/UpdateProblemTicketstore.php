@@ -131,7 +131,7 @@ class UpdateProblemTicketstore extends FormBase {
       // Here we could do something meaningful with the results.
       // We just display the number of nodes we processed...
       $messenger->addMessage(t('@count record processed.', ['@count' => count($results)]));
-      $messenger->addMessage(t('The final result was "%final"', ['%final' => dsm($results)]));
+      // $messenger->addMessage(t('The final result was "%final"', ['%final' => dsm($results)]));
     } else {
       // An error occurred.
       // $operations contains the operations that remained unprocessed.
