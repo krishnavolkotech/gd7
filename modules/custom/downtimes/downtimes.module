@@ -32,7 +32,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = trim(pathinfo($current_path, PATHINFO_BASENAME));
     if ($form_id == 'node_downtimes_form') {
-      $services_effected_text = [];
+      $services_effected_text = $states_help = "";
       if ($downtime_type == 'create_maintenance') {
         $help_markup = \Drupal::config('downtimes.settings')->get('report_maintenance');
         $states_help = \Drupal::config('downtimes.settings')->get('report_maintenance_2') . "<br/>";
