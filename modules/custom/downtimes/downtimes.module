@@ -1063,40 +1063,50 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
   
   // Services log.
   foreach ($form_state->getValue('services_effected') as $key => $value) {
+    $result = [];
     if ($value) {
       $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
       $result[] = db_query($query, array($value))->fetchField();
     }
   }
-  natcasesort($result);
+  if(count($result) > 0) {
+    natcasesort($result);
+  }
   $old_services = $form_values['services_effected']['#default_value'];
+  $old_result = [];
   foreach ($old_services as $key => $value) {
     if ($value) {
       $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
       $old_result[] = db_query($query, array($value))->fetchField();
     }
   }
-  natcasesort($old_result);
+  if(count($old_result) > 0) {
+    natcasesort($old_result);
+  }
   if (strcmp(implode(", ", $result), implode(", ", $old_result))) {
     $log['services']['old'] = implode(", ", $old_result);
     $log['services']['new'] = implode(", ", $result);
   }
   // States log.
   $states_list = get_all_user_state();
+  $new_states = [];
   foreach ($form_state->getValue('states') as $key => $value) {
     if ($value) {
       $new_states[] = $states_list[$value];
     }
   }
-  natcasesort($new_states);
-  $old_states = array();
+  if(count($new_states) > 0) {
+    natcasesort($new_states);
+  }
+  $old_states = [];
   foreach ($form_values['states']['#default_value'] as $key => $value) {
     if ($value) {
       $old_states[] = $states_list[$value];
     }
   }
-  natcasesort($old_states);
-  
+  if(count($old_states) > 0) {
+    natcasesort($old_states);
+  }
   if (strcmp(implode(", ", $new_states), implode(", ", $old_states))) {
     $log['states']['old'] = implode(", ", $old_states);
     $log['states']['new'] = implode(", ", $new_states);
