@@ -54,8 +54,7 @@ class GroupId extends NumericArgument {
    */
   public function titleQuery() {
     $titles = [];
-
-    $groups = $this->groupStorage->loadMultiple($this->value);
+    $groups = $this->groupStorage->loadMultiple(end($this->value));
     foreach ($groups as $group) {
       $titles[] = $group->label();
     }
