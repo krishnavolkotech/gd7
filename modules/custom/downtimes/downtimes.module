@@ -735,9 +735,15 @@ function saveServiceTime($node, $data) {
   $serviceData = [];
   foreach ($arr as $val) {
     if ($data['service_time'][$val]) {
-      $serviceData['service_time_' . $val] = $data['service_time'][$val]['day'];
-      $serviceData['service_time_' . $val . '_from'] = $data['service_time'][$val]['from']['time'];
-      $serviceData['service_time_' . $val . '_until'] = $data['service_time'][$val]['until']['time'];
+      if($data['service_time'][$val]['day']) {
+        $serviceData['service_time_' . $val] = $data['service_time'][$val]['day'];
+      }
+      if($data['service_time'][$val]['from']['time']) {
+        $serviceData['service_time_' . $val . '_from'] = $data['service_time'][$val]['from']['time'];
+      }
+      if($data['service_time'][$val]['until']['time']) {
+        $serviceData['service_time_' . $val . '_until'] = $data['service_time'][$val]['until']['time'];
+      }
     }
   }
   $query = \Drupal::database()->select('service_profile_maintenance_service_time', 'spm')
