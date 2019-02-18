@@ -386,12 +386,16 @@ class HzdEarlyWarnings extends ControllerBase {
             $comment = \Drupal\comment\Entity\Comment::load($value->comment_id);
             $userName = $comment->getOwner()->getDisplayName();
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
-          }else{
+          }else {
             $uid = $earlyWarningNode_tmp = node_get_entity_property_fast([$nid], 'uid')[$nid];
             $name = [];
-            $name[] = user_get_cust_profile_fast([$uid])[$uid]->firstname;
-            $name[] = user_get_cust_profile_fast([$uid])[$uid]->lastname;
-            $userName = implode(" ", $name);
+            $userName = "";
+            $fetched_name = user_get_cust_profile_fast([$uid]);
+            if (key_exists($uid, $fetched_name)) {
+              $name[] = $fetched_name[$uid]->firstname;
+              $name[] = $fetched_name[$uid]->lastname;
+              $userName = implode(" ", $name);
+            }
             $lastCreated = t('@date by @username',['@date' => date('d.m.Y', $value->last_changed), '@username' => $userName]);
           }
 
