@@ -76,26 +76,28 @@ class HzdreleasemanagementHelper {
         $date_format = explode(".", $date_time[0]);
         $time_format = explode(":", $date_time[1]);
         if ($time_format[0] && $time_format[1] && $date_format[1] && $date_format[0] && $date_format[2]) {
-          $date = mktime((int) $time_format[0], (int) $time_format[1], (int) $time_format[2], (int) $date_format[1], (int) $date_format[0], (int) $date_format[2]);
+          $date = mktime((int)$time_format[0], (int)$time_format[1], (int)$time_format[2], (int)$date_format[1], (int)$date_format[0], (int)$date_format[2]);
         }
         $values['datum'] = $date;
       }
     }
     $type = 'releases';
-    $service = $values['service'];
-    $service = trim($service);
-    if (HzdservicesHelper::service_exist($service, $type)) {
-      $services = HzdservicesStorage::get_related_services($type);
-      $service_id = array_keys($services, $service);
-      $values['service'] = $service_id[0];
-      return TRUE;
-    } else {
-      // Echo $service; echo $type; exit;.
-      $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases');
-      $subject = 'New service found while importing Releases';
-      $body = t("New service found in import file: ") . $service . ' ' . t("Please add this service to the release database.");
-      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-      return FALSE;
+    if (key_exists('service', $values)) {
+      $service = $values['service'];
+      $service = trim($service);
+      if (HzdservicesHelper::service_exist($service, $type)) {
+        $services = HzdservicesStorage::get_related_services($type);
+        $service_id = array_keys($services, $service);
+        $values['service'] = $service_id[0];
+        return TRUE;
+      } else {
+        // Echo $service; echo $type; exit;.
+        $mail = \Drupal::config('hzd_release_management.settings')->get('import_mail_releases');
+        $subject = 'New service found while importing Releases';
+        $body = t("New service found in import file: ") . $service . ' ' . t("Please add this service to the release database.");
+        HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
+        return FALSE;
+      }
     }
     return FALSE;
   }

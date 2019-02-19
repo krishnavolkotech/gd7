@@ -422,7 +422,9 @@ EOD;
    * @ingroup sanitization
    */
   public static function escape($text) {
-    return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    if(!is_object($text)) {
+      return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
   }
 
   /**

@@ -5,10 +5,4 @@ dependencies: {  }
 name: 'Messaging plain text'
 format: messaging_plain_text
 weight: -6
-filters:
-  filter_null:
-    id: filter_null
-    provider: filter
-    status: true
-    weight: -10
-    settings: {  }
+filters: {  }

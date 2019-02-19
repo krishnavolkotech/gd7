@@ -24,6 +24,7 @@ class ProblemsController extends ControllerBase {
 
 function new_downtimes_display() {
   $breadcrumb = array();
+  $output = "";
   $breadcrumb[] = l(t('Home'), NULL);
   if (isset($_SESSION['Group_name'])) {
     $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
