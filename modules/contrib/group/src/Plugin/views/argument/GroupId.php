@@ -53,9 +53,13 @@ class GroupId extends NumericArgument {
    * Override the behavior of title(). Get the title of the group.
    */
   public function titleQuery() {
-    $titles = [];
-
-    $groups = $this->groupStorage->loadMultiple($this->value);
+    $titles = $ids = [];
+    if(is_array(end($this->value))) {
+      $ids = end($this->value);
+    }else {
+      $ids = $this->value;
+    }
+    $groups = $this->groupStorage->loadMultiple($ids);
     foreach ($groups as $group) {
       $titles[] = $group->label();
     }

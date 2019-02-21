@@ -195,6 +195,7 @@ class Deployedreleasecreateform extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $deployed_date = $form_state->getValue('deployed_date');
+    $entered_date = "";
     /**
      *  to do date  format
      */

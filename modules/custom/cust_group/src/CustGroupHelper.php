@@ -71,18 +71,6 @@ class CustGroupHelper {
       $storage = \Drupal::service('entity_type.manager')
         ->getStorage('taxonomy_term');
       $parents = $storage->loadParents($term->id());
-      if (empty($parents)) {
-        $res = \Drupal::database()->select('taxonomy_term__parent', 'ttp')
-          ->fields('ttp', ['parent_target_id'])
-          ->condition('ttp.entity_id', $term->id())
-          ->execute()->fetchField();
-        if ($res) {
-          $parents = [$res => Term::load($res)];
-        }
-      }
-//      else {
-//        $parents = $parents;
-//      }
 //        pr($parents);exit;
       if ($routeMatch->getRouteName() == 'forum.page') {
         if (empty($parents)) {
