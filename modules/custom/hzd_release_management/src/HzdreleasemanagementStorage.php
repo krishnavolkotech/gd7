@@ -829,6 +829,11 @@ $inprogress_nid_values = [];
         }
       } else {
         // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
+        $download_directory = scandir($remove_quotes);
+        \Drupal::logger('hzd_release_management')->error("Error occurred in release download documentation link generate. For the node " . $nid);
+        $doc_download_url = "wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link;
+        \Drupal::logger('hzd_release_management')->error($doc_download_url);
+        \Drupal::logger('hzd_release_management')->error(print_r($download_directory, TRUE));
         $failed_link = "Documentation link was not downloaded";
         $failed_info = array(
           'nid' => $nid,
@@ -1298,9 +1303,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           'service' => $service->get('title')->value,
           'release' => $releases->getTitle()
       );
-      if ($type != 'released') {
-        $row[] = $releases->field_status->value;
-      }
+
+      $row[] = $releases->field_status->value;
+
       $row[] = $releases->field_date->value != NULL ?
               date('d.m.Y H:i:s', $releases->field_date->value) : '';
 
@@ -1469,7 +1474,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   static public function hzd_get_release_tab_headers($type) {
     $group_id = get_group_id();
     if ($type == 'released') {
-      $header = array(t('Service'), t('Release'), t('Date'));
+      $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
       if (isset($group_id)) {
         $header[] = t('Early Warnings');
       }

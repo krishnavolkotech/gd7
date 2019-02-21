@@ -103,9 +103,13 @@ class ServiceNotificationsUserForm extends FormBase {
     //$types = [1=>'downtimes',2=>'problem',3=>'release',4=>'early_warnings'];
 
     foreach ($subscriptions as $key => $content_value) {
-     if($content_value['subscriptions_interval_' . $key] == $default_interval[$mod_type[$key]]) {
-       unset($content_types[$key]);
-     }
+      if(key_exists($key, $mod_type)) {
+        if(key_exists($mod_type[$key], $default_interval)) {
+          if ($content_value['subscriptions_interval_' . $key] == $default_interval[$mod_type[$key]]) {
+            unset($content_types[$key]);
+          }
+        }
+      }
     };
 
     $services = '';

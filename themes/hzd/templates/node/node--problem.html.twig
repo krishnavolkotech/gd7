@@ -115,23 +115,23 @@
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Description'|trans }}</td>
-            <td class='problem_content' style="white-space: pre-wrap;">{{ problem_text|raw }}</td>
+            <td class='problem_content problem_content_pdf problem_content_web'>{{ problem_text|raw }}</td>
         </tr>
 
         <tr class='odd'>
             <td class='problem_titles'>{{ 'Diagnose'|trans }}</td>
-            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_diagnose.value }}</td>
+            <td class='problem_content problem_content_pdf problem_content_web'>{{ node.field_diagnose.value }}</td>
         </tr>
 
         <tr class='even'>
             <td class='problem_titles'>{{ 'Work Around'|trans }}</td>
-            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_work_around.value|raw }}</td>
+            <td class='problem_content problem_content_pdf problem_content_web'>{{ node.field_work_around.value|raw }}</td>
         </tr>
 
 
         <tr class='odd'>
             <td class='problem_titles'>{{ 'Solution'|trans }}</td>
-            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_solution.value|raw }}</td>
+            <td class='problem_content problem_content_pdf problem_content_web'>{{ node.field_solution.value|raw }}</td>
         </tr>
 
 
@@ -143,7 +143,7 @@
 
         <tr class='odd'>
             <td class='problem_titles'>{{ 'Annotations'|trans }}</td>
-            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_comments.value|raw }}</td>
+            <td class='problem_content problem_content_pdf problem_content_web'>{{ node.field_comments.value|raw }}</td>
         </tr>
 
         <tr class='even'>

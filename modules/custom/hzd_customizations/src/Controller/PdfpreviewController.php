@@ -34,7 +34,6 @@ class Customnodepageedit extends ControllerBase {
       $output['#markup'] = $this->t("This content was already published. You cannot edit it anymore.");
     }
     else {
-      dpm($node);
       $output['content']['problems_filter_element'] = \Drupal::formBuilder()->getForm($node);
       return $output;
       // Return drupal_get_form($node->type . '_node_form', $node);.

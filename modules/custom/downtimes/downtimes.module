@@ -31,8 +31,8 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $date_format = 'd.m.Y - H:i';
     $current_path = \Drupal::service('path.current')->getPath();
     $downtime_type = trim(pathinfo($current_path, PATHINFO_BASENAME));
+    $services_effected_text = $states_help = "";
     if ($form_id == 'node_downtimes_form') {
-      
       if ($downtime_type == 'create_maintenance') {
         $help_markup = \Drupal::config('downtimes.settings')->get('report_maintenance');
         $states_help = \Drupal::config('downtimes.settings')->get('report_maintenance_2') . "<br/>";
@@ -207,7 +207,7 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $form_state->getFormObject()->getEntity()->set('title',t("Service Profile for @title",['@title'=>$service_name]));
     }
     $serialized_data = $mwData = array();
-    $maintenance_windows_info = [];
+    $maintenance_windows = [];
     if ($node) {
       $data = \Drupal::database()->select('service_profile_maintenance_service_time', 'smst')
         ->fields('smst', array('day_time'))
@@ -218,8 +218,10 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         ->fields('smw', array('id', 'day', 'day_until', 'from_time', 'to_time'))
         ->condition('nid', $node->id(), '=')
         ->execute()->fetchAll();
-      foreach ($maintenance_windows as $val) {
-        $mwData[] = array('id' => $val->id, 'day' => $val->day, 'day_until' => $val->day_until, 'from_time' => $val->from_time, 'to_time' => $val->to_time);
+      if(count($maintenance_windows) > 0) {
+        foreach ($maintenance_windows as $val) {
+          $mwData[] = array('id' => $val->id, 'day' => $val->day, 'day_until' => $val->day_until, 'from_time' => $val->from_time, 'to_time' => $val->to_time);
+        }
       }
     }
     $arr = array(
@@ -248,14 +250,14 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
           'class' => ['service--profile-field'],
         ),
       );
-      
+
       $form['service_time'][$val]['day'] = array(
         '#title' => t($val),
         '#type' => 'checkbox',
         '#default_value' => isset($serialized_data['service_time_' . $val]) ? $serialized_data['service_time_' . $val] : '',
         '#title' => Html::escape($key),
       );
-      
+
       // The below function adds the from and until fields to service profile form.
       append_hours_minutes($form, $val, $serialized_data);
     }
@@ -370,20 +372,24 @@ function downtimes_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['#validate'][] = 'custom_service_profile_form_validate';
     $form['#redirect'] = 'group/' . INCIDENT_MANAGEMENT . '/stoerung/service-profiles';
     $dependent_service_options = get_related_downtime_services('downtimes');
-    $form['field_dependent_downtimeservices'] = array(
-      '#title' => t('Dependant Services'),
-      '#type' => 'checkboxes',
-      '#multiple' => true,
-      '#options' => $dependent_service_options,
-      '#required' => FALSE,
-    );
+    if(count($dependent_service_options) > 0) {
+      $form['field_dependent_downtimeservices'] = array(
+        '#title' => t('Dependant Services'),
+        '#type' => 'checkboxes',
+        '#multiple' => TRUE,
+        '#options' => $dependent_service_options,
+        '#required' => FALSE,
+      );
+    }
     if ($form_id == 'node_service_profile_edit_form') {
       $node = \Drupal::routeMatch()->getParameter('node');
       $nid = $node->id();
       $default_dependent_service_val = \Drupal::database()->select('node__field_dependent_downtimeservices', 'nfds')
         ->fields('nfds', array('field_dependent_downtimeservices_target_id'))
         ->condition('entity_id', $nid, '=')->execute()->fetchAll();
-      $form['field_dependent_downtimeservices']['#default_value'] = cleanServices($default_dependent_service_val);
+      if(count($default_dependent_service_val) > 0 && count(cleanServices($default_dependent_service_val)) > 0) {
+        $form['field_dependent_downtimeservices']['#default_value'] = cleanServices($default_dependent_service_val);
+      }
     }
     if (isset($_REQUEST['service'])) {
       $form['field_dependent_service']['widget']['#default_value'] = $_REQUEST['service'];
@@ -571,20 +577,22 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
   );
   $service_time = $form_state->getValue('service_time');
   foreach ($arr as $vals) {
-    if ($service_time[$vals]['day']) {
-      if ($service_time[$vals]['from'] >= $service_time[$vals]['until']) {
-        $form_state->setErrorByName('service_time', t("End Date must be greater than Start Date."));
+    if(key_exists($vals, $service_time)) {
+      if ($service_time[$vals]['day']) {
+        if ($service_time[$vals]['from'] >= $service_time[$vals]['until']) {
+          $form_state->setErrorByName('service_time', t("End Date must be greater than Start Date."));
+        }
+      }
+
+      if (($service_time[$vals]['from'] > $service_time[$vals]['until']) ||
+        ($service_time[$vals]['from'] < $service_time[$vals]['until'])
+      ) {
+        if (!$service_time[$vals]) {
+          $form_state->setErrorByName('service_time', t("Select day"));
+        }
       }
     }
-    
-    if (($service_time[$vals]['from'] > $service_time[$vals]['until']) ||
-      ($service_time[$vals]['from'] < $service_time[$vals]['until'])
-    ) {
-      if (!$service_time[$vals]) {
-        $form_state->setErrorByName('service_time', t("Select day"));
-      }
-    }
-    
+
     $validateDays = array(1 => "Mon", 2 => "Tue", 3 => "Wed", 4 => "Thu", 5 => "Fri", 6 => "Sat", 7 => "Sun");
     $maintenance_windows = $form_state->getValue('maintenance_windows');
     foreach ($maintenance_windows as $key => $field) {
@@ -598,7 +606,7 @@ function custom_service_profile_form_validate(&$form, &$form_state) {
       }
     }
   }
-  
+
   if ($form_state->getErrors()) {
     // $form_idform_idform_idform_id = $_POST['form_id'];.
     //$form_state['post'] =
@@ -698,25 +706,30 @@ function downtimes_node_update($node) {
 }
 
 function saveMaintenanceWindows($node, $data) {
-  $mwData = $data['maintenance_windows'];
+  $mwData = [];
+  if(key_exists('maintenance_windows', $data)) {
+    $mwData = $data['maintenance_windows'];
+  }
   $serviceId = $node->get('field_dependent_service')->first()->get('entity')->getTarget()->getValue()->id();
-  foreach ($mwData as $item) {
-    $item['from_time'] = date('Y-m-d') . ' ' . $item['from_time']['time'];
-    $item['to_time'] = date('Y-m-d') . ' ' . $item['to_time']['time'];
-    if (!empty($item['original_id'])) {
-      if ($item['is_deleted'] == 0) {
-        $query = \Drupal::database()->update('service_profile_maintenance_windows')
-          ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId])
-          ->condition('id', $item['original_id'])
-          ->execute();
+  if (count($mwData) > 0) {
+    foreach ($mwData as $item) {
+      $item['from_time'] = date('Y-m-d') . ' ' . $item['from_time']['time'];
+      $item['to_time'] = date('Y-m-d') . ' ' . $item['to_time']['time'];
+      if (!empty($item['original_id'])) {
+        if ($item['is_deleted'] == 0) {
+          $query = \Drupal::database()->update('service_profile_maintenance_windows')
+            ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId])
+            ->condition('id', $item['original_id'])
+            ->execute();
+        } else {
+          $query = \Drupal::database()->delete('service_profile_maintenance_windows')
+            ->condition('id', $item['original_id'])->execute();
+        }
       } else {
-        $query = \Drupal::database()->delete('service_profile_maintenance_windows')
-          ->condition('id', $item['original_id'])->execute();
+        $query = \Drupal::database()->insert('service_profile_maintenance_windows')
+          ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId, 'nid' => $node->id()])
+          ->execute();
       }
-    } else {
-      $query = \Drupal::database()->insert('service_profile_maintenance_windows')
-        ->fields(['day' => $item['day'], 'from_time' => $item['from_time'], 'to_time' => $item['to_time'], 'day_until' => $item['day_until'], 'service_id' => $serviceId, 'nid' => $node->id()])
-        ->execute();
     }
   }
 }
@@ -734,10 +747,18 @@ function saveServiceTime($node, $data) {
   );
   $serviceData = [];
   foreach ($arr as $val) {
-    if ($data['service_time'][$val]) {
-      $serviceData['service_time_' . $val] = $data['service_time'][$val]['day'];
-      $serviceData['service_time_' . $val . '_from'] = $data['service_time'][$val]['from']['time'];
-      $serviceData['service_time_' . $val . '_until'] = $data['service_time'][$val]['until']['time'];
+    if (key_exists('service_time', $data)) {
+      if ($data['service_time'][$val]) {
+        if (key_exists('day', $data['service_time'][$val])) {
+          $serviceData['service_time_' . $val] = $data['service_time'][$val]['day'];
+        }
+        if (key_exists('time', $data['service_time'][$val]['from'])) {
+          $serviceData['service_time_' . $val . '_from'] = $data['service_time'][$val]['from']['time'];
+        }
+        if (key_exists('time', $data['service_time'][$val]['until'])) {
+          $serviceData['service_time_' . $val . '_until'] = $data['service_time'][$val]['until']['time'];
+        }
+      }
     }
   }
   $query = \Drupal::database()->select('service_profile_maintenance_service_time', 'spm')
@@ -1063,40 +1084,50 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
   
   // Services log.
   foreach ($form_state->getValue('services_effected') as $key => $value) {
+    $result = [];
     if ($value) {
       $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
       $result[] = db_query($query, array($value))->fetchField();
     }
   }
-  natcasesort($result);
+  if(count($result) > 0) {
+    natcasesort($result);
+  }
   $old_services = $form_values['services_effected']['#default_value'];
+  $old_result = [];
   foreach ($old_services as $key => $value) {
     if ($value) {
       $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
       $old_result[] = db_query($query, array($value))->fetchField();
     }
   }
-  natcasesort($old_result);
+  if(count($old_result) > 0) {
+    natcasesort($old_result);
+  }
   if (strcmp(implode(", ", $result), implode(", ", $old_result))) {
     $log['services']['old'] = implode(", ", $old_result);
     $log['services']['new'] = implode(", ", $result);
   }
   // States log.
   $states_list = get_all_user_state();
+  $new_states = [];
   foreach ($form_state->getValue('states') as $key => $value) {
     if ($value) {
       $new_states[] = $states_list[$value];
     }
   }
-  natcasesort($new_states);
-  $old_states = array();
+  if(count($new_states) > 0) {
+    natcasesort($new_states);
+  }
+  $old_states = [];
   foreach ($form_values['states']['#default_value'] as $key => $value) {
     if ($value) {
       $old_states[] = $states_list[$value];
     }
   }
-  natcasesort($old_states);
-  
+  if(count($old_states) > 0) {
+    natcasesort($old_states);
+  }
   if (strcmp(implode(", ", $new_states), implode(", ", $old_states))) {
     $log['states']['old'] = implode(", ", $old_states);
     $log['states']['new'] = implode(", ", $new_states);

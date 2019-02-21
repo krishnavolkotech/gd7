@@ -178,6 +178,13 @@
 */
 
         });
+
+        $ewpath = $("#earlywarnings-filter-form").attr('action');
+        if (typeof $ewpath === 'undefined' || $ewpath === null) {
+        } else {
+            $("#earlywarnings-filter-form").attr('action', $ewpath + '#earlywarnings_results_wrapper');
+        }
+
       }
    };
 })(jQuery);
@@ -205,7 +212,7 @@ function reset_form_elements(){
   // window.location = path;
   url = window.location.href; 
   res = url.split('?');
-  window.location.assign(res['0']);
+  window.location.assign(res['0'] + '#earlywarnings_results_wrapper');
   return false;
 }
   

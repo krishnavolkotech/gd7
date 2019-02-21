@@ -54,7 +54,7 @@
                     {% endif %}
                         <br>
 
-                    {{ node.getTitle() }}
+                    {{ node.getTitle()|raw }}
                 </td>
                 <td height="35">
                     {{ 'Veröffentlicht am'|trans }}:

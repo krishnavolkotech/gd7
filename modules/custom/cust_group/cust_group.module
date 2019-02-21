@@ -238,6 +238,10 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     if (in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'config:block.block.hzdgruppenadministration'
+      ]);
   }
 
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
@@ -260,6 +264,16 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
       drupal_set_message(t('Mail sent.'), 'status');
     }
   }
+
+  if ($entity->request_status->value == 1) {
+    $user = $entity->get('entity_id')->referencedEntities()[0];
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'grantpermission_view:' . $user->id(),
+        'grantpermission_update_delete:' . $user->id()
+      ]);
+  }
+
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags([
       'config:block.block.hzd_local_tasks',
@@ -306,6 +320,16 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
   }
+
+  if ($entity->request_status->value == 1) {
+    $user = $entity->get('entity_id')->referencedEntities()[0];
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'grantpermission_view:' . $user->id(),
+        'grantpermission_update_delete:' . $user->id()
+      ]);
+  }
+
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags($tags);
 }
@@ -427,7 +451,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
   switch ($form_id) {
     case 'group_admin_permissions':
-      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
+//      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
       break;
     case 'node_faqs_gnode-form_form':
     case 'node_faqs_edit_form':
@@ -572,9 +596,9 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
 }
 
-function permission_cache_submit_handler(&$form, $form_state) {
-  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
-}
+//function permission_cache_submit_handler(&$form, $form_state) {
+//  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
+//}
 
 function requst_submit_handler(&$form, $form_state) {
   $data['group'] = \Drupal::routeMatch()->getParameter('group');

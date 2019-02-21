@@ -350,6 +350,11 @@ div[style] {
    /* word-wrap: break-word;
     white-space: normal;*/
 }
+
+td.problem_content_pdf {
+   white-space: normal;
+}
+
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-downtimes-edit-form .form-wrapper .form-type-checkbox,
 form.downtimes-setting-form #edit-services .form-type-checkbox,
@@ -534,9 +539,7 @@ table tr td {
  width:100% !important;
 }
 .pdf-content .ckeditor-custom-wrapper .field strong{
-  float:none;
-  display:block;
-  width:100%;
+ font-weight: bold;
 }
 .pdf-content .ckeditor-custom-wrapper .field,
 .pdf-content article.quickinfo .field,

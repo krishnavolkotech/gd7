@@ -368,6 +368,10 @@ table.problem_info tr th,
 table.problem_info tr td{
   vertical-align: top;
 }
+/*Test für Prob */
+.problem_content_web {
+  white-space: pre-wrap;
+}
 /* .view-rz-schnellinfo table tr th:nth-child(6),
 .view-rz-schnellinfo table tr td:nth-child(6),
 #im-attachment-files-list table tr th:nth-child(2),

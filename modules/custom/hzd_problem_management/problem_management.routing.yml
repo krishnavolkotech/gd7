@@ -106,4 +106,10 @@ problem_management.problem_management_settings:
 #  requirements:
 #    access arguments: 'administer problems'
 
-
+problem_management.update_problem_ticketstore:
+  path: '/admin/update-problem-ticketstore'
+  defaults:
+    _form: '\Drupal\problem_management\Form\UpdateProblemTicketstore'
+    _title: 'Updating Problem Ticketstore'
+  requirements:
+    _permission: 'administer site'

@@ -180,7 +180,7 @@ class ProblemImport {
       $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
 
       $diff = TRUE;
-      $basic_html_fileds = ['body', 'solution', 'taskforce', 'ticketstore_link', 'workaround', 'comment', 'field_comments'];
+      $basic_html_fileds = ['body', 'solution', 'taskforce', 'workaround', 'comment', 'field_comments'];
       foreach ($values as $key => $val) {
         if (in_array($key, $basic_html_fileds)) {
           if (check_markup($values[$key], 'plain_text') != $existing_node_vals[$key]) {
@@ -265,10 +265,7 @@ class ProblemImport {
     // $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_release', $values['release']);
-    $problem_node->set('field_ticketstore_link', array(
-      'value' => check_markup($values['ticketstore_link'], 'plain_text'),
-      'format' => 'plain_text',
-    ));
+    $problem_node->set('field_ticketstore_link', $values['ticketstore_link']);
     $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_timezone', $values['timezone']);.
     $problem_node->set('field_version', $values['version']);
