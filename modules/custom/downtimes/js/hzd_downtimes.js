@@ -101,7 +101,7 @@
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                                 $('.downtimes-date-wrapper p.text-danger, .downtimes-date-wrapper p.text-warning').remove();
-                                $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
+                                $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/stoerungen-blockzeiten/create_downtimes'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
                                 $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
@@ -124,7 +124,7 @@
                             } else {
                                 $('button.form-submit,button#edit-preview').attr('disabled', 'true');
                                 $('.downtimes-date-wrapper p.text-danger, .downtimes-date-wrapper p.text-warning').remove();
-                                $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/incident-management/stoerungen/melden'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
+                                $('input#edit-startdate-planned').parents('div.start-date-wrapper').append('<p class="text-danger">' + Drupal.t('Please note: Maintenances have to be scheduled at least ') + (a.sitewide_adv) + Drupal.t(' minutes before the actual start. If you need to perform immediate maintenance work, please ') + "<a href='/stoerungen-blockzeiten/create_downtimes'>" + Drupal.t(' report an Incident instead') + "</a>" + Drupal.t('.') + '</p>');
                                 $('input#edit-startdate-planned').addClass('text-danger');
                             }
                         }
