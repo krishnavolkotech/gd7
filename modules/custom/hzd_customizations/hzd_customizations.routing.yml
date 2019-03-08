@@ -151,7 +151,8 @@ hzd_customizations.front:
     _controller: '\Drupal\front\Controller\FrontPage::view'
     _title: 'Willkommen beim Betriebsportal KONSENS'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _access: 'TRUE'
 
 hzd_customizations.add_users_to_system_groups:
   path: '/admin/add-users-to-system-groups'

@@ -32,8 +32,8 @@ downtimes.DowntimesnotesDisplay:
     _title: 'Downtimes Notes'
     _entity_view: 'group.default'
   requirements:
-    _permission: 'access content'
-    _user_is_logged_in: 'FALSE'
+#    _permission: 'access content'
+    _access: 'TRUE'
     
 downtimes.DowntimesnotesDisplay_eng:
   path: '/group/{group}/stoerung/notes'
@@ -42,8 +42,8 @@ downtimes.DowntimesnotesDisplay_eng:
     _title: 'Downtimes Notes'
     _entity_view: 'group.default'
   requirements:
-    _permission: 'access content'
-    _user_is_logged_in: 'FALSE'
+#    _permission: 'access content'
+    _access: 'TRUE'
     
 downtimes.resolve:
   path: '/node/{node}/resolve'
@@ -235,8 +235,9 @@ downtimes.new_downtimes_controller_newDowntimes:
     _title: 'Störungen und Blockzeiten'
     _entity_view: 'group.default'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
+    _access: 'TRUE'
     
 downtimes.new_downtimes_controller_engDowntimes:
   path: '/group/{group}/downtimes'

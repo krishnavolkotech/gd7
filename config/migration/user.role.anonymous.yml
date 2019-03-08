@@ -10,11 +10,8 @@ weight: 0
 is_admin: false
 permissions:
   - 'access ckeditor'
-  - 'access content'
   - 'access frontpage'
   - 'access site-wide contact form'
-  - 'edit any deployed_releases content'
-  - 'edit own deployed_releases content'
   - 'view field_contact_from_pretext'
   - 'view media'
   - 'view own field_contact_from_pretext'
