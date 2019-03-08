@@ -73,21 +73,34 @@ class ArchiveDeployedReleaseForm extends FormBase {
     /**
      * {@inheritdoc}
      */
-    public function submitForm(array &$form, FormStateInterface $form_state) {
-        $nid = $form_state->getValue('deployed_release');
-        $node = Node::load($nid);
-        if($node){
-            $node->set('field_archived_release',1)->save();
-            \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
-            if ($node->field_environment->value == 1) {
-                // If environment is Production, delete cache for deployed releases overview table
-                // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-                // \Drupal::cache()->deleteMultiple($cids);
-                \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
-            }
-            $form_state->setRedirect('hzd_release_management.deployed_releases',['group'=>$this->groupId]);
-            drupal_set_message(t('Release Archived'));
-        }
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $parameters = array();
+    $request = \Drupal::request()->query;
+    $parameters['state'] = $request->get('state');
+    $parameters['environment'] = $request->get('environment');
+    $parameters['service'] = $request->get('service');
+    $parameters['release'] = $request->get('release');
+    $parameters['startdate'] = $request->get('startdate');
+    $parameters['enddate'] = $request->get('enddate');
+    $parameters['limit'] = $request->get('limit');
+    $options['query'] = $parameters;
+
+    $nid = $form_state->getValue('deployed_release');
+    $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $this->groupId], $options);
+
+    $node = Node::load($nid);
+    if ($node) {
+      $node->set('field_archived_release', 1)->save();
+      \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
+      if ($node->field_environment->value == 1) {
+        // If environment is Production, delete cache for deployed releases overview table
+        // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+        // \Drupal::cache()->deleteMultiple($cids);
+        \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
+      }
+      $form_state->setRedirectUrl($url);
+      drupal_set_message(t('Release Archived'));
     }
+  }
 
 }
