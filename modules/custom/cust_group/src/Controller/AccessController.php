@@ -280,6 +280,50 @@ class AccessController extends ControllerBase
         }
         return AccessResult::neutral();
     }
+
+  /**
+   * @param $fid
+   * @param $nid
+   * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden
+   */
+  function userFileDeleteAccess($fid, $nid) {
+    $currentUser = \Drupal::currentUser();
+    if ($currentUser && array_intersect($currentUser->getRoles(), ['admininstrator', 'site_administrator'])) {
+      return AccessResult::allowed();
+    }
+
+    //Checking permission for Group Admin
+    $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
+    $incidentManagementGroupMember = $incidentManagement->getMember($currentUser);
+    if ($incidentManagementGroupMember && $incidentManagementGroupMember->getGroupContent()
+        ->get('request_status')->value == 1) {
+      $roles = $incidentManagementGroupMember->getRoles();
+      if (in_array($incidentManagement->getGroupType()->id() . '-admin', array_keys($roles))) {
+        return AccessResult::allowed();
+      }
+    }
+
+    //Checking Permission for owner
+    $file = \Drupal\file\Entity\File::load($fid);
+    if ($file) {
+      if($file->getOwnerId() == $currentUser->id()) {
+        return AccessResult::allowed();
+      }
+    }
+
+    //Checking States
+    $userstateid = \Drupal::database()->select('cust_profile', 'cp')
+      ->fields('cp', array('state_id'))
+      ->condition('cp.uid', $currentUser->id())
+      ->execute()->fetchField();
+
+    $nodeData = \Drupal\node\Entity\Node::load($nid);
+    $field_state = $nodeData->get('field_state')->value;
+    if($field_state == $userstateid) {
+      return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
+  }
     
     function userCreateAccess() {
         $user = \Drupal::currentUser();

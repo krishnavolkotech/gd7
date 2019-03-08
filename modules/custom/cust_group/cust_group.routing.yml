@@ -8,7 +8,8 @@ cust_group.service_profile_create:
 #   'access_arguments' => array(1),
 #   'description' => $type->description
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _role: 'administrator+site_administrator'
     
 cust_group.quickinfo:
   path: '/node/{group_id}/add/{node_type}'
@@ -20,7 +21,8 @@ cust_group.quickinfo:
 #   'access_arguments' => array(1),
 #   'description' => $type->description
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 #cust_group.faq_list:
 #  path: '/group/{group}/faq/{term}'
@@ -32,24 +34,27 @@ cust_group.quickinfo:
 #    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #    _permission: 'access content'
 
-cust_group.menu_migrate:
-  path: '/menu-migrate'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::menuMigrate'
-  requirements:
-    _permission: 'access content'
-cust_group.daily_cron_notifications:
-  path: '/daily-cron'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\NotificationsController::dailyCron'
-  requirements:
-    _permission: 'access content'
-cust_group.group_cleanup:
-  path: '/group-membercleanup'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberCleanup'
-  requirements:
-    _permission: 'access content'    
+#cust_group.menu_migrate:
+#  path: '/menu-migrate'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::menuMigrate'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
+#cust_group.daily_cron_notifications:
+#  path: '/daily-cron'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\NotificationsController::dailyCron'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
+#cust_group.group_cleanup:
+#  path: '/group-membercleanup'
+#  defaults:
+#    _controller: '\Drupal\cust_group\Controller\CustNodeController::groupMemberCleanup'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
 cust_group.path_alias_update:
   path: '/group-content-path-alias'
   defaults:
@@ -167,7 +172,8 @@ cust_group.imattachment_delete_confirm:
   defaults:
     _form: '\Drupal\cust_group\Form\ImAttachmentFileDeleteConfirm'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::userFileDeleteAccess'
     
 #Inserting States values based on url in im attachments node's state field.
 #we can remove this route and fucntion after first migration go live

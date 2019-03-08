@@ -4,4 +4,6 @@ custom_script_batch.form:
     _form: '\Drupal\custom_script_batch\Form\MigrateGroupForm'
     _title: 'Migrating Groups using Batch processing'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _role: 'administrator+site_administrator'
+
