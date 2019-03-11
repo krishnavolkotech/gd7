@@ -288,6 +288,11 @@ class AccessController extends ControllerBase
    */
   function userFileDeleteAccess($fid, $nid) {
     $currentUser = \Drupal::currentUser();
+
+    if($currentUser->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
+
     if ($currentUser && array_intersect($currentUser->getRoles(), ['admininstrator', 'site_administrator'])) {
       return AccessResult::allowed();
     }

@@ -776,6 +776,19 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       return Drupal\Core\Access\AccessResult::forbidden()->cachePerPermissions()->cachePerUser();
     }
   }
+
+  $pagesFor_anonymous = [335 => 'impressum', 439 => 'hilfe'];
+  switch ($op) {
+    case 'view':
+      if ($account->isAnonymous() && !array_key_exists($node->id(), $pagesFor_anonymous)) {
+        return AccessResult::forbidden();
+      }
+    default:
+      if ($account->isAnonymous()) {
+        return AccessResult::forbidden();
+      }
+  }
+
 }
 
 /**
