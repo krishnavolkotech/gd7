@@ -135,13 +135,13 @@ view_mode ? view_mode|clean_class,
             <div class="downtime-view-history">Historie</div>
             {% if (incident.resolved or incident.cancelled) and incident.resolved_data.date_reported %}
                 <div class="changed-group">
-                    <span class="downtimes-view-updated">
+                    <h3>
                         {% if(incident.resolved) %} 
                             Behoben 
                         {% else %}
                             Abgebrochen
                         {% endif %}
-                        von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_reported|date('d.m.Y - H:i') }} Uhr</span>
+                        von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_reported|date('d.m.Y - H:i') }} Uhr</h3>
                     <div class="field-wrapper">
                     </div>
                     {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
