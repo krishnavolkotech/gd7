@@ -327,8 +327,10 @@ class HzdStorage {
         //Removing $exposedFilterData while generating the PDF
         $query = \Drupal::request()->query;
         if ($query->has('print') && $query->get('print') == 'pdf') {
+          unset($exposedFilterData['print']);
           $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
-            'absolute' => 1
+            'absolute' => 1,
+            'query' => $exposedFilterData
           ]));
         }
       }
