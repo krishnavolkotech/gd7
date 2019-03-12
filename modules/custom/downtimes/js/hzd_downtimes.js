@@ -371,8 +371,10 @@
             function check_with_sitewide_maintenance(start_date, end_date, weekday) {
                 var passed_flag = 0;
                 var start_day = new Date(convert_to_valid_format(start_date));
+                var start_week_no = Math.ceil((start_day.getDate() - 1 - start_day.getDay()) / 7);
                 start_day = start_day.getDayOveridden();
                 var end_day = new Date(convert_to_valid_format(end_date));
+                var end_week_no = Math.ceil((end_day.getDate() - 1 - end_day.getDay()) / 7);
                 end_day = end_day.getDayOveridden();
                 /*console.log("--------");
                  console.log(start_date);
@@ -412,7 +414,11 @@
                     }
                     if (check_day == 1) {
                         if (check_conditions(start_day, end_day, day_from_index, day_until_index, value.from_time, value.to_time)) {
-                            passed_flag = 1;
+                            if(start_week_no == end_week_no) {
+                                passed_flag = 1; // For same week maintenance Window validation will work, As assuming maintenance will not more than 4 weeks
+                            }else {
+                                passed_flag = 0; // For Diff week Mandatory to ask reason
+                            }
                             return true;
                         }
                     }
