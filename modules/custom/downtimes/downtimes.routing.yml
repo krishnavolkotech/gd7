@@ -33,7 +33,7 @@ downtimes.DowntimesnotesDisplay:
     _entity_view: 'group.default'
   requirements:
 #    _permission: 'access content'
-    _access: 'TRUE'
+    _user_is_logged_in: 'FALSE'
     
 downtimes.DowntimesnotesDisplay_eng:
   path: '/group/{group}/stoerung/notes'
