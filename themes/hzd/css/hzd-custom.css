@@ -1328,3 +1328,7 @@ form#views-exposed-form-rz-schnellinfo-page-2 div.form-item-label {
 form#views-exposed-form-rz-schnellinfo-page-2 div.form-item-items-per-page {
     padding-left: 105px;
 }
+
+form#views-exposed-form-rz-schnellinfo-page-2 div.views-exposed-form input[type='text'] {
+    margin-left: 0px;
+}
