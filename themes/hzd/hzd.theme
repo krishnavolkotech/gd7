@@ -324,11 +324,12 @@ function hzd_preprocess_node(&$variables) {
     $variables['ticketstore_count'] = $variables['node']->get('field_ticketstore_count')->value;
     $variables['ticketstore_link'] = $variables['node']->get('field_ticketstore_link')->value;
     if (empty($variables['ticketstore_count']) || $variables['ticketstore_count'] == 0) {
-      $variables['ticketstore_html'] = t('No attachments available');
+      $variables['ticketstore_html'] = $variables['ticketstore_html_nolink'] = t('No attachments available');
     }
     else {
       $att_html = $variables['ticketstore_count'] > 1 ? "attachments" : "attachment";
       $variables['ticketstore_html'] = t("<a href={$variables['ticketstore_link']} target='_blank'>" . t("Link to Ticketstore") . " ({$variables['ticketstore_count']} " . t("$att_html available") . ")</a>");
+      $variables['ticketstore_html_nolink'] = $variables['ticketstore_count'] . t("$att_html available");
     }
 
     $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
