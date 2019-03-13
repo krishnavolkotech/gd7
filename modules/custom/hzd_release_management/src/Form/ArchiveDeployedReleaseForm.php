@@ -77,13 +77,27 @@ class ArchiveDeployedReleaseForm extends FormBase {
     $parameters = array();
     $request = \Drupal::request()->query;
     $parameters['state'] = $request->get('state');
+    if($parameters['state'] == NULL) {
+      unset($parameters['state']);
+    }
     $parameters['environment'] = $request->get('environment');
+    if($parameters['environment'] == NULL) {
+      unset($parameters['environment']);
+    }
     $parameters['service'] = $request->get('service');
+    if($parameters['service'] == NULL) {
+      unset($parameters['service']);
+    }
     $parameters['release'] = $request->get('release');
+    if($parameters['release'] == NULL) {
+      unset($parameters['release']);
+    }
+
     $parameters['startdate'] = $request->get('startdate');
     $parameters['enddate'] = $request->get('enddate');
     $parameters['limit'] = $request->get('limit');
     $options['query'] = $parameters;
+    $options['fragment'] = 'deployedreleases_posting';
 
     $nid = $form_state->getValue('deployed_release');
     $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $this->groupId], $options);
