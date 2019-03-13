@@ -226,6 +226,13 @@ class ReleaseFilterForm extends FormBase
         if ($service) {
             $def_releases = get_release($type, $service);
             $options = $def_releases['releases'];
+          // Adding Inprogress release type in filter only on deployed form
+          if($type == 'deployed') {
+            $progress_data = get_release('progress', $service);
+            $progress_options = $progress_data['releases'];
+            unset($progress_options[0]);
+            $options = $options + $progress_options;
+          }
         } else {
 //            $options = array('Release');
         }
