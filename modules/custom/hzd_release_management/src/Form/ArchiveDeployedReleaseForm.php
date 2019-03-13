@@ -92,6 +92,10 @@ class ArchiveDeployedReleaseForm extends FormBase {
     if($parameters['release'] == NULL) {
       unset($parameters['release']);
     }
+    $parameters['page'] = $request->get('page');
+    if($parameters['page'] == NULL) {
+      unset($parameters['page']);
+    }
 
     $parameters['startdate'] = $request->get('startdate');
     $parameters['enddate'] = $request->get('enddate');
