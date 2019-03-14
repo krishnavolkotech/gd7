@@ -315,12 +315,15 @@
 
                 var start_date = $('input#edit-startdate-planned').val();
                 start_day = new Date(convert_to_valid_format(start_date));
-                var start_week_no = Math.ceil((start_day.getDate() - 1 - start_day.getDay()) / 7);
-                start_day = start_day.getDayOveridden();
-
                 var end_date = $('input#edit-enddate-planned').val();
                 end_day = new Date(convert_to_valid_format(end_date));
-                var end_week_no = Math.ceil((end_day.getDate() - 1 - end_day.getDay()) / 7);
+                var start_monday = getMonday(start_day);
+                var end_sunday = getSunday(end_day);
+                var time_diff = toTimestamp(end_sunday) - toTimestamp(start_monday);
+                console.log('start_monday : ' + start_monday);
+                console.log('end_sunday : ' + end_sunday);
+                console.log('time diff : ' + time_diff);
+                start_day = start_day.getDayOveridden();
                 end_day = end_day.getDayOveridden();
 
                 var passed = 0;
@@ -364,7 +367,7 @@
                         final_check = 0;
                         return false;
                     }else{
-                        if(start_week_no == end_week_no) {
+                        if(parseInt(time_diff) <= 604800) {
                             final_check = 1; // For same week maintenance Window validation will work, As assuming maintenance will not more than 4 weeks
                         }else {
                             final_check = 0; // For Diff week Mandatory to ask reason
@@ -374,13 +377,33 @@
                 });
                 return final_check;
             }
+
+            function getMonday(d) {
+                d = new Date(d);
+                var day = d.getDay(),
+                    diff = d.getDate() - day + (day == 0 ? -6 : 1);
+                prv_monday = new Date(d.setDate(diff));
+                prv_monday.setHours(0, 0, 0);
+                return prv_monday
+            }
+
+            function getSunday(d) {
+                d = new Date(d);
+                var day = d.getDay(),
+                    diff = d.getDate() - day + (day == 1 ? 6 : 7);
+                next_sunday = new Date(d.setDate(diff));
+                next_sunday.setHours(23, 59, 59);
+                return next_sunday;
+            }
+
             function check_with_sitewide_maintenance(start_date, end_date, weekday) {
                 var passed_flag = 0;
                 var start_day = new Date(convert_to_valid_format(start_date));
-                var start_week_no = Math.ceil((start_day.getDate() - 1 - start_day.getDay()) / 7);
-                start_day = start_day.getDayOveridden();
                 var end_day = new Date(convert_to_valid_format(end_date));
-                var end_week_no = Math.ceil((end_day.getDate() - 1 - end_day.getDay()) / 7);
+                var start_monday = getMonday(start_day);
+                var end_sunday = getSunday(end_day);
+                var time_diff = toTimestamp(end_sunday) - toTimestamp(start_monday);
+                start_day = start_day.getDayOveridden();
                 end_day = end_day.getDayOveridden();
                 /*console.log("--------");
                  console.log(start_date);
@@ -420,7 +443,7 @@
                     }
                     if (check_day == 1) {
                         if (check_conditions(start_day, end_day, day_from_index, day_until_index, value.from_time, value.to_time)) {
-                            if(start_week_no == end_week_no) {
+                            if(parseInt(time_diff) <= 604800) {
                                 passed_flag = 1; // For same week maintenance Window validation will work, As assuming maintenance will not more than 4 weeks
                             }else {
                                 passed_flag = 0; // For Diff week Mandatory to ask reason
