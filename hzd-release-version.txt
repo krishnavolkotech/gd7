@@ -5,6 +5,7 @@ Release Version
 18-OCT-2018 : release-3.7.0
 18-Nov-2018 : release-3.7.1
 05-Feb-2019 : release-3.7.2
+18-March-2019 : release-3.7.3
 
 
 
