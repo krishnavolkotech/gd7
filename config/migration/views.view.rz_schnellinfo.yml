@@ -758,7 +758,7 @@ display:
           empty: false
           tokenize: false
           content:
-            value: '<p><a href="/release-management/betriebsüberführung/rz-schnellinfo">Für ältere Ausgaben (03/2012-03/2014) bitte hier klicken</a></p>'
+            value: '<p><a href="/release-management/betriebsüberführung/rz-schnellinfo">Für ältere Ausgaben (2008-02/2014) bitte hier klicken</a></p>'
             format: full_html
           plugin_id: text
       footer: {  }

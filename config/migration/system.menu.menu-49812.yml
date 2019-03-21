@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: menu-49812
-label: Architektursteuerung
-description: null
+label: Architekturmanagement
+description: ''
 locked: false

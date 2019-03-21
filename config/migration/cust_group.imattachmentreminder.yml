@@ -1,4 +1,4 @@
 im_first_reminder: '90'
 im_reminder_frequency: '90'
 im_reminder_subject: '[Betriebsportal KONSENS] Ihr Störungslog [file:name] vom [file:changed]'
-im_reminder_body: "<p>Hallo&nbsp;[user:display-name],</p>\r\n\r\n<p>Sie haben das Störungslog&nbsp;[file:name] am&nbsp;[file:changed] hochgeladen. Bitte überprüfen Sie, ob dieses noch benötigt wird, ansonsten löschen Sie es bitte.</p>\r\n\r\n<p>-- Team Betriebsportal KONSENS</p>\r\n"
+im_reminder_body: "<p>Hallo&nbsp;[user:display-name],</p>\r\n\r\n<p>Sie haben das Störungslog&nbsp;[file:name] am&nbsp;[file:changed] hochgeladen. Bitte überprüfen Sie, ob dieses noch benötigt wird, ansonsten löschen Sie es bitte.</p>\r\n\r\n<p>Das Löschen erfolgt auf der Uploadseite <a href=\"http://betriebsportal-konsens.hessen.testa-de.net/incident-management/ablage-attachments\">http://betriebsportal-konsens.hessen.testa-de.net/incident-management/ablage-attachments</a>&nbsp;am rechten Rand der Tabellenzeile mit der von Ihnen hochgeladenen Datei.</p>\r\n\r\n<p>-- Team Betriebsportal KONSENS</p>\r\n"
