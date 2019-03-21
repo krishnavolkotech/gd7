@@ -1320,3 +1320,20 @@ form#views-exposed-form-measures-measures #edit-order-date,
 form#views-exposed-form-measures-measures #edit-target-date {
     width: 110px;
 }
+
+form#views-exposed-form-rz-schnellinfo-page-2 div.form-item-label {
+    padding-left: 85px;
+}
+
+form#views-exposed-form-rz-schnellinfo-page-2 div.form-item-items-per-page {
+    padding-left: 105px;
+    margin-right: 5px;
+}
+
+form#views-exposed-form-rz-schnellinfo-page-2 input[type="text"] {
+    margin-left: 0px !important;
+}
+
+form#views-exposed-form-rz-schnellinfo-page-2 select {
+    max-width: 88px !important;
+}

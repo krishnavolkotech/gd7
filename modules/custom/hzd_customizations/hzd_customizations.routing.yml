@@ -15,7 +15,8 @@ hzd_customizations.inactive_users:
     _controller: '\Drupal\hzd_customizations\Controller\Inactiveusers::inactive_users'
     _title: 'Inactive Users'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _role: 'administrator+site_administrator'
 
 hzd_customizations.quickinfo_templat:
   path: 'admin/messaging/quickinfo-template'
@@ -150,7 +151,8 @@ hzd_customizations.front:
     _controller: '\Drupal\front\Controller\FrontPage::view'
     _title: 'Willkommen beim Betriebsportal KONSENS'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _access: 'TRUE'
 
 hzd_customizations.add_users_to_system_groups:
   path: '/admin/add-users-to-system-groups'

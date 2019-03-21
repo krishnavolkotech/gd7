@@ -609,6 +609,7 @@ function hzd_customizations_quickinfo_save($node) {
       if (!file_exists('private://rz-schnellinfos/' . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf")) {
         \Drupal::service('file_system')
           ->mkdir('private://rz-schnellinfos/' . $quickinfoId, NULL, TRUE);
+        $node->save();
         $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
                 ->createSelectedInstance('pdf');
         $print_builder = \Drupal::service('entity_print.print_builder');
@@ -626,6 +627,24 @@ function hzd_customizations_quickinfo_save($node) {
             'description' => '',
         ]);
         $node->save();
+        $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
+          ->createSelectedInstance('pdf');
+        $print_builder = \Drupal::service('entity_print.print_builder');
+        $uri = $print_builder->savePrintable([$node], $print_engine, 'private', "rz-schnellinfos/{$quickinfoId}/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf");
+        $file_new = File::create([
+          'filename' => "RZ-Schnellinfo-Nr-{$quickinfoId}.pdf",
+          'uri' => $uri,
+          'uid' => \Drupal::currentUser()->id(),
+        ]);
+        $file_new->save();
+        file_delete($file->id());
+        $node->upload->appendItem([
+          'target_id' => $file_new->id(),
+          'display' => 1,
+          'description' => '',
+        ]);
+        $node->save();
+
         generate_quickinfo_pdf($node);
       }
     }

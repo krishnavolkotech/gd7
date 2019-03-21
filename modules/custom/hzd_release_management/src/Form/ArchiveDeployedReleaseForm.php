@@ -73,21 +73,52 @@ class ArchiveDeployedReleaseForm extends FormBase {
     /**
      * {@inheritdoc}
      */
-    public function submitForm(array &$form, FormStateInterface $form_state) {
-        $nid = $form_state->getValue('deployed_release');
-        $node = Node::load($nid);
-        if($node){
-            $node->set('field_archived_release',1)->save();
-            \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
-            if ($node->field_environment->value == 1) {
-                // If environment is Production, delete cache for deployed releases overview table
-                // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-                // \Drupal::cache()->deleteMultiple($cids);
-                \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
-            }
-            $form_state->setRedirect('hzd_release_management.deployed_releases',['group'=>$this->groupId]);
-            drupal_set_message(t('Release Archived'));
-        }
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $parameters = array();
+    $request = \Drupal::request()->query;
+    $parameters['state'] = $request->get('state');
+    if($parameters['state'] == NULL) {
+      unset($parameters['state']);
     }
+    $parameters['environment'] = $request->get('environment');
+    if($parameters['environment'] == NULL) {
+      unset($parameters['environment']);
+    }
+    $parameters['service'] = $request->get('service');
+    if($parameters['service'] == NULL) {
+      unset($parameters['service']);
+    }
+    $parameters['release'] = $request->get('release');
+    if($parameters['release'] == NULL) {
+      unset($parameters['release']);
+    }
+    $parameters['page'] = $request->get('page');
+    if($parameters['page'] == NULL) {
+      unset($parameters['page']);
+    }
+
+    $parameters['startdate'] = $request->get('startdate');
+    $parameters['enddate'] = $request->get('enddate');
+    $parameters['limit'] = $request->get('limit');
+    $options['query'] = $parameters;
+    $options['fragment'] = 'deployedreleases_posting';
+
+    $nid = $form_state->getValue('deployed_release');
+    $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => $this->groupId], $options);
+
+    $node = Node::load($nid);
+    if ($node) {
+      $node->set('field_archived_release', 1)->save();
+      \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
+      if ($node->field_environment->value == 1) {
+        // If environment is Production, delete cache for deployed releases overview table
+        // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+        // \Drupal::cache()->deleteMultiple($cids);
+        \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
+      }
+      $form_state->setRedirectUrl($url);
+      drupal_set_message(t('Release Archived'));
+    }
+  }
 
 }

@@ -324,6 +324,15 @@ class HzdStorage {
 //                        'query' => $exposedFilterData,
 //                    ]
 //                );
+        //Removing $exposedFilterData while generating the PDF
+        $query = \Drupal::request()->query;
+        if ($query->has('print') && $query->get('print') == 'pdf') {
+          unset($exposedFilterData['print']);
+          $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
+            'absolute' => 1,
+            'query' => $exposedFilterData
+          ]));
+        }
       }
       // redirect to the node view if a specified SDCallID is searched for
       if (is_numeric($filterData->get('string', NULL)) && count($result) == 1) {

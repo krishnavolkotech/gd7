@@ -24,5 +24,6 @@ hzd_earlywarnings.add_early_warnings:
     _title: 'Early Warnings'
     _entity_view: 'group.default'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     node: \d+

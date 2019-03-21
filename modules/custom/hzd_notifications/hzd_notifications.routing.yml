@@ -43,13 +43,14 @@ hzd_notifications.group_notifications:
 #    _permission: 'access content'
     _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
-hzd_notifications.update_notifications:
-  path: '/migrate_service_notifications'
-  defaults:
-    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_notifications'
-    _title: 'Migrate Notifications'
-  requirements:
-    _permission: 'access content'
+#hzd_notifications.update_notifications:
+#  path: '/migrate_service_notifications'
+#  defaults:
+#    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_notifications'
+#    _title: 'Migrate Notifications'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
 
 hzd_notifications.delete_notifications:
   path: '/update_notifications'
@@ -66,23 +67,26 @@ hzd_notifications.notifications_template:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::notification_templates'
     _title: 'Notifications Templates'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _role: 'administrator+site_administrator'
 
-hzd_notifications.migrate_group_notifications:
-  path: '/migrate_group_notifications'
-  defaults:
-    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_group_notifications'
-    _title: 'Migrate Group Notifications'
-  requirements:
-    _permission: 'access content'
+#hzd_notifications.migrate_group_notifications:
+#  path: '/migrate_group_notifications'
+#  defaults:
+#    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_group_notifications'
+#    _title: 'Migrate Group Notifications'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
 
-hzd_notifications.migrate_date_deployed:
-  path: '/migrate_date_deployed'
-  defaults:
-    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_date_deployed'
-    _title: 'Migrate Date field in Deployed Releases'
-  requirements:
-    _permission: 'access content'
+#hzd_notifications.migrate_date_deployed:
+#  path: '/migrate_date_deployed'
+#  defaults:
+#    _controller: '\Drupal\hzd_notifications\Controller\HzdMigrateNotifications::migrate_date_deployed'
+#    _title: 'Migrate Date field in Deployed Releases'
+#  requirements:
+##    _permission: 'access content'
+#    _role: 'administrator+site_administrator'
 
 hzd_notifications.update_subscriptions:
   path: '/user/{user}/notifications/update/{status}'
@@ -99,7 +103,8 @@ hzd_notifications.cancel_all_subscriptions:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::cancelUserNotifications'
     _title: 'Cancel Notifications'
   requirements:
-    _permission: 'access content'
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 hzd_notifications.notifications_config:
   path: '/admin/messaging/notifications'
   defaults:
