@@ -70,8 +70,8 @@ class Datetime extends DateElementBase {
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     if ($input !== FALSE) {
-      $date_input  = $element['#date_date_element'] != 'none' && !empty($input['date']) ? $input['date'] : '';
-      $time_input  = $element['#date_time_element'] != 'none' && !empty($input['time']) ? $input['time'] : '';
+      $date_input = $element['#date_date_element'] != 'none' && !empty($input['date']) ? $input['date'] : '';
+      $time_input = $element['#date_time_element'] != 'none' && !empty($input['time']) ? $input['time'] : '';
       $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
       $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
       $timezone = !empty($element['#date_timezone']) ? $element['#date_timezone'] : NULL;
@@ -96,7 +96,7 @@ class Datetime extends DateElementBase {
       ];
     }
     else {
-      $date = $element['#default_value'];
+      $date = isset($element['#default_value']) ? $element['#default_value'] : NULL;
       if ($date instanceof DrupalDateTime && !$date->hasErrors()) {
         $input = [
           'date'   => $date->format($element['#date_date_format']),
@@ -274,7 +274,7 @@ class Datetime extends DateElementBase {
       // Allows custom callbacks to alter the element.
       if (!empty($element['#date_date_callbacks'])) {
         foreach ($element['#date_date_callbacks'] as $callback) {
-          if (function_exists($callback)) {
+          if (is_callable($callback)) {
             $callback($element, $form_state, $date);
           }
         }

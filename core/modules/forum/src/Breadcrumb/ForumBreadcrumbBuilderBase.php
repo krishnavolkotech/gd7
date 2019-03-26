@@ -43,6 +43,13 @@ abstract class ForumBreadcrumbBuilderBase implements BreadcrumbBuilderInterface 
   protected $forumManager;
 
   /**
+   * The taxonomy term storage.
+   *
+   * @var \Drupal\taxonomy\TermStorageInterface
+   */
+  protected $termStorage;
+
+  /**
    * Constructs a forum breadcrumb builder object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -59,6 +66,7 @@ abstract class ForumBreadcrumbBuilderBase implements BreadcrumbBuilderInterface 
     $this->config = $config_factory->get('forum.settings');
     $this->forumManager = $forum_manager;
     $this->setStringTranslation($string_translation);
+    $this->termStorage = $entity_manager->getStorage('taxonomy_term');
   }
 
   /**
@@ -70,11 +78,11 @@ abstract class ForumBreadcrumbBuilderBase implements BreadcrumbBuilderInterface 
 
     $links[] = Link::createFromRoute($this->t('Home'), '<front>');
 
-//    $vocabulary = $this->entityManager
-//      ->getStorage('taxonomy_vocabulary')
-//      ->load($this->config->get('vocabulary'));
-//    $breadcrumb->addCacheableDependency($vocabulary);
-//    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
+    $vocabulary = $this->entityManager
+      ->getStorage('taxonomy_vocabulary')
+      ->load($this->config->get('vocabulary'));
+    $breadcrumb->addCacheableDependency($vocabulary);
+    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
 
     return $breadcrumb->setLinks($links);
   }

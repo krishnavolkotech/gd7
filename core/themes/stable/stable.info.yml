@@ -144,6 +144,11 @@ libraries-override:
       theme:
         css/menu_ui.admin.css: css/menu_ui/menu_ui.admin.css
 
+  migrate_drupal_ui/base:
+    css:
+      component:
+        css/components/upgrade-analysis-report-tables.css: css/migrate_drupal_ui/components/upgrade-analysis-report-tables.css
+
   node/drupal.node:
     css:
       layout:
@@ -280,8 +285,8 @@ libraries-override:
         css/views_ui.admin.theme.css: css/views_ui/views_ui.admin.theme.css
         css/views_ui.contextual.css: css/views_ui/views_ui.contextual.css
 
-# Information added by Drupal.org packaging script on 2019-01-16
-version: '8.5.10'
+# Information added by Drupal.org packaging script on 2019-03-20
+version: '8.6.13'
 core: '8.x'
 project: 'drupal'
-datestamp: 1547682227
+datestamp: 1553100246

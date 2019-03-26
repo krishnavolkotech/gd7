@@ -3,12 +3,12 @@ type: module
 description: 'Module with a dependency in the experimental package.'
 package: Testing
 dependencies:
-  - experimental_module_test
+  - drupal:experimental_module_test
 # version: VERSION
 # core: 8.x
 
-# Information added by Drupal.org packaging script on 2019-01-16
-version: '8.5.10'
+# Information added by Drupal.org packaging script on 2019-03-20
+version: '8.6.13'
 core: '8.x'
 project: 'drupal'
-datestamp: 1547682227
+datestamp: 1553100246

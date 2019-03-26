@@ -81,10 +81,39 @@ class InstallHelper implements ContainerInjectionInterface {
    * Imports default contents.
    */
   public function importContent() {
-    $this->importArticles()
+    $this->importEditors()
+      ->importArticles()
       ->importRecipes()
       ->importPages()
       ->importBlockContent();
+  }
+
+  /**
+   * Imports editors.
+   *
+   * Other users are created as their content is imported. However, editors
+   * don't have their own content so are created here instead.
+   *
+   * @return $this
+   */
+  protected function importEditors() {
+    $user_storage = $this->entityTypeManager->getStorage('user');
+    $editors = [
+      'Margaret Hopper',
+      'Grace Hamilton',
+    ];
+    foreach ($editors as $name) {
+      $user = $user_storage->create([
+        'name' => $name,
+        'status' => 1,
+        'roles' => ['editor'],
+        'mail' => mb_strtolower(str_replace(' ', '.', $name)) . '@example.com',
+      ]);
+      $user->enforceIsNew();
+      $user->save();
+      $this->storeCreatedContentUuids([$user->uuid() => 'user']);
+    }
+    return $this;
   }
 
   /**
@@ -104,6 +133,7 @@ class InstallHelper implements ContainerInjectionInterface {
         $values = [
           'type' => 'article',
           'title' => $data['title'],
+          'moderation_state' => 'published',
         ];
         // Fields mapping starts.
         // Set Body Field.
@@ -167,11 +197,11 @@ class InstallHelper implements ContainerInjectionInterface {
           'type' => 'recipe',
           // Title field.
           'title' => $data['title'],
+          'moderation_state' => 'published',
         ];
         // Set article author.
         if (!empty($data['author'])) {
           $values['uid'] = $this->getUser($data['author']);
-          $values['field_author'] = $values['uid'];
         }
         // Set node alias if exists.
         if (!empty($data['slug'])) {
@@ -264,6 +294,7 @@ class InstallHelper implements ContainerInjectionInterface {
         $values = [
           'type' => 'page',
           'title' => $data['title'],
+          'moderation_state' => 'published',
         ];
         // Fields mapping starts.
         // Set Body Field.
@@ -298,9 +329,9 @@ class InstallHelper implements ContainerInjectionInterface {
   protected function importBlockContent() {
     $module_path = $this->moduleHandler->getModule('demo_umami_content')->getPath();
     $block_content_entities = [
-      'umami_recipes_banner' => [
-        'uuid' => '4c7d58a3-a45d-412d-9068-259c57e40541',
-        'info' => 'Umami Recipes Banner',
+      'umami_home_banner' => [
+        'uuid' => '9aadf4a1-ded6-4017-a10d-a5e043396edf',
+        'info' => 'Umami Home Banner',
         'type' => 'banner_block',
         'field_title' => [
           'value' => 'Super easy vegetarian pasta bake',
@@ -311,7 +342,7 @@ class InstallHelper implements ContainerInjectionInterface {
             $node = reset($nodes);
             return $this->aliasManager->getAliasByPath('/node/' . $node->id());
           }),
-          'title' => 'Super easy vegetarian pasta bake',
+          'title' => 'View recipe',
         ],
         'field_summary' => [
           'value' => 'A wholesome pasta bake is the ultimate comfort food. This delicious bake is super quick to prepare and an ideal midweek meal for all the family.',
@@ -319,6 +350,29 @@ class InstallHelper implements ContainerInjectionInterface {
         'field_banner_image' => [
           'target_id' => $this->createFileEntity($module_path . '/default_content/images/veggie-pasta-bake-hero-umami.jpg'),
           'alt' => 'Mouth watering vegetarian pasta bake with rich tomato sauce and cheese toppings',
+        ],
+      ],
+      'umami_recipes_banner' => [
+        'uuid' => '4c7d58a3-a45d-412d-9068-259c57e40541',
+        'info' => 'Umami Recipes Banner',
+        'type' => 'banner_block',
+        'field_title' => [
+          'value' => 'Vegan chocolate and nut brownies',
+        ],
+        'field_content_link' => [
+          'uri' => 'internal:' . call_user_func(function () {
+            $nodes = $this->entityTypeManager->getStorage('node')->loadByProperties(['title' => 'Vegan chocolate and nut brownies']);
+            $node = reset($nodes);
+            return $this->aliasManager->getAliasByPath('/node/' . $node->id());
+          }),
+          'title' => 'View recipe',
+        ],
+        'field_summary' => [
+          'value' => 'These sumptuous brownies should be gooey on the inside and crisp on the outside. A perfect indulgence!',
+        ],
+        'field_banner_image' => [
+          'target_id' => $this->createFileEntity($module_path . '/default_content/images/vegan-brownies-hero-umami.jpg'),
+          'alt' => 'A stack of chocolate and pecan brownies, sprinkled with pecan crumbs and crushed walnut, fresh out of the oven',
         ],
       ],
       'umami_disclaimer' => [
@@ -401,10 +455,12 @@ class InstallHelper implements ContainerInjectionInterface {
     $user_storage = $this->entityTypeManager->getStorage('user');
     $users = $user_storage->loadByProperties(['name' => $name]);;
     if (empty($users)) {
-      // Creating user without any email/password.
+      // Creating user without any password.
       $user = $user_storage->create([
         'name' => $name,
         'status' => 1,
+        'roles' => ['author'],
+        'mail' => mb_strtolower(str_replace(' ', '.', $name)) . '@example.com',
       ]);
       $user->enforceIsNew();
       $user->save();

@@ -14,7 +14,7 @@ interface InboundPathProcessorInterface {
    *
    * Implementations may make changes to the request object passed in but should
    * avoid all other side effects. This method can be called to process requests
-   * other that the current request.
+   * other than the current request.
    *
    * @param string $path
    *   The path to process, with a leading slash.

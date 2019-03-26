@@ -5,13 +5,13 @@ description: "Support module for the Entity Reference tests."
 package: Testing
 # version: VERSION
 dependencies:
-  - node
-  - user
-  - views
-  - entity_test
+  - drupal:node
+  - drupal:user
+  - drupal:views
+  - drupal:entity_test
 
-# Information added by Drupal.org packaging script on 2019-01-16
-version: '8.5.10'
+# Information added by Drupal.org packaging script on 2019-03-20
+version: '8.6.13'
 core: '8.x'
 project: 'drupal'
-datestamp: 1547682227
+datestamp: 1553100246

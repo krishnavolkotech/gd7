@@ -49,7 +49,7 @@
  * The following changes have been done:
  *  Added namespace Drupal\Core\Archiver.
  *  Removed require_once 'PEAR.php'.
- *  Added defintion of OS_WINDOWS taken from PEAR.php.
+ *  Added definition of OS_WINDOWS taken from PEAR.php.
  *  Renamed class to ArchiveTar.
  *  Removed extends PEAR from class.
  *  Removed call parent:: __construct().
@@ -157,7 +157,6 @@ class ArchiveTar
      * @var string
      */
     public $_fmt ='';
-
     /**
      * Archive_Tar Class constructor. This flavour of the constructor only
      * declare a new Archive_Tar object, identifying it by the name of the
@@ -188,7 +187,7 @@ class ArchiveTar
                     if ($data == "\37\213") {
                         $this->_compress = true;
                         $this->_compress_type = 'gz';
-                        // No sure it's enought for a magic code ....
+                        // Not sure it's enough for a magic code ....
                     } elseif ($data == "BZ") {
                         $this->_compress = true;
                         $this->_compress_type = 'bz2';
@@ -264,6 +263,7 @@ class ArchiveTar
                 return false;
             }
         }
+
 
         if (version_compare(PHP_VERSION, "5.5.0-dev") < 0) {
             $this->_fmt = "a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/" .
@@ -596,7 +596,7 @@ class ArchiveTar
      * indicated by $p_path. When relevant the memorized path of the
      * files/dir can be modified by removing the $p_remove_path path at the
      * beginning of the file/dir path.
-     * While extracting a file, if the directory path does not exists it is
+     * While extracting a file, if the directory path does not exist it is
      * created.
      * While extracting a file, if the file already exists it is replaced
      * without looking for last modification date.
@@ -1411,6 +1411,7 @@ class ArchiveTar
         if ($p_stored_filename == '') {
             $p_stored_filename = $p_filename;
         }
+
         $v_reduced_filename = $this->_pathReduction($p_stored_filename);
 
         if (strlen($v_reduced_filename) > 99) {
@@ -1423,6 +1424,7 @@ class ArchiveTar
         if (@is_link($p_filename)) {
             $v_linkname = readlink($p_filename);
         }
+
         if (strlen($v_linkname) > 99) {
             if (!$this->_writeLongHeader($v_linkname, true)) {
                 return false;
@@ -1463,11 +1465,11 @@ class ArchiveTar
 
         $v_devmajor = '';
         $v_devminor = '';
-
         $v_prefix = '';
 
         $v_binary_data_first = pack(
             "a100a8a8a8a12a12",
+            $v_reduced_filename,
             $v_perms,
             $v_uid,
             $v_gid,
@@ -1740,6 +1742,7 @@ class ArchiveTar
         $v_checksum += array_sum(array_map('ord', array(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',)));
         $v_checksum += array_sum(array_map('ord', array_slice($v_binary_split, 156, 512)));
 
+
         $v_data = unpack($this->_fmt, $v_binary_data);
 
         if (strlen($v_data["prefix"]) > 0) {
@@ -1828,7 +1831,6 @@ class ArchiveTar
             return OctDec(trim($tar_size));
         }
     }
-
 
     /**
      * Detect and report a malicious file name
@@ -2442,7 +2444,7 @@ class ArchiveTar
 
     /**
      * Compress path by changing for example "/dir/foo/../bar" to "/dir/bar",
-     * rand emove double slashes.
+     * and remove double slashes.
      *
      * @param string $p_dir path to reduce
      *

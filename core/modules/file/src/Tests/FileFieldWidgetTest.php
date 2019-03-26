@@ -4,7 +4,6 @@ namespace Drupal\file\Tests;
 
 use Drupal\comment\Entity\Comment;
 use Drupal\comment\Tests\CommentTestTrait;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -260,7 +259,7 @@ class FileFieldWidgetTest extends FileFieldTestBase {
       '%field' => $field_name,
       '@max' => $cardinality,
       '@count' => count($upload_files_node_creation) + count($upload_files_node_revision),
-      '%list' => implode(', ', array_fill(0, 3, $test_file->getFilename())),
+      '%list' => implode(', ', ['text-0_2.txt', 'text-0_3.txt', 'text-0_4.txt']),
     ];
     $this->assertRaw(t('Field %field can only hold @max values but there were @count uploaded. The following files have been omitted as a result: %list.', $args));
     $node_storage->resetCache([$nid]);
@@ -270,7 +269,7 @@ class FileFieldWidgetTest extends FileFieldTestBase {
     // Try to upload exactly the allowed number of files on revision. Create an
     // empty node first, to fill it in its first revision.
     $node = $this->drupalCreateNode([
-      'type' => $type_name
+      'type' => $type_name,
     ]);
     $this->uploadNodeFile($test_file, $field_name, $node->id(), 1);
     $node_storage->resetCache([$nid]);
@@ -292,7 +291,7 @@ class FileFieldWidgetTest extends FileFieldTestBase {
       '%field' => $field_name,
       '@max' => $cardinality,
       '@count' => count($upload_files),
-      '%list' => $test_file->getFileName(),
+      '%list' => 'text-0_12.txt',
     ];
     $this->assertRaw(t('Field %field can only hold @max values but there were @count uploaded. The following files have been omitted as a result: %list.', $args));
   }
@@ -461,7 +460,7 @@ class FileFieldWidgetTest extends FileFieldTestBase {
    * Tests file widget element.
    */
   public function testWidgetElement() {
-    $field_name = Unicode::strtolower($this->randomMachineName());
+    $field_name = mb_strtolower($this->randomMachineName());
     $html_name = str_replace('_', '-', $field_name);
     $this->createFileField($field_name, 'node', 'article', ['cardinality' => FieldStorageConfig::CARDINALITY_UNLIMITED]);
     $file = $this->getTestFile('text');
