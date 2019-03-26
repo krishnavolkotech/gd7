@@ -2,33 +2,23 @@
 
 namespace Sabberworm\CSS\CSSList;
 
-use Sabberworm\CSS\Renderable;
 use Sabberworm\CSS\RuleSet\DeclarationBlock;
 use Sabberworm\CSS\RuleSet\RuleSet;
 use Sabberworm\CSS\Property\Selector;
-use Sabberworm\CSS\Comment\Commentable;
+use Sabberworm\CSS\Rule\Rule;
+use Sabberworm\CSS\Value\ValueList;
+use Sabberworm\CSS\Value\CSSFunction;
 
 /**
  * A CSSList is the most generic container available. Its contents include RuleSet as well as other CSSList objects.
  * Also, it may contain Import and Charset objects stemming from @-rules.
  */
-abstract class CSSList implements Renderable, Commentable {
+abstract class CSSList {
 
-	protected $aComments;
 	protected $aContents;
-	protected $iLineNo;
 
-	public function __construct($iLineNo = 0) {
-		$this->aComments = array();
+	public function __construct() {
 		$this->aContents = array();
-		$this->iLineNo = $iLineNo;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getLineNo() {
-		return $this->iLineNo;
 	}
 
 	public function append($oItem) {
@@ -46,17 +36,6 @@ abstract class CSSList implements Renderable, Commentable {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Set the contents.
-	 * @param array $aContents Objects to set as content.
-	 */
-	public function setContents(array $aContents) {
-		$this->aContents = array();
-		foreach ($aContents as $content) {
-			$this->append($content);
-		}
 	}
 
 	/**
@@ -132,26 +111,4 @@ abstract class CSSList implements Renderable, Commentable {
 	public function getContents() {
 		return $this->aContents;
 	}
-
-	/**
-	 * @param array $aComments Array of comments.
-	 */
-	public function addComments(array $aComments) {
-		$this->aComments = array_merge($this->aComments, $aComments);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getComments() {
-		return $this->aComments;
-	}
-
-	/**
-	 * @param array $aComments Array containing Comment objects.
-	 */
-	public function setComments(array $aComments) {
-		$this->aComments = $aComments;
-	}
-
 }

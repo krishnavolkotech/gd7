@@ -35,7 +35,6 @@ class Parser
     private $refs = array();
     private $skippedLineNumbers = array();
     private $locallySkippedLineNumbers = array();
-    private $refsBeingParsed = array();
 
     public function __construct()
     {
@@ -213,7 +212,6 @@ class Parser
 
                 if (isset($values['value']) && self::preg_match('#^&(?P<ref>[^ ]+) *(?P<value>.*)#u', $values['value'], $matches)) {
                     $isRef = $matches['ref'];
-                    $this->refsBeingParsed[] = $isRef;
                     $values['value'] = $matches['value'];
                 }
 
@@ -246,7 +244,6 @@ class Parser
                 }
                 if ($isRef) {
                     $this->refs[$isRef] = end($data);
-                    array_pop($this->refsBeingParsed);
                 }
             } elseif (
                 self::preg_match('#^(?P<key>(?:![^\s]++\s++)?(?:'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?[^ \'"\[\{!].*?)) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
@@ -290,10 +287,6 @@ class Parser
                     if (isset($values['value'][0]) && '*' === $values['value'][0]) {
                         $refName = substr(rtrim($values['value']), 1);
                         if (!array_key_exists($refName, $this->refs)) {
-                            if (false !== $pos = array_search($refName, $this->refsBeingParsed, true)) {
-                                throw new ParseException(sprintf('Circular reference [%s, %s] detected for reference "%s".', implode(', ', \array_slice($this->refsBeingParsed, $pos)), $refName, $refName), $this->currentLineNb + 1, $this->currentLine, $this->filename);
-                            }
-
                             throw new ParseException(sprintf('Reference "%s" does not exist.', $refName), $this->getRealCurrentLineNb() + 1, $this->currentLine, $this->filename);
                         }
 
@@ -347,7 +340,6 @@ class Parser
                     }
                 } elseif ('<<' !== $key && isset($values['value']) && self::preg_match('#^&(?P<ref>[^ ]++) *+(?P<value>.*)#u', $values['value'], $matches)) {
                     $isRef = $matches['ref'];
-                    $this->refsBeingParsed[] = $isRef;
                     $values['value'] = $matches['value'];
                 }
 
@@ -403,7 +395,6 @@ class Parser
                 }
                 if ($isRef) {
                     $this->refs[$isRef] = $data[$key];
-                    array_pop($this->refsBeingParsed);
                 }
             } else {
                 // multiple documents are not supported
@@ -509,7 +500,6 @@ class Parser
         $parser->totalNumberOfLines = $this->totalNumberOfLines;
         $parser->skippedLineNumbers = $skippedLineNumbers;
         $parser->refs = &$this->refs;
-        $parser->refsBeingParsed = $this->refsBeingParsed;
 
         return $parser->doParse($yaml, $flags);
     }
@@ -699,10 +689,6 @@ class Parser
             }
 
             if (!array_key_exists($value, $this->refs)) {
-                if (false !== $pos = array_search($value, $this->refsBeingParsed, true)) {
-                    throw new ParseException(sprintf('Circular reference [%s, %s] detected for reference "%s".', implode(', ', \array_slice($this->refsBeingParsed, $pos)), $value, $value), $this->currentLineNb + 1, $this->currentLine, $this->filename);
-                }
-
                 throw new ParseException(sprintf('Reference "%s" does not exist.', $value), $this->currentLineNb + 1, $this->currentLine, $this->filename);
             }
 

@@ -79,13 +79,13 @@ class ConstraintViolation implements ConstraintViolationInterface
         }
 
         $propertyPath = (string) $this->propertyPath;
-        $code = (string) $this->code;
+        $code = $this->code;
 
         if ('' !== $propertyPath && '[' !== $propertyPath[0] && '' !== $class) {
             $class .= '.';
         }
 
-        if ('' !== $code) {
+        if (!empty($code)) {
             $code = ' (code '.$code.')';
         }
 

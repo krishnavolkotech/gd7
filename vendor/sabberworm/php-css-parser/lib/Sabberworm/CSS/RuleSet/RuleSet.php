@@ -4,47 +4,25 @@ namespace Sabberworm\CSS\RuleSet;
 
 use Sabberworm\CSS\Rule\Rule;
 use Sabberworm\CSS\Renderable;
-use Sabberworm\CSS\Comment\Commentable;
 
 /**
  * RuleSet is a generic superclass denoting rules. The typical example for rule sets are declaration block.
  * However, unknown At-Rules (like @font-face) are also rule sets.
  */
-abstract class RuleSet implements Renderable, Commentable {
+abstract class RuleSet implements Renderable {
 
 	private $aRules;
-	protected $iLineNo;
-	protected $aComments;
 
-	public function __construct($iLineNo = 0) {
+	public function __construct() {
 		$this->aRules = array();
-		$this->iLineNo = $iLineNo;
-		$this->aComments = array();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getLineNo() {
-		return $this->iLineNo;
-	}
-
-	public function addRule(Rule $oRule, Rule $oSibling = null) {
+	public function addRule(Rule $oRule) {
 		$sRule = $oRule->getRule();
 		if(!isset($this->aRules[$sRule])) {
 			$this->aRules[$sRule] = array();
 		}
-
-		$iPosition = count($this->aRules[$sRule]);
-
-		if ($oSibling !== null) {
-			$iSiblingPos = array_search($oSibling, $this->aRules[$sRule], true);
-			if ($iSiblingPos !== false) {
-				$iPosition = $iSiblingPos;
-			}
-		}
-
-		array_splice($this->aRules[$sRule], $iPosition, 0, array($oRule));
+		$this->aRules[$sRule][] = $oRule;
 	}
 
 	/**
@@ -66,18 +44,7 @@ abstract class RuleSet implements Renderable, Commentable {
 		}
 		return $aResult;
 	}
-
-	/**
-	 * Override all the rules of this set.
-	 * @param array $aRules The rules to override with.
-	 */
-	public function setRules(array $aRules) {
-		$this->aRules = array();
-		foreach ($aRules as $rule) {
-			$this->addRule($rule);
-		}
-	}
-
+	
 	/**
 	 * Returns all rules matching the given pattern and returns them in an associative array with the rule’s name as keys. This method exists mainly for backwards-compatibility and is really only partially useful.
 	 * @param (string) $mRule pattern to search for. If null, returns all rules. if the pattern ends with a dash, all rules starting with the pattern are returned as well as one matching the pattern with the dash excluded. passing a Rule behaves like calling getRules($mRule->getRule()).
@@ -147,27 +114,6 @@ abstract class RuleSet implements Renderable, Commentable {
 		}
 
 		return $oOutputFormat->removeLastSemicolon($sResult);
-	}
-
-	/**
-	 * @param array $aComments Array of comments.
-	 */
-	public function addComments(array $aComments) {
-		$this->aComments = array_merge($this->aComments, $aComments);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getComments() {
-		return $this->aComments;
-	}
-
-	/**
-	 * @param array $aComments Array containing Comment objects.
-	 */
-	public function setComments(array $aComments) {
-		$this->aComments = $aComments;
 	}
 
 }

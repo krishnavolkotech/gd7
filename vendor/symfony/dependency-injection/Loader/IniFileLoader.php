@@ -70,9 +70,7 @@ class IniFileLoader extends FileLoader
     private function phpize($value)
     {
         // trim on the right as comments removal keep whitespaces
-        if ($value !== $v = rtrim($value)) {
-            $value = '""' === substr_replace($v, '', 1, -1) ? substr($v, 1, -1) : $v;
-        }
+        $value = rtrim($value);
         $lowercaseValue = strtolower($value);
 
         switch (true) {

@@ -375,7 +375,7 @@ class Router implements RouterInterface, RequestMatcherInterface
      * Provides the ConfigCache factory implementation, falling back to a
      * default implementation if necessary.
      *
-     * @return ConfigCacheFactoryInterface
+     * @return ConfigCacheFactoryInterface $configCacheFactory
      */
     private function getConfigCacheFactory()
     {

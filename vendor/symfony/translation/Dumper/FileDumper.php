@@ -53,7 +53,7 @@ abstract class FileDumper implements DumperInterface
     /**
      * Sets backup flag.
      *
-     * @param bool $backup
+     * @param bool
      */
     public function setBackup($backup)
     {

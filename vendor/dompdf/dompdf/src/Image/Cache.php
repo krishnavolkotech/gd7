@@ -34,9 +34,7 @@ class Cache
      *
      * @var string
      */
-    public static $broken_image = "data:image/svg+xml;charset=utf8,%3C?xml version='1.0'?%3E%3Csvg width='64' height='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect stroke='%23666666' id='svg_1' height='60.499994' width='60.166667' y='1.666669' x='1.999998' stroke-width='1.5' fill='none'/%3E%3Cline stroke-linecap='null' stroke-linejoin='null' id='svg_3' y2='59.333253' x2='59.749916' y1='4.333415' x1='4.250079' stroke-width='1.5' stroke='%23999999' fill='none'/%3E%3Cline stroke-linecap='null' stroke-linejoin='null' id='svg_4' y2='59.999665' x2='4.062838' y1='3.750342' x1='60.062164' stroke-width='1.5' stroke='%23999999' fill='none'/%3E%3C/g%3E%3C/svg%3E";
-
-    public static $error_message = "Image not found or type unknown";
+    public static $broken_image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAA3NCSVQICAjb4U/gAAAAHlBMVEWZmZn////g4OCkpKS1tbXv7++9vb2tra3m5ub5+fkFnN6oAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M0BrLToAAAABZ0RVh0Q3JlYXRpb24gVGltZQAwNC8xMi8xMRPnI58AAAGZSURBVEiJhZbPasMwDMbTw2DHKhDQcbDQPsEge4BAjg0Mxh5gkBcY7Niwkpx32PvOjv9JspX60It/+fxJsqxW1b11gN11rA7N3v6vAd5nfR9fDYCTDiyzAeA6qgKd9QDNoAtsAKyKCxzAAfhdBuyHGwC3oovNvQOaxxJwnSNg3ZQFAlBy4ax7AG6ZBLrgA5Cn038SAPgREiaJHJASwXYEhEQQIACyikTTCWCBJJoANBfpPAKQdBLHFMBYkctcBKIE9lAGggt6gRjgA2GV44CL7m1WgS08fAAdsPHxyyMAIyHujgRwEldHArCKy5cBz90+gNOyf8TTyKOUQN2LPEmgnWWPcKD+sr+rnuqTK1avAcHfRSv3afTgVAbqmCPiggLtGM8aSkBNOidVjADrmIDYebT1PoGsWJEE8Oc0b96aZoe4iMBZPiADB6RAzEUA2vwRmyiAL3Lfv6MBSEmUEg7ALt/3LhxwLgj4QNw4UCbKEsaBNpPsyRbgVRASFig78BIGyJNIJQyQTwIi0RvgT98H+Mi6W67j3X8H/427u5bfpQGVAAAAAElFTkSuQmCC";
     
     /**
      * Current dompdf instance
@@ -59,21 +57,6 @@ class Cache
      */
     static function resolve_url($url, $protocol, $host, $base_path, Dompdf $dompdf)
     {
-      $pp = explode('/', $url);
-
-      if ($pp[1] == 'system' && $pp[2] == 'files') {
-        $temp_path = 'sites/default/files/temp/';
-        if (!is_dir($temp_path)) {
-          mkdir($temp_path);
-        }
-        $private_path = \Drupal::service('file_system')->realpath("private://");
-        $private_path = substr($private_path, strpos($private_path, 'sites'));
-        $final_path = str_replace("/system/files", $private_path, $url);
-        $filename = end(explode('/', $final_path));
-        copy($final_path, $temp_path . $filename);
-        $filename = end(explode('/', $final_path));
-        $url = '/' . $temp_path . $filename;
-      }
         self::$_dompdf = $dompdf;
         
         $protocol = mb_strtolower($protocol);
@@ -103,7 +86,7 @@ class Cache
                     } // From remote
                     else {
                         $tmp_dir = $dompdf->getOptions()->getTempDir();
-                        $resolved_url = @tempnam($tmp_dir, "ca_dompdf_img_");
+                        $resolved_url = tempnam($tmp_dir, "ca_dompdf_img_");
                         $image = "";
 
                         if ($data_uri) {
@@ -156,7 +139,7 @@ class Cache
         } catch (ImageException $e) {
             $resolved_url = self::$broken_image;
             $type = "png";
-            $message = "Image removed";
+            $message = "Image not found or type unknown";
             Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
         }
 
@@ -196,6 +179,6 @@ class Cache
     }
 }
 
-if (file_exists(realpath(__DIR__ . "/../../lib/res/broken_image.svg"))) {
-    Cache::$broken_image = realpath(__DIR__ . "/../../lib/res/broken_image.svg");
+if (file_exists(realpath(__DIR__ . "/../../lib/res/broken_image.png"))) {
+    Cache::$broken_image = realpath(__DIR__ . "/../../lib/res/broken_image.png");
 }

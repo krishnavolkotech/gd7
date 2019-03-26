@@ -150,7 +150,7 @@ class Command
      * execute() method, you set the code to execute by passing
      * a Closure to the setCode() method.
      *
-     * @return int|null null or 0 if everything went fine, or an error code
+     * @return null|int null or 0 if everything went fine, or an error code
      *
      * @throws LogicException When this abstract method is not implemented
      *
@@ -173,14 +173,10 @@ class Command
     }
 
     /**
-     * Initializes the command after the input has been bound and before the input
-     * is validated.
+     * Initializes the command just after the input has been validated.
      *
      * This is mainly useful when a lot of commands extends one main command
      * where some things need to be initialized based on the input arguments and options.
-     *
-     * @see InputInterface::bind()
-     * @see InputInterface::validate()
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -309,13 +305,14 @@ class Command
 
         $this->definition->addOptions($this->application->getDefinition()->getOptions());
 
-        $this->applicationDefinitionMerged = true;
-
         if ($mergeArgs) {
             $currentArguments = $this->definition->getArguments();
             $this->definition->setArguments($this->application->getDefinition()->getArguments());
             $this->definition->addArguments($currentArguments);
+        }
 
+        $this->applicationDefinitionMerged = true;
+        if ($mergeArgs) {
             $this->applicationDefinitionMergedWithArgs = true;
         }
     }
@@ -368,12 +365,10 @@ class Command
     /**
      * Adds an argument.
      *
-     * @param string               $name        The argument name
-     * @param int|null             $mode        The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
-     * @param string               $description A description text
-     * @param string|string[]|null $default     The default value (for InputArgument::OPTIONAL mode only)
-     *
-     * @throws InvalidArgumentException When argument mode is not valid
+     * @param string $name        The argument name
+     * @param int    $mode        The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
+     * @param string $description A description text
+     * @param mixed  $default     The default value (for InputArgument::OPTIONAL mode only)
      *
      * @return $this
      */
@@ -387,13 +382,11 @@ class Command
     /**
      * Adds an option.
      *
-     * @param string                        $name        The option name
-     * @param string|array                  $shortcut    The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param int|null                      $mode        The option mode: One of the InputOption::VALUE_* constants
-     * @param string                        $description A description text
-     * @param string|string[]|int|bool|null $default     The default value (must be null for InputOption::VALUE_NONE)
-     *
-     * @throws InvalidArgumentException If option mode is invalid or incompatible
+     * @param string $name        The option name
+     * @param string $shortcut    The shortcut (can be null)
+     * @param int    $mode        The option mode: One of the InputOption::VALUE_* constants
+     * @param string $description A description text
+     * @param mixed  $default     The default value (must be null for InputOption::VALUE_NONE)
      *
      * @return $this
      */
@@ -533,7 +526,6 @@ class Command
     public function getProcessedHelp()
     {
         $name = $this->name;
-        $isSingleCommand = $this->application && $this->application->isSingleCommand();
 
         $placeholders = array(
             '%command.name%',
@@ -541,7 +533,7 @@ class Command
         );
         $replacements = array(
             $name,
-            $isSingleCommand ? $_SERVER['PHP_SELF'] : $_SERVER['PHP_SELF'].' '.$name,
+            $_SERVER['PHP_SELF'].' '.$name,
         );
 
         return str_replace($placeholders, $replacements, $this->getHelp() ?: $this->getDescription());

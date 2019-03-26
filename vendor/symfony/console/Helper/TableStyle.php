@@ -125,7 +125,7 @@ class TableStyle
     /**
      * Gets crossing character.
      *
-     * @return string
+     * @return string $crossingChar
      */
     public function getCrossingChar()
     {

@@ -59,8 +59,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface
         $timezone = $this->getTimezone($context);
 
         if (null !== $timezone) {
-            $object = clone $object;
-            $object = $object->setTimezone($timezone);
+            $object = (new \DateTimeImmutable('@'.$object->getTimestamp()))->setTimezone($timezone);
         }
 
         return $object->format($format);

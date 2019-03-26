@@ -127,17 +127,11 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
         }
 
         $ids = array();
-        $isReferencedByConstructor = false;
         foreach ($graph->getNode($id)->getInEdges() as $edge) {
-            $isReferencedByConstructor = $isReferencedByConstructor || $edge->isReferencedByConstructor();
-            if ($edge->isWeak() || $edge->isLazy()) {
+            if ($edge->isWeak()) {
                 return false;
             }
             $ids[] = $edge->getSourceNode()->getId();
-        }
-
-        if (!$ids) {
-            return true;
         }
 
         if (\count(array_unique($ids)) > 1) {
@@ -148,10 +142,6 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
             return false;
         }
 
-        if ($isReferencedByConstructor && $this->container->getDefinition($ids[0])->isLazy() && ($definition->getProperties() || $definition->getMethodCalls() || $definition->getConfigurator())) {
-            return false;
-        }
-
-        return $this->container->getDefinition($ids[0])->isShared();
+        return !$ids || $this->container->getDefinition($ids[0])->isShared();
     }
 }
