@@ -40,3 +40,4 @@ sites/simpletest
 config/dev/*
 config/dev-backup/*
 themes/hzd/images/*
+!themes/hzd/images/hzd_pdf_logo.svg
