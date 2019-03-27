@@ -1,0 +1,15 @@
+diff --git a/core/lib/Drupal/Component/Utility/Html.php b/core/lib/Drupal/Component/Utility/Html.php
+index cd6820d..3343429 100644
+--- a/core/lib/Drupal/Component/Utility/Html.php
++++ b/core/lib/Drupal/Component/Utility/Html.php
+@@ -422,7 +422,9 @@ public static function decodeEntities($text) {
+    * @ingroup sanitization
+    */
+   public static function escape($text) {
+-    return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
++    if(!is_object($text)) {
++      return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
++    }
+   }
+ 
+   /**

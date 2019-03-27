@@ -1,0 +1,14 @@
+diff --git a/modules/contrib/back_to_top/back_to_top.module b/modules/contrib/back_to_top/back_to_top.module
+index 3c6d281..15cb492 100644
+--- a/modules/contrib/back_to_top/back_to_top.module
++++ b/modules/contrib/back_to_top/back_to_top.module
+@@ -29,6 +29,9 @@ function back_to_top_page_attachments(array &$attachments) {
+   ) {
+     return FALSE;
+   }
++  if( \Drupal::routeMatch()->getRouteName() != 'entity.taxonomy_term.canonical' ) {
++      return FALSE;
++  }
+ 
+   //$attachments['#attached']['library'][] = 'core/jquery.ui.core';
+   //$attachments['#attached']['library'][] = 'core/jquery.ui.effects.core';

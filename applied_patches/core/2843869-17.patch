@@ -1,0 +1,275 @@
+diff --git a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+index 3c4cd14..9c16283 100644
+--- a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
++++ b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+@@ -39,6 +39,13 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
+   protected $html = '';
+ 
+   /**
++   * Keep track of whether we've rendered or not.
++   *
++   * @var bool
++   */
++  protected $hasRendered;
++
++  /**
+    * {@inheritdoc}
+    */
+   public function __construct(array $configuration, $plugin_id, $plugin_definition, ExportTypeInterface $export_type, Request $request) {
+@@ -143,7 +150,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
+    * {@inheritdoc}
+    */
+   public function send($filename, $force_download = TRUE) {
+-    $this->dompdf->render();
++    $this->doRender();
+ 
+     // Dompdf doesn't have a return value for send so just check the error
+     // global it provides.
+@@ -164,12 +171,21 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
+    * {@inheritdoc}
+    */
+   public function getBlob() {
+-    $this->dompdf->render();
+-
++    $this->doRender();
+     return $this->dompdf->output();
+   }
+ 
+   /**
++   * Tell Dompdf to render the HTML into a PDF.
++   */
++  protected function doRender() {
++    if (!$this->hasRendered) {
++      $this->dompdf->render();
++      $this->hasRendered = TRUE;
++    }
++  }
++
++  /**
+    * {@inheritdoc}
+    */
+   protected function getError() {
+diff --git a/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php b/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
+index 8c15c83..e747b6b 100644
+--- a/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
++++ b/src/Plugin/EntityPrint/PrintEngine/PhpWkhtmlToPdf.php
+@@ -99,7 +99,7 @@ class PhpWkhtmlToPdf extends PdfEngineBase implements AlignableHeaderFooterInter
+    * {@inheritdoc}
+    */
+   public function getBlob() {
+-    $this->pdf->toString();
++    return $this->pdf->toString();
+   }
+ 
+   /**
+diff --git a/src/PrintBuilder.php b/src/PrintBuilder.php
+index 83e7cef..ba5caac 100644
+--- a/src/PrintBuilder.php
++++ b/src/PrintBuilder.php
+@@ -47,22 +47,7 @@ class PrintBuilder implements PrintBuilderInterface {
+    * {@inheritdoc}
+    */
+   public function deliverPrintable(array $entities, PrintEngineInterface $print_engine, $force_download = FALSE, $use_default_css = TRUE) {
+-    if (empty($entities)) {
+-      throw new \InvalidArgumentException('You must pass at least 1 entity');
+-    }
+-
+-    $renderer = $this->rendererFactory->create($entities);
+-    $content = $renderer->render($entities);
+-
+-    $first_entity = reset($entities);
+-    $render = [
+-      '#theme' => 'entity_print__' . $first_entity->getEntityTypeId() . '__' . $first_entity->bundle(),
+-      '#title' => $this->t('View @type', ['@type' => $print_engine->getExportType()->label()]),
+-      '#content' => $content,
+-      '#attached' => [],
+-    ];
+-
+-    $print_engine->addPage($renderer->generateHtml($entities, $render, $use_default_css, TRUE));
++    $renderer = $this->prepareRenderer($entities, $print_engine, $use_default_css);
+ 
+     // Allow other modules to alter the generated Print object.
+     $this->dispatcher->dispatch(PrintEvents::PRE_SEND, new PreSendPrintEvent($print_engine, $entities));
+@@ -89,4 +74,58 @@ class PrintBuilder implements PrintBuilderInterface {
+     return $renderer->generateHtml([$entity], $render, $use_default_css, $optimize_css);
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $scheme = 'public', $filename = FALSE, $use_default_css = TRUE) {
++    $renderer = $this->prepareRenderer($entities, $print_engine, $use_default_css);
++
++    // Allow other modules to alter the generated Print object.
++    $this->dispatcher->dispatch(PrintEvents::PRE_SEND, new PreSendPrintEvent($print_engine, $entities));
++
++    // If we didn't have a URI passed in the generate one.
++    if (!$filename) {
++      $filename = $renderer->getFilename($entities) . '.' . $print_engine->getExportType()->getFileExtension();
++    }
++
++    $uri = "$scheme://$filename";
++
++    // Save the file.
++    return file_unmanaged_save_data($print_engine->getBlob(), $uri, FILE_EXISTS_REPLACE);
++  }
++
++  /**
++   * Configure the print engine with the passed entities.
++   *
++   * @param array $entities
++   *   An array of entities.
++   * @param \Drupal\entity_print\Plugin\PrintEngineInterface $print_engine
++   *   The print engine.
++   * @param bool $use_default_css
++   *   TRUE if we want the default CSS included.
++   *
++   * @return \Drupal\entity_print\Renderer\RendererInterface
++   *   A print renderer.
++   */
++  protected function prepareRenderer(array $entities, PrintEngineInterface $print_engine, $use_default_css) {
++    if (empty($entities)) {
++      throw new \InvalidArgumentException('You must pass at least 1 entity');
++    }
++
++    $renderer = $this->rendererFactory->create($entities);
++    $content = $renderer->render($entities);
++
++    $first_entity = reset($entities);
++    $render = [
++      '#theme' => 'entity_print__' . $first_entity->getEntityTypeId() . '__' . $first_entity->bundle(),
++      '#title' => $this->t('View @type', ['@type' => $print_engine->getExportType()->label()]),
++      '#content' => $content,
++      '#attached' => [],
++    ];
++
++    $print_engine->addPage($renderer->generateHtml($entities, $render, $use_default_css, TRUE));
++
++    return $renderer;
++  }
++
+ }
+diff --git a/src/PrintBuilderInterface.php b/src/PrintBuilderInterface.php
+index c98409a..fae2bef 100644
+--- a/src/PrintBuilderInterface.php
++++ b/src/PrintBuilderInterface.php
+@@ -18,7 +18,7 @@ interface PrintBuilderInterface {
+    * @param \Drupal\entity_print\Plugin\PrintEngineInterface $print_engine
+    *   The plugin id of the Print engine to use.
+    * @param bool $force_download
+-   *   (optional) TRUE to try and force the Print to be downloaded rather than opened.
++   *   (optional) TRUE to try and force the document download.
+    * @param bool $use_default_css
+    *   (optional) TRUE if you want the default CSS included, otherwise FALSE.
+    *
+@@ -38,7 +38,33 @@ interface PrintBuilderInterface {
+    *   TRUE if you the CSS should be compressed otherwise FALSE.
+    *
+    * @return string
+-   *   The rendered HTML for this entity, the same as what is used for the Print.
++   *   The rendered HTML for the entity, the same as what is used for the Print.
+    */
+   public function printHtml(EntityInterface $entity, $use_default_css = TRUE, $optimize_css = TRUE);
++
++  /**
++   * Render any content entity as a printed document and save to disk.
++   *
++   * Be careful when not specifying a uri as the default behaviour will use the
++   * default file scheme which is likely to be public and therefore putting a
++   * rendered version of this entity in a web accessible location. If you want
++   * to keep the files private, you must specify the uri yourself when calling
++   * this method.
++   *
++   * @param \Drupal\Core\Entity\EntityInterface[] $entities
++   *   The content entity to render.
++   * @param \Drupal\entity_print\Plugin\PrintEngineInterface $print_engine
++   *   The plugin id of the Print engine to use.
++   * @param string $scheme
++   *   The Drupal scheme.
++   * @param string $filename
++   *   (optional) The filename or empty to have one generated.
++   * @param bool $use_default_css
++   *   (optional) TRUE if you want the default CSS included, otherwise FALSE.
++   *
++   * @return string
++   *   FALSE or the URI to the file. E.g. public://my-file.pdf.
++   */
++  public function savePrintable(array $entities, PrintEngineInterface $print_engine, $scheme = 'public', $filename = '', $use_default_css = TRUE);
++
+ }
+diff --git a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
+index 630d951..7ee2520 100644
+--- a/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
++++ b/tests/modules/entity_print_test/src/Plugin/EntityPrint/PrintEngine/TestPrintEngine.php
+@@ -33,7 +33,7 @@ class TestPrintEngine extends PrintEngineBase {
+    * {@inheritdoc}
+    */
+   public function getBlob() {
+-    return '';
++    return 'Using testprintengine';
+   }
+ 
+   /**
+diff --git a/tests/src/Kernel/PrintBuilderTest.php b/tests/src/Kernel/PrintBuilderTest.php
+index 6850598..b33ec45 100644
+--- a/tests/src/Kernel/PrintBuilderTest.php
++++ b/tests/src/Kernel/PrintBuilderTest.php
+@@ -17,7 +17,14 @@ class PrintBuilderTest extends KernelTestBase {
+   /**
+    * {@inheritdoc}
+    */
+-  public static $modules = ['system', 'user', 'node', 'filter', 'entity_print', 'entity_print_test'];
++  public static $modules = [
++    'system',
++    'user',
++    'node',
++    'filter',
++    'entity_print',
++    'entity_print_test',
++  ];
+ 
+   /**
+    * {@inheritdoc}
+@@ -34,6 +41,8 @@ class PrintBuilderTest extends KernelTestBase {
+   }
+ 
+   /**
++   * Test the correct filename is generated.
++   *
+    * @covers ::deliverPrintable
+    * @dataProvider outputtedFileDataProvider
+    */
+@@ -59,6 +68,8 @@ class PrintBuilderTest extends KernelTestBase {
+   }
+ 
+   /**
++   * Test that you must pass at least 1 entity.
++   *
+    * @covers ::deliverPrintable
+    * @expectedException \InvalidArgumentException
+    * @expectedExceptionMessage You must pass at least 1 entity
+@@ -97,4 +108,24 @@ class PrintBuilderTest extends KernelTestBase {
+     $this->assertContains('entityprint-module.css', $html);
+   }
+ 
++  /**
++   * Test that a file blob is successfully saved.
++   */
++  public function testFileSaved() {
++    $builder = $this->container->get('entity_print.print_builder');
++    $print_engine = $this->container->get('plugin.manager.entity_print.print_engine')->createInstance('testprintengine');
++    $node = $this->createNode([]);
++
++    // Print builder generates a filename for us.
++    $uri = $builder->savePrintable([$node], $print_engine);
++    $this->assertRegExp('#public://(.*)\.pdf#', $uri);
++
++    $filename = $this->randomMachineName() . 'pdf';
++    $uri = $builder->savePrintable([$node], $print_engine, 'public', $filename);
++    $this->assertEquals("public://$filename", $uri);
++
++    // Test the file contents.
++    $this->assertEquals('Using testprintengine', file_get_contents($uri));
++  }
++
+ }

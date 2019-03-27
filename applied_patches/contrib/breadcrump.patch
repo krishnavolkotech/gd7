@@ -1,0 +1,37 @@
+diff --git a/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php b/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
+index e33b7b0..2d012d4 100644
+--- a/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
++++ b/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
+@@ -4,6 +4,7 @@
+ 
+ use Drupal\bootstrap\Utility\Variables;
+ use Drupal\Component\Utility\Html;
++use Drupal\Core\Render\Markup;
+ use Drupal\Core\Template\Attribute;
+ use Drupal\Core\Url;
+ /**
+@@ -45,7 +46,7 @@ public function preprocessVariables(Variables $variables) {
+       $page_title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
+       if (!empty($page_title)) {
+         $breadcrumb[] = [
+-          'text' => Html::decodeEntities($page_title),
++          'text' => Markup::create(Html::decodeEntities($page_title)),
+           'attributes' => new Attribute(['class' => ['active']]),
+         ];
+       }
+@@ -53,6 +54,15 @@ public function preprocessVariables(Variables $variables) {
+ 
+     // Add cache context based on url.
+     $variables->addCacheContexts(['url']);
++
++    $routeName = \Drupal::routeMatch()->getRouteName();
++    if($routeName == 'entity.node.revision') {
++      foreach ($breadcrumb as $key => $value) {
++        if(is_string($value['text'])) {
++          $breadcrumb[$key]['text'] = Markup::create(Html::decodeEntities($value['text']));
++        }
++      }
++    }
+   }
+ 
+ }

@@ -1,0 +1,21 @@
+diff --git a/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php b/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
+index ae5e8c4..272412f 100644
+--- a/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
++++ b/themes/bootstrap/src/Plugin/Preprocess/Breadcrumb.php
+@@ -10,6 +10,7 @@
+ use Drupal\bootstrap\Utility\Variables;
+ use Drupal\Core\Template\Attribute;
+ use Drupal\Core\Url;
++use Drupal\Component\Utility\Html;
+ 
+ /**
+  * Pre-processes variables for the "breadcrumb" theme hook.
+@@ -50,7 +51,7 @@ public function preprocessVariables(Variables $variables) {
+       $page_title = \Drupal::service('title_resolver')->getTitle($request, $route_match->getRouteObject());
+       if (!empty($page_title)) {
+         $breadcrumb[] = [
+-          'text' => $page_title,
++          'text' => Html::decodeEntities($page_title),
+           'attributes' => new Attribute(['class' => ['active']]),
+         ];
+       }

@@ -1,0 +1,246 @@
+diff --git a/modules/contrib/group/modules/gnode/gnode.module b/modules/contrib/group/modules/gnode/gnode.module
+index 3a3c0b8..fb96f1d 100644
+--- a/modules/contrib/group/modules/gnode/gnode.module
++++ b/modules/contrib/group/modules/gnode/gnode.module
+@@ -137,39 +137,7 @@ function gnode_node_grants(AccountInterface $account, $op) {
+   // performance hit, we only load those groups the user is a member of.
+   /** @var \Drupal\group\GroupMembershipLoaderInterface $membership_loader */
+   $membership_loader = \Drupal::service('group.membership_loader');
+-  foreach ($membership_loader->loadByUser($account) as $group_membership) {
+-    $group = $group_membership->getGroup();
+-
+-    // Add the groups the user is a member of to use later on.
+-    $member_gids[] = $gid = $group->id();
+-
+-    foreach ($node_type_ids as $node_type_id) {
+-      $plugin_id = "group_node:$node_type_id";
+-
+-      switch ($op) {
+-        case 'view':
+-          if ($group->hasPermission("view $plugin_id entity", $account)) {
+-            $grants_m["gnode:$node_type_id"][] = $gid;
+-          }
+-          if ($group->hasPermission("view unpublished $plugin_id entity", $account)) {
+-            $grants_m["gnode_unpublished:$node_type_id"][] = $gid;
+-          }
+-          break;
+-
+-        case 'update':
+-        case 'delete':
+-          // If you can act on any node, there's no need for the author grant.
+-          if ($group->hasPermission("$op any $plugin_id entity", $account)) {
+-            $grants_m["gnode:$node_type_id"][] = $gid;
+-          }
+-          elseif ($group->hasPermission("$op own $plugin_id entity", $account)) {
+-            $uid = $account->id();
+-            $grants_m["gnode_author:$uid:$node_type_id"][] = $gid;
+-          }
+-          break;
+-      }
+-    }
+-  }
++  $grants_m = $membership_loader->groupAccessNodeTypes($account, $node_type_ids, $op);
+ 
+   // All other groups have the benefit of sharing the same permission set among
+   // all anonymous or authenticated users per group type. We can therefore know
+@@ -236,7 +204,6 @@ function gnode_node_grants(AccountInterface $account, $op) {
+   foreach ($grants_ao as $key => $gids_per_group_type) {
+     $grants_ao[$key] = array_reduce($gids_per_group_type, 'array_merge', []);
+   }
+-
+   // Recursively merge the member grants with the anonymous/outsider grants.
+   return array_merge_recursive($grants_m, $grants_ao);
+ }
+diff --git a/modules/contrib/group/src/GroupMembershipLoader.php b/modules/contrib/group/src/GroupMembershipLoader.php
+index cfcb2fd..0c0d05b 100644
+--- a/modules/contrib/group/src/GroupMembershipLoader.php
++++ b/modules/contrib/group/src/GroupMembershipLoader.php
+@@ -22,6 +22,13 @@
+ class GroupMembershipLoader implements GroupMembershipLoaderInterface {
+ 
+   /**
++   * Static cache of group access of node types.
++   *
++   * @var array
++   */
++  protected $groupAccessNodeTypes = [];
++
++  /**
+    * The entity type manager.
+    *
+    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+@@ -132,4 +139,72 @@ public function loadByUser(AccountInterface $account = NULL, $roles = NULL) {
+     return $this->wrapGroupContentEntities($group_contents);
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function groupAccessNodeTypes(AccountInterface $account, $node_type_ids, $op) {
++    $uid = $account->id();
++    $tags = array('grant_permission_all_cached', 'grantpermission_view:' . $uid);
++    $tags_update = array('grant_permission_all_cached', 'grantpermission_update_delete:' . $uid);
++    $grants_m = [];
++
++    if($op == 'view') {
++      $grants_m_cid = 'cust_group:grantpermission_view' . $uid;
++    } else {
++      $grants_m_cid = 'cust_group:grantpermission_update' . $uid;
++    }
++    if ($grants_m_cache = \Drupal::cache()->get($grants_m_cid)) {
++      $grants_m_cache_data = $grants_m_cache->data;
++    }
++
++    if(isset($grants_m_cache_data)) {
++      return $grants_m_cache_data;
++    }
++
++    if(!isset($grants_m_cache_data)) {
++      $membership_loader = \Drupal::service('group.membership_loader');
++      foreach ($membership_loader->loadByUser($account) as $group_membership) {
++        $group = $group_membership->getGroup();
++
++        // Add the groups the user is a member of to use later on.
++        $member_gids[] = $gid = $group->id();
++
++        foreach ($node_type_ids as $node_type_id) {
++          $plugin_id = "group_node:$node_type_id";
++
++          switch ($op) {
++            case 'view':
++              if ($group->hasPermission("view $plugin_id entity", $account)) {
++                $grants_m["gnode:$node_type_id"][] = $gid;
++              }
++              if ($group->hasPermission("view unpublished $plugin_id entity", $account)) {
++                $grants_m["gnode_unpublished:$node_type_id"][] = $gid;
++              }
++              break;
++
++            case 'update':
++            case 'delete':
++              // If you can act on any node, there's no need for the author grant.
++              if ($group->hasPermission("$op any $plugin_id entity", $account)) {
++                $grants_m["gnode:$node_type_id"][] = $gid;
++              }
++              elseif ($group->hasPermission("$op own $plugin_id entity", $account)) {
++                $grants_m["gnode_author:$uid:$node_type_id"][] = $gid;
++              }
++              break;
++          }
++        }
++      }
++
++      //$this->groupAccessNodeTypes[$account->id()][$cache_id][$cache_id.'grants_m'] =  $grants_m;
++      if($op == 'view') {
++        \Drupal::cache()->set($grants_m_cid, $grants_m, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, $tags);
++      } else {
++        \Drupal::cache()->set($grants_m_cid, $grants_m, \Drupal\Core\Cache\CacheBackendInterface::CACHE_PERMANENT, $tags_update);
++      }
++    }
++
++    return $grants_m;
++  }
++
+ }
+diff --git a/modules/contrib/group/src/GroupMembershipLoaderInterface.php b/modules/contrib/group/src/GroupMembershipLoaderInterface.php
+index 4da4050..8ce0605 100644
+--- a/modules/contrib/group/src/GroupMembershipLoaderInterface.php
++++ b/modules/contrib/group/src/GroupMembershipLoaderInterface.php
+@@ -52,4 +52,13 @@ public function loadByGroup(GroupInterface $group, $roles = NULL);
+    */
+   public function loadByUser(AccountInterface $account = NULL, $roles = NULL);
+ 
++  /**
++   * Check Group permissions of Node types
++   *
++   * @param \Drupal\group\Entity\GroupInterface $group
++   * @param $node_type_ids
++   * @param $op
++   */
++  public function groupAccessNodeTypes(AccountInterface $account, $node_type_ids, $op);
++
+ }
+diff --git a/modules/custom/cust_group/cust_group.module b/modules/custom/cust_group/cust_group.module
+index f1c63f5..ce3780d 100644
+--- a/modules/custom/cust_group/cust_group.module
++++ b/modules/custom/cust_group/cust_group.module
+@@ -187,7 +187,9 @@ function cust_group_group_insert($group) {
+   \Drupal::service('cache_tags.invalidator')
+     ->invalidateTags([
+       'config:views.view.all_groups',
+-      'config:views.view.my_groups'
++      'config:views.view.my_groups',
++      'grantpermission_view:' . \Drupal::currentUser()->id(),
++      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
+     ]);
+ }
+ 
+@@ -195,7 +197,9 @@ function cust_group_group_update($group) {
+   \Drupal::service('cache_tags.invalidator')
+     ->invalidateTags([
+       'config:views.view.all_groups',
+-      'config:views.view.my_groups'
++      'config:views.view.my_groups',
++      'grantpermission_view:' . \Drupal::currentUser()->id(),
++      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
+     ]);
+ }
+ 
+@@ -203,7 +207,9 @@ function cust_group_group_delete($group) {
+   \Drupal::service('cache_tags.invalidator')
+     ->invalidateTags([
+       'config:views.view.all_groups',
+-      'config:views.view.my_groups'
++      'config:views.view.my_groups',
++      'grantpermission_view:' . \Drupal::currentUser()->id(),
++      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
+     ]);
+ }
+ 
+@@ -259,7 +265,9 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
+       'config:block.block.hzd_local_tasks',
+       'config:system.menu.primary-links',
+       'config:views.view.all_groups',
+-      'config:views.view.my_groups'
++      'config:views.view.my_groups',
++      'grantpermission_view:' . \Drupal::currentUser()->id(),
++      'grantpermission_update_delete:' . \Drupal::currentUser()->id()
+     ]);
+ }
+ 
+@@ -418,6 +426,9 @@ function cust_group_entity_reference_selection_alter(&$def) {
+ function cust_group_form_alter(&$form, $form_state, $form_id) {
+ 
+   switch ($form_id) {
++    case 'group_admin_permissions':
++      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
++      break;
+     case 'node_faqs_gnode-form_form':
+     case 'node_faqs_edit_form':
+     case 'node_faqs_form':
+@@ -561,6 +572,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
+ 
+ }
+ 
++function permission_cache_submit_handler(&$form, $form_state) {
++  \Drupal\Core\Cache\Cache::invalidateTags(array('grant_permission_all_cached'));
++}
++
+ function requst_submit_handler(&$form, $form_state) {
+   $data['group'] = \Drupal::routeMatch()->getParameter('group');
+   $form_state->setRedirect('view.all_groups.page_1');
+diff --git a/modules/custom/hzd_user_customizations/hzd_user_customizations.module b/modules/custom/hzd_user_customizations/hzd_user_customizations.module
+index 970f767..096891e 100644
+--- a/modules/custom/hzd_user_customizations/hzd_user_customizations.module
++++ b/modules/custom/hzd_user_customizations/hzd_user_customizations.module
+@@ -229,7 +229,9 @@ function hzd_user_customizations_user_insert($user) {
+  * hook implementing hook_user_update()
+  */
+ function hzd_user_customizations_user_update($account) {
+-  \Drupal\Core\Cache\Cache::invalidateTags(array('user:' . $account->id()));
++  \Drupal\Core\Cache\Cache::invalidateTags(array('user:' . $account->id(),
++      'grantpermission_view:' . $account->id(),
++      'grantpermission_update_delete:' . $account->id()));
+ }
+ 
+ /**

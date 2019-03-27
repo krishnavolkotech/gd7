@@ -1,0 +1,13 @@
+diff --git a/themes/bootstrap/js/misc/dialog.ajax.js b/themes/bootstrap/js/misc/dialog.ajax.js
+index f5c853c..d5953e3 100644
+--- a/themes/bootstrap/js/misc/dialog.ajax.js
++++ b/themes/bootstrap/js/misc/dialog.ajax.js
+@@ -41,7 +41,7 @@
+       });
+       var classes = $originalButton.attr('class').replace('use-ajax-submit', '');
+       buttons.push({
+-        text: $originalButton.html() || $originalButton.attr('value'),
++        html: $originalButton.html() || $originalButton.attr('value'),
+         class: classes,
+         click: function click(e) {
+           dialogAjaxCurrentButton = $(e.target);

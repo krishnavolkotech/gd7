@@ -1,0 +1,21 @@
+diff --git a/core/modules/forum/src/Breadcrumb/ForumBreadcrumbBuilderBase.php b/core/modules/forum/src/Breadcrumb/ForumBreadcrumbBuilderBase.php
+index 63d2d86..edd7b0f 100755
+--- a/core/modules/forum/src/Breadcrumb/ForumBreadcrumbBuilderBase.php
++++ b/core/modules/forum/src/Breadcrumb/ForumBreadcrumbBuilderBase.php
+@@ -70,11 +70,11 @@ public function build(RouteMatchInterface $route_match) {
+ 
+     $links[] = Link::createFromRoute($this->t('Home'), '<front>');
+ 
+-    $vocabulary = $this->entityManager
+-      ->getStorage('taxonomy_vocabulary')
+-      ->load($this->config->get('vocabulary'));
+-    $breadcrumb->addCacheableDependency($vocabulary);
+-    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
++//    $vocabulary = $this->entityManager
++//      ->getStorage('taxonomy_vocabulary')
++//      ->load($this->config->get('vocabulary'));
++//    $breadcrumb->addCacheableDependency($vocabulary);
++//    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
+ 
+     return $breadcrumb->setLinks($links);
+   }
