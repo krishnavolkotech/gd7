@@ -201,7 +201,9 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     $query = $this->entityQuery->get($entityTypeId);
     // @todo shall we assign serial id to unpublished as well?
     // $query->condition('status', 1);
-    $query->condition('type', $entityBundle);
+    $storage = $this->entityTypeManager->getStorage($entityTypeId);
+    $bundleKey = $storage->getEntityType()->getKey('bundle');
+    $query->condition($bundleKey, $entityBundle);
     $query->accessCheck(FALSE);
     $entityIds = $query->execute();
 
@@ -213,9 +215,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     );
 
     foreach ($entityIds as $entityId) {
-      $entity = $this->entityTypeManager
-        ->getStorage($entityTypeId)
-        ->loadUnchanged($entityId);
+      $entity = $storage->loadUnchanged($entityId);
       $serial = $this->generateValueFromName($storageName);
       // @todo review multilingual
       $entity->{$fieldName}->value = $serial;

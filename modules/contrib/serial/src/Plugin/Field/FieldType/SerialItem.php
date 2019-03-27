@@ -43,6 +43,21 @@ class SerialItem extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
+  public function getValue() {
+    // Update the values and return them.
+    foreach ($this->properties as $name => $property) {
+      $value = $property->getValue();
+      // Only write NULL values if the whole map is not NULL.
+      if (isset($this->values) || isset($value)) {
+        $this->values[$name] = $value;
+      }
+    }
+    return $this->values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     // @todo review DataDefinition methods : setReadOnly, setComputed, setRequired, setConstraints
     $properties['value'] = DataDefinition::create('integer')
