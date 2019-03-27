@@ -653,7 +653,7 @@ abstract class StylePluginBase extends PluginBase {
    * @param array $result
    *   The result array from $view->result
    */
-  protected function renderFields(array $result) {
+  public function renderFields(array $result) {
     if (!$this->usesFields()) {
       return;
     }
