@@ -26,7 +26,7 @@ class QueueUIConfirmItemDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Are you sure you want to delete queue item %queue_item?', array('%queue_item' => $this->queue_item));
+    return t('Are you sure you want to delete queue item %queue_item?', ['%queue_item' => $this->queue_item]);
   }
 
   /**

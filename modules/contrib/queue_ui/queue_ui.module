@@ -41,12 +41,16 @@ function queue_ui_defined_queues() {
  */
 function queue_ui_queue_info_alter(&$queues) {
   foreach ($queues as $queue_name => $definition) {
-
     // Check if a time limit override exists for this queue.
-    $time_limit = \Drupal::state()->get('queue_ui_cron_' . $queue_name);
-    if (!is_null($time_limit)) {
+    if ($time_limit = \Drupal::state()->get('queue_ui_cron_' . $queue_name)) {
       // Override the original definition.
       $queues[$queue_name]['cron']['time'] = $time_limit;
+    }
+
+    // Only set the weight when the queue_order module is available.
+    if (\Drupal::service('module_handler')->moduleExists('queue_order') && $weight = \Drupal::state()->get('queue_ui_weight_' . $queue_name)) {
+      // Override the original definition.
+      $queues[$queue_name]['weight'] = $weight;
     }
   }
 }

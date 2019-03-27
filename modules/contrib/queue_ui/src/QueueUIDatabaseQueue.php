@@ -106,8 +106,13 @@ class QueueUIDatabaseQueue implements QueueUIInterface {
   public function view($item_id) {
     $queue_item = $this->loadItem($item_id);
 
-    $data = '<pre>' . print_r(unserialize($queue_item->data), TRUE) . '</pre>';
-    // Use kpr to print the data
+    $data = [
+      '#type' => 'html_tag',
+      '#tag' => 'pre' ,
+      '#value' => print_r(unserialize($queue_item->data), TRUE)
+    ];
+    $data = \Drupal::service('renderer')->renderPlain($data);
+    // Use kpr to print the data.
     if (\Drupal::service('module_handler')->moduleExists('devel')) {
       $data = kpr(unserialize($queue_item->data), TRUE);
     }

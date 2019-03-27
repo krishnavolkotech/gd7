@@ -90,16 +90,16 @@ function drush_queue_ui_queue_release_all() {
  */
 function _queue_ui_release_queue($queue_name) {
   $num_updated = \Drupal::service('database')->update('queue')
-    ->fields(array(
+    ->fields([
       'expire' => 0,
-    ))
+    ])
     ->condition('name', $queue_name, '=')
     ->execute();
 
-  drush_log(t('@count lease reset in queue @name', array(
+  drush_log(t('@count lease reset in queue @name', [
     '@count' => $num_updated,
     '@name' => $queue_name
-  )), 'ok');
+  ]), 'ok');
 }
 
 /**
