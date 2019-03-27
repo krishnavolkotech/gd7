@@ -6,6 +6,7 @@ use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * {@inheritdoc}
@@ -38,6 +39,14 @@ class HzdBreadcrumbBuilder implements BreadcrumbBuilderInterface {
     $storage = \Drupal::service('entity_type.manager')
             ->getStorage('taxonomy_term');
     $parents = $storage->loadParents($term->id());
+    if (empty($parents)) {
+      $res = \Drupal::database()->select('taxonomy_term__parent', 'ttp')
+        ->fields('ttp', ['parent_target_id'])
+        ->condition('ttp.entity_id', $term->id())
+        ->execute()->fetchField();
+
+      $parents = [$res => Term::load($res)];
+    }
     if (reset($parents) instanceof \Drupal\taxonomy\Entity\Term) {
       $group = \Drupal::service('entity_type.manager')
               ->getStorage('group')

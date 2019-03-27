@@ -15,6 +15,7 @@ use Drupal\group\Entity\GroupContentType;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\group\Entity\Group;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Description of CustGroupHelper
@@ -71,6 +72,19 @@ class CustGroupHelper {
       $storage = \Drupal::service('entity_type.manager')
         ->getStorage('taxonomy_term');
       $parents = $storage->loadParents($term->id());
+      if (empty($parents)) {
+        $res = \Drupal::database()->select('taxonomy_term__parent', 'ttp')
+          ->fields('ttp', ['parent_target_id'])
+          ->condition('ttp.entity_id', $term->id())
+          ->execute()->fetchField();
+        if ($res) {
+          $parents = [$res => Term::load($res)];
+        }
+
+      }
+//      else {
+//        $parents = reset($parents);
+//      }
 //        pr($parents);exit;
       if ($routeMatch->getRouteName() == 'forum.page') {
         if (empty($parents)) {
