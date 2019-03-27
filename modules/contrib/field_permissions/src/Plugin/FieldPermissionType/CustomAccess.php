@@ -28,7 +28,7 @@ class CustomAccess extends Base implements CustomPermissionsInterface, AdminForm
    * {@inheritdoc}
    */
   public function hasFieldAccess($operation, EntityInterface $entity, AccountInterface $account) {
-    assert('in_array($operation, ["edit", "view"])', 'The operation is either "edit" or "view", "' . $operation . '" given instead.');
+    assert(in_array($operation, ["edit", "view"]), 'The operation is either "edit" or "view", "' . $operation . '" given instead.');
 
     $field_name = $this->fieldStorage->getName();
     if ($operation === 'edit' && $entity->isNew()) {
@@ -50,6 +50,14 @@ class CustomAccess extends Base implements CustomPermissionsInterface, AdminForm
     // Default to deny since access can be explicitly granted (edit field_name),
     // even if this entity type doesn't implement the EntityOwnerInterface.
     return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasFieldViewAccessForEveryEntity(AccountInterface $account) {
+    $field_name = $this->fieldStorage->getName();
+    return $account->hasPermission('view ' . $field_name);
   }
 
   /**
