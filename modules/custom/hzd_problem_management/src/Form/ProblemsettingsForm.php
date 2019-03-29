@@ -68,7 +68,18 @@ class ProblemsettingsForm extends FormBase {
     }
     // Echo '<pre>'; print_r($default_services); exit;.
     $type = 'problems';
-    $options = HzdservicesStorage::get_related_services($type);
+    $get_related_services = HzdservicesStorage::get_related_services($type);
+
+    // Problem Management Group Add All Services Feature
+    if ($group_id == 6) {
+      $options = ['all' => t('ALL SERVICES')] + $get_related_services;
+    } else {
+      $options = $get_related_services;
+    }
+
+    if($group_id == 6 && (count($default_services) == count($get_related_services))) {
+      $default_services = ['all' => t('ALL SERVICES')] + $default_services;
+    }
 
     // $services_obj= db_query("SELECT title, n.nid FROM {node} n, {content_field_service_type} cfst WHERE n.nid = cfst.nid and   field_service_type_value = %d ", 3);
     // while ($services = db_fetch_array($services_obj)) {
@@ -143,6 +154,9 @@ class ProblemsettingsForm extends FormBase {
     HzdStorage::delete_group_problems_view($group->id());
 
     $selected_services = $form_state->getValue('services');
+    if($group_id == 6 && isset($selected_services['all'])) {
+      unset($selected_services['all']);
+    }
     $counter = HzdStorage::insert_group_problems_view($group->id(), $selected_services);
     // menu names are the combination of groups field_old_referrence as these are the machine name so cannot be updated to new entity id.
     $menu_name = 'menu-' . $group->get('field_old_reference')->value;

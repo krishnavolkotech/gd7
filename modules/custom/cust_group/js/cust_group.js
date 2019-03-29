@@ -32,6 +32,10 @@
                 $rpath = $("#deployed-releases-filter-form a#edit-link").attr('href');
                 $("#deployed-releases-filter-form a#edit-link").attr("href", $rpath + '#deployedreleases_posting');
             }
+
+            $("form#problem-settings-form input#edit-services-all").click(function () {
+                $('form#problem-settings-form input:checkbox').not(this).prop('checked', this.checked);
+            });
         }
     }
 })(jQuery, Drupal, drupalSettings);
