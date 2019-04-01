@@ -120,5 +120,18 @@ function custom_views_php_views_data() {
       'id' => 'risk_cluster_risks',
     ),
   );
+
+  $data['views']['userstatus'] = array(
+    'title' => t('User Status (Active/Blocked/Inactive'),
+    'help' => t('User Status (Active/Blocked/Inactive'),
+    'field' => array(
+      'id' => 'userstatus',
+    ),
+    'sort' => array(
+      // ID of sort handler plugin to use.
+      'id' => 'userstatus',
+    ),
+  );
+
   return $data;
 }
