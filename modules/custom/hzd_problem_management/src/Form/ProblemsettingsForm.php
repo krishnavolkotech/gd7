@@ -78,7 +78,7 @@ class ProblemsettingsForm extends FormBase {
     }
 
     if($group_id == 6 && (count($default_services) == count($get_related_services))) {
-      $default_services = ['all' => t('ALL SERVICES')] + $default_services;
+      $default_services = ['all' => 'all'] + $default_services;
     }
 
     // $services_obj= db_query("SELECT title, n.nid FROM {node} n, {content_field_service_type} cfst WHERE n.nid = cfst.nid and   field_service_type_value = %d ", 3);
@@ -110,7 +110,6 @@ class ProblemsettingsForm extends FormBase {
     if ($options) {
       $form['#prefix'] = $prefix;
       $form['#suffix'] = "</div>";
-
       $form['services'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
