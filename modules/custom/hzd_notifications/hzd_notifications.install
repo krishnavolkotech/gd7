@@ -396,18 +396,6 @@ function hzd_notifications_update_8015() {
   }
 }
 
-/*function hzd_migrate_group_notifications() {
-  $groups = db_query("SELECT id FROM {groups}")->fetchCol();
-  $interval = array('-1', 0, 86400, 604800);
-  foreach($groups as $id) {
-    // get the list of users for each greoup and interval
-    foreach($interval as $vals) {
-      $uids = db_query()->fetchAll();
-    }
-  }
-}*/
-
-
 /**
  * Adds new table notifications_scheduled into database. This stores the
  * entities and user data, for which notifications are to be sent.

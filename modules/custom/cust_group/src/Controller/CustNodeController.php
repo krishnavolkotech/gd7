@@ -286,58 +286,6 @@ class CustNodeController extends ControllerBase {
     return t('Contact');
   }
   
-  
-  public function migrateServiceSpecificNotifications(){
-    $d6Db = \Drupal\Core\Database\Database::getConnection('default','migrate');
-    
-    $query = $d6Db->query('select nf.value,nf.field, sp.uid,sp.sid, n.send_interval from notifications_fields nf, notifications n,service_notifications_priority sp where n.sid = nf.sid and sp.sid = n.sid')->fetchAll();
-//    pr($query);exit;
-    $db = \Drupal::database();
-  
-    $preparedArray = [];
-    foreach ($query as $item) {
-      $sid = $item->sid;
-      $preparedArray[$sid]['uid'] = $item->uid;
-      $preparedArray[$sid]['send_interval'] = $item->send_interval == -1 ?-1:0;
-      if($item->field == 'type'){
-        $preparedArray[$sid]['type'] = $item->value;
-      }else{
-        $preparedArray[$sid]['service_id'] = $item->value;
-      }
-      
-    }
-    
-    foreach ($preparedArray as $item=>$value){
-      $value['rel_type'] = $db->select('node__release_type','nrt')
-        ->condition('entity_id',$value['service_id'])
-        ->condition('bundle','services')
-        ->fields('nrt',['release_type_target_id'])
-        ->execute()
-        ->fetchField();
-      $checkId = $db->select('service_notifications_override','sno')
-        ->fields('sno',['sid'])
-        ->condition('service_id',$value['service_id'])
-        ->condition('type',$value['type'])
-        ->condition('uid',$value['uid'])
-        ->condition('rel_type',$value['rel_type'])
-        ->execute()
-        ->fetchField();
-      if(!empty($checkId)){
-        $update = $db->update('service_notifications_override')
-          ->fields($value)
-          ->condition('sid',$checkId)
-          ->execute();
-      }else{
-        $insert = $db->insert('service_notifications_override')
-          ->fields($value)
-          ->execute();
-      }
-    }
-    
-    echo 'Successfully imported user service specific notifications';
-    exit;
-    
-  }
 
   function updateNotifications() {
     $this->db = \Drupal::database();

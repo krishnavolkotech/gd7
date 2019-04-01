@@ -34,13 +34,6 @@ cust_group.quickinfo:
 #    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 #    _permission: 'access content'
 
-#cust_group.menu_migrate:
-#  path: '/menu-migrate'
-#  defaults:
-#    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::menuMigrate'
-#  requirements:
-##    _permission: 'access content'
-#    _role: 'administrator+site_administrator'
 #cust_group.daily_cron_notifications:
 #  path: '/daily-cron'
 #  defaults:
@@ -143,28 +136,10 @@ cust_group.notifications_update:
     _form: '\Drupal\cust_group\Form\UpdateUserNotificationsForm'
   requirements:
     _permission: 'administer site'
-cust_group.service_notifications_update:
-  path: '/update-service-notifications'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\CustNodeController::migrateServiceSpecificNotifications'
-  requirements:
-    _permission: 'administer site'
 cust_group.url_alias_update:
   path: '/update-all-urls'
   defaults:
     _controller: '\Drupal\cust_group\Controller\CustNodeController::updateUrlAlias'
-  requirements:
-    _permission: 'administer site'
-cust_group.old_url_alias_delete:
-  path: '/delete-old-urls'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::deleteOldAlias'
-  requirements:
-    _permission: 'administer site'
-cust_group.faq_paths_alias_update:
-  path: '/faqs-paths-update'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\GroupMenuMigrateController::generateFaqPathAlias'
   requirements:
     _permission: 'administer site'
 cust_group.imattachment_delete_confirm:
@@ -174,58 +149,6 @@ cust_group.imattachment_delete_confirm:
   requirements:
 #    _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\AccessController::userFileDeleteAccess'
-    
-#Inserting States values based on url in im attachments node's state field.
-#we can remove this route and fucntion after first migration go live
-cust_group.imablageattachments_stateinsert:
-  path: '/ablageattachments/stateinsert'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\ImAlageAttachmentController::defaultStatesInsert'
-    _title: 'Störungslogs der Länder'
-  requirements:
-    _access: 'TRUE'
-cust_group.clean_file_paths:
-  path: '/cleanup-file-paths'
-  defaults:
-    _form: '\Drupal\cust_group\Controller\FilePathsCleanupController'
-    _title: 'Migrating file paths'
-  requirements:
-    _permission: 'administer site'
-cust_group.clean_file_paths_test:
-  path: '/cleanup-test'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\FilePathsCleanupController::checkFiles'
-    _title: 'Migrating file paths'
-  requirements:
-    _permission: 'administer site'
-cust_group.attach_quickinfo_files:
-  path: '/quickinfo-files-migrate'
-  defaults:
-    _form: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController'
-    _title: 'Migrating Quickinfo Files'
-  requirements:
-    _permission: 'administer site'
-cust_group.create_touch_files:
-  path: '/create-touch-files'
-  defaults:
-    _controller: '\Drupal\cust_group\Controller\QuickinfoFilesMigrateController::touchFiles'
-    _title: 'Migrating Quickinfo Files'
-  requirements:
-    _access: 'TRUE'
-cust_group.migrate_url_alias:
-  path: '/migrate-url-alias'
-  defaults:
-    _form: '\Drupal\cust_group\Form\MigrateUrlAliasForm'
-    _title: 'Migrating Url Alias'
-  requirements:
-    _permission: 'administer site'
-cust_group.migrate_menu:
-  path: '/detach-old-files'
-  defaults:
-    _form: '\Drupal\cust_group\Form\DetachOldFilesForm'
-    _title: 'Detach Old Files'
-  requirements:
-    _permission: 'administer site'
 cust_group.update_noficatio_override:
   path: '/update-notification-overrides'
   defaults:
