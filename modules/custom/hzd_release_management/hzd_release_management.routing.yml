@@ -102,10 +102,9 @@ hzd_release_management.release_documentation_settings:
     _form: '\Drupal\hzd_release_management\Form\ReleasedocumentsettingForm'
     _title: 'Release Documentation Settings'
   requirements:
-    _permission: 'access all views'
-#    _csrf_token: 'TRUE'
-#     'access callback' => 'cust_og_is_member', 
-#     'access arguments' => array('access all views'),
+    _role: 'administrator+site_administrator'
+  options:
+    _admin_route: TRUE
 
 hzd_release_management.release_documentation_credentials:
   path: 'admin/config/releases/release_documentation_credentials'
@@ -113,10 +112,9 @@ hzd_release_management.release_documentation_credentials:
     _form: '\Drupal\hzd_release_management\Form\ReleasedocumentcredentsettingForm'
     _title: 'Release Documentation Credentials'
   requirements:
-    _permission: 'access all views'
-#    _csrf_token: 'TRUE'
-#     'access callback' => 'cust_og_is_member', 
-#     'access arguments' => array('access all views'),
+    _role: 'administrator+site_administrator'
+  options:
+    _admin_route: TRUE
 
 #  this is for initial release document download  (not needed)
 #hzd_release_management.read_import_release_csv:

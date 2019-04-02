@@ -82,7 +82,9 @@ hzd_customizations.quickinfo_template_groups:
     _controller: '\Drupal\hzd_customizations\Controller\Getgroupids::get_group_ids'
     _title: 'Group names'
   requirements:
-    _permission: 'access all views'
+    _role: 'administrator+site_administrator'
+  options:
+    _admin_route: TRUE
 
 hzd_customizations.front_page_blocks_settings:
   path: 'admin/config/front-page-blocks'
