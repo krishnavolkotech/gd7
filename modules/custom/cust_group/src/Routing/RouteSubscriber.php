@@ -125,7 +125,10 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.add_form')) {
       $route->setDefault('_title_callback', "Drupal\cust_group\Controller\CustNodeController::GroupAddMemberCallback");
     }
-    
+
+    if ($route = $collection->get('entity.group_content.create_form')) {
+      $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentCreateAccess');
+    }
     
   }
 

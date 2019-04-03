@@ -364,7 +364,60 @@ class AccessController extends ControllerBase
       // @var $group = Group
       return AccessResult::allowedIf($group->hasPermission('administer members',$userEntity));
     }
-    
+
+
+  public function groupContentCreateAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    $group = $route_match->getParameter('group');
+    $plugin_id = $route_match->getParameter('plugin_id');
+    $userEntity = User::load($user->id());
+    $common_plugins = [
+      'group_node:faqs',
+      'group_node:faq',
+      'group_node:forum',
+      'group_node:page',
+      'group_node:newsletter'
+    ];
+    if (is_object($group) && isset($plugin_id)) {
+      $group_id = $group->id();
+      if ($group_id == RELEASE_MANAGEMENT) {
+        $release_management_plugin = array_merge($common_plugins, [
+          'group_node:planning_files'
+        ]);
+        if (in_array($plugin_id, $release_management_plugin)) {
+          return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
+        }
+      } elseif ($group_id == RISK_MANAGEMENT) {
+        $risk_management_plugin = array_merge($common_plugins, [
+          'group_node:risk_cluster',
+          'group_node:risk',
+          'group_node:measure'
+        ]);
+        if (in_array($plugin_id, $risk_management_plugin)) {
+          return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
+        }
+      } elseif ($group_id == QUICKINFO) {
+        $incident_management_plugin = array_merge($common_plugins, [
+          'group_node:quickinfo'
+        ]);
+        if (in_array($plugin_id, $incident_management_plugin)) {
+          return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
+        }
+      } elseif ($group_id == PROBLEM_MANAGEMENT) {
+        $incident_management_plugin = array_merge($common_plugins, [
+          'group_node:problem'
+        ]);
+        if (in_array($plugin_id, $incident_management_plugin)) {
+          return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
+        }
+      } else {
+        if (in_array($plugin_id, $common_plugins)) {
+          return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
+        }
+      }
+    }
+    return AccessResult::neutral();
+  }
+
     public function deployedReleasesAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
       $group = $route_match->getParameter('group');
       $member = $group->getMember($user);
