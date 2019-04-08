@@ -153,12 +153,12 @@ hzd_release_management.document_page_link:
     no_cache: 'TRUE'
 # create a zip link to download document files
 hzd_release_management.document_zip_link:
-  path: 'documentation_link_zip/{service_id}/{release_id}'
+  path: 'group/{group}/documentation_link_zip/{service_id}/{release_id}'
   defaults:
     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::DownloadDocumentFiles'
   requirements:
 #    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupAdminAccess'
+    _custom_access: '\Drupal\hzd_release_management\Controller\HzdReleases::AccessReleasesDocument'
 
 
 
