@@ -72,8 +72,20 @@
         </h2>
     {% endif %}
     {{ title_suffix }}
-    <div class='problems-backto-search'>{{ back_to_search }}</div>
+
     <h4 class='problem_heading'>  {{ "Details"|trans }}</h4>
+    <div class="problem-wrapper">
+        <div class='problems-backto-search'>{{ back_to_search }}
+            <span class="prev-next-element">
+                <span class="prev">
+                    {{ pre_node_url|raw }}
+                </span>
+            <span class="next-element">
+                {{ next_node_url|raw }}
+            </span>
+        </span>
+        </div>
+    </div>
     <table class='problem_info'>
 
         <tr class='even'>

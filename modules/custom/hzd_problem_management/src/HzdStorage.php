@@ -288,6 +288,7 @@ class HzdStorage {
     $conn->addExpression("STR_TO_DATE(nfp.field_processing_value,'%d.%m.%Y')", 'unix_order');
     $conn->leftJoin('node__field_processing', 'nfp', 'nfp.entity_id = nfd.nid');
 //        }
+    $resultall = $conn->execute()->fetchCol();
     if ($limit == 'all') {
       $result = $conn->execute()->fetchCol();
     }
@@ -297,7 +298,7 @@ class HzdStorage {
       $result = $pager->limit($page_limit)->execute()->fetchCol();
     }
 // pr($result);exit;
-    $rows = array();
+    $rows = $pageno = array();
     $status_msgs = array(
       'Neues Problem',
       'Known Error',
@@ -389,6 +390,9 @@ class HzdStorage {
 
       $header[7] = array('data' => t('Closed On'), 'class' => 'closed');
     }
+
+    $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+    $tempstore->set('problem_paginations', implode(',', $resultall));
 //        pr($header);exit;
 //        if ($rows) {
     $build['problem_table'] = array(

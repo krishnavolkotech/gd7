@@ -1337,3 +1337,19 @@ form#views-exposed-form-rz-schnellinfo-page-2 input[type="text"] {
 form#views-exposed-form-rz-schnellinfo-page-2 select {
     max-width: 88px !important;
 }
+
+body.page-node-type-problem .problems-backto-search {
+    float: right;
+}
+
+body.page-node-type-problem .problems-backto-search .prev-next-element {
+    margin-left: 15px;
+}
+
+body.page-node-type-problem .problems-backto-search .prev-next-element a {
+    text-decoration: none;
+}
+
+body.page-node-type-problem .problems-backto-search .prev-next-element .prev {
+    margin-right: 10px;
+}

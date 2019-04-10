@@ -347,6 +347,42 @@ function hzd_preprocess_node(&$variables) {
     );
     $variables['back_to_search'] = \Drupal::service('link_generator')
       ->generate(t('Back To Search'), $url);
+
+    $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+    $problem_paginations = explode(',', $tempstore->get('problem_paginations'));
+    //$filterData = \Drupal::request()->query;
+    $current = array_search($variables['node']->id(), $problem_paginations, TRUE);
+    $pre = ($problem_paginations[$current - 1]) ?: NULL;
+    $next = ($problem_paginations[$current + 1]) ?: NULL;
+    $options = ['query' => array(
+      \Drupal::request()->query->all()
+    ),
+      'absolute' => TRUE];
+    if ($pre) {
+      $options['attributes'] = [
+        'class' => array(
+          'glyphicon',
+          'glyphicon-chevron-left',
+        ),
+      ];
+      $pre_url = Link::fromTextAndUrl("", Url::fromRoute('entity.node.canonical', ['node' => $pre], $options));
+    } else {
+      $pre_url = "<span class='glyphicon glyphicon-chevron-left'></span>";
+    }
+    $variables['pre_node_url'] = $pre_url;
+
+    if ($next) {
+      $options['attributes'] = [
+        'class' => array(
+          'glyphicon',
+          'glyphicon-chevron-right',
+        ),
+      ];
+      $next_url = Link::fromTextAndUrl("", Url::fromRoute('entity.node.canonical', ['node' => $next], $options));
+    } else {
+      $next_url = "<span class='glyphicon glyphicon-chevron-right'></span>";
+    }
+    $variables['next_node_url'] = $next_url;
   }
 
   // Adds class to view pdf link.
