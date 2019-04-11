@@ -2,6 +2,7 @@
 
 namespace Drupal\hzd_release_management\Controller;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\node\Entity\Node;
 use Drupal\cust_group\Controller\CustNodeController;
 use Drupal\Core\Link;
@@ -68,8 +69,8 @@ class HzdReleases extends ControllerBase {
   /**
    *
    */
-  public function documentation($service_id, $release_id) {
-    $output[] = $this->documentation_page_link($service_id, $release_id);
+  public function documentation($group, $service_id, $release_id) {
+    $output[] = $this->documentation_page_link($group, $service_id, $release_id);
     return $output;
   }
 
@@ -196,7 +197,7 @@ class HzdReleases extends ControllerBase {
   /**
    *
    */
-  public function documentation_page_link($service_id, $release_id) {
+  public function documentation_page_link($group, $service_id, $release_id) {
     $query = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
     $query_explode = explode('/', $query);
     $query_explode_search = array_search('secure-downloads', $query_explode);
@@ -232,7 +233,11 @@ class HzdReleases extends ControllerBase {
         $cache = \Drupal::cache()->get('release_doc_import_' . $release_id);
 
         $doc_options['attributes'] = array('class' => 'document-link');
-        $doc_url = Url::fromUserInput('/documentation_link_zip/' . $service_id . '/' . $release_id, $doc_options);
+        $groupid = $group;
+        if (is_object($group)) {
+          $groupid = $group->id();
+         }
+        $doc_url = Url::fromUserInput('/group/' . $groupid . '/documentation_link_zip/' . $service_id . '/' . $release_id, $doc_options);
         $output = \Drupal::l(t("Please click here to download all documents for this release as a ZIP file."), $doc_url);
         if (!$cache) {
           // Display documentation table for specific release.
@@ -372,5 +377,28 @@ class HzdReleases extends ControllerBase {
     $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
+
+  /**
+   * Provide Access Callback for documentation_link_zip/{service_id}/{release_id} path
+   */
+  public function AccessReleasesDocument($group) {
+    $user = \Drupal::currentUser();
+    if ($user->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
+    if(is_object($group)) {
+     $group = Group::load($group->id());
+     }else {
+     $group = Group::load($group);
+     }
+    $groupMember = $group->getMember($user);
+    $user_role = $user->getRoles(TRUE);
+    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
+      return AccessResult::allowed();
+    }else {
+     return AccessResult::forbidden();
+    }
+  }
+
 
 }

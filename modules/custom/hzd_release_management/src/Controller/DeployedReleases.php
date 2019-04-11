@@ -8,7 +8,7 @@ use Drupal\group\Entity\GroupInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 
 
-if(!defined('EXEOSS'))
+if (!defined('EXEOSS'))
   define('EXEOSS', \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id'));
 
 /**
@@ -17,11 +17,11 @@ if(!defined('EXEOSS'))
 class DeployedReleases extends ControllerBase {
 
   /**
-   *  
+   *
    */
   public function OverView(GroupInterface $group) {
     $form = \Drupal::formBuilder()
-            ->getForm('Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew');
+      ->getForm('Drupal\hzd_release_management\Form\DeployedReleasesOverviewiew');
     $form['form_build_id']['#access'] = FALSE;
     $form['form_token']['#access'] = FALSE;
     $form['form_id']['#access'] = FALSE;
@@ -33,7 +33,7 @@ class DeployedReleases extends ControllerBase {
 
   public function display_deployed_release_table(GroupInterface $group, $release_type) {
 
-    if(!in_array($release_type, [KONSONS, EXEOSS])){
+    if (!in_array($release_type, [KONSONS, EXEOSS])) {
       return ['#markup' => Markup::create($this->t("Invalid input given"))];
     }
 
@@ -42,33 +42,32 @@ class DeployedReleases extends ControllerBase {
     $build = NULL;
 
     $cache = \Drupal::cache()->get($cid);
-    if (!empty($cache->data)){
+    if (!empty($cache->data)) {
       $build = $cache->data;
       return $build;
     }
 
 
-
     $db = \Drupal::database();
     $states = $db->select('states', 's')
-            ->condition('s.id', 1, '!=')
-            ->fields('s', array('abbr', 'id'))
-            ->orderBy('s.abbr');
+      ->condition('s.id', 1, '!=')
+      ->fields('s', array('abbr', 'id'))
+      ->orderBy('s.abbr');
     $states = $states->execute()->fetchAll();
     $groupServs = $db->select('group_releases_view', 's')
-            ->condition('s.group_id', $group_id, '=')
-            ->fields('s', array('service_id'))
-            ->distinct()
-            ->orderBy('s.service_id');
+      ->condition('s.group_id', $group_id, '=')
+      ->fields('s', array('service_id'))
+      ->distinct()
+      ->orderBy('s.service_id');
     $groupServs = $groupServs->execute()->fetchCol();
 
     $services = \Drupal::entityQuery('node')
-            ->condition('type', 'services')
-            ->condition('status', 1)
-            ->condition('field_release_name', 'NULL', '!=')
-            ->condition('release_type', $release_type)
-            ->sort('title')
-            ->execute();
+      ->condition('type', 'services')
+      ->condition('status', 1)
+      ->condition('field_release_name', 'NULL', '!=')
+      ->condition('release_type', $release_type)
+      ->sort('title')
+      ->execute();
 
     $groupServs = array_intersect($services, $groupServs);
     if (count($groupServs) > 0) {
@@ -101,27 +100,23 @@ class DeployedReleases extends ControllerBase {
         $cus_results[$row->field_release_service_value][$row->field_user_state_value][] = $row;
       }
       foreach ($groupServs as $service) {
-        $dep = NULL;
-        if(key_exists($service, $cus_results)) {
+        $dep = $results = NULL;
+        if (key_exists($service, $cus_results)) {
           $results = $cus_results[$service];
         }
         if ($results) {
           foreach ($states as $state_details) {
             $titles = $releases = NULL;
-            if(key_exists($state_details->id, $results)) {
+            if (key_exists($state_details->id, $results)) {
               $releases = $results[$state_details->id];
             }
             if ($releases) {
               foreach ($releases as $release) {
                 $release_service_value = $release->nid;
                 $finalRelease = node_get_field_data_fast([$release_service_value], 'field_earlywarning_release');
-                if(key_exists($release_service_value, $finalRelease)) {
-                  $finalReleaseNode = node_get_title_fast([$finalRelease[$release_service_value]]);
-                }
+                $finalReleaseNode = node_get_title_fast([$finalRelease[$release_service_value]]);
                 if ($finalReleaseNode) {
-                  if(key_exists($release_service_value, $finalRelease)) {
-                    $titles[] = $finalReleaseNode[$finalRelease[$release_service_value]];
-                  }
+                  $titles[] = $finalReleaseNode[$finalRelease[$release_service_value]];
                 }
               }
             }
@@ -159,7 +154,7 @@ class DeployedReleases extends ControllerBase {
         '#header' => $headers,
         '#rows' => $depReleases,
         '#attributes' => [
-            'class' => ['view-deployed-releases']
+          'class' => ['view-deployed-releases']
         ]
       ];
       \Drupal::cache()->set($cid, $build, CacheBackendInterface::CACHE_PERMANENT, ['deployedReleasesOverview']);
