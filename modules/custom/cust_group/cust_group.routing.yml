@@ -200,3 +200,22 @@ cust_group.im_attachment_reminder_form:
   options:
     _admin_route: TRUE
 
+cust_group.arbeitsanleitungen_settings:
+  path: 'admin/config/arbeitsanleitungen'
+  defaults:
+    _form: '\Drupal\cust_group\Form\ArbeitsanleitungensettingsForm'
+    _title: 'Arbeitsanleitungen Database Configuration'
+  requirements:
+      _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
+arbeitsanleitungen.read_arbeitsanleitungen_zip:
+  path: '/import-arbeitsanleitungen'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\Arbeitsanleitungen::read_arbeitsanleitungen_zip'
+    _title: 'Import Arbeitsanleitungen'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'

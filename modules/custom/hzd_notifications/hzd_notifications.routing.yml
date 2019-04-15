@@ -34,6 +34,24 @@ hzd_notifications.rz_schnellinfos_notifications:
 #    _permission: 'access content'
     _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
 
+hzd_notifications.arbeitsanleitungen_notifications:
+  path: '/user/{user}/notifications/arbeitsanleitungen'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::arbeitsanleitungen_notifications'
+    _title: 'Arbeitsanleitungen'
+  requirements:
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
+
+hzd_notifications.arbeitsanleitungen_documentation_settings:
+  path: 'admin/config/arbeitsanleitungen/arbeitsanleitungen_documentation_settings'
+  defaults:
+    _form: '\Drupal\hzd_notifications\Form\ArbeitsanleitungendocumentsettingForm'
+    _title: 'Arbeitsanleitungen Documentation Settings'
+  requirements:
+    _role: 'administrator+site_administrator'
+  options:
+    _admin_route: TRUE
+
 hzd_notifications.group_notifications:
   path: '/user/{user}/notifications/hzd_group'
   defaults:

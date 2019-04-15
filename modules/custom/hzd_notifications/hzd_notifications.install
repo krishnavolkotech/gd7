@@ -448,3 +448,37 @@ function hzd_notifications_update_8016() {
   $schema->createTable($table_name, $table_schema);
 
 }
+
+/**
+ * Implements hook_update_N() on Module hzd_notifications Update # 8017.
+ */
+function hzd_notifications_update_8017(&$sandbox) {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $table_name = 'arbeitsanleitung_notifications__user_default_interval';
+  $table_schema = [
+    'fields' => [
+      'id' => [
+        'description' => 'Storing Group notification serial value.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ],
+      'uid' => [
+        'description' => 'Storing Group notification user id value.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ],
+      'default_send_interval' => [
+        'description' => 'Storing default send value.',
+        'type' => 'int',
+      ]
+    ],
+    'primary key' => ['id'],
+  ];
+  $schema->createTable($table_name, $table_schema);
+  drupal_set_message('Module hzd_notifications Update # 8017 () was executed successfully.');
+}
+

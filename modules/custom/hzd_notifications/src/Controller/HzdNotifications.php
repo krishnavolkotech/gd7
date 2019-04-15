@@ -505,7 +505,12 @@ class HzdNotifications extends ControllerBase {
       }
     }
   }
-  
+
+  public function arbeitsanleitungen_notifications($user = NULL) {
+    $output[] = \Drupal::formBuilder()
+      ->getForm('Drupal\hzd_notifications\Form\ArbeitsanleitungNotifications', $user);
+    return $output;
+  }
   
   public function rz_schnellinfos_notifications($user = NULL) {
     $output[] = \Drupal::formBuilder()

@@ -12,3 +12,23 @@ cust_group.im_attachment_reminder_form:
   parent: cust_group.im_attachment_settings
   weight: 99
 
+cust_group.arbeitsanleitungen_settings:
+  title: 'Arbeitsanleitungen ZIP Configuration'
+  route_name: cust_group.arbeitsanleitungen_settings
+  parent: hzd_customizations.custom_configurations
+  description: 'Arbeitsanleitungen ZIP Configuration'
+  weight: -10
+
+cust_group.read_arbeitsanleitungen_zip:
+  title: 'Import Arbeitsanleitungen'
+  route_name: arbeitsanleitungen.read_arbeitsanleitungen_zip
+  parent: cust_group.arbeitsanleitungen_settings
+  description: 'Import Arbeitsanleitungen'
+  weight: -11
+
+cust_group.arbeitsanleitungen_documentation_settings:
+  title: 'Arbeitsanleitungen documentation settings'
+  route_name: hzd_notifications.arbeitsanleitungen_documentation_settings
+  parent: cust_group.arbeitsanleitungen_settings
+  description: 'Arbeitsanleitungen documentation settings'
+  weight: -12

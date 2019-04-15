@@ -165,6 +165,23 @@ class HzdNotificationsHelper {
     $quickinfo_record = array('uid' => $uid, 'affected_service' => $type, 'default_send_interval' => $intervel);
     db_insert('quickinfo_notifications_user_default_interval')->fields($quickinfo_record)->execute();
   }
+
+  /*
+ * Returns the default time intervals
+ */
+  static function get_default_arbeitsanleitung_timeintervals($uid) {
+    $time_interval = \Drupal::database()->query("SELECT default_send_interval as send_interval , uid
+             FROM {arbeitsanleitung_notifications__user_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchAllKeyed(1, 0);
+    return $time_interval;
+  }
+
+  /*
+   * Inserting user default intervel
+   */
+  static function insert_default_arbeitsanleitung_user_intervel($uid, $intervel) {
+    $arbeitsanleitung_record = array('uid' => $uid, 'default_send_interval' => $intervel);
+    return db_insert('arbeitsanleitung_notifications__user_default_interval')->fields($arbeitsanleitung_record)->execute();
+  }
   
   // get default interval of a particular content type
   static function hzd_default_content_type_intval($uid, $type, $rel_type) {
