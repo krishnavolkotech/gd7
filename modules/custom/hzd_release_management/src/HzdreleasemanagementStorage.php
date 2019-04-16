@@ -655,6 +655,34 @@ $inprogress_nid_values = [];
   }
 
   /**
+   * Function for sending mail.
+   */
+  public static function rarbeitsanleitungen_not_import_mail() {
+    $get_mails = \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_not_import');
+    $to = explode(',', $get_mails);
+    $module = 'hzd_notifications';
+    $key = 'download';
+    $from = \Drupal::config('system.site')->get('mail');
+    $message_body = [];
+    $message_body[] = [
+      '#markup' => \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_mail_body')['value']
+    ];
+    $message_body[] = [
+      '#markup' => "Arbeitsanleitungen : Not imported.",
+    ];
+    $params['message'] = \Drupal::service('renderer')->render($message_body);
+
+    $params['subject'] = t('Arbeitsanleitungen : Not imported. ');
+    $send = TRUE;
+    foreach ($to as $single_address) {
+      $mailManager = \Drupal::service('plugin.manager.mail');
+      $module = 'hzd_release_management';
+      $langcode = \Drupal::currentUser()->getPreferredLangcode();
+      $mailManager->mail($module, $key, $single_address, $langcode, $params, NULL, $send);
+    }
+  }
+
+  /**
    * Copy subfolders to Sonstige foldes.
    */
   public static function copy_subfolders_to_sonstige($dokument_path) {

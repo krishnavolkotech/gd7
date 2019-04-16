@@ -1595,4 +1595,6 @@ function downtimes_cron() {
         $mail = $maintanence_owner->getEmail();
         send_immediate_notifications($subject, $body, $mail, $preference);
     }
+
+  \Drupal\cust_group\Controller\Arbeitsanleitungen::read_arbeitsanleitungen_zip();
 }

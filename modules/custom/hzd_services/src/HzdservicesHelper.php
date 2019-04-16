@@ -55,4 +55,20 @@ static public function send_problems_notification($key, $to, $subject, $message_
   }
 }
 
+  /**
+   *  Message Mail Functionality
+   */
+  static public function send_arbeitsanleitungen_notification($key, $to, $subject, $message_text) {
+    $mailManager = \Drupal::service('plugin.manager.mail');
+    $module = 'problem_management';
+    $params['message'] = $message_text;
+    $params['subject'] = $subject;
+    $langcode = \Drupal::currentUser()->getPreferredLangcode();
+    $send = TRUE;
+    $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+    if (!$result['result']) {
+      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    }
+  }
+
 }

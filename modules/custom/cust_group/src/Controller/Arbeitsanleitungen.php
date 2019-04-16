@@ -10,10 +10,11 @@ namespace Drupal\cust_group\Controller;
 
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\hzd_services\HzdservicesHelper;
 
 class Arbeitsanleitungen extends ControllerBase {
 
-  public function read_arbeitsanleitungen_zip() {
+public static function read_arbeitsanleitungen_zip() {
     $path = DRUPAL_ROOT . '/' . \Drupal::config('arbeitsanleitungen.settings')
         ->get('import_path');
 
@@ -32,13 +33,13 @@ class Arbeitsanleitungen extends ControllerBase {
       }
       $result['#markup'] = t("Successfully Extracted file in al-edv");
     } catch (Exception $e) {
+      $mail = \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_not_import');
+      $subject = "Error while importing al-edv zip file.";
+      $body = \Drupal::config('hzd_notifications.settings')->get('arb_failed_download_text')['value'];
       \Drupal::logger('arbeitsanleitungen_file_issue')->error($e->getMessage());
-      $body = $e->getMessage();
-      $result['#markup'] = $body;
-//      HzdservicesHelper::send_problems_notification('release_read_csv', $mail, $subject, $body);
-//      $response = t('Error occurred while Releases import. Please check db log for error details.');
+      $result['#markup'] = $e->getMessage();
+      HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $mail, $subject, $body);
     }
-    //return $output = array('#markup' => $response);
     return $result;
   }
 }
