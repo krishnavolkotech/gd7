@@ -248,6 +248,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_planning_files_edit_form',
         'node_early_warnings_form',
         'node_early_warnings_edit_form',
+        'node_release_comments_form',
+        'node_release_comments_edit_form',
         'node_problem_edit_form',
         'node_problem_form',
       );
@@ -267,6 +269,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
         'node_planning_files_edit_form',
         'node_early_warnings_form',
         'node_early_warnings_edit_form',
+        'node_release_comments_form',
+        'node_release_comments_edit_form',
       );
       $for_groupmemeber_formids = array(
         'node_downtimes_edit_form',
@@ -363,7 +367,7 @@ function hzd_notifications_user_insert($entity) {
   $notificationController->isNewUser = TRUE;
   $notificationController->setDefaultForQuickInfoNotifications($user, $data['quickinfo']);
   $notificationController->setDefaultForGroupNotifications($user, $data['group']);
-  foreach (['downtimes', 'problem', 'release', 'early_warnings'] as $type) {
+  foreach (['downtimes', 'problem', 'release', 'early_warnings', 'release_comments'] as $type) {
     $notificationController->setDefaultForServiceTypeNotifications($type, $user, $data[$type]);
   }
 //echo $entity->id();exit;

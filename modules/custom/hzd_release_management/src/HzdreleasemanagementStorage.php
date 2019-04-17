@@ -3,6 +3,7 @@
 namespace Drupal\hzd_release_management;
 
 use Dompdf\Exception;
+use Drupal\cust_group\Controller\AccessController;
 use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
@@ -1228,11 +1229,34 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   /**
    * Display text on releases and inprogress tabs.
    */
-  static public function release_info() {
-    $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
+  static public function release_info($type = NULL) {
+    if ($type == 'progress' && self::RWCommentAccess()) {
+      $output = "<div class='menu-filter menu-filter-progress'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li><li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Comments ansehen</li><li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Comments ansehen</li></ul></div>";
+    } else {
+      $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
+    }
     $build['#markup'] = $output;
     $build['#exclude_from_print'] = 1;
     return $build;
+  }
+
+  /**
+   * @return bool
+   */
+  static public function RWCommentAccess() {
+    $user = \Drupal::currentUser();
+    $group = Group::load(RELEASE_MANAGEMENT);
+    $groupMember = $group->getMember($user);
+    if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+      $roles = $groupMember->getRoles();
+      if (!empty($roles) && (in_array($group->bundle() . '-rw_comments', array_keys($roles)))) {
+        return TRUE;
+      } else {
+        return FALSE;
+      }
+    } else {
+      return FALSE;
+    }
   }
 
   /**
@@ -1341,10 +1365,18 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         if (isset($group_id)) {
           $early_warnings = self::hzd_release_early_warnings(
                           $releases->field_relese_services->target_id, $releases->id(), $type, $service_release_type);
-          $earlywarnings_cell = array(
+
+          if ($type == 'progress' && self::RWCommentAccess()) {
+            $earlywarnings_cell = array(
+              'data' => $early_warnings,
+              'class' => 'earlywarnings-cell inprogress-comment-cell'
+            );
+          } else {
+            $earlywarnings_cell = array(
               'data' => $early_warnings,
               'class' => 'earlywarnings-cell'
-          );
+            );
+          }
           $row[] = $earlywarnings_cell;
         }
         $row[] = $link;
@@ -1549,56 +1581,105 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
   static public function hzd_release_early_warnings($service_id, $release_id, $type, $tid) {
     $group_id = get_group_id();
 
-    // Early Warning create icon.
-    $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
-    $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
-
     // Early Warnigs count for specific service and release.
     $query = db_select('node_field_data', 'n');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->condition('n.type', 'early_warnings', '=')
-            ->condition('nfer.field_earlywarning_release_value', $release_id, '=')
-            ->condition('nfrs.field_release_service_value', $service_id, '=');
+      ->condition('nfer.field_earlywarning_release_value', $release_id, '=')
+      ->condition('nfrs.field_release_service_value', $service_id, '=');
     $earlywarnings_count = $query->countQuery()->execute()->fetchField();
 
     if ($earlywarnings_count > 0) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array(
-          'services' => $service_id,
-          'releases' => $release_id,
-          'type' => $type,
-          'release_type' => $tid
+        'services' => $service_id,
+        'releases' => $release_id,
+        'type' => $type,
+        'release_type' => $tid
       );
       $view_options['attributes'] = array(
-          'class' => 'view-earlywarning',
-          'title' => t('Read Early Warnings for this release'));
+        'class' => 'view-earlywarning',
+        'title' => t('Read Early Warnings for this release'));
       $view_earlywarning_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $view_options);
       $view_earlywarning = array(
-          '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
-          '#type' => 'link',
-          '#url' => $view_earlywarning_url,
+        '#title' => array('#markup' => "<span class = '" . $warningclass . "'>" . $earlywarnings_count . "</span> "),
+        '#type' => 'link',
+        '#url' => $view_earlywarning_url,
       );
       $view_warning = \Drupal::service('renderer')->renderRoot($view_earlywarning);
     } else {
       $view_warning = t('<span class="no-warnigs"></span>');
     }
 
+    // Early Warning create icon.
+    $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
+    $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
     // Redirection array after creation of early warnings.
     $redirect = array('released' => 'releases', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
     $options['query']['destination'] = 'group/' . $group_id . '/' . $redirect[$type];
     $options['query'][] = array(
-        'services' => $service_id,
-        'releases' => $release_id,
-        'type' => $type,
-        'release_type' => $tid
+      'services' => $service_id,
+      'releases' => $release_id,
+      'type' => $type,
+      'release_type' => $tid
     );
     $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
     $create_earlywarning_url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => $group_id], $options);
     $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
     $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
 
-    $release_earlywarning = t('@view @create', array('@view' => $create_warning, '@create' => $view_warning));
+    if ($type == 'progress' && self::RWCommentAccess()) {
+      // Comment count for specific service and release.
+      $cmt_query = db_select('node_field_data', 'n');
+      $cmt_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
+      $cmt_query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
+      $cmt_query->condition('n.type', 'release_comments', '=')
+        ->condition('nfer.field_earlywarning_release_value', $release_id, '=')
+        ->condition('nfrs.field_release_service_value', $service_id, '=');
+      $cmt_count = $cmt_query->countQuery()->execute()->fetchField();
+
+      if ($cmt_count > 0) {
+        $cmtclass = ($cmt_count >= 10 ? 'warningcount_second' : 'commentcount');
+        $cmt_view_options['query'] = array(
+          'services' => $service_id,
+          'releases' => $release_id,
+          'type' => $type,
+          'release_type' => $tid
+        );
+        $cmt_view_options['attributes'] = array(
+          'class' => 'view-comment',
+          'title' => t('Read Early Warnings for this release'));
+        $view_cmt_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $cmt_view_options);
+        $view_cmt = array(
+          '#title' => array('#markup' => "<span class = '" . $cmtclass . "'>" . $cmt_count . "</span> "),
+          '#type' => 'link',
+          '#url' => $view_cmt_url,
+        );
+        $view_cmt = \Drupal::service('renderer')->renderRoot($view_cmt);
+      } else {
+        $view_cmt = t('<span class="no-warnigs"></span>');
+      }
+
+      // Comments create icon.
+      $cmt_create_icon_path = drupal_get_path('module', 'hzd_release_inprogress_comments') . '/images/create-green-icon.png';
+      $cmt_create_icon = '<img height=15 src = "/' . $cmt_create_icon_path . '">';
+      $cmt_options['query']['destination'] = 'group/' . $group_id . '/releases/in_progress';
+      $cmt_options['query'][] = array(
+        'services' => $service_id,
+        'releases' => $release_id,
+        'type' => $type,
+        'release_type' => $tid
+      );
+      $cmt_options['attributes'] = array('class' => 'create_comment', 'title' => t('Add an Comments for this release'));
+      $create_cmt_url = Url::fromRoute('hzd_release_inprogress_comments.add_release_comments', ['group' => $group_id], $cmt_options);
+      $create_cmt = array('#title' => array('#markup' => $cmt_create_icon), '#type' => 'link', '#url' => $create_cmt_url);
+      $create_cmt_warning = \Drupal::service('renderer')->renderRoot($create_cmt);
+      $release_earlywarning = t('@view @create @create_cmt @view_cmt', array('@create' => $create_warning, '@view' => $view_warning, '@view_cmt' => $view_cmt, '@create_cmt' => $create_cmt_warning));
+    } else {
+      $release_earlywarning = t('@create @view', array('@create' => $create_warning, '@view' => $view_warning));
+    }
+
     return $release_earlywarning;
   }
 

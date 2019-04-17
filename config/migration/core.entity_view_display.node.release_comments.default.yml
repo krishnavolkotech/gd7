@@ -1,0 +1,63 @@
+uuid: f505196b-78a4-4c5b-807a-8cb23675e33a
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment_no_subject.default
+    - field.field.node.release_comments.body
+    - field.field.node.release_comments.comment_no_subject
+    - field.field.node.release_comments.field_earlywarning_release
+    - field.field.node.release_comments.field_release_service
+    - node.type.release_comments
+  module:
+    - comment
+    - options
+    - text
+    - user
+id: node.release_comments.default
+targetEntityType: node
+bundle: release_comments
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment_no_subject:
+    weight: 4
+    label: above
+    settings:
+      view_mode: default
+      pager_id: 0
+    third_party_settings: {  }
+    type: comment_default
+    region: content
+  field_earlywarning_release:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_release_service:
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  content_revision_log: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

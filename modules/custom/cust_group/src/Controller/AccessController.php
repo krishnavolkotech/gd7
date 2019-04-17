@@ -282,6 +282,31 @@ class AccessController extends ControllerBase
     }
 
   /**
+   * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
+   */
+  static function groupRWCommentsAccess($group) {
+    $user = \Drupal::currentUser();
+    if (!is_object($group)) {
+      $group = Group::load($group);
+    }
+    if ($group->id() == RELEASE_MANAGEMENT) {
+      $groupMember = $group->getMember($user);
+      if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        $roles = $groupMember->getRoles();
+        if (!empty($roles) && (in_array($group->bundle() . '-rw_comments', array_keys($roles)))) {
+          return AccessResult::allowed();
+        } else {
+          return AccessResult::forbidden();
+        }
+      } else {
+        return AccessResult::forbidden();
+      }
+    } else {
+      return AccessResult::forbidden();
+    }
+  }
+
+  /**
    * @param $fid
    * @param $nid
    * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden

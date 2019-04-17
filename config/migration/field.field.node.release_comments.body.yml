@@ -1,0 +1,22 @@
+uuid: e3ae2427-2255-43e5-b6fd-eb52b17823e8
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.release_comments
+  module:
+    - text
+id: node.release_comments.body
+field_name: body
+entity_type: node
+bundle: release_comments
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+field_type: text_with_summary

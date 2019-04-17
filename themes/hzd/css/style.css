@@ -3772,7 +3772,53 @@ form[id^="views-form-groups-faq-category-"] .ckeditor-custom-wrapper ul li {
 
 form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbody > tr > td:first-child {
     width: 1em !important;
-    padding-right: 0px;
+    padding-right: -2px;
     padding-bottom: 0px;
 }
 
+.menu-filter-progress ul {
+    margin: 0 0 0px 0px !important;
+}
+.menu-filter-progress ul li {
+    list-style-type: none;
+    float: left;
+    color: #ffffff;
+    list-style-type: none !important;
+    padding: 0 13px 0 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    background: transparent !important;
+}
+
+table.releases tr td.inprogress-comment-cell {
+    text-align: center;
+}
+
+table.releases tr td.inprogress-comment-cell a.create_earlywarning{
+    float: left;
+}
+
+table.releases tr td.inprogress-comment-cell a.view-earlywarning{
+    float: left;
+}
+
+table.releases tr td.inprogress-comment-cell a{
+    float: left;
+    text-align: center;
+}
+
+table.releases tr td.inprogress-comment-cell img {
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.commentcount {
+    background: url(../../../modules/custom/hzd_release_inprogress_comments/images/blue-icon.png) left top no-repeat;
+    width: 28px;
+    height: 24px;
+    /*float: left;*/
+    line-height: 29px;
+    text-align: center;
+    font-size: 14px;
+    display:inline-block;
+}

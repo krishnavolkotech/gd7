@@ -112,7 +112,7 @@ class HzdReleases extends ControllerBase {
     $type = 'progress';
     # $output['#title'] = $this->t('@type Releases', ['@type' => 'In progress']);
     $output['#title'] = $this->t('In progress Releases');
-    $output[] = HzdreleasemanagementStorage::release_info();
+    $output[] = HzdreleasemanagementStorage::release_info($type);
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
     $output[]['#attached']['library'] = array('locale/translations',
         'locale/drupal.locale.datepicker',

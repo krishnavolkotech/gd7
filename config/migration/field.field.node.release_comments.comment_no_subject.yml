@@ -1,0 +1,33 @@
+uuid: a7e1a0f5-f25e-4aed-91df-c11e978f2b77
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.comment_no_subject
+    - node.type.release_comments
+  module:
+    - comment
+id: node.release_comments.comment_no_subject
+field_name: comment_no_subject
+entity_type: node
+bundle: release_comments
+label: Kommentare
+description: ''
+required: true
+translatable: true
+default_value:
+  -
+    status: 2
+    cid: 0
+    last_comment_timestamp: 0
+    last_comment_name: null
+    last_comment_uid: 0
+    comment_count: 0
+default_value_callback: ''
+settings:
+  default_mode: 1
+  per_page: 50
+  anonymous: 0
+  form_location: true
+  preview: 0
+field_type: comment

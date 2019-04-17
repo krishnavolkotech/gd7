@@ -1,0 +1,21 @@
+uuid: 5221694c-b34d-4850-83b4-79740f062697
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_earlywarning_release
+    - node.type.release_comments
+  module:
+    - options
+id: node.release_comments.field_earlywarning_release
+field_name: field_earlywarning_release
+entity_type: node
+bundle: release_comments
+label: Releases
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

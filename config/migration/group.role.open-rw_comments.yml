@@ -1,0 +1,14 @@
+uuid: cec5a786-c3ac-4f67-906d-56cce71f5eb8
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+id: open-rw_comments
+label: 'RW Comments'
+weight: 8
+internal: false
+audience: member
+group_type: open
+permissions_ui: true
+permissions: {  }

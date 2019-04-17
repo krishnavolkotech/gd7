@@ -1,0 +1,21 @@
+uuid: 9f4ffb61-34da-43cf-b4c2-d6534dc364ed
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_release_service
+    - node.type.release_comments
+  module:
+    - options
+id: node.release_comments.field_release_service
+field_name: field_release_service
+entity_type: node
+bundle: release_comments
+label: Services
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer
