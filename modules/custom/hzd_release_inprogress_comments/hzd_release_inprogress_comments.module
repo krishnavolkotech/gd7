@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Contains hzd_release_inprogress_comments.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function hzd_release_inprogress_comments_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the hzd_release_inprogress_comments module.
+    case 'help.page.hzd_release_inprogress_comments':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('HZD Release inprogress comments') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_release_inprogress_comments_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'node_release_comments_form') {
+    $service = \Drupal::request()->query->get('services');
+    $rel = \Drupal::request()->query->get('releases');
+    $form['field_release_service']['widget']['#default_value'] = $service;
+    $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
+    if ($rel && $service) {
+      $form['field_release_service']['#attributes']['readonly'] = 'readonly';
+      $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
+      $form['field_release_service']['#disabled'] = TRUE;
+      $form['field_earlywarning_release']['#disabled'] = TRUE;
+    }
+    $form['field_release_service']['widget']['#ajax'] = [
+      'callback' => 'hzd_early_warnings_service_change',
+      'wrapper' => 'hzd-release-early-warnings',
+    ];
+    $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
+    $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
+  }
+
+  return $form;
+}

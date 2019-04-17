@@ -1,0 +1,7 @@
+name: 'HZD Release inprogress comments'
+type: module
+description: 'HZD Release inprogress comments'
+core: 8.x
+package: 'HZD Custom'
+dependencies:
+  - hzd_release_management
