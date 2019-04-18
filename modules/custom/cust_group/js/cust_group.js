@@ -36,6 +36,21 @@
             $("form#problem-settings-form input#edit-services-all").click(function () {
                 $('form#problem-settings-form input:checkbox').not(this).prop('checked', this.checked);
             });
+
+            $("form#problem-settings-form input:checkbox").click(function () {
+                if (($(this.id.match(/edit-services\-\d+/))) && ($("form#problem-settings-form input#edit-services-all").prop("checked"))) {
+                    if($(this).prop("checked") == false) {
+                        $("form#problem-settings-form input#edit-services-all").prop("checked", false);
+                    }
+                }
+                var numberOfChecked = $('form#problem-settings-form input:checkbox:checked').length;
+                var totalCheckboxes = $('form#problem-settings-form input:checkbox').length;
+                var numberNotChecked = totalCheckboxes - numberOfChecked;
+                if(numberNotChecked == 1) {
+                    $("form#problem-settings-form input#edit-services-all").prop("checked", true);
+                }
+
+            });
         }
     }
 })(jQuery, Drupal, drupalSettings);
