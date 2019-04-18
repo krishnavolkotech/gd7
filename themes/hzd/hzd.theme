@@ -383,6 +383,10 @@ function hzd_preprocess_node(&$variables) {
       $next_url = "<span class='glyphicon glyphicon-chevron-right'></span>";
     }
     $variables['next_node_url'] = $next_url;
+    $variables['#cache'] = [
+      'max-age' => 0,
+      'contexts' => ['user']
+    ];
   }
 
   // Adds class to view pdf link.
