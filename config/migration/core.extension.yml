@@ -57,6 +57,7 @@ module:
   hzd_customizations: 0
   hzd_earlywarnings: 0
   hzd_notifications: 0
+  hzd_release_inprogress_comments: 0
   hzd_risk_management: 0
   hzd_services: 0
   hzd_user_customizations: 0
