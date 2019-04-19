@@ -773,6 +773,18 @@ function send_earlywarning_comment_notifications($entity, $action) {
       $subject = t('Updated Comment on Early Warning');
     }
     $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
+  }else if($entity_bundle == 'release_comments') {
+    $users = _get_subscribed_users($nodeentity);
+    $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
+    $enView = $view_builder->view($entity, 'mail', 'de');
+    $body = \Drupal::service('renderer')->render($enView);
+    if($action == 'insert') {
+      $subject = t('New Comment on Release Comments');
+    } else {
+      $subject = t('Updated Comment on Release Comments');
+    }
+    $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
   } else if($entity_bundle == 'forum') {
     $groupContent = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
     $users = _get_subscribed_users($groupContent);

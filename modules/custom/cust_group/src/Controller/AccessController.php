@@ -286,6 +286,9 @@ class AccessController extends ControllerBase
    */
   static function groupRWCommentsAccess($group) {
     $user = \Drupal::currentUser();
+    if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+      return AccessResult::allowed();
+    }
     if (!is_object($group)) {
       $group = Group::load($group);
     }

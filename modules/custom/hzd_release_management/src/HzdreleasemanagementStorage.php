@@ -1245,6 +1245,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function RWCommentAccess() {
     $user = \Drupal::currentUser();
+    if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
+      return TRUE;
+    }
     $group = Group::load(RELEASE_MANAGEMENT);
     $groupMember = $group->getMember($user);
     if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
