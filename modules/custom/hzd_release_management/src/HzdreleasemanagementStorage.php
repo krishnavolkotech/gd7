@@ -1650,7 +1650,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $cmt_view_options['attributes'] = array(
           'class' => 'view-comment',
           'title' => t('Read Early Warnings for this release'));
-        $view_cmt_url = Url::fromUserInput('/group/' . $group_id . '/view-early-warnings', $cmt_view_options);
+        $view_cmt_url = Url::fromUserInput('/group/' . $group_id . '/view-release-comments', $cmt_view_options);
         $view_cmt = array(
           '#title' => array('#markup' => "<span class = '" . $cmtclass . "'>" . $cmt_count . "</span> "),
           '#type' => 'link',

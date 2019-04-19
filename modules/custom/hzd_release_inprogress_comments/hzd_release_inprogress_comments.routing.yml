@@ -1,3 +1,10 @@
+hzd_release_inprogress_comments.view_release_comments:
+  path: 'group/{group}/view-release-comments'
+  defaults:
+    _controller: '\Drupal\hzd_release_inprogress_comments\Controller\HzdReleaseCommentsController::view_release_comments'
+    _title: 'Release Comments'
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupRWCommentsAccess'
 
 hzd_release_inprogress_comments.add_release_comments:
   path: 'group/{group}/add/release-comments'
