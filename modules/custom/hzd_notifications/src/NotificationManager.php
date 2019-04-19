@@ -29,6 +29,8 @@ class NotificationManager implements NotificationManagerInterface {
 
   public static $quickinfo = 'quickinfo';
 
+  public static $release_comments = 'release_comments';
+
   /**
    * The database connection to use.
    *
@@ -97,6 +99,10 @@ class NotificationManager implements NotificationManagerInterface {
     }elseif($bundle == self::$quickinfo){
       $services = $this->getServicesForEntity($entity);
       return hzd_get_immediate_qi_notification_user_mails($services);
+    } elseif ($bundle == self::$release_comments) {
+      $services = $this->getServicesForEntity($entity);
+      $service_ids = EntityHelper::extractIds($services);
+      return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
     }
     return [];
   }

@@ -367,7 +367,11 @@ function hzd_notifications_user_insert($entity) {
   $notificationController->isNewUser = TRUE;
   $notificationController->setDefaultForQuickInfoNotifications($user, $data['quickinfo']);
   $notificationController->setDefaultForGroupNotifications($user, $data['group']);
-  foreach (['downtimes', 'problem', 'release', 'early_warnings', 'release_comments'] as $type) {
+  $releases = ['downtimes', 'problem', 'release', 'early_warnings'];
+  if (\Drupal\hzd_release_management\HzdreleasemanagementStorage::RWCommentAccess()) {
+    $releases[] = 'release_comments';
+  }
+  foreach ($releases as $type) {
     $notificationController->setDefaultForServiceTypeNotifications($type, $user, $data[$type]);
   }
 //echo $entity->id();exit;

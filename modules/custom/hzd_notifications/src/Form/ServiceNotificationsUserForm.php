@@ -12,6 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\Core\Form\FormCache;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 
 //define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 class ServiceNotificationsUserForm extends FormBase {
@@ -33,8 +34,11 @@ class ServiceNotificationsUserForm extends FormBase {
     $content_types = HzdNotificationsHelper::service_notifications_content_type($rel_type);
     $default_interval = HzdNotificationsHelper::_get_default_timeintervals($uid, $rel_type);
     $form['account'] = array('#type' => 'value', '#value' => $uid);
-    if($rel_type == KONSONS) {
-      $types = array(1 => 'downtimes', 2=>'problem', 3=>'release', 4=>'early_warnings');
+    if ($rel_type == KONSONS) {
+      $types = array(1 => 'downtimes', 2 => 'problem', 3 => 'release', 4 => 'early_warnings');
+      if (HzdreleasemanagementStorage::RWCommentAccess()) {
+        $types[5] = 'release_comments';
+      }
     }
     else {
       $types = array(3 => 'release', 4=>'early_warnings');
@@ -59,17 +63,18 @@ class ServiceNotificationsUserForm extends FormBase {
         '#suffix' => "</div>"
       );
     }
+    $fno = count($form['subscriptions']) - 1;
 
     if ($rel_type == KONSONS) {
       //Getting the default time intervals for the planning files of release management
       $planning_files_default_interval = db_query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} 
                                          WHERE uid = :uid", array(":uid" => $uid))->fetchField();
-      $form['subscriptions'][5]['subscriptions_type_5'] = array(
+      $form['subscriptions'][$fno]['subscriptions_type_' . $fno] = array(
         '#markup' => t("Planning Files"),
         '#prefix' => "<div class = 'hzd_type'>",
         '#suffix' => "</div>"
       );
-      $form['subscriptions'][5]['subscriptions_interval_5'] = array(
+      $form['subscriptions'][$fno]['subscriptions_interval_' . $fno] = array(
         '#type' => 'radios',
         '#options' => $intervals,
         // $planning_files_default_interval is False/0/-1 
@@ -184,7 +189,11 @@ class ServiceNotificationsUserForm extends FormBase {
     }
     // planning files notifications
     if($rel_type == KONSONS) {
-      $pf_int_val = $subscriptions[5]['subscriptions_interval_5'];
+      if (HzdreleasemanagementStorage::RWCommentAccess()) {
+        $pf_int_val = $subscriptions[6]['subscriptions_interval_6'];
+      } else {
+        $pf_int_val = $subscriptions[5]['subscriptions_interval_5'];
+      }
       $default_pf_interval = HzdNotificationsHelper::get_default_pf_timeintervals($uid);
       HzdNotificationsHelper::insert_default_pf_user_intervel($pf_int_val, $uid);
       if(($pf_int_val != $default_pf_interval) || ($default_pf_interval == '')) {

@@ -13,6 +13,7 @@ use Drupal\Core\Url;
 use Drupal\group\Entity\Group;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
 use Drupal\Core\Access\AccessResult;
+use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\user\Entity\User;
 
@@ -539,6 +540,10 @@ class HzdNotifications extends ControllerBase {
       3 => 'release',
       4 => 'early_warnings'
     );
+
+    if(HzdreleasemanagementStorage::RWCommentAccess()) {
+      $content_types[] = 'release_comments';
+    }
     $action = \Drupal::request()->get('type');
     //pr($action);exit;
     if ($action == 'delete') {

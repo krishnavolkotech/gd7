@@ -3,6 +3,7 @@
 namespace Drupal\hzd_notifications;
 
 use Drupal\Core\Url;
+use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 
 //define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 
@@ -23,7 +24,11 @@ class HzdNotificationsHelper {
    */
   static function service_notifications_content_type($rel_type = KONSONS) {
     if ($rel_type == KONSONS) {
-      return array(1 => t('Incidents and Maintenances'), 2 => t('Problems'), 3 => t('Releases'), 4 => t('Early Warnings'));
+      if (HzdreleasemanagementStorage::RWCommentAccess()) {
+        return array(1 => t('Incidents and Maintenances'), 2 => t('Problems'), 3 => t('Releases'), 4 => t('Early Warnings'), 5 => t('Release Comments'));
+      } else {
+        return array(1 => t('Incidents and Maintenances'), 2 => t('Problems'), 3 => t('Releases'), 4 => t('Early Warnings'));
+      }
     } else {
       return array(3 => t('Releases'), 4 => t('Early Warnings'));
     }
@@ -195,6 +200,9 @@ class HzdNotificationsHelper {
   static function hzd_get_content_type_name($rel_type = KONSONS) {
     if ($rel_type == KONSONS) {
       $types = array(1 => 'downtimes', 2 => 'problem', 3 => 'release', 4 => 'early_warnings');
+      if (HzdreleasemanagementStorage::RWCommentAccess()) {
+        $types[5] = 'release_comments';
+      }
     } else {
       $types = array(3 => 'release', 4 => 'early_warnings');
     }
@@ -366,6 +374,9 @@ class HzdNotificationsHelper {
       }
       if (isset($default_interval['early_warnings'])) {
         $user_notifications[$services_info->nid]['early_warnings'] = $default_interval['early_warnings'];
+      }
+      if (isset($default_interval['release_comments'])) {
+        $user_notifications[$services_info->nid]['release_comments'] = $default_interval['release_comments'];
       }
     }
     // get priority of user services.
