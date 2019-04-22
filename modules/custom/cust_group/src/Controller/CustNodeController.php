@@ -302,7 +302,7 @@ class CustNodeController extends ControllerBase {
   public function updateServiceNotifications() {
     ini_set('max_execution_time', -1);
     //As users data is not properly saved in drupal 6 we were stuck for service update notifications.
-    $types[459] = ['release', 'downtimes', 'problem', 'early_warnings'];
+    $types[459] = ['release', 'downtimes', 'problem', 'early_warnings', 'release_comments'];
     $types[460] = ['release', 'early_warnings'];
     $services = $this->db->select('node_field_data', 'n')
       ->fields('n', ['nid'])

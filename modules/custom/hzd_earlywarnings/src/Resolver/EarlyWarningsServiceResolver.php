@@ -15,8 +15,8 @@ class EarlyWarningsServiceResolver implements ServiceResolverInterface {
    * @inheritdoc
    */
   public function resolve(EntityInterface $entity) {
-    if ($entity->bundle() == 'early_warnings') {
-      $service_id = (array) $entity->get('field_release_service')->value;
+    if ($entity->bundle() == 'early_warnings' || $entity->bundle() == 'release_comments') {
+      $service_id = (array)$entity->get('field_release_service')->value;
       //@Todo use referencedEntities()->id()
       $services = Node::loadMultiple($service_id);
 

@@ -367,10 +367,7 @@ function hzd_notifications_user_insert($entity) {
   $notificationController->isNewUser = TRUE;
   $notificationController->setDefaultForQuickInfoNotifications($user, $data['quickinfo']);
   $notificationController->setDefaultForGroupNotifications($user, $data['group']);
-  $releases = ['downtimes', 'problem', 'release', 'early_warnings'];
-  if (\Drupal\hzd_release_management\HzdreleasemanagementStorage::RWCommentAccess()) {
-    $releases[] = 'release_comments';
-  }
+  $releases = ['downtimes', 'problem', 'release', 'early_warnings', 'release_comments'];
   foreach ($releases as $type) {
     $notificationController->setDefaultForServiceTypeNotifications($type, $user, $data[$type]);
   }
@@ -679,7 +676,7 @@ function hzd_notifications_node_update($node){
       }else{
         return;
       }
-    }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
+    }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))){
       $users = _get_subscribed_users($node);
       _notify_users($node, ENTITY_OP_UPDATE, $users);
     }
@@ -694,7 +691,7 @@ function hzd_notifications_node_update($node){
 
 
 function hzd_notifications_node_insert($entity){
-  if($entity->isPublished() && in_array($entity->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles))){
+  if($entity->isPublished() && in_array($entity->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))){
     $users = _get_subscribed_users($entity);
     //Notify only if release is released
     if($entity->bundle() == 'release' && $entity->get('field_release_type')->value != 1){
@@ -720,6 +717,9 @@ function hzd_notifications_node_insert($entity){
       insert_new_service_notifications('release', $nid);
     }
     insert_new_service_notifications('early_warnings', $nid);
+    if($rel_type == KONSONS) {
+      insert_new_service_notifications('release_comments', $nid);
+    }
   }
 }
 

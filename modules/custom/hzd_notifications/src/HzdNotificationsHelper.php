@@ -150,6 +150,9 @@ class HzdNotificationsHelper {
     }
     if ($service) {
       $content_types[4] = t('Early Warnings');
+      if ($rel_type == KONSONS && HzdreleasemanagementStorage::RWCommentAccess()) {
+        $content_types[5] = t('Release Comments');
+      }
     }
     return $content_types;
   }
@@ -199,10 +202,7 @@ class HzdNotificationsHelper {
   // get content types list of release type
   static function hzd_get_content_type_name($rel_type = KONSONS) {
     if ($rel_type == KONSONS) {
-      $types = array(1 => 'downtimes', 2 => 'problem', 3 => 'release', 4 => 'early_warnings');
-      if (HzdreleasemanagementStorage::RWCommentAccess()) {
-        $types[5] = 'release_comments';
-      }
+      $types = array(1 => 'downtimes', 2 => 'problem', 3 => 'release', 4 => 'early_warnings', 5 => 'release_comments');
     } else {
       $types = array(3 => 'release', 4 => 'early_warnings');
     }

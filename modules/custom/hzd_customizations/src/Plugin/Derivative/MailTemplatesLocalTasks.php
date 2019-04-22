@@ -40,6 +40,7 @@ class MailTemplatesLocalTasks extends DeriverBase implements ContainerDeriverInt
       'planning_files',
       'quickinfo',
       'early_warnings',
+      'release_comments',
       'group',
       'group_content',
     ];

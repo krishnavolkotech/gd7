@@ -31,7 +31,7 @@ class NotificationsController extends ControllerBase
         if ($action == 'update' && $node->getEntityTypeId() == 'group') {
             $data = self::getGroupNotificationData($node);
             self::insertNotification($data);
-        } elseif (in_array($node->getType(), ['downtimes', 'early_warnings', 'problem', 'release'])) {
+        } elseif (in_array($node->getType(), ['downtimes', 'early_warnings', 'problem', 'release', 'release_comments'])) {
             $data = self::getServiceNotificationData($node);
             self::insertNotification($data);
         } elseif ($node->getType() == 'planning_files') {
@@ -106,6 +106,7 @@ class NotificationsController extends ControllerBase
                 $service_id = $node->get('field_relese_services')->referencedEntities()[0]->id();
                 break;
             case 'early_warnings':
+            case 'release_comments':
                 $service_id = $node->get('field_release_service')->value;
                 break;
         }

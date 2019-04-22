@@ -89,7 +89,7 @@ class NotificationManager implements NotificationManagerInterface {
 
     //   return $this->getUsersForGroup($groupContent->getGroup());
     // }
-    elseif (in_array($bundle, self::$service_bundles)) {
+    elseif (in_array($bundle, array_merge(self::$service_bundles, [self::$release_comments]))) {
       $services = $this->getServicesForEntity($entity);
       $service_ids = EntityHelper::extractIds($services);
       return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
@@ -99,10 +99,6 @@ class NotificationManager implements NotificationManagerInterface {
     }elseif($bundle == self::$quickinfo){
       $services = $this->getServicesForEntity($entity);
       return hzd_get_immediate_qi_notification_user_mails($services);
-    } elseif ($bundle == self::$release_comments) {
-      $services = $this->getServicesForEntity($entity);
-      $service_ids = EntityHelper::extractIds($services);
-      return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
     }
     return [];
   }

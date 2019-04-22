@@ -46,7 +46,7 @@ class NotificationsConfig extends FormBase {
       '#options' => $intervals,
     );
     
-    $notificationNodetypes = ['downtimes', 'release', 'problem', 'early_warnings', 'quickinfo'];
+    $notificationNodetypes = ['downtimes', 'release', 'problem', 'early_warnings', 'quickinfo', 'release_comments'];
     foreach ($notificationNodetypes as $notificationNodetype) {
       $title = NodeType::load($notificationNodetype)->label();
       $form['service'][$notificationNodetype] = array(

@@ -134,7 +134,7 @@ hzd_customizations.mail_templates:
     type: problem
   requirements:
     _permission: 'access administration pages'
-    type: problem|release|downtimes|planning_files|quickinfo|early_warnings|group|group_content
+    type: problem|release|downtimes|planning_files|quickinfo|early_warnings|release_comments|group|group_content
   options:
     _admin_route: TRUE
 #hzd_customizations.group_content_mail_templates:

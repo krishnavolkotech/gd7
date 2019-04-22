@@ -538,12 +538,10 @@ class HzdNotifications extends ControllerBase {
       1 => 'downtimes',
       2 => 'problem',
       3 => 'release',
-      4 => 'early_warnings'
+      4 => 'early_warnings',
+      5 => 'release_comments'
     );
 
-    if(HzdreleasemanagementStorage::RWCommentAccess()) {
-      $content_types[] = 'release_comments';
-    }
     $action = \Drupal::request()->get('type');
     //pr($action);exit;
     if ($action == 'delete') {

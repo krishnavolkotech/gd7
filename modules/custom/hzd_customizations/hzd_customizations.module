@@ -973,6 +973,10 @@ function default_notification_insert($edit) {
         case t('Early Warnings'):
           $release_type = 'early_warnings';
           break;
+
+        case t('Release Comments'):
+          $release_type = 'release_comments';
+          break;
       }
       /**
        * to do

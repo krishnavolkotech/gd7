@@ -12,6 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\hzd_notifications\Controller\HzdNotifications;
 use Drupal\Core\Form\FormCache;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 
 //define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 class UpdateServiceSpecificNotifications extends FormBase {
@@ -29,7 +30,11 @@ class UpdateServiceSpecificNotifications extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $uid = NULL, $service_id = NULL, $type = NULL, $send_interval = NULL, $rel_type = NULL, $id = NULL) {
     $services = array(t('Service')) + HzdNotificationsHelper::_services_list($rel_type);
     $content_types = HzdNotificationsHelper::_get_content_types($service_id, FALSE, $rel_type);
-    $types = array('downtimes' => 1, 'problem' => 2 , 'release' => 3 , 'early_warnings' => 4);
+    if (HzdreleasemanagementStorage::RWCommentAccess()) {
+      $types = array('downtimes' => 1, 'problem' => 2, 'release' => 3, 'early_warnings' => 4, 'release_comments' => 5);
+    } else {
+      $types = array('downtimes' => 1, 'problem' => 2, 'release' => 3, 'early_warnings' => 4);
+    }
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
     $uid = $uid ? $uid : \Drupal::currentUser()->id();
     $form['account'] = array('#type' => 'hidden', '#value' => $uid);

@@ -64,6 +64,7 @@ class GroupPostCountField extends FieldPluginBase {
       'moderate-group_node-page',
       'group_content_type_b2ed3eb8d19c9',
       'open-group_node-early_warnings',
+      'open-group_node-release_comments',
       'group_content_type_ecf0249297413',
       'open-group_node-faq',
       'open-group_node-faqs',

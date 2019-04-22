@@ -93,6 +93,20 @@ function hzd_earlywarnings_node_insert(EntityInterface $entity) {
       ->getStorage('group_content')
       ->create($values)
       ->save();
+  } else if ($entity->getType() == 'release_comments') {
+    $group = \Drupal::routeMatch()->getParameter('group');
+    $plugin = $group->getGroupType()
+      ->getContentPlugin('group_node:early_warnings');
+
+    $values = [
+      'type' => $plugin->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $entity->id(),
+    ];
+    $group_content = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->create($values)
+      ->save();
   }
 }
 
