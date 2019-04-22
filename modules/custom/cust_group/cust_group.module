@@ -240,6 +240,21 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     if (in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
+    if (!in_array($group->bundle() . '-rw_comments', $nroles) && in_array($group->bundle() . '-rw_comments', $oroles)) {
+      $uid = $entity->getEntity()->id();
+      \Drupal::database()
+        ->delete('service_notifications_override')
+        ->condition('uid', $uid, '=')
+        ->condition('type', 'release_comments', '=')
+        ->execute();
+
+      \Drupal::database()
+        ->delete('service_notifications_user_default_interval')
+        ->condition('uid', $uid, '=')
+        ->condition('service_type', 'release_comments', '=')
+        ->execute();
+    }
+
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags([
         'config:block.block.hzdgruppenadministration'
@@ -288,6 +303,32 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
 }
 
 function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterface $entity) {
+  $group = $entity->getGroup();
+  $plugin_id = $entity->getContentPlugin()->getPluginId();
+  if ($plugin_id == 'group_membership') {
+    $newroles = $entity->get('group_roles')->getValue();
+    $nroles = [];
+    if (isset($newroles) && !empty($newroles)) {
+      foreach ($newroles as $key => $val) {
+        $nroles[] = $val['target_id'];
+      }
+    }
+    if (in_array($group->bundle() . '-rw_comments', $nroles)) {
+      //delete inserted Notification
+      $uid = $entity->getEntity()->id();
+      \Drupal::database()
+        ->delete('service_notifications_override')
+        ->condition('uid', $uid, '=')
+        ->condition('type', 'release_comments', '=')
+        ->execute();
+
+      \Drupal::database()
+        ->delete('service_notifications_user_default_interval')
+        ->condition('uid', $uid, '=')
+        ->condition('service_type', 'release_comments', '=')
+        ->execute();
+    }
+  }
   $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
   $plugin_id = $entity->getContentPlugin()->getPluginId();
   if ($plugin_id == 'group_membership') {

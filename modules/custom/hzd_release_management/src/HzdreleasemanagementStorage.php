@@ -9,6 +9,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Component\Datetime\DateTimePlus;
+use Drupal\user\Entity\User;
 
 // if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
@@ -1244,7 +1245,18 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    * @return bool
    */
   static public function RWCommentAccess() {
-    $user = \Drupal::currentUser();
+    $current_url_user = \Drupal::routeMatch()->getParameter('user');
+    if (is_object($current_url_user)) {
+      $user_id = $current_url_user->Id();
+    } else {
+      $user_id = $current_url_user;
+    }
+
+    if ($user_id) {
+      $user = User::load($user_id);
+    } else {
+      $user = \Drupal::currentUser();
+    }
     if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
       return TRUE;
     }
