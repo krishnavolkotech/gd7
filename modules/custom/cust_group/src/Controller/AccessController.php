@@ -285,9 +285,17 @@ class AccessController extends ControllerBase
    * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
    */
   static function groupRWCommentsAccess($group) {
-    $user = \Drupal::currentUser();
-    if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
-      return AccessResult::allowed();
+    $current_url_user = \Drupal::routeMatch()->getParameter('user');
+    if (is_object($current_url_user)) {
+      $user_id = $current_url_user->Id();
+    } else {
+      $user_id = $current_url_user;
+    }
+
+    if ($user_id) {
+      $user = User::load($user_id);
+    } else {
+      $user = \Drupal::currentUser();
     }
     if (!is_object($group)) {
       $group = Group::load($group);
@@ -295,11 +303,10 @@ class AccessController extends ControllerBase
     if ($group->id() == RELEASE_MANAGEMENT) {
       $groupMember = $group->getMember($user);
       if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-        $roles = $groupMember->getRoles();
-        if (!empty($roles) && (in_array($group->bundle() . '-rw_comments', array_keys($roles)))) {
+        $userData = \Drupal::service('user.data');
+        $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
+        if ($rw_comments_permission) {
           return AccessResult::allowed();
-        } else {
-          return AccessResult::forbidden();
         }
       } else {
         return AccessResult::forbidden();

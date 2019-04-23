@@ -1257,23 +1257,27 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     } else {
       $user = \Drupal::currentUser();
     }
-    if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
-      return TRUE;
-    }
-    $group = Group::load(RELEASE_MANAGEMENT);
-    $groupMember = $group->getMember($user);
-    if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-      $roles = $groupMember->getRoles();
-      if (!empty($roles) && (in_array($group->bundle() . '-rw_comments', array_keys($roles)))) {
-        return TRUE;
-      } else {
-        return FALSE;
-      }
+    $userData = \Drupal::service('user.data');
+    $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
+    if ($rw_comments_permission) {
+      return $rw_comments_permission;
     } else {
       return FALSE;
     }
   }
 
+  /**
+   * @return \Drupal\Core\Entity\EntityInterface|\Drupal\Core\Session\AccountProxyInterface|User|null
+   */
+  static public function CurrentUserData() {
+    $membershipcontent = \Drupal::routeMatch()->getParameter('group_content');
+    $uid = $membershipcontent->getEntity()->id();
+
+    if ($uid) {
+      $user = User::load($uid);
+    }
+    return $user;
+  }
   /**
    * Get non production environments list when the state was selected.
    */
