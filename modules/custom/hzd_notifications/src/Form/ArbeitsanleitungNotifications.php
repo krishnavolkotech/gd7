@@ -31,7 +31,7 @@ class ArbeitsanleitungNotifications extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $user = NULL) {
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
     $options = [ARBEITSANLEITUNGEN => 'Arbeitsanleitungen'];
-    $uid = is_object($user) ? $user->id() : \Drupal::currentUser()->id();
+    $uid = is_object($user) ? $user->id() : $user;
     $default_interval = HzdNotificationsHelper::get_default_arbeitsanleitung_timeintervals($uid);
     $form['account'] = array('#type' => 'value', '#value' => $uid);
     $form['arbeitsanleitung'] = array(
@@ -76,8 +76,6 @@ class ArbeitsanleitungNotifications extends FormBase {
       // insert arbeitsanleitung default interval
       HzdNotificationsHelper::insert_default_arbeitsanleitung_user_intervel($uid, $int_val);
 
-      // update quickinfo notifications
-      // check previous interval and user submitted interval are same
       if ($int_val != $default_send_interval[$uid]) {
         //remove notifications from previous interval and update with user submitted interval
 //        HzdNotificationsHelper::hzd_modify_quickinfo_notifications($content, $default_send_interval[$content], $int_val, $uid);

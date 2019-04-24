@@ -52,14 +52,6 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
       '#suffix' => '</div>'
     );
 
-    $form['import_mail'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Email address for import errors'),
-      '#default_value' => \Drupal::config('arbeitsanleitungen.settings')->get('import_mail'),
-      '#required' => TRUE,
-      '#size' => 15,
-    );
-
     $form['submit'] = array(
       '#suffix' => t('If you change the file location, you need to clear drupal cache.'),
       '#attributes' => array('readonly' => 'readonly'),
@@ -73,12 +65,8 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $import_path = $form_state->getValue('import_path');
-    $import_mail = $form_state->getValue('import_mail');
     if (strpos($import_path, '.zip') == false) {
       $form_state->setErrorByName('import_path', $this->t('Please enter zip problem file path'));
-    }
-    if (!\Drupal::service('email.validator')->isValid($import_mail)) {
-      $form_state->setErrorByName('import_mail', $this->t('Invalid mail'));
     }
   }
 
@@ -87,11 +75,9 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $import_path = $form_state->getValue('import_path');
-    $import_mail = $form_state->getValue('import_mail');
 
     \Drupal::configFactory()->getEditable('arbeitsanleitungen.settings')
       ->set('import_path', $import_path)
-      ->set('import_mail', $import_mail)
       ->save();
     parent::submitForm($form, $form_state);
   }

@@ -303,6 +303,10 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
     if ($rw_comments_permission == 1) {
       clear_notification_from_tables($uid);
     }
+    $group = $entity->getGroup();
+    if ($group->id() == ARBEITSANLEITUNGEN) {
+      db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+    }
   }
   $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
   $plugin_id = $entity->getContentPlugin()->getPluginId();

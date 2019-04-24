@@ -40,7 +40,7 @@ hzd_notifications.arbeitsanleitungen_notifications:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::arbeitsanleitungen_notifications'
     _title: 'Arbeitsanleitungen'
   requirements:
-    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userNewAccess'
 
 hzd_notifications.arbeitsanleitungen_documentation_settings:
   path: 'admin/config/arbeitsanleitungen/arbeitsanleitungen_documentation_settings'
