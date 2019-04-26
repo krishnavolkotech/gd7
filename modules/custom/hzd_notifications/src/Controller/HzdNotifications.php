@@ -652,7 +652,7 @@ class HzdNotifications extends ControllerBase {
     } else {
       $user = User::load($user);
     }
-    $group = Group::load(ARBEITSANLEITUNGEN);
+    $group = Group::load(\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
     $groupMember = $group->getMember($user);
     $user_role = $user->getRoles(TRUE);
     if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {

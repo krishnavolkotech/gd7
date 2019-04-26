@@ -14,7 +14,6 @@ define('Zentrale_Release_Manager_Lander', 5);
 define('SERVICE_LEVEL_MANAGEMENT', 15);
 define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
-define('ARBEITSANLEITUNGEN', 77);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
@@ -304,7 +303,7 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
       clear_notification_from_tables($uid);
     }
     $group = $entity->getGroup();
-    if ($group->id() == ARBEITSANLEITUNGEN) {
+    if ($group->id() == \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
       db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
   }

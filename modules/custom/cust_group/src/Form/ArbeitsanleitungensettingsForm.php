@@ -36,7 +36,7 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['import_url'] = [
       '#type' => 'link',
-      '#title' => t('Import Arbeitsanleitungen'),
+      '#title' => $this->t('Import Arbeitsanleitungen'),
       '#url' => Url::fromroute('arbeitsanleitungen.read_arbeitsanleitungen_zip'),
       '#size' => 14,
     ];
@@ -44,16 +44,21 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
     $form["#suffix"] = "</div>";
     $form['import_path'] = array(
       '#type' => 'textfield',
-      '#title' => t('Path to import ZIP file'),
+      '#title' => $this->t('Path to import ZIP file'),
       '#description' => t('Path relative to @path', ['@path' => DRUPAL_ROOT . '/']),
       '#default_value' => \Drupal::config('arbeitsanleitungen.settings')->get('import_path'),
       '#required' => TRUE,
       '#prefix' => '<div class = "url_alias_textfield">',
       '#suffix' => '</div>'
     );
-
+    $form['arbeitsanleitungen_id'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Arbeitsanleitungen Group ID'),
+      '#default_value' => \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'),
+      '#required' => TRUE,
+    );
     $form['submit'] = array(
-      '#suffix' => t('If you change the file location, you need to clear drupal cache.'),
+      '#suffix' => $this->t('If you change the file location, you need to clear drupal cache.'),
       '#attributes' => array('readonly' => 'readonly'),
     );
 
@@ -75,9 +80,10 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $import_path = $form_state->getValue('import_path');
-
+    $arbeitsanleitungen_id = $form_state->getValue('arbeitsanleitungen_id');
     \Drupal::configFactory()->getEditable('arbeitsanleitungen.settings')
       ->set('import_path', $import_path)
+      ->set('arbeitsanleitungen_id', $arbeitsanleitungen_id)
       ->save();
     parent::submitForm($form, $form_state);
   }
