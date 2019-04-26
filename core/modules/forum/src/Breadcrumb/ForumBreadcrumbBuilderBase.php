@@ -78,11 +78,11 @@ abstract class ForumBreadcrumbBuilderBase implements BreadcrumbBuilderInterface 
 
     $links[] = Link::createFromRoute($this->t('Home'), '<front>');
 
-    $vocabulary = $this->entityManager
-      ->getStorage('taxonomy_vocabulary')
-      ->load($this->config->get('vocabulary'));
-    $breadcrumb->addCacheableDependency($vocabulary);
-    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
+//    $vocabulary = $this->entityManager
+//      ->getStorage('taxonomy_vocabulary')
+//      ->load($this->config->get('vocabulary'));
+//    $breadcrumb->addCacheableDependency($vocabulary);
+//    $links[] = Link::createFromRoute($vocabulary->label(), 'forum.index');
 
     return $breadcrumb->setLinks($links);
   }
