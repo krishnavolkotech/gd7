@@ -3822,3 +3822,25 @@ table.releases tr td.inprogress-comment-cell img {
     font-size: 14px;
     display:inline-block;
 }
+
+.nonecommentcount {
+    background: url(../../../modules/custom/hzd_release_inprogress_comments/images/none.jpg) left top no-repeat;
+    width: 28px;
+    height: 24px;
+    /*float: left;*/
+    line-height: 29px;
+    text-align: center;
+    font-size: 14px;
+    display:inline-block;
+}
+
+.nonewarningcount {
+    background: url(../../../modules/custom/hzd_release_inprogress_comments/images/none.jpg) left top no-repeat;
+    width: 28px;
+    height: 24px;
+    /*float: left;*/
+    line-height: 29px;
+    text-align: center;
+    font-size: 14px;
+    display:inline-block;
+}

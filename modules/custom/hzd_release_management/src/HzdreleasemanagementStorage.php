@@ -3,6 +3,7 @@
 namespace Drupal\hzd_release_management;
 
 use Dompdf\Exception;
+use Drupal\Core\Render\Markup;
 use Drupal\cust_group\Controller\AccessController;
 use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
@@ -1232,7 +1233,16 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function release_info($type = NULL) {
     if ($type == 'progress' && self::RWCommentAccess()) {
-      $output = "<div class='menu-filter menu-filter-progress'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li><li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Comments ansehen</li><li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Comments ansehen</li></ul></div>";
+      $output = "<div class='menu-filter menu-filter-progress'>
+<ul>
+<li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
+<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Comments ansehen</li>
+<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Comments ansehen</li>
+</ul>
+</div>";
     } else {
       $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
     }
@@ -1637,7 +1647,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       );
       $view_warning = \Drupal::service('renderer')->renderRoot($view_earlywarning);
     } else {
-      $view_warning = t('<span class="no-warnigs"></span>');
+      if ($type == 'progress' && self::RWCommentAccess()) {
+        $view_warning = Markup::create('<a><span class="nonewarningcount"></span></a>');
+      }else {
+        $view_warning = t('<span class="no-warnigs"></span>');
+      }
     }
 
     // Early Warning create icon.
@@ -1686,7 +1700,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         );
         $view_cmt = \Drupal::service('renderer')->renderRoot($view_cmt);
       } else {
-        $view_cmt = t('<span class="no-warnigs"></span>');
+        $view_cmt = Markup::create('<a><span class="nonecommentcount"></span></a>');
       }
 
       // Comments create icon.
