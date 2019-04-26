@@ -1257,6 +1257,15 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     } else {
       $user = \Drupal::currentUser();
     }
+    $group = Group::load(RELEASE_MANAGEMENT);
+    $groupMember = $group->getMember($user);
+    if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
+      return TRUE;
+    }
+    $roles = $groupMember->getRoles();
+    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+      return TRUE;
+    }
     $userData = \Drupal::service('user.data');
     $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
     if ($rw_comments_permission) {
