@@ -658,6 +658,12 @@ function _get_subscribed_users($entity){
 
 
 function hzd_notifications_node_update($node){
+  // Clearing cache from deployed table
+  if ($node->getType() == 'deployed_releases') {
+    if ($node->original->get('field_archived_release')->value == 1) {
+      \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
+    }
+  }
   if($node->isPublished() && $node->bundle() == 'quickinfo'){
     return;
   }
