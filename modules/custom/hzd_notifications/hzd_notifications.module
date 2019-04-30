@@ -661,7 +661,7 @@ function hzd_notifications_node_update($node){
   // Clearing cache from deployed table
   if ($node->getType() == 'deployed_releases') {
     if ($node->original->get('field_archived_release')->value == 1) {
-      \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
+      \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
     }
   }
   if($node->isPublished() && $node->bundle() == 'quickinfo'){
