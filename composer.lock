@@ -8058,16 +8058,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.40.0",
+            "version": "v1.40.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "2ba4eaf6b0649760a2cdbc0ada19486f9c1b4125"
+                "reference": "35889516bbd6bbe46a600c2c33b03515df4a076e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/2ba4eaf6b0649760a2cdbc0ada19486f9c1b4125",
-                "reference": "2ba4eaf6b0649760a2cdbc0ada19486f9c1b4125",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/35889516bbd6bbe46a600c2c33b03515df4a076e",
+                "reference": "35889516bbd6bbe46a600c2c33b03515df4a076e",
                 "shasum": ""
             },
             "require": {
@@ -8120,7 +8120,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-04-28T06:54:53+00:00"
+            "time": "2019-04-29T14:12:28+00:00"
         },
         {
             "name": "typo3/phar-stream-wrapper",
