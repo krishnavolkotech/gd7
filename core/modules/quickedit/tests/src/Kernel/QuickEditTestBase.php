@@ -85,6 +85,7 @@ abstract class QuickEditTestBase extends KernelTestBase {
       'settings' => $field_settings,
     ]);
     $this->fields->$field->save();
+
     if (!empty($widget_type)) {
       entity_get_form_display('entity_test', 'entity_test', 'default')
         ->setComponent($field_name, [
@@ -104,4 +105,5 @@ abstract class QuickEditTestBase extends KernelTestBase {
         ->save();
     }
   }
+
 }
