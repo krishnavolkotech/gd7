@@ -19,7 +19,7 @@ class Arbeitsanleitungen extends ControllerBase {
       ->get('import_path');
     $path = DRUPAL_ROOT . '/' . $config_path;
     $folders_of_al_edv = DRUPAL_ROOT . '/' . 'sites/default/files/al-edv/';
-    $bak_al_edv = DRUPAL_ROOT . '/' . 'sites/default/files/bak-al-edv/';
+    $bak_al_edv = DRUPAL_ROOT . '/' . 'sites/default/files/archive-al-edv/';
     $result = [];
     try {
       ini_set('memory_limit', '3G');
