@@ -25,7 +25,7 @@ class Arbeitsanleitungen extends ControllerBase {
       ini_set('memory_limit', '3G');
       ini_set('max_execution_time', 0);
       if ($path && file_exists($path)) {
-        $filename = end(explode($path));
+        $filename = end(explode("/", $path));
         if (is_dir($folders_of_al_edv)) {
           shell_exec("rm -rf " . $folders_of_al_edv);
         }
