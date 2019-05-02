@@ -854,7 +854,9 @@ class HzdcustomisationStorage {
     if(count($where_service_value) > 0) {
       $where_data[] = "CONCAT(',', d.service_id, ',') REGEXP ',(".implode('|', $where_service_value) ."),'";
     }
-    $downtimesQuery->where(implode(' AND ', $where_data));
+    if(count($where_data) > 0) {
+      $downtimesQuery->where(implode(' AND ', $where_data));
+    }
        // dump($downtimesQuery->__toString());
     if ($type == 'archived') {
     $count_query = clone $downtimesQuery;

@@ -241,6 +241,8 @@ class HzdStorage {
       $group_problems_view = self::get_problems_services($group_id);
       if (!empty($group_problems_view)) {
         $problem_node_ids->condition('field_services', $group_problems_view, 'IN');
+      }else{
+        $problem_node_ids->condition('field_services', '');
       }
     }
 
