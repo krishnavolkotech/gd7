@@ -52,6 +52,12 @@ class ReleasetypesettingForm extends ConfigFormBase {
       '#default_value' => \Drupal::config('hzd_release_management.settings')->get('ex_eoss_service_term_id'),
       '#description' => t('Enter EX-EOSS Term id'),
     );
+    $form['release_comments_intro_text_nid'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Release Comments Introductory Text nid'),
+      '#default_value' => \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid'),
+      '#description' => t('Release Comments Introductory Text nid'),
+    );
     return parent::buildForm($form, $form_state);
   }
 
@@ -68,11 +74,13 @@ class ReleasetypesettingForm extends ConfigFormBase {
     $release_vocabulary_id = $form_state->getValue('release_vocabulary_id');
     $konsens_service_term_id = $form_state->getValue('konsens_service_term_id');
     $ex_eoss_service_term_id = $form_state->getValue('ex_eoss_service_term_id');
+    $release_comments_intro_text_nid = $form_state->getValue('release_comments_intro_text_nid');
 
     \Drupal::configFactory()->getEditable('hzd_release_management.settings')
       ->set('release_vocabulary_id', $release_vocabulary_id)
       ->set('konsens_service_term_id', $konsens_service_term_id)
       ->set('ex_eoss_service_term_id', $ex_eoss_service_term_id)
+      ->set('release_comments_intro_text_nid', $release_comments_intro_text_nid)
       ->save();
     
    \Drupal::service("router.builder")->rebuild();

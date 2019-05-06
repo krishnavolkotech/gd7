@@ -134,12 +134,12 @@ class HzdReleaseCommentsStorage {
   static public function get_releasecomments_filters() {
     $parameters = array();
     $request = \Drupal::request()->query;
-    $parameters['release_type'] = $request->get('release_type');
-    $parameters['services'] = $request->get('services');
-    $parameters['releases'] = $request->get('releases');
-    $parameters['filter_startdate'] = $request->get('filter_startdate');
-    $parameters['filter_enddate'] = $request->get('filter_enddate');
-    $parameters['limit'] = $request->get('limit');
+    $parameters['release_type'] = ($request->get('release_type')) ?: KONSONS;
+    $parameters['services'] = ($request->get('services')) ?: "0";
+    $parameters['releases'] = ($request->get('releases')) ?: "0";
+    $parameters['filter_startdate'] = ($request->get('filter_startdate')) ?: "";
+    $parameters['filter_enddate'] = ($request->get('filter_enddate')) ?: "";
+    $parameters['limit'] = ($request->get('limit')) ?: "20";
     return $parameters;
   }
 }
