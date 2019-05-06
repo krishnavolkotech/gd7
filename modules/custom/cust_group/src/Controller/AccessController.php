@@ -302,18 +302,24 @@ class AccessController extends ControllerBase
     }
     if ($group->id() == RELEASE_MANAGEMENT) {
       $groupMember = $group->getMember($user);
-      if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
-        return AccessResult::allowed();
-      }
-      $roles = $groupMember->getRoles();
-      if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-        return AccessResult::allowed();
-      }
-      if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-        $userData = \Drupal::service('user.data');
-        $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
-        if ($rw_comments_permission) {
+      if ($groupMember) {
+        if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
           return AccessResult::allowed();
+        }
+        $roles = $groupMember->getRoles();
+        if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+          return AccessResult::allowed();
+        }
+        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+          $userData = \Drupal::service('user.data');
+          $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
+          if ($rw_comments_permission) {
+            return AccessResult::allowed();
+          } else {
+            return AccessResult::forbidden();
+          }
+        } else {
+          return AccessResult::forbidden();
         }
       } else {
         return AccessResult::forbidden();
