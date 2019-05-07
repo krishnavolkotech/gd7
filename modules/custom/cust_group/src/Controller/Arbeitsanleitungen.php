@@ -44,14 +44,16 @@ class Arbeitsanleitungen extends ControllerBase {
         //Sending Success Mails
         $mail = \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_not_import');
         $subject = t("Successfully Extracted file in al-edv");
-        $body = \Drupal::config('hzd_notifications.settings')->get('arb_success_download_text')['value'];
+        $body = ['#markup' => \Drupal::config('hzd_notifications.settings')->get('arb_success_download_text')['value']];
+        $body = \Drupal::service('renderer')->render($body);
         HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $mail, $subject, $body);
 
         //Notifying Users
         $config = \Drupal::config('hzd_notifications.aledvnotification');
         $users_mail = self::get_al_edv_subscriptions();
         $user_subject = $config->get('aledv_subject_update');
-        $user_body = $config->get('aledv_mail_footer');
+        $user_body = ['#markup' => $config->get('aledv_mail_footer')];
+        $user_body = \Drupal::service('renderer')->render($user_body);
         HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $users_mail, $user_subject, $user_body);
 
         $result['#markup'] = t("Successfully Extracted file in al-edv");
@@ -75,7 +77,7 @@ class Arbeitsanleitungen extends ControllerBase {
   public static function get_al_edv_subscriptions() {
     $result = "";
     $emails = db_query("select ufd.mail from {users_field_data} ufd, {arbeitsanleitung_notifications__user_default_interval} anudi where ufd.uid = anudi.uid AND ufd.status = 1 AND anudi.default_send_interval = 0")->fetchCol();
-    if(is_array($emails)) {
+    if (is_array($emails)) {
       $result = implode(', ', array_unique($emails));
     }
     return $result;
