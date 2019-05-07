@@ -444,10 +444,14 @@ class AccessController extends ControllerBase
           return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
         }
       } elseif ($group_id == QUICKINFO) {
-        $incident_management_plugin = array_merge($common_plugins, [
-          'group_node:quickinfo'
-        ]);
-        if (in_array($plugin_id, $incident_management_plugin)) {
+        if ($plugin_id == 'group_node:quickinfo') {
+          $content = $group->getMember(\Drupal::currentUser());
+          if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
+            return AccessResult::allowed();
+          } else {
+            return AccessResult::forbidden();
+          }
+        } elseif (in_array($plugin_id, $common_plugins)) {
           return AccessResult::allowedIf($group->hasPermission('administer members', $userEntity));
         }
       } elseif ($group_id == PROBLEM_MANAGEMENT) {
