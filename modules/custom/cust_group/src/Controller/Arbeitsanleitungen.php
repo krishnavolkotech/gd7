@@ -41,22 +41,41 @@ class Arbeitsanleitungen extends ControllerBase {
           shell_exec("mkdir -p " . $bak_al_edv);
           shell_exec("mv " . $path . " " . $bak_al_edv);
         }
+        //Sending Success Mails
         $mail = \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_not_import');
-        $subject = "Successfully Extracted file in al-edv";
+        $subject = t("Successfully Extracted file in al-edv");
         $body = \Drupal::config('hzd_notifications.settings')->get('arb_success_download_text')['value'];
         HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $mail, $subject, $body);
+
+        //Notifying Users
+        $config = \Drupal::config('hzd_notifications.aledvnotification');
+        $users_mail = self::get_al_edv_subscriptions();
+        $user_subject = $config->get('aledv_subject_update');
+        $user_body = $config->get('aledv_mail_footer');
+        HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $users_mail, $user_subject, $user_body);
+
         $result['#markup'] = t("Successfully Extracted file in al-edv");
       } else {
         $result['#markup'] = t("@file file not present.", ['@file' => $config_path]);
       }
     } catch (Exception $e) {
       $mail = \Drupal::config('hzd_notifications.settings')->get('arbeitsanleitungen_not_import');
-      $subject = "Error while importing al-edv zip file.";
+      $subject = t("Error while importing al-edv zip file.");
       $body = \Drupal::config('hzd_notifications.settings')->get('arb_failed_download_text')['value'];
       \Drupal::logger('arbeitsanleitungen_file_issue')->error($e->getMessage());
       $result['#markup'] = $e->getMessage();
       HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $mail, $subject, $body);
     }
+    return $result;
+  }
+
+  /**
+   * @return array|string
+   */
+  public static function get_al_edv_subscriptions() {
+    $result = "";
+    $emails = db_query("select ufd.mail from {users_field_data} ufd, {arbeitsanleitung_notifications__user_default_interval} anudi where ufd.uid = anudi.uid AND ufd.status = 1 AND anudi.default_send_interval = 0")->fetchAll();
+    $result = implode(', ', array_unique($emails));
     return $result;
   }
 }
