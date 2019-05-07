@@ -653,10 +653,14 @@ class HzdNotifications extends ControllerBase {
       $user = User::load($user);
     }
     $group = Group::load(\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
-    $groupMember = $group->getMember($user);
-    $user_role = $user->getRoles(TRUE);
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
-      return AccessResult::allowed();
+    if($group) {
+      $groupMember = $group->getMember($user);
+      $user_role = $user->getRoles(TRUE);
+      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
+        return AccessResult::allowed();
+      } else {
+        return AccessResult::forbidden();
+      }
     }else {
       return AccessResult::forbidden();
     }

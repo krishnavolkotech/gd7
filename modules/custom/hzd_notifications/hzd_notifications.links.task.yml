@@ -34,7 +34,7 @@ hzd_notifications.rz_schnellinfos_notifications:
   weight: 4
 
 hzd_notifications.arbeitsanleitungen_notifications:
-  title: 'Arbeitsanleitung der EDV-Stelle'
+  title: 'AL-EDV'
   route_name: hzd_notifications.arbeitsanleitungen_notifications
   parent_id: hzd_notifications.notifications
   weight: 4
