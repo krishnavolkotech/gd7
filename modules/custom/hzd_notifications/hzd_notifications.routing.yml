@@ -111,3 +111,13 @@ hzd_notifications.scheduled_mails:
     _title: 'Scheduled Mails'
   requirements:
     _role: 'administrator + site_administrator'
+hzd_notifications.aledv_notification_form:
+  path: 'admin/messaging/templates/aledvnotification'
+  defaults:
+    _form: '\Drupal\hzd_notifications\Form\ALEdvNotificationForm'
+    _title: 'ALEdvNotificationForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
