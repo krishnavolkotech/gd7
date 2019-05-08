@@ -25,6 +25,7 @@ conditions:
       problem: problem
       quickinfo: quickinfo
       release: release
+      release_comments: release_comments
       risk: risk
       risk_cluster: risk_cluster
     negate: false
