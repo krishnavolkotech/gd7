@@ -48,3 +48,24 @@ function hzd_release_inprogress_comments_form_alter(&$form, \Drupal\Core\Form\Fo
 
   return $form;
 }
+
+/**
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ */
+function hzd_release_inprogress_comments_node_insert(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->getType() == 'release_comments') {
+    $group = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
+    $plugin = $group->getGroupType()
+      ->getContentPlugin('group_node:release_comments');
+
+    $values = [
+      'type' => $plugin->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $entity->id(),
+    ];
+    $group_content = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->create($values)
+      ->save();
+  }
+}
