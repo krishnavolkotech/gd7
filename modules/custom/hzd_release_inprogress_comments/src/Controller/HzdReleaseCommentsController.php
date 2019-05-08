@@ -21,6 +21,7 @@ class HzdReleaseCommentsController extends ControllerBase {
       'hzd_earlywarnings/hzd_earlywarnings',
     );
 
+    $output['content']['pretext'] = HzdReleaseCommentsStorage::release_comment_text();
     $output['content']['#prefix'] = '<div id = "earlywarnings_results_wrapper">';
     $output['content']['earlywarnings_filter_form'] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_release_inprogress_comments\Form\ReleaseCommentsFilterForm');
@@ -49,24 +50,14 @@ class HzdReleaseCommentsController extends ControllerBase {
    * @return mixed
    */
   function release_comments_display($group) {
-    $node_body = "";
-    $release_comments_intro_text_nid = NULL;
-    $release_comments_intro_text_nid = \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid');
     $type = 'releaseWarnings';
     $group_id = $group->id();
     $output['content']['#attached']['library'] = array(
       'hzd_earlywarnings/hzd_earlywarnings',
     );
-
     $output['content']['#attached']['drupalSettings']['group_id'] = $group_id;
     $output['content']['#attached']['drupalSettings']['type'] = $type;
-
-    if($release_comments_intro_text_nid) {
-      $node_body = Markup::create(node_get_field_data_fast([$release_comments_intro_text_nid], 'body')[$release_comments_intro_text_nid]);
-    }
-    $output['content']['pretext']['#prefix'] = "<div class = 'earlywarnings_text'>";
-    $output['content']['pretext']['#markup'] = $node_body;
-
+    $output['content']['pretext'] = HzdReleaseCommentsStorage::release_comment_text();
     $output['content']['table_header']['#markup'] = '<h2>' .
       t('Current Release Comments') . '</h2>';
     $output['content']['filter_form']['#prefix'] = "<div class = "

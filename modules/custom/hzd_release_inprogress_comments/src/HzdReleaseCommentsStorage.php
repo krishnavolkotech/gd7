@@ -142,4 +142,18 @@ class HzdReleaseCommentsStorage {
     $parameters['limit'] = ($request->get('limit')) ?: "20";
     return $parameters;
   }
+
+  /**
+   * Display release comment text.
+   */
+  static public function release_comment_text() {
+    $release_comments_intro_text_nid = NULL;
+    $release_comments_intro_text_nid = \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid');
+    if($release_comments_intro_text_nid) {
+      $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
+    }
+    $output = "<div class = 'earlywarnings_text'>" . $body;
+    $build['#markup'] = $output;
+    return $build;
+  }
 }
