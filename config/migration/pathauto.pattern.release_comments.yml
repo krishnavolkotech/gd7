@@ -1,0 +1,34 @@
+uuid: cb78de29-d259-4eb5-a362-e76ea2fd3354
+langcode: de
+status: true
+dependencies:
+  module:
+    - language
+    - node
+id: release_comments
+label: 'Release Comments'
+type: 'canonical_entities:node'
+pattern: 'release-management/release-comments/[node:field_earlywarning_release_title]/[node:title]'
+selection_criteria:
+  e55f82e9-5386-4a52-b7f6-8120b4165825:
+    id: node_type
+    bundles:
+      release_comments: release_comments
+    negate: false
+    context_mapping:
+      node: node
+    uuid: e55f82e9-5386-4a52-b7f6-8120b4165825
+  78f5e495-17aa-486f-b08b-1fcfd62c25da:
+    id: language
+    langcodes:
+      de: de
+      en: en
+    negate: false
+    context_mapping:
+      language: 'node:langcode:language'
+    uuid: 78f5e495-17aa-486f-b08b-1fcfd62c25da
+selection_logic: and
+weight: -5
+relationships:
+  'node:langcode:language':
+    label: Sprache
