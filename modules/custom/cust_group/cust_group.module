@@ -877,6 +877,15 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
  * hook implementing hook_node_access()
  */
 function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
+
+  if ($node->getType() == 'release_comments') {
+    if (\Drupal\hzd_release_management\HzdreleasemanagementStorage::RWCommentAccess()) {
+      return AccessResult::allowed();
+    } else {
+      return AccessResult::forbidden();
+    }
+  }
+
   $plannigFileRef = array(
     1048 => "mlrp",
     65101 => "test calendar",
