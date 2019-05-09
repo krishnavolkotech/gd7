@@ -76,7 +76,7 @@ class Arbeitsanleitungen extends ControllerBase {
    */
   public static function get_al_edv_subscriptions() {
     $result = "";
-    $emails = db_query("select ufd.mail from {users_field_data} ufd, {arbeitsanleitung_notifications__user_default_interval} anudi where ufd.uid = anudi.uid AND ufd.status = 1 AND anudi.default_send_interval = 0")->fetchCol();
+    $emails = db_query("select ufd.mail from {users_field_data} ufd, {arbeitsanleitung_notifications__user_default_interval} anudi, {user__field_notifications_status} ufns where ufd.uid = anudi.uid AND ufd.uid = ufns.entity_id AND ufd.status = 1 AND anudi.default_send_interval = 0 AND ufns.field_notifications_status_value = 'Enable'")->fetchCol();
     if (is_array($emails)) {
       $result = implode(', ', array_unique($emails));
     }

@@ -187,6 +187,10 @@ class HzdNotifications extends ControllerBase {
     $this->getAllSubscribedNotificationsCount($user);
 //        exit;
     $this->setAllDefaultNotifications($user, -1);
+
+    // Remove Subscription from AL-EDV
+    db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $user));
+
     drupal_set_message($this->t('Preferrences Saved Successfully'));
     $url = Url::fromRoute('hzd_notifications.notifications', ['user' => $user])
       ->toString();
