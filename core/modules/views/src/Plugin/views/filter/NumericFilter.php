@@ -212,8 +212,7 @@ class NumericFilter extends FilterPluginBase {
       if (empty($this->options['expose']['use_operator']) || empty($this->options['expose']['operator_id'])) {
         // exposed and locked.
         $which = in_array($this->operator, $this->operatorValues(2)) ? 'minmax' : 'value';
-      }
-      else {
+      } else {
         $source = ':input[name="' . $this->options['expose']['operator_id'] . '"]';
       }
     }
@@ -239,8 +238,7 @@ class NumericFilter extends FilterPluginBase {
         $user_input[$identifier]['value'] = $this->value['value'];
         $form_state->setUserInput($user_input);
       }
-    }
-    elseif ($which == 'value') {
+    } elseif ($which == 'value') {
       // When exposed we drop the value-value and just do value if
       // the operator is locked.
       $form['value'] = [
@@ -319,8 +317,7 @@ class NumericFilter extends FilterPluginBase {
   protected function opBetween($field) {
     if ($this->operator == 'between') {
       $this->query->addWhere($this->options['group'], $field, [$this->value['min'], $this->value['max']], 'BETWEEN');
-    }
-    else {
+    } else {
       $this->query->addWhere($this->options['group'], $field, [$this->value['min'], $this->value['max']], 'NOT BETWEEN');
     }
   }
@@ -332,8 +329,7 @@ class NumericFilter extends FilterPluginBase {
   protected function opEmpty($field) {
     if ($this->operator == 'empty') {
       $operator = "IS NULL";
-    }
-    else {
+    } else {
       $operator = "IS NOT NULL";
     }
 
@@ -362,8 +358,7 @@ class NumericFilter extends FilterPluginBase {
     $output = $options[$this->operator];
     if (in_array($this->operator, $this->operatorValues(2))) {
       $output .= ' ' . $this->t('@min and @max', ['@min' => $this->value['min'], '@max' => $this->value['max']]);
-    }
-    elseif (in_array($this->operator, $this->operatorValues(1))) {
+    } elseif (in_array($this->operator, $this->operatorValues(1))) {
       $output .= ' ' . $this->value['value'];
     }
     return $output;
@@ -401,6 +396,9 @@ class NumericFilter extends FilterPluginBase {
             }
             break;
           case 2:
+            if (empty($this->value['min']) || empty($this->value['max'])) {
+              return FALSE;
+            }
             if ($value['min'] === '' && $value['max'] === '') {
               return FALSE;
             }

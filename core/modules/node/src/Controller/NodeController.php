@@ -193,7 +193,8 @@ class NodeController extends ControllerBase implements ContainerInjectionInterfa
         // revision, if it was the default revision, as its values for the
         // current language will be the same of the current default revision in
         // this case.
-        $is_current_revision = $vid == $default_revision || (!$current_revision_displayed && $revision->wasDefaultRevision());
+        $is_current_revision = $vid == $default_revision;
+
         if (!$is_current_revision) {
           $link = $this->l($date, new Url('entity.node.revision', ['node' => $node->id(), 'node_revision' => $vid]));
         }
