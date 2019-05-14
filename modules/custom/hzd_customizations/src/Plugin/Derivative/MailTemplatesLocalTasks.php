@@ -56,7 +56,9 @@ class MailTemplatesLocalTasks extends DeriverBase implements ContainerDeriverInt
       }
       else {
         $nodeType = NodeType::load($type);
-        $title = $nodeType->label();
+        if ($nodeType) {
+          $title = $nodeType->label();
+        }
       }
       
       if ($nodeType) {
