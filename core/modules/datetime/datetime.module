@@ -41,11 +41,6 @@ const DATETIME_DATETIME_STORAGE_FORMAT = 'Y-m-d\TH:i:s';
 const DATETIME_DATE_STORAGE_FORMAT = 'Y-m-d';
 
 /**
- *  Defines the format that time should be stored in.
- */
-const DATETIME_TIME_STORAGE_FORMAT = 'H:i:s';
-
-/**
  * Implements hook_help().
  */
 function datetime_help($route_name, RouteMatchInterface $route_match) {

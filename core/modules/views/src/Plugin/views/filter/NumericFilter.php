@@ -401,9 +401,6 @@ class NumericFilter extends FilterPluginBase {
             }
             break;
           case 2:
-            if (empty($this->value['min']) || empty($this->value['max'])) {
-              return FALSE;
-            }            
             if ($value['min'] === '' && $value['max'] === '') {
               return FALSE;
             }

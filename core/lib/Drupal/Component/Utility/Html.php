@@ -383,9 +383,7 @@ EOD;
    * @see \Drupal\Component\Utility\Html::escape()
    */
   public static function decodeEntities($text) {
-    if (!is_array($text)) {
-      return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-    }
+    return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
   /**
@@ -423,9 +421,7 @@ EOD;
    * @ingroup sanitization
    */
   public static function escape($text) {
-    if (!is_object($text)) {
-      return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
+    return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
   }
 
   /**
