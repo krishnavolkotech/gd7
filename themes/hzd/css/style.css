@@ -3844,3 +3844,7 @@ table.releases tr td.inprogress-comment-cell img {
     font-size: 14px;
     display:inline-block;
 }
+
+form#node-release-comments-form div#edit-field-earlywarning-release-wrapper div#edit-footer {
+    display: none;
+}

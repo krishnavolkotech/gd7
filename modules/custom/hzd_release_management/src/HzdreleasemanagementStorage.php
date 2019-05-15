@@ -1628,6 +1628,12 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       ->condition('nfrs.field_release_service_value', $service_id, '=');
     $earlywarnings_count = $query->countQuery()->execute()->fetchField();
 
+    if ($type == 'progress' && self::RWCommentAccess()) {
+      $el_class = 'create_earlywarning';
+    }else {
+      $el_class = 'create_earlywarning-old';
+    }
+
     if ($earlywarnings_count > 0) {
       $warningclass = ($earlywarnings_count >= 10 ? 'warningcount_second' : 'warningcount');
       $view_options['query'] = array(
@@ -1666,7 +1672,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       'type' => $type,
       'release_type' => $tid
     );
-    $options['attributes'] = array('class' => 'create_earlywarning', 'title' => t('Add an Early Warning for this release'));
+    $options['attributes'] = array('class' => $el_class, 'title' => t('Add an Early Warning for this release'));
     $create_earlywarning_url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => $group_id], $options);
     $create_earlywarning = array('#title' => array('#markup' => $create_icon), '#type' => 'link', '#url' => $create_earlywarning_url);
     $create_warning = \Drupal::service('renderer')->renderRoot($create_earlywarning);
