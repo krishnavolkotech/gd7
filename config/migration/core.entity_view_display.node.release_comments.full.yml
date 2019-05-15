@@ -38,14 +38,14 @@ content:
     region: content
   field_earlywarning_release:
     weight: 1
-    label: above
+    label: inline
     settings: {  }
     third_party_settings: {  }
     type: list_default
     region: content
   field_release_service:
     weight: 0
-    label: above
+    label: inline
     settings: {  }
     third_party_settings: {  }
     type: list_default
