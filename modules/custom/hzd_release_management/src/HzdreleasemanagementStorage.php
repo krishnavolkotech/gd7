@@ -1629,9 +1629,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $earlywarnings_count = $query->countQuery()->execute()->fetchField();
 
     if ($type == 'progress' && self::RWCommentAccess()) {
-      $el_class = 'create_earlywarning';
+      $el_class = 'create_earlywarning earlywarning-inprogress';
     }else {
-      $el_class = 'create_earlywarning-old';
+      $el_class = 'create_earlywarning';
     }
 
     if ($earlywarnings_count > 0) {

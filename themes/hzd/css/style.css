@@ -3790,9 +3790,10 @@ form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbo
     background: transparent !important;
 }
 
-table.releases tr td.inprogress-comment-cell {
-    text-align: center;
+table.releases tr td.earlywarnings-cell {
+    float: left;
 }
+
 
 table.releases tr td.inprogress-comment-cell a.create_earlywarning{
     float: left;
