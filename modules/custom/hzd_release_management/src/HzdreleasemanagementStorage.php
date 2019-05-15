@@ -1402,13 +1402,20 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       if ($type == 'released' || $type == 'progress') {
         if (isset($group_id)) {
           $early_warnings = self::hzd_release_early_warnings(
-                          $releases->field_relese_services->target_id, $releases->id(), $type, $service_release_type);
+            $releases->field_relese_services->target_id, $releases->id(), $type, $service_release_type);
 
-          if ($type == 'progress' && self::RWCommentAccess()) {
-            $earlywarnings_cell = array(
-              'data' => $early_warnings,
-              'class' => 'earlywarnings-cell inprogress-comment-cell'
-            );
+          if ($type == 'progress') {
+            if (self::RWCommentAccess()) {
+              $earlywarnings_cell = array(
+                'data' => $early_warnings,
+                'class' => 'earlywarnings-cell inprogress-comment-cell'
+              );
+            } else {
+              $earlywarnings_cell = array(
+                'data' => $early_warnings,
+                'class' => 'earlywarnings-cell inprogress-no-comment-cell'
+              );
+            }
           } else {
             $earlywarnings_cell = array(
               'data' => $early_warnings,
