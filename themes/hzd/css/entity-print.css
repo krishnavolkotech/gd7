@@ -75,7 +75,7 @@ body {
     float: none;
     width: 100%;
     line-height: 20px;
-    display: none;
+    display: block;
     margin: 5px 0 !important;
 }
 .pdf-content article ol,
@@ -576,7 +576,7 @@ table tr td {
   padding-right:0
 }
 .pdf-content br{
-  display:none;
+  display:block;
 }
 .pdf-content table.releases tr td.earlywarnings-cell a.view-earlywarning,
 .pdf-content table.releases tr td.earlywarnings-cell a.create_earlywarning{
