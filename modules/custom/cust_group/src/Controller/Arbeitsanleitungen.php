@@ -54,7 +54,9 @@ class Arbeitsanleitungen extends ControllerBase {
         $user_subject = $config->get('aledv_subject_update');
         $user_body = ['#markup' => $config->get('aledv_mail_footer')];
         $user_body = \Drupal::service('renderer')->render($user_body);
-        HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $users_mail, $user_subject, $user_body);
+        foreach ($users_mail as $user_mail) {
+          HzdservicesHelper::send_arbeitsanleitungen_notification('read_arbeitsanleitungen_zipfile', $user_mail, $user_subject, $user_body);
+        }
 
         $result['#markup'] = t("Successfully Extracted file in al-edv");
       } else {
@@ -75,10 +77,10 @@ class Arbeitsanleitungen extends ControllerBase {
    * @return array|string
    */
   public static function get_al_edv_subscriptions() {
-    $result = "";
+    $result = [];
     $emails = db_query("select ufd.mail from {users_field_data} ufd, {arbeitsanleitung_notifications__user_default_interval} anudi, {user__field_notifications_status} ufns where ufd.uid = anudi.uid AND ufd.uid = ufns.entity_id AND ufd.status = 1 AND anudi.default_send_interval = 0 AND ufns.field_notifications_status_value = 'Enable'")->fetchCol();
     if (is_array($emails)) {
-      $result = implode(', ', array_unique($emails));
+      $result[] = array_unique($emails);
     }
     return $result;
   }
