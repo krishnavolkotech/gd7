@@ -290,7 +290,7 @@ class HzdcustomisationStorage {
       }
       else {
         $text = $service->service;
-        $url = Url::fromUserInput('/node/' . MAINTENANCE_GROUP_ID . '/add/service_profile?service=' . $service->nid . '&destination=' . $current_uri);
+        $url = Url::fromUserInput('/node/add/service_profile?service=' . $service->nid . '&destination=' . $current_uri);
         // $link = Link::fromTextAndUrl($text, $url);.
         $data[] = Link::fromTextAndUrl($text, $url);
         // Echo '<pre>';  print_r($check);  exit;.

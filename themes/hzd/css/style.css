@@ -3812,8 +3812,8 @@ table.releases tr td.inprogress-comment-cell a{
 }
 
 table.releases tr td.inprogress-comment-cell img {
-    margin-right: 15px;
-    margin-left: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .commentcount {
@@ -3852,3 +3852,15 @@ table.releases tr td.inprogress-comment-cell img {
 form#node-release-comments-form div#edit-field-earlywarning-release-wrapper div#edit-footer {
     display: none;
 }
+
+form#arbeitsanleitung-notifications-user-form table#edit-arbeitsanleitung tr td .radio {
+    margin: 0;
+    float: left;
+    margin-left: 5px;
+}
+
+form#arbeitsanleitung-notifications-user-form table#edit-arbeitsanleitung tr td div {
+  float: left;
+  margin-right: -30px;
+}
+
