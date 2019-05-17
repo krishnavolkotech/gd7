@@ -52,7 +52,7 @@ class HzdproblemmanagementHelper {
     $result['problems_default_display'] =
       HzdStorage::problems_default_display($type, DISPLAY_LIMIT);
     $result['#suffix'] = "</div>";
-    $result['problems_default_display']['#cache'] = ['tags' => ['node_list']];
+    $result['problems_default_display']['#cache'] = ['tags' => ['node_list', 'hzd_problem_management:prob']];
 // sid load
     return $result;
   }

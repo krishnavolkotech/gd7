@@ -191,6 +191,10 @@ class ProblemsettingsForm extends FormBase {
       $menu_link->save();
     }
     \Drupal::service("router.builder")->rebuild();
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'hzd_problem_management:prob'
+      ]);
     drupal_set_message(t('Problem Settings Updated'), 'status');
   }
 
