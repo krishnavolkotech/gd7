@@ -77,7 +77,7 @@ class ProblemsettingsForm extends FormBase {
       $options = $get_related_services;
     }
 
-    if($group_id == 6 && (count($default_services) == count($get_related_services))) {
+    if($group_id == 6 && (count(array_filter($default_services)) == count($get_related_services))) {
       $default_services = ['all' => 'all'] + $default_services;
     }
 
