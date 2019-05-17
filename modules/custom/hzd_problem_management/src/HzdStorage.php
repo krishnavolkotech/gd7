@@ -404,7 +404,7 @@ class HzdStorage {
       '#empty' => t('No Data Created Yet'),
       '#attributes' => ['id' => "sortable", 'class' => "tablesorter"],
       '#caption' => t('Problems'),
-      '#cache'=>['tags'=>['node_list']]
+//      '#cache'=>['tags'=>['node_list']]
     );
 
     $build['pager'] = array(
