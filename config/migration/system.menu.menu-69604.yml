@@ -1,0 +1,8 @@
+uuid: 1cc3388a-9abc-4d52-8ebf-78b4a3d0672c
+langcode: de
+status: true
+dependencies: {  }
+id: menu-69604
+label: Betriebsmanagement
+description: ''
+locked: false
