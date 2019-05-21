@@ -7,3 +7,10 @@ custom_script_batch.form:
 #    _permission: 'access content'
     _role: 'administrator+site_administrator'
 
+custom_script_batch.update_term_controller_update_term:
+  path: '/custom-script-batch/update-term'
+  defaults:
+    _controller: '\Drupal\custom_script_batch\Controller\UpdateTermController::update_term'
+    _title: 'Update All Taxonomy Term'
+  requirements:
+    _role: 'administrator+site_administrator'

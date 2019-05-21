@@ -650,10 +650,14 @@ function _notify_users($entity, $action, $user_data){
   
 }
 
-function _get_subscribed_users($entity){
+function _get_subscribed_users($entity) {
   /* @var \Drupal\hzd_notifications\NotificationManagerInterface $notification_manager */
   $notification_manager = \Drupal::service('hzd_notifications.manager');
-  return $notification_manager->getSubscribedUsers($entity);
+  if ($entity) {
+    return $notification_manager->getSubscribedUsers($entity);
+  } else {
+    return [];
+  }
 }
 
 
