@@ -7,9 +7,9 @@ settings:
   orientation: portrait
   default_paper_size: letter
   username: Azri
-  password: Hzd!upgrd@27
+  password: ''
   enable_html5_parser: true
   enable_remote: true
   cafile: ''
-  verify_peer: true
-  verify_peer_name: true
+  verify_peer: false
+  verify_peer_name: false
