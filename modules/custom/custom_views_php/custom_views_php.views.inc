@@ -133,5 +133,13 @@ function custom_views_php_views_data() {
     ),
   );
 
+  $data['views']['comment_release_status'] = array(
+    'title' => t('Is User have comment release access.'),
+    'help' => t('Is User have comment release access.'),
+    'field' => array(
+      'id' => 'comment_release_status',
+    ),
+  );
+
   return $data;
 }
