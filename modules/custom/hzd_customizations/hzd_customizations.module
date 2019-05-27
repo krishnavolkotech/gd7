@@ -321,6 +321,11 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
     $form['attachments']['#collapsed'] = FALSE;
   }
+
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-hzd-group-members-approved') {
+    $form['items_per_page']['#weight']  = 10;
+  }
+
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-group-members-lists-page-1') {
 
     $db = \Drupal::database();
