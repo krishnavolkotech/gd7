@@ -556,7 +556,7 @@ display:
       pager:
         type: full
         options:
-          items_per_page: 20
+          items_per_page: 50
           offset: 0
           id: 0
           total_pages: null
@@ -568,9 +568,9 @@ display:
           expose:
             items_per_page: true
             items_per_page_label: Anzahl
-            items_per_page_options: '20, 50, 100, 200'
+            items_per_page_options: '20, 50, 100'
             items_per_page_options_all: true
-            items_per_page_options_all_label: '- Alle -'
+            items_per_page_options_all_label: Alle
             offset: false
             offset_label: Offset
           quantity: 9
