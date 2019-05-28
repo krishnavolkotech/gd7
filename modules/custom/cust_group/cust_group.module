@@ -244,11 +244,11 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
       $userData = \Drupal::service('user.data');
       $rw_comments_permission = $userData->get('cust_group', $uid, 'rw_comments_permission');
       if (!in_array($group->bundle() . '-admin', $nroles) && in_array($group->bundle() . '-admin', $oroles)) {
-        if ($rw_comments_permission == 1) {
+        if ($rw_comments_permission == 0) {
           clear_notification_from_tables($uid);
         }
       } elseif (!in_array($group->bundle() . '-admin', $nroles)) {
-        if ($rw_comments_permission == 1) {
+        if ($rw_comments_permission == 0) {
           clear_notification_from_tables($uid);
         }
       }
@@ -715,7 +715,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
         '#default_value' => $rw_comments_permission,
         '#weight' => 99,
       ];
-      $form['actions']['submit']['#submit'][] = 'rw_comments_permission_submit_handler';
+      array_unshift($form['actions']['submit']['#submit'], 'rw_comments_permission_submit_handler');
     }
   }
 
