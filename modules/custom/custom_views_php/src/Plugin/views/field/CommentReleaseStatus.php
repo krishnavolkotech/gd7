@@ -61,7 +61,12 @@ class CommentReleaseStatus extends FieldPluginBase {
         $userData = \Drupal::service('user.data');
         $rw_comments_permission = $userData->get('cust_group', $rowUser->id(), 'rw_comments_permission');
         if ($rw_comments_permission) {
-          return Markup::create($this->t("Release Comments"));
+          $roles = $groupMember->getRoles();
+          if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
+            return Markup::create($this->t(", Release Comments"));
+          } else {
+            return Markup::create($this->t("Release Comments"));
+          }
         }
       }
     }
