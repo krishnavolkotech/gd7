@@ -1353,3 +1353,12 @@ body.page-node-type-problem .problems-backto-search .prev-next-element a {
 body.page-node-type-problem .problems-backto-search .prev-next-element .prev {
     margin-right: 10px;
 }
+
+div.view-hzd-group-members.view-display-id-approved table .views-field-mail {
+    width: 150px;
+    word-break: break-all;
+}
+
+div.view-hzd-group-members.view-display-id-approved table .views-field-comment-release-status {
+    width: 100px;
+}
