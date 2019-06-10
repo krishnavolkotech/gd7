@@ -15,16 +15,11 @@ class UtilitiesTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = array(
+  public static $modules = [
+    'search_api',
     'search_api_solr',
-  );
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    parent::setUp();
-  }
+    'user',
+  ];
 
   /**
    * Tests encoding and decoding of Solr field names.
@@ -45,6 +40,29 @@ class UtilitiesTest extends KernelTestBase {
     $this->assertEquals($decoded_field_name, $forbidden_field_name);
 
     $this->assertEquals('ss_field_foo', Utility::encodeSolrName('ss_field_foo'));
+  }
+
+  /**
+   * Tests language-specific Solr field names.
+   */
+  public function testLanguageSpecificFieldTypeNames() {
+    $this->assertEquals('text_de', Utility::encodeSolrName('text_de'));
+
+    // Drupal-like locale for Austria.
+    $encoded = Utility::encodeSolrName('text_de-at');
+    $this->assertEquals('text_de_X2d_at', $encoded);
+    $this->assertEquals('text_de-at', Utility::decodeSolrName($encoded));
+
+    // Traditional Chinese as used in Hong Kong.
+    $encoded = Utility::encodeSolrName('text_zh-Hant-HK');
+    $this->assertEquals('text_zh_X2d_Hant_X2d_HK', $encoded);
+    $this->assertEquals('text_zh-Hant-HK', Utility::decodeSolrName($encoded));
+
+    // The variant of German orthography dating from the 1901 reforms, as seen
+    // in Switzerland.
+    $encoded = Utility::encodeSolrName('text_de-CH-1901');
+    $this->assertEquals('text_de_X2d_CH_X2d_1901', $encoded);
+    $this->assertEquals('text_de-CH-1901', Utility::decodeSolrName($encoded));
   }
 
 }
