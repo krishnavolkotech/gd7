@@ -5258,18 +5258,18 @@
     },
     {
         "name": "drupal/search_api_solr",
-        "version": "3.0.0-rc1",
-        "version_normalized": "3.0.0.0-RC1",
+        "version": "3.0.0",
+        "version_normalized": "3.0.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupalcode.org/project/search_api_solr.git",
-            "reference": "8.x-3.0-rc1"
+            "reference": "8.x-3.0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/search_api_solr-8.x-3.0-rc1.zip",
-            "reference": "8.x-3.0-rc1",
-            "shasum": "f5f4016afd9a029950a7c4dc70b29acd06dc8c73"
+            "url": "https://ftp.drupal.org/files/projects/search_api_solr-8.x-3.0.zip",
+            "reference": "8.x-3.0",
+            "shasum": "1a4044190f585fec19dec2a6d80a6ea177228dbf"
         },
         "require": {
             "consolidation/annotated-command": "^2.12",
@@ -5284,7 +5284,7 @@
         },
         "conflict": {
             "drupal/core": "<8.6",
-            "drupal/search_api_solr_multilingual": "<3.0.0-beta1"
+            "drupal/search_api_solr_multilingual": "<3.0.0"
         },
         "require-dev": {
             "drupal/devel": "*",
@@ -5306,11 +5306,11 @@
                 "dev-3.x": "3.x-dev"
             },
             "drupal": {
-                "version": "8.x-3.0-rc1",
-                "datestamp": "1559570881",
+                "version": "8.x-3.0",
+                "datestamp": "1559917381",
                 "security-coverage": {
-                    "status": "not-covered",
-                    "message": "RC releases are not covered by Drupal security advisories."
+                    "status": "covered",
+                    "message": "Covered by Drupal's security advisory policy"
                 }
             },
             "drush": {
