@@ -1251,11 +1251,9 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
       }
 
       if ($query->hasTag('mlt')) {
-        // For MLT we onöy fetch one document, but in multiple translations. 100
-        // translations should be enough as setting higher number of rows cause
-        // more reserved memory on distributed searches (shards or cloud).
-        $solarium_query->setStart(0);
-        $solarium_query->setRows(100);
+        // Set the list of fields to retrieve, but avoid highlighting and
+        // different overhead.
+        $this->setFields($solarium_query, $query->getOption('search_api_retrieved_field_values', []), $query, FALSE);
       }
       else {
         // Set the list of fields to retrieve.
@@ -1286,19 +1284,19 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
         if (isset($options['search_api_spellcheck'])) {
           $this->setSpellcheck($solarium_query, $query, $options['search_api_spellcheck']);
         }
-
-        if (isset($options['offset'])) {
-          $solarium_query->setStart($options['offset']);
-        }
-
-        // In previous versions we set a high value for rows if no limit was set
-        // in the options. The intention was to retrieve "all" results instead of
-        // falling back to Solr's default of 10. But for Solr Cloud it turned out
-        // that independent from the real number of documents, Solr seems to
-        // allocate rows*shards memory for sorting the distributed result. That
-        // could lead to out of memory exceptions.
-        $solarium_query->setRows($query->getOption('limit', 10) ?? 10);
       }
+
+      if (isset($options['offset'])) {
+        $solarium_query->setStart($options['offset']);
+      }
+
+      // In previous versions we set a high value for rows if no limit was set
+      // in the options. The intention was to retrieve "all" results instead of
+      // falling back to Solr's default of 10. But for Solr Cloud it turned out
+      // that independent from the real number of documents, Solr seems to
+      // allocate rows*shards memory for sorting the distributed result. That
+      // could lead to out of memory exceptions.
+      $solarium_query->setRows($query->getOption('limit', 10) ?? 10);
 
       foreach ($options as $option => $value) {
         if (strpos($option, 'solr_param_') === 0) {
@@ -1543,10 +1541,11 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
    * @param \Drupal\search_api\Query\QueryInterface $query
    *   The \Drupal\search_api\Query\Query object representing the executed
    *   search query.
+   * @param bool $highlight
    *
    * @throws \Drupal\search_api\SearchApiException
    */
-  protected function setFields(Query $solarium_query, array $fields_to_be_retrieved, QueryInterface $query) {
+  protected function setFields(Query $solarium_query, array $fields_to_be_retrieved, QueryInterface $query, $highlight = TRUE) {
     $required_fields = $this->getRequiredFields($query);
     $returned_fields = [];
     $highlight_fields = ['*'];
@@ -1576,16 +1575,19 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
 
     $solarium_query->setFields(array_unique($returned_fields));
 
-    try {
-      $highlight_config = $query->getIndex()->getProcessor('highlight')->getConfiguration();
-      if ($highlight_config['highlight'] !== 'never') {
+    if ($highlight) {
+      try {
+        $highlight_config = $query->getIndex()
+          ->getProcessor('highlight')
+          ->getConfiguration();
+        if ($highlight_config['highlight'] !== 'never') {
+          $this->setHighlighting($solarium_query, $query, $highlight_fields);
+        }
+      } catch (SearchApiException $exception) {
+        // Highlighting processor is not enabled for this index. Just use the
+        // the index configuration.
         $this->setHighlighting($solarium_query, $query, $highlight_fields);
       }
-    }
-    catch (SearchApiException $exception) {
-      // Highlighting processor is not enabled for this index. Just use the
-      // the index configuration.
-      $this->setHighlighting($solarium_query, $query, $highlight_fields);
     }
   }
 
@@ -3878,9 +3880,7 @@ class SearchApiSolrBackend extends BackendPluginBase implements SolrBackendInter
           $id = $this->queryHelper->escapePhrase($id);
         });
       }
-      $solarium_query
-        ->setQuery('id:' . implode(' id:', $ids))
-        ->setFields('id');
+      $solarium_query->setQuery('id:' . implode(' id:', $ids));
     }
 
     $mlt_fl = [];
