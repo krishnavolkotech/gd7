@@ -61,7 +61,8 @@
         "drupal/console": "^1.8",
         "dompdf/dompdf": "^0.8.3",
         "drupal/draggableviews": "^1.2",
-        "drupal/search_api_solr": "^3.0"
+        "drupal/search_api_solr": "^3.0",
+        "drupal/entity_print": "^2.1"
     },
     "replace": {
         "drupal/core": "^8.6"

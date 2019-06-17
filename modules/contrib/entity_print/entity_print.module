@@ -23,7 +23,8 @@ function entity_print_theme($existing, $type, $theme, $path) {
       'variables' => [
         'title' => '',
         'content' => NULL,
-        'entity_print_css' => NULL,
+	'entity_print_css' => NULL,
+	'footer' => NULL,
       ],
     ],
   ];
