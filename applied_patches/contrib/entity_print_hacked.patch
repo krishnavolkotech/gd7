@@ -1,0 +1,59 @@
+diff --git a/modules/contrib/entity_print/entity_print.module b/modules/contrib/entity_print/entity_print.module
+index f57ceca83..fd26629bd 100644
+--- a/modules/contrib/entity_print/entity_print.module
++++ b/modules/contrib/entity_print/entity_print.module
+@@ -23,7 +23,8 @@ function entity_print_theme($existing, $type, $theme, $path) {
+       'variables' => [
+         'title' => '',
+         'content' => NULL,
+-        'entity_print_css' => NULL,
++	'entity_print_css' => NULL,
++	'footer' => NULL,
+       ],
+     ],
+   ];
+diff --git a/modules/contrib/entity_print/src/Plugin/EntityPrint/PrintEngine/DomPdf.php b/modules/contrib/entity_print/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+index 3fbc1be99..2dec23b8d 100644
+--- a/modules/contrib/entity_print/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
++++ b/modules/contrib/entity_print/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
+@@ -174,7 +174,7 @@ public function send($filename, $force_download = TRUE) {
+     // Dompdf doesn't have a return value for send so just check the error
+     // global it provides.
+     if ($errors = $this->getError()) {
+-      throw new PrintEngineException(sprintf('Failed to generate PDF: %s', $errors));
++      watchdog_exception('entity_print', new PrintEngineException(sprintf('Failed to generate PDF: %s', $errors)));
+     }
+ 
+     // The Dompdf library internally adds the .pdf extension so we remove it
+diff --git a/modules/contrib/entity_print/src/Renderer/RendererBase.php b/modules/contrib/entity_print/src/Renderer/RendererBase.php
+index 045d64911..5258b0d11 100644
+--- a/modules/contrib/entity_print/src/Renderer/RendererBase.php
++++ b/modules/contrib/entity_print/src/Renderer/RendererBase.php
+@@ -81,6 +81,7 @@ public static function createInstance(ContainerInterface $container, EntityTypeI
+    * {@inheritdoc}
+    */
+   public function generateHtml(array $entities, array $render, $use_default_css, $optimize_css) {
++    global $base_url;
+     $rendered_css = $this->assetRenderer->render($entities, $use_default_css, $optimize_css);
+     $render['#entity_print_css'] = $this->renderer->executeInRenderContext(new RenderContext(), function () use (&$rendered_css) {
+       return $this->renderer->render($rendered_css);
+@@ -92,7 +93,18 @@ public function generateHtml(array $entities, array $render, $use_default_css, $
+ 
+     // Allow other modules to alter the generated HTML.
+     $this->dispatcher->dispatch(PrintEvents::POST_RENDER, new PrintHtmlAlterEvent($html, $entities));
+-
++    
++    foreach ($entities as $entity) {
++    $current_entity = $entity->toUrl();
++      $result = '';
++      if(!empty($current_entity)) {
++        $entity_path = $current_entity->toString();
++        if($entity_path) {
++          $result = \Drupal::service('path.alias_manager')->getAliasByPath($entity_path);
++	  $render['#footer'] = $base_url . $result;
++        }
++      }
++    }
+     return $html;
+   }
+ 
