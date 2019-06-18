@@ -36,7 +36,7 @@ class SchnellinfosNotifications extends FormBase {
     $form['account'] = array('#type' => 'value', '#value' => $uid);
     $form['schnellinfos'] = array(
       '#type' => 'table',
-      '#header' => '',
+      '#header' => array('Erstellendes Verfahren', t('Notification Status')), 
     );
 
     foreach($options as $content_key => $content) {

@@ -36,7 +36,7 @@ class GroupNotifications extends FormBase {
       $form['account'] = array('#type' => 'value', '#value' => $uid);
       $form['subscription'] = array(
         '#type' => 'table',
-        '#header' => '',
+        '#header' => array(t('Group Name'), t('Notification Status')), 
         '#attributes' => ['class' => ['subscription_vals']],
       );
 /*      $form['subscription']['text']['label'] = array(

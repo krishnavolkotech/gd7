@@ -36,7 +36,7 @@ class ArbeitsanleitungNotifications extends FormBase {
     $form['account'] = array('#type' => 'value', '#value' => $uid);
     $form['arbeitsanleitung'] = array(
       '#type' => 'table',
-      '#header' => '',
+      '#header' => array(t('AL-EDV'), t('Notification Status')), 
     );
     foreach ($options as $content_key => $content) {
       $form['arbeitsanleitung'][$content_key]['subscriptions_type_' . $content_key] = array(
