@@ -153,8 +153,14 @@ class ProblemsettingsForm extends FormBase {
     HzdStorage::delete_group_problems_view($group->id());
 
     $selected_services = $form_state->getValue('services');
-    if($group_id == 6 && isset($selected_services['all'])) {
+    $config = \Drupal::configFactory()->getEditable('problem_management.settings');
+    if ($group_id == 6 && isset($selected_services['all'])) {
+      if ($config->get('prballservice') !== TRUE) {
+        $config->set('prballservice', TRUE)->save();
+      }
       unset($selected_services['all']);
+    } elseif ($group_id == 6) {
+      $config->set('prballservice', FALSE)->save();
     }
     $counter = HzdStorage::insert_group_problems_view($group->id(), $selected_services);
     // menu names are the combination of groups field_old_referrence as these are the machine name so cannot be updated to new entity id.

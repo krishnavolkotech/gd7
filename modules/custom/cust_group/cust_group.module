@@ -925,7 +925,7 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
   switch ($op) {
     case 'view':
       if ($account->isAnonymous()) {
-        if ($node->getType() == 'downtimes') {
+        if ($node->getType() == 'downtimes' || $node->getType() == 'services') {
           return AccessResult::allowed();
         }
 
@@ -957,6 +957,19 @@ function cust_group_node_insert($entity) {
     $key = array_search($type, $plannigFileRef);
     \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
   }
+
+  if ($entity->bundle() == 'services') {
+    $newname = strtolower($entity->get('field_problem_name')->value);
+    $config = \Drupal::configFactory()->getEditable('problem_management.settings');
+    if ($config->get('prballservice') == TRUE) {
+      if (!empty($newname)) {
+        $query = \Drupal::database()
+          ->insert('group_problems_view')
+          ->fields(array('group_id' => PROBLEM_MANAGEMENT, 'service_id' => $entity->id()))
+          ->execute();
+      }
+    }
+  }
 }
 
 
@@ -970,6 +983,28 @@ function cust_group_node_update($entity) {
     1049 => "transcription pp",
     785 => "transcription fmk"
   );
+
+  if ($entity->bundle() == 'services') {
+    $newname = strtolower($entity->get('field_problem_name')->value);
+    $oldname = strtolower($entity->original->get('field_problem_name')->value);
+    $config = \Drupal::configFactory()->getEditable('problem_management.settings');
+    if ($config->get('prballservice') == TRUE) {
+      if (empty($oldname) && !empty($newname)) {
+        $query = \Drupal::database()
+          ->insert('group_problems_view')
+          ->fields(array('group_id' => PROBLEM_MANAGEMENT, 'service_id' => $entity->id()))
+          ->execute();
+      }
+    }
+    if (!empty($oldname) && empty($newname)) {
+      $query = \Drupal::database()
+        ->delete('group_problems_view')
+        ->condition('group_id', PROBLEM_MANAGEMENT, '=')
+        ->condition('service_id', $entity->id())
+        ->execute();
+    }
+  }
+
   if ($entity->bundle() == 'planning_files') {
     $oldtype = strtolower($entity->original->get('field_planning_file_type')->value);
     $newtype = strtolower($entity->get('field_planning_file_type')->value);
@@ -1004,6 +1039,17 @@ function cust_group_node_delete($entity) {
     $type = strtolower($entity->get('field_planning_file_type')->value);
     $key = array_search($type, $plannigFileRef);
     \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $key));
+  }
+
+  if ($entity->bundle() == 'services') {
+    $newname = strtolower($entity->get('field_problem_name')->value);
+    if (!empty($newname)) {
+      $query = \Drupal::database()
+        ->delete('group_problems_view')
+        ->condition('group_id', PROBLEM_MANAGEMENT, '=')
+        ->condition('service_id', $entity->id())
+        ->execute();
+    }
   }
 }
 
