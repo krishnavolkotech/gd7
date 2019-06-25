@@ -1233,7 +1233,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function release_info($type = NULL) {
     if ($type == 'progress' && self::RWCommentAccess()) {
-      $output = "<div class='menu-filter menu-filter-progress'>
+      $output = "
+<div><p>Ab 12.6.2019 wird der Status \"Zertifizierung ZRMK (DSL-Zert-RMK)\" in den Status \"Warten auf Freigabe f&uuml;r KONSENS durch AnL (ZRMK)\" umbenannt.</p></div>
+<div class='menu-filter menu-filter-progress'>
 <ul>
 <li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li>
 <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
