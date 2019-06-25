@@ -28,6 +28,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  piwik:
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   timezone:
     weight: 6
     region: content

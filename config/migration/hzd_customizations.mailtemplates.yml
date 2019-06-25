@@ -65,3 +65,11 @@ group:
   mail_content: "<p>[group:url]</p>\r\n"
   mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[user:user-notification-settings-url-absolute]\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
   mail_view: 1
+release_comments:
+  subject_insert: '[[node:field_release_service]] Neuer Kommentar zu einem Release: [node:title]'
+  subject_update: '[[node:field_release_service]] Aktualisierter Kommentar zu einem Release: [node:title]'
+  subject_cancel: null
+  subject_resolve: null
+  mail_content: ''
+  mail_footer: "<p>[node:url:absolute]</p>\r\n\r\n<p>--<br />\r\nDies ist eine automatische Benachrichtigung vom Betriebsportal KONSENS. Falls Sie keine Benachrichtigungen mehr erhalten möchten, können Sie Ihre <a href=\"[user:user-notification-settings-url-absolute]\">Einstellungen für Benachrichtigungen ändern</a>.</p>\r\n"
+  mail_view: 1
