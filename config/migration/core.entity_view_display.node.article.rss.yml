@@ -24,6 +24,7 @@ content:
 hidden:
   body: true
   comment: true
+  content_revision_log: true
   downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true

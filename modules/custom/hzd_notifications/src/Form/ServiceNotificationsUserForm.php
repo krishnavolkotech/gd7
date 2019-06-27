@@ -46,7 +46,7 @@ class ServiceNotificationsUserForm extends FormBase {
 
     $form['subscriptions'] = array(
       '#type' => 'table',
-      '#header' => '',
+      '#header' => array('Type', t('Notification Status')),
     );
 
     foreach($content_types as $content_key => $content) {

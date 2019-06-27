@@ -73,6 +73,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_revision_log: true
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true

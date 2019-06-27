@@ -332,8 +332,11 @@ function hzd_preprocess_node(&$variables) {
       $variables['ticketstore_html_nolink'] = $variables['ticketstore_count'] . " " . t("$att_html available");
     }
 
-    $variables['erroffnet_value'] = date('d.m.Y', $variables['node']
-      ->get('field_problem_eroffnet')->value);
+    if(!empty($variables['node']->get('field_problem_eroffnet')->value)) {
+      $variables['erroffnet_value'] = date('d.m.Y', $variables['node']->get('field_problem_eroffnet')->value);
+    }else {
+      $variables['erroffnet_value'] = '';
+    }
 
 //        $filter_parameter = \Drupal\problem_management\HzdStorage::get_problem_filters();
 
@@ -352,8 +355,8 @@ function hzd_preprocess_node(&$variables) {
     $problem_paginations = explode(',', $tempstore->get('problem_paginations'));
     //$filterData = \Drupal::request()->query;
     $current = array_search($variables['node']->id(), $problem_paginations, TRUE);
-    $pre = ($problem_paginations[$current - 1]) ?: NULL;
-    $next = ($problem_paginations[$current + 1]) ?: NULL;
+    $pre = key_exists($current - 1, $problem_paginations) ? $problem_paginations[$current - 1] : NULL;
+    $next = key_exists($current + 1, $problem_paginations) ? $problem_paginations[$current + 1] : NULL;
     $options = ['query' => array(
       \Drupal::request()->query->all()
     ),

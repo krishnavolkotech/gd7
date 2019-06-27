@@ -28,10 +28,12 @@ content:
     region: content
 hidden:
   comment: true
+  content_revision_log: true
   downtime_description: true
   entity_print_view: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_order: true
   langcode: true
   upload: true

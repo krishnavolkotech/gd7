@@ -2,6 +2,8 @@
 
 namespace Drupal\Component\Utility;
 
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
 /**
  * Provides DOMDocument helpers for parsing and serializing HTML strings.
  *
@@ -423,9 +425,7 @@ EOD;
    * @ingroup sanitization
    */
   public static function escape($text) {
-    if(!is_object($text)) {
-      return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-    }
+    return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
   }
 
   /**
