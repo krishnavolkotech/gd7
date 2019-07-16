@@ -36,7 +36,7 @@ class HzdreleasemanagementStorage {
     try {
       setlocale(LC_ALL, 'de_DE.UTF-8');
       // Delete the nodes if the release type is locked or in progress.
-      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
+      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4, 'archived' => 5);
       $release_type = $types[$type];
 
       // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
@@ -100,9 +100,14 @@ $inprogress_nid_values = [];
 //                    pr($value);
             $values[$header_values[$key]] = $explodedData[$key];
           }
-//                pr($values);exit;
-          // $values['type'] = SafeMarkup::checkPlain($type);
           $values['type'] = $type;
+          $archived = strpos($values['status'], 'Archiv');
+          if ($archived >= 0) {
+              $values['type'] = 'archived';
+          }
+          // $values['type'] = SafeMarkup::checkPlain($type);
+          //pr($values);exit;
+                    
           if ($values['title']) {
             $validation = HzdreleasemanagementHelper::validate_releases_csv($values);
             if ($validation) {
@@ -159,7 +164,7 @@ $inprogress_nid_values = [];
         $created = $info->created;
       }
 
-      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4);
+      $types = array('released' => 1, 'progress' => 2, 'locked' => 3, 'ex_eoss' => 4, 'archived' => 5);
       //$release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
@@ -1243,7 +1248,17 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Comments ansehen</li>
 </ul>
 </div>";
-    } else {
+    }
+    else if($type == 'archived') {
+      $output = "<div class='menu-filter'>
+                   <ul>
+                      <li><b>Legende:</b></li>
+                      <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li>
+                      <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
+                   </ul>
+                </div>";
+    }
+    else {
       $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
     }
     $build['#markup'] = $output;
@@ -1403,7 +1418,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $row[] = $releases->field_date->value != NULL ?
               date('d.m.Y H:i:s', $releases->field_date->value) : '';
 
-      if ($type == 'released' || $type == 'progress') {
+      if ($type == 'released' || $type == 'archived' || $type == 'progress') {
         if (isset($group_id)) {
           $early_warnings = self::hzd_release_early_warnings(
             $releases->field_relese_services->target_id, $releases->id(), $type, $service_release_type);
@@ -1426,7 +1441,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
               'class' => 'earlywarnings-cell'
             );
           }
-          $row[] = $earlywarnings_cell;
+          if ($type != 'archived') {
+            $row[] = $earlywarnings_cell;
+          }
         }
         $row[] = $link;
       }
@@ -1582,9 +1599,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function hzd_get_release_tab_headers($type) {
     $group_id = get_group_id();
-    if ($type == 'released') {
+    if ($type == 'released' || $type == 'archived') {
       $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
-      if (isset($group_id)) {
+      if (isset($group_id) && $type != 'archived') {
         $header[] = t('Early Warnings');
       }
       $header[] = t('D/L');

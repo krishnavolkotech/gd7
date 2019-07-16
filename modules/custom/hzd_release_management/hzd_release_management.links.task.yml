@@ -36,35 +36,43 @@ hzd_release_management.release_management_release_tab:
   route_name: hzd_release_management.released
   base_route: hzd_release_management.released
   weight: 0
+
+hzd_release_management.release_management_archived_tab:
+  title: Archived
+  route_name: hzd_release_management.archived
+  base_route: hzd_release_management.released
+  weight: 1
   
 hzd_release_management.release_management_progress_tab:
   title: In Progress
   route_name: hzd_release_management.inprogress
   base_route: hzd_release_management.released
-  weight: 1
+  weight: 2
   
 hzd_release_management.release_management_locked_tab:
   title: Locked
   route_name: hzd_release_management.locked
   base_route: hzd_release_management.released
-  weight: 2
+  weight: 3
   
 hzd_release_management.release_management_deployed_tab:
   title: Deployed
   route_name: hzd_release_management.deployed
   base_route: hzd_release_management.released
-  weight: 3
+  weight: 4
   
 hzd_release_management.release_management_overview_deployed_tab:
   title: Deployed(Overview)
   route_name: hzd_release_management.view_deployed_releases
   base_route: hzd_release_management.released
-  weight: 4
+  weight: 5
+  
 hzd_release_management.deployed_releases_tab:
   title: Deployed Releases
   route_name: hzd_release_management.deployed_releases
   base_route: hzd_release_management.deployed_releases
   weight: 1
+
 hzd_release_management.archived_deployed_releases_tab:
   title: Archived Deployed Releases
   route_name: hzd_release_management.archived_deployed_releases
