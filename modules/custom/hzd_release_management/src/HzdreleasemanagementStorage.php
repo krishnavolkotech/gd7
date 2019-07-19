@@ -102,7 +102,7 @@ $inprogress_nid_values = [];
           }
           $values['type'] = $type;
           $archived = strpos($values['status'], 'Archiv');
-          if ($archived >= 0) {
+          if ($archived) {
               $values['type'] = 'archived';
           }
           // $values['type'] = SafeMarkup::checkPlain($type);
