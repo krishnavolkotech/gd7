@@ -101,9 +101,8 @@ $inprogress_nid_values = [];
             $values[$header_values[$key]] = $explodedData[$key];
           }
           $values['type'] = $type;
-          $archived = strpos($values['status'], 'Archiv');
-          if ($archived) {
-              $values['type'] = 'archived';
+          if (stripos($values['status'], 'Archiv') !== FALSE) {
+            $values['type'] = 'archived';
           }
           // $values['type'] = SafeMarkup::checkPlain($type);
           //pr($values);exit;
