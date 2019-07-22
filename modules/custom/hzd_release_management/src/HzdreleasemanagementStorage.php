@@ -101,8 +101,10 @@ $inprogress_nid_values = [];
             $values[$header_values[$key]] = $explodedData[$key];
           }
           $values['type'] = $type;
-          if (stripos($values['status'], 'Archiv') !== FALSE) {
-            $values['type'] = 'archived';
+          if (isset($values['status'])) {
+            if (stripos($values['status'], 'Archiv') !== FALSE) {
+              $values['type'] = 'archived';
+            }
           }
           // $values['type'] = SafeMarkup::checkPlain($type);
           //pr($values);exit;
@@ -1691,7 +1693,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
     $create_icon = '<img height=15 src = "/' . $create_icon_path . '">';
     // Redirection array after creation of early warnings.
-    $redirect = array('released' => 'releases', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
+    $redirect = array('released' => 'releases', 'archived' => 'archived', 'progress' => 'releases/in_progress', 'locked' => 'releases/locked');
     $options['query']['destination'] = 'group/' . $group_id . '/' . $redirect[$type];
     $options['query'][] = array(
       'services' => $service_id,

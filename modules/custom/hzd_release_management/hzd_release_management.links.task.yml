@@ -38,7 +38,7 @@ hzd_release_management.release_management_release_tab:
   weight: 0
 
 hzd_release_management.release_management_archived_tab:
-  title: Archived
+  title: Archived (DSL)
   route_name: hzd_release_management.archived
   base_route: hzd_release_management.released
   weight: 1
