@@ -392,7 +392,14 @@ class HzdNotifications extends ControllerBase {
             BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
             KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
         );
-        $groupsIds = array_merge($groupsIds, $preselected);
+
+        if ($groupsIds) {
+          $groupsIds = array_merge($groupsIds, $preselected);
+        }
+        else {
+          $groupsIds = $preselected;
+        }
+
         if(empty($groupsIds)){
           return;
         }
