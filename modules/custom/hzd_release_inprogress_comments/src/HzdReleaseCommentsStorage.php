@@ -149,6 +149,7 @@ class HzdReleaseCommentsStorage {
   static public function release_comment_text() {
     $release_comments_intro_text_nid = NULL;
     $release_comments_intro_text_nid = \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid');
+    $body = NULL;
     if($release_comments_intro_text_nid) {
       $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
     }
