@@ -280,9 +280,14 @@ class HzdStorage {
       $ids = [-1];
     }
     $conn = \Drupal::database()->select('node_field_data', 'nfd');
+    $conn->innerJoin('node__field_s_no', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
     $conn->addField('nfd', 'nid', 'dsa');
+    $conn->addField('nfd', 'changed', 'cha'); //cclaus: eingefügt zum Sortieren nach Updatedatum
+    $conn->addField('nfs', 'field_s_no_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
     $conn = $conn->condition('nfd.nid', $ids, 'IN')
-      ->orderBy('unix_order', 'desc');
+      ->orderBy('unix_order', 'desc')
+      ->orderBy('cha', 'desc')
+      ->orderBy('sdc', 'desc'); //cclaus: Sortierkriterien ergänzt um "cha" und "sdc"
 //        if ($string == 'archived_problems') {
 //            $conn->addExpression("STR_TO_DATE(nfp.field_closed_value,'%d.%m.%Y')",'unix_order');
 //            $conn->leftJoin('node__field_closed','nfp','nfp.entity_id = nfd.nid');
