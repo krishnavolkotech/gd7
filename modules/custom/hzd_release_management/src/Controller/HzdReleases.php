@@ -105,6 +105,35 @@ class HzdReleases extends ControllerBase {
   }
 
   /**
+   * Archived Releases
+   */
+  public function archived() {
+    global $base_url;
+    $type = 'archived';
+    $output['#title'] = $this->t('Archived Releases');
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = array('#markup' => '<div id = "released_results_wrapper">');
+
+    $output[]['#attached']['library'] = array(
+        'locale/translations',
+        'locale/drupal.locale.datepicker',
+        'hzd_release_management/hzd_release_management',
+    );
+    // Add Some extra "settings" to use in JS.
+    $output[]['#attached']['drupalSettings']['release_management'] = array(
+        'type' => $type,
+        'base_path' => $base_url,
+    );
+    $output[] = \Drupal::formBuilder()
+            ->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+
+    $output[] = $hzdReleaseManageStorage->release_info($type);
+    $output[] = HzdreleasemanagementStorage::releases_display_table($type, NULL, DISPLAY_LIMIT);
+    $output['#cache'] = ['tags' => ['hzd_release_management:archived']];
+    return $output;
+  }
+  
+  /**
    *
    */
   public function inprogress() {

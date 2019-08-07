@@ -1,0 +1,17 @@
+name: 'Matomo Analytics'
+type: module
+description: "Adds Matomo javascript tracking code to all your site's pages."
+package: Statistics
+# core: 8.x
+configure: matomo.admin_settings_form
+dependencies:
+  - drupal:system (>= 8.5)
+test_dependencies:
+  - php:php
+  - token:token
+
+# Information added by Drupal.org packaging script on 2019-02-08
+version: '8.x-1.9'
+core: '8.x'
+project: 'matomo'
+datestamp: 1549615102

@@ -2641,7 +2641,12 @@ article.quickinfo table {
 #earlywarnings_results_wrapper .table-responsive table tr td.responses-cell {
     text-align: center;
 }
- table.releases tr td.earlywarnings-cell{
+
+#released_results_wrapper table.archived tr th {
+    text-align: left !important;
+}
+
+table.releases tr td.earlywarnings-cell{
     /*text-align: right;*/
 }
 table.releases tr td.earlywarnings-cell a.view-earlywarning:hover{

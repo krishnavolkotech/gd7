@@ -91,8 +91,10 @@ class NotificationManager implements NotificationManagerInterface {
     // }
     elseif (in_array($bundle, array_merge(self::$service_bundles, [self::$release_comments]))) {
       $services = $this->getServicesForEntity($entity);
-      $service_ids = EntityHelper::extractIds($services);
-      return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
+      if (count($services) > 0) {
+          $service_ids = EntityHelper::extractIds($services);
+          return $this->hzd_get_immediate_notification_user_mails($service_ids, $entity->bundle());
+      }
     }
     elseif (in_array($bundle, self::$special_bundles)) {
       return $this->hzd_get_immediate_pf_notification_user_mails();
