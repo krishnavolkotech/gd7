@@ -27,6 +27,9 @@ settings:
     -
       value: '4'
       label: Abgelehnt
+    -
+      value: '5'
+      label: Archiviert
   allowed_values_function: ''
 module: options
 locked: false

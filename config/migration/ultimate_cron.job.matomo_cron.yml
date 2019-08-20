@@ -1,14 +1,14 @@
-uuid: 644657fb-e56c-49aa-a6bb-37091a2d111c
+uuid: e9e24a59-b0ed-4528-9e36-fc58c067b5de
 langcode: de
 status: true
 dependencies:
   module:
-    - piwik
+    - matomo
 title: 'Default cron handler'
-id: piwik_cron
+id: matomo_cron
 weight: 0
-module: piwik
-callback: piwik_cron
+module: matomo
+callback: matomo_cron
 scheduler:
   id: simple
 launcher:

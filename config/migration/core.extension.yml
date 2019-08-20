@@ -74,6 +74,7 @@ module:
   mailsystem: 0
   masquerade: 0
   mass_contact: 0
+  matomo: 0
   menu_ui: 0
   migrate: 0
   node: 0
@@ -83,7 +84,6 @@ module:
   path: 0
   pdf_api: 0
   persistent_login: 0
-  piwik: 0
   prlp: 0
   problem_management: 0
   queue_ui: 0

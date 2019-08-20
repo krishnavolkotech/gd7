@@ -53,6 +53,7 @@ permissions:
   - 'make forums public'
   - 'manage favorites'
   - 'manage own subscriptions'
+  - 'opt-in or out of matomo tracking'
   - 'post comments'
   - 'revert quickinfo revisions'
   - 'search content'
