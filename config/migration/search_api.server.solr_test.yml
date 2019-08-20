@@ -1,6 +1,6 @@
-uuid: 751acb2e-3bd0-4e2b-82ee-630a211225d3
+uuid: e0ea4b4e-16cf-4dd8-87de-4509a1a25091
 langcode: de
-status: true
+status: false
 dependencies:
   config:
     - search_api_solr.solr_field_type.text_de_7_0_0
@@ -15,18 +15,18 @@ dependencies:
     - search_api_solr.solr_field_type.text_und_7_0_0
   module:
     - search_api_solr
-id: solr_bpk_migration
-name: 'Solr Produktion'
+id: solr_test
+name: 'Solr Test'
 description: ''
 backend: search_api_solr
 backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: localhost
+    host: konitsmtst4.intern.hessen.de
     port: 8983
     path: /
-    core: bpkprd
+    core: bpktst
     timeout: 5
     index_timeout: 5
     optimize_timeout: 10
@@ -37,10 +37,10 @@ backend_config:
     jmx: true
     solr_install_dir: /opt/solr
   disabled_field_types: {  }
-  retrieve_data: true
-  highlight_data: true
+  retrieve_data: false
+  highlight_data: false
   skip_schema_check: false
   server_prefix: ''
   domain: generic
   optimize: false
-  site_hash: true
+  site_hash: false
