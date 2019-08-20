@@ -313,7 +313,7 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
           $nroles[] = $val['target_id'];
         }
       }
-      $uid = $entity->getEntity()->id();
+      $uid = $entity->id();
       $userData = \Drupal::service('user.data');
       $rw_comments_permission = $userData->get('cust_group', $uid, 'rw_comments_permission');
       if ($rw_comments_permission == 1) {

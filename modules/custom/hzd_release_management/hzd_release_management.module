@@ -287,7 +287,7 @@ function get_release_type($type) {
     case 'released':
       $release_type = 1;
       break;
-
+      
     case 'progress':
       $release_type = 2;
       break;
@@ -298,6 +298,10 @@ function get_release_type($type) {
 
     case 'rejected':
       $release_type = 4;
+      break;
+
+  case 'archived':
+      $release_type = 5;
       break;
   }
   return $release_type;
@@ -1370,6 +1374,7 @@ function hzd_release_management_schema() {
 function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
   $routes = [
     'hzd_release_management.release_management_release_tab',
+    'hzd_release_management.release_management_archived_tab',
     'hzd_release_management.release_management_progress_tab',
     'hzd_release_management.release_management_locked_tab',
     'hzd_release_management.release_management_deployed_tab',

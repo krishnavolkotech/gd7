@@ -108,8 +108,8 @@
                   type: 'numeric'
               });
 
-            var release_tab_type = [ "released", "deployed", "locked", "progress" ];
-            if (jQuery.inArray( drupalSettings.release_management.type,  release_tab_type) == -1) {
+        var release_tab_type = [ "released", "archived", "deployed", "locked", "progress" ];
+        if (jQuery.inArray( drupalSettings.release_management.type,  release_tab_type) == -1) {
             // jQuery("#sortable").tablesorter();
               $(context).find("#sortable").tablesorter({
                     showProcessing: true,

@@ -696,7 +696,9 @@ function downtimes_node_update($node) {
       //Handling Custom revisions. so forwarding $form, $formstate
       global $downTimeForm;
       global $downtimeFormState;
-      custom_maintenance_downtime_update($downTimeForm, $downtimeFormState, $node);
+      if (isset($downtimeFormState)) {
+        custom_maintenance_downtime_update($downTimeForm, $downtimeFormState, $node);
+      }
   } elseif ($node->getType() == 'service_profile') {
     saveServiceTime($node, $_POST);
     saveMaintenanceWindows($node, $_POST);
