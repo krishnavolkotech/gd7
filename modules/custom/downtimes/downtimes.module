@@ -1085,8 +1085,8 @@ function custom_maintenance_downtime_update(&$form, FormStateInterface $form_sta
   }
   
   // Services log.
+  $result = [];
   foreach ($form_state->getValue('services_effected') as $key => $value) {
-    $result = [];
     if ($value) {
       $query = "SELECT title FROM {node_field_data} WHERE nid = ? ORDER BY title DESC";
       $result[] = db_query($query, array($value))->fetchField();
