@@ -64,6 +64,7 @@ class MailTemplatesForm extends ConfigFormBase {
       $nodeType = NodeType::load($this->mailType);
       $typeLabel = $nodeType->label();
     }
+
     $form['#title'] = $this->t('Mail Template for @type', ['@type' => $typeLabel]);;
     $form['subject_insert'] = array(
       '#type' => 'textfield',
@@ -77,6 +78,17 @@ class MailTemplatesForm extends ConfigFormBase {
       '#description' => $this->t('Mail subject when content is updated'),
       '#default_value' => isset($data['subject_update']) ? $data['subject_update'] : NULL,
     );
+
+    if ($this->mailType == 'release') {
+      $form['subject_locked_update'] = array(
+        '#type' => 'textfield',
+        '#title' => $this->t('Locked Subject Update'),
+        '#description' => $this->t('Mail subject when content is updated'),
+        '#default_value' => isset($data['subject_locked_update']) ? $data['subject_locked_update'] : NULL,
+      );
+    }
+
+    
     if($this->mailType == 'downtimes'){
       $form['subject_cancel'] = array(
         '#type' => 'textfield',
@@ -151,6 +163,7 @@ class MailTemplatesForm extends ConfigFormBase {
     $data = [
       'subject_insert' => $form_state->getValue('subject_insert'),
       'subject_update' => $form_state->getValue('subject_update'),
+      'subject_locked_update' => $form_state->getValue('subject_locked_update'),
       'subject_cancel' => $form_state->getValue('subject_cancel'),
       'subject_resolve' => $form_state->getValue('subject_resolve'),
       'mail_content' => $form_state->getValue('mail_content')['value'],
