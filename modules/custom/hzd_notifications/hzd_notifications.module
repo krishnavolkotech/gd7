@@ -631,9 +631,11 @@ function _notify_users($entity, $action, $user_data){
 
     $config_type = 'subject_' . $action;
     if ($type == 'release') {
-      $config_type = getReleaseMailSubjectType($entity, $config_type);
+      $locked_type = getReleaseMailSubjectType($entity, $config_type);
+      if (isset($config[$locked_type]) && trim($config[$locked_type]) != '') {
+        $config_type = $locked_type;
+      }
     }
-    
     $token_sub = $config[$config_type];
     $subject = \Drupal\Component\Utility\Html::decodeEntities($token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity)));
     if ((gettype($body) == 'object') && (strlen($body->__toString()) > 65535)) {
