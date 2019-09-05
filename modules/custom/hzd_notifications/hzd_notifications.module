@@ -630,7 +630,7 @@ function _notify_users($entity, $action, $user_data){
     // Replace the token for subject.
 
     $config_type = 'subject_' . $action;
-    if ($type == 'release') {
+    if ($type == 'release' && $action == ENTITY_OP_UPDATE) {
       $locked_type = getReleaseMailSubjectType($entity, $config_type);
       if (isset($config[$locked_type]) && trim($config[$locked_type]) != '') {
         $config_type = $locked_type;
