@@ -28,6 +28,8 @@ class DeployedReleasesFilterForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $this->request = Drupal::request();
+    $current_path = \Drupal::service('path.current')->getPath();
+
     $user = \Drupal::currentUser();
     $user_role = $user->getRoles(TRUE);
     $form['#method'] = 'get';
@@ -89,6 +91,10 @@ class DeployedReleasesFilterForm extends FormBase {
         50 => 50,
         100 => 100,
     );
+    if ($current_path == "/group/5/eingesetzte-releases/archiv") {
+        unset($default_limit['all']);
+    }
+
     if($this->request->get('limit')) {
         $limit_default = $this->request->get('limit');
     } else{

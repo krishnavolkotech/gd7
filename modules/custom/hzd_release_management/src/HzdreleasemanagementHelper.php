@@ -647,7 +647,12 @@ class HzdreleasemanagementHelper {
         $limit = $request->get('limit');
         $result = $entityQuery->pager($limit)->execute();
     } elseif($request->get('limit') == 'all') {
-        $result = $entityQuery->execute();
+        if ($type == 'archived') {
+            $result = $entityQuery->pager($default_limit)->execute();
+        }
+        else {
+            $result = $entityQuery->execute();
+        }
     } else {
         $result = $entityQuery->pager($default_limit)->execute();
     }
