@@ -238,7 +238,7 @@ function hzd_preprocess_node(&$variables) {
       'scheduled_p',
       'cancelled'
     ]);
-    $get_maintain_window->addExpression("group_concat(distinct title separator ', ')", "service");
+    $get_maintain_window->addExpression("group_concat(distinct title order by title ASC SEPARATOR ', ')", "service");
     $get_maintain_window->where('downtime_id=' . $id);
     $get_maintain_window->groupBy('d.downtime_id, d.description, d.startdate_reported, d.state_id, d.status, d.email_reminder_sent, d.comment, d.reason, d.service_id, d.resolved, d.enddate_reported, d.startdate_planned, d.enddate_planned, d.scheduled_p, d.cancelled');
     $get_maintain_window->join('node_field_data', 'n', "FIND_IN_SET(n.nid, d.service_id)");
@@ -246,6 +246,7 @@ function hzd_preprocess_node(&$variables) {
 
     $incident_data = new stdClass();
     $incident_data->startdate_planned = isset($result->startdate_planned) ? date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr') : NULL;
+    
     $incident_data->service_name = isset($result->service) ? $result->service : NULL;
 //    $incident_data->service_name = [
 //      '#items' => explode(',', $result->service),
