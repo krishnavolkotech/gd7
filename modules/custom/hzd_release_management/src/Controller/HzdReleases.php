@@ -78,12 +78,15 @@ class HzdReleases extends ControllerBase {
    *
    */
   public function getTitle($service_id, $release_id) {
-    $release_name = db_query("SELECT title FROM {node_field_data} "
-            . "where nid= :nid", array(":nid" => $release_id))->fetchField();
-    $release_product = explode("_", $release_name);
-    $release_versions = explode("-", $release_product[1]);
-    $releases_title = $release_product[0] . "_" . $release_versions[0];
-    return $this->t("Documentation for @title", ['@title' => $releases_title]);
+    if (is_numeric($release_id)) {
+      $release_name = db_query("SELECT title FROM {node_field_data} "
+                                 . "where nid= :nid", array(":nid" => $release_id))->fetchField();
+      $release_product = explode("_", $release_name);
+      $release_versions = explode("-", $release_product[1]);
+      $releases_title = $release_product[0] . "_" . $release_versions[0];
+      return $this->t("Documentation for @title", ['@title' => $releases_title]);
+    }
+    return $this->t(" ");
   }
 
   /**
@@ -227,27 +230,33 @@ class HzdReleases extends ControllerBase {
    *
    */
   public function documentation_page_link($group, $service_id, $release_id) {
-    $query = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
-    $query_explode = explode('/', $query);
-    $query_explode_search = array_search('secure-downloads', $query_explode);
-
+    $query_explode_search = NULL;
+    if (is_numeric($release_id)) {
+      $query = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
+      $query_explode = explode('/', $query);
+      $query_explode_search = array_search('secure-downloads', $query_explode);
+    }
+    
     // Check secure-downloads string in documentaion link.
     if ($query_explode_search) {
       $output = \Drupal::config('hzd_release_management.settings')->get('secure_download_text')['value'];
       $output .= "<h4><a target = '_blank' href ='$query'>" . t("Please click this secure download link to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
       $build['#markup'] = $output;
       return $build;
-    } else {
-      $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
-      $arr = $doc_values['arr'];
-      $files = $doc_values['files'];
+    }
+    else {
 
-//            $major_directory = $release_product . "_" . max($arr);
-      unset($files[0]);
-      unset($files[1]);
+      if (is_numeric($release_id)) {  
+          $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
+          $arr = $doc_values['arr'];
+          $files = $doc_values['files'];
+        
+          // $major_directory = $release_product . "_" . max($arr);
+          unset($files[0]);
+          unset($files[1]);
+      }
       // Check the documentation link download or not. if not failed download link will display.
       if (!empty($files)) {
-
 //Host is not being processed properly for absolute urls with ports so using relative url.
         $host = '';
         $host_path = $host . "/system/files/releases/" . strtolower($doc_values['service_name']) . "/" . $doc_values['product'];
@@ -285,6 +294,7 @@ class HzdReleases extends ControllerBase {
       } // Display failed download text.
       else {
         // $output = variable_get('failed_download_text', NULL);.
+        $query = isset($query)?$query:NULL;
         $output = \Drupal::config('hzd_release_management.settings')->get('failed_download_text')['value'];
         $string = t('Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)');
         $output .= "<h4><a target = '_blank' href='$query'>" . t("Please click here to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
