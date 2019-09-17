@@ -1598,5 +1598,5 @@ function downtimes_cron() {
         send_immediate_notifications($subject, $body, $mail, $preference);
     }
 
-  \Drupal\cust_group\Controller\Arbeitsanleitungen::read_arbeitsanleitungen_zip();
+    // \Drupal\cust_group\Controller\Arbeitsanleitungen::read_arbeitsanleitungen_zip();
 }
