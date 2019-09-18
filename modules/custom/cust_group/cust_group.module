@@ -14,6 +14,7 @@ define('Zentrale_Release_Manager_Lander', 5);
 define('SERVICE_LEVEL_MANAGEMENT', 15);
 define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
+define('VERFUGBARKEITSMANAGEMENT', 77);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);

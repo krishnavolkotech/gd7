@@ -391,6 +391,7 @@ class HzdNotifications extends ControllerBase {
             SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
             BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
             KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+            VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
         );
         $groupsIds = array_merge($groupsIds, $preselected);
         if(empty($groupsIds)){
