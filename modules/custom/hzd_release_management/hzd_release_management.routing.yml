@@ -156,6 +156,7 @@ hzd_release_management.document_page_link:
   requirements:
 #    _permission: 'access content'
 #    _access: 'FALSE'
+    release_id: \d+
     _group_permission: 'leave group'
   options:
     no_cache: 'TRUE'
