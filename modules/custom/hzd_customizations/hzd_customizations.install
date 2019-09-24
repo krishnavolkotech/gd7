@@ -43,7 +43,7 @@ function hzd_customizations_update_8003(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 1000 , 2000";
+                  and uid != 0 limit 1000 , 1500";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -63,7 +63,7 @@ function hzd_customizations_update_8004(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 2000 , 3000";
+                  and uid != 0 limit 2500 , 1000";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -83,7 +83,7 @@ function hzd_customizations_update_8005(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 3000, 100000";
+                  and uid != 0 limit 3500, 100000";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
