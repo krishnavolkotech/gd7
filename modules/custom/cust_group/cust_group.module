@@ -1185,7 +1185,7 @@ function cust_group_file_download($uri) {
 
 
 function al_edvFileAccess($uri){
-  $uid = $uid ? $uid : \Drupal::currentUser()->id();
+  $uid = \Drupal::currentUser()->id();
   if ($uid == 1) {
       return 1;
   }
