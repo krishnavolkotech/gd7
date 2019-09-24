@@ -185,7 +185,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Type
+          label: Inhaltstyp
           exclude: false
           alter:
             alter_text: false
@@ -425,7 +425,7 @@ display:
           exposed: true
           expose:
             operator_id: type_op
-            label: Type
+            label: Inhaltstyp
             description: ''
             use_operator: false
             operator: type_op
