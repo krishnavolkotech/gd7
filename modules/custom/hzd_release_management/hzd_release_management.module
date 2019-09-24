@@ -1387,6 +1387,9 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
     'hzd_release_management.archived_deployed_releases_tab',
   ];
   $param = \Drupal::request()->query->all();
+  if (isset($param['page'])) {
+      unset($param['page']);
+  }
   if (!empty($data['tabs'][0])) {
     $release = $data['tabs'][0];
     foreach ($release as $key => $value) {

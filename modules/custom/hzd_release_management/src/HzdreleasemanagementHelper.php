@@ -205,16 +205,20 @@ class HzdreleasemanagementHelper {
     // Get service name and release name.
     $service_name = strtolower(db_query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $service_id))->fetchField());
     $release_name = db_query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $release_id))->fetchField();
-    $release_product = explode("_", $release_name);
-    $release_versions = explode("-", $release_product[1]);
-    $releases_title = $release_product[0] . "_" . $release_versions[0];
-
+    $release_product = $release_versions = array();
+    $releases_title = '';
+    if (!empty($release_name)) {
+        $release_product = explode("_", $release_name);
+        $release_versions = explode("-", $release_product[1]);
+        $releases_title = $release_product[0] . "_" . $release_versions[0];
+    }
     // Get the documentation folder path.
     $file_path = \Drupal::service('file_system')->realpath("private://");
 
-    $get_product = $file_path . "/releases/" . strtolower($service_name) . "/" . strtolower($release_product[0]);
-    $product = strtolower($release_product[0]);
-    $upper_product = $release_product[0];
+    $r_product = isset($release_product[0])?$release_product[0]:'';
+    $get_product = $file_path . "/releases/" . strtolower($service_name) . "/" . strtolower($r_product);
+    $product = strtolower($r_product);
+    $upper_product = $r_product;
     $new_release = $get_product . "/" . strtolower($release_name);
     $dir = $new_release . "/dokumentation";
     $files = null;
@@ -223,7 +227,10 @@ class HzdreleasemanagementHelper {
       $files = scandir($dir);
     }
 
-    $get_product_scan = scandir($get_product);
+    $get_product_scan = array();
+    if (is_dir($dir)) {
+        $get_product_scan = scandir($get_product);
+    }
     $count = count($get_product_scan);
     if ($count >= 2) {
       foreach ($get_product_scan as $key => $values) {
@@ -647,7 +654,12 @@ class HzdreleasemanagementHelper {
         $limit = $request->get('limit');
         $result = $entityQuery->pager($limit)->execute();
     } elseif($request->get('limit') == 'all') {
-        $result = $entityQuery->execute();
+        if ($type == 'archived') {
+            $result = $entityQuery->pager($default_limit)->execute();
+        }
+        else {
+            $result = $entityQuery->execute();
+        }
     } else {
         $result = $entityQuery->pager($default_limit)->execute();
     }

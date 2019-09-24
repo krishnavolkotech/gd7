@@ -14,6 +14,7 @@ define('Zentrale_Release_Manager_Lander', 5);
 define('SERVICE_LEVEL_MANAGEMENT', 15);
 define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
+define('VERFUGBARKEITSMANAGEMENT', 77);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
@@ -1169,9 +1170,33 @@ function cust_group_file_download($uri) {
   $scheme = \Drupal::service('file_system')->uriScheme($uri);
   if (\Drupal::currentUser()->isAnonymous() && $scheme == 'private') {
     return -1;
-  } else {
-//    echo 1;exit;
+  }
+  else {
+    $target = file_uri_target($uri);
+    if (stripos($target, 'al-edv') !== FALSE) {
+      if (is_dir($uri)) {
+        return -1;
+      }
+      return al_edvFileAccess($uri);
+    }
     return 1;
+  }
+}
+
+
+function al_edvFileAccess($uri){
+  $uid = \Drupal::currentUser()->id();
+  if ($uid == 1) {
+      return 1;
+  }
+  $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($uid);
+  $al_edv_group_id = \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
+
+  if ($al_edv_group_id && isset($user_groups[$al_edv_group_id])) {
+    return 1;
+  }
+  else {
+    return -1;
   }
 }
 

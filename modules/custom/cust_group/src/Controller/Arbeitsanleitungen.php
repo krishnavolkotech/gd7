@@ -18,8 +18,10 @@ class Arbeitsanleitungen extends ControllerBase {
     $config_path = \Drupal::config('arbeitsanleitungen.settings')
       ->get('import_path');
     $path = DRUPAL_ROOT . '/' . $config_path;
-    $folders_of_al_edv = DRUPAL_ROOT . '/' . 'sites/default/files/al-edv/';
-    $bak_al_edv = DRUPAL_ROOT . '/' . 'sites/default/files/archive-al-edv/';
+
+    $private_files = \Drupal::service('file_system')->realpath("private://");
+    $folders_of_al_edv = $private_files . '/' . 'al-edv/';
+    $bak_al_edv = $private_files . '/' . 'archive-al-edv/';
     $result = [];
     try {
       ini_set('memory_limit', '3G');

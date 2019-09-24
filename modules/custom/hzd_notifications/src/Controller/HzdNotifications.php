@@ -391,16 +391,13 @@ class HzdNotifications extends ControllerBase {
             SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
             BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
             KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+            VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
         );
-
-        if ($groupsIds) {
+        
+        if (is_array($preselected)) {
           $groupsIds = array_merge($groupsIds, $preselected);
         }
-        else {
-          $groupsIds = $preselected;
-        }
-
-        if(empty($groupsIds)){
+	if(empty($groupsIds)){
           return;
         }
         $groups = Group::loadMultiple($groupsIds);

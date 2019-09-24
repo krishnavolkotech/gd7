@@ -628,7 +628,15 @@ function _notify_users($entity, $action, $user_data){
       ->get($type);
     $token_service = \Drupal::token();
     // Replace the token for subject.
-    $token_sub = $config['subject_' . $action];
+
+    $config_type = 'subject_' . $action;
+    if ($type == 'release' && $action == ENTITY_OP_UPDATE) {
+      $locked_type = getReleaseMailSubjectType($entity, $config_type);
+      if (isset($config[$locked_type]) && trim($config[$locked_type]) != '') {
+        $config_type = $locked_type;
+      }
+    }
+    $token_sub = $config[$config_type];
     $subject = \Drupal\Component\Utility\Html::decodeEntities($token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity)));
     if ((gettype($body) == 'object') && (strlen($body->__toString()) > 65535)) {
       $error ="Die Seite hat " . strlen($body->__toString()) . " Zeichen. "
@@ -648,6 +656,14 @@ function _notify_users($entity, $action, $user_data){
     $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
   }
   
+}
+
+function getReleaseMailSubjectType($node, $type) {
+  $status = $node->get('field_status')->value;
+  if (stripos($status, 'gesperrt') !== FALSE) {
+    $type = 'subject_locked_update';
+  }
+  return $type;
 }
 
 function _get_subscribed_users($entity) {

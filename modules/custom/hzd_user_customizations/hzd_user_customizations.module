@@ -130,7 +130,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
                 '#title' => t('@grp',['@grp'=>t('Groups')]),
                 '#options' => $groups,
                 '#default_value' => array(RELEASE_MANAGEMENT, INCIDENT_MANAGEMENT, PROBLEM_MANAGEMENT,
-                    SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT),
+                SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT, VERFUGBARKEITSMANAGEMENT),
                 //'#required' => true
             );
             $form['groups'][RELEASE_MANAGEMENT] = array( '#disabled' => TRUE, );
@@ -139,6 +139,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             $form['groups'][SERVICE_LEVEL_MANAGEMENT] = array( '#disabled' => TRUE, );
             $form['groups'][BETRIEBSPORTAL_KONSENS] = array( '#disabled' => TRUE, );
             $form['groups'][KAPAZITATSMANAGEMENT] = array( '#disabled' => TRUE, );
+            $form['groups'][VERFUGBARKEITSMANAGEMENT] = array('#disabled' => TRUE, );
         }
         $form['#validate'][] = 'hzd_user_register_form_validate';
         $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
@@ -199,6 +200,7 @@ function hzd_user_customizations_user_insert($user) {
         SERVICE_LEVEL_MANAGEMENT => SERVICE_LEVEL_MANAGEMENT,
         BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
         KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
+        VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
     );
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];

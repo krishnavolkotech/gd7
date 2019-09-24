@@ -14,3 +14,83 @@
 function hzd_customizations_uninstall() {
   \Drupal::configFactory()->getEditable('planning.settings')->delete();
 }
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8002.
+ */
+function hzd_customizations_update_8002(&$sandbox) {
+  $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
+                                           WHERE gid = 77 and type = 'open-group_membership') 
+                  and uid != 0 limit 0 , 1000 ";
+  $users = db_query($sql)->fetchAll();
+  if (count($users) > 0) {
+    foreach($users as $uid) {
+      $user = \Drupal\user\Entity\User::load($uid->uid);
+      $group = \Drupal\group\Entity\Group::load(77);
+      $group->addMember($user);
+    }
+  }
+  drupal_set_message('Module hzd_customizations Update # 8002 () was executed successfully.');
+}
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8004.
+ */
+function hzd_customizations_update_8003(&$sandbox) {
+  $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
+                                           WHERE gid = 77 and type = 'open-group_membership') 
+                  and uid != 0 limit 1000 , 2000";
+  $users = db_query($sql)->fetchAll();
+  if (count($users) > 0) {
+    foreach($users as $uid) {
+      $user = \Drupal\user\Entity\User::load($uid->uid);
+      $group = \Drupal\group\Entity\Group::load(77);
+      $group->addMember($user);
+    }
+  }
+  drupal_set_message('Module hzd_customizations Update # 8003 () was executed successfully.');
+}
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8004.
+ */
+function hzd_customizations_update_8004(&$sandbox) {
+  $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
+                                           WHERE gid = 77 and type = 'open-group_membership') 
+                  and uid != 0 limit 2000 , 3000";
+  $users = db_query($sql)->fetchAll();
+  if (count($users) > 0) {
+    foreach($users as $uid) {
+      $user = \Drupal\user\Entity\User::load($uid->uid);
+      $group = \Drupal\group\Entity\Group::load(77);
+      $group->addMember($user);
+    }
+  }
+  drupal_set_message('Module hzd_customizations Update # 8004 () was executed successfully.');
+}
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8004.
+ */
+function hzd_customizations_update_8005(&$sandbox) {
+  $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
+                                           WHERE gid = 77 and type = 'open-group_membership') 
+                  and uid != 0 limit 3000, 100000";
+  $users = db_query($sql)->fetchAll();
+  if (count($users) > 0) {
+    foreach($users as $uid) {
+      $user = \Drupal\user\Entity\User::load($uid->uid);
+      $group = \Drupal\group\Entity\Group::load(77);
+      $group->addMember($user);
+    }
+  }
+  drupal_set_message('Module hzd_customizations Update # 8005 () was executed successfully.');
+}
