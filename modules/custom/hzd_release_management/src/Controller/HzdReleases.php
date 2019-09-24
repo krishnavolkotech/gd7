@@ -81,9 +81,12 @@ class HzdReleases extends ControllerBase {
     if (is_numeric($release_id)) {
       $release_name = db_query("SELECT title FROM {node_field_data} "
                                  . "where nid= :nid", array(":nid" => $release_id))->fetchField();
-      $release_product = explode("_", $release_name);
-      $release_versions = explode("-", $release_product[1]);
-      $releases_title = $release_product[0] . "_" . $release_versions[0];
+      $releases_title = '';
+      if (!empty($release_name)) {
+        $release_product = explode("_", $release_name);
+        $release_versions = explode("-", $release_product[1]);
+        $releases_title = $release_product[0] . "_" . $release_versions[0];
+      }
       return $this->t("Documentation for @title", ['@title' => $releases_title]);
     }
     return $this->t(" ");

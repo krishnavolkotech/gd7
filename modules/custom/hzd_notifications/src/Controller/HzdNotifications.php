@@ -393,7 +393,10 @@ class HzdNotifications extends ControllerBase {
             KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
             VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
         );
-        $groupsIds = array_merge($groupsIds, $preselected);
+        
+        if (is_array($preselected)) {
+          $groupsIds = array_merge($groupsIds, $preselected);
+        }
         if(empty($groupsIds)){
           return;
         }
