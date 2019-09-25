@@ -23,7 +23,7 @@ function hzd_customizations_update_8002(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 0 , 1000 ";
+                  and uid != 0 and uid <= 1500 ";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -43,7 +43,7 @@ function hzd_customizations_update_8003(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 1000 , 1500";
+                  and uid != 0 and uid between 1500 and 2500";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -63,7 +63,7 @@ function hzd_customizations_update_8004(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 2500 , 1000";
+                  and uid != 0 and uid between 2499 and 3500";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -83,7 +83,7 @@ function hzd_customizations_update_8005(&$sandbox) {
           FROM {users_field_data} 
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 limit 3500, 100000";
+                  and uid != 0 and uid between 3499 and 10000";
   $users = db_query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
@@ -93,25 +93,4 @@ function hzd_customizations_update_8005(&$sandbox) {
     }
   }
   drupal_set_message('Module hzd_customizations Update # 8005 () was executed successfully.');
-}
-
-
-/**
- * Implements hook_update_N() on Module hzd_customizarions Update # 8004.
- */
-function hzd_customizations_update_8006(&$sandbox) {
-  $sql = "SELECT uid 
-          FROM {users_field_data} 
-          WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
-                                           WHERE gid = 77 and type = 'open-group_membership') 
-                  and uid != 0 ";
-  $users = db_query($sql)->fetchAll();
-  if (count($users) > 0) {
-    foreach($users as $uid) {
-      $user = \Drupal\user\Entity\User::load($uid->uid);
-      $group = \Drupal\group\Entity\Group::load(77);
-      $group->addMember($user);
-    }
-  }
-  drupal_set_message('Module hzd_customizations Update # 8006 () was executed successfully.');
 }
