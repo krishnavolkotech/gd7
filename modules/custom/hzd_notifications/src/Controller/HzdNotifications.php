@@ -395,8 +395,15 @@ class HzdNotifications extends ControllerBase {
         );
         
         if (is_array($preselected)) {
-          $groupsIds = array_merge($groupsIds, $preselected);
-        }
+	  // rschombu: This check is necessary to allow automatic user creation for testautomation
+	  if ($groupsIds) {
+            $groupsIds = array_merge($groupsIds, $preselected);
+	  }
+	  else {
+	    $groupsIds = $preselected;
+	  }
+	}
+
 	if(empty($groupsIds)){
           return;
         }
