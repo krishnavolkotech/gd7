@@ -402,11 +402,13 @@ function hzd_preprocess_node(&$variables) {
 }
 
 function hzd_preprocess_node__release__mail(&$variables) {
-  $r_type = $variables['node']->get('field_release_type')->value;
-  $status = $variables['node']->get('field_status')->value;
-  $variables['status'] = 0;
-  if (stripos($status, 'gesperrt') !== FALSE) {
-    $variables['status'] = t('locked');
+  if (isset($variables['node']->node_action)) {
+    $r_type = $variables['node']->get('field_release_type')->value;
+    $status = $variables['node']->get('field_status')->value;
+    $variables['status'] = 0;
+    if (stripos($status, 'gesperrt') !== FALSE) {
+      $variables['status'] = t('locked');
+    }
   }
 }
 
