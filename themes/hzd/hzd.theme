@@ -398,7 +398,18 @@ function hzd_preprocess_node(&$variables) {
     $variables['content']['entity_print_view']['#attributes'] = ['class' => ['entity_print_view']];
     //pr($variables['content']['entity_print_view']);exit;
   }
+
 }
+
+function hzd_preprocess_node__release__mail(&$variables) {
+  $r_type = $variables['node']->get('field_release_type')->value;
+  $status = $variables['node']->get('field_status')->value;
+  $variables['status'] = 0;
+  if (stripos($status, 'gesperrt') !== FALSE) {
+    $variables['status'] = t('locked');
+  }
+}
+
 
 function hzd_preprocess_breadcrumb(&$variables) {
   $breadcount_cout = count($variables['breadcrumb']);

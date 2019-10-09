@@ -15,7 +15,12 @@
         {% if content.field_release_type %}
             <tr>
                 <td style="font-weight: 700;line-height: 22px;width: 10%;">{{ node.field_release_type.fieldDefinition.label }}</td>
-                <td>{{ content.field_release_type }}</td>
+                <td>{% if status == 0 %}
+		  {{ content.field_release_type }}
+		  {% else %}
+		  <div class="field field--name-field-release-type field--type-list-string field--label-hidden field--item">{{ status }}</div>
+		  {% endif %}
+		</td>
             </tr>
         {% endif %}
         {% if content.field_date %}
