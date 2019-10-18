@@ -598,7 +598,7 @@ function hzd_notifications_token_info_alter(&$data) {
   ];
 }
 
-function _notify_users($entity, $action, $user_data){
+function _notify_users(&$entity, $action, $user_data){
   $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
 
   $dont_send_notification = \Drupal::request()->request->get('node_notification_checkbox'); // form param
@@ -704,6 +704,7 @@ function hzd_notifications_node_update($node){
       }
     }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))){
       $users = _get_subscribed_users($node);
+      $node->node_action =  ENTITY_OP_UPDATE;
       _notify_users($node, ENTITY_OP_UPDATE, $users);
     }
     
