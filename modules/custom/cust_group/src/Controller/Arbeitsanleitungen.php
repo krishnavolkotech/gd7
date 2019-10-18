@@ -34,6 +34,13 @@ class Arbeitsanleitungen extends ControllerBase {
         }
         shell_exec("mkdir -p " . $folders_of_al_edv);
         shell_exec("unzip " . $path . " -d " . $folders_of_al_edv);
+        $codierung = shell_exec("file -bi $folders_of_al_edv" . "mainframeALEDV.html");
+        if (strpos($codierung, 'charset=iso-8859-1') !== false) {
+          shell_exec("mv $folders_of_al_edv" . "mainframeALEDV.html $folders_of_al_edv" . "mainframeALEDV.html_iso");
+          shell_exec("iconv -f iso8859-1 -t utf-8 $folders_of_al_edv" . "mainframeALEDV.html_iso > $folders_of_al_edv" . "mainframeALEDV.html");
+        } else {
+          shell_exec("echo '$codierung' | mail -s 'Codierung ALEDV prüfen' -r 'noreply-betriebsportal-konsens@hzd.hessen.de' betriebsportal-konsens@hzd.hessen.de");
+        }
         if (is_dir($bak_al_edv)) {
           if (file_exists($bak_al_edv . $filename)) {
             shell_exec("rm " . $bak_al_edv . $filename);
