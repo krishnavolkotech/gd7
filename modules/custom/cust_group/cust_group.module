@@ -1183,16 +1183,20 @@ function cust_group_file_download($uri) {
   }
 }
 
-
 function al_edvFileAccess($uri){
-  $uid = \Drupal::currentUser()->id();
-  if ($uid == 1) {
-      return 1;
-  }
-  $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($uid);
-  $al_edv_group_id = \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
+  $member = \Drupal::currentUser();
 
-  if ($al_edv_group_id && isset($user_groups[$al_edv_group_id])) {
+  // All siteadmins should be able to access aledv
+  if (in_array('site_administrator', $member->getRoles())) {
+    return 1;
+  }
+
+  // rschomburg: method doesn't deliver ids from unpublished groups
+  // $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($uid);
+  $al_edv_group_id = \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
+  $group = \Drupal\group\Entity\Group::load($al_edv_group_id);
+
+  if ($group && $group->getMember($member)) {
     return 1;
   }
   else {
