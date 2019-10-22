@@ -1,0 +1,18 @@
+uuid: 545f30f1-d6c7-4cc6-b63b-95305fdeffe8
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: 'Fragebogen Upload'
+type: fragebogen_upload
+description: 'Release Management Fragebogen Upload Form'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: true

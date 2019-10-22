@@ -1,0 +1,28 @@
+uuid: 76d3d6bf-88d7-4fb1-b2c9-31b0b38fcb31
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.fragebogen_upload.field_un_zip_status
+    - node.type.fragebogen_upload
+  module:
+    - user
+id: node.fragebogen_upload.teaser
+targetEntityType: node
+bundle: fragebogen_upload
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  content_revision_log: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_un_zip_status: true
+  langcode: true
