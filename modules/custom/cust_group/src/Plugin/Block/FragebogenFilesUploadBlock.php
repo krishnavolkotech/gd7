@@ -21,12 +21,32 @@ class FragebogenFilesUploadBlock extends BlockBase {
      * {@inheritdoc}
      */
     public function build() {
-      $result['fragebogen_upload_form'] = \Drupal::formBuilder()->getForm(
-        'Drupal\cust_group\Form\FragebogenUploadForm');
-      $result['fragebogen_upload_form']['#prefix'] = '<div class = "im-attachment-filesupload-form-wrapper">';
-      $result['fragebogen_upload_form']['#suffix'] = '</div><div id="im-attachment-files-list">';
-      
+      $currentUser = \Drupal::currentUser();
+      $releaseManagement = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
+      $releaseManagementGroupMember = $releaseManagement->getMember($currentUser);
+      $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin(RELEASE_MANAGEMENT);
 
+      if (in_array('site_administrator', $currentUser->getRoles()) || $currentUser->id() == 1) {
+          $showUpload = TRUE;
+      }
+      else if ($is_group_admin) {
+          $showUpload = TRUE;
+      }
+      else {
+          $showUpload = FALSE;
+      }
+
+      if ($showUpload) {
+        $result['fragebogen_upload_form'] = \Drupal::formBuilder()->getForm('Drupal\cust_group\Form\FragebogenUploadForm');
+        $result['fragebogen_upload_form']['#prefix'] = '<div class = "fragebogen-filesupload-form-wrapper">';
+        $result['fragebogen_upload_form']['#suffix'] = '</div><div id="fragebogen-files-list">';
+      }
+
+      $result['fragebogen_upload_filter_element'] = \Drupal::formBuilder()->getForm(
+          '\Drupal\cust_group\Form\FragebogenUploadFilterForm');
+      $result['fragebogen_upload_filter_element']['#prefix'] = '<div class = "fragebogen-filter-form-wrapper">';
+      $result['fragebogen_upload_filter_element']['#suffix'] = '</div>';
+      
       $query = \Drupal::database()->select('node_field_data', 'n');
       $query->join('node__field_upload', 'nfu', 'n.nid = nfu.entity_id');
       $query->leftjoin('node__field_un_zip_status', 'nfz', 'nfz.entity_id = n.nid');
@@ -38,15 +58,16 @@ class FragebogenFilesUploadBlock extends BlockBase {
       
       $publicFiles = \Drupal::service('file_system')->realpath("public://");
       $unzipFolder = $publicFiles . '/release-fragebogen/';
+
+      $filterData = \Drupal::request()->query->all();
+      $fileName = isset($filterData['filename']) && $filterData['filename'] != '' ? $filterData['filename'] : NULL;
       
       foreach($files_data as $data) {
         $this->unzip_release_fragebogen_files($unzipFolder, $data->nid, $data->field_upload_target_id);
       }
-      $files = $this->release_fragebogen_files($unzipFolder);
+
+      $files = $this->release_fragebogen_files($unzipFolder, $fileName);
       $rows = [];
-      $currentUser = \Drupal::currentUser();
-      $releaseManagement = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
-      $releaseManagementGroupMember = $releaseManagement->getMember($currentUser);
       
       if ($releaseManagementGroupMember) {
         foreach ($files as $file) {
@@ -59,16 +80,17 @@ class FragebogenFilesUploadBlock extends BlockBase {
           }
         }
       }
-      
+
       $result['files'] = [
         '#type' => 'table',
         '#attributes' => ['class' => ['files']],
         '#suffix' => '</div>',
         '#rows' => $rows,
         '#empty' => t('No files available.'),
+        '#cache'=>['max-age' => 0],
         '#header' => [
-          $this->t('Dateiname'),
-          $this->t('Dateidatum'),
+          $this->t('FileName'),
+          $this->t('Timestamp'),
         ],
       ];
       return $result;
@@ -93,17 +115,26 @@ class FragebogenFilesUploadBlock extends BlockBase {
       }
     }
     
-    public function release_fragebogen_files($unzipFolder) {
+    public function release_fragebogen_files($unzipFolder, $searchFileName = NULL) {
       if ($dh = opendir($unzipFolder)) {
         while (($fileName = readdir($dh)) !== false) {
           $stat = stat($fileName);
           if (file_exists($unzipFolder. '/' .$fileName) && $fileName != '.' && $fileName != '..') {
-              $time = filectime($unzipFolder. '/' .$fileName);
+              $time = filemtime($unzipFolder. '/' .$fileName);
               $path = "public:///release-fragebogen/". $fileName;
               $file_downloadable_link = file_create_url($path);
               $url = \Drupal\Core\Url::fromUri($file_downloadable_link, array('attributes' => array('target' => '_blank')));
               $file_link = \Drupal\Core\Link::fromTextAndUrl($fileName, $url)->toString();
-              $files[] = ['file' => $file_link, 'time' => $time];
+
+              if (isset($searchFileName)) {
+                  if (stripos($fileName, $searchFileName) !== FALSE) {
+                      $files[] = ['file' => $file_link, 'time' => $time];
+                  }
+              }
+              else {
+                  $files[] = ['file' => $file_link, 'time' => $time];    
+              }
+                            
           }
         }
         closedir($dh);
