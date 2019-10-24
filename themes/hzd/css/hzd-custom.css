@@ -1371,3 +1371,8 @@ div.view-hzd-group-members.view-display-id-approved table .views-field-comment-r
   padding:20px;
   margin-bottom: 1.5%;
 }
+#fragebogen-upload-form div#edit-upload-file-upload input {
+    width: 45%;
+    float: left;
+    margin-right: 1%;
+}
