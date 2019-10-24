@@ -25,7 +25,7 @@ class FragebogenUploadFilterForm extends FormBase {
 
         $form['filename'] = [
             '#type' => 'textfield',
-            '#placeholder' => $this->t('FileName'),
+            '#placeholder' => $this->t('Filename'),
             '#default_value' => isset($fileName) ? $fileName : '',
             '#size' => 30,
             '#maxlength' => 128,
