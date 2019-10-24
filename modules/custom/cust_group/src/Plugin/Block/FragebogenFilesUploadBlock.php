@@ -118,7 +118,6 @@ class FragebogenFilesUploadBlock extends BlockBase {
     public function release_fragebogen_files($unzipFolder, $searchFileName = NULL) {
       if ($dh = opendir($unzipFolder)) {
         while (($fileName = readdir($dh)) !== false) {
-          $stat = stat($fileName);
           if (file_exists($unzipFolder. '/' .$fileName) && $fileName != '.' && $fileName != '..') {
               $time = filemtime($unzipFolder. '/' .$fileName);
               $path = "public:///release-fragebogen/". $fileName;
