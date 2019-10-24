@@ -102,14 +102,15 @@ class FragebogenFilesUploadBlock extends BlockBase {
         if ($file) {
           $path = $file->getFileUri();
           if ($path && file_exists($path) && is_dir($unzipFolder)) {
-            $realFilesPath = \Drupal::service('file_system')->realpath($path);
-            shell_exec("unzip -o " . $realFilesPath . " -d " . $unzipFolder);
+              $realFilesPath = \Drupal::service('file_system')->realpath($path);
+              $rpath = preg_replace('/\W/', '\\\\$0', $realFilesPath);
+              shell_exec("unzip -o " . $rpath . " -d " . $unzipFolder);
           }
           
           if ($nid) {
-            $node = \Drupal\node\Entity\Node::load($nid);
-            $node->set('field_un_zip_status', 1);
-            $node->save();
+              $node = \Drupal\node\Entity\Node::load($nid);
+              $node->set('field_un_zip_status', 1);
+              $node->save();
           }
         }
       }
