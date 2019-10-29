@@ -46,30 +46,26 @@ class FragebogenFilesUploadBlock extends BlockBase {
           '\Drupal\cust_group\Form\FragebogenUploadFilterForm');
       $result['fragebogen_upload_filter_element']['#prefix'] = '<div class = "fragebogen-filter-form-wrapper">';
       $result['fragebogen_upload_filter_element']['#suffix'] = '</div>';
-      
-      $query = \Drupal::database()->select('node_field_data', 'n');
-      $query->join('node__field_upload', 'nfu', 'n.nid = nfu.entity_id');
-      $query->leftjoin('node__field_un_zip_status', 'nfz', 'nfz.entity_id = n.nid');
-      $query->condition('n.type', 'fragebogen_upload', '=');
-      $query->condition('nfz.field_un_zip_status_value', 0, '=');
-      $query->fields('nfu', ['field_upload_target_id']);
-      $query->fields('n', ['nid']);
-      $files_data = $query->execute()->fetchAll();
-      
+
+
       $publicFiles = \Drupal::service('file_system')->realpath("public://");
-      $unzipFolder = $publicFiles . '/release-fragebogen/';
+      $zipUploadedDir = $publicFiles . '/release-fragebogen/';
+      checkAndCreateFolder($zipUploadedDir);
+      
+      $privateFiles = \Drupal::service('file_system')->realpath("private://");
+      $unzipFolder = $privateFiles . '/release-fragebogen/';
+      checkAndCreateFolder($unzipFolder);
+      
+      
+      $this->unzip_release_fragebogen_files($unzipFolder, $zipUploadedDir);
 
       $filterData = \Drupal::request()->query->all();
       $fileName = isset($filterData['filename']) && $filterData['filename'] != '' ? $filterData['filename'] : NULL;
-      
-      foreach($files_data as $data) {
-        $this->unzip_release_fragebogen_files($unzipFolder, $data->nid, $data->field_upload_target_id);
-      }
 
       $files = $this->release_fragebogen_files($unzipFolder, $fileName);
       $rows = [];
       
-      if ($releaseManagementGroupMember) {
+      if ($releaseManagementGroupMember && count($files) > 0) {
         foreach ($files as $file) {
           if ($file) {
             $row = array(
@@ -96,32 +92,36 @@ class FragebogenFilesUploadBlock extends BlockBase {
       return $result;
     }
 
-    public function unzip_release_fragebogen_files($unzipFolder, $nid, $fid) {
-      if ($fid) {
-        $file = \Drupal\file\Entity\File::load($fid);
-        if ($file) {
-          $path = $file->getFileUri();
-          if ($path && file_exists($path) && is_dir($unzipFolder)) {
-              $realFilesPath = \Drupal::service('file_system')->realpath($path);
-              $rpath = preg_replace('/\W/', '\\\\$0', $realFilesPath);
-              shell_exec("unzip -o " . $rpath . " -d " . $unzipFolder);
-          }
-          
-          if ($nid) {
-              $node = \Drupal\node\Entity\Node::load($nid);
-              $node->set('field_un_zip_status', 1);
-              $node->save();
+    /**
+     * Unzip the uploaded files into private files directory
+     */
+    public function unzip_release_fragebogen_files($unzipFolder, $zipUploadedDir) {
+      if ($dh = opendir($zipUploadedDir)) {
+        while (($fileName = readdir($dh)) !== false) {
+          if ($fileName != '.' && $fileName != '..') {
+            $uploadedFiles = $zipUploadedDir . '' . $fileName;
+            $rpath = preg_replace('/\W/', '\\\\$0', $uploadedFiles);
+            shell_exec("unzip -o " . $rpath . " -d " . $unzipFolder);
+            shell_exec("rm " . $rpath);
           }
         }
+        closedir($dh);
+      }
+      else {
+        drupal_set_message($this->t('Fragebogen Upload Directory Does Not Exists.'), 'error');
       }
     }
-    
+
+    /**
+     * Listing the files from Private files directory
+     */
     public function release_fragebogen_files($unzipFolder, $searchFileName = NULL) {
+      $files = [];
       if ($dh = opendir($unzipFolder)) {
         while (($fileName = readdir($dh)) !== false) {
           if (file_exists($unzipFolder. '/' .$fileName) && $fileName != '.' && $fileName != '..') {
               $time = filemtime($unzipFolder. '/' .$fileName);
-              $path = "public:///release-fragebogen/". $fileName;
+              $path = "private://release-fragebogen/". $fileName;
               $file_downloadable_link = file_create_url($path);
               $url = \Drupal\Core\Url::fromUri($file_downloadable_link, array('attributes' => array('target' => '_blank')));
               $file_link = \Drupal\Core\Link::fromTextAndUrl($fileName, $url)->toString();
@@ -139,6 +139,9 @@ class FragebogenFilesUploadBlock extends BlockBase {
         }
         closedir($dh);
         usort($files, 'filesCompareByName');
+      }
+      else {
+        drupal_set_message($this->t('Fragebogen Unzip Directory Does Not Exists.'), 'error');
       }
       return $files;
     }
