@@ -28,6 +28,7 @@ planning_files:
 release:
   subject_insert: '[[node:field_relese_services:entity:title]] Neues Release: [node:title]'
   subject_update: '[[node:field_relese_services:entity:title]] Aktualisiertes Release: [node:title]'
+  subject_locked_update: '[[node:field_relese_services:entity:title]] Gesperrtes Release: [node:title]'
   subject_cancel: null
   subject_resolve: null
   mail_content: "<p>[node:url:absolute]</p>\r\n"
