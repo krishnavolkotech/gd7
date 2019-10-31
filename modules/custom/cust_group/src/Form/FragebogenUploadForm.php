@@ -96,20 +96,9 @@ class FragebogenUploadForm extends FormBase {
     if ($action == 'upload_submit') {
       if (!empty($values['upload_file'])) {
         $file = \Drupal::entityTypeManager()->getStorage('file')->load($form_state->getValue('upload_file')[0]);
-
-        $fragebogen_data = \Drupal\node\Entity\Node::create(array(
-          'type' => 'fragebogen_upload',
-          'title' => $file->getFilename(). ':'. date('d.m.Y H:i:s'),
-          'field_upload' => $file->id(),
-          'description' => array(
-              'value' =>$values['description'],
-              'format' => 'plain_text',
-          ),
-        ));
-        $fragebogen_data->save();
+        $message = t('File was successfully uploaded!');
+        drupal_set_message($message);
       }
-      $message = t('File was successfully uploaded!');
     }
-    drupal_set_message($message);
   }  
 }
