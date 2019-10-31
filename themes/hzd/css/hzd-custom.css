@@ -1362,3 +1362,17 @@ div.view-hzd-group-members.view-display-id-approved table .views-field-mail {
 div.view-hzd-group-members.view-display-id-approved table .views-field-comment-release-status {
     width: 100px;
 }
+.fragebogen-submit {
+    float: left;
+    margin-right: .5%;
+}
+#fragebogen-upload-form{
+  border:1px solid #ddd;
+  padding:20px;
+  margin-bottom: 1.5%;
+}
+#fragebogen-upload-form div#edit-upload-file-upload input {
+    width: 45%;
+    float: left;
+    margin-right: 1%;
+}

@@ -1433,3 +1433,6 @@ function cust_group_page_attachments_alter(array &$page) {
     $page['#attached']['library'][] = 'cust_group/cust_group';
 }
 
+function filesCompareByName($file1, $file2) {
+  return strcasecmp($file1["file"], $file2["file"]);
+}

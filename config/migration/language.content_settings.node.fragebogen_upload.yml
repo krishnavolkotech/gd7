@@ -1,0 +1,18 @@
+uuid: 16db742e-d89a-4c8a-b6a9-4a7c086c05d2
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.fragebogen_upload
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: node.fragebogen_upload
+target_entity_type_id: node
+target_bundle: fragebogen_upload
+default_langcode: site_default
+language_alterable: true

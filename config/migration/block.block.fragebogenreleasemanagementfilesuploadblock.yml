@@ -1,0 +1,32 @@
+uuid: 4abd0116-d2b8-4677-b143-47f87660fdb8
+langcode: de
+status: true
+dependencies:
+  module:
+    - block_visibility_groups
+    - cust_group
+    - system
+  theme:
+    - hzd
+id: fragebogenreleasemanagementfilesuploadblock
+theme: hzd
+region: content
+weight: 0
+provider: null
+plugin: fragebogen_files_upload_block
+settings:
+  id: fragebogen_files_upload_block
+  label: 'Fragebogen ReleaseManagement Files Upload Block'
+  provider: cust_group
+  label_display: '0'
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: "/node/784\r\n"
+    negate: false
+    context_mapping: {  }
