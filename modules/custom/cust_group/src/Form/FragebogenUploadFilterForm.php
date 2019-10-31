@@ -25,7 +25,7 @@ class FragebogenUploadFilterForm extends FormBase {
 
         $form['filename'] = [
             '#type' => 'textfield',
-            '#placeholder' => $this->t('Filename'),
+            '#placeholder' => $this->t('Suchbegriff'),
             '#default_value' => isset($fileName) ? $fileName : '',
             '#size' => 30,
             '#maxlength' => 128,
@@ -35,7 +35,7 @@ class FragebogenUploadFilterForm extends FormBase {
         
         $form['actions']['submit'] = array(
             '#type' => 'button',
-            '#value' => $this->t('Submit'),
+            '#value' => $this->t('Filtern'),
             '#weight' => 99,
             '#attributes' => array(
                 'class' => array('fragebogen-submit')

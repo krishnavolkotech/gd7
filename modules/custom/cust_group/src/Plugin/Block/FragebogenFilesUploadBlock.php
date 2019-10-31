@@ -86,7 +86,7 @@ class FragebogenFilesUploadBlock extends BlockBase {
         '#cache'=>['max-age' => 0],
         '#header' => [
           $this->t('Filename'),
-          $this->t('Timestamp'),
+          $this->t('Date'),
         ],
       ];
       return $result;
