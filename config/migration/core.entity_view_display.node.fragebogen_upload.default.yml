@@ -1,0 +1,46 @@
+uuid: 541b3d6a-0f8e-46ce-9298-b43fa7d68b00
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.fragebogen_upload.field_un_zip_status
+    - field.field.node.fragebogen_upload.field_upload
+    - node.type.fragebogen_upload
+  module:
+    - file
+    - user
+id: node.fragebogen_upload.default
+targetEntityType: node
+bundle: fragebogen_upload
+mode: default
+content:
+  field_un_zip_status:
+    weight: 103
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_upload:
+    weight: 104
+    label: above
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    type: file_default
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  content_revision_log: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

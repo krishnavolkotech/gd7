@@ -5,5 +5,5 @@ dependencies: {  }
 name: FAQ-Seite
 vid: faq_seite
 description: 'Bitte wählen Sie aus, auf welcher FAQ-Seite Sie diese Frage '
-hierarchy: 1
+hierarchy: 0
 weight: 0
