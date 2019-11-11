@@ -45,7 +45,8 @@ class Arbeitsanleitungen extends ControllerBase {
           if (file_exists($bak_al_edv . $filename)) {
             shell_exec("rm " . $bak_al_edv . $filename);
           }
-          shell_exec("mv " . $path . " " . $bak_al_edv);
+          shell_exec("mv " . $path . " " . $folders_of_al_edv);
+          //shell_exec("mv " . $path . " " . $bak_al_edv);
         } else {
           shell_exec("mkdir -p " . $bak_al_edv);
           shell_exec("mv " . $path . " " . $bak_al_edv);
