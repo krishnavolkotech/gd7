@@ -1173,6 +1173,14 @@ function cust_group_file_download($uri) {
   }
   else {
     $target = file_uri_target($uri);
+
+    $path_parts = explode('/', $target);
+    if (count($path_parts) > 0 && $path_parts[0] == 'gruppen') {
+        $group_id = getGroupIdFromFolderName($path_parts[1]);
+        if ($group_id) {
+            return hzdGroupFileAccess($group_id);
+        }
+    }
     if (stripos($target, 'al-edv') !== FALSE) {
       if (is_dir($uri)) {
         return -1;
@@ -1181,6 +1189,26 @@ function cust_group_file_download($uri) {
     }
     return 1;
   }
+}
+
+function hzdGroupFileAccess($group_id) {
+  $member = \Drupal::currentUser();
+  // All siteadmins should be able to access aledv
+  if (in_array('site_administrator', $member->getRoles())) {
+    return 1;
+  }
+  $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($member->id());
+  if (isset($user_groups[$group_id])) {
+      return 1;
+  }
+  else {
+      return -1;
+  }
+}
+
+function getGroupIdFromFolderName($folder_name) {
+  $sql = "select id from {groups_field_data} where replace(REPLACE(label,' - ',' '), ' ', '-') = :folder_name";
+  return $group_id = db_query($sql, array(':folder_name' => $folder_name))->fetchField();
 }
 
 function al_edvFileAccess($uri){
