@@ -1175,7 +1175,7 @@ function cust_group_file_download($uri) {
     $target = file_uri_target($uri);
 
     $path_parts = explode('/', $target);
-    if (count($path_parts) > 0 && $path_parts[0] == 'gruppen') {
+    if (count($path_parts) > 1 && $path_parts[0] == 'gruppen' && isset($path_parts[1])) {
         $group_id = getGroupIdFromFolderName($path_parts[1]);
         if ($group_id) {
             return hzdGroupFileAccess($group_id);

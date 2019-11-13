@@ -428,7 +428,7 @@ class ImceFM {
    */
   public function getFileProperties($uri) {
     $properties = ['date' => filemtime($uri), 'size' => filesize($uri)];
-    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = getimagesize($uri)) {
+    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = @getimagesize($uri)) {
       $properties['width'] = $info[0];
       $properties['height'] = $info[1];
     }
