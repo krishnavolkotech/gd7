@@ -754,7 +754,8 @@ function hzd_notifications_node_insert($entity){
 function hzd_notifications_group_content_insert($groupContent){
   if(in_array($groupContent->getEntity()->bundle(), NotificationManager::$groupBundles)){
     $users = _get_subscribed_users($groupContent);
-    _notify_users($groupContent->getEntity(), ENTITY_OP_INSERT, $users);
+    $entity = $groupContent->getEntity();
+    _notify_users($entity, ENTITY_OP_INSERT, $users);
   }
 }
 
