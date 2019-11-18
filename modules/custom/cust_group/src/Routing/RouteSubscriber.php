@@ -57,6 +57,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupNodeEdit');
     }
 
+    if ($route = $collection->get('imce.page')) {
+      $route->setRequirement('_access', 'FALSE');
+    }
+
     if ($route = $collection->get('entity.node.version_history')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
     }
