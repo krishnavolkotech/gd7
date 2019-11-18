@@ -3869,3 +3869,11 @@ form#arbeitsanleitung-notifications-user-form table#edit-arbeitsanleitung tr td 
   margin-right: -30px;
 }
 
+td.checkbox {
+    margin: 0px;
+}
+
+.form-managed-file {
+    width: 95%;
+    float: left;
+}
