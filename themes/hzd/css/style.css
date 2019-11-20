@@ -3877,3 +3877,8 @@ td.checkbox {
     width: 95%;
     float: left;
 }
+
+#node-page-edit-form .tabledrag-toggle-weight.btn-sm.btn.btn-default,
+#node-page-edit-form .alert-warning {
+    display:none !important;
+}
