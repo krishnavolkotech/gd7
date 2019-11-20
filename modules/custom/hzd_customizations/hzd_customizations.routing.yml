@@ -205,7 +205,7 @@ hzd_customizations.archived_downtimes_controller:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
 hzd_customizations.update_taxonomy_parents:
-  path: '/update/taxanomy/parents'
+  path: '/taxanomy/parents-update'
   defaults:
     _controller: '\Drupal\hzd_customizations\Controller\UpdateTaxonomyParent::updateParent'
     _title: 'Update Taxonomy Parents'
