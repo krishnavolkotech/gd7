@@ -1197,7 +1197,7 @@ function hzdGroupFileAccess($group_id) {
   if (in_array('site_administrator', $member->getRoles())) {
     return 1;
   }
-  $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($member->id());
+  $user_groups = \Drupal\cust_group\CustGroupHelper::hzd_user_groups_list($member->id());
   if (isset($user_groups[$group_id])) {
       return 1;
   }

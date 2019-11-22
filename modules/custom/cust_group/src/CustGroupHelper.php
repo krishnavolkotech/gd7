@@ -145,4 +145,13 @@ class CustGroupHelper {
     return $element;
   }
   
+  public static function hzd_user_groups_list($uid) {
+    $user_groups_query = \Drupal::database()->query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
+                   WHERE gcfd.request_status = 1 AND gfd.id = gcfd.gid  AND gcfd.entity_id = :eid ORDER BY gfd.label", array(":eid" => $uid))->fetchAll();
+      $user_groups = array();
+      foreach ($user_groups_query as $groups_list) {
+          $user_groups[$groups_list->id] = $groups_list->label;
+      }
+      return $user_groups;
+  }
 }
