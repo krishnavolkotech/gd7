@@ -7,15 +7,17 @@ label: 'Group profile'
 description: 'T2 Large'
 conf:
   extensions: '*'
-  maxsize: !!float 10
+  maxsize: !!float 50
   quota: !!float 100
   maxwidth: 10000
   maxheight: 10000
-  replace: 2
+  replace: 1
   folders:
     -
       path: gruppen
       permissions:
         browse_files: true
         browse_subfolders: true
+        create_subfolders: true
         upload_files: true
+        delete_files: true
