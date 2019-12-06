@@ -59,6 +59,8 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
 //exit;
             pr(($form['account']['pass']['#weight']));exit;*/
         }
+
+        $disabled = [];
         if ($form_id == 'user_form') {
             $account = $form_state->getFormObject()->getEntity();
             $userid = $account->id();
@@ -67,7 +69,15 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
                 ->fields('cp', array('firstname', 'lastname', 'phone', 'position', 'state_id'))
                 ->condition('cp.uid', $userid);
             $val = $result->execute()->fetchAssoc();
+
+            $disabled =  ['disabled' => 'disabled'];
+            $member = \Drupal::currentUser();
+            if ($member->id() == 1 || in_array('site_administrator', $member->getRoles())) {
+                $disabled = [];
+            }
         }
+
+
         $form['profile'] = array(
             '#type' => 'fieldset',
             '#title' => t('Personal Information'),
@@ -104,11 +114,14 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             '#maxlength' => 128,
             '#required' => TRUE,
         );
+
+
         $form['profile']['user_state'] = array(
             '#type' => 'select',
             '#title' => t('State'),
             '#options' => $user_states,
             '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
+            '#attributes' => $disabled,
             '#required' => TRUE,
         );
         
