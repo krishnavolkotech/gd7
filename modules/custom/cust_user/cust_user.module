@@ -62,7 +62,7 @@ function nsm_user_form(&$form, \Drupal\Core\Form\FormStateInterface $form_state)
   $query->condition('nur.user_id', $user_id, '=');
   $user_nsm_role = $query->execute()->fetchField();
   
-  $n_role = $user_nsm_role ? $user_nsm_role : 1;
+  $n_role = $user_nsm_role ? $user_nsm_role : 0;
   
   $form['nsm'] = array(
     '#type' => 'fieldset',

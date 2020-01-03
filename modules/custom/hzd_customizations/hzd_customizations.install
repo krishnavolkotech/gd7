@@ -94,3 +94,15 @@ function hzd_customizations_update_8005(&$sandbox) {
   }
   drupal_set_message('Module hzd_customizations Update # 8005 () was executed successfully.');
 }
+
+
+function hzd_customizations_update_8006(&$sandbox) {
+  $sql = "SELECT uid from users u  
+          LEFT OUTER JOIN {nsm_user_role} nur on u.uid = nur.user_id 
+          WHERE  nur.user_id IS NULL";
+  $users = db_query($sql)->fetchAll();
+  foreach($users as $user) {
+    insert_nsm_role($user->uid);
+  }
+  drupal_set_message('Module hzd_customizations Update # 8006 is executed successfully.');
+}
