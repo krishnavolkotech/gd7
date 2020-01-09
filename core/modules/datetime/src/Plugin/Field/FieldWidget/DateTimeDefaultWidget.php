@@ -49,7 +49,7 @@ class DateTimeDefaultWidget extends DateTimeWidgetBase implements ContainerFacto
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('entity.manager')->getStorage('date_format')
+      $container->get('entity_type.manager')->getStorage('date_format')
     );
   }
 
@@ -74,13 +74,6 @@ class DateTimeDefaultWidget extends DateTimeWidgetBase implements ContainerFacto
       case DateTimeItem::DATETIME_TYPE_DATE:
         $date_type = 'date';
         $time_type = 'none';
-        $date_format = $this->dateStorage->load('html_date')->getPattern();
-        $time_format = '';
-        break;
-
-      case DateTimeItem::DATETIME_TYPE_TIME:
-        $date_type = 'none';
-        $time_type = 'time';
         $date_format = $this->dateStorage->load('html_date')->getPattern();
         $time_format = '';
         break;

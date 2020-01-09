@@ -117,9 +117,6 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
    * {@inheritdoc}
    */
   public function processOutbound($path, &$options = [], Request $request = NULL, BubbleableMetadata $bubbleableMetadata = NULL) {
-    if (isset($options['absolute']) && $options['absolute']) {
-      return $path;
-    }
     $original_path = $path;
     $subpath = [];
     $max_depth = $this->getMaxDepth();
@@ -157,7 +154,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       $path_info = '/' . substr($path_info, strlen($language_prefix));
     }
 
-    return rtrim(urldecode($path_info),'/');
+    return $path_info;
   }
 
   /**
