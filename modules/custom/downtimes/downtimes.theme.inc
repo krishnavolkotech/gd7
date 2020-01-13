@@ -36,12 +36,12 @@ function theme_service_checkbox($element) {
   $service_names = explode("|", $element['#title']);
   if (!is_null($element['#title'])) {
     $checkbox .= '<div class = "published-services"><label class="option" for="' . $element['#id'] . '"> ' . $service_names[0];
+
     if (isset($service_names[1])) {
-      $checkbox .= $service_names[1];
+        $checkbox .= $service_names[1] ;
     }
-    else {
-      $checkbox .= '</label></div>';
-    }
+    $checkbox .= '</label></div>';
+    
   }
 
   unset($element['#title']);
