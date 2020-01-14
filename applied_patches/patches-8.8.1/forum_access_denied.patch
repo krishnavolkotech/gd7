@@ -1,0 +1,18 @@
+diff --git a/core/modules/forum/src/Controller/ForumController.php b/core/modules/forum/src/Controller/ForumController.php
+old mode 100755
+new mode 100644
+index 0e3d995..0c0813f
+--- a/core/modules/forum/src/Controller/ForumController.php
++++ b/core/modules/forum/src/Controller/ForumController.php
+@@ -316,9 +316,9 @@
+     if (empty($links)) {
+       // Authenticated user does not have access to create new topics.
+       if ($user->isAuthenticated()) {
+-        $links['disallowed'] = [
++/*        $links['disallowed'] = [
+           '#markup' => $this->t('You are not allowed to post new content in the forum.'),
+-        ];
++        ];*/
+       }
+       // Anonymous user does not have access to create new topics.
+       else {
