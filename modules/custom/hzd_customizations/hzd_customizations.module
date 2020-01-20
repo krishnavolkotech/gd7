@@ -456,7 +456,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   if ($form_id == 'node_deployed_releases_edit_form') {
     $entity = $form_state->getFormObject()->getEntity();
     $dateData = $entity->get('field_date_deployed')->value;
-    $form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
+    //$form['field_date_deployed']['widget'][0]['value']['#default_value'] = new DrupalDateTime($dateData);
     $form['#validate'][] = 'field_date_deployed_validate';
     $service = $form_state->getValue('field_release_service')[0]['value'];
     if (empty($service)) {
