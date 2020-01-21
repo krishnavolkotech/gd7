@@ -5,6 +5,9 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.risk_cluster.body
+    - field.field.node.risk_cluster.field_comments
+    - field.field.node.risk_cluster.field_id
+    - field.field.node.risk_cluster.field_trend
     - node.type.risk_cluster
   module:
     - text

@@ -8,7 +8,7 @@ description: 'T2 Large'
 conf:
   extensions: '*'
   maxsize: !!float 50
-  quota: !!float 100
+  quota: !!float 1000
   maxwidth: 10000
   maxheight: 10000
   replace: 1
