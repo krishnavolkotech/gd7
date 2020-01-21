@@ -102,7 +102,7 @@ class FragebogenFilesUploadBlock extends BlockBase {
             $uploadedFiles = $zipUploadedDir . '' . $fileName;
             $rpath = preg_replace('/\W/', '\\\\$0', $uploadedFiles);
             shell_exec("unzip -o " . $rpath . " -d " . $unzipFolder);
-            shell_exec("rm " . $rpath);
+            //shell_exec("rm " . $rpath);
           }
         }
         closedir($dh);

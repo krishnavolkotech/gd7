@@ -277,11 +277,14 @@ class HzdcustomisationStorage {
       $id = $query->execute()->fetchField();
       $current_uri = \Drupal::request()->getRequestUri();
       if ($id) {
+        // path alias is a service now 
+        /*
         $query = \Drupal::database()->select('url_alias', 'ua');
         $query->addField('ua', 'alias');
         $query->condition('ua.source', '/node/' . $id);
         $query->range(0, 1);
         $path_alias = $query->execute()->fetchField();
+          */
         $text = $service->service;
         // $url = Url::fromUserInput($path_alias . '/edit');.
         

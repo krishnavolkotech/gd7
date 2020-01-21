@@ -33,9 +33,6 @@ class PathautoItem extends PathItem {
     if ($this->pathauto == PathautoState::SKIP) {
       parent::postSave($update);
     }
-    else {
-      \Drupal::service('pathauto.generator')->updateEntityAlias($this->getEntity(), $update ? 'update' : 'insert');
-    }
     $this->get('pathauto')->persist();
   }
 
@@ -45,7 +42,7 @@ class PathautoItem extends PathItem {
   public function isEmpty() {
     // Make sure that the pathauto state flag does not get lost if just that is
     // changed.
-    return !$this->alias && !$this->get('pathauto')->hasValue();
+    return parent::isEmpty() && !$this->get('pathauto')->hasValue();
   }
 
 }

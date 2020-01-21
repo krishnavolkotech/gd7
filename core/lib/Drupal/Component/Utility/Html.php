@@ -2,8 +2,6 @@
 
 namespace Drupal\Component\Utility;
 
-use Drupal\Core\StringTranslation\TranslatableMarkup;
-
 /**
  * Provides DOMDocument helpers for parsing and serializing HTML strings.
  *
@@ -385,7 +383,7 @@ EOD;
    * @see \Drupal\Component\Utility\Html::escape()
    */
   public static function decodeEntities($text) {
-    if (!is_array($text)) {
+    if(!is_array($text)) {
       return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
     }
   }

@@ -1535,7 +1535,7 @@ nav#block-optionen ul li.active ul.dropdown-menu {
     margin-right: 5px;
 }
 #edit-services-effected .form-checkbox .published-services {
-    margin-left: 21px;
+    margin-left: 23px;
     /*position: relative;*/
     vertical-align:top;
     width:100%;
@@ -3885,4 +3885,8 @@ td.checkbox {
 .tabledrag-toggle-weight.btn-sm.btn.btn-default,
 #node-page-edit-form .alert-warning {
     display:none !important;
+}
+.downtimes-service-tooltip {
+  margin-left: 5px;
+  font-size: 21px;
 }

@@ -1,0 +1,71 @@
+diff --git a/core/modules/datetime/datetime.module b/core/modules/datetime/datetime.module
+index 245d0c4..c13096e 100644
+--- a/core/modules/datetime/datetime.module
++++ b/core/modules/datetime/datetime.module
+@@ -41,6 +41,11 @@
+ const DATETIME_DATE_STORAGE_FORMAT = 'Y-m-d';
+ 
+ /**
++ *  Defines the format that time should be stored in.
++ */
++const DATETIME_TIME_STORAGE_FORMAT = 'H:i:s';
++
++/**
+  * Implements hook_help().
+  */
+ function datetime_help($route_name, RouteMatchInterface $route_match) {
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php b/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
+index 3264069..8c389d5 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
+@@ -42,6 +42,12 @@ public static function defaultStorageSettings() {
+    */
+   const DATETIME_TYPE_DATETIME = 'datetime';
+ 
++
++  /**
++   * Value for the 'datetime_type' setting: store a date and time.
++   */
++  const DATETIME_TYPE_TIME = 'time';
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -92,6 +98,7 @@ public function storageSettingsForm(array &$form, FormStateInterface $form_state
+       '#options' => [
+         static::DATETIME_TYPE_DATETIME => t('Date and time'),
+         static::DATETIME_TYPE_DATE => t('Date only'),
++        static::DATETIME_TYPE_TIME => t('Time only'),
+       ],
+       '#disabled' => $has_data,
+     ];
+@@ -110,8 +117,9 @@ public static function generateSampleValue(FieldDefinitionInterface $field_defin
+     $timestamp = REQUEST_TIME - mt_rand(0, 86400 * 365);
+     if ($type == DateTimeItem::DATETIME_TYPE_DATE) {
+       $values['value'] = gmdate(static::DATE_STORAGE_FORMAT, $timestamp);
+-    }
+-    else {
++    } elseif ($type == DateTimeItem::DATETIME_TYPE_TIME) {
++      $values['value'] = gmdate(static::DATETIME_TIME_STORAGE_FORMAT, $timestamp);
++    } else {
+       $values['value'] = gmdate(static::DATETIME_STORAGE_FORMAT, $timestamp);
+     }
+     return $values;
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
+index 2a4ffcd..4c48a2d 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
+@@ -78,6 +78,13 @@ public function formElement(FieldItemListInterface $items, $delta, array $elemen
+         $time_format = '';
+         break;
+ 
++      case DateTimeItem::DATETIME_TYPE_TIME:
++        $date_type = 'none';
++        $time_type = 'time';
++        $date_format = $this->dateStorage->load('html_date')->getPattern();
++        $time_format = '';
++        break;
++
+       default:
+         $date_type = 'date';
+         $time_type = 'time';

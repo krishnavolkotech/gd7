@@ -33,11 +33,10 @@ function prk($data) {
  * implements hook_form_alter
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-    
-        if ($form_id == 'user_register_form' || $form_id == 'user_form') {
-        $val = [];
+  if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+    	$val = [];
 	$user_states = hzd_states();
-	//sort($user_states);
+	asort($user_states);
         if ($form_id == 'user_register_form') {
             $form['desc'] = [
                 '#weight' => -100,
@@ -207,6 +206,7 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
  * hook implementing hook_user_insert()
  */
 function hzd_user_customizations_user_insert($user) {
+    insert_nsm_role($user->id());
     $preselected = array(
         RELEASE_MANAGEMENT => RELEASE_MANAGEMENT,
         INCIDENT_MANAGEMENT => INCIDENT_MANAGEMENT,
@@ -239,6 +239,14 @@ function hzd_user_customizations_user_insert($user) {
             }
         }
     }
+}
+
+function insert_nsm_role($uid) {
+  \Drupal::database()->insert('nsm_user_role')
+                     ->fields(array(
+                         'user_id' => $uid,
+                         'nsm_role_id' => 1,
+                     ))->execute();
 }
 
 /**
