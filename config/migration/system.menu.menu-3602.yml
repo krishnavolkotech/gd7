@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: menu-3602
 label: Dateiablage
-description: null
+description: ''
 locked: false
