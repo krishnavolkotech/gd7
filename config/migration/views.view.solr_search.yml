@@ -17,7 +17,6 @@ description: ''
 tag: ''
 base_table: search_api_index_hzd_solr_index
 base_field: search_api_id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -532,6 +531,8 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -547,31 +548,31 @@ display:
           parse_mode: terms
           min_length: null
           fields:
-            id: id
-            label: label
-            title: title
-            uid: uid
-            created: created
-            body: body
-            entity_id: entity_id
-            field_additional_email_recipient: field_additional_email_recipient
-            field_business_impact: field_business_impact
-            field_business_impact_services: field_business_impact_services
-            field_contact: field_contact
-            field_creators: field_creators
-            field_custom_title: field_custom_title
-            field_dates: field_dates
-            field_depend_other_services: field_depend_other_services
-            field_intial_situation: field_intial_situation
-            field_other_services: field_other_services
-            field_professional_conditions: field_professional_conditions
-            field_recipients: field_recipients
-            field_related_transfer_number: field_related_transfer_number
-            field_special_notes: field_special_notes
-            field_technical_impact: field_technical_impact
-            field_technical_impact_services: field_technical_impact_services
-            field_tech_requirements: field_tech_requirements
-            downtime_description: downtime_description
+            - body
+            - created
+            - downtime_description
+            - entity_id
+            - field_additional_email_recipient
+            - field_business_impact
+            - field_business_impact_services
+            - field_contact
+            - field_creators
+            - field_custom_title
+            - field_dates
+            - field_depend_other_services
+            - field_intial_situation
+            - field_other_services
+            - field_professional_conditions
+            - field_recipients
+            - field_related_transfer_number
+            - field_special_notes
+            - field_tech_requirements
+            - field_technical_impact
+            - field_technical_impact_services
+            - id
+            - label
+            - title
+            - uid
           plugin_id: search_api_fulltext
       sorts: {  }
       title: Suche

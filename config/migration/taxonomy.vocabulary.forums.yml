@@ -10,5 +10,4 @@ _core:
 name: Foren
 vid: forums
 description: 'Forum Navigations-Vokabular'
-hierarchy: 1
 weight: -10

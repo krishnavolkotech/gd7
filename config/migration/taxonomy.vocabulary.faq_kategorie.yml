@@ -5,5 +5,4 @@ dependencies: {  }
 name: FAQ-Kategorie
 vid: faq_kategorie
 description: 'Kategorie, zu der diese Frage gehört'
-hierarchy: 1
 weight: 0
