@@ -10,9 +10,6 @@ dependencies:
     - user
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: optionen
 theme: hzd
 region: navigation
@@ -26,6 +23,7 @@ settings:
   label_display: visible
   level: 1
   depth: 0
+  expand_all_items: false
 visibility:
   user_role:
     id: user_role

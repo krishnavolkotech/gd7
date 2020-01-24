@@ -10,9 +10,6 @@ dependencies:
     - system
   theme:
     - bootstrap
-third_party_settings:
-  block_class:
-    classes: ''
 id: primarylinks_3
 theme: bootstrap
 region: navigation_collapsible
@@ -26,6 +23,7 @@ settings:
   label_display: visible
   level: 1
   depth: 0
+  expand_all_items: false
 visibility:
   language:
     id: language

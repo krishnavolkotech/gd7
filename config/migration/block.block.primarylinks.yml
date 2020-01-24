@@ -11,9 +11,6 @@ dependencies:
     - user
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: primarylinks
 theme: hzd
 region: navigation_collapsible
@@ -27,6 +24,7 @@ settings:
   label_display: '0'
   level: 1
   depth: 0
+  expand_all_items: false
 visibility:
   language:
     id: language

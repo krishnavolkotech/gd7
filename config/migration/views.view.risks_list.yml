@@ -28,7 +28,6 @@ description: ''
 tag: ''
 base_table: group_content_field_data
 base_field: id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -980,6 +979,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1024,6 +1025,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: 0
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1067,6 +1070,8 @@ display:
             remember_roles:
               authenticated: authenticated
             placeholder: null
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1125,6 +1130,8 @@ display:
             placeholder: null
             min_placeholder: null
             max_placeholder: null
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1220,6 +1227,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1285,6 +1294,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: 'Responsible state (field_non_production_state)'
@@ -1331,6 +1342,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             placeholder: '<Suchtext eingeben>'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1382,6 +1395,8 @@ display:
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1422,6 +1437,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1598,6 +1615,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1642,6 +1661,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: 0
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1685,6 +1706,8 @@ display:
             remember_roles:
               authenticated: authenticated
             placeholder: null
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1743,6 +1766,8 @@ display:
             placeholder: null
             min_placeholder: null
             max_placeholder: null
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1856,6 +1881,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: 'Responsible state (field_non_production_state)'
@@ -1902,6 +1929,8 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             placeholder: '<Suchtext eingeben>'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1953,6 +1982,8 @@ display:
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1993,6 +2024,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
