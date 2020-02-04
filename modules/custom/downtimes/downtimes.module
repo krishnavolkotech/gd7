@@ -1001,11 +1001,12 @@ function downtimes_after_node_submit(&$form, $form_state){
   $downtime_type = $form_state->getValue('downtime_type');
   $messenger = \Drupal::messenger();
   $messenger->deleteAll();
-  $isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
-  if($isNewlyCreated){
-    $status = 'created';
-  }else{
+  //$isNewlyCreated = $form_state->getFormObject()->isNewlyCreated;
+  
+  if ($form_state->getFormObject()->getOperation() == 'edit') {
     $status = 'updated';
+  }else{
+    $status = 'created';
   }
   if($downtime_type == 0){
     $text = 'An Incident was ' . $status;
