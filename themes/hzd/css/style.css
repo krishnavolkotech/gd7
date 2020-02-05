@@ -3938,3 +3938,11 @@ td.checkbox {
 textarea#edit-abnormalities-desc {
     width: 400px;
 }
+
+.deployed .links-wrapper {
+    text-align: center;
+}
+
+.deployed .tablesorter-header-inner {
+    text-align: center;
+}

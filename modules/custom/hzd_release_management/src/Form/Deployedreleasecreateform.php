@@ -33,7 +33,6 @@ class Deployedreleasecreateform extends FormBase {
     );
 
     $wrapper = 'earlywarnings_posting';
-
     $environment_data = non_productions_list();
     $form['deployed_environment'] = array(
       '#type' => 'select',
@@ -71,7 +70,8 @@ class Deployedreleasecreateform extends FormBase {
 
     $form['installation_time'] = array(
       '#type' => 'textfield',
-      '#title' => t('Installation Time'),
+      '#title' => t('Installation Duration'),
+      '#description' => 'Dauer des gesamten Softwareinstallations- und Konfigurationsprozesses mit der technischen Vor- und Nacharbeitungsphase bis zum Zeitpunkt der Betriebsfähigkeit.',
       '#size' => 8,
       '#placeholder' =>  t('hh:mm')->render(),
       '#weight' => 7,
@@ -79,6 +79,7 @@ class Deployedreleasecreateform extends FormBase {
 
     $form['automated_deployment'] = array(
       '#type' => 'checkbox',
+      '#description' => 'Automatisierte Installation und Konfiguration über Puppet',
       '#title' => t('Automated Deployment'),
       '#weight' => 8,
     );
@@ -92,8 +93,8 @@ class Deployedreleasecreateform extends FormBase {
 
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
-      '#title' => t('Abnormalities Description'),
-      '#attributes' => array("class" => ["abnormalities-desc"]),
+      '#title' => t('Description of Abnormalities'),
+      '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
     );
@@ -230,6 +231,7 @@ class Deployedreleasecreateform extends FormBase {
       '#type' => 'select',
       '#title' => t('Previous Release'),
       '#default_value' => 0,
+      '#description' => 'In der Umgebung unmittelbar vorhereingesetztes Release',
       '#options' => $default_releases,
       '#weight' => -4,
       "#prefix" => "<div id = 'deployed_previous_release'>",
@@ -311,8 +313,8 @@ class Deployedreleasecreateform extends FormBase {
     if (!$form_state->getValue('deployed_environment')) {
       $form_state->setErrorByName('deployed_environment', t("Please Select environment"));
     }
-    
-    if ($form_state->getValue('previous_releases') == 0) {
+
+    if ($form_state->getValue('previous_releases') === "0") {
       $form_state->setErrorByName('previous_releases', t("Please Select Previous Release"));
     }
   }

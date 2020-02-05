@@ -292,7 +292,7 @@ function get_deployed_dependent_release($service = NULL, $environment = NULL, $r
     ->condition('type', 'deployed_releases')
     ->condition('field_user_state', $state_id)
     ->condition('field_environment', $environment)
-//    ->condition('status', 1)
+    ->condition('field_archived_release', 1, '!=')
     ->execute();
   $entities_fer = node_get_field_data_fast($entityQuery, 'field_earlywarning_release');
   foreach ($entities_fer as $fer_key =>$entity) {

@@ -72,46 +72,47 @@ class DeployedinfoFilterForm extends FormBase {
     $form['#prefix'] = "<div class = 'releases_filters'>";
     $form['#suffix'] = "</div>";
     
-    if ($type == 'deployed') {
-        if (!$filter_value['deployed_type']) {
-            $filter_value['deployed_type'] = "current";
-        }
-        
-        $states = get_all_user_state();
-        $form['states'] = array(
-            '#type' => 'select',
-            '#options' => $states,
-            '#default_value' => isset($filter_value['states']) ? $filter_value['states']: $form_state->getValue('states'),
-            '#weight' => -28,
-            "#prefix" => "<div class = 'state_search_dropdown hzd-form-element'>",
-            '#suffix' => '</div>',
-            '#attributes' => array(
-                'onchange' => 'this.form.submit()',
-            ),
-        );
-        
-        $environment_data = HzdreleasemanagementStorage::get_environment_options(\Drupal::request()->get('states'));
-        $form['environment_type'] = array(
-            '#type' => 'select',
-            '#default_value' => isset($filter_value['environment_type']) ?
-            $filter_value['environment_type'] : $form_state->getValue('environment_type'),
-            '#options' => $environment_data,
-            '#weight' => -26,
-            '#validated' => TRUE,
-            "#prefix" => "<div class = 'env-type hzd-form-element'>",
-            '#suffix' => '</div>',
-            '#attributes' => array(
-                'onchange' => 'this.form.submit()',
-            ),
-        );
+    if (!$filter_value['deployed_type']) {
+        $filter_value['deployed_type'] = "current";
     }
+    
+    /*
+      $states = get_all_user_state();
+      $form['states'] = array(
+      '#type' => 'select',
+      '#options' => $states,
+      '#default_value' => isset($filter_value['states']) ? $filter_value['states']: $form_state->getValue('states'),
+      '#weight' => -28,
+      "#prefix" => "<div class = 'state_search_dropdown hzd-form-element'>",
+      '#suffix' => '</div>',
+      '#attributes' => array(
+      'onchange' => 'this.form.submit()',
+      ),
+      );
+    */
+    
+    $environment_data = HzdreleasemanagementStorage::get_environment_options(\Drupal::request()->get('states'));
+    $form['environment_type'] = array(
+      '#type' => 'select',
+      '#default_value' => isset($filter_value['environment_type']) ?
+      $filter_value['environment_type'] : $form_state->getValue('environment_type'),
+      '#options' => $environment_data,
+      '#weight' => 1,
+      '#validated' => TRUE,
+      "#prefix" => "<div class = 'env-type hzd-form-element'>",
+      '#suffix' => '</div>',
+      '#attributes' => array(
+          'onchange' => 'this.form.submit()',
+      ),
+    );
+    
     
     natcasesort($release_type_list);
     $form['release_type'] = array(
         '#type' => 'select',
         '#default_value' => $default_type,
         '#options' => $release_type_list,
-        '#weight' => -25,
+        '#weight' => 3,
         "#prefix" => "<div class = 'release_type_dropdown hzd-form-element'>",
         '#suffix' => '</div><div style="clear:both"></div>',
         '#attributes' => array(
@@ -129,7 +130,7 @@ class DeployedinfoFilterForm extends FormBase {
         '#type' => 'select',
         '#options' => $services,
         '#default_value' => $default_value_services,
-        '#weight' => -7,
+        '#weight' => 2,
         "#prefix" => "<div class = 'service_search_dropdown hzd-form-element'>",
         '#suffix' => '</div>',
         '#attributes' => array(
@@ -166,7 +167,7 @@ class DeployedinfoFilterForm extends FormBase {
         '#type' => 'select',
         '#options' => $options,
         '#default_value' => $default_value_releases,
-        '#weight' => -6,
+        '#weight' => 4,
         "#prefix" => "<div class = 'releases_search_dropdown hzd-form-element'>",
         '#suffix' => '</div>',
         '#attributes' => array(

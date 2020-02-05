@@ -1193,7 +1193,7 @@ $inprogress_nid_values = [];
         $link_path = '';
       }
 
-      $release_download = t('@info_link @link_path @link', array('@link_path' => $link_path, '@link' => $link, '@info_link' => $info_link));
+      $release_download = t('<div class="links-wrapper">@info_link @link_path @link</div>', array('@link_path' => $link_path, '@link' => $link, '@info_link' => $info_link));
       array_push($elements, $release_download);
       $rows[] = $elements;
     }
@@ -2020,15 +2020,16 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $installation_duration = $deployed_release_node->field_installation_duration->value;
       $automated_depoyment = $deployed_release_node->field_automated_deployment->value;
       $abnormalities = $deployed_release_node->field_abnormality_description->value;
+      $deployed_date = date('m.d.Y', strtotime($deployed_release_node->field_date_deployed->value));
       
       $elements = array(
           'state' => $state,
           'release' => $release,
-          'service' => $service,
+          'deployed_date' => $deployed_date,
           'environment' => $environment_val,
           'previous_release' => $previous_release_title,
           'installation_duration' => $installation_duration,
-          'automated_deployment' => $automated_depoyment,
+          'automated_deployment' => $automated_depoyment?t('Yes'):t('No'),
           'abnormalities' => $abnormalities,
       );
 
@@ -2037,11 +2038,11 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           $elements = array(
             'state' => $state,
             'release' => $release,
-            'service' => $service,
+            'deployed_date' => $deployed_date,
             'environment' => $environment_val,
             'previous_release' => $previous_release_title,
             'installation_duration' => $installation_duration,
-            'automated_deployment' => $automated_depoyment,
+            'automated_deployment' => $automated_depoyment?t('Yes'):t('No'),
             'abnormalities' => $abnormalities,
           );
         }
@@ -2067,7 +2068,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         '#theme' => 'table',
         '#rows' => $rows,
         '#header' => $header,
-        '#attributes' => ['id' => "sortable", 'class' => "tablesorter releases deployed"],
+        '#attributes' => ['id' => "sortable", 'class' => "tablesorter deployedinfo"],
         '#empty' => t('No data to be displayed'),
     );
 

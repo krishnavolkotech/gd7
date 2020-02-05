@@ -425,14 +425,14 @@ function hzd_preprocess_node(&$variables) {
       $deploy_info_values[] = ['title' => t('Service'), 'value' => $service];
       $deploy_info_values[] = ['title' => t('Release'), 'value' => $release];
       $deploy_info_values[] = ['title' => t('Previous Release'), 'value' => $previous_release_title];
-      $deploy_info_values[] = ['title' => t('User State'), 'value' => $state];
-      $deploy_info_values[] = ['title' => t('Deployed Date'), 'value' => $node->get('field_date_deployed')->value];
+      $deploy_info_values[] = ['title' => t('State'), 'value' => $state];
+      $deploy_info_values[] = ['title' => t('Deployed Date'), 'value' => date('d.m.Y', strtotime($node->get('field_date_deployed')->value))];
       $deploy_info_values[] = ['title' => t('Installation Duration'), 'value' => $node->get('field_installation_duration')->value];
       $deploy_info_values[] = ['title' => t('Automated Deployment'), 'value' => $automated];
       
       $deploy_info_values[] = ['title' => t('Abnormalities'), 'value' => $abnormalities? t('Yes') :t('No')];
       if ($abnormalities) {
-        $deploy_info_values[] = ['title' => t('Abnormality Description'), 'value' => $node->get('field_abnormality_description')->value];
+        $deploy_info_values[] = ['title' => t('Description of Abnormality'), 'value' => $node->get('field_abnormality_description')->value];
       }
 
       if ($node->get('field_archived_release')->value) {
