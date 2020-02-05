@@ -16,6 +16,7 @@ use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
 /**
  * @param $variables
@@ -399,6 +400,54 @@ function hzd_preprocess_node(&$variables) {
     //pr($variables['content']['entity_print_view']);exit;
   }
 
+  if ($variables['node']->getType() == 'deployed_releases') {
+      $node = $variables['node'];
+      $state = HzdreleasemanagementHelper::getStateABBR($node->field_user_state->value);
+      $service = HzdreleasemanagementHelper::getNodedetails($node->field_release_service->value, 'title');
+      $release = HzdreleasemanagementHelper::getNodedetails($node->field_earlywarning_release->value, 'title');
+
+      $previous_release = $node->field_previous_release->value;
+      $previous_release_title = $previous_release == 0 ? 'Ersteinsatz': HzdreleasemanagementHelper::getNodedetails($node->field_previous_release->value, 'title');
+
+      if ($node->field_environment->value == 1) {
+          $environment_val = t('Produktion');
+      }
+      else if ($node->field_environment->value == 2) {
+          $environment_val = t('Pilot');
+      }
+      else {
+        $environment_val = \Drupal\node\Entity\Node::load($node->field_environment->value)->getTitle();           
+      }
+      $abnormalities = $node->get('field_abnormalities')->value;
+      $automated = $node->get('field_abnormalities')->value? t('Yes'):t('No');
+      
+      $deploy_info_values[] = ['title' => t('Environment'), 'value' => $environment_val];
+      $deploy_info_values[] = ['title' => t('Service'), 'value' => $service];
+      $deploy_info_values[] = ['title' => t('Release'), 'value' => $release];
+      $deploy_info_values[] = ['title' => t('Previous Release'), 'value' => $previous_release_title];
+      $deploy_info_values[] = ['title' => t('User State'), 'value' => $state];
+      $deploy_info_values[] = ['title' => t('Deployed Date'), 'value' => $node->get('field_date_deployed')->value];
+      $deploy_info_values[] = ['title' => t('Installation Duration'), 'value' => $node->get('field_installation_duration')->value];
+      $deploy_info_values[] = ['title' => t('Automated Deployment'), 'value' => $automated];
+      
+      $deploy_info_values[] = ['title' => t('Abnormalities'), 'value' => $abnormalities? t('Yes') :t('No')];
+      if ($abnormalities) {
+        $deploy_info_values[] = ['title' => t('Abnormality Description'), 'value' => $node->get('field_abnormality_description')->value];
+      }
+
+      if ($node->get('field_archived_release')->value) {
+          $deploy_info_values[] = ['title' => t('Archived'), 'value' => $node->get('field_archived_release')->value? t('Yes'): t('No')];
+      }
+
+      $groupId = RELEASE_MANAGEMENT;
+      $url = Url::fromRoute('hzd_release_management.deployed', array('group' => $groupId), [
+          'attributes' => ['class' => ['back-search']],
+          'query' => \Drupal::request()->query->all()
+      ]);
+      $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
+      $variables['deployed_info'] = $deploy_info_values;
+  }
+
 }
 
 function hzd_preprocess_node__release__mail(&$variables) {
@@ -420,6 +469,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
   }
   // This breadcrumb will apply only for our view at /group/24/address
   $route = \Drupal::routeMatch()->getRouteName();
+
   if ($route == 'view.group_members_lists.page_1') {
     // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
     /**
@@ -475,6 +525,13 @@ function hzd_preprocess_breadcrumb(&$variables) {
         '#title' => 'PDF'
       ];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+      
+      if($entity->bundle() == 'deployed_releases') {
+          $title =  $variables['breadcrumb'][1];
+          $variables['breadcrumb'][1] = ['text' => t('Release Management') , 'url' => '/release-management'];
+          $variables['breadcrumb'][] = ['text' => t('Deployed') , 'url' => '/release-management/releases/deployed'];
+          $variables['breadcrumb'][] = $title;
+      }
     }
     else {
       $que = \Drupal::request()->query;
@@ -495,8 +552,9 @@ function hzd_preprocess_breadcrumb(&$variables) {
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
   }
+  
 //    $variables['breadcrumb'][] = $rightData;
-//    pr(($variables['breadcrumb']['extras']['pdf_print']));exit;
+  //pr(($variables['breadcrumb']));exit;
 }
 
 function custom_user_fullname($uid) {

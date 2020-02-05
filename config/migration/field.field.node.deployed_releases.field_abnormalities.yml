@@ -1,0 +1,21 @@
+uuid: 5b1e2b92-8468-48ef-aea9-c11d59cec98f
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_abnormalities
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_abnormalities
+field_name: field_abnormalities
+entity_type: node
+bundle: deployed_releases
+label: Abnormalities
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

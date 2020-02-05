@@ -25,7 +25,26 @@
           .css("margin-left", "-40px");
       }
 
-      /*$("#sortable").tablesorter({
+
+	if ($(".abnormalities").is(":checked")) {
+	    $(".form-item-abnormalities-desc").show();
+	}
+	else {
+	    $(".form-item-abnormalities-desc").hide();
+	}
+
+	$('.abnormalities').click(function(){
+	    if($(this).is(":checked")){
+		$(".form-item-abnormalities-desc").show();
+	    }
+	    else if($(this).is(":not(:checked)")){
+		$(".form-item-abnormalities-desc").hide();
+	    }
+	});
+
+	
+	
+	/*$("#sortable").tablesorter({
        headers: {
        3: {sorter: 'archived_date'}
        },

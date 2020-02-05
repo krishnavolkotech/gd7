@@ -1,0 +1,28 @@
+uuid: 9206ab22-a7f7-4ab8-b6d2-8ed3dde3166f
+langcode: de
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - options
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_automated_deployment
+field_name: field_automated_deployment
+entity_type: node
+type: list_integer
+settings:
+  allowed_values:
+    -
+      value: 1
+      label: 'Automated Deployment'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
