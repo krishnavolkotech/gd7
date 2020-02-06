@@ -30,6 +30,15 @@
                 5:{sorter:'deployed_date'},
                 widgets: ['zebra']
             });
+
+	$(context).find("#deployed-info-sortable").tablesorter({
+	    dateFormat: 'dd.mm.yyyy',
+            headers: {
+                4: {sorter: 'deployed_date'},
+                '.instattion-duration-hdr, .automated-deployment-hdr, .abnormalities-hdr' : {sorter: false},
+            },
+            widgets: ['zebra']
+            });
             
             $.tablesorter.addParser({
                   // set a unique id

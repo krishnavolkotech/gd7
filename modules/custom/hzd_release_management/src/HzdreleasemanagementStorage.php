@@ -2071,7 +2071,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         '#theme' => 'table',
         '#rows' => $rows,
         '#header' => $header,
-        '#attributes' => ['id' => "sortable", 'class' => "tablesorter deployedinfo"],
+        '#attributes' => ['id' => "deployed-info-sortable", 'class' => "tablesorter deployedinfo"],
         '#empty' => t('No data to be displayed'),
     );
 
