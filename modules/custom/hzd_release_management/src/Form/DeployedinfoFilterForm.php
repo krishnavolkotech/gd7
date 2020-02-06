@@ -92,19 +92,6 @@ class DeployedinfoFilterForm extends FormBase {
     */
     
     $environment_data = HzdreleasemanagementStorage::get_environment_options(\Drupal::request()->get('states'));
-    $form['environment_type'] = array(
-      '#type' => 'select',
-      '#default_value' => isset($filter_value['environment_type']) ?
-      $filter_value['environment_type'] : $form_state->getValue('environment_type'),
-      '#options' => $environment_data,
-      '#weight' => 1,
-      '#validated' => TRUE,
-      "#prefix" => "<div class = 'env-type hzd-form-element'>",
-      '#suffix' => '</div>',
-      '#attributes' => array(
-          'onchange' => 'this.form.submit()',
-      ),
-    );
     
     
     natcasesort($release_type_list);
@@ -112,7 +99,7 @@ class DeployedinfoFilterForm extends FormBase {
         '#type' => 'select',
         '#default_value' => $default_type,
         '#options' => $release_type_list,
-        '#weight' => 3,
+        '#weight' => 1,
         "#prefix" => "<div class = 'release_type_dropdown hzd-form-element'>",
         '#suffix' => '</div><div style="clear:both"></div>',
         '#attributes' => array(
@@ -137,6 +124,7 @@ class DeployedinfoFilterForm extends FormBase {
             'onchange' => 'jQuery(\'select[name="releases"]\').prop(\'selectedIndex\',0);this.form.submit()',
         ),
     );
+
     
     $service = $filter_value['services'];
     $options = array('<' . $this->t('Release') . '>');
@@ -156,12 +144,29 @@ class DeployedinfoFilterForm extends FormBase {
         '#type' => 'hidden',
         '#value' => $type
     );
+
+
+    $form['environment_type'] = array(
+      '#type' => 'select',
+      '#default_value' => isset($filter_value['environment_type']) ?
+      $filter_value['environment_type'] : $form_state->getValue('environment_type'),
+      '#options' => $environment_data,
+      '#weight' => 3,
+      '#validated' => TRUE,
+      "#prefix" => "<div class = 'env-type hzd-form-element'>",
+      '#suffix' => '</div>',
+      '#attributes' => array(
+          'onchange' => 'this.form.submit()',
+      ),
+    );
+
     
     $timer = \Drupal::config('hzd_release_management.settings')->get('timer');
     $default_value_releases = $filter_value['releases'];
     if (!$default_value_releases) {
         $default_value_releases = isset($timer) ? $timer : $form_state->getValue('releases');
     }
+
     natcasesort($options);
     $form['releases'] = array(
         '#type' => 'select',

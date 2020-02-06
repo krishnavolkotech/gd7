@@ -2007,6 +2007,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $service = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_release_service->value, 'title');
       $release = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_earlywarning_release->value, 'title');
       $previous_release_title = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_previous_release->value, 'title');
+      if(!$previous_release_title) {
+        $previous_release_title = 'Ersteinsatz';
+      }
       
       if ($deployed_release_node->field_environment->value == 1) {
           $environment_val = t('Produktion');
@@ -2020,7 +2023,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $installation_duration = $deployed_release_node->field_installation_duration->value;
       $automated_depoyment = $deployed_release_node->field_automated_deployment->value;
       $abnormalities = $deployed_release_node->field_abnormality_description->value;
-      $deployed_date = date('m.d.Y', strtotime($deployed_release_node->field_date_deployed->value));
+      $deployed_date = date('d.m.Y', strtotime($deployed_release_node->field_date_deployed->value));
       
       $elements = array(
           'state' => $state,
