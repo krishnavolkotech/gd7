@@ -15,7 +15,7 @@ entity_type: node
 type: list_integer
 settings:
   allowed_values: {  }
-  allowed_values_function: hzd_earlywarning_release
+  allowed_values_function: hzd_deployedinfo_release
 module: options
 locked: false
 cardinality: 1

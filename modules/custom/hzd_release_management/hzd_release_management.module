@@ -147,6 +147,23 @@ function hzd_earlywarning_release() {
   return $options['releases'];
 }
 
+/**
+ * Get early warning releases.
+ */
+function hzd_deployedinfo_release() {
+  $type = Drupal::request()->get('type');
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+
+  if ((isset($type) && $type == 'deployed_releases') || (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) {
+    $service = Drupal::request()->get('ser');
+    $release = Drupal::request()->get('rel');
+    return get_undeployed_dependent_release($service, NULL, $release);
+  }
+  $options = get_earlywarning_release();
+  $options['releases'] = ['Ersteinsatz' => 'Ersteinsatz'] + $options['releases'];
+  return $options['releases'];
+}
 
 /**
  * Get early warning releases.
