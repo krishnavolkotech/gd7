@@ -5,10 +5,15 @@ dependencies:
   config:
     - field.field.node.deployed_releases.body
     - field.field.node.deployed_releases.comment
+    - field.field.node.deployed_releases.field_abnormalities
+    - field.field.node.deployed_releases.field_abnormality_description
     - field.field.node.deployed_releases.field_archived_release
+    - field.field.node.deployed_releases.field_automated_deployment
     - field.field.node.deployed_releases.field_date_deployed
     - field.field.node.deployed_releases.field_earlywarning_release
     - field.field.node.deployed_releases.field_environment
+    - field.field.node.deployed_releases.field_installation_duration
+    - field.field.node.deployed_releases.field_previous_release
     - field.field.node.deployed_releases.field_release_service
     - field.field.node.deployed_releases.field_user_state
     - field.field.node.deployed_releases.upload
@@ -21,23 +26,34 @@ targetEntityType: node
 bundle: deployed_releases
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 5
+  field_abnormalities:
+    weight: 8
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
+  field_abnormality_description:
+    weight: 9
     settings:
-      rows: 9
-      summary_rows: 3
+      rows: 5
       placeholder: ''
     third_party_settings: {  }
+    type: text_textarea
     region: content
   field_archived_release:
-    weight: 4
+    weight: 10
     type: options_buttons
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_automated_deployment:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
   field_date_deployed:
-    weight: 6
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
@@ -50,6 +66,20 @@ content:
     region: content
   field_environment:
     weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_installation_duration:
+    weight: 6
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_previous_release:
+    weight: 4
     settings: {  }
     third_party_settings: {  }
     type: options_select
@@ -69,6 +99,7 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
+  body: true
   comment: true
   created: true
   field_user_state: true

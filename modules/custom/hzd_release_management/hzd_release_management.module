@@ -148,6 +148,41 @@ function hzd_earlywarning_release() {
 }
 
 /**
+ * Get early warning releases.
+ */
+function hzd_deployedinfo_release() {
+  $type = Drupal::request()->get('type');
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+
+  if ((isset($type) && $type == 'deployed_releases') || (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) {
+    $service = Drupal::request()->get('ser');
+    $release = Drupal::request()->get('rel');
+    return get_undeployed_dependent_release($service, NULL, $release);
+  }
+  $options = get_earlywarning_release();
+  $options['releases'] = ['Ersteinsatz' => 'Ersteinsatz'] + $options['releases'];
+  return $options['releases'];
+}
+
+/**
+ * Get early warning releases.
+ */
+function hzd_deployed_release() {
+  $type = Drupal::request()->get('type');
+  $current_path = \Drupal::service('path.current')->getPath();
+  $path_args = explode('/', $current_path);
+
+  if ((isset($type) && $type == 'deployed_releases') || (isset($path_args['3']) && $path_args['3'] == 'deployed_releases')) {
+    $service = Drupal::request()->get('ser');
+    $release = Drupal::request()->get('rel');
+    return get_undeployed_dependent_release($service, NULL, $release);
+  }
+  $options = get_earlywarning_release();
+  return $options['releases'];
+}
+
+/**
  * Returns the releases associated with the provided sevices.
  *
  * @service is service id for which releses has to be returned
@@ -251,6 +286,64 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
   natcasesort($undeployed_releases);
   // dpm($release);
   return $undeployed_releases;
+}
+
+
+
+/**
+ *
+ * @returns: the releases which are not deployed
+ */
+function get_deployed_dependent_release($service = NULL, $environment = NULL, $release = NULL) {
+
+  $releases = \Drupal::entityQuery('node')
+    ->condition('field_relese_services', $service)
+    //Querying for released and in progressed releases
+    ->condition('field_release_type', [1, 2], 'IN')
+    ->condition('type', 'release')
+    ->execute();
+  $nodes_title = node_get_title_fast($releases);
+  
+  $state_id = hzd_user_state();
+  $entityQuery = \Drupal::entityQuery('node')
+    ->condition('type', 'deployed_releases')
+    ->condition('field_user_state', $state_id)
+    ->condition('field_environment', $environment)
+    ->condition('field_archived_release', 1, '!=')
+    ->execute();
+  $entities_fer = node_get_field_data_fast($entityQuery, 'field_earlywarning_release');
+  foreach ($entities_fer as $fer_key =>$entity) {
+    $releaseData[$entity] = $entity;
+  }
+
+  $deployed_releases[0] = t("< Previous Release >");
+  foreach ($nodes_title as $key => $value) {
+    if (in_array($key, $releaseData)) {
+      $deployed_releases[$key] = $value;
+    }
+  }
+  // print_r($undeployed_releases); exit;.
+  if ($release) {
+    $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
+      ":env" => $environment,
+      ":eid" => $release
+    ))->fetchField();
+    if ($deployed_nid) {
+      $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
+      $deployed_releases[$deployed_nid] = $title;
+    }
+  }
+
+  //dump($deployed_releases);
+//  if(count($deployed_releases) == 1) {
+    unset($deployed_releases[0]);
+    //}
+  natcasesort($deployed_releases);
+
+  $default = ['Ersteinsatz' => "Ersteinsatz"];
+  $deployed = $default + $deployed_releases;
+  
+  return $deployed;
 }
 
 /**
@@ -1379,6 +1472,7 @@ function hzd_release_management_menu_local_tasks_alter(&$data, $route_name) {
     'hzd_release_management.release_management_locked_tab',
     'hzd_release_management.release_management_deployed_tab',
     'hzd_release_management.release_management_overview_deployed_tab',
+    'hzd_release_management.release_management_deployed_info_tab',
     'downtimes.new_downtimes_controller_newDowntime.profiles_management',
     'downtimes.archived_downtimes_controller',
     'problem_management.problems_tab',

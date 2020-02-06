@@ -906,6 +906,13 @@ $inprogress_nid_values = [];
     return array($release_title, $product, $release, $compressed_file, $link_search);
   }
 
+  static public function has_deployed_info($node) {
+      if (!is_null($node->field_previous_release->value)) {
+          return TRUE;
+      }
+      return FALSE;
+  }
+  
   /**
    *
    * @filter_options:filter options for filtering releases according to selected filters
@@ -1041,6 +1048,8 @@ $inprogress_nid_values = [];
                         $deployed_release_node->field_environment->value)->getTitle();
       }
 //      // date("d.m.Y", 1900000)
+
+      $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($deployed_release_node);
       $elements = array(
           'state' => $state,
           'environment' => $environment_val,
@@ -1126,6 +1135,8 @@ $inprogress_nid_values = [];
 
       $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
       $download = "<img src = '/" . $download_imgpaths . "'>";
+
+           
       $link_info = !empty($release_node->field_documentation_link) ? $release_node->field_documentation_link->value : null;
       $link_info_path = !empty($release_node->field_link) ? $release_node->field_link->value : null;
       $link = null;
@@ -1149,6 +1160,28 @@ $inprogress_nid_values = [];
 //                $link = t('No Download link available');
       }
 
+      $info_link = '';
+
+      if($has_depoyment_info) {
+          $deployed_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/notification-icon.png';
+          $deployed_img = "<img class = 'info-icon' src = '/" . $deployed_imgpaths . "'>";
+
+          $filterData = \Drupal::request()->query;
+          $exposedFilterData = $filterData->all();
+          unset($exposedFilterData['form_build_id']);
+          unset($exposedFilterData['form_id']);
+
+          $url = $deployed_release_node->toUrl('canonical', ['query' => $exposedFilterData]);
+          $info_link = array(
+              '#title' => array(
+                  '#markup' => $deployed_img
+              ),
+              '#type' => 'link',
+              '#url' => $url
+          );
+          $info_link = \Drupal::service('renderer')->renderRoot($info_link);
+      }
+      
       if (\Drupal\Component\Utility\UrlHelper::isValid($link_info_path)) {
         $options['attributes'] = array('class' => 'download_img_icon');
         $download_url = Url::fromUri($link_info_path);
@@ -1159,7 +1192,8 @@ $inprogress_nid_values = [];
       } else {
         $link_path = '';
       }
-      $release_download = t('@link_path @link', array('@link_path' => $link_path, '@link' => $link));
+
+      $release_download = t('<div class="links-wrapper">@info_link @link_path @link</div>', array('@link_path' => $link_path, '@link' => $link, '@info_link' => $info_link));
       array_push($elements, $release_download);
       $rows[] = $elements;
     }
@@ -1176,7 +1210,7 @@ $inprogress_nid_values = [];
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
       $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warnings-hdr');
-      $download = array('data' => t('D/L'), 'class' => 'download-hdr');
+      $download = array('data' => t('D/L/EI'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $earlywarnings, $download);
     } else {
       $state = array('data' => t('State'), 'class' => 'state-hdr');
@@ -1184,7 +1218,7 @@ $inprogress_nid_values = [];
       $service = array('data' => t('Service'), 'class' => 'service-hdr');
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
-      $download = array('data' => t('D/L'), 'class' => 'download-hdr');
+      $download = array('data' => t('D/L/EI'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $download);
     }
 
@@ -1228,6 +1262,20 @@ $inprogress_nid_values = [];
     $link = \Drupal::l(t('hier'), $url);
 
     $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
+Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
+F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
+    $build['#markup'] = $output;
+    return $build;
+  }
+
+  /**
+   * Deployed release tab default text.
+   */
+  static public function deployed_info_text() {
+    $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
+    $link = \Drupal::l(t('hier'), $url);
+
+    $output = "<div class = 'deployed-info-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
 Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
 F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
     $build['#markup'] = $output;
@@ -1872,4 +1920,176 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     return $parameters;
   }
 
+
+
+  /**
+   *
+   * @filter_options:filter options for filtering releases according to selected filters
+   * @limit:page limit
+   * @returns: table display of deployed releases
+   */
+  static public function deployed_info_displaytable($service_release_type = KONSONS) {
+    $deployed_releases_node_ids = \Drupal::entityQuery('node')
+        ->condition('field_previous_release', NULL, 'IS NOT NULL')
+        ->condition('type', 'deployed_releases', '=');
+
+    $filter_value = HzdreleasemanagementStorage::get_release_filters();
+    $type = 'deployed_releases';
+    $group_id = get_group_id();
+    
+    if (isset($filter_value['release_type'])) {
+      $default_type = $filter_value['release_type'];
+    }
+    else {
+      if ($group_id != RELEASE_MANAGEMENT) {
+          $default_type = db_query("SELECT release_type "
+          . "FROM {default_release_type} "
+          . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
+          $default_type = $default_type ? $default_type : KONSONS;
+      }
+      else {
+          $default_type = KONSONS;
+      }
+    }
+    
+    if ($filter_value['services']) {
+        $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
+    }
+    else {
+      $services_obj = db_query("SELECT n.title, n.nid
+                     FROM {node_field_data} n, {group_releases_view} grv, 
+                     {node__release_type} nrt 
+                     WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
+                     and grv.group_id = :gid and nrt.release_type_target_id = :tid 
+                     ORDER BY n.title asc", array(
+                         ":gid" => $group_id,
+                         ":tid" => $default_type
+                     )
+      )->fetchAll();
+      $services = [];
+      if (empty($services_obj)) {
+          $services = [-1];
+      }
+      foreach ($services_obj as $services_data) {
+          $services[] = $services_data->nid;
+      }
+      $deployed_releases_node_ids->condition('field_release_service', $services, 'IN');
+    }
+
+    if (isset($filter_value['states']) && $filter_value['states'] != 1) {
+      $deployed_releases_node_ids->condition('field_user_state', $filter_value['states'], '=');
+    }
+    if ($filter_value['releases']) {
+      $deployed_releases_node_ids->condition('field_earlywarning_release', $filter_value['releases'], '=');
+    }
+
+    if ($filter_value['environment_type']) {
+      $deployed_releases_node_ids->condition('field_environment', $filter_value['environment_type'], '=');
+    }
+    $deployed_releases_node_ids->sort('field_date_deployed', 'DESC');
+
+
+    $gid = $group_id ? $group_id : RELEASE_MANAGEMENT;
+    if ($filter_value['limit'] != 'all') {
+      $page_limit = (isset($filter_value['limit']) ? $filter_value['limit'] : DISPLAY_LIMIT);
+      $result = $deployed_releases_node_ids->pager($page_limit)->execute();
+    }
+    else {
+      $result = $deployed_releases_node_ids->execute();
+    }
+    $rows = [];
+
+    $current_uri = \Drupal::request()->getRequestUri();
+
+    foreach ($result as $deployed_releases_node_id) {
+      $deployed_release_node = \Drupal\node\Entity\Node::load($deployed_releases_node_id);
+      $state = HzdreleasemanagementHelper::getStateABBR($deployed_release_node->field_user_state->value);
+      $service = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_release_service->value, 'title');
+      $release = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_earlywarning_release->value, 'title');
+      $previous_release_title = HzdreleasemanagementHelper::getNodedetails($deployed_release_node->field_previous_release->value, 'title');
+      if(!$previous_release_title) {
+        $previous_release_title = 'Ersteinsatz';
+      }
+      
+      if ($deployed_release_node->field_environment->value == 1) {
+          $environment_val = t('Produktion');
+      }
+      else if ($deployed_release_node->field_environment->value == 2) {
+          $environment_val = t('Pilot');
+      }
+      else {
+        $environment_val = \Drupal\node\Entity\Node::load($deployed_release_node->field_environment->value)->getTitle();           
+      }
+      $installation_duration = $deployed_release_node->field_installation_duration->value;
+      $automated_depoyment = $deployed_release_node->field_automated_deployment->value;
+      $abnormalities = $deployed_release_node->field_abnormality_description->value;
+      $deployed_date = date('d.m.Y', strtotime($deployed_release_node->field_date_deployed->value));
+      
+      $elements = array(
+          'state' => $state,
+          'release' => $release,
+          'deployed_date' => $deployed_date,
+          'environment' => $environment_val,
+          'previous_release' => $previous_release_title,
+          'installation_duration' => $installation_duration,
+          'automated_deployment' => $automated_depoyment?t('Yes'):t('No'),
+          'abnormalities' => $abnormalities,
+      );
+
+      if (isset($filter_value['states']) && $filter_value['states'] > 1) {
+        if ($filter_value['states'] == $deployed_release_node->field_user_state->value) {
+          $elements = array(
+            'state' => $state,
+            'release' => $release,
+            'deployed_date' => $deployed_date,
+            'environment' => $environment_val,
+            'previous_release' => $previous_release_title,
+            'installation_duration' => $installation_duration,
+            'automated_deployment' => $automated_depoyment?t('Yes'):t('No'),
+            'abnormalities' => $abnormalities,
+          );
+        }
+        else {
+          $elements = array();
+        }
+      }
+      $rows[] = $elements;
+    }
+
+    $state = array('data' => t('State'), 'class' => 'state-hdr');
+    $release = array('data' => t('Release'), 'class' => 'release-hdr');
+    $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
+    $environment = array('data' => t('Environment'), 'class' => 'environment-hdr');
+    $previous_release = array('data' => t('Previous Release'), 'class' => 'previous-release-hdr');
+    $installation_duration = array('data' => t('Installation Duration'), 'class' => 'instattion-duration-hdr');
+    $automated_depoyment = array('data' => t('Automated Deployment'), 'class' => 'automated-deployment-hdr');
+    $abnormalities = array('data' => t('Abnormalities'), 'class' => 'abnormalities-hdr');
+    
+    $header = array($state, $release, $date, $environment, $previous_release, $installation_duration, $automated_depoyment, $abnormalities);
+
+    $output['deployed'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#attributes' => ['id' => "deployed-info-sortable", 'class' => "tablesorter deployedinfo"],
+        '#empty' => t('No data to be displayed'),
+    );
+
+    $output['pager'] = array(
+        '#type' => 'pager',
+        '#quantity' => 5,
+        '#prefix' => '<div id="pagination">',
+        '#suffix' => '</div>',
+        '#exclude_from_print'=>TRUE,
+    );
+
+    $output['#attached']['library'] = array(
+        'hzd_release_management/hzd_release_management',
+    );
+    $output['#attached']['drupalSettings']['release_management'] = array(
+        'group_id' => $group_id,
+    );
+    return $output;
+  }  
 }
+

@@ -66,7 +66,14 @@ hzd_release_management.release_management_overview_deployed_tab:
   route_name: hzd_release_management.view_deployed_releases
   base_route: hzd_release_management.released
   weight: 5
-  
+
+hzd_release_management.release_management_deployed_info_tab:
+  title: Einsatzinformationen
+  route_name: hzd_release_management.deployedinfo
+  base_route: hzd_release_management.released
+  weight: 6
+
+
 hzd_release_management.deployed_releases_tab:
   title: Deployed Releases
   route_name: hzd_release_management.deployed_releases
@@ -78,3 +85,9 @@ hzd_release_management.archived_deployed_releases_tab:
   route_name: hzd_release_management.archived_deployed_releases
   base_route: hzd_release_management.deployed_releases
   weight: 2
+
+hzd_release_management.extended_deployed_releases_tab:
+  title: Extended Deployed Releases
+  route_name: hzd_release_management.extended_deployed_releases
+  base_route: hzd_release_management.deployed_releases
+  weight: 3

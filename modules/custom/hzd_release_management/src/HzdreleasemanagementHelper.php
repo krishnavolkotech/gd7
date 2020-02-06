@@ -851,4 +851,22 @@ class HzdreleasemanagementHelper {
     );
   }
 
+  static public function getStateABBR($id) {
+    if ($id) {
+      return $state = db_query("SELECT abbr FROM {states} where id = :id", array(":id" => $id))->fetchField();
+    }
+  }
+
+  static public function getNodedetails($nid, $field = NULL) {
+    $node = \Drupal\node\Entity\Node::load($nid);
+    if ($node instanceof Node) {
+      $element = $node->get('title')->getValue();
+      if (is_array($element)) {
+        if (isset($element[0]['value'])) {
+            return $element[0]['value'];
+        }
+      }
+    }
+  }
+  
 }

@@ -941,6 +941,24 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       }
   }
 
+  if ($node->getType() == 'deployed_releases') {
+    $group_id = 5;
+    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+    if (!$is_group_admin) {
+        switch ($op) {
+        case 'view':
+            return AccessResult::allowed();
+        case 'edit':
+            return AccessResult::forbidden();
+        default:
+            if ($account->isAnonymous()) {
+                return AccessResult::forbidden();
+            }
+        }
+        return AccessResult::forbidden();
+    }
+  }
+
 }
 
 /**

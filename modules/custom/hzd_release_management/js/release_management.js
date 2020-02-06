@@ -30,6 +30,7 @@
                 5:{sorter:'deployed_date'},
                 widgets: ['zebra']
             });
+
             
             $.tablesorter.addParser({
                   // set a unique id
@@ -143,8 +144,35 @@
                   }, 
                   type: "numeric" 
                });
-               
-                $(context).find("#sortable").tablesorter({
+
+
+		$(context).find("#deployed-info-sortable").tablesorter({
+                    dateFormat: 'dd.mm.yyyy',
+                    headers: {
+                        3: {sorter: 'deployed_date'},
+                        5: {sorter: false},
+			6: {sorter: false},
+			7: {sorter: false},
+                    },
+                    showProcessing: true,
+                    headerTemplate : '{content} {icon}',
+                    widgets: ['zebra',"pager", 'stickyHeaders'],
+                    widgetOptions: {
+                        stickyHeaders: 'sticky-header',
+                        stickyHeaders_offset: $.fn.admin_toolbar(),
+                        stickyHeaders_cloneId: '-sticky',
+                        stickyHeaders_addResizeEvent: true,
+                        stickyHeaders_includeCaption: true,
+                        stickyHeaders_zIndex: 2,
+                        stickyHeaders_attachTo: null,
+                        stickyHeaders_xScroll: null,
+                        stickyHeaders_yScroll: null,
+                        stickyHeaders_filteredToTop: true
+                    }
+                });
+
+		
+		$(context).find("#sortable").tablesorter({
                     dateFormat: 'dd.mm.yyyy',
                     headers: {
                         4: {sorter: 'deployed_date'},

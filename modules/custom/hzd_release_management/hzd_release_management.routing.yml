@@ -60,6 +60,16 @@ hzd_release_management.deployed:
   #  _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
+hzd_release_management.deployedinfo:
+  path: 'group/{group}/releases/einsatzinformationen'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_info'
+    _title: 'Deployment Information'
+    _entity_view: group.default
+  requirements:
+  #  _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+
 #hzd_release_management.eingesetzte:
 #  path: 'group/{group}/eingesetzte-releases'
 #  defaults:
@@ -193,6 +203,7 @@ hzd_release_management.deployed_releases:
     _entity_view: group.default
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+
 hzd_release_management.archived_deployed_releases:
   path: '/group/{group}/eingesetzte-releases/archiv'
   defaults:
@@ -201,7 +212,17 @@ hzd_release_management.archived_deployed_releases:
     _entity_view: group.default
   requirements:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-#   cust_og_is_admin: 'TRUE'     
+#   cust_og_is_admin: 'TRUE'
+
+hzd_release_management.extended_deployed_releases:
+  path: '/group/{group}/eingesetzte-releases/neues-eingesetzte'
+  defaults:
+    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::extended_deployed_releases'
+    _title: 'Extended Deployed Releases'
+    _entity_view: group.default
+  requirements:
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+#   cust_og_is_admin: 'TRUE'
 
 # to do access check ( group id is releasemanagement)
 #hzd_release_management.rz-schnellinfo-overview:
