@@ -12,6 +12,7 @@ use Drupal\group\Entity\GroupContent;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\user\Entity\User;
 
+
 // if(!defined('KONSONS'))
 //  define('KONSONS', \Drupal::config('hzd_release_management.settings')->get('konsens_service_term_id'));
 // if(!defined('RELEASE_MANAGEMENT'))
@@ -907,10 +908,25 @@ $inprogress_nid_values = [];
   }
 
   static public function has_deployed_info($node) {
+    if ($node->getType() == 'deployed_releases') {
       if (!is_null($node->field_previous_release->value)) {
           return TRUE;
       }
-      return FALSE;
+    }
+    else {
+        $service = $node->field_relese_services->target_id;
+        $deployed_releases_node_ids = \Drupal::entityQuery('node')
+            ->condition('type', 'deployed_releases', '=')
+            ->condition('field_release_service', $service , '=')
+            ->condition('field_earlywarning_release', $node->id(), '=')
+            ->condition('field_previous_release', NULL, 'IS NOT NULL')
+            ->execute();
+        if (count($deployed_releases_node_ids) > 1) {
+            return TRUE;
+        }
+        
+    }
+    return FALSE;
   }
   
   /**
@@ -1161,17 +1177,25 @@ $inprogress_nid_values = [];
       }
 
       $info_link = '';
-
+      
       if($has_depoyment_info) {
           $deployed_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/notification-icon.png';
-          $deployed_img = "<img class = 'info-icon' src = '/" . $deployed_imgpaths . "'>";
+          $deployed_img = "<img class = 'deployed-info-icon' src = '/" . $deployed_imgpaths . "'>";
 
           $filterData = \Drupal::request()->query;
           $exposedFilterData = $filterData->all();
           unset($exposedFilterData['form_build_id']);
           unset($exposedFilterData['form_id']);
 
-          $url = $deployed_release_node->toUrl('canonical', ['query' => $exposedFilterData]);
+          $url = $deployed_release_node->toUrl('canonical');
+
+
+          $markupdata = ['#type' => 'container', '#attributes' => ['id' => 'deployed-' . $deployed_release_node->id(), 'class' => ['deployed-popover-wrapper']]];
+          $renderer = \Drupal::service('renderer');
+          $hover_markup = $renderer->render($markupdata);
+          $info_link = Markup::create( '<div class="deployed-tooltip">'.$deployed_img. $hover_markup ."</div>");
+
+          /*
           $info_link = array(
               '#title' => array(
                   '#markup' => $deployed_img
@@ -1179,7 +1203,9 @@ $inprogress_nid_values = [];
               '#type' => 'link',
               '#url' => $url
           );
+          
           $info_link = \Drupal::service('renderer')->renderRoot($info_link);
+          */
       }
       
       if (\Drupal\Component\Utility\UrlHelper::isValid($link_info_path)) {
@@ -1193,7 +1219,7 @@ $inprogress_nid_values = [];
         $link_path = '';
       }
 
-      $release_download = t('<div class="links-wrapper">@info_link @link_path @link</div>', array('@link_path' => $link_path, '@link' => $link, '@info_link' => $info_link));
+      $release_download = t('<div class="links-wrapper">@info_link <div class="other-links"> @link_path @link</div></div>', array('@link_path' => $link_path, '@link' => $link, '@info_link' => $info_link));
       array_push($elements, $release_download);
       $rows[] = $elements;
     }
@@ -1434,7 +1460,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
                         $releases->field_documentation_link->value, $releases->field_relese_services->target_id, $releases->id());
       } else {
         if ($type == 'progress' || $type == 'released') {
-                    $link = t('No Download link available');
+            $link = t('No Download link available');
         } else {
           $link = '';
         }
@@ -1451,14 +1477,37 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       } else {
         $link_path = '';
       }
-      $link = t('@link_path @link', array(
+
+      $depolyed_link = '';
+      if ($type == 'progress' || $type == 'released') {
+        $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
+        if ($has_depoyment_info) {
+          $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/notification-icon.png';
+          $deployed_img = "<img class = 'info-icon' src = '/" . $deployed_imgpath . "'>";
+
+          $groupId = RELEASE_MANAGEMENT;
+          $options = \Drupal::request()->query->all();
+          $options['services'] = $releases->field_relese_services->target_id;
+          $options['releases'] = $releases->id();
+          unset($options['form_id']);
+          unset($options['form_build_id']);
+          unset($options['page']);
+
+          $url = Url::fromRoute('hzd_release_management.deployedinfo', array('group' => $groupId), [
+              'query' => $options
+          ]);
+          $download_link = array('#title' => array('#markup' => $deployed_img), '#type' => 'link', '#url' => $url);
+          $depolyed_link = \Drupal::service('renderer')->renderRoot($download_link);
+        }
+      }        
+      $link = t('@dep_link @link_path @link', array(
           '@link_path' => $link_path,
-          '@link' => $link
+          '@link' => $link,
+          '@dep_link' => $depolyed_link
               )
       );
       $row = array();
       $service = $releases->get('field_relese_services')->first()->entity;
-//          pr($releases->id());
       $row = array(
           'service' => $service->get('title')->value,
           'release' => $releases->getTitle()
@@ -1526,13 +1575,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         'group_id' => $group_id,
     );
     return $output;
-//        } else {
-//            return $output[]['#markup'] = array(
-//                '#prefix' => '<div id="no-result">',
-//                '#markup' => t("results not found"),
-//                '#suffix' => '</div>',
-//            );
-//        }
   }
 
   /**

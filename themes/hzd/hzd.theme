@@ -52,12 +52,18 @@ function hzd_preprocess_page(&$variables) {
  * Implements hook_preprocess_html().
  */
 function hzd_preprocess_html(&$variables) {
-
   $title = $variables['head_title']['title'];
+
   if ($title instanceof Markup) {
     $variables['head_title']['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
 
+  if ($variables['node_type'] == 'deployed_releases') {
+    $title = 'Einsatzmeldung';
+    $variables['head_title']['title'] = $title;
+    $variables['head_title_array']['title'] = $title;
+  }
+  
   $user = \Drupal::currentUser()->id();
   if (!$user) {
     $variables['attributes']['class'][] = 'not-loggedin';
@@ -527,6 +533,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
       
       if($entity->bundle() == 'deployed_releases') {
+          $variables['breadcrumb'][1]['text'] = 'Einsatzmeldung';
           $title =  $variables['breadcrumb'][1];
           $variables['breadcrumb'][1] = ['text' => t('Release Management') , 'url' => '/release-management'];
           $variables['breadcrumb'][] = ['text' => t('Deployed') , 'url' => '/release-management/releases/deployed'];

@@ -25,20 +25,33 @@
           .css("margin-left", "-40px");
       }
 
+	$(".abnormalities-desc").keyup(function(){
+	    var count = (400 - $(this).val().length);
+	    $("#char-count").text(Drupal.t('Characters left @count', {'@count': count}));
+	});
 
+	
 	if ($(".abnormalities").is(":checked")) {
 	    $(".form-item-abnormalities-desc").show();
+	    $("#char-count").show();
+	    $('label', '.form-item-abnormalities-desc').addClass('form-required');
 	}
 	else {
+	    $('label', '.form-item-abnormalities-desc').removeClass('form-required');
 	    $(".form-item-abnormalities-desc").hide();
+	    $("#char-count").hide();
 	}
 
 	$('.abnormalities').click(function(){
 	    if($(this).is(":checked")){
 		$(".form-item-abnormalities-desc").show();
+		$("#char-count").show();
+		$('label', '.form-item-abnormalities-desc').addClass('form-required');
 	    }
 	    else if($(this).is(":not(:checked)")){
 		$(".form-item-abnormalities-desc").hide();
+		$("#char-count").hide();
+		$('label', '.form-item-abnormalities-desc').removeClass('form-required');
 	    }
 	});
 

@@ -73,7 +73,7 @@ class Deployedreleasecreateform extends FormBase {
       '#title' => t('Installation Duration'),
       '#description' => 'Dauer des gesamten Softwareinstallations- und Konfigurationsprozesses mit der technischen Vor- und Nacharbeitungsphase bis zum Zeitpunkt der Betriebsfähigkeit.',
       '#size' => 8,
-      '#placeholder' =>  t('hh:mm')->render(),
+      '#placeholder' =>  t('hhh:mm')->render(),
       '#weight' => 7,
     );
 
@@ -97,6 +97,7 @@ class Deployedreleasecreateform extends FormBase {
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
+      '#suffix' => "<div id='char-count'>". t('Characters left @count', array('@count' => 400))."</div>"
     );
     
 
@@ -274,7 +275,7 @@ class Deployedreleasecreateform extends FormBase {
     //   $deployed_date =  \Drupal::service('date.formatter')->format($deployed_date, $type = 'medium', 'd.m.y');.
 
     if ($installation_time) {
-        if(!preg_match("/^(?:2[0-4]|[01][1-9]|10):([0-5][0-9])$/", $installation_time)) {
+        if(!preg_match("/^(?:\d{1,3}):([0-5][0-9])$/", $installation_time)) {
             $form_state->setErrorByName('installation_time', t("Invalid Time Format"));
         }
     }

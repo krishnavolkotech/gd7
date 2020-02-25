@@ -204,6 +204,14 @@ hzd_customizations.archived_downtimes_controller:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdIncidentGroupAccess'
 
+hzd_customizations.deployed_popup_content:
+  path: '/ajaxnode/deployed/{node_id}'
+  defaults:
+    _controller: '\Drupal\hzd_customizations\Ajax\RenderNodePopupAjaxCommand::ajaxDeployedDetails'
+  requirements:
+    _permission: 'access content'
+
+
 hzd_customizations.update_taxonomy_parents:
   path: '/taxanomy/parents-update'
   defaults:

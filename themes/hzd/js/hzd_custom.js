@@ -461,6 +461,53 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
           }
       });
 
+
+
+      $('.deployed-info-icon').click(function() {
+	  var ele = $(this);
+	  // Close previous popovers
+	  data = "Hello World";
+	  title = "Einsatzmeldung";
+	  $('.popover').popover('destroy');
+	  $(this).popover({
+	      placement: 'left',
+	      html: true,
+	      // 'X' Button to close popover
+	      title: title + '<button type="button" class="close" aria-label="Close" onclick="jQuery(&quot;.popover&quot;).popover(&quot;hide&quot;);">&times;</button>',
+	      content: function () {
+		  var nodeid = ele.next().attr('id').replace('deployed-', '');;
+		  var endpoint = Drupal.url('ajaxnode/deployed/' + nodeid);
+		  var node_data = '';
+		  $.ajax({
+                      async: false,
+                      type: 'POST',
+                      url: endpoint,
+                      dataType: 'json',
+                      success: function (data) {
+                          node_data = data[1].data;
+			  return node_data;
+                      },
+                      error: function (jqXHR, exception) {
+                          return false;
+                      }
+                  });
+		  return node_data;
+	      },
+	  }).popover('show');
+	  return false;
+      });
+				     
+      /**
+       *  Close popover, if clicked outside.
+       */
+      $('body').on('click', function (e) {
+	  if ($(e.target).data('toggle') !== 'popover'
+	      && $(e.target).parents('.popover.in').length === 0) {
+	      $('.popover').popover('destroy');
+	  }
+      });
+      
+      
 //        $(".frontpage-downtime-block ul.incidents-home-block>li .service-tooltip").hover(function () {
 //            var ele = $(this);
 //            var offset = ele.offset();
