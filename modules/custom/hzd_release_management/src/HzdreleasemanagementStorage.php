@@ -921,7 +921,7 @@ $inprogress_nid_values = [];
             ->condition('field_earlywarning_release', $node->id(), '=')
             ->condition('field_previous_release', NULL, 'IS NOT NULL')
             ->execute();
-        if (count($deployed_releases_node_ids) > 1) {
+        if (!empty($deployed_releases_node_ids)) {
             return TRUE;
         }
         

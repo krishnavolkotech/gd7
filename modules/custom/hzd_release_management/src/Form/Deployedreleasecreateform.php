@@ -97,7 +97,7 @@ class Deployedreleasecreateform extends FormBase {
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
-      '#suffix' => "<div id='char-count'>". t('Characters left @count', array('@count' => 400))."</div>"
+      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => 400))."</div>"
     );
     
 
@@ -342,7 +342,8 @@ class Deployedreleasecreateform extends FormBase {
 
     $deployed_date = $form_state->getValue('deployed_date');
     $deployed_date = date("Y-m-d", strtotime($deployed_date));
-    // Echo $deployed_date; exit;.
+    // Echo $deployed_date; exit;
+    $abnormality = trim($form_state->getValue('abnormalities'));
     $node_array = array(
       'type' => 'deployed_releases',
       'title' => array(
@@ -407,7 +408,7 @@ class Deployedreleasecreateform extends FormBase {
       ),
       'field_abnormality_description' => array(
         '0' => array(
-          'value' => $form_state->getValue('abnormalities_desc'),
+          'value' => $abnormality?$form_state->getValue('abnormalities_desc'):'',
         ),
       ),
       'field_user_state' => array(

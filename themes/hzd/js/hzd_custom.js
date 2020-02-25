@@ -466,12 +466,12 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
       $('.deployed-info-icon').click(function() {
 	  var ele = $(this);
 	  // Close previous popovers
-	  data = "Hello World";
 	  title = "Einsatzmeldung";
 	  $('.popover').popover('destroy');
 	  $(this).popover({
 	      placement: 'left',
 	      html: true,
+	      template: '<div class="popover margin-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 	      // 'X' Button to close popover
 	      title: title + '<button type="button" class="close" aria-label="Close" onclick="jQuery(&quot;.popover&quot;).popover(&quot;hide&quot;);">&times;</button>',
 	      content: function () {

@@ -3967,24 +3967,25 @@ textarea#edit-abnormalities-desc {
 .view-deployed-popup-content .field-content {
     float: left;
     padding-top: 4px;
+    max-width: 500px;
 }
 
 /*** Code #26578 ***/
-.popover-title {
+.margin-popover .popover-title {
   font-weight: bold !important;
   margin: 0 !important;
 }
 
-div.popover-content {
+.margin-popover div.popover-content {
   padding: 9px 14px !important;
 }
 
-div.popover-content div h4 {
+.margin-popover div.popover-content div h4 {
   margin-top: 8px !important;
   margin-bottom: 10px !important;
   float: left;
 }
 
-div.popover-content hr {
+.margin-popover div.popover-content hr {
   margin-bottom: 9px !important;
 }
