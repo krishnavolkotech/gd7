@@ -1,0 +1,16 @@
+diff --git a/core/lib/Drupal/Core/Form/FormValidator.php b/core/lib/Drupal/Core/Form/FormValidator.php
+index 57d24cc21..79aefb304 100644
+--- a/core/lib/Drupal/Core/Form/FormValidator.php
++++ b/core/lib/Drupal/Core/Form/FormValidator.php
+@@ -330,8 +330,9 @@ protected function doValidateForm(&$elements, FormStateInterface &$form_state, $
+    */
+   protected function performRequiredValidation(&$elements, FormStateInterface &$form_state) {
+     // Verify that the value is not longer than #maxlength.
+-    if (isset($elements['#maxlength']) && mb_strlen($elements['#value']) > $elements['#maxlength']) {
+-      $form_state->setError($elements, $this->t('@name cannot be longer than %max characters but is currently %length characters long.', ['@name' => empty($elements['#title']) ? $elements['#parents'][0] : $elements['#title'], '%max' => $elements['#maxlength'], '%length' => mb_strlen($elements['#value'])]));
++    $length = mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $elements['#value']));
++    if (isset($elements['#maxlength']) && $length > $elements['#maxlength']) {
++      $form_state->setError($elements, $this->t('@name cannot be longer than %max characters but is currently %length characters long.', ['@name' => empty($elements['#title']) ? $elements['#parents'][0] : $elements['#title'], '%max' => $elements['#maxlength'], '%length' => $length]));
+     }
+ 
+     if (isset($elements['#options']) && isset($elements['#value'])) {

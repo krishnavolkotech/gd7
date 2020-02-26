@@ -92,7 +92,7 @@ class Deployedreleasecreateform extends FormBase {
     );
 
     $desc = $form_state->getUserInput()['abnormalities_desc'];
-    $count = 400-mb_strlen($desc)+1;
+    $count = 400-mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $desc));
      
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
@@ -100,7 +100,7 @@ class Deployedreleasecreateform extends FormBase {
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
-      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => $count?$count:400))."</div>"
+      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => $count))."</div>"
     );
 
     $form['submit'] = array(
