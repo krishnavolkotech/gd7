@@ -91,8 +91,9 @@ class Deployedreleasecreateform extends FormBase {
       '#weight' => 9,
     );
 
-    $count = strlen($form_state->getUserInput()['abnormalities_desc']);
-    
+    $desc = $form_state->getUserInput()['abnormalities_desc'];
+    $count = 400-mb_strlen($desc)+1;
+     
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
       '#title' => t('Description of Abnormalities'),
