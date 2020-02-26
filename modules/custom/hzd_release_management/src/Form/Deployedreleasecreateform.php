@@ -91,15 +91,16 @@ class Deployedreleasecreateform extends FormBase {
       '#weight' => 9,
     );
 
+    $count = strlen($form_state->getUserInput()['abnormalities_desc']);
+    
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
       '#title' => t('Description of Abnormalities'),
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
-      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => 400))."</div>"
+      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => $count?$count:400))."</div>"
     );
-    
 
     $form['submit'] = array(
       '#type' => 'submit',

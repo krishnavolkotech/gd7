@@ -277,8 +277,8 @@ display:
           label: 'Previous Release'
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: "{% if field_previous_release == '0' %} \r\n   {{ 'Ersteinsatz' }}\r\n{% else %}\r\n   {{ field_previous_release }}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -566,7 +566,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
+          click_sort_column: format
           type: text_default
           settings: {  }
           group_column: value

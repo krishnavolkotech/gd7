@@ -25,6 +25,7 @@
           .css("margin-left", "-40px");
       }
 
+	$("#char-count").hide();
 	$(".abnormalities-desc").keyup(function(){
 	    var count = (400 - $(this).val().length);
 	    $("#char-count").text(Drupal.t('Characters left @count', {'@count': count}));
