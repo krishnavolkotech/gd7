@@ -1482,8 +1482,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       if ($type == 'progress' || $type == 'released') {
         $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
         if ($has_depoyment_info) {
-          $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/notification-icon.png';
-          $deployed_img = "<img class = 'info-icon' src = '/" . $deployed_imgpath . "'>";
+          $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/e-icon.png';
+          $deployed_img = "<img class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
 
           $groupId = RELEASE_MANAGEMENT;
           $options = \Drupal::request()->query->all();

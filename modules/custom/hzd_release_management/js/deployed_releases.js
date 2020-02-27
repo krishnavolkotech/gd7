@@ -28,7 +28,7 @@
 	$("#char-count").hide();
 	$(".abnormalities-desc").keyup(function(){
 	    var count = (400 - $(this).val().length);
-	    $("#char-count").text(Drupal.t('Characters left @count', {'@count': count}));
+	    $("#char-count").text(Drupal.t('@count/400 Characters Remaining.', {'@count': count}));
 	});
 
 	

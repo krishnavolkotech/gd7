@@ -100,7 +100,7 @@ class Deployedreleasecreateform extends FormBase {
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
-      '#suffix' => "<div id='char-count' style='display:none'>". t('Characters left @count', array('@count' => $count))."</div>"
+      '#suffix' => "<div id='char-count' style='display:none'>". t('@count/400 Characters Remaining.', array('@count' => $count))."</div>"
     );
 
     $form['submit'] = array(
