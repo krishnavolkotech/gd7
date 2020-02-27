@@ -3920,6 +3920,11 @@ td.checkbox {
     width: 73%;
     float: left;
 }
+
+.e-info-icon {
+    width:25px;
+    height:25px;
+}
 .info-icon {
     width:22px;
     height:22px;
@@ -3941,4 +3946,51 @@ textarea#edit-abnormalities-desc {
 
 .deployed .links-wrapper {
     text-align: center;
+}
+
+.other-links {
+    float:left;
+}
+
+.deployed-tooltip {
+    float: left;
+    margin-right: 2px;
+    cursor: pointer;
+}
+
+.view-deployed-popup-content .views-field {
+    clear: both;
+}
+.view-deployed-popup-content span.views-label {
+    font-weight: bold;
+    float: left;
+    clear: both;
+    min-width: 200px;
+    padding: 1%;
+}
+
+.view-deployed-popup-content .field-content {
+    float: left;
+    padding-top: 4px;
+    max-width: 500px;
+}
+
+/*** Code #26578 ***/
+.margin-popover .popover-title {
+  font-weight: bold !important;
+  margin: 0 !important;
+}
+
+.margin-popover div.popover-content {
+  padding: 9px 14px !important;
+}
+
+.margin-popover div.popover-content div h4 {
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
+  float: left;
+}
+
+.margin-popover div.popover-content hr {
+  margin-bottom: 9px !important;
 }

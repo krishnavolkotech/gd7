@@ -73,7 +73,7 @@ class Deployedreleasecreateform extends FormBase {
       '#title' => t('Installation Duration'),
       '#description' => 'Dauer des gesamten Softwareinstallations- und Konfigurationsprozesses mit der technischen Vor- und Nacharbeitungsphase bis zum Zeitpunkt der Betriebsfähigkeit.',
       '#size' => 8,
-      '#placeholder' =>  t('hh:mm')->render(),
+      '#placeholder' =>  t('hhh:mm')->render(),
       '#weight' => 7,
     );
 
@@ -91,14 +91,17 @@ class Deployedreleasecreateform extends FormBase {
       '#weight' => 9,
     );
 
+    $desc = $form_state->getUserInput()['abnormalities_desc'];
+    $count = 400-mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $desc));
+     
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
       '#title' => t('Description of Abnormalities'),
       '#attributes' => array("class" => ["abnormalities-desc"], 'style' => 'width:400px;'),
       '#maxlength' => 400,
       '#weight' => 10,
+      '#suffix' => "<div id='char-count' style='display:none'>". t('@count/400 Characters Remaining.', array('@count' => $count))."</div>"
     );
-    
 
     $form['submit'] = array(
       '#type' => 'submit',
@@ -274,7 +277,7 @@ class Deployedreleasecreateform extends FormBase {
     //   $deployed_date =  \Drupal::service('date.formatter')->format($deployed_date, $type = 'medium', 'd.m.y');.
 
     if ($installation_time) {
-        if(!preg_match("/^(?:2[0-4]|[01][1-9]|10):([0-5][0-9])$/", $installation_time)) {
+        if(!preg_match("/^(?:\d{1,3}):([0-5][0-9])$/", $installation_time)) {
             $form_state->setErrorByName('installation_time', t("Invalid Time Format"));
         }
     }
@@ -341,7 +344,8 @@ class Deployedreleasecreateform extends FormBase {
 
     $deployed_date = $form_state->getValue('deployed_date');
     $deployed_date = date("Y-m-d", strtotime($deployed_date));
-    // Echo $deployed_date; exit;.
+    // Echo $deployed_date; exit;
+    $abnormality = trim($form_state->getValue('abnormalities'));
     $node_array = array(
       'type' => 'deployed_releases',
       'title' => array(
@@ -406,7 +410,7 @@ class Deployedreleasecreateform extends FormBase {
       ),
       'field_abnormality_description' => array(
         '0' => array(
-          'value' => $form_state->getValue('abnormalities_desc'),
+          'value' => $abnormality?$form_state->getValue('abnormalities_desc'):'',
         ),
       ),
       'field_user_state' => array(
