@@ -3920,6 +3920,11 @@ td.checkbox {
     width: 73%;
     float: left;
 }
+
+.e-info-icon {
+    width:25px;
+    height:25px;
+}
 .info-icon {
     width:22px;
     height:22px;
