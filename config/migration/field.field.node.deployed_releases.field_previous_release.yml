@@ -11,7 +11,7 @@ id: node.deployed_releases.field_previous_release
 field_name: field_previous_release
 entity_type: node
 bundle: deployed_releases
-label: 'Previous Release'
+label: Vorgängerrelease
 description: ''
 required: true
 translatable: true
