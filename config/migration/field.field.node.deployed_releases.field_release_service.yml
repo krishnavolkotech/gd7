@@ -11,7 +11,7 @@ id: node.deployed_releases.field_release_service
 field_name: field_release_service
 entity_type: node
 bundle: deployed_releases
-label: Services
+label: Verfahren
 description: ''
 required: true
 translatable: true

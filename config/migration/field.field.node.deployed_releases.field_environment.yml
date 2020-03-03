@@ -11,7 +11,7 @@ id: node.deployed_releases.field_environment
 field_name: field_environment
 entity_type: node
 bundle: deployed_releases
-label: Environment
+label: Umgebung
 description: ''
 required: true
 translatable: true

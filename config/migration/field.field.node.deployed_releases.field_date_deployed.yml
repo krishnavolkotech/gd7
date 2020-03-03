@@ -11,7 +11,7 @@ id: node.deployed_releases.field_date_deployed
 field_name: field_date_deployed
 entity_type: node
 bundle: deployed_releases
-label: 'Deployed Date'
+label: Einsatzdatum
 description: ''
 required: true
 translatable: true
