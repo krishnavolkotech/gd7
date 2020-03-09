@@ -76,15 +76,16 @@ class HzdNotifications extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'notifications_title'>" . $this->t('Add new notification request') . "</div>");
     $output[] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_notifications\Form\ServiceSpecificNotificationsUserForm', $user, $rel_type);
-    $notifications_priority = db_query("SELECT service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
+    $notifications_priority = db_query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
       ":uid" => $user,
       ":rel_type" => $rel_type
     ))->fetchAll();
     if (count($notifications_priority) > 0) {
       $output[] = array('#markup' => "<div class = 'service_specific_notifications'><div class = 'notifications_title'>" . $this->t('My current notification requests') . "</div>");
+
       foreach ($notifications_priority as $vals) {
-        $output[] = \Drupal::formBuilder()
-          ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type);
+          $output[] = \Drupal::formBuilder()
+              ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type, $vals->sid);
       }
       $output[] = array('#markup' => "</div>");
     }
