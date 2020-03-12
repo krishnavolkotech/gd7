@@ -1236,7 +1236,7 @@ $inprogress_nid_values = [];
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
       $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warnings-hdr');
-      $download = array('data' => t('EI/D/L'), 'class' => 'download-hdr');
+      $download = array('data' => t('Ei/D/L'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $earlywarnings, $download);
     } else {
       $state = array('data' => t('State'), 'class' => 'state-hdr');
@@ -1244,7 +1244,7 @@ $inprogress_nid_values = [];
       $service = array('data' => t('Service'), 'class' => 'service-hdr');
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
-      $download = array('data' => t('EI/D/L'), 'class' => 'download-hdr');
+      $download = array('data' => t('Ei/D/L'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $download);
     }
 
@@ -1323,7 +1323,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 <li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
 <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare ansehen</li>
 <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
-<li><img class='white-bg' height=15 src='/modules/custom/hzd_release_management/images/e-icon.png'>".t('Deployment Information')."</li>
+<li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/e-icon-whitebg.png'>".t('Deployment Information')."</li>
 </ul>
 </div>";
     }
@@ -1344,7 +1344,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
           <li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li>
           <li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
-          <li><img class='white-bg' height=15 src='/modules/custom/hzd_release_management/images/e-icon.png'>".t('Deployment Information')."</li>
+          <li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/e-icon-whitebg.png'>".t('Deployment Information')."</li>
        </ul>
      </div>";
     }
@@ -1711,7 +1711,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $header[] = t('D/L');
       }
       else {
-        $header[] = t('EI/D/L');
+        $header[] = t('Ei/D/L');
       }
       
     }
@@ -1721,7 +1721,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         if (isset($group_id)) {
           $header[] = t('Early Warnings');
         }
-        $header[] = t('EI/D/L');
+        $header[] = t('Ei/D/L');
       }
       if ($type == 'locked') {
         $header[] = t('Comment');
@@ -2158,7 +2158,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $output = "<div class='menu-filter'>
                    <ul>
                       <li><b>Legende:</b></li>
-<li><img class='white-bg' height=15 src='/modules/custom/hzd_release_management/images/notification-icon.png'>".t('Deployment information')."</li>
+<li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/notification-icon-whitebg.png'>".t('Deployment information')."</li>
                    </ul>
                 </div>";
     }
