@@ -695,7 +695,7 @@ body.not-loggedin.path-user .region-content {
     background: transparent !important;
 }
 .menu-filter ul li img.white-bg {
-    background: #fff;
+    margin-top: 1px !important;
 }
 .menu-filter ul img {
     margin-right: 4px;
