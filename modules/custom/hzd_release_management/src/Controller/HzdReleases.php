@@ -219,6 +219,8 @@ class HzdReleases extends ControllerBase {
         'base_path' => $base_url,
     );
     $output[] = \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = $hzdReleaseManageStorage->deployed_info_legend('deployed');
 //    $output[] = array('#markup' => "<div class = 'reset_form'>");
 //    $output[] = HzdreleasemanagementHelper::releases_reset_element();
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
@@ -231,7 +233,7 @@ class HzdReleases extends ControllerBase {
 
   public function deployed_info() {
     global $base_url;
-    $type = 'deployed';
+    $type = 'deployed_info';
     $output['#title'] = $this->t('Deployment Information');
     $output[] = HzdreleasemanagementStorage::deployed_info_text();
 
@@ -240,6 +242,9 @@ class HzdReleases extends ControllerBase {
         'base_path' => $base_url,
     );
     $output[] = \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\DeployedinfoFilterForm', $type);
+
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = $hzdReleaseManageStorage->deployed_info_legend();
     $output[] = HzdreleasemanagementStorage::deployed_info_displaytable();
     $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;

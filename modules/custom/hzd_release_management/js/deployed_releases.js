@@ -31,6 +31,10 @@
 	    $("#char-count").text(Drupal.t('@count/400 Characters Remaining.', {'@count': count}));
 	});
 
+	var label_text = Drupal.t('Valid values: 0:01 - 999:59, Format: hhh:mm');
+	if (!$('.custom-help-text').length) {
+	  $('label', '.form-item-installation-time').after('<div class="custom-help-text">'+label_text+'</div>');
+	}
 	
 	if ($(".abnormalities").is(":checked")) {
 	    $(".form-item-abnormalities-desc").show();
