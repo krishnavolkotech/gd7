@@ -63,7 +63,9 @@ class Imupdateticket extends FormBase {
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
       $ticket_id = empty(trim($form_state->getValue('ticket_id'))) ? NULL : $form_state->getValue('ticket_id');
-      $file_id = $form_state->getValue('file_id');
+      // 20200312 #26750 file_id in form_state can be wrong under certain circumstances
+      // $file_id = $form_state->getValue('file_id');
+      $file_id = \Drupal::request()->request->get('file_id');
       if (isset($ticket_id) && isset($file_id)) {
         $query = \Drupal::entityQuery('cust_group_imattachments_data');
         $query->condition('fid', $file_id);
