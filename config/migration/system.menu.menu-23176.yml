@@ -3,6 +3,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: menu-23176
-label: 'ElsterLohn II - ELStAM'
+label: 'LAVENDEL - ELStAM'
 description: ''
 locked: false
