@@ -815,16 +815,20 @@ function send_earlywarning_comment_notifications($entity, $action) {
     $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
   } else if($entity_bundle == 'forum') {
     $groupContent = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($nodeentity);
+    $groupLabel = $groupContent->getGroup()->label();
+    $fadenLabel = $entity->getCommentedEntity()->getTitle();
     $users = _get_subscribed_users($groupContent);
     $notification_scheduler = \Drupal::service('hzd_notifications.scheduler');
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
     $enView = $view_builder->view($entity, 'mail', 'de');
     $body = \Drupal::service('renderer')->render($enView);
+    $subject = '[' . $groupLabel . '] ';
     if($action == 'insert') {
-      $subject = t('New Comment on Forum');
+      $subject .= t('New post in');
     } else {
-      $subject = t('Updated Comment on Forum');
+      $subject .= t('Updated post in');
     }
+    $subject .= ': ' . $fadenLabel;
     $notification_scheduler->schedule($entity, $action, (array)$users, $body, $subject);
   }
 }
