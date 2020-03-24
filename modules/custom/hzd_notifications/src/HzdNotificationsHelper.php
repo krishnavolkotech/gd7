@@ -459,4 +459,113 @@ class HzdNotificationsHelper {
     $group_record = array('uid' => $uid, 'group_id' => $gid, 'group_name' => $label, 'default_send_interval' => $int_val);
     \Drupal::database()->insert('group_notifications_user_default_interval')->fields($group_record)->execute();
   }
+
+  static function add_group_membership_for_all($gid, $limitStart = 0, $limitEnd = 10000, $active = FALSE) {
+    $select = "SELECT uid  FROM {users_field_data} ";
+    $where = " WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
+                                   WHERE gid = :gid and type = 'open-group_membership') 
+                  and uid != 0 ";
+    if ($active) {
+      $where .= " and status = 1 ";
+    }
+    $limit = " limit ". $limitStart ." , ". $limitEnd;
+
+    $sql = $select . $where. $limit;
+    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+    if (count($users) > 0) {
+      foreach($users as $uid) {
+        $user = \Drupal\user\Entity\User::load($uid->uid);
+        $group = \Drupal\group\Entity\Group::load($gid);
+        $group->addMember($user);
+        //self::save_group_default_notifications($uid->uid, $gid, 0);
+      }
+    }
+  }
+
+  static function save_group_default_notifications($uid, $gid, $subscription) {
+    $user_groups = self::hzd_user_groups_list($uid);
+    $data = NULL;
+    
+    $default_subscription = $subscription;
+
+    $defaultData = \Drupal::database()
+        ->select('group_notifications_user_default_interval', 'gnudi')
+        ->fields('gnudi', ['id'])
+        ->condition('group_id', $gid)
+        ->condition('uid', $uid)
+        ->execute()
+        ->fetchField();
+    
+    if (empty($defaultData)) {
+        \Drupal::database()
+            ->insert('group_notifications_user_default_interval')
+            ->fields([
+                'uid' => $uid,
+                'group_id' => $gid,
+                'default_send_interval' => $default_subscription,
+            ])
+            ->execute();
+    }
+    else {
+        \Drupal::database()
+            ->update('group_notifications_user_default_interval')
+            ->fields([
+                'uid' => $uid,
+                'group_id' => $gid,
+                'default_send_interval' => $default_subscription
+            ])
+            ->condition('id', $defaultData)
+            ->execute();
+    }
+      
+    $data = \Drupal::database()->select('group_notifications', 'gn')
+                               ->fields('gn', ['id', 'uids', 'send_interval'])
+                               ->condition('group_id', $gid)
+                               ->execute()->fetchAllAssoc('send_interval');
+    
+    $userChoiceInterval = $default_subscription;
+    $uids = NULL;
+    
+    $intervals = self::hzd_notification_send_interval();
+    foreach ($intervals as $interval => $value) {
+      if (isset($data[$interval])) {
+          $uids = unserialize($data[$interval]->uids);
+          foreach ((array)$uids as $userKey => $item) {
+            if ($item == $uid) {
+                unset($uids[$userKey]);
+            }
+          }
+          if ($userChoiceInterval == $interval) {
+              $uids[] = $uid;
+          }
+          \Drupal::database()
+              ->update('group_notifications')
+              ->fields(['uids' => serialize($uids)])
+              ->condition('id', $data[$interval]->id)->execute();
+      }
+      else {
+          
+        if($default_subscription == $interval){
+            $notifyData = [
+                'uids' => serialize([$uid]),
+                'send_interval' => $interval,
+                'group_id' => $gid,
+                'group_name'=>$gid
+            ];
+        }
+        else{
+            $notifyData = [
+                'uids' => serialize([]),
+                'send_interval' => $interval,
+                'group_id' => $gid,
+                'group_name'=>$gid
+            ];
+        }
+        
+        \Drupal::database()
+            ->insert('group_notifications')
+            ->fields($notifyData)->execute();
+      }
+    }
+  }
 }

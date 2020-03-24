@@ -392,6 +392,7 @@ class HzdNotifications extends ControllerBase {
             BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
             KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
             VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
+            COVID_INFO => COVID_INFO,
         );
         
         if (is_array($preselected)) {
