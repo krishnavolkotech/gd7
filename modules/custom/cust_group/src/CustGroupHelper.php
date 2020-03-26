@@ -154,4 +154,12 @@ class CustGroupHelper {
       }
       return $user_groups;
   }
+
+  public static function invalidate_groupAdministation_blockCache() {
+    \Drupal::service('cache_tags.invalidator')
+      ->invalidateTags([
+        'config:block.block.hzdgruppenadministration'
+    ]);
+  }
+  
 }

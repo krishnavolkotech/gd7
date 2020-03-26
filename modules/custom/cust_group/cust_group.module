@@ -254,11 +254,7 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
         }
       }
     }
-
-    \Drupal::service('cache_tags.invalidator')
-      ->invalidateTags([
-        'config:block.block.hzdgruppenadministration'
-      ]);
+    \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
@@ -701,6 +697,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
   }
 
   if ($form_id == 'group_content_open-group_membership_edit_form') {
+    $form['actions']['submit']['#submit'][] = 'invalidate_group_admin_cache';
     $user = \Drupal\hzd_release_management\HzdreleasemanagementStorage::CurrentUserData();
     $userData = \Drupal::service('user.data');
     $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
@@ -720,6 +717,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+}
+
+function invalidate_group_admin_cache(&$form, $form_state) {
+  \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
 }
 
 /**
