@@ -78,10 +78,12 @@ module:
   menu_ui: 0
   migrate: 0
   node: 0
+  noscript_tag: 0
   options: 0
   page_cache: 0
   panelbutton: 0
   path: 0
+  path_alias: 0
   pdf_api: 0
   persistent_login: 0
   prlp: 0
@@ -117,7 +119,6 @@ module:
   forum: 1
   menu_link_content: 1
   pathauto: 1
-  path_alias: 0
   content_translation: 10
   ultimate_cron: 10
   views: 10
