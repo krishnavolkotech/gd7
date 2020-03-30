@@ -677,45 +677,50 @@ function _get_subscribed_users($entity) {
 }
 
 
-function hzd_notifications_node_update($node){
-  // Clearing cache from deployed table
+/*
+ * Implementing HOOK_entity_postupdate
+ */
+function hzd_notifications_node_postupdate(EntityInterface $node) {
   if ($node->getType() == 'deployed_releases') {
     if ($node->original->get('field_archived_release')->value == 1) {
       \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
     }
   }
-  if($node->isPublished() && $node->bundle() == 'quickinfo'){
+  
+  if ($node->isPublished() && $node->bundle() == 'quickinfo') {
     return;
   }
-  elseif($node->isPublished()){
+  elseif ($node->isPublished()) {
     //Notify only if release is released
-    if($node->bundle() == 'release' && $node->get('field_release_type')->value != 1){
+     if ($node->bundle() == 'release' && $node->get('field_release_type')->value != 1) {
       return;
     }
     $users = [];
-    if(in_array($node->bundle(), NotificationManager::$groupBundles)){
+    if (in_array($node->bundle(), NotificationManager::$groupBundles)) {
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       // pr($groupContent);exit;
-      if($groupContent instanceof GroupContent){
+      if ($groupContent instanceof GroupContent) {
         $users = _get_subscribed_users($groupContent);
         _notify_users($node, ENTITY_OP_UPDATE, $users);
-      }else{
+      }
+      else {
         return;
       }
-    }elseif(in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))){
+    }
+    elseif (in_array($node->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))) {
       $users = _get_subscribed_users($node);
       $node->node_action =  ENTITY_OP_UPDATE;
       _notify_users($node, ENTITY_OP_UPDATE, $users);
     }
-    
   }
-  
+}
+
+function hzd_notifications_node_update($node){
   // Services bundle is not altered for now. 
   if($node->getType() == 'services'){
     update_service_notifications($node);
   }
 }
-
 
 function hzd_notifications_node_insert($entity){
   if($entity->isPublished() && in_array($entity->bundle(), array_merge(NotificationManager::$service_bundles, NotificationManager::$special_bundles, [NotificationManager::$release_comments]))){
