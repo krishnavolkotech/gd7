@@ -125,7 +125,7 @@ module:
   reroute_email: 19
   queue_mail: 20
   hzd_release_management: 21
-  hzd_notifications: 100
+  hzd_notifications: 0
   standard: 1000
 theme:
   stable: 0
