@@ -219,9 +219,7 @@ function hzd_user_customizations_user_insert($user) {
         COVID_INFO => COVID_INFO,
     );
 
-    //Insert default Notification Subscription for COVID INFO GROUP
-    Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($user->id(), COVID_INFO, 0);
-    
+   
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
         $finalgroups = array_merge($groupData, $preselected);
@@ -245,6 +243,8 @@ function hzd_user_customizations_user_insert($user) {
             }
         }
     }
+    //Insert default Notification Subscription for COVID INFO GROUP
+    Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($user->id(), COVID_INFO, 0);
 }
 
 function insert_nsm_role($uid) {
