@@ -668,7 +668,7 @@ class HzdNotifications extends ControllerBase {
     } else {
       $user = User::load($user);
     }
-    $group = Group::load(\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
+    $group = Group::load(\Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
     if($group) {
       $groupMember = $group->getMember($user);
       $user_role = $user->getRoles(TRUE);
