@@ -143,7 +143,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
                 '#title' => t('@grp',['@grp'=>t('Groups')]),
                 '#options' => $groups,
                 '#default_value' => array(RELEASE_MANAGEMENT, INCIDENT_MANAGEMENT, PROBLEM_MANAGEMENT,
-                SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT, VERFUGBARKEITSMANAGEMENT),
+                SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT, VERFUGBARKEITSMANAGEMENT, COVID_INFO),
                 //'#required' => true
             );
             $form['groups'][RELEASE_MANAGEMENT] = array( '#disabled' => TRUE, );
@@ -153,6 +153,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             $form['groups'][BETRIEBSPORTAL_KONSENS] = array( '#disabled' => TRUE, );
             $form['groups'][KAPAZITATSMANAGEMENT] = array( '#disabled' => TRUE, );
             $form['groups'][VERFUGBARKEITSMANAGEMENT] = array('#disabled' => TRUE, );
+            $form['groups'][COVID_INFO] = array('#disabled' => TRUE, );
         }
         $form['#validate'][] = 'hzd_user_register_form_validate';
         $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
@@ -215,7 +216,10 @@ function hzd_user_customizations_user_insert($user) {
         BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
         KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
         VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
+        COVID_INFO => COVID_INFO,
     );
+
+   
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
         $finalgroups = array_merge($groupData, $preselected);
@@ -239,6 +243,8 @@ function hzd_user_customizations_user_insert($user) {
             }
         }
     }
+    //Insert default Notification Subscription for COVID INFO GROUP
+    Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($user->id(), COVID_INFO, 0);
 }
 
 function insert_nsm_role($uid) {

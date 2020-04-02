@@ -15,6 +15,7 @@ define('SERVICE_LEVEL_MANAGEMENT', 15);
 define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
 define('VERFUGBARKEITSMANAGEMENT', 77);
+define('COVID_INFO', 83);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
@@ -254,11 +255,7 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
         }
       }
     }
-
-    \Drupal::service('cache_tags.invalidator')
-      ->invalidateTags([
-        'config:block.block.hzdgruppenadministration'
-      ]);
+    \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
@@ -324,7 +321,7 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
       }
     }
 
-    if ($group->id() == \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
+    if ($group->id() == \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
       db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
   }
@@ -701,6 +698,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
   }
 
   if ($form_id == 'group_content_open-group_membership_edit_form') {
+    $form['actions']['submit']['#submit'][] = 'invalidate_group_admin_cache';
     $user = \Drupal\hzd_release_management\HzdreleasemanagementStorage::CurrentUserData();
     $userData = \Drupal::service('user.data');
     $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
@@ -720,6 +718,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+}
+
+function invalidate_group_admin_cache(&$form, $form_state) {
+  \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
 }
 
 /**
@@ -1245,7 +1247,7 @@ function al_edvFileAccess($uri){
 
   // rschomburg: method doesn't deliver ids from unpublished groups
   // $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($uid);
-  $al_edv_group_id = \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
+  $al_edv_group_id = \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
   $group = \Drupal\group\Entity\Group::load($al_edv_group_id);
 
   if ($group && $group->getMember($member)) {

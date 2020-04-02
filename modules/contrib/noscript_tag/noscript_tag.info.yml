@@ -1,0 +1,11 @@
+name: Noscript Tag
+description: Helps site admin to display noscript tag.
+type: module
+# core: 8.x
+configure: noscript_tag.settings
+
+# Information added by Drupal.org packaging script on 2017-03-11
+version: '8.x-1.0'
+core: '8.x'
+project: 'noscript_tag'
+datestamp: 1489243992

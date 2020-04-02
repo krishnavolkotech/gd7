@@ -106,3 +106,88 @@ function hzd_customizations_update_8006(&$sandbox) {
   }
   drupal_set_message('Module hzd_customizations Update # 8006 is executed successfully.');
 }
+
+function hzd_customizations_update_8012(&$sandbox) {
+    $gid = 83;
+    if (!isset($sandbox['total'])) {
+        $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid != 0";
+        $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+        $sandbox['total'] = count($users);
+        $sandbox['current'] = 0;
+    }
+
+
+    $increment = 10;
+    $startLimit = $sandbox['current'];
+    $endLimit = $sandbox['current'] + $increment;
+    
+    $select = "SELECT uid  FROM {users_field_data} ";
+    $where = " WHERE uid != 0 ";
+
+    $limit = ' limit ' . $startLimit . "  , ". $endLimit;
+    $sql = $select . $where . $limit;
+    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+
+    if (count($users) > 0) {
+        foreach($users as $uid) {
+            $user = \Drupal\user\Entity\User::load($uid->uid);
+            $group = \Drupal\group\Entity\Group::load($gid);
+            $group->addMember($user);
+            
+            error_log(" Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
+            $sandbox['current']++;
+        }
+    }
+
+    drupal_set_message($sandbox['current'] . ' Users Processed.');
+    if ($sandbox['total'] == 0) {
+        $sandbox['#finished'] = 1;
+    }
+    else {
+        $sandbox['#finished'] = ($sandbox['current'] / $sandbox['total']);
+    }
+}
+
+
+function hzd_customizations_update_8013(&$sandbox) {
+    $gid = 83;
+    if (!isset($sandbox['total'])) {
+        $sql = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid != 0 ";
+        $sandbox['users'] = $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+        $sandbox['total'] = count($users);
+        $sandbox['current'] = 0;
+    }
+
+    $increment = 1;
+    $startLimit = $sandbox['current'];
+    $endLimit = $sandbox['current'] + $increment;
+    
+    $sql_users = "SELECT uid 
+          FROM {users_field_data} 
+          WHERE uid != 0 ";
+    $limit = ' limit ' . $startLimit . "  , ". $endLimit;
+    $sql = $sql_users . $limit;
+
+    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+    if (count($users) > 0) {
+        foreach($users as $uid) {
+            Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($uid->uid, $gid, 0);
+	    error_log(" Notification Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
+	    //drupal_set_message(" Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
+        $sandbox['current']++;
+        }
+    }
+    //drupal_set_message($sandbox['current'] . ' Notficaions Processed.');
+        
+    if ($sandbox['total'] == 0) {
+        $sandbox['#finished'] = 1;
+    }
+    else {
+        $sandbox['#finished'] = ($sandbox['current'] / $sandbox['total']);
+    }
+    
+}
