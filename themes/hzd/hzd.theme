@@ -58,10 +58,12 @@ function hzd_preprocess_html(&$variables) {
     $variables['head_title']['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
 
-  if ($variables['node_type'] == 'deployed_releases') {
-    $title = 'Einsatzmeldung';
-    $variables['head_title']['title'] = $title;
-    $variables['head_title_array']['title'] = $title;
+  if (isset($variables['node_type'])) {
+    if ($variables['node_type'] == 'deployed_releases') {
+      $title = 'Einsatzmeldung';
+      $variables['head_title']['title'] = $title;
+      $variables['head_title_array']['title'] = $title;
+    }
   }
   
   $user = \Drupal::currentUser()->id();
