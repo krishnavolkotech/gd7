@@ -10,7 +10,6 @@ use Drupal\node\Entity\Node;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Url;
 
-define('Zentrale_Release_Manager_Lander', 5);
 /**
  *
  */
@@ -91,9 +90,14 @@ class Deployedreleasecreateform extends FormBase {
       '#weight' => 9,
     );
 
-    $desc = $form_state->getUserInput()['abnormalities_desc'];
-    $count = 400-mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $desc));
-     
+    $userInput = $form_state->getUserInput();
+    $desc = '';
+    $count = 400;
+    if (isset($userInput['abnormalities_desc'])) {
+      $desc = $userInput['abnormalities_desc'];
+      $count = $count-mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $desc));
+    }
+    
     $form['abnormalities_desc'] = array(
       '#type' => 'textarea',
       '#title' => t('Description of Abnormalities'),
