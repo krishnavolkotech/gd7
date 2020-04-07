@@ -25,6 +25,11 @@ libraries:
   - 'hzd/bootstrap-scripts'
   - 'core/jquery.ui.datepicker'
 
+ckeditor_stylesheets:
+  - css/hzd-custom.css
+  - css/style.css
+  - css/3.3.5/bootstrap.min.css
+
 entity_print:
  node:
    quickinfo: hzd/quickinfo

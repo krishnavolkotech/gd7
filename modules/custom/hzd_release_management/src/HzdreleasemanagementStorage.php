@@ -1180,7 +1180,7 @@ $inprogress_nid_values = [];
       
       if($has_depoyment_info) {
           $deployed_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/notification-icon.png';
-          $deployed_img = "<img class = 'deployed-info-icon' src = '/" . $deployed_imgpaths . "'>";
+          $deployed_img = "<img title='Einsatzinformationen anzeigen' class = 'deployed-info-icon' src = '/" . $deployed_imgpaths . "'>";
 
           $filterData = \Drupal::request()->query;
           $exposedFilterData = $filterData->all();
@@ -1236,7 +1236,7 @@ $inprogress_nid_values = [];
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
       $earlywarnings = array('data' => t('Early Warnings'), 'class' => 'early-warnings-hdr');
-      $download = array('data' => t('D/L/EI'), 'class' => 'download-hdr');
+      $download = array('data' => t('Ei/D/L'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $earlywarnings, $download);
     } else {
       $state = array('data' => t('State'), 'class' => 'state-hdr');
@@ -1244,7 +1244,7 @@ $inprogress_nid_values = [];
       $service = array('data' => t('Service'), 'class' => 'service-hdr');
       $release = array('data' => t('Release'), 'class' => 'release-hdr');
       $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
-      $download = array('data' => t('D/L/EI'), 'class' => 'download-hdr');
+      $download = array('data' => t('Ei/D/L'), 'class' => 'download-hdr');
       $header = array($state, $environment, $service, $release, $date, $download);
     }
 
@@ -1317,12 +1317,13 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 <div><p>Ab 12.6.2019 wird der Status \"Zertifizierung ZRMK (DSL-Zert-RMK)\" in den Status \"Warten auf Freigabe f&uuml;r KONSENS durch AnL (ZRMK)\" umbenannt.</p></div>
 <div class='menu-filter menu-filter-progress'>
 <ul>
-<li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li>
-<li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
-<li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li>
+<li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings</li>
 <li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
-<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare ansehen</li>
+<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare</li>
 <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
+<li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/e-icon-whitebg.png'> Einsatzinformationen</li>
 </ul>
 </div>";
     }
@@ -1330,13 +1331,22 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $output = "<div class='menu-filter'>
                    <ul>
                       <li><b>Legende:</b></li>
-                      <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li>
-                      <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li>
+                      <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
+                      <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
                    </ul>
                 </div>";
     }
     else {
-      $output = "<div class='menu-filter'><ul><li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Release herunterladen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings ansehen</li><li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li></ul></div>";
+      $output = "<div class='menu-filter'>
+        <ul>
+          <li><b>Legende:</b></li>
+          <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
+          <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
+          <li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings</li>
+          <li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
+          <li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/e-icon-whitebg.png'> Einsatzinformationen</li>
+       </ul>
+     </div>";
     }
     $build['#markup'] = $output;
     $build['#exclude_from_print'] = 1;
@@ -1470,7 +1480,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         if (\Drupal\Component\Utility\UrlHelper::isValid($releases->field_link->value)) {
           $url = Url::fromUri($releases->field_link->value, $options);
           $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
-          $download = "<img src = '/" . $download_imgpath . "'>";
+          $download = "<img src = '/" . $download_imgpath . "' title='Release herunterladen'>";
           $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
           $link_path = \Drupal::service('renderer')->renderRoot($download_link);
         }
@@ -1483,7 +1493,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
         if ($has_depoyment_info) {
           $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/e-icon.png';
-          $deployed_img = "<img class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
+          $deployed_img = "<img title='Einsatzinformationen anzeigen' class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
 
           $groupId = RELEASE_MANAGEMENT;
           $options = \Drupal::request()->query->all();
@@ -1697,7 +1707,13 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       if (isset($group_id) && $type != 'archived') {
         $header[] = t('Early Warnings');
       }
-      $header[] = t('D/L');
+      if ($type == 'archived') {
+        $header[] = t('D/L');
+      }
+      else {
+        $header[] = t('Ei/D/L');
+      }
+      
     }
     if ($type == 'progress' || $type == 'locked' || $type == 'in_progress') {
       $header = array(t('Service'), t('Release'), t('Status'), t('Date'));
@@ -1705,7 +1721,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         if (isset($group_id)) {
           $header[] = t('Early Warnings');
         }
-        $header[] = t('D/L');
+        $header[] = t('Ei/D/L');
       }
       if ($type == 'locked') {
         $header[] = t('Comment');
@@ -1721,7 +1737,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $group_id = get_group_id();
 
     $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
-    $download = '<img src = "/' . $download_imgpaths . '">';
+    $download = '<img src = "/' . $download_imgpaths . '" title="Dokumentation ansehen">';
 
     $secure_downloads = array_search('secure-downloads', explode('/', $doc_link));
     if ($secure_downloads) {
@@ -2103,8 +2119,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $date = array('data' => t('Date Deployed'), 'class' => 'date-hdr');
     $environment = array('data' => t('Environment'), 'class' => 'environment-hdr');
     $previous_release = array('data' => t('Previous Release'), 'class' => 'previous-release-hdr');
-    $installation_duration = array('data' => t('Installation Duration'), 'class' => 'instattion-duration-hdr');
-    $automated_depoyment = array('data' => t('Automated Deployment'), 'class' => 'automated-deployment-hdr');
+    $installation_duration = array('data' => t('ID'), 'class' => 'instattion-duration-hdr');
+    $automated_depoyment = array('data' => t('AD'), 'class' => 'automated-deployment-hdr');
     $abnormalities = array('data' => t('Abnormalities'), 'class' => 'abnormalities-hdr');
     
     $header = array($state, $release, $date, $environment, $previous_release, $installation_duration, $automated_depoyment, $abnormalities);
@@ -2132,6 +2148,38 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         'group_id' => $group_id,
     );
     return $output;
-  }  
+  }
+
+  /**
+   * Display text on releases and inprogress tabs.
+   */
+  static public function deployed_info_legend($type = NULL) {
+    if ($type == 'deployed') {
+        $output = "<div class='menu-filter'>
+<ul>
+<li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings</li>
+<li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
+<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare</li>
+<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
+<li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/notification-icon-whitebg.png'> Einsatzinformationen</li>
+</ul>
+</div>";
+    }
+    else {
+        $output = "<div class='menu-filter'>
+                 <ul>
+                   <li><b>Legende:</b></li>
+                   <li>".t('ID')." = ".t('Installation Duration')."</li>
+                   <li>".t('AD')." = ".t('Automated Deployment')."</li>
+                 </ul>
+               </div>";
+    }
+    $build['#markup'] = $output;
+    $build['#exclude_from_print'] = 1;
+    return $build;
+  }
+
 }
 

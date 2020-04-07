@@ -5,5 +5,4 @@ dependencies: {  }
 name: 'Release Type'
 vid: release_type
 description: 'Type of Release'
-hierarchy: 1
 weight: 0

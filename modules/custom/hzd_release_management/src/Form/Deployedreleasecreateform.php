@@ -282,7 +282,7 @@ class Deployedreleasecreateform extends FormBase {
 
     if ($installation_time) {
         if(!preg_match("/^(?:\d{1,3}):([0-5][0-9])$/", $installation_time)) {
-            $form_state->setErrorByName('installation_time', t("Invalid Time Format"));
+            $form_state->setErrorByName('installation_time', t("Valid values: 0:01 - 999:59, Format: hhh:mm"));
         }
     }
 

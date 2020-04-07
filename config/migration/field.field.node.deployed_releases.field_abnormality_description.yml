@@ -21,7 +21,7 @@ id: node.deployed_releases.field_abnormality_description
 field_name: field_abnormality_description
 entity_type: node
 bundle: deployed_releases
-label: 'Abnormality Description'
+label: 'Beschreibung der Auffälligkeiten'
 description: ''
 required: false
 translatable: true
