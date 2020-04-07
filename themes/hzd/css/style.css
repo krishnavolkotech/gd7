@@ -3998,14 +3998,3 @@ textarea#edit-abnormalities-desc {
 .noscriptHeight {
   height: 50px !important;
 }
-
-noscript, noscript p{
-    background-color: #ae0000;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
-    width: 100%;
-    padding-top: 2.5px;
-    padding-bottom: 2.5px;
-    margin:0px;
-}
