@@ -69,6 +69,7 @@ function noscript_tag_page_top(array &$page_top) {
         '#type' => 'html_tag',
         '#tag' => 'p',
         '#noscript' => TRUE,
+        '#attributes' => ['class' => ['noscript']],
         '#value' => $markup,
       ],
     ];
