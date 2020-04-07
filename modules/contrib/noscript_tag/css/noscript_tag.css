@@ -4,8 +4,8 @@ noscript p {
     font-size: 12px;
     text-align: center;
     width: 100%;
-    padding-top: 2.5px;
-    padding-bottom: 2.5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     margin:0px;
 }
 
@@ -15,7 +15,7 @@ p.noscript{
     font-size: 12px;
     text-align: center;
     width: 100%;
-    padding-top: 2.5px;
-    padding-bottom: 2.5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     margin:0px;
 }
