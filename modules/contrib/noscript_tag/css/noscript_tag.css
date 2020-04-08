@@ -1,10 +1,21 @@
-noscript {
-  background-color: #ae0000;
-  color: #fff;
-  font-size: 12px;
-  position: fixed;
-  text-align: center;
-  top: 0;
-  width: 100%;
-  z-index: 999;
+noscript p {
+    background-color: #ae0000;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin:0px;
+}
+
+p.noscript{
+    background-color: #ae0000;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin:0px;
 }

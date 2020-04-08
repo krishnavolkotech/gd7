@@ -67,6 +67,7 @@ abstract class AccountForm extends ContentEntityForm implements TrustedCallbackI
     $user = $this->currentUser();
     $config = \Drupal::config('user.settings');
     $form['#cache']['tags'] = $config->getCacheTags();
+    $admin = $user->hasPermission('administer users');
 
     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
