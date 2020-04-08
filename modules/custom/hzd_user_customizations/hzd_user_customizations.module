@@ -221,7 +221,7 @@ function hzd_user_customizations_user_insert($user) {
 
     $covid_group = \Drupal\group\Entity\Group::load(COVID_INFO);
     if (isset($covid_group)) {
-      $preselected[COVID_INFO] => COVID_INFO;
+      $preselected[COVID_INFO] = COVID_INFO;
     }
    
     if(!empty($_POST['groups'])) {
