@@ -4005,6 +4005,7 @@ table.deployed tr th:last-child {
     text-align: right;
     padding-right: 20px;
     padding-left: 0px;
+    min-width: 100px;
 }
 
 
@@ -4015,6 +4016,7 @@ table.released tr th:last-child {
     text-align: right;
     padding-right: 20px;
     padding-left: 0px;
+    min-width: 100px;
 }
 
 .custom-help-text {
