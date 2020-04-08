@@ -682,17 +682,20 @@ body.not-loggedin.path-user .region-content {
 .menu-filter ul {
     width: 100%;
     float: left;
-    margin: 0 0 0px 30px !important;
+    margin: 0 0 0px 10px !important;
 }
 .menu-filter ul li {
     list-style-type: none;
     float: left;
     color: #ffffff;
     list-style-type: none !important;
-    padding: 0 40px 0 0 !important;
+    padding: 0 25px 0 0 !important;
     margin: 0 !important;
     width: auto !important;
     background: transparent !important;
+}
+.menu-filter ul li img.white-bg {
+    background: #fff;
 }
 .menu-filter ul img {
     margin-right: 4px;
@@ -3945,7 +3948,8 @@ textarea#edit-abnormalities-desc {
 }
 
 .deployed .links-wrapper {
-    text-align: center;
+    text-align: right;
+    float:right;
 }
 
 .other-links {
@@ -3997,4 +4001,34 @@ textarea#edit-abnormalities-desc {
 
 .noscriptHeight {
   height: 50px !important;
+}
+
+table.deployed tr td:last-child,
+table.deployed tr th:last-child {
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 0px;
+}
+
+
+table.progress tr td:last-child,
+table.progress tr th:last-child,
+table.released tr td:last-child,
+table.released tr th:last-child {
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 0px;
+}
+
+.custom-help-text {
+    font-size: 13px;
+    color: #757272;
+    font-weight: bold;
+    padding-bottom: 5px;
+    margin-top: -5px;
+}
+
+.empty.message {
+  text-align: left !important;
+  padding-left: 8px !important;
 }

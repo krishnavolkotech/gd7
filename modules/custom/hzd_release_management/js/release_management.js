@@ -30,10 +30,10 @@
                 5:{sorter:'deployed_date'},
                 widgets: ['zebra']
             });
-
+	
             
             $.tablesorter.addParser({
-                  // set a unique id
+                 // set a unique id
                   id: 'release_datesortable',
                   is: function(s) {
                       // return false so this parser is not auto detected
@@ -109,7 +109,7 @@
                   type: 'numeric'
               });
 
-        var release_tab_type = [ "released", "archived", "deployed", "locked", "progress" ];
+        var release_tab_type = [ "released", "archived", "deployed","deployed_info", "locked", "progress" ];
         if (jQuery.inArray( drupalSettings.release_management.type,  release_tab_type) == -1) {
             // jQuery("#sortable").tablesorter();
               $(context).find("#sortable").tablesorter({
@@ -145,32 +145,6 @@
                   type: "numeric" 
                });
 
-
-		$(context).find("#deployed-info-sortable").tablesorter({
-                    dateFormat: 'dd.mm.yyyy',
-                    headers: {
-                        3: {sorter: 'deployed_date'},
-                        5: {sorter: false},
-			6: {sorter: false},
-			7: {sorter: false},
-                    },
-                    showProcessing: true,
-                    headerTemplate : '{content} {icon}',
-                    widgets: ['zebra',"pager", 'stickyHeaders'],
-                    widgetOptions: {
-                        stickyHeaders: 'sticky-header',
-                        stickyHeaders_offset: $.fn.admin_toolbar(),
-                        stickyHeaders_cloneId: '-sticky',
-                        stickyHeaders_addResizeEvent: true,
-                        stickyHeaders_includeCaption: true,
-                        stickyHeaders_zIndex: 2,
-                        stickyHeaders_attachTo: null,
-                        stickyHeaders_xScroll: null,
-                        stickyHeaders_yScroll: null,
-                        stickyHeaders_filteredToTop: true
-                    }
-                });
-
 		
 		$(context).find("#sortable").tablesorter({
                     dateFormat: 'dd.mm.yyyy',
@@ -198,7 +172,47 @@
                 });
                   
             }
-	    else if (jQuery.inArray( drupalSettings.release_management.type,  ['locked', 'progress']) != -1) {
+	else if  (drupalSettings.release_management.type == "deployed_info") {
+	    $.tablesorter.addParser({ 
+                id: "deployed_date", 
+                is: function(s) { 
+                    return false; 
+                }, 
+                format: function(s,table) { 
+                    s = s.replace(/\-/g,"/"); 
+                    s = s.replace(/(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{4})/, "$3/$2/$1");                            
+                    return $.tablesorter.formatFloat(new Date(s).getTime()); 
+                }, 
+                type: "numeric" 
+            });
+	    
+	    $(context).find("#deployed-info-sortable").tablesorter({
+                dateFormat: 'dd.mm.yyyy',
+                headers: {
+                    2: {sorter: 'deployed_date'},
+                    5: {sorter: false},
+                    6: {sorter: false},
+		    7: {sorter: false},
+                },
+                showProcessing: true,
+                headerTemplate : '{content} {icon}',
+                widgets: ['zebra',"pager", 'stickyHeaders'],
+                widgetOptions: {
+                    stickyHeaders: 'sticky-header',
+                    stickyHeaders_offset: $.fn.admin_toolbar(),
+                    stickyHeaders_cloneId: '-sticky',
+                    stickyHeaders_addResizeEvent: true,
+                    stickyHeaders_includeCaption: true,
+                    stickyHeaders_zIndex: 2,
+                    stickyHeaders_attachTo: null,
+                    stickyHeaders_xScroll: null,
+                    stickyHeaders_yScroll: null,
+                    stickyHeaders_filteredToTop: true
+                }
+            });
+            
+	}
+	else if (jQuery.inArray( drupalSettings.release_management.type,  ['locked', 'progress']) != -1) {
               $(context).find("#sortable").tablesorter({
                     headers: {
                         3: { sorter:'release_datesortable' },
