@@ -1,0 +1,22 @@
+diff --git a/core/modules/user/src/AccountForm.php b/core/modules/user/src/AccountForm.php
+index f30191fe3..077ff0f56 100644
+--- a/core/modules/user/src/AccountForm.php
++++ b/core/modules/user/src/AccountForm.php
+@@ -67,7 +67,7 @@ public function form(array $form, FormStateInterface $form_state) {
+     $user = $this->currentUser();
+     $config = \Drupal::config('user.settings');
+     $form['#cache']['tags'] = $config->getCacheTags();
+-    $admin = $user->hasPermission('administer users');
++     $admin = $user->hasPermission('administer users');
+ 
+     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
+ 
+@@ -116,7 +116,7 @@ public function form(array $form, FormStateInterface $form_state) {
+         'spellcheck' => 'false',
+       ],
+       '#default_value' => (!$register ? $account->getAccountName() : ''),
+-      '#access' => ($register || ($user->id() == $account->id() && $user->hasPermission('change own username')) || $admin),
++       '#access' => ($register || ($user->id() == $account->id() && $user->hasPermission('change own username')) || $admin),
+       //'#access' => $account->name->access('edit'),
+     ];
+ 
