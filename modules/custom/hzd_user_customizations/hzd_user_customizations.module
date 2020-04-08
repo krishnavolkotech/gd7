@@ -37,6 +37,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
     $val = [];
 	$user_states = hzd_states();
 	asort($user_states);
+	//sort($user_states);
         if ($form_id == 'user_register_form') {
             $form['desc'] = [
                 '#weight' => -100,
