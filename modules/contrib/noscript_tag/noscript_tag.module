@@ -62,13 +62,15 @@ function noscript_tag_page_top(array &$page_top) {
     // Get format from config.
     $noscript_tag_format = $noscript_tag_config->get('noscript_tag_format');
     // Format Markup.
-    $markup = check_markup($noscript_tag_value, $noscript_tag_format);
+    $markup = check_markup(strip_tags($noscript_tag_value), $noscript_tag_format);
     // Add html to page top.
+
     $page_top = [
       'noscript_tag' => [
         '#type' => 'html_tag',
         '#tag' => 'p',
         '#noscript' => TRUE,
+        '#attributes' => ['class' => ['noscript']],
         '#value' => $markup,
       ],
     ];

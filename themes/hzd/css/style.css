@@ -4001,11 +4001,13 @@ textarea#edit-abnormalities-desc {
   margin-bottom: 9px !important;
 }
 
+
 table.deployed tr td:last-child,
 table.deployed tr th:last-child {
     text-align: right;
     padding-right: 20px;
     padding-left: 0px;
+    min-width: 100px;
 }
 
 
@@ -4016,6 +4018,7 @@ table.released tr th:last-child {
     text-align: right;
     padding-right: 20px;
     padding-left: 0px;
+    min-width: 100px;
 }
 
 .custom-help-text {
@@ -4029,4 +4032,8 @@ table.released tr th:last-child {
 .empty.message {
   text-align: left !important;
   padding-left: 8px !important;
+}
+
+.noscriptHeight {
+  height: 50px !important;
 }
