@@ -218,11 +218,11 @@ article.page .content table {
 }
 header .block-cust-group-search-block form span.glyphicon-search{
   cursor:pointer;
-  z-index:10000;  
-  margin:0 0 10px 0;   
+  z-index:10000;
+  margin:0 0 10px 0;
 }
 @media only screen and (max-width: 600px) {
-form.node-service-profile-form .service-time .form-type-checkbox, 
+form.node-service-profile-form .service-time .form-type-checkbox,
 form.node-service-profile-edit-form .service-time .form-type-checkbox{
   width:100% !important;
 }
@@ -237,7 +237,7 @@ form.node-service-profile-edit-form .service-time .form-type-checkbox,
 form.node-service-profile-edit-form .service-time .control-label,
 form.node-service-profile-edit-form .service-time .container-inline {
    float:left;
- margin-right:5px; 
+ margin-right:5px;
 }
 }
 @media only screen and (min-width: 768px) {
@@ -254,7 +254,7 @@ form.node-service-profile-edit-form .service-time .container-inline {
     #block-customtable thead tr {
         background: #eaeff5;
     }
-  
+
     header {
         padding: 0 !important;
     }
@@ -655,11 +655,11 @@ body.not-loggedin.path-user .region-content {
 .alert-success {
     color: #325e1c;
     /*text-indent:23px;*/
-    
+
     background-color: #f3faef;
     border-color: #c9e1bd #c9e1bd #c9e1bd transparent;
     /* LTR */
-    
+
     background: rgba(201, 225, 189, 0.05) url(../images/check.svg) 10px 17px no-repeat;
     /* LTR */
 }
@@ -667,10 +667,10 @@ body.not-loggedin.path-user .region-content {
     border: 1px solid;
     border-width: 1px 1px 1px 0;
     /* LTR */
-    
+
     padding: 15px 15px 15px 35px !important;
     /* LTR */
-    
+
     margin-bottom: 20px;
     margin-left: 8px;
 }
@@ -687,9 +687,8 @@ body.not-loggedin.path-user .region-content {
 .menu-filter ul li {
     list-style-type: none;
     float: left;
-    color: #ffffff;
     list-style-type: none !important;
-    padding: 0 25px 0 0 !important;
+    padding: 0 15px 0 0 !important;
     margin: 0 !important;
     width: auto !important;
     background: transparent !important;
@@ -787,7 +786,7 @@ table tr td ul {
 table tr td ul li {
     list-style-type: none;
 }
-table tr.odd { 
+table tr.odd {
     background: transparent !important;
     border-bottom: 1px solid #dddddd;
 }
@@ -811,14 +810,15 @@ table tr.even:hover {
     color: #333333;
 }
 .warningcount {
-    background: url(../images/warning-icon.png) left top no-repeat;
-    width: 28px;
-    height: 24px;
+    background: url(../images/ew-icon.svg) left top no-repeat;
+    width: 30px;
+    height: 26px;
     /*float: left;*/
-    line-height: 29px;
+    line-height: 31px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     display:inline-block;
+    font-weight: bold;
 }
 aside section.blue,
 .region-sidebar-first .block-hzd-release-management,
@@ -867,7 +867,7 @@ nav#block-optionen .field--name-body ul li:last-child {
 /*aside section.blue .field--name-body ul li:hover a,
 .region-sidebar-first .block-hzd-release-management .field--name-body ul li:hover a,
 nav#block-optionen .field--name-body ul li:hover a {
- text-decoration: ; 
+ text-decoration: ;
 }*/
 h1.page-header {
     margin: 0 0 20px 0 !important;
@@ -944,7 +944,7 @@ table.border-null td{
 input.hasDatepicker {
     height: 34px !important;
     font-size: 14px;
-    color: #333;  
+    color: #333;
     width: 100%;
 }
 .filter_end_date input,
@@ -1058,7 +1058,7 @@ button.button--reset:hover {
 }
 .block-incidents-block a.downtime-create-button:hover,
 .block-maintenance-block a.downtime-create-button:hover{
-  text-decoration:none; 
+  text-decoration:none;
   opacity:0.95;
 }
 .block-incidents-block a.downtime-create-button,
@@ -1472,7 +1472,7 @@ nav#block-optionen ul li {
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.dropdown-toggle,
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active a.is-active {
-    color: #0084bf; 
+    color: #0084bf;
     margin-bottom: 5px;
 }
 .region-sidebar-first section.blue.incident-menu ul.menu.nav li.expanded.dropdown.active ul li a:hover {
@@ -1733,12 +1733,13 @@ ul.nav-tabs li:hover a .summary {
     display: inline-block;
 }
 .unpublished-quickinfo-edit-link a {
-    background: url(../images/edit-icon.png) left top no-repeat !important;
+    background: url(../images/edit-icon.svg) left top no-repeat !important;
     padding-left: 25px;
 }
 .unpublished-quickinfo-pdf-preview a {
-    background: url(../images/pdf-icon-grey.jpg) left top no-repeat !important;
+    background: url(../images/pdf-icon2.svg) left top no-repeat !important;
     display:block;
+    width: 30px;
 }
 article.downtimes .downtime_reason,
 article.downtimes .Incident {
@@ -1766,7 +1767,7 @@ nav#block-optionen ul.menu.nav li.expanded.dropdown.open a.dropdown-toggle {
 }
 form#downtimes-filter .archive_other_states_filter_form_wrapper,
 form#downtimes-filter .archive_downtimes_states_filter_form_wrapper,
-form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper { 
+form#downtimes-filter .archive_downtimes_dates_filter_form_wrapper {
     float: left;
 }
 form.archived .downtimes_form_row {
@@ -1828,7 +1829,7 @@ section h2.block-title,
     border-bottom: 1px dotted rgba(0,0,0,.2);
 }
 .block-favorites h2.block-title {
-    background: url("../images/ic_star_black.png") no-repeat scroll right top;
+    background: url("../images/bookmark-active.svg") no-repeat scroll right top;
 }
 .block-incidents-block ul {
     margin: 0;
@@ -2112,7 +2113,7 @@ section .form-group .more-link a {
     background: none;
     padding: 0;
 }
-/*aside section .form-group .item-list ul li*/ 
+/*aside section .form-group .item-list ul li*/
 section .form-group .item-list ul li{
     display: inline-block;
     padding: 0;
@@ -2428,12 +2429,12 @@ section.block-star-favorites-block form button.del-fav {
     padding: 0 !important;
 }
 section.block-star-favorites-block form button.add-fav {
-    background: url(../images/ic_star_black.png) left top no-repeat !important;
+    background: url(../images/bookmark-active.svg) left top no-repeat !important;
     font-size: 0;
     border: none !important
 }
 section.block-star-favorites-block form button.del-fav {
-    background: url(../images/ic_star_border_black.png) left top no-repeat !important;
+    background: url(../images/bookmark-inactive.svg) left top no-repeat !important;
     font-size: 0;
     border: none !important
 }
@@ -2458,7 +2459,7 @@ section .form-group .more-link a:hover,
 .block-incidents-block ul li span {
     font-size: 14px;
 }
-.block-incidents-block ul li span.service-item {  
+.block-incidents-block ul li span.service-item {
     font-size: 14px;
     color: #cc0000;
 }
@@ -2565,7 +2566,7 @@ article.downtimes h3 {
     float: left;
     margin: 10px 0 !important;
 }
-article.downtimes .downtime-view-wrapper {  
+article.downtimes .downtime-view-wrapper {
     background: #f5f7fa;
     padding: 20px;
     width: 100%;
@@ -2573,7 +2574,7 @@ article.downtimes .downtime-view-wrapper {
     margin: 0px;
     text-align: left;
 }
-#edit-services-effected article.downtimes .downtime-view-wrapper {  
+#edit-services-effected article.downtimes .downtime-view-wrapper {
     margin: 10px 0 20px 0;
 }
 article.downtimes .form-group,
@@ -2657,6 +2658,8 @@ table.releases tr td.earlywarnings-cell a.view-earlywarning:hover{
 }
 table.releases  tr td.earlywarnings-cell img{
    margin-right:40px;
+   width: 26px;
+   height: 26px;
 }
 table.releases tr td.earlywarnings-cell a.view-earlywarning,
 table.releases tr td.earlywarnings-cell a.create_earlywarning{
@@ -2679,7 +2682,7 @@ table.releases tr td.earlywarnings-cell a.create_earlywarning{
 }
 .view-groups-faq form button.tabledrag-toggle-weight{
   float:left;
-} 
+}
 .quickinfo-attachments .field--name-upload .table-responsive button.tabledrag-toggle-weight {
     float: right;
 }
@@ -2925,27 +2928,27 @@ body.path-group .main-container .region-content {
 /*----  16-12-16   ----*/
 
 .text-danger td a.downtimes_details_link {
-    background: url(../images/notification-icon.png) center top no-repeat;
-    width: 22px;
-    height: 22px;
+    background: url(../images/info-icon.svg) center top no-repeat;
+    width: 24px;
+    height: 24px;
     float: left;
     font-size: 0;
     /*margin: 0 10px 0 0;*/
     margin:0 5px 0 0;
 }
 a.downtimes_details_link {
-    background: url(../images/notification-icon.png) center top no-repeat;
-    width: 22px;
-    height: 22px;
+    background: url(../images/info-icon.svg) center top no-repeat;
+    width: 24px;
+    height: 24px;
     /*float: left;*/
     display:table-cell;
     font-size: 0;
     margin-right: 10px;
 }
 table.archived tr td a.downtimes_details_link {
-    background: url(../images/notification-icon.png) center top no-repeat;
-    width: 22px;
-    height: 22px;
+    background: url(../images/info-icon.svg) center top no-repeat;
+    width: 36px;
+    height: 24px;
     /*float: left;*/
     display:table-cell;
     font-size: 0;
@@ -2954,9 +2957,9 @@ table.archived tr td a.downtimes_details_link {
 }
 .text-danger td a.downtimes_update_link,
 a.downtimes_update_link {
-    background: url(../images/details-icon.png) center top no-repeat;
-    width: 32px;
-    height: 20px;
+    background: url(../images/edit-icon.svg) center top no-repeat;
+    width: 36px;
+    height: 24px;
     /*float: left;*/
     display:table-cell;
     font-size: 0;
@@ -2964,24 +2967,24 @@ a.downtimes_update_link {
 }
 .text-danger td a.downtimes_resolve_link,
 a.downtimes_resolve_link {
-    background: url(../images/tick-icon.png) center top no-repeat;
-    width: 32px;
-    height: 17px;
+    background: url(../images/check-icon.svg) center top no-repeat;
+    width: 36px;
+    height: 24px;
     font-size: 0;
     margin: 0;
     /*float: left;*/
     display:table-cell;
 }
 .text-danger td a.downtimes_cancel_link{
-    background: url("../images/cancel-icon.png") center top no-repeat;
-    width: 32px;
+    background: url("../images/cancel-icon.svg") center top no-repeat;
+    width: 27px;
     height: 20px;
     float: left;
     font-size: 0;
 }
 a.downtimes_cancel_link {
-    background: url("../images/cancel-icon.png") center top no-repeat;
-    width: 32px;
+    background: url("../images/cancel-icon.svg") center top no-repeat;
+    width: 27px;
     height: 20px;
     display:table-cell;
     font-size: 0;
@@ -3653,7 +3656,7 @@ div.risk-table-wrapper div.field div.field--item{
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
 }
-.riskcluster-list table tbody tr td:last-child, 
+.riskcluster-list table tbody tr td:last-child,
 .risk-list table tbody tr td:last-child,
 .measures-list table tbody tr td:last-child{
   min-width: 65px;
@@ -3790,7 +3793,6 @@ form[id^="views-form-groups-faq-category-"] > div.table-responsive > table > tbo
 .menu-filter-progress ul li {
     list-style-type: none;
     float: left;
-    color: #ffffff;
     list-style-type: none !important;
     padding: 0 13px 0 0 !important;
     margin: 0 !important;
@@ -3825,13 +3827,13 @@ table.releases tr td.inprogress-comment-cell img {
 }
 
 .commentcount {
-    background: url(../../../modules/custom/hzd_release_inprogress_comments/images/blue-icon.png) left top no-repeat;
-    width: 28px;
-    height: 24px;
+    background: url(/themes/hzd/images/comment-icon.svg) left top no-repeat;
+    width: 30px;
+    height: 26px;
     /*float: left;*/
-    line-height: 29px;
+    line-height: 31px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     display:inline-block;
 }
 
@@ -3898,7 +3900,7 @@ td.checkbox {
 }
 
 
-.deployed-info-view-wrapper {  
+.deployed-info-view-wrapper {
     background: #f5f7fa;
     padding: 20px;
     width: 100%;
