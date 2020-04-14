@@ -34,7 +34,7 @@ function prk($data) {
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if ($form_id == 'user_register_form' || $form_id == 'user_form') {
-    $val = [];
+    	$val = [];
 	$user_states = hzd_states();
 	asort($user_states);
 	//sort($user_states);
