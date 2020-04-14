@@ -37,6 +37,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
     	$val = [];
 	$user_states = hzd_states();
 	asort($user_states);
+	//sort($user_states);
         if ($form_id == 'user_register_form') {
             $form['desc'] = [
                 '#weight' => -100,
@@ -216,9 +217,12 @@ function hzd_user_customizations_user_insert($user) {
         BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
         KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
         VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
-        COVID_INFO => COVID_INFO,
     );
 
+    $covid_group = \Drupal\group\Entity\Group::load(COVID_INFO);
+    if (isset($covid_group)) {
+      $preselected[COVID_INFO] = COVID_INFO;
+    }
    
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
@@ -244,7 +248,9 @@ function hzd_user_customizations_user_insert($user) {
         }
     }
     //Insert default Notification Subscription for COVID INFO GROUP
-    Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($user->id(), COVID_INFO, 0);
+    if (isset($covid_group)) {
+      Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($user->id(), COVID_INFO, 0);
+    }
 }
 
 function insert_nsm_role($uid) {

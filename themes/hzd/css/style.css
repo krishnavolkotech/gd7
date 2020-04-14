@@ -3999,6 +3999,9 @@ textarea#edit-abnormalities-desc {
   margin-bottom: 9px !important;
 }
 
+.noscriptHeight {
+  height: 50px !important;
+}
 
 table.deployed tr td:last-child,
 table.deployed tr th:last-child {
@@ -4030,8 +4033,4 @@ table.released tr th:last-child {
 .empty.message {
   text-align: left !important;
   padding-left: 8px !important;
-}
-
-.noscriptHeight {
-  height: 50px !important;
 }
