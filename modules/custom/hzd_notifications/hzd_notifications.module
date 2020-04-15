@@ -606,9 +606,9 @@ function _notify_users(&$entity, $action, $user_data){
     $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity->getEntityTypeId());
     $enView = $view_builder->view($entity, 'mail', 'de');
     if($entity->bundle() == 'quickinfo') {
-      $body = \Drupal\Component\Utility\Html::decodeEntities(\Drupal::service('renderer')->render($enView));
+      $body = \Drupal\Component\Utility\Html::decodeEntities(\Drupal::service('renderer')->renderRoot($enView));
     } else {
-      $body = \Drupal::service('renderer')->render($enView);
+      $body = \Drupal::service('renderer')->renderRoot($enView);
     } 
     if ($entity->getEntityTypeId() == 'group') {
       $type = 'group';
