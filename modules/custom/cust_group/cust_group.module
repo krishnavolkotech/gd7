@@ -324,6 +324,12 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
     if ($group->id() == \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
       db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
+    //wird dies für SAMS überhaupt benötigt? Eingetragen, weil paralel zu ALEDV erstellt im Rahmen der Trennung von SAMS und ALEDV
+    // Ja, wir benötigt um abonnierte Benachrichtigungen aus Datenbank zu löschen, wenn user die Gruppe verlässt.
+    // @todo Testen.
+    if ($group->id() == \Drupal::config('sams.settings')->get('sams_id')) {
+      db_query("DELETE FROM {sams_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+    }
   }
   $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
   $plugin_id = $entity->getContentPlugin()->getPluginId();

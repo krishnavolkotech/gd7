@@ -1,0 +1,37 @@
+.popover-title {
+  font-weight: bold !important;
+  margin: 0 !important;
+}
+
+div.popover-content {
+  padding: 9px 14px !important;
+}
+
+div h4 {
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
+  float: left;
+}
+
+textarea {
+  resize: none;
+  height: 120px !important;
+}
+
+hr {
+  margin-bottom: 9px !important;
+}
+
+.btn-info {
+  float:right;
+  margin-bottom: 10px !important;
+  background-color: rgb(127,181,203) !important;
+}
+
+.btn-info:hover {
+   background-color: rgb(0,164,227) !important;
+}
+
+h4.hzd-form-element {
+  margin: 10px 10px 0 0 !important;
+}

@@ -32,3 +32,10 @@ cust_group.arbeitsanleitungen_documentation_settings:
   parent: cust_group.arbeitsanleitungen_settings
   description: 'Arbeitsanleitungen documentation settings'
   weight: -12
+  
+cust_group.sams_settings:
+  title: 'Sams Configuration'
+  route_name: cust_group.sams_settings
+  parent: hzd_customizations.custom_configurations
+  description: 'Sams Configuration'
+  weight: 99

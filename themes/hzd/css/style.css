@@ -3824,6 +3824,28 @@ table.releases tr td.inprogress-comment-cell img {
     margin-left: 5px;
 }
 
+table.artifacts {
+    font-size: 14px;
+}
+
+table.artifacts tr td.artifact-comment-cell {
+    width: 80px;
+}
+
+table.artifacts tr td.artifact-comment-cell a{
+    float: left;
+    text-align: center;
+}
+
+table.artifacts tr td.artifact-comment-cell img{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.artifact-info-icon.disabled {
+	pointer-events: none;
+}
+
 .commentcount {
     background: url(../../../modules/custom/hzd_release_inprogress_comments/images/blue-icon.png) left top no-repeat;
     width: 28px;

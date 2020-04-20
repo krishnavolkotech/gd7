@@ -494,3 +494,50 @@ function hzd_notifications_update_8018(&$sandbox) {
   }
   drupal_set_message('Migration tables deleted successfully.');
 }
+
+/**
+ * Implements hook_update_N() on Module hzd_notifications Update # 8019.
+ */
+function hzd_notifications_update_8019(&$sandbox) {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $table_name = 'sams_notifications__user_default_interval';
+  $table_schema = [
+    'description' => 'Stores the Sams notifications default interval',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'service' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'class' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'product' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'status' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+  ];
+  $schema->createTable($table_name, $table_schema);
+  drupal_set_message('Module hzd_notifications Update # 8019 () was executed successfully.');
+}

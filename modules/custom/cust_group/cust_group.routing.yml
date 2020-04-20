@@ -219,3 +219,13 @@ arbeitsanleitungen.read_arbeitsanleitungen_zip:
     _access: 'TRUE'
   options:
     no_cache: 'TRUE'
+
+cust_group.sams_settings:
+  path: 'admin/config/sams'
+  defaults:
+    _form: '\Drupal\cust_group\Form\SamsForm'
+    _title: 'Sams Configuration'
+  requirements:
+      _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

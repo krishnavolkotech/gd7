@@ -37,4 +37,10 @@ hzd_notifications.arbeitsanleitungen_notifications:
   title: 'AL-EDV'
   route_name: hzd_notifications.arbeitsanleitungen_notifications
   parent_id: hzd_notifications.notifications
-  weight: 4
+  weight: 5
+
+hzd_notifications.sams_notifications:
+  title: 'SAMS'
+  route_name: hzd_notifications.sams_notifications
+  parent_id: hzd_notifications.notifications
+  weight: 6
