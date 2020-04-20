@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * @file
+ * Contains hzd_artifact_comments.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_help().
+ */
+function hzd_artifact_comments_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the hzd_artifact_comments module.
+    case 'help.page.hzd_artifact_comments':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Erlaubt die Erstellung von Kommentaren zu Softwareartefakten') . '</p>';
+      return $output;
+    default:
+  }
+}
+
+/**
+ * implements hook_form_alter
+ */
+function hzd_artifact_comments_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//  ksm($form_id);
+  if ($form_id == 'node_artefakt_kommentar_form') {
+    $artifactName = \Drupal::request()->query->get('artifact');
+//    $artifactClass = \Drupal::request()->query->get('class');
+//    $artifactStatus = \Drupal::request()->query->get('status');
+
+    $form['field_artifact_name']['widget']['0']['value']['#default_value'] = $artifactName;
+    $form['field_artifact_name']['#disabled'] = TRUE;
+//    $form['field_klasse']['widget']['0']['value']['#default_value'] = $artifactClass;
+//    $form['field_klasse']['#disabled'] = TRUE;
+//    $form['field_artifact_status']['widget']['0']['value']['#default_value'] = $artifactStatus;
+//    $form['field_artifact_status']['#disabled'] = TRUE;
+  }
+  if ($form_id == 'node_artefakt_kommentar_edit_form') {
+    $form['field_artifact_name']['#disabled'] = TRUE;
+//    $form['field_klasse']['#disabled'] = TRUE;
+//    $form['field_artifact_status']['#disabled'] = TRUE;
+  }
+  if ($form_id == 'comment_comment_no_subject_form') {
+    $form['actions']['preview']['#access'] = FALSE;
+    $isArtifactComment = FALSE;
+    foreach ($form['#cache']['tags'] as $tag) {
+      if (strpos($tag, 'artefakt_kommentar')) {
+        $isArtifactComment = TRUE;
+      }
+      if ($isArtifactComment === TRUE) {
+        $form['field_do_not_send_notifications']['#disabled'] = TRUE;
+        $form['field_do_not_send_notifications']['#access'] = FALSE;
+      }
+    }
+
+  }
+  return $form;
+}
+
+/**
+ * implements hook_node_insert
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ */
+function hzd_artifact_comments_node_insert(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->getType() == 'artefakt_kommentar') {
+    $samsGroupId = \Drupal::config('sams.settings')->get('sams_id');
+    $group = \Drupal\group\Entity\Group::load($samsGroupId);
+    $plugin = $group->getGroupType()
+      ->getContentPlugin('group_node:artefakt_kommentar');
+
+    $values = [
+      'type' => $plugin->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $entity->id(),
+    ];
+    $group_content = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->create($values)
+      ->save();
+  }
+}
+
+/**
+ * Adds a button to get from the single thread to an overview of associate threads.
+ *
+ * Implements hook_ENTITY_TYPE_view
+ * @param array $build
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ * @param \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display
+ * @param $view_mode
+ */
+function hzd_artifact_comments_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->getType() == 'artefakt_kommentar') {
+    $groupId = \Drupal::config('sams.settings')->get('sams_id');
+    $artifact = $entity->get('field_artifact_name')->getValue();
+    $cmt_options['attributes'] = array('class' => 'btn btn-default');
+    $cmt_options['query'][] = ['artifact' => $artifact[0]['value']];
+    $create_cmt_url = Url::fromRoute(
+      'hzd_artifact_comments.view_artifact_comments',
+      ['group' => $groupId],
+      $cmt_options
+    );
+    $createCommentRenderArray = [
+      '#type' => 'link',
+      '#url' => $create_cmt_url,
+      '#title' => [
+        '#markup' => '<span class="glyphicon glyphicon-list-alt" aria-hidden="true">&nbsp;</span>' . t('Back to overview'),
+      ],
+    ];
+    $createComment = \Drupal::service('renderer')->renderRoot($createCommentRenderArray);
+    $build = array_reverse($build);
+    $build['hzd_artifact_comments']['#markup'] = $createComment->__toString() . '<p>&nbsp;</p>';
+    $build = array_reverse($build);
+  }
+}

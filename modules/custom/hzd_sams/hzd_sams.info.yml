@@ -1,0 +1,10 @@
+name: 'SAMS'
+type: module
+description: 'Darstellung von Software Artefakten aus dem SAMS'
+core: 8.x
+configure: cust_group.sams_settings
+package: 'Custom'
+dependencies:
+  - hzd_notifications
+  - cust_group
+

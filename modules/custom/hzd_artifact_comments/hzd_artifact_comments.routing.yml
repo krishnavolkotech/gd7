@@ -1,0 +1,34 @@
+hzd_artifact_comments.add_artifact_comment:
+  # todo: eindeutschen
+  path: 'sams-konsens/artefakt-kommentare/add'
+  defaults:
+    _controller: '\Drupal\hzd_artifact_comments\Controller\HzdArtifactComments::addArtifactComment'
+    _title: 'Add Artifact Comments'
+    _entity_view: 'group.default'
+  requirements:
+    # _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+
+
+hzd_artifact_comments.view_artifact_comments:
+  path: 'sams-konsens/artefakt-kommentare'
+  defaults:
+    _controller: '\Drupal\hzd_artifact_comments\Controller\HzdArtifactComments::viewArtifactComment'
+    _title: 'Artifact Comments'
+   # _entity_view: 'group.default'
+  requirements:
+    # _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+
+#hzd_artifact_comments.artifact_comments:
+#  path: 'group/{group}/artefakt-kommentare'
+#  defaults:
+#    _controller: '\Drupal\hzd_artifact_comments\Controller\HzdArtifactComments::artifact_comments_display'
+#    _title: 'Artifact Comments'
+#    _entity_view: 'group.default'
+#  requirements:
+##    _permission: 'access content'
+#    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+##    _custom_access: '\Drupal\cust_group\Controller\AccessController::groupRWCommentsAccess'

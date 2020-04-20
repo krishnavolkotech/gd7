@@ -1,0 +1,426 @@
+From 0edf8b8c80b3761d3298ed5e2c31a736dc8a86a4 Mon Sep 17 00:00:00 2001
+From: Betriebsportal KONSENS <betriebsportal-konsens@hzd.hessen.de>
+Date: Fri, 30 Aug 2019 16:23:30 +0200
+Subject: [PATCH] Konfiguration: Artefakt-Kommentare (Inhaltstyp)
+
+---
+ .../auto_nodetitle.node.artefakt_kommentar.yml     |   2 +
+ ...orm_display.node.artefakt_kommentar.default.yml | 104 +++++++++++++++++++++
+ ...iew_display.node.artefakt_kommentar.default.yml |  55 +++++++++++
+ ...view_display.node.artefakt_kommentar.teaser.yml |  36 +++++++
+ .../field.field.node.artefakt_kommentar.body.yml   |  22 +++++
+ ....node.artefakt_kommentar.comment_no_subject.yml |  33 +++++++
+ ...node.artefakt_kommentar.field_artifact_name.yml |  19 ++++
+ .../field.storage.node.field_artifact_name.yml     |  21 +++++
+ ...ge.content_settings.node.artefakt_kommentar.yml |  16 ++++
+ config/migration/node.settings.yml                 |   1 +
+ config/migration/node.type.artefakt_kommentar.yml  |  17 ++++
+ 11 files changed, 326 insertions(+)
+ create mode 100644 config/migration/auto_nodetitle.node.artefakt_kommentar.yml
+ create mode 100644 config/migration/core.entity_form_display.node.artefakt_kommentar.default.yml
+ create mode 100644 config/migration/core.entity_view_display.node.artefakt_kommentar.default.yml
+ create mode 100644 config/migration/core.entity_view_display.node.artefakt_kommentar.teaser.yml
+ create mode 100644 config/migration/field.field.node.artefakt_kommentar.body.yml
+ create mode 100644 config/migration/field.field.node.artefakt_kommentar.comment_no_subject.yml
+ create mode 100644 config/migration/field.field.node.artefakt_kommentar.field_artifact_name.yml
+ create mode 100644 config/migration/field.storage.node.field_artifact_name.yml
+ create mode 100644 config/migration/language.content_settings.node.artefakt_kommentar.yml
+ create mode 100644 config/migration/node.type.artefakt_kommentar.yml
+
+diff --git a/config/migration/auto_nodetitle.node.artefakt_kommentar.yml b/config/migration/auto_nodetitle.node.artefakt_kommentar.yml
+new file mode 100644
+index 000000000..368024afd
+--- /dev/null
++++ b/config/migration/auto_nodetitle.node.artefakt_kommentar.yml
+@@ -0,0 +1,2 @@
++status: 0
++pattern: ''
+diff --git a/config/migration/core.entity_form_display.node.artefakt_kommentar.default.yml b/config/migration/core.entity_form_display.node.artefakt_kommentar.default.yml
+new file mode 100644
+index 000000000..6a2995736
+--- /dev/null
++++ b/config/migration/core.entity_form_display.node.artefakt_kommentar.default.yml
+@@ -0,0 +1,104 @@
++uuid: a691bf34-4873-473b-8c32-21bd85e020f3
++langcode: de
++status: true
++dependencies:
++  config:
++    - field.field.node.artefakt_kommentar.body
++    - field.field.node.artefakt_kommentar.comment_no_subject
++    - field.field.node.artefakt_kommentar.field_artifact_name
++    - node.type.artefakt_kommentar
++  module:
++    - comment
++    - path
++    - text
++id: node.artefakt_kommentar.default
++targetEntityType: node
++bundle: artefakt_kommentar
++mode: default
++content:
++  body:
++    type: text_textarea_with_summary
++    weight: 121
++    settings:
++      rows: 9
++      summary_rows: 3
++      placeholder: ''
++    third_party_settings: {  }
++    region: content
++  comment_no_subject:
++    weight: 123
++    settings: {  }
++    third_party_settings: {  }
++    type: comment_default
++    region: content
++  created:
++    type: datetime_timestamp
++    weight: 10
++    region: content
++    settings: {  }
++    third_party_settings: {  }
++  field_artifact_name:
++    weight: 122
++    settings:
++      size: 60
++      placeholder: ''
++    third_party_settings: {  }
++    type: string_textfield
++    region: content
++  langcode:
++    type: language_select
++    weight: 2
++    region: content
++    settings:
++      include_locked: true
++    third_party_settings: {  }
++  path:
++    type: path
++    weight: 30
++    region: content
++    settings: {  }
++    third_party_settings: {  }
++  promote:
++    type: boolean_checkbox
++    settings:
++      display_label: true
++    weight: 15
++    region: content
++    third_party_settings: {  }
++  status:
++    type: boolean_checkbox
++    settings:
++      display_label: true
++    weight: 120
++    region: content
++    third_party_settings: {  }
++  sticky:
++    type: boolean_checkbox
++    settings:
++      display_label: true
++    weight: 16
++    region: content
++    third_party_settings: {  }
++  title:
++    type: string_textfield
++    weight: -5
++    region: content
++    settings:
++      size: 60
++      placeholder: ''
++    third_party_settings: {  }
++  translation:
++    weight: 10
++    settings: {  }
++    third_party_settings: {  }
++    region: content
++  uid:
++    type: entity_reference_autocomplete
++    weight: 5
++    settings:
++      match_operator: CONTAINS
++      size: 60
++      placeholder: ''
++    region: content
++    third_party_settings: {  }
++hidden: {  }
+diff --git a/config/migration/core.entity_view_display.node.artefakt_kommentar.default.yml b/config/migration/core.entity_view_display.node.artefakt_kommentar.default.yml
+new file mode 100644
+index 000000000..47b8a2e42
+--- /dev/null
++++ b/config/migration/core.entity_view_display.node.artefakt_kommentar.default.yml
+@@ -0,0 +1,55 @@
++uuid: 464ba042-9406-47db-abd7-b732f753ac07
++langcode: de
++status: true
++dependencies:
++  config:
++    - core.entity_view_display.comment.comment_no_subject.default
++    - field.field.node.artefakt_kommentar.body
++    - field.field.node.artefakt_kommentar.comment_no_subject
++    - field.field.node.artefakt_kommentar.field_artifact_name
++    - node.type.artefakt_kommentar
++  module:
++    - comment
++    - text
++    - user
++id: node.artefakt_kommentar.default
++targetEntityType: node
++bundle: artefakt_kommentar
++mode: default
++content:
++  body:
++    label: hidden
++    type: text_default
++    weight: 101
++    settings: {  }
++    third_party_settings: {  }
++    region: content
++  comment_no_subject:
++    weight: 103
++    label: above
++    settings:
++      view_mode: default
++      pager_id: 0
++    third_party_settings: {  }
++    type: comment_default
++    region: content
++  field_artifact_name:
++    weight: 102
++    label: above
++    settings:
++      link_to_entity: false
++    third_party_settings: {  }
++    type: string
++    region: content
++  links:
++    weight: 100
++    settings: {  }
++    third_party_settings: {  }
++    region: content
++hidden:
++  content_revision_log: true
++  downtime_description: true
++  entity_print_view_epub: true
++  entity_print_view_pdf: true
++  entity_print_view_word_docx: true
++  langcode: true
+diff --git a/config/migration/core.entity_view_display.node.artefakt_kommentar.teaser.yml b/config/migration/core.entity_view_display.node.artefakt_kommentar.teaser.yml
+new file mode 100644
+index 000000000..9ca1e03ec
+--- /dev/null
++++ b/config/migration/core.entity_view_display.node.artefakt_kommentar.teaser.yml
+@@ -0,0 +1,36 @@
++uuid: 6971f7f1-e273-421e-96bb-604202bdb453
++langcode: de
++status: true
++dependencies:
++  config:
++    - core.entity_view_mode.node.teaser
++    - field.field.node.artefakt_kommentar.body
++    - node.type.artefakt_kommentar
++  module:
++    - text
++    - user
++id: node.artefakt_kommentar.teaser
++targetEntityType: node
++bundle: artefakt_kommentar
++mode: teaser
++content:
++  body:
++    label: hidden
++    type: text_summary_or_trimmed
++    weight: 101
++    settings:
++      trim_length: 600
++    third_party_settings: {  }
++    region: content
++  links:
++    weight: 100
++    settings: {  }
++    third_party_settings: {  }
++    region: content
++hidden:
++  content_revision_log: true
++  downtime_description: true
++  entity_print_view_epub: true
++  entity_print_view_pdf: true
++  entity_print_view_word_docx: true
++  langcode: true
+diff --git a/config/migration/field.field.node.artefakt_kommentar.body.yml b/config/migration/field.field.node.artefakt_kommentar.body.yml
+new file mode 100644
+index 000000000..668c195f2
+--- /dev/null
++++ b/config/migration/field.field.node.artefakt_kommentar.body.yml
+@@ -0,0 +1,22 @@
++uuid: bf93c57c-73ea-44e1-be06-06e4e2e8e581
++langcode: de
++status: true
++dependencies:
++  config:
++    - field.storage.node.body
++    - node.type.artefakt_kommentar
++  module:
++    - text
++id: node.artefakt_kommentar.body
++field_name: body
++entity_type: node
++bundle: artefakt_kommentar
++label: Body
++description: ''
++required: false
++translatable: true
++default_value: {  }
++default_value_callback: ''
++settings:
++  display_summary: true
++field_type: text_with_summary
+diff --git a/config/migration/field.field.node.artefakt_kommentar.comment_no_subject.yml b/config/migration/field.field.node.artefakt_kommentar.comment_no_subject.yml
+new file mode 100644
+index 000000000..bfa3968a8
+--- /dev/null
++++ b/config/migration/field.field.node.artefakt_kommentar.comment_no_subject.yml
+@@ -0,0 +1,33 @@
++uuid: 345dcafe-b3e8-490e-bb2c-6139ae33f414
++langcode: de
++status: true
++dependencies:
++  config:
++    - field.storage.node.comment_no_subject
++    - node.type.artefakt_kommentar
++  module:
++    - comment
++id: node.artefakt_kommentar.comment_no_subject
++field_name: comment_no_subject
++entity_type: node
++bundle: artefakt_kommentar
++label: Kommentare
++description: ''
++required: false
++translatable: true
++default_value:
++  -
++    status: 2
++    cid: 0
++    last_comment_timestamp: 0
++    last_comment_name: null
++    last_comment_uid: 0
++    comment_count: 0
++default_value_callback: ''
++settings:
++  default_mode: 1
++  per_page: 50
++  anonymous: 0
++  form_location: true
++  preview: 1
++field_type: comment
+diff --git a/config/migration/field.field.node.artefakt_kommentar.field_artifact_name.yml b/config/migration/field.field.node.artefakt_kommentar.field_artifact_name.yml
+new file mode 100644
+index 000000000..398799614
+--- /dev/null
++++ b/config/migration/field.field.node.artefakt_kommentar.field_artifact_name.yml
+@@ -0,0 +1,19 @@
++uuid: f8e439c3-b61f-4ad5-861f-ec9d9453b1ac
++langcode: de
++status: true
++dependencies:
++  config:
++    - field.storage.node.field_artifact_name
++    - node.type.artefakt_kommentar
++id: node.artefakt_kommentar.field_artifact_name
++field_name: field_artifact_name
++entity_type: node
++bundle: artefakt_kommentar
++label: Artefakt
++description: ''
++required: false
++translatable: false
++default_value: {  }
++default_value_callback: ''
++settings: {  }
++field_type: string
+diff --git a/config/migration/field.storage.node.field_artifact_name.yml b/config/migration/field.storage.node.field_artifact_name.yml
+new file mode 100644
+index 000000000..d520f3778
+--- /dev/null
++++ b/config/migration/field.storage.node.field_artifact_name.yml
+@@ -0,0 +1,21 @@
++uuid: 0c9c29fa-2000-4ce0-8b64-dbbf917df132
++langcode: de
++status: true
++dependencies:
++  module:
++    - node
++id: node.field_artifact_name
++field_name: field_artifact_name
++entity_type: node
++type: string
++settings:
++  max_length: 80
++  is_ascii: false
++  case_sensitive: false
++module: core
++locked: false
++cardinality: 1
++translatable: true
++indexes: {  }
++persist_with_no_fields: false
++custom_storage: false
+diff --git a/config/migration/language.content_settings.node.artefakt_kommentar.yml b/config/migration/language.content_settings.node.artefakt_kommentar.yml
+new file mode 100644
+index 000000000..db0b91532
+--- /dev/null
++++ b/config/migration/language.content_settings.node.artefakt_kommentar.yml
+@@ -0,0 +1,16 @@
++uuid: a2e481f6-a294-4148-9fef-b715adb4c8db
++langcode: de
++status: true
++dependencies:
++  config:
++    - node.type.artefakt_kommentar
++  module:
++    - content_translation
++third_party_settings:
++  content_translation:
++    enabled: true
++id: node.artefakt_kommentar
++target_entity_type_id: node
++target_bundle: artefakt_kommentar
++default_langcode: site_default
++language_alterable: false
+diff --git a/config/migration/node.settings.yml b/config/migration/node.settings.yml
+index 0c81a1d36..a40c3c6e8 100644
+--- a/config/migration/node.settings.yml
++++ b/config/migration/node.settings.yml
+@@ -30,3 +30,4 @@ notification_checkbox_risk_cluster: 0
+ notification_checkbox_risk: 0
+ notification_checkbox_measure: 0
+ notification_checkbox_release_comments: 1
++notification_checkbox_artefakt_kommentar: 0
+diff --git a/config/migration/node.type.artefakt_kommentar.yml b/config/migration/node.type.artefakt_kommentar.yml
+new file mode 100644
+index 000000000..676609a06
+--- /dev/null
++++ b/config/migration/node.type.artefakt_kommentar.yml
+@@ -0,0 +1,17 @@
++uuid: 37c35b92-4eb7-41e0-ac90-c175418911d0
++langcode: de
++status: true
++dependencies:
++  module:
++    - menu_ui
++third_party_settings:
++  menu_ui:
++    available_menus: {  }
++    parent: ''
++name: 'Artefakt Kommentar'
++type: artefakt_kommentar
++description: ''
++help: ''
++new_revision: true
++preview_mode: 1
++display_submitted: false
+-- 
+2.16.4
+

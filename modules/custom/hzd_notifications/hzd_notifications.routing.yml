@@ -42,6 +42,14 @@ hzd_notifications.arbeitsanleitungen_notifications:
   requirements:
     _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userNewAccess'
 
+hzd_notifications.sams_notifications:
+  path: '/user/{user}/notifications/sams'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::sams_notifications'
+    _title: 'SAMS Abonnementverwaltung'
+  requirements:
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userSamsAccess'
+
 hzd_notifications.arbeitsanleitungen_documentation_settings:
   path: 'admin/config/arbeitsanleitungen/arbeitsanleitungen_documentation_settings'
   defaults:
@@ -66,6 +74,15 @@ hzd_notifications.delete_notifications:
   defaults:
     _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::delete_notifications'
     _title: 'Delete Notifications'
+  requirements:
+#    _permission: 'access content'
+    _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'
+
+hzd_notifications.delete_sams_notifications:
+  path: '/update_sams_notifications'
+  defaults:
+    _controller: '\Drupal\hzd_notifications\Controller\HzdNotifications::delete_sams_notifications'
+    _title: 'Delete SAMS Notifications'
   requirements:
 #    _permission: 'access content'
     _custom_access: '\Drupal\hzd_notifications\Controller\HzdNotifications::userAccess'

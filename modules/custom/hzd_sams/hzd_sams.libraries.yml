@@ -1,0 +1,12 @@
+hzd_sams.artifact_info:
+  version: 1.x
+  css:
+    base:
+      css/hzd_sams.css: {}
+  js:
+    js/artifact_info.js: {}
+  dependencies:
+    - core/drupal.ajax
+    - core/jquery
+    - core/jquery.once
+    

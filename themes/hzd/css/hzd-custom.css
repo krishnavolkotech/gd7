@@ -1296,6 +1296,10 @@ a.cke_dialog_tab {
     padding: 0% 0% 1% 0%;
     margin-bottom: 0px;
 }
+.artefakt-kommentar .content .field--label-inline {
+    padding: 0% 0% 1% 0%;
+    margin-bottom: 0px;
+}
 .view .attachment .views-element-container span a.is-active {
   color: #ff3333;
   text-decoration: underline;
