@@ -2161,8 +2161,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
 <li><img height=15 src='/modules/custom/hzd_release_management/images/icon.png'> Early Warnings</li>
 <li><img height=15 src='/modules/custom/hzd_release_management/images/create-icon.png'> Early Warning erstellen</li>
-<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare</li>
-<li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
 <li><img class='white-bg' height=18 src='/modules/custom/hzd_release_management/images/notification-icon-whitebg.png'> Einsatzinformationen</li>
 </ul>
 </div>";
