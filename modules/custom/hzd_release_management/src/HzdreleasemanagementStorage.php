@@ -1150,7 +1150,7 @@ $inprogress_nid_values = [];
       }
 
       $download_imgpaths = drupal_get_path('module', 'hzd_release_management') . '/images/document-icon.png';
-      $download = "<img src = '/" . $download_imgpaths . "'>";
+      $download = "<img title='Dokumentation ansehen' src = '/" . $download_imgpaths . "'>";
 
            
       $link_info = !empty($release_node->field_documentation_link) ? $release_node->field_documentation_link->value : null;
@@ -1212,7 +1212,7 @@ $inprogress_nid_values = [];
         $options['attributes'] = array('class' => 'download_img_icon');
         $download_url = Url::fromUri($link_info_path);
         $download_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/download_icon.png';
-        $download = "<img src = '/" . $download_imgpath . "'>";
+        $download = "<img title='Release herunterladen' src = '/" . $download_imgpath . "'>";
         $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $download_url);
         $link_path = \Drupal::service('renderer')->renderRoot($download_link);
       } else {
