@@ -312,14 +312,17 @@ function get_deployed_dependent_release($service = NULL, $environment = NULL, $r
     ->condition('field_archived_release', 1, '!=')
     ->execute();
   $entities_fer = node_get_field_data_fast($entityQuery, 'field_earlywarning_release');
+  $releaseData = [];
   foreach ($entities_fer as $fer_key =>$entity) {
     $releaseData[$entity] = $entity;
   }
 
   $deployed_releases[0] = t("< Previous Release >");
-  foreach ($nodes_title as $key => $value) {
-    if (in_array($key, $releaseData)) {
-      $deployed_releases[$key] = $value;
+  if (!empty($nodes_title)) {
+    foreach ($nodes_title as $key => $value) {
+      if (in_array($key, $releaseData)) {
+        $deployed_releases[$key] = $value;
+      }
     }
   }
   // print_r($undeployed_releases); exit;.
@@ -824,16 +827,24 @@ function hzd_release_management_node_presave(NodeInterface $node) {
       Cache::invalidateTags($tags);
     }
     if ($node->getType() == 'deployed_releases') {
-        if (!isset($node->field_archived_release->value)) {
-          $node->set('field_archived_release', 0);
-        }
-
-        if (($node->field_environment->value == 1) || ($node->original->field_environment->value == 1)) {
+      if (!isset($node->field_archived_release->value)) {
+        $node->set('field_archived_release', 0);
+      }
+      
+      $field_environment = 0;
+      if (isset($node->field_environment->value)) {
+        $field_environment = $node->field_environment->value;
+      }
+      elseif (isset($node->original->field_environment->value)) {
+        $field_environment = $node->original->field_environment->value; 
+      }
+      
+      if ($field_environment == 1) {
           // If environment is or was Production, delete cache for deployed releases overview table
-            // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
-            // \Drupal::cache()->deleteMultiple($cids);
-            \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
-        }
+          // $cids = ['deployedReleasesOverview459', 'deployedReleasesOverview460'];
+          // \Drupal::cache()->deleteMultiple($cids);
+          \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
+      }
     }
 }
 
