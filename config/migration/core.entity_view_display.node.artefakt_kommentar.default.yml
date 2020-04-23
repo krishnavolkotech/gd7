@@ -1,0 +1,51 @@
+uuid: 11c0af98-76d8-4cd0-876c-10ec2fbb6c76
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.comment.comment_no_subject.default
+    - field.field.node.artefakt_kommentar.body
+    - field.field.node.artefakt_kommentar.comment_no_subject
+    - field.field.node.artefakt_kommentar.field_artifact_name
+    - node.type.artefakt_kommentar
+  module:
+    - comment
+    - text
+    - user
+id: node.artefakt_kommentar.default
+targetEntityType: node
+bundle: artefakt_kommentar
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  comment_no_subject:
+    weight: 2
+    label: above
+    settings:
+      view_mode: default
+      pager_id: 0
+    third_party_settings: {  }
+    type: comment_default
+    region: content
+  field_artifact_name:
+    weight: 0
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  content_revision_log: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  links: true

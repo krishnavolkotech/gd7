@@ -296,7 +296,7 @@ class HzdSamsStorage {
       unset($action);
       $action = '';
       // @todo url aus konfig ziehen
-      $urlpath = 'https://sams-konsens-tst.hessen.doi-de.net/artifactory/'
+      $urlpath = 'https://sams-konsens.hessen.doi-de.net/artifactory/'
         . $row['repo'] . '/'
         . $row['path'] . '/'
         . $row['artifact'];

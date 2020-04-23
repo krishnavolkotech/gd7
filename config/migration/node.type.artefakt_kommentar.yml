@@ -1,0 +1,17 @@
+uuid: f822a487-87ea-4827-9c7f-4bbd13b45112
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: 'Artefakt Kommentar'
+type: artefakt_kommentar
+description: 'Neuen Kommentar zu einem Software-Artefakt erstellen.'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: true

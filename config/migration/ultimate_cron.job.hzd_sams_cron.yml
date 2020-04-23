@@ -1,0 +1,17 @@
+uuid: dd05140b-db92-4949-8b39-800fc4a1bf6c
+langcode: de
+status: true
+dependencies:
+  module:
+    - hzd_sams
+title: 'Default cron handler'
+id: hzd_sams_cron
+weight: 0
+module: hzd_sams
+callback: hzd_sams_cron
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database

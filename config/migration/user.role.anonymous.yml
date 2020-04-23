@@ -15,4 +15,5 @@ permissions:
   - 'access site-wide contact form'
   - 'view field_contact_from_pretext'
   - 'view media'
+  - 'view noscript tag'
   - 'view own field_contact_from_pretext'

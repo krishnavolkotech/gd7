@@ -69,6 +69,7 @@ permissions:
   - 'view downtimes revisions'
   - 'view field_contact_from_pretext'
   - 'view media'
+  - 'view noscript tag'
   - 'view own field_contact_from_pretext'
   - 'view own unpublished content'
   - 'view problems'

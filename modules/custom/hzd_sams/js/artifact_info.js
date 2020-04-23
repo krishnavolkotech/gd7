@@ -11,7 +11,7 @@
     var element = this;
     $.ajax({
       // @todo Url aus Konfiguration ziehen (base-url aus Drupal.Konfiguration)
-      url: 'https://tebpk.dev.intern/artifact_info_callback',
+      url: 'https://betriebsportal-konsens.hessen.testa-de.net/artifact_info_callback',
       method: 'post',
       data: {
         repo: repoPath,

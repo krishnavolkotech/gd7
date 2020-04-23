@@ -1,0 +1,19 @@
+uuid: 141a71b2-f736-4519-8e9c-ff246daffae6
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_artifact_name
+    - node.type.artefakt_kommentar
+id: node.artefakt_kommentar.field_artifact_name
+field_name: field_artifact_name
+entity_type: node
+bundle: artefakt_kommentar
+label: Artefakt
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

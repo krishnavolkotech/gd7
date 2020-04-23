@@ -1,0 +1,40 @@
+uuid: 5b28fcec-dc18-4876-8041-7c62eaf68135
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.artefakt_kommentar.body
+    - field.field.node.artefakt_kommentar.comment_no_subject
+    - field.field.node.artefakt_kommentar.field_artifact_name
+    - node.type.artefakt_kommentar
+  module:
+    - text
+    - user
+id: node.artefakt_kommentar.teaser
+targetEntityType: node
+bundle: artefakt_kommentar
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  comment_no_subject: true
+  content_revision_log: true
+  downtime_description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_artifact_name: true
+  langcode: true

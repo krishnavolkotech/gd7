@@ -1,0 +1,11 @@
+uuid: 7c81f5f1-7fd1-446a-b767-27b8bafd7540
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.artefakt_kommentar
+id: node.artefakt_kommentar
+target_entity_type_id: node
+target_bundle: artefakt_kommentar
+default_langcode: site_default
+language_alterable: false
