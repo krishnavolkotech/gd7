@@ -1,0 +1,291 @@
+hzd_sams.artifact_info:
+  path: 'artifact_info_callback'
+  defaults:
+    _title: 'AJAX - Info Icon'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifact_info_callback'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.sams_mail:
+  path: 'send-sams-mail'
+  defaults:
+    _title: 'SAMS - Mailtrigger'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::sendMail'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.registration_form:
+  path: 'sams-konsens/sams-registration-form'
+  defaults:
+    _title: 'SAMS Registrierungsantrag'
+    _form: '\Drupal\hzd_sams\Form\SamsRegistrationForm'
+   # _controller: '\Drupal\hzd_sams\Controller\HzdSams::registrationForm'
+   # _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_libraries_final:
+  path: 'sams-konsens/software-artefakte/bibliotheken'
+  defaults:
+    _title: 'Bibliotheken'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+#    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_libraries_test:
+  path: 'sams-konsens/software-artefakte/bibliotheken/test'
+  defaults:
+    _title: 'Bibliotheken'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    # _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+   _permission: 'access content'
+   _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_libraries_rc:
+  path: 'sams-konsens/software-artefakte/bibliotheken/rc'
+  defaults:
+    _title: 'Bibliotheken'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    # _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+   _permission: 'access content'
+   _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_libraries_deprecated:
+  path: 'sams-konsens/software-artefakte/bibliotheken/deprecated'
+  defaults:
+    _title: 'Bibliotheken'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_development_versions_final:
+  path: 'sams-konsens/software-artefakte/entwicklungsversionen'
+  defaults:
+    _title: 'Entwicklungsversionen'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    # _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+   _permission: 'access content'
+   _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_development_versions_test:
+  path: 'sams-konsens/software-artefakte/entwicklungsversionen/test'
+  defaults:
+    _title: 'Entwicklungsversionen'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_development_versions_rc:
+  path: 'sams-konsens/software-artefakte/entwicklungsversionen/rc'
+  defaults:
+    _title: 'Entwicklungsversionen'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_development_versions_deprecated:
+  path: 'sams-konsens/software-artefakte/entwicklungsversionen/deprecated'
+  defaults:
+    _title: 'Entwicklungsversionen'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_mock_objects_final:
+  path: 'sams-konsens/software-artefakte/mock-objekte'
+  defaults:
+    _title: 'Mock-Objekte'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_mock_objects_test:
+  path: 'sams-konsens/software-artefakte/mock-objekte/test'
+  defaults:
+    _title: 'Mock-Objekte'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_mock_objects_rc:
+  path: 'sams-konsens/software-artefakte/mock-objekte/rc'
+  defaults:
+    _title: 'Mock-Objekte'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_mock_objects_deprecated:
+  path: 'sams-konsens/software-artefakte/mock-objekte/deprecated'
+  defaults:
+    _title: 'Mock-Objekte'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_shema_final:
+  path: 'sams-konsens/software-artefakte/schema'
+  defaults:
+    _title: 'Schema'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_shema_test:
+  path: 'sams-konsens/software-artefakte/schema/test'
+  defaults:
+    _title: 'Schema'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_shema_rc:
+  path: 'sams-konsens/software-artefakte/schema/rc'
+  defaults:
+    _title: 'Schema'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_shema_deprecated:
+  path: 'sams-konsens/software-artefakte/schema/deprecated'
+  defaults:
+    _title: 'Schema'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_norm_final:
+  path: 'sams-konsens/software-artefakte/norm'
+  defaults:
+    _title: 'Norm'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_norm_test:
+  path: 'sams-konsens/software-artefakte/norm/test'
+  defaults:
+    _title: 'Norm'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_norm_rc:
+  path: 'sams-konsens/software-artefakte/norm/rc'
+  defaults:
+    _title: 'Norm'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+hzd_sams.view_norm_deprecated:
+  path: 'sams-konsens/software-artefakte/norm/deprecated'
+  defaults:
+    _title: 'Norm'
+    _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    _entity_view: group.default
+  requirements:
+    _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+# Testseite für Performancetests
+# hzd_sams.view_performance_test:
+  # path: 'sams-konsens/software-artefakte/performance-test'
+  # defaults:
+    # _title: 'Alle Softwareartefakte (Testzwecke)'
+    # _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
+    # _entity_view: group.default
+  # requirements:
+    # _permission: 'access content'
+    # _user_is_logged_in: 'TRUE'
+  # options:
+    # no_cache: 'TRUE'

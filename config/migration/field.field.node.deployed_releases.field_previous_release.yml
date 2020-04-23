@@ -1,0 +1,21 @@
+uuid: 9c0080c2-2c1d-4d98-b348-e45d19046275
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_previous_release
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_previous_release
+field_name: field_previous_release
+entity_type: node
+bundle: deployed_releases
+label: Vorgängerrelease
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

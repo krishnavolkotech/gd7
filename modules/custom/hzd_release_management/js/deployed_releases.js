@@ -25,7 +25,44 @@
           .css("margin-left", "-40px");
       }
 
-      /*$("#sortable").tablesorter({
+	$("#char-count").hide();
+	$(".abnormalities-desc").keyup(function(){
+	    var count = (400 - $(this).val().length);
+	    $("#char-count").text(Drupal.t('@count/400 Characters Remaining.', {'@count': count}));
+	});
+
+	var label_text = Drupal.t('Valid values: 0:01 - 999:59, Format: hhh:mm');
+	if (!$('.custom-help-text').length) {
+	  $('label', '.form-item-installation-time').after('<div class="custom-help-text">'+label_text+'</div>');
+	}
+	
+	if ($(".abnormalities").is(":checked")) {
+	    $(".form-item-abnormalities-desc").show();
+	    $("#char-count").show();
+	    $('label', '.form-item-abnormalities-desc').addClass('form-required');
+	}
+	else {
+	    $('label', '.form-item-abnormalities-desc').removeClass('form-required');
+	    $(".form-item-abnormalities-desc").hide();
+	    $("#char-count").hide();
+	}
+
+	$('.abnormalities').click(function(){
+	    if($(this).is(":checked")){
+		$(".form-item-abnormalities-desc").show();
+		$("#char-count").show();
+		$('label', '.form-item-abnormalities-desc').addClass('form-required');
+	    }
+	    else if($(this).is(":not(:checked)")){
+		$(".form-item-abnormalities-desc").hide();
+		$("#char-count").hide();
+		$('label', '.form-item-abnormalities-desc').removeClass('form-required');
+	    }
+	});
+
+	
+	
+	/*$("#sortable").tablesorter({
        headers: {
        3: {sorter: 'archived_date'}
        },

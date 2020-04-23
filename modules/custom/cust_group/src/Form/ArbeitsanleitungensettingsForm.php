@@ -26,7 +26,7 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'arbeitsanleitungen.settings',
+      'cust_group.arbeitsanleitungen.settings',
     ];
   }
 
@@ -46,7 +46,7 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Path to import ZIP file'),
       '#description' => t('Path relative to @path', ['@path' => DRUPAL_ROOT . '/']),
-      '#default_value' => \Drupal::config('arbeitsanleitungen.settings')->get('import_path'),
+      '#default_value' => \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('import_path'),
       '#required' => TRUE,
       '#prefix' => '<div class = "url_alias_textfield">',
       '#suffix' => '</div>'
@@ -54,7 +54,7 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
     $form['arbeitsanleitungen_id'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Arbeitsanleitungen Group ID'),
-      '#default_value' => \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'),
+      '#default_value' => \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'),
       '#required' => TRUE,
     );
     $form['submit'] = array(
@@ -81,7 +81,7 @@ class ArbeitsanleitungensettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $import_path = $form_state->getValue('import_path');
     $arbeitsanleitungen_id = $form_state->getValue('arbeitsanleitungen_id');
-    \Drupal::configFactory()->getEditable('arbeitsanleitungen.settings')
+    \Drupal::configFactory()->getEditable('cust_group.arbeitsanleitungen.settings')
       ->set('import_path', $import_path)
       ->set('arbeitsanleitungen_id', $arbeitsanleitungen_id)
       ->save();

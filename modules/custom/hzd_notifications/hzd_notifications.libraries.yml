@@ -1,6 +1,7 @@
 hzd_notifications:
   js:
     js/hzd_service_notifications.js: {}
+    js/hzd_sams_notifications.js: {}
   dependencies:
     - core/jquery
     - core/jquery.once

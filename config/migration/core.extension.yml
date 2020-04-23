@@ -54,9 +54,9 @@ module:
   gnode: 0
   group: 0
   history: 0
+  hook_post_action: 0
   hzd_customizations: 0
   hzd_earlywarnings: 0
-  hzd_notifications: 0
   hzd_release_inprogress_comments: 0
   hzd_risk_management: 0
   hzd_services: 0
@@ -78,6 +78,7 @@ module:
   menu_ui: 0
   migrate: 0
   node: 0
+  noscript_tag: 0
   options: 0
   page_cache: 0
   panelbutton: 0
@@ -124,6 +125,7 @@ module:
   reroute_email: 19
   queue_mail: 20
   hzd_release_management: 21
+  hzd_notifications: 0
   standard: 1000
 theme:
   stable: 0

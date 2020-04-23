@@ -1,0 +1,31 @@
+uuid: 297fb025-2ebd-4f91-8dad-0b96ccbfcd81
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_abnormality_description
+    - node.type.deployed_releases
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    basic_html: basic_html
+    restricted_html: restricted_html
+    filtered_html: filtered_html
+    full_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.deployed_releases.field_abnormality_description
+field_name: field_abnormality_description
+entity_type: node
+bundle: deployed_releases
+label: 'Beschreibung der Auffälligkeiten'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

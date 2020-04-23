@@ -15,7 +15,7 @@ use Drupal\hzd_services\HzdservicesHelper;
 class Arbeitsanleitungen extends ControllerBase {
 
   public static function read_arbeitsanleitungen_zip() {
-    $config_path = \Drupal::config('arbeitsanleitungen.settings')
+    $config_path = \Drupal::config('cust_group.arbeitsanleitungen.settings')
       ->get('import_path');
     $path = DRUPAL_ROOT . '/' . $config_path;
 

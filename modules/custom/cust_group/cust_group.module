@@ -255,11 +255,7 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
         }
       }
     }
-
-    \Drupal::service('cache_tags.invalidator')
-      ->invalidateTags([
-        'config:block.block.hzdgruppenadministration'
-      ]);
+    \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
   if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
@@ -325,8 +321,14 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
       }
     }
 
-    if ($group->id() == \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
+    if ($group->id() == \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
       db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+    }
+    //wird dies für SAMS überhaupt benötigt? Eingetragen, weil paralel zu ALEDV erstellt im Rahmen der Trennung von SAMS und ALEDV
+    // Ja, wir benötigt um abonnierte Benachrichtigungen aus Datenbank zu löschen, wenn user die Gruppe verlässt.
+    // @todo Testen.
+    if ($group->id() == \Drupal::config('sams.settings')->get('sams_id')) {
+      db_query("DELETE FROM {sams_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
   }
   $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
@@ -702,6 +704,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
   }
 
   if ($form_id == 'group_content_open-group_membership_edit_form') {
+    $form['actions']['submit']['#submit'][] = 'invalidate_group_admin_cache';
     $user = \Drupal\hzd_release_management\HzdreleasemanagementStorage::CurrentUserData();
     $userData = \Drupal::service('user.data');
     $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
@@ -721,6 +724,10 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+}
+
+function invalidate_group_admin_cache(&$form, $form_state) {
+  \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
 }
 
 /**
@@ -940,6 +947,24 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       if ($account->isAnonymous()) {
         return AccessResult::forbidden();
       }
+  }
+
+  if ($node->getType() == 'deployed_releases') {
+    $group_id = 5;
+    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+    if (!$is_group_admin) {
+        switch ($op) {
+        case 'view':
+            return AccessResult::allowed();
+        case 'edit':
+            return AccessResult::forbidden();
+        default:
+            if ($account->isAnonymous()) {
+                return AccessResult::forbidden();
+            }
+        }
+        return AccessResult::forbidden();
+    }
   }
 
 }
@@ -1228,7 +1253,7 @@ function al_edvFileAccess($uri){
 
   // rschomburg: method doesn't deliver ids from unpublished groups
   // $user_groups = \Drupal\hzd_notifications\HzdNotificationsHelper::hzd_user_groups_list($uid);
-  $al_edv_group_id = \Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
+  $al_edv_group_id = \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id');
   $group = \Drupal\group\Entity\Group::load($al_edv_group_id);
 
   if ($group && $group->getMember($member)) {

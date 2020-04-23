@@ -16,6 +16,7 @@ use Drupal\group\Entity\GroupContent;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
 /**
  * @param $variables
@@ -47,16 +48,185 @@ function hzd_preprocess_page(&$variables) {
   }
   } */
 
+function hzd_preprocess_mailbody(&$variables) {
+  // Format the table columns:
+  if (!empty($variables['colgroups'])) {
+    foreach ($variables['colgroups'] as &$colgroup) {
+      // Check if we're dealing with a simple or complex column
+      if (isset($colgroup['data'])) {
+        $cols = $colgroup['data'];
+        unset($colgroup['data']);
+        $colgroup_attributes = $colgroup;
+      }
+      else {
+        $cols = $colgroup;
+        $colgroup_attributes = [];
+      }
+      $colgroup = [];
+      $colgroup['attributes'] = new Attribute($colgroup_attributes);
+      $colgroup['cols'] = [];
+
+      // Build columns.
+      if (is_array($cols) && !empty($cols)) {
+        foreach ($cols as $col_key => $col) {
+          $colgroup['cols'][$col_key]['attributes'] = new Attribute($col);
+        }
+      }
+    }
+  }
+
+  // Build an associative array of responsive classes keyed by column.
+  $responsive_classes = [];
+
+  // Format the table header:
+  $ts = [];
+  $header_columns = 0;
+  if (!empty($variables['header'])) {
+    $ts = tablesort_init($variables['header']);
+
+    // Use a separate index with responsive classes as headers
+    // may be associative.
+    $responsive_index = -1;
+    foreach ($variables['header'] as $col_key => $cell) {
+      // Increase the responsive index.
+      $responsive_index++;
+
+      if (!is_array($cell)) {
+        $header_columns++;
+        $cell_content = $cell;
+        $cell_attributes = new Attribute();
+        $is_header = TRUE;
+      }
+      else {
+        if (isset($cell['colspan'])) {
+          $header_columns += $cell['colspan'];
+        }
+        else {
+          $header_columns++;
+        }
+        $cell_content = '';
+        if (isset($cell['data'])) {
+          $cell_content = $cell['data'];
+          unset($cell['data']);
+        }
+        // Flag the cell as a header or not and remove the flag.
+        $is_header = isset($cell['header']) ? $cell['header'] : TRUE;
+        unset($cell['header']);
+
+        // Track responsive classes for each column as needed. Only the header
+        // cells for a column are marked up with the responsive classes by a
+        // module developer or themer. The responsive classes on the header cells
+        // must be transferred to the content cells.
+        if (!empty($cell['class']) && is_array($cell['class'])) {
+          if (in_array(RESPONSIVE_PRIORITY_MEDIUM, $cell['class'])) {
+            $responsive_classes[$responsive_index] = RESPONSIVE_PRIORITY_MEDIUM;
+          }
+          elseif (in_array(RESPONSIVE_PRIORITY_LOW, $cell['class'])) {
+            $responsive_classes[$responsive_index] = RESPONSIVE_PRIORITY_LOW;
+          }
+        }
+
+        tablesort_header($cell_content, $cell, $variables['header'], $ts);
+
+        // tablesort_header() removes the 'sort' and 'field' keys.
+        $cell_attributes = new Attribute($cell);
+      }
+      $variables['header'][$col_key] = [];
+      $variables['header'][$col_key]['tag'] = $is_header ? 'th' : 'td';
+      $variables['header'][$col_key]['attributes'] = $cell_attributes;
+      $variables['header'][$col_key]['content'] = $cell_content;
+    }
+  }
+  $variables['header_columns'] = $header_columns;
+
+  // Rows and footer have the same structure.
+  $sections = ['rows' , 'footer'];
+  foreach ($sections as $section) {
+    if (!empty($variables[$section])) {
+      foreach ($variables[$section] as $row_key => $row) {
+        $cells = $row;
+        $row_attributes = [];
+
+        // Check if we're dealing with a simple or complex row
+        if (isset($row['data'])) {
+          $cells = $row['data'];
+          $variables['no_striping'] = isset($row['no_striping']) ? $row['no_striping'] : FALSE;
+
+          // Set the attributes array and exclude 'data' and 'no_striping'.
+          $row_attributes = $row;
+          unset($row_attributes['data']);
+          unset($row_attributes['no_striping']);
+        }
+
+        // Build row.
+        $variables[$section][$row_key] = [];
+        $variables[$section][$row_key]['attributes'] = new Attribute($row_attributes);
+        $variables[$section][$row_key]['cells'] = [];
+        if (!empty($cells)) {
+          // Reset the responsive index.
+          $responsive_index = -1;
+          foreach ($cells as $col_key => $cell) {
+            // Increase the responsive index.
+            $responsive_index++;
+
+            if (!is_array($cell)) {
+              $cell_content = $cell;
+              $cell_attributes = [];
+              $is_header = FALSE;
+            }
+            else {
+              $cell_content = '';
+              if (isset($cell['data'])) {
+                $cell_content = $cell['data'];
+                unset($cell['data']);
+              }
+
+              // Flag the cell as a header or not and remove the flag.
+              $is_header = !empty($cell['header']);
+              unset($cell['header']);
+
+              $cell_attributes = $cell;
+            }
+            // Active table sort information.
+            if (isset($variables['header'][$col_key]['data']) && $variables['header'][$col_key]['data'] == $ts['name'] && !empty($variables['header'][$col_key]['field'])) {
+              $variables[$section][$row_key]['cells'][$col_key]['active_table_sort'] = TRUE;
+            }
+            // Copy RESPONSIVE_PRIORITY_LOW/RESPONSIVE_PRIORITY_MEDIUM
+            // class from header to cell as needed.
+            if (isset($responsive_classes[$responsive_index])) {
+              $cell_attributes['class'][] = $responsive_classes[$responsive_index];
+            }
+            $variables[$section][$row_key]['cells'][$col_key]['tag'] = $is_header ? 'th' : 'td';
+            $variables[$section][$row_key]['cells'][$col_key]['attributes'] = new Attribute($cell_attributes);
+            $variables[$section][$row_key]['cells'][$col_key]['content'] = $cell_content;
+          }
+        }
+      }
+    }
+  }
+  if (empty($variables['no_striping'])) {
+    $variables['attributes']['data-striping'] = 1;
+  }
+}
+
 /**
  * Implements hook_preprocess_html().
  */
 function hzd_preprocess_html(&$variables) {
-
   $title = $variables['head_title']['title'];
+
   if ($title instanceof Markup) {
     $variables['head_title']['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
 
+  if (isset($variables['node_type'])) {
+    if ($variables['node_type'] == 'deployed_releases') {
+      $title = 'Einsatzmeldung';
+      $variables['head_title']['title'] = $title;
+      $variables['head_title_array']['title'] = $title;
+    }
+  }
+  
   $user = \Drupal::currentUser()->id();
   if (!$user) {
     $variables['attributes']['class'][] = 'not-loggedin';
@@ -399,6 +569,54 @@ function hzd_preprocess_node(&$variables) {
     //pr($variables['content']['entity_print_view']);exit;
   }
 
+  if ($variables['node']->getType() == 'deployed_releases') {
+      $node = $variables['node'];
+      $state = HzdreleasemanagementHelper::getStateABBR($node->field_user_state->value);
+      $service = HzdreleasemanagementHelper::getNodedetails($node->field_release_service->value, 'title');
+      $release = HzdreleasemanagementHelper::getNodedetails($node->field_earlywarning_release->value, 'title');
+
+      $previous_release = $node->field_previous_release->value;
+      $previous_release_title = $previous_release == 0 ? 'Ersteinsatz': HzdreleasemanagementHelper::getNodedetails($node->field_previous_release->value, 'title');
+
+      if ($node->field_environment->value == 1) {
+          $environment_val = t('Produktion');
+      }
+      else if ($node->field_environment->value == 2) {
+          $environment_val = t('Pilot');
+      }
+      else {
+        $environment_val = \Drupal\node\Entity\Node::load($node->field_environment->value)->getTitle();           
+      }
+      $abnormalities = $node->get('field_abnormalities')->value;
+      $automated = $node->get('field_abnormalities')->value? t('Yes'):t('No');
+      
+      $deploy_info_values[] = ['title' => t('Environment'), 'value' => $environment_val];
+      $deploy_info_values[] = ['title' => t('Service'), 'value' => $service];
+      $deploy_info_values[] = ['title' => t('Release'), 'value' => $release];
+      $deploy_info_values[] = ['title' => t('Previous Release'), 'value' => $previous_release_title];
+      $deploy_info_values[] = ['title' => t('State'), 'value' => $state];
+      $deploy_info_values[] = ['title' => t('Deployed Date'), 'value' => date('d.m.Y', strtotime($node->get('field_date_deployed')->value))];
+      $deploy_info_values[] = ['title' => t('Installation Duration'), 'value' => $node->get('field_installation_duration')->value];
+      $deploy_info_values[] = ['title' => t('Automated Deployment'), 'value' => $automated];
+      
+      $deploy_info_values[] = ['title' => t('Abnormalities'), 'value' => $abnormalities? t('Yes') :t('No')];
+      if ($abnormalities) {
+        $deploy_info_values[] = ['title' => t('Description of Abnormality'), 'value' => $node->get('field_abnormality_description')->value];
+      }
+
+      if ($node->get('field_archived_release')->value) {
+          $deploy_info_values[] = ['title' => t('Archived'), 'value' => $node->get('field_archived_release')->value? t('Yes'): t('No')];
+      }
+
+      $groupId = RELEASE_MANAGEMENT;
+      $url = Url::fromRoute('hzd_release_management.deployed', array('group' => $groupId), [
+          'attributes' => ['class' => ['back-search']],
+          'query' => \Drupal::request()->query->all()
+      ]);
+      $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
+      $variables['deployed_info'] = $deploy_info_values;
+  }
+
 }
 
 function hzd_preprocess_node__release__mail(&$variables) {
@@ -420,6 +638,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
   }
   // This breadcrumb will apply only for our view at /group/24/address
   $route = \Drupal::routeMatch()->getRouteName();
+
   if ($route == 'view.group_members_lists.page_1') {
     // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
     /**
@@ -475,6 +694,14 @@ function hzd_preprocess_breadcrumb(&$variables) {
         '#title' => 'PDF'
       ];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
+      
+      if($entity->bundle() == 'deployed_releases') {
+          $variables['breadcrumb'][1]['text'] = 'Einsatzmeldung';
+          $title =  $variables['breadcrumb'][1];
+          $variables['breadcrumb'][1] = ['text' => t('Release Management') , 'url' => '/release-management'];
+          $variables['breadcrumb'][] = ['text' => t('Deployed') , 'url' => '/release-management/releases/deployed'];
+          $variables['breadcrumb'][] = $title;
+      }
     }
     else {
       $que = \Drupal::request()->query;
@@ -495,8 +722,9 @@ function hzd_preprocess_breadcrumb(&$variables) {
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
   }
+  
 //    $variables['breadcrumb'][] = $rightData;
-//    pr(($variables['breadcrumb']['extras']['pdf_print']));exit;
+  //pr(($variables['breadcrumb']));exit;
 }
 
 function custom_user_fullname($uid) {

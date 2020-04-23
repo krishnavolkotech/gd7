@@ -34,6 +34,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
         $exposedFilterData = \Drupal::request()->query->all();
         $statename = isset($exposedFilterData['state']) && $exposedFilterData['state'] != 1 ? $exposedFilterData['state'] : '';
         $string = isset($exposedFilterData['string']) && $exposedFilterData['string'] != '' ? $exposedFilterData['string'] : '';
+	$string = trim($string);
 
         $query = \Drupal::database()->select('node_field_data', 'n');
         $query->join('node__field_im_upload_page_files', 'imuf', 'n.nid = imuf.entity_id');

@@ -30,7 +30,7 @@ class ArbeitsanleitungNotifications extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $user = NULL) {
     $intervals = HzdNotificationsHelper::hzd_notification_send_interval();
-    $options = [\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id') => 'Arbeitsanleitung der EDV-Stelle'];
+    $options = [\Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id') => 'Arbeitsanleitung der EDV-Stelle'];
     $uid = is_object($user) ? $user->id() : $user;
     $default_interval = HzdNotificationsHelper::get_default_arbeitsanleitung_timeintervals($uid);
     $form['account'] = array('#type' => 'value', '#value' => $uid);
@@ -66,7 +66,7 @@ class ArbeitsanleitungNotifications extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $uid = $form_state->getValue('account');
     $default_send_interval = HzdNotificationsHelper::get_default_arbeitsanleitung_timeintervals($uid);
-    $options = [\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id') => 'Arbeitsanleitung'];
+    $options = [\Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id') => 'Arbeitsanleitung'];
     //DELETE the previous default intervals for the submitted user
     db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
 

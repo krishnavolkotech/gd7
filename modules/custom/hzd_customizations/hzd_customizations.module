@@ -466,6 +466,10 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $default_releases = array("0" => '<' . t('Release') . '>',$releaseNode_nid => node_get_title_fast([$releaseNode_nid])[$releaseNode_nid]);
     if ($service != 0) {
       $default_releases += Drupal\hzd_release_management\HzdreleasemanagementHelper::released_deployed_releases($service)['releases'];
+
+      $deployed_releases = get_undeployed_dependent_release($service);
+      $deployed_releases[0] = 'Ersteinsatz';
+      $form['field_previous_release']['widget']['#options'] = $deployed_releases;;
     }
     natcasesort($default_releases);
 
@@ -479,8 +483,6 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
             'type' => 'throbber',
         ),
     ];
-
-    // Rel.
   }
 
   if ($form_id == 'block_upload_form') {

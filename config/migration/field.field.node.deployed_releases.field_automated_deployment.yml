@@ -1,0 +1,21 @@
+uuid: 1ed9b534-c9ae-4160-a1d4-913ac1d8aa47
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_automated_deployment
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_automated_deployment
+field_name: field_automated_deployment
+entity_type: node
+bundle: deployed_releases
+label: 'Automatisiertes Deployment'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

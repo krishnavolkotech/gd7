@@ -219,12 +219,33 @@ class HzdReleases extends ControllerBase {
         'base_path' => $base_url,
     );
     $output[] = \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\ReleaseFilterForm', $type);
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = $hzdReleaseManageStorage->deployed_info_legend('deployed');
 //    $output[] = array('#markup' => "<div class = 'reset_form'>");
 //    $output[] = HzdreleasemanagementHelper::releases_reset_element();
 //    $output[] = array('#markup' => '</div><div style = "clear:both"></div>');
     //  dpm($_SESSION);
     $output[] = HzdreleasemanagementStorage::deployed_releases_displaytable();
 //    $output[] = array('#markup' => '</div>');
+    $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
+    return $output;
+  }
+
+  public function deployed_info() {
+    global $base_url;
+    $type = 'deployed_info';
+    $output['#title'] = $this->t('Deployment Information');
+    $output[] = HzdreleasemanagementStorage::deployed_info_text();
+
+    $output[]['#attached']['drupalSettings']['release_management'] = array(
+        'type' => $type,
+        'base_path' => $base_url,
+    );
+    $output[] = \Drupal::formBuilder()->getForm('Drupal\hzd_release_management\Form\DeployedinfoFilterForm', $type);
+
+    $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
+    $output[] = $hzdReleaseManageStorage->deployed_info_legend();
+    $output[] = HzdreleasemanagementStorage::deployed_info_displaytable();
     $output['#cache'] = ['tags' => ['hzd_release_management:releases']];
     return $output;
   }
@@ -373,15 +394,18 @@ class HzdReleases extends ControllerBase {
                               ->get('deployed_releses') ? DEPLOYED_RELESES_HEADING : 11220);
 
       $output['node_body']['#markup'] = $node->body->value;
-      $output['newdeployrelease']['#prefix'] = '<h2 class="konsens">';
-      $output['newdeployrelease']['#markup'] = t("Enter a new deployed release:");
-      $output['newdeployrelease']['#suffix'] = "</h2><p>Bei der Meldung bitte die Felder in der Reihenfolge von links nach rechts auswählen.</p>";
+      $output['newdeployrelease']['#suffix'] = "</h2>";
       $output['newdeployrelease']['#exclude_from_print'] = 1;
+      
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
-      $output['deploy_release_form']['form'] = ['#type' => 'container'];
-      $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
-      $output['deploy_release_form']['form']['render'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
-      $output['deploy_release_form']['form']['#suffix'] = '</div>';
+      $url = Url::fromRoute('hzd_release_management.extended_deployed_releases', ['group' => Zentrale_Release_Manager_Lander], ['attributes' => ['class' => ['button', 'btn-default', 'btn']]]);
+      $link = \Drupal::l(t('Enter a new deployed release:'), $url);
+      $output['deploy_release_form']['#markup'] = $link;
+      $output['deploy_release_form']['#suffix'] = '</div>';
+
+      
+
+      
       //  $output['deploy_release_form']['reset']['#prefix'] = "<div class = 'reset_form'>" .
       # $output['deploy_release_form']['reset'] = HzdreleasemanagementHelper::releases_reset_element();
       # $output['deploy_release_form']['reset']['#suffix'] = "</div>";
@@ -443,4 +467,17 @@ class HzdReleases extends ControllerBase {
   }
 
 
+  /**
+   *  Callback for the Extended Deployed Releases
+   */
+  public function extended_deployed_releases() {
+      $output['deploy_release_form']['form'] = ['#type' => 'container'];
+      $output['deploy_release_form']['form']['#prefix'] = '<div id = "deployed_release_form_warapper">';
+      $output['deploy_release_form']['form']['render'] = \Drupal::formBuilder()->getForm('\Drupal\hzd_release_management\Form\Deployedreleasecreateform');
+      $output['deploy_release_form']['form']['#suffix'] = '</div>';
+      return $output;
+  }
+  
+
+  
 }

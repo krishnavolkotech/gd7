@@ -682,17 +682,20 @@ body.not-loggedin.path-user .region-content {
 .menu-filter ul {
     width: 100%;
     float: left;
-    margin: 0 0 0px 30px !important;
+    margin: 0 0 0px 10px !important;
 }
 .menu-filter ul li {
     list-style-type: none;
     float: left;
     color: #ffffff;
     list-style-type: none !important;
-    padding: 0 40px 0 0 !important;
+    padding: 0 25px 0 0 !important;
     margin: 0 !important;
     width: auto !important;
     background: transparent !important;
+}
+.menu-filter ul li img.white-bg {
+    margin-top: 1px !important;
 }
 .menu-filter ul img {
     margin-right: 4px;
@@ -3268,7 +3271,7 @@ article.downtimes .Incident .downtimes_content_paragraph ol li {
 form.deployedreleases-create-form .btn,
 form.deployedreleases-create-form .form-group {
     width: auto;
-    float: left;
+    float: none;
     margin: 10px 10px 0 0 !important;
 }
 .deployedreleases-create-form .reset_form .butoon{
@@ -3821,6 +3824,28 @@ table.releases tr td.inprogress-comment-cell img {
     margin-left: 5px;
 }
 
+table.artifacts {
+    font-size: 14px;
+}
+
+table.artifacts tr td.artifact-comment-cell {
+    width: 80px;
+}
+
+table.artifacts tr td.artifact-comment-cell a{
+    float: left;
+    text-align: center;
+}
+
+table.artifacts tr td.artifact-comment-cell img{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.artifact-info-icon.disabled {
+	pointer-events: none;
+}
+
 .commentcount {
     background: url(../../../modules/custom/hzd_release_inprogress_comments/images/blue-icon.png) left top no-repeat;
     width: 28px;
@@ -3889,4 +3914,145 @@ td.checkbox {
 .downtimes-service-tooltip {
   margin-left: 5px;
   font-size: 21px;
+}
+.form-item-abnormalities-desc {
+    display: none;
+}
+
+
+.deployed-info-view-wrapper {  
+    background: #f5f7fa;
+    padding: 20px;
+    width: 100%;
+    float: left;
+    margin: 0px;
+    text-align: left;
+}
+.deployed-info-view-wrapper .field-details {
+    width: 100%;
+    float: left;
+    margin-bottom: 10px;
+}
+
+.deployed-info-view-wrapper .deplyment-info-title {
+    font-weight: 600;
+    float: left;
+    width: 24%;
+    margin: 0 2% 3px 0;
+}
+
+.deployed-info-view-wrapper .deplyment-info-content {
+    width: 73%;
+    float: left;
+}
+
+.e-info-icon {
+    width:25px;
+    height:25px;
+}
+.info-icon {
+    width:22px;
+    height:22px;
+}
+
+
+.deployedreleases-create-form .select-wrapper,
+.deployedreleases-create-form .form-type-textfield{
+    width: 400px !important;
+    display: block;
+}
+
+.deployedreleases-create-form .input-group .select-wrapper{
+    width: 400px !important;
+}
+textarea#edit-abnormalities-desc {
+    width: 400px;
+}
+
+.deployed .links-wrapper {
+    text-align: right;
+    float:right;
+}
+
+.other-links {
+    float:left;
+}
+
+.deployed-tooltip {
+    float: left;
+    margin-right: 2px;
+    cursor: pointer;
+}
+
+.view-deployed-popup-content .views-field {
+    clear: both;
+}
+.view-deployed-popup-content span.views-label {
+    font-weight: bold;
+    float: left;
+    clear: both;
+    min-width: 230px;
+    padding: 1%;
+}
+
+.view-deployed-popup-content .field-content {
+    float: left;
+    padding-top: 4px;
+    max-width: 500px;
+}
+
+/*** Code #26578 ***/
+.margin-popover .popover-title {
+  font-weight: bold !important;
+  margin: 0 !important;
+}
+
+.margin-popover div.popover-content {
+  padding: 9px 14px !important;
+}
+
+.margin-popover div.popover-content div h4 {
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
+  float: left;
+}
+
+.margin-popover div.popover-content hr {
+  margin-bottom: 9px !important;
+}
+
+.noscriptHeight {
+  height: 50px !important;
+}
+
+table.deployed tr td:last-child,
+table.deployed tr th:last-child {
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 0px;
+    min-width: 100px;
+}
+
+
+table.progress tr td:last-child,
+table.progress tr th:last-child,
+table.released tr td:last-child,
+table.released tr th:last-child {
+    text-align: right;
+    padding-right: 20px;
+    padding-left: 0px;
+    min-width: 100px;
+}
+
+.custom-help-text {
+    font-size: 13px;
+    color: #757272;
+    font-weight: bold;
+    padding-bottom: 5px;
+    margin-top: -5px;
+}
+
+.empty.message {
+  text-align: left !important;
+  padding-left: 8px !important;
 }

@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Contains hzd_sams.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\hzd_sams\HzdSamsStorage;
+
+
+define('SAMS',80);
+
+
+/**
+ * Implements hook_help().
+ */
+function hzd_sams_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the hzd_sams module.
+    case 'help.page.hzd_sams':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Darstellung von Software Artefakten aus dem SAMS') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_mail.
+ */
+function hzd_sams_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'sams':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      $message['headers']['Content-Type'] =  'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    break;
+  }
+}
+
+/*
+* Implements hook_theme()
+*/
+function hzd_sams_theme($existing,$type,$theme,$path){
+  return [
+   'mailbody' =>
+   [
+    'variables' => [
+     'header' => NULL,
+     'rows' => NULL,
+     'recipientUserId' => NULL,
+    ]
+   ],
+  ];
+}
+ 
+/**
+ * Fixes broken breadcrumbs for the artifact tables
+ * 
+ * Implements hook_system_breadcrumb_alter.
+ */
+function hzd_sams_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$breadcrumb, \Drupal\Core\Routing\RouteMatchInterface $route_match, array $context) {
+
+  $uri = Drupal::request()->getRequestUri();
+  if (strpos($uri, 'sams/software-artefakte/') !== False) {
+    $breadcrumb = new \Drupal\Core\Breadcrumb\Breadcrumb();
+    $breadcrumb->addLink(\Drupal\Core\Link::createFromRoute(t('Startseite'), 'hzd_customizations.front'));
+    $breadcrumb->addLink(\Drupal\Core\Link::createFromRoute(t('SAMS'), 'entity.group.canonical', ['group' => 82]));
+    $breadcrumb->addLink(\Drupal\Core\Link::createFromRoute(t('Software-Artefakte'), 'entity.node.canonical', ['node' => 71177]));
+  }
+}
+
+/**
+ *  Cleanup of the SAMS state-data
+ * 
+ * Implements hook_cron().
+ */
+function hzd_sams_cron() {
+  \Drupal::state()->delete('samsFilterServices');
+  \Drupal::state()->delete('samsFilterProducts');
+  \Drupal::state()->delete('samsFilterVersions');
+  
+  $storage = new HzdSamsStorage();
+  $storage->fetch();
+}

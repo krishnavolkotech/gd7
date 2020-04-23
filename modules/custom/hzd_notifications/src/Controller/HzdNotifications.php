@@ -12,6 +12,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\group\Entity\Group;
 use Drupal\hzd_notifications\HzdNotificationsHelper;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\hzd_release_management\HzdreleasemanagementStorage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -76,15 +77,16 @@ class HzdNotifications extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'notifications_title'>" . $this->t('Add new notification request') . "</div>");
     $output[] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_notifications\Form\ServiceSpecificNotificationsUserForm', $user, $rel_type);
-    $notifications_priority = db_query("SELECT service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
+    $notifications_priority = db_query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
       ":uid" => $user,
       ":rel_type" => $rel_type
     ))->fetchAll();
     if (count($notifications_priority) > 0) {
       $output[] = array('#markup' => "<div class = 'service_specific_notifications'><div class = 'notifications_title'>" . $this->t('My current notification requests') . "</div>");
+
       foreach ($notifications_priority as $vals) {
-        $output[] = \Drupal::formBuilder()
-          ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type);
+          $output[] = \Drupal::formBuilder()
+              ->getForm('Drupal\hzd_notifications\Form\UpdateServiceSpecificNotifications', $user, $vals->service_id, $vals->type, $vals->send_interval, $rel_type, $vals->sid);
       }
       $output[] = array('#markup' => "</div>");
     }
@@ -534,7 +536,49 @@ class HzdNotifications extends ControllerBase {
       ->getForm('Drupal\hzd_notifications\Form\SchnellinfosNotifications', $user);
     return $output;
   }
-  
+
+  /**
+   * SAMS event-subscription management under personal notification preferences
+   */
+  public function sams_notifications($user = NULL) {
+    // pr($user);exit;
+    // Fügt die js-library hinzu, die man benötigt, um den Formularbatzen (Formulartabelle) unten zu bearbeiten.
+    // Der normale Submit funktioniert nicht - es wrd immer nur das erste Formular submitted.
+    $output[]['#attached']['library'] = array(
+      'hzd_notifications/hzd_notifications',
+      'hzd_sams/hzd_sams.artifact_info'
+    );
+
+    $output[] = \Drupal::formBuilder()
+      ->getForm('Drupal\hzd_notifications\Form\SamsNotifications', $user);
+
+    $connection = \Drupal::database();
+    // Should use uid from URL
+    if ($user == NULL) {
+      $user = \Drupal::currentUser()->id();
+    }
+    // Abo-Übersichts-Formular:
+    $subscriptions = $connection->query("SELECT id, service, class, product, status FROM {sams_notifications__user_default_interval} WHERE uid = $user")->fetchAll();
+    if (count($subscriptions) > 0) {
+      $output[] = array('#markup' => "<div class = 'sams_notifications'><div class = 'notifications_title'>" . $this->t('My current subscriptions') . "</div>");
+      $output[] = [
+        '#markup' => '
+          <h4 class="hzd-form-element col-md-3">Verfahren</h4>
+          <h4 class="hzd-form-element col-md-2">Klasse</h4>
+          <h4 class="hzd-form-element col-md-3">Produkt</h4>
+          <h4 class="hzd-form-element col-md-2">Status</h4>
+          <h4 class="hzd-form-element col-md-1">Aktion</h4>
+          ', 
+      ];
+      foreach ($subscriptions as $vals) {
+        $output[] = \Drupal::formBuilder()
+          ->getForm('Drupal\hzd_notifications\Form\UpdateSamsNotifications', $vals->id, $user, $vals->service, $vals->class, $vals->product, $vals->status);
+      }
+      $output[] = array('#markup' => "</div>");
+    }
+    return $output;
+  }
+
   public
   function group_notifications($user = NULL) {
     $output[] = \Drupal::formBuilder()
@@ -606,7 +650,23 @@ class HzdNotifications extends ControllerBase {
     $resp->setData(['success' => TRUE, 'data' => 'success']);
     return $resp;
   }
-  
+
+  /**
+   * Gets called by Ajax POST-request and deletes a SAMS subscription
+   */
+  public function delete_sams_notifications() {
+    $id = \Drupal::request()->get('id');
+    $action = \Drupal::request()->get('type');
+    if ($action == 'delete') {
+      \Drupal::database()->delete('sams_notifications__user_default_interval')
+        ->condition('id', $id)
+        ->execute();
+    }    
+    $resp = new \Drupal\Core\Ajax\AjaxResponse();
+    $resp->setData(['success' => TRUE, 'data' => 'success']);
+    return $resp;
+  }
+
   public
   function notification_templates() {
     $output[] = array('#markup' => $this->t('Notifications Templates'));
@@ -668,7 +728,7 @@ class HzdNotifications extends ControllerBase {
     } else {
       $user = User::load($user);
     }
-    $group = Group::load(\Drupal::config('arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
+    $group = Group::load(\Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id'));
     if($group) {
       $groupMember = $group->getMember($user);
       $user_role = $user->getRoles(TRUE);
@@ -682,5 +742,48 @@ class HzdNotifications extends ControllerBase {
     }
 
   }
-  
+
+  /**
+   * Checks access for a specific request.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   Run access checks for this account.
+   *
+   * @return \Drupal\Core\Access\AccessResultInterface
+   *   The access result.
+   */
+  function userSamsAccess(AccountInterface $account) {
+    if ($account->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
+    
+    $routeUserId = \Drupal::routeMatch()->getParameters()->get('user');
+    $routeUser = User::load($routeUserId);
+    $currentRoles = $account->getRoles();
+    $group = Group::load(\Drupal::config('sams.settings')->get('sams_id'));
+    
+    if($group) {
+      $groupMember = $group->getMember($routeUser);
+      if (!$groupMember) {
+        return AccessResult::forbidden();
+      }
+      if ($groupMember->getGroupContent()->get('request_status')->value == 0) {
+        return AccessResult::forbidden();
+      }
+      if ($routeUserId == $account->id()) {
+        return AccessResult::allowed();
+      }
+      if (in_array('site_administrator', $currentRoles)) {
+    // Verbuggt
+    // if (array_intersect($user_role, array('site_administrator', 'administrator'))) {
+      return AccessResult::allowed();
+      }
+      else {
+        return AccessResult::forbidden();
+      }
+    }
+    else {
+      return AccessResult::forbidden();
+    }
+  }
 }
