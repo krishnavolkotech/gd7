@@ -11,9 +11,6 @@ dependencies:
     - views
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: views_block__news_list_block_1_2
 theme: hzd
 region: navigation

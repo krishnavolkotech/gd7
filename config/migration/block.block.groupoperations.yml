@@ -8,9 +8,6 @@ dependencies:
     - user
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: groupoperations
 theme: hzd
 region: navigation

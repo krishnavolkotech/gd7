@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: menu-631
 label: 'Zentrale Release Manager der Länder'
-description: null
+description: ''
 locked: false

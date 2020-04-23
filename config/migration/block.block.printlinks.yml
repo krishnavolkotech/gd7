@@ -7,9 +7,6 @@ dependencies:
     - entity_print
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: printlinks
 theme: hzd
 region: navigation

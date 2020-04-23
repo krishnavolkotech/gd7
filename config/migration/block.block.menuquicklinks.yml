@@ -7,9 +7,6 @@ dependencies:
     - language
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: menuquicklinks
 theme: hzd
 region: navigation

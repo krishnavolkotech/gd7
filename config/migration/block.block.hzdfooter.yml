@@ -9,9 +9,6 @@ dependencies:
     - simple_block
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: hzdfooter
 theme: hzd
 region: footer

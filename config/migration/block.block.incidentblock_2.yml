@@ -8,9 +8,6 @@ dependencies:
     - system
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: incidentblock_2
 theme: hzd
 region: sidebar_first

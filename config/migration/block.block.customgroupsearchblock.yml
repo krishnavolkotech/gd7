@@ -8,9 +8,6 @@ dependencies:
     - user
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: customgroupsearchblock
 theme: hzd
 region: user_menu

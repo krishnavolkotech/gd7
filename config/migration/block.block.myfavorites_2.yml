@@ -9,9 +9,6 @@ dependencies:
     - user
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: myfavorites_2
 theme: hzd
 region: sidebar_first

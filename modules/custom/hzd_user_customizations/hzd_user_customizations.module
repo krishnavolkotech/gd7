@@ -217,6 +217,7 @@ function hzd_user_customizations_user_insert($user) {
         BETRIEBSPORTAL_KONSENS => BETRIEBSPORTAL_KONSENS,
         KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
         VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
+        COVID_INFO => COVID_INFO,
     );
 
     $covid_group = \Drupal\group\Entity\Group::load(COVID_INFO);

@@ -7,9 +7,6 @@ dependencies:
     - system
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: views_block__group_faqs_group_faq_block
 theme: hzd
 region: navigation

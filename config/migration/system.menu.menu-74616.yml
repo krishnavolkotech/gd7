@@ -1,0 +1,8 @@
+uuid: ca73253b-7789-4ed5-a085-f51165229d0f
+langcode: de
+status: true
+dependencies: {  }
+id: menu-74616
+label: 'Corona Info'
+description: ''
+locked: false

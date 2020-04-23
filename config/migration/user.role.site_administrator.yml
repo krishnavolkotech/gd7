@@ -70,6 +70,7 @@ permissions:
   - 'administer field permissions'
   - 'administer files'
   - 'administer filters'
+  - 'administer forums'
   - 'administer group'
   - 'administer group display'
   - 'administer group fields'

@@ -6,9 +6,6 @@ dependencies:
     - block_class
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: customgroupblock
 theme: hzd
 region: navigation
