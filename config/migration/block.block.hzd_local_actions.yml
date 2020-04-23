@@ -6,9 +6,6 @@ dependencies:
     - block_class
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 _core:
   default_config_hash: 13GQpeITIJsp1kyPniXtWZfyFH87vb1xxJCHifL4UeE
 id: hzd_local_actions

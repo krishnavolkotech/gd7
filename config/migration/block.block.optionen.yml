@@ -5,7 +5,6 @@ dependencies:
   config:
     - system.menu.optionen
   module:
-    - block_class
     - system
     - user
   theme:

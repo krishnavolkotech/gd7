@@ -7,9 +7,6 @@ dependencies:
     - cust_group
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: hzdfootercontent
 theme: hzd
 region: navigation

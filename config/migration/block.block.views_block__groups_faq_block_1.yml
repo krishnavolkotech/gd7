@@ -11,9 +11,6 @@ dependencies:
     - views
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: views_block__groups_faq_block_1
 theme: hzd
 region: content

@@ -1,0 +1,49 @@
+uuid: 564a754c-dc63-4fb3-9344-975aaaf9cef6
+langcode: de
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:b91d245a-5be5-4c4a-a0f0-3d502205afd2'
+  module:
+    - block_class
+    - block_content
+    - block_visibility_groups
+    - system
+    - user
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: block-incidents-block
+id: coronainfoblock
+theme: hzd
+region: sidebar_second
+weight: -30
+provider: null
+plugin: 'block_content:b91d245a-5be5-4c4a-a0f0-3d502205afd2'
+settings:
+  id: 'block_content:b91d245a-5be5-4c4a-a0f0-3d502205afd2'
+  label: 'SARS-CoV-2: Aktuelle Informationen'
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

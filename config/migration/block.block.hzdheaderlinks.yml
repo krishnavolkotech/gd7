@@ -8,9 +8,6 @@ dependencies:
     - language
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: hzdheaderlinks
 theme: hzd
 region: user_menu

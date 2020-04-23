@@ -9,9 +9,6 @@ dependencies:
     - cust_group
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: imattachmentsuploadedfilesblock
 theme: hzd
 region: navigation

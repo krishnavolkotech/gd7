@@ -7,9 +7,6 @@ dependencies:
     - favorites
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: addtofavorites
 theme: hzd
 region: navigation

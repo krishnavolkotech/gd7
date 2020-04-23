@@ -9,9 +9,6 @@ dependencies:
     - system
   theme:
     - hzd
-third_party_settings:
-  block_class:
-    classes: ''
 id: blockupload1
 theme: hzd
 region: navigation
