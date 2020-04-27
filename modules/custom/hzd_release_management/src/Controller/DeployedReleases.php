@@ -149,13 +149,15 @@ class DeployedReleases extends ControllerBase {
           }
         }
       }
+      
       $build = [
         '#theme' => 'table',
         '#header' => $headers,
         '#rows' => $depReleases,
-        '#attributes' => [
-          'class' => ['view-deployed-releases']
-        ]
+        '#attributes' => array(
+            'id' => 'current_deploysortable',
+            'class' => ['view-deployed-releases'],
+        ),
       ];
       \Drupal::cache()->set($cid, $build, CacheBackendInterface::CACHE_PERMANENT, ['deployedReleasesOverview']);
       return $build;

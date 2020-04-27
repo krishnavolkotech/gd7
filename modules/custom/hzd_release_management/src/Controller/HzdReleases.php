@@ -337,6 +337,10 @@ class HzdReleases extends ControllerBase {
   public function deployed_releases() {
     global $base_url;
 
+    $output['#attached']['library'] = array(
+      'hzd_release_management/deployed_releases',
+    );
+    
     $output['#attached']['drupalSettings']['deploy_release'] = array(
         'type' => 'deployed_releases',
         'base_path' => $base_url,
