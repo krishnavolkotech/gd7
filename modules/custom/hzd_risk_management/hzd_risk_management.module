@@ -30,21 +30,25 @@ function hzd_risk_management_help($route_name, RouteMatchInterface $route_match)
 }
 
 
-function computed_field_field_risk_category_compute($entity_type_manager, $entity, $fields, $delta){
+function computed_field_field_risk_category_compute($entity_type_manager, $entity, $fields, $delta) {
   $value = 'Invalid';
   $riskValue = $entity->get('field_probability_of_occurrence')->value * $entity->get('field_risk_impact')->value;
   // pr($entity->toArray());exit;
   return calculateRiskCategory($riskValue);
 }
 
-function calculateRiskCategory($riskValue){
-  if($riskValue > 6){
+function calculateRiskCategory($riskValue) {
+  pr($riskValue);
+  if ($riskValue >= 7.5) {
     return 'A';
-  }elseif($riskValue > 2 && $riskValue <= 6){
+  }
+  elseif ($riskValue >= 2.5 && $riskValue < 7.5) {
     return 'B';
-  }elseif($riskValue <= 2){
+  }
+  elseif ($riskValue < 2.5) {
     return 'C';
-  }else{
+  }
+  else {
     return "Invalid Value";
   }
 /*  switch($riskValue){
@@ -214,7 +218,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       return $risk->get('field_risk_value')->value;
     },$risks);
     if(count($items)){
-      $value = round(array_sum($items)/count($items));
+      $value = array_sum($items)/count($items);
     }else{
       $value = 0;
     }
@@ -230,7 +234,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        '0'=>['#markup'=>$value . " - " . calculateRiskCategory($value)],
+        '0'=>['#markup'=>round($value) . " - " . calculateRiskCategory($value)],
     ];
   }
   if($display->getComponent('last_updated')){
