@@ -38,7 +38,6 @@ function computed_field_field_risk_category_compute($entity_type_manager, $entit
 }
 
 function calculateRiskCategory($riskValue) {
-  pr($riskValue);
   if ($riskValue >= 7.5) {
     return 'A';
   }
@@ -69,6 +68,25 @@ function calculateRiskCategory($riskValue) {
       break;
   }
   return $value;*/
+}
+
+function calculateRisk($value) {
+  $value = round($value);
+  switch ($value) {
+    case 3:
+      $value = 'Hoch';
+      break;
+    case 2:
+      break;
+      $value = 'Mittel';
+    case 1:
+      $value = 'Niedrig';
+      break;
+    default:
+      $value = 'Invalid Value';
+  }
+  pr($value);
+  return $value;
 }
 
 function hzd_risk_management_form_alter(array &$form, $formState, $formId){
@@ -210,6 +228,60 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
     ];
   }
+  if($display->getComponent('field_risks_cluster_propability')){
+    $risks = \Drupal::entityTypeManager()
+    ->getStorage('node')
+    ->loadByProperties(['field_risk_clusters' => $entity->id()]);
+    $items = array_map(function($risk){
+      return $risk->get('field_probability_of_occurrence')->value;
+    },$risks);
+    if(count($items)){
+      $value = array_sum($items)/count($items);
+    }else{
+      $value = 0;
+    }
+    $build['field_risks_cluster_propability'] = [
+      '#theme' => 'field',
+        '#title' => t('Propability of Occurence'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#markup'=>round($value) . " - " . calculateRisk($value)],
+    ];
+  }
+  if($display->getComponent('field_risks_cluster_impact')){
+    $risks = \Drupal::entityTypeManager()
+    ->getStorage('node')
+    ->loadByProperties(['field_risk_clusters' => $entity->id()]);
+    $items = array_map(function($risk){
+      return $risk->get('field_risk_impact')->value;
+    },$risks);
+    if(count($items)){
+      $value = array_sum($items)/count($items);
+    }else{
+      $value = 0;
+    }
+    $build['field_risks_cluster_impact'] = [
+      '#theme' => 'field',
+        '#title' => t('Impact'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>['#markup'=>round($value) . " - " . calculateRisk($value)],
+    ];
+  }
   if($display->getComponent('field_risks_cluster_class')){
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
@@ -297,6 +369,18 @@ function hzd_risk_management_entity_extra_field_info() {
     'visible' => TRUE,
     'weight' => 100,
   ); 
+  $extra['node']['risk_cluster']['display']['field_risks_cluster_propability'] = array(
+    'label' => t('Propability of Occurence'),
+    'description' => t('This is pseudo-field'),
+    'visible' => TRUE,
+    'weight' => 100,
+  );
+  $extra['node']['risk_cluster']['display']['field_risks_cluster_impact'] = array(
+    'label' => t('Impact'),
+    'description' => t('This is pseudo-field'),
+    'visible' => TRUE,
+    'weight' => 100,
+  );
   $extra['node']['risk_cluster']['display']['field_risks_cluster_class'] = array(
     'label' => t('Risk Value and Category'),
     'description' => t('This is pseudo-field'),
