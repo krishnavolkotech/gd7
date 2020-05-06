@@ -5,6 +5,7 @@ hzd_sams.artifact_info:
       css/hzd_sams.css: {}
   js:
     js/artifact_info.js: {}
+    js/artifact_tablesorter.js: {}
   dependencies:
     - core/drupal.ajax
     - core/jquery

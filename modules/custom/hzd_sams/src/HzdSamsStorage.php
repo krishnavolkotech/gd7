@@ -29,6 +29,18 @@ class HzdSamsStorage {
   }
 
   /**
+   * Returns current artifact-class context or false.
+   */
+  public function getCurrentClass() {
+    if ($this->class) {
+      return $this->class;
+    }
+    else {
+      return false;
+    }
+  }
+  
+  /**
    * Returns table with artifacts as a render array.
    *
    * @return array
@@ -39,14 +51,21 @@ class HzdSamsStorage {
     $rows = $this->buildRows();
     // $header = array(t('REPO-Bezeichnung'), t('Artefakt-Bezeichnung'), t('Datum'), t('Comment'), t('debug'), t('Download'));
     // $header = array(t('REPO-Bezeichnung'), t('Artefakt-Bezeichnung'), t('Datum'), t('Comment'), t('Download'));
-    $header = array(t('Repository'), t('Artifact'), t('Date'), t('Comment'), 'D/I');
-    $type = 'released';
+    $header = array(
+      array('data' => t('Repository'), 'class' => 'sorter-text'),
+      array('data' => t('Artifact'), 'class' => 'sorter-text'),
+      array('data' => t('Date'), 'class' => 'sorter-artifact-date'),
+      array('data' => t('Comment'), 'class' => 'sorter-no-parser'),
+      array('data' => 'D/I', 'class' => 'sorter-no-parser')
+    );
 
     $build[] = array(
       '#theme' => 'table',
       '#rows' => $rows,
       '#header' => $header,
-      '#attributes' => ['id' => "sortable", 'class' => ["tablesorter", 'artifacts', $type]],   // Bug? Tablesorter für Releases, nicht Artefakte
+      '#attributes' => [
+        'id' => "sortable_artifact_table", 'class' => ["tablesorter", 'artifacts']
+      ],
       '#empty' => t('No records found'),
     );
 
@@ -210,17 +229,19 @@ class HzdSamsStorage {
     if (count($samsImportObject->results) === 0) {
       return;
     }
+
     foreach ($samsImportObject->results as $artifactData) {
-      //ksm($artifactData);
       $repo = $artifactData->repo;
-      // @todo wird hier noch ein error erzeugt?
-      //if (!$this->service) {
-        $restServices[] = explode("_", $repo)[0];
-      //}
+
+      // Nicht-KONSENS Repos rausfiltern
+      if (strpos($repo, '_') === False) {
+        continue;
+      }
+
+      $restServices[] = explode("_", $repo)[0];
       $artifact = $artifactData->name;
+      
       $path = $artifactData->path;
-      // TODO: Pfadauflösung fehleranfällig! Gleiches Problem in SamsMail.php
-      //  -> erledigt 17.12.19
       $explodedPath = explode("/", $path);
       if (strpos($repo, 'RPM') !== False) {
         array_pop($explodedPath);
@@ -229,7 +250,6 @@ class HzdSamsStorage {
       $restProducts[] = array_pop($explodedPath);
 
       $artifactCommentCell = '';
-
       $time = date_create_from_format('Y-m-d\TH:i:s.uP', $artifactData->modified);
       $modified = date_format($time, 'd.m.Y H:i:s');
 
@@ -295,13 +315,23 @@ class HzdSamsStorage {
       /* Downloadlink bauen */
       unset($action);
       $action = '';
+
       // @todo url aus konfig ziehen
       $urlpath = 'https://sams-konsens.hessen.doi-de.net/artifactory/'
         . $row['repo'] . '/'
         . $row['path'] . '/'
         . $row['artifact'];
       $url = Url::fromUri($urlpath, $options);
-      $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
+
+      $download_link = array(
+          '#title' => array(
+            '#markup' => $download
+          ),
+          '#type' => 'link',
+          '#url' => $url,
+          '#attributes' => ['target' => '_blank'],
+        );
+
       $link_path = \Drupal::service('renderer')->renderRoot($download_link);
       $popoverInfoIcon = array(
         '#markup' => ''
