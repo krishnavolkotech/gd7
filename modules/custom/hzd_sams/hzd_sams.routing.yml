@@ -49,7 +49,7 @@ hzd_sams.view_libraries_final:
 hzd_sams.view_libraries_test:
   path: 'sams-konsens/software-artefakte/bibliotheken/test'
   defaults:
-    _title: 'Bibliotheken'
+    _title: 'Test'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -62,7 +62,7 @@ hzd_sams.view_libraries_test:
 hzd_sams.view_libraries_rc:
   path: 'sams-konsens/software-artefakte/bibliotheken/rc'
   defaults:
-    _title: 'Bibliotheken'
+    _title: 'RC'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -75,7 +75,7 @@ hzd_sams.view_libraries_rc:
 hzd_sams.view_libraries_deprecated:
   path: 'sams-konsens/software-artefakte/bibliotheken/deprecated'
   defaults:
-    _title: 'Bibliotheken'
+    _title: 'Deprecated'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -148,7 +148,7 @@ hzd_sams.view_mock_objects_final:
 hzd_sams.view_mock_objects_test:
   path: 'sams-konsens/software-artefakte/mock-objekte/test'
   defaults:
-    _title: 'Mock-Objekte'
+    _title: 'Test'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -160,7 +160,7 @@ hzd_sams.view_mock_objects_test:
 hzd_sams.view_mock_objects_rc:
   path: 'sams-konsens/software-artefakte/mock-objekte/rc'
   defaults:
-    _title: 'Mock-Objekte'
+    _title: 'RC'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -172,7 +172,7 @@ hzd_sams.view_mock_objects_rc:
 hzd_sams.view_mock_objects_deprecated:
   path: 'sams-konsens/software-artefakte/mock-objekte/deprecated'
   defaults:
-    _title: 'Mock-Objekte'
+    _title: 'Deprecated'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -196,7 +196,7 @@ hzd_sams.view_shema_final:
 hzd_sams.view_shema_test:
   path: 'sams-konsens/software-artefakte/schema/test'
   defaults:
-    _title: 'Schema'
+    _title: 'Test'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -208,7 +208,7 @@ hzd_sams.view_shema_test:
 hzd_sams.view_shema_rc:
   path: 'sams-konsens/software-artefakte/schema/rc'
   defaults:
-    _title: 'Schema'
+    _title: 'RC'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -220,7 +220,7 @@ hzd_sams.view_shema_rc:
 hzd_sams.view_shema_deprecated:
   path: 'sams-konsens/software-artefakte/schema/deprecated'
   defaults:
-    _title: 'Schema'
+    _title: 'Deprecated'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -244,7 +244,7 @@ hzd_sams.view_norm_final:
 hzd_sams.view_norm_test:
   path: 'sams-konsens/software-artefakte/norm/test'
   defaults:
-    _title: 'Norm'
+    _title: 'Test'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -256,7 +256,7 @@ hzd_sams.view_norm_test:
 hzd_sams.view_norm_rc:
   path: 'sams-konsens/software-artefakte/norm/rc'
   defaults:
-    _title: 'Norm'
+    _title: 'RC'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:
@@ -268,7 +268,7 @@ hzd_sams.view_norm_rc:
 hzd_sams.view_norm_deprecated:
   path: 'sams-konsens/software-artefakte/norm/deprecated'
   defaults:
-    _title: 'Norm'
+    _title: 'Deprecated'
     _controller: '\Drupal\hzd_sams\Controller\HzdSams::artifacts'
     _entity_view: group.default
   requirements:

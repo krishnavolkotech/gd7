@@ -65,6 +65,7 @@ class ArtifactFilterForm extends FormBase {
         $default_value_services = $form_state->getValue('services');
       }
       
+      natcasesort($services);
       $form['services'] = array(
           '#type' => 'select',
           '#options' => $services,
@@ -132,6 +133,7 @@ class ArtifactFilterForm extends FormBase {
         // pr($default_value_products);exit;
       }
       
+      natcasesort($products);
       $form['products'] = array(
           '#type' => 'select',
           '#options' => $products,
