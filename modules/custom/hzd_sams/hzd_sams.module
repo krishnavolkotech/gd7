@@ -66,6 +66,7 @@ function hzd_sams_theme($existing,$type,$theme,$path){
  * 
  * Implements hook_system_breadcrumb_alter.
  */
+/*
 function hzd_sams_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$breadcrumb, \Drupal\Core\Routing\RouteMatchInterface $route_match, array $context) {
 
   $uri = Drupal::request()->getRequestUri();
@@ -76,6 +77,7 @@ function hzd_sams_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$b
     $breadcrumb->addLink(\Drupal\Core\Link::createFromRoute(t('Software-Artefakte'), 'entity.node.canonical', ['node' => 71177]));
   }
 }
+*/
 
 /**
  *  Cleanup of the SAMS state-data
