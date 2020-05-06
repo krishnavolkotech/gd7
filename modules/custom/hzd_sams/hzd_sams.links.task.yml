@@ -1,12 +1,6 @@
 hzd_sams.libraries_final_tab:
-  title: FINAL
+  title: Final
   route_name: hzd_sams.view_libraries_final
-  base_route: hzd_sams.view_libraries_final
-  weight: 0
-  
-hzd_sams.libraries_test_tab:
-  title: TEST
-  route_name: hzd_sams.view_libraries_test
   base_route: hzd_sams.view_libraries_final
   weight: 0
   
@@ -15,28 +9,28 @@ hzd_sams.libraries_rc_tab:
   route_name: hzd_sams.view_libraries_rc
   base_route: hzd_sams.view_libraries_final
   weight: 0
-  
-hzd_sams.libraries_deprecated_tab:
-  title: DEPRECATED
-  route_name: hzd_sams.view_libraries_deprecated
+
+hzd_sams.libraries_test_tab:
+  title: Test
+  route_name: hzd_sams.view_libraries_test
   base_route: hzd_sams.view_libraries_final
   weight: 0
-    
+  
+hzd_sams.libraries_deprecated_tab:
+  title: Deprecated
+  route_name: hzd_sams.view_libraries_deprecated
+  base_route: hzd_sams.view_libraries_final
+  weight: 0  
+
 hzd_sams.development_versions_test_tab:
-  title: TEST
+  title: Test
   route_name: hzd_sams.view_development_versions_test
   base_route: hzd_sams.view_development_versions_test
   weight: 0
-    
-hzd_sams.mock_objects_final_tab:
-  title: FINAL
-  route_name: hzd_sams.view_mock_objects_final
-  base_route: hzd_sams.view_mock_objects_final
-  weight: 0
   
-hzd_sams.mock_objects_test_tab:
-  title: TEST
-  route_name: hzd_sams.view_mock_objects_test
+hzd_sams.mock_objects_final_tab:
+  title: Final
+  route_name: hzd_sams.view_mock_objects_final
   base_route: hzd_sams.view_mock_objects_final
   weight: 0
   
@@ -46,21 +40,21 @@ hzd_sams.mock_objects_rc_tab:
   base_route: hzd_sams.view_mock_objects_final
   weight: 0
   
+hzd_sams.mock_objects_test_tab:
+  title: Test
+  route_name: hzd_sams.view_mock_objects_test
+  base_route: hzd_sams.view_mock_objects_final
+  weight: 0
+  
 hzd_sams.mock_objects_deprecated_tab:
-  title: DEPRECATED
+  title: Deprecated
   route_name: hzd_sams.view_mock_objects_deprecated
   base_route: hzd_sams.view_mock_objects_final
   weight: 0
 
 hzd_sams.shema_final_tab:
-  title: FINAL
+  title: Final
   route_name: hzd_sams.view_shema_final
-  base_route: hzd_sams.view_shema_final
-  weight: 0
-  
-hzd_sams.shema_test_tab:
-  title: TEST
-  route_name: hzd_sams.view_shema_test
   base_route: hzd_sams.view_shema_final
   weight: 0
   
@@ -70,21 +64,21 @@ hzd_sams.shema_rc_tab:
   base_route: hzd_sams.view_shema_final
   weight: 0
   
+hzd_sams.shema_test_tab:
+  title: Test
+  route_name: hzd_sams.view_shema_test
+  base_route: hzd_sams.view_shema_final
+  weight: 0
+  
 hzd_sams.shema_deprecated_tab:
-  title: DEPRECATED
+  title: Deprecated
   route_name: hzd_sams.view_shema_deprecated
   base_route: hzd_sams.view_shema_final
   weight: 0
 
 hzd_sams.norm_final_tab:
-  title: FINAL
+  title: Final
   route_name: hzd_sams.view_norm_final
-  base_route: hzd_sams.view_norm_final
-  weight: 0
-  
-hzd_sams.norm_test_tab:
-  title: TEST
-  route_name: hzd_sams.view_norm_test
   base_route: hzd_sams.view_norm_final
   weight: 0
   
@@ -94,9 +88,15 @@ hzd_sams.norm_rc_tab:
   base_route: hzd_sams.view_norm_final
   weight: 0
   
+hzd_sams.norm_test_tab:
+  title: Test
+  route_name: hzd_sams.view_norm_test
+  base_route: hzd_sams.view_norm_final
+  weight: 0
+  
 hzd_sams.norm_deprecated_tab:
-  title: DEPRECATED
+  title: Deprecated
   route_name: hzd_sams.view_norm_deprecated
   base_route: hzd_sams.view_norm_final
   weight: 0
-    
+  

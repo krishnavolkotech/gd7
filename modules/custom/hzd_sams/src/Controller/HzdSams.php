@@ -25,15 +25,6 @@ class HzdSams extends ControllerBase {
   public function artifacts() {
     global $base_url;
     $type = 'released'; // TODO: abbauen
-    $legendenText = "
-      <div class='menu-filter'>
-      <ul>
-      <li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Artefakt herunterladen</li>
-      <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare ansehen</li>
-      <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
-      <li><img height=15 src='/themes/hzd/images/notification-icon.png' class='white-image-background'>Koordinaten anzeigen</li>
-      </ul>
-      </div>";
       
     $storage = new HzdSamsStorage();
     $storage->fetch();
@@ -43,6 +34,28 @@ class HzdSams extends ControllerBase {
     $output['#title'] = $storage->getClass();
     $output['filter'] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_sams\Form\ArtifactFilterForm', $type, $samsData);
+    
+    $legendenText = "
+      <div class='menu-filter'>
+      <ul>
+      <li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Artefakt herunterladen</li>
+      <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare ansehen</li>
+      <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
+      <li><img height=15 src='/themes/hzd/images/notification-icon.png' class='white-image-background'>Koordinaten anzeigen</li>
+      </ul>
+      </div>";
+
+    if ($storage->getCurrentClass() == 'ENTWICKLUNGSVERSION') {
+      $legendenText = "
+        <div class='menu-filter'>
+        <ul>
+        <li><b>Legende:</b></li><li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Artefakt herunterladen</li>
+        <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/blue-icon.png'>Kommentare ansehen</li>
+        <li><img height=15 src='/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png'>Kommentieren</li>
+        </ul>
+        </div>";
+    }
+
     $output['legend'] = [
       '#type' => 'inline_template',
       '#template' => '
