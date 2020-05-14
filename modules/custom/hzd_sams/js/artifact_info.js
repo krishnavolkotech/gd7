@@ -4,7 +4,7 @@
 	 * via Rest vom SAMS abzufragen.
 	 */
   $('.artifact-info-icon').click(function() {
-    let repoPath = $(this).closest('tr').children('[data-th="Repository"]').html();
+    let repoPath = $(this).closest('tr').children('[data-th="Repository "]').html();
     let download = $(this).closest('td').children('a').first().attr('href');
     $('.popover').popover('destroy');
     let artifact = $(this).attr('artifact');
