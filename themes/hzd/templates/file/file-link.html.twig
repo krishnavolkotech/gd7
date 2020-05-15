@@ -35,7 +35,8 @@
             <span class='hzd-file-created'>{{ file_created }}</span>
           {% endif %}
         {% endif %}
-        <span class="file-size">{{ file_size }}</span>
+            <span class='hzd-file-created'>{{ file_created }}</span>
+            <span class="file-size">{{ file_size }}</span>
       </span>
     {% else %}
       {% if icon_position == 'after' %}
@@ -55,8 +56,14 @@
             <span class='hzd-file-created'>{{ file_created }}</span>
           {% endif %}
         {% endif %}
-        <span class="file-size">{{ file_size }}</span>
-      {% endif %}
+            <span class="file-size">{{ file_size }}</span>
+
+	    {% if file_owner != '' %}
+	      <span class='hzd-file-created'>{{ file_created }}</span>
+	      <span class="file-size">{{ file_owner }}</span>
+	    {% endif %}
+
+	{% endif %}
     {% endif %}
   </span>
 {% endspaceless %}

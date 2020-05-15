@@ -1233,3 +1233,18 @@ function get_group_content_node_type() {
 //  \Drupal::cache()->set($cid, $res, CacheBackendInterface::CACHE_PERMANENT, ['hzdcustomization']);
   return $res;
 }
+
+function getFileAttachedNode($fid) {
+  $query = \Drupal::database()->select('file_usage', 'fu');
+  $query->condition('fid', $fid);
+  $query->fields('fu', ['id']);
+  return $query->execute()->fetchField();
+}
+
+function getNodeGroupLabel($nid) {
+  $query = \Drupal::database()->select('group_content_field_data', 'gc');
+  $query->innerJoin('groups_field_data', 'gf', 'gf.id = gc.gid');
+  $query->condition('gc.entity_id', $nid);
+  $query->fields('gf', ['label']);
+  return $query->execute()->fetchField();
+}
