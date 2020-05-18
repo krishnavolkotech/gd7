@@ -1384,3 +1384,17 @@ div.view-hzd-group-members.view-display-id-approved table .views-field-comment-r
 li.menu-separator {
   border-top: 1px solid #027596;
 }
+
+#block-primarylinks ul ul.dropdown-menu li:hover ul.dropdown-menu {
+  display: block;
+  position: absolute;
+  left: 99% !important;
+  top: unset !important;
+  border: none;
+}
+
+#block-primarylinks ul li.expanded ul.dropdown-menu li.expanded {
+  background-position: 97.5%;
+  background-image: url('../images/chevron-right.svg');
+  background-repeat: no-repeat;
+}
