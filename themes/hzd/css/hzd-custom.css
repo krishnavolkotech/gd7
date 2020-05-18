@@ -1380,3 +1380,7 @@ div.view-hzd-group-members.view-display-id-approved table .views-field-comment-r
     float: left;
     margin-right: 1%;
 }
+
+li.menu-separator {
+  border-top: 1px solid #027596;
+}

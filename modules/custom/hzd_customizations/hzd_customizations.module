@@ -18,6 +18,7 @@ use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\node\Entity\Node;
 use Drupal\group\Entity\Group;
 use Drupal\hzd_customizations\Controller\Inactiveusers;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
@@ -1247,4 +1248,23 @@ function getNodeGroupLabel($nid) {
   $query->condition('gc.entity_id', $nid);
   $query->fields('gf', ['label']);
   return $query->execute()->fetchField();
+}
+
+function hzd_customizations_entity_base_field_info(\Drupal\Core\Entity\EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == "menu_link_content") {
+    $fields['menu_separator'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Menu Separator'))
+      ->setDescription(t('Displays Separator Line on top of Menu Item'))
+      ->setDefaultValue(FALSE)
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('form', array(
+        'type' => 'boolean_checkbox',
+        'settings' => array(
+          'display_label' => TRUE,
+        ),
+      ))
+      ->setDisplayConfigurable('form', TRUE);
+    return $fields;
+  }
 }

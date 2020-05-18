@@ -1201,3 +1201,19 @@ function hzd_preprocess_menu_local_action(array &$variables) {
     unset($variables['link']);
   }
 }
+
+/*
+ * Appying Menu Link Separator Class to primary Menus
+ */
+function hzd_preprocess_menu__primary_links(&$variables) {
+  foreach ($variables['items'] as $idx => $item) {
+    if (count($item['below']) > 0) {
+      foreach ($item['below'] as $below_idx => $below_item) {
+        $original = $below_item['original_link'];
+        if ($original->getEntity()->get('menu_separator')->value == 1) {
+          $variables['items'][$idx]['below'][$below_idx]['has_separator'] = TRUE;
+        }
+      }
+    }
+  }
+}

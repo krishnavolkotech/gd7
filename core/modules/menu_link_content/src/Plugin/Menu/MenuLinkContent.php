@@ -134,7 +134,7 @@ class MenuLinkContent extends MenuLinkBase implements ContainerFactoryPluginInte
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    *   If the entity ID and UUID are both invalid or missing.
    */
-  protected function getEntity() {
+  public function getEntity() {
     if (empty($this->entity)) {
       $entity = NULL;
       $storage = $this->entityTypeManager->getStorage('menu_link_content');
