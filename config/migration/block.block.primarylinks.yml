@@ -5,6 +5,7 @@ dependencies:
   config:
     - system.menu.primary-links
   module:
+    - block_visibility_groups
     - language
     - system
     - user
@@ -23,7 +24,7 @@ settings:
   label_display: '0'
   level: 1
   depth: 0
-  expand_all_items: false
+  expand_all_items: true
 visibility:
   language:
     id: language
@@ -40,3 +41,8 @@ visibility:
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
