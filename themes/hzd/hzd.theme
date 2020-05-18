@@ -1142,7 +1142,7 @@ function hzd_preprocess_file_link(&$variables) {
   $nid = getFileAttachedNode($file->id());
   if ($nid) {
     $groupTitle = getNodeGroupLabel($nid);
-    $pos = stripos($groupTitle, "Inc");
+    $pos = stripos($groupTitle, "DaSi");
     if ($pos !== false) {
         $url = Url::fromRoute('entity.user.canonical', array('user' => $uid));
         $user_link = [
