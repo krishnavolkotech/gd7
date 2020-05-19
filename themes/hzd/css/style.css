@@ -2614,10 +2614,11 @@ article.quickinfo .field .field--items {
     margin: 0 0 3px 0%;
    padding:0;
 }
-dl dt,
-dl da {
-    margin: 10px 0 0 0;
-}
+/* dl dt, */
+/* dl da, */
+/* dl dd { */
+    /* margin: 10px 0 0 0; */
+/* } */
 article.quickinfo .field .field--item ul li {
     margin: 0 0 7px 0;
 }
@@ -3603,6 +3604,10 @@ div.risk-table-wrapper div.field div.field--item{
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
 }
+.risk-measure-table, .risk-measure-table th {
+    border: none;
+    background-color: white;
+}
 .views-field.views-field-nothing {
 	width: 73px;
 }
@@ -3659,6 +3664,12 @@ div.risk-table-wrapper div.field div.field--item{
   min-width: 65px;
   padding-right: 0px;
 }
+.label.risk-label {
+  display: block;
+}
+/* .risk-detail-table { */
+  /* border: 0px solid rgba(0,0,0,.2); */
+/* } */
 ul.content-revision-log li{
   float: left;
   width: 100%;

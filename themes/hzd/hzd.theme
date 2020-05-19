@@ -6,6 +6,7 @@
  *
  * Place your custom PHP code in this file.
  */
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\UrlHelper;
@@ -616,6 +617,24 @@ function hzd_preprocess_node(&$variables) {
       $variables['back_to_search'] = \Drupal::service('link_generator')->generate(t('Back To Search'), $url);
       $variables['deployed_info'] = $deploy_info_values;
   }
+  
+  if ($variables['node']->getType() == 'risk') {
+    $node = $variables['node'];
+    
+    // Helpful $content variable for templates.
+    $variables += array(
+      'content' => array(),
+    );
+    foreach (Element::children($variables['elements']) as $key) {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
+    // ksm($variables['content']);
+    $fieldRiskValue = $node->field_risk_value->view();
+    $fieldRiskCategory = $node->field_risk_category->view();
+    $variables['content']['field_risk_value'] = $fieldRiskValue;
+    $variables['content']['field_risk_category'] = $fieldRiskCategory;
+  }
+
 
 }
 

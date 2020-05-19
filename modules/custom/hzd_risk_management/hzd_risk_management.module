@@ -186,6 +186,7 @@ function hzd_risk_management_node_presave($node){
 }
 
 function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){
+  // kint($build);
   if($display->getComponent('field_risk_category_value')){
     $riskCategory = $entity->get('field_risk_category')->value;
     $riskValue = $entity->get('field_risk_value')->value;
@@ -325,7 +326,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '0'=>['#markup'=>\Drupal::service('date.formatter')->format($entity->getChangedTime(), 'medium')],
     ];
   }
-  if($display->getComponent('field_measures')){
+  if($display->getComponent('field_measures')) {
     $measures = \Drupal::entityTypeManager()
       ->getStorage('node')
       ->loadByProperties(
@@ -334,22 +335,53 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           'type' => 'measure',
         ]);
     $items = array_map(function($measure){
-      return $measure->toLink($measure->get('field_id')->value." - ".$measure->label());
+      $measureLink = $measure->toLink($measure->get('field_id')->value." - ".$measure->label());
+      $measureOwner = $measure->get('field_owner')->value;
+      $fieldMeasureStatus = $measure->get('field_measure_status');
+      $measureStatus = $fieldMeasureStatus->getSetting('allowed_values')[$fieldMeasureStatus->value];
+
+      $row = [
+        'Titel' => $measureLink,
+        'Eigentümer' => $measureOwner,
+        'Status' => $measureStatus
+      ];
+      return $row;
+    },$measures);
+
+    $status = array_map(function($measure){
+      return $measure->get('field_measure_status')->getSetting('allowed_values')[$measure->get('field_measure_status')->value];
     },$measures); 
+
+    $statusCounts = [];
+    foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
+      $statusCounts[$value] = 0;
+    }
+    $statusCounts = array_merge($statusCounts, array_count_values($status));
+    $header = [t('Title'),t('Owner'),t('Status'),];
     $build['field_measures'] = [
       '#theme' => 'field',
-        '#title' => t('Measures'),
-        '#label_display' => 'inline',
-        '#view_mode' => $view_mode,
-        '#language' => 'de',
-        '#field_name' => 'field_id',
-        '#field_type' => 'textfield',
-        '#entity_type' => 'node',
-        '#bundle' => $entity->bundle(),
-        '#object' => $entity,
-        '#is_multiple' => false,
-        '0'=>['#theme'=>'item_list', '#items'=>$items],
+      '#title' => t('Measures'),
+      '#label_display' => 'inline',
+      '#view_mode' => $view_mode,
+      '#language' => 'de',
+      '#field_name' => 'field_id',
+      '#field_type' => 'textfield',
+      '#entity_type' => 'node',
+      '#bundle' => $entity->bundle(),
+      '#object' => $entity,
+      '#is_multiple' => false,
+      '0'=>[
+        '#theme'=>'table',
+        '#header' => $header,
+        '#rows'=>$items,
+        '#attributes' => [
+          'class' => [
+            0 => 'risk-measure-table'
+          ]
+        ]
+      ],
     ];
+    $build['#attached']['drupalSettings']['hzd_risk_management']['statusCounts'] = $statusCounts;
   }
 }
 

@@ -170,6 +170,14 @@ table {
     border-radius: 5px !important;
     border-collapse: inherit !important;
 }
+table.risk-detail-table {
+  border: none;
+}
+div.risk-detail-table-wrapper {
+    width: 100% !important;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px !important;
+}
 .form-actions button,
 a.button--danger,
 a#edit-cancel {
