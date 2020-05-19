@@ -149,7 +149,7 @@
   <div class="container-fluid">
     <div class="row">
     {# Risikodaten Rahmeninfo #}
-      <div class="col-sm-9 col-md-6 col-lg-12">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <table>
           <tbody>
             <tr>
@@ -174,7 +174,7 @@
     <div class="risk-detail-table-wrapper">
       <div class="row">
         {# Risikowerte (farblich) #}
-        <div class="col-sm-3 col-md-6 col-lg-5">
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
           <table class="risk-detail-table">
             <tbody>
               <tr>
@@ -208,7 +208,7 @@
           </table>
         </div>
         {# Risikodaten Gruppe 1 #}
-        <div class="col-sm-9 col-md-6 col-lg-6 col-lg-offset-1">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
           <table class="risk-detail-table">
             <tbody>
               <tr class="success">
@@ -247,7 +247,7 @@
     </br>
     {# Beschreibung #}
     <div class="row">
-      <div class="col-sm-3 col-md-6 col-lg-12">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ content.body['#title'] }}</h3>
@@ -262,7 +262,7 @@
     {# Maßnahmen #}
 {# {{ kint(content) }} #}
     <div class="row">
-      <div class="col-sm-12 col-md-12 col-lg-12">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ content.field_measures['#title'] }}</h3>
@@ -276,7 +276,7 @@
     </br>
     {# Bemerkungen #}
     <div class="row">
-      <div class="col-sm-12 col-md-12 col-lg-12">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ content.field_remarks['#title'] }}</h3>
@@ -291,7 +291,7 @@
     {# Historie #}
     {# {{ kint(content.field_arbeitslog)}} #}
     <div class="row">
-      <div class="col-sm-3 col-md-6 col-lg-12">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ content.field_arbeitslog['#title'] }}</h3>
@@ -303,19 +303,21 @@
       </div>
     </div> 
     </br>
-    <div class="row">
-      <div class="col-sm-3 col-md-6 col-lg-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ content.content_revision_log['#title'] }}</h3>
-          </div>
-          <div class="panel-body">
-            {{ content.content_revision_log[0] }}
+    {% if content.content_revision_log %}
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{ content.content_revision_log['#title'] }}</h3>
+            </div>
+            <div class="panel-body">
+              {{ content.content_revision_log[0] }}
+            </div>
           </div>
         </div>
       </div>
-    </div> 
-    </br>
+      </br>
+    {% endif %}
   </div>
 
 {# <span class="label label-{{  }}">Default</span> #}

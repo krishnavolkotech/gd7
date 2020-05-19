@@ -21,8 +21,8 @@
           labels: statusLabels,
           datasets: [{
             label: '# of Votes',
-            data: [4, 2, 3, 1, 2],
-            // data: statusCounts,
+            // data: [4, 2, 3, 1, 2],
+            data: statusCounts,
             backgroundColor: [
               'rgba(217, 84, 79, 1)',
               'rgba(240, 173, 78, 1)',
