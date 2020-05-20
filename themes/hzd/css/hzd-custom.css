@@ -1381,16 +1381,20 @@ div.view-hzd-group-members.view-display-id-approved table .views-field-comment-r
     margin-right: 1%;
 }
 
-li.menu-separator {
+div.menu-separator {
   border-top: 1px solid #027596;
+  height: 1px;
+  margin-left: 5%;
+  margin-right: 10%;
 }
 
 #block-primarylinks ul ul.dropdown-menu li:hover ul.dropdown-menu {
   display: block;
   position: absolute;
-  left: 98% !important;
+  left: 100% !important;
   top: unset !important;
   border: none;
+  margin-top: -5px;
 }
 
 #block-primarylinks ul li.expanded ul.dropdown-menu li.expanded {

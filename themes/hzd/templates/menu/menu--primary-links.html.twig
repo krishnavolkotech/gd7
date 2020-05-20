@@ -24,7 +24,6 @@
       {%
         set item_classes = [
           item.is_expanded and item.below ? 'expanded',
-          item.has_separator ? 'menu-separator',
           item.is_expanded and menu_level == 0 and item.below ? 'dropdown',
           item.in_active_trail ? 'active',
         ]
@@ -35,7 +34,10 @@
         <a href="{{ item.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ item.title }} <span class="caret"></span></a>
       {% else %}
         <li{{ item.attributes.addClass(item_classes) }}>
-        {{ link(item.title, item.url) }}
+	  {% if item.has_separator %}
+	    <div class='menu-separator'>&nbsp;</div>
+	  {% endif %}
+          {{ link(item.title, item.url) }}
       {% endif %}
       {% if item.below %}
         {{ _self.menu_links(item.below, attributes.removeClass(classes), menu_level + 1, classes) }}
