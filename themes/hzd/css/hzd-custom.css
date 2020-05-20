@@ -1388,13 +1388,13 @@ li.menu-separator {
 #block-primarylinks ul ul.dropdown-menu li:hover ul.dropdown-menu {
   display: block;
   position: absolute;
-  left: 99% !important;
+  left: 98% !important;
   top: unset !important;
   border: none;
 }
 
 #block-primarylinks ul li.expanded ul.dropdown-menu li.expanded {
-  background-position: 97.5%;
+  background-position: 99%;
   background-image: url('../images/chevron-right.svg');
   background-repeat: no-repeat;
 }
