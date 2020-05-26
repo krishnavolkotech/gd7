@@ -330,13 +330,8 @@ class FormValidator implements FormValidatorInterface {
    */
   protected function performRequiredValidation(&$elements, FormStateInterface &$form_state) {
     // Verify that the value is not longer than #maxlength.
-    $length = 0;
-    if (!isset($elements['#value'])) {
-      $length = count($elements['#value']) > 0 ? mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $elements['#value'])): 0;
-    }
-     
-    if (isset($elements['#maxlength']) && $length > $elements['#maxlength']) {
-      $form_state->setError($elements, $this->t('@name cannot be longer than %max characters but is currently %length characters long.', ['@name' => empty($elements['#title']) ? $elements['#parents'][0] : $elements['#title'], '%max' => $elements['#maxlength'], '%length' => $length]));
+    if (isset($elements['#maxlength']) && mb_strlen($elements['#value']) > $elements['#maxlength']) {
+      $form_state->setError($elements, $this->t('@name cannot be longer than %max characters but is currently %length characters long.', ['@name' => empty($elements['#title']) ? $elements['#parents'][0] : $elements['#title'], '%max' => $elements['#maxlength'], '%length' => mb_strlen($elements['#value'])]));
     }
 
     if (isset($elements['#options']) && isset($elements['#value'])) {
