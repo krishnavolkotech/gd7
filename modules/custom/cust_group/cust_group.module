@@ -327,7 +327,7 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
     //wird dies für SAMS überhaupt benötigt? Eingetragen, weil paralel zu ALEDV erstellt im Rahmen der Trennung von SAMS und ALEDV
     // Ja, wir benötigt um abonnierte Benachrichtigungen aus Datenbank zu löschen, wenn user die Gruppe verlässt.
     // @todo Testen.
-    if ($group->id() == \Drupal::config('sams.settings')->get('sams_id')) {
+    if ($group->id() == \Drupal::config('cust_group.sams.settings')->get('sams_id')) {
       db_query("DELETE FROM {sams_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
   }

@@ -200,7 +200,8 @@ class HzdSamsStorage {
     // $url = "https://sams-konsens-tst.hessen.doi-de.net/artifactory/api/search/aql";
     //Catharina - Anpassung für Nutzung der Einträge auf Sams Konfig Seite
     // $url = "http://10.7.5.120:8081/artifactory/api/search/aql";
-    $url = \Drupal::config('sams.settings')->get('sams_url') . "/artifactory/api/search/aql";
+    $samsSettings = \Drupal::config('cust_group.sams.settings');
+    $url = $samsSettings->get('sams_url') . "/artifactory/api/search/aql";
     $headers = array('Content-Type: text/plain');
 
     // REST Abfrage an SAMS schicken
@@ -210,7 +211,7 @@ class HzdSamsStorage {
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     //Catharina - Anpassung für Nutzung der Einträge auf Sams Konfig Seite
     // curl_setopt($curl, CURLOPT_USERPWD, 'bpk_user:password');
-    curl_setopt($curl, CURLOPT_USERPWD, \Drupal::config('sams.settings')->get('sams_user') . ":" . \Drupal::config('sams.settings')->get('sams_pw'));
+    curl_setopt($curl, CURLOPT_USERPWD, $samsSettings->get('sams_user') . ":" . $samsSettings->get('sams_pw'));
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
     curl_setopt($curl, CURLOPT_POST, true);

@@ -26,7 +26,7 @@ class SamsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'sams.settings',
+      'cust_group.sams.settings',
     ];
   }
 
@@ -38,28 +38,28 @@ class SamsForm extends ConfigFormBase {
     $form['sams_id'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Sams Group ID'),
-      '#default_value' => \Drupal::config('sams.settings')->get('sams_id'),
+      '#default_value' => \Drupal::config('cust_group.sams.settings')->get('sams_id'),
       '#required' => TRUE,
     );
     
     $form['sams_url'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Sams URL'),
-      '#default_value' => \Drupal::config('sams.settings')->get('sams_url'),
+      '#default_value' => \Drupal::config('cust_group.sams.settings')->get('sams_url'),
       '#required' => TRUE,
     );
      
     $form['sams_user'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Sams User'),
-      '#default_value' => \Drupal::config('sams.settings')->get('sams_user'),
+      '#default_value' => \Drupal::config('cust_group.sams.settings')->get('sams_user'),
       '#required' => TRUE,
     );
  
     $form['sams_pw'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Sams Password'),
-      '#default_value' => \Drupal::config('sams.settings')->get('sams_pw'),
+      '#default_value' => \Drupal::config('cust_group.sams.settings')->get('sams_pw'),
       '#required' => TRUE,
     );
     
@@ -75,7 +75,7 @@ class SamsForm extends ConfigFormBase {
     $sams_url = $form_state->getValue('sams_url');
     $sams_user = $form_state->getValue('sams_user');
     $sams_pw = $form_state->getValue('sams_pw');
-    \Drupal::configFactory()->getEditable('sams.settings')
+    \Drupal::configFactory()->getEditable('cust_group.sams.settings')
       ->set('sams_id', $sams_id)
       ->set('sams_url', $sams_url)
       ->set('sams_user', $sams_user)

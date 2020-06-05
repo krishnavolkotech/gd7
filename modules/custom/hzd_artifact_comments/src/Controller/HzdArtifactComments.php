@@ -14,7 +14,7 @@ class HzdArtifactComments extends ControllerBase {
   private $samsGroupId;
 
   public function __construct() {
-    $this->samsGroupId = \Drupal::config('sams.settings')->get('sams_id');
+    $this->samsGroupId = \Drupal::config('cust_group.sams.settings')->get('sams_id');
   }
 
   public function addArtifactComment() {

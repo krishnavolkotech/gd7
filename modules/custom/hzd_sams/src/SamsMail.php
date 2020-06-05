@@ -119,7 +119,7 @@ class SamsMail {
     
     foreach ($this->subscribers as $key => $subscriber) {
       $user = User::load($subscriber);
-      $group = Group::load(\Drupal::config('sams.settings')->get('sams_id'));
+      $group = Group::load(\Drupal::config('cust_group.sams.settings')->get('sams_id'));
       $groupMember = $group->getMember($user);
       if (!$groupMember) {
         unset($this->subscribers[$key]);

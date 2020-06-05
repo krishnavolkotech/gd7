@@ -69,7 +69,7 @@ function hzd_artifact_comments_form_alter(&$form, \Drupal\Core\Form\FormStateInt
  */
 function hzd_artifact_comments_node_insert(\Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->getType() == 'artefakt_kommentar') {
-    $samsGroupId = \Drupal::config('sams.settings')->get('sams_id');
+    $samsGroupId = \Drupal::config('cust_group.sams.settings')->get('sams_id');
     $group = \Drupal\group\Entity\Group::load($samsGroupId);
     $plugin = $group->getGroupType()
       ->getContentPlugin('group_node:artefakt_kommentar');
@@ -97,7 +97,7 @@ function hzd_artifact_comments_node_insert(\Drupal\Core\Entity\EntityInterface $
  */
 function hzd_artifact_comments_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->getType() == 'artefakt_kommentar') {
-    $groupId = \Drupal::config('sams.settings')->get('sams_id');
+    $groupId = \Drupal::config('cust_group.sams.settings')->get('sams_id');
     $artifact = $entity->get('field_artifact_name')->getValue();
     $cmt_options['attributes'] = array('class' => 'btn btn-default');
     $cmt_options['query'][] = ['artifact' => $artifact[0]['value']];

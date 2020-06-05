@@ -99,7 +99,8 @@ class HzdSams extends ControllerBase {
     $link = $request->request->all()['link'];
 
     $path = substr($link,strpos($link, $repo)+strlen($repo)+1);
-    $samsUrl = \Drupal::config('sams.settings')->get('sams_url');
+    $samsSettings = \Drupal::config('cust_group.sams.settings');
+    $samsUrl = $samsSettings->get('sams_url');
 
     // GAV-Koordinaten
     $url = $samsUrl 
@@ -108,7 +109,7 @@ class HzdSams extends ControllerBase {
 
     $curl = curl_init($url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_USERPWD, \Drupal::config('sams.settings')->get('sams_user') . ":" . \Drupal::config('sams.settings')->get('sams_pw'));
+    curl_setopt($curl, CURLOPT_USERPWD, $samsSettings->get('sams_user') . ":" . $samsSettings->get('sams_pw'));
     $gavRaw = curl_exec($curl);
     curl_close($curl);
     
@@ -119,7 +120,7 @@ class HzdSams extends ControllerBase {
 
     $curl = curl_init($url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_USERPWD, \Drupal::config('sams.settings')->get('sams_user') . ":" . \Drupal::config('sams.settings')->get('sams_pw'));
+    curl_setopt($curl, CURLOPT_USERPWD, $samsSettings->get('sams_user') . ":" . $samsSettings->get('sams_pw'));
     $gradleRaw = curl_exec($curl);
     curl_close($curl);
 

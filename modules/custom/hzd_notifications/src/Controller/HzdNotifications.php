@@ -760,7 +760,7 @@ class HzdNotifications extends ControllerBase {
     $routeUserId = \Drupal::routeMatch()->getParameters()->get('user');
     $routeUser = User::load($routeUserId);
     $currentRoles = $account->getRoles();
-    $group = Group::load(\Drupal::config('sams.settings')->get('sams_id'));
+    $group = Group::load(\Drupal::config('cust_group.sams.settings')->get('sams_id'));
     
     if($group) {
       $groupMember = $group->getMember($routeUser);
