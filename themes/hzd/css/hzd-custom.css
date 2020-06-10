@@ -1402,3 +1402,24 @@ div.menu-separator {
   background-image: url('../images/chevron-right.svg');
   background-repeat: no-repeat;
 }
+
+.dasi-links span.file-link {
+    width: 450px !important;
+}
+
+.dasi-links span.file-size{
+    width: 80px !important;
+    text-align: left !important;
+}
+
+.dasi-links .hzd-file-created {
+    width: 80px;
+    text-align: left;
+}
+
+.dasi-links span.file-owner {
+    text-align: left;
+    display: table-cell;
+    width: 20rem;
+    vertical-align: middle;
+}

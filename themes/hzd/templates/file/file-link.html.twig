@@ -25,7 +25,7 @@
       not icon_only ? 'icon-' ~ icon_position|clean_class
     ]
   %}
-  <span{{ attributes.addClass(classes) }}>
+  <span{{ attributes.addClass(classes).addClass(dasi_class) }}>
     {% if icon_only %}
       <span class="file-icon">{{ icon }}</span>
       <span class="sr-only">
@@ -60,7 +60,7 @@
 
 	    {% if file_owner != '' %}
 	      <span class='hzd-file-created'>{{ file_created }}</span>
-	      <span class="file-size">{{ file_owner }}</span>
+	      <span class="file-owner">{{ file_owner }}</span>
 	    {% endif %}
 
 	{% endif %}

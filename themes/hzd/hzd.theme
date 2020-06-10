@@ -1146,6 +1146,7 @@ function hzd_preprocess_file_link(&$variables) {
     $user_name = $user->getDisplayName();
 
     $variables['file_owner'] = '';
+    $variables['dasi_class'] = '';
     $nid = getFileAttachedNode($file->id());
     if ($nid) {
       $groupTitle = getNodeGroupLabel($nid);
@@ -1157,6 +1158,7 @@ function hzd_preprocess_file_link(&$variables) {
           '#url' => $url,
           '#title' => $user_name
         ];
+        $variables['dasi_class'] = "dasi-links";
         $variables['file_owner'] = $user_link;
       }
     }
