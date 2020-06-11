@@ -56,7 +56,7 @@ class PrlpController extends UserController {
         if (!$login_destination) {
           $login_destination = '/user/%user/edit';
         }
-        $login_destination = str_replace('%user', $uid, $login_destination);
+        $login_destination = str_replace(['%user', '%uid'], $uid, $login_destination);
         $login_destination = str_replace('%front', $this->config('system.site')->get('page.front'), $login_destination);
         if (substr($login_destination, 0, 1) !== '/') {
           $login_destination = '/' . $login_destination;
