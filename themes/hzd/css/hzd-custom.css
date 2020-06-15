@@ -1417,9 +1417,13 @@ div.menu-separator {
     text-align: left;
 }
 
+.dasi-links span.file-icon {
+    width: 25px;
+}
+
 .dasi-links span.file-owner {
     text-align: left;
     display: table-cell;
-    width: 20rem;
+    width: 13rem;
     vertical-align: middle;
 }
