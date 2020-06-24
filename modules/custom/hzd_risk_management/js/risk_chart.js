@@ -1,60 +1,186 @@
-(function(Drupal, drupalSettings) {
-  Drupal.behaviors.hzd_risk_management = {
+(function($, Drupal, drupalSettings) {
+  Drupal.behaviors.hzd_risk_managementChart = {
     attach: function(context, settings) {
-      // console.log(drupalSettings);
-      var measureData = drupalSettings.hzd_risk_management.statusCounts;
-      // var statusLabels = measureData.statusLabels();
-      var statusLabels = [];
-      var statusCounts = [];
-      var translatedStatusLabels = [];
-      for (var key in measureData) {
-        statusLabels.push(key);
-        // translatedStatusLabels.push(Drupal.t(key));
-        statusCounts.push(measureData[key]);
-      }
-      console.log(translatedStatusLabels);
-      var ctx = document.getElementById('myChart').getContext('2d');
-      var myChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          // labels: ['Red', 'Blue', 'Yellow'],
-          labels: statusLabels,
-          datasets: [{
-            label: '# of Votes',
-            // data: [4, 2, 3, 1, 2],
-            data: statusCounts,
-            backgroundColor: [
-              'rgba(217, 84, 79, 1)',
-              'rgba(240, 173, 78, 1)',
-              'rgba(255, 218, 86, 1)',
-              'rgba(148, 148, 148, 1)',
-              'rgba(92, 184, 92, 1)'
-            ],
-            // borderColor: [
-            //   'rgba(255, 99, 132, 1)',
-            //   'rgba(54, 162, 235, 1)',
-            //   'rgba(255, 206, 86, 1)',
-            //   'rgba(75, 192, 192, 1)',
-            //   'rgba(153, 102, 255, 1)'
-            // ],
-            // borderWidth: 1
-          }]
-        },
-        options: {
-          legend: {
-            display: false
-          },
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              },
-              display: false
-            }]
-          }
+      // Einzelrisiko: Maßnahmen Status
+
+      // BUG behoben (24.06.2020, Robin): Chart wurde zwei mal geladen. Führt zu 
+      // seltsamen Verhalten, z.b. wurde der Chart zu groß oder zu klein und 
+      // unscharf dargestellt, wenn die Seite gezoomt wurde.
+      // Ursache: jQuery selector wurde auf gesamten DOM angewandt. Aufgrund eines
+      // AJAX calls, wurde das behavior zwei mal attached. (Jeder AJAX call macht
+      // das). Lösung: context als Selector verwenden. Bei AJAX Call ist das nur
+      // der Inhalt der AJAX Antwort und unser Ziel wird nicht ein zweites mal
+      // gefunden.
+
+      if ($(context).find('#measure-status-pie-chart').length) {
+        var measureData = settings.hzd_risk_management.chartData['status'];
+        var statusLabels = [];
+        var statusCounts = [];
+        for (var key in measureData) {
+          statusLabels.push(key);
+          statusCounts.push(measureData[key]);
         }
-      });
+        var ctx = $(context).find('#measure-status-pie-chart')[0].getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            // labels: ['Red', 'Blue', 'Yellow'],
+            labels: statusLabels,
+            datasets: [{
+              label: '# of Votes',
+              // data: [4, 2, 3, 1, 2],
+              data: statusCounts,
+              backgroundColor: [
+                'rgba(217, 84, 79, 1)', // rot
+                'rgba(240, 173, 78, 1)', // orange
+                'rgba(255, 218, 86, 1)', // gelb
+                'rgba(148, 148, 148, 1)', // grau
+                'rgba(92, 184, 92, 1)' // grün
+              ],
+            }]
+          },
+          options: {
+            responsive: false,
+            legend: {
+              display: true,
+              position: "right",
+              labels: {
+                boxWidth: 15,
+              }
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                },
+                display: false
+              }]
+            },
+          }
+        });
+      }
+
+      // Maßnahme: Risiken Status
+      if ($(context).find("#status-pie-chart").length) {
+      
+        var measureData = drupalSettings.hzd_risk_management.chartData['status'];
+        var statusLabels = [];
+        var statusCounts = [];
+        
+        for (var key in measureData) {
+          statusLabels.push(key);
+          statusCounts.push(measureData[key]);
+        }
+        
+        var ctx = $(context).find('#status-pie-chart')[0].getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            // labels: ['Red', 'Blue', 'Yellow'],
+            labels: statusLabels,
+            datasets: [{
+              label: '# of Votes',
+              // data: [4, 2, 3, 1, 2],
+              data: statusCounts,
+              backgroundColor: [
+                'rgba(217, 84, 79, 1)', // rot
+                'rgba(240, 173, 78, 1)', // orange
+                'rgba(255, 218, 86, 1)', // gelb
+                'rgba(148, 148, 148, 1)', // grau
+                'rgba(92, 184, 92, 1)' // grün
+              ],
+            }]
+          },
+          options: {
+            responsive: false,
+            legend: {
+              display: true,
+              position: "right",
+              labels: {
+                boxWidth: 15,
+              }
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                },
+                display: false
+              }]
+            },
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+              }
+            }
+          }
+        });
+        myChart.canvas.parentNode.style.height = '128px';
+        myChart.canvas.parentNode.style.width = '128px';
+      }
+            
+      // Maßnahmen: Risikokategorien
+      if ($(context).find("#risk-category-chart").length) {
+        var data = drupalSettings.hzd_risk_management.chartData['categories'];
+        var statusLabels = [];
+        var statusCounts = [];
+        for (var key in data) {
+          statusLabels.push(key);
+          statusCounts.push(data[key]);
+        }
+        var ctx = $(context).find('#risk-category-chart')[0].getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            // labels: ['1', '2', '3', '4', '5'],
+            labels: statusLabels,
+            datasets: [{
+              label: '# of Votes',
+              // data: [4, 2, 3, 1, 2],
+              data: statusCounts,
+              backgroundColor: [
+                'rgba(217, 84, 79, 1)', // rot
+                'rgba(240, 173, 78, 1)', // orange
+                'rgba(255, 218, 86, 1)', // gelb
+              ],
+            }]
+          },
+          options: {
+            responsive: false,
+            legend: {
+              display: true,
+              position: "right",
+              labels: {
+                boxWidth: 15,
+              }
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                },
+                display: false
+              }]
+            },
+            layout: {
+              padding: {
+                left: 0,
+                right: 20,
+                top: 0,
+                bottom: 0
+              }
+            }
+          }
+        });
+        myChart.canvas.parentNode.style.height = '128px';
+        myChart.canvas.parentNode.style.width = '128px';
+      }
+
+
     }
   }
-})(Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings);
 

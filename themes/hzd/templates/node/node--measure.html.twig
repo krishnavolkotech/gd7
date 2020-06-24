@@ -63,9 +63,11 @@
  *   in different view modes.
  */
 #}
+
 {{ attach_library('hzd_risk_management/Chart') }}
 
 {{ attach_library('hzd_risk_management/risk_chart') }}
+
 {%
   set classes = [
     node.bundle|clean_class,
@@ -77,53 +79,8 @@
   ]
 %}
 
-{% if '1' in content.field_probability_of_occurrence[0]['#markup'] %}
-  {% set propabilityLabelStyle = 'success' %}
-{% elseif '2' in content.field_probability_of_occurrence[0]['#markup'] %}
-  {% set propabilityLabelStyle = 'warning' %}
-{% elseif '3' in content.field_probability_of_occurrence[0]['#markup'] %}
-  {% set propabilityLabelStyle = 'danger' %}
-{% else %}
-    {% set propabilityLabelStyle = 'default' %}
-{% endif %}
-
-{% if '1' in content.field_risk_impact[0]['#markup'] %}
-  {% set impactLabelStyle = 'success' %}
-{% elseif '2' in content.field_risk_impact[0]['#markup'] %}
-  {% set impactLabelStyle = 'warning' %}
-{% elseif '3' in content.field_risk_impact[0]['#markup'] %}
-  {% set impactLabelStyle = 'danger' %}
-{% else %}
-    {% set impactLabelStyle = 'default' %}
-{% endif %}
-
-{# 9=A, 6,4,3=B, 2,1 = C #}
-{% if '1' in content.field_risk_value[0]['#markup']
-    or '2' in content.field_risk_value[0]['#markup'] %}
-  {% set riskValueLabelStyle = 'success' %}
-{% elseif '3' in content.field_risk_value[0]['#markup']
-    or '4' in content.field_risk_value[0]['#markup']
-    or '6' in content.field_risk_value[0]['#markup'] %}
-  {% set riskValueLabelStyle = 'warning' %}
-{% elseif '9' in content.field_risk_value[0]['#markup'] %}
-  {% set riskValueLabelStyle = 'danger' %}
-{% else %}
-    {% set riskValueLabelStyle = 'default' %}
-{% endif %}
-
-{% if 'Besser' in content.field_risk_trend[0]['#markup'] %}
-  {% set trendLabelStyle = 'success' %}
-{% elseif 'Unverändert' in content.field_risk_trend[0]['#markup'] %}
-  {% set trendLabelStyle = 'warning' %}
-{% elseif 'Schlechter' in content.field_risk_trend[0]['#markup'] %}
-  {% set trendLabelStyle = 'danger' %}
-{% else %}
-    {% set trendLabelStyle = 'primary' %}
-{% endif %}
-  
 <article{{ attributes.addClass(classes) }}>
-
-  {{ title_prefix }}
+ {{ title_prefix }}
   {% if not page %}
     <h2{{ title_attributes }}>
       <a href="{{ url }}" rel="bookmark">{{ label }}</a>
@@ -148,25 +105,23 @@
   {# {{ kint(content) }} #}
   <div class="container-fluid">
     <div class="row">
-    {# Risikodaten Rahmeninfo #}
+    {# Maßnahmendaten Rahmeninfo #}
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <table>
           <tbody>
             <tr>
-              <th scope="row">{{ content.field_id['#title'] }}</th>
-              <th scope="row">{{ content.field_creation_date['#title'] }}</th>
-              <th scope="row">{{ content.last_updated['#title'] }}</th>
-              <th scope="row">{{ content.field_reported_by['#title'] }}</th>
-              <th scope="row">{{ content.field_contact_person['#title'] }}</th>
-              <th scope="row">{{ content.field_risk_status['#title'] }}</th>
+              <th>{{ content.field_id['#title'] }}</th>
+              <th>{{ content.field_order_date['#title'] }}</th>
+              <th>{{ content.field_sponsor['#title'] }}</th>
+              <th>{{ content.field_contact_person['#title'] }}</th>
+              <th>{{ content.field_measure_status['#title'] }}</th>
             </tr>
             <tr>
               <td>{{ content.field_id[0] }}</td>
-              <td>{{ content.field_creation_date[0] }}</td>
-              <td>{{ content.last_updated[0] }}</td>
-              <td>{{ content.field_reported_by[0] }}</td>
+              <td>{{ content.field_order_date[0] }}</td>
+              <td>{{ content.field_sponsor[0] }}</td>
               <td>{{ content.field_contact_person[0] }}</td>
-              <td><span class="label label-primary">{{ content.field_risk_status[0] }}</span></td>
+              <td><span class="label label-primary">{{ content.field_measure_status[0] }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -175,49 +130,46 @@
     </div>
     <div class="risk-detail-table-wrapper">
       <div class="row">
-        {# Risikowerte (farblich) #}
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        {# Maßnahmendaten Gruppe 1 #}
+        {# Typ, Erw. Ergebnis, Gesch. Aufwand, Wiedervorlage #}
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
           <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">{{ content.field_probability_of_occurrence['#title'] }}</th>
-                <td><span class="label label-{{ propabilityLabelStyle }} risk-label">{{ content.field_probability_of_occurrence[0] }}</span></td>
+                <th scope="row">{{ content.last_updated['#title'] }}</th>
+                <td>{{ content.last_updated[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_risk_impact['#title'] }}</th>
-                <td><span class="label label-{{ impactLabelStyle }} risk-label">{{ content.field_risk_impact[0] }}</span></td>
+                <th scope="row">{{ content.field_type['#title'] }}</th>
+                <td>{{ content.field_type[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">Risikowert und -klasse</th>
-                <td><span class="label label-{{ riskValueLabelStyle }} risk-label">{{ content.field_risk_value[0] }}-{{ content.field_risk_category[0] }}</span></td>
+                <th scope="row">{{ content.field_estimated_effort['#title'] }}</th>
+                <td>{{ content.field_estimated_effort[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_risk_trend['#title'] }}</th>
-                <td><span class="label label-{{ trendLabelStyle }} risk-label">{{ content.field_risk_trend[0] }}</span></td>
+                <th scope="row">{{ content.field_follow_up['#title'] }}</th>
+                <td>{{ content.field_follow_up[0] }}</td>
               </tr>
               <tr>
-                <th></th>
-                <td></td>
+                <th scope="row">Risiken: Statusverteilung</th>
+                <td><canvas id="status-pie-chart" width="220" height="128"></canvas></td>
               </tr>
-              <tr>
-                <th scope="row">Status der Maßnahmen</th>
-                <td>
+              {# <tr> #}
+                {# <th scope="row">Status der Risiken</th> #}
+                {# <td> #}
                   {# style="margin-top: -30px; margin-bottom: 10px;" #}
-                  {# <canvas id="measure-status-pie-chart" width="100" height="100"></canvas> #}
-                  <canvas id="measure-status-pie-chart" width="220" height="128"></canvas>
-                </td>
-              </tr>
-            </tbody>
+                  {# <canvas id="myChart" width="100" height="100"></canvas> #}
+                {# </td> #}
+              {# </tr> #}
+           </tbody>
           </table>
         </div>
-        {# Risikodaten Gruppe 1 #}
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+        {# Maßnahmendaten Gruppe 2 #}
+        {# Zust. Land, Eigentümer, Startt., Zielt. #}
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-0">
           <table class="risk-detail-table">
             <tbody>
-              <tr>
-                <th scope="row">{{ content.field_risk_clusters['#title'] }}</th>
-                <td>{{ content.field_risk_clusters[0] }}</td>
-              </tr>
               <tr>
                 <th scope="row">{{ content.field_non_production_state['#title'] }}</th>
                 <td>{{ content.field_non_production_state[0] }}</td>
@@ -227,34 +179,49 @@
                 <td>{{ content.field_owner[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_affected_oes['#title'] }}</th>
-                <td>{{ content.field_affected_oes[0] }}</td>
+                <th scope="row">{{ content.field_creation_date['#title'] }}</th>
+                <td>{{ content.field_creation_date[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_category['#title'] }}</th>
-                <td>{{ content.field_category[0] }}</td>
+                <th scope="row">{{ content.field_target_date['#title'] }}</th>
+                <td>{{ content.field_target_date[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_scope['#title'] }}</th>
-                <td>{{ content.field_scope[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_follow_up['#title'] }}</th>
-                <td>{{ content.field_follow_up[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_graduation_date['#title'] }}</th>
-                <td>{{ content.field_graduation_date[0] }}</td>
+                <th scope="row">Risiken: Klassenverteilung</th>
+                <td><canvas id="risk-category-chart" width="170" height="128"></canvas></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+      {# <div class="row">
+        <div class="col-lg-12">
+          <div class="col-lg-12">
+            <p> {{ content.field_risks[0]['#rows']|length }} zugehörige Einzelrisiken <a href="#risks">(->zu den Risiken)</a></p><br>
+          </div>
+        </div>
+      </div> #}
+    </div>
+    </br> 
+
+    {# Risiken #}
+{# {{ kint(content.field_risks) }} #}
+    <div id="risks" class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ content.field_risks['#title'] }}</h3>
+          </div>
+          <div class="panel-body">
+            {{ content.field_risks[0] }}
+          </div>
+        </div>
+      </div>
     </div>
     </br>
+   
     {# Beschreibung #}
-   {% if content.body ['#title']  %}
-   <div class="row">
+    <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -267,24 +234,23 @@
       </div>
     </div> 
     </br>
-   {% endif %}
-    {# Maßnahmen #}
-{# {{ kint(content.field_measures) }} #}
+
+    {# erwartetes Ergebnis #}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_measures['#title'] }}</h3>
+            <h3 class="panel-title">{{ content.field_expected_result['#title'] }}</h3>
           </div>
           <div class="panel-body">
-            {{ content.field_measures[0] }}
+            {{ content.field_expected_result[0] }}
           </div>
         </div>
-      </div>
+      </div> 
     </div>
     </br>
+
     {# Bemerkungen #}
-    {% if content.field_remarks['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
@@ -298,16 +264,14 @@
       </div> 
     </div>
     </br>
-    {% endif %}
+
     {# Historie #}
-    {# {{ kint(content.field_arbeitslog)}} #}
     {% if content.field_arbeitslog['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
            <h3 class="panel-title">{{ content.field_arbeitslog['#title'] }}</h3>
-              {# <h3 class="panel-title">Arbeitslog</h3> #}
           </div>
           <div class="panel-body">
             {{ content.field_arbeitslog }}
@@ -317,7 +281,7 @@
     </div> 
     </br>
     {% endif %}
-    
+   
     {% if content.content_revision_log %}
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -334,14 +298,6 @@
       </br>
     {% endif %}
   </div>
-
-{# <span class="label label-{{  }}">Default</span> #}
-{# <span class="label label-{{  }}">Primary</span> #}
-{# <span class="label label-{{  }}">Success</span> #}
-{# <span class="label label-{{  }}nfo</span> #}
-{# <span class="label label-{{  }}">Warning</span> #}
-{# <span class="label label-{{  }}>{{ content.field_probability_of_occurrence[0] }}</span> #}
-
 
     
     {# {{ content }} #}

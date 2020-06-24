@@ -85,7 +85,6 @@ function calculateRisk($value) {
     default:
       $value = 'Invalid Value';
   }
-  pr($value);
   return $value;
 }
 
@@ -177,7 +176,7 @@ function hzd_risk_management_node_presave($node){
   if($node->bundle() == 'measure'){
     $risks = $node->get('field_risks')
     ->referencedEntities();
-    $tags = array_map(function($risk){
+    $tags = array_map(function($risk) {
       return 'node:'.$risk->id();
     },$risks);
     \Drupal::service('cache_tags.invalidator')
@@ -186,7 +185,6 @@ function hzd_risk_management_node_presave($node){
 }
 
 function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){
-  // kint($build);
   if($display->getComponent('field_risk_category_value')){
     $riskCategory = $entity->get('field_risk_category')->value;
     $riskValue = $entity->get('field_risk_value')->value;
@@ -214,6 +212,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $text = $risk->get('field_id')->value . " - " . $risk->label() . " (" . $risk->get('field_risk_value')->value . " - " . $risk->get('field_risk_category')->value . ")";
       $items[$risk->id()] = $risk->toLink($text);
     }
+   
     $build['field_risks_data'] = [
       '#theme' => 'field',
         '#title' => t('Risks'),
@@ -226,9 +225,21 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
-    ];
+        // '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
+        '0'=>[
+         '#theme'=>'table',
+         '#header' => $header,
+         '#rows'=>$items,
+         '#empty'=>t('No Risks'),
+         '#attributes' => [
+           'class' => [
+              // 0 => 'risk-measure-table'
+           ]
+         ]
+       ],
+    ];   
   }
+   
   if($display->getComponent('field_risks_cluster_propability')){
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
@@ -307,7 +318,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        '0'=>['#markup'=>round($value) . " - " . calculateRiskCategory($value)],
+        '0'=>['#markup'=>round($value) . " - " . calculateRiskCategory($value)]
     ];
   }
   if($display->getComponent('last_updated')){
@@ -323,18 +334,19 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        '0'=>['#markup'=>\Drupal::service('date.formatter')->format($entity->getChangedTime(), 'medium')],
+        '0'=>['#markup'=>\Drupal::service('date.formatter')->format($entity->getChangedTime(), 'medium')]
     ];
   }
+  
+  // Risk view
   if($display->getComponent('field_measures')) {
     $measures = \Drupal::entityTypeManager()
       ->getStorage('node')
-      ->loadByProperties(
-        [
+      ->loadByProperties([
           'field_risks' => $entity->id(),
-          'type' => 'measure',
+          'type' => 'measure'
         ]);
-    $items = array_map(function($measure){
+    $items = array_map(function($measure) {
       $measureLink = $measure->toLink($measure->get('field_id')->value." - ".$measure->label());
       $measureOwner = $measure->get('field_owner')->value;
       $fieldMeasureStatus = $measure->get('field_measure_status');
@@ -353,9 +365,12 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     },$measures); 
 
     $statusCounts = [];
-    foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
-      $statusCounts[$value] = 0;
+    if ($measures){
+      foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
+        $statusCounts[$value] = 0;
+      }
     }
+
     $statusCounts = array_merge($statusCounts, array_count_values($status));
     $header = [t('Title'),t('Owner'),t('Status'),];
     $build['field_measures'] = [
@@ -381,9 +396,104 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         ]
       ],
     ];
-    $build['#attached']['drupalSettings']['hzd_risk_management']['statusCounts'] = $statusCounts;
-    // if current user !=  groupadmin/siteadmin then $build['content_revision_log'] = nichts
     
+    // Data for Charts JS implementation
+    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
+   } 
+   
+   // Measure view
+  if($entity->bundle() == 'measure') {
+    // $setting = array('MYMODULE' => array('currentNid' => $node->nid));
+    // $node->content['#attached']['js'][] = array(
+    //   'data' => $setting,
+    //   'type' => 'setting',
+    // );
+
+    $risks = $entity->get('field_risks')->referencedEntities();
+    $items = array_map(function($risk){
+      $riskLink = $risk->toLink($risk->get('field_id')->value." - ".$risk->label());
+
+      //Ansprechpartner ist vermutlich Objekt (BpKAcount der Person). Aufruf wie?    
+      // $riskContactPerson = $risk->get('field_contact_person')->value;
+      $fieldRiskStatus = $risk->get('field_risk_status');
+      $riskStatus = $fieldRiskStatus->getSetting('allowed_values')[$fieldRiskStatus->value];
+
+      //Ist Pseudofeld und kann nicht auf diese Weise aufgerufen werden. Wie dann?  
+      // $riskCatValue = $risk->get('field_risk_category_value')->value;
+      // -> Der Wert muss hier von Hand erst befüllt werden, 'field_risk_category_value' ist kein echtes Feld dieses Node.
+      //    Es taucht nur im Display-Array auf und kann daher genau wie echte Felder in der Ansichtskonfiguration platziert werden.
+      //    Die Befüllung erfolgt dann allerdings hier in der node_view Funktion.
+      
+      $riskCategory = $risk->get('field_risk_category')->value;
+      $riskValue = $risk->get('field_risk_value')->value;
+      $riskCatValue = $riskValue . ' - ' . $riskCategory;
+      
+      $row = [
+        'Titel' =>  $riskLink,
+        // 'Ansprechpartner' => $riskContactPerson,
+        'Status' =>  $riskStatus,
+        'Risikowert- und klasse'=> $riskCatValue
+      ];
+      return $row;
+    },$risks);
+    
+    $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
+    foreach ($risks as $risk) {
+      $category = $risk->get('field_risk_category')->value;
+      if (array_key_exists($category, $categoryCounts)) {
+        $categoryCounts[$category] += 1;
+      }
+    }
+    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['categories'] = $categoryCounts;
+
+    $statusCounts = [];
+    if ($risks) {
+      foreach(reset($risks)->get('field_risk_status')->getSetting('allowed_values') as $key => $value) {
+        $statusCounts[$value] = 0;
+      }
+    }
+
+    $status = array_map(function($risk){
+      return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
+    },$risks); 
+
+    
+    if ($risks) {
+      foreach(reset($risks)->get('field_risk_status')->getSetting('allowed_values') as $key => $value) {
+        $statusCounts[$value] = 0;
+      }
+
+    $statusCounts = array_merge($statusCounts, array_count_values($status));
+      
+    $header = [t('Title'),t('Status'),t('Risk value and class')];
+
+    $build['field_risks'] = [
+      '#theme' => 'field',
+      '#title' => t('Associated risks'),
+      '#label_display' => 'inline',
+      '#view_mode' => $view_mode,
+      '#language' => 'de',
+      '#field_name' => 'field_id',
+      '#field_type' => 'textfield',
+      '#entity_type' => 'node',
+      '#bundle' => $entity->bundle(),
+      '#object' => $entity,
+      '#is_multiple' => false,
+      '0'=>[
+        '#theme'=>'table',
+        '#header' => $header,
+        '#rows'=>$items,
+        '#attributes' => [
+          'class' => [
+            0 => 'risk-measure-table'
+          ]
+        ]
+      ],
+    ];
+
+    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
+  }
+    // if current user !=  groupadmin/siteadmin then $build['content_revision_log'] = nichts
     // @todo: schöner machen
     $group = \Drupal\group\Entity\Group::load(73);
     $groupMember = $group->getMember(\Drupal::currentUser());

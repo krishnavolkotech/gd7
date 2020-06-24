@@ -3666,6 +3666,7 @@ div.risk-table-wrapper div.field div.field--item{
 }
 .label.risk-label {
   display: block;
+  width: 90px;
 }
 /* .risk-detail-table { */
   /* border: 0px solid rgba(0,0,0,.2); */
