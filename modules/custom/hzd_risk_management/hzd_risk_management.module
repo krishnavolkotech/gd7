@@ -6,10 +6,11 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\Entity\NodeType;
-
+use Drupal\node\Entity\Node;
 
 define('RISK_MANAGEMENT',73);
 
@@ -209,7 +210,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
     $items = [];
     foreach ($risks as $risk){
-      $text = $risk->get('field_id')->value . " - " . $risk->label() . " (" . $risk->get('field_risk_value')->value . " - " . $risk->get('field_risk_category')->value . ")";
+      $text = $risk->get('field_risk_id')->value . " - " . $risk->label() . " (" . $risk->get('field_risk_value')->value . " - " . $risk->get('field_risk_category')->value . ")";
       $items[$risk->id()] = $risk->toLink($text);
     }
    
@@ -225,18 +226,18 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        // '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
-        '0'=>[
-         '#theme'=>'table',
-         '#header' => $header,
-         '#rows'=>$items,
-         '#empty'=>t('No Risks'),
-         '#attributes' => [
-           'class' => [
-              // 0 => 'risk-measure-table'
-           ]
-         ]
-       ],
+        '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
+      //   '0'=>[
+      //    '#theme'=>'table',
+      //    '#header' => $header,
+      //    '#rows'=>$items,
+      //    '#empty'=>t('No Risks'),
+      //    '#attributes' => [
+      //      'class' => [
+      //         // 0 => 'risk-measure-table'
+      //      ]
+      //    ]
+      //  ],
     ];   
   }
    
@@ -403,15 +404,9 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
    
    // Measure view
   if($entity->bundle() == 'measure') {
-    // $setting = array('MYMODULE' => array('currentNid' => $node->nid));
-    // $node->content['#attached']['js'][] = array(
-    //   'data' => $setting,
-    //   'type' => 'setting',
-    // );
-
     $risks = $entity->get('field_risks')->referencedEntities();
     $items = array_map(function($risk){
-      $riskLink = $risk->toLink($risk->get('field_id')->value." - ".$risk->label());
+      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." - ".$risk->label());
 
       //Ansprechpartner ist vermutlich Objekt (BpKAcount der Person). Aufruf wie?    
       // $riskContactPerson = $risk->get('field_contact_person')->value;
@@ -444,6 +439,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         $categoryCounts[$category] += 1;
       }
     }
+
     $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['categories'] = $categoryCounts;
 
     $statusCounts = [];
@@ -473,7 +469,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       '#label_display' => 'inline',
       '#view_mode' => $view_mode,
       '#language' => 'de',
-      '#field_name' => 'field_id',
+      '#field_name' => 'field_risk_id',
       '#field_type' => 'textfield',
       '#entity_type' => 'node',
       '#bundle' => $entity->bundle(),
@@ -564,4 +560,49 @@ $extra['node']['risk']['display']['field_measures'] =
   );
 
   return $extra;
+}
+
+/**
+ * Implements computed_field_FIELD_compute().
+ * 
+ * @todo 
+ * - docblock schreiben
+ * - Zählerlogik prüfen
+ * 
+ */
+function computed_field_field_risk_id_compute($entity_type_manager, $entity, $fields, $delta) {
+  if (!$entity->isNew()) {
+    return $entity->original->field_risk_id->value;
+  }
+
+  $clusterNid = $fields['field_risk_clusters'][0]['target_id'];
+  $cluster = $entity_type_manager->getStorage('node')->load($clusterNid);
+  $clusterId = $cluster->field_id->value;
+  
+  $query = \Drupal::entityQuery('node');
+  $query->condition('type', 'risk');
+  $query->condition('field_risk_clusters', $clusterNid);
+  $entity_ids = $query->execute();
+
+  $riskId = [];
+  foreach ($entity_ids as $entityId) {
+    $risk = Node::load($entityId);
+    $riskId = explode(' - ',$risk->field_risk_id->value);
+    $riskIds[] = intval($riskId[1]);
+  }
+
+  sort($riskIds);
+  $counter = 1;
+  foreach ($riskIds as $id) {
+    if ($id == $counter) {
+      $counter++;
+      continue;
+    }
+    else {
+      $finalRiskId = $counter;
+      break;
+    }
+  }
+
+  return "$clusterId - $finalRiskId";
 }
