@@ -61,7 +61,7 @@ class Risks extends FieldPluginBase {
       ->execute();
     if(count($riskItems) > 0) {
       $risk_title = node_get_title_fast($riskItems);
-      $risk_ids = node_get_field_data_fast($riskItems, 'field_id');
+      $risk_ids = node_get_field_data_fast($riskItems, 'field_risk_id');
       $item_list = array_map(function ($key, $title, $field_id) {
         $options = ['absolute' => TRUE];
         $url = Url::fromRoute('entity.node.canonical', ['node' => $key], $options);

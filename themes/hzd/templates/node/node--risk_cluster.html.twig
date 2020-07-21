@@ -64,9 +64,10 @@
  */
 #}
 
-{{ attach_library('hzd_risk_management/Chart') }}
+ {{ attach_library('hzd_risk_management/Chart') }} 
 
-{{ attach_library('hzd_risk_management/risk_chart') }}
+ {{ attach_library('hzd_risk_management/risk_chart') }}
+
 
 {%
   set classes = [
@@ -79,8 +80,44 @@
   ]
 %}
 
+{# Färben Cluster Klasse #}
+{# 9 bis 7,5=A, 6,5,4,3=B, 2,1 = C #}
+{% if content.field_risks_cluster_class[0]['#markup'] < 3 %}
+  {% set clusterClassLabelStyle = 'success' %}
+{% elseif content.field_risks_cluster_class[0]['#markup'] < 7.5 %}
+   {% set clusterClassLabelStyle = 'warning' %}
+{% elseif content.field_risks_cluster_class[0]['#markup'] > 7.5 %}
+  {% set clusterClassLabelStyle = 'danger' %}
+{% else %}
+  {% set clusterClassLabelStyle = 'default' %}
+{% endif %}
+
+{# Färben Impact #}
+{% if '1' in content.field_risks_cluster_impact[0]['#markup'] %}
+  {% set clusterImpactLabelStyle = 'success' %}
+{% elseif '2' in content.field_risks_cluster_impact[0]['#markup'] %}
+  {% set clusterImpactLabelStyle = 'warning' %}
+{% elseif '3' in content.field_risks_cluster_impact[0]['#markup'] %}
+  {% set clusterImpactLabelStyle = 'danger' %}
+{% else %}
+    {% set clusterImpactLabelStyle = 'default' %}
+{% endif %}
+
+{# Färben Propability #}
+{% if '1' in content.field_risks_cluster_propability[0]['#markup'] %}
+  {% set clusterPropabilityLabelStyle = 'success' %}
+{% elseif '2' in content.field_risks_cluster_propability[0]['#markup'] %}
+  {% set clusterPropabilityLabelStyle = 'warning' %}
+{% elseif '3' in content.field_risks_cluster_propability[0]['#markup'] %}
+  {% set clusterPropabilityLabelStyle = 'danger' %}
+{% else %}
+    {% set clusterPropabilityLabelStyle = 'default' %}
+{% endif %}
+
+
 <article{{ attributes.addClass(classes) }}>
- {{ title_prefix }}
+
+  {{ title_prefix }}
   {% if not page %}
     <h2{{ title_attributes }}>
       <a href="{{ url }}" rel="bookmark">{{ label }}</a>
@@ -89,7 +126,7 @@
   {{ title_suffix }}
 
   {% if display_submitted %}
-    <div class="{{ node.bundle }}-author-info">
+    <div class="{{ node.bundle }}-author-info">                                                                                                                                                                                                 
       {# author_picture #}
       <div{{ author_attributes.addClass('author') }}>
         {# commenting the below for UI consitency with D6#}
@@ -102,118 +139,66 @@
 
   <div{{ content_attributes.addClass('content') }}>
   
-  {# {{ kint(content) }} #}
+  {# {{ kint(node.field_id.0.label) }}  #}
   <div class="container-fluid">
+    {# Risikocluster Rahmeninfo #}
     <div class="row">
-    {# Maßnahmendaten Rahmeninfo #}
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <table>
           <tbody>
             <tr>
-              <th>{{ content.field_id['#title'] }}</th>
-              <th>{{ content.field_order_date['#title'] }}</th>
-              <th>{{ content.field_sponsor['#title'] }}</th>
-              <th>{{ content.field_contact_person['#title'] }}</th>
-              <th>{{ content.field_measure_status['#title'] }}</th>
+              <th scope="row">{{ "ID" }} </th>
+              <th scope="row">{{ content.field_risks_cluster_class['#title'] }} </th>
+              <th scope="row">{{ content.field_risks_cluster_impact['#title'] }} </th>
+              <th scope="row">{{ content.field_risks_cluster_propability['#title'] }} </th>
+              <th scope="row">{{ content.last_updated['#title'] }} </th>
             </tr>
             <tr>
-              <td>{{ content.field_id[0] }}</td>
-              <td>{{ content.field_order_date[0] }}</td>
-              <td>{{ content.field_sponsor[0] }}</td>
-              <td>{{ content.field_contact_person[0] }}</td>
-              <td><span class="label label-primary">{{ content.field_measure_status[0] }}</span></td>
+              <td>{{ node.field_id.0.value }}</td>
+              <td><span class="label label-{{ clusterClassLabelStyle }} risk-label">{{ content.field_risks_cluster_class[0] }}</span></td>
+              <td><span class="label label-{{ clusterImpactLabelStyle }} risk-label">{{ content.field_risks_cluster_impact[0] }}</td>
+              <td><span class="label label-{{ clusterPropabilityLabelStyle }} risk-label">{{ content.field_risks_cluster_propability[0] }}</td>
+              <td>{{ content.last_updated[0] }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
-    <div class="risk-detail-table-wrapper">
-      <div class="row">
-        {# Maßnahmendaten Gruppe 1 #}
-        {# Typ, Erw. Ergebnis, Gesch. Aufwand, Wiedervorlage #}
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
-          <table class="risk-detail-table">
-            <tbody>
-              <tr>
-                <th scope="row">{{ content.last_updated['#title'] }}</th>
-                <td>{{ content.last_updated[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_type['#title'] }}</th>
-                <td>{{ content.field_type[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_estimated_effort['#title'] }}</th>
-                <td>{{ content.field_estimated_effort[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_follow_up['#title'] }}</th>
-                <td>{{ content.field_follow_up[0] }}</td>
-              </tr>
-           </tbody>
-          </table>
-        </div>
-        {# Maßnahmendaten Gruppe 2 #}
-        {# Zust. Land, Eigentümer, Startt., Zielt. #}
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-0">
-          <table class="risk-detail-table">
-            <tbody>
-              <tr>
-                <th scope="row">{{ content.field_non_production_state['#title'] }}</th>
-                <td>{{ content.field_non_production_state }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_owner['#title'] }}</th>
-                <td>{{ content.field_owner[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_creation_date['#title'] }}</th>
-                <td>{{ content.field_creation_date[0] }}</td>
-              </tr>
-              <tr>
-                <th scope="row">{{ content.field_target_date['#title'] }}</th>
-                <td>{{ content.field_target_date[0] }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-12">
-          <table class="risk-detail-table">
-            <tbody>
-              <tr>
-                <th scope="row">Risiken:<br/>Statusverteilung</th>
-                <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
-                <th scope="row">Risiken:<br/>Klassenverteilung</th>
-                <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    
+    {# Charts #}
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row">Risiken:<br/>Statusverteilung</th>
+              <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+              <th scope="row">Risiken:<br/>Klassenverteilung</th>
+              <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    </br> 
-
-    {# Risiken #}
-    {# {{ kint(content.field_risks) }} #}
-    <div id="risks" class="row">
+    </br>
+    
+    {# Einzelrisiken #}
+    <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_risks['#title'] }}</h3>
+            <h3 class="panel-title">{{ content.field_risks_data['#title'] }}</h3>
           </div>
           <div class="panel-body">
-            {{ content.field_risks[0] }}
+            {{ content.field_risks_data[0] }}
           </div>
         </div>
       </div>
     </div>
     </br>
-   
+       
     {# Beschreibung #}
+    {% if content.body['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
@@ -227,54 +212,43 @@
       </div>
     </div> 
     </br>
-
-    {# erwartetes Ergebnis #}
+   {% endif %}
+   
+    {# Trend #}
+    {% if content.field_trend['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_expected_result['#title'] }}</h3>
+            <h3 class="panel-title">{{ content.field_trend['#title'] }}</h3>
           </div>
           <div class="panel-body">
-            {{ content.field_expected_result[0] }}
+            {{ content.field_trend[0] }}
           </div>
         </div>
       </div> 
     </div>
     </br>
-
-    {# Bemerkungen #}
+    {% endif %}
+    
+    {# Bemerkung #}
+    {% if content.field_comments['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_remarks['#title'] }}</h3>
+            <h3 class="panel-title">{{ content.field_comments['#title'] }}</h3>
           </div>
           <div class="panel-body">
-            {{ content.field_remarks[0] }}
-          </div>
-        </div>
-      </div> 
-    </div>
-    </br>
-
-    {# Historie #}
-    {% if content.field_arbeitslog['#title'] %}
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-           <h3 class="panel-title">{{ content.field_arbeitslog['#title'] }}</h3>
-          </div>
-          <div class="panel-body">
-            {{ content.field_arbeitslog }}
+            {{ content.field_comments[0] }}
           </div>
         </div>
       </div>
     </div> 
-    </br>
+    </br>   
     {% endif %}
-   
+    
+    {# Historie #}
     {% if content.content_revision_log %}
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -290,11 +264,7 @@
       </div>
       </br>
     {% endif %}
-  </div>
-
-    
-    {# {{ content }} #}
     
   </div>
-
+  </div>
 </article>

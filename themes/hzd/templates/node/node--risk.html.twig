@@ -145,7 +145,6 @@
 
   <div{{ content_attributes.addClass('content') }}>
   
-  {# {{ kint(content) }} #}
   <div class="container-fluid">
     <div class="row">
     {# Risikodaten Rahmeninfo #}
@@ -171,8 +170,8 @@
           </tbody>
         </table>
       </div>
-
     </div>
+
     <div class="risk-detail-table-wrapper">
       <div class="row">
         {# Risikowerte (farblich) #}
@@ -199,18 +198,23 @@
                 <th></th>
                 <td></td>
               </tr>
+
               <tr>
                 <th scope="row">Status der Maßnahmen</th>
                 <td>
-                  {# style="margin-top: -30px; margin-bottom: 10px;" #}
-                  {# <canvas id="measure-status-pie-chart" width="100" height="100"></canvas> #}
+                {# {% kint(content.field_measures) %} #}
+                {% if content.field_measures[0] %}
                   <canvas id="measure-status-pie-chart" width="220" height="128"></canvas>
+                {% else %}
+                  <center><p><i>Keine Maßnahmen vorhanden.</i></p></center>
+                {% endif %}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        {# Risikodaten Gruppe 1 #}
+
+        {# Risikodaten - Gruppe #}
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
           <table class="risk-detail-table">
             <tbody>
@@ -269,7 +273,7 @@
     </br>
    {% endif %}
     {# Maßnahmen #}
-{# {{ kint(content.field_measures) }} #}
+    {% if content.field_measures['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
@@ -284,6 +288,7 @@
     </div>
     </br>
     {# Bemerkungen #}
+    {% endif %}
     {% if content.field_remarks['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
