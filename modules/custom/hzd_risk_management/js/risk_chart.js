@@ -49,7 +49,7 @@
               display: true,
               position: "right",
               labels: {
-                boxWidth: 15,
+                boxWidth: 12,
               }
             },
             scales: {
@@ -101,7 +101,7 @@
               display: true,
               position: "right",
               labels: {
-                boxWidth: 15,
+                boxWidth: 12,
               }
             },
             scales: {
@@ -158,7 +158,7 @@
               display: true,
               position: "right",
               labels: {
-                boxWidth: 15,
+                boxWidth: 12,
               }
             },
             scales: {
@@ -217,7 +217,7 @@
               display: true,
               position: "right",
               labels: {
-                boxWidth: 15,
+                boxWidth: 12,
               }
             },
             scales: {
@@ -263,7 +263,7 @@
               display: true,
               position: "right",
               labels: {
-                boxWidth: 15,
+                boxWidth: 12,
               }
             },
             scales: {
