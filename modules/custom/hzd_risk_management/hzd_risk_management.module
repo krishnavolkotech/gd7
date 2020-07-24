@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\Entity\Node;
+// use Drupal\views\ViewExecutable;
 
 define('RISK_MANAGEMENT',73);
 
@@ -225,14 +226,31 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
 
   // Kommt vor in: Cluster Detailansicht
+  // Status berücksichtigen! V1 22.07.20 umgesetzt.
   if($display->getComponent('field_risks_data')) {
+    // @todo: Status in Query condition abfragen!!
+    // @todo: Später evtl. umsetzen, wenn klar ist ob Charts auch gefiltert werden
+    // sollen. Statuscheck dann hierhin auslagern (Refaktorisierung)
+    // Achtung: Liefert aktuell NUR die node IDs, funktioniert im weiteren Verlauf nicht.
+    // $risks = \Drupal::entityTypeManager()
+    // ->getStorage('node')
+    // ->getQuery()
+    // ->condition('field_risk_clusters', $entity->id())
+    // ->condition('field_risk_status', 'completed', '!=')
+    // ->execute();
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
 
-    $items = array_map(function($risk) {
-      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." - ".$risk->label());
+    $completed = 0;
+    $items = array();
+    foreach ($risks as $risk) {
+      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
       $fieldRiskStatus = $risk->get('field_risk_status');
+      if ($fieldRiskStatus->value == 'completed') {
+        $completed++;
+        continue;
+      }
       $riskStatus = $fieldRiskStatus->getSetting('allowed_values')[$fieldRiskStatus->value];
       $riskCategory = $risk->get('field_risk_category')->value;
       $riskValue = $risk->get('field_risk_value')->value;
@@ -258,11 +276,10 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           '<span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span>'
           )
       ];
-      return $row;
-    },$risks);
+      $items[] = $row;
+    }
 
     $header = [t('Title'),t('Status'),t('Risk value and class')];
-
     $build['field_risks_data'] = [
       '#theme' => 'field',
         '#title' => t('Risks'),
@@ -275,19 +292,22 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         '#bundle' => $entity->bundle(),
         '#object' => $entity,
         '#is_multiple' => false,
-        // '0'=>['#theme'=>'item_list', '#items'=>$items, '#empty'=>t('No Risks')],
         '0' => [
-         '#theme' => 'table',
-         '#header' => $header,
-         '#rows' => $items,
-         '#empty'=>t('No Risks'),
-         '#attributes' => [
-           'class' => [
-              0 => 'risk-measure-table'
-           ]
-         ]
-       ],
-    ];
+          '#theme' => 'table',
+          '#header' => $header,
+          '#rows' => $items,
+          '#empty'=>t('No Risks'),
+          '#attributes' => [
+            'class' => [
+               0 => 'risk-measure-table'
+            ]
+          ]
+        ],
+        '1' => [
+          '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
+          <a href="/risikomanagement/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+        ],  
+      ];
 
     $statusCounts = [];
     if ($risks) {
@@ -296,6 +316,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
     }
 
+    // Status in Chart berücksichtigen!?
     $status = array_map(function($risk){
       return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
     },$risks); 
@@ -303,7 +324,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     $statusCounts = array_merge($statusCounts, array_count_values($status));
     $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
 
-    // @todo: Chart Data muss hier her
+    // Status in Chart berücksichtigen!?
     $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
     foreach ($risks as $risk) {
       $category = $risk->get('field_risk_category')->value;
@@ -315,13 +336,18 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
   
   // Kommt vor in: Cluster Detailansicht
+  // Status berücksichtigen! Erledigt 23.07.20 - Robin
   if($display->getComponent('field_risks_cluster_propability')){
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
-    $items = array_map(function($risk){
-      return $risk->get('field_probability_of_occurrence')->value;
-    },$risks);
+    $items = array();
+    foreach ($risks as $risk) {
+      if ($risk->get('field_risk_status')->value == 'completed') {
+        continue;
+      }
+      $items[] = $risk->get('field_probability_of_occurrence')->value;
+    }
     if(count($items)){
       $value = array_sum($items)/count($items);
     }else{
@@ -344,13 +370,18 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
   
   // Kommt vor in: Cluster Detailansicht
+  // Status berücksichtigen! Erledigt 23.07.20 - Robin
   if($display->getComponent('field_risks_cluster_impact')){
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
-    $items = array_map(function($risk){
-      return $risk->get('field_risk_impact')->value;
-    },$risks);
+    $items = array();
+    foreach ($risks as $risk) {
+      if ($risk->get('field_risk_status')->value == 'completed') {
+        continue;
+      }
+      $items[] = $risk->get('field_risk_impact')->value;
+    }
     if(count($items)){
       $value = array_sum($items)/count($items);
     }else{
@@ -373,16 +404,22 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
 
   // Kommt vor in: Cluster Detailansicht
+  // Status berücksichtigen! Erledigt 23.07.20 - Robin
   if($display->getComponent('field_risks_cluster_class')){
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
-    $items = array_map(function($risk){
-      return $risk->get('field_risk_value')->value;
-    },$risks);
-    if(count($items)){
+    $items = array();
+    foreach ($risks as $risk) {
+      if ($risk->get('field_risk_status')->value == 'completed') {
+        continue;
+      }
+      $items[] = $risk->get('field_risk_value')->value;
+    }
+    if (count($items)){
       $value = array_sum($items)/count($items);
-    }else{
+    }
+    else{
       $value = 0;
     }
     $build['field_risks_cluster_class'] = [
@@ -427,10 +464,16 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           'field_risks' => $entity->id(),
           'type' => 'measure'
         ]);
-    $items = array_map(function($measure) {
-      $measureLink = $measure->toLink($measure->get('field_id')->value." - ".$measure->label());
+    $items = array();
+    $completed = 0;
+    foreach ($measures as $measure) {
+      $measureLink = $measure->toLink($measure->get('field_id')->value.": ".$measure->label());
       $measureOwner = $measure->get('field_owner')->value;
       $fieldMeasureStatus = $measure->get('field_measure_status');
+      if ($fieldMeasureStatus->value == 'completed') {
+        $completed++;
+        continue;
+      }
       $measureStatus = $fieldMeasureStatus->getSetting('allowed_values')[$fieldMeasureStatus->value];
 
       $row = [
@@ -438,9 +481,10 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         'Eigentümer' => $measureOwner,
         'Status' => $measureStatus
       ];
-      return $row;
-    },$measures);
+      $items[] = $row;
+    }
 
+    // Status in Chart berücksichtigen?
     $status = array_map(function($measure){
       return $measure->get('field_measure_status')->getSetting('allowed_values')[$measure->get('field_measure_status')->value];
     },$measures); 
@@ -456,6 +500,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     // Data for Charts JS implementation
     $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
 
+    // Status berücksichtigen! Erledigt 23.07.20 - Robin
     $header = [t('Title'),t('Owner'),t('Status'),];
     $build['field_measures'] = [
       '#theme' => 'field',
@@ -479,39 +524,39 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           ]
         ]
       ],
+      '1' => [
+        '#markup' => '<p><b>Anzahl abgeschlossener Maßnahmen: </b> 
+        <a href="/risikomanagement/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+      ],
     ];
    } 
 
    // Measure view
   if($entity->bundle() == 'measure') {
     $risks = $entity->get('field_risks')->referencedEntities();
-    $items = array_map(function($risk) {
-      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." - ".$risk->label());
-
-      //Ansprechpartner ist vermutlich Objekt (BpKAcount der Person). Aufruf wie?    
-      // $riskContactPerson = $risk->get('field_contact_person')->value;
+    // Status berücksichtigen! erledigt 23.07.20 - Robin
+    $completed = 0;
+    $items = array();
+    foreach ($risks as $risk) {
+      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
       $fieldRiskStatus = $risk->get('field_risk_status');
+      if ($fieldRiskStatus->value == 'completed') {
+        $completed++;
+        continue;
+      }
       $riskStatus = $fieldRiskStatus->getSetting('allowed_values')[$fieldRiskStatus->value];
-
-      //Ist Pseudofeld und kann nicht auf diese Weise aufgerufen werden. Wie dann?  
-      // $riskCatValue = $risk->get('field_risk_category_value')->value;
-      // -> Der Wert muss hier von Hand erst befüllt werden, 'field_risk_category_value' ist kein echtes Feld dieses Node.
-      //    Es taucht nur im Display-Array auf und kann daher genau wie echte Felder in der Ansichtskonfiguration platziert werden.
-      //    Die Befüllung erfolgt dann allerdings hier in der node_view Funktion.
-      
       $riskCategory = $risk->get('field_risk_category')->value;
       $riskValue = $risk->get('field_risk_value')->value;
       $riskCatValue = $riskValue . ' - ' . $riskCategory;
-      
       $row = [
         'Titel' =>  $riskLink,
-        // 'Ansprechpartner' => $riskContactPerson,
         'Status' =>  $riskStatus,
         'Risikowert- und klasse'=> $riskCatValue
       ];
-      return $row;
-    },$risks);
+      $items[] = $row;
+    }
     
+    // Status in Chart berücksichtigen?
     $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
     foreach ($risks as $risk) {
       $category = $risk->get('field_risk_category')->value;
@@ -528,12 +573,12 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         $statusCounts[$value] = 0;
       }
     }
-
+    // Status in Chart berücksichtigen?
     $status = array_map(function($risk){
       return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
     },$risks); 
 
-    
+    // @todo: redundant? siehe oben
     if ($risks) {
       foreach(reset($risks)->get('field_risk_status')->getSetting('allowed_values') as $key => $value) {
         $statusCounts[$value] = 0;
@@ -566,6 +611,10 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
             ]
           ]
         ],
+        '1' => [
+          '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
+          <a href="/risikomanagement/risiken/archive?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+        ],  
       ];
 
     }
@@ -672,46 +721,46 @@ $extra['node']['risk']['display']['field_measures'] =
  * - Funktion computed_field_field_risk_id_computed derzeit nicht aktiv, weil Risk-Nummerierung manuell in Formular. -> Außerbertrieb nehmen.
  * 
  */
- function computed_field_field_risk_id_compute($entity_type_manager, $entity, $fields, $delta) {
-  if (!$entity->isNew()) {
-    return $entity->original->field_risk_id->value;
-  }
+//  function computed_field_field_risk_id_compute($entity_type_manager, $entity, $fields, $delta) {
+//   if (!$entity->isNew()) {
+//     return $entity->original->field_risk_id->value;
+//   }
 
-  $clusterNid = $fields['field_risk_clusters'][0]['target_id'];
-  $cluster = $entity_type_manager->getStorage('node')->load($clusterNid);
-  $clusterId = $cluster->field_id->value;
+//   $clusterNid = $fields['field_risk_clusters'][0]['target_id'];
+//   $cluster = $entity_type_manager->getStorage('node')->load($clusterNid);
+//   $clusterId = $cluster->field_id->value;
   
-  $query = \Drupal::entityQuery('node');
-  $query->condition('type', 'risk');
-  $query->condition('field_risk_clusters', $clusterNid);
-  $entity_ids = $query->execute();
+//   $query = \Drupal::entityQuery('node');
+//   $query->condition('type', 'risk');
+//   $query->condition('field_risk_clusters', $clusterNid);
+//   $entity_ids = $query->execute();
 
-  $riskId = [];
-  foreach ($entity_ids as $entityId) {
-    $risk = Node::load($entityId);
-    $riskId = explode(' - ',$risk->field_risk_id->value);
-    $riskIds[] = intval($riskId[1]);
-  }
+//   $riskId = [];
+//   foreach ($entity_ids as $entityId) {
+//     $risk = Node::load($entityId);
+//     $riskId = explode(' - ',$risk->field_risk_id->value);
+//     $riskIds[] = intval($riskId[1]);
+//   }
 
-  sort($riskIds);
-  $counter = 1;
-  foreach ($riskIds as $id) {
-    if ($id == $counter) {
-      $counter++;
-      continue;
-    }
-    else {
-      $finalRiskId = $counter;
-      break;
-    }
-  }
+//   sort($riskIds);
+//   $counter = 1;
+//   foreach ($riskIds as $id) {
+//     if ($id == $counter) {
+//       $counter++;
+//       continue;
+//     }
+//     else {
+//       $finalRiskId = $counter;
+//       break;
+//     }
+//   }
 
-  return "$clusterId - $finalRiskId";
-}
+//   return "$clusterId - $finalRiskId";
+// }
 
 function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->id() == RISK_MANAGEMENT) {
-    // @todo: Archivierte Maßnahmen entfernen
+    // Archivierte Maßnahmen aus Chart entfernen?
     $measures = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties([
@@ -729,28 +778,16 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
       }
     }
 
-    // $statusCounts = [
-    //   'Erfasst' => 2,
-    //   'Beauftragt' => 2,
-    //   'In Bearbeitung' => 2,
-    //   'Zurückgestellt' => 2,
-    //   'Abgeschlossen' => 2,
-    // ];
     $statusCounts = array_merge($statusCounts, array_count_values($status));
     $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
 
-    // @todo: Archivierte Risiken entfernen
+    // Archivierte Risiken aus Chart entfernen?
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties([
         'type' => 'risk'
       ]);
 
-    // $categoryCounts = [
-    //   'A' => 1,
-    //   'B' => 1,
-    //   'C' => 1
-    // ];
     $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
     foreach ($risks as $risk) {
       $category = $risk->get('field_risk_category')->value;
@@ -763,3 +800,14 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
     $build['#attached']['library'][] = 'hzd_risk_management/risk_chart';
   }
 }
+
+// function hzd_risk_management_views_pre_render(&$view) {
+//   if ($view->id() == 'risk_clusters') {
+//     foreach ($view->result as $i => $result) {
+//       if ($i === 0) {
+//         ksm($view->field->field_risks_data);
+//         // ksm($result);
+//       }
+//     }
+//   }
+// }
