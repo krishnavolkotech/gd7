@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\Entity\Node;
-// use Drupal\views\ViewExecutable;
+use Drupal\Core\Render\Element;
 
 define('RISK_MANAGEMENT',73);
 
@@ -241,98 +241,99 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
-
-    $completed = 0;
-    $items = array();
-    foreach ($risks as $risk) {
-      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
-      $fieldRiskStatus = $risk->get('field_risk_status');
-      if ($fieldRiskStatus->value == 'completed') {
-        $completed++;
-        continue;
-      }
-      $riskStatus = $fieldRiskStatus->getSetting('allowed_values')[$fieldRiskStatus->value];
-      $riskCategory = $risk->get('field_risk_category')->value;
-      $riskValue = $risk->get('field_risk_value')->value;
-      $riskCatValue = $riskValue . ' - ' . $riskCategory;
-            
-      if ($riskValue >= 7.5) {
-        $labelClass = 'danger';
-      }
-      elseif ($riskValue >= 2.5 && $riskValue < 7.5) {
-        $labelClass = 'warning';
-      }
-      elseif ($riskValue < 2.5) {
-        $labelClass = 'success';
-      }
-      else {
-        $labelClass = 'primary';
-      }
-    
-      $row = [
-        'Titel' =>  $riskLink,
-        'Status' =>  $riskStatus,
-        'Risikowert- und klasse' => \Drupal\Core\Render\Markup::create(
-          '<span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span>'
-          )
-      ];
-      $items[] = $row;
-    }
-
-    $header = [t('Title'),t('Status'),t('Risk value and class')];
-    $build['field_risks_data'] = [
-      '#theme' => 'field',
-        '#title' => t('Risks'),
-        '#label_display' => 'inline',
-        '#view_mode' => $view_mode,
-        '#language' => 'de',
-        '#field_name' => 'field_id',
-        '#field_type' => 'textfield',
-        '#entity_type' => 'node',
-        '#bundle' => $entity->bundle(),
-        '#object' => $entity,
-        '#is_multiple' => false,
-        '0' => [
-          '#theme' => 'table',
-          '#header' => $header,
-          '#rows' => $items,
-          '#empty'=>t('No Risks'),
-          '#attributes' => [
-            'class' => [
-               0 => 'risk-measure-table'
-            ]
-          ]
-        ],
-        '1' => [
-          '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
-          <a href="/risikomanagement/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
-        ],  
-      ];
-
-    $statusCounts = [];
     if ($risks) {
-      foreach(reset($risks)->get('field_risk_status')->getSetting('allowed_values') as $key => $value) {
-        $statusCounts[$value] = 0;
+      $completed = 0;
+      $items = array();
+      foreach ($risks as $risk) {
+        $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
+        $fieldRiskStatus = $risk->get('field_risk_status');
+        if ($fieldRiskStatus->value == 'completed') {
+          $completed++;
+          continue;
+        }
+        $riskStatus = $fieldRiskStatus->getSetting('allowed_values')[$fieldRiskStatus->value];
+        $riskCategory = $risk->get('field_risk_category')->value;
+        $riskValue = $risk->get('field_risk_value')->value;
+        $riskCatValue = $riskValue . ' - ' . $riskCategory;
+              
+        if ($riskValue >= 7.5) {
+          $labelClass = 'danger';
+        }
+        elseif ($riskValue >= 2.5 && $riskValue < 7.5) {
+          $labelClass = 'warning';
+        }
+        elseif ($riskValue < 2.5) {
+          $labelClass = 'success';
+        }
+        else {
+          $labelClass = 'primary';
+        }
+      
+        $row = [
+          'Titel' =>  $riskLink,
+          'Status' =>  $riskStatus,
+          'Risikowert- und klasse' => \Drupal\Core\Render\Markup::create(
+            '<span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span>'
+            )
+        ];
+        $items[] = $row;
       }
-    }
 
-    // Status in Chart berücksichtigen!?
-    $status = array_map(function($risk){
-      return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
-    },$risks); 
+      $header = [t('Title'),t('Status'),t('Risk value and class')];
+      $build['field_risks_data'] = [
+        '#theme' => 'field',
+          '#title' => t('Risks'),
+          '#label_display' => 'inline',
+          '#view_mode' => $view_mode,
+          '#language' => 'de',
+          '#field_name' => 'field_id',
+          '#field_type' => 'textfield',
+          '#entity_type' => 'node',
+          '#bundle' => $entity->bundle(),
+          '#object' => $entity,
+          '#is_multiple' => false,
+          '0' => [
+            '#theme' => 'table',
+            '#header' => $header,
+            '#rows' => $items,
+            '#empty'=>t('No Risks'),
+            '#attributes' => [
+              'class' => [
+                0 => 'risk-measure-table'
+              ]
+            ]
+          ],
+          '1' => [
+            '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
+            <a href="/risikomanagement/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+          ],  
+        ];
 
-    $statusCounts = array_merge($statusCounts, array_count_values($status));
-    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
-
-    // Status in Chart berücksichtigen!?
-    $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
-    foreach ($risks as $risk) {
-      $category = $risk->get('field_risk_category')->value;
-      if (array_key_exists($category, $categoryCounts)) {
-        $categoryCounts[$category] += 1;
+      $statusCounts = [];
+      if ($risks) {
+        foreach(reset($risks)->get('field_risk_status')->getSetting('allowed_values') as $key => $value) {
+          $statusCounts[$value] = 0;
+        }
       }
+
+      // Status in Chart berücksichtigen!?
+      $status = array_map(function($risk){
+        return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
+      },$risks); 
+
+      $statusCounts = array_merge($statusCounts, array_count_values($status));
+      $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
+
+      // Status in Chart berücksichtigen!?
+      $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
+      foreach ($risks as $risk) {
+        $category = $risk->get('field_risk_category')->value;
+        if (array_key_exists($category, $categoryCounts)) {
+          $categoryCounts[$category] += 1;
+        }
+      }
+      $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['categories'] = $categoryCounts;
     }
-    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['categories'] = $categoryCounts;
   }
   
   // Kommt vor in: Cluster Detailansicht
@@ -464,80 +465,89 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           'field_risks' => $entity->id(),
           'type' => 'measure'
         ]);
-    $items = array();
-    $completed = 0;
-    foreach ($measures as $measure) {
-      $measureLink = $measure->toLink($measure->get('field_id')->value.": ".$measure->label());
-      $measureOwner = $measure->get('field_owner')->value;
-      $fieldMeasureStatus = $measure->get('field_measure_status');
-      if ($fieldMeasureStatus->value == 'completed') {
-        $completed++;
-        continue;
+    if ($measures) {
+      $items = array();
+      $completed = 0;
+      foreach ($measures as $measure) {
+        $measureLink = $measure->toLink($measure->get('field_id')->value.": ".$measure->label());
+        $measureOwner = $measure->get('field_owner')->value;
+        $fieldMeasureStatus = $measure->get('field_measure_status');
+        if ($fieldMeasureStatus->value == 'completed') {
+          $completed++;
+          continue;
+        }
+        $measureStatus = $fieldMeasureStatus->getSetting('allowed_values')[$fieldMeasureStatus->value];
+
+        $row = [
+          'Titel' => $measureLink,
+          'Eigentümer' => $measureOwner,
+          'Status' => $measureStatus
+        ];
+        $items[] = $row;
       }
-      $measureStatus = $fieldMeasureStatus->getSetting('allowed_values')[$fieldMeasureStatus->value];
 
-      $row = [
-        'Titel' => $measureLink,
-        'Eigentümer' => $measureOwner,
-        'Status' => $measureStatus
-      ];
-      $items[] = $row;
-    }
+      // Status in Chart berücksichtigen?
+      $status = array_map(function($measure){
+        return $measure->get('field_measure_status')->getSetting('allowed_values')[$measure->get('field_measure_status')->value];
+      },$measures); 
 
-    // Status in Chart berücksichtigen?
-    $status = array_map(function($measure){
-      return $measure->get('field_measure_status')->getSetting('allowed_values')[$measure->get('field_measure_status')->value];
-    },$measures); 
-
-    $statusCounts = [];
-    if ($measures){
-      foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
-        $statusCounts[$value] = 0;
+      $statusCounts = [];
+      if ($measures){
+        foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
+          $statusCounts[$value] = 0;
+        }
       }
-    }
 
-    $statusCounts = array_merge($statusCounts, array_count_values($status));
-    // Data for Charts JS implementation
-    $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
+      $statusCounts = array_merge($statusCounts, array_count_values($status));
+      // Data for Charts JS implementation
+      $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
 
-    // Status berücksichtigen! Erledigt 23.07.20 - Robin
-    $header = [t('Title'),t('Owner'),t('Status'),];
-    $build['field_measures'] = [
-      '#theme' => 'field',
-      '#title' => t('Measures'),
-      '#label_display' => 'inline',
-      '#view_mode' => $view_mode,
-      '#language' => 'de',
-      '#field_name' => 'field_id',
-      '#field_type' => 'textfield',
-      '#entity_type' => 'node',
-      '#bundle' => $entity->bundle(),
-      '#object' => $entity,
-      '#is_multiple' => false,
-      '0'=>[
-        '#theme'=>'table',
-        '#header' => $header,
-        '#rows'=>$items,
-        '#attributes' => [
-          'class' => [
-            0 => 'risk-measure-table'
+      // Status berücksichtigen! Erledigt 23.07.20 - Robin
+      $header = [t('Title'),t('Owner'),t('Status'),];
+      $build['field_measures'] = [
+        '#theme' => 'field',
+        '#title' => t('Measures'),
+        '#label_display' => 'inline',
+        '#view_mode' => $view_mode,
+        '#language' => 'de',
+        '#field_name' => 'field_id',
+        '#field_type' => 'textfield',
+        '#entity_type' => 'node',
+        '#bundle' => $entity->bundle(),
+        '#object' => $entity,
+        '#is_multiple' => false,
+        '0'=>[
+          '#theme'=>'table',
+          '#header' => $header,
+          '#rows'=>$items,
+          '#attributes' => [
+            'class' => [
+              0 => 'risk-measure-table'
+            ]
           ]
-        ]
-      ],
-      '1' => [
-        '#markup' => '<p><b>Anzahl abgeschlossener Maßnahmen: </b> 
-        <a href="/risikomanagement/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
-      ],
-    ];
-   } 
+        ],
+        '1' => [
+          '#markup' => '<p><b>Anzahl abgeschlossener Maßnahmen: </b> 
+          <a href="/risikomanagement/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+        ],
+      ];
+    }
+  }
 
    // Measure view
   if($entity->bundle() == 'measure') {
     $risks = $entity->get('field_risks')->referencedEntities();
     // Status berücksichtigen! erledigt 23.07.20 - Robin
     $completed = 0;
-    $items = array();
+
+    $sortedRisks = [];
     foreach ($risks as $risk) {
+      $sortedRisks[$risk->get('field_risk_id')->value] = $risk;
+      ksort($sortedRisks);
+    }
+
+    $items = [];
+    foreach ($sortedRisks as $risk) {
       $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
       $fieldRiskStatus = $risk->get('field_risk_status');
       if ($fieldRiskStatus->value == 'completed') {
@@ -548,10 +558,26 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $riskCategory = $risk->get('field_risk_category')->value;
       $riskValue = $risk->get('field_risk_value')->value;
       $riskCatValue = $riskValue . ' - ' . $riskCategory;
+
+      if ($riskValue >= 7.5) {
+        $labelClass = 'danger';
+      }
+      elseif ($riskValue >= 2.5 && $riskValue < 7.5) {
+        $labelClass = 'warning';
+      }
+      elseif ($riskValue < 2.5) {
+        $labelClass = 'success';
+      }
+      else {
+        $labelClass = 'primary';
+      }
+    
       $row = [
         'Titel' =>  $riskLink,
         'Status' =>  $riskStatus,
-        'Risikowert- und klasse'=> $riskCatValue
+        'Risikowert- und klasse' => \Drupal\Core\Render\Markup::create(
+          '<span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span>'
+          )
       ];
       $items[] = $row;
     }
@@ -588,7 +614,6 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
         
       $header = [t('Title'),t('Status'),t('Risk value and class')];
-
       $build['field_risks'] = [
         '#theme' => 'field',
         '#title' => t('Associated risks'),
@@ -616,14 +641,8 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           <a href="/risikomanagement/risiken/archive?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
         ],  
       ];
-
     }
 
-    // @todo: Zuständiges Land formatieren
-    // array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode
-    // ksm($build['field_non_production_state']); // FieldItemList
-    // ksm($entity->field_non_production_state->count());
-    // ksm($entity->field_non_production_state->get(1)); // ListStringItem
     $database = \Drupal::database();
     foreach ($entity->field_non_production_state as $stateField) {
       $stateId = $stateField->value;
@@ -801,13 +820,19 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
   }
 }
 
-// function hzd_risk_management_views_pre_render(&$view) {
-//   if ($view->id() == 'risk_clusters') {
-//     foreach ($view->result as $i => $result) {
-//       if ($i === 0) {
-//         ksm($view->field->field_risks_data);
-//         // ksm($result);
-//       }
-//     }
-//   }
-// }
+/**
+ * Implements hook_entity_display_build_alter
+ */
+function hzd_risk_management_entity_display_build_alter(&$build, $context) {
+  if ($context['entity']->bundle() != 'measure' && $context['entity']->bundle() != 'risk') {
+    return;
+  }
+  $node = $context['entity'];
+  foreach (Element::children($build) as $field_name) {
+    $element =& $build[$field_name];
+    // if (empty($node->$field_name->value)) {
+    if (!$element['#theme']) {
+      $element['0']['#markup'] = "-";
+    }
+  }
+}

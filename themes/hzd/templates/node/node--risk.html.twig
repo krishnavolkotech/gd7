@@ -152,12 +152,12 @@
         <table>
           <tbody>
             <tr>
-              <th scope="row">{{ content.field_risk_id['#title'] }}</th>
-              <th scope="row">{{ content.field_creation_date['#title'] }}</th>
+              <th scope="row">{{ node.field_risk_id.fieldDefinition.label }}</th>
+              <th scope="row">{{ node.field_creation_date.fieldDefinition.label }}</th>
               <th scope="row">{{ content.last_updated['#title'] }}</th>
-              <th scope="row">{{ content.field_reported_by['#title'] }}</th>
-              <th scope="row">{{ content.field_contact_person['#title'] }}</th>
-              <th scope="row">{{ content.field_risk_status['#title'] }}</th>
+              <th scope="row">{{ node.field_reported_by.fieldDefinition.label }}</th>
+              <th scope="row">{{ node.field_contact_person.fieldDefinition.label }}</th>
+              <th scope="row">{{ node.field_risk_status.fieldDefinition.label }}</th>
             </tr>
             <tr>
               <td>{{ content.field_risk_id[0] }}</td>
@@ -179,11 +179,11 @@
           <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">{{ content.field_probability_of_occurrence['#title'] }}</th>
+                <th scope="row">{{ node.field_probability_of_occurrence.fieldDefinition.label }}</th>
                 <td><span class="label label-{{ propabilityLabelStyle }} risk-label">{{ content.field_probability_of_occurrence[0] }}</span></td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_risk_impact['#title'] }}</th>
+                <th scope="row">{{ node.field_risk_impact.fieldDefinition.label }}</th>
                 <td><span class="label label-{{ impactLabelStyle }} risk-label">{{ content.field_risk_impact[0] }}</span></td>
               </tr>
               <tr>
@@ -191,8 +191,12 @@
                 <td><span class="label label-{{ riskValueLabelStyle }} risk-label">{{ content.field_risk_value[0] }}-{{ content.field_risk_category[0] }}</span></td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_risk_trend['#title'] }}</th>
+                <th scope="row">{{ node.field_risk_trend.fieldDefinition.label }}</th>
+                {% if '-' in content.field_risk_trend[0]['#markup'] %}
+                <td>{{ content.field_risk_trend[0] }}</td>
+                {% else %}
                 <td><span class="label label-{{ trendLabelStyle }} risk-label">{{ content.field_risk_trend[0] }}</span></td>
+                {% endif %}
               </tr>
               <tr>
                 <th></th>
@@ -206,7 +210,7 @@
                 {% if content.field_measures[0] %}
                   <canvas id="measure-status-pie-chart" width="220" height="128"></canvas>
                 {% else %}
-                  <center><p><i>Keine Maßnahmen vorhanden.</i></p></center>
+                  <p><i>Keine Maßnahmen vorhanden.</i></p>
                 {% endif %}
                 </td>
               </tr>
@@ -219,35 +223,35 @@
           <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">{{ content.field_risk_clusters['#title'] }}</th>
+                <th scope="row">{{ node.field_risk_clusters.fieldDefinition.label }}</th>
                 <td>{{ content.field_risk_clusters[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_non_production_state['#title'] }}</th>
+                <th scope="row">{{ node.field_non_production_state.fieldDefinition.label }}</th>
                 <td>{{ content.field_non_production_state[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_owner['#title'] }}</th>
+                <th scope="row">{{ node.field_owner.fieldDefinition.label }}</th>
                 <td>{{ content.field_owner[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_affected_oes['#title'] }}</th>
+                <th scope="row">{{ node.field_affected_oes.fieldDefinition.label }}</th>
                 <td>{{ content.field_affected_oes[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_category['#title'] }}</th>
+                <th scope="row">{{ node.field_category.fieldDefinition.label }}</th>
                 <td>{{ content.field_category[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_scope['#title'] }}</th>
+                <th scope="row">{{ node.field_scope.fieldDefinition.label }}</th>
                 <td>{{ content.field_scope[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_follow_up['#title'] }}</th>
+                <th scope="row">{{ node.field_follow_up.fieldDefinition.label }}</th>
                 <td>{{ content.field_follow_up[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_graduation_date['#title'] }}</th>
+                <th scope="row">{{ node.field_graduation_date.fieldDefinition.label }}</th>
                 <td>{{ content.field_graduation_date[0] }}</td>
               </tr>
             </tbody>
@@ -257,12 +261,12 @@
     </div>
     </br>
     {# Beschreibung #}
-   {% if content.body ['#title']  %}
+   {% if content.body['#title']  %}
    <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.body['#title'] }}</h3>
+            <h3 class="panel-title">{{ node.body.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.body[0] }}
@@ -273,7 +277,7 @@
     </br>
    {% endif %}
     {# Maßnahmen #}
-    {% if content.field_measures['#title'] %}
+    {% if content.field_measures[0] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
@@ -288,14 +292,14 @@
       </div>
     </div>
     </br>
-    {# Bemerkungen #}
     {% endif %}
+    {# Bemerkungen #}
     {% if content.field_remarks['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_remarks['#title'] }}</h3>
+            <h3 class="panel-title">{{ node.field_remarks.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.field_remarks[0] }}
@@ -312,7 +316,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-           <h3 class="panel-title">{{ content.field_arbeitslog['#title'] }}</h3>
+           <h3 class="panel-title">{{ node.field_arbeitslog.fieldDefinition.label }}</h3>
               {# <h3 class="panel-title">Arbeitslog</h3> #}
           </div>
           <div class="panel-body">
@@ -329,7 +333,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">{{ content.content_revision_log['#title'] }}</h3>
+              <h3 class="panel-title">{{ node.content_revision_log.fieldDefinition.label }}</h3>
             </div>
             <div class="panel-body">
               {{ content.content_revision_log }}

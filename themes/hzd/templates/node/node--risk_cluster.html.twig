@@ -82,7 +82,9 @@
 
 {# Färben Cluster Klasse #}
 {# 9 bis 7,5=A, 6,5,4,3=B, 2,1 = C #}
-{% if content.field_risks_cluster_class[0]['#markup'] < 3 %}
+{% if content.field_risks_cluster_class[0]['#markup'] < 1 %}
+  {% set clusterClassLabelStyle = 'default' %}
+{% elseif content.field_risks_cluster_class[0]['#markup'] < 3 %}
   {% set clusterClassLabelStyle = 'success' %}
 {% elseif content.field_risks_cluster_class[0]['#markup'] < 7.5 %}
    {% set clusterClassLabelStyle = 'warning' %}
@@ -167,20 +169,36 @@
     {# Charts #}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">Risiken:<br/>Statusverteilung</th>
-              <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
-              <th scope="row">Risiken:<br/>Klassenverteilung</th>
-              <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table>
+            <tbody>
+              <tr>
+                <th scope="row">Risiken:<br/>Statusverteilung</th>
+                {% if content.field_risks_data[0] %}
+                  <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+                {% else %}
+                  <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
+                {% endif %}
+                <th scope="row">Risiken:<br/>Klassenverteilung</th>
+                {% if content.field_risks_data[0] %}
+                  <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
+                {% else %}
+                  <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
+                {% endif %}
+
+                {# <th scope="row">Risiken:<br/>Statusverteilung</th>
+                <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+                <th scope="row">Risiken:<br/>Klassenverteilung</th>
+                <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td> #}
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     </br>
     
+    {% if content.field_risks_data[0] %}
     {# Einzelrisiken #}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -196,7 +214,8 @@
       </div>
     </div>
     </br>
-       
+    {% endif %}
+
     {# Beschreibung #}
     {% if content.body['#title'] %}
     <div class="row">

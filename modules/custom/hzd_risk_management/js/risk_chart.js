@@ -87,11 +87,11 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
-                'rgba(217, 84, 79, 1)', // rot
-                'rgba(240, 173, 78, 1)', // orange
-                'rgba(255, 218, 86, 1)', // gelb
                 'rgba(148, 148, 148, 1)', // grau
-                'rgba(92, 184, 92, 1)' // grün
+                'rgba(255, 218, 86, 1)', // gelb
+                'rgba(240, 173, 78, 1)', // orange
+                'rgba(217, 84, 79, 1)', // rot
+                'rgba(92, 184, 92, 1)', // grün
               ],
             }]
           },

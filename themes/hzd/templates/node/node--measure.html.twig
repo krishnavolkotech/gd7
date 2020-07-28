@@ -110,11 +110,11 @@
         <table>
           <tbody>
             <tr>
-              <th>{{ content.field_id['#title'] }}</th>
-              <th>{{ content.field_order_date['#title'] }}</th>
-              <th>{{ content.field_sponsor['#title'] }}</th>
-              <th>{{ content.field_contact_person['#title'] }}</th>
-              <th>{{ content.field_measure_status['#title'] }}</th>
+              <th>{{ node.field_id.fieldDefinition.label }}</th>
+              <th>{{ node.field_order_date.fieldDefinition.label }}</th>
+              <th>{{ node.field_sponsor.fieldDefinition.label }}</th>
+              <th>{{ node.field_contact_person.fieldDefinition.label }}</th>
+              <th>{{ node.field_measure_status.fieldDefinition.label }}</th>
             </tr>
             <tr>
               <td>{{ content.field_id[0] }}</td>
@@ -140,15 +140,15 @@
                 <td>{{ content.last_updated[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_type['#title'] }}</th>
+                <th scope="row">{{ node.field_type.fieldDefinition.label }}</th>
                 <td>{{ content.field_type[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_estimated_effort['#title'] }}</th>
+                <th scope="row">{{ node.field_estimated_effort.fieldDefinition.label }}</th>
                 <td>{{ content.field_estimated_effort[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_follow_up['#title'] }}</th>
+                <th scope="row">{{ node.field_follow_up.fieldDefinition.label }}</th>
                 <td>{{ content.field_follow_up[0] }}</td>
               </tr>
            </tbody>
@@ -160,19 +160,26 @@
           <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">{{ content.field_non_production_state['#title'] }}</th>
-                <td>{{ content.field_non_production_state }}</td>
+                <th scope="row">{{ node.field_non_production_state.fieldDefinition.label }}</th>
+                <td>
+                {% if content.field_non_production_state[1] %}
+                  <div>{{ content.field_non_production_state[0] }}</div>
+                  <div>{{ content.field_non_production_state[1] }}</div>
+                {% else %}
+                  <div>{{ content.field_non_production_state[0] }}</div>
+                {% endif %}
+                </td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_owner['#title'] }}</th>
+                <th scope="row">{{ node.field_owner.fieldDefinition.label }}</th>
                 <td>{{ content.field_owner[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_creation_date['#title'] }}</th>
+                <th scope="row">{{ node.field_creation_date.fieldDefinition.label }}</th>
                 <td>{{ content.field_creation_date[0] }}</td>
               </tr>
               <tr>
-                <th scope="row">{{ content.field_target_date['#title'] }}</th>
+                <th scope="row">{{ node.field_target_date.fieldDefinition.label }}</th>
                 <td>{{ content.field_target_date[0] }}</td>
               </tr>
             </tbody>
@@ -180,6 +187,7 @@
         </div>
       </div>
 
+    {% if content.field_risks['#title'] %}
       <div class="row">
         <div class="col-lg-12">
           <table class="risk-detail-table">
@@ -196,9 +204,11 @@
       </div>
     </div>
     </br> 
+    {% endif %}
 
     {# Risiken #}
-    {# {{ kint(content.field_risks) }} #}
+    {# {{ kint(content.field_risks[0]) }} #}
+    {% if content.field_risks['#title'] %}
     <div id="risks" class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
@@ -213,13 +223,15 @@
       </div>
     </div>
     </br>
+    {% endif %}
    
     {# Beschreibung #}
+    {% if content.body['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.body['#title'] }}</h3>
+            <h3 class="panel-title">{{ node.body.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.body[0] }}
@@ -228,13 +240,15 @@
       </div>
     </div> 
     </br>
+    {% endif %}
 
     {# erwartetes Ergebnis #}
+    {% if content.field_expected_result['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_expected_result['#title'] }}</h3>
+            <h3 class="panel-title">{{ node.field_expected_result.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.field_expected_result[0] }}
@@ -243,13 +257,15 @@
       </div> 
     </div>
     </br>
+    {% endif %}
 
     {# Bemerkungen #}
+    {% if content.field_remarks['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ content.field_remarks['#title'] }}</h3>
+            <h3 class="panel-title">{{ node.field_remarks.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.field_remarks[0] }}
@@ -258,14 +274,15 @@
       </div> 
     </div>
     </br>
+    {% endif %}
 
-    {# Historie #}
+    {# Arbeitslog #}
     {% if content.field_arbeitslog['#title'] %}
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-           <h3 class="panel-title">{{ content.field_arbeitslog['#title'] }}</h3>
+           <h3 class="panel-title">{{ node.field_arbeitslog.fieldDefinition.label }}</h3>
           </div>
           <div class="panel-body">
             {{ content.field_arbeitslog }}
@@ -276,12 +293,13 @@
     </br>
     {% endif %}
    
+    {# Historie #}
     {% if content.content_revision_log %}
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">{{ content.content_revision_log['#title'] }}</h3>
+              <h3 class="panel-title">{{ node.content_revision_log.fieldDefinition.label }}</h3>
             </div>
             <div class="panel-body">
               {{ content.content_revision_log }}
