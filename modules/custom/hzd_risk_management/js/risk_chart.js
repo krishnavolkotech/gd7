@@ -147,8 +147,8 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(217, 84, 79, 1)', // rot
-                'rgba(240, 173, 78, 1)', // orange
                 'rgba(255, 218, 86, 1)', // gelb
+                'rgba(92, 184, 92, 1)', // grün
               ],
             }]
           },
@@ -252,8 +252,8 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(217, 84, 79, 1)', // rot
-                'rgba(240, 173, 78, 1)', // orange
                 'rgba(255, 218, 86, 1)', // gelb
+                'rgba(92, 184, 92, 1)', // grün
               ],
             }]
           },
