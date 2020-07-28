@@ -824,14 +824,16 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
  * Implements hook_entity_display_build_alter
  */
 function hzd_risk_management_entity_display_build_alter(&$build, $context) {
+  if ($context['view_mode'] != 'full') {
+    return;
+  }
   if ($context['entity']->bundle() != 'measure' && $context['entity']->bundle() != 'risk') {
     return;
   }
   $node = $context['entity'];
   foreach (Element::children($build) as $field_name) {
     $element =& $build[$field_name];
-    // if (empty($node->$field_name->value)) {
-    if (!$element['#theme']) {
+    if (!array_key_exists('#theme', $element)) {
       $element['0']['#markup'] = "-";
     }
   }
