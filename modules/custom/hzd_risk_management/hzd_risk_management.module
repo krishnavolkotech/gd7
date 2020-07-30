@@ -179,6 +179,15 @@ function risk_management_form_validate(array $form, $formState){
   if($formState->getValue('field_scope')[0]['value'] == 'local' && !$formState->getValue('field_affected_oes')[0]['value']){
     $formState->setErrorByName('field_affected_oes',t('This field is required when Scope is local'));
   }
+  
+  $riskId = $formState->getValue('field_risk_id')[0]['value'];
+  $entity_ids = \Drupal::entityQuery('node')
+    ->condition('field_risk_id', $riskId)
+    ->condition('type', 'risk')
+    ->execute();
+  if (count($entity_ids) > 0) {
+    $formState->setErrorByName('field_risk_id',t('This ID is already taken.'));
+  }
 }
 
 
