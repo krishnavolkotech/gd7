@@ -143,56 +143,61 @@
   
   <div class="container-fluid">
     {# Risikocluster Rahmeninfo #}
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">{{ content.field_id['#title'] }} </th>
-              <th scope="row">{{ content.field_risks_cluster_class['#title'] }} </th>
-              <th scope="row">{{ content.field_risks_cluster_impact['#title'] }} </th>
-              <th scope="row">{{ content.field_risks_cluster_propability['#title'] }} </th>
-              <th scope="row">{{ content.last_updated['#title'] }} </th>
-            </tr>
-            <tr>
-              <td>{{ content.field_id[0] }}</td>
-              <td><span class="label label-{{ clusterClassLabelStyle }} risk-label">{{ content.field_risks_cluster_class[0] }}</span></td>
-              <td><span class="label label-{{ clusterImpactLabelStyle }} risk-label">{{ content.field_risks_cluster_impact[0] }}</td>
-              <td><span class="label label-{{ clusterPropabilityLabelStyle }} risk-label">{{ content.field_risks_cluster_propability[0] }}</td>
-              <td>{{ content.last_updated[0] }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    {# Charts #}
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="table-responsive">
-          <table>
+    <div class="risk-detail-table-wrapper">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">Risiken:<br/>Statusverteilung</th>
-                {% if content.field_risks_data[0] %}
-                  <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
-                {% else %}
-                  <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
-                {% endif %}
-                <th scope="row">Risiken:<br/>Klassenverteilung</th>
-                {% if content.field_risks_data[0] %}
-                  <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
-                {% else %}
-                  <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
-                {% endif %}
-
-                {# <th scope="row">Risiken:<br/>Statusverteilung</th>
-                <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
-                <th scope="row">Risiken:<br/>Klassenverteilung</th>
-                <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td> #}
+                <th scope="row">{{ content.field_id['#title'] }} </th>
+                <th scope="row">{{ content.field_risks_cluster_class['#title'] }} </th>
+                <th scope="row">{{ content.field_risks_cluster_impact['#title'] }} </th>
+                <th scope="row">{{ content.field_risks_cluster_propability['#title'] }} </th>
+                <th scope="row">{{ content.last_updated['#title'] }} </th>
+              </tr>
+              <tr>
+                <td>{{ content.field_id[0] }}</td>
+                <td><span class="label label-{{ clusterClassLabelStyle }} risk-label">{{ content.field_risks_cluster_class[0] }}</span></td>
+                <td><span class="label label-{{ clusterImpactLabelStyle }} risk-label">{{ content.field_risks_cluster_impact[0] }}</td>
+                <td><span class="label label-{{ clusterPropabilityLabelStyle }} risk-label">{{ content.field_risks_cluster_propability[0] }}</td>
+                <td>{{ content.last_updated[0] }}</td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+    </br>
+
+    {# Charts #}
+    <div class="risk-detail-table-wrapper">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="table-responsive">
+            <table class="risk-detail-table">
+              <tbody>
+                <tr>
+                  <th scope="row">Risiken:<br/>Statusverteilung</th>
+                  {% if content.field_risks_data[0] %}
+                    <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+                  {% else %}
+                    <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
+                  {% endif %}
+                  <th scope="row">Risiken:<br/>Klassenverteilung</th>
+                  {% if content.field_risks_data[0] %}
+                    <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
+                  {% else %}
+                    <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
+                  {% endif %}
+
+                  {# <th scope="row">Risiken:<br/>Statusverteilung</th>
+                  <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+                  <th scope="row">Risiken:<br/>Klassenverteilung</th>
+                  <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td> #}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

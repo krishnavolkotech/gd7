@@ -104,35 +104,40 @@
   
   {# {{ kint(content) }} #}
   <div class="container-fluid">
-    <div class="row">
-    {# Maßnahmendaten Rahmeninfo #}
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <table>
-          <tbody>
-            <tr>
-              <th>{{ node.field_id.fieldDefinition.label }}</th>
-              <th>{{ node.field_order_date.fieldDefinition.label }}</th>
-              <th>{{ node.field_sponsor.fieldDefinition.label }}</th>
-              <th>{{ node.field_contact_person.fieldDefinition.label }}</th>
-              <th>{{ node.field_measure_status.fieldDefinition.label }}</th>
-            </tr>
-            <tr>
-              <td>{{ content.field_id[0] }}</td>
-              <td>{{ content.field_order_date[0] }}</td>
-              <td>{{ content.field_sponsor[0] }}</td>
-              <td>{{ content.field_contact_person[0] }}</td>
-              <td><span class="label label-primary">{{ content.field_measure_status[0] }}</span></td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="risk-detail-table-wrapper">
+      <div class="row">
+      {# Maßnahmendaten Rahmeninfo #}
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="table-responsive">
+            <table class="risk-detail-table">
+              <tbody>
+                <tr>
+                  <th>{{ node.field_id.fieldDefinition.label }}</th>
+                  <th>{{ node.field_order_date.fieldDefinition.label }}</th>
+                  <th>{{ node.field_sponsor.fieldDefinition.label }}</th>
+                  <th>{{ node.field_contact_person.fieldDefinition.label }}</th>
+                  <th>{{ node.field_measure_status.fieldDefinition.label }}</th>
+                </tr>
+                <tr>
+                  <td>{{ content.field_id[0] }}</td>
+                  <td>{{ content.field_order_date[0] }}</td>
+                  <td>{{ content.field_sponsor[0] }}</td>
+                  <td>{{ content.field_contact_person[0] }}</td>
+                  <td><span class="label label-primary">{{ content.field_measure_status[0] }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
     </div>
+    </br>
+
     <div class="risk-detail-table-wrapper">
       <div class="row">
         {# Maßnahmendaten Gruppe 1 #}
         {# Typ, Erw. Ergebnis, Gesch. Aufwand, Wiedervorlage #}
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+        <div class="col-xs-6 col-sm-6 col-md-5 col-lg-6">
           <table class="risk-detail-table">
             <tbody>
               <tr>
@@ -156,7 +161,7 @@
         </div>
         {# Maßnahmendaten Gruppe 2 #}
         {# Zust. Land, Eigentümer, Startt., Zielt. #}
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-0">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-0">
           <table class="risk-detail-table">
             <tbody>
               <tr>
@@ -189,7 +194,7 @@
 
     {% if content.field_risks['#title'] %}
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-xs-12 col-lg-12">
           <div class="table-responsive">
             <table class="risk-detail-table">
               <tbody>
@@ -212,7 +217,7 @@
     {# {{ kint(content.field_risks[0]) }} #}
     {% if content.field_risks['#title'] %}
     <div id="risks" class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ content.field_risks['#title'] }}</h3>

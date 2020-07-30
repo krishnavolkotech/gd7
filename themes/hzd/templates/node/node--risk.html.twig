@@ -146,31 +146,36 @@
   <div{{ content_attributes.addClass('content') }}>
   
   <div class="container-fluid">
-    <div class="row">
-    {# Risikodaten Rahmeninfo #}
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">{{ node.field_risk_id.fieldDefinition.label }}</th>
-              <th scope="row">{{ node.field_creation_date.fieldDefinition.label }}</th>
-              <th scope="row">{{ content.last_updated['#title'] }}</th>
-              <th scope="row">{{ node.field_reported_by.fieldDefinition.label }}</th>
-              <th scope="row">{{ node.field_contact_person.fieldDefinition.label }}</th>
-              <th scope="row">{{ node.field_risk_status.fieldDefinition.label }}</th>
-            </tr>
-            <tr>
-              <td>{{ content.field_risk_id[0] }}</td>
-              <td>{{ content.field_creation_date[0] }}</td>
-              <td>{{ content.last_updated[0] }}</td>
-              <td>{{ content.field_reported_by[0] }}</td>
-              <td>{{ content.field_contact_person[0] }}</td>
-              <td><span class="label label-primary">{{ content.field_risk_status[0] }}</span></td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="risk-detail-table-wrapper">
+      <div class="row">
+      {# Risikodaten Rahmeninfo #}
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="table-responsive">
+            <table class="risk-detail-table">
+              <tbody>
+                <tr>
+                  <th scope="row">{{ node.field_risk_id.fieldDefinition.label }}</th>
+                  <th scope="row">{{ node.field_creation_date.fieldDefinition.label }}</th>
+                  <th scope="row">{{ content.last_updated['#title'] }}</th>
+                  <th scope="row">{{ node.field_reported_by.fieldDefinition.label }}</th>
+                  <th scope="row">{{ node.field_contact_person.fieldDefinition.label }}</th>
+                  <th scope="row">{{ node.field_risk_status.fieldDefinition.label }}</th>
+                </tr>
+                <tr>
+                  <td>{{ content.field_risk_id[0] }}</td>
+                  <td>{{ content.field_creation_date[0] }}</td>
+                  <td>{{ content.last_updated[0] }}</td>
+                  <td>{{ content.field_reported_by[0] }}</td>
+                  <td>{{ content.field_contact_person[0] }}</td>
+                  <td><span class="label label-primary">{{ content.field_risk_status[0] }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
+    </br>
 
     <div class="risk-detail-table-wrapper">
       <div class="row">

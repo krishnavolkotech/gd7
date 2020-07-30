@@ -172,6 +172,8 @@ table {
 }
 table.risk-detail-table {
   border: none;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
 }
 div.risk-detail-table-wrapper {
     width: 100% !important;
