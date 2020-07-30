@@ -1404,7 +1404,14 @@ div.menu-separator {
 }
 
 .dasi-links span.file-link {
-    width: 450px !important;
+    display: block;
+    /* word-break: break-word; */
+    /* -webkit-line-break: after-white-space; */
+    overflow-wrap: break-word;
+    /* word-wrap: break-word; */
+    min-width: 200px;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
 }
 
 .dasi-links span.file-size{
