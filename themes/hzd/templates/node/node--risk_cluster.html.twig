@@ -179,13 +179,13 @@
                 <tr>
                   <th scope="row">Risiken:<br/>Statusverteilung</th>
                   {% if content.field_risks_data[0] %}
-                    <td><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
+                    <td data-th="Risiken: Statusverteilung"><canvas id="risk-status-pie-chart" width="220" height="128"></canvas></td>
                   {% else %}
                     <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
                   {% endif %}
                   <th scope="row">Risiken:<br/>Klassenverteilung</th>
                   {% if content.field_risks_data[0] %}
-                    <td><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
+                    <td data-th="Risiken: Klassenverteilung"><canvas id="risk-category-pie-chart" width="220" height="128"></canvas></td>
                   {% else %}
                     <td><center><p><i>Keine Risiken vorhanden.</i></p></center></td>
                   {% endif %}

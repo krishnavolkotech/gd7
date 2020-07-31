@@ -282,7 +282,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           'Titel' =>  $riskLink,
           'Status' =>  $riskStatus,
           'Risikowert- und klasse' => \Drupal\Core\Render\Markup::create(
-            '<span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span>'
+            '<div><span class="label label-' . $labelClass . ' risk-label">' . $riskCatValue . '</span></div>'
             )
         ];
         $items[] = $row;
