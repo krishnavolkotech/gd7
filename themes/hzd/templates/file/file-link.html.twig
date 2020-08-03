@@ -51,6 +51,7 @@
       {% else %}
         <span class="file-icon">{{ icon }}</span>
         <span class="file-link">{{ link }}</span>
+	
         {% if node_edit_page == 'edit' %}
           {% if node_view_mode != 'mail' %}
             <span class='hzd-file-created'>{{ file_created }}</span>
@@ -58,8 +59,8 @@
         {% endif %}
             <span class="file-size">{{ file_size }}</span>
 
-	    {% if file_owner != '' %}
-	      <span class='hzd-file-created'>{{ file_created }}</span>
+	    {% if dasi_class != '' %}
+	      <span class='dasi-hzd-file-created'>{{ file_created }}</span>
 	      <span class="file-owner">{{ file_owner }}</span>
 	    {% endif %}
 

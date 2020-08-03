@@ -1136,30 +1136,31 @@ function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
   $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
   $variables['node_view_mode'] = $file->node_view_mode;
+
+  $variables['file_owner'] = '';
+  $variables['dasi_class'] = '';
+  $uid = $file->getOwner()->id();
+  $user = \Drupal\user\Entity\User::load($uid);
+  $user_name = $user->getDisplayName();
+  $url = Url::fromRoute('entity.user.canonical', array('user' => $uid));
+  $user_link = [
+      '#type' => 'link',
+      '#url' => $url,
+      '#title' => $user_name
+  ];
+  $variables['file_owner'] = $user_link;
+  
   $route = \Drupal::request()->get(Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_NAME);
   if ($route == 'entity.node.edit_form') {
     $variables['node_edit_page'] = 'edit';
   }
   else {
-    $uid = $file->getOwner()->id();
-    $user = \Drupal\user\Entity\User::load($uid);
-    $user_name = $user->getDisplayName();
-
-    $variables['file_owner'] = '';
-    $variables['dasi_class'] = '';
     $nid = getFileAttachedNode($file->id());
     if ($nid) {
       $groupTitle = getNodeGroupLabel($nid);
       $pos = stripos($groupTitle, "DaSi");
       if ($pos !== false) {
-        $url = Url::fromRoute('entity.user.canonical', array('user' => $uid));
-        $user_link = [
-          '#type' => 'link',
-          '#url' => $url,
-          '#title' => $user_name
-        ];
         $variables['dasi_class'] = "dasi-links";
-        $variables['file_owner'] = $user_link;
       }
     }
   }

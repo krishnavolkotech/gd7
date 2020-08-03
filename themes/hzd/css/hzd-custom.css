@@ -1050,6 +1050,8 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
 .deployedReleases {
   padding-top: 20px;
 }
+
+.dasi-hzd-file-created,
 .hzd-file-created {
     padding: 0 1em;
     white-space: pre;
@@ -1419,6 +1421,7 @@ div.menu-separator {
     text-align: left !important;
 }
 
+.dasi-links .dasi-hzd-file-created,
 .dasi-links .hzd-file-created {
     width: 80px;
     text-align: left;
