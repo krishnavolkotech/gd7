@@ -53,18 +53,19 @@
 
 
 	{% if node_view_mode == 'mail' %}
-  	<table>
+  	<table style="width:900px;">
 	  <tr>
-            <td style="border: 0; width: 200px;">{{ link }}</td>
-	    <td style="border: 0; width: 50px;">{{ file_size }}</td>
+            <td style="border: 0; width: 350px;">{{ link }}</td>
+	    <td style="border: 0; width: 100px;">{{ file_size }}</td>
 	    {% if dasi_class != '' %}
-	    <td style="border: 0; width: 50px;">{{ file_created }}</td>
-	    <td style="border: 0; width: 100px;">{{ file_owner }}</td>
+	    <td style="border: 0; width: 100px;">{{ file_created }}</td>
+	    <td style="border: 0; width: 250px;">{{ file_owner }}</td>
 	    {% endif %}
 	  </tr>
 	</table>
 	
 	{% else %}
+	
   	  <span class="file-icon">{{ icon }}</span>
           <span class="file-link">{{ link }}</span>
 	  {% if node_edit_page == 'edit' %}
@@ -74,7 +75,7 @@
           {% endif %}
           <span class="file-size">{{ file_size }}</span>
 
-	  {% if dasi_class != '' %}
+	  {% if dasi_class != '' and node_edit_page != 'edit' %}
 	    <span class='dasi-hzd-file-created'>{{ file_created }}</span>
 	    <span class="file-owner">{{ file_owner }}</span>
 	  {% endif %}
