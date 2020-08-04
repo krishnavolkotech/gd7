@@ -49,22 +49,41 @@
         <span class="file-size">{{ file_size }}</span>
         <span class="file-icon">{{ icon }}</span>
       {% else %}
-        <span class="file-icon">{{ icon }}</span>
-        <span class="file-link">{{ link }}</span>
-	
-        {% if node_edit_page == 'edit' %}
-          {% if node_view_mode != 'mail' %}
-            <span class='hzd-file-created'>{{ file_created }}</span>
-          {% endif %}
-        {% endif %}
-            <span class="file-size">{{ file_size }}</span>
 
-	    {% if dasi_class != '' %}
-	      <span class='dasi-hzd-file-created'>{{ file_created }}</span>
-	      <span class="file-owner">{{ file_owner }}</span>
-	    {% endif %}
+
+
+	{% if node_view_mode == 'mail' %}
+  	<table>
+	  <tr>
+            <td style="border: 0; width: 200px;">{{ link }}</td>
+	    <td style="border: 0; width: 50px;">{{ file_size }}</td>
+	    <td style="border: 0; width: 50px;">{{ file_created }}</td>
+	    <td style="border: 0; width: 100px;">{{ file_owner }}</td>
+	    <td style="border: 0; width: 50px;">{{ dasi_class }}</td>
+	  </tr>
+	</table>
+	
+	{% else %}
+  	  <span class="file-icon">{{ icon }}</span>
+          <span class="file-link">{{ link }}</span>
+	  {% if node_edit_page == 'edit' %}
+            {% if node_view_mode != 'mail' %}
+              <span class='hzd-file-created'>{{ file_created }}</span>
+            {% endif %}
+          {% endif %}
+          <span class="file-size">{{ file_size }}</span>
+
+	  {% if dasi_class != '' %}
+	    <span class='dasi-hzd-file-created'>{{ file_created }}</span>
+	    <span class="file-owner">{{ file_owner }}</span>
+	  {% endif %}
+	
+	{% endif %}
+    
+
 
 	{% endif %}
+
     {% endif %}
   </span>
 {% endspaceless %}

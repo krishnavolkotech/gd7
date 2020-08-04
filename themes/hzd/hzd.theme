@@ -1139,6 +1139,7 @@ function hzd_preprocess_file_link(&$variables) {
 
   $variables['file_owner'] = '';
   $variables['dasi_class'] = '';
+  
   $uid = $file->getOwner()->id();
   $user = \Drupal\user\Entity\User::load($uid);
   $user_name = $user->getDisplayName();
@@ -1149,20 +1150,20 @@ function hzd_preprocess_file_link(&$variables) {
       '#title' => $user_name
   ];
   $variables['file_owner'] = $user_link;
+  $nid = getFileAttachedNode($file->id());
+
+  if ($nid) {
+    $groupTitle = getNodeGroupLabel($nid);
+  }
+
+  $pos = stripos($groupTitle, "DaSi");
+  if ($pos !== false) {
+    $variables['dasi_class'] = "dasi-links";
+  }
   
   $route = \Drupal::request()->get(Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_NAME);
   if ($route == 'entity.node.edit_form') {
     $variables['node_edit_page'] = 'edit';
-  }
-  else {
-    $nid = getFileAttachedNode($file->id());
-    if ($nid) {
-      $groupTitle = getNodeGroupLabel($nid);
-      $pos = stripos($groupTitle, "DaSi");
-      if ($pos !== false) {
-        $variables['dasi_class'] = "dasi-links";
-      }
-    }
   }
 }
 
