@@ -57,9 +57,10 @@
 	  <tr>
             <td style="border: 0; width: 200px;">{{ link }}</td>
 	    <td style="border: 0; width: 50px;">{{ file_size }}</td>
+	    {% if dasi_class != '' %}
 	    <td style="border: 0; width: 50px;">{{ file_created }}</td>
 	    <td style="border: 0; width: 100px;">{{ file_owner }}</td>
-	    <td style="border: 0; width: 50px;">{{ dasi_class }}</td>
+	    {% endif %}
 	  </tr>
 	</table>
 	
