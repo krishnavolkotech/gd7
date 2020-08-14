@@ -25,7 +25,10 @@
       not icon_only ? 'icon-' ~ icon_position|clean_class
     ]
   %}
+
+{% if node_view_mode != 'mail' %}
   <span{{ attributes.addClass(classes).addClass(dasi_class) }}>
+{% endif %}
     {% if icon_only %}
       <span class="file-icon">{{ icon }}</span>
       <span class="sr-only">
@@ -53,13 +56,13 @@
 
 
 	{% if node_view_mode == 'mail' %}
-  	<table style="width:900px; !important;">
+  	<table>
 	  <tr>
-            <td style="border: 0; max-width: 450px;width: 450px;">{{ link }}</td>
-	    <td style="border: 0; text-align:left;width: 75px;">{{ file_size }}</td>
+            <td style="border: 0; min-width:400px; max-width: 400px;">{{ link }}</td>
+	    <td style="border: 0; text-align:left;min-width:75px;max-width:75px;">{{ file_size }}</td>
 	    {% if dasi_class != '' %}
-	    <td style="border: 0; text-align:left;width: 75px;">{{ file_created }}</td>
-	    <td style="border: 0; text-align:left;width: 200px;">{{ file_owner }}</td>
+	    <td style="border: 0; text-align:left;min-width:75px;max-width: 75px;">{{ file_created }}</td>
+	    <td style="border: 0; text-align:left;min-width: 200px;">{{ file_owner }}</td>
 	    {% endif %}
 	  </tr>
 	</table>
@@ -87,5 +90,7 @@
 	{% endif %}
 
     {% endif %}
+{% if node_view_mode != 'mail' %}
   </span>
+  {% endif %}
 {% endspaceless %}
