@@ -1467,5 +1467,8 @@ span.glyphicon.down-arrow {
   width: 85%;
   background: #fff;
   z-index: 100;
-  display: none;
+}
+
+.limit-results {
+    margin-bottom: 3rem;
 }
