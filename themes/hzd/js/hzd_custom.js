@@ -1,7 +1,11 @@
 (function ($) {
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
-        
+
+	$('.all-groups-filter').once('.all-groups-filter').click(function(){
+	    $('.search-limited-content').toggleClass('hidden');
+	});
+	
     $.fn.admin_toolbar = function () {
       if($('#toolbar-administration').length) {
           return 80;
@@ -724,10 +728,6 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
     $(element).wrap("<div class='table-responsive'></div>");
     //}
   });
-
-   $('.all-groups-filter').click(function(){
-       $('.search-limited-content').toggle();
-   });
 
 	
     }
