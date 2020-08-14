@@ -1,0 +1,159 @@
+{#
+/**
+ * @file
+ * Default theme implementation for main view template.
+ *
+ * Available variables:
+ * - attributes: Remaining HTML attributes for the element.
+ * - css_name: A css-safe version of the view name.
+ * - css_class: The user-specified classes names, if any.
+ * - header: The optional header.
+ * - footer: The optional footer.
+ * - rows: The results of the view query, if any.
+ * - empty: The content to display if there are no rows.
+ * - pager: The optional pager next/prev links to display.
+ * - exposed: Exposed widget form/info to display.
+ * - feed_icons: Optional feed icons to display.
+ * - more: An optional link to the next page of results.
+ * - title: Title of the view, only used when displaying in the admin preview.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the view title.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the view title.
+ * - attachment_before: An optional attachment view to be displayed before the
+ *   view content.
+ * - attachment_after: An optional attachment view to be displayed after the
+ *   view content.
+ * - dom_id: Unique id for every view being printed to give unique class for
+ *   JavaScript.
+ *
+ * @ingroup templates
+ *
+ * @see template_preprocess_views_view()
+ */
+#}
+{%
+  set classes = [
+    'view',
+    'view-' ~ id|clean_class,
+    'view-id-' ~ id,
+    'view-display-id-' ~ display_id,
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+  ]
+%}
+<div{{ attributes.addClass(classes) }}>
+  {{ title_prefix }}
+  {% if title %}
+    {{ title }}
+  {% endif %}
+  {{ title_suffix }}
+  {% if header %}
+    <div class="view-header">
+      {{ header }}
+    </div>
+  {% endif %}
+  {% if exposed %}
+    <div class="view-filters form-group">
+      {{ exposed }}
+    </div>
+  {% endif %}
+  {% if attachment_before %}
+    <div class="attachment attachment-before">
+      {{ attachment_before }}
+    </div>
+  {% endif %}
+
+  <div style="clear:both"></div>
+
+  {% if rows %}
+  
+  <div class='limit-results'>
+    <div class='row limit-header'>
+      <div class='col-sm-3'>{{ 'Ergebnisse einschränken auf'| t }}: </div>
+      <div class='col-sm-2'>{{ 'Alle Gruppen'| t }} <span class="glyphicon down-arrow all-groups-filter">&#xe114;</span> </div>
+      <div class='col-sm-2'>{{ 'Beligbige Zeit'| t }}  <span class="glyphicon down-arrow search-time-filters">&#xe114;</span></div>
+    </div>
+
+    <div class='row search-limited-content'>
+      <div class='col-sm-3'>
+	<div class="limit-block-title"><h2>{{ itsm.title }}</h2></div>
+	<div class="limit-block-content">
+	  <ul>
+	    {% for link in itsm.links %}
+              <li>{{ link }}</li>
+            {% endfor %}
+	  </ul>
+	</div>
+      </div>
+
+      <div class='col-sm-3'>
+	<div class="limit-block-title"><h2>{{ verfahren.title }}</h2></div>
+	<div class="limit-block-content">
+	  <ul>
+	    {% for link in verfahren.links %}
+            <li>{{ link }}</li>
+            {% endfor %}
+	  </ul>
+	</div>
+      </div>
+
+      <div class='col-sm-3'>
+	<div class="limit-block-title"><h2>{{ zoe_zps.title }}</h2></div>
+	<div class="limit-block-content">
+	  <ul>
+	    {% for link in zoe_zps.links %}
+            <li>{{ link }}</li>
+            {% endfor %}
+	  </ul>
+	</div>
+      </div>
+
+      <div class='col-sm-3'>
+	<div class="limit-block-title"><h2>{{ weitere_gruppen.title }}</h2></div>
+	<div class="limit-block-content">
+	  <ul>
+	    {% for link in weitere_gruppen.links %}
+            <li>{{ link }}</li>
+            {% endfor %}
+	  </ul>
+	</div>
+      </div>
+      
+    </div>
+  </div>
+    
+
+    
+
+   
+    <div class="view-content">
+      {{ rows }}
+    </div>
+  {% elseif empty %}
+    <div class="view-empty">
+      {{ empty }}
+    </div>
+  {% endif %}
+
+  {% if pager %}
+    {{ pager }}
+  {% endif %}
+  {% if attachment_after %}
+    <div class="attachment attachment-after">
+      {{ attachment_after }}
+    </div>
+  {% endif %}
+  {% if more %}
+    {{ more }}
+  {% endif %}
+  {% if footer %}
+    <div class="view-footer">
+      {{ footer }}
+    </div>
+  {% endif %}
+  {% if feed_icons %}
+    <div class="feed-icons">
+      {{ feed_icons }}
+    </div>
+  {% endif %}
+</div>

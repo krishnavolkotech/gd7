@@ -1437,3 +1437,35 @@ div.menu-separator {
     width: 13rem;
     vertical-align: middle;
 }
+
+/********Search Page CSS *********/
+span.glyphicon.down-arrow {
+    top: 3px;
+    left: 5px;
+    cursor:pointer;
+}
+
+.row.limit-header {
+    padding: 1.1rem 0px 1.1rem 0px;
+    font-size: 16px;
+}
+
+.limit-block-content ul {
+    padding: 0;
+}
+
+.limit-block-content li {
+    list-style: none;
+    padding: .2rem 0px .2rem 0px;
+}
+
+.row.search-limited-content {
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  position: absolute;
+  padding-bottom: 10px;
+  width: 85%;
+  background: #fff;
+  z-index: 100;
+  display: none;
+}

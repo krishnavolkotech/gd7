@@ -725,8 +725,13 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
     //}
   });
 
+   $('.all-groups-filter').click(function(){
+       $('.search-limited-content').toggle();
+   });
+
+	
     }
-  }
+}
 })
 (jQuery);
 

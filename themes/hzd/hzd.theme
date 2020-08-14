@@ -1223,3 +1223,91 @@ function hzd_preprocess_menu__primary_links(&$variables) {
     }
   }
 }
+
+/**
+ * theme_suggestions for the views_view.
+ */
+function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $variables) {
+  $suggestions[] = sprintf('views_view__%s__%s', $variables['view']->id(), $variables['view']->current_display);
+}
+
+function hzd_preprocess_views_view__solr_search(&$variables) {
+  $variables['itsm'] = search_limit_groups('itsm');
+  $variables['verfahren'] = search_limit_groups('verfahren');
+  $variables['zoe_zps'] = search_limit_groups('zoe_zps');
+  $variables['weitere_gruppen'] = search_limit_groups('weitere_gruppen');
+}
+
+/*
+ * ADDED STATIC BLOCKS FOR FILTERING
+ * TODO: Need to provide settings page for the blocks
+ */
+function search_limit_groups($type) {
+  $titles['itsm'] = t('ITSM-Prozesse');
+  $titles['verfahren'] = t('Verfahren');
+  $titles['zoe_zps'] = t('ZOE & ZPS');
+  $titles['weitere_gruppen'] = t('Weitere Gruppen');
+/*
+  $gids = \Drupal::entityQuery('group')
+      ->condition('status',1)
+      ->sort('label')
+      ->execute();
+  
+  
+    $groups = \Drupal\group\Entity\Group::loadMultiple($gids);
+    foreach($groups as $id => $group) {
+      dump($id. " : ". $group->label());
+      }
+  */
+  $param = \Drupal::request()->query->all();
+  $itsm_group['title'] = $titles[$type];
+  $itsm_links = static_search_groups($type);
+  foreach($itsm_links as $id => $group) {
+      $options = [
+          'fulltext' => $param['fulltext'],
+          'f[0]' => 'itsm_prozesse:'.$id
+      ];
+      $url = Url::fromRoute('view.solr_search.page_1', $options);
+      $link = Link::fromTextAndUrl($group, $url)->toString(); 
+      $itsm_group['links'][] = $link;
+  }
+
+  return $itsm_group;
+}
+
+function static_search_groups($type) {
+    $groups['itsm'] = [
+        2 => t('Incident Management'),
+        39 => t('Kapazitätsmanagement'),
+        6 => t('Problem Management'),
+        1 => t('Release Management'),
+        15 => t('Service Level Management'),
+        77 => t('Verfügbarkeitsmanagement'),
+        80 => t('Corono Info'),
+    ];
+
+    $groups['zoe_zps'] = [
+        2 => t('Incident Management'),
+        39 => t('Kapazitätsmanagement'),
+        6 => t('Problem Management'),
+        1 => t('Release Management'),
+        15 => t('Service Level Management'),
+        77 => t('Verfügbarkeitsmanagement'),
+        80 => t('Corono Info'),
+    ];
+
+    $groups['verfahren'] = [
+        37 => t('ARCO'),
+        26 => t('BIENE'),
+        19 => t('DAME'),
+    ];
+
+    $groups['weitere_gruppen'] = [
+        37 => t('ARCO'),
+        26 => t('BIENE'),
+        19 => t('DAME'),
+    ];
+
+    return $groups[$type];
+
+}
