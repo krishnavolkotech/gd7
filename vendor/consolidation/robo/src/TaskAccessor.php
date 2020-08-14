@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo;
 
 use Robo\Common\BuilderAwareTrait;

@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Docker;
 
 /**
@@ -55,7 +54,7 @@ class Commit extends Base
     }
 
     /**
-     * @param string $name
+     * @param $name
      *
      * @return $this
      */

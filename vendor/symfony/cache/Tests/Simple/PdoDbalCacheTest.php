@@ -25,7 +25,7 @@ class PdoDbalCacheTest extends CacheTestCase
 
     protected static $dbFile;
 
-    public static function setUpBeforeClass(): void
+    public static function setupBeforeClass()
     {
         if (!\extension_loaded('pdo_sqlite')) {
             self::markTestSkipped('Extension pdo_sqlite required.');
@@ -37,7 +37,7 @@ class PdoDbalCacheTest extends CacheTestCase
         $pool->createTable();
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         @unlink(self::$dbFile);
     }

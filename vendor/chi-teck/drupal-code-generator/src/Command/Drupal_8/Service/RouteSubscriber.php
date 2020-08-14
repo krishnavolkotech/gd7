@@ -6,7 +6,6 @@ use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Implements d8:service:route-subscriber command.
@@ -21,15 +20,10 @@ class RouteSubscriber extends BaseGenerator {
    * {@inheritdoc}
    */
   protected function interact(InputInterface $input, OutputInterface $output) {
-    $questions = Utils::moduleQuestions();
+    $questions = Utils::defaultQuestions();
 
-    $default_class = function ($vars) {
-      return Utils::camelize($vars['machine_name']) . 'RouteSubscriber';
-    };
-    $questions['class'] = new Question('Class', $default_class);
-    $questions['class']->setValidator([Utils::class, 'validateClassName']);
-
-    $this->collectVars($input, $output, $questions);
+    $vars = &$this->collectVars($input, $output, $questions);
+    $vars['class'] = Utils::camelize($vars['name']) . 'RouteSubscriber';
 
     $this->addFile()
       ->path('src/EventSubscriber/{class}.php')

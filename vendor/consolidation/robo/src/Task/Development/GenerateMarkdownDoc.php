@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Development;
 
 use Robo\Task\BaseTask;
@@ -507,7 +506,7 @@ class GenerateMarkdownDoc extends BaseTask implements BuilderAwareInterface
 
         $methods = array_filter($methods);
 
-        $doc .= implode("\n", $methods) . "\n";
+        $doc .= implode("\n", $methods)."\n";
 
         return $doc;
     }

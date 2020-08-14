@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo;
 
 use Symfony\Component\Console\ConsoleEvents;
@@ -13,14 +12,10 @@ class GlobalOptionsEventListener implements EventSubscriberInterface, ConfigAwar
 {
     use ConfigAwareTrait;
 
-    /**
-     * @var \Robo\Application
-     */
+    /** @var Application */
     protected $application;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $prefix;
 
     /**
@@ -33,10 +28,6 @@ class GlobalOptionsEventListener implements EventSubscriberInterface, ConfigAwar
 
     /**
      * Add a reference to the Symfony Console application object.
-     *
-     * @param \Robo\Application $application
-     *
-     * @return $this
      */
     public function setApplication($application)
     {
@@ -46,10 +37,7 @@ class GlobalOptionsEventListener implements EventSubscriberInterface, ConfigAwar
 
     /**
      * Stipulate the prefix to use for option injection.
-     *
      * @param string $prefix
-     *
-     * @return $this
      */
     public function setGlobalOptionsPrefix($prefix)
     {
@@ -130,7 +118,6 @@ class GlobalOptionsEventListener implements EventSubscriberInterface, ConfigAwar
      * the input string contains no '=' character, then the value will be 'true'.
      *
      * @param string $value
-     *
      * @return array
      */
     protected function splitConfigKeyValue($value)
@@ -143,8 +130,6 @@ class GlobalOptionsEventListener implements EventSubscriberInterface, ConfigAwar
     /**
      * Get default option values from the Symfony Console application, if
      * it is available.
-     *
-     * @return array
      */
     protected function applicationOptionDefaultValues()
     {

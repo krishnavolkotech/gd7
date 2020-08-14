@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Development;
 
 use Robo\Exception\TaskException;
@@ -87,7 +86,7 @@ abstract class GitHub extends BaseTask
     }
 
     /**
-     * @param string $password
+     * @param $password
      *
      * @return $this
      */
@@ -98,7 +97,7 @@ abstract class GitHub extends BaseTask
     }
 
     /**
-     * @param string $token
+     * @param $accessToken
      *
      * @return $this
      */

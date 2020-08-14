@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Common;
 
 /**
@@ -21,7 +20,7 @@ trait DynamicParams
     public function __call($property, $args)
     {
         if (!property_exists($this, $property)) {
-            throw new \RuntimeException("Property $property in task " . get_class($this) . ' does not exists');
+            throw new \RuntimeException("Property $property in task ".get_class($this).' does not exists');
         }
 
         // toggle boolean values

@@ -70,9 +70,10 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
     private $redisServerSupportSPOP = null;
 
     /**
-     * @param \Redis|\RedisArray|\RedisCluster|\Predis\ClientInterface $redisClient     The redis client
-     * @param string                                                   $namespace       The default namespace
-     * @param int                                                      $defaultLifetime The default lifetime
+     * @param \Redis|\RedisArray|\RedisCluster|\Predis\Client $redisClient     The redis client
+     * @param string                                          $namespace       The default namespace
+     * @param int                                             $defaultLifetime The default lifetime
+     * @param MarshallerInterface|null                        $marshaller
      *
      * @throws \Symfony\Component\Cache\Exception\LogicException If phpredis with version lower than 3.1.3.
      */
@@ -81,7 +82,7 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
         $this->init($redisClient, $namespace, $defaultLifetime, $marshaller);
 
         // Make sure php-redis is 3.1.3 or higher configured for Redis classes
-        if (!$this->redis instanceof \Predis\ClientInterface && version_compare(phpversion('redis'), '3.1.3', '<')) {
+        if (!$this->redis instanceof Predis\Client && \version_compare(\phpversion('redis'), '3.1.3', '<')) {
             throw new LogicException('RedisTagAwareAdapter requires php-redis 3.1.3 or higher, alternatively use predis/predis');
         }
     }
@@ -97,7 +98,7 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
         }
 
         // While pipeline isn't supported on RedisCluster, other setups will at least benefit from doing this in one op
-        $results = $this->pipeline(static function () use ($serialized, $lifetime, $addTagData, $delTagData, $failed) {
+        $results = $this->pipeline(static function () use ($serialized, $lifetime, $addTagData, $delTagData) {
             // Store cache items, force a ttl if none is set, as there is no MSETEX we need to set each one
             foreach ($serialized as $id => $value) {
                 yield 'setEx' => [
@@ -109,21 +110,17 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
 
             // Add and Remove Tags
             foreach ($addTagData as $tagId => $ids) {
-                if (!$failed || $ids = array_diff($ids, $failed)) {
-                    yield 'sAdd' => array_merge([$tagId], $ids);
-                }
+                yield 'sAdd' => array_merge([$tagId], $ids);
             }
 
             foreach ($delTagData as $tagId => $ids) {
-                if (!$failed || $ids = array_diff($ids, $failed)) {
-                    yield 'sRem' => array_merge([$tagId], $ids);
-                }
+                yield 'sRem' => array_merge([$tagId], $ids);
             }
         });
 
         foreach ($results as $id => $result) {
             // Skip results of SADD/SREM operations, they'll be 1 or 0 depending on if set value already existed or not
-            if (is_numeric($result)) {
+            if (\is_numeric($result)) {
                 continue;
             }
             // setEx results
@@ -144,7 +141,7 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
             return true;
         }
 
-        $predisCluster = $this->redis instanceof \Predis\ClientInterface && $this->redis->getConnection() instanceof ClusterInterface;
+        $predisCluster = $this->redis instanceof \Predis\Client && $this->redis->getConnection() instanceof ClusterInterface;
         $this->pipeline(static function () use ($ids, $tagData, $predisCluster) {
             if ($predisCluster) {
                 foreach ($ids as $id) {
@@ -155,7 +152,7 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
             }
 
             foreach ($tagData as $tagId => $idList) {
-                yield 'sRem' => array_merge([$tagId], $idList);
+                yield 'sRem' => \array_merge([$tagId], $idList);
             }
         })->rewind();
 
@@ -181,10 +178,10 @@ class RedisTagAwareAdapter extends AbstractTagAwareAdapter
         });
 
         // Flatten generator result from pipeline, ignore keys (tag ids)
-        $ids = array_unique(array_merge(...iterator_to_array($tagIdSets, false)));
+        $ids = \array_unique(\array_merge(...\iterator_to_array($tagIdSets, false)));
 
         // Delete cache in chunks to avoid overloading the connection
-        foreach (array_chunk($ids, self::BULK_DELETE_LIMIT) as $chunkIds) {
+        foreach (\array_chunk($ids, self::BULK_DELETE_LIMIT) as $chunkIds) {
             $this->doDelete($chunkIds);
         }
 

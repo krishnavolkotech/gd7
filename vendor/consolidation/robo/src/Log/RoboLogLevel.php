@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Log;
 
 class RoboLogLevel extends \Consolidation\Log\ConsoleLogLevel

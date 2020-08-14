@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Vcs;
 
 trait loadShortcuts

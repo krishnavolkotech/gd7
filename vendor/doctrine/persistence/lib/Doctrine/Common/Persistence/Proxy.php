@@ -2,15 +2,34 @@
 
 namespace Doctrine\Common\Persistence;
 
-use function class_alias;
+/**
+ * Interface for proxy classes.
+ */
+interface Proxy
+{
+    /**
+     * Marker for Proxy class names.
+     */
+    public const MARKER = '__CG__';
 
-class_alias(
-    \Doctrine\Persistence\Proxy::class,
-    __NAMESPACE__ . '\Proxy'
-);
+    /**
+     * Length of the proxy marker.
+     */
+    public const MARKER_LENGTH = 6;
 
-if (false) {
-    interface Proxy extends \Doctrine\Persistence\Proxy
-    {
-    }
+    /**
+     * Initializes this proxy if its not yet initialized.
+     *
+     * Acts as a no-op if already initialized.
+     *
+     * @return void
+     */
+    public function __load();
+
+    /**
+     * Returns whether this proxy is initialized or not.
+     *
+     * @return bool
+     */
+    public function __isInitialized();
 }

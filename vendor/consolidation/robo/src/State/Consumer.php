@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\State;
 
 use Robo\State\Data;
@@ -7,7 +6,7 @@ use Robo\State\Data;
 interface Consumer
 {
     /**
-     * @return \Robo\State\Data
+     * @return Data
      */
     public function receiveState(Data $state);
 }

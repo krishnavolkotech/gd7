@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Assets;
 
 use Robo\Result;
@@ -24,7 +23,7 @@ use Robo\Task\BaseTask;
 class Minify extends BaseTask
 {
     /**
-     * @var string[]
+     * @var array
      */
     protected $types = ['css', 'js'];
 
@@ -44,7 +43,7 @@ class Minify extends BaseTask
     protected $type;
 
     /**
-     * @var bool[]
+     * @var array
      */
     protected $squeezeOptions = [
         'singleLine' => true,
@@ -88,8 +87,7 @@ class Minify extends BaseTask
     /**
      * Sets type with validation.
      *
-     * @param string $type
-     *   Allowed values: "css", "js".
+     * @param string $type css|js
      *
      * @return $this
      */
@@ -219,11 +217,11 @@ class Minify extends BaseTask
     }
 
     /**
-     * Set specialVarRx option for the JS minimisation.
+     * specialVarRx option for the JS minimisation.
      *
      * @param bool $specialVarRx
      *
-     * @return $this
+     * @return $this ;
      */
     public function specialVarRx($specialVarRx)
     {

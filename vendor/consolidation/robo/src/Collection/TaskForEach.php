@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Collection;
 
 use Robo\Result;
@@ -111,7 +110,7 @@ class TaskForEach extends BaseTask implements NestedCollectionInterface, Builder
     /**
      * @param callable $fn
      *
-     * @return $this
+     * @return \Robo\Collection\TaskForEach
      */
     public function call(callable $fn)
     {
@@ -125,7 +124,7 @@ class TaskForEach extends BaseTask implements NestedCollectionInterface, Builder
     /**
      * @param callable $fn
      *
-     * @return $this
+     * @return \Robo\Collection\TaskForEach
      */
     public function withBuilder(callable $fn)
     {

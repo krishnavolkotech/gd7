@@ -2,15 +2,44 @@
 
 namespace Doctrine\Common\Persistence\Event;
 
-use function class_alias;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
 
-class_alias(
-    \Doctrine\Persistence\Event\LoadClassMetadataEventArgs::class,
-    __NAMESPACE__ . '\LoadClassMetadataEventArgs'
-);
+/**
+ * Class that holds event arguments for a loadMetadata event.
+ */
+class LoadClassMetadataEventArgs extends EventArgs
+{
+    /** @var ClassMetadata */
+    private $classMetadata;
 
-if (false) {
-    class LoadClassMetadataEventArgs extends \Doctrine\Persistence\Event\LoadClassMetadataEventArgs
+    /** @var ObjectManager */
+    private $objectManager;
+
+    public function __construct(ClassMetadata $classMetadata, ObjectManager $objectManager)
     {
+        $this->classMetadata = $classMetadata;
+        $this->objectManager = $objectManager;
+    }
+
+    /**
+     * Retrieves the associated ClassMetadata.
+     *
+     * @return ClassMetadata
+     */
+    public function getClassMetadata()
+    {
+        return $this->classMetadata;
+    }
+
+    /**
+     * Retrieves the associated ObjectManager.
+     *
+     * @return ObjectManager
+     */
+    public function getObjectManager()
+    {
+        return $this->objectManager;
     }
 }

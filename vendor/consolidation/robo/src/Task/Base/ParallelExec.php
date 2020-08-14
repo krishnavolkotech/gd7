@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Base;
 
 use Robo\Contract\CommandInterface;
@@ -188,7 +187,7 @@ class ParallelExec extends BaseTask implements CommandInterface, PrintedInterfac
             if ($p->getExitCode() === 0) {
                 continue;
             }
-            $errorMessage .= "'" . $p->getCommandLine() . "' exited with code " . $p->getExitCode() . " \n";
+            $errorMessage .= "'" . $p->getCommandLine() . "' exited with code ". $p->getExitCode()." \n";
             $exitCode = max($exitCode, $p->getExitCode());
         }
         if (!$errorMessage) {

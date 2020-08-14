@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Log;
 
 use Robo\Result;
@@ -7,6 +6,7 @@ use Robo\Contract\PrintedInterface;
 use Robo\Contract\ProgressIndicatorAwareInterface;
 use Robo\Contract\VerbosityThresholdInterface;
 use Robo\Common\ProgressIndicatorAwareTrait;
+
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -27,7 +27,7 @@ class ResultPrinter implements LoggerAwareInterface, ProgressIndicatorAwareInter
      *
      * @param \Robo\Result $result
      *
-     * @return null|bool
+     * @return bool
      */
     public function printResult(Result $result)
     {
