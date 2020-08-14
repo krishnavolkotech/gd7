@@ -1472,3 +1472,8 @@ span.glyphicon.down-arrow {
 .limit-results {
     margin-bottom: 3rem;
 }
+.row.search-limited-content a.active {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 16px;
+}
