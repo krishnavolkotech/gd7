@@ -2,6 +2,13 @@
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
 
+	if($('.view-empty').length >= 1) {
+	    $('.view-solr-search .pager-nav').addClass('hidden');
+	}
+	else {
+	    $('.view-solr-search .pager-nav').removeClass('hidden');
+	}
+	
 	$('.all-groups-filter').once('.all-groups-filter').click(function(){
 	    $('.search-limited-content').toggleClass('hidden');
 	    $('.search-time-filters-content').addClass('hidden');

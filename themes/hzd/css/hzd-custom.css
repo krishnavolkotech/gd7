@@ -1488,3 +1488,15 @@ span.glyphicon.down-arrow {
     margin-top: 1rem;
     font-size: 14px;
 }
+
+li.facet-item {
+    list-style: none;
+}
+
+ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget {
+    padding: 0;
+}
+
+li.facet-item label {
+    margin-left: 1rem;
+}
