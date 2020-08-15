@@ -1268,3 +1268,38 @@ function hzd_customizations_entity_base_field_info(\Drupal\Core\Entity\EntityTyp
     return $fields;
   }
 }
+
+function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+  $fields = $query->getIndex()->getFields();
+  if (isset($fields['created_date'])) {
+    $param = \Drupal::request()->query->all();
+    if (isset($param['created'])) {
+      $time = search_before_timing($param['created']);
+      if ($time > 0) {
+        $query->addCondition('created_date', $time, '>=');
+      }
+    }
+  }
+}
+
+function search_before_timing($range) {
+    $time = time();
+    if ($range == 'last_day') {
+      $time = strtotime(date("Y-m-d", $time) . " -1 day");
+    }
+    else if ($range == 'last_week') {
+        $time = strtotime(date("Y-m-d", $time) . " -1 week");
+    }
+    else if ($range == 'last_month') {
+        $time = strtotime(date("Y-m-d", $time) . " -1 month");
+    }
+    else if ($range == 'last_year') {
+        $time = strtotime(date("Y-m-d", $time) . " -1 year");
+    }
+    else {
+        $time = 0;
+    }
+    return $time;
+}
+
+

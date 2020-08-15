@@ -1232,13 +1232,16 @@ function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $vari
 }
 
 function hzd_preprocess_views_view__solr_search(&$variables) {
-    $param = \Drupal::request()->query->all();
+  $param = \Drupal::request()->query->all();
   if (isset($param['fulltext'])) {
       $variables['itsm'] = search_limit_groups('itsm');
       $variables['verfahren'] = search_limit_groups('verfahren');
       $variables['zoe_zps'] = search_limit_groups('zoe_zps');
       $variables['weitere_gruppen'] = search_limit_groups('weitere_gruppen');
+
+      $variables['filter_created'] = conent_created_filter();
   }
+
 }
 
 /*
@@ -1290,6 +1293,37 @@ function search_limit_groups($type) {
   return $itsm_group;
 }
 
+function conent_created_filter() {
+  $params = \Drupal::request()->query->all();
+
+  if (isset($params['created'])) {
+      $active_class_id = $params['created'];
+  }
+  
+  $timings = [
+      'all' => t('Beliebige Zeit'),
+      'last_day' => t('Letzte 24 Stunden'),
+      'last_week' => t('Letzte Woche'),
+      'last_month' => t('Letzte Monat'),
+      'last_year' => t('Letzte Jahr'),
+  ];
+
+  $created = [];
+  foreach($timings as $id => $text) {
+    if ($id != 'all') {
+      $params['created'] = $id;
+    }
+    $active = '';
+    if ($active_class_id == $id) {
+      $active = 'active';
+    }
+    $url = Url::fromRoute('view.solr_search.page_1', $params, ['attributes' => ['class' => [$active]]]);
+    $link = Link::fromTextAndUrl($text, $url)->toString(); 
+    $created['links'][] = $link;
+  }
+  return $created;
+}
+
 function static_search_groups($type) {
     $groups['itsm'] = [
         2 => t('Incident Management'),
@@ -1321,7 +1355,5 @@ function static_search_groups($type) {
         26 => t('BIENE'),
         19 => t('DAME'),
     ];
-
     return $groups[$type];
-
 }

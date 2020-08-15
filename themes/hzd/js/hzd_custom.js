@@ -4,7 +4,14 @@ Drupal.behaviors.hzd = {
 
 	$('.all-groups-filter').once('.all-groups-filter').click(function(){
 	    $('.search-limited-content').toggleClass('hidden');
+	    $('.search-time-filters-content').addClass('hidden');
 	});
+
+	$('.search-time-filters').once('.search-time-filters').click(function(){
+	    $('.search-limited-content').addClass('hidden');
+	    $('.search-time-filters-content').toggleClass('hidden');
+	});
+
 	
     $.fn.admin_toolbar = function () {
       if($('#toolbar-administration').length) {

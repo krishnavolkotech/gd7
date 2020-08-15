@@ -1450,15 +1450,18 @@ span.glyphicon.down-arrow {
     font-size: 16px;
 }
 
+.search-time-filters-content ul,
 .limit-block-content ul {
     padding: 0;
 }
 
+.search-time-filters-content ul li,
 .limit-block-content li {
     list-style: none;
     padding: .2rem 0px .2rem 0px;
 }
 
+.search-time-filters-content,
 .row.search-limited-content {
   border: 1px solid #dddddd;
   border-radius: 6px;
@@ -1472,8 +1475,16 @@ span.glyphicon.down-arrow {
 .limit-results {
     margin-bottom: 3rem;
 }
+
+.row.search-time-filters-content a.active,
 .row.search-limited-content a.active {
     font-weight: bold;
     text-decoration: underline;
     font-size: 16px;
+}
+
+.row.search-time-filters-content {
+    padding: 1rem .5rem .5rem 1rem;
+    margin-top: 1rem;
+    font-size: 14px;
 }
