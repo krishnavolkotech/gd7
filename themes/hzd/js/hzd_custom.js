@@ -19,6 +19,15 @@ Drupal.behaviors.hzd = {
 	    $('.search-time-filters-content').toggleClass('hidden');
 	});
 
+
+	$('.custom-facets-checkbox').change(function() {
+            if($(this).is(":checked")) {
+		var href = $(this).next().next().attr('href');
+		window.location.href = href;
+	    }
+        });
+
+	
 	
     $.fn.admin_toolbar = function () {
       if($('#toolbar-administration').length) {

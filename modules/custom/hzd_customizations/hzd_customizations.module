@@ -1302,4 +1302,16 @@ function search_before_timing($range) {
     return $time;
 }
 
-
+/*
+ * IMplementing Hook_theme
+ */
+function hzd_customizations_theme($existing, $type, $theme, $path) {
+  return [
+    'search_content_types' => [
+        'variables' => [
+            'title' => NULL,
+            'content_types' => array(),
+        ],
+    ]
+  ];
+}

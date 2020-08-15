@@ -1489,10 +1489,12 @@ span.glyphicon.down-arrow {
     font-size: 14px;
 }
 
+
 li.facet-item {
     list-style: none;
 }
 
+ul.custom-search-facet,
 ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget {
     padding: 0;
 }

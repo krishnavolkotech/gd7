@@ -1,0 +1,21 @@
+<div class="block-search-content-wrapper">
+  {% for content_type in content_types %}
+  <h3 class='block-title'>{{ content_type.title }}</h3>
+
+  <ul class='custom-search-facet'>
+    {% for link in content_type.links %}
+    <li class='facet-item'>
+      <input type="checkbox" class="custom-facets-checkbox" id="custom-search-page">
+      <label>
+	<span class="facet-item__value">{{ link.title }}</span>
+      </label>
+      {{ link.url }}
+    </li>
+    {% endfor %}
+  </ul>
+  
+  {% endfor %}
+</div>
+
+
+
