@@ -48,26 +48,17 @@ class NodeGroupContentType extends ProcessorPluginBase {
    */
   public function addFieldValues(ItemInterface $item) {
     $node = $item->getOriginalObject()->getValue();
-    $content_type = $node->getType();
+    $node_type = $node->getEntityTypeId();
 
-    if ($content_type) {
-      $groupId = \Drupal\cust_group\Controller\CustNodeController::getNodeGroupId($node);
-      $group_name = '';
-      if ($groupId) {
-        $gid = $groupId->getGroup()->id();
-        $group = \Drupal\group\Entity\Group::load($gid);
-        $group_name = $group->label();
-        
-        $field_value = $content_type .':'.$group_name; 
-        $fields = $this->getFieldsHelper()->filterForPropertyPath($item->getFields(), NULL, 'node_group_content_type');
-        foreach ($fields as $field) {
-          $field->addValue($field_value);
-        }
-        
-      }// End of Group IF
-      
+    if ($node_type != 'group_content') {
+      $group_name = $rel->getGroup()->label();
+      $content_type = $rel->getEntity()->getType();        
+      $field_value = $content_type .':'.$group_name; 
+      $fields = $this->getFieldsHelper()->filterForPropertyPath($item->getFields(), NULL, 'node_group_content_type');
+      foreach ($fields as $field) {
+        $field->addValue($field_value);
+      }
     } //End of ContentType If
     
   }
-  
 }
