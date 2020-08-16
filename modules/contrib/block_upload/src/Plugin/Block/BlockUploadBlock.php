@@ -1,10 +1,14 @@
 <?php
 
 namespace Drupal\block_upload\Plugin\Block;
-use Drupal\Core\Block\BlockBase;
+
 use Drupal\block_upload\BlockUploadManager;
+use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a Custom block.
@@ -16,12 +20,48 @@ use Drupal\field\Entity\FieldStorageConfig;
  *   deriver = "Drupal\block_upload\Plugin\Derivative\BlockUploadBlock"
  * )
  */
-class BlockUploadBlock extends BlockBase {
+class BlockUploadBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  protected $account;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    AccountProxyInterface $account
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->account = $account;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(
+    ContainerInterface $container,
+    array $configuration,
+    $plugin_id,
+    $plugin_definition
+  ) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('current_user')
+    );
+  }
 
   /**
    * Build the content for mymodule block.
    */
   public function build() {
+    if (!$this->account->hasPermission('block upload')) {
+      return [];
+    }
+
     $block_id = $this->getDerivativeId();
     return [
       BlockUploadManager::blockUploadBuildBlockContent($block_id),
@@ -94,4 +134,3 @@ class BlockUploadBlock extends BlockBase {
   }
 
 }
-

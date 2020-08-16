@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\block_upload\Form;
+
 use Drupal\block_upload\BlockUploadBuild;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -8,10 +9,10 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\node\Entity\Node;
 use Drupal\field\Entity\FieldConfig;
-use \Drupal\file\Entity\File;
+use Drupal\file\Entity\File;
 
 /**
- * Configure book settings for this site.
+ * Block upload form.
  */
 class BlockUploadPluploadForm extends FormBase {
 
@@ -122,11 +123,11 @@ class BlockUploadPluploadForm extends FormBase {
 
         // Move file without creating a new 'file' entity.
         $uri = file_unmanaged_move($uploaded_file['tmppath'], $file_uri);
-        
+
         $file = File::Create([
-            'uri' => $uri,
-            'uid' => $uid->id(),
-          ]);
+          'uri' => $uri,
+          'uid' => $uid->id(),
+        ]);
         $file->save();
         // @todo: When https://www.drupal.org/node/2245927 is resolved,
         // use a helper to save file to file_managed table
@@ -136,5 +137,5 @@ class BlockUploadPluploadForm extends FormBase {
     }
     $node->save();
   }
-}
 
+}

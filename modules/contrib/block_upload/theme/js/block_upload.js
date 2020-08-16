@@ -1,7 +1,12 @@
-(function($) {
+/**
+ * @file
+ * Javascript for Block Upload.
+ */
+
+(function ($) {
   Drupal.behaviors.block_remove_files = {
-    attach : function(context) {
-      $.each($('.delete-files tr:not(:first)'), function() {
+    attach : function (context) {
+      $.each($('.delete-files tr:not(:first)'), function () {
         var source = $('td:last span a', this).attr('href');
         var type = $('td:last', this).attr('field_type');
         if (type == 'image') {
@@ -10,7 +15,7 @@
         else {
           var $item = $('.field-item span.file').find('a[href$="' + source + '"]');
         }
-        $('td:first input', this).click(function() {
+        $('td:first input', this).click(function () {
           if ($(this).attr('checked')) {
             $item.parent().hide();
           }
@@ -20,7 +25,7 @@
         });
         $(this).addClass('block-upload-table');
         $(this).hover(
-          function() {
+          function () {
             $item.parent().addClass('block-upload-field');
           },
           function () {
