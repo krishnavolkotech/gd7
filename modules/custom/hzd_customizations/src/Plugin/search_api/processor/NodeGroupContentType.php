@@ -50,7 +50,8 @@ class NodeGroupContentType extends ProcessorPluginBase {
     $node = $item->getOriginalObject()->getValue();
     $node_type = $node->getEntityTypeId();
 
-    if ($node_type != 'group_content') {
+    if ($node_type == 'group_content') {
+      $rel = \Drupal\group\Entity\GroupContent::load($node->id());
       $group_name = $rel->getGroup()->label();
       $content_type = $rel->getEntity()->getType();        
       $field_value = $content_type .':'.$group_name; 

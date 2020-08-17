@@ -1447,7 +1447,7 @@ span.glyphicon.down-arrow {
 
 .row.limit-header {
     padding: 1.1rem 0px 1.1rem 0px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .search-time-filters-content ul,
@@ -1501,4 +1501,11 @@ ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget 
 
 li.facet-item label {
     margin-left: 1rem;
+}
+
+.limit-block-title h2 {
+    color: #222222b5 !important;
+}
+.col-sm-3.group-filter-text {
+    width: 21rem !important;
 }
