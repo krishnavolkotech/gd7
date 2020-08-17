@@ -162,9 +162,10 @@
                 // 'rgba(233, 125, 99, 1)', //rot-neu
                 // 'rgba(233, 195, 99, 1)', //gelb-orange-neu
                 // 'rgba(71, 167, 110, 1)', //grün-neu
+                'rgba(0, 78, 89)', // Dunkelblau 
                 'rgba(2, 117, 150, 1)', // Primär Blau 
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
+                // 'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
                 // 'rgba(217, 84, 79, 1)', // rot
                 // 'rgba(255, 218, 86, 1)', // gelb
                 // 'rgba(92, 184, 92, 1)', // grün
@@ -281,9 +282,10 @@
                 // 'rgba(145, 11, 0, 1)', //rot-neu
                 // 'rgba(220, 150, 0, 1)', //gelb-orange-neu
                 // 'rgba(0, 111, 19, 1)', //grün-neu
+                'rgba(0, 78, 89)', // Dunkelblau 
                 'rgba(2, 117, 150, 1)', // Primär Blau
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
+                // 'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
                 // 'rgba(217, 84, 79, 1)', // rot
                 // 'rgba(255, 218, 86, 1)', // gelb
                 // 'rgba(92, 184, 92, 1)', // grün
