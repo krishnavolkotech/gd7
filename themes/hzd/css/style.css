@@ -4068,3 +4068,19 @@ table.released tr th:last-child {
   text-align: left !important;
   padding-left: 8px !important;
 }
+
+.label-success {
+  background-color: #00A4E3 !important;
+}
+
+.label-warning {
+  background-color: #77659A !important;
+}
+
+.label-danger {
+  background-color: #ED2551 !important;
+}
+
+.label-primary {
+  background-color: rgb(0, 78, 89) !important;
+}
