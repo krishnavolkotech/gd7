@@ -1694,24 +1694,27 @@ class Database extends BackendPluginBase implements PluginFormInterface {
       }
 
       $fulltext_fields = $this->getQueryFulltextFields($query);
-      if (!$fulltext_fields) {
-        throw new SearchApiException('Search keys are given but no fulltext fields are defined.');
-      }
-
-      $fulltext_field_information = [];
-      foreach ($fulltext_fields as $name) {
-        if (!isset($fields[$name])) {
-          throw new SearchApiException("Unknown field '$name' specified as search target.");
+      if ($fulltext_fields) {
+        $fulltext_field_information = [];
+        foreach ($fulltext_fields as $name) {
+          if (!isset($fields[$name])) {
+            throw new SearchApiException("Unknown field '$name' specified as search target.");
+          }
+          if (!$this->getDataTypeHelper()->isTextType($fields[$name]['type'])) {
+            $types = $this->getDataTypePluginManager()->getInstances();
+            $type = $types[$fields[$name]['type']]->label();
+            throw new SearchApiException("Cannot perform fulltext search on field '$name' of type '$type'.");
+          }
+          $fulltext_field_information[$name] = $fields[$name];
         }
-        if (!$this->getDataTypeHelper()->isTextType($fields[$name]['type'])) {
-          $types = $this->getDataTypePluginManager()->getInstances();
-          $type = $types[$fields[$name]['type']]->label();
-          throw new SearchApiException("Cannot perform fulltext search on field '$name' of type '$type'.");
-        }
-        $fulltext_field_information[$name] = $fields[$name];
-      }
 
-      $db_query = $this->createKeysQuery($keys, $fulltext_field_information, $fields, $query->getIndex());
+        $db_query = $this->createKeysQuery($keys, $fulltext_field_information, $fields, $query->getIndex());
+      }
+      else {
+        $this->getLogger()->warning('Search keys are given but no fulltext fields are defined.');
+        $msg = $this->t('Search keys are given but no fulltext fields are defined.');
+        $this->warnings[(string) $msg] = 1;
+      }
     }
     elseif ($keys_set) {
       $msg = $this->t('No valid search keys were present in the query.');

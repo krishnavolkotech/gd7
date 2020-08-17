@@ -276,20 +276,9 @@ class TaskManager implements TaskManagerInterface {
       ],
       'finished' => [$this, 'finishBatch'],
     ];
-
-    // If called inside of Drush, we want to start the batch immediately.
-    // However, we first need to determine whether there already is one running,
-    // since we don't want to start a second one – our new batch will
-    // automatically be appended to the currently running batch operation.
-    $batch = batch_get();
-    $run_drush_batch = function_exists('drush_backend_batch_process')
-      && empty($batch['running']);
-
     // Schedule the batch.
     batch_set($batch_definition);
-
-    // Now run the Drush batch, if applicable.
-    if ($run_drush_batch) {
+    if (function_exists('drush_backend_batch_process')) {
       $result = drush_backend_batch_process();
       // Drush performs batch processing in a separate PHP request. When the
       // last batch is processed the batch list is cleared, but this only takes
@@ -299,7 +288,6 @@ class TaskManager implements TaskManagerInterface {
       if ($result['context']['drush_batch_process_finished'] === TRUE) {
         $batch = &batch_get();
         $batch = NULL;
-        unset($batch);
       }
     }
   }

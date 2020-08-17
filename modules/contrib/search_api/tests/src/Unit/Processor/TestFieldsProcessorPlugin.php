@@ -124,7 +124,7 @@ class TestFieldsProcessorPlugin extends FieldsProcessorPluginBase {
       $this->methodOverrides[__FUNCTION__]($value);
       return;
     }
-    if ($value !== NULL) {
+    if (isset($value)) {
       $value = "*$value";
     }
     else {
