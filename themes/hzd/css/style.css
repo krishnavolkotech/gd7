@@ -4068,3 +4068,21 @@ table.released tr th:last-child {
   text-align: left !important;
   padding-left: 8px !important;
 }
+
+.label-success {
+  background-color: rgb(204, 227, 235) !important;
+}
+
+.label-warning {
+  background-color: rgb(127, 181, 203) !important;
+}
+
+.label-danger {
+  background-color: rgb(2, 117, 150) !important;
+}
+
+.label-primary {
+  /*background-color: rgb(2, 117, 150) !important;*/ /*Blau*/
+  /*background-color: rgb(3, 22, 101) !important;*/ /*lila-schwarz*/
+  background-color: rgb(67, 40, 106) !important; /*konsens-lila*/
+}
