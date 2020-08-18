@@ -1,0 +1,29 @@
+uuid: 2676b4f3-8bc5-4acf-9761-dc649d3675cd
+langcode: de
+status: false
+dependencies:
+  config:
+    - facets.facet.node_group_content_type
+  module:
+    - block_visibility_groups
+    - facets
+  theme:
+    - hzd
+id: nodegroupcontenttype
+theme: hzd
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'facet_block:node_group_content_type'
+settings:
+  id: 'facet_block:node_group_content_type'
+  label: 'Node Group Content Type'
+  provider: facets
+  label_display: visible
+  block_id: nodegroupcontenttype
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
