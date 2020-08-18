@@ -1503,9 +1503,6 @@ li.facet-item label {
     margin-left: 1rem;
 }
 
-.limit-block-title h2 {
-    color: #222222b5 !important;
-}
 .col-sm-3.group-filter-text {
     width: 21rem !important;
 }
@@ -1513,3 +1510,9 @@ li.facet-item label {
 .col-sm-2.group-filter-text {
     width: 13.5rem !important;
 }
+
+/*
+.view-solr-search .item-list li:nth-child(even) {
+    background: #f0f0f069;
+}
+*/

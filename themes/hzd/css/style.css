@@ -3399,9 +3399,6 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
     padding:0 !important;
 }
 
-.view-solr-search .item-list li:nth-child(even) {
-    background: #f0f0f069;
-}
 .view-solr-search .view-content ul li{
 /*  margin-bottom:20px !important; */
     float:left;
