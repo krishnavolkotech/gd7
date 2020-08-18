@@ -1509,3 +1509,7 @@ li.facet-item label {
 .col-sm-3.group-filter-text {
     width: 21rem !important;
 }
+
+.col-sm-2.group-filter-text {
+    width: 13.5rem !important;
+}
