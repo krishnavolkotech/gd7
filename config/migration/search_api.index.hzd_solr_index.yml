@@ -11,10 +11,10 @@ dependencies:
     - downtimes
     - hzd_customizations
   config:
+    - field.storage.node.body
     - field.storage.node.field_custom_title
     - field.storage.node.field_other_services
     - field.storage.node.field_release_service
-    - field.storage.node.body
     - search_api.server.solr_bpk_migration
 third_party_settings:
   search_api_solr:
@@ -52,7 +52,6 @@ third_party_settings:
       interestingTerms: none
     advanced:
       index_prefix: ''
-      collection: ''
 id: hzd_solr_index
 name: 'Solr Index Produktion'
 description: ''
@@ -381,6 +380,6 @@ tracker_settings:
   default:
     indexing_order: fifo
 options:
-  index_directly: false
+  index_directly: true
   cron_limit: 100
 server: solr_bpk_migration
