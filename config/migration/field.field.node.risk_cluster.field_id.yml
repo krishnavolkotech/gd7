@@ -1,5 +1,5 @@
-uuid: e97749b1-c037-4a4d-9052-1c5ddb07024f
-langcode: en
+uuid: e52aa044-fc19-4be9-a04e-f69231d1cc26
+langcode: de
 status: true
 dependencies:
   config:
@@ -13,10 +13,9 @@ entity_type: node
 bundle: risk_cluster
 label: ID
 description: ''
-required: true
-translatable: false
-default_value:
-  - {  }
+required: false
+translatable: true
+default_value: {  }
 default_value_callback: ''
 settings: {  }
 field_type: serial

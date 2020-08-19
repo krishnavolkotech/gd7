@@ -1,0 +1,23 @@
+uuid: 643f0f2a-404c-4e83-b090-f03441991cdc
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_cluster_id
+    - node.type.risk_cluster
+id: node.risk_cluster.field_cluster_id
+field_name: field_cluster_id
+entity_type: node
+bundle: risk_cluster
+label: 'Cluster ID'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0
+  max: 99
+  prefix: ''
+  suffix: ''
+field_type: integer
