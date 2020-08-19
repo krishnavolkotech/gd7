@@ -5,17 +5,8 @@
       if ($(context).find('.risk-management-chart-block').length) {
         $(".risk-management-chart-block").insertAfter($(".page-header"));
       }
+      
       // Einzelrisiko: Maßnahmen Status
-
-      // BUG behoben (24.06.2020, Robin): Chart wurde zwei mal geladen. Führt zu 
-      // seltsamen Verhalten, z.b. wurde der Chart zu groß oder zu klein und 
-      // unscharf dargestellt, wenn die Seite gezoomt wurde.
-      // Ursache: jQuery selector wurde auf gesamten DOM angewandt. Aufgrund eines
-      // AJAX calls, wurde das behavior zwei mal attached. (Jeder AJAX call macht
-      // das). Lösung: context als Selector verwenden. Bei AJAX Call ist das nur
-      // der Inhalt der AJAX Antwort und unser Ziel wird nicht ein zweites mal
-      // gefunden.
-
       if ($(context).find('#measure-status-pie-chart').length) {
         var measureData = settings.hzd_risk_management.chartData['status'];
         var statusLabels = [];
@@ -36,16 +27,10 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(2, 117, 150, 1)', // Primär Blau
-                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
-                'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
-                // 'rgba(240, 173, 78, 1)', // orange
-                // 'rgba(255, 218, 86, 1)', // gelb
                 'rgba(204, 227, 235, 1)', // Hellblau 35%
-                // 'rgba(148, 148, 148, 1)', // grau
-                'rgba(176, 212, 230, 1)', // Custom Hellblau
-                // 'rgba(217, 84, 79, 1)', // rot
-                // 'rgba(92, 184, 92, 1)' // grün
+                'rgba(127, 181, 203, 1)', // Sekundär Hellblau
+                'rgba(1, 83, 119, 1)', // B HB
+                'rgba(63, 128, 162, 1)', // HB HB
               ],
             }]
           },
@@ -94,18 +79,10 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(2, 117, 150, 1)', // Primär Blau
-                '#B0D4E6', // Hellblau 35 heller
-                // '#C1DEEC', //  Hellblau 35 noch heller
-                'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
-                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
                 'rgba(204, 227, 235, 1)', // Hellblau 35%
-                
-                // 'rgba(148, 148, 148, 1)', // grau
-                // 'rgba(255, 218, 86, 1)', // gelb
-                // 'rgba(240, 173, 78, 1)', // orange
-                // 'rgba(217, 84, 79, 1)', // rot
-                // 'rgba(92, 184, 92, 1)', // grün
+                'rgba(127, 181, 203, 1)', // Sekundär Hellblau
+                'rgba(1, 83, 119, 1)', // B HB
+                'rgba(63, 128, 162, 1)', // HB HB
               ],
             }]
           },
@@ -136,8 +113,6 @@
             }
           }
         });
-        // myChart.canvas.parentNode.style.height = '128px';
-        // myChart.canvas.parentNode.style.width = '128px';
       }
             
       // Maßnahmen: Risikokategorien
@@ -160,19 +135,9 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
-                // 'rgba(145, 11, 0, 1)', //rot-neu
-                // 'rgba(220, 150, 0, 1)', //gelb-orange-neu
-                // 'rgba(0, 111, 19, 1)', //grün-neu
-                // 'rgba(233, 125, 99, 1)', //rot-neu
-                // 'rgba(233, 195, 99, 1)', //gelb-orange-neu
-                // 'rgba(71, 167, 110, 1)', //grün-neu
-                'rgba(0, 78, 89)', // Dunkelblau 
+                'rgba(1, 83, 119, 1)', // Dunkelblau 
                 'rgba(2, 117, 150, 1)', // Primär Blau 
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                // 'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
-                // 'rgba(217, 84, 79, 1)', // rot
-                // 'rgba(255, 218, 86, 1)', // gelb
-                // 'rgba(92, 184, 92, 1)', // grün
               ],
             }]
           },
@@ -204,8 +169,6 @@
             }
           }
         });
-        // myChart.canvas.parentNode.style.height = '128px';
-        // myChart.canvas.parentNode.style.width = '128px';
       }
 
       if ($(context).find('#front-measure-status-pie-chart').length) {
@@ -228,16 +191,10 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(2, 117, 150, 1)', // Primär Blau
-                'rgba(176, 212, 230, 1)', // Custom Hellblau
+                'rgba(204, 227, 235, 1)', // Hellblau 35%
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
-                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
-                'rgba(204, 227, 235, 1)' // Hellblau 35%
-                // 'rgba(217, 84, 79, 1)', // rot
-                // 'rgba(240, 173, 78, 1)', // orange
-                // 'rgba(255, 218, 86, 1)', // gelb
-                // 'rgba(148, 148, 148, 1)', // grau
-                // 'rgba(92, 184, 92, 1)' // grün
+                'rgba(1, 83, 119, 1)', // B HB
+                'rgba(63, 128, 162, 1)', // HB HB
               ],
             }]
           },
@@ -281,19 +238,9 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
-                // 'rgba(237, 37,81, 1)', // rot-ausprobieren
-                // 'rgba(255, 182, 0, 1)', // gelb- ausprobieren
-                // 'rgba(70, 200, 0, 1)', // grün-ausprobieren
-                // 'rgba(145, 11, 0, 1)', //rot-neu
-                // 'rgba(220, 150, 0, 1)', //gelb-orange-neu
-                // 'rgba(0, 111, 19, 1)', //grün-neu
-                'rgba(0, 78, 89)', // Dunkelblau 
-                'rgba(2, 117, 150, 1)', // Primär Blau
+                'rgba(1, 83, 119, 1)', // Dunkelblau 
+                'rgba(2, 117, 150, 1)', // Primär Blau 
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                // 'rgba(204, 227, 235, 1)', // Sekundär Hellblau 35%
-                // 'rgba(217, 84, 79, 1)', // rot
-                // 'rgba(255, 218, 86, 1)', // gelb
-                // 'rgba(92, 184, 92, 1)', // grün
               ],
             }]
           },
@@ -318,7 +265,6 @@
               padding: {
                 left: 0,
                 right: 75,
-                // right: 0,
                 top: 0,
                 bottom: 0
               }
