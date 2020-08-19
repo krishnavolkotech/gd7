@@ -135,7 +135,7 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
-                'rgba(1, 83, 119, 1)', // Dunkelblau 
+                'rgba(0, 78, 89, 1)', // grünlich dunkelblau
                 'rgba(2, 117, 150, 1)', // Primär Blau 
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
               ],
@@ -238,7 +238,7 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
-                'rgba(1, 83, 119, 1)', // Dunkelblau 
+                'rgba(0, 78, 89, 1)', // grünlich dunkelblau
                 'rgba(2, 117, 150, 1)', // Primär Blau 
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
               ],
