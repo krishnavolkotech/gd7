@@ -177,8 +177,9 @@ table.risk-detail-table {
 }
 div.risk-detail-table-wrapper {
     width: 100% !important;
-    border: 1px solid rgba(0,0,0,.2);
+    /* border: 1px solid rgba(0,0,0,.2); */
     border-radius: 5px !important;
+    background-color: #f5f7fa !important;
 }
 .form-actions button,
 a.button--danger,

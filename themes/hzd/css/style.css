@@ -4072,6 +4072,7 @@ table.released tr th:last-child {
 .label-success {
   /* hellblau 35 */
   /* background-color: rgb(204, 227, 235) !important; */
+  
   /* hellblau */
   background-color: rgb(127, 181, 203) !important;
 }
@@ -4087,6 +4088,7 @@ table.released tr th:last-child {
 .label-danger {
   /* blau */
   /* background-color: rgb(2, 117, 150) !important; */
+  
   /* Dunkelblau */
   background-color: rgb(0, 78, 89) !important;
 }
@@ -4099,5 +4101,27 @@ table.released tr th:last-child {
   /*background-color: rgb(3, 22, 101) !important;*/
   
   /*konsens-lila*/
-  background-color: rgb(67, 40, 106) !important;
+  /* background-color: rgb(67, 40, 106) !important; */
+  background-color: rgb(237, 37, 81) !important;
+  /* rgba(255, 218, 86, 1)', // gelb */
 }
+
+.panel-light {
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading {
+  color: #fff !important;
+  background-color: #f5f7fa !important;
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading .badge {
+  color: #f5f7fa !important;
+  background-color: #fff !important;
+}
+.panel-light > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #EDF0F3 !important;
+}
+

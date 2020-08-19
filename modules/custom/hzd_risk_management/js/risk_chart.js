@@ -38,12 +38,13 @@
                 'rgba(2, 117, 150, 1)', // Primär Blau
                 'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(0, 164, 227, 1)', // Akzent Cyan
-                'rgba(204, 227, 235, 1)' // Hellblau 35%
-                // 'rgba(217, 84, 79, 1)', // rot
+                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
                 // 'rgba(240, 173, 78, 1)', // orange
                 // 'rgba(255, 218, 86, 1)', // gelb
+                'rgba(204, 227, 235, 1)', // Hellblau 35%
                 // 'rgba(148, 148, 148, 1)', // grau
+                'rgba(176, 212, 230, 1)', // Custom Hellblau
+                // 'rgba(217, 84, 79, 1)', // rot
                 // 'rgba(92, 184, 92, 1)' // grün
               ],
             }]
@@ -93,10 +94,13 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(2, 117, 150, 1)', // Primär Blau
-                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
+                '#B0D4E6', // Hellblau 35 heller
+                // '#C1DEEC', //  Hellblau 35 noch heller
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(0, 164, 227, 1)', // Akzent Cyan
-                'rgba(204, 227, 235, 1)' // Hellblau 35%
+                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
+                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
+                'rgba(204, 227, 235, 1)', // Hellblau 35%
+                
                 // 'rgba(148, 148, 148, 1)', // grau
                 // 'rgba(255, 218, 86, 1)', // gelb
                 // 'rgba(240, 173, 78, 1)', // orange
@@ -224,9 +228,10 @@
               data: statusCounts,
               backgroundColor: [
                 'rgba(2, 117, 150, 1)', // Primär Blau
-                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
+                'rgba(176, 212, 230, 1)', // Custom Hellblau
                 'rgba(127, 181, 203, 1)', // Sekundär Hellblau
-                'rgba(0, 164, 227, 1)', // Akzent Cyan
+                // 'rgba(0, 164, 227, 1)', // Akzent Cyan
+                'rgba(0, 78, 89, 1)', // Sekundär Dunkelblau
                 'rgba(204, 227, 235, 1)' // Hellblau 35%
                 // 'rgba(217, 84, 79, 1)', // rot
                 // 'rgba(240, 173, 78, 1)', // orange
