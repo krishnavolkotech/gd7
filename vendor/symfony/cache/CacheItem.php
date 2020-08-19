@@ -60,8 +60,6 @@ final class CacheItem implements ItemInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return $this
      */
     public function set($value)
     {
@@ -72,8 +70,6 @@ final class CacheItem implements ItemInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return $this
      */
     public function expiresAt($expiration)
     {
@@ -90,8 +86,6 @@ final class CacheItem implements ItemInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return $this
      */
     public function expiresAfter($time)
     {
@@ -116,7 +110,7 @@ final class CacheItem implements ItemInterface
         if (!$this->isTaggable) {
             throw new LogicException(sprintf('Cache item "%s" comes from a non tag-aware pool: you cannot tag it.', $this->key));
         }
-        if (!is_iterable($tags)) {
+        if (!\is_iterable($tags)) {
             $tags = [$tags];
         }
         foreach ($tags as $tag) {

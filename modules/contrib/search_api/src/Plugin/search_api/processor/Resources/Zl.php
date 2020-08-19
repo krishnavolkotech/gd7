@@ -11,10 +11,8 @@ class Zl implements UnicodeCharacterPropertyInterface {
    * {@inheritdoc}
    */
   public static function getRegularExpression() {
-    // phpcs:disable
     return
       '\x{2028}';
-    // phpcs:enable
   }
 
 }

@@ -83,10 +83,12 @@ function hzd_earlywarnings_node_insert(EntityInterface $entity) {
     $group = \Drupal::routeMatch()->getParameter('group');
     $plugin = $group->getGroupType()
       ->getContentPlugin('group_node:early_warnings');
-    
+
+    //Adding All Early Warnings to the RELEASE MANAGEMENT GROUP Context
     $values = [
       'type' => $plugin->getContentTypeConfigId(),
-      'gid' => $group->id(),
+//      'gid' => $group->id(),
+      'gid' => 1,
       'entity_id' => $entity->id(),
     ];
     $group_content = \Drupal::entityTypeManager()

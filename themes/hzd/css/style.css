@@ -2056,12 +2056,15 @@ section .form-group .view-footer a.all-problems,
 .view-release-list ul li{
   padding-left:0 !important;
 }
-.view-solr-search .view-content ul li .views-field-title,
+
+
+/*.view-solr-search .view-content ul li .views-field-title, */
 .view-news-list .views-field-body .field-content{
   width:100%;
   float:left;
   border-bottom:1px solid #ccc;
 }
+
 .view-solr-search .view-content ul li .views-field-title{
   margin-bottom: 5px;
 }
@@ -3395,10 +3398,13 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
     text-decoration:none;
     padding:0 !important;
 }
+
 .view-solr-search .view-content ul li{
-  margin-bottom:20px !important;
-  float:left;
+/*  margin-bottom:20px !important; */
+    float:left;
+    padding: 2rem 0px 2rem 6px !important;
 }
+
 .forum-author-info{
   width:auto;
   display:inline-block;

@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Npm;
 
 use Robo\Task\BaseTask;

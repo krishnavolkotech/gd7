@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Common;
 
 trait Timer

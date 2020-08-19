@@ -20,12 +20,11 @@ class BlockUploadBlock extends DeriverBase {
     for ($i = 1; $i <= $blocks_count; $i++) {
       $this->derivatives['block_upload' . $i] = $base_plugin_definition;
       $this->derivatives['block_upload' . $i]['admin_label'] = 'Block upload ' . $i;
-      $this->derivatives['block_upload' . $i]['cache'] = array(
+      $this->derivatives['block_upload' . $i]['cache'] = [
         'max_age' => 0,
-      );
+      ];
     }
     return $this->derivatives;
   }
 
 }
-

@@ -5,10 +5,6 @@ class RoboFile extends \Robo\Tasks
 {
     /**
      * Run the Robo unit tests.
-     *
-     * n.b. The CI jobs use `composer unit` rather than this function
-     * to run the tests. This command also runs the remaining Codeception
-     * tests. You must re-add Codeception to the project to use this.
      */
     public function test(array $args, $options =
         [
@@ -16,11 +12,7 @@ class RoboFile extends \Robo\Tasks
             'coverage' => false
         ])
     {
-        $collection = $this->collectionBuilder();
-
-        $taskPHPUnit = $collection->taskPHPUnit();
-
-        $taskCodecept = $collection->taskCodecept()
+        $taskCodecept = $this->taskCodecept()
             ->args($args);
 
         if ($options['coverage']) {
@@ -30,7 +22,7 @@ class RoboFile extends \Robo\Tasks
             $taskCodecept->coverageHtml('../../build/logs/coverage');
         }
 
-        return $collection;
+        return $taskCodecept->run();
      }
 
     /**
@@ -67,9 +59,8 @@ class RoboFile extends \Robo\Tasks
     /**
      * Generate a new Robo task that wraps an existing utility class.
      *
-     * @param string $className The name of the existing utility class to wrap.
-     * @param string $wrapperClassName The name of the wrapper class to create. Optional.
-     *
+     * @param $className The name of the existing utility class to wrap.
+     * @param $wrapperClassName The name of the wrapper class to create. Optional.
      * @usage generate:task 'Symfony\Component\Filesystem\Filesystem' FilesystemStack
      */
     public function generateTask($className, $wrapperClassName = "")

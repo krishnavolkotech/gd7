@@ -1050,6 +1050,8 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
 .deployedReleases {
   padding-top: 20px;
 }
+
+.dasi-hzd-file-created,
 .hzd-file-created {
     padding: 0 1em;
     white-space: pre;
@@ -1404,7 +1406,14 @@ div.menu-separator {
 }
 
 .dasi-links span.file-link {
-    width: 450px !important;
+    display: block;
+    /* word-break: break-word; */
+    /* -webkit-line-break: after-white-space; */
+    overflow-wrap: break-word;
+    /* word-wrap: break-word; */
+    min-width: 200px;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
 }
 
 .dasi-links span.file-size{
@@ -1412,6 +1421,7 @@ div.menu-separator {
     text-align: left !important;
 }
 
+.dasi-links .dasi-hzd-file-created,
 .dasi-links .hzd-file-created {
     width: 80px;
     text-align: left;
@@ -1427,3 +1437,82 @@ div.menu-separator {
     width: 13rem;
     vertical-align: middle;
 }
+
+/********Search Page CSS *********/
+span.glyphicon.down-arrow {
+    top: 3px;
+    left: 5px;
+    cursor:pointer;
+}
+
+.row.limit-header {
+    padding: 1.1rem 0px 1.1rem 0px;
+    font-size: 14px;
+}
+
+.search-time-filters-content ul,
+.limit-block-content ul {
+    padding: 0;
+}
+
+.search-time-filters-content ul li,
+.limit-block-content li {
+    list-style: none;
+    padding: .2rem 0px .2rem 0px;
+}
+
+.search-time-filters-content,
+.row.search-limited-content {
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  position: absolute;
+  padding-bottom: 10px;
+  width: 85%;
+  background: #fff;
+  z-index: 100;
+}
+
+.limit-results {
+    margin-bottom: 3rem;
+}
+
+.row.search-time-filters-content a.active,
+.row.search-limited-content a.active {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 16px;
+}
+
+.row.search-time-filters-content {
+    padding: 1rem .5rem .5rem 1rem;
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+
+li.facet-item {
+    list-style: none;
+}
+
+ul.custom-search-facet,
+ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget {
+    padding: 0;
+}
+
+li.facet-item label {
+    margin-left: 1rem;
+}
+
+.col-sm-3.group-filter-text {
+    width: 21rem !important;
+}
+
+.col-sm-2.group-filter-text {
+    width: 13.5rem !important;
+}
+
+/*
+.view-solr-search .item-list li:nth-child(even) {
+    background: #f0f0f069;
+}
+*/

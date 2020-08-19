@@ -97,7 +97,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function indexItems($index_id) {
     $index_status = parent::indexItems($index_id);
     $index = Index::load($index_id);
-    $this->ensureCommit($index);
+    $this->ensureCommit($index->getServerInstance());
     return $index_status;
   }
 
@@ -107,7 +107,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function clearIndex() {
     $index = Index::load($this->indexId);
     $index->clear();
-    $this->ensureCommit($index);
+    $this->ensureCommit($index->getServerInstance());
   }
 
   /**
@@ -138,7 +138,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function checkIndexWithoutFields() {
     $index = parent::checkIndexWithoutFields();
     $index->clear();
-    $this->ensureCommit($index);
+    $this->ensureCommit($index->getServerInstance());
   }
 
   /**

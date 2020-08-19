@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Testing;
 
 use Robo\Contract\CommandInterface;
@@ -36,13 +35,6 @@ class PHPUnit extends BaseTask implements CommandInterface, PrintedInterface
      */
     protected $files = '';
 
-    /**
-     * PHPUnit constructor.
-     *
-     * @param null|string $pathToPhpUnit
-     *
-     * @throws \Robo\Exception\TaskException
-     */
     public function __construct($pathToPhpUnit = null)
     {
         $this->command = $pathToPhpUnit;
@@ -158,8 +150,7 @@ class PHPUnit extends BaseTask implements CommandInterface, PrintedInterface
     /**
      * Directory of test files or single test file to run.
      *
-     * @param string $files
-     *   A single test file or a directory containing test files.
+     * @param string $files A single test file or a directory containing test files.
      *
      * @return $this
      *
@@ -180,8 +171,7 @@ class PHPUnit extends BaseTask implements CommandInterface, PrintedInterface
     /**
      * Test the provided file.
      *
-     * @param string $file
-     *   Path to file to test.
+     * @param string $file path to file to test
      *
      * @return $this
      */

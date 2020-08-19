@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Common;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -20,9 +19,7 @@ trait IO
     /**
      * Provide access to SymfonyStyle object.
      *
-     * @deprecated Use a style injector instead
-     *
-     * @return \Symfony\Component\Console\Style\SymfonyStyle
+     * @return SymfonyStyle
      *
      * @see http://symfony.com/blog/new-in-symfony-2-8-console-style-guide
      */
@@ -128,13 +125,12 @@ trait IO
 
     /**
      * @param string $question
-     * @param bool $default
      *
      * @return string
      */
-    protected function confirm($question, $default = false)
+    protected function confirm($question)
     {
-        return $this->doAsk(new ConfirmationQuestion($this->formatQuestion($question . ' (y/n)'), $default));
+        return $this->doAsk(new ConfirmationQuestion($this->formatQuestion($question . ' (y/n)'), false));
     }
 
     /**

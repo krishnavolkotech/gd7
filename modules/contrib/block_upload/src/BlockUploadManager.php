@@ -8,8 +8,20 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\Component\Render\FormattableMarkup;
 
+/**
+ * BlockUploadManager class.
+ */
 class BlockUploadManager {
 
+  /**
+   * Builds contents of block upload by its id.
+   *
+   * @param int $block_id
+   *   Block upload variable ID.
+   *
+   * @return array
+   *   Block with content.
+   */
   public static function blockUploadBuildBlockContent($block_id) {
     $block = [];
     if (\Drupal::request()->attributes->has('node')) {
@@ -55,14 +67,16 @@ class BlockUploadManager {
   }
 
   /**
-   * Dinamic form elements for image/file field types.
+   * Dynamic form elements for image/file field types.
    *
+   * @param array $form
+   *   Form array into which need add form elements.
    * @param int $buid
    *   Block upload variable ID.
    * @param string $type
    *   Field type.
    */
-  public static function blockUploadFieldOptionsFormElements(&$form, $buid, $type) {
+  public static function blockUploadFieldOptionsFormElements(array &$form, $buid, $type) {
     $form['config'] = [
       '#title' => t("Additional display"),
       '#description' => t('Alt and title fields display for single form display. Will not apply for plupload widget.'),
@@ -112,4 +126,3 @@ class BlockUploadManager {
   }
 
 }
-

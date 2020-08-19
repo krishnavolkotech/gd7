@@ -10,23 +10,12 @@ use Sabberworm\CSS\Value\URL;
 class Import implements AtRule {
 	private $oLocation;
 	private $sMediaQuery;
-	protected $iLineNo;
-	protected $aComments;
 	
-	public function __construct(URL $oLocation, $sMediaQuery, $iLineNo = 0) {
+	public function __construct(URL $oLocation, $sMediaQuery) {
 		$this->oLocation = $oLocation;
 		$this->sMediaQuery = $sMediaQuery;
-		$this->iLineNo = $iLineNo;
-		$this->aComments = array();
 	}
-
-	/**
-	 * @return int
-	 */
-	public function getLineNo() {
-		return $this->iLineNo;
-	}
-
+	
 	public function setLocation($oLocation) {
 			$this->oLocation = $oLocation;
 	}
@@ -53,17 +42,5 @@ class Import implements AtRule {
 			array_push($aResult, $this->sMediaQuery);
 		}
 		return $aResult;
-	}
-
-	public function addComments(array $aComments) {
-		$this->aComments = array_merge($this->aComments, $aComments);
-	}
-
-	public function getComments() {
-		return $this->aComments;
-	}
-
-	public function setComments(array $aComments) {
-		$this->aComments = $aComments;
 	}
 }

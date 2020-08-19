@@ -11,7 +11,6 @@ use Drupal\search_api_solr\Form\IndexSolrMultisiteCloneForm;
 use Drupal\search_api_solr\Form\IndexSolrMultisiteUpdateForm;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\search_api_solr\Utility\Utility;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * Implements hook_help().
@@ -73,7 +72,7 @@ function search_api_solr_cron() {
         }
 
         if ($optimize && $backend->isOptimizeEnabled()) {
-          $connector->optimize($backend->getCollectionEndpoint($index));
+          $connector->optimize();
           $backend->getLogger()->info('Optimized Solr server @server.', ['@server' => $server->label()]);
         }
       }
@@ -138,24 +137,12 @@ function search_api_solr_default_index_third_party_settings() {
     ],
     'advanced' => [
       'index_prefix' => '',
-      'collection' => '',
     ],
     'multilingual' => [
       'limit_to_content_language' => FALSE,
       'include_language_independent' => TRUE,
     ],
   ];
-}
-
-/**
- * Merges the default third party settings to those of an index for Solr.
- *
- * @param array $third_party_settings
- *
- * @return array
- */
-function search_api_solr_merge_default_index_third_party_settings(array $third_party_settings) {
-  return ArrayUtils::merge(search_api_solr_default_index_third_party_settings(), $third_party_settings, TRUE);
 }
 
 /**
@@ -176,7 +163,7 @@ function search_api_solr_form_search_api_index_form_alter(&$form, FormStateInter
     if (!$index->isNew()) {
       $settings = $index->getThirdPartySettings('search_api_solr');
     }
-    $settings = search_api_solr_merge_default_index_third_party_settings($settings);
+    $settings += search_api_solr_default_index_third_party_settings();
 
     $form['third_party_settings']['search_api_solr'] = [
       '#tree' => TRUE,
@@ -453,13 +440,6 @@ function search_api_solr_form_search_api_index_form_alter(&$form, FormStateInter
       '#title' => t('Index prefix'),
       '#description' => t("By default, the index ID in the Solr server is the same as the index's machine name in Drupal. This setting will let you specify an additional prefix. Only use alphanumeric characters and underscores. Since changing the prefix makes the currently indexed data inaccessible, you should not change this variable when no data is indexed."),
       '#default_value' => $settings['advanced']['index_prefix'],
-    ];
-
-    $form['third_party_settings']['search_api_solr']['advanced']['collection'] = [
-      '#type' => 'textfield',
-      '#title' => t('Collection'),
-      '#description' => t("If the server uses a Solr Cloud connector, this setting overwrites the configured default collection if set."),
-      '#default_value' => $settings['advanced']['collection'],
     ];
 
   }

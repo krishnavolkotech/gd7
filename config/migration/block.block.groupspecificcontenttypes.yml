@@ -1,0 +1,32 @@
+uuid: bf1a7311-85cc-4d6c-bdfd-67efb26f3e4e
+langcode: de
+status: false
+dependencies:
+  module:
+    - block_visibility_groups
+    - hzd_customizations
+    - system
+  theme:
+    - hzd
+id: groupspecificcontenttypes
+theme: hzd
+region: sidebar_first
+weight: 0
+provider: null
+plugin: search_group_content
+settings:
+  id: search_group_content
+  label: 'Group Specific Content Types'
+  provider: hzd_customizations
+  label_display: '0'
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: "/suche\r\n/suche*\r\n/suche/*\r\nsuche\r\nsuche*"
+    negate: false
+    context_mapping: {  }

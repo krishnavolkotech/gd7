@@ -24,9 +24,6 @@ function back_to_top_page_attachments(array &$attachments) {
   ) {
     return FALSE;
   }
-  if( \Drupal::routeMatch()->getRouteName() != 'entity.taxonomy_term.canonical' ) {
-      return FALSE;
-  }
 
   //$attachments['#attached']['library'][] = 'core/jquery.ui.core';
   //$attachments['#attached']['library'][] = 'core/jquery.ui.effects.core';

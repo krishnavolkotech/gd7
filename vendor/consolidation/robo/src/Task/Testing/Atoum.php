@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Testing;
 
 use Robo\Contract\CommandInterface;
@@ -49,7 +48,7 @@ class Atoum extends BaseTask implements CommandInterface, PrintedInterface
     /**
      * Tag or Tags to filter.
      *
-     * @param string|string[] $tags
+     * @param string|array $tags
      *
      * @return $this
      */
@@ -125,7 +124,7 @@ class Atoum extends BaseTask implements CommandInterface, PrintedInterface
     /**
      * Test file or test files to run.
      *
-     * @param string|string[]
+     * @param string|array
      *
      * @return $this
      */
@@ -137,8 +136,7 @@ class Atoum extends BaseTask implements CommandInterface, PrintedInterface
     /**
      * Test directory or directories to run.
      *
-     * @param string|string[]
-     *   A single directory or a list of directories.
+     * @param string|array A single directory or a list of directories.
      *
      * @return $this
      */
@@ -149,7 +147,7 @@ class Atoum extends BaseTask implements CommandInterface, PrintedInterface
 
     /**
      * @param string $option
-     * @param string|string[] $values
+     * @param string|array $values
      *
      * @return $this
      */

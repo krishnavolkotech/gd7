@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Composer;
 
 trait loadTasks
@@ -7,7 +6,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Install|\Robo\Collection\CollectionBuilder
+     * @return Install
      */
     protected function taskComposerInstall($pathToComposer = null)
     {
@@ -17,7 +16,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Update|\Robo\Collection\CollectionBuilder
+     * @return Update
      */
     protected function taskComposerUpdate($pathToComposer = null)
     {
@@ -27,7 +26,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\DumpAutoload|\Robo\Collection\CollectionBuilder
+     * @return DumpAutoload
      */
     protected function taskComposerDumpAutoload($pathToComposer = null)
     {
@@ -37,7 +36,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Init|\Robo\Collection\CollectionBuilder
+     * @return Init
      */
     protected function taskComposerInit($pathToComposer = null)
     {
@@ -47,7 +46,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Config|\Robo\Collection\CollectionBuilder
+     * @return Config
      */
     protected function taskComposerConfig($pathToComposer = null)
     {
@@ -57,7 +56,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Validate|\Robo\Collection\CollectionBuilder
+     * @return Validate
      */
     protected function taskComposerValidate($pathToComposer = null)
     {
@@ -67,7 +66,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\Remove|\Robo\Collection\CollectionBuilder
+     * @return Remove
      */
     protected function taskComposerRemove($pathToComposer = null)
     {
@@ -77,7 +76,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\RequireDependency|\Robo\Collection\CollectionBuilder
+     * @return RequireDependency
      */
     protected function taskComposerRequire($pathToComposer = null)
     {
@@ -87,7 +86,7 @@ trait loadTasks
     /**
      * @param null|string $pathToComposer
      *
-     * @return \Robo\Task\Composer\CreateProject|\Robo\Collection\CollectionBuilder
+     * @return CreateProject
      */
     protected function taskComposerCreateProject($pathToComposer = null)
     {

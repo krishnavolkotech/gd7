@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Filesystem;
 
 use Robo\Task\BaseTask;

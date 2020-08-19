@@ -8,7 +8,6 @@ namespace Drush\Runtime;
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Drush\Commands\DrushCommands;
 use Webmozart\PathUtil\Path;
 
 use Psr\Log\LoggerAwareInterface;
@@ -42,12 +41,7 @@ class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
         }
 
         if (!Drush::config()->get(Runtime::DRUSH_RUNTIME_COMPLETED_NAMESPACE)) {
-            Drush::logger()->warning('Drush command terminated abnormally.');
-            // Make sure that we will return an error code when we exit,
-            // even if the code that got us here did not.
-            if (!Runtime::exitCode()) {
-                Runtime::setExitCode(DrushCommands::EXIT_FAILURE);
-            }
+            Drush::logger()->warning('Drush command terminated abnormally. Check for an exit() in your Drupal site.');
         }
 
         if (Drush::backend()) {

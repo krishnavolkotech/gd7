@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Vcs;
 
 use Robo\Task\CommandStack;
@@ -43,7 +42,6 @@ class GitStack extends CommandStack
      *
      * @param string $repo
      * @param string $to
-     * @param string $branch
      *
      * @return $this
      */

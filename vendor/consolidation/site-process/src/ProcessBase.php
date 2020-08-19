@@ -178,14 +178,10 @@ class ProcessBase extends Process
             // Revert of doubled backslashes.
             $output = preg_replace('#\\\\{2}#', '\\', $output);
         }
-        $sanitizedOutput = $this->removeNonJsonJunk($output);
-        $json = json_decode($sanitizedOutput, true);
+        $output = $this->removeNonJsonJunk($output);
+        $json = json_decode($output, true);
         if (!isset($json)) {
-            $msg = 'Unable to decode output into JSON: ' . json_last_error_msg();
-            if (json_last_error() == JSON_ERROR_SYNTAX) {
-                $msg .= "\n\n$output";
-            }
-            throw new \InvalidArgumentException($msg);
+            throw new \InvalidArgumentException('Unable to decode output into JSON.');
         }
         return $json;
     }

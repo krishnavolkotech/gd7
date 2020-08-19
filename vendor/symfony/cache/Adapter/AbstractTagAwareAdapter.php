@@ -60,7 +60,7 @@ abstract class AbstractTagAwareAdapter implements TagAwareAdapterInterface, TagA
                 $item->metadata[CacheItem::METADATA_TAGS] = $value['tags'] ?? [];
                 if (isset($value['meta'])) {
                     // For compactness these values are packed, & expiry is offset to reduce size
-                    $v = unpack('Ve/Nc', $value['meta']);
+                    $v = \unpack('Ve/Nc', $value['meta']);
                     $item->metadata[CacheItem::METADATA_EXPIRY] = $v['e'] + CacheItem::METADATA_EXPIRY_OFFSET;
                     $item->metadata[CacheItem::METADATA_CTIME] = $v['c'];
                 }
@@ -82,7 +82,7 @@ abstract class AbstractTagAwareAdapter implements TagAwareAdapterInterface, TagA
                     $key = (string) $key;
                     if (null === $item->expiry) {
                         $ttl = 0 < $item->defaultLifetime ? $item->defaultLifetime : 0;
-                    } elseif (0 >= $ttl = (int) (0.1 + $item->expiry - $now)) {
+                    } elseif (0 >= $ttl = (int) ($item->expiry - $now)) {
                         $expiredIds[] = $getId($key);
                         continue;
                     }
@@ -96,16 +96,16 @@ abstract class AbstractTagAwareAdapter implements TagAwareAdapterInterface, TagA
 
                     if ($metadata) {
                         // For compactness, expiry and creation duration are packed, using magic numbers as separators
-                        $value['meta'] = pack('VN', (int) (0.1 + $metadata[self::METADATA_EXPIRY] - self::METADATA_EXPIRY_OFFSET), $metadata[self::METADATA_CTIME]);
+                        $value['meta'] = \pack('VN', (int) $metadata[CacheItem::METADATA_EXPIRY] - CacheItem::METADATA_EXPIRY_OFFSET, $metadata[CacheItem::METADATA_CTIME]);
                     }
 
                     // Extract tag changes, these should be removed from values in doSave()
                     $value['tag-operations'] = ['add' => [], 'remove' => []];
                     $oldTags = $item->metadata[CacheItem::METADATA_TAGS] ?? [];
-                    foreach (array_diff($value['tags'], $oldTags) as $addedTag) {
+                    foreach (\array_diff($value['tags'], $oldTags) as $addedTag) {
                         $value['tag-operations']['add'][] = $getId($tagPrefix.$addedTag);
                     }
-                    foreach (array_diff($oldTags, $value['tags']) as $removedTag) {
+                    foreach (\array_diff($oldTags, $value['tags']) as $removedTag) {
                         $value['tag-operations']['remove'][] = $getId($tagPrefix.$removedTag);
                     }
 
@@ -229,18 +229,14 @@ abstract class AbstractTagAwareAdapter implements TagAwareAdapterInterface, TagA
             unset($this->deferred[$key]);
         }
 
-        try {
-            foreach ($this->doFetch($ids) as $id => $value) {
-                foreach ($value['tags'] ?? [] as $tag) {
-                    $tagData[$this->getId(self::TAGS_PREFIX.$tag)][] = $id;
-                }
+        foreach ($this->doFetch($ids) as $id => $value) {
+            foreach ($value['tags'] ?? [] as $tag) {
+                $tagData[$this->getId(self::TAGS_PREFIX.$tag)][] = $id;
             }
-        } catch (\Exception $e) {
-            // ignore unserialization failures
         }
 
         try {
-            if ($this->doDelete(array_values($ids), $tagData)) {
+            if ($this->doDelete(\array_values($ids), $tagData)) {
                 return true;
             }
         } catch (\Exception $e) {
@@ -275,7 +271,7 @@ abstract class AbstractTagAwareAdapter implements TagAwareAdapterInterface, TagA
         }
 
         $tagIds = [];
-        foreach (array_unique($tags) as $tag) {
+        foreach (\array_unique($tags) as $tag) {
             $tagIds[] = $this->getId(self::TAGS_PREFIX.$tag);
         }
 

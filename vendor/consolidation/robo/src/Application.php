@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo;
 
 use SelfUpdate\SelfUpdateCommand;
@@ -43,7 +42,7 @@ class Application extends SymfonyApplication
         $createRoboFile->setCode(function () use ($roboClass, $roboFile) {
             $output = Robo::output();
             $output->writeln("<comment>  ~~~ Welcome to Robo! ~~~~ </comment>");
-            $output->writeln("<comment>  " . basename($roboFile) . " will be created in the current directory </comment>");
+            $output->writeln("<comment>  ". basename($roboFile) ." will be created in the current directory </comment>");
             file_put_contents(
                 $roboFile,
                 '<?php'
@@ -62,8 +61,7 @@ class Application extends SymfonyApplication
     /**
      * Add self update command, do nothing if null is provided
      *
-     * @param string $repository
-     *   GitHub Repository for self update.
+     * @param string $repository GitHub Repository for self update
      */
     public function addSelfUpdateCommand($repository = null)
     {

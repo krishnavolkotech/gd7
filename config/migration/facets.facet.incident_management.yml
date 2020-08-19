@@ -1,0 +1,111 @@
+uuid: 64c2941e-d69f-44e8-bef2-6205adfd3b08
+langcode: de
+status: true
+dependencies:
+  config:
+    - search_api.index.hzd_solr_index
+    - views.view.solr_search
+  module:
+    - search_api
+id: incident_management
+name: 'Incident Management'
+url_alias: incident_management
+weight: 0
+min_count: 1
+show_only_one_result: false
+field_identifier: type
+facet_source_id: 'search_api:views_page__solr_search__page_1'
+widget:
+  type: checkbox
+  config:
+    show_numbers: false
+    soft_limit: 0
+    soft_limit_settings:
+      show_less_label: 'Show less'
+      show_more_label: 'Show more'
+    show_reset_link: false
+    reset_text: 'Alle anzeigen'
+    hide_reset_when_no_selection: false
+query_operator: or
+use_hierarchy: false
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
+hard_limit: 0
+exclude: false
+only_visible_when_facet_source_is_visible: true
+processor_configs:
+  active_widget_order:
+    processor_id: active_widget_order
+    weights:
+      sort: 20
+    settings:
+      sort: DESC
+  count_widget_order:
+    processor_id: count_widget_order
+    weights:
+      sort: 30
+    settings:
+      sort: DESC
+  display_value_widget_order:
+    processor_id: display_value_widget_order
+    weights:
+      sort: 40
+    settings:
+      sort: ASC
+  hzd_customizations_search_merge_group_content_types:
+    processor_id: hzd_customizations_search_merge_group_content_types
+    weights:
+      build: 80
+    settings:
+      facet_groups:
+        -
+          facet_name: ''
+          parent_group:
+            downtimes: downtimes
+            artefakt_kommentar: 0
+            article: 0
+            book: 0
+            deployed_releases: 0
+            early_warnings: 0
+            event: 0
+            faq: 0
+            faqs: 0
+            forum: 0
+            fragebogen_upload: 0
+            group: 0
+            grouppost: 0
+            im_upload_page: 0
+            measure: 0
+            news: 0
+            newsletter: 0
+            non_production_environment: 0
+            page: 0
+            planning_files: 0
+            problem: 0
+            quickinfo: 0
+            release: 0
+            release_comments: 0
+            risk: 0
+            risk_cluster: 0
+            service_profile: 0
+            services: 0
+            story: 0
+  list_item:
+    processor_id: list_item
+    weights:
+      build: 5
+    settings: {  }
+  translate_entity:
+    processor_id: translate_entity
+    weights:
+      build: 5
+    settings: {  }
+  url_processor_handler:
+    processor_id: url_processor_handler
+    weights:
+      pre_query: 50
+      build: 15
+    settings: {  }
+empty_behavior:
+  behavior: none
+show_title: false

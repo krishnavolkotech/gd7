@@ -17,7 +17,7 @@ use Symfony\Component\Cache\PruneableInterface;
 
 abstract class CacheTestCase extends SimpleCacheTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

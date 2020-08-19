@@ -6,7 +6,6 @@ use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Implements d8:service:middleware command.
@@ -21,14 +20,9 @@ class Middleware extends BaseGenerator {
    * {@inheritdoc}
    */
   protected function interact(InputInterface $input, OutputInterface $output) {
-    $questions = Utils::moduleQuestions();
-
-    $default_class = function ($vars) {
-      return Utils::camelize($vars['machine_name']) . 'Middleware';
-    };
-    $questions['class'] = new Question('Class', $default_class);
-    $questions['class']->setValidator([Utils::class, 'validateClassName']);
-    $this->collectVars($input, $output, $questions);
+    $questions = Utils::defaultQuestions();
+    $vars = &$this->collectVars($input, $output, $questions);
+    $vars['class'] = Utils::camelize($vars['name']) . 'Middleware';
 
     $this->addFile()
       ->path('src/{class}.php')

@@ -4,16 +4,15 @@ namespace Sabberworm\CSS\Value;
 
 class CSSFunction extends ValueList {
 
-	protected $sName;
+	private $sName;
 
-	public function __construct($sName, $aArguments, $sSeparator = ',', $iLineNo = 0) {
+	public function __construct($sName, $aArguments, $sSeparator = ',') {
 		if($aArguments instanceof RuleValueList) {
 			$sSeparator = $aArguments->getListSeparator();
 			$aArguments = $aArguments->getListComponents();
 		}
 		$this->sName = $sName;
-		$this->iLineNo = $iLineNo;
-		parent::__construct($aArguments, $sSeparator, $iLineNo);
+		parent::__construct($aArguments, $sSeparator);
 	}
 
 	public function getName() {

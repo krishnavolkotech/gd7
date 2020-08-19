@@ -32,7 +32,6 @@ use function uasort;
  * serialize a collection use {@link toArray()} and reconstruct the collection
  * manually.
  *
- * @phpstan-template TKey
  * @psalm-template TKey of array-key
  * @psalm-template T
  * @template-implements Collection<TKey,T>
@@ -87,7 +86,7 @@ class ArrayCollection implements Collection, Selectable
      * @return static
      *
      * @psalm-param array<TKey,T> $elements
-     * @psalm-return static<TKey,T>
+     * @psalm-return ArrayCollection<TKey,T>
      */
     protected function createFrom(array $elements)
     {
@@ -161,8 +160,6 @@ class ArrayCollection implements Collection, Selectable
      * Required by interface ArrayAccess.
      *
      * {@inheritDoc}
-     *
-     * @psalm-param TKey $offset
      */
     public function offsetExists($offset)
     {
@@ -173,8 +170,6 @@ class ArrayCollection implements Collection, Selectable
      * Required by interface ArrayAccess.
      *
      * {@inheritDoc}
-     *
-     * @psalm-param TKey $offset
      */
     public function offsetGet($offset)
     {
@@ -201,8 +196,6 @@ class ArrayCollection implements Collection, Selectable
      * Required by interface ArrayAccess.
      *
      * {@inheritDoc}
-     *
-     * @psalm-param TKey $offset
      */
     public function offsetUnset($offset)
     {
@@ -289,11 +282,6 @@ class ArrayCollection implements Collection, Selectable
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
-     *
-     * This breaks assumptions about the template type, but it would
-     * be a backwards-incompatible change to remove this method
      */
     public function add($element)
     {
@@ -324,10 +312,6 @@ class ArrayCollection implements Collection, Selectable
      * {@inheritDoc}
      *
      * @return static
-     *
-     * @psalm-template U
-     * @psalm-param Closure(T=):U $func
-     * @psalm-return static<TKey, U>
      */
     public function map(Closure $func)
     {
@@ -339,7 +323,7 @@ class ArrayCollection implements Collection, Selectable
      *
      * @return static
      *
-     * @psalm-return static<TKey,T>
+     * @psalm-return ArrayCollection<TKey,T>
      */
     public function filter(Closure $p)
     {

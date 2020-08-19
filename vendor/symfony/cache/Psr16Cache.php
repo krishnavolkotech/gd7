@@ -42,7 +42,7 @@ class Psr16Cache implements CacheInterface, PruneableInterface, ResettableInterf
         }
         $cacheItemPrototype = &$this->cacheItemPrototype;
         $createCacheItem = \Closure::bind(
-            static function ($key, $value, $allowInt = false) use (&$cacheItemPrototype) {
+            function ($key, $value, $allowInt = false) use (&$cacheItemPrototype) {
                 $item = clone $cacheItemPrototype;
                 $item->key = $allowInt && \is_int($key) ? (string) $key : CacheItem::validateKey($key);
                 $item->value = $value;
@@ -169,7 +169,7 @@ class Psr16Cache implements CacheInterface, PruneableInterface, ResettableInterf
             unset($metadata[CacheItem::METADATA_TAGS]);
 
             if ($metadata) {
-                $values[$key] = ["\x9D".pack('VN', (int) (0.1 + $metadata[CacheItem::METADATA_EXPIRY] - self::METADATA_EXPIRY_OFFSET), $metadata[CacheItem::METADATA_CTIME])."\x5F" => $values[$key]];
+                $values[$key] = ["\x9D".pack('VN', (int) $metadata[CacheItem::METADATA_EXPIRY] - self::METADATA_EXPIRY_OFFSET, $metadata[CacheItem::METADATA_CTIME])."\x5F" => $values[$key]];
             }
         }
 

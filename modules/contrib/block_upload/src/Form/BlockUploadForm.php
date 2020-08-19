@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\block_upload\Form;
+
 use Drupal\block_upload\BlockUploadBuild;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -8,7 +9,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\node\Entity\Node;
 use Drupal\field\Entity\FieldConfig;
-use \Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Html;
 
 /**
  * Configure book settings for this site.
@@ -119,7 +120,15 @@ class BlockUploadForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     $nid = $values['block_upload_nid'];
-    $file = $values['block_upload_file']['fids']['0']?:$values['block_upload_file']['0'];
+    if (isset($values['block_upload_file']['fids']['0'])) {
+      $file = $values['block_upload_file']['fids']['0'];
+    }
+    elseif (isset($values['block_upload_file']['0'])) {
+      $file = $values['block_upload_file']['0'];
+    }
+    else {
+      $file = '';
+    }
     $buid = $values['buid'];
     $field_name = explode('.', \Drupal::state()->get('block_upload_' . $buid . '_field') ?: '')[1];
     $node = Node::load($nid);
@@ -128,7 +137,7 @@ class BlockUploadForm extends FormBase {
         BlockUploadBuild::blockUploadDeleteFiles($node, $field_name, $values);
       }
     }
-    if ($values['block_upload_file']['fids'] != [] || $values['block_upload_file'] != []) {
+    if (!empty($values['block_upload_file']['fids']) || !empty($values['block_upload_file'])) {
       $new_file['target_id'] = $file;
       if (isset($values['block_upload_' . $buid . '_alt'])) {
         $alt = Html::escape($values['block_upload_' . $buid . '_alt']);
@@ -149,4 +158,3 @@ class BlockUploadForm extends FormBase {
   }
 
 }
-

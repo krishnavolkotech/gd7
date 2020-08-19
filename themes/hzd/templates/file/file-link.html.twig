@@ -25,7 +25,10 @@
       not icon_only ? 'icon-' ~ icon_position|clean_class
     ]
   %}
+
+{% if node_view_mode != 'mail' %}
   <span{{ attributes.addClass(classes).addClass(dasi_class) }}>
+{% endif %}
     {% if icon_only %}
       <span class="file-icon">{{ icon }}</span>
       <span class="sr-only">
@@ -49,21 +52,45 @@
         <span class="file-size">{{ file_size }}</span>
         <span class="file-icon">{{ icon }}</span>
       {% else %}
-        <span class="file-icon">{{ icon }}</span>
-        <span class="file-link">{{ link }}</span>
-        {% if node_edit_page == 'edit' %}
-          {% if node_view_mode != 'mail' %}
-            <span class='hzd-file-created'>{{ file_created }}</span>
-          {% endif %}
-        {% endif %}
-            <span class="file-size">{{ file_size }}</span>
 
-	    {% if file_owner != '' %}
-	      <span class='hzd-file-created'>{{ file_created }}</span>
-	      <span class="file-owner">{{ file_owner }}</span>
+
+
+	{% if node_view_mode == 'mail' %}
+  	<table>
+	  <tr>
+            <td style="border: 0; min-width:400px; max-width: 400px;">{{ link }}</td>
+	    <td style="border: 0; text-align:left;min-width:75px;max-width:75px;">{{ file_size }}</td>
+	    {% if dasi_class != '' %}
+	    <td style="border: 0; text-align:left;min-width:75px;max-width: 75px;">{{ file_created }}</td>
+	    <td style="border: 0; text-align:left;min-width: 200px;">{{ file_owner }}</td>
 	    {% endif %}
+	  </tr>
+	</table>
+	
+	{% else %}
+	
+  	  <span class="file-icon">{{ icon }}</span>
+          <span class="file-link">{{ link }}</span>
+	  {% if node_edit_page == 'edit' %}
+            {% if node_view_mode != 'mail' %}
+              <span class='hzd-file-created'>{{ file_created }}</span>
+            {% endif %}
+          {% endif %}
+          <span class="file-size">{{ file_size }}</span>
+
+	  {% if dasi_class != '' and node_edit_page != 'edit' %}
+	    <span class='dasi-hzd-file-created'>{{ file_created }}</span>
+	    <span class="file-owner">{{ file_owner }}</span>
+	  {% endif %}
+	
+	{% endif %}
+    
+
 
 	{% endif %}
+
     {% endif %}
+{% if node_view_mode != 'mail' %}
   </span>
+  {% endif %}
 {% endspaceless %}

@@ -2,8 +2,6 @@
 
 namespace Sabberworm\CSS\RuleSet;
 
-use Sabberworm\CSS\Parsing\ParserState;
-use Sabberworm\CSS\Parsing\OutputException;
 use Sabberworm\CSS\Property\Selector;
 use Sabberworm\CSS\Rule\Rule;
 use Sabberworm\CSS\Value\RuleValueList;
@@ -11,6 +9,7 @@ use Sabberworm\CSS\Value\Value;
 use Sabberworm\CSS\Value\Size;
 use Sabberworm\CSS\Value\Color;
 use Sabberworm\CSS\Value\URL;
+use Sabberworm\CSS\Parsing\OutputException;
 
 /**
  * Declaration blocks are the parts of a css file which denote the rules belonging to a selector.
@@ -20,20 +19,10 @@ class DeclarationBlock extends RuleSet {
 
 	private $aSelectors;
 
-	public function __construct($iLineNo = 0) {
-		parent::__construct($iLineNo);
+	public function __construct() {
+		parent::__construct();
 		$this->aSelectors = array();
 	}
-
-	public static function parse(ParserState $oParserState) {
-		$aComments = array();
-		$oResult = new DeclarationBlock($oParserState->currentLine());
-		$oResult->setSelector($oParserState->consumeUntil('{', false, true, $aComments));
-		$oResult->setComments($aComments);
-		RuleSet::parseRuleSet($oParserState, $oResult);
-		return $oResult;
-	}
-
 
 	public function setSelectors($mSelector) {
 		if (is_array($mSelector)) {
@@ -76,11 +65,6 @@ class DeclarationBlock extends RuleSet {
 		$this->setSelectors($mSelector);
 	}
 
-	/**
-	 * Get selectors.
-	 *
-	 * @return Selector[] Selectors.
-	 */
 	public function getSelectors() {
 		return $this->aSelectors;
 	}
@@ -150,7 +134,7 @@ class DeclarationBlock extends RuleSet {
 						$sNewRuleName = $sBorderRule . "-style";
 					}
 				}
-				$oNewRule = new Rule($sNewRuleName, $this->iLineNo);
+				$oNewRule = new Rule($sNewRuleName);
 				$oNewRule->setIsImportant($oRule->getIsImportant());
 				$oNewRule->addValue(array($mNewValue));
 				$this->addRule($oNewRule);
@@ -206,7 +190,7 @@ class DeclarationBlock extends RuleSet {
 					break;
 			}
 			foreach (array('top', 'right', 'bottom', 'left') as $sPosition) {
-				$oNewRule = new Rule(sprintf($sExpanded, $sPosition), $this->iLineNo);
+				$oNewRule = new Rule(sprintf($sExpanded, $sPosition));
 				$oNewRule->setIsImportant($oRule->getIsImportant());
 				$oNewRule->addValue(${$sPosition});
 				$this->addRule($oNewRule);
@@ -271,7 +255,7 @@ class DeclarationBlock extends RuleSet {
 			}
 		}
 		foreach ($aFontProperties as $sProperty => $mValue) {
-			$oNewRule = new Rule($sProperty, $this->iLineNo);
+			$oNewRule = new Rule($sProperty);
 			$oNewRule->addValue($mValue);
 			$oNewRule->setIsImportant($oRule->getIsImportant());
 			$this->addRule($oNewRule);
@@ -294,7 +278,7 @@ class DeclarationBlock extends RuleSet {
 		$aBgProperties = array(
 			'background-color' => array('transparent'), 'background-image' => array('none'),
 			'background-repeat' => array('repeat'), 'background-attachment' => array('scroll'),
-			'background-position' => array(new Size(0, '%', null, false, $this->iLineNo), new Size(0, '%', null, false, $this->iLineNo))
+			'background-position' => array(new Size(0, '%'), new Size(0, '%'))
 		);
 		$mRuleValue = $oRule->getValue();
 		$aValues = array();
@@ -305,7 +289,7 @@ class DeclarationBlock extends RuleSet {
 		}
 		if (count($aValues) == 1 && $aValues[0] == 'inherit') {
 			foreach ($aBgProperties as $sProperty => $mValue) {
-				$oNewRule = new Rule($sProperty, $this->iLineNo);
+				$oNewRule = new Rule($sProperty);
 				$oNewRule->addValue('inherit');
 				$oNewRule->setIsImportant($oRule->getIsImportant());
 				$this->addRule($oNewRule);
@@ -339,7 +323,7 @@ class DeclarationBlock extends RuleSet {
 			}
 		}
 		foreach ($aBgProperties as $sProperty => $mValue) {
-			$oNewRule = new Rule($sProperty, $this->iLineNo);
+			$oNewRule = new Rule($sProperty);
 			$oNewRule->setIsImportant($oRule->getIsImportant());
 			$oNewRule->addValue($mValue);
 			$this->addRule($oNewRule);
@@ -375,7 +359,7 @@ class DeclarationBlock extends RuleSet {
 		}
 		if (count($aValues) == 1 && $aValues[0] == 'inherit') {
 			foreach ($aListProperties as $sProperty => $mValue) {
-				$oNewRule = new Rule($sProperty, $this->iLineNo);
+				$oNewRule = new Rule($sProperty);
 				$oNewRule->addValue('inherit');
 				$oNewRule->setIsImportant($oRule->getIsImportant());
 				$this->addRule($oNewRule);
@@ -396,7 +380,7 @@ class DeclarationBlock extends RuleSet {
 			}
 		}
 		foreach ($aListProperties as $sProperty => $mValue) {
-			$oNewRule = new Rule($sProperty, $this->iLineNo);
+			$oNewRule = new Rule($sProperty);
 			$oNewRule->setIsImportant($oRule->getIsImportant());
 			$oNewRule->addValue($mValue);
 			$this->addRule($oNewRule);
@@ -426,7 +410,7 @@ class DeclarationBlock extends RuleSet {
 			}
 		}
 		if (count($aNewValues)) {
-			$oNewRule = new Rule($sShorthand, $this->iLineNo);
+			$oNewRule = new Rule($sShorthand);
 			foreach ($aNewValues as $mValue) {
 				$oNewRule->addValue($mValue);
 			}
@@ -499,7 +483,7 @@ class DeclarationBlock extends RuleSet {
 					}
 					$aValues[$sPosition] = $aRuleValues;
 				}
-				$oNewRule = new Rule($sProperty, $this->iLineNo);
+				$oNewRule = new Rule($sProperty);
 				if ((string) $aValues['left'][0] == (string) $aValues['right'][0]) {
 					if ((string) $aValues['top'][0] == (string) $aValues['bottom'][0]) {
 						if ((string) $aValues['top'][0] == (string) $aValues['left'][0]) {
@@ -544,7 +528,7 @@ class DeclarationBlock extends RuleSet {
 		if (!isset($aRules['font-size']) || !isset($aRules['font-family'])) {
 			return;
 		}
-		$oNewRule = new Rule('font', $this->iLineNo);
+		$oNewRule = new Rule('font');
 		foreach (array('font-style', 'font-variant', 'font-weight') as $sProperty) {
 			if (isset($aRules[$sProperty])) {
 				$oRule = $aRules[$sProperty];
@@ -580,7 +564,7 @@ class DeclarationBlock extends RuleSet {
 				$aLHValues = $mRuleValue->getListComponents();
 			}
 			if ($aLHValues[0] !== 'normal') {
-				$val = new RuleValueList('/', $this->iLineNo);
+				$val = new RuleValueList('/');
 				$val->addListComponent($aFSValues[0]);
 				$val->addListComponent($aLHValues[0]);
 				$oNewRule->addValue($val);
@@ -596,7 +580,7 @@ class DeclarationBlock extends RuleSet {
 		} else {
 			$aFFValues = $mRuleValue->getListComponents();
 		}
-		$oFFValue = new RuleValueList(',', $this->iLineNo);
+		$oFFValue = new RuleValueList(',');
 		$oFFValue->setListComponents($aFFValues);
 		$oNewRule->addValue($oFFValue);
 
@@ -613,15 +597,11 @@ class DeclarationBlock extends RuleSet {
 	public function render(\Sabberworm\CSS\OutputFormat $oOutputFormat) {
 		if(count($this->aSelectors) === 0) {
 			// If all the selectors have been removed, this declaration block becomes invalid
-			throw new OutputException("Attempt to print declaration block with missing selector", $this->iLineNo);
+			throw new OutputException("Attempt to print declaration block with missing selector");
 		}
-		$sResult = $oOutputFormat->sBeforeDeclarationBlock;
-		$sResult .= $oOutputFormat->implode($oOutputFormat->spaceBeforeSelectorSeparator() . ',' . $oOutputFormat->spaceAfterSelectorSeparator(), $this->aSelectors);
-		$sResult .= $oOutputFormat->sAfterDeclarationBlockSelectors;
-		$sResult .= $oOutputFormat->spaceBeforeOpeningBrace() . '{';
+		$sResult = $oOutputFormat->implode($oOutputFormat->spaceBeforeSelectorSeparator() . ',' . $oOutputFormat->spaceAfterSelectorSeparator(), $this->aSelectors) . $oOutputFormat->spaceBeforeOpeningBrace() . '{';
 		$sResult .= parent::render($oOutputFormat);
 		$sResult .= '}';
-		$sResult .= $oOutputFormat->sAfterDeclarationBlock;
 		return $sResult;
 	}
 

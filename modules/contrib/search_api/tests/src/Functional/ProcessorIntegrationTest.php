@@ -451,7 +451,6 @@ TAGS
     $this->checkValidationError($configuration, 'html_filter', $errors);
 
     $configuration = $form_values = [
-      'all_fields' => TRUE,
       'title' => FALSE,
       'alt' => FALSE,
       'tags' => [
@@ -466,9 +465,7 @@ TAGS
    * Tests the UI for the "Ignore case" processor.
    */
   public function checkIgnoreCaseIntegration() {
-    $this->editSettingsForm([
-      'all_fields' => TRUE,
-    ], 'ignorecase');
+    $this->editSettingsForm([], 'ignorecase');
   }
 
   /**
@@ -480,32 +477,34 @@ TAGS
     ];
     $this->checkValidationError($configuration, 'ignore_character', 'The entered text is no valid regular expression.');
 
-    $configuration = $form_values = [
-      'all_fields' => TRUE,
+    $form_values = [
       'ignorable' => '[¿¡!?,.]',
+      'strip' => [
+        'character_sets' => [
+          'Pc' => 'Pc',
+          'Pd' => 'Pd',
+          'Pe' => 'Pe',
+          'Pf' => 'Pf',
+          'Pi' => 'Pi',
+          'Po' => 'Po',
+          'Ps' => 'Ps',
+          'Cc' => 'Cc',
+          'Cf' => FALSE,
+          'Co' => FALSE,
+          'Mc' => FALSE,
+          'Me' => FALSE,
+          'Mn' => FALSE,
+          'Sc' => FALSE,
+          'Sk' => FALSE,
+          'Sm' => FALSE,
+          'So' => FALSE,
+          'Zl' => FALSE,
+          'Zp' => FALSE,
+          'Zs' => FALSE,
+        ],
+      ],
     ];
-    $form_values['strip']['character_sets'] = [
-      'Pc' => 'Pc',
-      'Pd' => 'Pd',
-      'Pe' => 'Pe',
-      'Pf' => 'Pf',
-      'Pi' => 'Pi',
-      'Po' => 'Po',
-      'Ps' => 'Ps',
-      'Cc' => 'Cc',
-      'Cf' => FALSE,
-      'Co' => FALSE,
-      'Mc' => FALSE,
-      'Me' => FALSE,
-      'Mn' => FALSE,
-      'Sc' => FALSE,
-      'Sk' => FALSE,
-      'Sm' => FALSE,
-      'So' => FALSE,
-      'Zl' => FALSE,
-      'Zp' => FALSE,
-      'Zs' => FALSE,
-    ];
+    $configuration['ignorable'] = $form_values['ignorable'];
     $configuration['ignorable_classes'] = array_filter($form_values['strip']['character_sets']);
     sort($configuration['ignorable_classes']);
     $this->editSettingsForm($configuration, 'ignore_character', $form_values);
@@ -583,11 +582,9 @@ TAGS
    */
   public function checkStopWordsIntegration() {
     $configuration = [
-      'all_fields' => TRUE,
       'stopwords' => ['the'],
     ];
     $form_values = [
-      'all_fields' => TRUE,
       'stopwords' => 'the',
     ];
     $this->editSettingsForm($configuration, 'stopwords', $form_values);
@@ -603,7 +600,6 @@ TAGS
     $this->checkValidationError($configuration, 'tokenizer', 'The entered text is no valid PCRE character class.');
 
     $configuration = [
-      'all_fields' => TRUE,
       'spaces' => '',
       'overlap_cjk' => FALSE,
       'minimum_word_size' => 2,
@@ -615,9 +611,7 @@ TAGS
    * Tests the UI for the "Transliteration" processor.
    */
   public function checkTransliterationIntegration() {
-    $this->editSettingsForm([
-      'all_fields' => TRUE,
-    ], 'transliteration');
+    $this->editSettingsForm([], 'transliteration');
   }
 
   /**
@@ -645,11 +639,9 @@ TAGS
   public function checkStemmerIntegration() {
     $this->enableProcessor('stemmer');
     $configuration = [
-      'all_fields' => TRUE,
       'exceptions' => ['indian' => 'india'],
     ];
     $form_values = [
-      'all_fields' => TRUE,
       'exceptions' => 'indian=india',
     ];
     $this->editSettingsForm($configuration, 'stemmer', $form_values);

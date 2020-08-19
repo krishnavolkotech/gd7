@@ -20,9 +20,11 @@ use Symfony\Component\Cache\CacheItem;
  */
 trait TagAwareTestTrait
 {
+    /**
+     * @expectedException \Psr\Cache\InvalidArgumentException
+     */
     public function testInvalidTag()
     {
-        $this->expectException('Psr\Cache\InvalidArgumentException');
         $pool = $this->createCachePool();
         $item = $pool->getItem('foo');
         $item->tag(':');

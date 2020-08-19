@@ -7,7 +7,6 @@ use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
 use Solarium\Core\Query\QueryInterface;
-use Solarium\Exception\OutOfBoundsException;
 use Solarium\QueryType\Extract\Result as ExtractResult;
 use Solarium\QueryType\Update\Query\Query as UpdateQuery;
 use Solarium\QueryType\Select\Query\Query;
@@ -329,7 +328,7 @@ interface SolrConnectorInterface extends ConfigurablePluginInterface {
   /**
    * Creates a result from a response.
    *
-   * @param \Solarium\Core\ConfigurableInterface|QueryInterface $query
+   * @param \Solarium\Core\ConfigurableInterface\QueryInterface $query
    *   The Solarium query object.
    * @param \Solarium\Core\Client\Response $response
    *   The Solarium response object.
@@ -432,23 +431,8 @@ interface SolrConnectorInterface extends ConfigurablePluginInterface {
    *
    * @return \Solarium\Core\Client\Endpoint
    *   The Solarium endpoint object.
-   *
-   * @throws OutOfBoundsException
    */
   public function getEndpoint($key = 'search_api_solr');
-
-  /**
-   * Creates an endpoint.
-   *
-   * @param string $key
-   *   The endpoint ID.
-   * @param array $additional_configuration
-   *   Configuration in addtion to the default configuration.
-   *
-   * @return \Solarium\Core\Client\Endpoint
-   *   The Solarium endpoint object.
-   */
-  public function createEndpoint(string $key, array $additional_configuration = []);
 
   /**
    * Retrieves a config file or file list from the Solr server.

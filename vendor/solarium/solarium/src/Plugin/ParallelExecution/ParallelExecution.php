@@ -126,7 +126,7 @@ class ParallelExecution extends AbstractPlugin
 
         $timeout = $this->getOption('curlmultiselecttimeout');
         while ($active && CURLM_OK == $mrc) {
-            if (-1 === curl_multi_select($multiHandle, $timeout)) {
+            if (curl_multi_select($multiHandle, $timeout) == -1) {
                 usleep(100);
             }
 

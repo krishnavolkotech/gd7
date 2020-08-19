@@ -18,7 +18,7 @@ class PredisTagAwareClusterAdapterTest extends PredisClusterAdapterTest
 {
     use TagAwareTestTrait;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->skippedTests['testTagItemExpiry'] = 'Testing expiration slows down the test suite';

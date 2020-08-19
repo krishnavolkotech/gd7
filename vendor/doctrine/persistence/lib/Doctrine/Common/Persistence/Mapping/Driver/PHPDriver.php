@@ -2,15 +2,43 @@
 
 namespace Doctrine\Common\Persistence\Mapping\Driver;
 
-use function class_alias;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
-class_alias(
-    \Doctrine\Persistence\Mapping\Driver\PHPDriver::class,
-    __NAMESPACE__ . '\PHPDriver'
-);
+/**
+ * The PHPDriver includes php files which just populate ClassMetadataInfo
+ * instances with plain PHP code.
+ */
+class PHPDriver extends FileDriver
+{
+    /** @var ClassMetadata */
+    protected $metadata;
 
-if (false) {
-    class PHPDriver extends \Doctrine\Persistence\Mapping\Driver\PHPDriver
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct($locator)
     {
+        parent::__construct($locator, '.php');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function loadMetadataForClass($className, ClassMetadata $metadata)
+    {
+        $this->metadata = $metadata;
+
+        $this->loadMappingFile($this->locator->findMappingFile($className));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function loadMappingFile($file)
+    {
+        $metadata = $this->metadata;
+        include $file;
+
+        return [$metadata->getName() => $metadata];
     }
 }

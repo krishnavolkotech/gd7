@@ -3,7 +3,7 @@
 namespace DrupalCodeGenerator\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
-use Twig\Environment;
+use Twig_Environment;
 
 /**
  * Output dumper form generators.
@@ -13,17 +13,17 @@ class Renderer extends Helper {
   /**
    * The twig environment.
    *
-   * @var \Twig\Environment
+   * @var \Twig_Environment
    */
   protected $twig;
 
   /**
    * Constructs a generator command.
    *
-   * @param \Twig\Environment $twig
+   * @param \Twig_Environment $twig
    *   The twig environment.
    */
-  public function __construct(Environment $twig) {
+  public function __construct(Twig_Environment $twig) {
     $this->twig = $twig;
   }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Task\Composer;
 
 /**
@@ -20,8 +19,6 @@ class Validate extends Base
     protected $action = 'validate';
 
     /**
-     * @param bool $noCheckAll
-     *
      * @return $this
      */
     public function noCheckAll($noCheckAll = true)
@@ -33,8 +30,6 @@ class Validate extends Base
     }
 
     /**
-     * @param bool $noCheckLock
-     *
      * @return $this
      */
     public function noCheckLock($noCheckLock = true)
@@ -46,8 +41,6 @@ class Validate extends Base
     }
 
     /**
-     * @param bool $noCheckPublish
-     *
      * @return $this
      */
     public function noCheckPublish($noCheckPublish = true)
@@ -59,8 +52,6 @@ class Validate extends Base
     }
 
     /**
-     * @param bool $withDependencies
-     *
      * @return $this
      */
     public function withDependencies($withDependencies = true)
@@ -72,8 +63,6 @@ class Validate extends Base
     }
 
     /**
-     * @param bool $strict
-     *
      * @return $this
      */
     public function strict($strict = true)

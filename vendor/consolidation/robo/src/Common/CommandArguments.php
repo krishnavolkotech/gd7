@@ -1,5 +1,4 @@
 <?php
-
 namespace Robo\Common;
 
 use Robo\Common\ProcessUtils;
@@ -97,11 +96,6 @@ trait CommandArguments
      * Pass multiple options to executable. The associative array contains
      * the key:value pairs that become `--key value`, for each item in the array.
      * Values are automatically escaped.
-     *
-     * @param array $options
-     * @param string $separator
-     *
-     * @return $this
      */
     public function options(array $options, $separator = ' ')
     {

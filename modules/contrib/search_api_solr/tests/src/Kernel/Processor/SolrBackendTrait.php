@@ -46,7 +46,7 @@ trait SolrBackendTrait {
    */
   protected function indexItems() {
     $index_status = parent::indexItems();
-    $this->ensureCommit($this->index);
+    $this->ensureCommit($this->server);
     return $index_status;
   }
 
@@ -55,7 +55,7 @@ trait SolrBackendTrait {
    */
   protected function tearDown() {
     $this->index->clear();
-    $this->ensureCommit($this->index);
+    $this->ensureCommit($this->server);
     parent::tearDown();
   }
 

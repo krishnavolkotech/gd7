@@ -1136,32 +1136,34 @@ function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
   $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
   $variables['node_view_mode'] = $file->node_view_mode;
+
+  $variables['file_owner'] = '';
+  $variables['dasi_class'] = '';
+  
+  $uid = $file->getOwner()->id();
+  $user = \Drupal\user\Entity\User::load($uid);
+  $user_name = $user->getDisplayName();
+  $url = Url::fromRoute('entity.user.canonical', array('user' => $uid));
+  $user_link = [
+      '#type' => 'link',
+      '#url' => $url,
+      '#title' => $user_name
+  ];
+  $variables['file_owner'] = $user_link;
+  $nid = getFileAttachedNode($file->id());
+
+  if ($nid) {
+    $groupTitle = getNodeGroupLabel($nid);
+  }
+
+  $pos = stripos($groupTitle, "DaSi");
+  if ($pos !== false) {
+    $variables['dasi_class'] = "dasi-links";
+  }
+  
   $route = \Drupal::request()->get(Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_NAME);
   if ($route == 'entity.node.edit_form') {
     $variables['node_edit_page'] = 'edit';
-  }
-  else {
-    $uid = $file->getOwner()->id();
-    $user = \Drupal\user\Entity\User::load($uid);
-    $user_name = $user->getDisplayName();
-
-    $variables['file_owner'] = '';
-    $variables['dasi_class'] = '';
-    $nid = getFileAttachedNode($file->id());
-    if ($nid) {
-      $groupTitle = getNodeGroupLabel($nid);
-      $pos = stripos($groupTitle, "DaSi");
-      if ($pos !== false) {
-        $url = Url::fromRoute('entity.user.canonical', array('user' => $uid));
-        $user_link = [
-          '#type' => 'link',
-          '#url' => $url,
-          '#title' => $user_name
-        ];
-        $variables['dasi_class'] = "dasi-links";
-        $variables['file_owner'] = $user_link;
-      }
-    }
   }
 }
 
@@ -1220,4 +1222,139 @@ function hzd_preprocess_menu__primary_links(&$variables) {
       }
     }
   }
+}
+
+/**
+ * theme_suggestions for the views_view.
+ */
+function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $variables) {
+  $suggestions[] = sprintf('views_view__%s__%s', $variables['view']->id(), $variables['view']->current_display);
+}
+
+function hzd_preprocess_views_view__solr_search(&$variables) {
+  $param = \Drupal::request()->query->all();
+//  if (isset($param['fulltext'])) {
+      $variables['itsm'] = search_limit_groups('itsm');
+      $variables['verfahren'] = search_limit_groups('verfahren');
+      $variables['zoe_zps'] = search_limit_groups('zoe_zps');
+      $variables['weitere_gruppen'] = search_limit_groups('weitere_gruppen');
+
+      $variables['filter_created'] = conent_created_filter();
+ // }
+
+}
+
+/*
+ * ADDED STATIC BLOCKS FOR FILTERING
+ * TODO: Need to provide settings page for the blocks
+ */
+function search_limit_groups($type) {
+  $param = \Drupal::request()->query->all();
+  $titles['itsm'] = t('ITSM-Prozesse');
+  $titles['verfahren'] = t('Verfahren');
+  $titles['zoe_zps'] = t('ZOE & ZPS');
+  $titles['weitere_gruppen'] = t('Weitere Gruppen');
+
+  /*
+  $gids = \Drupal::entityQuery('group')
+      ->condition('status',1)
+      ->sort('label')
+      ->execute();
+  
+  
+    $groups = \Drupal\group\Entity\Group::loadMultiple($gids);
+    foreach($groups as $id => $group) {
+      dump($id. " : ". $group->label());
+      }
+  */
+  $active_class_id = '';
+  if (isset($param['f'])) {
+    $active = explode(':',$param['f'][0]);
+    if (isset($active[1])) {
+        $active_class_id = $active[1];
+    }
+  }
+  $itsm_group['title'] = $titles[$type];
+  $itsm_links = static_search_groups($type);
+  foreach($itsm_links as $id => $group) {
+      $options = [
+          'fulltext' => $param['fulltext'],
+          'f[0]' => 'parent_group:'.$id
+      ];
+      $active = '';
+      if ($active_class_id == $id) {
+          $active = 'active';
+	  unset($options['f[0]']);	  
+      }
+      $url = Url::fromRoute('view.solr_search.page_1', $options, ['attributes' => ['class' => [$active]]]);
+      $link = Link::fromTextAndUrl($group, $url)->toString(); 
+      $itsm_group['links'][] = $link;
+  }
+
+  return $itsm_group;
+}
+
+function conent_created_filter() {
+  $params = \Drupal::request()->query->all();
+
+  if (isset($params['created'])) {
+      $active_class_id = $params['created'];
+  }
+  
+  $timings = [
+      'all' => t('Beliebige Zeit'),
+      'last_day' => t('Letzte 24 Stunden'),
+      'last_week' => t('Letzte Woche'),
+      'last_month' => t('Letzte Monat'),
+      'last_year' => t('Letzte Jahr'),
+  ];
+
+  $created = [];
+  foreach($timings as $id => $text) {
+    if ($id != 'all') {
+      $params['created'] = $id;
+    }
+    $active = '';
+    if ($active_class_id == $id) {
+      $active = 'active';
+    }
+    $url = Url::fromRoute('view.solr_search.page_1', $params, ['attributes' => ['class' => [$active]]]);
+    $link = Link::fromTextAndUrl($text, $url)->toString(); 
+    $created['links'][] = $link;
+  }
+  return $created;
+}
+
+function static_search_groups($type) {
+    $groups['itsm'] = [
+        2 => t('Incident Management'),
+        39 => t('Kapazitätsmanagement'),
+        6 => t('Problem Management'),
+        1 => t('Release Management'),
+        15 => t('Service Level Management'),
+        77 => t('Verfügbarkeitsmanagement'),
+        80 => t('Corono Info'),
+    ];
+
+    $groups['zoe_zps'] = [
+        41 => t('Architektursteuerung'),
+        21 => t('Betriebsportal KONSENS'),
+        33 => t('GPM'),
+        790 => t('TestCenter KONSENS'),
+        7 => t('ZANS'),
+        44 => t('ZPS ELSTER-Kommunikation'),
+    ];
+
+    $groups['verfahren'] = [
+        37 => t('ARCO'),
+        26 => t('BIENE'),
+        19 => t('DAME'),
+    ];
+
+    $groups['weitere_gruppen'] = [
+        37 => t('ARCO'),
+        26 => t('BIENE'),
+        19 => t('DAME'),
+    ];
+    return $groups[$type];
 }

@@ -3,7 +3,7 @@
  * @package php-svg-lib
  * @link    http://github.com/PhenX/php-svg-lib
  * @author  Fabien Ménager <fabien.menager@gmail.com>
- * @license GNU LGPLv3+ http://www.gnu.org/copyleft/lesser.html
+ * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
 namespace Svg\Tag;
@@ -21,7 +21,7 @@ abstract class AbstractTag
     /** @var Style */
     protected $style;
 
-    protected $attributes = array();
+    protected $attributes;
 
     protected $hasShape = true;
 
@@ -166,14 +166,7 @@ abstract class AbstractTag
                         break;
 
                     case "rotate":
-                        if (isset($t[2])) {
-                            $t[3] = isset($t[3]) ? $t[3] : 0;
-                            $surface->translate($t[2], $t[3]);
-                            $surface->rotate($t[1]);
-                            $surface->translate(-$t[2], -$t[3]);
-                        } else {
-                            $surface->rotate($t[1]);
-                        }
+                        $surface->rotate($t[1]);
                         break;
 
                     case "skewX":

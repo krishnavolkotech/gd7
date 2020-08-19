@@ -44,7 +44,7 @@ class FacetsTest extends SearchApiBrowserTestBase {
     if ($this->indexId) {
       $index = Index::load($this->indexId);
       $index->clear();
-      $this->ensureCommit($index);
+      $this->ensureCommit($index->getServerInstance());
     }
     parent::tearDown();
   }
@@ -102,7 +102,7 @@ class FacetsTest extends SearchApiBrowserTestBase {
   protected function indexItems($index_id) {
     $index_status = $this->doindexItems($index_id);
     $index = Index::load($this->indexId);
-    $this->ensureCommit($index);
+    $this->ensureCommit($index->getServerInstance());
     return $index_status;
   }
 

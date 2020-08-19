@@ -5,16 +5,28 @@ namespace Drupal\block_upload\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Module configuration form.
+ */
 class BlockUploadSettingsForm extends ConfigFormBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function getFormId() {
     return 'block_upload_admin_settings';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function getEditableConfigNames() {
     return ['block_upload.settings'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['block_upload_blocks_count'] = [
       '#type' => 'select',
@@ -25,6 +37,9 @@ class BlockUploadSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $blocks_count = $form_state->getValue('block_upload_blocks_count');
     $this->config('block_upload.settings')

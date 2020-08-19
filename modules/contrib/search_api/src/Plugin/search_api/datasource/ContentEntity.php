@@ -951,8 +951,7 @@ class ContentEntity extends DatasourcePluginBase implements EntityDatasourceInte
       }
     }
 
-    if ($nested_path !== NULL
-        && $property instanceof ComplexDataDefinitionInterface) {
+    if (isset($nested_path) && $property instanceof ComplexDataDefinitionInterface) {
       $nested = $this->getFieldsHelper()->getNestedProperties($property);
       $nested_dependencies = $this->getPropertyPathDependencies($nested_path, $nested);
       foreach ($nested_dependencies as $type => $names) {
