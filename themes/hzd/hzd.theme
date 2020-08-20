@@ -1302,11 +1302,11 @@ function conent_created_filter() {
   }
   
   $timings = [
-      'all' => t('Beliebige Zeit'),
+      'all' => t('Beliebiger Zeitraum'),
       'last_day' => t('Letzte 24 Stunden'),
       'last_week' => t('Letzte Woche'),
-      'last_month' => t('Letzte Monat'),
-      'last_year' => t('Letzte Jahr'),
+      'last_month' => t('Letzter Monat'),
+      'last_year' => t('Letztes Jahr'),
   ];
 
   $created = [];
