@@ -256,14 +256,7 @@ Drupal.fileFieldSources = {
 
 // Override triggerUploadButton method from file.js.
 Drupal.file.triggerUploadButton = function (event) {
-  var uploadButton = $(event.target).closest('.form-managed-file').find('.form-submit.upload-button');
-  if (uploadButton.length) {
-    uploadButton.trigger('mousedown');
-  }
-  else {
-    // Original triggerUploadButton method content.
-    $(event.target).closest('.js-form-managed-file').find('.js-form-submit').trigger('mousedown');
-  }
+  $(event.target).closest('.form-managed-file').find('.form-submit.upload-button').trigger('mousedown');
 }
 
 })(jQuery, Drupal);

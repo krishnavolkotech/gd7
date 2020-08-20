@@ -63,6 +63,15 @@
       win.close();
       if (el) {
         $(el).val(url).change().focus();
+        // Auto-update image alt input with image name.
+        var name = el.name;
+        var re = /(^|[^a-z])src([^a-z]|$)/i;
+        if (name && re.test(name)) {
+          var altEl = el.form && el.form.elements[name.replace(re, '$1alt$2')];
+          if (altEl && !altEl.value) {
+            altEl.value = el.value.split('/').pop();
+          }
+        }
       }
     }
   
