@@ -17,7 +17,7 @@
         }
         var ctx = $(context).find('#measure-status-pie-chart')[0].getContext('2d');
         var myChart = new Chart(ctx, {
-          type: 'pie',
+          type: 'bar',
           data: {
             // labels: ['Red', 'Blue', 'Yellow'],
             labels: statusLabels,
@@ -26,18 +26,18 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
+                '#00A4E3', // cyan
+                '#ED2551', // Purpur
                 '#00A4E3',
-                '#77659A',
                 '#ED2551',
-                '#3B84BF',
-                '#B24576',
+                '#00A4E3',
               ],
             }]
           },
           options: {
             responsive: false,
             legend: {
-              display: true,
+              display: false,
               position: "right",
               labels: {
                 boxWidth: 12,
@@ -46,11 +46,21 @@
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: true,
+                  stepSize: 1,
                 },
-                display: false
+                display: true
               }]
             },
+            layout: {
+              padding: {
+                left: 0,
+                right: 40,
+                top: 0,
+                bottom: 0
+              }
+            }
+
           }
         });
       }
@@ -69,7 +79,7 @@
         
         var ctx = $(context).find('#risk-status-pie-chart')[0].getContext('2d');
         var myChart = new Chart(ctx, {
-          type: 'pie',
+          type: 'bar',
           data: {
             // labels: ['Red', 'Blue', 'Yellow'],
             labels: statusLabels,
@@ -78,18 +88,22 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
+                // '#00A4E3', // cyan
+                // '#77659A',
+                // '#77659A', // Lila Mischbeere
+                '#00A4E3', // cyan
+                '#ED2551', // Purpur
                 '#00A4E3',
-                '#77659A',
                 '#ED2551',
-                '#3B84BF',
-                '#B24576',
+                '#00A4E3',
+                // '#B24576',
               ],
             }]
           },
           options: {
             responsive: false,
             legend: {
-              display: true,
+              display: false,
               position: "right",
               labels: {
                 boxWidth: 12,
@@ -98,9 +112,10 @@
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: true,
+                  stepSize: 1,
                 },
-                display: false
+                display: true
               }]
             },
             layout: {
@@ -136,6 +151,7 @@
               data: statusCounts,
               backgroundColor: [
                 '#ED2551',
+                // '#027596',
                 '#77659A',
                 '#00A4E3',
               ],
@@ -181,7 +197,7 @@
         }
         var ctx = $(context).find('#front-measure-status-pie-chart')[0].getContext('2d');
         var myChart = new Chart(ctx, {
-          type: 'pie',
+          type: 'bar',
           data: {
             // labels: ['Red', 'Blue', 'Yellow'],
             labels: statusLabels,
@@ -190,18 +206,18 @@
               // data: [4, 2, 3, 1, 2],
               data: statusCounts,
               backgroundColor: [
+                '#00A4E3', // cyan
+                '#ED2551', // Purpur
                 '#00A4E3',
-                '#77659A',
                 '#ED2551',
-                '#3B84BF',
-                '#B24576',
+                '#00A4E3',
               ],
             }]
           },
           options: {
             responsive: false,
             legend: {
-              display: true,
+              display: false,
               position: "right",
               labels: {
                 boxWidth: 12,
@@ -210,9 +226,10 @@
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: true,
+                  stepSize: 1,
                 },
-                display: false
+                display: true
               }]
             },
           }

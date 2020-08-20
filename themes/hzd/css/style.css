@@ -4074,6 +4074,8 @@ table.released tr th:last-child {
 }
 
 .label-warning {
+                  /* '#027596', */
+  /* background-color: #77659A !important; */
   background-color: #77659A !important;
 }
 
@@ -4082,7 +4084,7 @@ table.released tr th:last-child {
 }
 
 .label-primary {
-  background-color: rgb(0, 78, 89) !important;
+  background-color: #027596 !important;
 }
 
 .panel-light {
