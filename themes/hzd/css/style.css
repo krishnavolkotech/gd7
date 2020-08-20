@@ -4084,3 +4084,22 @@ table.released tr th:last-child {
 .label-primary {
   background-color: rgb(0, 78, 89) !important;
 }
+
+.panel-light {
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading {
+  color: #fff !important;
+  background-color: #f5f7fa !important;
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading .badge {
+  color: #f5f7fa !important;
+  background-color: #fff !important;
+}
+.panel-light > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #EDF0F3 !important;
+}
