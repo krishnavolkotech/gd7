@@ -428,7 +428,7 @@ class ImceFM {
    */
   public function getFileProperties($uri) {
     $properties = ['date' => filemtime($uri), 'size' => filesize($uri)];
-    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = getimagesize($uri)) {
+    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = @getimagesize($uri)) {
       $properties['width'] = $info[0];
       $properties['height'] = $info[1];
     }
@@ -610,16 +610,9 @@ class ImceFM {
       if ($folder = $this->activeFolder) {
         $conf['active_path'] = $folder->getPath();
       }
-      elseif ($this->request) {
-        // Check $_GET['init_path']
-        if (($path = $this->request->query->get('init_path')) && $this->checkFolder($path)) {
-          $conf['active_path'] = $path;
-        }
-        // Check session
-        elseif ($this->user->isAuthenticated() && $path = $this->request->getSession()->get('imce_active_path')) {
-          if ($this->checkFolder($path)) {
-            $conf['active_path'] = $path; 
-          }
+      elseif ($this->user->isAuthenticated() && $this->request && $path = $this->request->getSession()->get('imce_active_path')) {
+        if ($this->checkFolder($path)) {
+          $conf['active_path'] = $path; 
         }
       }
     }
