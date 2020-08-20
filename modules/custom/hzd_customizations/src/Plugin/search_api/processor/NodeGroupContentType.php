@@ -47,8 +47,11 @@ class NodeGroupContentType extends ProcessorPluginBase {
    * {@inheritdoc}
    */
   public function addFieldValues(ItemInterface $item) {
+
+/*
     $node = $item->getOriginalObject()->getValue();
     $node_type = $node->getEntityTypeId();
+
 
     if ($node_type == 'group_content') {
       $rel = \Drupal\group\Entity\GroupContent::load($node->id());
@@ -59,7 +62,9 @@ class NodeGroupContentType extends ProcessorPluginBase {
       foreach ($fields as $field) {
         $field->addValue($field_value);
       }
-    } //End of ContentType If
+    }
+*/
+//End of ContentType If
     
   }
 }
