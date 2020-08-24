@@ -4069,13 +4069,22 @@ table.released tr th:last-child {
   padding-left: 8px !important;
 }
 
+/*
+  '#00A4E3', // Cyan
+  '#ED2551', // Purpur
+  '#027596', // Primär Blau
+  'rgb(0,78,89)', // Sek. Dunkelblau
+  '#7fb5cb', // Sek Hellblau
+  '#cce3eb', // Sek Hellblau 35%
+  '#77659A', // Mischlila
+  '#44286a', // Akzent Lila
+*/
+
 .label-success {
   background-color: #00A4E3 !important;
 }
 
 .label-warning {
-                  /* '#027596', */
-  /* background-color: #77659A !important; */
   background-color: #77659A !important;
 }
 
@@ -4084,7 +4093,7 @@ table.released tr th:last-child {
 }
 
 .label-primary {
-  background-color: #027596 !important;
+  background-color: #00A4E3 !important;
 }
 
 .panel-light {
