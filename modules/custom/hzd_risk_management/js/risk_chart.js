@@ -25,7 +25,7 @@
         // '#00A4E3', // Cyan
         // '#ED2551', // Purpur
         // '#00A4E3', // Cyan
-        
+                
         // '#027596', // Primär Blau
         // 'rgb(0,78,89)', // Sek. Dunkelblau
         // '#7fb5cb', // Sek Hellblau
@@ -47,9 +47,13 @@
         var measureData = settings.hzd_risk_management.chartData['status'];
         var statusLabels = [];
         var statusCounts = [];
+        var step = 1;
         for (var key in measureData) {
           statusLabels.push(key);
           statusCounts.push(measureData[key]);
+          if (measureData[key] > 5) {
+            step = 2;
+          }
         }
         var ctx = $(context).find('#measure-status-pie-chart')[0].getContext('2d');
         var myChart = new Chart(ctx, {
@@ -77,7 +81,7 @@
               yAxes: [{
                 ticks: {
                   beginAtZero: true,
-                  stepSize: 1,
+                  stepSize: step,
                 },
                 display: true
               }]
@@ -100,10 +104,14 @@
         var measureData = drupalSettings.hzd_risk_management.chartData['status'];
         var statusLabels = [];
         var statusCounts = [];
-        
+        var step = 1;
+      
         for (var key in measureData) {
           statusLabels.push(key);
           statusCounts.push(measureData[key]);
+          if (measureData[key] > 5) {
+            step = 2;
+          }
         }
         
         var ctx = $(context).find('#risk-status-pie-chart')[0].getContext('2d');
@@ -132,7 +140,7 @@
               yAxes: [{
                 ticks: {
                   beginAtZero: true,
-                  stepSize: 1,
+                  stepSize: step,
                 },
                 display: true
               }],
@@ -205,9 +213,13 @@
         var measureData = settings.hzd_risk_management.chartData['status'];
         var statusLabels = [];
         var statusCounts = [];
-        for (var key in measureData) {
+        var step = 1;
+       for (var key in measureData) {
           statusLabels.push(key);
           statusCounts.push(measureData[key]);
+          if (measureData[key] > 5) {
+            step = 2;
+          }
         }
         var ctx = $(context).find('#front-measure-status-pie-chart')[0].getContext('2d');
         var myChart = new Chart(ctx, {
@@ -244,7 +256,7 @@
               yAxes: [{
                 ticks: {
                   beginAtZero: true,
-                  stepSize: 1,
+                  stepSize: step,
                 },
                 display: true
               }]
