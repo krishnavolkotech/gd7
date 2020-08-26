@@ -4074,10 +4074,20 @@ table.released tr th:last-child {
   '#ED2551', // Purpur
   '#027596', // Primär Blau
   'rgb(0,78,89)', // Sek. Dunkelblau
+        // 004E59 // Sek. Dunkelblau
   '#7fb5cb', // Sek Hellblau
   '#cce3eb', // Sek Hellblau 35%
   '#77659A', // Mischlila
   '#44286a', // Akzent Lila
+  ff9515 // Purpur Gelb 1zu1 (Orange)
+  
+  Aus Purpur:
+  FF7328 orange
+  65E023 Grün
+  1BAE82 grün dunkler
+  
+  aus cyan
+  FFB600 gelb
 */
 
 .label-success {
@@ -4085,7 +4095,7 @@ table.released tr th:last-child {
 }
 
 .label-warning {
-  background-color: #77659A !important;
+  background-color: #FFB600 !important;
 }
 
 .label-danger {
