@@ -224,6 +224,14 @@ datasource_settings:
     bundles:
       default: true
       selected:
+        - closed-group_membership
+        - closed_private-group_membership
+        - downtimes-group_membership
+        - group_content_type_6693a40b54133
+        - group_content_type_7b308aea24fe7
+        - group_content_type_c26112f8ad4cd
+        - group_content_type_d4b06e2b6aad0
+        - moderate-group_membership
         - open-group_membership
     languages:
       default: true
