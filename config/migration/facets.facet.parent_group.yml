@@ -1,4 +1,4 @@
-uuid: 3925fe52-7e64-49cf-a210-4eb9c46befdf
+uuid: e5e1440f-7d5e-489c-bde8-e8de3de4ae56
 langcode: de
 status: true
 dependencies:
@@ -24,7 +24,7 @@ widget:
       show_less_label: 'Show less'
       show_more_label: 'Show more'
     show_reset_link: false
-    reset_text: 'Alle anzeigen'
+    reset_text: 'Show all'
     hide_reset_when_no_selection: false
 query_operator: or
 use_hierarchy: false
@@ -52,11 +52,6 @@ processor_configs:
       sort: 40
     settings:
       sort: ASC
-  list_item:
-    processor_id: list_item
-    weights:
-      build: 5
-    settings: {  }
   translate_entity:
     processor_id: translate_entity
     weights:
