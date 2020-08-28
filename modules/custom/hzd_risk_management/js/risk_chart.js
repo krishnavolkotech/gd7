@@ -7,51 +7,17 @@
       }
       
       var statusColorScheme = [
-        // '#ED2551', // Purpur
-        // '#ED2551', // Purpur
-        // '#ED2551', // Purpur
-        // '#ED2551', // Purpur
-        // '#ED2551', // Purpur
-        
-        '#00A4E3', // Cyan
-        '#00A4E3', // Cyan
-        '#00A4E3', // Cyan
-        '#00A4E3', // Cyan
-        '#00A4E3', // Cyan
-
-        // '#ED2551', // Purpur
-        // '#00A4E3', // Cyan
-        // '#ED2551', // Purpur
-        // '#00A4E3', // Cyan
-        // '#ED2551', // Purpur
-        // '#00A4E3', // Cyan
-        
-        // '#027596', // Primär Blau
-        // '#027596', // Primär Blau
-        // '#027596', // Primär Blau
-        // '#027596', // Primär Blau
-        // '#027596', // Primär Blau
-        
-        // 'rgb(0,78,89)', // Sek. Dunkelblau
-        // 004E59 // Sek. Dunkelblau
-        // '#7fb5cb', // Sek Hellblau
-        // '#cce3eb', // Sek Hellblau 35%
-        // '#77659A', // Mischlila
-        // '#44286a', // Akzent Lila
-        
-        // '#ff9515', // Orange (Purpur mit Gelb 1 zu 1)
-          // FF7328
-        // 65E023 Grün
-        // 1BAE82 greün dunkler
-        
-        // Basis cyn
-        // FFB600 gelb
+        '#337ab7',
+        '#337ab7',
+        '#337ab7',
+        '#337ab7',
+        '#337ab7',
       ];
       
       var categoryColorScheme = [
-        '#ED2551',
-        '#FFB600',
-        '#00A4E3',
+        '#D9534F',
+        '#FFDA56',
+        '#5CB85C',
       ];
       
       // Chart.defaults.global.defaultFontColor = 'rgb(34, 34, 34)';

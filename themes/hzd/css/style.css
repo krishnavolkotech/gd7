@@ -4069,41 +4069,9 @@ table.released tr th:last-child {
   padding-left: 8px !important;
 }
 
-/*
-  '#00A4E3', // Cyan
-  '#ED2551', // Purpur
-  '#027596', // Primär Blau
-  'rgb(0,78,89)', // Sek. Dunkelblau
-        // 004E59 // Sek. Dunkelblau
-  '#7fb5cb', // Sek Hellblau
-  '#cce3eb', // Sek Hellblau 35%
-  '#77659A', // Mischlila
-  '#44286a', // Akzent Lila
-  ff9515 // Purpur Gelb 1zu1 (Orange)
-  
-  Aus Purpur:
-  FF7328 orange
-  65E023 Grün
-  1BAE82 grün dunkler
-  
-  aus cyan
-  FFB600 gelb
-*/
-
-.label-success {
-  background-color: #00A4E3 !important;
-}
-
 .label-warning {
-  background-color: #FFB600 !important;
-}
-
-.label-danger {
-  background-color: #ED2551 !important;
-}
-
-.label-primary {
-  background-color: #00A4E3 !important;
+  background-color: #FFDA56 !important;
+  color: #202020 !important;
 }
 
 .panel-light {
