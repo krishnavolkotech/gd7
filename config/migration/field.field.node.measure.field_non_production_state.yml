@@ -12,7 +12,7 @@ field_name: field_non_production_state
 entity_type: node
 bundle: measure
 label: 'Responsible State'
-description: ''
+description: 'Mehrfachauswahl mit <b>Strg+Linksklick</b> möglich.'
 required: true
 translatable: true
 default_value: {  }

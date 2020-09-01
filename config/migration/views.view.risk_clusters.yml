@@ -3,6 +3,7 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.storage.node.field_cluster_id
     - field.storage.node.field_id
     - group.content_type.open-group_node-risk_cluster
   module:
@@ -55,6 +56,75 @@ display:
           offset: 0
       style:
         type: table
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+          override: true
+          sticky: false
+          caption: ''
+          summary: ''
+          description: ''
+          columns:
+            gid: gid
+            nid: nid
+            field_id: field_id
+            field_cluster_id: field_cluster_id
+            title: title
+            risk_cluster_risks: risk_cluster_risks
+            view_node: view_node
+          info:
+            gid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            nid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_cluster_id:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            title:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            risk_cluster_risks:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            view_node:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+          default: '-1'
+          empty_table: false
       row:
         type: fields
       fields:
@@ -196,7 +266,7 @@ display:
           group_type: group
           admin_label: ''
           label: Nr.
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -239,6 +309,70 @@ display:
           click_sort_column: value
           type: serial_default_formatter
           settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
+        field_cluster_id:
+          id: field_cluster_id
+          table: node__field_cluster_id
+          field: field_cluster_id
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: Nr.
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -430,7 +564,19 @@ display:
           expose:
             operator_limit_selection: false
             operator_list: {  }
-      sorts: {  }
+      sorts:
+        field_cluster_id_value:
+          id: field_cluster_id_value
+          table: node__field_cluster_id
+          field: field_cluster_id_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: 'Cluster ID (field_cluster_id)'
+          plugin_id: standard
       title: Risikocluster
       header: {  }
       footer: {  }
@@ -505,6 +651,7 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
       tags:
+        - 'config:field.storage.node.field_cluster_id'
         - 'config:field.storage.node.field_id'
   clusters:
     display_plugin: page
@@ -549,4 +696,5 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
       tags:
+        - 'config:field.storage.node.field_cluster_id'
         - 'config:field.storage.node.field_id'

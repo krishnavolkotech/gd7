@@ -10,7 +10,7 @@ revision: null
 revision_information: null
 whitelist: robin.schomburg@hzd.hessen.de
 address: betriebsportal-konsens@hzd.hessen.de
-enable: false
+enable: true
 description: true
 langcode: de
 message: false

@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.risk_cluster.body
+    - field.field.node.risk_cluster.field_cluster_id
     - field.field.node.risk_cluster.field_comments
     - field.field.node.risk_cluster.field_id
     - field.field.node.risk_cluster.field_trend
@@ -26,6 +27,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
     region: content
+  field_cluster_id:
+    weight: 27
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
   field_comments:
     weight: 3
     settings:
@@ -35,7 +43,7 @@ content:
     type: text_textarea
     region: content
   field_id:
-    weight: 5
+    weight: 26
     settings: {  }
     third_party_settings: {  }
     type: serial_default_widget

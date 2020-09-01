@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.risk_cluster.body
+    - field.field.node.risk_cluster.field_cluster_id
     - field.field.node.risk_cluster.field_comments
     - field.field.node.risk_cluster.field_id
     - field.field.node.risk_cluster.field_trend
@@ -11,6 +12,7 @@ dependencies:
   module:
     - field_group
     - revision_log
+    - serial
     - text
     - user
 third_party_settings:
@@ -56,12 +58,28 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+  field_cluster_id:
+    weight: 6
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
   field_comments:
     weight: 3
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
+  field_id:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: serial_default_formatter
     region: content
   field_risks:
     weight: 3
@@ -100,5 +118,4 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_id: true
   langcode: true

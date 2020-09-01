@@ -3,6 +3,6 @@ langcode: de
 status: true
 dependencies: {  }
 id: menu-63995
-label: Risikomanagement
+label: 'Risikomanagement Betrieb'
 description: ''
 locked: false

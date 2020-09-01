@@ -9,7 +9,6 @@ dependencies:
     - cust_group
     - search_api
     - downtimes
-    - hzd_customizations
   config:
     - field.storage.node.body
     - field.storage.node.field_custom_title
@@ -139,7 +138,7 @@ field_settings:
       config:
         - field.storage.node.field_other_services
   field_release_service:
-    label: 'Inhalt » Inhalt » Services'
+    label: 'Inhalt » Inhalt » Verfahren'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_release_service'
     type: integer
@@ -175,10 +174,6 @@ field_settings:
         - group
         - group
         - group
-  node_group_content_type:
-    label: 'Node Group Content Type'
-    property_path: node_group_content_type
-    type: string
   title:
     label: 'Inhalt » Inhalt » Titel'
     datasource_id: 'entity:group_content'
@@ -220,15 +215,8 @@ field_settings:
 datasource_settings:
   'entity:group':
     bundles:
-      default: false
-      selected:
-        - closed
-        - downtimes
-        - incident_managent
-        - open
-        - quick_info
-        - realease_management
-        - zentrale_release_manag
+      default: true
+      selected: {  }
     languages:
       default: true
       selected: {  }
@@ -237,37 +225,14 @@ datasource_settings:
       default: true
       selected:
         - closed-group_membership
-        - closed-group_node-faq
-        - closed-group_node-forum
-        - closed-group_node-page
         - closed_private-group_membership
-        - closed_private-group_node-faq
-        - closed_private-group_node-page
         - downtimes-group_membership
-        - group_content_type_466cc368a8c15
-        - group_content_type_486a744513175
         - group_content_type_6693a40b54133
-        - group_content_type_71a6b6a92fefd
         - group_content_type_7b308aea24fe7
-        - group_content_type_8fbe33e60f149
-        - group_content_type_aa3a511b55f8c
-        - group_content_type_b2ed3eb8d19c9
         - group_content_type_c26112f8ad4cd
         - group_content_type_d4b06e2b6aad0
-        - group_content_type_e340605cbaf90
         - moderate-group_membership
-        - moderate-group_node-event
-        - moderate-group_node-faq
-        - moderate-group_node-faqs
-        - moderate-group_node-forum
-        - moderate-group_node-newsletter
-        - moderate-group_node-page
-        - moderate-group_node-quickinfo
-        - moderate_private-group_node-faq
-        - moderate_private-group_node-faqs
-        - moderate_private-group_node-page
         - open-group_membership
-        - quick_info-group_membership
     languages:
       default: true
       selected: {  }
@@ -361,7 +326,6 @@ processor_settings:
         preprocess_index: -10
         preprocess_query: -10
     all_fields: false
-  node_group_content_type: {  }
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
@@ -381,5 +345,5 @@ tracker_settings:
     indexing_order: fifo
 options:
   index_directly: true
-  cron_limit: 100
+  cron_limit: 1000
 server: solr_bpk_migration

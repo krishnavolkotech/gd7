@@ -25,13 +25,13 @@ third_party_settings:
       options:
         slashes: false
         pathauto: false
-        transliterate: false
+        transliterate: true
 id: node.page.upload
 field_name: upload
 entity_type: node
 bundle: page
 label: upload
-description: ''
+description: '<b>Hilfetext TESTE TEST Wo erscheint dieser Inhalt? TEs TEst</b>'
 required: false
 translatable: true
 default_value: {  }

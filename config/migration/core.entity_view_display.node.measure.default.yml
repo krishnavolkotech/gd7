@@ -24,13 +24,17 @@ dependencies:
     - datetime
     - field_group
     - hzd_risk_management
+    - options
     - revision_log
+    - serial
     - text
     - user
 third_party_settings:
   field_group:
     group_table:
       children:
+        - field_id
+        - field_non_production_state
         - body
         - last_updated
         - field_target_date
@@ -56,13 +60,13 @@ content:
   body:
     label: inline
     type: text_default
-    weight: 2
+    weight: 14
     settings: {  }
     third_party_settings: {  }
     region: content
   content_revision_log:
     type: revision_log_formatter
-    weight: 3
+    weight: 4
     region: content
     label: above
     settings:
@@ -71,8 +75,22 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+  field_id:
+    type: serial_default_formatter
+    weight: 12
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_non_production_state:
+    type: list_default
+    weight: 13
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
   field_owner:
-    weight: 5
+    weight: 17
     label: inline
     settings:
       link_to_entity: false
@@ -80,14 +98,14 @@ content:
     type: string
     region: content
   field_remarks:
-    weight: 2
+    weight: 3
     label: inline
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_risks:
-    weight: 6
+    weight: 18
     label: inline
     settings:
       token_data: '<a href=''[node:url]''>[node:field_id] - [node:title]</a>'
@@ -95,7 +113,7 @@ content:
     type: tokenized_field_formatter
     region: content
   field_target_date:
-    weight: 4
+    weight: 16
     label: inline
     settings:
       format_type: medium
@@ -104,7 +122,7 @@ content:
     type: datetime_default
     region: content
   last_updated:
-    weight: 3
+    weight: 15
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -123,9 +141,7 @@ hidden:
   field_estimated_effort: true
   field_expected_result: true
   field_follow_up: true
-  field_id: true
   field_measure_status: true
-  field_non_production_state: true
   field_order_date: true
   field_sponsor: true
   field_type: true
