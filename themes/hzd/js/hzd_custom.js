@@ -2,6 +2,17 @@
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
 
+	function tog(v){return v?'addClass':'removeClass';} 
+	$(document).on('input', '#edit-fulltext', function() {
+	    $(this)[tog(this.value)]('hascontent');
+	}).on('mousemove', '.hascontent', function( e ){
+	    $(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onremove');
+	}).on('touchstart click', '.onremove', function( ev ){
+	    ev.preventDefault();
+	    $(this).removeClass('hascontent onremove').val('').change();
+	});
+
+	
 	if($('.view-empty').length >= 1) {
 	    $('.view-solr-search .pager-nav').addClass('hidden');
 	}

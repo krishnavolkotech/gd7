@@ -1503,16 +1503,31 @@ li.facet-item label {
     margin-left: 1rem;
 }
 
+
 .col-sm-3.group-filter-text {
     width: 21rem !important;
 }
 
+/*
 .col-sm-2.group-filter-text {
     width: 13.5rem !important;
 }
 
-/*
+
 .view-solr-search .item-list li:nth-child(even) {
     background: #f0f0f069;
 }
 */
+
+
+#edit-fulltext{
+  background: #fff url(../images/close-icon.png) no-repeat right -10px center;
+  background-size: 10px 10px;
+  border: 1px solid #999;
+  padding: 3px 18px 3px 4px; 
+  border-radius: 3px;
+  transition: background 0.4s;
+}
+#edit-fulltext.hascontent  { background-position: right 10px center; } 
+#edit-fulltext.onremove{ cursor: pointer; }              
+#edit-fulltext::-ms-clear {display: none; width:0; height:0;} 

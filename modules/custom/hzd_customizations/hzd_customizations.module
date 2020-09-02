@@ -239,7 +239,6 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
  * Implements hook_form_alter.
  */
 function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-
   $user = \Drupal::service('current_user');
   $uid = $user->id();
   $raw_name = $user->getDisplayName();
@@ -498,7 +497,16 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       $form['#submit'][] = 'node_revisions_revert_confirm_custom';
       //kint($form['#action']);exit;
   }
-  
+
+  if ($form_id == 'views_exposed_form') {
+    if (isset($form['fulltext'])) {
+      $param = \Drupal::request()->query->all();
+      if (isset($param['fulltext']) && trim($param['fulltext']) != '') {
+        $form['fulltext']['#attributes']['class'][] = 'hascontent';
+      }
+    }
+  }
+      
   if($form_id == 'comment_comment_forum_form' || $form_id == 'comment_comment_no_subject_form') {
       $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
   }
