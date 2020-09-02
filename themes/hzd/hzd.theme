@@ -1235,8 +1235,9 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   $param = \Drupal::request()->query->all();
 //  if (isset($param['fulltext'])) {
   //$primary_menus = load_primary_menus();
-  $primary_menus = load_primary_menus();
-
+  //$primary_menus = load_primary_menus();
+  $link = Link::fromTextAndUrl('Zurücksetzen', Url::fromRoute('view.solr_search.page_1'))->toString();
+  $variables['reset_link'] = $link;
   $variables['itsm'] = search_limit_groups('itsm', $primary_menus);
   $variables['verfahren'] = search_limit_groups('verfahren', $primary_menus);
   $variables['zoe_zps'] = search_limit_groups('zoe_zps', $primary_menus);
