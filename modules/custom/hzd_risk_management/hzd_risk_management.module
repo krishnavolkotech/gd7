@@ -347,8 +347,12 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['status'] = $statusCounts;
 
       // Status in Chart berücksichtigen!?
+      // @todo: In Funktion auslagern. Wird 3x verwendet.
       $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
       foreach ($risks as $risk) {
+        if ($risk->get('field_risk_status')->value == 'completed') {
+          continue;
+        }
         $category = $risk->get('field_risk_category')->value;
         if (array_key_exists($category, $categoryCounts)) {
           $categoryCounts[$category] += 1;
@@ -607,6 +611,9 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
     // Status in Chart berücksichtigen?
     $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
     foreach ($risks as $risk) {
+      if ($risk->get('field_risk_status')->value == 'completed') {
+        continue;
+      }
       $category = $risk->get('field_risk_category')->value;
       if (array_key_exists($category, $categoryCounts)) {
         $categoryCounts[$category] += 1;
@@ -831,6 +838,9 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
 
     $categoryCounts = ['A' => 0, 'B' => 0, 'C' => 0];
     foreach ($risks as $risk) {
+      if ($risk->get('field_risk_status')->value == 'completed') {
+        continue;
+      }
       $category = $risk->get('field_risk_category')->value;
       if (array_key_exists($category, $categoryCounts)) {
         $categoryCounts[$category] += 1;
