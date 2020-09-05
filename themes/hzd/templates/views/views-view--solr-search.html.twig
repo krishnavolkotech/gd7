@@ -72,7 +72,7 @@
     <div class='row limit-header'>
       <div class='col-sm-3 group-filter-text'>{{ 'Ergebnisse einschränken auf'| t }}: </div>
       <div class='col-sm-2 group-filter-text'>{{ active_group }} <span class="glyphicon down-arrow all-groups-filter">&#xe114;</span> </div>
-      <div class='col-sm-2'>{{ active_timing }}  <span class="glyphicon down-arrow search-time-filters">&#xe114;</span>
+      <div class='col-sm-2 group-filter-text''>{{ active_timing }}  <span class="glyphicon down-arrow search-time-filters">&#xe114;</span>
 
 	<div class='row search-time-filters-content hidden'>
 	  <ul>
@@ -138,9 +138,39 @@
   </div>
 
   {% if rows %}      
-    <div class="view-content">
-      {{ rows }}
+  <div class="view-content">
+    
+    <div class="item-list">
+      <ul>
+	{% for result in results %}
+	
+	<li>
+	  <div class="views-field views-field-label">
+	    <span class="field-content">
+	      {{ result.changed }} /  {{ result.group_link?result.group_link:"Global"|t }} /  {{ result.type }}
+	    </span>
+	  </div>
+	  
+	  <div class="views-field views-field-title">
+	    <span class="field-content">
+              {{ result.node_link }}
+	    </span>
+	  </div>
+	  
+	  <div class="views-field views-field-body">
+	    <span class="field-content">
+	      {{ result.body | raw  }}
+	    </span>
+	  </div>
+	  
+	</li>
+
+	{% endfor %}
+      </ul>
     </div>
+
+
+  </div>
   {% elseif empty %}
     <div class="view-empty">
       {{ empty }}

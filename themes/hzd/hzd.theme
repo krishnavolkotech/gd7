@@ -17,6 +17,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
+use Drupal\node\Entity\NodeType;
 
 /**
  * @param $variables
@@ -1213,6 +1214,9 @@ function hzd_preprocess_menu_local_action(array &$variables) {
  */
 function hzd_preprocess_menu__primary_links(&$variables) {
   foreach ($variables['items'] as $idx => $item) {
+    if ($item['title'] == 'Weitere Gruppen') {
+      unset($variables['items'][$idx]);
+    }
     if (count($item['below']) > 0) {
       foreach ($item['below'] as $below_idx => $below_item) {
         $original = $below_item['original_link'];
@@ -1232,6 +1236,72 @@ function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $vari
 }
 
 function hzd_preprocess_views_view__solr_search(&$variables) {
+  $rows = $variables['rows'][0]['#rows'];
+  $all_content_types = NodeType::loadMultiple();
+  $contentTypes = [];
+  foreach ($all_content_types as $machine_name => $content_type) {
+    $contentTypes[$machine_name] = $content_type->label();
+  }
+
+  $data = [];
+  foreach($rows as $row) {
+    $result = [];
+    foreach($row['#row'] as $key => $val) {
+      switch($key) {
+        case "entity:group_content/entity_id:entity:type":
+        case "entity:node/type":
+          $result['type'] = $contentTypes[$val[0]];
+        break;
+        case "entity:group_content/gid:entity:label":
+          $result['center'] = $val[0]; 
+        break;
+        case "entity:group_content/gid":
+          $result['gid'] = $val[0];
+        break;
+        case "entity:group_content/entity_id:entity:title":
+        case "entity:node/title":
+          $result['title'] = $val[0];
+        break;
+        case "entity:group_content/entity_id:entity:changed":
+        case "entity:node/changed":
+          $result['changed'] = date('d.m.Y', $val[0]);
+        break;
+        case "entity:group_content/entity_id:entity:body":
+        case "entity:node/body":
+          $body = $val[0]->getText();
+          $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
+          $result['body'] = $out;
+        break;
+        case "entity:node/nid":
+          $result['entity'] = $val[0];
+        break;
+        case "entity:group_content/entity_id":
+          $result['entity'] = $val[0]->getText();
+        break;
+      }
+
+      if (isset($result['gid']) && isset($result['center'])) {
+        $result['group_link'] = Link::createFromRoute($result['center'], 'entity.group.canonical', ['group' => $result['gid']])->toString();
+      }
+
+      if (isset($result['entity']) && isset($result['title'])) {
+        $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+      }
+
+    }
+
+    if (count($result) > 0 && isset($result['node_link'])) {
+       if ($result['type'] != 'Meldung' && !isset($result['group_link'])) {
+       }
+       else {
+         $data[] = $result;
+       }
+    }
+  }
+  
+  $variables['results'] = $data;
+
+
   $primary_menus = load_primary_menus();
   $link = Link::fromTextAndUrl('Zurücksetzen', Url::fromRoute('view.solr_search.page_1'))->toString();
   $variables['reset_link'] = $link;
@@ -1252,8 +1322,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   $variables['active_group'] = $zoe_zps['active'] != ''?$zoe_zps['active']: $variables['active_group'];
 
   $weitere_gruppen =  search_limit_groups('weitere_gruppen', $primary_menus);
-  $variables['weitere_gruppen'] = $zoe_zps['links'];
-  $variables['active_group'] = $zoe_zps['active'] != ''?$zoe_zps['active']:$variables['active_group'];
+  $variables['weitere_gruppen'] = $weitere_gruppen['links'];
+  $variables['active_group'] = $weitere_gruppen['active'] != ''?$weitere_gruppen['active']:$variables['active_group'];
   
 
   $variables['active_timing'] = t('Beliebiger Zeitraum');
@@ -1297,7 +1367,6 @@ function search_limit_groups($type, $menus) {
     }
   }
   $itsm_group['title'] = $titles[$type];
-
   
   if(empty($menus[$type])) {
       $itsm_links = static_search_groups($type);
@@ -1308,7 +1377,7 @@ function search_limit_groups($type, $menus) {
 
   foreach($itsm_links as $id => $group) {
       $options = [
-          'fulltext' => $param['fulltext'],
+          'fulltext' => isset($param['fulltext'])?$param['fulltext']:'',
           'f[0]' => 'parent_group:'.$id
       ];
       $active = '';
@@ -1366,7 +1435,7 @@ function load_primary_menus() {
 
       if ($item['title'] == 'ITSM-Prozesse') {
           if (isset($item['below'])) {
-              $menus_links['itsm'] = get_second_level_menus($item['below']);
+            $menus_links['itsm'] = get_second_level_menus($item['below']);
           }
       }
 
@@ -1381,9 +1450,9 @@ function load_primary_menus() {
               $menus_links['zoe_zps'] = get_second_level_menus($item['below']);
           }
       }
-      
-      if ($item['title'] == 'Gruppen') {
-          if (isset($item['below'])) {
+
+      if ($item['title'] == "Weitere Gruppen") {
+         if (isset($item['below'])) {	
               $menus_links['weitere_gruppen'] = get_second_level_menus($item['below']);
           }
       }
@@ -1394,7 +1463,8 @@ function load_primary_menus() {
 function get_second_level_menus($item) {
   $menus = [];
   foreach($item as $subitem) {
-      if (!$subitem['url']->isExternal()) {
+    $val = (array)$subitem['url'];
+    if ($val["\x00*\x00routeName"] !=  NULL && !$subitem['url']->isExternal()) {
           $params = $subitem['url']->getRouteParameters();
           if(isset($params['group'])) {
               $menus[$params['group']] = $subitem['title'];
@@ -1438,14 +1508,15 @@ function static_search_groups($type) {
 }
 
 function get_menu_items($menu_name) {
-    $menu_tree = \Drupal::menuTree();
-    $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
-    $tree = $menu_tree->load($menu_name, $parameters);
-    $manipulators = array(
-        array('callable' => 'menu.default_tree_manipulators:checkAccess'),
-        array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
-    );
-    $tree = $menu_tree->transform($tree, $manipulators);
-    $menu = $menu_tree->build($tree);
-    return $menu;
+  $menu_tree = \Drupal::menuTree();
+  $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
+  $tree = $menu_tree->load($menu_name, $parameters);
+  $manipulators = array(
+    array('callable' => 'menu.default_tree_manipulators:checkAccess'),
+    array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
+  );
+  $tree = $menu_tree->transform($tree, $manipulators);
+  $menu = $menu_tree->build($tree);
+   
+  return $menu;
 }

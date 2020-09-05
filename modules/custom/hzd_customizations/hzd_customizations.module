@@ -1277,6 +1277,9 @@ function hzd_customizations_entity_base_field_info(\Drupal\Core\Entity\EntityTyp
   }
 }
 
+
+
+
 function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
   $fields = $query->getIndex()->getFields();
   if (isset($fields['created_date'])) {
@@ -1284,11 +1287,30 @@ function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\Quer
     if (isset($param['created'])) {
       $time = search_before_timing($param['created']);
       if ($time > 0) {
-        $query->addCondition('created_date', $time, '>=');
+        $query->addCondition('changed', $time, '>=');
       }
     }
   }
 }
+
+
+/*
+function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+  $fields = $query->getIndex()->getFields();
+  if (isset($fields['created_date'])) {
+    $param = \Drupal::request()->query->all();
+    if (isset($param['created'])) {
+      $time = search_before_timing($param['created']);
+      if ($time > 0) {
+      	  $conditionGroup = $query->createConditionGroup('OR');
+	  $conditionGroup->addCondition('changed', $time, '>=');
+	  $conditionGroup->addCondition('changed_site', $time, '>=');
+	  $query->addConditionGroup($conditionGroup);
+      }
+    }
+  }
+}
+*/
 
 function search_before_timing($range) {
     $time = time();

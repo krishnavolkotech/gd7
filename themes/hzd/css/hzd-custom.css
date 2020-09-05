@@ -1473,7 +1473,7 @@ span.glyphicon.down-arrow {
 }
 
 .limit-results {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 
 .row.search-time-filters-content a.active,
@@ -1519,7 +1519,21 @@ li.facet-item label {
 }
 */
 
+.col-sm-2.group-filter-text {
+    width: fit-content !important;
+    margin-right: 1rem;
+}
 
+.col-sm-3.reset-link a {
+    color: #333;
+}
+span.field-content::first-letter {
+    text-transform: capitalize;
+}
+
+.row.search-time-filters-content {
+    width: auto;
+}
 #edit-fulltext{
   background: #fff url(../images/close-icon.png) no-repeat right -10px center;
   background-size: 10px 10px;
@@ -1531,3 +1545,7 @@ li.facet-item label {
 #edit-fulltext.hascontent  { background-position: right 10px center; } 
 #edit-fulltext.onremove{ cursor: pointer; }              
 #edit-fulltext::-ms-clear {display: none; width:0; height:0;} 
+
+.view-solr-search .view-content ul li a{
+    text-transform: capitalize;
+}
