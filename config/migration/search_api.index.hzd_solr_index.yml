@@ -10,10 +10,40 @@ dependencies:
     - search_api
     - downtimes
   config:
-    - field.storage.node.body
     - field.storage.node.field_custom_title
+    - field.storage.node.field_related_transfer_number
     - field.storage.node.field_other_services
+    - field.storage.node.field_recipients
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_depend_other_services
+    - field.storage.node.field_business_impact
+    - field.storage.node.field_technical_impact
+    - field.storage.node.field_business_impact_services
+    - field.storage.node.field_technical_impact_services
+    - field.storage.node.field_special_notes
+    - field.storage.node.field_dates
+    - field.storage.node.field_creators
+    - field.storage.node.field_contact
+    - field.storage.node.field_abnormality_description
+    - field.storage.node.field_closed
+    - field.storage.node.field_comments
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_attachment
+    - field.storage.node.field_detailed_question
+    - field.storage.node.field_diagnose
+    - field.storage.node.field_processing
+    - field.storage.node.field_problem_name
+    - field.storage.node.field_release_name
+    - field.storage.node.field_problem_status
+    - field.storage.node.field_problem_symptoms
+    - field.storage.node.field_solution
+    - field.storage.node.field_task_force
+    - field.storage.node.body
     - field.storage.node.field_release_service
+    - field.storage.node.field_author_name
+    - field.storage.node.field_work_around
     - search_api.server.solr_bpk_migration
 third_party_settings:
   search_api_solr:
@@ -67,6 +97,14 @@ field_settings:
         - node
       config:
         - field.storage.node.body
+  body_1:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: body
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.body
   changed:
     label: 'Inhalt » Inhalt » Geändert'
     datasource_id: 'entity:group_content'
@@ -76,6 +114,14 @@ field_settings:
       module:
         - group
         - node
+        - node
+  changed_site:
+    label: Geändert
+    datasource_id: 'entity:node'
+    property_path: changed
+    type: date
+    dependencies:
+      module:
         - node
   created:
     label: 'Inhalt » Inhalt » geschrieben am'
@@ -115,6 +161,105 @@ field_settings:
     dependencies:
       module:
         - group
+  field_abnormality_description:
+    label: 'Inhalt » Inhalt » Beschreibung der Auffälligkeiten'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_abnormality_description'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_abnormality_description
+  field_attachment:
+    label: 'Inhalt » Inhalt » Creator'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_attachment'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_attachment
+  field_author_name:
+    label: 'Inhalt » Inhalt » Veröffentlicht von'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_author_name'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_author_name
+  field_business_impact:
+    label: 'Inhalt » Inhalt » 2.5 Fachliche Auswirkungen:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_business_impact'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_business_impact
+  field_business_impact_services:
+    label: 'Inhalt » Inhalt » 2.7 Fachliche Auswirkungen auf andere (Fach-) Verfahren:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_business_impact_services'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_business_impact_services
+  field_closed:
+    label: 'Inhalt » Inhalt » Closed'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_closed'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_closed
+  field_comments:
+    label: 'Inhalt » Inhalt » Comment'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_comments'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_comments
+  field_contact:
+    label: 'Inhalt » Inhalt » 2.12 Ansprechpartner:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_contact'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_contact
+  field_creators:
+    label: 'Inhalt » Inhalt » 2.11 Ersteller:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_creators'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_creators
   field_custom_title:
     label: 'Inhalt » Inhalt » 1.1 Title'
     datasource_id: 'entity:group_content'
@@ -126,6 +271,72 @@ field_settings:
         - node
       config:
         - field.storage.node.field_custom_title
+  field_dates:
+    label: 'Inhalt » Inhalt » 2.10 Termine:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_dates'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_dates
+  field_depend_other_services:
+    label: 'Inhalt » Inhalt » 2.4 Abhängigkeiten:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_depend_other_services'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_depend_other_services
+  field_detailed_question:
+    label: 'Inhalt » Inhalt » Detailed Question'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_detailed_question'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_detailed_question
+  field_diagnose:
+    label: 'Inhalt » Inhalt » Diagnose'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_diagnose'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_diagnose
+  field_eroffnet:
+    label: 'Inhalt » Inhalt » Created'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_eroffnet'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_eroffnet
+  field_intial_situation:
+    label: 'Inhalt » Inhalt » 2.1 Ausgangslage'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_intial_situation'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_intial_situation
   field_other_services:
     label: 'Inhalt » Inhalt » 1.3 Erstellendes Verfahren'
     datasource_id: 'entity:group_content'
@@ -137,6 +348,94 @@ field_settings:
         - node
       config:
         - field.storage.node.field_other_services
+  field_problem_name:
+    label: 'Inhalt » Inhalt » Name in Problem Database'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_problem_name'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_problem_name
+  field_problem_status:
+    label: 'Inhalt » Inhalt » Problem Status'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_problem_status'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_problem_status
+  field_problem_symptoms:
+    label: 'Inhalt » Inhalt » Problem Symptoms'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_problem_symptoms'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_problem_symptoms
+  field_processing:
+    label: 'Inhalt » Inhalt » Last Update'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_processing'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_processing
+  field_professional_conditions:
+    label: 'Inhalt » Inhalt » 2.2 Fachliche / organisatorische Einsatzvoraussetzungen:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_professional_conditions'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_professional_conditions
+  field_recipients:
+    label: 'Inhalt » Inhalt » 1.4 Angesprochene Stellen'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_recipients'
+    type: string
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_recipients
+  field_related_transfer_number:
+    label: 'Inhalt » Inhalt » 1.2 Bezug zu SW-Übergabe-Nr.:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_related_transfer_number'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_related_transfer_number
+  field_release_name:
+    label: 'Inhalt » Inhalt » Name in Release Database'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_release_name'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_release_name
   field_release_service:
     label: 'Inhalt » Inhalt » Verfahren'
     datasource_id: 'entity:group_content'
@@ -148,6 +447,83 @@ field_settings:
         - node
       config:
         - field.storage.node.field_release_service
+  field_solution:
+    label: 'Inhalt » Inhalt » Solution'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_solution'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_solution
+  field_special_notes:
+    label: 'Inhalt » Inhalt » 2.9 Besondere Hinweise:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_special_notes'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_special_notes
+  field_task_force:
+    label: 'Inhalt » Inhalt » Task Force'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_task_force'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_task_force
+  field_tech_requirements:
+    label: 'Inhalt » Inhalt » 2.3 Technische Einsatzvoraussetzungen:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_tech_requirements'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_tech_requirements
+  field_technical_impact:
+    label: 'Inhalt » Inhalt » 2.6 Technische Auswirkungen:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_technical_impact'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_technical_impact
+  field_technical_impact_services:
+    label: 'Inhalt » Inhalt » 2.8 Technische Auswirkungen auf andere (Fach-) Verfahren:'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_technical_impact_services'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_technical_impact_services
+  field_work_around:
+    label: 'Inhalt » Inhalt » Workaround'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_work_around'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+      config:
+        - field.storage.node.field_work_around
   gid:
     label: 'Parent group'
     datasource_id: 'entity:group_content'
@@ -174,6 +550,14 @@ field_settings:
         - group
         - group
         - group
+  nid:
+    label: NID
+    datasource_id: 'entity:node'
+    property_path: nid
+    type: integer
+    dependencies:
+      module:
+        - node
   title:
     label: 'Inhalt » Inhalt » Titel'
     datasource_id: 'entity:group_content'
@@ -183,6 +567,14 @@ field_settings:
       module:
         - group
         - node
+        - node
+  title_1:
+    label: Titel
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    dependencies:
+      module:
         - node
   type:
     label: 'Inhalt » Inhalt » Inhaltstyp'
@@ -202,6 +594,14 @@ field_settings:
     dependencies:
       module:
         - group
+  type_2:
+    label: Inhaltstyp
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+    dependencies:
+      module:
+        - node
   uid:
     label: 'Inhalt » Inhalt » Erstellt von'
     datasource_id: 'entity:group_content'
@@ -228,11 +628,30 @@ datasource_settings:
         - closed_private-group_membership
         - downtimes-group_membership
         - group_content_type_6693a40b54133
+        - group_content_type_71a6b6a92fefd
         - group_content_type_7b308aea24fe7
         - group_content_type_c26112f8ad4cd
         - group_content_type_d4b06e2b6aad0
+        - group_content_type_ecf0249297413
         - moderate-group_membership
         - open-group_membership
+        - open-group_node-early_warnings
+    languages:
+      default: true
+      selected: {  }
+  'entity:node':
+    bundles:
+      default: true
+      selected:
+        - artefakt_kommentar
+        - book
+        - deployed_releases
+        - early_warnings
+        - newsletter
+        - non_production_environment
+        - release
+        - release_comments
+        - service_profile
     languages:
       default: true
       selected: {  }
@@ -248,102 +667,95 @@ processor_settings:
     settings:
       weights:
         preprocess_query: -10
+    weights:
+      preprocess_query: -30
   highlight:
-    plugin_id: highlight
-    settings:
-      highlight: always
-      excerpt: true
-      excerpt_length: 256
-      exclude_fields: {  }
-      prefix: '<strong>'
-      suffix: '</strong>'
-      weights:
-        postprocess_query: 0
-    prefix: '<strong>'
-    suffix: '</strong>'
-    excerpt: true
-    excerpt_length: 256
     highlight: always
     highlight_partial: false
-    exclude_fields: {  }
+    excerpt: true
+    excerpt_length: 1256
+    exclude_fields:
+      - created
+      - entity_id
+      - field_other_services
+      - id
+      - uid
+    prefix: '<strong>'
+    suffix: '</strong>'
+    weights:
+      postprocess_query: 0
   html_filter:
-    plugin_id: html_filter
-    settings:
-      fields:
-        - title
-        - body
-        - field_additional_email_recipient
-        - field_business_impact
-        - field_business_impact_services
-        - field_contact
-        - field_creators
-        - field_custom_title
-        - field_dates
-        - field_depend_other_services
-        - field_intial_situation
-        - field_other_services
-        - field_professional_conditions
-        - field_recipients
-        - field_related_transfer_number
-        - field_special_notes
-        - field_technical_impact
-        - field_technical_impact_services
-        - field_tech_requirements
-        - downtime_description
-      title: true
-      alt: true
-      tags:
-        h1: 5
-        h2: 3
-        h3: 2
-        strong: 2
-        b: 2
-      weights:
-        preprocess_index: -10
-        preprocess_query: -10
     all_fields: false
+    fields:
+      - body
+      - created
+      - downtime_description
+      - entity_id
+      - field_custom_title
+      - field_other_services
+      - id
+      - label
+      - title
+      - type
+      - type_1
+      - uid
     title: true
     alt: true
     tags:
       b: 2
-      em: 1
       h1: 5
       h2: 3
       h3: 2
       strong: 2
-      u: 1
+    weights:
+      preprocess_index: -15
+      preprocess_query: -15
   ignorecase:
-    plugin_id: ignorecase
-    settings:
-      fields:
-        - id
-        - title
-        - created
-        - body
-        - gid
-        - entity_id
-      weights:
-        preprocess_index: -10
-        preprocess_query: -10
     all_fields: false
+    fields:
+      - body
+      - created
+      - downtime_description
+      - entity_id
+      - field_custom_title
+      - field_other_services
+      - id
+      - label
+      - title
+      - type
+      - type_1
+      - uid
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
-  solr_date_range: {  }
+  solr_date_range:
+    weights:
+      preprocess_index: 0
   transliteration:
-    plugin_id: transliteration
-    settings:
-      fields:
-        - title
-        - body
-      weights:
-        preprocess_index: -10
-        preprocess_query: -4
     all_fields: false
+    fields:
+      - body
+      - created
+      - downtime_description
+      - entity_id
+      - field_custom_title
+      - field_other_services
+      - id
+      - label
+      - title
+      - type
+      - type_1
+      - uid
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
 tracker_settings:
   default:
     indexing_order: fifo
 options:
   index_directly: true
-  cron_limit: 1000
+  cron_limit: 500
 server: solr_bpk_migration
