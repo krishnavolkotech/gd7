@@ -1549,3 +1549,9 @@ span.field-content::first-letter {
 .view-solr-search .view-content ul li a{
     text-transform: capitalize;
 }
+
+.group-filter-text {
+    float: left;
+    margin-right: 2rem;
+    margin-left: 1rem;
+}
