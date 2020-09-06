@@ -25,6 +25,7 @@ use Drupal\search_api\SearchApiException;
 use Drupal\search_api\Task\IndexTaskManager;
 use Drupal\views\ViewEntityInterface;
 use Drupal\views\ViewExecutable;
+use Drupal\group\Entity\GroupContent;
 
 /**
  * Implements hook_help().
@@ -249,6 +250,15 @@ function search_api_entity_update(EntityInterface $entity) {
   if (!($entity instanceof ContentEntityInterface) || $entity->search_api_skip_tracking) {
     return;
   }
+
+   if ($entity instanceof ContentEntityInterface) {
+    if ($group_contents = GroupContent::loadByEntity($entity)) {
+      foreach ($group_contents as $group_content) {
+       $entity = $group_content;
+      }
+    }
+  }
+
   $indexes = ContentEntity::getIndexesForEntity($entity);
   if (!$indexes) {
     return;
@@ -260,10 +270,13 @@ function search_api_entity_update(EntityInterface $entity) {
   $inserted_item_ids = [];
   $updated_item_ids = $entity->getTranslationLanguages();
   $deleted_item_ids = [];
-  $old_translations = $entity->original->getTranslationLanguages();
-  foreach ($old_translations as $langcode => $language) {
-    if (!isset($updated_item_ids[$langcode])) {
-      $deleted_item_ids[] = $langcode;
+  $old_translations = [];
+  if (isset($entity->original)) {
+    $old_translations = $entity->original->getTranslationLanguages();
+    foreach ($old_translations as $langcode => $language) {
+      if (!isset($updated_item_ids[$langcode])) {
+        $deleted_item_ids[] = $langcode;
+      }
     }
   }
   foreach ($updated_item_ids as $langcode => $language) {
