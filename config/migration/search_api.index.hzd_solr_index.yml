@@ -10,39 +10,39 @@ dependencies:
     - search_api
     - downtimes
   config:
-    - field.storage.node.field_custom_title
-    - field.storage.node.field_related_transfer_number
-    - field.storage.node.field_other_services
-    - field.storage.node.field_recipients
-    - field.storage.node.field_intial_situation
-    - field.storage.node.field_professional_conditions
-    - field.storage.node.field_tech_requirements
-    - field.storage.node.field_depend_other_services
-    - field.storage.node.field_business_impact
-    - field.storage.node.field_technical_impact
-    - field.storage.node.field_business_impact_services
-    - field.storage.node.field_technical_impact_services
-    - field.storage.node.field_special_notes
-    - field.storage.node.field_dates
-    - field.storage.node.field_creators
-    - field.storage.node.field_contact
+    - field.storage.node.body
     - field.storage.node.field_abnormality_description
+    - field.storage.node.field_attachment
+    - field.storage.node.field_author_name
+    - field.storage.node.field_business_impact
+    - field.storage.node.field_business_impact_services
     - field.storage.node.field_closed
     - field.storage.node.field_comments
-    - field.storage.node.field_eroffnet
-    - field.storage.node.field_attachment
+    - field.storage.node.field_contact
+    - field.storage.node.field_creators
+    - field.storage.node.field_custom_title
+    - field.storage.node.field_dates
+    - field.storage.node.field_depend_other_services
     - field.storage.node.field_detailed_question
     - field.storage.node.field_diagnose
-    - field.storage.node.field_processing
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_other_services
     - field.storage.node.field_problem_name
-    - field.storage.node.field_release_name
     - field.storage.node.field_problem_status
     - field.storage.node.field_problem_symptoms
-    - field.storage.node.field_solution
-    - field.storage.node.field_task_force
-    - field.storage.node.body
+    - field.storage.node.field_processing
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_recipients
+    - field.storage.node.field_related_transfer_number
+    - field.storage.node.field_release_name
     - field.storage.node.field_release_service
-    - field.storage.node.field_author_name
+    - field.storage.node.field_solution
+    - field.storage.node.field_special_notes
+    - field.storage.node.field_task_force
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_technical_impact
+    - field.storage.node.field_technical_impact_services
     - field.storage.node.field_work_around
     - search_api.server.solr_bpk_migration
 third_party_settings:
@@ -630,28 +630,24 @@ datasource_settings:
         - group_content_type_6693a40b54133
         - group_content_type_71a6b6a92fefd
         - group_content_type_7b308aea24fe7
+        - group_content_type_b2ed3eb8d19c9
         - group_content_type_c26112f8ad4cd
         - group_content_type_d4b06e2b6aad0
+        - group_content_type_e340605cbaf90
         - group_content_type_ecf0249297413
         - moderate-group_membership
         - open-group_membership
         - open-group_node-early_warnings
+        - open-group_node-release
+        - open-group_node-release_comments
     languages:
       default: true
       selected: {  }
   'entity:node':
     bundles:
-      default: true
+      default: false
       selected:
-        - artefakt_kommentar
-        - book
-        - deployed_releases
-        - early_warnings
-        - newsletter
-        - non_production_environment
-        - release
-        - release_comments
-        - service_profile
+        - news
     languages:
       default: true
       selected: {  }
@@ -679,6 +675,7 @@ processor_settings:
       - entity_id
       - field_other_services
       - id
+      - title
       - uid
     prefix: '<strong>'
     suffix: '</strong>'
@@ -731,6 +728,7 @@ processor_settings:
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
+  reverse_entity_references: {  }
   solr_date_range:
     weights:
       preprocess_index: 0
