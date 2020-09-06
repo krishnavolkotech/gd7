@@ -1237,6 +1237,7 @@ function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $vari
 
 function hzd_preprocess_views_view__solr_search(&$variables) {
   $rows = $variables['rows'][0]['#rows'];
+
   $all_content_types = NodeType::loadMultiple();
   $contentTypes = [];
   foreach ($all_content_types as $machine_name => $content_type) {
@@ -1248,6 +1249,9 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
     $result = [];
     foreach($row['#row'] as $key => $val) {
       switch($key) {
+        case "_item":
+	  $highlighted = $val->getExcerpt();
+        break;
         case "entity:group_content/entity_id:entity:type":
         case "entity:node/type":
           $result['type'] = $contentTypes[$val[0]];
@@ -1270,7 +1274,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
         case "entity:node/body":
           $body = $val[0]->getText();
           $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
-          $result['body'] = $out;
+          $result['body'] = $highlighted?$highlighted:$out;
         break;
         case "entity:node/nid":
           $result['entity'] = $val[0];
