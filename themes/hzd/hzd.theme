@@ -19,6 +19,11 @@ use Drupal\Core\Link;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\NodeType;
 
+define('ITSM_PROZESSE', 'ITSM-Prozesse');
+define('VERFAHREN', 'Verfahren');
+define('ZOE_ZPS', 'ZPS & ZOE');
+define('WEITERE_GRUPPEN', 'Weitere Gruppen');
+
 /**
  * @param $variables
  */
@@ -1216,7 +1221,7 @@ function hzd_preprocess_menu_local_action(array &$variables) {
  */
 function hzd_preprocess_menu__primary_links(&$variables) {
   foreach ($variables['items'] as $idx => $item) {
-    if ($item['title'] == 'Weitere Gruppen') {
+    if ($item['title'] == WEITERE_GRUPPEN) {
       unset($variables['items'][$idx]);
     }
     if (count($item['below']) > 0) {
@@ -1346,10 +1351,10 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
  */
 function search_limit_groups($type, $menus) {
   $param = \Drupal::request()->query->all();
-  $titles['itsm'] = t('ITSM-Prozesse');
-  $titles['verfahren'] = t('Verfahren');
-  $titles['zoe_zps'] = t('ZOE & ZPS');
-  $titles['weitere_gruppen'] = t('Weitere Gruppen');
+  $titles['itsm'] = ITSM_PROZESSE;
+  $titles['verfahren'] = VERFAHREN;
+  $titles['zoe_zps'] = ZOE_ZPS;
+  $titles['weitere_gruppen'] = WEITERE_GRUPPEN;
 
   /*
   $gids = \Drupal::entityQuery('group')
@@ -1438,25 +1443,25 @@ function load_primary_menus() {
     $menus_links = [];
     foreach ($menu_data['#items'] as $item) {
 
-      if ($item['title'] == 'ITSM-Prozesse') {
+     if ($item['title'] == ITSM_PROZESSE) {
           if (isset($item['below'])) {
             $menus_links['itsm'] = get_second_level_menus($item['below']);
           }
       }
 
-      if ($item['title'] == 'Verfahren') {
+      if ($item['title'] == VERFAHREN) {
           if (isset($item['below'])) {
               $menus_links['verfahren'] = get_second_level_menus($item['below']);
           }
       }
-      
-      if ($item['title'] == 'ZPS & ZOE') {
+
+      if ($item['title'] == ZOE_ZPS) {
           if (isset($item['below'])) {
               $menus_links['zoe_zps'] = get_second_level_menus($item['below']);
           }
       }
 
-      if ($item['title'] == "Weitere Gruppen") {
+      if ($item['title'] == WEITERE_GRUPPEN) {
          if (isset($item['below'])) {	
               $menus_links['weitere_gruppen'] = get_second_level_menus($item['below']);
           }
@@ -1479,36 +1484,10 @@ function get_second_level_menus($item) {
   return $menus;
 }
 function static_search_groups($type) {
-    $groups['itsm'] = [
-        2 => t('Incident Management'),
-        39 => t('Kapazitätsmanagement'),
-        6 => t('Problem Management'),
-        1 => t('Release Management'),
-        15 => t('Service Level Management'),
-        77 => t('Verfügbarkeitsmanagement'),
-        80 => t('Corono Info'),
-    ];
-
-    $groups['zoe_zps'] = [
-        41 => t('Architektursteuerung'),
-        21 => t('Betriebsportal KONSENS'),
-        33 => t('GPM'),
-        790 => t('TestCenter KONSENS'),
-        7 => t('ZANS'),
-        44 => t('ZPS ELSTER-Kommunikation'),
-    ];
-
-    $groups['verfahren'] = [
-        37 => t('ARCO'),
-        26 => t('BIENE'),
-        19 => t('DAME'),
-    ];
-
-    $groups['weitere_gruppen'] = [
-        37 => t('ARCO'),
-        26 => t('BIENE'),
-        19 => t('DAME'),
-    ];
+    $groups['itsm'] = [];
+    $groups['zoe_zps'] = [];
+    $groups['verfahren'] = [];
+    $groups['weitere_gruppen'] = [];
     return $groups[$type];
 }
 
