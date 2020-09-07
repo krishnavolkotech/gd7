@@ -159,7 +159,7 @@
 	  
 	  <div class="views-field views-field-body">
 	    <span class="field-content">
-	      {{ result.body | raw  }}
+	      {{ result.highlighted?result.highlighted | raw : result.body | raw  }}
 	    </span>
 	  </div>
 	  
