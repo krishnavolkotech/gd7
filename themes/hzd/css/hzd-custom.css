@@ -1545,10 +1545,11 @@ span.field-content::first-letter {
 #edit-fulltext.hascontent  { background-position: right 10px center; } 
 #edit-fulltext.onremove{ cursor: pointer; }              
 #edit-fulltext::-ms-clear {display: none; width:0; height:0;} 
-
+/*
 .view-solr-search .view-content ul li a{
     text-transform: capitalize;
 }
+*/
 
 .group-filter-text {
     float: left;
