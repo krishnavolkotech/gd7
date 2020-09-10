@@ -1251,6 +1251,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   }
 
   $data = [];
+  if (count($rows) > 0) {
   foreach($rows as $row) {
     $result = [];
     foreach($row['#row'] as $key => $val) {
@@ -1307,6 +1308,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
          $data[] = $result;
        }
     }
+  }
   }
   
   $variables['results'] = $data;

@@ -8,7 +8,6 @@ dependencies:
     - node
     - cust_group
     - search_api
-    - downtimes
   config:
     - field.storage.node.body
     - field.storage.node.field_abnormality_description
@@ -658,13 +657,6 @@ processor_settings:
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
-  group_access:
-    plugin_id: group_access
-    settings:
-      weights:
-        preprocess_query: -10
-    weights:
-      preprocess_query: -30
   highlight:
     highlight: always
     highlight_partial: false
