@@ -685,7 +685,6 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
       $stateString .= ", $value";
     }
-    // pr($stateString);
   }
 
   // Historie der Änderungen nur für Gruppenadmins sichtbar.
@@ -703,6 +702,12 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         $build['content_revision_log'] = NULL;
       }
     }
+  }
+
+  // Disabling caches for detail presentations (cluster, risk, measure)
+  $riskmBundles = ['risk_cluster', 'risk', 'measure'];
+  if (in_array($entity->bundle(), $riskmBundles)) {
+    $build['#cache']['max-age'] = 0;
   }
 }
 
@@ -806,6 +811,9 @@ $extra['node']['risk']['display']['field_measures'] =
 //   return "$clusterId - $finalRiskId";
 // }
 
+/**
+ * Implements hook_ENTITY_TYPE_view()
+ */
 function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->id() == RISK_MANAGEMENT) {
     // Archivierte Maßnahmen aus Chart entfernen?
@@ -849,6 +857,7 @@ function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\Entit
     $build['#attached']['drupalSettings']['hzd_risk_management']['chartData']['categories'] = $categoryCounts;
     $build['#attached']['library'][] = 'hzd_risk_management/Chart';
     $build['#attached']['library'][] = 'hzd_risk_management/risk_chart';
+    $build['#cache']['max-age'] = 0;
   }
 }
 

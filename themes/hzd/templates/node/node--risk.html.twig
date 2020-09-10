@@ -233,7 +233,14 @@
               </tr>
               <tr>
                 <th scope="row">{{ node.field_non_production_state.fieldDefinition.label }}</th>
-                <td>{{ content.field_non_production_state[0] }}</td>
+                <td>
+                {% if content.field_non_production_state[1] %}
+                  <div>{{ content.field_non_production_state[0] }}</div>
+                  <div>{{ content.field_non_production_state[1] }}</div>
+                {% else %}
+                  <div>{{ content.field_non_production_state[0] }}</div>
+                {% endif %}
+                </td>
               </tr>
               <tr>
                 <th scope="row">{{ node.field_owner.fieldDefinition.label }}</th>
