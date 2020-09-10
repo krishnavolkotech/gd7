@@ -1559,3 +1559,27 @@ span.field-content::first-letter {
     margin-right: 2rem;
     margin-left: 1rem;
 }
+
+.reset-button a{
+    background: #0e9e57 !important;
+    font-size: 14px;
+    color: #ffffff !important;
+    padding: 6px 12px;
+    float: left !important;
+    border: none !important;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.search-results {
+    min-width: 1100px;
+}
+.reset-button a:hover {
+    text-decoration: none;
+    border: none !important;
+    background: #027596 !important;
+    color: #fff !important;
+} 
+.reset-button {
+    margin-top: -5px;
+}
