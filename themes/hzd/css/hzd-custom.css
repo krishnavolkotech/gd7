@@ -1574,11 +1574,12 @@ span.field-content::first-letter {
 .search-results {
     min-width: 1100px;
 }
+#edit-submit-solr-search,
 .reset-button a:hover {
     text-decoration: none;
     border: none !important;
-    background: #027596 !important;
     color: #fff !important;
+    background: #0e9e57 !important;
 } 
 .reset-button {
     margin-top: -5px;
