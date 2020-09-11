@@ -5,11 +5,13 @@ dependencies:
   config:
     - field.storage.node.body
     - search_api.index.hzd_solr_index
+    - user.role.authenticated
   module:
     - group
     - node
     - search_api
     - text
+    - user
 id: solr_search
 label: 'Solr Search'
 module: views
@@ -25,8 +27,10 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            authenticated: authenticated
       cache:
         type: none
         options: {  }
@@ -597,7 +601,7 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: Suche
+            label: ''
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
@@ -747,6 +751,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.body'
   attachment_1:
@@ -762,6 +767,7 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - user.roles
       tags:
         - 'config:field.storage.node.body'
   attachment_2:
@@ -777,6 +783,7 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - user.roles
       tags:
         - 'config:field.storage.node.body'
   page_1:
@@ -1430,5 +1437,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.roles
       tags:
         - 'config:field.storage.node.body'
