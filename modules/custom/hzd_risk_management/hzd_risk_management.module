@@ -306,7 +306,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $header = [t('Title'),t('Status'),t('Risk value and class')];
       $build['field_risks_data'] = [
         '#theme' => 'field',
-          '#title' => t('Risks'),
+          '#title' => t('Associated risks'),
           '#label_display' => 'inline',
           '#view_mode' => $view_mode,
           '#language' => 'de',
@@ -534,7 +534,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $header = [t('Title'),t('Owner'),t('Status'),];
       $build['field_measures'] = [
         '#theme' => 'field',
-        '#title' => t('Measures'),
+        '#title' => t('Associated measures'),
         '#label_display' => 'inline',
         '#view_mode' => $view_mode,
         '#language' => 'de',
