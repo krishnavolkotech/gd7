@@ -21,7 +21,7 @@ use Drupal\node\Entity\NodeType;
 
 define('ITSM_PROZESSE', 'ITSM-Prozesse');
 define('VERFAHREN', 'Verfahren');
-define('ZOE_ZPS', 'ZPS & ZOE');
+define('ZOE_ZPS', 'ZOE & ZPS');
 define('WEITERE_GRUPPEN', 'Weitere Gruppen');
 
 /**
@@ -1439,7 +1439,7 @@ function content_timing_filter() {
 function load_primary_menus() {
     $menu_name = 'primary-links';
     $menu_data = get_menu_items($menu_name);
-    $search_menus_links = ['ITSM-Prozesse', 'Verfahren', 'ZPS & ZOE', 'Gruppen'];
+    $search_menus_links = ['ITSM-Prozesse', 'Verfahren', 'ZOE & ZPS', 'Gruppen'];
     $menus_links = [];
     foreach ($menu_data['#items'] as $item) {
 

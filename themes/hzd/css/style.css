@@ -3393,16 +3393,20 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
 }
 .view-solr-search .view-content ul li .views-field-title a,
 .view-news-list h2 a{
-    color:#004077 !important;
-    font-size:18px !important;
-    text-decoration:none;
-    padding:0 !important;
+    color: #027596 !important;
+    font-size: 18px !important;
+    text-decoration: none;
+    padding: 0 !important;
+}
+
+.view-solr-search {
+/*  margin-bottom:20px !important; */
+    float:left;
+    padding: 0 5rem;
 }
 
 .view-solr-search .view-content ul li{
-/*  margin-bottom:20px !important; */
-    float:left;
-    padding: .5rem 0px .5rem 0px !important;
+    padding-bottom: 2rem !important;
 }
 
 .forum-author-info{
