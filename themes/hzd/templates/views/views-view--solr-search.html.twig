@@ -38,6 +38,7 @@
     'view-' ~ id|clean_class,
     'view-id-' ~ id,
     'view-display-id-' ~ display_id,
+    'search-results',
     dom_id ? 'js-view-dom-id-' ~ dom_id,
   ]
 %}
@@ -72,7 +73,7 @@
     <div class='row limit-header'>
       <div class='group-filter-text'>{{ 'Ergebnisse einschränken auf'| t }}: </div>
       <div class='group-filter-text'>{{ active_group }} <span class="glyphicon down-arrow all-groups-filter">&#xe114;</span> </div>
-      <div class='group-filter-text''>{{ active_timing }}  <span class="glyphicon down-arrow search-time-filters">&#xe114;</span>
+      <div class='group-filter-text'>{{ active_timing }}  <span class="glyphicon down-arrow search-time-filters">&#xe114;</span>
 
 	<div class='row search-time-filters-content hidden'>
 	  <ul>
@@ -84,7 +85,7 @@
 
       </div>
 
-      <div class='col-sm-3'>{{ reset_link }} </div>
+      <div class='col-sm-2 reset-button'>{{ reset_link }} </div>
       
     </div>
 

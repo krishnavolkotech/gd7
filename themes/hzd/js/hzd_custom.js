@@ -19,13 +19,27 @@ Drupal.behaviors.hzd = {
 	else {
 	    $('.view-solr-search .pager-nav').removeClass('hidden');
 	}
+
+	$(document).click(function(e) {
+	    $('.search-limited-content').addClass('hidden');
+	    $('.search-time-filters-content').addClass('hidden');
+	});
+
+	$('.search-limited-content').once('.all-groups-filter').click(function(e){
+	    e.stopPropagation();
+	});
+	$('.search-time-filters-content').once('.search-time-filters').click(function(e){
+	    e.stopPropagation();
+	});
 	
-	$('.all-groups-filter').once('.all-groups-filter').click(function(){
+	$('.all-groups-filter').once('.all-groups-filter').click(function(e){
+	    e.stopPropagation();
 	    $('.search-limited-content').toggleClass('hidden');
 	    $('.search-time-filters-content').addClass('hidden');
 	});
 
-	$('.search-time-filters').once('.search-time-filters').click(function(){
+	$('.search-time-filters').once('.search-time-filters').click(function(e){
+	    e.stopPropagation();
 	    $('.search-limited-content').addClass('hidden');
 	    $('.search-time-filters-content').toggleClass('hidden');
 	});

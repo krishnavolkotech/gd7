@@ -498,8 +498,9 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       //kint($form['#action']);exit;
   }
 
-  if ($form_id == 'views_exposed_form') {
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-solr-search-page-1') {
     if (isset($form['fulltext'])) {
+      $form['actions']['submit']['#value'] = 'Suchen';
       $param = \Drupal::request()->query->all();
       if (isset($param['fulltext']) && trim($param['fulltext']) != '') {
         $form['fulltext']['#attributes']['class'][] = 'hascontent';
@@ -1345,3 +1346,37 @@ function hzd_customizations_theme($existing, $type, $theme, $path) {
     ]
   ];
 }
+
+function hzd_customizations_form_views_exposed_form_alter(&$form, $form_state, $form_id) {
+  $params = \Drupal::requestStack()->getCurrentRequest()->query->all();
+
+  $facet_manager = \Drupal::service('facets.manager');
+  $facets = $facet_manager->getEnabledFacets();
+  foreach ($facets as $facet) {
+    $filter_keys[] = empty($facet->getFacetSourceConfig()->getFilterKey()) ? 'f' : $facet->getFacetSourceConfig()->getFilterKey();
+  }
+  if (!empty($filter_keys)) {
+    if ($params['fulltext'] == '') {
+      $params = array();
+    }
+    if (isset($params['created'])) {
+          $form['created'] = [
+            '#type' => 'hidden',
+            '#value' => $params['created'],
+          ];
+    }  
+
+    foreach (array_unique($filter_keys) as $filter_key) {
+     if (!empty($params[$filter_key]) && !empty($param_values = $params[$filter_key])) {
+        // Add facet parameters to hidden fields in the forms.
+        foreach ($param_values as $key => $value) {
+          $form[$filter_key . '[' . $key . ']'] = [
+            '#type' => 'hidden',
+            '#value' => $value,
+          ];
+        }
+      }
+    }
+  }
+}
+

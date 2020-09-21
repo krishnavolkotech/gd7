@@ -1251,6 +1251,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   }
 
   $data = [];
+  if (count($rows) > 0) {
   foreach($rows as $row) {
     $result = [];
     foreach($row['#row'] as $key => $val) {
@@ -1307,6 +1308,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
          $data[] = $result;
        }
     }
+  }
   }
   
   $variables['results'] = $data;
@@ -1372,7 +1374,8 @@ function search_limit_groups($type, $menus) {
   $active_class_id = '';
   if (isset($param['f'])) {
     $active = explode(':',$param['f'][0]);
-    if (isset($active[1])) {
+    if (isset($active[1]) && (isset($param['fulltext']) && $param['fulltext']
+    != '')) {
         $active_class_id = $active[1];
     }
   }
@@ -1390,6 +1393,9 @@ function search_limit_groups($type, $menus) {
           'fulltext' => isset($param['fulltext'])?$param['fulltext']:'',
           'f[0]' => 'parent_group:'.$id
       ];
+      if (isset($param['created'])) {
+        $options['created'] = $param['created'];    
+      }	 
       $active = '';
       if ($active_class_id == $id) {
           $active = 'active';
@@ -1406,7 +1412,8 @@ function search_limit_groups($type, $menus) {
 function content_timing_filter() {
   $params = \Drupal::request()->query->all();
   $active_class_id = '';
-  if (isset($params['created'])) {
+  if (isset($params['created']) && (isset($params['fulltext']) &&
+  $params['fulltext'] != '')) {
       $active_class_id = $params['created'];
   }
   
