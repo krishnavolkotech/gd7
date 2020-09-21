@@ -12,6 +12,8 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Link;
 
 define('RISK_MANAGEMENT',73);
 
@@ -192,7 +194,7 @@ function risk_management_form_validate(array $form, $formState){
     ->condition('field_risk_id', $riskId)
     ->condition('type', 'risk');
 
-  if ($nid) {
+  if (isset($nid)) {
     $query->condition('nid', $nid, '!=');
   }
 
@@ -327,7 +329,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           ],
           '1' => [
             '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
-            <a href="/risikomanagement/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+            <a href="/risikomanagement-betrieb/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
           ],  
         ];
 
@@ -554,7 +556,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         ],
         '1' => [
           '#markup' => '<p><b>Anzahl abgeschlossener Maßnahmen: </b> 
-          <a href="/risikomanagement/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+          <a href="/risikomanagement-betrieb/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
         ],
       ];
     }
@@ -667,7 +669,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         ],
         '1' => [
           '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
-          <a href="/risikomanagement/risiken/archive?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+          <a href="/risikomanagement-betrieb/risiken/archive?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
         ],  
       ];
     }
@@ -814,7 +816,7 @@ $extra['node']['risk']['display']['field_measures'] =
 /**
  * Implements hook_ENTITY_TYPE_view()
  */
-function hzd_risk_management_group_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+function hzd_risk_management_group_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->id() == RISK_MANAGEMENT) {
     // Archivierte Maßnahmen aus Chart entfernen?
     $measures = \Drupal::entityTypeManager()
@@ -876,6 +878,71 @@ function hzd_risk_management_entity_display_build_alter(&$build, $context) {
     $element =& $build[$field_name];
     if (!array_key_exists('#theme', $element)) {
       $element['0']['#markup'] = "-";
+    }
+  }
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter.
+ * 
+ * @todo: Testen
+ */
+function hzd_risk_management_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  $viewId = $route_match->getParameter('view_id');
+  $displayId = $route_match->getParameter('display_id');
+  $isRiskView = False;
+  $isRiskNode = False;
+  
+  if (isset($viewId) && isset($displayId)) {
+    if (in_array($viewId, ['risk_clusters', 'risks_list', 'measures'])) {
+      $isRiskView = True;
+    }
+  } 
+  else {
+    $node = $route_match->getParameter('node');
+    if (isset($node)) {
+      $contentType = $node->getType();
+      if (in_array($contentType, ['risk_cluster', 'risk', 'measure'])) {
+        $isRiskNode = True;
+      }
+    }
+  }
+  
+  if ($isRiskNode || $isRiskView) {
+    $clusterView = [t('Clusters'), 'view.risk_clusters.clusters'];
+    $riskView = [t('Risks'), 'view.risks_list.risks'];
+    $measureView = [t('Measures'), 'view.measures.measures'];
+
+    $breadcrumb = new Breadcrumb();
+    $breadcrumb
+      ->addLink(Link::createFromRoute(t('Startseite'), 'hzd_customizations.front'))
+      ->addLink(Link::createFromRoute(t('Risikomanagement Betrieb'), 'entity.group.canonical', ['group' => RISK_MANAGEMENT]))
+      ->addLink(Link::createFromRoute(t('Risikoliste'), 'entity.node.canonical', ['node' => 73970]));
+
+    // Breadcrumb for views:
+    if ($isRiskView && $displayId == 'page_1') {
+      $target = $viewId == 'risks_list' ? $riskView : $measureView;
+      $breadcrumb->addLink(Link::createFromRoute($target[0], $target[1], ['group' => RISK_MANAGEMENT]));
+    }
+
+    // Breadcrumb for nodes:
+    if ($isRiskNode) {
+      switch ($contentType) {
+        case 'risk_cluster':
+          $target = $clusterView;
+          break;
+        case 'risk':
+          $target = $riskView;
+          break;
+        case 'measure':
+          $target = $measureView;
+          break;
+              
+        default:
+          $target = $clusterView;
+          break;
+        }
+      $breadcrumb->addLink(Link::createFromRoute($target[0], $target[1], ['group' => RISK_MANAGEMENT]));
     }
   }
 }
