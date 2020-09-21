@@ -113,8 +113,8 @@ function calculateClusterPropability($value) {
 function hzd_risk_management_form_alter(array &$form, $formState, $formId){
 //echo $formId;exit;
   $current_path = \Drupal::service('path.current')->getPath();
-  if ($formId == 'views_exposed_form' && ($current_path == '/group/73/massnahme'
-      || $current_path == '/group/73/massnahme/archive')) {
+  if ($formId == 'views_exposed_form' && ($current_path == '/group/73/massnahmen'
+      || $current_path == '/group/73/massnahmen/archiv')) {
     $form['order_date']['#type'] = 'textfield';
     $form['order_date']['#attributes']['class'][] = 'datepicker-text';
     $form['order_date']['#attributes']['placeholder'] = 'dd.mm.yyyy';
@@ -329,7 +329,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
           ],
           '1' => [
             '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
-            <a href="/risikomanagement-betrieb/risiken/archive?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+            <a href="/risikomanagement-betrieb/risiken/archiv?risk_cluster=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
           ],  
         ];
 
@@ -556,7 +556,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         ],
         '1' => [
           '#markup' => '<p><b>Anzahl abgeschlossener Maßnahmen: </b> 
-          <a href="/risikomanagement-betrieb/massnahme/archive?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+          <a href="/risikomanagement-betrieb/massnahmen/archiv?risk=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
         ],
       ];
     }
@@ -669,7 +669,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
         ],
         '1' => [
           '#markup' => '<p><b>Anzahl erledigter Einzelrisiken: </b> 
-          <a href="/risikomanagement-betrieb/risiken/archive?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
+          <a href="/risikomanagement-betrieb/risiken/archiv?measure=' . $entity->id() . '">' . $completed . ' (Archiv)</a></p>',
         ],  
       ];
     }
