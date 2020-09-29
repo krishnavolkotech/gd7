@@ -1315,7 +1315,11 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
 
 
   $primary_menus = load_primary_menus();
-  $link = Link::fromTextAndUrl('Zurücksetzen', Url::fromRoute('view.solr_search.page_1'))->toString();
+  $param = \Drupal::request()->query->all();
+  $fulltext = isset($param['fulltext'])?$param['fulltext']:'';
+  $options['fulltext'] = isset($param['fulltext'])?$param['fulltext']:'';
+  $link = Link::fromTextAndUrl('Filter zurücksetzen',
+  Url::fromRoute('view.solr_search.page_1', $options))->toString();
   $variables['reset_link'] = $link;
   $variables['active_group'] = t('Alle Gruppen');
 
