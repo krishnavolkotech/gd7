@@ -22,7 +22,7 @@ use Drupal\Core\Link;
  * )
  */
 class SearchContentTypes extends BlockBase {
-  
+
   /**
    * {@inheritdoc}
    */
@@ -99,5 +99,5 @@ class SearchContentTypes extends BlockBase {
 
       return $content_types;
   }
-  
+
 }

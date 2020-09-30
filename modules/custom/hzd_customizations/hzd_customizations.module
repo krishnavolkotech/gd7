@@ -225,7 +225,7 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
       $revision_user = \Drupal\user\Entity\User::load($revision_user_id);
       $revision_user_name = $revision_user->getDisplayName();
       $entity->set('field_author_name',$revision_user_name);
-      
+
       $build['field_author_name'] = $entity->get('field_author_name')->view();
       $build['field_author_name']['#label_display'] = 'inline';
       $build['modified'] = $entity->get('changed')->view();
@@ -280,7 +280,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     // $form['actions']['publish']['#published_status'] = TRUE;
     // $form['actions']['submit']['#published_status'] = FALSE;
     // $form['actions']['publish']['#value'] = t('Publish');
-    
+
     // $form['actions']['publish']['#weight'] = 10;
     // $form['actions']['unpublish']['#weight'] = 5;
     // if(\Drupal::currentUser()->isAuthenticated()) {
@@ -317,7 +317,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
     $form['field_author_name']['widget'][0]['value']['#default_value'] = $raw_name;
     $form['field_author_name']['#access'] = FALSE;
-    
+
     $form['field_author_state']['widget'][0]['value']['#type'] = 'hidden';
     $form['attachments']['#collapsed'] = FALSE;
   }
@@ -347,7 +347,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $db = \Drupal::database();
     $result = $db->query('SELECT SUBSTRING(cust_profile.lastname, 1, 1) AS lname FROM {users_field_data} LEFT JOIN {cust_profile} ON users_field_data.uid = cust_profile.uid GROUP BY lname ORDER BY lname ASC ');
     $glossarydata = array();
-    
+
     $current_path = \Drupal::service('path.current')->getPath();
     $path_values = explode('/', $current_path);
     $lastElement = array_slice($path_values, -1)[0];
@@ -492,7 +492,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
     $form['remove_files']['#weight'] = 4;
     $form['submit']['#weight'] = 19;
   }
-  
+
   if($form_id == 'node_revision_revert_confirm') {
       $form['#submit'][] = 'node_revisions_revert_confirm_custom';
       //kint($form['#action']);exit;
@@ -507,7 +507,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
       }
     }
   }
-      
+
   if($form_id == 'comment_comment_forum_form' || $form_id == 'comment_comment_no_subject_form') {
       $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
   }
@@ -615,7 +615,7 @@ function hzd_customizations_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAs
 function hzd_customizations_quickinfo_node_save_callback($form, FormStateInterface $form_state) {
   $node = $form_state->getFormObject()->getEntity();
   $node->set('status',1);
-  hzd_customizations_quickinfo_save($node);  
+  hzd_customizations_quickinfo_save($node);
 }
 
 
@@ -766,7 +766,7 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
       }
     }
   }
-  
+
   /*if($view->id() == 'user_admin_people'){
     $status = \Drupal::request()->get('uid',null);
     if($status) {
@@ -799,7 +799,7 @@ function get_last_unix_time($block_name) {
 function private_group_member_view_access_check($group) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) 
+    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)
             || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
       return TRUE;
     }
@@ -818,11 +818,11 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
                     $result->_entity->getGroupType()->id() == 'moderate_private') && !$access) {
                 unset($view -> result[$key]);
             }
-           
+
         }
-        
+
     }
-    
+
     //Hidding unpublished groups from /gruppen/meine table for group members
     if($view->id() == 'my_groups') {
         $user = \Drupal::currentUser();
@@ -830,7 +830,7 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
             foreach ($view -> result as $key => &$result) {
                 $groupMember = $result->_entity->getMember($user);
                 $roles = $groupMember->getRoles();
-                if(!$result->_entity->isPublished() && $groupMember 
+                if(!$result->_entity->isPublished() && $groupMember
                         && $groupMember->getGroupContent()->get('request_status')->value == 1
                         && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
                     unset($view -> result[$key]);
@@ -847,12 +847,12 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
       $start_date = DateTimePlus::createFromTimestamp((integer) $start_date)
               ->format('d.m.Y');
       $value->_entity->set('field_problem_eroffnet', (string) $start_date);
-      
+
       $node_title = $value->_entity->get('title')->value;
       $value->_entity->set('title', Html::decodeEntities($node_title));
     }
   }
-  
+
   if($view->id() == 'content') {
       foreach ($view->result as $value) {
         $node_title = $value->_entity->get('title')->value;
@@ -1356,7 +1356,7 @@ function hzd_customizations_form_views_exposed_form_alter(&$form, $form_state, $
     $filter_keys[] = empty($facet->getFacetSourceConfig()->getFilterKey()) ? 'f' : $facet->getFacetSourceConfig()->getFilterKey();
   }
   if (!empty($filter_keys)) {
-    if ($params['fulltext'] == '') {
+    if (isset($params['fulltext']) && $params['fulltext'] == '') {
       $params = array();
     }
     if (isset($params['created'])) {
@@ -1364,7 +1364,7 @@ function hzd_customizations_form_views_exposed_form_alter(&$form, $form_state, $
             '#type' => 'hidden',
             '#value' => $params['created'],
           ];
-    }  
+    }
 
     foreach (array_unique($filter_keys) as $filter_key) {
      if (!empty($params[$filter_key]) && !empty($param_values = $params[$filter_key])) {
