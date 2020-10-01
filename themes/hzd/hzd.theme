@@ -1243,6 +1243,12 @@ function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $vari
 }
 
 function hzd_preprocess_views_view__solr_search(&$variables) {
+  $params = \Drupal::request()->query->all();
+  $variables['display_filter'] = 0;
+  if ((isset($params['fulltext']) && $params['fulltext'] != '') &&
+      (isset($params['f']) || $params['created']  )) {
+    $variables['display_filter'] = 1;
+  }
   $rows = $variables['rows'][0]['#rows'];
   $all_content_types = NodeType::loadMultiple();
   $contentTypes = [];
@@ -1278,7 +1284,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:comment/changed":
             $result['changed'] = date('d.m.Y', $val[0]);
           break;
-          case "entity:comment/entity_id:entity:title":
+          case "entity:comment/subject":
             $result['title'] = $val[0];
             $result['type'] = "Kommentar";
           break;
