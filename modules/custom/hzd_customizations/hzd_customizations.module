@@ -1288,7 +1288,7 @@ function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\Quer
     if (isset($param['created'])) {
       $time = search_before_timing($param['created']);
       if ($time > 0) {
-        $query->addCondition('changed', $time, '>=');
+        $query->addCondition('sort_datasources_result', $time, '>=');
       }
     }
   }
