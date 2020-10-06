@@ -4,44 +4,54 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - group
+    - comment
     - node
+    - group
+    - file
+    - filefield_paths
     - cust_group
     - search_api
+    - hzd_customizations
   config:
-    - field.storage.node.body
-    - field.storage.node.field_abnormality_description
-    - field.storage.node.field_attachment
-    - field.storage.node.field_author_name
+    - field.storage.comment.comment_body
+    - field.storage.node.field_custom_title
+    - field.storage.node.field_related_transfer_number
+    - field.storage.node.field_other_services
+    - field.storage.node.field_recipients
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_depend_other_services
     - field.storage.node.field_business_impact
+    - field.storage.node.field_technical_impact
     - field.storage.node.field_business_impact_services
+    - field.storage.node.field_technical_impact_services
+    - field.storage.node.field_special_notes
+    - field.storage.node.field_dates
+    - field.storage.node.field_creators
+    - field.storage.node.field_contact
+    - field.storage.node.field_abnormality_description
     - field.storage.node.field_closed
     - field.storage.node.field_comments
-    - field.storage.node.field_contact
-    - field.storage.node.field_creators
-    - field.storage.node.field_custom_title
-    - field.storage.node.field_dates
-    - field.storage.node.field_depend_other_services
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_attachment
+    - field.storage.node.field_page_files
+    - field.storage.node.field_im_upload_page_files
     - field.storage.node.field_detailed_question
     - field.storage.node.field_diagnose
-    - field.storage.node.field_eroffnet
-    - field.storage.node.field_intial_situation
-    - field.storage.node.field_other_services
+    - field.storage.node.field_processing
     - field.storage.node.field_problem_name
+    - field.storage.node.field_release_name
     - field.storage.node.field_problem_status
     - field.storage.node.field_problem_symptoms
-    - field.storage.node.field_processing
-    - field.storage.node.field_professional_conditions
-    - field.storage.node.field_recipients
-    - field.storage.node.field_related_transfer_number
-    - field.storage.node.field_release_name
-    - field.storage.node.field_release_service
     - field.storage.node.field_solution
-    - field.storage.node.field_special_notes
     - field.storage.node.field_task_force
-    - field.storage.node.field_tech_requirements
-    - field.storage.node.field_technical_impact
-    - field.storage.node.field_technical_impact_services
+    - field.storage.node.body
+    - field.storage.node.field_upload_planning_file
+    - field.storage.node.upload
+    - field.storage.node.field_upload
+    - field.storage.node.field_release_service
+    - field.storage.node.field_author_name
     - field.storage.node.field_work_around
     - search_api.server.solr_bpk_migration
 third_party_settings:
@@ -100,7 +110,7 @@ field_settings:
     label: Body
     datasource_id: 'entity:node'
     property_path: body
-    type: text
+    type: string
     dependencies:
       config:
         - field.storage.node.body
@@ -114,6 +124,14 @@ field_settings:
         - group
         - node
         - node
+  changed_1:
+    label: Geändert
+    datasource_id: 'entity:comment'
+    property_path: changed
+    type: date
+    dependencies:
+      module:
+        - comment
   changed_site:
     label: Geändert
     datasource_id: 'entity:node'
@@ -160,6 +178,14 @@ field_settings:
     dependencies:
       module:
         - group
+  entity_id_1:
+    label: Objektkennung
+    datasource_id: 'entity:comment'
+    property_path: entity_id
+    type: integer
+    dependencies:
+      module:
+        - comment
   field_abnormality_description:
     label: 'Inhalt » Inhalt » Beschreibung der Auffälligkeiten'
     datasource_id: 'entity:group_content'
@@ -523,6 +549,82 @@ field_settings:
         - node
       config:
         - field.storage.node.field_work_around
+  filename:
+    label: 'upload » File » Dateiname'
+    datasource_id: 'entity:node'
+    property_path: 'upload:entity:filename'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.upload
+      module:
+        - file
+        - file
+  filename_1:
+    label: 'Inhalt » Inhalt » Upload Planning File » File » Dateiname'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_upload_planning_file:entity:filename'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - file
+      config:
+        - field.storage.node.field_upload_planning_file
+  filename_2:
+    label: 'Inhalt » Inhalt » upload » File » Dateiname'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:upload:entity:filename'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - file
+      config:
+        - field.storage.node.upload
+  filename_3:
+    label: 'Inhalt » Inhalt » Upload » File » Dateiname'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_upload:entity:filename'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - file
+      config:
+        - field.storage.node.field_upload
+  filename_4:
+    label: 'Inhalt » Inhalt » Dateien » File » Dateiname'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_im_upload_page_files:entity:filename'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - file
+      config:
+        - field.storage.node.field_im_upload_page_files
+  filename_5:
+    label: 'Inhalt » Inhalt » Dateien » Datei » Dateiname'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_page_files:entity:filename'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - file
+      config:
+        - field.storage.node.field_page_files
   gid:
     label: 'Parent group'
     datasource_id: 'entity:group_content'
@@ -557,6 +659,50 @@ field_settings:
     dependencies:
       module:
         - node
+  origname:
+    label: 'upload » File » Original filename'
+    datasource_id: 'entity:node'
+    property_path: 'upload:entity:origname'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.upload
+      module:
+        - file
+        - filefield_paths
+  origname_1:
+    label: 'Inhalt » Inhalt » Dateien » Datei » Original filename'
+    datasource_id: 'entity:group_content'
+    property_path: 'entity_id:entity:field_page_files:entity:origname'
+    type: text
+    dependencies:
+      module:
+        - group
+        - node
+        - file
+        - filefield_paths
+      config:
+        - field.storage.node.field_page_files
+  processed:
+    label: 'Kommentar » Processed text'
+    datasource_id: 'entity:comment'
+    property_path: 'comment_body:processed'
+    type: text
+    dependencies:
+      config:
+        - field.storage.comment.comment_body
+  sort_datasources_result:
+    label: 'Sort datasources by entity changed date'
+    property_path: sort_datasources_result
+    type: string
+  subject:
+    label: Betreff
+    datasource_id: 'entity:comment'
+    property_path: subject
+    type: text
+    dependencies:
+      module:
+        - comment
   title:
     label: 'Inhalt » Inhalt » Titel'
     datasource_id: 'entity:group_content'
@@ -574,6 +720,16 @@ field_settings:
     type: text
     dependencies:
       module:
+        - node
+  title_2:
+    label: 'Objektkennung » Inhalt » Titel'
+    datasource_id: 'entity:comment'
+    property_path: 'entity_id:entity:title'
+    type: text
+    dependencies:
+      module:
+        - comment
+        - node
         - node
   type:
     label: 'Inhalt » Inhalt » Inhaltstyp'
@@ -601,6 +757,16 @@ field_settings:
     dependencies:
       module:
         - node
+  type_3:
+    label: 'Objektkennung » Inhalt » Inhaltstyp'
+    datasource_id: 'entity:comment'
+    property_path: 'entity_id:entity:type'
+    type: string
+    dependencies:
+      module:
+        - comment
+        - node
+        - node
   uid:
     label: 'Inhalt » Inhalt » Erstellt von'
     datasource_id: 'entity:group_content'
@@ -612,6 +778,13 @@ field_settings:
         - node
         - node
 datasource_settings:
+  'entity:comment':
+    bundles:
+      default: true
+      selected: {  }
+    languages:
+      default: true
+      selected: {  }
   'entity:group':
     bundles:
       default: true
@@ -646,6 +819,7 @@ datasource_settings:
     bundles:
       default: false
       selected:
+        - forum
         - news
     languages:
       default: true
@@ -706,6 +880,7 @@ processor_settings:
   solr_date_range:
     weights:
       preprocess_index: 0
+  sort_datasources_result: {  }
 tracker_settings:
   default:
     indexing_order: fifo

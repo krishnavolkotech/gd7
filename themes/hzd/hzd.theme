@@ -232,7 +232,7 @@ function hzd_preprocess_html(&$variables) {
       $variables['head_title_array']['title'] = $title;
     }
   }
-  
+
   $user = \Drupal::currentUser()->id();
   if (!$user) {
     $variables['attributes']['class'][] = 'not-loggedin';
@@ -422,7 +422,7 @@ function hzd_preprocess_node(&$variables) {
 
     $incident_data = new stdClass();
     $incident_data->startdate_planned = isset($result->startdate_planned) ? date('d.m.Y - H:i', $result->startdate_planned) . " " . t('Uhr') : NULL;
-    
+
     $incident_data->service_name = isset($result->service) ? $result->service : NULL;
 //    $incident_data->service_name = [
 //      '#items' => explode(',', $result->service),
@@ -591,11 +591,11 @@ function hzd_preprocess_node(&$variables) {
           $environment_val = t('Pilot');
       }
       else {
-        $environment_val = \Drupal\node\Entity\Node::load($node->field_environment->value)->getTitle();           
+        $environment_val = \Drupal\node\Entity\Node::load($node->field_environment->value)->getTitle();
       }
       $abnormalities = $node->get('field_abnormalities')->value;
       $automated = $node->get('field_abnormalities')->value? t('Yes'):t('No');
-      
+
       $deploy_info_values[] = ['title' => t('Environment'), 'value' => $environment_val];
       $deploy_info_values[] = ['title' => t('Service'), 'value' => $service];
       $deploy_info_values[] = ['title' => t('Release'), 'value' => $release];
@@ -604,7 +604,7 @@ function hzd_preprocess_node(&$variables) {
       $deploy_info_values[] = ['title' => t('Deployed Date'), 'value' => date('d.m.Y', strtotime($node->get('field_date_deployed')->value))];
       $deploy_info_values[] = ['title' => t('Installation Duration'), 'value' => $node->get('field_installation_duration')->value];
       $deploy_info_values[] = ['title' => t('Automated Deployment'), 'value' => $automated];
-      
+
       $deploy_info_values[] = ['title' => t('Abnormalities'), 'value' => $abnormalities? t('Yes') :t('No')];
       if ($abnormalities) {
         $deploy_info_values[] = ['title' => t('Description of Abnormality'), 'value' => $node->get('field_abnormality_description')->value];
@@ -700,7 +700,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
         '#title' => 'PDF'
       ];
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
-      
+
       if($entity->bundle() == 'deployed_releases') {
           $variables['breadcrumb'][1]['text'] = 'Einsatzmeldung';
           $title =  $variables['breadcrumb'][1];
@@ -728,7 +728,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
       $variables['breadcrumb']['extras']['pdf_print'] = $pdfLink;
     }
   }
-  
+
 //    $variables['breadcrumb'][] = $rightData;
   //pr(($variables['breadcrumb']));exit;
 }
@@ -862,7 +862,7 @@ function downtimes_revisions($node) {
     if (empty($query) || empty($oldData)) {
 //    echo 1223;exit;
       $oldData = NULL;
-      
+
 
       $get_maintain_window = \Drupal::database()
         ->select('node_field_data', 'n');
@@ -1168,7 +1168,7 @@ function hzd_preprocess_file_link(&$variables) {
   if ($pos !== false) {
     $variables['dasi_class'] = "dasi-links";
   }
-  
+
   $route = \Drupal::request()->get(Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_NAME);
   if ($route == 'entity.node.edit_form') {
     $variables['node_edit_page'] = 'edit';
@@ -1243,6 +1243,12 @@ function hzd_theme_suggestions_views_view_alter(array &$suggestions, array $vari
 }
 
 function hzd_preprocess_views_view__solr_search(&$variables) {
+  $params = \Drupal::request()->query->all();
+  $variables['display_filter'] = 0;
+  if ((isset($params['fulltext']) && $params['fulltext'] != '') &&
+      (isset($params['f']) || $params['created']  )) {
+    $variables['display_filter'] = 1;
+  }
   $rows = $variables['rows'][0]['#rows'];
   $all_content_types = NodeType::loadMultiple();
   $contentTypes = [];
@@ -1252,70 +1258,85 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
 
   $data = [];
   if (count($rows) > 0) {
-  foreach($rows as $row) {
-    $result = [];
-    foreach($row['#row'] as $key => $val) {
-      switch($key) {
-        case "_item":
-	  $result['highlighted'] = $val->getExcerpt();
-        break;
-        case "entity:group_content/entity_id:entity:type":
-        case "entity:node/type":
-          $result['type'] = $contentTypes[$val[0]];
-        break;
-        case "entity:group_content/gid:entity:label":
-          $result['center'] = $val[0]; 
-        break;
-        case "entity:group_content/gid":
-          $result['gid'] = $val[0];
-        break;
-        case "entity:group_content/entity_id:entity:title":
-        case "entity:node/title":
-          $result['title'] = $val[0];
-        break;
-        case "entity:group_content/entity_id:entity:changed":
-        case "entity:node/changed":
-          $result['changed'] = date('d.m.Y', $val[0]);
-        break;
-        case "entity:group_content/entity_id:entity:body":
-        case "entity:node/body":
-          $body = $val[0]->getText();
-          $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
-          $result['body'] = $out;
-        break;
-        case "entity:node/nid":
-          $result['entity'] = $val[0];
-        break;
-        case "entity:group_content/entity_id":
-          $result['entity'] = $val[0]->getText();
-        break;
+    foreach($rows as $row) {
+      $result = [];
+      foreach($row['#row'] as $key => $val) {
+        switch($key) {
+          case "_item":
+            $result['highlighted'] = $val->getExcerpt();
+          break;
+          case "entity:group_content/entity_id:entity:type":
+          case "entity:node/type":
+            $result['type'] = $contentTypes[$val[0]];
+          break;
+          case "entity:group_content/gid:entity:label":
+            $result['center'] = $val[0];
+          break;
+          case "entity:group_content/gid":
+            $result['gid'] = $val[0];
+          break;
+          case "entity:group_content/entity_id:entity:title":
+          case "entity:node/title":
+            $result['title'] = $val[0];
+          break;
+          case "entity:group_content/entity_id:entity:changed":
+          case "entity:node/changed":
+          case "entity:comment/changed":
+            $result['changed'] = date('d.m.Y', $val[0]);
+          break;
+          case "entity:comment/subject":
+            $result['title'] = $val[0];
+            $result['type'] = "Kommentar";
+          break;
+          case "entity:comment/entity_id":
+            $result['entity'] = $val[0];
+          break;
+          case "entity:comment/comment_body:processed":
+            $body = $val[0]->getText();
+            $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
+            $result['body'] = $out;
+          break;
+          case "entity:group_content/entity_id:entity:body":
+          case "entity:node/body":
+            // $body = $val[0]->getText();
+            $body = $val[0];
+            $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
+            $result['body'] = $out;
+          break;
+          case "entity:node/nid":
+            $result['entity'] = $val[0];
+          break;
+          case "entity:group_content/entity_id":
+            $result['entity'] = $val[0]->getText();
+          break;
+        }
+
+        if (isset($result['gid']) && isset($result['center'])) {
+          $result['group_link'] = Link::createFromRoute($result['center'], 'entity.group.canonical', ['group' => $result['gid']])->toString();
+        }
+
+        if (isset($result['entity']) && isset($result['title'])) {
+          $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+        }
+
       }
-
-      if (isset($result['gid']) && isset($result['center'])) {
-        $result['group_link'] = Link::createFromRoute($result['center'], 'entity.group.canonical', ['group' => $result['gid']])->toString();
+      if (count($result) > 0 && isset($result['node_link'])) {
+        if ($result['type'] != 'Kommentar' && $result['type'] != 'Meldung' && !isset($result['group_link'])) {
+        }
+        else {
+          $data[] = $result;
+        }
       }
-
-      if (isset($result['entity']) && isset($result['title'])) {
-        $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
-      }
-
-    }
-
-    if (count($result) > 0 && isset($result['node_link'])) {
-       if ($result['type'] != 'Meldung' && !isset($result['group_link'])) {
-       }
-       else {
-         $data[] = $result;
-       }
     }
   }
-  }
-  
   $variables['results'] = $data;
 
-
   $primary_menus = load_primary_menus();
-  $link = Link::fromTextAndUrl('Zurücksetzen', Url::fromRoute('view.solr_search.page_1'))->toString();
+  $param = \Drupal::request()->query->all();
+  $fulltext = isset($param['fulltext'])?$param['fulltext']:'';
+  $options['fulltext'] = isset($param['fulltext'])?$param['fulltext']:'';
+  $link = Link::fromTextAndUrl('Filter zurücksetzen',
+  Url::fromRoute('view.solr_search.page_1', $options))->toString();
   $variables['reset_link'] = $link;
   $variables['active_group'] = t('Alle Gruppen');
 
@@ -1336,13 +1357,13 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   $weitere_gruppen =  search_limit_groups('weitere_gruppen', $primary_menus);
   $variables['weitere_gruppen'] = $weitere_gruppen['links'];
   $variables['active_group'] = $weitere_gruppen['active'] != ''?$weitere_gruppen['active']:$variables['active_group'];
-  
+
 
   $variables['active_timing'] = t('Beliebiger Zeitraum');
   $filter_created = content_timing_filter();
   $variables['filter_created'] = $filter_created['links'];
   $variables['active_timing'] = $filter_created['active'] != ''?$filter_created['active']:$variables['active_timing'];
-  
+
  // }
 
 }
@@ -1363,8 +1384,8 @@ function search_limit_groups($type, $menus) {
       ->condition('status',1)
       ->sort('label')
       ->execute();
-  
-  
+
+
     $groups = \Drupal\group\Entity\Group::loadMultiple($gids);
     foreach($groups as $id => $group) {
       dump($id. " : ". $group->label());
@@ -1380,7 +1401,7 @@ function search_limit_groups($type, $menus) {
     }
   }
   $itsm_group['title'] = $titles[$type];
-  
+
   if(empty($menus[$type])) {
       $itsm_links = static_search_groups($type);
   }
@@ -1394,8 +1415,8 @@ function search_limit_groups($type, $menus) {
           'f[0]' => 'parent_group:'.$id
       ];
       if (isset($param['created'])) {
-        $options['created'] = $param['created'];    
-      }	 
+        $options['created'] = $param['created'];
+      }
       $active = '';
       if ($active_class_id == $id) {
           $active = 'active';
@@ -1403,7 +1424,7 @@ function search_limit_groups($type, $menus) {
           $active_group = $group;
       }
       $url = Url::fromRoute('view.solr_search.page_1', $options, ['attributes' => ['class' => [$active]]]);
-      $link = Link::fromTextAndUrl($group, $url)->toString(); 
+      $link = Link::fromTextAndUrl($group, $url)->toString();
       $itsm_group['links'][] = $link;
   }
   return ['links' => $itsm_group, 'active' => $active_group];
@@ -1416,7 +1437,7 @@ function content_timing_filter() {
   $params['fulltext'] != '')) {
       $active_class_id = $params['created'];
   }
-  
+
   $timings = [
       'all' => t('Beliebiger Zeitraum'),
       'last_day' => t('Letzte 24 Stunden'),
@@ -1437,7 +1458,7 @@ function content_timing_filter() {
       $active_time = $text;
     }
     $url = Url::fromRoute('view.solr_search.page_1', $params, ['attributes' => ['class' => [$active]]]);
-    $link = Link::fromTextAndUrl($text, $url)->toString(); 
+    $link = Link::fromTextAndUrl($text, $url)->toString();
     $created['links'][] = $link;
   }
   return ['links' => $created, 'active' => $active_time];
@@ -1469,7 +1490,7 @@ function load_primary_menus() {
       }
 
       if ($item['title'] == WEITERE_GRUPPEN) {
-         if (isset($item['below'])) {	
+         if (isset($item['below'])) {
               $menus_links['weitere_gruppen'] = get_second_level_menus($item['below']);
           }
       }
@@ -1508,6 +1529,6 @@ function get_menu_items($menu_name) {
   );
   $tree = $menu_tree->transform($tree, $manipulators);
   $menu = $menu_tree->build($tree);
-   
+
   return $menu;
 }

@@ -66,8 +66,7 @@
 
   <div style="clear:both"></div>
 
-
-  
+{% if rows or display_filter == 1 %}        
   <div class='limit-results'>
 
     <div class='row limit-header'>
@@ -138,7 +137,9 @@
 
   </div>
 
-  {% if rows %}      
+  {% endif %}
+  
+  {% if rows %}        
   <div class="view-content">
     
     <div class="item-list">
