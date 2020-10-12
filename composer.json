@@ -63,10 +63,8 @@
         "drupal/search_api_solr": "^3.0",
         "drupal/entity_print": "^2.1",
         "drupal/pathauto": "^1.8",
-        "drupal/facets": "^1.5"
-    },
-    "replace": {
-        "drupal/core": "^8.6"
+        "drupal/facets": "^1.5",
+        "drupal/core": "^8.8.10"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
