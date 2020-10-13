@@ -1,5 +1,5 @@
-name: Admin Toolbar Extra Tools
-description: Adds menu links like Flush cache, Run cron, Run updates, and Logout under Drupal icon.
+name: Admin Toolbar Search
+description: Provides search of Admin Toolbar items.
 package: Administration
 
 type: module
