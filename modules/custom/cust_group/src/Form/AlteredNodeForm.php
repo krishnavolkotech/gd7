@@ -24,13 +24,14 @@ class AlteredNodeForm extends NodeForm {
     $node = $this->entity;
     if ($node->getType() == 'quickinfo') {
       $messages = drupal_get_messages();
+      $nodeTitle = $node->tolink($node->label())->toString();
       if ($node->get('status')->value == 1) {
-        drupal_set_message(t('@type %title has been published.', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
-      } 
+        drupal_set_message(t('@type @title has been published.', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
+      }
       elseif($node->custom_isnew == 1) {
-          drupal_set_message(t('@type %title has been saved', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
+          drupal_set_message(t('@type @title has been saved', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       } else {
-        drupal_set_message(t('@type %title has been updated', ['@type' => node_get_type_label($node), '%title' => $node->tolink($node->label())]));
+        drupal_set_message(t('@type @title has been updated', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       }
     }
   }
