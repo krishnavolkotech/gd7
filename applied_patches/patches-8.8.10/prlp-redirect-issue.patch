@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/prlp/src/Controller/PrlpController.php b/modules/contrib/prlp/src/Controller/PrlpController.php
+index 1b7922884..3ef7796ee 100644
+--- a/modules/contrib/prlp/src/Controller/PrlpController.php
++++ b/modules/contrib/prlp/src/Controller/PrlpController.php
+@@ -56,7 +56,7 @@ public function prlpResetPassLogin(Request $request, $uid, $timestamp, $hash) {
+         if (!$login_destination) {
+           $login_destination = '/user/%user/edit';
+         }
+-        $login_destination = str_replace('%user', $uid, $login_destination);
++        $login_destination = str_replace(['%user', '%uid'], $uid, $login_destination);
+         $login_destination = str_replace('%front', $this->config('system.site')->get('page.front'), $login_destination);
+         if (substr($login_destination, 0, 1) !== '/') {
+           $login_destination = '/' . $login_destination;

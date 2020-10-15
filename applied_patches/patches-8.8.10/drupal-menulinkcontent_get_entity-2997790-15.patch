@@ -1,0 +1,45 @@
+From 67b51692f6bd10a8c11a50d3e6ec6c443296fc05 Mon Sep 17 00:00:00 2001
+From: lozgu <lozgu@smile.fr>
+Date: Thu, 4 Jul 2019 18:01:47 +0200
+Subject: [PATCH] Issue #2997790 by Grimreaper, StijnStroobants: Set
+ MenuLinkContent getEntity to public visibility
+
+---
+ .../menu_link_content/src/Plugin/Menu/MenuLinkContent.php        | 2 +-
+ .../menu_link_content/tests/src/Unit/MenuLinkPluginTest.php      | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php b/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
+index 68ddd94..c955b25 100644
+--- a/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
++++ b/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
+@@ -134,7 +134,7 @@ public static function create(ContainerInterface $container, array $configuratio
+    * @throws \Drupal\Component\Plugin\Exception\PluginException
+    *   If the entity ID and UUID are both invalid or missing.
+    */
+-  protected function getEntity() {
++  public function getEntity() {
+     if (empty($this->entity)) {
+       $entity = NULL;
+       $storage = $this->entityTypeManager->getStorage('menu_link_content');
+diff --git a/core/modules/menu_link_content/tests/src/Unit/MenuLinkPluginTest.php b/core/modules/menu_link_content/tests/src/Unit/MenuLinkPluginTest.php
+index a6af580..85177ab 100644
+--- a/core/modules/menu_link_content/tests/src/Unit/MenuLinkPluginTest.php
++++ b/core/modules/menu_link_content/tests/src/Unit/MenuLinkPluginTest.php
+@@ -28,4 +28,13 @@ public function testGetInstanceReflection() {
+     $this->assertEquals('test_id', $instance_method->invoke($menu_link_content_plugin));
+   }
+ 
++  /**
++   * @covers ::getEntity
++   */
++  public function testVisibilityGetEntity() {
++    $class = new \ReflectionClass(MenuLinkContent::class);
++    $instance_method = $class->getMethod('getEntity');
++    $this->assertEquals(true, $instance_method->isPublic());
++  }
++
+ }
+-- 
+2.7.4
+
