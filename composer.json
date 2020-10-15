@@ -58,13 +58,15 @@
         "drupal/revision_log": "1.0-alpha1",
         "drush/drush": "^9.5",
         "drupal/console": "^1.8",
-        "dompdf/dompdf": "^0.8.3",
+        "dompdf/dompdf": "^0.8.4",
         "drupal/draggableviews": "^1.2",
         "drupal/search_api_solr": "^3.0",
         "drupal/entity_print": "^2.2",
         "drupal/pathauto": "^1.8",
         "drupal/facets": "^1.5",
-        "drupal/core": "^8.8.10"
+        "drupal/core": "^8.8.10",
+        "sabberworm/php-css-parser": "^8.3.1",
+        "phenx/php-svg-lib": "^0.3.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
