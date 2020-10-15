@@ -1207,7 +1207,7 @@ function cust_group_file_download($uri) {
         if ($path_parts[2] == 'quickinfo') {
           return 1;
         }
-        
+
         $group_id = getGroupIdFromFolderName($path_parts[1]);
         if ($group_id) {
             return hzdGroupFileAccess($group_id);
@@ -1343,7 +1343,9 @@ function cust_group_user_format_name_alter(&$name, $account) {
     $userQuery->condition('cp.uid', $account->id(), '=')
       ->fields('cp', array('firstname', 'lastname'));
     $userData = $userQuery->execute()->fetchAssoc();
-    $name = $userData['firstname'] . ' ' . $userData['lastname'];
+    if(is_array($userData) && !empty($userData)){
+      $name = $userData['firstname'] . ' ' . $userData['lastname'];
+    }
   }
 }
 
