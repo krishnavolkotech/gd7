@@ -640,7 +640,11 @@ function hzd_preprocess_node__release__mail(&$variables) {
 function hzd_preprocess_breadcrumb(&$variables) {
   $breadcount_cout = count($variables['breadcrumb']);
   if($breadcount_cout > 1) {
-    $variables['breadcrumb'][$breadcount_cout - 1]['text'] = Markup::create(htmlspecialchars_decode($variables['breadcrumb'][$breadcount_cout - 1]['text']));
+    if (!is_array($variables['breadcrumb'][$breadcount_cout - 1]['text'])) {
+      $variables['breadcrumb'][$breadcount_cout - 1]['text'] =
+  Markup::create(htmlspecialchars_decode($variables['breadcrumb'][$breadcount_cout
+  - 1]['text']));
+    }
   }
   // This breadcrumb will apply only for our view at /group/24/address
   $route = \Drupal::routeMatch()->getRouteName();
@@ -1159,7 +1163,7 @@ function hzd_preprocess_file_link(&$variables) {
     $variables['file_owner'] = $user_link;
   }
   $nid = getFileAttachedNode($file->id());
-
+  $groupTitle =	'';
   if ($nid) {
     $groupTitle = getNodeGroupLabel($nid);
   }
