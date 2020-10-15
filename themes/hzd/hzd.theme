@@ -1246,7 +1246,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
   $params = \Drupal::request()->query->all();
   $variables['display_filter'] = 0;
   if ((isset($params['fulltext']) && $params['fulltext'] != '') &&
-      (isset($params['f']) || $params['created']  )) {
+      (isset($params['f']) || isset($params['created'])  )) {
     $variables['display_filter'] = 1;
   }
   $rows = $variables['rows'][0]['#rows'];

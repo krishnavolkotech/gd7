@@ -159,7 +159,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         $build[$field_name] = [
             '#theme' => 'field',
             '#title' => $definition->getLabel(),
-            '#label_display' => $component['label'],
+            '#label_display' => isset($component['label'])?$component['label']:'',
             '#view_mode' => $context['view_mode'],
             '#language' => $entity->get($field_name)->getLangcode(),
             '#field_name' => $definition->getName(),
