@@ -61,6 +61,9 @@ entity_print_print_engine.dompdf:
     verify_peer_name:
       type: boolean
       label: 'Verify Peer Name'
+    base_url:
+      type: string
+      label: 'Base URL'
 
 entity_print_print_engine.phpwkhtmltopdf:
   type: entint_print_engine_pdf

@@ -81,6 +81,21 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
       ->setBaseHost($request->getHttpHost())
       ->setProtocol($request->getScheme() . '://');
 
+    if (!empty($this->configuration['base_url'])) {
+      $base_url = parse_url($this->configuration['base_url']);
+      if (!empty($base_url['scheme']) && !empty($base_url['host'])) {
+        $this->dompdf->setProtocol($base_url['scheme'] . '://');
+        $host = $base_url['host'];
+        if (!empty($base_url['port'])) {
+          $host .= ':' . $base_url['port'];
+        }
+        $this->dompdf->setBaseHost($host);
+        if (!empty($base_url['path'])) {
+          $this->dompdf->setBasePath($base_url['path']);
+        }
+      }
+    }
+
     $this->setupHttpContext();
   }
 
@@ -112,6 +127,7 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
       'enable_html5_parser' => TRUE,
       'disable_log' => FALSE,
       'enable_remote' => TRUE,
+      'base_url' => '',
       'cafile' => '',
       'verify_peer' => TRUE,
       'verify_peer_name' => TRUE,
@@ -142,6 +158,12 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
       '#type' => 'checkbox',
       '#default_value' => $this->configuration['enable_remote'],
       '#description' => $this->t('This settings must be enabled for CSS and Images to work unless you manipulate the source manually.'),
+    ];
+    $form['base_url'] = [
+      '#title' => $this->t('Base URL'),
+      '#type' => 'textfield',
+      '#default_value' => $this->configuration['base_url'],
+      '#description' => $this->t('Leave empty to use the default site URL. Do not add trailing slashes.'),
     ];
     $form['ssl_configuration'] = [
       '#type' => 'details',
