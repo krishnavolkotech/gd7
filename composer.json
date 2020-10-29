@@ -37,7 +37,7 @@
         "drupal/masquerade": "^2.0@beta",
         "doctrine/inflector": "^1.1",
         "doctrine/common": "^2.6",
-        "drupal/group": "^1.0@RC",
+        "drupal/group": "^1.0",
         "drupal/bootstrap": "3.11",
         "solarium/solarium": "^5",
         "drupal/allowed_formats": "^1.1",

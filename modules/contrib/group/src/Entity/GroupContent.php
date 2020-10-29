@@ -2,12 +2,14 @@
 
 namespace Drupal\group\Entity;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\EntityOwnerTrait;
 use Drupal\user\UserInterface;
 
 /**
@@ -27,6 +29,7 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Group content type"),
  *   handlers = {
  *     "storage" = "Drupal\group\Entity\Storage\GroupContentStorage",
+ *     "storage_schema" = "Drupal\group\Entity\Storage\GroupContentStorageSchema",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data" = "Drupal\group\Entity\Views\GroupContentViewsData",
  *     "list_builder" = "Drupal\group\Entity\Controller\GroupContentListBuilder",
@@ -39,9 +42,6 @@ use Drupal\user\UserInterface;
  *       "delete" = "Drupal\group\Entity\Form\GroupContentDeleteForm",
  *       "group-join" = "Drupal\group\Form\GroupJoinForm",
  *       "group-leave" = "Drupal\group\Form\GroupLeaveForm",
- *       "approve" = "Drupal\group\Entity\Form\GroupContentApproveForm",
- *       "reject" = "Drupal\group\Entity\Form\GroupContentRejectForm",
- *       "group-request" = "Drupal\group\Form\GroupRequestMembershipForm",
  *     },
  *     "access" = "Drupal\group\Entity\Access\GroupContentAccessControlHandler",
  *   },
@@ -51,6 +51,7 @@ use Drupal\user\UserInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "uuid" = "uuid",
+ *     "owner" = "uid",
  *     "langcode" = "langcode",
  *     "bundle" = "type",
  *     "label" = "label"
@@ -76,6 +77,7 @@ use Drupal\user\UserInterface;
 class GroupContent extends ContentEntityBase implements GroupContentInterface {
 
   use EntityChangedTrait;
+  use EntityOwnerTrait;
 
   /**
    * {@inheritdoc}
@@ -160,36 +162,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getOwner() {
-    return $this->get('uid')->entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getOwnerId() {
-    return $this->get('uid')->target_id;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwnerId($uid) {
-    $this->set('uid', $uid);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setOwner(UserInterface $account) {
-    $this->set('uid', $account->id());
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
@@ -203,13 +175,33 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
 
+    // For memberships, we generally need to rebuild the group role cache for
+    // the member's user account in the target group.
+    $rebuild_group_role_cache = $this->getContentPlugin()->getPluginId() == 'group_membership';
+
     if ($update === FALSE) {
       // We want to make sure that the entity we just added to the group behaves
       // as a grouped entity. This means we may need to update access records,
       // flush some caches containing the entity or perform other operations we
       // cannot possibly know about. Lucky for us, all of that behavior usually
       // happens when saving an entity so let's re-save the added entity.
-//      $this->getEntity()->save();
+      $this->getEntity()->save();
+    }
+
+    // If a membership gets updated, but the member's roles haven't changed, we
+    // do not need to rebuild the group role cache for the member's account.
+    elseif ($rebuild_group_role_cache) {
+      $new = array_column($this->group_roles->getValue(), 'target_id');
+      $old = array_column($this->original->group_roles->getValue(), 'target_id');
+      sort($new);
+      sort($old);
+      $rebuild_group_role_cache = ($new != $old);
+    }
+
+    if ($rebuild_group_role_cache) {
+      /** @var \Drupal\group\Entity\Storage\GroupRoleStorageInterface $role_storage */
+      $role_storage = \Drupal::entityTypeManager()->getStorage('group_role');
+      $role_storage->resetUserGroupRoleCache($this->getEntity(), $this->getGroup());
     }
   }
 
@@ -219,27 +211,71 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   public static function postDelete(EntityStorageInterface $storage, array $entities) {
     parent::postDelete($storage, $entities);
 
-    // For the same reasons we re-save entities that are added to a group, we
-    // need to re-save entities that were removed from one. See ::postSave().
     /** @var GroupContentInterface[] $entities */
     foreach ($entities as $group_content) {
-      // We only save the entity if it still exists to avoid trying to save an
-      // entity that just got deleted and triggered the deletion of its group
-      // content entities.
       if ($entity = $group_content->getEntity()) {
+        // For the same reasons we re-save entities that are added to a group,
+        // we need to re-save entities that were removed from one. See
+        // ::postSave(). We only save the entity if it still exists to avoid
+        // trying to save an entity that just got deleted and triggered the
+        // deletion of its group content entities.
         // @todo Revisit when https://www.drupal.org/node/2754399 lands.
         $entity->save();
+
+        // If a membership gets deleted, we need to reset the internal group
+        // roles cache for the member in that group, but only if the user still
+        // exists. Otherwise, it doesn't matter as the user ID will become void.
+        if ($group_content->getContentPlugin()->getPluginId() == 'group_membership') {
+          /** @var \Drupal\group\Entity\Storage\GroupRoleStorageInterface $role_storage */
+          $role_storage = \Drupal::entityTypeManager()->getStorage('group_role');
+          $role_storage->resetUserGroupRoleCache($group_content->getEntity(), $group_content->getGroup());
+        }
       }
     }
   }
-  
-  public function getRequestStatus() {
-    return $this->get('request_status')->value;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function invalidateTagsOnSave($update) {
+    parent::invalidateTagsOnSave($update);
+    // Always invalidate our custom list cache tags, even for new entities.
+    if (!$update) {
+      Cache::invalidateTags($this->getCacheTagsToInvalidate());
+    }
   }
-  
-  public function setRequestStatus($value) {
-    $this->set('request_status', $value);
-    return $this;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTagsToInvalidate() {
+    $tags = parent::getCacheTagsToInvalidate();
+
+    $group_id = $this->get('gid')->target_id;
+    $entity_id = $this->get('entity_id')->target_id;
+    $plugin_id = $this->getGroupContentType()->getContentPluginId();
+
+    // A specific group gets any content, regardless of plugin used.
+    // E.g.: A group's list of entities can be flushed with this.
+    $tags[] = "group_content_list:group:$group_id";
+
+    // A specific entity gets added to any group, regardless of plugin used.
+    // E.g.: An entity's list of groups can be flushed with this.
+    $tags[] = "group_content_list:entity:$entity_id";
+
+    // Any entity gets added to any group using a specific plugin.
+    // E.g.: A list of all memberships anywhere can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id";
+
+    // A specific group gets any content using a specific plugin.
+    // E.g.: A group's list of members can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id:group:$group_id";
+
+    // A specific entity gets added to any group using a specific plugin.
+    // E.g.: A user's list of memberships can be flushed with this.
+    $tags[] = "group_content_list:plugin:$plugin_id:entity:$entity_id";
+
+    return $tags;
   }
 
   /**
@@ -247,12 +283,14 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+    $fields += static::ownerBaseFieldDefinitions($entity_type);
 
     $fields['gid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Parent group'))
       ->setDescription(t('The group containing the entity.'))
       ->setSetting('target_type', 'group')
-      ->setReadOnly(TRUE);
+      ->setReadOnly(TRUE)
+      ->setRequired(TRUE);
 
     // Borrowed this logic from the Comment module.
     // Warning! May change in the future: https://www.drupal.org/node/2346347
@@ -283,13 +321,9 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
         'weight' => -5,
       ]);
 
-    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
+    $fields['uid']
       ->setLabel(t('Group content creator'))
       ->setDescription(t('The username of the group content creator.'))
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\group\Entity\GroupContent::getCurrentUserId')
-      ->setTranslatable(TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
 
@@ -302,14 +336,7 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       ->setLabel(t('Changed on'))
       ->setDescription(t('The time that the group content was last edited.'))
       ->setTranslatable(TRUE);
-    
-    $fields['request_status'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Request Status'))
-      ->setDescription(t('Request mebership status.'))
-      ->setSetting('unsigned', TRUE)
-      ->setDefaultValue(1)
-      ->setTranslatable(TRUE);
-    
+
     if (\Drupal::moduleHandler()->moduleExists('path')) {
       $fields['path'] = BaseFieldDefinition::create('path')
         ->setLabel(t('URL alias'))
@@ -323,18 +350,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
     }
 
     return $fields;
-  }
-
-  /**
-   * Default value callback for 'uid' base field definition.
-   *
-   * @see ::baseFieldDefinitions()
-   *
-   * @return array
-   *   An array of default values.
-   */
-  public static function getCurrentUserId() {
-    return [\Drupal::currentUser()->id()];
   }
 
   /**
