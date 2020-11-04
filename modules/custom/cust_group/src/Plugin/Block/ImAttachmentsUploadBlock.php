@@ -85,8 +85,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
         $incidentManagementGroupMember = $incidentManagement->getMember($currentUser);
         if (in_array('site_administrator', $currentUser->getRoles()) || $currentUser->id() == 1) {
           $showDelete = TRUE;
-        } else if ($incidentManagementGroupMember && $incidentManagementGroupMember->getGroupContent()
-                    ->get('request_status')->value == 1) {
+        }
+        else if ($incidentManagementGroupMember && group_request_status($incidentManagementGroupMember)) {
             $roles = $incidentManagementGroupMember->getRoles();
             if (in_array($incidentManagement->getGroupType()->id() . '-admin', array_keys($roles))) {
               $showDelete = TRUE;

@@ -304,10 +304,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
           );
         }
         else {
-          if (($group->getMember($current_user) && $group->getMember($current_user)
-                ->getGroupContent()
-                ->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)
-          ) {
+            //if (($group->getMember($current_user) && $group->getMember($current_user)->getGroupContent()->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)) {
+            if (($group->getMember($current_user)) && in_array($form_id, $for_groupmemeber_formids)) {
             $form['notification'] = array(
               '#type' => 'fieldset',
               '#weight' => 99,

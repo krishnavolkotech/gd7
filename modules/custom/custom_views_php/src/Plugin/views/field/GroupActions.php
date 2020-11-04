@@ -55,8 +55,8 @@ class GroupActions extends FieldPluginBase {
     $link = '';
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
-            $roles = $groupMember->getRoles();
+    if ($groupMember && group_request_status($groupMember)) {
+        $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                 $link = $this->t('<span title="Gruppenadministratoren können eine Gruppe nicht verlassen"><i>Gruppenadmin</i></span>');
             } else {

@@ -229,3 +229,14 @@ cust_group.sams_settings:
       _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+#OVERRIDE GROUPS
+entity.group.request:
+  path: '/group/{group}/request'
+  defaults:
+    _controller: '\Drupal\cust_group\Controller\GroupMembershipController::requestMembership'
+    _title_callback: '\Drupal\cust_group\Controller\GroupMembershipController::requestMembershipTitle'
+  requirements:
+    _group_permission: 'request group membership'
+    _group_member: 'FALSE'
+

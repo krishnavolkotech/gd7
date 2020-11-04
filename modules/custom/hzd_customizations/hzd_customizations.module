@@ -190,13 +190,8 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       if ($group instanceof Group) {
         //$groupTypeId = $group->getGroupType()->id();
         $groupMember = $group->getMember($user);
-        if (($groupMember && $groupMember->getGroupContent()
-                        ->get('request_status')->value == 1
-                ) || (array_intersect($user->getRoles(), [
-                    'site_administrator',
-                    'administrator'
-                ]))
-        ) {
+        
+        if (($groupMember && group_request_status($groupMember)) || (array_intersect($user->getRoles(), ['site_administrator','administrator']))) {
           $build['field_einfuehrung']['#access'] = FALSE;
           $build['field_description']['#access'] = TRUE;
           $build['field_group_body']['#access'] = TRUE;
@@ -253,7 +248,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
             $group = \Drupal\group\Entity\Group::load($group);
         }
         $groupMember = $group->getMember(\Drupal::currentUser());
-        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        if ($groupMember && group_request_status($groupMember)) {
             $roles = $groupMember->getRoles();
             if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
                 $status = TRUE;
@@ -799,9 +794,10 @@ function get_last_unix_time($block_name) {
 function private_group_member_view_access_check($group) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)
+    
+    if (($groupMember && group_request_status($groupMember))
             || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
-      return TRUE;
+        return TRUE;
     }
     return FALSE;
 }
@@ -831,8 +827,8 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
                 $groupMember = $result->_entity->getMember($user);
                 $roles = $groupMember->getRoles();
                 if(!$result->_entity->isPublished() && $groupMember
-                        && $groupMember->getGroupContent()->get('request_status')->value == 1
-                        && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
+                && group_request_status($groupMember)
+                && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
                     unset($view -> result[$key]);
                 }
             }

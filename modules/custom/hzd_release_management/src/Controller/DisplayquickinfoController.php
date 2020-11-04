@@ -88,7 +88,7 @@ class DisplayquickinfoController extends ControllerBase {
     }
     $group = Group::load($group_id);
     $content = $group->getMember(\Drupal::currentUser());
-    if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
+    if ($content && group_request_status($content)) {
       return TRUE;
     }
     return FALSE;

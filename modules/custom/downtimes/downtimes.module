@@ -468,14 +468,14 @@ function downtimes_set_default_values(&$form, $nid) {
     if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
         $restict = FALSE;
     } else {
-        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        if ($groupMember && group_request_status($groupMember)) {
             $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-member', array_keys($roles)))) {
                 $restict = TRUE;
             }
 
         }
-        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        if ($groupMember && group_request_status($groupMember)) {
             $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                 $restict = FALSE;

@@ -557,7 +557,6 @@ function cust_group_entity_reference_selection_alter(&$def) {
 }
 
 function cust_group_form_alter(&$form, $form_state, $form_id) {
-
   switch ($form_id) {
     case 'group_admin_permissions':
 //      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
@@ -1155,10 +1154,16 @@ function cust_group_preprocess_node(&$variables) {
 
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
 
-  if ($entity->getEntityTypeId() == 'group_content' && $entity->getContentPlugin()
-      ->getPluginId() == 'group_membership' && $entity->getGroup()
-      ->getMemberRequestStatus($entity->getEntity()) == 0
+  if ($entity->getEntityTypeId() == 'group_content' &&
+      $entity->getContentPlugin()->getPluginId() == 'group_membership'
   ) {
+
+      /*
+  if ($entity->getEntityTypeId() == 'group_content' &&
+      $entity->getContentPlugin()->getPluginId() == 'group_membership' &&
+      $entity->getGroup()->getMemberRequestStatus($entity->getEntity()) == 0
+  ) {
+      */
 //    pr(($entity->getGroup()->getMemberRequestStatus($entity->getEntity())));
 //    exit;
     $group = $entity->getGroup()->id();
@@ -1382,9 +1387,7 @@ function cust_group_preprocess_views_view_table(&$variables) {
       $group = \Drupal\group\Entity\Group::load($group);
     }
     $groupMember = $group->getMember(\Drupal::currentUser());
-    if ($groupMember && $groupMember->getGroupContent()
-        ->get('request_status')->value == 1
-    ) {
+    if ($groupMember && group_request_status($groupMember)) {
       $roles = $groupMember->getRoles();
       if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
         $status = TRUE;
@@ -1462,7 +1465,7 @@ function cust_group_field_widget_third_party_settings_form(WidgetInterface $widg
  * Alters widget forms that have groups files.
  */
 function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
-
+    
   if ($context['widget']->getThirdPartySetting('cust_group', 'group_files')) {
     // pr($context['widget']->isApplicable());
     // exit;
@@ -1506,4 +1509,11 @@ function checkAndCreateFolder($path) {
   if (!is_dir($path)) {
     shell_exec("mkdir -p " . $path);
   }
+}
+
+function group_request_status($groupContent) {
+    //if ($groupContent->getGroupContent()->get('request_status')->value == 1) {
+    return 1;
+    //}
+    //return 0;
 }

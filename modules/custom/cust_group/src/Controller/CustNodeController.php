@@ -81,8 +81,7 @@ class CustNodeController extends ControllerBase {
         $group = Group::load($group);
       }
       $groupMember = $group->getMember($user);
-      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
-      ) {
+      if (($groupMember && group_request_status($groupMember)) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -95,8 +94,7 @@ class CustNodeController extends ControllerBase {
       }
       $group = $groupContent->getGroup();
       $groupMember = $group->getMember($user);
-      if (($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1) || array_intersect(['site_administrator','administrator'], $user->getRoles())
+      if (($groupMember && group_request_status($groupMember)) || array_intersect(['site_administrator','administrator'], $user->getRoles())
       ) {
         return AccessResult::allowed();
       } else {
@@ -110,8 +108,8 @@ class CustNodeController extends ControllerBase {
     if ($user->isAuthenticated()) {
       $group = $route_match->getParameter('group');
       $groupMember = $group->getMember($user);
-      if ($group->id() == INCIDENT_MANAGEMENT && (($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1) || array_intersect([
+
+      if ($group->id() == INCIDENT_MANAGEMENT && (($groupMember && group_request_status($groupMember)) || array_intersect([
                   'site_administrator',
                   'administrator'
                       ], $user->getRoles()))
@@ -154,8 +152,7 @@ class CustNodeController extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load($group);
       }
       $groupMember = $group->getMember($user);
-      if (($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+      if (($groupMember && group_request_status($groupMember)) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
       ) {
         return AccessResult::allowed();
       } else {
@@ -172,8 +169,7 @@ class CustNodeController extends ControllerBase {
         if ($group_id) {
           $group = \Drupal\group\Entity\Group::load($group_id['gid']);
           $groupMember = $group->getMember($user);
-          if (($groupMember && $groupMember->getGroupContent()
-                          ->get('request_status')->value == 1) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
+          if (($groupMember && group_request_status($groupMember)) || $user->id() == 1 || in_array('site_administrator', $user->getRoles())
           ) {
             return AccessResult::allowed();
           } else {
@@ -194,9 +190,7 @@ class CustNodeController extends ControllerBase {
         $group = \Drupal\group\Entity\Group::load($group);
       }
       $groupMember = $group->getMember($user);
-      if (($groupMember && $groupMember->getGroupContent()
-                      ->get('request_status')->value == 1) || $user->id() == 1
-      ) {
+      if (($groupMember && group_request_status($groupMember)) || $user->id() == 1) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -214,12 +208,10 @@ class CustNodeController extends ControllerBase {
     }
     $group = \Drupal\group\Entity\Group::load($group_id);
     $content = $group->getMember(\Drupal::currentUser());
-    if ($content && $content->getGroupContent()
-                    ->get('request_status')->value == 1
-    ) {
-      $roles = $content->getRoles();
-      if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
-        return true;
+    if ($content && group_request_status($content)) {
+        $roles = $content->getRoles();
+        if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
+            return true;
       }
     }
 

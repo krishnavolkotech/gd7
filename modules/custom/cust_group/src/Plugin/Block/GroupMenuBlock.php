@@ -89,8 +89,8 @@ class GroupMenuBlock extends BlockBase {
       }
       $user = \Drupal::currentUser();
       $groupMember = $group->getMember($user);
-      $groupMember = (bool) ($groupMember && $groupMember->getGroupContent()
-          ->get('request_status')->value == 1);
+      $groupMember = (bool) ($groupMember &&  group_request_status($groupMember));
+      
       //pr((bool)$groupMember);exit;
       if ($groupMember || array_intersect($user->getRoles(), [
           'admininstrator',
