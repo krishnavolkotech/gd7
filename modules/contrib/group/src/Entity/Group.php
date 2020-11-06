@@ -276,12 +276,15 @@ class Group extends ContentEntityBase implements GroupInterface {
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
-
     // If a new group is created and the group type is configured to grant group
     // creators a membership by default, add the creator as a member.
     // @todo Deprecate in 8.x-2.x in favor of a form-only approach. API-created
     //   groups should not get this functionality because it may create
     //   incomplete group memberships.
+    if (!$this->getOwner()) {
+        $this->setOwnerId(\Drupal::currentUser()->id());
+    }
+    
     $group_type = $this->getGroupType();
     if ($update === FALSE && $group_type->creatorGetsMembership()) {
       $values = ['group_roles' => $group_type->getCreatorRoleIds()];
