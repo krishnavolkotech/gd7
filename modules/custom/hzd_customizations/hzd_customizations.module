@@ -159,7 +159,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
         $build[$field_name] = [
             '#theme' => 'field',
             '#title' => $definition->getLabel(),
-            '#label_display' => $component['label'],
+            '#label_display' => isset($component['label'])?$component['label']:'',
             '#view_mode' => $context['view_mode'],
             '#language' => $entity->get($field_name)->getLangcode(),
             '#field_name' => $definition->getName(),
@@ -902,6 +902,46 @@ function hzd_customizations_node_search_result(NodeInterface $node) {
   return array('Attachments' => $files);
 }
 
+/**
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ */
+function hzd_customizations_node_update(EntityInterface $entity) {
+  if ($entity->getType() == 'quickinfo') {
+    /**
+     * On quickinfo publish Delete group content relation with quickinfo
+     */
+    $nodeId = $entity->id();
+    $group_contents = \Drupal::entityTypeManager()
+    ->getStorage('group_content')
+    ->loadByProperties([
+      'entity_id' => $nodeId,
+      'gid' => QUICKINFO,
+    ]);
+    if(!empty($group_contents)){
+      $isNodePublished = $entity->isPublished();
+      if($isNodePublished){
+        foreach ($group_contents as $item) {
+          $item->delete();
+        }
+        /**
+         * On quickinfo publish add group content relation with release management
+         */
+        $releaseManagementGroup = \Drupal\group\Entity\Group::load(RELEASE_MANAGEMENT);
+        $quickinfo_gnode_plugin = $releaseManagementGroup->getGroupType()->getContentPlugin('group_node:quickinfo');
+        $releaseManagementGroupContentValues = [
+          'type' => $quickinfo_gnode_plugin->getContentTypeConfigId(),
+          'gid' => RELEASE_MANAGEMENT,
+          'entity_id' => $nodeId,
+        ];
+
+        $releaseManagementGroupContent = \Drupal::entityTypeManager()
+            ->getStorage('group_content')
+            ->create($releaseManagementGroupContentValues)
+            ->save();
+      }
+    }
+  }
+}
 /**
  * Hook_node_update_index(\Drupal\node\NodeInterface $node)
  */

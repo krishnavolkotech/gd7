@@ -1,0 +1,26 @@
+diff --git a/vendor/solarium/solarium/src/Core/Query/AbstractRequestBuilder.php b/vendor/solarium/solarium/src/Core/Query/AbstractRequestBuilder.php
+index 73b6ee724..a3c49ba45 100644
+--- a/vendor/solarium/solarium/src/Core/Query/AbstractRequestBuilder.php
++++ b/vendor/solarium/solarium/src/Core/Query/AbstractRequestBuilder.php
+@@ -68,7 +68,7 @@ public function renderLocalParams(string $value, array $localParams = []): strin
+             }
+ 
+             if (is_array($paramValue)) {
+-                $paramValue = implode($paramValue, ',');
++                $paramValue = implode(',', $paramValue);
+             }
+ 
+             $params .= $paramName.'='.$paramValue.' ';
+diff --git a/vendor/solarium/solarium/src/Core/Query/Helper.php b/vendor/solarium/solarium/src/Core/Query/Helper.php
+index e7b241638..c362f0392 100644
+--- a/vendor/solarium/solarium/src/Core/Query/Helper.php
++++ b/vendor/solarium/solarium/src/Core/Query/Helper.php
+@@ -340,7 +340,7 @@ public function functionCall(string $name, array $params = [], bool $dereference
+             return $name.'()';
+         }
+ 
+-        return $name.'('.implode($params, ',').')';
++        return $name.'('.implode(',', $params).')';
+     }
+ 
+     /**

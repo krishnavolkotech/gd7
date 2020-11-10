@@ -91,7 +91,7 @@ view_mode ? view_mode|clean_class,
         {{ metadata }}
       </div>
     </footer>
-    {% endif %} 
+    {% endif %}
 
     <div{{ content_attributes.addClass('content') }}>
       {{ content }}
@@ -128,7 +128,7 @@ view_mode ? view_mode|clean_class,
     </div>
     <div style = "clear:both" ></div>
     {% endif %}
-    
+
     <div class = "Incident">
       <div class = 'downtimes_title'>{{ 'Gemeldet von'|trans }}:</div>
       <div class = 'downtimes_content'>{{ incident.reported_by }}</div>
@@ -141,11 +141,11 @@ view_mode ? view_mode|clean_class,
     <div style = "clear:both" ></div>
 
      <!-- <div class = "downtime_reason">
-      <u> {{ 'Gemeldet von'|trans }} {{ incident.reported_by }} am 
+      <u> {{ 'Gemeldet von'|trans }} {{ incident.reported_by }} am
 	{{ node.getCreatedTime|date('d.m.Y - H:i') }}  Uhr
-      </u> 
+      </u>
 
-    </div>-->  
+    </div>-->
       {% if incident.reason %}
       <div class = "Incident">
         <div class = 'downtimes_title'>{{ 'Grund für die Wartung der Wartungsfenster'|trans }}:</div>
@@ -166,12 +166,12 @@ view_mode ? view_mode|clean_class,
    {% if (incident.resolved or incident.cancelled) and incident.resolved_data.date_reported %}
    <div class="changed-group">
    <h3>
-	{% if(incident.resolved) %} 
-	  Behoben 
+	{% if(incident.resolved) %}
+	  Behoben
 	{% else %}
 	  Abgebrochen
 	{% endif %}
-    von {{ incident.resolved_data.name }} am {{ incident.resolved_data.date_reported|date('d.m.Y - H:i') }} Uhr</h3>
+    von&nbsp;{{ incident.resolved_data.name }}&nbsp;am&nbsp;{{ incident.resolved_data.date_reported|date('d.m.Y - H:i') }}&nbsp;Uhr</h3>
    <div class="field-wrapper">
    </div>
     {% if incident.resolved and incident.enddate_planned  is defined and incident.enddate_planned  is not empty %}
