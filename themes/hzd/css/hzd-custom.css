@@ -328,6 +328,7 @@ table.releases.released tr.even td.earlywarnings-cell {
 .home-problems-title,
 .home-problems-title a{
   color:#333 !important;
+  word-break: break-word;
 }
 /*table tr td,
 table tr th {
