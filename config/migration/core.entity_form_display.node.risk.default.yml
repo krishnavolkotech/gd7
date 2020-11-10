@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.risk.body
     - field.field.node.risk.field_affected_oes
+    - field.field.node.risk.field_arbeitslog
     - field.field.node.risk.field_category
     - field.field.node.risk.field_contact_person
     - field.field.node.risk.field_creation_date
@@ -18,6 +19,7 @@ dependencies:
     - field.field.node.risk.field_reported_by
     - field.field.node.risk.field_risk_category
     - field.field.node.risk.field_risk_clusters
+    - field.field.node.risk.field_risk_id
     - field.field.node.risk.field_risk_impact
     - field.field.node.risk.field_risk_status
     - field.field.node.risk.field_risk_trend
@@ -38,15 +40,24 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 1
+    weight: 17
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   field_affected_oes:
-    weight: 6
+    weight: 13
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+  field_arbeitslog:
+    weight: 19
     settings:
       rows: 5
       placeholder: ''
@@ -54,13 +65,13 @@ content:
     type: text_textarea
     region: content
   field_category:
-    weight: 3
+    weight: 14
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_contact_person:
-    weight: 14
+    weight: 4
     settings:
       size: '60'
       placeholder: ''
@@ -72,7 +83,7 @@ content:
     type: group_user_field_widget
     region: content
   field_creation_date:
-    weight: 7
+    weight: 2
     settings: {  }
     third_party_settings:
       cust_group:
@@ -92,19 +103,19 @@ content:
     type: datetime_default
     region: content
   field_id:
-    weight: 2
+    weight: 23
     settings: {  }
     third_party_settings: {  }
     type: serial_default_widget
     region: content
   field_non_production_state:
-    weight: 12
+    weight: 10
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_owner:
-    weight: 13
+    weight: 11
     settings:
       size: 60
       placeholder: ''
@@ -112,7 +123,7 @@ content:
     type: string_textfield
     region: content
   field_probability_of_occurrence:
-    weight: 9
+    weight: 6
     settings: {  }
     third_party_settings: {  }
     type: options_select
@@ -126,7 +137,7 @@ content:
     type: text_textarea
     region: content
   field_reported_by:
-    weight: 8
+    weight: 3
     settings:
       size: 60
       placeholder: ''
@@ -134,56 +145,64 @@ content:
     type: string_textfield
     region: content
   field_risk_category:
-    weight: 27
+    weight: 22
     settings: {  }
     third_party_settings: {  }
     type: computed_string_widget
     region: content
   field_risk_clusters:
-    weight: 4
+    weight: 9
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
+  field_risk_id:
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_risk_impact:
-    weight: 10
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_risk_status:
-    weight: 11
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_risk_trend:
-    weight: 17
+    weight: 8
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_risk_value:
-    weight: 26
+    weight: 21
     settings: {  }
     third_party_settings: {  }
     type: computed_number_widget
     region: content
   field_scope:
-    weight: 5
+    weight: 12
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   path:
     type: path
-    weight: 19
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 0
+    weight: 1
     region: content
     settings:
       size: 60

@@ -10,7 +10,6 @@ dependencies:
     - field.field.node.risk_cluster.field_trend
     - node.type.risk_cluster
   module:
-    - path
     - serial
     - text
 id: node.risk_cluster.default
@@ -25,14 +24,8 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
-    region: content
-  field_cluster_id:
-    weight: 27
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
     region: content
   field_comments:
     weight: 3
@@ -43,7 +36,7 @@ content:
     type: text_textarea
     region: content
   field_id:
-    weight: 26
+    weight: 4
     settings: {  }
     third_party_settings: {  }
     type: serial_default_widget
@@ -56,12 +49,6 @@ content:
     third_party_settings: {  }
     type: text_textarea
     region: content
-  path:
-    type: path
-    weight: 4
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   title:
     type: string_textfield
     weight: 0
@@ -72,7 +59,9 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  field_cluster_id: true
   langcode: true
+  path: true
   promote: true
   status: true
   sticky: true

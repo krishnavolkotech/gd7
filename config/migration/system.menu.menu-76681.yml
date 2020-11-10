@@ -1,0 +1,8 @@
+uuid: da377ff6-8a2c-4088-8089-c32f92a3674c
+langcode: de
+status: true
+dependencies: {  }
+id: menu-76681
+label: 'DaSi LAVENDEL'
+description: 'DaSi LAVENDEL'
+locked: false

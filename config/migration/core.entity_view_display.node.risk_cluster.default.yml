@@ -23,6 +23,11 @@ third_party_settings:
         - last_updated
         - field_risks_cluster_class
         - field_risks_data
+        - field_trend
+        - field_comments
+        - field_id
+        - content_revision_log
+        - field_cluster_id
       parent_name: ''
       weight: 1
       format_type: table_field
@@ -49,7 +54,7 @@ content:
     region: content
   content_revision_log:
     type: revision_log_formatter
-    weight: 4
+    weight: 8
     region: content
     label: above
     settings:
@@ -59,7 +64,7 @@ content:
       limit: '0'
     third_party_settings: {  }
   field_cluster_id:
-    weight: 6
+    weight: 9
     label: above
     settings:
       thousand_separator: ''
@@ -68,14 +73,14 @@ content:
     type: number_integer
     region: content
   field_comments:
-    weight: 3
+    weight: 6
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_id:
-    weight: 5
+    weight: 7
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -97,7 +102,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_trend:
-    weight: 2
+    weight: 5
     label: above
     settings: {  }
     third_party_settings: {  }

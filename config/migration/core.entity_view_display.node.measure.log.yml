@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.log
     - field.field.node.measure.body
+    - field.field.node.measure.field_arbeitslog
     - field.field.node.measure.field_contact_person
     - field.field.node.measure.field_creation_date
     - field.field.node.measure.field_estimated_effort
@@ -161,6 +162,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_arbeitslog: true
   field_id: true
   langcode: true
   last_updated: true

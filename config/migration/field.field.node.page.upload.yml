@@ -31,7 +31,7 @@ field_name: upload
 entity_type: node
 bundle: page
 label: upload
-description: '<b>Hilfetext TESTE TEST Wo erscheint dieser Inhalt? TEs TEst</b>'
+description: ''
 required: false
 translatable: true
 default_value: {  }

@@ -5,6 +5,22 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.measure.body
+    - field.field.node.measure.field_arbeitslog
+    - field.field.node.measure.field_contact_person
+    - field.field.node.measure.field_creation_date
+    - field.field.node.measure.field_estimated_effort
+    - field.field.node.measure.field_expected_result
+    - field.field.node.measure.field_follow_up
+    - field.field.node.measure.field_id
+    - field.field.node.measure.field_measure_status
+    - field.field.node.measure.field_non_production_state
+    - field.field.node.measure.field_order_date
+    - field.field.node.measure.field_owner
+    - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risks
+    - field.field.node.measure.field_sponsor
+    - field.field.node.measure.field_target_date
+    - field.field.node.measure.field_type
     - node.type.measure
   module:
     - text
@@ -34,6 +50,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_arbeitslog: true
   field_contact_person: true
   field_creation_date: true
   field_estimated_effort: true
