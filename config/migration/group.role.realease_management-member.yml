@@ -11,4 +11,17 @@ internal: true
 audience: member
 group_type: realease_management
 permissions_ui: true
-permissions: {  }
+permissions:
+  0: 'view group_node:quickinfo entity'
+  2: 'create group_node:quickinfo entity'
+  3: 'delete any group_node:quickinfo entity'
+  4: 'delete own group_node:quickinfo entity'
+  5: 'update any group_node:quickinfo entity'
+  6: 'update own group_node:quickinfo entity'
+  7: 'view unpublished group_node:quickinfo entity'
+  8: 'create group_node:quickinfo content'
+  9: 'delete any group_node:quickinfo content'
+  10: 'delete own group_node:quickinfo content'
+  11: 'update any group_node:quickinfo content'
+  12: 'update own group_node:quickinfo content'
+  13: 'view group_node:quickinfo content'

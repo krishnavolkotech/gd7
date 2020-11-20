@@ -34,3 +34,5 @@ permissions:
   - 'update own group_node:risk content'
   - 'view group_node:risk content'
   - 'create group_node:measure content'
+  - 'view group_node:quickinfo entity'
+  - 'view group_node:quickinfo content'

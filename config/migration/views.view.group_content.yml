@@ -348,11 +348,12 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
+        - user.group_permissions
       tags: {  }
   block_1:
     display_plugin: block
@@ -414,11 +415,12 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
+        - user.group_permissions
       tags: {  }
   page_1:
     display_plugin: page
@@ -442,6 +444,7 @@ display:
         fields: false
         title: false
         header: false
+        access: false
       use_more_always: false
       use_more_text: more
       group_by: false
@@ -501,8 +504,14 @@ display:
         type: fields
         options: {  }
       menu:
-        enabled: true
+        type: none
+        title: ''
+        description: ''
         expanded: false
+        parent: ''
+        weight: 0
+        context: '0'
+        menu_name: main
       relationships:
         gc__node:
           id: gc__node
@@ -1063,13 +1072,18 @@ display:
             value: '<!-- <a href="/group/{{ arguments.gid }}/members/add?destination=/group/{{ arguments.gid }}/address" class="btn btn-xs btn-success">Add member</a> -->'
             format: full_html
           plugin_id: text
+      access:
+        type: group_permission
+        options:
+          group_permission: 'administer members'
     cache_metadata:
       max-age: 0
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
         - url.query_args
+        - user.group_permissions
       tags: {  }

@@ -16,6 +16,7 @@ dependencies:
     - group.content_type.quick_info-group_membership
   module:
     - better_exposed_filters
+    - content_translation
     - custom_views_php
     - group
     - inactive_user
@@ -493,7 +494,7 @@ display:
             title_enable: false
             title: All
           title_enable: true
-          title: 'Mitglieder von {{ arguments.gid|striptags }} '
+          title: 'Mitglieder von {{ arguments.gid|placeholder }} '
           default_argument_type: group_id_from_url
           default_argument_options: {  }
           default_argument_skip_url: false
@@ -525,12 +526,13 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
         - url.query_args
+        - user.group_permissions
       tags: {  }
   approved:
     display_plugin: page
@@ -573,7 +575,7 @@ display:
             items_per_page_label: Anzahl
             items_per_page_options: '20, 50, 100'
             items_per_page_options_all: true
-            items_per_page_options_all_label: Alle
+            items_per_page_options_all_label: '- Alle -'
             offset: false
             offset_label: Offset
           quantity: 9
@@ -1329,6 +1331,286 @@ display:
           entity_type: user
           entity_field: mail
           plugin_id: field
+        edit_group_content:
+          id: edit_group_content
+          table: group_content
+          field: edit_group_content
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Link to edit Group content'
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Bearbeiten
+          output_url_as_text: false
+          absolute: false
+          entity_type: group_content
+          plugin_id: entity_link_edit
+        translation_link:
+          id: translation_link
+          table: group_content
+          field: translation_link
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Link to translate Group content'
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Übersetzen
+          output_url_as_text: 0
+          absolute: 0
+          entity_type: group_content
+          plugin_id: content_translation_link
+        delete_group_content:
+          id: delete_group_content
+          table: group_content
+          field: delete_group_content
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Link to delete Group content'
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Löschen
+          output_url_as_text: false
+          absolute: false
+          entity_type: group_content
+          plugin_id: entity_link_delete
+        view_group_content:
+          id: view_group_content
+          table: group_content
+          field: view_group_content
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Link to Group content'
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: 'View related entity'
+          output_url_as_text: false
+          absolute: false
+          entity_type: group_content
+          plugin_id: entity_link
+        dropbutton:
+          id: dropbutton
+          table: views
+          field: dropbutton
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Aktionen
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          fields:
+            edit_group_content: edit_group_content
+            translation_link: translation_link
+            delete_group_content: delete_group_content
+            view_group_content: view_group_content
+            id: '0'
+            uid: '0'
+            group_member_name: '0'
+            label: '0'
+            id_1: '0'
+            lastname: '0'
+            firstname: '0'
+            name: '0'
+            group_roles: '0'
+            comment_release_status: '0'
+            userstatus: '0'
+            abbr: '0'
+            mail: '0'
+          destination: true
+          plugin_id: dropbutton
         operations:
           id: operations
           table: group_content
@@ -1339,8 +1621,8 @@ display:
           label: Aktionen
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: '{{dropbutton}}'
             make_link: false
             path: ''
             absolute: false
@@ -1461,49 +1743,6 @@ display:
           entity_type: group_content
           entity_field: type
           plugin_id: bundle
-        request_status:
-          id: request_status
-          table: group_content_field_data
-          field: request_status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: '1'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: group_content
-          entity_field: request_status
-          plugin_id: numeric
         combine:
           id: combine
           table: views
@@ -1595,26 +1834,32 @@ display:
           sort_desc_label: Ab
           bef:
             general:
+              autosubmit: false
+              autosubmit_exclude_textfield: false
+              autosubmit_hide: false
+              input_required: false
               allow_secondary: false
               secondary_label: 'Erweiterte Optionen'
-              autosubmit: false
-              autosubmit_hide: false
             sort:
-              bef_format: default
+              plugin_id: default
               advanced:
-                collapsible: false
-                collapsible_label: Sortierungsoptionen
                 combine: true
                 combine_rewrite: ''
                 reset: false
                 reset_label: ''
+                collapsible: false
+                collapsible_label: Sortierungsoptionen
                 is_secondary: false
-            combine:
-              bef_format: default
-              more_options:
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
+            filter:
+              combine:
+                plugin_id: default
+                advanced:
+                  collapsible: false
+                  is_secondary: false
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  sort_options: false
       merge_rows: 1
       use_grouping: 0
       field_config:
@@ -1693,16 +1938,35 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
+        - user.group_permissions
       tags:
         - 'config:field.storage.group_content.group_roles'
+  attachment_1:
+    display_plugin: attachment
+    id: attachment_1
+    display_title: Anhang
+    position: 3
+    display_options:
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - route
+        - route.group
+        - url
+        - url.query_args
+        - user.group_permissions
+      tags: {  }
   pending:
     display_plugin: page
     id: pending
@@ -1751,8 +2015,14 @@ display:
           quantity: 9
       title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
       menu:
-        enabled: true
+        type: none
+        title: ''
+        description: ''
         expanded: false
+        parent: ''
+        weight: 0
+        context: '0'
+        menu_name: main
       fields:
         id:
           id: id
@@ -2844,10 +3114,11 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
         - 'languages:language_content'
         - 'languages:language_interface'
         - route
+        - route.group
         - url
         - url.query_args
+        - user.group_permissions
       tags: {  }
