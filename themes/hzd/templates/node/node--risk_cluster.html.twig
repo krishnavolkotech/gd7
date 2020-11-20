@@ -149,14 +149,14 @@
           <table class="risk-detail-table">
             <tbody>
               <tr>
-                <th scope="row">{{ content.field_id['#title'] }} </th>
+                <th scope="row">{{ content.field_risk_id['#title'] }} </th>
                 <th scope="row">{{ content.field_risks_cluster_class['#title'] }} </th>
                 <th scope="row">{{ content.field_risks_cluster_impact['#title'] }} </th>
                 <th scope="row">{{ content.field_risks_cluster_propability['#title'] }} </th>
                 <th scope="row">{{ content.last_updated['#title'] }} </th>
               </tr>
               <tr>
-                <td>{{ content.field_id[0] }}</td>
+                <td>{{ content.field_risk_id[0] }}</td>
                 <td><span class="label label-{{ clusterClassLabelStyle }} risk-label">{{ content.field_risks_cluster_class[0] }}</span></td>
                 <td><span class="label label-{{ clusterImpactLabelStyle }} risk-label">{{ content.field_risks_cluster_impact[0] }}</td>
                 <td><span class="label label-{{ clusterPropabilityLabelStyle }} risk-label">{{ content.field_risks_cluster_propability[0] }}</td>

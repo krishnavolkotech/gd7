@@ -66,7 +66,7 @@ class Risks extends FieldPluginBase {
       $item_list = array_map(function ($key, $title, $field_id) {
         $options = ['absolute' => TRUE];
         $url = Url::fromRoute('entity.node.canonical', ['node' => $key], $options);
-        return Link::fromTextAndUrl($field_id . ' ' . $title, $url);
+        return Link::fromTextAndUrl($field_id . ': ' . $title, $url);
       }, array_keys($risk_title), $risk_title, $risk_ids);
     }
     $build = [

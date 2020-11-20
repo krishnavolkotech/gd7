@@ -269,7 +269,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $completed = 0;
       $items = array();
       foreach ($risks as $risk) {
-        $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
+        $riskLink = $risk->toLink($risk->get('field_risk_id')->value.": ".$risk->label());
         $fieldRiskStatus = $risk->get('field_risk_status');
         if ($fieldRiskStatus->value == 'completed') {
           $completed++;
@@ -497,7 +497,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       $items = array();
       $completed = 0;
       foreach ($measures as $measure) {
-        $measureLink = $measure->toLink($measure->get('field_id')->value.": ".$measure->label());
+        $measureLink = $measure->toLink($measure->get('field_risk_id')->value.": ".$measure->label());
         $measureOwner = $measure->get('field_owner')->value;
         $fieldMeasureStatus = $measure->get('field_measure_status');
         if ($fieldMeasureStatus->value == 'completed') {
@@ -576,7 +576,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
 
     $items = [];
     foreach ($sortedRisks as $risk) {
-      $riskLink = $risk->toLink($risk->get('field_risk_id')->value." ".$risk->label());
+      $riskLink = $risk->toLink($risk->get('field_risk_id')->value.": ".$risk->label());
       $fieldRiskStatus = $risk->get('field_risk_status');
       if ($fieldRiskStatus->value == 'completed') {
         $completed++;
