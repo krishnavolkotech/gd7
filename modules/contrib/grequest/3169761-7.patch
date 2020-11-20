@@ -1,0 +1,126 @@
+diff --git a/grequest.module b/grequest.module
+index f3c544b..c650172 100644
+--- a/grequest.module
++++ b/grequest.module
+@@ -5,6 +5,7 @@
+  * Contains hooks for grequest module.
+  */
+ 
++use Drupal\Core\Entity\EntityInterface;
+ use Drupal\group\Entity\GroupInterface;
+ 
+ /**
+@@ -32,3 +33,15 @@ function grequest_menu_local_tasks_alter(&$data, $route_name) {
+     unset($data['tabs'][0]['views_view:view.group_pending_members.page_1']);
+   }
+ }
++
++/**
++ * Implements hook_entity_delete().
++ */
++function grequest_group_content_delete(EntityInterface $group_content) {
++  if ($group_content->getContentPlugin()->getPluginId() === 'group_membership') {
++    $membership_request = \Drupal::service('grequest.membership_request_manager')->getMembershipRequest($group_content->getEntity(), $group_content->getGroup());
++    if (!empty($membership_request)) {
++      $membership_request->delete();
++    }
++  }
++}
+diff --git a/grequest.services.yml b/grequest.services.yml
+new file mode 100644
+index 0000000..f85c599
+--- /dev/null
++++ b/grequest.services.yml
+@@ -0,0 +1,4 @@
++services:
++  grequest.membership_request_manager:
++    class: 'Drupal\grequest\MembershipRequestManager'
++    arguments: ['@entity_type.manager']
+diff --git a/src/MembershipRequestManager.php b/src/MembershipRequestManager.php
+new file mode 100644
+index 0000000..6752677
+--- /dev/null
++++ b/src/MembershipRequestManager.php
+@@ -0,0 +1,82 @@
++<?php
++
++namespace Drupal\grequest;
++
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\Core\StringTranslation\StringTranslationTrait;
++use Drupal\group\Entity\GroupInterface;
++use Drupal\user\UserInterface;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++/**
++ * Membership Request Manager class.
++ */
++class MembershipRequestManager {
++
++  use StringTranslationTrait;
++
++  /**
++   * The entity type manager.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * PrivacyManager constructor.
++   *
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
++   *   The entity type manager.
++   */
++  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
++    $this->entityTypeManager = $entity_type_manager;
++  }
++
++  /**
++   * Create an instance of the current class.
++   *
++   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
++   *   Container.
++   *
++   * @return \Drupal\fut_group\PrivacyManager
++   *   Privacy Manager Object.
++   */
++  public static function createInstance(ContainerInterface $container) {
++    return new static(
++      $container->get('entity_type.manager')
++    );
++  }
++
++  /**
++   * Get membership request.
++   *
++   * @param \Drupal\user\UserInterface $user
++   *   User.
++   * @param \Drupal\group\Entity\GroupInterface $group
++   *   Group.
++   *
++   * @return \Drupal\Core\Entity\EntityInterface|null
++   *   Group content.
++   */
++  public function getMembershipRequest(UserInterface $user, GroupInterface $group) {
++    // If no responsible group content types were found, we return nothing.
++    /** @var \Drupal\group\Entity\Storage\GroupContentTypeStorageInterface $storage */
++    $group_content_type_storage = $this->entityTypeManager->getStorage('group_content_type');
++    $group_content_types = $group_content_type_storage->loadByContentPluginId('group_membership_request');
++    if (!empty($group_content_types)) {
++      $group_content_storage = $this->entityTypeManager->getStorage('group_content');
++      $group_content_items = $group_content_storage->loadByProperties([
++        'type' => array_keys($group_content_types),
++        'entity_id' => $user->id(),
++        'gid' => $group->id(),
++      ]);
++
++      if (!empty($group_content_items)) {
++        return reset($group_content_items);
++      }
++    }
++
++    return NULL;
++  }
++
++}

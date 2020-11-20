@@ -471,7 +471,7 @@ function cust_group_taxonomy_term_insert($term) {
     return;
   }
   $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
-  $query = \Drupal::entityQuery('group');
+  $query = \Drupal::entityQuery('group')->accessCheck(FALSE);
   $query->condition('label', $parentlabel);
   $groupid = $query->execute();
   $gid = reset($groupid);
@@ -558,6 +558,9 @@ function cust_group_entity_reference_selection_alter(&$def) {
 
 function cust_group_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
+    case 'group_content_group_content_type_58a8289e9c89a_group-reject-membership_form':
+      $form['actions']['submit']['#submit'][] = 'membership_reject_submit_handler';
+    break;
     case 'group_admin_permissions':
 //      $form['actions']['submit']['#submit'][] = 'permission_cache_submit_handler';
       break;
@@ -622,7 +625,29 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       break;
     case 'group_content_moderate-group_membership_group-request_form':
     case 'group_content_group_content_type_d4b06e2b6aad0_group-request_form':
-      $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
+    case 'group_content_group_content_type_58a8289e9c89a_group-request-membership_form':
+      $group = \Drupal::routeMatch()->getParameter('group');
+      $plugin = $group->getGroupType()->getContentPlugin('group_membership_request');
+      $check = \Drupal::entityQuery('group_content')
+        ->condition('gid',$group->id())
+        ->condition('entity_id',\Drupal::currentUser()->id())
+        ->condition('type',$plugin->getContentTypeConfigId())
+        ->execute();
+      $form['path']['#access'] = FALSE;
+      if (!empty($check)) {
+        $form['actions']['#access'] = FALSE;
+        $form['waiting_for_approval']  = ['#markup' => t('Your request for membership group of %label is in queue, Please wait for approval.', ['%label' => $group->label()])];
+      }
+      else {
+        $form['message'] = [
+          '#type' => 'textarea',
+          '#title' => t('Message Body'),
+          '#required' => true,
+          '#description' => t('We will attache this message in request membership mail.'),
+        ];
+        $form['path']['#access'] = FALSE;
+        $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
+      }
       break;
     case 'node_faqs_delete_form':
 //            kint($_SERVER);
@@ -725,6 +750,34 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
 
 }
 
+function membership_reject_submit_handler(&$form, $form_state) {
+  $group = \Drupal::routeMatch()->getParameter('group');
+  $groupContent = \Drupal::routeMatch()->getParameter('group_content');
+
+  $grouplabel = $group->label();
+  $subject = t("Membership Request for a Group - @groupLabel has been rejected", ['@groupLabel' => $grouplabel]);
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'cust_group';
+  $key = 'immediate_notifications';
+  $params['subject'] = $subject;
+  $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $send = TRUE;
+  $user = $groupContent->referencedEntities()[1];
+  $params['message'] = t('Dear @user,<br><br>Membership Request for Group @groupLabel has been rejected.', [
+      '@user' => $user->getDisplayName(),
+      '@groupLabel' => $grouplabel
+  ]);
+  $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
+  if ($result['result']) {
+    drupal_set_message(t('Mail sent.'), 'status');
+  }
+
+  \Drupal::logger('group_content')->notice('@type: rejected %title.', [
+    '@type' => $group->bundle(),
+    '%title' => $group->label(),
+  ]);
+  $groupContent->delete();
+}
 function invalidate_group_admin_cache(&$form, $form_state) {
   \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
 }
@@ -793,7 +846,7 @@ function mailToGroupAdmins($data = []) {
       $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
     }
   }
-  drupal_set_message(t('Request has been sucessfully placed.'), 'status');
+  //drupal_set_message(t('Request has been sucessfully placed.'), 'status');
 }
 
 use Drupal\group\Entity\Group;
@@ -1172,7 +1225,7 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     unset($operations['edit']);
     $operations['approve_request'] = array(
       'title' => t('Approve Request'),
-      'url' => \Drupal\Core\Url::fromRoute('cust_group.approve_membership_request', [
+      'url' => \Drupal\Core\Url::fromRoute('entity.group_content.group_approve_membership', [
         'group' => $group,
         'group_content' => $group_content
       ]),
@@ -1180,7 +1233,7 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
     );
     $operations['reject_request'] = array(
       'title' => t('Reject Request'),
-      'url' => \Drupal\Core\Url::fromRoute('cust_group.reject_membership_request', [
+      'url' => \Drupal\Core\Url::fromRoute('entity.group_content.group_reject_membership', [
         'group' => $group,
         'group_content' => $group_content
       ]),
@@ -1465,7 +1518,7 @@ function cust_group_field_widget_third_party_settings_form(WidgetInterface $widg
  * Alters widget forms that have groups files.
  */
 function cust_group_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
-    
+
   if ($context['widget']->getThirdPartySetting('cust_group', 'group_files')) {
     // pr($context['widget']->isApplicable());
     // exit;

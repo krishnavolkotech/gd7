@@ -11,6 +11,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\EntityOwnerTrait;
 use Drupal\user\UserInterface;
+use Drupal\Core\Entity\EntityPublishedTrait;
+use Drupal\user\StatusItem;
 
 /**
  * Defines the Group entity.
@@ -52,7 +54,8 @@ use Drupal\user\UserInterface;
  *     "owner" = "uid",
  *     "langcode" = "langcode",
  *     "bundle" = "type",
- *     "label" = "label"
+ *     "label" = "label",
+ *     "published" = "status"
  *   },
  *   links = {
  *     "add-form" = "/group/add/{group_type}",
@@ -71,11 +74,13 @@ class Group extends ContentEntityBase implements GroupInterface {
 
   use EntityChangedTrait;
   use EntityOwnerTrait;
+  use EntityPublishedTrait;
 
   /**
    * Gets the group membership loader.
    *
    * @return \Drupal\group\GroupMembershipLoaderInterface
+   *  The group.membership_loader service.
    */
   protected function membershipLoader() {
     return \Drupal::service('group.membership_loader');
@@ -85,6 +90,7 @@ class Group extends ContentEntityBase implements GroupInterface {
    * Gets the group permission checker.
    *
    * @return \Drupal\group\Access\GroupPermissionCheckerInterface
+   *   The group_permission.checker service.
    */
   protected function groupPermissionChecker() {
     return \Drupal::service('group_permission.checker');
@@ -94,6 +100,7 @@ class Group extends ContentEntityBase implements GroupInterface {
    * Gets the group content storage.
    *
    * @return \Drupal\group\Entity\Storage\GroupContentStorageInterface
+   *   The group content storage.
    */
   protected function groupContentStorage() {
     return $this->entityTypeManager()->getStorage('group_content');
@@ -103,6 +110,7 @@ class Group extends ContentEntityBase implements GroupInterface {
    * Gets the group role storage.
    *
    * @return \Drupal\group\Entity\Storage\GroupRoleStorageInterface
+   *   The group role storage.
    */
   protected function groupRoleStorage() {
     return $this->entityTypeManager()->getStorage('group_role');
@@ -211,6 +219,21 @@ class Group extends ContentEntityBase implements GroupInterface {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields += static::ownerBaseFieldDefinitions($entity_type);
 
+    // Add the published field.
+    $fields += static::publishedBaseFieldDefinitions($entity_type);
+    // @todo Remove the usage of StatusItem in
+    //   https://www.drupal.org/project/drupal/issues/2936864.
+    $fields['status']->getItemDefinition()->setClass(StatusItem::class);
+    $fields['status']
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'settings' => [
+          'display_label' => TRUE,
+        ],
+        'weight' => 120,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
+
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))
       ->setRequired(TRUE)
@@ -284,7 +307,7 @@ class Group extends ContentEntityBase implements GroupInterface {
     if (!$this->getOwner()) {
         $this->setOwnerId(\Drupal::currentUser()->id());
     }
-    
+
     $group_type = $this->getGroupType();
     if ($update === FALSE && $group_type->creatorGetsMembership()) {
       $values = ['group_roles' => $group_type->getCreatorRoleIds()];

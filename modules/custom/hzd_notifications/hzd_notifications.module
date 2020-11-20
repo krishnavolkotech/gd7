@@ -176,9 +176,71 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
     );
     $form['actions']['#weight'] = 34;
   }
+  if (\Drupal::currentUser()->hasPermission('administer group') || $group->hasPermission('administer group',\Drupal::currentUser())) {
+      // isNew | prev status » default   & publish label             & unpublish label
+      // 1     | 1           » publish   & Save and publish          & Save as unpublished
+      // 1     | 0           » unpublish & Save and publish          & Save as unpublished
+      // 0     | 1           » publish   & Save and keep published   & Save and unpublish
+      // 0     | 0           » unpublish & Save and keep unpublished & Save and publish
 
+      // Add a "Publish" button.
+      $groupStatus = FALSE;
+      if($group) {
+        $groupStatus = $group->isPublished();
+      }
+      $form['#entity_builders']['update_status'] = 'set_group_status_form_submit';
+      $form['actions']['publish'] = $form['actions']['submit'];
+      // If the "Publish" button is clicked, we want to update the status to "published".
+      $form['actions']['publish']['#published_status'] = TRUE;
+      $form['actions']['publish']['#dropbutton'] = 'save';
+      if (empty($group)) {
+        $form['actions']['publish']['#value'] = t('Save and publish');
+      }
+      else {
+        $form['actions']['#value'] = $groupStatus ? t('Save and keep published') : t('Save and publish');
+      }
+      // $form['actions']['#weight'] = 0;
+
+      // Add a "Unpublish" button.
+      $form['actions']['unpublish'] = $form['actions']['submit'];
+      // If the "Unpublish" button is clicked, we want to update the status to "unpublished".
+      $form['actions']['unpublish']['#published_status'] = FALSE;
+      $form['actions']['unpublish']['#dropbutton'] = 'save';
+      if (empty($group)) {
+        $form['actions']['unpublish']['#value'] = t('Save as unpublished');
+      }
+      else {
+        $form['actions']['unpublish']['#value'] = !$groupStatus ? t('Save and keep unpublished') : t('Save and unpublish');
+      }
+      $form['actions']['unpublish']['#weight'] = 10;
+
+      // If already published, the 'publish' button is primary.
+      if ($groupStatus) {
+        unset($form['actions']['unpublish']['#button_type']);
+      }
+      // Otherwise, the 'unpublish' button is primary and should come first.
+      else {
+        unset($form['actions']['publish']['#button_type']);
+        $form['actions']['unpublish']['#weight'] = -10;
+      }
+
+      // Remove the "Save" button.
+      $form['actions']['submit']['#access'] = FALSE;
+    }
+
+    $form['status']['#access'] = FALSE;
+    if(!empty($group)){
+      $form['actions']['delete']['#access'] = $group->access('delete');
+      $form['actions']['delete']['#weight'] = 100;
+    }
 }
 
+function set_group_status_form_submit($entity_type_id, $group, array $form, $form_state) {
+  $formButton = $form_state->getTriggeringElement();
+  if (isset($formButton['#published_status'])) {
+    $group->set('status', $formButton['#published_status'] ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+  }
+}
 function hzd_notifications_preprocess_form_element(&$variables) {
   $element = &$variables['element'];
   if (isset($element['#id']) && $element['#id'] == 'edit-path-0-pathauto') {

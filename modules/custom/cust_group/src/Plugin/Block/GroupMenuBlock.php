@@ -90,7 +90,7 @@ class GroupMenuBlock extends BlockBase {
       $user = \Drupal::currentUser();
       $groupMember = $group->getMember($user);
       $groupMember = (bool) ($groupMember &&  group_request_status($groupMember));
-      
+
       //pr((bool)$groupMember);exit;
       if ($groupMember || array_intersect($user->getRoles(), [
           'admininstrator',
@@ -135,7 +135,7 @@ class GroupMenuBlock extends BlockBase {
             'moderate',
             'moderate_private'
           ])) {
-            $group_member_join_link['#url'] = Url::fromRoute('entity.group.request', ['group' => $group->id()]);
+            $group_member_join_link['#url'] = Url::fromRoute('entity.group.group_request_membership', ['group' => $group->id()]);
             $group_member_join_link['#title'] = $this->t('Request Membership');
           }
           //\Drupal::service('renderer')->render($link)

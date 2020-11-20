@@ -190,7 +190,7 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       if ($group instanceof Group) {
         //$groupTypeId = $group->getGroupType()->id();
         $groupMember = $group->getMember($user);
-        
+
         if (($groupMember && group_request_status($groupMember)) || (array_intersect($user->getRoles(), ['site_administrator','administrator']))) {
           $build['field_einfuehrung']['#access'] = FALSE;
           $build['field_description']['#access'] = TRUE;
@@ -790,11 +790,15 @@ function get_last_unix_time($block_name) {
 
   return $last_unix_time;
 }
-
+function hzd_customizations_local_tasks_alter(&$local_tasks) {
+  if(isset($local_tasks['group.content'])) {
+    unset($local_tasks['group.content']['base_route']);
+  }
+}
 function private_group_member_view_access_check($group) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    
+
     if (($groupMember && group_request_status($groupMember))
             || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
         return TRUE;
@@ -1181,7 +1185,7 @@ function hzd_customizations_preprocess_block(&$variables) {
 
     // If the internal path starts with 'forum', we might want to modify the UI.
     if ('forum' == $parts[0]) {
-      $groupid = \Drupal::entityQuery('group')
+      $groupid = \Drupal::entityQuery('group')->accessCheck(FALSE)
               ->condition('field_forum_containers', $parts[1], '=')
               ->execute();
       if (NULL == $groupid) {
@@ -1189,7 +1193,7 @@ function hzd_customizations_preprocess_block(&$variables) {
                 ->getStorage('taxonomy_term');
         $parents = $storage->loadParents($parts[1]);
         $ptid = key($parents);
-        $groupid = \Drupal::entityQuery('group')
+        $groupid = \Drupal::entityQuery('group')->accessCheck(FALSE)
                 ->condition('field_forum_containers', $ptid, '=')
                 ->execute();
       }

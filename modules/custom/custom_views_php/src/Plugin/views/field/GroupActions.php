@@ -74,16 +74,16 @@ class GroupActions extends FieldPluginBase {
           $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
           $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
         }elseif(in_array($group->bundle(),['moderate','moderate_private', 'closed', 'closed_private'])){
-          $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
+          $url = Url::fromRoute('entity.group.group_request_membership',['group'=>$group->id()]);
           $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
-        }        
+        }
     }elseif($group->bundle() == 'open'){
       $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
     } elseif($group->bundle() == 'closed') {
         $link = $this->t('Closed');
     }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
-      $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
+      $url = Url::fromRoute('entity.group.group_request_membership',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
     }elseif(\Drupal::currentUser()->id() == 1){
       $link == 'admin';

@@ -16,31 +16,31 @@ use Drupal\Core\Url;
  * @ViewsField("group_member_count_field")
  */
 class GroupMemberCountField extends FieldPluginBase {
-  
+
   /**
    * {@inheritdoc}
    */
   public function usesGroupBy() {
     return FALSE;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function query() {
     // Do nothing -- to override the parent query.
   }
-  
+
   /**
    * {@inheritdoc}
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    
+
     $options['hide_alter_empty'] = array('default' => FALSE);
     return $options;
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -69,7 +69,7 @@ class GroupMemberCountField extends FieldPluginBase {
     $gpc->condition('u.status', "1");
     $gpc->groupBy('gid');
     $gpc->groupBy('type');
-    $gpc->condition('g.request_status', "1");
+    // $gpc->condition('g.request_status', "1");
     $gpc->condition('g.type', get_group_content_node_type(), 'NOT IN')
       ->isNull('iu.uid');
     return $gpc->execute()->fetchAllKeyed(0, 2);
@@ -81,7 +81,7 @@ class GroupMemberCountField extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -97,5 +97,5 @@ class GroupMemberCountField extends FieldPluginBase {
     }
     return $res;
   }
-  
+
 }

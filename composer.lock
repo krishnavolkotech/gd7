@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb107b2844e1fc7ea9bff4ff9bfb7557",
+    "content-hash": "b89ccc280c471eea84693f5a32131c07",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2291,6 +2291,7 @@
             "keywords": [
                 "reflection"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2018-06-14T14:45:07+00:00"
         },
         {
@@ -4444,6 +4445,53 @@
             "homepage": "https://www.drupal.org/project/flood_unblock",
             "support": {
                 "source": "https://git.drupalcode.org/project/flood_unblock"
+            }
+        },
+        {
+            "name": "drupal/grequest",
+            "version": "1.0.0-alpha6",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/grequest.git",
+                "reference": "1.0.0-alpha6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/grequest-1.0.0-alpha6.zip",
+                "reference": "1.0.0-alpha6",
+                "shasum": "1492fed57a46ee1e3c9dac1a25233a85b244ac79"
+            },
+            "require": {
+                "drupal/core": "^8.8 || ^9",
+                "drupal/group": "^1.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.0-alpha6",
+                    "datestamp": "1601412426",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Nikolay Lobachev",
+                    "homepage": "https://www.drupal.org/u/lobsterr",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Group membership request module allows to request membership in a group.",
+            "homepage": "https://www.drupal.org/project/grequest",
+            "support": {
+                "source": "https://git.drupalcode.org/project/grequest",
+                "issues": "https://www.drupal.org/project/issues/grequest"
             }
         },
         {
@@ -12594,7 +12642,8 @@
         "drupal/faq": 20,
         "drupal/ultimate_cron": 15,
         "drupal/serial": 20,
-        "drupal/entity_reference_exposed_filters": 15
+        "drupal/entity_reference_exposed_filters": 15,
+        "drupal/grequest": 15
     },
     "prefer-stable": true,
     "prefer-lowest": false,
