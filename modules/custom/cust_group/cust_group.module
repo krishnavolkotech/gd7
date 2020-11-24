@@ -1208,7 +1208,7 @@ function cust_group_preprocess_node(&$variables) {
 function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity) {
 
   if ($entity->getEntityTypeId() == 'group_content' &&
-      $entity->getContentPlugin()->getPluginId() == 'group_membership'
+      $entity->getContentPlugin()->getPluginId() == 'group_membership_request'
   ) {
 
       /*
