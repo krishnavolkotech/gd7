@@ -5,4 +5,6 @@ dependencies: {  }
 id: closed_private
 label: 'Geschlossen Privat'
 description: 'Same as Closed, But visible to only Members.'
+creator_membership: true
+creator_wizard: false
 creator_roles: {  }

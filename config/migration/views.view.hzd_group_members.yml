@@ -7,6 +7,7 @@ dependencies:
     - group.content_type.closed-group_membership
     - group.content_type.closed_private-group_membership
     - group.content_type.downtimes-group_membership
+    - group.content_type.group_content_type_58a8289e9c89a
     - group.content_type.group_content_type_6693a40b54133
     - group.content_type.group_content_type_7b308aea24fe7
     - group.content_type.group_content_type_c26112f8ad4cd
@@ -2487,16 +2488,7 @@ display:
           admin_label: ''
           operator: in
           value:
-            closed_private-group_membership: closed_private-group_membership
-            closed-group_membership: closed-group_membership
-            downtimes-group_membership: downtimes-group_membership
-            group_content_type_7b308aea24fe7: group_content_type_7b308aea24fe7
-            group_content_type_d4b06e2b6aad0: group_content_type_d4b06e2b6aad0
-            moderate-group_membership: moderate-group_membership
-            open-group_membership: open-group_membership
-            quick_info-group_membership: quick_info-group_membership
-            group_content_type_6693a40b54133: group_content_type_6693a40b54133
-            group_content_type_c26112f8ad4cd: group_content_type_c26112f8ad4cd
+            group_content_type_58a8289e9c89a: group_content_type_58a8289e9c89a
           group: 1
           exposed: false
           expose:
@@ -2505,6 +2497,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -2512,8 +2506,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -2529,49 +2521,6 @@ display:
           entity_type: group_content
           entity_field: type
           plugin_id: bundle
-        request_status:
-          id: request_status
-          table: group_content_field_data
-          field: request_status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: group_content
-          entity_field: request_status
-          plugin_id: numeric
         status:
           id: status
           table: users_field_data
@@ -2650,6 +2599,50 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin_id: is_null
+        grequest_status_value:
+          id: grequest_status_value
+          table: group_content__grequest_status
+          field: grequest_status_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '!='
+          value:
+            min: ''
+            max: ''
+            value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: numeric
       filter_groups:
         operator: AND
         groups:
