@@ -237,6 +237,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $user = \Drupal::service('current_user');
   $uid = $user->id();
   $raw_name = $user->getDisplayName();
+  if(strpos($form_id, 'group_membership_group-join_form') !== FALSE) {
+    $form['actions']['submit']['#submit'][] = 'custom_redirect_member_add';
+  }
+  if(strpos($form_id, 'group_membership_group-leave_form') !== FALSE) {
+    $form['actions']['submit']['#submit'][] = 'custom_redirect_member_leave';
+  }
   if(strpos($form_id, 'views_form_groups_faq_category_') !== FALSE){
     $status = FALSE;
     if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
@@ -536,6 +542,17 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 //  echo $form_id;exit;
 }
 
+function custom_redirect_member_add($form, FormStateInterface $form_state) {
+  $group = \Drupal::routeMatch()->getParameter('group');
+
+  if ($group->access('view')) {
+    $form_state->setRedirectUrl($group->toUrl());
+  }
+}
+
+function custom_redirect_member_leave($form, FormStateInterface $form_state) {
+    $form_state->setRedirectUrl(Url::fromUri('internal:/gruppen'));
+}
 function node_revisions_revert_confirm_custom($form, FormStateInterface $form_state) {
       $nodeid = \Drupal::routeMatch()->getParameter('node');
       $form_state->setRedirect('entity.node.canonical', ['node' => $nodeid] );

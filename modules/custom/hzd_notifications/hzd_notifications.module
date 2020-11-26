@@ -219,7 +219,7 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
         unset($form['actions']['unpublish']['#button_type']);
       }
       // Otherwise, the 'unpublish' button is primary and should come first.
-      else {
+      else if(!empty($group)){
         unset($form['actions']['publish']['#button_type']);
         $form['actions']['unpublish']['#weight'] = -10;
       }
