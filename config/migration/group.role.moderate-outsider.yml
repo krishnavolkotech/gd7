@@ -12,6 +12,5 @@ audience: outsider
 group_type: moderate
 permissions_ui: true
 permissions:
-  - 'view group'
   - 'request group membership'
-  - 'view group_node:quickinfo entity'
+  - 'view group'

@@ -409,7 +409,7 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
     }
   }
 
-  $access = $has_access ? AccessResult::allowed() : AccessResult::forbidden();
+  $access = $has_access ? AccessResult::allowed() : AccessResult::neutral();
   if ($owner_access) {
     $access->cachePerUser();
   }

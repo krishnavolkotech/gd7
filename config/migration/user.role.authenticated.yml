@@ -38,6 +38,7 @@ permissions:
   - 'edit own comments'
   - 'edit own deployed_releases content'
   - 'edit own im_upload_page content'
+  - 'edit own quickinfo content'
   - 'edit own service_profile content'
   - 'entity print access bundle early_warnings'
   - 'entity print access bundle event'
