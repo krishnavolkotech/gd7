@@ -28,4 +28,13 @@ class MenuLinkPluginTest extends UnitTestCase {
     $this->assertEquals('test_id', $instance_method->invoke($menu_link_content_plugin));
   }
 
+  /**
+   * @covers ::getEntity
+   */
+  public function testVisibilityGetEntity() {
+    $class = new \ReflectionClass(MenuLinkContent::class);
+    $instance_method = $class->getMethod('getEntity');
+    $this->assertEquals(true, $instance_method->isPublic());
+  }
+
 }
