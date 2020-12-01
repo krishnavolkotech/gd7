@@ -2352,7 +2352,8 @@
         "homepage": "https://www.doctrine-project.org/projects/reflection.html",
         "keywords": [
             "reflection"
-        ]
+        ],
+        "abandoned": "roave/better-reflection"
     },
     {
         "name": "dompdf/dompdf",
@@ -3426,17 +3427,17 @@
     },
     {
         "name": "drupal/core",
-        "version": "8.8.10",
-        "version_normalized": "8.8.10.0",
+        "version": "8.8.12",
+        "version_normalized": "8.8.12.0",
         "source": {
             "type": "git",
             "url": "https://github.com/drupal/core.git",
-            "reference": "3df0c753d18bc8982d819f43b47759ae50be94bc"
+            "reference": "9cbfd3b0e955bc34649bdc471b9a702650887f73"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/drupal/core/zipball/3df0c753d18bc8982d819f43b47759ae50be94bc",
-            "reference": "3df0c753d18bc8982d819f43b47759ae50be94bc",
+            "url": "https://api.github.com/repos/drupal/core/zipball/9cbfd3b0e955bc34649bdc471b9a702650887f73",
+            "reference": "9cbfd3b0e955bc34649bdc471b9a702650887f73",
             "shasum": ""
         },
         "require": {
@@ -3461,7 +3462,7 @@
             "ext-xml": "*",
             "guzzlehttp/guzzle": "^6.3",
             "masterminds/html5": "^2.1",
-            "pear/archive_tar": "^1.4.9",
+            "pear/archive_tar": "^1.4.11",
             "php": ">=7.0.8",
             "stack/builder": "^1.0",
             "symfony-cmf/routing": "^1.4",
@@ -3602,7 +3603,7 @@
             "drupal/workflows": "self.version",
             "drupal/workspaces": "self.version"
         },
-        "time": "2020-09-16T11:22:50+00:00",
+        "time": "2020-11-26T02:06:22+00:00",
         "type": "drupal-core",
         "extra": {
             "drupal-scaffold": {
@@ -4569,6 +4570,55 @@
         "homepage": "https://www.drupal.org/project/flood_unblock",
         "support": {
             "source": "https://git.drupalcode.org/project/flood_unblock"
+        }
+    },
+    {
+        "name": "drupal/grequest",
+        "version": "1.0.0-alpha6",
+        "version_normalized": "1.0.0.0-alpha6",
+        "source": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/project/grequest.git",
+            "reference": "1.0.0-alpha6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/grequest-1.0.0-alpha6.zip",
+            "reference": "1.0.0-alpha6",
+            "shasum": "1492fed57a46ee1e3c9dac1a25233a85b244ac79"
+        },
+        "require": {
+            "drupal/core": "^8.8 || ^9",
+            "drupal/group": "^1.0"
+        },
+        "type": "drupal-module",
+        "extra": {
+            "drupal": {
+                "version": "1.0.0-alpha6",
+                "datestamp": "1601412426",
+                "security-coverage": {
+                    "status": "not-covered",
+                    "message": "Project has not opted into security advisory coverage!"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packages.drupal.org/8/downloads",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "authors": [
+            {
+                "name": "Nikolay Lobachev",
+                "homepage": "https://www.drupal.org/u/lobsterr",
+                "role": "Maintainer"
+            }
+        ],
+        "description": "Group membership request module allows to request membership in a group.",
+        "homepage": "https://www.drupal.org/project/grequest",
+        "support": {
+            "source": "https://git.drupalcode.org/project/grequest",
+            "issues": "https://www.drupal.org/project/issues/grequest"
         }
     },
     {
@@ -7865,17 +7915,17 @@
     },
     {
         "name": "pear/archive_tar",
-        "version": "1.4.9",
-        "version_normalized": "1.4.9.0",
+        "version": "1.4.11",
+        "version_normalized": "1.4.11.0",
         "source": {
             "type": "git",
             "url": "https://github.com/pear/Archive_Tar.git",
-            "reference": "c5b00053770e1d72128252c62c2c1a12c26639f0"
+            "reference": "17d355cb7d3c4ff08e5729f29cd7660145208d9d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/pear/Archive_Tar/zipball/c5b00053770e1d72128252c62c2c1a12c26639f0",
-            "reference": "c5b00053770e1d72128252c62c2c1a12c26639f0",
+            "url": "https://api.github.com/repos/pear/Archive_Tar/zipball/17d355cb7d3c4ff08e5729f29cd7660145208d9d",
+            "reference": "17d355cb7d3c4ff08e5729f29cd7660145208d9d",
             "shasum": ""
         },
         "require": {
@@ -7890,7 +7940,7 @@
             "ext-xz": "Lzma2 compression support.",
             "ext-zlib": "Gzip compression support."
         },
-        "time": "2019-12-04T10:17:28+00:00",
+        "time": "2020-11-19T22:10:24+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

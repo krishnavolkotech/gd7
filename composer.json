@@ -64,10 +64,11 @@
         "drupal/entity_print": "^2.2",
         "drupal/pathauto": "^1.8",
         "drupal/facets": "^1.5",
-        "drupal/core": "^8.8.10",
+        "drupal/core": "8.8.12",
         "sabberworm/php-css-parser": "^8.3.1",
         "phenx/php-svg-lib": "^0.3.3",
-        "drupal/grequest": "^1.0@alpha"
+        "drupal/grequest": "^1.0@alpha",
+        "pear/archive_tar": "^1.4.11"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
