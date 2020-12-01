@@ -1,0 +1,95 @@
+diff --git a/src/Entity/GroupContent.php b/src/Entity/GroupContent.php
+index 645a804..13cbcc2 100644
+--- a/src/Entity/GroupContent.php
++++ b/src/Entity/GroupContent.php
+@@ -209,8 +209,11 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
+       // as a grouped entity. This means we may need to update access records,
+       // flush some caches containing the entity or perform other operations we
+       // cannot possibly know about. Lucky for us, all of that behavior usually
+-      // happens when saving an entity so let's re-save the added entity.
+-      $this->getEntity()->save();
++      // happens after saving an entity so let's invoke postSave().
++      $entity = $this->getEntity();
++      $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
++      $entity->original = $storage->loadUnchanged($entity->id());
++      $entity->postSave($storage);
+     }
+ 
+     // If a membership gets updated, but the member's roles haven't changed, we
+@@ -238,14 +241,16 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
+ 
+     /** @var GroupContentInterface[] $entities */
+     foreach ($entities as $group_content) {
++      // For the same reasons we invoking postSave() on entities that are added
++      // to a group, we need to do the same for entities that were removed from
++      // one. See ::postSave(). We only save the entity if it still exists to
++      // avoid trying to save an entity that just got deleted and triggered the
++      // deletion of its group content entities.
+       if ($entity = $group_content->getEntity()) {
+-        // For the same reasons we re-save entities that are added to a group,
+-        // we need to re-save entities that were removed from one. See
+-        // ::postSave(). We only save the entity if it still exists to avoid
+-        // trying to save an entity that just got deleted and triggered the
+-        // deletion of its group content entities.
+         // @todo Revisit when https://www.drupal.org/node/2754399 lands.
+-        $entity->save();
++        $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
++        $entity->original = $storage->loadUnchanged($entity->id());
++        $entity->postSave($storage);
+ 
+         // If a membership gets deleted, we need to reset the internal group
+         // roles cache for the member in that group, but only if the user still
+@@ -253,12 +258,23 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
+         if ($group_content->getContentPlugin()->getPluginId() == 'group_membership') {
+           /** @var \Drupal\group\Entity\Storage\GroupRoleStorageInterface $role_storage */
+           $role_storage = \Drupal::entityTypeManager()->getStorage('group_role');
+-          $role_storage->resetUserGroupRoleCache($group_content->getEntity(), $group_content->getGroup());
++          $role_storage->resetUserGroupRoleCache($entity, $group_content->getGroup());
+         }
+       }
+     }
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getCacheTags() {
++    if ($entity = $this->getEntity()) {
++      $this->addCacheableDependency($entity);
++    }
++
++    return parent::getCacheTags();
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+diff --git a/tests/src/Kernel/GroupContentTest.php b/tests/src/Kernel/GroupContentTest.php
+index d0f3b41..206ca8d 100644
+--- a/tests/src/Kernel/GroupContentTest.php
++++ b/tests/src/Kernel/GroupContentTest.php
+@@ -61,24 +61,4 @@ class GroupContentTest extends GroupKernelTestBase {
+     }
+   }
+ 
+-  /**
+-   * Tests that after adding an entity to a group, it gets saved again.
+-   *
+-   * @covers ::postSave
+-   *
+-   * @see group_test_user_update()
+-   */
+-  public function testSubjectResaved() {
+-    $changed = 123456789;
+-    $account = $this->createUser(['changed' => $changed]);
+-
+-    $group = $this->createGroup();
+-    $group->addContent($account, 'group_membership');
+-
+-    // All users whose changed time was set to 123456789 get their changed time
+-    // set to 530496000 in group_test_user_update() when the account is updated.
+-    $account_unchanged = $this->entityTypeManager->getStorage('user')->loadUnchanged($account->id());
+-    $this->assertEquals(530496000, $account_unchanged->getChangedTime(), 'Account was saved as part of being added to a group.');
+-  }
+-
+ }
