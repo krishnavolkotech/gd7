@@ -1,0 +1,19 @@
+uuid: c1397efb-a440-44c5-885e-08e884e53368
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_risk_id
+    - node.type.risk
+id: node.risk.field_risk_id
+field_name: field_risk_id
+entity_type: node
+bundle: risk
+label: Nr.
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

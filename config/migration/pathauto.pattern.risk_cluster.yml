@@ -7,16 +7,16 @@ dependencies:
 id: risk_cluster
 label: 'Risk cluster'
 type: 'canonical_entities:node'
-pattern: '/risikomanagement/risikocluster/[node:field_id]'
+pattern: '/risikomanagement-betrieb/risikocluster/[node:field_risk_id]'
 selection_criteria:
-  eb570813-af3c-4a7c-a4ce-384512a9b98b:
+  757c4e0f-d214-4a09-848e-6cebd634c810:
     id: node_type
     bundles:
       risk_cluster: risk_cluster
     negate: false
     context_mapping:
       node: node
-    uuid: eb570813-af3c-4a7c-a4ce-384512a9b98b
+    uuid: 757c4e0f-d214-4a09-848e-6cebd634c810
 selection_logic: and
 weight: -5
 relationships: {  }

@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.measure.body
+    - field.field.node.measure.field_arbeitslog
     - field.field.node.measure.field_contact_person
     - field.field.node.measure.field_creation_date
     - field.field.node.measure.field_estimated_effort
@@ -15,6 +16,7 @@ dependencies:
     - field.field.node.measure.field_order_date
     - field.field.node.measure.field_owner
     - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risk_id
     - field.field.node.measure.field_risks
     - field.field.node.measure.field_sponsor
     - field.field.node.measure.field_target_date
@@ -33,15 +35,13 @@ third_party_settings:
   field_group:
     group_table:
       children:
+        - field_order_date
+        - field_sponsor
+        - field_contact_person
+        - field_measure_status
         - field_id
-        - field_non_production_state
-        - body
-        - last_updated
-        - field_target_date
-        - field_owner
-        - field_risks
       parent_name: ''
-      weight: 1
+      weight: 0
       format_type: table_field
       format_settings:
         label: table
@@ -52,6 +52,46 @@ third_party_settings:
         classes: risk-table-wrapper
         required_fields: false
       label: table
+    group_table_2:
+      children:
+        - last_updated
+        - field_type
+        - field_estimated_effort
+        - field_follow_up
+        - field_non_production_state
+        - field_owner
+        - field_creation_date
+        - field_target_date
+      parent_name: ''
+      weight: 1
+      format_type: table_field
+      format_settings:
+        id: ''
+        classes: risk-table-wrapper
+        fieldtitle: 1
+        wrapper: '0'
+        caption: ''
+        required_fields: false
+      label: 'table 2'
+    group_tab:
+      children:
+        - field_risks
+        - body
+        - field_expected_result
+        - field_remarks
+        - field_arbeitslog
+        - content_revision_log
+      parent_name: ''
+      weight: 2
+      format_type: table_field
+      format_settings:
+        id: ''
+        classes: risk-table-wrapper
+        fieldtitle: 1
+        wrapper: '0'
+        caption: ''
+        required_fields: false
+      label: 'table 3'
 id: node.measure.default
 targetEntityType: node
 bundle: measure
@@ -60,13 +100,13 @@ content:
   body:
     label: inline
     type: text_default
-    weight: 14
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     region: content
   content_revision_log:
     type: revision_log_formatter
-    weight: 4
+    weight: 9
     region: content
     label: above
     settings:
@@ -75,22 +115,86 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+  field_arbeitslog:
+    weight: 8
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_contact_person:
+    type: entity_reference_label
+    weight: 14
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_creation_date:
+    type: datetime_default
+    weight: 10
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_estimated_effort:
+    type: string
+    weight: 6
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_expected_result:
+    type: text_default
+    weight: 6
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_follow_up:
+    type: datetime_default
+    weight: 7
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
   field_id:
     type: serial_default_formatter
-    weight: 12
+    weight: 16
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_measure_status:
+    type: list_default
+    weight: 15
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_non_production_state:
     type: list_default
-    weight: 13
+    weight: 8
     region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+  field_order_date:
+    type: datetime_default
+    weight: 12
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
   field_owner:
-    weight: 17
+    weight: 9
     label: inline
     settings:
       link_to_entity: false
@@ -98,22 +202,38 @@ content:
     type: string
     region: content
   field_remarks:
-    weight: 3
+    weight: 7
     label: inline
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
+  field_risk_id:
+    weight: 17
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
   field_risks:
-    weight: 18
+    weight: 4
     label: inline
     settings:
       token_data: '<a href=''[node:url]''>[node:field_id] - [node:title]</a>'
     third_party_settings: {  }
     type: tokenized_field_formatter
     region: content
+  field_sponsor:
+    type: string
+    weight: 13
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
   field_target_date:
-    weight: 16
+    weight: 11
     label: inline
     settings:
       format_type: medium
@@ -121,13 +241,15 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: content
-  last_updated:
-    weight: 15
+  field_type:
+    type: list_default
+    weight: 5
     region: content
+    label: above
     settings: {  }
     third_party_settings: {  }
-  links:
-    weight: 0
+  last_updated:
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -136,13 +258,5 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_contact_person: true
-  field_creation_date: true
-  field_estimated_effort: true
-  field_expected_result: true
-  field_follow_up: true
-  field_measure_status: true
-  field_order_date: true
-  field_sponsor: true
-  field_type: true
   langcode: true
+  links: true

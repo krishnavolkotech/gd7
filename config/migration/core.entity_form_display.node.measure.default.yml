@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.measure.body
+    - field.field.node.measure.field_arbeitslog
     - field.field.node.measure.field_contact_person
     - field.field.node.measure.field_creation_date
     - field.field.node.measure.field_estimated_effort
@@ -15,6 +16,7 @@ dependencies:
     - field.field.node.measure.field_order_date
     - field.field.node.measure.field_owner
     - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risk_id
     - field.field.node.measure.field_risks
     - field.field.node.measure.field_sponsor
     - field.field.node.measure.field_target_date
@@ -23,8 +25,6 @@ dependencies:
   module:
     - cust_group
     - datetime
-    - path
-    - serial
     - text
 id: node.measure.default
 targetEntityType: node
@@ -33,7 +33,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 2
+    weight: 14
     settings:
       rows: 9
       summary_rows: 3
@@ -41,8 +41,16 @@ content:
       show_summary: false
     third_party_settings: {  }
     region: content
+  field_arbeitslog:
+    weight: 17
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
   field_contact_person:
-    weight: 13
+    weight: 4
     settings:
       size: '60'
       placeholder: ''
@@ -54,13 +62,13 @@ content:
     type: group_user_field_widget
     region: content
   field_creation_date:
-    weight: 14
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_estimated_effort:
-    weight: 6
+    weight: 7
     settings:
       size: 60
       placeholder: ''
@@ -68,7 +76,7 @@ content:
     type: string_textfield
     region: content
   field_expected_result:
-    weight: 5
+    weight: 15
     settings:
       rows: 5
       placeholder: ''
@@ -76,37 +84,31 @@ content:
     type: text_textarea
     region: content
   field_follow_up:
-    weight: 15
+    weight: 8
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
-  field_id:
-    weight: 0
-    settings: {  }
-    third_party_settings: {  }
-    type: serial_default_widget
-    region: content
   field_measure_status:
-    weight: 10
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_non_production_state:
-    weight: 11
+    weight: 9
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_order_date:
-    weight: 7
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_owner:
-    weight: 12
+    weight: 10
     settings:
       size: 60
       placeholder: ''
@@ -121,14 +123,24 @@ content:
     third_party_settings: {  }
     type: text_textarea
     region: content
+  field_risk_id:
+    weight: 0
+    settings:
+      size: 60
+      placeholder: 'Beispiel: M1'
+    third_party_settings:
+      cust_group:
+        group_files: 0
+    type: string_textfield
+    region: content
   field_risks:
-    weight: 3
+    weight: 13
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
     region: content
   field_sponsor:
-    weight: 8
+    weight: 3
     settings:
       size: 60
       placeholder: ''
@@ -136,23 +148,17 @@ content:
     type: string_textfield
     region: content
   field_target_date:
-    weight: 9
+    weight: 12
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_type:
-    weight: 4
+    weight: 6
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
-  path:
-    type: path
-    weight: 17
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   title:
     type: string_textfield
     weight: 1
@@ -163,7 +169,9 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  field_id: true
   langcode: true
+  path: true
   promote: true
   status: true
   sticky: true

@@ -9,11 +9,11 @@ dependencies:
     - field.storage.node.field_non_production_state
     - field.storage.node.field_order_date
     - field.storage.node.field_owner
+    - field.storage.node.field_risk_id
     - field.storage.node.field_target_date
     - field.storage.node.field_type
     - group.content_type.open-group_node-measure
   module:
-    - better_exposed_filters
     - datetime
     - group
     - node
@@ -48,7 +48,7 @@ display:
           query_comment: ''
           query_tags: {  }
       exposed_form:
-        type: bef
+        type: basic
         options:
           submit_button: Anwenden
           reset_button: true
@@ -57,52 +57,6 @@ display:
           expose_sort_order: false
           sort_asc_label: Aufsteigend
           sort_desc_label: Absteigend
-          input_required: false
-          text_input_required: 'Select any filter and click on Apply to see results'
-          bef:
-            general:
-              allow_secondary: false
-              secondary_label: 'Advanced options'
-              autosubmit: true
-              autosubmit_hide: false
-            field_order_date_value:
-              bef_format: default
-              more_options:
-                is_secondary: false
-            field_target_date_value:
-              bef_format: default
-              more_options:
-                is_secondary: false
-            field_measure_status_value:
-              bef_format: default
-              more_options:
-                bef_select_all_none: false
-                bef_collapsible: false
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: "- Alle -|<Status>\n- Any -|<Status>"
-            field_type_value:
-              bef_format: default
-              more_options:
-                bef_select_all_none: false
-                bef_collapsible: false
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: "- Alle -|<Type>\n- All -|<Type>"
-            eref_node_titles:
-              bef_format: bef_hidden
-              more_options:
-                bef_select_all_none: false
-                bef_collapsible: false
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
-            combine:
-              bef_format: default
-              more_options:
-                is_secondary: false
-                placeholder_text: ''
-          text_input_required_format: full_html
       pager:
         type: full
         options:
@@ -129,6 +83,69 @@ display:
       row:
         type: fields
       fields:
+        field_risk_id:
+          id: field_risk_id
+          table: node__field_risk_id
+          field: field_risk_id
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          label: Nr.
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
         title:
           id: title
           table: node_field_data
@@ -180,7 +197,7 @@ display:
           click_sort_column: value
           type: string
           settings:
-            link_to_entity: false
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -517,7 +534,7 @@ display:
           group_type: group
           admin_label: ''
           label: Wiedervorlage
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -963,6 +980,8 @@ display:
             description: ''
             use_operator: false
             operator: field_order_date_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: order_date
             required: false
             remember: false
@@ -974,11 +993,9 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            placeholder: ''
+            placeholder: dd.mm.yyy
             min_placeholder: ''
             max_placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1154,6 +1171,8 @@ display:
             description: ''
             use_operator: false
             operator: combine_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: combine
             required: false
             remember: false
@@ -1166,8 +1185,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             placeholder: '<Suchtext eingeben>'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1181,6 +1198,7 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           fields:
+            field_risk_id: field_risk_id
             title: title
             field_owner: field_owner
           plugin_id: combine
@@ -1200,10 +1218,12 @@ display:
           exposed: true
           expose:
             operator_id: field_risks_target_id_op
-            label: ''
+            label: 'Zugehörige Risiken (field_risks)'
             description: ''
             use_operator: false
             operator: field_risks_target_id_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk
             required: false
             remember: false
@@ -1218,8 +1238,6 @@ display:
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1378,6 +1396,7 @@ display:
         - 'config:field.storage.node.field_non_production_state'
         - 'config:field.storage.node.field_order_date'
         - 'config:field.storage.node.field_owner'
+        - 'config:field.storage.node.field_risk_id'
         - 'config:field.storage.node.field_target_date'
         - 'config:field.storage.node.field_type'
   measures:
@@ -1388,7 +1407,7 @@ display:
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: group/%group/massnahme
+      path: group/%group/massnahmen
       merge_rows: 0
       use_grouping: 0
       field_config:
@@ -1485,17 +1504,18 @@ display:
         - 'config:field.storage.node.field_non_production_state'
         - 'config:field.storage.node.field_order_date'
         - 'config:field.storage.node.field_owner'
+        - 'config:field.storage.node.field_risk_id'
         - 'config:field.storage.node.field_target_date'
         - 'config:field.storage.node.field_type'
   page_1:
     display_plugin: page
     id: page_1
-    display_title: Page
+    display_title: Archiv
     position: 2
     display_options:
       display_extenders:
         views_merge_rows: {  }
-      path: group/%group/massnahme/archive
+      path: group/%group/massnahmen/archiv
       title: 'Archivierte Maßnahmen'
       defaults:
         title: false
@@ -1815,6 +1835,7 @@ display:
       value:
         completed: completed
       reduce_duplicates: 0
+      display_description: ''
     cache_metadata:
       max-age: -1
       contexts:
@@ -1830,5 +1851,6 @@ display:
         - 'config:field.storage.node.field_non_production_state'
         - 'config:field.storage.node.field_order_date'
         - 'config:field.storage.node.field_owner'
+        - 'config:field.storage.node.field_risk_id'
         - 'config:field.storage.node.field_target_date'
         - 'config:field.storage.node.field_type'
