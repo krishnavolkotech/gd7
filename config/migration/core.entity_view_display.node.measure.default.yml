@@ -16,6 +16,7 @@ dependencies:
     - field.field.node.measure.field_order_date
     - field.field.node.measure.field_owner
     - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risk_id
     - field.field.node.measure.field_risks
     - field.field.node.measure.field_sponsor
     - field.field.node.measure.field_target_date
@@ -206,6 +207,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
+  field_risk_id:
+    weight: 17
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
   field_risks:
     weight: 4

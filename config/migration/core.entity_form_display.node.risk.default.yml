@@ -160,8 +160,10 @@ content:
     weight: 0
     settings:
       size: 60
-      placeholder: ''
-    third_party_settings: {  }
+      placeholder: 'Beispiel: R1.1'
+    third_party_settings:
+      cust_group:
+        group_files: 0
     type: string_textfield
     region: content
   field_risk_impact:

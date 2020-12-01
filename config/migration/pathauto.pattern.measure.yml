@@ -7,16 +7,16 @@ dependencies:
 id: measure
 label: Measure
 type: 'canonical_entities:node'
-pattern: '/risikomanagement-betrieb/massnahme/[node:field_id]'
+pattern: '/risikomanagement-betrieb/massnahme/[node:field_risk_id]'
 selection_criteria:
-  efc52d50-7932-470a-a97b-556f32f449fb:
+  5626d1b7-f537-4931-8783-18e24c2a1e7f:
     id: node_type
     bundles:
       measure: measure
     negate: false
     context_mapping:
       node: node
-    uuid: efc52d50-7932-470a-a97b-556f32f449fb
+    uuid: 5626d1b7-f537-4931-8783-18e24c2a1e7f
 selection_logic: and
 weight: -5
 relationships: {  }

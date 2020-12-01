@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.risk_cluster.field_cluster_id
     - field.field.node.risk_cluster.field_comments
     - field.field.node.risk_cluster.field_id
+    - field.field.node.risk_cluster.field_risk_id
     - field.field.node.risk_cluster.field_trend
     - node.type.risk_cluster
   module:
@@ -85,6 +86,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: serial_default_formatter
+    region: content
+  field_risk_id:
+    weight: 10
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
   field_risks:
     weight: 3

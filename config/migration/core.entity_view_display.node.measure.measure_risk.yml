@@ -17,6 +17,7 @@ dependencies:
     - field.field.node.measure.field_order_date
     - field.field.node.measure.field_owner
     - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risk_id
     - field.field.node.measure.field_risks
     - field.field.node.measure.field_sponsor
     - field.field.node.measure.field_target_date
@@ -117,6 +118,7 @@ hidden:
   field_measure_status: true
   field_non_production_state: true
   field_order_date: true
+  field_risk_id: true
   field_sponsor: true
   field_type: true
   langcode: true
