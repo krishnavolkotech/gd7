@@ -224,7 +224,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
         // trying to save an entity that just got deleted and triggered the
         // deletion of its group content entities.
         // @todo Revisit when https://www.drupal.org/node/2754399 lands.
-        $entity = $this->getEntity();
         $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
         $entity->original = $storage->loadUnchanged($entity->id());
         $entity->postSave($storage);
