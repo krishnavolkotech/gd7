@@ -110,89 +110,126 @@ function calculateClusterPropability($value) {
   return $value;
 }
 
-function hzd_risk_management_form_alter(array &$form, $formState, $formId){
-//echo $formId;exit;
+/**
+ * Implements hook_form_alter.
+ */
+function hzd_risk_management_form_alter(array &$form, $formState, $formId) {
   $current_path = \Drupal::service('path.current')->getPath();
   if ($formId == 'views_exposed_form' && ($current_path == '/group/73/massnahmen'
       || $current_path == '/group/73/massnahmen/archiv')) {
     $form['order_date']['#type'] = 'textfield';
     $form['order_date']['#attributes']['class'][] = 'datepicker-text';
-    $form['order_date']['#attributes']['placeholder'] = 'dd.mm.yyyy';
+    $form['order_date']['#attributes']['placeholder'] = 'TT.MM.JJJJ';
 
     $form['target_date']['#type'] = 'textfield';
     $form['target_date']['#attributes']['class'][] = 'datepicker-text';
-    $form['target_date']['#attributes']['placeholder'] = 'dd.mm.yyyy';
+    $form['target_date']['#attributes']['placeholder'] = 'TT.MM.JJJJ';
     $form['#attached']['library'][] = 'hzd_risk_management/hzd_risk_management_date';
     $form['#validate'][] = 'reset_date_format';
+
+    $form['measure_status']['#options']['All'] = '<Status>';
+    $form['field_type']['#options']['All'] = '<Typ>';
   }
 
-  if($formId == 'views_exposed_form' && isset($form['combine'])){
+  if ($formId == 'views_exposed_form' && ($current_path == '/group/73/risiken'
+  || $current_path == '/group/73/risiken/archiv')) {
+    $form['risk_cluster']['#options']['All'] = '<Risikocluster>';
+    $form['risk_status']['#options']['All'] = '<Status>';
+    $form['risk_state']['#options']['All'] = '<Bundesland>';
+  }
+
+  if ($formId == 'views_exposed_form' && isset($form['combine'])) {
     $form['combine']['#attributes']['data-bef-auto-submit-exclude'] = '';
   }
-  if($formId == 'views_exposed_form' && isset($form['measure'])){
+  if ($formId == 'views_exposed_form' && isset($form['measure'])) {
     $form['measure']['#type'] = 'hidden';
   }
-  if($formId == 'views_exposed_form' && isset($form['risk'])){
+  if ($formId == 'views_exposed_form' && isset($form['risk'])) {
     $form['risk']['#type'] = 'hidden';
   }
-  if(in_array($formId,['node_risk_form','node_risk_edit_form'])){
-    $form['#validate'][] = 'risk_management_form_validate';
+  if (in_array($formId,['node_risk_form','node_risk_edit_form'])) {
+    $form['#validate'][] = 'hzd_risk_management_risk_form_validate';
   }
-  if(in_array($formId,['node_measure_form','node_measure_edit_form'])){
-    $form['#validate'][] = 'risk_management_measure_form_validate';
+  if (in_array($formId,['node_measure_form','node_measure_edit_form'])) {
+    $form['#validate'][] = 'hzd_risk_management_measure_form_validate';
+  }
+
+  $riskManagementFormIds = [
+    'node_risk_form',
+    'node_risk_edit_form',
+    'node_measure_form',
+    'node_measure_edit_form',
+    'node_risk_cluster_form',
+    'node_risk_cluster_edit_form'
+  ];
+  if (in_array($formId,$riskManagementFormIds)) {
+    $form['#validate'][] = 'hzd_risk_management_validate_risk_id';
+    $form['actions']['submit']['#submit'][] = 'hzd_risk_management_trim_risk_id';
   }
 }
 
-function reset_date_format(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-  if(!empty($form['order_date']['#value'])) {
-    $dt = date_create_from_format('d.m.Y', $form['order_date']['#value']);
-    if($dt!==FALSE) {
-      $value = $dt->format("Y-m-d");
-      $form_state->setValue('order_date', $value);
-    }
-  }
-
-  if(!empty($form['target_date']['#value'])) {
-    $dt = date_create_from_format('d.m.Y', $form['target_date']['#value']);
-    if($dt!==FALSE) {
-      $value = $dt->format("Y-m-d");
-      $form_state->setValue('target_date', $value);
-    }
-  }
-}
-
-function risk_management_measure_form_validate(array $form, $formState){
-  if($formState->getValue('field_measure_status')[0]['value'] != 'created'){
-$status = $formState->getValue('field_measure_status')[0]['value'];
-   if(!$formState->getValue('field_order_date')[0]['value']){
-      $formState->setErrorByName('field_order_date',t('field_order_date field is required when Status is @status',['@status'=>$status]));
-    }
-    if(!$formState->getValue('field_target_date')[0]['value']){
-      $formState->setErrorByName('field_target_date',t('field_target_date field is required when Status is @status',['@status'=>$status]));
-    }
-   if(!$formState->getValue('field_sponsor')[0]['value']){
-      $formState->setErrorByName('field_sponsor',t('field_sponsor field is required when Status is @status',['@status'=>$status]));
-    }
-  }
-}
-
-function risk_management_form_validate(array $form, $formState){
-//pr($formState->getValue('field_scope'));exit;
-  if($formState->getValue('field_scope')[0]['value'] == 'local' && !$formState->getValue('field_affected_oes')[0]['value']){
-    $formState->setErrorByName('field_affected_oes',t('This field is required when Scope is local'));
-  }
-  
+/**
+ * Custom submit function for risk, measure and cluster forms.
+ * 
+ * Removes whitespace from field_risk_id.
+ */
+function hzd_risk_management_trim_risk_id(&$form, \Drupal\Core\Form\FormStateInterface $formState) {
+  $riskId = $formState->getValue('field_risk_id')[0]['value'];
   $entity = $formState->getFormObject()->getEntity();
-  
+  $entity->field_risk_id->value = trim($riskId);
+  $entity->save();
+}
+
+/**
+ * Custom validation function.
+ */
+function reset_date_format(&$form, \Drupal\Core\Form\FormStateInterface $formState) {
+  if (!empty($form['order_date']['#value'])) {
+    $dt = date_create_from_format('d.m.Y', $form['order_date']['#value']);
+    if ($dt!==FALSE) {
+      $value = $dt->format("Y-m-d");
+      $formState->setValue('order_date', $value);
+    }
+  }
+
+  if (!empty($form['target_date']['#value'])) {
+    $dt = date_create_from_format('d.m.Y', $form['target_date']['#value']);
+    if ($dt!==FALSE) {
+      $value = $dt->format("Y-m-d");
+      $formState->setValue('target_date', $value);
+    }
+  }
+}
+
+/**
+ * Custom validation function for risk, measure and cluster forms.
+ * 
+ * Condition 1:
+ *   Trimmed field_risk_id must meet the following format condition (regex):
+ *   /(C|R|M)[0-9][0-9]*\.?[0-9]*$/
+ * 
+ * Condition 2:
+ *   field_risk_id must be unique for its content type.
+ */
+function hzd_risk_management_validate_risk_id(array $form, \Drupal\Core\Form\FormStateInterface $formState) {
+  $riskId = $formState->getValue('field_risk_id')[0]['value'];
+  $riskId = trim($riskId);
+
+  // Check for condition 1
+  if (preg_match('/(C|R|M)[0-9][0-9]*\.?[0-9]*$/', $riskId) === 0) {
+    $formState->setErrorByName('field_risk_id',t('Please check the format of field "Nr.": "%id". Examples: "R1.1", "M1"', ['%id' => $riskId]));
+  }
+
+  $entity = $formState->getFormObject()->getEntity();
+  $bundle = $entity->bundle();
+
   if (!$entity->isNew()) {
     $nid = $entity->id();
   }
 
-  $riskId = $formState->getValue('field_risk_id')[0]['value'];
-
   $query = \Drupal::entityQuery('node')
     ->condition('field_risk_id', $riskId)
-    ->condition('type', 'risk');
+    ->condition('type', $bundle);
 
   if (isset($nid)) {
     $query->condition('nid', $nid, '!=');
@@ -200,14 +237,44 @@ function risk_management_form_validate(array $form, $formState){
 
   $entity_ids = $query->execute();
 
+  // Check for condition 2
   if (count($entity_ids) > 0) {
     $formState->setErrorByName('field_risk_id',t('This ID is already taken.'));
   }
 }
 
+/**
+ * Custom validation function for measure form.
+ */
+function hzd_risk_management_measure_form_validate(array $form, \Drupal\Core\Form\FormStateInterface $formState) {
+  if ($formState->getValue('field_measure_status')[0]['value'] != 'created') {
+    $status = $formState->getValue('field_measure_status')[0]['value'];
+    if (!$formState->getValue('field_order_date')[0]['value']) {
+      $formState->setErrorByName('field_order_date',t('field_order_date field is required when Status is @status',['@status'=>$status]));
+    }
+    if (!$formState->getValue('field_target_date')[0]['value']) {
+      $formState->setErrorByName('field_target_date',t('field_target_date field is required when Status is @status',['@status'=>$status]));
+    }
+    if (!$formState->getValue('field_sponsor')[0]['value']) {
+      $formState->setErrorByName('field_sponsor',t('field_sponsor field is required when Status is @status',['@status'=>$status]));
+    }
+  }
+}
 
-function hzd_risk_management_node_presave($node){
-  if($node->bundle() == 'risk'){
+/**
+ * Custom validation function for risk form.
+ */
+function hzd_risk_management_risk_form_validate(array $form, \Drupal\Core\Form\FormStateInterface $formState) {
+    if ($formState->getValue('field_scope')[0]['value'] == 'local' && !$formState->getValue('field_affected_oes')[0]['value']) {
+      $formState->setErrorByName('field_affected_oes',t('This field is required when Scope is local'));
+    }
+  }     
+
+/**
+ * implements hook_node_presave.
+ */
+function hzd_risk_management_node_presave($node) {
+  if ($node->bundle() == 'risk') {
     $cluster = $node->get('field_risk_clusters')
       ->first()
       ->get('entity')
@@ -217,7 +284,8 @@ function hzd_risk_management_node_presave($node){
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags($tags);
   }
-  if($node->bundle() == 'measure'){
+
+  if ($node->bundle() == 'measure') {
     $risks = $node->get('field_risks')
     ->referencedEntities();
     $tags = array_map(function($risk) {
@@ -228,9 +296,12 @@ function hzd_risk_management_node_presave($node){
   }
 }
 
-function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode){
+/**
+ * Implements hook_ENTITY_TYPE_view.
+ */
+function hzd_risk_management_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   // Kommt vor in: Risiko Detailansicht
-  if($display->getComponent('field_risk_category_value')){
+  if ($display->getComponent('field_risk_category_value')) {
     $riskCategory = $entity->get('field_risk_category')->value;
     $riskValue = $entity->get('field_risk_value')->value;
     $build['field_risk_category_value'] = [
@@ -251,7 +322,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
 
   // Kommt vor in: Cluster Detailansicht
   // Status berücksichtigen! V1 22.07.20 umgesetzt.
-  if($display->getComponent('field_risks_data')) {
+  if ($display->getComponent('field_risks_data')) {
     // @todo: Status in Query condition abfragen!!
     // @todo: Später evtl. umsetzen, wenn klar ist ob Charts auch gefiltert werden
     // sollen. Statuscheck dann hierhin auslagern (Refaktorisierung)
@@ -341,7 +412,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
 
       // Status in Chart berücksichtigen!?
-      $status = array_map(function($risk){
+      $status = array_map(function($risk) {
         return $risk->get('field_risk_status')->getSetting('allowed_values')[$risk->get('field_risk_status')->value];
       },$risks); 
 
@@ -366,7 +437,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   
   // Kommt vor in: Cluster Detailansicht
   // Status berücksichtigen! Erledigt 23.07.20 - Robin
-  if($display->getComponent('field_risks_cluster_propability')){
+  if ($display->getComponent('field_risks_cluster_propability')) {
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
@@ -377,9 +448,10 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
       $items[] = $risk->get('field_probability_of_occurrence')->value;
     }
-    if(count($items)){
+    if (count($items)) {
       $value = array_sum($items)/count($items);
-    }else{
+    }
+    else {
       $value = 0;
     }
     $build['field_risks_cluster_propability'] = [
@@ -400,7 +472,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   
   // Kommt vor in: Cluster Detailansicht
   // Status berücksichtigen! Erledigt 23.07.20 - Robin
-  if($display->getComponent('field_risks_cluster_impact')){
+  if ($display->getComponent('field_risks_cluster_impact')) {
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
@@ -411,11 +483,14 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
       $items[] = $risk->get('field_risk_impact')->value;
     }
-    if(count($items)){
+
+    if (count($items)) {
       $value = array_sum($items)/count($items);
-    }else{
+    }
+    else {
       $value = 0;
     }
+
     $build['field_risks_cluster_impact'] = [
       '#theme' => 'field',
         '#title' => t('Impact'),
@@ -434,7 +509,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
 
   // Kommt vor in: Cluster Detailansicht
   // Status berücksichtigen! Erledigt 23.07.20 - Robin
-  if($display->getComponent('field_risks_cluster_class')){
+  if ($display->getComponent('field_risks_cluster_class')) {
     $risks = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->loadByProperties(['field_risk_clusters' => $entity->id()]);
@@ -445,10 +520,10 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
       $items[] = $risk->get('field_risk_value')->value;
     }
-    if (count($items)){
+    if (count($items)) {
       $value = array_sum($items)/count($items);
     }
-    else{
+    else {
       $value = 0;
     }
     $build['field_risks_cluster_class'] = [
@@ -468,7 +543,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
 
   // Kommt vor in: Cluster, Einzelrisiko, Maßnahme
-  if($display->getComponent('last_updated')){
+  if ($display->getComponent('last_updated')) {
     $build['last_updated'] = [
       '#theme' => 'field',
         '#title' => t('Last Updated'),
@@ -486,7 +561,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
 
   // Risk view
-  if($display->getComponent('field_measures')) {
+  if ($display->getComponent('field_measures')) {
     $measures = \Drupal::entityTypeManager()
       ->getStorage('node')
       ->loadByProperties([
@@ -515,12 +590,12 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
       }
 
       // Status in Chart berücksichtigen?
-      $status = array_map(function($measure){
+      $status = array_map(function($measure) {
         return $measure->get('field_measure_status')->getSetting('allowed_values')[$measure->get('field_measure_status')->value];
       },$measures); 
 
       $statusCounts = [];
-      if ($measures){
+      if ($measures) {
         foreach(reset($measures)->get('field_measure_status')->getSetting('allowed_values') as $key => $value) {
           $statusCounts[$value] = 0;
         }
@@ -563,7 +638,7 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
   }
 
    // Measure view
-  if($entity->bundle() == 'measure') {
+  if ($entity->bundle() == 'measure') {
     $risks = $entity->get('field_risks')->referencedEntities();
     // Status berücksichtigen! erledigt 23.07.20 - Robin
     $completed = 0;
@@ -900,7 +975,7 @@ function hzd_risk_management_system_breadcrumb_alter(Breadcrumb &$breadcrumb, Ro
   } 
   else {
     $node = $route_match->getParameter('node');
-    if (isset($node)) {
+    if (isset($node) && is_object($node)) {
       $contentType = $node->getType();
       if (in_array($contentType, ['risk_cluster', 'risk', 'measure'])) {
         $isRiskNode = True;
