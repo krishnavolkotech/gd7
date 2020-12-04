@@ -1282,6 +1282,14 @@ table.view-deployed-releases {
     color: #027596;
     font-size: 14px;
 }
+#block-primarylinks ul ul.dropdown-menu li span {
+    width: 100%;
+    float: left;
+    padding: 10px 20px;
+    color: #027596;
+    font-size: 14px;
+    cursor: default;
+}
 #block-primarylinks ul ul.dropdown-menu li a:hover {
     text-decoration: underline;
 }
