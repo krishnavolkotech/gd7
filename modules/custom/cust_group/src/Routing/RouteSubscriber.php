@@ -64,14 +64,14 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.node.version_history')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
     }
-    
+
     if ($route = $collection->get('node.revision_revert_confirm')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
     }
     if ($route = $collection->get('entity.node.revision')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::nodeRevisionsAccess');
     }
-    
+
     if ($route = $collection->get('entity.group_content.delete_form')) {
         $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupAdministratorValidation');
     }
@@ -122,7 +122,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('hzd_customizations.front')) {
       $route->setDefault('_controller', "Drupal\cust_group\Controller\FrontPageController::frontPageOverride");
     }
-    
+
     if (($route = $collection->get('user.admin_create')) || ($route = $collection->get('entity.user.collection'))) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::userCreateAccess');
     }
@@ -133,7 +133,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.group_content.create_form')) {
       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\AccessController::groupContentCreateAccess');
     }
-    
+
   }
 
   //retuns the views related to groups created from UI
