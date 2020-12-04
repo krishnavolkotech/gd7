@@ -876,7 +876,9 @@ function downtimes_revisions($node) {
         ->fetchCol();
 
       if (!empty($get_maintain_window)) {
-        $oldData[] = $labels['services'] . ' : ' . trim(implode($get_maintain_window, ','));
+//implode nessesary  paramter order is glue, arry since php 7.4 
+//        $oldData[] = $labels['services'] . ' : ' . trim(implode($get_maintain_window, ','));
+        $oldData[] = $labels['services'] . ' : ' . trim(implode(',', $get_maintain_window));
       }
       $statesArray = \Drupal::database()->select('states', 's');
       $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
