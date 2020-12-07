@@ -217,7 +217,7 @@ function hzd_risk_management_validate_risk_id(array $form, \Drupal\Core\Form\For
 
   // Check for condition 1
   if (preg_match('/(C|R|M)[0-9][0-9]*\.?[0-9]*$/', $riskId) === 0) {
-    $formState->setErrorByName('field_risk_id',t('Please check the format of field "Nr.": "%id". Examples: "R1.1", "M1"', ['%id' => $riskId]));
+    $formState->setErrorByName('field_risk_id',t('Please check the format of field "Nr.": "%id". Examples: "C1", "R1.1", "M1"', ['%id' => $riskId]));
   }
 
   $entity = $formState->getFormObject()->getEntity();
