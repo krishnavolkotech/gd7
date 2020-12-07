@@ -13,7 +13,6 @@ group_type: moderate
 permissions_ui: true
 permissions:
   - 'access group_membership overview'
-  - 'access group_node overview'
   - 'create group_node:forum content'
   - 'create group_node:forum entity'
   - 'create group_node:quickinfo content'

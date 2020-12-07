@@ -27,6 +27,7 @@ permissions:
   - 'update own group_node:measure entity'
   - 'update own group_node:risk content'
   - 'update own group_node:risk entity'
+  - 'view any unpublished group'
   - 'view group'
   - 'view group_node:measure content'
   - 'view group_node:measure entity'
