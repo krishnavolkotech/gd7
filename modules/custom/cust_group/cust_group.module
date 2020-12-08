@@ -981,7 +981,6 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       return Drupal\Core\Access\AccessResult::forbidden()->cachePerPermissions()->cachePerUser();
     }
   }
-
   $pagesFor_anonymous = [335 => 'impressum', 439 => 'hilfe'];
   switch ($op) {
     case 'view':
@@ -994,6 +993,14 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
           return AccessResult::allowed();
         }
         return AccessResult::forbidden();
+      }
+      if($account->isAuthenticated() && $node->getType() == 'page') {
+        $group_contents = \Drupal\group\Entity\GroupContent::loadByEntity($node);
+        if(!empty($group_contents)){
+          if(!current($group_contents)->getGroup()->getMember($account)) {
+            return AccessResult::forbidden();
+          }
+        }
       }
     default:
       if ($account->isAnonymous()) {
