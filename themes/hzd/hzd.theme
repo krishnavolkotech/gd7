@@ -1029,8 +1029,11 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
       $menu = 'menu-' . $group->get('field_old_reference')->value;
       $menuEntity = \Drupal::entityTypeManager()->getStorage('menu')
         ->load($menu);
-      $menuOptions = \Drupal::service('menu.parent_form_selector')
-        ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
+      $menuOptions = array();  
+      if ($menuEntity) {
+        $menuOptions = \Drupal::service('menu.parent_form_selector')
+          ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
+      }
       $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
 //      pr($x);exit;
       /* foreach($options as $key=>$option){

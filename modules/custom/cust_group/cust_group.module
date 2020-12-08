@@ -258,7 +258,7 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
-  if ($entity->original->request_status->value == 0 && $entity->request_status->value == 1) {
+  if (isset($entity->original->request_status->value) && ($entity->original->request_status->value == 0 || $entity->request_status->value == 1)) {
 
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
