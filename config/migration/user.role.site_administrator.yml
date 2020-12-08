@@ -20,6 +20,7 @@ permissions:
   - 'access draggableviews'
   - 'access files overview'
   - 'access frontpage'
+  - 'access group overview'
   - 'access in-place editing'
   - 'access print'
   - 'access printer-friendly version'
