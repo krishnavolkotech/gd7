@@ -4,55 +4,55 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - comment
-    - node
     - group
+    - node
+    - comment
+    - cust_group
     - file
     - filefield_paths
-    - cust_group
     - search_api
     - hzd_customizations
   config:
-    - field.storage.comment.comment_body
-    - field.storage.node.field_custom_title
-    - field.storage.node.field_related_transfer_number
-    - field.storage.node.field_other_services
-    - field.storage.node.field_recipients
-    - field.storage.node.field_intial_situation
-    - field.storage.node.field_professional_conditions
-    - field.storage.node.field_tech_requirements
-    - field.storage.node.field_depend_other_services
-    - field.storage.node.field_business_impact
-    - field.storage.node.field_technical_impact
-    - field.storage.node.field_business_impact_services
-    - field.storage.node.field_technical_impact_services
-    - field.storage.node.field_special_notes
-    - field.storage.node.field_dates
-    - field.storage.node.field_creators
-    - field.storage.node.field_contact
+    - field.storage.node.body
     - field.storage.node.field_abnormality_description
+    - field.storage.node.field_attachment
+    - field.storage.node.field_author_name
+    - field.storage.node.field_business_impact
+    - field.storage.node.field_business_impact_services
     - field.storage.node.field_closed
     - field.storage.node.field_comments
-    - field.storage.node.field_eroffnet
-    - field.storage.node.field_attachment
-    - field.storage.node.field_page_files
-    - field.storage.node.field_im_upload_page_files
+    - field.storage.node.field_contact
+    - field.storage.node.field_creators
+    - field.storage.node.field_custom_title
+    - field.storage.node.field_dates
+    - field.storage.node.field_depend_other_services
     - field.storage.node.field_detailed_question
     - field.storage.node.field_diagnose
-    - field.storage.node.field_processing
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_other_services
     - field.storage.node.field_problem_name
-    - field.storage.node.field_release_name
     - field.storage.node.field_problem_status
     - field.storage.node.field_problem_symptoms
-    - field.storage.node.field_solution
-    - field.storage.node.field_task_force
-    - field.storage.node.body
-    - field.storage.node.field_upload_planning_file
-    - field.storage.node.upload
-    - field.storage.node.field_upload
+    - field.storage.node.field_processing
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_recipients
+    - field.storage.node.field_related_transfer_number
+    - field.storage.node.field_release_name
     - field.storage.node.field_release_service
-    - field.storage.node.field_author_name
+    - field.storage.node.field_solution
+    - field.storage.node.field_special_notes
+    - field.storage.node.field_task_force
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_technical_impact
+    - field.storage.node.field_technical_impact_services
     - field.storage.node.field_work_around
+    - field.storage.node.upload
+    - field.storage.node.field_upload_planning_file
+    - field.storage.node.field_upload
+    - field.storage.node.field_im_upload_page_files
+    - field.storage.node.field_page_files
+    - field.storage.comment.comment_body
     - search_api.server.solr_bpk_migration
 third_party_settings:
   search_api_solr:

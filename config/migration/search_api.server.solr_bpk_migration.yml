@@ -23,7 +23,7 @@ backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: localhost
+    host: 10.12.18.14
     port: 8983
     path: /
     core: bpktst
