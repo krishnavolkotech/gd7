@@ -826,13 +826,14 @@ display:
         options:
           group_permission: 'leave group'
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: url
+        4: url.query_args
+        5: route.group
+        6: user.group_permissions
       tags:
         - 'config:field.storage.node.faq_kategorie'
   group_faq_block:
@@ -1581,12 +1582,13 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - route
-        - url
-        - url.query_args
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: route
+        4: url
+        5: url.query_args
+        6: route.group
+        7: user.group_permissions
       tags:
         - 'config:field.storage.node.body'
         - 'config:field.storage.node.faq_kategorie'

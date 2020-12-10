@@ -16,31 +16,31 @@ use Drupal\Core\Url;
  * @ViewsField("group_member_count_field")
  */
 class GroupMemberCountField extends FieldPluginBase {
-  
+
   /**
    * {@inheritdoc}
    */
   public function usesGroupBy() {
     return FALSE;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function query() {
     // Do nothing -- to override the parent query.
   }
-  
+
   /**
    * {@inheritdoc}
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    
+
     $options['hide_alter_empty'] = array('default' => FALSE);
     return $options;
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -69,7 +69,7 @@ class GroupMemberCountField extends FieldPluginBase {
     $gpc->condition('u.status', "1");
     $gpc->groupBy('gid');
     $gpc->groupBy('type');
-    $gpc->condition('g.request_status', "1");
+    // $gpc->condition('g.request_status', "1");
     $gpc->condition('g.type', get_group_content_node_type(), 'NOT IN')
       ->isNull('iu.uid');
     return $gpc->execute()->fetchAllKeyed(0, 2);
@@ -81,7 +81,7 @@ class GroupMemberCountField extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -90,12 +90,12 @@ class GroupMemberCountField extends FieldPluginBase {
     $result = $this->groupMemberCount($gid);
     $res = $result;
     $groupMember = $values->_entity->getMember(\Drupal::currentUser());
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || \Drupal::currentUser()->id() == 1) {
+    if (($groupMember && group_request_status($groupMember)) || \Drupal::currentUser()->id() == 1) {
       $doc_options['attributes'] = array('class' => 'member-link');
       $url = Url::fromUserInput('/group/' . $gid . '/address', $doc_options);
       $res = \Drupal::service('link_generator')->generate($result, $url);
     }
     return $res;
   }
-  
+
 }

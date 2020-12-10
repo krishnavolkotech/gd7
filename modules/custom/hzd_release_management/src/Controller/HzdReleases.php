@@ -366,7 +366,7 @@ class HzdReleases extends ControllerBase {
     $group = Group::load(zrml);
 
     $groupMember = $group->getMember(\Drupal::currentUser());
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator','administrator'))) {
+    if (($groupMember && group_request_status($groupMember)) || array_intersect($user_role, array('site_administrator','administrator'))) {
       $breadcrumb = array();
       $url = Url::fromRoute('/');
       $link = Link::fromTextAndUrl(t('Home'), $url);
@@ -463,7 +463,7 @@ class HzdReleases extends ControllerBase {
      }
     $groupMember = $group->getMember($user);
     $user_role = $user->getRoles(TRUE);
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
+    if (($groupMember && group_request_status($groupMember)) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
       return AccessResult::allowed();
     }else {
      return AccessResult::forbidden();

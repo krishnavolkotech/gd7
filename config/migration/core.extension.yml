@@ -38,6 +38,7 @@ module:
   draggableviews: 0
   dynamic_page_cache: 0
   editor: 0
+  entity: 0
   entity_print: 0
   entity_print_views: 0
   entity_reference_exposed_filters: 0
@@ -54,6 +55,7 @@ module:
   front: 0
   gforum: 0
   gnode: 0
+  grequest: 0
   group: 0
   history: 0
   hook_post_action: 0
@@ -113,6 +115,7 @@ module:
   toolbar: 0
   update: 0
   user: 0
+  variationcache: 0
   view_unpublished: 0
   views_merge_rows: 0
   views_ui: 0

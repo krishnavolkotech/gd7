@@ -1,0 +1,319 @@
+diff --git a/group.group.permissions.yml b/group.group.permissions.yml
+index 2b933ac..5a56fe2 100644
+--- a/group.group.permissions.yml
++++ b/group.group.permissions.yml
+@@ -4,7 +4,11 @@ administer group:
+   description: 'Administer the group, its content and members'
+   restrict access: TRUE
+ view group:
+-  title: 'View group'
++  title: 'View published group'
++view any unpublished group:
++  title: 'View any unpublished group'
++view own unpublished group:
++  title: 'View own unpublished group'
+ edit group:
+   title: 'Edit group'
+   description: 'Edit the group information'
+diff --git a/group.install b/group.install
+index eb8b68d..c4d417c 100644
+--- a/group.install
++++ b/group.install
+@@ -9,6 +9,7 @@ use Drupal\Core\Config\ExtensionInstallStorage;
+ use Drupal\Core\Config\InstallStorage;
+ use Drupal\Core\Entity\EntityTypeListenerInterface;
+ use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
++use Drupal\Core\Field\BaseFieldDefinition;
+ use Drupal\group\Entity\GroupContent;
+ use Drupal\group\Entity\Storage\GroupContentStorageSchema;
+ 
+@@ -522,3 +423,56 @@ function group_update_8021() {
+     $base_field_override->save(TRUE);
+   }
+ }
++
++/**
++ * Added the status field to group entity type.
++ */
++function group_update_8022() {
++  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
++  $entity_type = $definition_update_manager->getEntityType('group');
++
++  // Bail out early if a field named 'status' is already installed.
++  if ($definition_update_manager->getFieldStorageDefinition('status', 'group')) {
++    return t('The publishing status field has <strong>not</strong> been added to groups.');
++  }
++
++  // Add the 'published' entity key to the group entity type.
++  $entity_keys = $entity_type->getKeys();
++  $entity_keys['published'] = 'status';
++  $entity_type->set('entity_keys', $entity_keys);
++
++  $definition_update_manager->updateEntityType($entity_type);
++
++  // Add the status field.
++  $status = BaseFieldDefinition::create('boolean')
++    ->setLabel(t('Published'))
++    ->setDescription(t('A boolean indicating the published state.'))
++    ->setRevisionable(TRUE)
++    ->setTranslatable(TRUE)
++    ->setDefaultValue(TRUE)
++    ->setDisplayOptions('form', [
++      'type' => 'boolean_checkbox',
++      'settings' => [
++        'display_label' => TRUE,
++      ],
++      'weight' => 120,
++    ])
++    ->setDisplayConfigurable('form', TRUE);
++
++  $has_content_translation_status_field = \Drupal::moduleHandler()->moduleExists('content_translation') && $definition_update_manager->getFieldStorageDefinition('content_translation_status', 'group');
++  if ($has_content_translation_status_field) {
++    $status->setInitialValueFromField('content_translation_status', TRUE);
++  }
++  else {
++    $status->setInitialValue(TRUE);
++  }
++  $definition_update_manager->installFieldStorageDefinition('status', 'group', 'group', $status);
++
++  // Uninstall the 'content_translation_status' field if needed.
++  if ($has_content_translation_status_field) {
++    $content_translation_status = $definition_update_manager->getFieldStorageDefinition('content_translation_status', 'group');
++    $definition_update_manager->uninstallFieldStorageDefinition($content_translation_status);
++  }
++
++  return t('The published field has been added to groups.');
++}
+diff --git a/src/Entity/Access/GroupAccessControlHandler.php b/src/Entity/Access/GroupAccessControlHandler.php
+index 03f7838..a352540 100644
+--- a/src/Entity/Access/GroupAccessControlHandler.php
++++ b/src/Entity/Access/GroupAccessControlHandler.php
+@@ -19,9 +19,22 @@ class GroupAccessControlHandler extends EntityAccessControlHandler {
+    * {@inheritdoc}
+    */
+   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
++    // Fetch information from the group object if possible.
++    $status = $entity->isPublished();
++    $uid = $entity->getOwnerId();
++
+     switch ($operation) {
+       case 'view':
+-        return GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view group');
++        if (!$status) {
++          $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view any unpublished group');
++          if (!$access_result->isAllowed() && $account->isAuthenticated() && $account->id() == $uid) {
++            $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view own unpublished group');
++          }
++        }
++        else {
++          $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view group');
++        }
++        return $access_result;
+ 
+       case 'update':
+         return GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'edit group');
+diff --git a/src/Entity/Group.php b/src/Entity/Group.php
+index 5b39dce..5f3d335 100644
+--- a/src/Entity/Group.php
++++ b/src/Entity/Group.php
+@@ -8,9 +8,11 @@ use Drupal\Core\Entity\ContentEntityInterface;
+ use Drupal\Core\Entity\EntityTypeInterface;
+ use Drupal\Core\Entity\EntityChangedTrait;
+ use Drupal\Core\Entity\EntityStorageInterface;
++use Drupal\Core\Entity\EntityPublishedTrait;
+ use Drupal\Core\Session\AccountInterface;
+ use Drupal\user\EntityOwnerTrait;
+ use Drupal\user\UserInterface;
++use Drupal\user\StatusItem;
+ 
+ /**
+  * Defines the Group entity.
+@@ -52,7 +54,8 @@ use Drupal\user\UserInterface;
+  *     "owner" = "uid",
+  *     "langcode" = "langcode",
+  *     "bundle" = "type",
+- *     "label" = "label"
++ *     "label" = "label",
++ *     "published" = "status"
+  *   },
+  *   links = {
+  *     "add-form" = "/group/add/{group_type}",
+@@ -71,11 +74,13 @@ class Group extends ContentEntityBase implements GroupInterface {
+ 
+   use EntityChangedTrait;
+   use EntityOwnerTrait;
++  use EntityPublishedTrait;
+ 
+   /**
+    * Gets the group membership loader.
+    *
+    * @return \Drupal\group\GroupMembershipLoaderInterface
++   *   The group.membership_loader service.
+    */
+   protected function membershipLoader() {
+     return \Drupal::service('group.membership_loader');
+@@ -85,6 +90,7 @@ class Group extends ContentEntityBase implements GroupInterface {
+    * Gets the group permission checker.
+    *
+    * @return \Drupal\group\Access\GroupPermissionCheckerInterface
++   *   The group_permission.checker service.
+    */
+   protected function groupPermissionChecker() {
+     return \Drupal::service('group_permission.checker');
+@@ -94,6 +100,7 @@ class Group extends ContentEntityBase implements GroupInterface {
+    * Gets the group content storage.
+    *
+    * @return \Drupal\group\Entity\Storage\GroupContentStorageInterface
++   *   The group content storage.
+    */
+   protected function groupContentStorage() {
+     return $this->entityTypeManager()->getStorage('group_content');
+@@ -103,6 +110,7 @@ class Group extends ContentEntityBase implements GroupInterface {
+    * Gets the group role storage.
+    *
+    * @return \Drupal\group\Entity\Storage\GroupRoleStorageInterface
++   *   The group role storage.
+    */
+   protected function groupRoleStorage() {
+     return $this->entityTypeManager()->getStorage('group_role');
+@@ -211,6 +219,21 @@ class Group extends ContentEntityBase implements GroupInterface {
+     $fields = parent::baseFieldDefinitions($entity_type);
+     $fields += static::ownerBaseFieldDefinitions($entity_type);
+ 
++    // Add the published field.
++    $fields += static::publishedBaseFieldDefinitions($entity_type);
++    // @todo Remove the usage of StatusItem in
++    //   https://www.drupal.org/project/drupal/issues/2936864.
++    $fields['status']->getItemDefinition()->setClass(StatusItem::class);
++    $fields['status']
++      ->setDisplayOptions('form', [
++        'type' => 'boolean_checkbox',
++        'settings' => [
++          'display_label' => TRUE,
++        ],
++        'weight' => 120,
++      ])
++      ->setDisplayConfigurable('form', TRUE);
++
+     $fields['label'] = BaseFieldDefinition::create('string')
+       ->setLabel(t('Title'))
+       ->setRequired(TRUE)
+diff --git a/src/Entity/GroupInterface.php b/src/Entity/GroupInterface.php
+index f6477fc..d3b445d 100644
+--- a/src/Entity/GroupInterface.php
++++ b/src/Entity/GroupInterface.php
+@@ -7,13 +7,14 @@ use Drupal\Core\Entity\ContentEntityInterface;
+ use Drupal\Core\Entity\EntityChangedInterface;
+ use Drupal\Core\Session\AccountInterface;
+ use Drupal\user\UserInterface;
++use Drupal\Core\Entity\EntityPublishedInterface;
+ 
+ /**
+  * Provides an interface defining a Group entity.
+  *
+  * @ingroup group
+  */
+-interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface {
++interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, EntityPublishedInterface {
+ 
+   /**
+    * Gets the group creation timestamp.
+diff --git a/tests/src/Functional/GroupAccessTest.php b/tests/src/Functional/GroupAccessTest.php
+new file mode 100644
+index 0000000..f71153e
+--- /dev/null
++++ b/tests/src/Functional/GroupAccessTest.php
+@@ -0,0 +1,93 @@
++<?php
++
++namespace Drupal\Tests\group\Functional;
++
++use Drupal\group\Entity\GroupInterface;
++use Drupal\Tests\system\Functional\Cache\AssertPageCacheContextsAndTagsTrait;
++
++/**
++ * Tests the group access permissions.
++ *
++ * @group group
++ */
++class GroupAccessTest extends GroupBrowserTestBase {
++
++  use AssertPageCacheContextsAndTagsTrait;
++
++  /**
++   * Test access control functionality for groups.
++   */
++  public function testGroupAccess() {
++    $assert_session = $this->assertSession();
++
++    // Create two groups.
++    $published_group = $this->createGroup([
++      'status' => 1,
++    ]);
++    $published_group->save();
++    $unpublished_group = $this->createGroup([
++      'status' => 0,
++    ]);
++    $unpublished_group->save();
++
++    // Setting permissions for members.
++    $default_group_type = $this->entityTypeManager->getStorage('group_type')->load('default');
++    $default_group_type->getMemberRole()->grantPermission('view own unpublished group')->save();
++
++    $this->drupalGet('group/' . $published_group->id());
++    $assert_session->statusCodeEquals(200);
++    $this->assertGroupAccess($published_group, 'view', TRUE);
++    $this->drupalGet('group/' . $unpublished_group->id());
++    $assert_session->statusCodeEquals(200);
++    $this->assertGroupAccess($unpublished_group, 'view', TRUE);
++
++    // Test as custom member with acces to view any unpublish.
++    $custom_member = $this->drupalCreateUser(['access content']);
++    $this->drupalLogin($custom_member);
++    $custom_role = $this->entityTypeManager->getStorage('group_role')->load('default-custom');
++    $custom_role->grantPermission('view any unpublished group')->save();
++    $published_group->addMember($custom_member, $values = ['group_roles' => ['default-custom']]);
++    $unpublished_group->addMember($custom_member, $values = ['group_roles' => ['default-custom']]);
++
++    $this->drupalGet('group/' . $published_group->id());
++    $assert_session->statusCodeEquals(200);
++    $this->assertGroupAccess($published_group, 'view', TRUE);
++    $this->drupalGet('group/' . $unpublished_group->id());
++    $assert_session->statusCodeEquals(200);
++    $this->assertGroupAccess($unpublished_group, 'view', TRUE);
++
++    // Test as outsider user.
++    $outsider = $this->drupalCreateUser(['access content']);
++    $this->drupalLogin($outsider);
++
++    $this->drupalGet('group/' . $published_group->id());
++    $assert_session->statusCodeEquals(200);
++    $this->assertGroupAccess($published_group, 'view', TRUE);
++    $this->drupalGet('group/' . $unpublished_group->id());
++    $assert_session->statusCodeEquals(403);
++    $this->assertGroupAccess($unpublished_group, 'view', FALSE);
++
++  }
++
++  /**
++   * Checks access on group.
++   *
++   * @param \Drupal\group\Entity\GroupInterface $group
++   *   A group entity.
++   * @param string $access_operation
++   *   The entity operation, e.g. 'view', 'edit', 'delete', etc.
++   * @param bool $access_allowed
++   *   Whether the current use has access to the given operation or not.
++   * @param string $access_reason
++   *   (optional) The reason of the access result.
++   */
++  protected function assertGroupAccess(GroupInterface $group, $access_operation, $access_allowed, $access_reason = '') {
++    $access_result = $group->access($access_operation, NULL, TRUE);
++    $this->assertSame($access_allowed, $access_result->isAllowed());
++
++    if ($access_reason) {
++      $this->assertSame($access_reason, $access_result->getReason());
++    }
++  }
++
++}

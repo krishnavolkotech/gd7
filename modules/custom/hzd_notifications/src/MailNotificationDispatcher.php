@@ -92,8 +92,8 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
         }
         $this->mailToAdditionalRecepients($entity, $attachments, $data);
       }
-      
-      if (is_array($user_ids) && count($user_ids) > 0) {
+
+      if (is_array($user_ids) && count($user_ids) > 0 && $entity !== NULL) {
         // Each notification subscribed by multiple users.
         foreach ($user_ids as $user_id) {
           if(empty($user_id)){
@@ -182,7 +182,7 @@ class MailNotificationDispatcher implements NotificationDispatcherInterface {
     }
     $config = \Drupal::config('hzd_customizations.mailtemplates')
       ->get($type);
-    $token_service = \Drupal::token();  
+    $token_service = \Drupal::token();
     if ($config['mail_view']) {
       $body[] = [
           '#children' => $data['body']

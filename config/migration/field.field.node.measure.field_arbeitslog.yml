@@ -1,0 +1,31 @@
+uuid: 3982c279-922e-4ba1-8379-0ce3f4748d70
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_arbeitslog
+    - node.type.measure
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    full_html: full_html
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
+id: node.measure.field_arbeitslog
+field_name: field_arbeitslog
+entity_type: node
+bundle: measure
+label: Arbeitslog
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

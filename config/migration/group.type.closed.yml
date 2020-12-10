@@ -5,4 +5,6 @@ dependencies: {  }
 id: closed
 label: Geschlossen
 description: 'Admin can add the members.'
+creator_membership: true
+creator_wizard: false
 creator_roles: {  }

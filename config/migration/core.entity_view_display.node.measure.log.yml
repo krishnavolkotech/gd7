@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.log
     - field.field.node.measure.body
+    - field.field.node.measure.field_arbeitslog
     - field.field.node.measure.field_contact_person
     - field.field.node.measure.field_creation_date
     - field.field.node.measure.field_estimated_effort
@@ -16,6 +17,7 @@ dependencies:
     - field.field.node.measure.field_order_date
     - field.field.node.measure.field_owner
     - field.field.node.measure.field_remarks
+    - field.field.node.measure.field_risk_id
     - field.field.node.measure.field_risks
     - field.field.node.measure.field_sponsor
     - field.field.node.measure.field_target_date
@@ -161,6 +163,8 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_arbeitslog: true
   field_id: true
+  field_risk_id: true
   langcode: true
   last_updated: true

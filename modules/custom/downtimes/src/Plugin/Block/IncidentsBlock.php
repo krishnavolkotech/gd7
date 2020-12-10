@@ -111,7 +111,9 @@ class IncidentsBlock extends BlockBase
                 $serviceTitles = $stateTitles = null;
                 foreach ($serviceid as $serviceItem) {
                   if($serviceItem) {
-                    $serviceTitles .= node_get_title_fast([$serviceItem])[$serviceItem] . ', ';
+		    $item = node_get_title_fast([$serviceItem]);
+		    if (isset($item[$serviceItem]))
+                      $serviceTitles .= node_get_title_fast([$serviceItem])[$serviceItem] . ', ';
                   }
                 }
                 foreach ($stateids as $stateId) {

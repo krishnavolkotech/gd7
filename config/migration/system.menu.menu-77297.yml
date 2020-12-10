@@ -1,0 +1,8 @@
+uuid: 0c8d75ad-e80b-4a7e-9765-a3b94c45fec2
+langcode: de
+status: true
+dependencies: {  }
+id: menu-77297
+label: 'DaSi Zeuge-II'
+description: 'DaSi Zeuge-II'
+locked: false

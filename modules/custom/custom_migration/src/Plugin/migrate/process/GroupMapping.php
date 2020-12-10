@@ -26,37 +26,37 @@ use Drupal\migrate\Row;
  * )
  */
 class GroupMapping extends ProcessPluginBase {
-  
-  
+
+
   public function getGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    
-    
+
+
     $source = $row->getSource();
-    
+
     if (empty($row->getSourceProperty('title'))) {
       return FALSE;
     }
-    
+
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('og_ancestry', 'source_table_name')
       ->fields('source_table_name')
       ->condition('source_table_name.' . $this->configuration['source'], $value)
       ->execute()
       ->fetchAssoc();
-    
+
     $d8Gid = FALSE;
     if (isset($data['group_nid'])) {
-      $d8Gid = \Drupal::entityQuery('group')
+      $d8Gid = \Drupal::entityQuery('group')->accessCheck(FALSE)
         ->condition('field_old_reference', $data['group_nid'])
         ->execute();
       $d8Gid = reset($d8Gid);
 //      print_r($d8Gid);exit;
     }
     return $d8Gid;
-    
+
   }
-  
-  
+
+
   public function getGroupContentTypeId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $content_name = $row->getSourceProperty('type');
 //    print_r($row);
@@ -71,7 +71,7 @@ class GroupMapping extends ProcessPluginBase {
 //    exit;
     return FALSE;
   }
-  
+
   public function getNewGroupId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $d8Gid = \Drupal::entityQuery('group')
       ->condition('field_old_reference', $value)
@@ -81,18 +81,18 @@ class GroupMapping extends ProcessPluginBase {
     }
     return FALSE;
   }
-  
+
   public function getGroupForumId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $source = $row->getSource();
-    
+
     if (empty($row->getSourceProperty('title'))) {
       return FALSE;
     }
-    
+
     if (empty($value)) {
       return false;
     }
-    
+
     $term = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_node', 'source_table_name')
       ->fields('source_table_name',['tid'])
@@ -128,14 +128,14 @@ class GroupMapping extends ProcessPluginBase {
     }
     return $d8Gid;
   }
-  
+
   function getForumTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $source = $row->getSource();
-    
+
     if (empty($row->getSourceProperty('nid'))) {
       return FALSE;
     }
-    
+
     $data = \Drupal\Core\Database\Database::getConnection('default', $source['target'])
       ->select('term_node', 'source_table_name')
       ->fields('source_table_name', ['tid'])
@@ -147,20 +147,20 @@ class GroupMapping extends ProcessPluginBase {
     }
     return FALSE;
   }
-  
+
   function getFaqCategoryTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     //5
     return $this->getFaqTaxonomyId($value, $migrate_executable, $row, $destination_property, 5);
   }
-  
+
   function getFaqSeiteTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     //4
     return $this->getFaqTaxonomyId($value, $migrate_executable, $row, $destination_property, 4);
   }
-  
+
   function getFaqTaxonomyId($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property, $vid) {
     $source = $row->getSource();
-    
+
     $data = Database::getConnection('default', $source['target'])
       ->select('term_node', 'source_table_name')
       ->fields('source_table_name',['tid'])

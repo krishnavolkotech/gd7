@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.risk_cluster.field_cluster_id
     - field.field.node.risk_cluster.field_comments
     - field.field.node.risk_cluster.field_id
+    - field.field.node.risk_cluster.field_risk_id
     - field.field.node.risk_cluster.field_trend
     - node.type.risk_cluster
   module:
@@ -57,6 +58,7 @@ hidden:
   entity_print_view_word_docx: true
   field_cluster_id: true
   field_id: true
+  field_risk_id: true
   field_risks_cluster_class: true
   field_risks_data: true
   langcode: true

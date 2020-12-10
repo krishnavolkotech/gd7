@@ -11,11 +11,13 @@ id: node.risk_cluster.field_id
 field_name: field_id
 entity_type: node
 bundle: risk_cluster
-label: ID
+label: Nr.
 description: ''
 required: false
-translatable: true
-default_value: {  }
+translatable: false
+default_value:
+  -
+    value: '1'
 default_value_callback: ''
 settings: {  }
 field_type: serial

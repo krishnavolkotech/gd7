@@ -7,16 +7,16 @@ dependencies:
 id: risk
 label: Risk
 type: 'canonical_entities:node'
-pattern: '/risikomanagement/risiko/[node:field_id]'
+pattern: '/risikomanagement-betrieb/risiko/[node:field_risk_id]'
 selection_criteria:
-  43d53d96-6bc8-460b-8fa0-0db0e1c81460:
+  128e3d20-cc81-400b-a456-02e5f2af1c2f:
     id: node_type
     bundles:
       risk: risk
     negate: false
     context_mapping:
       node: node
-    uuid: 43d53d96-6bc8-460b-8fa0-0db0e1c81460
+    uuid: 128e3d20-cc81-400b-a456-02e5f2af1c2f
 selection_logic: and
 weight: -5
 relationships: {  }

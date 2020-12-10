@@ -80,15 +80,27 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
     );
     //$contents =
     //pr($uid);exit;
-    $gpc = \Drupal::database()->select('group_content_field_data', 'g')
-        ->fields('g', array('gid'))
-        ->condition('entity_id', $uid,'=')
-        ->condition('type', $contents, 'IN')
-        ->condition('request_status', '1', '=')
+    /*
+     $gpc = \Drupal::database()->select('group_content_field_data', 'g');
+    $gpc->join('group_content__grequest_status', 'grq', 'grq.entity_id = g.id');
+    $gpc->condition('g.entity_id', $uid,'=')
+    ->fields('g', array('gid'))
+        ->condition('g.type', $contents, 'IN')
+        // ->condition('request_status', '1', '=')
         ->distinct()
         ->execute()
         ->fetchCol();
-    return $gpc;
+    print_R($gpc); die;*/
+    $gpc = \Drupal::database()->select('group_content_field_data', 'g');
+    // $gpc->leftjoin('group_content__grequest_status', 'grq', 'grq.entity_id = g.id');
+    $result = $gpc->condition('g.entity_id', $uid,'=')
+        ->fields('g', array('gid'))
+        ->condition('g.type', $contents, 'IN')
+        // ->condition('request_status', '1', '=')
+        ->distinct()
+        ->execute()
+        ->fetchCol();
+    return $result;
   }
 
   /**
@@ -96,7 +108,7 @@ class GroupIdFromLoggedinUser extends ArgumentDefaultPluginBase implements Cache
    */
   public function getArgument() {
     $uid = \Drupal::currentUser()->id();
-    
+
 //    if (!empty($this->group) && $id = $this->group->id()) {
 //      return $id;
 //    }

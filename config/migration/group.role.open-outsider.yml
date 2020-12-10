@@ -12,8 +12,8 @@ audience: outsider
 group_type: open
 permissions_ui: true
 permissions:
-  - 'view group'
   - 'join group'
+  - 'request group membership'
+  - 'view group'
   - 'view group_node:downtimes content'
   - 'view group_node:downtimes entity'
-  - 'request group membership'

@@ -1,0 +1,8 @@
+uuid: df528456-be99-4ec5-b4ea-bb59e0fdbbf5
+langcode: de
+status: true
+dependencies: {  }
+id: menu-76887
+label: 'DaSi eITP'
+description: 'DaSi eITP'
+locked: false

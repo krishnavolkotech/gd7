@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.risk.body
     - field.field.node.risk.field_affected_oes
+    - field.field.node.risk.field_arbeitslog
     - field.field.node.risk.field_category
     - field.field.node.risk.field_contact_person
     - field.field.node.risk.field_creation_date
@@ -18,6 +19,7 @@ dependencies:
     - field.field.node.risk.field_reported_by
     - field.field.node.risk.field_risk_category
     - field.field.node.risk.field_risk_clusters
+    - field.field.node.risk.field_risk_id
     - field.field.node.risk.field_risk_impact
     - field.field.node.risk.field_risk_status
     - field.field.node.risk.field_risk_trend
@@ -35,22 +37,66 @@ third_party_settings:
   field_group:
     group_table:
       children:
-        - field_risk_clusters
-        - body
+        - field_risk_id
+        - field_creation_date
         - last_updated
-        - field_risk_category_value
-        - field_measures
+        - field_reported_by
+        - field_contact_person
       parent_name: ''
       weight: 0
       format_type: table_field
       format_settings:
-        label: table
-        fieldtitle: '1'
-        wrapper: '0'
-        caption: ''
         id: ''
         classes: risk-table-wrapper
+        fieldtitle: 1
+        wrapper: '0'
+        caption: ''
+        required_fields: false
       label: table
+    group_table_2:
+      children:
+        - field_risk_status
+        - field_probability_of_occurrence
+        - field_risk_impact
+        - field_risk_category_value
+        - field_risk_trend
+        - field_risk_clusters
+        - field_non_production_state
+        - field_owner
+        - field_affected_oes
+        - field_category
+        - field_scope
+        - field_follow_up
+        - field_graduation_date
+        - field_measures
+      parent_name: ''
+      weight: 1
+      format_type: table_field
+      format_settings:
+        id: ''
+        classes: risk-table-wrapper
+        fieldtitle: 1
+        wrapper: '0'
+        caption: ''
+        required_fields: false
+      label: 'table 2'
+    group_tab:
+      children:
+        - body
+        - field_remarks
+        - field_arbeitslog
+        - content_revision_log
+      parent_name: ''
+      weight: 2
+      format_type: table_field
+      format_settings:
+        id: ''
+        classes: risk-table-wrapper
+        fieldtitle: 1
+        wrapper: '0'
+        caption: ''
+        required_fields: false
+      label: 'table 3'
 id: node.risk.default
 targetEntityType: node
 bundle: risk
@@ -65,7 +111,7 @@ content:
     region: content
   content_revision_log:
     type: revision_log_formatter
-    weight: 5
+    weight: 8
     region: content
     label: above
     settings:
@@ -74,9 +120,47 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+  field_affected_oes:
+    type: text_default
+    weight: 8
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_arbeitslog:
+    weight: 7
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_category:
+    type: list_default
+    weight: 9
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_contact_person:
+    type: entity_reference_label
+    weight: 15
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_creation_date:
+    type: datetime_default
+    weight: 12
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
   field_follow_up:
     type: datetime_default
-    weight: 1
+    weight: 11
     region: content
     label: inline
     settings:
@@ -85,7 +169,7 @@ content:
     third_party_settings: {  }
   field_graduation_date:
     type: datetime_default
-    weight: 2
+    weight: 12
     region: content
     label: inline
     settings:
@@ -93,39 +177,98 @@ content:
       timezone_override: ''
     third_party_settings: {  }
   field_measures:
-    weight: 9
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_non_production_state:
+    type: list_default
+    weight: 6
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_owner:
+    type: string
+    weight: 7
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_probability_of_occurrence:
+    type: list_default
+    weight: 1
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
   field_remarks:
-    weight: 4
+    weight: 6
     label: inline
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
+  field_reported_by:
+    type: string
+    weight: 14
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
   field_risk_category_value:
-    weight: 8
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_risk_clusters:
-    weight: 4
+    weight: 5
     label: inline
     settings:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
     region: content
+  field_risk_id:
+    weight: 11
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_risk_impact:
+    type: list_default
+    weight: 2
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_risk_status:
+    type: list_default
+    weight: 0
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
   field_risk_trend:
     type: list_default
-    weight: 3
+    weight: 4
     region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+  field_scope:
+    type: list_default
+    weight: 10
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
   last_updated:
-    weight: 6
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -134,19 +277,8 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_affected_oes: true
-  field_category: true
-  field_contact_person: true
-  field_creation_date: true
   field_id: true
-  field_non_production_state: true
-  field_owner: true
-  field_probability_of_occurrence: true
-  field_reported_by: true
   field_risk_category: true
-  field_risk_impact: true
-  field_risk_status: true
   field_risk_value: true
-  field_scope: true
   langcode: true
   links: true

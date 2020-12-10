@@ -732,7 +732,7 @@ class HzdNotifications extends ControllerBase {
     if($group) {
       $groupMember = $group->getMember($user);
       $user_role = $user->getRoles(TRUE);
-      if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
+      if (($groupMember && group_request_status($groupMember)) || array_intersect($user_role, array('site_administrator', 'administrator'))) {
         return AccessResult::allowed();
       } else {
         return AccessResult::forbidden();
@@ -767,7 +767,7 @@ class HzdNotifications extends ControllerBase {
       if (!$groupMember) {
         return AccessResult::forbidden();
       }
-      if ($groupMember->getGroupContent()->get('request_status')->value == 0) {
+      if (!group_request_status($groupMember)) {
         return AccessResult::forbidden();
       }
       if ($routeUserId == $account->id()) {

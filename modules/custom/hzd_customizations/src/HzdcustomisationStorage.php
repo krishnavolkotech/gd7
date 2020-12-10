@@ -989,13 +989,15 @@ class HzdcustomisationStorage {
       $groupMember = $maintenance_group->getMember($currentUser);
       $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
       $incidentManagementGroupMember = $incidentManagement->getMember($currentUser);
-      if (($groupMember && $groupMember->getGroupContent()
-            ->get('request_status')->value == 1 && $incidentManagementGroupMember) || array_intersect($currentUser->getRoles(), [
+
+      
+      if (($groupMember && group_request_status($groupMember) && $incidentManagementGroupMember) ||
+        array_intersect($currentUser->getRoles(), [
           'site_administrator',
           'administrator'
         ])
       ) {
-        $maintenance_edit = TRUE;
+          $maintenance_edit = TRUE;
       }
       else {
         $maintenance_edit = FALSE;
