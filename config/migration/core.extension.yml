@@ -38,6 +38,7 @@ module:
   draggableviews: 0
   dynamic_page_cache: 0
   editor: 0
+  entity_clone: 0
   entity_print: 0
   entity_print_views: 0
   entity_reference_exposed_filters: 0
@@ -80,6 +81,7 @@ module:
   masquerade: 0
   mass_contact: 0
   matomo: 0
+  menu_link_clone: 0
   menu_ui: 0
   migrate: 0
   node: 0
