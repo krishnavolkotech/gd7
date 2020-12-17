@@ -1413,7 +1413,9 @@ function search_limit_groups($type, $menus) {
       $itsm_links = $menus[$type];
   }
 
-  foreach($itsm_links as $id => $group) {
+  foreach($itsm_links as $menu_id => $groupData) {
+      $group = $groupData['label'];
+      $id = $groupData['id'];
       $options = [
           'fulltext' => isset($param['fulltext'])?$param['fulltext']:'',
           'f[0]' => 'parent_group:'.$id
@@ -1504,12 +1506,12 @@ function load_primary_menus() {
 
 function get_second_level_menus($item) {
   $menus = [];
-  foreach($item as $subitem) {
+  foreach($item as $menu_key => $subitem) {
     $val = (array)$subitem['url'];
     if ($val["\x00*\x00routeName"] !=  NULL && !$subitem['url']->isExternal()) {
           $params = $subitem['url']->getRouteParameters();
           if(isset($params['group'])) {
-              $menus[$params['group']] = $subitem['title'];
+              $menus[$menu_key] = ['id' => $params['group'], 'label' => $subitem['title']];
           }
       }
   }
