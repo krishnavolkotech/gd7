@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ef541dc0ad3c71e7d7245b80d033b73",
+    "content-hash": "0c6864d6191ed619e05256f41efd58fd",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2291,6 +2291,7 @@
             "keywords": [
                 "reflection"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2018-06-14T14:45:07+00:00"
         },
         {
@@ -3814,6 +3815,50 @@
             }
         },
         {
+            "name": "drupal/entity_clone",
+            "version": "1.0.0-beta4",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/entity_clone.git",
+                "reference": "8.x-1.0-beta4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_clone-8.x-1.0-beta4.zip",
+                "reference": "8.x-1.0-beta4",
+                "shasum": "4568ca25634d4ce4f142f56156259ba1f0d9f3c1"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.0-beta4",
+                    "datestamp": "1588605099",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "vpeltot",
+                    "homepage": "https://www.drupal.org/user/1361586"
+                }
+            ],
+            "description": "Add a clone action for all entities",
+            "homepage": "https://www.drupal.org/project/entity_clone",
+            "support": {
+                "source": "https://git.drupalcode.org/project/entity_clone"
+            }
+        },
+        {
             "name": "drupal/entity_print",
             "version": "2.2.0",
             "source": {
@@ -5084,6 +5129,60 @@
             "homepage": "https://www.drupal.org/project/menu_export",
             "support": {
                 "source": "https://git.drupalcode.org/project/menu_export"
+            }
+        },
+        {
+            "name": "drupal/menu_link_clone",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/menu_link_clone.git",
+                "reference": "8.x-3.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/menu_link_clone-8.x-3.2.zip",
+                "reference": "8.x-3.2",
+                "shasum": "c8d2babc7c367e70910bb7c8c78f44d36d8184ea"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9",
+                "drupal/entity_clone": "^1.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-3.2",
+                    "datestamp": "1583388236",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "heykarthikwithu",
+                    "homepage": "https://www.drupal.org/user/2833651"
+                },
+                {
+                    "name": "nitvirus",
+                    "homepage": "https://www.drupal.org/user/965290"
+                },
+                {
+                    "name": "vsujeetkumar",
+                    "homepage": "https://www.drupal.org/user/3200879"
+                }
+            ],
+            "description": "Allows clone the menu items.",
+            "homepage": "https://www.drupal.org/project/menu_link_clone",
+            "support": {
+                "source": "https://cgit.drupalcode.org/menu_link_clone",
+                "issues": "https://www.drupal.org/project/issues/menu_link_clone"
             }
         },
         {
