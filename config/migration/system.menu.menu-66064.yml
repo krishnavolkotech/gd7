@@ -3,6 +3,6 @@ langcode: de
 status: true
 dependencies: {  }
 id: menu-66064
-label: 'ZPS Betrieb Fachdienste'
+label: 'Zentrale Fachdienste & Landeskopfstellen'
 description: ''
 locked: false
