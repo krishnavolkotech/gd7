@@ -170,6 +170,20 @@ table {
     border-radius: 5px !important;
     border-collapse: inherit !important;
 }
+table.risk-detail-table {
+  border: none;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+div.risk-detail-table-wrapper {
+    width: 100% !important;
+    /* border: 1px solid rgba(0,0,0,.2); */
+    border-radius: 5px !important;
+    background-color: #f5f7fa !important;
+}
+input#edit-field-risk-id-0-value {
+	color: #999;
+}
 .form-actions button,
 a.button--danger,
 a#edit-cancel {

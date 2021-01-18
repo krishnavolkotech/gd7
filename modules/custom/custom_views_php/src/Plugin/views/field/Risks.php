@@ -57,15 +57,16 @@ class Risks extends FieldPluginBase {
     $riskItems = \Drupal::entityQuery('node')
       ->condition('field_risk_clusters',$cluster->getEntity()->id())
       ->condition('type','risk')
+      ->condition('field_risk_status', 'completed', '!=')
       ->sort('created','desc')
       ->execute();
     if(count($riskItems) > 0) {
       $risk_title = node_get_title_fast($riskItems);
-      $risk_ids = node_get_field_data_fast($riskItems, 'field_id');
+      $risk_ids = node_get_field_data_fast($riskItems, 'field_risk_id');
       $item_list = array_map(function ($key, $title, $field_id) {
         $options = ['absolute' => TRUE];
         $url = Url::fromRoute('entity.node.canonical', ['node' => $key], $options);
-        return Link::fromTextAndUrl($field_id . '-' . $title, $url);
+        return Link::fromTextAndUrl($field_id . ': ' . $title, $url);
       }, array_keys($risk_title), $risk_title, $risk_ids);
     }
     $build = [
