@@ -7,5 +7,5 @@ dependencies:
 id: hzdfooter_content
 title: 'HZD Footer'
 content:
-  value: "<div class=\"row\">\r\n<div class=\"col-sm-12 footer-links\"><span class=\"cr\">© 2009-2020&nbsp;KONSENS</span> | <a href=\"/impressum\">Impressum</a> | <a href=\"/impressum\">Datenschutz</a></div>\r\n</div>\r\n"
+  value: "<div class=\"row\">\r\n<div class=\"col-sm-12 footer-links\"><span class=\"cr\">© 2009-2021&nbsp;KONSENS</span> | <a href=\"/impressum\">Impressum</a> | <a href=\"/impressum\">Datenschutz</a></div>\r\n</div>\r\n"
   format: full_html

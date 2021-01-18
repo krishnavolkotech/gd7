@@ -29,7 +29,7 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/downtimes/archive\r\n*/zps-uebersicht\r\n*/hilfe\r\n*group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online"
+    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/downtimes/archive\r\n*/hilfe\r\n*group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online\r\n*/zoe-rem\r\n*/betriebsportal-konsens/anleitung-zum-zertifikatscheck"
     negate: true
     context_mapping: {  }
   user_role:
