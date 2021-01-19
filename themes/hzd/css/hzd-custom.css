@@ -181,7 +181,7 @@ div.risk-detail-table-wrapper {
     border-radius: 5px !important;
     background-color: #f5f7fa !important;
 }
-input#edit-field-risk-id-0-value {
+input#edit-field-risk-id-0-value::placeholder {
 	color: #999;
 }
 .form-actions button,
