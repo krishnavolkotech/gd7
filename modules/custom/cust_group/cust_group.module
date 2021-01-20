@@ -16,6 +16,7 @@ define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
 define('VERFUGBARKEITSMANAGEMENT', 77);
 define('COVID_INFO', 83);
+define('RISIKOMANAGEMENT', 73);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
