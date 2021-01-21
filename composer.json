@@ -67,7 +67,8 @@
         "drupal/core": "^8.8.10",
         "sabberworm/php-css-parser": "^8.3.1",
         "phenx/php-svg-lib": "^0.3.3",
-        "drupal/menu_link_clone": "^3.2"
+        "drupal/menu_link_clone": "^3.2",
+        "ifsnop/mysqldump-php": "^2.9"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
