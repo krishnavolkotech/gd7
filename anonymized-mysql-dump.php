@@ -28,17 +28,7 @@ $dump = new IMysqldump\Mysqldump("mysql:host=localhost;dbname=hzdupgrd_dev", "hz
 
 $dump->setTransformTableRowHook(function ($tableName, array $row) {
   include_once(dirname(__FILE__) .'/anonymize-tables-list.php');
-  /*
-   $anonymize_tables = array(
-    'node_field_data' => array('column' => 'title'),
-    'node__body' => array('column' => 'body_value'),
-    'node__field_abnormality_description' => array('column' => 'field_abnormality_description_value'),
-    'node__field_installation_duration' => array('column' => 'field_installation_duration_value'),
-    'node__field_custom_title' => array('column' => 'field_custom_title_value'),
-    'node__field_related_transfer_number' => array('column' => 'field_related_transfer_number_value')
-  );
-  */
-  $anonymize_tables = anonimize_tables_list();
+  $anonymize_tables = anonymize_tables_list();
 
   if (array_key_exists($tableName, $anonymize_tables)) {
       if (isset($row['nid'])) {
@@ -47,21 +37,27 @@ $dump->setTransformTableRowHook(function ($tableName, array $row) {
       }
       else if (isset($row['entity_id'])) {
         $ent_id = $row['entity_id'];
-        $type = $row['bundle'];
+        $type = isset($row['bundle'])?$row['bundle']:'';
       }
       else {
         $ent_id = '';
         $type = '';
       }
 
-     $replace = $ent_id .' : '. $type . " : Lorum Ipsum Dummy content ";
-
+     $replace = $ent_id .' : '. $type . " : Lorum Ipsum Lorum Ipsum ";
      if ($tableName == 'node_field_data') {
        if ($row['type'] == 'services' || $row['type'] == 'group') {
-          $replace = $row['title']; 
+          //$replace = $row['title']; 
+       }
+       else {
+          $row['title'] = $replace; 
        }
      }
-     $row[$anonymize_tables[$tableName]['column']] = $replace;
+     else {
+         foreach($anonymize_tables[$tableName]['säulen'] as $säule) {
+             $row[$säule['säule']] = ($säule['replace'] != ''?$säule['replace']:$replace);
+         }
+     }
    }
    return $row;
 });
