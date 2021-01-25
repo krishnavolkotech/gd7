@@ -46,7 +46,7 @@ content:
     type: revision_log_formatter
     weight: 9
     region: content
-    label: above
+    label: hidden
     settings:
       order: desc
       date_format: short
