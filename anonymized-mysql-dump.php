@@ -45,21 +45,27 @@ $dump->setTransformTableRowHook(function ($tableName, array $row) {
       }
 
      $replace = $ent_id .' : '. $type . " : Lorum Ipsum Lorum Ipsum ";
+     
      if ($tableName == 'node_field_data') {
-       if ($row['type'] == 'services' || $row['type'] == 'group') {
-          //$replace = $row['title']; 
-       }
-       else {
-          $row['title'] = $replace; 
-       }
+         if ($row['type'] == 'services' || $row['type'] == 'group') {
+             //$replace = $row['title']; 
+         }
+         else {
+             $row['title'] = $replace; 
+         }
+     }
+     else if ($tableName == 'users_field_data') {
+         $row['name'] = "User_".$row['uid'];
+         $row['pass'] = "asdasdaewdyytrg523rg425vowOPdWHJaad";
+         $row['mail'] = "user_".$row['uid'].'@test.com';
      }
      else {
          foreach($anonymize_tables[$tableName]['säulen'] as $säule) {
              $row[$säule['säule']] = ($säule['replace'] != ''?$säule['replace']:$replace);
          }
      }
-   }
-   return $row;
+  }
+  return $row;
 });
 
 $dump->start("anonymized-backup-${date}.sql");

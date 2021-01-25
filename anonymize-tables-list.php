@@ -12,7 +12,11 @@ function anonymize_tables_list() {
               array('säule' =>'title', 'replace' => '')
           )
       ),
-      'node__body' => array('säulen' => array( array('säule' =>'body_value', 'replace' => ''))),
+      'node__body' => array(
+          'säulen' => array(
+              array('säule' =>'body_value', 'replace' => '')
+          )
+      ),
       'node__field_abnormality_description' => array('säulen' => array( array('säule' =>'field_abnormality_description_value', 'replace' => ''))),
       'node_revision__field_abnormality_description' => array('säulen' => array( array('säule' =>'field_abnormality_description_value', 'replace' => ''))),
       'node__field_installation_duration' => array('säulen' => array( array('säule' =>'field_installation_duration_value', 'replace' => ''))),
@@ -135,6 +139,13 @@ function anonymize_tables_list() {
               array('säule' => 'lastname', 'replace' => 'Last Name'),
               array('säule' => 'position', 'replace' => 'test'),
               array('säule' => 'phone', 'replace' => '0000000000'),
+          )
+      ),
+      'users_field_data' => array(
+          'säulen' => array(
+              array('säule' => 'name', 'replace' => ''),
+              array('säule' => 'pass', 'replace' => ''),
+              array('säule' => 'mail', 'replace' => ''),
           )
       ),
       
