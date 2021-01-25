@@ -129,6 +129,15 @@ function anonymize_tables_list() {
               array('säule' => 'uri', 'replace' => 'private://lorum-ipsum.txt'),
           )
       ),
+      'cust_profile' => array(
+          'säulen' => array(
+              array('säule' => 'firstname', 'replace' => 'First Name'),
+              array('säule' => 'lastname', 'replace' => 'Last Name'),
+              array('säule' => 'position', 'replace' => 'test'),
+              array('säule' => 'phone', 'replace' => '0000000000'),
+          )
+      ),
+      
   );
 }
       
