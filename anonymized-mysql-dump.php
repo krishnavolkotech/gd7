@@ -55,13 +55,13 @@ $dump->setTransformTableRowHook(function ($tableName, array $row) {
          }
      }
      else if ($tableName == 'users_field_data') {
-         $row['name'] = "User_".$row['uid'];
+         $row['name'] = "user_".$row['uid'];
          $row['pass'] = "asdasdaewdyytrg523rg425vowOPdWHJaad";
          $row['mail'] = "user_".$row['uid'].'@test.com';
      }
      else {
-         foreach($anonymize_tables[$tableName]['säulen'] as $säule) {
-             $row[$säule['säule']] = ($säule['replace'] != ''?$säule['replace']:$replace);
+         foreach($anonymize_tables[$tableName]['columns'] as $säule) {
+             $row[$säule['column']] = ($säule['replace'] != ''?$säule['replace']:$replace);
          }
      }
   }
