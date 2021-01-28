@@ -238,7 +238,8 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
         $nroles[] = $val['target_id'];
       }
     }
-    if (in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
+
+    if (in_array($group->bundle() . '-admin', $nroles) &&   !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
     if ($group->id() == RELEASE_MANAGEMENT) {
@@ -258,8 +259,13 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
-  if (isset($entity->original->request_status->value) && ($entity->original->request_status->value == 0 || $entity->request_status->value == 1)) {
-
+    
+/*
+if (isset($entity->original->request_status->value) &&
+ ($entity->original->request_status->value == 0 ||
+ $entity->request_status->value == 1))
+ */
+ if (get_grequest_status($entity->original)) {
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
@@ -279,7 +285,8 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     }
   }
 
-  if ($entity->request_status->value == 1) {
+//  if ($entity->request_status->value == 1) {
+  if (get_grequest_status($entity->original)) {	
     $user = $entity->get('entity_id')->referencedEntities()[0];
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags([
@@ -1569,6 +1576,14 @@ function checkAndCreateFolder($path) {
   if (!is_dir($path)) {
     shell_exec("mkdir -p " . $path);
   }
+}
+
+function get_grequest_status($group) {
+  $group_request = $group->get('grequest_status')->getValue();
+  if(isset($group_request[0]['value'])) {
+    return $group_request[0]['value'];
+  }
+  return false;
 }
 
 function group_request_status($groupContent) {
