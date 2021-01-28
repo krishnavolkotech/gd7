@@ -33,7 +33,7 @@ $dump->setTransformTableRowHook(function ($tableName, array $row) {
   if (array_key_exists($tableName, $anonymize_tables)) {
       if (isset($row['nid'])) {
         $ent_id = $row['nid'];
-        $type = $row['type'];
+        $type = isset($row['type'])?$row['type']:'';
       }
       else if (isset($row['entity_id'])) {
         $ent_id = $row['entity_id'];

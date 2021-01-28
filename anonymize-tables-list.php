@@ -12,6 +12,11 @@ function anonymize_tables_list() {
               array('säule' =>'title', 'replace' => '')
           )
       ),
+      'node_field_revision' => array(
+          'säulen' => array(
+              array('säule' =>'title', 'replace' => '')
+          )
+      ),
       'node__body' => array(
           'säulen' => array(
               array('säule' =>'body_value', 'replace' => '')
