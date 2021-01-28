@@ -19,7 +19,14 @@ function anonymize_tables_list() {
       ),
       'node__body' => array(
           'säulen' => array(
-              array('säule' =>'body_value', 'replace' => '')
+              array('säule' =>'body_value', 'replace' => ''),
+              array('säule' =>'body_summary', 'replace' => 'Lorum Ipsum'),
+          )
+      ),
+      'node_revision__body' => array(
+          'säulen' => array(
+              array('säule' =>'body_value', 'replace' => 'Lorum Ipsum'),
+              array('säule' =>'body_summary', 'replace' => 'Lorum Ipsum')
           )
       ),
       'node__field_abnormality_description' => array('säulen' => array( array('säule' =>'field_abnormality_description_value', 'replace' => ''))),
