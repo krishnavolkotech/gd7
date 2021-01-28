@@ -153,7 +153,11 @@ function anonymize_tables_list() {
               array('säule' => 'mail', 'replace' => ''),
           )
       ),
-      
+      'downtimes' => array(
+          'säulen' => array(
+              array('säule' => 'description', 'replace' => 'Lorum Ipsum'),
+          ),
+      ),
   );
 }
       
