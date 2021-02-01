@@ -1,0 +1,8 @@
+uuid: 2b9bbdec-a9d3-4b50-a0c2-c0ad98a567b3
+langcode: en
+status: true
+dependencies: {  }
+id: solrmenu
+label: 01_Solr-Filter
+description: ''
+locked: false

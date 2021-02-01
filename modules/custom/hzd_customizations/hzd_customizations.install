@@ -239,3 +239,50 @@ function hzd_customizations_update_8061() {
     }
   }
 }
+/**
+ * parallel 8012
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8062.
+ * Adds All Users who are not member of group 73 (BRMK) yet to the group
+ */
+function hzd_customizations_update_8062(&$sandbox) {
+  $gid = 73;
+  if (!isset($sandbox['total'])) {
+      $sql = "SELECT uid
+        FROM {users_field_data}
+        WHERE uid != 0";
+      $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+      $sandbox['total'] = count($users);
+      $sandbox['current'] = 0;
+  }
+
+
+  $increment = 10;
+  $startLimit = $sandbox['current'];
+  $endLimit = $sandbox['current'] + $increment;
+
+  $select = "SELECT uid  FROM {users_field_data} ";
+  $where = " WHERE uid != 0 ";
+
+  $limit = ' limit ' . $startLimit . "  , ". $endLimit;
+  $sql = $select . $where . $limit;
+  $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+
+  if (count($users) > 0) {
+      foreach($users as $uid) {
+          $user = \Drupal\user\Entity\User::load($uid->uid);
+          $group = \Drupal\group\Entity\Group::load($gid);
+          $group->addMember($user);
+
+          error_log(" Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
+          $sandbox['current']++;
+      }
+  }
+
+  drupal_set_message($sandbox['current'] . ' Users Processed.');
+  if ($sandbox['total'] == 0) {
+      $sandbox['#finished'] = 1;
+  }
+  else {
+      $sandbox['#finished'] = ($sandbox['current'] / $sandbox['total']);
+  }
+}

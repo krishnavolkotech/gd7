@@ -7,3 +7,17 @@ hzd_risk_management_date:
     - core/jquery.ui
     - core/drupal.dialog
     - core/jquery.ui.datepicker
+Chart:
+  header: true
+  version: 2.9.3
+  js:
+    js/Chart.js: {}
+risk_chart:
+  version: 1.x
+  js:
+    js/risk_chart.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery
+    

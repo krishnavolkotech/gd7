@@ -971,7 +971,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{# view_node #} <a href="{{ path(''entity.node.canonical'',{''node'':nid}) }}" class="risk-view"></a> <a href=''{{  path(''view.measures.measures'', {''group'': id, ''risk'': nid}) }}'' class=''risk-measures''></a>'
+            text: '{# view_node #} <a href="{{ path(''entity.node.canonical'',{''node'':nid}) }}" class="risk-view">Details</a> <a href=''{{  path(''view.measures.measures'', {''group'': id, ''risk'': nid}) }}'' class=''risk-measures''></a>'
             make_link: false
             path: ''
             absolute: false
