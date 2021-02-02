@@ -83,8 +83,6 @@ function anonymize_tables_list() {
       'node_revision__field_processing' => array('columns' => array( array('column' =>'field_processing_value', 'replace' => ''))),
       'node__field_priority' => array('columns' => array( array('column' =>'field_priority_value', 'replace' => ''))),
       'node_revision__field_priority' => array('columns' => array( array('column' =>'field_priority_value', 'replace' => ''))),
-      'node__field_problem_status' => array('columns' => array( array('column' =>'field_problem_status_value', 'replace' => ''))),
-      'node_revision__field_problem_status' => array('columns' => array( array('column' =>'field_problem_status_value', 'replace' => ''))),
       'node__field_problem_symptoms' => array('columns' => array( array('column' =>'field_problem_symptoms_value', 'replace' => ''))),
       'node_revision__field_problem_symptoms' => array('columns' => array( array('column' =>'field_problem_symptoms_value', 'replace' => ''))),
       'node__field_release' => array('columns' => array( array('column' =>'field_release_value', 'replace' => ''))),
@@ -117,8 +115,6 @@ function anonymize_tables_list() {
       'node_revision__field_remarks' => array('columns' => array( array('column' =>'field_remarks_value', 'replace' => ''))),
       'node__field_affected_oes' => array('columns' => array( array('column' =>'field_affected_oes_value', 'replace' => ''))),
       'node_revision__field_affected_oes' => array('columns' => array( array('column' =>'field_affected_oes_value', 'replace' => ''))),
-      'node__field_risk_category' => array('columns' => array( array('column' =>'field_risk_category_value', 'replace' => ''))),
-      'node_revision__field_risk_category' => array('columns' => array( array('column' =>'field_risk_category_value', 'replace' => ''))),
       'node__field_arbeitslog' => array('columns' => array( array('column' =>'field_arbeitslog_value', 'replace' => ''))),  
       'node_revision__field_arbeitslog' => array('columns' => array( array('column' =>'field_arbeitslog_value', 'replace' => ''))),  
       'node__field_remarks' => array('columns' => array( array('column' =>'field_remarks_value', 'replace' => ''))),
@@ -163,6 +159,37 @@ function anonymize_tables_list() {
       'downtimes' => array(
           'columns' => array(
               array('column' => 'description', 'replace' => 'Lorum Ipsum'),
+          ),
+      ),
+      'downtimes_logs' => array(
+          'columns' => array(
+              array('column' => 'log', 'replace' => 'a:0:{}'),
+          ),
+      ),
+      'im_attachments_data' => array(
+          'columns' => array(
+              array('column' => 'description__value', 'replace' => ''),
+              array('column' => 'ticket_id', 'replace' => '123456'),
+          ),
+      ),
+      'group__field_description' => array(
+          'columns' => array(
+              array('column' => 'field_description_value', 'replace' => ''),
+          ),
+      ),
+      'path_alias' => array(
+          'columns' => array(
+              array('column' => 'alias', 'replace' => ''),
+          ),
+      ),
+      'resolve_cancel_incident' => array(
+          'columns' => array(
+              array('column' => 'comment', 'replace' => 'Lorum Ipsum'),
+          ),
+      ),
+      'group__field_einfuehrung' => array(
+          'columns' => array(
+              array('column' => 'field_einfuehrung_value', 'replace' => 'Lorum Ipsum'),
           ),
       ),
   );
