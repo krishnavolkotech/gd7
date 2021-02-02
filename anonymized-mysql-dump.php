@@ -54,6 +54,11 @@ $dump->setTransformTableRowHook(function ($tableName, array $row) {
              $row['title'] = $replace; 
          }
      }
+     else if ($tableName == 'path_alias') {
+         if (strpos($row['path'], '/user/') !== false) {
+             $row['alias'] = '';
+	 }
+     }   
      else if ($tableName == 'users_field_data') {
          $row['name'] = "user_".$row['uid'];
          $row['pass'] = "asdasdaewdyytrg523rg425vowOPdWHJaad";

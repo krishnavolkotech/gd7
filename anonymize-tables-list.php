@@ -169,7 +169,7 @@ function anonymize_tables_list() {
       'im_attachments_data' => array(
           'columns' => array(
               array('column' => 'description__value', 'replace' => ''),
-              array('column' => 'ticket_id', 'replace' => '123456'),
+              array('column' => 'ticket_id', 'replace' => '123456'),	      
           ),
       ),
       'group__field_description' => array(
