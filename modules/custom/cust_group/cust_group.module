@@ -1601,7 +1601,7 @@ function get_grequest_status($group) {
   if ($group->hasField('grequest_status')) {
     $group_request = $group->get('grequest_status')->getValue();
     if (isset($group_request[0]['value'])) {
-      return $group_request[0]['value'];
+      return TRUE;
     }
   }
   return false;
