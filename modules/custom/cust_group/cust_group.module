@@ -431,14 +431,23 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
     $tags[] = 'config:views.view.my_groups';
 
     $newroles = $entity->get('group_roles')->getValue();
+ 
     $nroles = [];
     if (isset($newroles) && !empty($newroles)) {
       foreach ($newroles as $key => $val) {
-        $nroles[] = $val['target_id'];
+          $nroles[$val['target_id']] = $val['target_id'];
       }
     }
-    if (in_array($group->bundle() . '-admin', $nroles)) {
-      sendGroupAdminRoleMail($group, $entity->getEntity());
+
+    $admin_role = $group->bundle() . '-admin';
+    foreach($nroles as $ukey => $urole) {
+      if ((string)$ukey == (string)$admin_role) {
+        sendGroupAdminRoleMail($group, $entity->getEntity());
+      }
+    }
+    
+    if (in_array((string)$group->bundle() . '-admin', $nroles)) {
+      //sendGroupAdminRoleMail($group, $entity->getEntity());
     }
   }
 
@@ -572,6 +581,9 @@ function cust_group_entity_reference_selection_alter(&$def) {
 
 function cust_group_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
+    case 'group_content_group_content_type_86f239cfd394e_group-request-membership_form':
+      $form['path']['#access'] = FALSE;
+    break;
     case 'group_content_group_content_type_58a8289e9c89a_group-reject-membership_form':
       $form['actions']['submit']['#submit'][] = 'membership_reject_submit_handler';
     break;
