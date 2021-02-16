@@ -243,6 +243,8 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     if (in_array($group->bundle() . '-admin', $nroles) &&   !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
+
+
     if ($group->id() == RELEASE_MANAGEMENT) {
       $uid = $entity->getEntity()->id();
       $userData = \Drupal::service('user.data');
@@ -266,6 +268,7 @@ if (isset($entity->original->request_status->value) &&
  ($entity->original->request_status->value == 0 ||
  $entity->request_status->value == 1))
  */
+
  if (get_grequest_status($entity->original)) {
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
@@ -285,6 +288,7 @@ if (isset($entity->original->request_status->value) &&
       drupal_set_message(t('Mail sent.'), 'status');
     }
   }
+
 
 //  if ($entity->request_status->value == 1) {
   if (get_grequest_status($entity->original)) {	
@@ -550,14 +554,16 @@ function cust_group_entity_type_alter(array &$entity_types) {
   $entity_types['node']->set('handlers', $nodeFormHandlers);
 }
 
-/* function cust_group_mail_alter(&$message) {
-  switch ($message['key']) {
-  case 'immediate_notifications':
-  case 'periodic_notifications':
-  //      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
-  break;
+ function cust_group_mail_alter(&$message) {
+   switch ($message['key']) {
+     case 'page_mail':
+     case 'page_copy':
+     //case 'immediate_notifications':
+     //case 'periodic_notifications':
+       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    break;
   }
-  } */
+ } 
 
 function cust_group_entity_reference_selection_alter(&$def) {
   $def['default:user']['class'] = 'Drupal\cust_group\Plugin\EntityReferenceSelection\CustomUserSelection';
@@ -1580,9 +1586,11 @@ function checkAndCreateFolder($path) {
 }
 
 function get_grequest_status($group) {
-  $group_request = $group->get('grequest_status')->getValue();
-  if(isset($group_request[0]['value'])) {
-    return $group_request[0]['value'];
+  if ($group->hasField('grequest_status')) {
+    $group_request = $group->get('grequest_status')->getValue();
+    if (isset($group_request[0]['value'])) {
+      return $group_request[0]['value'];
+    }
   }
   return false;
 }
