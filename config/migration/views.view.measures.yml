@@ -907,7 +907,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{# view_node #} <a href=''{{ path(''entity.node.canonical'',{node:nid}) }}'' class=''measure-view''></a> <a href=''{{ path(''view.risks_list.risks'',{''group'':id, ''measure'':nid}) }}'' class=''risk-list-data''></a>'
+            text: '{# view_node #} <a href=''{{ path(''entity.node.canonical'',{node:nid}) }}'' class=''measure-view''>Details</a> <a href=''{{ path(''view.risks_list.risks'',{''group'':id, ''measure'':nid}) }}'' class=''risk-list-data''></a>'
             make_link: false
             path: ''
             absolute: false
@@ -1300,7 +1300,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
-          order: ASC
+          order: DESC
           exposed: false
           expose:
             label: ''

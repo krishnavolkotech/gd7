@@ -1,0 +1,41 @@
+uuid: 8783d50b-318f-42dc-8e7c-d59958df7c64
+langcode: de
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:bddf376e-dfb7-4e49-af86-5e7408df8d75'
+  module:
+    - block_class
+    - block_content
+    - block_visibility_groups
+    - system
+  theme:
+    - hzd
+third_party_settings:
+  block_class:
+    classes: risk-management-chart-block
+id: riskikomanagementcharts
+theme: hzd
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:bddf376e-dfb7-4e49-af86-5e7408df8d75'
+settings:
+  id: 'block_content:bddf376e-dfb7-4e49-af86-5e7408df8d75'
+  label: 'Risikomanagement Charts'
+  provider: block_content
+  label_display: '0'
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    pages: /risikomanagement-betrieb
+    negate: false
+    context_mapping: {  }

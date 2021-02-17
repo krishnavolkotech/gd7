@@ -11,36 +11,10 @@ dependencies:
     - field.field.node.risk_cluster.field_trend
     - node.type.risk_cluster
   module:
-    - field_group
     - revision_log
     - serial
     - text
     - user
-third_party_settings:
-  field_group:
-    group_table:
-      children:
-        - body
-        - last_updated
-        - field_risks_cluster_class
-        - field_risks_data
-        - field_trend
-        - field_comments
-        - field_id
-        - content_revision_log
-        - field_cluster_id
-      parent_name: ''
-      weight: 1
-      format_type: table_field
-      format_settings:
-        label: table
-        fieldtitle: '1'
-        wrapper: '0'
-        caption: ''
-        id: ''
-        classes: risk-table-wrapper
-        required_fields: false
-      label: table
 id: node.risk_cluster.default
 targetEntityType: node
 bundle: risk_cluster
@@ -102,6 +76,16 @@ content:
     third_party_settings: {  }
   field_risks_cluster_class:
     weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_risks_cluster_impact:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_risks_cluster_propability:
+    weight: 100
     region: content
     settings: {  }
     third_party_settings: {  }

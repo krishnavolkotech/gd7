@@ -144,7 +144,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
                 '#title' => t('@grp',['@grp'=>t('Groups')]),
                 '#options' => $groups,
                 '#default_value' => array(RELEASE_MANAGEMENT, INCIDENT_MANAGEMENT, PROBLEM_MANAGEMENT,
-                SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT, VERFUGBARKEITSMANAGEMENT, COVID_INFO),
+                SERVICE_LEVEL_MANAGEMENT, BETRIEBSPORTAL_KONSENS, KAPAZITATSMANAGEMENT, VERFUGBARKEITSMANAGEMENT, COVID_INFO, RISIKOMANAGEMENT),
                 //'#required' => true
             );
             $form['groups'][RELEASE_MANAGEMENT] = array( '#disabled' => TRUE, );
@@ -155,6 +155,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             $form['groups'][KAPAZITATSMANAGEMENT] = array( '#disabled' => TRUE, );
             $form['groups'][VERFUGBARKEITSMANAGEMENT] = array('#disabled' => TRUE, );
             $form['groups'][COVID_INFO] = array('#disabled' => TRUE, );
+            $form['groups'][RISIKOMANAGEMENT] = array('#disabled' => TRUE, );
         }
         $form['#validate'][] = 'hzd_user_register_form_validate';
         $form['actions']['submit']['#submit'][] = 'hzd_user_register_form_submit';
@@ -218,6 +219,7 @@ function hzd_user_customizations_user_insert($user) {
         KAPAZITATSMANAGEMENT => KAPAZITATSMANAGEMENT,
         VERFUGBARKEITSMANAGEMENT => VERFUGBARKEITSMANAGEMENT,
         COVID_INFO => COVID_INFO,
+        RISIKOMANAGEMENT => RISIKOMANAGEMENT,
     );
 
     $covid_group = \Drupal\group\Entity\Group::load(COVID_INFO);

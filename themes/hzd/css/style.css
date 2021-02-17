@@ -1285,7 +1285,7 @@ table.view-deployed-releases {
 #block-primarylinks ul ul.dropdown-menu li span {
     width: 100%;
     float: left;
-    padding: 10px 20px;
+    padding: 5px 20px;
     color: #027596;
     font-size: 14px;
     cursor: default;
@@ -2625,10 +2625,11 @@ article.quickinfo .field .field--items {
     margin: 0 0 3px 0%;
    padding:0;
 }
-dl dt,
-dl da {
-    margin: 10px 0 0 0;
-}
+/* dl dt, */
+/* dl da, */
+/* dl dd { */
+    /* margin: 10px 0 0 0; */
+/* } */
 article.quickinfo .field .field--item ul li {
     margin: 0 0 7px 0;
 }
@@ -3621,6 +3622,10 @@ div.risk-table-wrapper div.field div.field--item{
 	margin: 0 10px 0 0;
 	margin: 0 5px 0 0;
 }
+.risk-measure-table, .risk-measure-table th {
+    border: none;
+    background-color: white;
+}
 .views-field.views-field-nothing {
 	width: 73px;
 }
@@ -3677,6 +3682,13 @@ div.risk-table-wrapper div.field div.field--item{
   min-width: 65px;
   padding-right: 0px;
 }
+.label.risk-label {
+  display: block;
+  width: 90px;
+}
+/* .risk-detail-table { */
+  /* border: 0px solid rgba(0,0,0,.2); */
+/* } */
 ul.content-revision-log li{
   float: left;
   width: 100%;
@@ -4073,4 +4085,28 @@ table.released tr th:last-child {
 .empty.message {
   text-align: left !important;
   padding-left: 8px !important;
+}
+
+.label-warning {
+  background-color: #FFDA56 !important;
+  color: #202020 !important;
+}
+
+.panel-light {
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading {
+  color: #fff !important;
+  background-color: #f5f7fa !important;
+  border-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #EDF0F3 !important;
+}
+.panel-light > .panel-heading .badge {
+  color: #f5f7fa !important;
+  background-color: #fff !important;
+}
+.panel-light > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #EDF0F3 !important;
 }

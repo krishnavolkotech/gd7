@@ -16,6 +16,7 @@ define('BETRIEBSPORTAL_KONSENS', 21);
 define('KAPAZITATSMANAGEMENT', 39);
 define('VERFUGBARKEITSMANAGEMENT', 77);
 define('COVID_INFO', 83);
+define('RISIKOMANAGEMENT', 73);
 
 // define('QUICKINFO', variable_get('quickinfo_group_id', NULL));.
 define('MAINTENANCE_GROUP_ID', 2);
@@ -238,9 +239,12 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
         $nroles[] = $val['target_id'];
       }
     }
-    if (in_array($group->bundle() . '-admin', $nroles) && !in_array($group->bundle() . '-admin', $oroles)) {
+
+    if (in_array($group->bundle() . '-admin', $nroles) &&   !in_array($group->bundle() . '-admin', $oroles)) {
       sendGroupAdminRoleMail($group, $entity->getEntity());
     }
+
+
     if ($group->id() == RELEASE_MANAGEMENT) {
       $uid = $entity->getEntity()->id();
       $userData = \Drupal::service('user.data');
@@ -258,8 +262,14 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     \Drupal\cust_group\CustGroupHelper::invalidate_groupAdministation_blockCache();
   }
 
-  if (isset($entity->original->request_status->value) && ($entity->original->request_status->value == 0 || $entity->request_status->value == 1)) {
+    
+/*
+if (isset($entity->original->request_status->value) &&
+ ($entity->original->request_status->value == 0 ||
+ $entity->request_status->value == 1))
+ */
 
+ if (get_grequest_status($entity->original)) {
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
@@ -279,7 +289,9 @@ function cust_group_group_content_update(\Drupal\group\Entity\GroupContentInterf
     }
   }
 
-  if ($entity->request_status->value == 1) {
+
+//  if ($entity->request_status->value == 1) {
+  if (get_grequest_status($entity->original)) {	
     $user = $entity->get('entity_id')->referencedEntities()[0];
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags([
@@ -419,14 +431,23 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
     $tags[] = 'config:views.view.my_groups';
 
     $newroles = $entity->get('group_roles')->getValue();
+ 
     $nroles = [];
     if (isset($newroles) && !empty($newroles)) {
       foreach ($newroles as $key => $val) {
-        $nroles[] = $val['target_id'];
+          $nroles[$val['target_id']] = $val['target_id'];
       }
     }
-    if (in_array($group->bundle() . '-admin', $nroles)) {
-      sendGroupAdminRoleMail($group, $entity->getEntity());
+
+    $admin_role = $group->bundle() . '-admin';
+    foreach($nroles as $ukey => $urole) {
+      if ((string)$ukey == (string)$admin_role) {
+        sendGroupAdminRoleMail($group, $entity->getEntity());
+      }
+    }
+    
+    if (in_array((string)$group->bundle() . '-admin', $nroles)) {
+      //sendGroupAdminRoleMail($group, $entity->getEntity());
     }
   }
 
@@ -542,14 +563,16 @@ function cust_group_entity_type_alter(array &$entity_types) {
   $entity_types['node']->set('handlers', $nodeFormHandlers);
 }
 
-/* function cust_group_mail_alter(&$message) {
-  switch ($message['key']) {
-  case 'immediate_notifications':
-  case 'periodic_notifications':
-  //      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
-  break;
+ function cust_group_mail_alter(&$message) {
+   switch ($message['key']) {
+     case 'page_mail':
+     case 'page_copy':
+     //case 'immediate_notifications':
+     //case 'periodic_notifications':
+       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    break;
   }
-  } */
+ } 
 
 function cust_group_entity_reference_selection_alter(&$def) {
   $def['default:user']['class'] = 'Drupal\cust_group\Plugin\EntityReferenceSelection\CustomUserSelection';
@@ -558,6 +581,9 @@ function cust_group_entity_reference_selection_alter(&$def) {
 
 function cust_group_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
+    case 'group_content_group_content_type_86f239cfd394e_group-request-membership_form':
+      $form['path']['#access'] = FALSE;
+    break;
     case 'group_content_group_content_type_58a8289e9c89a_group-reject-membership_form':
       $form['actions']['submit']['#submit'][] = 'membership_reject_submit_handler';
     break;
@@ -1569,6 +1595,16 @@ function checkAndCreateFolder($path) {
   if (!is_dir($path)) {
     shell_exec("mkdir -p " . $path);
   }
+}
+
+function get_grequest_status($group) {
+  if ($group->hasField('grequest_status')) {
+    $group_request = $group->get('grequest_status')->getValue();
+    if (isset($group_request[0]['value'])) {
+      return TRUE;
+    }
+  }
+  return false;
 }
 
 function group_request_status($groupContent) {

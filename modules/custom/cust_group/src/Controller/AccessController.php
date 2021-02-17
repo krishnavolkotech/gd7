@@ -35,7 +35,10 @@ class AccessController extends ControllerBase
         if (is_object($node)) {
             
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
-                return AccessResult::forbidden();
+	       $uid = \Drupal::currentUser()->id();
+               if ($uid != 1) {
+                 return AccessResult::forbidden();
+               }
             }
             
             if ($node->getType() == 'quickinfo' && !$node->isPublished()) {

@@ -1,4 +1,4 @@
-message: "<div class=\"title\">\r\n\tWillkommen beim Betriebsportal KONSENS</div>\r\n<div class=\"portal_heading\">\r\n\tHinweis: Es werden aktuell geplante Wartungsarbeiten durchgeführt. Das BpK steht Ihnen vorraussichtlich gegen 19 Uhr wieder zur Verfügung.<br />\r\n\t<br />\r\n\t<p>&nbsp;</p>\r\n</div>\r\n"
+message: "<div class=\"title\">\r\n\tWillkommen beim Betriebsportal KONSENS</div>\r\n<div class=\"portal_heading\">\r\n\tHinweis: Es werden aktuell Wartungsarbeiten durchgeführt. Das BpK steht Ihnen in Kürze wieder zur Verfügung.<br />\r\n\t<br />\r\n\t<p>&nbsp;</p>\r\n</div>\r\n"
 langcode: de
 _core:
   default_config_hash: Z5MXifrF77GEAgx0GQ6iWT8wStjFuY8BD9OruofWTJ8
