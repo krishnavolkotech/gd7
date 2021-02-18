@@ -119,7 +119,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
 
         $form['profile']['user_state'] = array(
             '#type' => 'select',
-            '#title' => t('State'),
+            '#title' => t('State or Bund when indicated'),
             '#options' => $user_states,
             '#default_value' => isset($val['state_id']) ? $val['state_id'] : '',
             '#attributes' => $disabled,
