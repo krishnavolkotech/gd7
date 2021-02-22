@@ -326,8 +326,6 @@ class FormValidator implements FormValidatorInterface {
    *   web service requests, or other expensive requests that should
    *   not be repeated in the submission step.
    */
-     protected function performRequiredValidation(&$elements, FormStateInterface &$form_state) {
-     // Verify that the value is not longer than #maxlength.
   protected function performRequiredValidation(&$elements, FormStateInterface &$form_state) {
     // Verify that the value is not longer than #maxlength.
     $length = 0;
