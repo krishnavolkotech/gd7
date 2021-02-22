@@ -30,7 +30,7 @@ class Editor extends PluginBase implements InPlaceEditorInterface {
     // This editor is compatible with formatted ("rich") text fields; but only
     // if there is a currently active text format, that text format has an
     // associated editor and that editor supports inline editing.
-    elseif (is_object($items[0]) && $editor = editor_load($items[0]->format)) {
+    elseif ($editor = editor_load($items[0]->format)) {
       $definition = \Drupal::service('plugin.manager.editor')->getDefinition($editor->getEditor());
       if ($definition['supports_inline_editing'] === TRUE) {
         return TRUE;
