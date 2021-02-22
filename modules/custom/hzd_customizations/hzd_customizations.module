@@ -809,7 +809,7 @@ function get_last_unix_time($block_name) {
 }
 function hzd_customizations_local_tasks_alter(&$local_tasks) {
   if(isset($local_tasks['group.content'])) {
-    unset($local_tasks['group.content']['base_route']);
+    //unset($local_tasks['group.content']['base_route']);
   }
 }
 function private_group_member_view_access_check($group) {
