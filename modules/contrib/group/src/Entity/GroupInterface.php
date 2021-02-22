@@ -7,14 +7,13 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
-use Drupal\Core\Entity\EntityPublishedInterface;
 
 /**
  * Provides an interface defining a Group entity.
  *
  * @ingroup group
  */
-interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, EntityPublishedInterface {
+interface GroupInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface {
 
   /**
    * Gets the group creation timestamp.

@@ -123,7 +123,7 @@ class GroupListBuilder extends EntityListBuilder {
     // need to add the render array using the 'data' key.
     $row['name']['data'] = $entity->toLink()->toRenderable();
     $row['type'] = $entity->getGroupType()->label();
-    $row['uid'] = in_array("label", get_class_methods($entity->uid->entity))?$entity->uid->entity->label():'';
+    $row['uid'] = $entity->uid->entity->label();
     return $row + parent::buildRow($entity);
   }
 

@@ -19,22 +19,9 @@ class GroupAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    // Fetch information from the group object if possible.
-    $status = $entity->isPublished();
-    $uid = $entity->getOwnerId();
-
     switch ($operation) {
       case 'view':
-        if (!$status) {
-          $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view any unpublished group');
-          if (!$access_result->isAllowed() && $account->isAuthenticated() && $account->id() == $uid) {
-            $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view own unpublished group');
-          }
-        }
-        else {
-          $access_result = GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view group');
-        }
-        return $access_result;
+        return GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'view group');
 
       case 'update':
         return GroupAccessResult::allowedIfHasGroupPermission($entity, $account, 'edit group');
