@@ -68,7 +68,7 @@
         "sabberworm/php-css-parser": "^8.3.1",
         "phenx/php-svg-lib": "^0.3.3",
         "drupal/grequest": "^1.0@alpha",
-        "pear/archive_tar": "^1.4.11"
+        "pear/archive_tar": "^1.4.11",
         "drupal/menu_link_clone": "^3.2",
         "ifsnop/mysqldump-php": "^2.9"
     },
