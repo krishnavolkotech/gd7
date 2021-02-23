@@ -106,6 +106,11 @@ class GroupListBuilder extends EntityListBuilder {
         'specifier' =>'type',
         'field' => 'type',
       ],
+      'status' => [
+        'data' => $this->t('Status'),
+        'specifier' =>'status',
+        'field' => 'status',
+      ],
       'uid' => [
         'data' => $this->t('Owner'),
       ],
@@ -123,6 +128,7 @@ class GroupListBuilder extends EntityListBuilder {
     // need to add the render array using the 'data' key.
     $row['name']['data'] = $entity->toLink()->toRenderable();
     $row['type'] = $entity->getGroupType()->label();
+    $row['status'] = $entity->isPublished() ? $this->t('published') : $this->t('not published');
     $row['uid'] = $entity->uid->entity->label();
     return $row + parent::buildRow($entity);
   }
