@@ -184,8 +184,11 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // as a grouped entity. This means we may need to update access records,
       // flush some caches containing the entity or perform other operations we
       // cannot possibly know about. Lucky for us, all of that behavior usually
-      // happens when saving an entity so let's re-save the added entity.
-      $this->getEntity()->save();
+      // happens after saving an entity so let's invoke postSave().
+      $entity = $this->getEntity();
+      $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
+      $entity->original = $storage->loadUnchanged($entity->id());
+      $entity->postSave($storage);
     }
 
     // If a membership gets updated, but the member's roles haven't changed, we
@@ -213,14 +216,16 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
 
     /** @var GroupContentInterface[] $entities */
     foreach ($entities as $group_content) {
+      // For the same reasons we invoking postSave() on entities that are added
+      // to a group, we need to do the same for entities that were removed from
+      // one. See ::postSave(). We only save the entity if it still exists to
+      // avoid trying to save an entity that just got deleted and triggered the
+      // deletion of its group content entities.
       if ($entity = $group_content->getEntity()) {
-        // For the same reasons we re-save entities that are added to a group,
-        // we need to re-save entities that were removed from one. See
-        // ::postSave(). We only save the entity if it still exists to avoid
-        // trying to save an entity that just got deleted and triggered the
-        // deletion of its group content entities.
         // @todo Revisit when https://www.drupal.org/node/2754399 lands.
-        $entity->save();
+        $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
+        $entity->original = $storage->loadUnchanged($entity->id());
+        $entity->postSave($storage);
 
         // If a membership gets deleted, we need to reset the internal group
         // roles cache for the member in that group, but only if the user still
@@ -228,10 +233,21 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
         if ($group_content->getContentPlugin()->getPluginId() == 'group_membership') {
           /** @var \Drupal\group\Entity\Storage\GroupRoleStorageInterface $role_storage */
           $role_storage = \Drupal::entityTypeManager()->getStorage('group_role');
-          $role_storage->resetUserGroupRoleCache($group_content->getEntity(), $group_content->getGroup());
+          $role_storage->resetUserGroupRoleCache($entity, $group_content->getGroup());
         }
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    if ($entity = $this->getEntity()) {
+      $this->addCacheableDependency($entity);
+    }
+
+    return parent::getCacheTags();
   }
 
   /**
