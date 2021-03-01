@@ -47,6 +47,22 @@ class RouteSubscriber extends RouteSubscriberBase {
       //           $route->setRequirement('_custom_access','\Drupal\hzd_customizations\Controller\HZDCustomizations::access');.
     }
 
+    if ($route = $collection->get('entity.node.clone_form')) {
+      $route->setRequirement('_access', 'FALSE');
+    }
+
+    if ($route = $collection->get('entity.group.clone_form')) {
+      $route->setRequirement('_access', 'FALSE');
+    }
+
+    if ($route = $collection->get('entity.group_content.clone_form')) {
+      $route->setRequirement('_access', 'FALSE');
+    }
+
+    if ($route = $collection->get('entity.user.clone_form')) {
+      $route->setRequirement('_access', 'FALSE');
+    }
+
     if ($route = $collection->get('entity.user.edit_form')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::userEditAcces");
     }
