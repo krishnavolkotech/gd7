@@ -56,6 +56,8 @@ class GroupId extends NumericArgument {
     $titles = [];
 
     $groups = $this->groupStorage->loadMultiple($this->value);
+    $values = is_array($this->value[0])?$this->value[0]:$this->value;
+    $groups = $this->groupStorage->loadMultiple($values);
     foreach ($groups as $group) {
       $titles[] = $group->label();
     }
