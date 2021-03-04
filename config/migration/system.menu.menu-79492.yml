@@ -1,0 +1,8 @@
+uuid: 2f102cd5-3c52-47ec-8e0e-4add8898033d
+langcode: de
+status: true
+dependencies: {  }
+id: menu-79492
+label: 'ZPS ELSTER-Support'
+description: ''
+locked: false
