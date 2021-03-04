@@ -124,7 +124,7 @@ content:
     weight: 4
     label: above
     settings:
-      token_data: '<a href=''[node:url]''>[node:field_id] - [node:title]</a>'
+      token_data: '<a href=''[node:url]''>[node:field_risk_id] - [node:title]</a>'
     third_party_settings: {  }
     type: tokenized_field_formatter
     region: content
