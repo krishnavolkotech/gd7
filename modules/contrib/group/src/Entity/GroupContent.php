@@ -184,7 +184,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
       // as a grouped entity. This means we may need to update access records,
       // flush some caches containing the entity or perform other operations we
       // cannot possibly know about. Lucky for us, all of that behavior usually
-      // happens when saving an entity so let's re-save the added entity.
       // happens after saving an entity so let's invoke postSave().
       $entity = $this->getEntity();
       $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
@@ -217,12 +216,12 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
 
     /** @var GroupContentInterface[] $entities */
     foreach ($entities as $group_content) {
+      // For the same reasons we invoking postSave() on entities that are added
+      // to a group, we need to do the same for entities that were removed from
+      // one. See ::postSave(). We only save the entity if it still exists to
+      // avoid trying to save an entity that just got deleted and triggered the
+      // deletion of its group content entities.
       if ($entity = $group_content->getEntity()) {
-        // For the same reasons we re-save entities that are added to a group,
-        // we need to re-save entities that were removed from one. See
-        // ::postSave(). We only save the entity if it still exists to avoid
-        // trying to save an entity that just got deleted and triggered the
-        // deletion of its group content entities.
         // @todo Revisit when https://www.drupal.org/node/2754399 lands.
         $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
         $entity->original = $storage->loadUnchanged($entity->id());
@@ -243,17 +242,6 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  protected function invalidateTagsOnSave($update) {
-    parent::invalidateTagsOnSave($update);
-    // Always invalidate our custom list cache tags, even for new entities.
-    if (!$update) {
-      Cache::invalidateTags($this->getCacheTagsToInvalidate());
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getCacheTags() {
     if ($entity = $this->getEntity()) {
       $this->addCacheableDependency($entity);
@@ -265,8 +253,8 @@ class GroupContent extends ContentEntityBase implements GroupContentInterface {
   /**
    * {@inheritdoc}
    */
-  public function getCacheTagsToInvalidate() {
-    $tags = parent::getCacheTagsToInvalidate();
+  public function getListCacheTagsToInvalidate() {
+    $tags = parent::getListCacheTagsToInvalidate();
 
     $group_id = $this->get('gid')->target_id;
     $entity_id = $this->get('entity_id')->target_id;

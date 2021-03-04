@@ -8,10 +8,10 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\EntityOwnerTrait;
 use Drupal\user\UserInterface;
-use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\user\StatusItem;
 
 /**
@@ -80,7 +80,7 @@ class Group extends ContentEntityBase implements GroupInterface {
    * Gets the group membership loader.
    *
    * @return \Drupal\group\GroupMembershipLoaderInterface
-   *  The group.membership_loader service.
+   *   The group.membership_loader service.
    */
   protected function membershipLoader() {
     return \Drupal::service('group.membership_loader');
@@ -299,15 +299,12 @@ class Group extends ContentEntityBase implements GroupInterface {
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
+
     // If a new group is created and the group type is configured to grant group
     // creators a membership by default, add the creator as a member.
     // @todo Deprecate in 8.x-2.x in favor of a form-only approach. API-created
     //   groups should not get this functionality because it may create
     //   incomplete group memberships.
-    if (!$this->getOwner()) {
-        $this->setOwnerId(\Drupal::currentUser()->id());
-    }
-
     $group_type = $this->getGroupType();
     if ($update === FALSE && $group_type->creatorGetsMembership()) {
       $values = ['group_roles' => $group_type->getCreatorRoleIds()];

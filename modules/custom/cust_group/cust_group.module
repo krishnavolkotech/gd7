@@ -269,7 +269,7 @@ if (isset($entity->original->request_status->value) &&
  $entity->request_status->value == 1))
  */
 
- if (get_grequest_status($entity->original)) {
+ if (get_grequest_status($entity) == 1) {
     $subject = t("Membership Request for a Group - @groupLabel has been accepted", ['@groupLabel' => $group->label()]);
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'cust_group';
@@ -291,7 +291,7 @@ if (isset($entity->original->request_status->value) &&
 
 
 //  if ($entity->request_status->value == 1) {
-  if (get_grequest_status($entity->original)) {	
+  if (get_grequest_status($entity)) {	
     $user = $entity->get('entity_id')->referencedEntities()[0];
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags([
@@ -451,7 +451,9 @@ function cust_group_group_content_insert(\Drupal\group\Entity\GroupContentInterf
     }
   }
 
-  if ($entity->request_status->value == 1) {
+  $request_status = $entity->hasField('request_status')?$entity->request_status->value:0;
+
+  if (get_grequest_status($entity) || $request_status == 1) {
     $user = $entity->get('entity_id')->referencedEntities()[0];
     \Drupal::service('cache_tags.invalidator')
       ->invalidateTags([
@@ -564,14 +566,23 @@ function cust_group_entity_type_alter(array &$entity_types) {
 }
 
  function cust_group_mail_alter(&$message) {
+ /*
    switch ($message['key']) {
      case 'page_mail':
      case 'page_copy':
      //case 'immediate_notifications':
      //case 'periodic_notifications':
-       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+     //  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
     break;
-  }
+   }
+ */
+   if (!empty($message['id']) && ($message['id'] == 'contact_page_mail' ||
+                                  $message['id'] == 'contact_page_copy' ))
+   {
+     if (isset($message['body'][1])) {
+       //$message['body'][1] = PHP_EOL . ($message['body'][1]->__toString());
+     }
+   }
  } 
 
 function cust_group_entity_reference_selection_alter(&$def) {
@@ -1601,10 +1612,10 @@ function get_grequest_status($group) {
   if ($group->hasField('grequest_status')) {
     $group_request = $group->get('grequest_status')->getValue();
     if (isset($group_request[0]['value'])) {
-      return TRUE;
+      return $group_request[0]['value'];
     }
   }
-  return false;
+  return FALSE;
 }
 
 function group_request_status($groupContent) {

@@ -9,9 +9,9 @@ use Drupal\Core\Config\ExtensionInstallStorage;
 use Drupal\Core\Config\InstallStorage;
 use Drupal\Core\Entity\EntityTypeListenerInterface;
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\Storage\GroupContentStorageSchema;
-use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Resave all GroupContent labels and remove orphaned entities.
