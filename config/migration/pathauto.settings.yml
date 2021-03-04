@@ -45,3 +45,5 @@ _core:
 langcode: de
 enabled_entity_types:
   - user
+safe_tokens:
+  - 'node:menu-link:parents:join-path'
