@@ -64,7 +64,7 @@ class GroupActions extends FieldPluginBase {
                 $link = $this->t('<span title="Gruppenadministratoren können eine Gruppe nicht verlassen"><i>Gruppenadmin</i></span>');
             } else {
                 //pr($group->id());exit;
-                if (!in_array($group->id(), array("1", "2", "6", "15", "21", "39", "77"))) {
+                if (!in_array($group->id(), array("1", "2", "6", "15", "21", "39", "73", "77"))) {
                     $url = Url::fromRoute('entity.group.leave', ['group' => $group->id()]);
                     $link = \Drupal::service('link_generator')->generate($this->t('Leave Group'), $url);
                 } else {
