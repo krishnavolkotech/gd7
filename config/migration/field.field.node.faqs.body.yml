@@ -6,12 +6,22 @@ dependencies:
     - field.storage.node.body
     - node.type.faqs
   module:
+    - allowed_formats
     - text
+third_party_settings:
+  allowed_formats:
+    full_html: '0'
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
 id: node.faqs.body
 field_name: body
 entity_type: node
 bundle: faqs
-label: Answer
+label: Antwort
 description: ''
 required: false
 translatable: true

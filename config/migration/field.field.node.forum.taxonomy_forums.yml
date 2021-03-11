@@ -12,7 +12,7 @@ id: node.forum.taxonomy_forums
 field_name: taxonomy_forums
 entity_type: node
 bundle: forum
-label: Foren
+label: Forum
 description: ''
 required: true
 translatable: true
@@ -26,4 +26,5 @@ settings:
     sort:
       field: _none
     auto_create: true
+    auto_create_bundle: ''
 field_type: entity_reference
