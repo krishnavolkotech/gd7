@@ -5,6 +5,6 @@ dependencies: {  }
 id: quick_info
 label: 'Quick Info'
 description: 'Same as Closed.'
-creator_roles: {  }
 creator_membership: true
 creator_wizard: true
+creator_roles: {  }
