@@ -6,3 +6,5 @@ id: zentrale_release_manag
 label: 'Zentrale Release Manager der Länder'
 description: 'Same as open group.'
 creator_roles: {  }
+creator_membership: true
+creator_wizard: true

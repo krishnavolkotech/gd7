@@ -6,5 +6,5 @@ id: moderate_private
 label: 'Moderiert Privat'
 description: 'Same as Moderate, But visible to only Members. '
 creator_membership: true
-creator_wizard: false
+creator_wizard: true
 creator_roles: {  }

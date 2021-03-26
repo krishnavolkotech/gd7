@@ -6,3 +6,5 @@ id: downtimes
 label: Downtimes
 description: 'Same as open group.'
 creator_roles: {  }
+creator_membership: true
+creator_wizard: true

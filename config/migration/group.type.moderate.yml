@@ -6,5 +6,5 @@ id: moderate
 label: Moderiert
 description: 'Membership Request is required.'
 creator_membership: true
-creator_wizard: false
+creator_wizard: true
 creator_roles: {  }

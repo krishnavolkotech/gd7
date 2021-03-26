@@ -13,6 +13,4 @@ label: 'Open: Group node (Eingesetzte Releases)'
 description: 'Adds <em class="placeholder">Eingesetzte Releases</em> content to groups both publicly and privately.'
 group_type: open
 content_plugin: 'group_node:deployed_releases'
-plugin_config:
-  group_cardinality: 0
-  entity_cardinality: 1
+plugin_config: null
