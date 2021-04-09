@@ -7,7 +7,6 @@ dependencies:
     - group.content_type.closed-group_membership
     - group.content_type.closed_private-group_membership
     - group.content_type.downtimes-group_membership
-    - group.content_type.group_content_type_24751a240ffd0
     - group.content_type.group_content_type_58a8289e9c89a
     - group.content_type.group_content_type_6693a40b54133
     - group.content_type.group_content_type_7b308aea24fe7
@@ -2489,7 +2488,6 @@ display:
           admin_label: ''
           operator: in
           value:
-            group_content_type_24751a240ffd0: group_content_type_24751a240ffd0
             group_content_type_58a8289e9c89a: group_content_type_58a8289e9c89a
           group: 1
           exposed: false
