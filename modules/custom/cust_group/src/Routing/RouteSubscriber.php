@@ -31,6 +31,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::downtimeAcces");
     }
 
+     if ($route = $collection->get('entity.group.canonical')) {
+       $route->setRequirement('_custom_access', '\Drupal\cust_group\Controller\CustNodeController::customHzdGroupAccess');
+    }
+
     if ($route = $collection->get('entity.group_content.group_node__quickinfo.create_form')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\QuickinfoAccessController::CheckQuickinfonodecreateAccess");
     }

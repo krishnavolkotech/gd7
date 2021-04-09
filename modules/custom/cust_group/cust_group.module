@@ -662,6 +662,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       break;
     case 'group_content_moderate-group_membership_group-request_form':
     case 'group_content_group_content_type_d4b06e2b6aad0_group-request_form':
+    case 'group_content_group_content_type_24751a240ffd0_group-request-membership_form':
     case 'group_content_group_content_type_58a8289e9c89a_group-request-membership_form':
       $group = \Drupal::routeMatch()->getParameter('group');
       $plugin = $group->getGroupType()->getContentPlugin('group_membership_request');
@@ -1619,6 +1620,7 @@ function get_grequest_status($group) {
 }
 
 function group_request_status($groupContent) {
+	 //    dump($groupContent->getGroupContent());
     //if ($groupContent->getGroupContent()->get('request_status')->value == 1) {
     return 1;
     //}
