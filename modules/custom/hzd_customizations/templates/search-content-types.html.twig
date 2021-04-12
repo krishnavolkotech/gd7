@@ -5,7 +5,7 @@
   <ul class='custom-search-facet'>
     {% for link in content_type.links %}
     <li class='facet-item'>
-      <input type="checkbox" class="custom-facets-checkbox" id="custom-search-page">
+        <input type="checkbox" class="custom-facets-checkbox" id="custom-search-page" {{link.checked}} />
       <label>
 	<span class="facet-item__value">{{ link.title }}</span>
       </label>

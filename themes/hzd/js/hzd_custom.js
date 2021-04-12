@@ -46,10 +46,10 @@ Drupal.behaviors.hzd = {
 
 
 	$('.custom-facets-checkbox').change(function() {
-            if($(this).is(":checked")) {
+            //if($(this).is(":checked")) {
 		var href = $(this).next().next().attr('href');
 		window.location.href = href;
-	    }
+            //}
         });
 
 	
