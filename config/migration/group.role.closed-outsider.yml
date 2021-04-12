@@ -12,4 +12,5 @@ audience: outsider
 group_type: closed
 permissions_ui: true
 permissions:
+  - 'restrict group'
   - 'view group'
