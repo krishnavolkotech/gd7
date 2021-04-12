@@ -72,6 +72,32 @@ class CustNodeController extends ControllerBase {
     return $parm->get('entity_id')->referencedEntities()[0]->label();
   }
 
+  static function customHzdGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $account) {
+    if ($account->isAnonymous()) {
+      return AccessResult::forbidden();
+    }
+    $member_only = $route->getRequirement('_group_member') === 'TRUE';
+    $parameters = $route_match->getParameters();
+    $group = $parameters->get('group');
+
+    if ($account->id() == 1 || in_array('site_administrator', $account->getRoles())) {
+       return AccessResult::allowed();
+    }
+
+    if ($group->getMember($account)) {
+       return AccessResult::allowed();
+    }
+
+    if ($group->hasPermission('restrict group', $account)) {
+       return AccessResult::forbidden();
+    }
+
+    if ($group->hasPermission('view group', $account)) {
+       return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
+  }
+  
   static function hzdGroupAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if ($user->isAnonymous()) {
       return AccessResult::forbidden();
