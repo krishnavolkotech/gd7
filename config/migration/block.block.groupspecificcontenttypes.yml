@@ -1,6 +1,6 @@
 uuid: bf1a7311-85cc-4d6c-bdfd-67efb26f3e4e
 langcode: de
-status: false
+status: true
 dependencies:
   module:
     - block_visibility_groups
@@ -16,7 +16,7 @@ provider: null
 plugin: search_group_content
 settings:
   id: search_group_content
-  label: 'Group Specific Content Types'
+  label: 'Content type search filter'
   provider: hzd_customizations
   label_display: '0'
 visibility:
