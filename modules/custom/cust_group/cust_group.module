@@ -595,6 +595,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
     case 'group_content_group_content_type_86f239cfd394e_group-request-membership_form':
       $form['path']['#access'] = FALSE;
     break;
+    case 'group_content_group_content_type_24751a240ffd0_group-reject-membership_form':
     case 'group_content_group_content_type_58a8289e9c89a_group-reject-membership_form':
       $form['actions']['submit']['#submit'][] = 'membership_reject_submit_handler';
     break;
