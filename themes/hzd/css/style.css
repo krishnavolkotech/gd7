@@ -3410,7 +3410,7 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
 
 .view-solr-search {
 /*  margin-bottom:20px !important; */
-    float:left;
+    /*float:left;*/
     padding: 0 5rem;
 }
 
