@@ -61,25 +61,31 @@ class SearchContentTypes extends BlockBase {
       // Content Types
       $process_content_types = [
         'global' => ['group', 'user'],
-        'gruppeninhalte' => ['page', 'faq', 'forum'],
+        'gruppeninhalte' => ['page', 'faqs', 'forum'],
         'incident_management' => ['downtimes'],
         'problem_management' => ['problem'],
-        'release_management' => ['release', 'planning_files', 'release_comments'],
+        'release_management' => ['deployed_releases', 'planning_files', 'quickinfo'],
         'risiko_management' => ['risk', 'measure', 'risk_cluster']
                               ];
-      $content_types_titles = ['group' => 'Gruppen', 'page' => 'Seiten', 'faq'
-      => 'FAQ', 'forum' => 'Forumnach', 'downtimes' => 'Störung oder
-      Blockzeit', 'problem' => 'Problem', 'release' => 'Release',
-      'planning_files' => 'Planungsdatei', 'release_comments' => 'Release
-      Comments', 'risk' => 'Einzelrisiko', 'measure' => 'Maßnahme',
-      'risk_cluster' => 'Risikocluster', 'user' => 'Mitglieder'];
+
+      $content_types_titles = ['group' => t('Gruppen'), 'page' => t('Seite'), 'faqs'
+      => t('FAQ'), 'forum' => t('Forenthema'), 'downtimes' => t('Störung oder
+      Blockzeit'), 'problem' => t('Problem'), 'deployed_releases' => t('Eingesetzteinformationen'),
+      'planning_files' => t('Planungsdatei'), 'quickinfo' => t('RZ-Schnellinfo'), 'risk' => t('Einzelrisiko'), 'measure' => t('Maßnahme'),
+      'risk_cluster' => t('Risikocluster'), 'user' => t('Mitglieder')];
 
       $content_types = [];
       foreach ($processes as $process_key => $process_title) {
       $content_types[$process_key]['title'] = $this->t($process_title);
       $links = [];
       foreach ($process_content_types[$process_key] as $content_type) {
-        $content_type_params = $params;
+        $content_type_params = [];
+        $content_type_params['fulltext'] = isset($params['fulltext']) ? $params['fulltext'] : "";
+        $content_type_params['f'] = isset($params['f']) ? $params['f'] : [];
+        if (isset($params['created'])) {
+          $content_type_params['created'] = $params['created'];
+        }
+
         $content_type_filter = $content_type_facet . ':' . $content_type;
         if (!isset($content_type_params['f']) || !in_array($content_type_filter, $content_type_params['f'])) {
           $content_type_params['f'][] = $content_type_filter;
