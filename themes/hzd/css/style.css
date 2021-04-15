@@ -3341,6 +3341,9 @@ header .block-cust-group-search-block button {
     margin: 0;
     padding: 0;
 }
+.custom-search-facet label {
+    font-weight: 400;
+}
 .path-search .view-solr-search .view-content ul li {
     width: 100%;
     float: left;
