@@ -19,12 +19,12 @@ $dumpSettings = array(
     'disable-foreign-keys-check' => true,
     'skip-triggers' => false,
     'add-drop-trigger' => true,
-    'databases' => true,
-    'add-drop-database' => true,
+    'databases' => false,
+    'add-drop-database' => false,
     'hex-blob' => true
     );
 
-$dump = new IMysqldump\Mysqldump("mysql:host=localhost;dbname=hzdupgrd_dev", "hzdupgrd_dev", "HzDgrd!deVv#0026", $dumpSettings);
+$dump = new IMysqldump\Mysqldump("mysql:host=localhost;dbname=bpktst", "bputst", "bputst", $dumpSettings);
 
 $dump->setTransformTableRowHook(function ($tableName, array $row) {
   include_once(dirname(__FILE__) .'/anonymize-tables-list.php');
