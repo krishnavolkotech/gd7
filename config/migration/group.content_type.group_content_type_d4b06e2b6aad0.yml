@@ -11,6 +11,4 @@ label: 'Moderate Private: Group membership'
 description: 'Adds users to groups as members.'
 group_type: moderate_private
 content_plugin: group_membership
-plugin_config:
-  group_cardinality: 0
-  entity_cardinality: 1
+plugin_config: null

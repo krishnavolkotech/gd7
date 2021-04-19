@@ -66,8 +66,6 @@ class GroupContentDeleteForm extends ContentEntityConfirmFormBase {
     ]);
 
     $form_state->setRedirect('entity.group.canonical', ['group' => $group->id()]);
-    if(!$form_state->getRedirect())
-      $form_state->setRedirect('entity.group.collection');
   }
 
 }

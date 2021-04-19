@@ -703,7 +703,15 @@ function hzd_preprocess_breadcrumb(&$variables) {
   }
   // This breadcrumb will apply only for our view at /group/24/address
   $route = \Drupal::routeMatch()->getRouteName();
-
+  if ($route == 'entity.group_content.group_reject_membership' ||
+      $route == 'entity.group_content.group_approve_membership' ||
+      $route == 'entity.group_content.edit_form' ||
+      $route == 'entity.group_content.canonical' ||
+      $route == 'entity.group_content.delete_form'
+  ) {
+     unset($variables['breadcrumb'][2]);
+     unset($variables['breadcrumb'][3]);
+  }  
   if ($route == 'view.group_members_lists.page_1') {
     // Unsetting the third link since this is because of glossary contextual filter and view name is repeated twice in breadcrumb.
     /**
@@ -931,7 +939,9 @@ function downtimes_revisions($node) {
         ->fetchCol();
 
       if (!empty($get_maintain_window)) {
-        $oldData[] = $labels['services'] . ' : ' . trim(implode($get_maintain_window, ','));
+//implode nessesary  paramter order is glue, arry since php 7.4 
+//        $oldData[] = $labels['services'] . ' : ' . trim(implode($get_maintain_window, ','));
+        $oldData[] = $labels['services'] . ' : ' . trim(implode(',', $get_maintain_window));
       }
       $statesArray = \Drupal::database()->select('states', 's');
       $statesArray->addExpression("concat(s.state,' (',s.abbr,')')", "state");
@@ -1082,8 +1092,11 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
       $menu = 'menu-' . $group->get('field_old_reference')->value;
       $menuEntity = \Drupal::entityTypeManager()->getStorage('menu')
         ->load($menu);
-      $menuOptions = \Drupal::service('menu.parent_form_selector')
-        ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
+      $menuOptions = array();  
+      if ($menuEntity) {
+        $menuOptions = \Drupal::service('menu.parent_form_selector')
+          ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
+      }
       $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
 //      pr($x);exit;
       /* foreach($options as $key=>$option){

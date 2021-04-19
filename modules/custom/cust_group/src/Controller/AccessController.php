@@ -35,7 +35,10 @@ class AccessController extends ControllerBase
         if (is_object($node)) {
             
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
-                return AccessResult::forbidden();
+	       $uid = \Drupal::currentUser()->id();
+               if ($uid != 1) {
+                 return AccessResult::forbidden();
+               }
             }
             
             if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
@@ -48,8 +51,8 @@ class AccessController extends ControllerBase
                 if (array_intersect($user->getRoles(), ['site_administrator', 'administrator'])) {
                     return AccessResult::allowed();
                 }
-                if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
-                    return AccessResult::allowed();
+                if ($content && group_request_status($content)) {
+                  return AccessResult::allowed();
                 } else {
                     return AccessResult::forbidden();
                 }
@@ -70,13 +73,13 @@ class AccessController extends ControllerBase
                 $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
                 $incidentManagementGroupMember = $incidentManagement->getMember($user);
                 if($downtime_type == 1){
-                    if (($groupMember && $groupMember->getGroupContent()
-                            ->get('request_status')->value == 1 && $incidentManagementGroupMember) || array_intersect($user->getRoles(), [
+                    
+                    if (($groupMember && group_request_status($groupMember) && $incidentManagementGroupMember) || array_intersect($user->getRoles(), [
                         'site_administrator',
                         'administrator'
                         ])
                     ) {
-                        return AccessResult::allowed();
+                      return AccessResult::allowed();
                     }
                 }else{
                     $states = \Drupal::database()->select('downtimes','d')
@@ -100,12 +103,12 @@ class AccessController extends ControllerBase
                 }
                 $group = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
                 $groupMember = $group->getMember(\Drupal::currentUser());
-                if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
-                    $roles = $groupMember->getRoles();
-                    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-                        return AccessResult::allowed();
-                    }
-                    return AccessResult::forbidden();
+                if ($groupMember && group_request_status($groupMember)) {
+                  $roles = $groupMember->getRoles();
+                  if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+                      return AccessResult::allowed();
+                  }
+                  return AccessResult::forbidden();
                 }
             }
             //$checkGroupNode = \Drupal::database()->select('group_content_field_data','gcfd')
@@ -199,8 +202,8 @@ class AccessController extends ControllerBase
                 if (!$content && !$releaseMember) {
                     return AccessResult::forbidden();
                 } else {
-                    if (($content !== FALSE) && !$node->isPublished() && $content->getGroupContent()->get('request_status')->value == 1) {
-                        return AccessResult::allowed();
+                    if (($content !== FALSE) && !$node->isPublished() && group_request_status($content)) {
+                      return AccessResult::allowed();
                     }
                 }
             }
@@ -237,7 +240,7 @@ class AccessController extends ControllerBase
         if ($group = \Drupal\group\Entity\group::load(GEPLANTE_BLOCKZEITEN)) {
             $content = $group->getMember($user);
             $incidentGroupMember = \Drupal\group\Entity\group::load(INCIDENT_MANAGEMENT)->getMember($user);
-            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && $content->getGroupContent()->get('request_status')->value == 1 && $incidentGroupMember && $incidentGroupMember->getGroupContent()->get('request_status')->value == 1) {
+            if ($content && $loadedGroup->id() == INCIDENT_MANAGEMENT && group_request_status($content) && $incidentGroupMember && group_request_status($incidentGroupMember)) {
                 return AccessResult::allowed();
             } else {
                 return AccessResult::forbidden();
@@ -268,7 +271,7 @@ class AccessController extends ControllerBase
                 $group = \Drupal\group\Entity\Group::load($group);
             }
             $groupMember = $group->getMember(\Drupal::currentUser());
-            if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+            if ($groupMember && group_request_status($groupMember)) {
                 $roles = $groupMember->getRoles();
                 if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                     return AccessResult::allowed();
@@ -310,7 +313,7 @@ class AccessController extends ControllerBase
         if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
           return AccessResult::allowed();
         }
-        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        if ($groupMember && group_request_status($groupMember)) {
           $userData = \Drupal::service('user.data');
           $rw_comments_permission = $userData->get('cust_group', $user->id(), 'rw_comments_permission');
           if ($rw_comments_permission) {
@@ -348,8 +351,7 @@ class AccessController extends ControllerBase
     //Checking permission for Group Admin
     $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
     $incidentManagementGroupMember = $incidentManagement->getMember($currentUser);
-    if ($incidentManagementGroupMember && $incidentManagementGroupMember->getGroupContent()
-        ->get('request_status')->value == 1) {
+    if ($incidentManagementGroupMember && group_request_status($incidentManagementGroupMember)) {
       $roles = $incidentManagementGroupMember->getRoles();
       if (in_array($incidentManagement->getGroupType()->id() . '-admin', array_keys($roles))) {
         return AccessResult::allowed();
@@ -446,7 +448,7 @@ class AccessController extends ControllerBase
       } elseif ($group_id == QUICKINFO) {
         if ($plugin_id == 'group_node:quickinfo') {
           $content = $group->getMember(\Drupal::currentUser());
-          if ($content && $content->getGroupContent()->get('request_status')->value == 1) {
+          if ($content && group_request_status($content)) {
             return AccessResult::allowed();
           } else {
             return AccessResult::forbidden();

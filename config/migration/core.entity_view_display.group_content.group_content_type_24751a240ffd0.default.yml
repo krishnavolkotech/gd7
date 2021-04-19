@@ -1,0 +1,37 @@
+uuid: 9af4856c-2b48-401e-838e-51cdf297ae9a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.group_content.group_content_type_24751a240ffd0.grequest_status
+    - field.field.group_content.group_content_type_24751a240ffd0.grequest_updated_by
+    - group.content_type.group_content_type_24751a240ffd0
+id: group_content.group_content_type_24751a240ffd0.default
+targetEntityType: group_content
+bundle: group_content_type_24751a240ffd0
+mode: default
+content:
+  grequest_status:
+    type: number_integer
+    weight: -4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    region: content
+  grequest_updated_by:
+    label: above
+    type: entity_reference_label
+    settings:
+      link: true
+    weight: -3
+    third_party_settings: {  }
+    region: content
+hidden:
+  entity_id: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  uid: true

@@ -11,7 +11,7 @@ id: zentrale_release_manag-a416e6833
 label: Administrator
 weight: 2
 internal: true
-audience: outsider
+audience: member
 group_type: zentrale_release_manag
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

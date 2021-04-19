@@ -11,7 +11,7 @@ id: downtimes-a007929fd
 label: 'group member(Not in use)'
 weight: 3
 internal: true
-audience: outsider
+audience: member
 group_type: downtimes
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

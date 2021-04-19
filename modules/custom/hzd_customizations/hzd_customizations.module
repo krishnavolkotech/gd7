@@ -190,13 +190,8 @@ function hzd_customizations_group_view(array &$build, EntityInterface $entity, E
       if ($group instanceof Group) {
         //$groupTypeId = $group->getGroupType()->id();
         $groupMember = $group->getMember($user);
-        if (($groupMember && $groupMember->getGroupContent()
-                        ->get('request_status')->value == 1
-                ) || (array_intersect($user->getRoles(), [
-                    'site_administrator',
-                    'administrator'
-                ]))
-        ) {
+
+        if (($groupMember && group_request_status($groupMember)) || (array_intersect($user->getRoles(), ['site_administrator','administrator']))) {
           $build['field_einfuehrung']['#access'] = FALSE;
           $build['field_description']['#access'] = TRUE;
           $build['field_group_body']['#access'] = TRUE;
@@ -242,6 +237,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $user = \Drupal::service('current_user');
   $uid = $user->id();
   $raw_name = $user->getDisplayName();
+  if(strpos($form_id, 'group_membership_group-join_form') !== FALSE) {
+    $form['actions']['submit']['#submit'][] = 'custom_redirect_member_add';
+  }
+  if(strpos($form_id, 'group_membership_group-leave_form') !== FALSE) {
+    $form['actions']['submit']['#submit'][] = 'custom_redirect_member_leave';
+  }
   if(strpos($form_id, 'views_form_groups_faq_category_') !== FALSE){
     $status = FALSE;
     if (\Drupal::currentUser()->hasPermission('access draggableviews')) {
@@ -253,7 +254,7 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
             $group = \Drupal\group\Entity\Group::load($group);
         }
         $groupMember = $group->getMember(\Drupal::currentUser());
-        if ($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1) {
+        if ($groupMember && group_request_status($groupMember)) {
             $roles = $groupMember->getRoles();
             if (\Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())) {
                 $status = TRUE;
@@ -541,6 +542,17 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 //  echo $form_id;exit;
 }
 
+function custom_redirect_member_add($form, FormStateInterface $form_state) {
+  $group = \Drupal::routeMatch()->getParameter('group');
+
+  if ($group->access('view')) {
+    $form_state->setRedirectUrl($group->toUrl());
+  }
+}
+
+function custom_redirect_member_leave($form, FormStateInterface $form_state) {
+    $form_state->setRedirectUrl(Url::fromUri('internal:/gruppen'));
+}
 function node_revisions_revert_confirm_custom($form, FormStateInterface $form_state) {
       $nodeid = \Drupal::routeMatch()->getParameter('node');
       $form_state->setRedirect('entity.node.canonical', ['node' => $nodeid] );
@@ -795,13 +807,18 @@ function get_last_unix_time($block_name) {
 
   return $last_unix_time;
 }
-
+function hzd_customizations_local_tasks_alter(&$local_tasks) {
+  if(isset($local_tasks['group.content'])) {
+    //unset($local_tasks['group.content']['base_route']);
+  }
+}
 function private_group_member_view_access_check($group) {
     $user = \Drupal::currentUser();
     $groupMember = $group->getMember($user);
-    if (($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1)
+
+    if (($groupMember && group_request_status($groupMember))
             || $user->id() == 1 || in_array('site_administrator', $user->getRoles())) {
-      return TRUE;
+        return TRUE;
     }
     return FALSE;
 }
@@ -831,8 +848,8 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
                 $groupMember = $result->_entity->getMember($user);
                 $roles = $groupMember->getRoles();
                 if(!$result->_entity->isPublished() && $groupMember
-                        && $groupMember->getGroupContent()->get('request_status')->value == 1
-                        && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
+                && group_request_status($groupMember)
+                && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
                     unset($view -> result[$key]);
                 }
             }
@@ -1185,7 +1202,7 @@ function hzd_customizations_preprocess_block(&$variables) {
 
     // If the internal path starts with 'forum', we might want to modify the UI.
     if ('forum' == $parts[0]) {
-      $groupid = \Drupal::entityQuery('group')
+      $groupid = \Drupal::entityQuery('group')->accessCheck(FALSE)
               ->condition('field_forum_containers', $parts[1], '=')
               ->execute();
       if (NULL == $groupid) {
@@ -1193,7 +1210,7 @@ function hzd_customizations_preprocess_block(&$variables) {
                 ->getStorage('taxonomy_term');
         $parents = $storage->loadParents($parts[1]);
         $ptid = key($parents);
-        $groupid = \Drupal::entityQuery('group')
+        $groupid = \Drupal::entityQuery('group')->accessCheck(FALSE)
                 ->condition('field_forum_containers', $ptid, '=')
                 ->execute();
       }

@@ -125,9 +125,9 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             '#attributes' => $disabled,
             '#required' => TRUE,
         );
-        
+
         if ($form_id == 'user_register_form') {
-            $gids = \Drupal::entityQuery('group')->condition('type', ['open'], 'IN')->condition('status',1)->sort('label')->execute();
+            $gids = \Drupal::entityQuery('group')->accessCheck(FALSE)->condition('type', 'open')->condition('status',1)->sort('label')->execute();
             //sort($gids);
             $groupsList = \Drupal\group\Entity\Group::loadMultiple($gids);
             $groups = [];
@@ -226,13 +226,13 @@ function hzd_user_customizations_user_insert($user) {
     if (isset($covid_group)) {
       $preselected[COVID_INFO] = COVID_INFO;
     }
-   
+
     if(!empty($_POST['groups'])) {
         $groupData = $_POST['groups'];
         $finalgroups = array_merge($groupData, $preselected);
     } else {
         $finalgroups = $preselected;
-    }  
+    }
     if($finalgroups) {
         foreach ($finalgroups as $gid) {
             $group = \Drupal\group\Entity\Group::load($gid);
@@ -314,7 +314,7 @@ function hzd_group_list($uid, $no_html = false) {
     $result->join('group_content_field_data', 'gcfd', 'gfd.id = gcfd.gid');
     $result->fields('gfd', array('id', 'label'))
         ->condition('gcfd.entity_id', $uid)
-        ->condition('request_status', 1)
+        // ->condition('request_status', 1)
         ->orderBy('label', 'ASC');
     $val = $result->execute()->fetchAll();
     if (!$no_html) {

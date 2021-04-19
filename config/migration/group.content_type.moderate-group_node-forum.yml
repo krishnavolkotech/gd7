@@ -1,5 +1,5 @@
 uuid: 55001cf9-8869-4542-afd2-afc1064ea387
-langcode: de
+langcode: en
 status: true
 dependencies:
   config:
@@ -13,7 +13,4 @@ label: 'Moderiert: Gruppe (Forenthema)'
 description: 'Adds <em class="placeholder">Forenthema</em> content to groups both publicly and privately.'
 group_type: moderate
 content_plugin: 'group_node:forum'
-plugin_config:
-  group_cardinality: 0
-  entity_cardinality: 1
-  use_creation_wizard: false
+plugin_config: null

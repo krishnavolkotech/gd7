@@ -1,0 +1,13 @@
+diff --git a/group.module b/group.module
+index e8fd221..f027925 100644
+--- a/group.module
++++ b/group.module
+@@ -405,7 +405,7 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
+     }
+   }
+ 
+-  $access = $has_access ? AccessResult::allowed() : AccessResult::forbidden();
++  $access = $has_access ? AccessResult::allowed() : AccessResult::neutral();
+   if ($owner_access) {
+     $access->cachePerUser();
+   }

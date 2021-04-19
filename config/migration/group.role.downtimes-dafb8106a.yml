@@ -11,7 +11,7 @@ id: downtimes-dafb8106a
 label: 'Site Administrator'
 weight: 5
 internal: true
-audience: outsider
+audience: member
 group_type: downtimes
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

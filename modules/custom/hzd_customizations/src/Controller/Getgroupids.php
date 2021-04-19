@@ -22,7 +22,7 @@ class Getgroupids extends ControllerBase {
    * Menu callback; presents the node editing form, or redirects to delete confirmation.
    */
   public function get_group_ids() {
-    $query = \Drupal::entityQuery('group')->sort('id', 'ASC')->execute();
+    $query = \Drupal::entityQuery('group')->accessCheck(FALSE)->sort('id', 'ASC')->execute();
     // $query = [31=>31,32=>32];.
     $header = array(t('Group Name'), t('Group Id'));
     foreach ($query as $row) {

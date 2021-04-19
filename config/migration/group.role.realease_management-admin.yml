@@ -12,10 +12,10 @@ audience: member
 group_type: realease_management
 permissions_ui: true
 permissions:
-  - 'edit group'
-  - 'view group'
-  - 'administer members'
-  - 'access group_membership overview'
-  - 'view group_membership content'
-  - 'leave group'
-  - 'access group_node overview'
+  0: 'edit group'
+  1: 'administer members'
+  2: 'access group_membership overview'
+  3: 'view group_membership content'
+  4: 'leave group'
+  9: 'view group'
+  10: 'access group_node overview'

@@ -11,7 +11,7 @@ id: moderate-4583ada7b
 label: 'group administrator(Not in use)'
 weight: 4
 internal: true
-audience: outsider
+audience: member
 group_type: moderate
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

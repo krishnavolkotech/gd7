@@ -1,0 +1,15 @@
+uuid: 35059b3e-c636-4b96-b9f8-4f82c4b3a4a2
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+  module:
+    - grequest
+    - user
+id: group_content_type_58a8289e9c89a
+label: 'Moderiert: Group membership request'
+description: 'Adds users as requesters for the group.'
+group_type: moderate
+content_plugin: group_membership_request
+plugin_config: null

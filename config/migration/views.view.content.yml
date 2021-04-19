@@ -161,7 +161,7 @@ display:
           id: title
           table: node_field_data
           field: title
-          label: Titel
+          label: Title
           exclude: false
           alter:
             alter_text: false
@@ -184,7 +184,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Inhaltstyp
+          label: Type
           exclude: false
           alter:
             alter_text: false
@@ -429,7 +429,7 @@ display:
           exposed: true
           expose:
             operator_id: type_op
-            label: Inhaltstyp
+            label: Type
             description: ''
             use_operator: false
             operator: type_op
@@ -472,7 +472,7 @@ display:
           exposed: true
           expose:
             operator_id: title_op
-            label: Titel
+            label: Title
             description: ''
             use_operator: false
             operator: title_op

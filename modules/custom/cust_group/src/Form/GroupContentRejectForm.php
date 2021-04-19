@@ -63,7 +63,6 @@ class GroupContentRejectForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $entity = $this->entity;
     $entity->delete();
-
     $grouplabel = $this->entity->get('gid')->referencedEntities()[0]->label();
     $subject = t("Membership Request for a Group - @groupLabel has been rejected", ['@groupLabel' => $grouplabel]);
     $mailManager = \Drupal::service('plugin.manager.mail');

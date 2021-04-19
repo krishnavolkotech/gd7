@@ -1,5 +1,5 @@
 uuid: 7466ae9f-8c07-4766-b411-dfda5bc976b5
-langcode: de
+langcode: en
 status: true
 dependencies:
   config:
@@ -13,7 +13,4 @@ label: 'Offen: Gruppeninhalt (Artefakt Kommentar)'
 description: '<em class="placeholder">Artefakt Kommentar</em> in der Gruppe erstellen'
 group_type: open
 content_plugin: 'group_node:artefakt_kommentar'
-plugin_config:
-  group_cardinality: 0
-  entity_cardinality: 1
-  use_creation_wizard: false
+plugin_config: null

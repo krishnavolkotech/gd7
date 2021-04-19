@@ -96,7 +96,7 @@ class BulkMailGroupMembersForm extends FormBase {
     $groupMembers = $group->getContent('group_membership');
     foreach ($groupMembers as $user){
       // $user = $groupMember->getGroupContent();
-      if($user->getEntity()->isActive() && $user->get('request_status')->value == 1 && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
+      if($user->getEntity()->isActive() && hzd_user_inactive_status_check($user->getEntity()->id()) == FALSE){
         $mailToGroupMember[] = $user->getEntity()->id();
 //          break;
       }
@@ -112,7 +112,7 @@ class BulkMailGroupMembersForm extends FormBase {
         )
       );
     }
-    
+
     //dsm($group_members_list);
     $batch = array(
       'title' => t('Mass mail to group members...'),
@@ -122,5 +122,5 @@ class BulkMailGroupMembersForm extends FormBase {
     );
     batch_set($batch);
   }
-  
+
 }

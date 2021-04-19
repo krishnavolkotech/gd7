@@ -1,0 +1,13 @@
+diff --git a/core/lib/Drupal/Core/TypedData/Validation/RecursiveContextualValidator.php b/core/lib/Drupal/Core/TypedData/Validation/RecursiveContextualValidator.php
+index 90513008f..f4431f03e 100644
+--- a/core/lib/Drupal/Core/TypedData/Validation/RecursiveContextualValidator.php
++++ b/core/lib/Drupal/Core/TypedData/Validation/RecursiveContextualValidator.php
+@@ -126,7 +126,7 @@ protected function validateNode(TypedDataInterface $data, $constraints = NULL, $
+ 
+     $metadata = $this->metadataFactory->getMetadataFor($data);
+     $cache_key = spl_object_hash($data);
+-    $property_path = $is_root_call ? '' : PropertyPath::append($previous_path, $data->getName());
++    $property_path = $is_root_call ? '' : PropertyPath::append((string)$previous_path, (string)$data->getName());
+ 
+     // Prefer a specific instance of the typed data manager stored by the data
+     // if it is available. This is necessary for specialized typed data objects,

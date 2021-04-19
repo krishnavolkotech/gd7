@@ -54,9 +54,12 @@ class GroupActions extends FieldPluginBase {
     $group = $values->_entity;
     $link = '';
     $user = \Drupal::currentUser();
+
     $groupMember = $group->getMember($user);
-    if($groupMember && $groupMember->getGroupContent()->get('request_status')->value == 1){
-            $roles = $groupMember->getRoles();
+
+    
+    if ($groupMember && group_request_status($groupMember)) {
+        $roles = $groupMember->getRoles();
             if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
                 $link = $this->t('<span title="Gruppenadministratoren können eine Gruppe nicht verlassen"><i>Gruppenadmin</i></span>');
             } else {
@@ -73,17 +76,22 @@ class GroupActions extends FieldPluginBase {
         if($group->bundle() == 'open'){
           $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
           $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
-        }elseif(in_array($group->bundle(),['moderate','moderate_private', 'closed', 'closed_private'])){
-          $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
+        }
+	//elseif(in_array($group->bundle(),['moderate','moderate_private', 'closed', 'closed_private'])){
+       elseif (in_array($group->bundle(),['moderate','moderate_private'])){
+          $url = Url::fromRoute('entity.group.group_request_membership',['group'=>$group->id()]);
           $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
-        }        
+        }
+	elseif (in_array($group->bundle(),['closed', 'closed_private'])){
+          $link = $this->t('Closed');
+        }
     }elseif($group->bundle() == 'open'){
       $url = Url::fromRoute('entity.group.join',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Join Group'), $url);
     } elseif($group->bundle() == 'closed') {
         $link = $this->t('Closed');
     }elseif(in_array($group->bundle(),['moderate','moderate_private'])){
-      $url = Url::fromRoute('entity.group.request',['group'=>$group->id()]);
+      $url = Url::fromRoute('entity.group.group_request_membership',['group'=>$group->id()]);
       $link = \Drupal::service('link_generator')->generate($this->t('Request Membership'), $url);
     }elseif(\Drupal::currentUser()->id() == 1){
       $link == 'admin';
