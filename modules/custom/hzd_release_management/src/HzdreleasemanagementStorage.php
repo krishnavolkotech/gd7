@@ -516,14 +516,18 @@ $inprogress_nid_values = [];
 
       // Checked documentation link empty or not.
       if ($link != '') {
+
+        // Trigger download/delete only if link contains "aspx" (new download method)
+        if (strpos($link, 'aspx') === false) {
+          return;
+        }
+
         /* Check It is new release or not
          * Check Release status changes from inprogress to released
          * Check how many times release import attempted.If three attempts unsuccesssful failure is perment.
          * Check released release date/time changed or not.
          */
-
         if ((!$title) || ($field_release_value == 2 && $field_release_type_value == 1) || (($count_nid < 3) && ($count_nid >= 0)) || (($field_date_value != $values_date) && ($field_release_type_value == 1))) {
-
           $removePreviousData = 0;
           if (($values_date != $field_date_value) || ($field_release_value == 2 && $field_release_type_value == 1) || $field_documentation_link_value != $link) {
             $removePreviousData = 1;
@@ -767,8 +771,14 @@ $inprogress_nid_values = [];
    */
   static public function release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid) {
     try {
-
-      shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
+      // 1. Cookie speichern
+      shell_exec("wget -S -4 -q -O '/dev/null' --post-data 'ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$cpnlLoginType\$tbUserName=" . $username . "&ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$cpnlLoginType\$tbPassword=" . $password . "&ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$btnLogin=&__VIEWSTATE=' 'https://softvw-referenz-lfst.bayern.doi-de.net/DSLKONSENSPortal/Login.aspx' --no-check-certificate --keep-session-cookies --save-cookies='/tmp/dslkonsensportal.cookie'");
+      
+      //2. Dokudownload mit Verwendung des Cookies
+      shell_exec("wget -S -4 -O '" . $paths . "/" . $compressed_file . "' '". $link . "' --no-check-certificate --keep-session-cookies --load-cookies='/tmp/dslkonsensportal.cookie'");
+      
+      // Old download method (Emergency Backup). Check documentation_link_download().
+      //  shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
       $dokument_path = $paths;
       $remove_quotes = str_replace("'", "", $paths);
       $download_directory = scandir($remove_quotes);
