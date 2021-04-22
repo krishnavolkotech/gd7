@@ -48,8 +48,13 @@ class ProblemFilterFrom extends FormBase
         $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
         $query->Fields('nfd', array('nid', 'title'));
         $query->condition('gpv.group_id', $group_id, '=');
+        //Filter services with minimum one problem/release.
+        $query->join('node__field_services', 'nfs', 'nfd.nid=nfs.field_services_target_id');
         $query->orderBy('nfd.title','asc');
         $service = $query->execute()->fetchAll();
+
+        //select field_services_target_id from node_field_data nfd join node__field_services nfs where nfd.nid=nfs.entity_id and nfd.type='problem' group by field_services_target_id;
+
         foreach ($service as $services) {
           $serviceEntity = \Drupal\node\Entity\Node::load($services->nid);
 //          if(!empty($serviceEntity->get('field_problem_name')->value)){
