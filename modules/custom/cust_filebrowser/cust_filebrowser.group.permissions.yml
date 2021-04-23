@@ -1,0 +1,14 @@
+delete files:
+  title: 'delete files'
+edit description:
+  title: 'edit description'
+create folders:
+  title: 'create folders'
+upload files:
+  title: 'upload files'
+rename files:
+  title: 'rename files'
+download archive:
+  title: 'download archive'
+download files:
+  title: 'download files'
