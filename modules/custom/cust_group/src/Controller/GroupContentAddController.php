@@ -13,14 +13,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class GroupContentAddController extends GroupContentController {
-  
+
   public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityTypeManagerInterface $entity_type_manager, EntityFormBuilderInterface $entity_form_builder, RendererInterface $renderer) {
     $this->privateTempStoreFactory = $temp_store_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->entityFormBuilder = $entity_form_builder;
     $this->renderer = $renderer;
   }
-  
+
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('user.private_tempstore'),
@@ -29,8 +29,8 @@ class GroupContentAddController extends GroupContentController {
       $container->get('renderer')
     );
   }
-  
-  
+
+
   public function addPage(GroupInterface $group, $create_mode = FALSE) {
     $build = parent::addPage($group,true);
     if($build instanceof RedirectResponse){
@@ -38,7 +38,7 @@ class GroupContentAddController extends GroupContentController {
     }
 //    $contentTypes = ['page','faqs','newsletter','forum'];
     //removed newsletter content type from content being created
-    $contentTypes = ['page','faqs','forum'];
+    $contentTypes = ['page','faqs','forum', 'dir_listing'];
     if($group->id() == QUICKINFO){
       $contentTypes[] = 'quickinfo';
     }
@@ -64,7 +64,7 @@ class GroupContentAddController extends GroupContentController {
 $this->renderer->addCacheableDependency($build,0);
     return $build;
   }
-  
+
 protected function isContentCreatable($type,$types){
     $contentEnablerManager = \Drupal::service('plugin.manager.group_content_enabler');
     foreach ($types as $val){
