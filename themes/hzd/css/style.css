@@ -3341,6 +3341,9 @@ header .block-cust-group-search-block button {
     margin: 0;
     padding: 0;
 }
+.custom-search-facet label {
+    font-weight: 400;
+}
 .path-search .view-solr-search .view-content ul li {
     width: 100%;
     float: left;
@@ -3410,7 +3413,7 @@ table.cke_dialog_contents table tr td.cke_dialog_ui_hbox_child select{
 
 .view-solr-search {
 /*  margin-bottom:20px !important; */
-    float:left;
+    /*float:left;*/
     padding: 0 5rem;
 }
 

@@ -1321,7 +1321,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
       (isset($params['f']) || isset($params['created'])  )) {
     $variables['display_filter'] = 1;
   }
-  $rows = $variables['rows'][0]['#rows'];
+  $rows = isset($variables['rows'][0]) ? $variables['rows'][0]['#rows'] : [];
+
   $all_content_types = NodeType::loadMultiple();
   $contentTypes = [];
   foreach ($all_content_types as $machine_name => $content_type) {
@@ -1465,8 +1466,8 @@ function search_limit_groups($type, $menus) {
   */
   $active_group = '';
   $active_class_id = '';
-  if (isset($param['f'])) {
-    $active = explode(':',$param['f'][0]);
+  if (isset($param['f']['group_filter'])) {
+    $active = explode(':',$param['f']['group_filter']);
     if (isset($active[1]) && (isset($param['fulltext']) && $param['fulltext']
     != '')) {
         $active_class_id = $active[1];
@@ -1481,13 +1482,16 @@ function search_limit_groups($type, $menus) {
       $itsm_links = $menus[$type];
   }
 
+
   foreach($itsm_links as $menu_id => $groupData) {
       $group = $groupData['label'];
       $id = $groupData['id'];
+
       $options = [
           'fulltext' => isset($param['fulltext'])?$param['fulltext']:'',
-          'f[0]' => 'parent_group:'.$id
+          'f' => isset($param['f']) ? $param['f'] : [],
       ];
+      $options['f']['group_filter'] = 'parent_group:'.$id;
       if (isset($param['created'])) {
         $options['created'] = $param['created'];
       }
@@ -1523,9 +1527,7 @@ function content_timing_filter() {
   $created = [];
   $active_time = '';
   foreach($timings as $id => $text) {
-    if ($id != 'all') {
-      $params['created'] = $id;
-    }
+    $params['created'] = $id;
     $active = '';
     if ($active_class_id == $id) {
       $active = 'active';
