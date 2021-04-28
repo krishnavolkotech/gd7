@@ -1,0 +1,8 @@
+name: HZD React Module
+description: Progressively Decoupling Drupal
+package: Custom
+
+type: module
+core_version_requirement: ^8.8 || ^9
+libraries:
+  - hzd_react_theme/react_app

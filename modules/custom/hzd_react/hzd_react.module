@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+// function hzd_react_page_attachments_alter(array &$attachments) {
+//   // Use the dev library if we're developing locally.
+//   if (in_array('hzd_react/react_app', $attachments['#attached']['library']) && file_exists(__DIR__ . '/js/dist_dev')) {
+//     $index = array_search('hzd_react/react_app', $attachments['#attached']['library']);
+//     $attachments['#attached']['library'][$index] = 'hzd_react/react_app_dev';
+//   }
+// }
+
+/**
+ * Implements hook_theme().
+ */
+function hzd_react_theme() {
+  return [
+    'node__article' => [
+      'template' => 'node--article',
+      'base hook' => 'node'
+    ],
+  ];
+}
+
+function hzd_react_page_attachments(array &$page) { 
+  $page['#attached']['library'][] = 'hzd_react/react_app_dev';
+}

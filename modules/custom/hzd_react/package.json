@@ -1,0 +1,33 @@
+{
+  "name": "hzd_react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "js/src/index.jsx",
+  "scripts": {
+    "build": "NODE_ENV=production webpack --mode=production",
+    "build:dev": "webpack",
+    "start": "webpack --watch",
+    "start:hmr": "webpack-dev-server --hot --progress --colors --disable-host-check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@hot-loader/react-dom": "^16.13.0",
+    "react-bootstrap": "^0.33.1",
+    "react-hot-loader": "^4.13.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
+  }
+}

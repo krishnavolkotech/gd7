@@ -1,0 +1,15 @@
+hzd_react.entry:
+  path: '/r'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'React'
+  requirements:
+    _permission: 'access content'
+hzd_react.page:
+  path: '/r/{reactPage}'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'React'
+  requirements:
+    _permission: 'access content'
+
