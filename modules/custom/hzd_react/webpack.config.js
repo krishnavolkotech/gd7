@@ -2,7 +2,7 @@ const path = require('path');
 const isDevMode = process.env.NODE_ENV !== 'production';
 
 // const PROXY = 'https://react-tutorials-2.ddev.site/';
-const PROXY = 'http://localhost/';
+const PROXY = 'http://tebpk2.dev.intern/';
 const PUBLIC_PATH = '/modules/custom/hzd_react/js/dist_dev/';
 
 const config = {
@@ -43,9 +43,9 @@ const config = {
     ],
   },
   devServer: {
-    port: 8181,
+    port: 8080,
     hot: true,
-    https: true,
+    https: false,
     writeToDisk: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     // Settings for http-proxy-middleware.

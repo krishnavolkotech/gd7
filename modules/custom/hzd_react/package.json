@@ -7,7 +7,8 @@
     "build": "NODE_ENV=production webpack --mode=production",
     "build:dev": "webpack",
     "start": "webpack --watch",
-    "start:hmr": "webpack-dev-server --hot --progress --colors --disable-host-check"
+    "start:hmr": "webpack-dev-server --hot --progress --colors --disable-host-check",
+    "start:hmr-remote": "webpack-dev-server --hot --progress --colors --disable-host-check --host 0.0.0.0"
   },
   "keywords": [],
   "author": "",

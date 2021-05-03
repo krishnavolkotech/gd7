@@ -13,13 +13,14 @@ class ReactController extends ControllerBase {
    * Display the markup.
    *
    * @return array
-   *  Return markup array.
+   *   Return markup array.
    */
   public function content($reactPage = NULL) {
     return [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-      '#attached' => ['library' => 'hzd_react/react_app_dev']
+      '#attached' => ['library' => 'hzd_react/react_app_dev'],
     ];
   }
+
 }
