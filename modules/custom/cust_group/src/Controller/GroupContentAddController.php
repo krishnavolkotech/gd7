@@ -11,14 +11,16 @@ use Drupal\group\Entity\GroupInterface;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use \Drupal\Core\Session\AccountProxyInterface;
 
 class GroupContentAddController extends GroupContentController {
 
-  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityTypeManagerInterface $entity_type_manager, EntityFormBuilderInterface $entity_form_builder, RendererInterface $renderer) {
+  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityTypeManagerInterface $entity_type_manager, EntityFormBuilderInterface $entity_form_builder, RendererInterface $renderer, AccountProxyInterface $account) {
     $this->privateTempStoreFactory = $temp_store_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->entityFormBuilder = $entity_form_builder;
     $this->renderer = $renderer;
+    $this->currentUser = $account;
   }
 
   public static function create(ContainerInterface $container) {
@@ -26,7 +28,8 @@ class GroupContentAddController extends GroupContentController {
       $container->get('user.private_tempstore'),
       $container->get('entity_type.manager'),
       $container->get('entity.form_builder'),
-      $container->get('renderer')
+      $container->get('renderer'),
+      $container->get('current_user'),
     );
   }
 
@@ -38,7 +41,7 @@ class GroupContentAddController extends GroupContentController {
     }
 //    $contentTypes = ['page','faqs','newsletter','forum'];
     //removed newsletter content type from content being created
-    $contentTypes = ['page','faqs','forum', 'dir_listing'];
+    $contentTypes = ['page','faqs','forum'];
     if($group->id() == QUICKINFO){
       $contentTypes[] = 'quickinfo';
     }
@@ -53,6 +56,12 @@ class GroupContentAddController extends GroupContentController {
       $contentTypes[] = 'risk_cluster';
       $contentTypes[] = 'measure';
     }
+
+    // Site-Admin actions.
+    if (in_array("site_administrator", $this->currentUser()->getRoles())) {
+      $contentTypes[] = 'dir_listing';
+    }
+
     foreach($build['#bundles'] as $key=>$type){
       if(!$this->isContentCreatable($key,$contentTypes)){
 //      if((strpos($key,'page') === false) && (strpos($key,'faqs') === false) && (strpos($key,'newsletter') === false)){
