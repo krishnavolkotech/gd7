@@ -44,7 +44,8 @@ Drupal.behaviors.hzd = {
 	    $('.search-time-filters-content').toggleClass('hidden');
 	});
 
-
+        //Trigger checkbox click on clicking label as well.
+        jQuery('.custom-search-facet li label').click(function(){console.log(jQuery(this).parent().children('input').click());});
 	$('.custom-facets-checkbox').change(function() {
           //if($(this).is(":checked")) {
           //}
