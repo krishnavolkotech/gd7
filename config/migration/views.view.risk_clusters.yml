@@ -570,9 +570,10 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: route.group
+        4: user.group_permissions
       tags:
         - 'config:field.storage.node.field_risk_id'
   clusters:
@@ -614,8 +615,9 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: route.group
+        4: user.group_permissions
       tags:
         - 'config:field.storage.node.field_risk_id'

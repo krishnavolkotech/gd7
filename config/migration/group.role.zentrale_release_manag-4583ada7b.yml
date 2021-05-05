@@ -11,7 +11,7 @@ id: zentrale_release_manag-4583ada7b
 label: 'group administrator(Not in use)'
 weight: 4
 internal: true
-audience: outsider
+audience: member
 group_type: zentrale_release_manag
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

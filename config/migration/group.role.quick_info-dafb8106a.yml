@@ -11,7 +11,7 @@ id: quick_info-dafb8106a
 label: 'Site Administrator'
 weight: 5
 internal: true
-audience: outsider
+audience: member
 group_type: quick_info
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

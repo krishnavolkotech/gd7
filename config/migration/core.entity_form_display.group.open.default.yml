@@ -33,6 +33,16 @@ content:
     third_party_settings: {  }
     type: text_textarea
     region: content
+  field_forum_containers:
+    type: entity_reference_autocomplete
+    weight: 7
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_group_body:
     weight: 3
     settings:
@@ -75,6 +85,5 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
-  field_forum_containers: true
   field_old_reference: true
   uid: true

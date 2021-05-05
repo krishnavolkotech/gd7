@@ -1,0 +1,8 @@
+uuid: ec668eb3-ea39-46e9-8bb0-f480ef9d9269
+langcode: de
+status: true
+dependencies: {  }
+id: menu-80302
+label: 'ZPS GVD-Master'
+description: ''
+locked: false

@@ -8,7 +8,7 @@ id: node.faqs.title
 field_name: title
 entity_type: node
 bundle: faqs
-label: Title
+label: Titel
 description: ''
 required: true
 translatable: true

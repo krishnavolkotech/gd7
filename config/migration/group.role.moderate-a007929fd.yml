@@ -11,7 +11,7 @@ id: moderate-a007929fd
 label: 'group member(Not in use)'
 weight: 3
 internal: true
-audience: outsider
+audience: member
 group_type: moderate
-permissions_ui: false
+permissions_ui: true
 permissions: {  }

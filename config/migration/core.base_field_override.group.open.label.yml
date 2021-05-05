@@ -8,7 +8,7 @@ id: group.open.label
 field_name: label
 entity_type: group
 bundle: open
-label: Title
+label: Titel
 description: ''
 required: true
 translatable: true

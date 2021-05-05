@@ -516,6 +516,12 @@ $inprogress_nid_values = [];
 
       // Checked documentation link empty or not.
       if ($link != '') {
+
+        // Trigger download/delete only if link contains "aspx" (new download method)
+        if (strpos($link, 'aspx') === false) {
+          return;
+        }
+
         /* Check It is new release or not
          * Check Release status changes from inprogress to released
          * Check how many times release import attempted.If three attempts unsuccesssful failure is perment.
@@ -767,8 +773,14 @@ $inprogress_nid_values = [];
    */
   static public function release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid) {
     try {
+      // 1. Cookie speichern
+      shell_exec("wget -S -4 -q -O '/dev/null' --post-data 'ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$cpnlLoginType\$tbUserName=" . $username . "&ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$cpnlLoginType\$tbPassword=" . $password . "&ctl00\$ctl00\$RootSplitter\$ContentContentPlaceHolder\$MainContentPlaceHolder\$pnlLogin\$btnLogin=&__VIEWSTATE=' 'https://softvw-lfst.bayern.testa-de.net/DSLKONSENSPortal/Login.aspx' --no-check-certificate --keep-session-cookies --save-cookies='/tmp/dslkonsensportal.cookie'");
 
-      shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
+      //2. Dokudownload mit Verwendung des Cookies
+      shell_exec("wget -S -4 -O '" . $paths . "/" . $compressed_file . "' '". $link . "' --no-check-certificate --keep-session-cookies --load-cookies='/tmp/dslkonsensportal.cookie'");
+      
+      // Old download method (Emergency Backup). Check documentation_link_download().
+      //shell_exec("wget --no-check-certificate --user='" . $username . "'  --password='" . $password . "' -P " . $paths . "  " . $link);
       $dokument_path = $paths;
       $remove_quotes = str_replace("'", "", $paths);
       $download_directory = scandir($remove_quotes);

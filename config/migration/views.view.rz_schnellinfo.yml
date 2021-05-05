@@ -816,11 +816,12 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: url
+        4: url.query_args
+        5: route.group
+        6: user.group_permissions
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -1628,10 +1629,11 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_interface'
-        - url
-        - url.query_args
+        1: 'languages:language_interface'
+        2: url
+        3: url.query_args
+        4: route.group
+        5: user.group_permissions
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'
@@ -2455,11 +2457,12 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - group_membership.roles.permissions
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
+        1: 'languages:language_content'
+        2: 'languages:language_interface'
+        3: url
+        4: url.query_args
+        5: route.group
+        6: user.group_permissions
       tags:
         - 'config:field.storage.node.field_author_state'
         - 'config:field.storage.node.field_other_services'

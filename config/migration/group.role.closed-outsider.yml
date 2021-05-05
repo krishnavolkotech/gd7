@@ -11,4 +11,6 @@ internal: true
 audience: outsider
 group_type: closed
 permissions_ui: true
-permissions: {  }
+permissions:
+  - 'restrict group'
+  - 'view group'
