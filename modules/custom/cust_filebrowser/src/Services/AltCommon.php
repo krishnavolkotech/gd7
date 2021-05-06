@@ -5,7 +5,8 @@ namespace Drupal\cust_filebrowser\Services;
 use Drupal\filebrowser\Services\Common;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\Group;
-
+use Drupal\node\NodeInterface;
+use \Drupal\Core\Session\AccountProxy;
 /**
  * Override to set CSV filename when exported.
  */
@@ -52,6 +53,7 @@ class AltCommon extends Common {
 
     // Crash, wenn benutzer abgemeldet ist
     if ($account->isAuthenticated()) {
+      // @todo Richtige Gruppe laden.
       $group = Group::load(2);
       // $group = reset(GroupContent::loadByEntity($node))->getGroup();
     }
@@ -109,7 +111,7 @@ class AltCommon extends Common {
         'type' => 'button',
       ];
     }
-    if ($this->canDownloadArchive($node) && function_exists('zip_open')) {
+    if ($this->canDownloadArchiveModified($node, $group, $account) && function_exists('zip_open')) {
       $actions[] = [
         'operation' => 'archive',
         'title' => $this->t('Download archive'),
@@ -118,5 +120,16 @@ class AltCommon extends Common {
       ];
     }
     return $actions;
+  }
+
+  /**
+   * Check if user can download ZIP archives.
+   * @param NodeInterface $node Node containing the filebrowser
+   * @return bool
+   */
+  function canDownloadArchiveModified(NodeInterface $node, Group $group, AccountProxy $account) {
+    $download_archive = $node->filebrowser->downloadArchive;
+    return ($node->access('view') && $download_archive && $group
+        ->hasPermission(Common::DOWNLOAD_ARCHIVE, $account));
   }
 }

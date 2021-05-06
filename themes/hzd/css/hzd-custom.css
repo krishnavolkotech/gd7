@@ -1618,9 +1618,9 @@ span.field-content::first-letter {
 }
 
 .cust-filebrowser-actions .btn-default:hover {
-    color: #333 !important;
-    background-color: #e6e6e6 !important;
-    border-color: #adadad !important;
+  color: #333 !important;
+  background-color: #e6e6e6 !important;
+  border-color: #adadad !important;
 }
 
 .cust-filebrowser-actions .btn-danger {
@@ -1628,7 +1628,6 @@ span.field-content::first-letter {
 }
 
 .cust-filebrowser-actions .btn-danger:hover {
-    color: #fff !important;
-    background-color: #c9302c !important;
-    border-color: #ac2925 !important;
+  color: #fff !important;
+  background-color: #c9302c !important;
 }
