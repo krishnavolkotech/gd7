@@ -47,10 +47,19 @@ Drupal.behaviors.hzd = {
         //Trigger checkbox click on clicking label as well.
         jQuery('.custom-search-facet li label').click(function(){console.log(jQuery(this).parent().children('input').click());});
 	$('.custom-facets-checkbox').change(function() {
+          var search_txt = $('#edit-fulltext').val();
           //if($(this).is(":checked")) {
           //}
           var href = $(this).next().next().attr('href');
-          window.location.href = href;
+          var base_url = window.location.protocol + '//' + window.location.host;
+          var url = new URL(base_url + '/' + href);
+          var search_params = url.searchParams;
+          //Updating the search string if user has types a new keyword in the search field.
+          search_params.set('fulltext', search_txt);
+          var query = search_params.toString();
+          var target_url = window.location.pathname + "?" + query;
+          //window.location.href = href;
+          window.location.href = target_url;
           jQuery('.custom-facets-checkbox').attr("disabled", true);
         });
 
