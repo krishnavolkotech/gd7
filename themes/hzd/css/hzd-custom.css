@@ -1474,6 +1474,10 @@ span.glyphicon.down-arrow {
 .limit-block-content li {
     list-style: none;
     padding: .2rem 0px .2rem 0px;
+    -webkit-hyphens : auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
 }
 
 .search-time-filters-content,
@@ -1573,6 +1577,7 @@ span.field-content::first-letter {
     float: left;
     margin-right: 2rem;
     margin-left: 1rem;
+    margin-bottom: 1rem;
 }
 
 .reset-button a{
