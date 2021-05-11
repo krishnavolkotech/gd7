@@ -1478,6 +1478,7 @@ span.glyphicon.down-arrow {
     -moz-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
+    word-wrap: break-word;
 }
 
 .search-time-filters-content,

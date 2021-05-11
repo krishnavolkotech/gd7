@@ -3347,6 +3347,7 @@ header .block-cust-group-search-block button {
     -moz-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
+    word-wrap: break-word;
 }
 .path-search .view-solr-search .view-content ul li {
     width: 100%;
