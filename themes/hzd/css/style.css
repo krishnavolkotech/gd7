@@ -3343,6 +3343,10 @@ header .block-cust-group-search-block button {
 }
 .custom-search-facet label {
     font-weight: 400;
+    -webkit-hyphens : auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
 }
 .path-search .view-solr-search .view-content ul li {
     width: 100%;

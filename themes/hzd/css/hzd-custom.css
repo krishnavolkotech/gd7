@@ -1512,7 +1512,11 @@ span.glyphicon.down-arrow {
 li.facet-item {
     list-style: none;
 }
-
+li.facet-item,
+li.facet-item input,
+li.facet-item label {
+    cursor: pointer;
+}
 ul.custom-search-facet,
 ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget {
     padding: 0;
