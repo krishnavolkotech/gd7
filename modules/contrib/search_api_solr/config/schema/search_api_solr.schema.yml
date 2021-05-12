@@ -93,6 +93,16 @@ search_api.index.*.third_party.search_api_solr:
         interestingTerms:
           type: string
           label: 'Controls how the MoreLikeThis component presents the "interesting" terms (the top TF/IDF terms) for the query. Supports three settings. The setting "list" lists the terms. The setting "none" lists no terms. The setting "details" lists the terms along with the boost value used for each term. Unless mlt.boost=true, all terms will have boost=1.0.'
+    term_modifiers:
+      type: mapping
+      label: 'term modifiers'
+      mapping:
+        slop:
+          type: integer
+          label: 'The distance referred to here is the number of term movements needed to match the specified phrase.'
+        fuzzy:
+          type: integer
+          label: 'Damerau-Levenshtein Distance or Edit Distance for fuzzy searches.'
     advanced:
       type: mapping
       label: 'advanced settings'
@@ -100,6 +110,12 @@ search_api.index.*.third_party.search_api_solr:
         index_prefix:
           type: string
           label: 'The prefix for the Solr index'
+        collection:
+          type: string
+          label: 'If the server uses a Solr Cloud connector, this setting overwrites the configured default collection if set.'
+        timezone:
+          type: string
+          label: 'Forces a time zone to be set for every query targeting this index.'
     multilingual:
       type: mapping
       label: 'multilingual settings'
@@ -110,3 +126,55 @@ search_api.index.*.third_party.search_api_solr:
         include_language_independent:
           type: boolean
           label: 'Include languages independent content in search results'
+
+search_api_solr.solr_configs:
+  type: mapping
+  mapping:
+    searchComponents:
+      type: sequence
+      nullable: true
+      sequence:
+        type: mapping
+        mapping:
+          name:
+            type: string
+            label: 'The search component name'
+          class:
+            type: string
+            label: 'The search component class'
+          lst:
+            type: search_api_solr.list
+            nullable: true
+          str:
+            type: search_api_solr.scalar_values
+            nullable: true
+
+search_api_solr.list:
+  type: sequence
+  sequence:
+    type: mapping
+    mapping:
+      name:
+        type: string
+        label: 'name'
+      str:
+        type: search_api_solr.scalar_values
+      int:
+        type: search_api_solr.scalar_values
+      float:
+        type: search_api_solr.scalar_values
+      bool:
+        type: search_api_solr.scalar_values
+
+search_api_solr.scalar_values:
+  type: sequence
+  sequence:
+    type: mapping
+    mapping:
+      name:
+        type: string
+        label: 'property name'
+        nullable: true
+      VALUE:
+        type: string
+        label: 'property value'

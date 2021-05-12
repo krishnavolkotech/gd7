@@ -28,9 +28,16 @@ class AddHierarchyTest extends SearchApiAddHierarchyTest {
   /**
    * {@inheritdoc}
    */
-  public function setUp($processor = NULL) {
+  public function setUp($processor = NULL): void {
     parent::setUp();
-    $this->enableSolrServer('search_api_solr_test', '/config/install/search_api.server.solr_search_server.yml');
+    $this->enableSolrServer();
+  }
+
+  /**
+   *
+   */
+  public function testRegression3059312() {
+    $this->markTestSkipped('This test makes no sense on Solr.');
   }
 
 }

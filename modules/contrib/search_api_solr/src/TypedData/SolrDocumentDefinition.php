@@ -25,10 +25,12 @@ class SolrDocumentDefinition extends ComplexDataDefinitionBase implements SolrDo
    *
    * @return static
    */
-  public static function create($index_id) {
-    $definition['type'] = 'solr_document:' . $index_id;
+  public static function create($index_id = NULL) {
+    $definition['type'] = $index_id ? 'solr_document:' . $index_id : 'solr_document';
     $document_definition = new static($definition);
-    $document_definition->setIndexId($index_id);
+    if ($index_id) {
+      $document_definition->setIndexId($index_id);
+    }
     return $document_definition;
   }
 
@@ -36,13 +38,11 @@ class SolrDocumentDefinition extends ComplexDataDefinitionBase implements SolrDo
    * {@inheritdoc}
    */
   public static function createFromDataType($data_type) {
-    // The data type should be in the form of "solr_document:$index_id".
+    // The data type should be in the form of "solr_document:$index_id" or
+    // "solr_multisite_document:$index_id".
     $parts = explode(':', $data_type, 2);
-    if ($parts[0] !== 'solr_document') {
-      throw new \InvalidArgumentException('Data type must be in the form of "solr_document:INDEX_ID".');
-    }
-    if (empty($parts[1])) {
-      throw new \InvalidArgumentException('A Search API Index must be specified.');
+    if (!in_array($parts[0], ['solr_document', 'solr_multisite_document'])) {
+      throw new \InvalidArgumentException('Data type must be in the form of "solr_document:INDEX_ID" or solr_multisite_document:INDEX_ID.');
     }
 
     return self::create($parts[1]);

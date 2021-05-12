@@ -11,6 +11,8 @@ use Drupal\search_api\Entity\Server;
  * Tests location searches and distance facets using the Solr search backend.
  *
  * @group search_api_solr
+ * @group not_solr3
+ * @group not_solr4
  */
 class SearchApiSolrLocationTest extends SolrBackendTestBase {
 
@@ -23,21 +25,9 @@ class SearchApiSolrLocationTest extends SolrBackendTestBase {
     'language',
     'search_api_location',
     'search_api_test_example_content',
-    'search_api_solr_test',
     'entity_test',
     'geofield',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function installConfigs() {
-    parent::installConfigs();
-
-    $this->installConfig([
-      'search_api_solr_test',
-    ]);
-  }
 
   /**
    * Required parts of the setUp() function that are the same for all backends.

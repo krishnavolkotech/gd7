@@ -7,7 +7,7 @@ dependencies:
   config:
     - language.entity.zh-hans
 id: text_zh-hans_7_0_0
-label: 'Chinese Text Field'
+label: 'Simplified Chinese Text Field'
 minimum_solr_version: 7.0.0
 field_type_language_code: zh-hans
 domains: { }
@@ -19,19 +19,58 @@ field_type:
     -
       type: index
       tokenizer:
-        class: org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer
+        class: solr.HMMChineseTokenizerFactory
       filters:
         -
           class: solr.CJKWidthFilterFactory
+        -
+          class: solr.StopFilterFactory
+          words: org/apache/lucene/analysis/cn/smart/stopwords.txt
+        -
+          class: solr.PorterStemFilterFactory
         -
           class: solr.LowerCaseFilterFactory
     -
       type: query
       tokenizer:
-        class: org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer
+        class: solr.HMMChineseTokenizerFactory
       filters:
         -
           class: solr.CJKWidthFilterFactory
+        -
+          class: solr.StopFilterFactory
+          words: org/apache/lucene/analysis/cn/smart/stopwords.txt
+        -
+          class: solr.PorterStemFilterFactory
+        -
+          class: solr.LowerCaseFilterFactory
+unstemmed_field_type:
+  name: text_unstemmed_zh_hans
+  class: solr.TextField
+  positionIncrementGap: 100
+  analyzers:
+    -
+      type: index
+      tokenizer:
+        class: solr.HMMChineseTokenizerFactory
+      filters:
+        -
+          class: solr.CJKWidthFilterFactory
+        -
+          class: solr.StopFilterFactory
+          words: org/apache/lucene/analysis/cn/smart/stopwords.txt
+        -
+          class: solr.LowerCaseFilterFactory
+    -
+      type: query
+      tokenizer:
+        class: solr.HMMChineseTokenizerFactory
+      filters:
+        -
+          class: solr.CJKWidthFilterFactory
+        -
+          class: solr.StopFilterFactory
+          words: org/apache/lucene/analysis/cn/smart/stopwords.txt
         -
           class: solr.LowerCaseFilterFactory
 spellcheck_field_type:
@@ -40,12 +79,12 @@ spellcheck_field_type:
   positionIncrementGap: 100
   analyzer:
     tokenizer:
-      class: org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer
+      class: solr.HMMChineseTokenizerFactory
     filters:
       -
         class: solr.CJKWidthFilterFactory
-        min: 2
-        max: 100
+      -
+        class: solr.LowerCaseFilterFactory
 collated_field_type:
   name: collated_zh-hans
   class: solr.ICUCollationField
