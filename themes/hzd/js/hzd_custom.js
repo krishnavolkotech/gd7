@@ -84,7 +84,9 @@ Drupal.behaviors.hzd = {
                 var target_url = window.location.pathname + "?" + query;
                 window.location.href = target_url;
             }
+            //When one filter is clicked, disable the rest
             $('.custom-facets-checkbox').attr("disabled", true);
+            $('.custom-search-facet .facet-item').off('click');
         });
           //jQuery('.custom-search-facet li label').click(function(){console.log(jQuery(this).parent().children('input').click());});
       /*$('.custom-facets-checkbox').change(function() {
