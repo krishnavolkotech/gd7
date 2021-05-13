@@ -60,6 +60,11 @@ class Date extends FormElement {
    *   The processed element.
    */
   public static function processDate(&$element, FormStateInterface $form_state, &$complete_form) {
+    // Set a default type if a type has not already been set, this helps prevent
+    // errors if attributes have been added to the element without a type
+    // attribute.
+    $element['#attributes'] += ['type' => 'date'];
+
     // Attach JS support for the date field, if we can determine which date
     // format should be used.
     if ($element['#attributes']['type'] == 'date' && !empty($element['#date_date_format'])) {
@@ -87,9 +92,6 @@ class Date extends FormElement {
    *   The $element with prepared variables ready for #theme 'input__date'.
    */
   public static function preRenderDate($element) {
-    if (empty($element['#attributes']['type'])) {
-      $element['#attributes']['type'] = 'date';
-    }
     Element::setAttributes($element, ['id', 'name', 'type', 'min', 'max', 'step', 'value', 'size']);
     static::setAttributes($element, ['form-' . $element['#attributes']['type']]);
 
