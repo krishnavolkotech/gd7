@@ -791,10 +791,10 @@ table tr.odd {
     background: transparent !important;
     border-bottom: 1px solid #dddddd;
 }
-.table-hover > tbody> tr:hover,
+/* .table-hover > tbody> tr:hover,
 table tr.even:hover {
     background: none !important;
-}
+} */
 .region-user-menu .block-hzd-header-links {
     width: 45%;
     float: right;
