@@ -1,5 +1,5 @@
 import React from 'react';
-
+import FilterableReleaseTable from './FilterableReleaseTable';
 class ReleaseManagementDashboard extends React.Component {
   constructor(props) {
     super(props);

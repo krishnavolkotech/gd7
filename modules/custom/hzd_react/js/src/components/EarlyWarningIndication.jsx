@@ -17,6 +17,7 @@ function EarlyWarningIndication({ releaseNid, serviceNid }) {
     // console.log(fetchUrl);
 
     // Fetch associated service title.
+    setEarlyWarnings('');
     fetch(fetchUrl, { headers })
       .then(response => response.json())
       .then(results => {

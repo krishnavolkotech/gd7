@@ -1,47 +1,92 @@
 import React, { useState, useEffect } from 'react';
+import useQuery from '../hooks/hooks';
 import { fetchWithCSRFToken } from "../utils/fetch";
 import ReleaseTable from './ReleaseTable';
 import ReleaseFilter from './ReleaseFilter';
 import ReleasePager from './ReleasePager';
+import { useHistory } from 'react-router-dom';
 
 function FilterableReleaseTable() {
-  const path = window.location.pathname;
-  const [ data, setData ] = useState([]);
-      
-  useEffect(() => {
-    console.log("Fetching data ...");
-    // let fetchUrl = '/jsonapi/node/release';
-//     sort[sort-created][path]=created
-// sort[sort-created][direction]=DESC
-    let fetchUrl = '/jsonapi/node/release?include=field_relese_services&page[offset]=0&page[limit]=20&sort[sort-changed][path]=changed&sort[sort-changed][direction]=DESC';
-    let filter = '?';
+  // Um URL Parameter ändern zu können.
+  const history = useHistory();
+
+  // Release-Daten.
+  const [data, setData] = useState([]);
+
+  // True, wenn keine Daten geladen werden können.
+  const [timeout, setTimeout] = useState(false);
+
+  // Verfahrensfilter basierend auf URL Parameter.
+  const query = useQuery();
+  const serviceSelection = query.has("service") ? query.get("service") : "default";
+  const [serviceFilter, setServiceFilter] = useState(serviceSelection);
+
+  // Funktion zum ändern des Verfahrensfilter. Ausgelöst durch
+  // ReleaseFilter-Komponente.
+  const handleServiceFilter = (e) => {
+    setServiceFilter(e.target.value);
+  }
+
+  const handleReset = () => {
+    console.log("Reset-Handled");
+    setServiceFilter('default');
+  }
+
+  if (serviceFilter !== 'default') {
+    var serviceFilterUrl = '&filter[field_relese_services.title][value]=' + serviceFilter;
+  }
+
+  const fetchData = () => {
+    const fetchUrl = '/jsonapi/node/release';
+    const defaultFilter = '?include=field_relese_services&page[limit]=20&sort[sort-date][path]=field_date&sort[sort-date][direction]=DESC&filter[field_release_type]=1';
+    let url = fetchUrl + defaultFilter;
+    url += (typeof serviceFilterUrl !== 'undefined') ? serviceFilterUrl : '';
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
     const csrfUrl = `/session/token?_format=json`;
-    fetch(fetchUrl, {headers})
+    setData([]);
+    setTimeout(false);
+    fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        let releaseData = results.data.map(( release ) => {
+        let releaseData = results.data.map((release) => {
           // Search included relationship for associated service name.
           const relId = release.relationships.field_relese_services.data.id;
           const relatedServiceObject = results.included.find(({ id }) => id === relId);
           const relatedServiceName = relatedServiceObject.attributes.field_release_name;
           const relatedServiceNid = relatedServiceObject.attributes.drupal_internal__nid;
-          console.log(relatedServiceNid);
           release.service = relatedServiceName;
           release.serviceNid = relatedServiceNid;
           return release;
         });
+        if (releaseData.length === 0) setTimeout(true);
         setData(releaseData);
       })
       .catch(error => console.log("error", error));
-  }, []);
+  }
+
+  useEffect(() => {
+    // Change URL Params
+    const params = new URLSearchParams();
+    if (serviceFilter !== "default") {
+      params.append("service", serviceFilter);
+    } else {
+      params.delete("service");
+    }
+    history.push({ search: params.toString() });
+
+    fetchData();
+  }, [serviceFilter]);
 
   return (
     <div>
-      <ReleaseFilter />
-      <ReleaseTable releases={data}/>
+      <ReleaseFilter 
+        serviceFilter={serviceFilter} 
+        handleServiceFilter={handleServiceFilter}
+        handleReset={handleReset}
+      />
+      <ReleaseTable releases={data} timeout={timeout} />
       <ReleasePager />
     </div>
   );

@@ -5,7 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import ReleaseManagementDashboard from "./ReleaseManagement";
+import ReleaseManagementDashboard from "./ReleaseManagementDashboard";
 
 class App extends React.Component {
   constructor(props) {
@@ -37,7 +37,6 @@ class App extends React.Component {
             </Route>
             <Route path="/r/releases">
               <ReleaseManagementDashboard />
-              {/* <Bla /> */}
             </Route>
           </Switch>
         </div>
