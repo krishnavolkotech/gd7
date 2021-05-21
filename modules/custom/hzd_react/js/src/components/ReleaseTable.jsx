@@ -56,7 +56,7 @@ function ReleaseTable({ releases, timeout }) {
               <td>{release.attributes.title}</td>
               <td>{release.attributes.field_status}</td>
               <td>{humanDateFormat}</td>
-              <EarlyWarningIndication releaseNid={release.attributes.drupal_internal__nid} service={release.serviceNid} />
+              <EarlyWarningIndication release={ release } />
               <td><ReleaseActions /></td>
             </tr>
           )
