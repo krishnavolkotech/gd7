@@ -27,7 +27,7 @@
         "drupal/admin_toolbar": "^2.4",
         "drupal/block_class": "^1.0@alpha",
         "drupal/block_upload": "1.x-dev",
-        "drupal/ctools": "^3.0",
+        "drupal/ctools": "^3.6",
         "drupal/field_group": "^3.1",
         "drupal/field_permissions": "^1.0@beta",
         "drupal/filefield_paths": "^1.0@beta",
