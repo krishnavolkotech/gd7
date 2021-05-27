@@ -63,7 +63,7 @@
         "drupal/search_api_solr": "^4.1",
         "drupal/entity_print": "^2.2",
         "drupal/pathauto": "^1.8",
-        "drupal/facets": "1.6",
+        "drupal/facets": "^1.8",
         "drupal/core": "8.9.13",
         "sabberworm/php-css-parser": "^8.3.1",
         "phenx/php-svg-lib": "^0.3.3",
