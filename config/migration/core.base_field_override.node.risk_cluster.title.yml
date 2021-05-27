@@ -1,13 +1,13 @@
-uuid: 2bc62aa8-5c0c-4f48-a6ab-673c94d641bc
-langcode: en
+uuid: 400eeab6-4c88-4f2c-845c-4356ddca7981
+langcode: de
 status: true
 dependencies:
   config:
-    - node.type.news
-id: node.news.title
+    - node.type.risk_cluster
+id: node.risk_cluster.title
 field_name: title
 entity_type: node
-bundle: news
+bundle: risk_cluster
 label: Titel
 description: ''
 required: true
