@@ -86,7 +86,6 @@ class QueryString extends UrlProcessorPluginBase {
     $facet_source_path = $facet->getFacetSource()->getPath();
     $request = $this->getRequestByFacetSourcePath($facet_source_path);
     $requestUrl = $this->getUrlForRequest($facet_source_path, $request);
-    $routeParameters = $this->getUrlRouteParameters();
 
     $original_filter_params = [];
     foreach ($this->getActiveFilters() as $facet_id => $values) {
@@ -125,25 +124,33 @@ class QueryString extends UrlProcessorPluginBase {
             unset($filter_params[$key]);
           }
         }
-        if ($facet->getEnableParentWhenChildGetsDisabled() && $facet->getUseHierarchy()) {
-          // Enable parent id again if exists.
-          $parent_ids = $facet->getHierarchyInstance()->getParentIds($result->getRawValue());
-          if (isset($parent_ids[0]) && $parent_ids[0]) {
-            // Get the parents children.
-            $child_ids = $facet->getHierarchyInstance()->getNestedChildIds($parent_ids[0]);
+        if ($facet->getUseHierarchy()) {
+          $id = $result->getRawValue();
 
-            // Check if there are active siblings.
-            $active_sibling = FALSE;
-            if ($child_ids) {
-              foreach ($results as $result2) {
-                if ($result2->isActive() && $result2->getRawValue() != $result->getRawValue() && in_array($result2->getRawValue(), $child_ids)) {
-                  $active_sibling = TRUE;
-                  continue;
+          // Disable child filters.
+          foreach ($facet->getHierarchyInstance()->getNestedChildIds($id) as $child_id) {
+            $filter_params = array_diff($filter_params, [$this->urlAlias . $this->getSeparator() . $child_id]);
+          }
+          if ($facet->getEnableParentWhenChildGetsDisabled()) {
+            // Enable parent id again if exists.
+            $parent_ids = $facet->getHierarchyInstance()->getParentIds($id);
+            if (isset($parent_ids[0]) && $parent_ids[0]) {
+              // Get the parents children.
+              $child_ids = $facet->getHierarchyInstance()->getNestedChildIds($parent_ids[0]);
+
+              // Check if there are active siblings.
+              $active_sibling = FALSE;
+              if ($child_ids) {
+                foreach ($results as $result2) {
+                  if ($result2->isActive() && $result2->getRawValue() != $id && in_array($result2->getRawValue(), $child_ids)) {
+                    $active_sibling = TRUE;
+                    continue;
+                  }
                 }
               }
-            }
-            if (!$active_sibling) {
-              $filter_params[] = $this->urlAlias . $this->getSeparator() . $parent_ids[0];
+              if (!$active_sibling) {
+                $filter_params[] = $this->urlAlias . $this->getSeparator() . $parent_ids[0];
+              }
             }
           }
         }
@@ -155,25 +162,33 @@ class QueryString extends UrlProcessorPluginBase {
           $filter_params[] = $filter_string;
         }
 
+        $parents_and_child_ids = [];
         if ($facet->getUseHierarchy()) {
-          // If hierarchy is active, unset parent trail and every child when
-          // building the enable-link to ensure those are not enabled anymore.
           $parent_ids = $facet->getHierarchyInstance()->getParentIds($result->getRawValue());
           $child_ids = $facet->getHierarchyInstance()->getNestedChildIds($result->getRawValue());
           $parents_and_child_ids = array_merge($parent_ids, $child_ids);
-          foreach ($parents_and_child_ids as $id) {
-            $filter_params = array_diff($filter_params, [$this->urlAlias . $this->getSeparator() . $id]);
+
+          if (!$facet->getKeepHierarchyParentsActive()) {
+            // If hierarchy is active, unset parent trail and every child when
+            // building the enable-link to ensure those are not enabled anymore.
+            foreach ($parents_and_child_ids as $id) {
+              $filter_params = array_diff($filter_params, [$this->urlAlias . $this->getSeparator() . $id]);
+            }
           }
         }
+
         // Exclude currently active results from the filter params if we are in
         // the show_only_one_result mode.
         if ($facet->getShowOnlyOneResult()) {
           foreach ($results as $result2) {
             if ($result2->isActive()) {
-              $active_filter_string = $this->urlAlias . $this->getSeparator() . $result2->getRawValue();
-              foreach ($filter_params as $key2 => $filter_param2) {
-                if ($filter_param2 == $active_filter_string) {
-                  unset($filter_params[$key2]);
+              $id = $result2->getRawValue();
+              if (!in_array($id, $parents_and_child_ids)) {
+                $active_filter_string = $this->urlAlias . $this->getSeparator() . $id;
+                foreach ($filter_params as $key2 => $filter_param2) {
+                  if ($filter_param2 == $active_filter_string) {
+                    unset($filter_params[$key2]);
+                  }
                 }
               }
             }
@@ -182,16 +197,19 @@ class QueryString extends UrlProcessorPluginBase {
       }
 
       // Allow other modules to alter the result url built.
-      $this->eventDispatcher->dispatch(QueryStringCreated::NAME, new QueryStringCreated($result_get_params, $filter_params, $result, $this->activeFilters, $facet));
+      $event = new QueryStringCreated($result_get_params, $filter_params, $result, $this->activeFilters, $facet);
+      $this->eventDispatcher->dispatch(QueryStringCreated::NAME, $event);
+      $filter_params = $event->getFilterParameters();
 
       asort($filter_params, \SORT_NATURAL);
       $result_get_params->set($this->filterKey, array_values($filter_params));
-      if (!empty($routeParameters)) {
-        $url->setRouteParameters($routeParameters);
-      }
 
       if ($result_get_params->all() !== [$this->filterKey => []]) {
         $new_url_params = $result_get_params->all();
+
+        if (empty($new_url_params[$this->filterKey])) {
+          unset($new_url_params[$this->filterKey]);
+        }
 
         // Facet links should be page-less.
         // See https://www.drupal.org/node/2898189.
@@ -242,32 +260,6 @@ class QueryString extends UrlProcessorPluginBase {
     $request->attributes->set('_format', $this->request->get('_format'));
     $requestsByPath[$facet_source_path] = $request;
     return $request;
-  }
-
-  /**
-   * Gets the route parameters from the original request.
-   *
-   * This method statically caches the route parameters for the request, so that
-   * subsequent calls to this processor do not re-run Url::createFromRequest for
-   * the same request.
-   *
-   * @return array
-   *   The route parameters.
-   */
-  protected function getUrlRouteParameters() {
-    $routeParameters = &drupal_static(__CLASS__ . __FUNCTION__, []);
-    if ($routeParameters) {
-      return $routeParameters;
-    }
-
-    // Grab any route params from the original request.
-    try {
-      $routeParameters = Url::createFromRequest($this->request)->getRouteParameters();
-    }
-    catch (ResourceNotFoundException $e) {
-      $routeParameters = [];
-    }
-    return $routeParameters;
   }
 
   /**
