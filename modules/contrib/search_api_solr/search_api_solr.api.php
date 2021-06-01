@@ -119,7 +119,7 @@ function hook_search_api_solr_converted_query_alter(\Solarium\Core\Query\QueryIn
   // If the Search API query has a 'I_know_what_I_am_doing' option set to
   // 'really!', overwrite the 'q' parameter, query handler and add some boost
   // queries.
-  if ($query->getOption('I_know_what_I_am_doing') == 'really!') {
+  if ($query->getOption('I_know_what_I_am_doing') === 'really!') {
     // $solr_field_names maps search_api field names to real field names in
     // the Solr index.
     $solr_field_names = $query->getIndex()->getServerInstance()->getBackend()->getSolrFieldNames($query->getIndex());
@@ -246,6 +246,20 @@ function hook_search_api_solr_config_files_alter(array &$files, string $lucene_m
   $files['solrconfig_extra.xml'] .= "<!-- Append additional stuff -->\n";
   // If you want to modify the existing XML files we recommend to use PHP's DOM
   // API.
+}
+
+/**
+ * Alter the zip archive of newly assembled Solr configuration files.
+ *
+ * @param \ZipStream\ZipStream $files
+ *   Zip archive.
+ * @param string $lucene_match_version
+ *   Lucene (Solr) minor version string.
+ * @param string $server_id
+ *   Optional Search API server id. Will be set in most cases but might be
+ *   empty when the config generation is triggered via UI or drush.
+ */
+function hook_search_api_solr_config_zip_alter(\ZipStream\ZipStream $zip, string $lucene_match_version, string $server_id = '') {
 }
 
 /**

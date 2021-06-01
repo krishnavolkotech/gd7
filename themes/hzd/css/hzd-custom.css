@@ -1474,6 +1474,11 @@ span.glyphicon.down-arrow {
 .limit-block-content li {
     list-style: none;
     padding: .2rem 0px .2rem 0px;
+    -webkit-hyphens : auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    word-wrap: break-word;
 }
 
 .search-time-filters-content,
@@ -1508,7 +1513,11 @@ span.glyphicon.down-arrow {
 li.facet-item {
     list-style: none;
 }
-
+li.facet-item,
+li.facet-item input,
+li.facet-item label {
+    cursor: pointer;
+}
 ul.custom-search-facet,
 ul.facet-inactive.js-facets-checkbox-links.item-list__checkbox.js-facets-widget {
     padding: 0;
@@ -1573,6 +1582,7 @@ span.field-content::first-letter {
     float: left;
     margin-right: 2rem;
     margin-left: 1rem;
+    margin-bottom: 1rem;
 }
 
 .reset-button a{

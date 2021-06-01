@@ -3,8 +3,15 @@
 namespace Drupal\search_api_solr\Utility;
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Drupal\search_api\IndexInterface;
+use Drupal\search_api\ParseMode\ParseModeInterface;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\ServerInterface;
+use Drupal\search_api_solr\Entity\SolrCache;
+use Drupal\search_api_solr\Entity\SolrRequestDispatcher;
+use Drupal\search_api_solr\Entity\SolrRequestHandler;
 use Drupal\search_api_solr\SearchApiSolrException;
 use Drupal\search_api_solr\SolrBackendInterface;
 use Drupal\search_api_solr\SolrFieldTypeInterface;
@@ -111,7 +118,7 @@ class Utility {
 
     // Return the info.
     if (isset($type)) {
-      return isset($types[$type]) ? $types[$type] : NULL;
+      return $types[$type] ?? NULL;
     }
     return $types;
   }
@@ -129,7 +136,7 @@ class Utility {
     // Copied from apachesolr_site_hash().
     if (!($hash = \Drupal::state()->get('search_api_solr.site_hash', FALSE))) {
       global $base_url;
-      $hash = substr(base_convert(sha1(uniqid($base_url, TRUE)), 16, 36), 0, 6);
+      $hash = substr(base_convert(hash('sha256', uniqid($base_url, TRUE)), 16, 36), 0, 6);
       \Drupal::state()->set('search_api_solr.site_hash', $hash);
     }
     return $hash;
@@ -198,7 +205,7 @@ class Utility {
       $snippets = [$snippets];
     }
 
-    $keys = [];
+    $keys = [[]];
 
     foreach ($snippets as $snippet) {
       if (preg_match_all('@\[HIGHLIGHT\](.+?)\[/HIGHLIGHT\]@', $snippet, $matches)) {
@@ -441,7 +448,12 @@ class Utility {
   public static function buildSuggesterContextFilterQuery(array $tags) {
     $cfg = [];
     foreach ($tags as $tag) {
-      $cfg[] = '+' . self::encodeSolrName($tag);
+      if (self::decodeSolrName($tag) === $tag) {
+        $cfg[] = '+' . self::encodeSolrName($tag);
+      }
+      else {
+        $cfg[] = '+' . $tag;
+      }
     }
     return implode(' ', $cfg);
   }
@@ -461,7 +473,7 @@ class Utility {
     if ($custom_code = $solr_field_type->getCustomCode()) {
       $text_file_name .= '_' . $custom_code;
     }
-    return $text_file_name . '_' . $solr_field_type->getFieldTypeLanguageCode() . '.txt';
+    return $text_file_name . '_' . str_replace('-', '_', $solr_field_type->getFieldTypeLanguageCode()) . '.txt';
   }
 
   /**
@@ -481,7 +493,7 @@ class Utility {
     foreach ($parameters as $parameter) {
       if ($parameter) {
         if (strpos($parameter, '=')) {
-          list($name, $value) = explode('=', $parameter);
+          [$name, $value] = explode('=', $parameter);
           $params[urldecode($name)][] = urldecode($value);
         }
         else {
@@ -522,7 +534,16 @@ class Utility {
    * @throws \Drupal\search_api_solr\SearchApiSolrException
    */
   public static function getSortableSolrField(string $field_name, array $solr_field_names, QueryInterface $query) {
+    if (!isset($solr_field_names[$field_name])) {
+      throw new SearchApiSolrException(sprintf('Sort "%s" is not valid solr field.', $field_name));
+    }
+
     $first_solr_field_name = reset($solr_field_names[$field_name]);
+
+    if (Utility::hasIndexJustSolrDocumentDatasource($query->getIndex())) {
+      return $first_solr_field_name;
+    }
+
     // First we need to handle special fields which are prefixed by
     // 'search_api_'. Otherwise they will erroneously be treated as dynamic
     // string fields by the next detection below because they start with an
@@ -542,13 +563,13 @@ class Utility {
       }
     }
     elseif (strpos($first_solr_field_name, 'spellcheck') === 0 || strpos($first_solr_field_name, 'twm_suggest') === 0) {
-      throw new SearchApiSolrException('You can\'t sort by spellcheck or suggester catalogs.');
+      throw new SearchApiSolrException("You can't sort by spellcheck or suggester catalogs.");
     }
     elseif (strpos($first_solr_field_name, 's') === 0 || strpos($first_solr_field_name, 't') === 0) {
       // For string and fulltext fields use the dedicated sort field for faster
       // and language specific sorts. If multiple languages are specified, use
       // the first one.
-      $language_ids = $query->getLanguages();
+      $language_ids = $query->getLanguages() ?? [LanguageInterface::LANGCODE_NOT_SPECIFIED];
       return Utility::encodeSolrName('sort' . SolrBackendInterface::SEARCH_API_SOLR_LANGUAGE_SEPARATOR . reset($language_ids) . '_' . $field_name);
     }
     elseif (preg_match('/^([a-z]+)m(_.*)/', $first_solr_field_name, $matches)) {
@@ -575,8 +596,10 @@ class Utility {
    * the available memory is 2147483629. So we use this a cut-off.
    *
    * @param int $rows
+   *   The number of rows.
    *
    * @return int
+   *   Normalized number of rows.
    */
   public static function normalizeMaxRows(int $rows) {
     $i = 2;
@@ -585,4 +608,540 @@ class Utility {
     }
     return ($i > 2147483629) ? 2147483629 : $i;
   }
+
+  /**
+   * Flattens keys and fields into a single search string.
+   *
+   * Formatting the keys into a Solr query can be a bit complex. Keep in mind
+   * that the default operator is OR. For some combinations we had to take
+   * decisions because different interpretations are possible and we have to
+   * ensure that stop words in boolean combinations don't lead to zero results.
+   * Therefore this function will produce these queries:
+   *
+   * Careful interpreting this, phrase  and sloppy phrase queries will represent
+   * different phrases as A & B. To be very clear, A could equal multiple words.
+   *
+   * @code
+   * #conjunction | #negation | fields | parse mode     | return value
+   * ---------------------------------------------------------------------------
+   * AND          | FALSE     | []     | terms / phrase | +(+A +B)
+   * AND          | TRUE      | []     | terms / phrase | -(+A +B)
+   * OR           | FALSE     | []     | terms / phrase | +(A B)
+   * OR           | TRUE      | []     | terms / phrase | -(A B)
+   * AND          | FALSE     | [x]    | terms / phrase | +(x:(+A +B)^1)
+   * AND          | TRUE      | [x]    | terms / phrase | -(x:(+A +B)^1)
+   * OR           | FALSE     | [x]    | terms / phrase | +(x:(A B)^1)
+   * OR           | TRUE      | [x]    | terms / phrase | -(x:(A B)^1)
+   * AND          | FALSE     | [x,y]  | terms          | +((+(x:A^1 y:A^1) +(x:B^1 y:B^1)) x:(+A +B)^1 y:(+A +B)^1)
+   * AND          | FALSE     | [x,y]  | phrase         | +(x:(+A +B)^1 y:(+A +B)^1)
+   * AND          | TRUE      | [x,y]  | terms          | -((+(x:A^1 y:A^1) +(x:B^1 y:B^1)) x:(+A +B)^1 y:(+A +B)^1)
+   * AND          | TRUE      | [x,y]  | phrase         | -(x:(+A +B)^1 y:(+A +B)^1)
+   * OR           | FALSE     | [x,y]  | terms          | +(((x:A^1 y:A^1) (x:B^1 y:B^1)) x:(A B)^1 y:(A B)^1)
+   * OR           | FALSE     | [x,y]  | phrase         | +(x:(A B)^1 y:(A B)^1)
+   * OR           | TRUE      | [x,y]  | terms          | -(((x:A^1 y:A^1) (x:B^1 y:B^1)) x:(A B)^1 y:(A B)^1)
+   * OR           | TRUE      | [x,y]  | phrase         | -(x:(A B)^1 y:(A B)^1)
+   * AND          | FALSE     | [x,y]  | sloppy_terms   | +(x:(+"A"~10000000 +"B"~10000000)^1 y:(+"A"~10000000 +"B"~10000000)^1)
+   * AND          | TRUE      | [x,y]  | sloppy_terms   | -(x:(+"A"~10000000 +"B"~10000000)^1 y:(+"A"~10000000 +"B"~10000000)^1)
+   * OR           | FALSE     | [x,y]  | sloppy_terms   | +(x:("A"~10000000 "B"~10000000)^1 y:("A"~10000000 "B"~10000000)^1)
+   * OR           | TRUE      | [x,y]  | sloppy_terms   | -(x:("A"~10000000 "B"~10000000)^1 y:("A"~10000000 "B"~10000000)^1)
+   * AND          | FALSE     | [x,y]  | sloppy_phrase  | +(x:(+"A"~10000000 +"B"~10000000)^1 y:(+"A"~10000000 +"B"~10000000)^1)
+   * AND          | TRUE      | [x,y]  | sloppy_phrase  | -(x:(+"A"~10000000 +"B"~10000000)^1 y:(+"A"~10000000 +"B"~10000000)^1)
+   * OR           | FALSE     | [x,y]  | sloppy_phrase  | +(x:("A"~10000000 "B"~10000000)^1 y:("A"~10000000 "B"~10000000)^1)
+   * OR           | TRUE      | [x,y]  | sloppy_phrase  | -(x:("A"~10000000 "B"~10000000)^1 y:("A"~10000000 "B"~10000000)^1)
+   * AND          | FALSE     | [x,y]  | edismax        | +({!edismax qf=x^1,y^1}+A +B)
+   * AND          | TRUE      | [x,y]  | edismax        | -({!edismax qf=x^1,y^1}+A +B)
+   * OR           | FALSE     | [x,y]  | edismax        | +({!edismax qf=x^1,y^1}A B)
+   * OR           | TRUE      | [x,y]  | edismax        | -({!edismax qf=x^1,y^1}A B)
+   * AND / OR     | FALSE     | [x]    | direct         | +(x:(A)^1)
+   * AND / OR     | TRUE      | [x]    | direct         | -(x:(A)^1)
+   * AND / OR     | FALSE     | [x,y]  | direct         | +(x:(A)^1 y:(A)^1)
+   * AND / OR     | TRUE      | [x,y]  | direct         | -(x:(A)^1 y:(A)^1)
+   * AND          | FALSE     | []     | keys           | +A +B
+   * AND          | TRUE      | []     | keys           | -(+A +B)
+   * OR           | FALSE     | []     | keys           | A B
+   * OR           | TRUE      | []     | keys           | -(A B)
+   * @endcode
+   *
+   * @param array|string $keys
+   *   The keys array to flatten, formatted as specified by
+   *   \Drupal\search_api\Query\QueryInterface::getKeys() or a phrase string.
+   * @param array $fields
+   *   (optional) An array of field names.
+   * @param string $parse_mode_id
+   *   (optional) The parse mode ID. Defaults to "phrase".
+   * @param array $options
+   *   (optional) An array of options.
+   *
+   * @return string
+   *   A Solr query string representing the same keys.
+   *
+   * @throws \Drupal\search_api_solr\SearchApiSolrException
+   */
+  public static function flattenKeys($keys, array $fields = [], string $parse_mode_id = 'phrase', array $options = []): string {
+    switch ($parse_mode_id) {
+      case 'keys':
+        if (!empty($fields)) {
+          throw new SearchApiSolrException(sprintf('Parse mode %s could not handle fields.', $parse_mode_id));
+        }
+        break;
+
+      case 'edismax':
+      case 'direct':
+        if (empty($fields)) {
+          throw new SearchApiSolrException(sprintf('Parse mode %s requires fields.', $parse_mode_id));
+        }
+        break;
+    }
+
+    $k = [];
+    $pre = '+';
+    $neg = '';
+    $query_parts = [];
+    $sloppiness = '';
+    $fuzziness = '';
+
+    if (is_array($keys)) {
+      $queryHelper = \Drupal::service('solarium.query_helper');
+
+      if (isset($keys['#conjunction']) && $keys['#conjunction'] === 'OR') {
+        $pre = '';
+      }
+
+      if (!empty($keys['#negation'])) {
+        $neg = '-';
+      }
+
+      $escaped = $keys['#escaped'] ?? FALSE;
+
+      foreach ($keys as $key_nr => $key) {
+        // We cannot use \Drupal\Core\Render\Element::children() anymore because
+        // $keys is not a valid render array.
+        if (!$key || strpos($key_nr, '#') === 0) {
+          continue;
+        }
+        if (is_array($key)) {
+          if ('edismax' === $parse_mode_id) {
+            throw new SearchApiSolrException('Incompatible parse mode.');
+          }
+          if ($subkeys = self::flattenKeys($key, $fields, $parse_mode_id, $options)) {
+            $query_parts[] = $subkeys;
+          }
+        }
+        elseif ($escaped) {
+          $k[] = trim($key);
+        }
+        else {
+          $key = trim($key);
+          switch ($parse_mode_id) {
+            // Using the 'phrase' or 'sloppy_phrase' parse mode, Search API
+            // provides one big phrase as keys. Using the 'terms' parse mode,
+            // Search API provides chunks of single terms as keys. But these
+            // chunks might contain not just real terms but again a phrase if
+            // you enter something like this in the search box:
+            // term1 "term2 as phrase" term3.
+            // This will be converted in this keys array:
+            // ['term1', 'term2 as phrase', 'term3'].
+            // To have Solr behave like the database backend, these three
+            // "terms" should be handled like three phrases.
+            case 'terms':
+            case 'sloppy_terms':
+            case 'phrase':
+            case 'sloppy_phrase':
+            case 'edismax':
+            case 'keys':
+              $k[] = $queryHelper->escapePhrase($key);
+              break;
+
+            case 'fuzzy_terms':
+              if (strpos($key, ' ')) {
+                $k[] = $queryHelper->escapePhrase($key);
+              }
+              else {
+                $k[] = $queryHelper->escapeTerm($key);
+              }
+              break;
+
+            default:
+              throw new SearchApiSolrException('Incompatible parse mode.');
+          }
+        }
+      }
+    }
+    elseif (is_string($keys)) {
+      switch ($parse_mode_id) {
+        case 'direct':
+          $pre = '';
+          $k[] = '(' . trim($keys) . ')';
+          break;
+
+        default:
+          throw new SearchApiSolrException('Incompatible parse mode.');
+      }
+    }
+
+    if ($k) {
+      switch ($parse_mode_id) {
+        case 'edismax':
+          $query_parts[] = "({!edismax qf='" . implode(' ', $fields) . "'}" . $pre . implode(' ' . $pre, $k) . ')';
+          break;
+
+        case 'keys':
+          $query_parts[] = $pre . implode(' ' . $pre, $k);
+          break;
+
+        case 'sloppy_terms':
+        case 'sloppy_phrase':
+          if (isset($options['slop'])) {
+            $sloppiness = '~' . $options['slop'];
+          }
+          // No break! Execute 'default', too. 'terms' will be skipped when $k
+          // just contains one element.
+        case 'fuzzy_terms':
+          if (!$sloppiness && isset($options['fuzzy'])) {
+            $fuzziness = '~' . $options['fuzzy'];
+          }
+          // No break! Execute 'default', too. 'terms' will be skipped when $k
+          // just contains one element.
+        case 'terms':
+          if (count($k) > 1 && count($fields) > 0) {
+            $key_parts = [];
+            foreach ($k as $l) {
+              $field_parts = [];
+              foreach ($fields as $f) {
+                $field = $f;
+                $boost = '';
+                // Split on operators:
+                // - boost (^)
+                // - fixed score (^=)
+                if ($split = preg_split('/([\^])/', $f, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) {
+                  $field = array_shift($split);
+                  $boost = implode('', $split);
+                }
+                $field_parts[] = $field . ':' . $l . $boost;
+              }
+              $key_parts[] = $pre . '(' . implode(' ', $field_parts) . ')';
+            }
+            $query_parts[] = '(' . implode(' ', $key_parts) . ')';
+          }
+          // No break! Execute 'default', too.
+        default:
+          foreach ($k as &$term_or_phrase) {
+            // Just add sloppiness when if we really have a phrase, indicated
+            // by double quotes and terms separated by blanks.
+            if ($sloppiness && strpos($term_or_phrase, ' ') && strpos($term_or_phrase, '"') === 0) {
+              $term_or_phrase .= $sloppiness;
+            }
+            // Otherwise just add fuzziness when if we really have a term.
+            elseif ($fuzziness && !strpos($term_or_phrase, ' ') && strpos($term_or_phrase, '"') !== 0) {
+              $term_or_phrase .= $fuzziness;
+            }
+            unset($term_or_phrase);
+          }
+
+          if (count($fields) > 0) {
+            foreach ($fields as $f) {
+              $field = $f;
+              $boost = '';
+              // Split on operators:
+              // - boost (^)
+              // - fixed score (^=)
+              if ($split = preg_split('/([\^])/', $f, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) {
+                $field = array_shift($split);
+                $boost = implode('', $split);
+              }
+              $query_parts[] = $field . ':(' . $pre . implode(' ' . $pre, $k) . ')' . $boost;
+            }
+          }
+          else {
+            $query_parts[] = '(' . $pre . implode(' ' . $pre, $k) . ')';
+          }
+      }
+    }
+
+    if (count($query_parts) === 1) {
+      return $neg . reset($query_parts);
+    }
+
+    if (count($query_parts) > 1) {
+      return $neg . '(' . implode(' ', $query_parts) . ')';
+    }
+
+    return '';
+  }
+
+  /**
+   * Flattens keys into payload_score queries.
+   *
+   * @param array|string $keys
+   *   The keys array to flatten, formatted as specified by
+   *   \Drupal\search_api\Query\QueryInterface::getKeys() or a phrase string.
+   * @param ParseModeInterface $parse_mode
+   *   (optional) The parse mode. Defaults to "terms" if null.
+   *
+   * @return string
+   *   A Solr query string representing the same keys.
+   *
+   * @throws \Drupal\search_api_solr\SearchApiSolrException
+   */
+  public static function flattenKeysToPayloadScore($keys, ?ParseModeInterface $parse_mode = NULL): string {
+    $payload_scores = [];
+    $conjunction = $parse_mode ? $parse_mode->getConjunction() : 'OR';
+    if ('OR' === $conjunction) {
+      $parse_mode_id = $parse_mode ? $parse_mode->getPluginId() : 'terms';
+      $k = [];
+
+      if (is_array($keys)) {
+        $queryHelper = \Drupal::service('solarium.query_helper');
+
+        $escaped = $keys['#escaped'] ?? FALSE;
+
+        foreach ($keys as $key_nr => $key) {
+          if (!$key || strpos($key_nr, '#') === 0) {
+            continue;
+          }
+          if (is_array($key)) {
+            if ($subkeys = self::flattenKeysToPayloadScore($key, $parse_mode)) {
+              $payload_scores[] = $subkeys;
+            }
+          }
+          elseif ($escaped) {
+            $k[] = trim($key);
+          }
+          else {
+            switch ($parse_mode_id) {
+              case 'terms':
+              case "sloppy_terms":
+              case 'edismax':
+                $k[] = $queryHelper->escapePhrase(trim($key));
+                break;
+
+              case 'phrase':
+              case "sloppy_phrase":
+                // It makes no sense to search for a phrase within the
+                // boost_terms.
+                break;
+
+              default:
+                throw new SearchApiSolrException('Incompatible parse mode.');
+            }
+          }
+        }
+      }
+      elseif (is_string($keys)) {
+        switch ($parse_mode_id) {
+          case 'direct':
+            // NOP.
+            break;
+
+          default:
+            throw new SearchApiSolrException('Incompatible parse mode.');
+        }
+      }
+
+      // See the boost_term_payload field type in schema.xml. If we send shorter
+      // or larger keys then defined by solr.LengthFilterFactory we'll trigger a
+      // "SpanQuery is null" exception.
+      $k = array_filter($k, function ($v) {
+        $v = trim($v, '"');
+        return (mb_strlen($v) >= 2) && (mb_strlen($v) <= 100);
+      });
+
+      if ($k) {
+        $payload_scores[] = ' {!payload_score f=boost_term v=' . implode(' func=max} {!payload_score f=boost_term v=', $k) . ' func=max}';
+      }
+    }
+    return implode('', $payload_scores);
+  }
+
+  /**
+   * Returns whether the index only contains "solr_*" datasources.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index entity.
+   *
+   * @return bool
+   *   TRUE if the index only contains "solr_*" datasources, FALSE otherwise.
+   */
+  public static function hasIndexJustSolrDatasources(IndexInterface $index): bool {
+    static $datasources = [];
+
+    if (!isset($datasources[$index->id()])) {
+      $datasource_ids = $index->getDatasourceIds();
+      $datasource_ids = array_filter($datasource_ids, function ($datasource_id) {
+        return strpos($datasource_id, 'solr_') !== 0;
+      });
+      $datasources[$index->id()] = !$datasource_ids;
+    }
+
+    return $datasources[$index->id()];
+  }
+
+  /**
+   * Returns whether the index contains any "solr_*" datasources.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index entity.
+   *
+   * @return bool
+   *   TRUE if the index contains "solr_*" datasources, FALSE otherwise.
+   */
+  public static function hasIndexSolrDatasources(IndexInterface $index): bool {
+    static $datasources = [];
+
+    if (!isset($datasources[$index->id()])) {
+      $datasource_ids = $index->getDatasourceIds();
+      $datasource_ids = array_filter($datasource_ids, function ($datasource_id) {
+        return strpos($datasource_id, 'solr_') === 0;
+      });
+      $datasources[$index->id()] = !empty($datasource_ids);
+    }
+
+    return $datasources[$index->id()];
+  }
+
+  /**
+   * Returns whether the index only contains "solr_document" datasources.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index entity.
+   *
+   * @return bool
+   *   TRUE if the index only contains "solr_document" datasources, FALSE
+   *   otherwise.
+   */
+  public static function hasIndexJustSolrDocumentDatasource(IndexInterface $index): bool {
+    static $datasources = [];
+
+    if (!isset($datasources[$index->id()])) {
+      $datasource_ids = $index->getDatasourceIds();
+      $datasources[$index->id()] = ((1 === count($datasource_ids)) && in_array('solr_document', $datasource_ids));
+    }
+
+    return $datasources[$index->id()];
+  }
+
+  /**
+   * Returns the timezone for a query.
+   *
+   * There's a fallback mechanism to get the time zone:
+   * 1. time zone configured for the index
+   * 2. the current user's time zone
+   * 3. site default time zone
+   * 4. storage time zone (UTC)
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Solr index.
+   *
+   * @return string
+   *   The timezone.
+   */
+  public static function getTimeZone(IndexInterface $index): string {
+    $settings = self::getIndexSolrSettings($index);
+    $system_date = \Drupal::config('system.date');
+    $timezone = '';
+    if ($settings['advanced']['timezone']) {
+      $timezone = $settings['advanced']['timezone'];
+    }
+    else {
+      if ($system_date->get('timezone.user.configurable')) {
+        $timezone = \Drupal::currentUser()->getAccount()->getTimeZone();
+      }
+    }
+    if (!$timezone) {
+      $timezone = $system_date->get('timezone.default') ?: date_default_timezone_get();
+    }
+    return $timezone ?: DateTimeItemInterface::STORAGE_TIMEZONE;
+  }
+
+  /**
+   * Returns the Solr settings for the given index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index entity.
+   *
+   * @return array
+   *   An associative array of settings.
+   */
+  public static function getIndexSolrSettings(IndexInterface $index): array {
+    return \search_api_solr_merge_default_index_third_party_settings(
+      $index->getThirdPartySettings('search_api_solr')
+    );
+  }
+
+  /**
+   * Formats a checkpoint ID for topic() or _topic() streaming expressions.
+   *
+   * The checkpoint name gets suffixed by targeted index and site hash to avoid
+   * collisions.
+   *
+   * @param string $checkpoint
+   * @param string $index_id
+   * @param string $site_hash
+   *
+   * @return string
+   *   The formatted checkpoint ID.
+   */
+  public static function formatCheckpointId(string $checkpoint, string $index_id, string $site_hash): string {
+    return $checkpoint . '-' . $index_id . '-' . $site_hash;
+  }
+
+  /**
+   * Get all available environments.
+   *
+   * @return string[]
+   *   An array of environments as strings.
+   */
+  public static function getAvailableEnvironments() {
+    $options = array_unique(array_merge(
+      SolrCache::getAvailableEnvironments(),
+      SolrRequestHandler::getAvailableEnvironments(),
+      SolrRequestDispatcher::getAvailableEnvironments()
+    ));
+    sort($options);
+    return $options;
+  }
+
+  /**
+   * Normalize a XML file.
+   *
+   * Removes comments from an xml file and removes the 'name' attribute of the
+   * root node.
+   *
+   * @param string $xml
+   *   The XML file to normalize.
+   *
+   * @return array
+   *   An array with the version number and the normalized XML.
+   */
+  public static function normalizeXml($xml): array {
+    if ($xml = trim($xml)) {
+      $document = new \DOMDocument();
+      if (@$document->loadXML($xml) === FALSE) {
+        $document->loadXML("<root>$xml</root>");
+      }
+      $version_number = '';
+      $root = $document->documentElement;
+      if (isset($root) && $root->hasAttribute('name')) {
+        $parts = explode('-', $root->getAttribute('name'));
+        if (isset($parts[4])) {
+          // Remove jump-start config-set flag.
+          unset($parts[4]);
+        }
+        $version_number = implode('-', $parts);
+        $root->removeAttribute('name');
+      }
+      $xpath = new \DOMXPath($document);
+      // Remove all comments.
+      foreach ($xpath->query("//comment()") as $comment) {
+        $comment->parentNode->removeChild($comment);
+      }
+      // Trim all whitespaces.
+      foreach ($xpath->query('//text()') as $whitespace) {
+        $whitespace->data = trim($whitespace->nodeValue);
+      }
+      return [$version_number, $document->saveXML()];
+    }
+    return ['', ''];
+  }
+
 }

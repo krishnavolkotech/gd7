@@ -6,6 +6,7 @@ use Drupal\search_api\Backend\BackendInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\ItemInterface;
 use Drupal\search_api\Query\QueryInterface;
+use Solarium\Core\Client\Endpoint;
 use Solarium\QueryType\Update\Query\Query as UpdateQuery;
 
 /**
@@ -19,7 +20,7 @@ interface SolrBackendInterface extends BackendInterface {
   /**
    * The minimum required Solr schema version.
    */
-  const SEARCH_API_SOLR_MIN_SCHEMA_VERSION = '8.3.3';
+  const SEARCH_API_SOLR_MIN_SCHEMA_VERSION = '4.1.1';
 
   /**
    * The separator to indicate the start of a language ID.
@@ -68,7 +69,7 @@ interface SolrBackendInterface extends BackendInterface {
    *
    * @throws \Drupal\search_api\SearchApiException
    */
-  public function getLanguageSpecificSolrFieldNames($language_id, IndexInterface $index, $reset = FALSE);
+  public function getLanguageSpecificSolrFieldNames($language_id, ?IndexInterface $index, $reset = FALSE);
 
   /**
    * Gets a language-specific mapping from Drupal to Solr field names.
@@ -151,6 +152,14 @@ interface SolrBackendInterface extends BackendInterface {
   public function getDomain();
 
   /**
+   * Returns the targeted environment of the server.
+   *
+   * @return string
+   *   The environment.
+   */
+  public function getEnvironment();
+
+  /**
    * Indicates if the Solr server uses a managed schema.
    *
    * @return bool
@@ -177,6 +186,33 @@ interface SolrBackendInterface extends BackendInterface {
    *   The query string filter.
    */
   public function getIndexFilterQueryString(IndexInterface $index);
+
+  /**
+   * Returns the endpoint to use for the index.
+   *
+   * In case of Solr Cloud an index might use a different Solr collection.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *
+   * @return \Solarium\Core\Client\Endpoint
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Drupal\search_api\SearchApiException
+   */
+  public function getCollectionEndpoint(IndexInterface $index);
+
+  /**
+   * Returns the Solr settings for the given index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index entity.
+   *
+   * @return array
+   *   An associative array of settings.
+   *
+   * @deprecated use \Drupal\search_api_solr\Utility\Utility::getIndexSolrSettings()
+   */
+  public function getIndexSolrSettings(IndexInterface $index);
 
   /**
    * Prefixes an index ID as configured.
@@ -270,16 +306,20 @@ interface SolrBackendInterface extends BackendInterface {
   /**
    * Gets schema language statistics for the multilingual Solr server.
    *
+   * @param \Solarium\Core\Client\Endpoint|null $endpoint
+   *   If not set, the statistics for the server's default endpoint will be
+   *   returned.
+   *
    * @return array
-   *   Stats as associative array keyed by language IDs and a boolean value to
-   *   indicate if corresponding field types are existing on the server's
-   *   current schema.
+   *   Stats as associative array keyed by language IDs. The value is the
+   *   language id of the corresponding field type existing on the server's
+   *   current schema or FALSE.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    * @throws \Drupal\search_api\SearchApiException
    * @throws \Drupal\search_api_solr\SearchApiSolrException
    */
-  public function getSchemaLanguageStatistics();
+  public function getSchemaLanguageStatistics(?Endpoint $endpoint = NULL);
 
   /**
    * Get document counts for this server, in total and per site / index.
@@ -313,5 +353,33 @@ interface SolrBackendInterface extends BackendInterface {
    * @return String[]
    */
   public function getDisabledFieldTypes(): array;
+
+  /**
+   * Gets a list of Solr Caches that are disabled for this backend.
+   *
+   * @return String[]
+   */
+  public function getDisabledCaches(): array;
+
+  /**
+   * Gets a list of Solr Request Handlers that are disabled for this backend.
+   *
+   * @return String[]
+   */
+  public function getDisabledRequestHandlers(): array;
+
+  /**
+   * Gets a list of Solr Request Dispatchers that are disabled for this backend.
+   *
+   * @return String[]
+   */
+  public function getDisabledRequestDispatchers(): array;
+
+  /**
+   * Indicates if the the current Solr config should not be verified.
+   *
+   * @return bool
+   */
+  public function isNonDrupalOrOutdatedConfigSetAllowed(): bool;
 
 }

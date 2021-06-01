@@ -27,13 +27,9 @@ class StreamDocument extends AbstractDocument {
    *   The field name.
    * @param mixed $value
    *   The field value.
-   *
-   * @return self
    */
-  public function __set($name, $value): DocumentInterface {
+  public function __set($name, $value): void {
     $this->fields[$name] = $value;
-
-    return $this;
   }
 
 }
