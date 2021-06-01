@@ -70,7 +70,7 @@ class SearchContentTypes extends BlockBase {
 
       $content_types_titles = ['group' => t('Gruppen'), 'page' => t('Seite'), 'faqs'
       => t('FAQ'), 'forum' => t('Forenthema'), 'downtimes' => t('Störung oder
-      Blockzeit'), 'problem' => t('Problem'), 'deployed_releases' => t('Eingesetzteinformationen'),
+      Blockzeit'), 'problem' => t('Problem'), 'deployed_releases' => t('Eingesetztes Release'),
       'planning_files' => t('Planungsdatei'), 'quickinfo' => t('RZ-Schnellinfo'), 'risk' => t('Einzelrisiko'), 'measure' => t('Maßnahme'),
       'risk_cluster' => t('Risikocluster'), 'user' => t('Mitglieder')];
 

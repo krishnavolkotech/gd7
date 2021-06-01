@@ -90,6 +90,9 @@ third_party_settings:
       interestingTerms: none
     advanced:
       index_prefix: ''
+    term_modifiers:
+      slop: 10000000
+      fuzzy: 2
 id: hzd_solr_index
 name: 'Solr Index Produktion'
 description: ''
