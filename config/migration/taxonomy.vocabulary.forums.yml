@@ -7,7 +7,7 @@ dependencies:
       - forum
 _core:
   default_config_hash: mflVSHt4N6ABP4asGcCrKD0Qvf7y9WO_Cs_v5vCjOrw
-name: Foren
+name: Forum
 vid: forums
 description: 'Forum Navigations-Vokabular'
 weight: -10

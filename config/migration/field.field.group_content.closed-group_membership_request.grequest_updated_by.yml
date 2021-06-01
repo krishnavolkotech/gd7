@@ -1,0 +1,21 @@
+uuid: ab52246c-85cf-41e8-b652-476d64c19da4
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group_content.grequest_updated_by
+    - group.content_type.closed-group_membership_request
+id: group_content.closed-group_membership_request.grequest_updated_by
+field_name: grequest_updated_by
+entity_type: group_content
+bundle: closed-group_membership_request
+label: 'Approved/Rejected by'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user'
+  handler_settings: {  }
+field_type: entity_reference

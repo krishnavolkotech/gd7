@@ -3,6 +3,6 @@ langcode: de
 status: true
 dependencies: {  }
 id: menu-69604
-label: Betriebsmanagement
+label: 'ZOE Betriebsmanagement'
 description: ''
 locked: false

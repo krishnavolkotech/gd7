@@ -13,6 +13,4 @@ label: 'Open: Group node (RZ-Schnellinfo)'
 description: 'Adds <em class="placeholder">RZ-Schnellinfo</em> content to groups both publicly and privately.'
 group_type: open
 content_plugin: 'group_node:quickinfo'
-plugin_config:
-  group_cardinality: 0
-  entity_cardinality: 1
+plugin_config: null
