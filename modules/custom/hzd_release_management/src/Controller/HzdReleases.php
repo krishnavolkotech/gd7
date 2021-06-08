@@ -258,11 +258,12 @@ class HzdReleases extends ControllerBase {
     if (is_numeric($release_id)) {
       $query = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
       $query_explode = explode('/', $query);
-      $query_explode_search = array_search('secure-downloads', $query_explode);
+      $query_explode_search_old = array_search('secure-downloads', $query_explode);
+      $query_explode_search_new = array_search('Portal.aspx?download=secure-downloads', $query_explode);
     }
     
-    // Check secure-downloads string in documentaion link.
-    if ($query_explode_search) {
+    // Check secure-downloads string in documentation link.
+    if (($query_explode_search_old) || ($query_explode_search_new)) {
       $output = \Drupal::config('hzd_release_management.settings')->get('secure_download_text')['value'];
       $output .= "<h4><a target = '_blank' href ='$query'>" . t("Please click this secure download link to download the documentation as a ZIP file directly from the DSL (authentication required)") . "</a></h4>";
       $build['#markup'] = $output;
