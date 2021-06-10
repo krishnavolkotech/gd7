@@ -64,7 +64,7 @@ class SearchContentTypes extends BlockBase {
         'gruppeninhalte' => ['page', 'faqs', 'forum'],
         'incident_management' => ['downtimes'],
         'problem_management' => ['problem'],
-        'release_management' => ['deployed_releases', 'planning_files', 'quickinfo'],
+        'release_management' => ['planning_files', 'quickinfo'],
         'risiko_management' => ['risk', 'measure', 'risk_cluster']
                               ];
 

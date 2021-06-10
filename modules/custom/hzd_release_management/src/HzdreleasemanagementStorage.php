@@ -915,7 +915,7 @@ $inprogress_nid_values = [];
     $product = strtolower($product);
     $link_explode = explode('/', $link);
     $compressed_file = array_pop($link_explode);
-    $link_search = array_search('secure-downloads', $link_explode);
+    $link_search = array_search('Portal.aspx?download=secure-downloads', $link_explode);
     return array($release_title, $product, $release, $compressed_file, $link_search);
   }
 
