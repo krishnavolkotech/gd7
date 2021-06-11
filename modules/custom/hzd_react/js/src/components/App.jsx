@@ -6,6 +6,7 @@ import {
   Link
 } from "react-router-dom";
 import ReleaseManagementDashboard from "./ReleaseManagementDashboard";
+import { Jumbotron, Button, Panel, Grid, Row, Col } from 'react-bootstrap';
 
 class App extends React.Component {
   constructor(props) {
@@ -17,20 +18,6 @@ class App extends React.Component {
     return(
       <Router>
         <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/r">Dashboard</Link>
-              </li>
-              <li>
-                <Link to="/r/home">Home</Link>
-              </li>
-              <li>
-                <Link to="/r/releases">Releases</Link>
-              </li>
-            </ul>
-          </nav>
-
           <Switch>
             <Route path="/r/home">
               <Home />
@@ -46,12 +33,38 @@ class App extends React.Component {
 
 }
 function Home() {
-  console.log(global);
-
   return (
-    <div>
-      <h2>Home</h2>
-    </div>
+    <Grid>
+      <Row>
+        <Col sm={3}>
+          <Panel>
+            <Panel.Heading><b>Geschäftsservices / Sonstige Projekte</b></Panel.Heading>
+            <Panel.Body>Übersicht der <b>Geschäftsservice</b>-Releases</Panel.Body>
+            <Panel.Body><Button bsStyle="primary"><span class="glyphicon glyphicon-arrow-right" /> Zu den Releases</Button></Panel.Body>
+          </Panel>
+        </Col>
+        <Col sm={3}>
+          <Panel>
+            <Panel.Heading><b>KONSENS Verfahren</b></Panel.Heading>
+            <Panel.Body>Übersicht der <b>KONSENS</b>-Releases</Panel.Body>
+            <br />
+            <Panel.Body>
+              <Link to="/r/releases">
+                <Button bsStyle="primary"><span class="glyphicon glyphicon-arrow-right" /> Zu den Releases</Button>
+              </Link>
+            </Panel.Body>
+          </Panel>
+        </Col>
+        <Col sm={3}>
+          <Panel>
+            <Panel.Heading><b>Bestehende / Fakultative Verfahren</b></Panel.Heading>
+            <Panel.Body>Übersicht der <b>Best/Fakt</b>-Releases</Panel.Body>
+            <br />
+            <Panel.Body><Button bsStyle="primary"><span class="glyphicon glyphicon-arrow-right" /> Zu den Releases</Button></Panel.Body>
+          </Panel>
+        </Col>
+      </Row>
+    </Grid>
   );
 }
 

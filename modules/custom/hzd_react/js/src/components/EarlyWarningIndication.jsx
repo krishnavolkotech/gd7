@@ -25,7 +25,7 @@ function EarlyWarningIndication({ release }) {
       <div>
         <OverlayTrigger placement="top" overlay={tooltipEarlyWarning}>
           <a href={release.links.appendix.href} >
-            <span className="glyphicon glyphicon-warning-sign" />
+            {count}&nbsp;<span className="glyphicon glyphicon-warning-sign" />
           </a>
         </OverlayTrigger>
         <OverlayTrigger placement="top" overlay={tooltipEarlyWarningCreate}>

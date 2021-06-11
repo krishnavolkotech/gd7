@@ -57,7 +57,7 @@ function ReleaseTable({ releases, timeout }) {
               <td>{release.attributes.field_status}</td>
               <td>{humanDateFormat}</td>
               <EarlyWarningIndication release={ release } />
-              <td><ReleaseActions /></td>
+              <td><ReleaseActions release={release} /></td>
             </tr>
           )
         })}

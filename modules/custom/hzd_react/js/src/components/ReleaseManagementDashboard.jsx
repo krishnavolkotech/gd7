@@ -1,18 +1,15 @@
 import React from 'react';
 import FilterableReleaseTable from './FilterableReleaseTable';
-class ReleaseManagementDashboard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import { Link } from "react-router-dom";
+import ReleaseNavigation from './ReleaseNavigation';
+import { Row, Grid } from 'react-bootstrap';
 
-  render() {
-    return (
-      <div>
-        <div>Navigations-Tabs</div>
+function ReleaseManagementDashboard() {
+  return (
+    <div>
         <FilterableReleaseTable />
-      </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default ReleaseManagementDashboard;
