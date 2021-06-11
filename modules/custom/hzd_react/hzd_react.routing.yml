@@ -12,4 +12,18 @@ hzd_react.page:
     _title: 'React'
   requirements:
     _permission: 'access content'
+hzd_react.sub_page:
+  path: '/r/{reactPage}/{subPage}'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'React'
+  requirements:
+    _permission: 'access content'
+hzd_react.ajax:
+  path: '/r/ajax'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\AjaxController::call_ajax'
+    _title: 'Ajax'
+  requirements:
+    _permission: 'access content'
 
