@@ -1339,17 +1339,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 </ul>
 </div>";
     }
-    else if($type == 'archived') {
-      $output = "<div class='menu-filter'>
-                   <ul>
-                      <li><b>Legende:</b></li>
-                      <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
-                      <li><img height=15 src='/modules/custom/hzd_release_management/images/document-icon.png'> Dokumentation</li>
-                   </ul>
-                </div>";
-    }
-    else {
-      $output = "<div class='menu-filter'>
+    else if ($type != 'archived'){
+    $output = "<div class='menu-filter'>
         <ul>
           <li><b>Legende:</b></li>
           <li><img height=15 src='/modules/custom/hzd_release_management/images/download_icon.png'> Download</li>
@@ -1496,10 +1487,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
           $download_link = array('#title' => array('#markup' => $download), '#type' => 'link', '#url' => $url);
           $link_path = \Drupal::service('renderer')->renderRoot($download_link);
         }
-      } else {
-        $link_path = '';
-      }
-
+       } else {
+         $link_path = '';
+       }
       $depolyed_link = '';
       if ($type == 'progress' || $type == 'released') {
         $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
@@ -1572,6 +1562,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
       if ($type == 'locked') {
         $row[] = $releases->field_release_comments->value;
+      }
+      if ($type == 'archived'){
+        $remove_LinkIcons=array_pop($row);
       }
       $rows[] = $row;
     }
@@ -1738,6 +1731,9 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       if ($type == 'locked') {
         $header[] = t('Comment');
       }
+    }
+    if ($type == 'archived'){
+      $remove_DL= array_pop($header);
     }
     return $header;
   }
