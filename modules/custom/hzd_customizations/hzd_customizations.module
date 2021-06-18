@@ -920,9 +920,63 @@ function hzd_customizations_node_search_result(NodeInterface $node) {
 }
 
 /**
+* Save a given node to the given group.
+*/
+function saveNewstoBPK($nid, $content_type, $gid) {
+  $Group = \Drupal\group\Entity\Group::load($gid);
+  $gnode_plugin = $Group->getGroupType()->getContentPlugin($content_type);
+  $GroupContentValues = [
+    'type' => $gnode_plugin->getContentTypeConfigId(),
+     'gid' => $gid,
+     'entity_id' => $nid,
+  ];
+
+  \Drupal::entityTypeManager()
+    ->getStorage('group_content')
+    ->create($GroupContentValues)
+    ->save();
+}
+
+/**
+ * hook implementing hook_node_insert()
+ */
+function hzd_customizations_node_insert(EntityInterface $entity) {
+  //Whenever a new news node is created assign it to bpk group.
+  if ($entity->getType() == 'news') {
+    $BPKGroup = \Drupal\group\Entity\Group::load(BETRIEBSPORTAL_KONSENS);
+    $nodeId = $entity->id();
+    $group_contents = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->loadByProperties([
+      'entity_id' => $nodeId,
+    ]);
+
+    //If the news node does not belong to any group add it to bpk group.
+    if(empty($group_contents)) {
+      saveNewstoBPK($nodeId, 'group_node:news', BETRIEBSPORTAL_KONSENS);
+    }
+  }
+}
+
+/**
  * @param \Drupal\Core\Entity\EntityInterface $entity
  */
 function hzd_customizations_node_update(EntityInterface $entity) {
+  //Whenever a new news node is updated assign it to bpk group if not already.
+  if ($entity->getType() == 'news') {
+    $BPKGroup = \Drupal\group\Entity\Group::load(BETRIEBSPORTAL_KONSENS);
+    $nodeId = $entity->id();
+    $group_contents = \Drupal::entityTypeManager()
+      ->getStorage('group_content')
+      ->loadByProperties([
+      'entity_id' => $nodeId,
+    ]);
+
+    //If the news node does not belong to any group add it to bpk group.
+    if(empty($group_contents)) {
+      saveNewstoBPK($nodeId, 'group_node:news', BETRIEBSPORTAL_KONSENS);
+    }
+  }
   if ($entity->getType() == 'quickinfo') {
     /**
      * On quickinfo publish Delete group content relation with quickinfo
