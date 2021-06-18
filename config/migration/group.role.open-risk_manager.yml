@@ -31,6 +31,7 @@ permissions:
   - 'view group'
   - 'view group_node:measure content'
   - 'view group_node:measure entity'
+  - 'view group_node:news entity'
   - 'view group_node:quickinfo content'
   - 'view group_node:quickinfo entity'
   - 'view group_node:risk content'
