@@ -4,55 +4,56 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - comment
-    - node
     - group
+    - node
+    - comment
+    - cust_group
     - file
     - filefield_paths
-    - cust_group
     - search_api
     - hzd_customizations
+    - downtimes
   config:
-    - field.storage.comment.comment_body
-    - field.storage.node.field_custom_title
-    - field.storage.node.field_related_transfer_number
-    - field.storage.node.field_other_services
-    - field.storage.node.field_recipients
-    - field.storage.node.field_intial_situation
-    - field.storage.node.field_professional_conditions
-    - field.storage.node.field_tech_requirements
-    - field.storage.node.field_depend_other_services
-    - field.storage.node.field_business_impact
-    - field.storage.node.field_technical_impact
-    - field.storage.node.field_business_impact_services
-    - field.storage.node.field_technical_impact_services
-    - field.storage.node.field_special_notes
-    - field.storage.node.field_dates
-    - field.storage.node.field_creators
-    - field.storage.node.field_contact
+    - field.storage.node.body
     - field.storage.node.field_abnormality_description
+    - field.storage.node.field_attachment
+    - field.storage.node.field_author_name
+    - field.storage.node.field_business_impact
+    - field.storage.node.field_business_impact_services
     - field.storage.node.field_closed
     - field.storage.node.field_comments
-    - field.storage.node.field_eroffnet
-    - field.storage.node.field_attachment
-    - field.storage.node.field_page_files
-    - field.storage.node.field_im_upload_page_files
+    - field.storage.node.field_contact
+    - field.storage.node.field_creators
+    - field.storage.node.field_custom_title
+    - field.storage.node.field_dates
+    - field.storage.node.field_depend_other_services
     - field.storage.node.field_detailed_question
     - field.storage.node.field_diagnose
-    - field.storage.node.field_processing
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_other_services
     - field.storage.node.field_problem_name
-    - field.storage.node.field_release_name
     - field.storage.node.field_problem_status
     - field.storage.node.field_problem_symptoms
+    - field.storage.node.field_processing
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_recipients
+    - field.storage.node.field_related_transfer_number
+    - field.storage.node.field_release_name
+    - field.storage.node.field_release_service
     - field.storage.node.field_solution
+    - field.storage.node.field_special_notes
     - field.storage.node.field_task_force
-    - field.storage.node.body
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_technical_impact
+    - field.storage.node.field_technical_impact_services
+    - field.storage.node.field_work_around
     - field.storage.node.field_upload_planning_file
     - field.storage.node.upload
     - field.storage.node.field_upload
-    - field.storage.node.field_release_service
-    - field.storage.node.field_author_name
-    - field.storage.node.field_work_around
+    - field.storage.node.field_im_upload_page_files
+    - field.storage.node.field_page_files
+    - field.storage.comment.comment_body
     - search_api.server.solr_bpk_migration
 third_party_settings:
   search_api_solr:
@@ -104,14 +105,6 @@ field_settings:
       module:
         - group
         - node
-      config:
-        - field.storage.node.body
-  body_1:
-    label: Body
-    datasource_id: 'entity:node'
-    property_path: body
-    type: text
-    dependencies:
       config:
         - field.storage.node.body
   changed:
@@ -549,17 +542,6 @@ field_settings:
         - node
       config:
         - field.storage.node.field_work_around
-  filename:
-    label: 'upload » File » Dateiname'
-    datasource_id: 'entity:node'
-    property_path: 'upload:entity:filename'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.upload
-      module:
-        - file
-        - file
   filename_1:
     label: 'Inhalt » Inhalt » Upload Planning File » File » Dateiname'
     datasource_id: 'entity:group_content'
@@ -659,17 +641,6 @@ field_settings:
     dependencies:
       module:
         - node
-  origname:
-    label: 'upload » File » Original filename'
-    datasource_id: 'entity:node'
-    property_path: 'upload:entity:origname'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.upload
-      module:
-        - file
-        - filefield_paths
   origname_1:
     label: 'Inhalt » Inhalt » Dateien » Datei » Original filename'
     datasource_id: 'entity:group_content'
@@ -797,7 +768,9 @@ datasource_settings:
       default: true
       selected:
         - closed-group_membership
+        - closed-group_node-faq
         - closed_private-group_membership
+        - closed_private-group_node-faq
         - downtimes-group_membership
         - group_content_type_6693a40b54133
         - group_content_type_71a6b6a92fefd
@@ -808,8 +781,11 @@ datasource_settings:
         - group_content_type_e340605cbaf90
         - group_content_type_ecf0249297413
         - moderate-group_membership
+        - moderate-group_node-faq
+        - moderate_private-group_node-faq
         - open-group_membership
         - open-group_node-early_warnings
+        - open-group_node-faq
         - open-group_node-release
         - open-group_node-release_comments
     languages:
@@ -818,9 +794,7 @@ datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected:
-        - forum
-        - news
+      selected: {  }
     languages:
       default: true
       selected: {  }
@@ -831,6 +805,9 @@ processor_settings:
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
+  group_access:
+    weights:
+      preprocess_query: -30
   highlight:
     highlight: always
     highlight_partial: false
