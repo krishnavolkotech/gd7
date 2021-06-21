@@ -48,8 +48,8 @@ dependencies:
     - field.storage.node.field_technical_impact
     - field.storage.node.field_technical_impact_services
     - field.storage.node.field_work_around
-    - field.storage.node.field_upload_planning_file
     - field.storage.node.upload
+    - field.storage.node.field_upload_planning_file
     - field.storage.node.field_upload
     - field.storage.node.field_im_upload_page_files
     - field.storage.node.field_page_files
@@ -91,6 +91,9 @@ third_party_settings:
       interestingTerms: none
     advanced:
       index_prefix: ''
+    term_modifiers:
+      slop: 10000000
+      fuzzy: 2
 id: hzd_solr_index
 name: 'Solr Index Produktion'
 description: ''
@@ -666,6 +669,22 @@ field_settings:
     label: 'Sort datasources by entity changed date'
     property_path: sort_datasources_result
     type: string
+  status:
+    label: null
+    datasource_id: 'entity:comment'
+    property_path: status
+    type: boolean
+    dependencies:
+      module:
+        - comment
+  status_1:
+    label: null
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+    dependencies:
+      module:
+        - node
   subject:
     label: Betreff
     datasource_id: 'entity:comment'
@@ -747,6 +766,14 @@ field_settings:
       module:
         - group
         - node
+        - node
+  uid_1:
+    label: null
+    datasource_id: 'entity:node'
+    property_path: uid
+    type: integer
+    dependencies:
+      module:
         - node
 datasource_settings:
   'entity:comment':
