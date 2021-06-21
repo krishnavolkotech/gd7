@@ -110,14 +110,6 @@ field_settings:
         - node
       config:
         - field.storage.node.body
-  body_1:
-    label: Body
-    datasource_id: 'entity:node'
-    property_path: body
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.body
   changed:
     label: 'Inhalt » Inhalt » Geändert'
     datasource_id: 'entity:group_content'
@@ -553,17 +545,6 @@ field_settings:
         - node
       config:
         - field.storage.node.field_work_around
-  filename:
-    label: 'upload » File » Dateiname'
-    datasource_id: 'entity:node'
-    property_path: 'upload:entity:filename'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.upload
-      module:
-        - file
-        - file
   filename_1:
     label: 'Inhalt » Inhalt » Upload Planning File » File » Dateiname'
     datasource_id: 'entity:group_content'
@@ -663,17 +644,6 @@ field_settings:
     dependencies:
       module:
         - node
-  origname:
-    label: 'upload » File » Original filename'
-    datasource_id: 'entity:node'
-    property_path: 'upload:entity:origname'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.upload
-      module:
-        - file
-        - filefield_paths
   origname_1:
     label: 'Inhalt » Inhalt » Dateien » Datei » Original filename'
     datasource_id: 'entity:group_content'
@@ -825,7 +795,9 @@ datasource_settings:
       default: true
       selected:
         - closed-group_membership
+        - closed-group_node-faq
         - closed_private-group_membership
+        - closed_private-group_node-faq
         - downtimes-group_membership
         - group_content_type_6693a40b54133
         - group_content_type_71a6b6a92fefd
@@ -836,8 +808,11 @@ datasource_settings:
         - group_content_type_e340605cbaf90
         - group_content_type_ecf0249297413
         - moderate-group_membership
+        - moderate-group_node-faq
+        - moderate_private-group_node-faq
         - open-group_membership
         - open-group_node-early_warnings
+        - open-group_node-faq
         - open-group_node-release
         - open-group_node-release_comments
     languages:
@@ -846,9 +821,7 @@ datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected:
-        - forum
-        - news
+      selected: {  }
     languages:
       default: true
       selected: {  }
