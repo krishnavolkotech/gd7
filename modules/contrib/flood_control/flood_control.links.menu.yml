@@ -1,0 +1,6 @@
+flood_control.admin:
+  title: 'Flood control'
+  description: "Configure hidden flood control variables, like the login attempt limiters."
+  parent: user.admin_index
+  route_name: flood_control.settings
+  menu_name: devel

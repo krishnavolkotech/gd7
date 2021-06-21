@@ -1,6 +1,6 @@
 default_form: frage_zum_betriebsportal
 flood:
-  limit: 3
+  limit: 6
   interval: 3600
 user_default_enabled: true
 _core:
