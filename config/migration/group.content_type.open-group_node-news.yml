@@ -1,0 +1,19 @@
+uuid: 81e5a4c0-40e9-4808-baf5-dd989d52ecba
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.open
+    - node.type.news
+  module:
+    - gnode
+    - node
+id: open-group_node-news
+label: 'Offen: Gruppeninhalt (Meldung)'
+description: '<em class="placeholder">Meldung</em> in der Gruppe erstellen'
+group_type: open
+content_plugin: 'group_node:news'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

@@ -20,11 +20,40 @@ interface SolrCloudConnectorInterface extends SolrConnectorInterface {
   public function getCollectionName();
 
   /**
+   * Temporarily set a different collection name for the connection.
+   *
+   * @param \Solarium\Core\Client\Endpoint|null $endpoint
+   *   Solr endpoint.
+   */
+  public function setCollectionNameFromEndpoint(Endpoint $endpoint);
+
+  /**
    * Returns the Solr collection name used to store topic checkpoints.
    *
    * @return string
+   *   Solr collection name.
    */
   public function getCheckpointsCollectionName();
+
+  /**
+   * Returns the Solr collection endpoint used to store topic checkpoints.
+   *
+   * @return \Solarium\Core\Client\Endpoint|null
+   *   Solr endpoint.
+   */
+  public function getCheckpointsCollectionEndpoint(): ?Endpoint;
+
+  /**
+   * Deletes all checkpoints for given index/site.
+   *
+   * @param string $index_id
+   *   Id of the index.
+   * @param string $site_hash
+   *   The site hash.
+   *
+   * @throws \Drupal\search_api_solr\SearchApiSolrException
+   */
+  public function deleteCheckpoints(string $index_id, string $site_hash);
 
   /**
    * Returns a link to the Solr collection, if the necessary options are set.
@@ -85,7 +114,7 @@ interface SolrCloudConnectorInterface extends SolrConnectorInterface {
    *
    * @throws \Drupal\search_api_solr\SearchApiSolrException
    */
-  public function stream(StreamQuery $query, Endpoint $endpoint = NULL);
+  public function stream(StreamQuery $query, ?Endpoint $endpoint = NULL);
 
   /**
    * Executes a graph query.
@@ -100,6 +129,6 @@ interface SolrCloudConnectorInterface extends SolrConnectorInterface {
    *
    * @throws \Drupal\search_api_solr\SearchApiSolrException
    */
-  public function graph(GraphQuery $query, Endpoint $endpoint = NULL);
+  public function graph(GraphQuery $query, ?Endpoint $endpoint = NULL);
 
 }

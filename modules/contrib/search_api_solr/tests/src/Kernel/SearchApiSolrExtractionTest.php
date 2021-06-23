@@ -12,24 +12,6 @@ use Drupal\search_api\Entity\Server;
 class SearchApiSolrExtractionTest extends SolrBackendTestBase {
 
   /**
-   * Modules to enable for this test.
-   *
-   * @var string[]
-   */
-  public static $modules = [
-    'search_api_solr_test',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function installConfigs() {
-    parent::installConfigs();
-
-    $this->installConfig(['search_api_solr_test']);
-  }
-
-  /**
    * Test tika extension based PDF extraction.
    */
   public function testBackend() {
@@ -37,7 +19,7 @@ class SearchApiSolrExtractionTest extends SolrBackendTestBase {
     /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
     $backend = Server::load($this->serverId)->getBackend();
     $content = $backend->extractContentFromFile($filepath);
-    $this->assertContains('The extraction seems working!', $content);
+    $this->assertStringContainsString('The extraction seems working!', $content);
   }
 
 }

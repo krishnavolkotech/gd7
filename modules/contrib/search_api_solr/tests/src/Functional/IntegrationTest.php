@@ -14,6 +14,7 @@ use Drupal\Tests\search_api\Functional\IntegrationTest as SearchApiIntegrationTe
 class IntegrationTest extends SearchApiIntegrationTest {
 
   use SolrCommitTrait;
+
   /**
    * The backend of the search server used for this test.
    *
@@ -32,11 +33,11 @@ class IntegrationTest extends SearchApiIntegrationTest {
   /**
    * {@inheritdoc}
    */
-  protected function tearDown() {
+  protected function tearDown(): void {
     if ($this->indexId) {
       if ($index = $this->getIndex()) {
         $index->clear();
-        $this->ensureCommit($index->getServerInstance());
+        $this->ensureCommit($index);
       }
     }
     parent::tearDown();
@@ -108,7 +109,7 @@ class IntegrationTest extends SearchApiIntegrationTest {
       'backend_config[connector_config][host]' => 'localhost',
       'backend_config[connector_config][port]' => '8983',
       'backend_config[connector_config][path]' => '/foo',
-      'backend_config[connector_config][core]' => '',
+      'backend_config[connector_config][core]' => 'bar',
     ];
     $this->submitForm($edit, 'Save');
 
@@ -123,7 +124,7 @@ class IntegrationTest extends SearchApiIntegrationTest {
       'backend_config[connector_config][host]' => 'localhost',
       'backend_config[connector_config][port]' => '8983',
       'backend_config[connector_config][path]' => '/',
-      'backend_config[connector_config][core]' => 'd8',
+      'backend_config[connector_config][core]' => 'drupal',
     ];
     $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('The Solr server could be reached.');
@@ -140,7 +141,7 @@ class IntegrationTest extends SearchApiIntegrationTest {
   protected function indexItems() {
     $index_status = parent::indexItems();
     $index = Index::load($this->indexId);
-    $this->ensureCommit($index->getServerInstance());
+    $this->ensureCommit($index);
     return $index_status;
   }
 

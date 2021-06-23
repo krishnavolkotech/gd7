@@ -53,6 +53,7 @@ module:
   file: 0
   filefield_paths: 0
   filter: 0
+  flood_control: 0
   front: 0
   gforum: 0
   gnode: 0

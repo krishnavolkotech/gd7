@@ -1,7 +1,22 @@
 (function ($) {
 Drupal.behaviors.hzd = {
     attach: function (context, settings) {
-
+        //Check if the browser is IE.
+        function detectIE(){
+            var ua = window.navigator.userAgent;
+            var msie = ua.indexOf('MSIE ');
+            if (msie > 0) {
+                // IE 10 or below
+                return true;
+            }
+            var trident = ua.indexOf('Trident/');
+            if (trident > 0) {
+                // IE 11
+                return true;
+            }
+           //Non IE browser
+           return false;
+        }
 	function tog(v){return v?'addClass':'removeClass';} 
 	$(document).on('input', '#edit-fulltext', function() {
 	    $(this)[tog(this.value)]('hascontent');
@@ -44,13 +59,52 @@ Drupal.behaviors.hzd = {
 	    $('.search-time-filters-content').toggleClass('hidden');
 	});
 
-
-	$('.custom-facets-checkbox').change(function() {
-            if($(this).is(":checked")) {
-		var href = $(this).next().next().attr('href');
-		window.location.href = href;
-	    }
+        //Trigger checkbox click on clicking label as well.
+        $('.custom-search-facet .facet-item').click(function(){
+            if($(this).children('input').is(':checked')) {
+                $(this).children('input').attr('checked', false);
+            }
+            else {
+                $(this).children('input').attr('checked', true);
+            }
+            var IE = detectIE();
+            var target_href = $(this).children('a').attr('href');
+            var search_txt = $('#edit-fulltext').val();
+            if (IE === true){
+                target_href = target_href + '&fulltext=' + search_txt;
+                window.location.href = target_href;
+            }
+            else{
+                var base_url = window.location.protocol + '//' + window.location.host;
+                var url = new URL(base_url + '/' + target_href);
+                var search_params = url.searchParams;
+                //Updating the search string if user has types a new keyword in the search field.
+                search_params.set('fulltext', search_txt);
+                var query = search_params.toString();
+                var target_url = window.location.pathname + "?" + query;
+                window.location.href = target_url;
+            }
+            //When one filter is clicked, disable the rest
+            $('.custom-facets-checkbox').attr("disabled", true);
+            $('.custom-search-facet .facet-item').off('click');
         });
+          //jQuery('.custom-search-facet li label').click(function(){console.log(jQuery(this).parent().children('input').click());});
+      /*$('.custom-facets-checkbox').change(function() {
+          var search_txt = $('#edit-fulltext').val();
+          //if($(this).is(":checked")) {
+          //}
+          var href = $(this).next().next().attr('href');
+          var base_url = window.location.protocol + '//' + window.location.host;
+          var url = new URL(base_url + '/' + href);
+          var search_params = url.searchParams;
+          //Updating the search string if user has types a new keyword in the search field.
+          search_params.set('fulltext', search_txt);
+          var query = search_params.toString();
+          var target_url = window.location.pathname + "?" + query;
+          //window.location.href = href;
+          window.location.href = target_url;
+          jQuery('.custom-facets-checkbox').attr("disabled", true);
+        });*/
 
 	
 	

@@ -1240,9 +1240,12 @@ function cust_group_cron() {
 function cust_group_user_delete($user) {
   $groupContent = \Drupal::entityQuery('group_content')
     ->condition('entity_id', $user->id())
+    ->condition('type', '%' . db_like('group_membership') . '%', 'LIKE')
     ->execute();
+
   $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
   foreach ($groupUsers as $gUser) {
+    /*if( $gUser->get("type")->getValue()[0]['target_id'] == "open-group_membership") {}*/
     $gUser->delete();
   }
 }

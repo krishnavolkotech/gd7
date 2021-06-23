@@ -50,6 +50,8 @@ permissions:
   - 'view group_node:forum entity'
   - 'view group_node:measure content'
   - 'view group_node:measure entity'
+  - 'view group_node:news content'
+  - 'view group_node:news entity'
   - 'view group_node:newsletter content'
   - 'view group_node:newsletter entity'
   - 'view group_node:page content'

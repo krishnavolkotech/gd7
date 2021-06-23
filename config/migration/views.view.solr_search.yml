@@ -712,7 +712,7 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'Keine Ergebnisse gefunden.'
+          content: "Keine Ergebnisse gefunden.\r\nHinweis: Ergebnisse in Gruppen, in denen Sie kein Mitglied sind, werden nicht angezeigt."
           plugin_id: text_custom
       relationships:
         gid:

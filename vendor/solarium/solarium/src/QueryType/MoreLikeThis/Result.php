@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Solarium package.
+ *
+ * For the full copyright and license information, please view the COPYING
+ * file that was distributed with this source code.
+ */
+
 namespace Solarium\QueryType\MoreLikeThis;
 
 use Solarium\Exception\UnexpectedValueException;
@@ -9,15 +16,15 @@ use Solarium\QueryType\Select\Result\Result as SelectResult;
 /**
  * MoreLikeThis query result.
  *
- * This is the standard resulttype for a moreLikeThis query. Example usage:
+ * This is the standard resulttype for a MoreLikeThis query. Example usage:
  * <code>
- * // total solr mlt results
+ * // total Solr MLT results
  * $result->getNumFound();
  *
  * // results fetched
  * count($result);
  *
- * // iterate over fetched mlt docs
+ * // iterate over fetched MLT docs
  * foreach ($result as $doc) {
  *    ....
  * }
@@ -50,7 +57,7 @@ class Result extends SelectResult
     public function getInterestingTerms()
     {
         $query = $this->getQuery();
-        if ('none' == $query->getInterestingTerms()) {
+        if ('none' === $query->getInterestingTerms()) {
             throw new UnexpectedValueException('interestingterms is none');
         }
         $this->parseResponse();

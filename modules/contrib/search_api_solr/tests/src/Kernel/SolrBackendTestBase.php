@@ -7,6 +7,10 @@ use Drupal\search_api\Entity\Server;
 use Drupal\search_api_solr_test\Logger\InMemoryLogger;
 use Drupal\Tests\search_api\Kernel\BackendTestBase;
 use Drupal\search_api_solr\Utility\SolrCommitTrait;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
+defined('SOLR_CLOUD') || define('SOLR_CLOUD', getenv('SOLR_CLOUD') ?: 'false');
 
 /**
  * Tests location searches and distance facets using the Solr search backend.
@@ -24,6 +28,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
    */
   public static $modules = [
     'search_api_solr',
+    'search_api_solr_test',
   ];
 
   /**
@@ -43,14 +48,19 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   /**
    * The in-memory logger.
    *
-   * @var \Drupal\search_api_solr_test\Logger\InMemoryLogger
+   * @var \Psr\Log\LoggerInterface
    */
   protected $logger;
 
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
+    if ('true' === SOLR_CLOUD) {
+      $this->serverId .= '_cloud';
+      $this->indexId .= '_cloud';
+    }
+
     parent::setUp();
 
     $this->installConfigs();
@@ -66,6 +76,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function installConfigs() {
     $this->installConfig([
       'search_api_solr',
+      'search_api_solr_test',
     ]);
   }
 
@@ -77,7 +88,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   /**
    * Clear the index after every test.
    */
-  public function tearDown() {
+  public function tearDown(): void {
     $this->clearIndex();
     parent::tearDown();
   }
@@ -97,7 +108,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function indexItems($index_id) {
     $index_status = parent::indexItems($index_id);
     $index = Index::load($index_id);
-    $this->ensureCommit($index->getServerInstance());
+    $this->ensureCommit($index);
     return $index_status;
   }
 
@@ -107,7 +118,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function clearIndex() {
     $index = Index::load($this->indexId);
     $index->clear();
-    $this->ensureCommit($index->getServerInstance());
+    $this->ensureCommit($index);
   }
 
   /**
@@ -138,7 +149,7 @@ abstract class SolrBackendTestBase extends BackendTestBase {
   protected function checkIndexWithoutFields() {
     $index = parent::checkIndexWithoutFields();
     $index->clear();
-    $this->ensureCommit($index->getServerInstance());
+    $this->ensureCommit($index);
   }
 
   /**

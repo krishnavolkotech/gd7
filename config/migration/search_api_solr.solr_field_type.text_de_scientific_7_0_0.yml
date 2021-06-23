@@ -1,9 +1,12 @@
 uuid: 6d738a5d-e46b-4090-8c28-a56ec5210642
 langcode: de
 status: true
-dependencies: {  }
-_core:
-  default_config_hash: 2bluTWiMM6tZ-7O1uJL1KMkKia49dahDjyNr0lbQPNE
+dependencies:
+  module:
+    - search_api_solr
+    - language
+  config:
+    - language.entity.de
 id: text_de_scientific_7_0_0
 label: 'German Scientific Text Field'
 minimum_solr_version: 7.0.0
@@ -88,8 +91,5 @@ field_type:
           protected: protwords_de.txt
         -
           class: solr.RemoveDuplicatesTokenFilterFactory
-unstemmed_field_type: null
-spellcheck_field_type: null
-collated_field_type: null
 solr_configs: {  }
 text_files: {  }
