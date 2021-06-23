@@ -1,13 +1,13 @@
-uuid: 2bc62aa8-5c0c-4f48-a6ab-673c94d641bc
-langcode: en
+uuid: e4bffe13-7e12-4477-affb-297a6fcc24b6
+langcode: de
 status: true
 dependencies:
   config:
-    - node.type.news
-id: node.news.title
+    - node.type.artefakt_kommentar
+id: node.artefakt_kommentar.title
 field_name: title
 entity_type: node
-bundle: news
+bundle: artefakt_kommentar
 label: Titel
 description: ''
 required: true

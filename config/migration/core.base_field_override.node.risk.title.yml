@@ -1,13 +1,13 @@
-uuid: 2bc62aa8-5c0c-4f48-a6ab-673c94d641bc
-langcode: en
+uuid: fcfab775-4c33-4dc3-a0a9-8c66ce1d6850
+langcode: de
 status: true
 dependencies:
   config:
-    - node.type.news
-id: node.news.title
+    - node.type.risk
+id: node.risk.title
 field_name: title
 entity_type: node
-bundle: news
+bundle: risk
 label: Titel
 description: ''
 required: true
