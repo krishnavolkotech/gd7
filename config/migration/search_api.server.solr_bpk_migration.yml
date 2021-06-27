@@ -39,7 +39,7 @@ backend_config:
     host: 10.12.18.14
     port: 8983
     path: /
-    core: bpktst
+    core: bpkstg
     timeout: 5
     index_timeout: 5
     optimize_timeout: 10

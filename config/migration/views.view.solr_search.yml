@@ -703,17 +703,19 @@ display:
       header: {  }
       footer: {  }
       empty:
-        area_text_custom:
-          id: area_text_custom
+        area:
+          id: area
           table: views
-          field: area_text_custom
+          field: area
           relationship: none
           group_type: group
           admin_label: ''
           empty: true
           tokenize: false
-          content: "Keine Ergebnisse gefunden.\r\nHinweis: Ergebnisse in Gruppen, in denen Sie kein Mitglied sind, werden nicht angezeigt."
-          plugin_id: text_custom
+          content:
+            value: "<p>Keine Ergebnisse gefunden. <br>\r\n<strong>Hinweis:</strong> Ergebnisse in Gruppen, in denen Sie kein Mitglied sind, werden nicht angezeigt.</p>"
+            format: full_html
+          plugin_id: text
       relationships:
         gid:
           id: gid
