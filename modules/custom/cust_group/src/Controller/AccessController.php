@@ -417,19 +417,20 @@ class AccessController extends ControllerBase
 
 
   public function groupContentCreateAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
-    // If SiteAdmin -> return Allowed
+    // Site Administrator may create everything.
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return AccessResult::allowed();
+    }
+
     $group = $route_match->getParameter('group');
     $plugin_id = $route_match->getParameter('plugin_id');
     $userEntity = User::load($user->id());
-    // @todo Filebrowser muss für SiteAdmin allein konfiguriert werden.
-    // Code unten ist nur Workaround.
     $common_plugins = [
       'group_node:faqs',
       'group_node:faq',
       'group_node:forum',
       'group_node:page',
       'group_node:newsletter',
-      'group_node:dir_listing',
     ];
     if (is_object($group) && isset($plugin_id)) {
       $group_id = $group->id();

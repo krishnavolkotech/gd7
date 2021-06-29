@@ -6,28 +6,36 @@ use Drupal\filebrowser\Services\Common;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\Group;
 use Drupal\node\NodeInterface;
-use \Drupal\Core\Session\AccountProxy;
+use Drupal\Core\Session\AccountProxy;
+
 /**
- * Override to set CSV filename when exported.
+ * Class AltCommon
+ * @package Drupal\cust_filebrowser\Services
  */
 class AltCommon extends Common {
 
-  // Permissions
-  // const DELETE_FILES = 'delete files';
-  // const EDIT_DESCRIPTION = 'edit description';
-  // const CREATE_FOLDER = 'create folders';
-  // const FILE_UPLOAD = 'upload files';
-  // const RENAME_FILES = 'rename files';
-  // const DOWNLOAD_ARCHIVE = 'download archive';
-  // const DOWNLOAD = 'download files';
+  /**
+   * Returns current User object.
+   * 
+   * @return \Drupal\Core\Session\AccountProxy
+   */
+  public function getCurrentUser() {
+    return \Drupal::currentUser();
+  }
 
-  // const CREATE_LISTING = 'create listings';
-  // const DELETE_OWN_LISTINGS = 'delete listings';
-  // const DELETE_ANY_LISTINGS = 'delete any listings';
-  // const EDIT_OWN_LISTINGS = 'edit own listings';
-  // const EDIT_ANY_LISTINGS = 'edit any listings';
-  // const VIEW_LISTINGS = 'view listings';
-
+  /**
+   * Returns a Group object for given entity.
+   * 
+   * @param NodeInterface $node
+   * The entity that belongs to a group.
+   * 
+   * @return \Drupal\group\Entity\Group
+   */
+  public function getGroupByNode(NodeInterface $node) {
+    $groupContent = GroupContent::loadByEntity($node);
+    $group = reset($groupContent)->getGroup();
+    return $group;
+  }
 
   /**
    * Returns an array containing the allowed actions for logged in user.
@@ -44,18 +52,19 @@ class AltCommon extends Common {
    * @return array
    */
   public function userAllowedActions($node) {
-    // @todo: Default Funktion implementieren. Dies hier soll es erweitern, wenn Filebrowser im Gruppenkontext verwendet wird.
-    /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
-
+    // @todo: Default Funktion implementieren. Dies hier soll es erweitern,
+    // wenn Filebrowser im Gruppenkontext verwendet wird.
     $actions = [];
-    $account = \Drupal::currentUser();
+
+    /** @var \Drupal\Core\Session\AccountProxy $account */
+    $account = $this->getCurrentUser();
+
+    /** @var \Drupal\filebrowser\Filebrowser $filebrowser */
     $filebrowser = $node->filebrowser;
 
     // Crash, wenn benutzer abgemeldet ist
     if ($account->isAuthenticated()) {
-      // @todo Richtige Gruppe laden.
-      $group = Group::load(2);
-      // $group = reset(GroupContent::loadByEntity($node))->getGroup();
+      $group = $this->getGroupByNode($node);
     }
     else {
       return $actions;
@@ -65,7 +74,7 @@ class AltCommon extends Common {
     }
 
     // needs_item indicates this button needs items selected on the form
-    // Upload button
+    // Upload button.
     if ($filebrowser->enabled && $group->hasPermission(Common::FILE_UPLOAD, $account)) {
       $actions[] = [
         'operation' => 'upload',
@@ -75,7 +84,7 @@ class AltCommon extends Common {
         'route' => 'filebrowser.action',
       ];
     }
-    //Create folder
+    // Create folder button.
     if ($filebrowser->createFolders && $group->hasPermission(Common::CREATE_FOLDER, $account)) {
       $actions[] = [
         'operation' => 'folder',
@@ -84,7 +93,7 @@ class AltCommon extends Common {
         'type' => 'link',
       ];
     }
-    // Delete items button
+    // Delete items button.
     if ($group->hasPermission(Common::DELETE_FILES, $account)) {
       $actions[] = [
         'operation' => 'delete',
@@ -93,7 +102,7 @@ class AltCommon extends Common {
         'type' => 'button',
       ];
     }
-    // Rename items button
+    // Rename items button.
     if ($filebrowser->enabled && $group->hasPermission(Common::RENAME_FILES, $account)) {
       $actions[] = [
         'operation' => 'rename',
@@ -102,7 +111,7 @@ class AltCommon extends Common {
         'type' => 'button',
       ];
     }
-    // Edit description button
+    // Edit description button.
     if ($filebrowser->enabled && $group->hasPermission(Common::EDIT_DESCRIPTION, $account)) {
       $actions[] = [
         'operation' => 'description',
@@ -111,6 +120,7 @@ class AltCommon extends Common {
         'type' => 'button',
       ];
     }
+    // ZIP download button.
     if ($this->canDownloadArchiveModified($node, $group, $account) && function_exists('zip_open')) {
       $actions[] = [
         'operation' => 'archive',
@@ -124,12 +134,21 @@ class AltCommon extends Common {
 
   /**
    * Check if user can download ZIP archives.
-   * @param NodeInterface $node Node containing the filebrowser
+   * 
+   * @param NodeInterface $node 
+   *  Node containing the filebrowser.
+   * 
+   * @param Group $group
+   *  Group containing the node.
+   * 
+   * @param AccountProxy $account
+   *  The User Account.
+   * 
    * @return bool
    */
   function canDownloadArchiveModified(NodeInterface $node, Group $group, AccountProxy $account) {
     $download_archive = $node->filebrowser->downloadArchive;
     return ($node->access('view') && $download_archive && $group
-        ->hasPermission(Common::DOWNLOAD_ARCHIVE, $account));
+      ->hasPermission(Common::DOWNLOAD_ARCHIVE, $account));
   }
 }
