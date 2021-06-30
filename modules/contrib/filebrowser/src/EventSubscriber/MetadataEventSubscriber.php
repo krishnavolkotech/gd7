@@ -132,7 +132,7 @@ class MetadataEventSubscriber implements EventSubscriberInterface {
     }
     else{
       // no description available
-      $description = 'Default description';
+      $description = '';
     }
 
     if(!empty($subdir_fid)) {
