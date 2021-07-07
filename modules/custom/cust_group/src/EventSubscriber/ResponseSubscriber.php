@@ -58,6 +58,10 @@ class ResponseSubscriber implements EventSubscriberInterface {
 
         if ($group) {
           $groupType = $group->getGroupType()->id();
+          // Do not attempt to redirect a group member. Prevents redirect loop.
+          if ($group->getMember(\Drupal::currentUser())) {
+            return;
+          }
         }
 
         if ($group and in_array($groupType, ['open', 'moderate'])) {
