@@ -74,7 +74,7 @@ class UploadForm extends FormBase {
 
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Save Upload'),
+      '#value' => $this->t('Refresh and close'),
     ];
     return $form;
   }
