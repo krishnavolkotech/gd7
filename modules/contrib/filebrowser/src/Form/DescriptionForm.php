@@ -95,10 +95,10 @@ class DescriptionForm extends FormBase {
       ];
     }
 
-    $form['cancel'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Cancel'),
-    ];
+    // $form['cancel'] = [
+    //   '#type' => 'submit',
+    //   '#value' => $this->t('Cancel'),
+    // ];
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
