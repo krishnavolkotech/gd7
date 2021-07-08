@@ -1,0 +1,30 @@
+diff --git a/modules/contrib/filebrowser/src/Services/FormHelper.php b/modules/contrib/filebrowser/src/Services/FormHelper.php
+index cc6384aaf..2b2b109d8 100644
+--- a/modules/contrib/filebrowser/src/Services/FormHelper.php
++++ b/modules/contrib/filebrowser/src/Services/FormHelper.php
+@@ -68,6 +68,7 @@ public function createLink(array $action, NodeInterface $node, $relative_fid) {
+     $link_options = [
+       'attributes' => [
+         'class' => [
++          'disabled',
+           'use-ajax',
+           'button',
+           'btn',
+@@ -93,6 +94,7 @@ public function createAjaxButton($action) {
+       '#name' => $action['operation'],
+       '#title' => $action['title'],
+       '#attributes' => [
++        'disabled' => True,
+         'class' => [
+           'use-ajax-submit',
+         ],
+@@ -116,6 +118,9 @@ public function createNormalButton($action) {
+       '#value' => $action['title'],
+       '#name' => $action['operation'],
+       '#title' => $action['title'],
++      '#attributes' => [
++        'disabled' => True,
++      ],
+     ];
+   }
+ 

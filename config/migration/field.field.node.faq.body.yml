@@ -13,7 +13,7 @@ id: node.faq.body
 field_name: body
 entity_type: node
 bundle: faq
-label: Textkörper
+label: Body
 description: ''
 required: false
 translatable: true

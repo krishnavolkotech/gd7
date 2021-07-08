@@ -12,6 +12,13 @@ services:
     class: Drupal\cust_group\EventSubscriber\ContentView
     tags:
       - { name: event_subscriber }
+
+  cust_group.access_denied_event.response_subscriber:
+    class: Drupal\cust_group\EventSubscriber\ResponseSubscriber
+    arguments: ['@current_user']
+    tags:
+      - { name: event_subscriber }
+
   #  arguments: ['@config.factory']
   #cust_group.default:
   #  class: Drupal\cust_group\EventSubscriber\DefaultSubscriber

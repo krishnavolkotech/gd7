@@ -334,7 +334,7 @@ table.releases.released tr.even td.earlywarnings-cell {
   display:inline-block;
   color:#9b9b9b !important;
   font-size:13px;
-  
+
 }
 /*.news-block ul li a{
   border-bottom:1px solid #ccc;
@@ -355,7 +355,7 @@ table tr th {
     margin-bottom: 0 !important;
     display:table-cell;
 }
-#incidents_search_results_wrapper table tr td p { 
+#incidents_search_results_wrapper table tr td p {
     /*word-wrap: break-word;*/
     float: left;
 }
@@ -449,7 +449,7 @@ table.sticky-header tr th{
 .view-group-members-lists table tr td.views-field-mail a{
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
   display:inline-block;
   width:90%;
 }
@@ -771,12 +771,12 @@ form.deployedreleases-create-form .btn{
  margin-bottom:2%;
 }
 }
-@media only screen and (min-width:768px) and (max-width:991px){ 
+@media only screen and (min-width:768px) and (max-width:991px){
 form.im-attachments-upload-form .form-item label.form-required,
 form.im-attachments-upload-form .form-group label.form-required{
   width:25% !important;
 }
-form.im-attachments-upload-form .form-actions button, 
+form.im-attachments-upload-form .form-actions button,
 form.im-attachments-upload-form .form-type-checkbox label.form-required{
   margin-left:27%;
 }
@@ -817,7 +817,7 @@ form.deployedreleases-create-form .form-item,
 }
 .node-form .field--type-text-with-summary .form-item label{
   margin-top:15px !important;
-}  
+}
 
 @media only screen and (max-width:767px){
 form.problem-settings-form .form-checkboxes,
@@ -856,7 +856,7 @@ body.not-loggedin.path-user .region-content{
   border:1px solid #ddd;
 }
 .tooltip,
-.table-responsive table thead, 
+.table-responsive table thead,
 .table-responsive table th{
   display:none !important;
 }
@@ -870,7 +870,7 @@ body.not-loggedin .region-content,
   float:left;
 }
 .table-responsive table tbody td::before{
-  content: attr(data-th) ":"; 
+  content: attr(data-th) ":";
   font-weight: bold;
   display: inline-block;
   color:#333;
@@ -987,7 +987,7 @@ form.node-service-profile-form .form-checkboxes{
  height: auto;
   -webkit-column-count:2;
   -moz-column-count:2;
-  column-count:2; 
+  column-count:2;
 }
 .path-frontpage .block-maintenance-block .maintenance-home-info .maintenance-list{
  /*display:inline-block;
@@ -1090,7 +1090,7 @@ header .block-cust-group-search-block form .search-expanded a.close:after{
     color:#fff;
     width:100%;
     float:left;
-    
+
 }
 .form-group:last-child,
 .panel:last-child,
@@ -1135,8 +1135,8 @@ aside section {
 }
 /*
 form.node-service-profile-edit-form #edit-field-dependent-downtimeservices,
-form.node-service-profile-edit-form #edit-field-service-recipient , 
-form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator 
+form.node-service-profile-edit-form #edit-field-service-recipient ,
+form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator
 */
 form.problem-settings-form .form-checkboxes,
 form.downtimes-setting-form #edit-services,
@@ -1150,12 +1150,12 @@ form.node-service-profile-form .form-checkboxes{
     -webkit-column-count:3;
     -moz-column-count:3;
     column-count:3;
-    -webkit-column-fill: balance; 
-    -moz-column-fill: balance; 
+    -webkit-column-fill: balance;
+    -moz-column-fill: balance;
     column-fill: balance;
     column-gap:20px;
-    -webkit-column-gap: 20px; 
-    -moz-column-gap: 20px; 
+    -webkit-column-gap: 20px;
+    -moz-column-gap: 20px;
     position: relative;
 }
 form.problem-settings-form .form-checkboxes .form-type-checkbox,
@@ -1166,8 +1166,8 @@ form.node-downtimes-form .form-wrapper #edit-services-effected .form-type-checkb
 form.node-downtimes-form .form-wrapper #edit-states .form-type-checkbox,
 form.node-downtimes-edit-form .form-wrapper #edit-services-effected .form-checkbox,
 form.node-downtimes-form .form-wrapper #edit-services-effected .form-checkbox,
-form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox, 
-form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox, 
+form.node-service-profile-edit-form #edit-field-dependent-downtimeservices .form-type-checkbox,
+form.node-service-profile-edit-form #edit-field-service-recipient .form-type-checkbox,
 form.node-service-profile-edit-form .form-wrapper #edit-field-service-operator .form-type-checkbox{
   width: 99%;
   display: inline-block;
@@ -1195,11 +1195,11 @@ form.node-downtimes-form legend{
   margin-top:15px;
 }
 
-form.node-service-profile-form .field--name-field-service-operator, 
-form.node-service-profile-form .field--name-field-service-recipient, 
-form.node-service-profile-form .field--name-field-dependent-service, 
-form.node-service-profile-edit-form .field--name-field-service-operator, 
-form.node-service-profile-edit-form .field--name-field-service-recipient, 
+form.node-service-profile-form .field--name-field-service-operator,
+form.node-service-profile-form .field--name-field-service-recipient,
+form.node-service-profile-form .field--name-field-dependent-service,
+form.node-service-profile-edit-form .field--name-field-service-operator,
+form.node-service-profile-edit-form .field--name-field-service-recipient,
 form.node-service-profile-edit-form .field--name-field-dependent-service,
 form.node-service-profile-form .form-checkboxes,
 form.node-service-profile-edit-form .form-checkboxes{
@@ -1306,7 +1306,7 @@ a.cke_dialog_tab {
     padding-left: 10px;
 }
 .cke_ltr .cke_dialog_contents_body .cke_dialog_page_contents table {
-   margin-top: 0px !important; 
+   margin-top: 0px !important;
    margin-bottom: 0px !important; /*  in ckeditor table popup table */
 }
 .early-warnings .content .field--label-inline {
@@ -1562,13 +1562,13 @@ span.field-content::first-letter {
   background: #fff url(../images/close-icon.png) no-repeat right -10px center;
   background-size: 10px 10px;
   border: 1px solid #999;
-  padding: 3px 18px 3px 4px; 
+  padding: 3px 18px 3px 4px;
   border-radius: 3px;
   transition: background 0.4s;
 }
-#edit-fulltext.hascontent  { background-position: right 10px center; } 
-#edit-fulltext.onremove{ cursor: pointer; }              
-#edit-fulltext::-ms-clear {display: none; width:0; height:0;} 
+#edit-fulltext.hascontent  { background-position: right 10px center; }
+#edit-fulltext.onremove{ cursor: pointer; }
+#edit-fulltext::-ms-clear {display: none; width:0; height:0;}
 
 .view-solr-search .view-content ul li a{
     color: #333;
@@ -1605,7 +1605,29 @@ span.field-content::first-letter {
     border: none !important;
     color: #fff !important;
     background: #0e9e57 !important;
-} 
+}
 .reset-button {
     margin-top: -5px;
+}
+
+.cust-filebrowser-actions .btn {
+  margin-right: 10px;
+  border: 1px solid rgb(204, 204, 204) !important;
+  background: #fff !important;
+  color: rgb(51, 51, 51) !important;
+}
+
+.cust-filebrowser-actions .btn-default:hover {
+  color: #333 !important;
+  background-color: #e6e6e6 !important;
+  border-color: #adadad !important;
+}
+
+.cust-filebrowser-actions .btn-danger {
+  border-color: #ac2925 !important;
+}
+
+.cust-filebrowser-actions .btn-danger:hover {
+  color: #fff !important;
+  background-color: #c9302c !important;
 }

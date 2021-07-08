@@ -9,14 +9,15 @@ label: Seite
 type: 'canonical_entities:node'
 pattern: '[node:group_raw]/[node:menu-link:parents:join-path]/[node:title]'
 selection_criteria:
-  e2761aa0-09f6-4290-80d5-b56bdc3bc713:
+  9875a17d-a224-4820-9c75-a4d0b6d6bdc2:
     id: node_type
     bundles:
+      dir_listing: dir_listing
       page: page
     negate: false
     context_mapping:
       node: node
-    uuid: e2761aa0-09f6-4290-80d5-b56bdc3bc713
+    uuid: 9875a17d-a224-4820-9c75-a4d0b6d6bdc2
 selection_logic: and
 weight: -3
 relationships: {  }

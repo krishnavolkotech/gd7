@@ -1,0 +1,21 @@
+uuid: 97944b2a-d2dc-40eb-8452-ce3886137dc4
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+id: moderate_private-5_filemanager
+label: Dateiverwalter
+weight: 9
+internal: false
+audience: member
+group_type: moderate_private
+permissions_ui: true
+permissions:
+  - 'create folders'
+  - 'delete files'
+  - 'download archive'
+  - 'download files'
+  - 'edit description'
+  - 'rename files'
+  - 'upload files'
