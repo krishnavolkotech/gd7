@@ -3,6 +3,6 @@ langcode: de
 status: true
 dependencies: {  }
 id: menu-66491
-label: BuStra
+label: 'BuStra / Steufa'
 description: ''
 locked: false

@@ -8,7 +8,7 @@ id: group.open.label
 field_name: label
 entity_type: group
 bundle: open
-label: Titel
+label: 'Gruppenname (Achtung: NUR in Rücksprache mit BpK-Team ändern, sonst geht die Gruppe kaputt!)'
 description: ''
 required: true
 translatable: true

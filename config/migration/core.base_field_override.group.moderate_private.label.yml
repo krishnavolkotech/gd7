@@ -8,7 +8,7 @@ id: group.moderate_private.label
 field_name: label
 entity_type: group
 bundle: moderate_private
-label: Title
+label: 'Gruppenname (Achtung: NUR in Rücksprache mit BpK-Team ändern, sonst geht die Gruppe kaputt!)'
 description: ''
 required: true
 translatable: true
