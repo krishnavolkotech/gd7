@@ -700,21 +700,41 @@ function _notify_users(&$entity, $action, $user_data){
     }
     $token_sub = $config[$config_type];
     $subject = \Drupal\Component\Utility\Html::decodeEntities($token_service->replace($token_sub, array($entity->getEntityTypeId() => $entity)));
-    if ((gettype($body) == 'object') && (strlen($body->__toString()) > 65535)) {
-      $error ="Die Seite hat " . strlen($body->__toString()) . " Zeichen. "
+
+    // Convert $body to string, if it comes as an object.
+    if (gettype($body) == 'object') {
+      $body = $body->__toString();
+    }
+
+    // Only try to replace links, if body is small enough to be sent via e-mail.
+    if (strlen($body) <= 65535) {
+    // Regex-Pattern of relative link.
+     $pattern = '/<a [^>]*href="\//';
+     // Verfication if relative link exists in notification body.
+     if (preg_match_all($pattern, $body, $matches)) {
+        foreach ($matches as $match) {
+          $host = \Drupal::request()->getSchemeAndHttpHost();
+          $url = 'href="' . $host . '/';
+          $replacement = str_replace('href="/', $url, $match);
+          $body = str_replace($match, $replacement, $body);
+        }
+      }
+    }
+    else {
+      // Too many characters: Default warning text.
+      $error ="Die Seite hat " . strlen($body) . " Zeichen. "
         . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
         . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link zu dieser Seite.";
-      drupal_set_message($error, 'warning');
       $body = "Der Inhalt der Seite ist zu groß zum Versenden. Untenstehender Link führt zum Inhalt.";
-    }
-    elseif (strlen($body) > 65535) {
-      $error ="Ihre RZ-Schnellinfo hat " . strlen($body) . " Zeichen. "
-        . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
-        . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link sowie eine PDF-Datei.";
+      // Modified warning text for quickinfo.
+      if ($entity->bundle() == 'quickinfo') {
+        $error ="Ihre RZ-Schnellinfo hat " . strlen($body) . " Zeichen. "
+          . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
+          . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link sowie eine PDF-Datei.";
+        $body = "RZ-Schnellinfo ist zu groß um im Mailbody versendet zu werden. Den Inhalt finden Sie im angehängten PDF oder wenn Sie dem Link folgen.";
+      }
       drupal_set_message($error, 'warning');
-      $body = "RZ-Schnellinfo ist zu groß um im Mailbody versendet zu werden. Den Inhalt finden Sie im angehängten PDF oder wenn Sie dem Link folgen.";
     }
-    // These bundles have condition for notifications.
     $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
   }
 

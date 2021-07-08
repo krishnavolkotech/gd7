@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/filebrowser/src/Form/UploadForm.php b/modules/contrib/filebrowser/src/Form/UploadForm.php
+index 36436f981..767026a06 100644
+--- a/modules/contrib/filebrowser/src/Form/UploadForm.php
++++ b/modules/contrib/filebrowser/src/Form/UploadForm.php
+@@ -74,7 +74,7 @@ public function buildForm(array $form, FormStateInterface $form_state, $nid= nul
+ 
+     $form['submit'] = [
+       '#type' => 'submit',
+-      '#value' => $this->t('Save Upload'),
++      '#value' => $this->t('Refresh and close'),
+     ];
+     return $form;
+   }

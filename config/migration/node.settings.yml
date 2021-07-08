@@ -31,3 +31,4 @@ notification_checkbox_risk: 0
 notification_checkbox_measure: 0
 notification_checkbox_release_comments: 1
 notification_checkbox_artefakt_kommentar: 0
+notification_checkbox_dir_listing: 0

@@ -1,0 +1,8 @@
+action_unblocker:
+  version: 1.x
+  header: true
+  js:
+    js/action-unblocker.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

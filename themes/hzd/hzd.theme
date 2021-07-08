@@ -1073,12 +1073,26 @@ function hzd_preprocess_views_view_summary_unformatted(&$variables) {
   }
 }
 
+/**
+ * Implements hook_form_alter().
+ * 
+ * Alters the menu form, which is used to create a group menu link to the node.
+ * This alters and overrides the available options to match the current group 
+ * context.
+ * 
+ */
 function hzd_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'node_page_form' || $form_id == 'node_page_edit_form') {
-    if ($form_id == 'node_page_form') {
+  $createNodeForms = ['node_page_form', 'node_dir_listing_form'];
+  $editNodeForms = ['node_page_edit_form', 'node_dir_listing_edit_form'];
+
+  // Is it the menu-form we want to change? (Page or Filebrowser)
+  if (in_array($form_id, array_merge($createNodeForms, $editNodeForms))) {
+    // Gets group from new node.
+    if (in_array($form_id, $createNodeForms)) {
       $group = \Drupal::routeMatch()->getRawParameter('group');
     }
-    elseif ($form_id == 'node_page_edit_form') {
+    // Gets group from existing node.
+    elseif (in_array($form_id, $editNodeForms)) {
       $node = \Drupal::routeMatch()->getParameter('node');
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       if (!empty($groupContent)) {
@@ -1098,14 +1112,6 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
           ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
       }
       $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
-//      pr($x);exit;
-      /* foreach($options as $key=>$option){
-        if(strpos($key,$menu) !== 0){
-        unset($form['menu']['link']['menu_parent']['#options'][$key]);
-        }
-        } */
-      /*      kint($menu);
-        kint($options);exit; */
     }
   }
 }

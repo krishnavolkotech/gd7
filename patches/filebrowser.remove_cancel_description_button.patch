@@ -1,0 +1,19 @@
+diff --git a/modules/contrib/filebrowser/src/Form/DescriptionForm.php b/modules/contrib/filebrowser/src/Form/DescriptionForm.php
+index 1399d8ac3..9c47518a3 100644
+--- a/modules/contrib/filebrowser/src/Form/DescriptionForm.php
++++ b/modules/contrib/filebrowser/src/Form/DescriptionForm.php
+@@ -95,10 +95,10 @@ public function buildForm(array $form, FormStateInterface $form_state, $nid = nu
+       ];
+     }
+ 
+-    $form['cancel'] = [
+-      '#type' => 'submit',
+-      '#value' => $this->t('Cancel'),
+-    ];
++    // $form['cancel'] = [
++    //   '#type' => 'submit',
++    //   '#value' => $this->t('Cancel'),
++    // ];
+     $form['submit'] = [
+       '#type' => 'submit',
+       '#value' => $this->t('Save'),
