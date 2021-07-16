@@ -7,6 +7,9 @@ import {
 } from "react-router-dom";
 import ReleaseManagementDashboard from "./ReleaseManagementDashboard";
 import { Jumbotron, Button, Panel, Grid, Row, Col } from 'react-bootstrap';
+import ReleaseDeploymentHome from './ReleaseDeploymentHome';
+import DeployedReleasesZrmlView from './DeployedReleasesZrmlView';
+import ReleaseEinsatzmeldungsManager from './ReleaseEinsatzmeldungsManager';
 
 class App extends React.Component {
   constructor(props) {
@@ -18,12 +21,21 @@ class App extends React.Component {
     return(
       <Router>
         <div>
-          <Switch>
+          <Switch >
             <Route path="/r/home">
               <Home />
             </Route>
             <Route path="/r/releases">
               <ReleaseManagementDashboard />
+            </Route>
+            <Route exact path="/zrml/r/einsatzmeldungen">
+              <ReleaseDeploymentHome />
+            </Route>
+            <Route exact path="/zrml/r/einsatzmeldungen/eingesetzt">
+              <ReleaseEinsatzmeldungsManager />
+            </Route>
+            <Route exact path="/zrml/r/einsatzmeldungen/archiviert">
+              <ReleaseEinsatzmeldungsManager />
             </Route>
           </Switch>
         </div>
