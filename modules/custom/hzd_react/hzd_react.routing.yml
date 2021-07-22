@@ -26,4 +26,28 @@ hzd_react.ajax:
     _title: 'Ajax'
   requirements:
     _permission: 'access content'
+hzd_react.deployed_releases_home:
+  path: '/group/{group}/r/einsatzmeldungen'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
+    _title: 'ZRML'
+  requirements:
+    _permission: 'access content'
+    group: '5'
+hzd_react.deployed_releases_list:
+  path: '/group/{group}/r/einsatzmeldungen/eingesetzt'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
+    _title: 'ZRML'
+  requirements:
+    _permission: 'access content'
+    group: '5'
+hzd_react.archived_deployments:
+  path: '/group/{group}/r/einsatzmeldungen/archiviert'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
+    _title: 'ZRML'
+  requirements:
+    _permission: 'access content'
+    group: '5'
 

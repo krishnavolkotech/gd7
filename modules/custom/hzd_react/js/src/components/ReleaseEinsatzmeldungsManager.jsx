@@ -19,7 +19,7 @@ export default function ReleaseEinsatzmeldungsManager() {
   // die Seite "archiviert" initial aufgerufen?
   let archivedUrl = false;
   if (history.location.pathname.indexOf('archiviert') > 0) {
-    archivedUrl = true;
+    archivedUrl = "1";
   }
 
   /** @const {array} data - Daten der Einsatzmeldungen. */
@@ -29,10 +29,34 @@ export default function ReleaseEinsatzmeldungsManager() {
   /** @const {string} isArchived - Archiviert oder im Einsatz? */
   const [isArchived, setIsArchived] = useState(archivedUrl);
 
-  let activeKey = isArchived ? "1" : "0";
+  //let activeKey = isArchived ? "1" : "0";
+  let activeKey
+  if (isArchived == 1) {
+    activeKey = "1";
+  }
+  else {
+    activeKey = "0";
+  }
 
-  // Filter State Variablen
+  // gewählte Umgebung aus URL Parametern
+  const environmentSelection = query.has("environment") ? query.get("environment") : "0";
+  // Filter Environments
+  const [environmentFilter, setEnvironmentFilter] = useState(environmentSelection);
+  
+  // gewähltes Verfahren aus URL Parametern
+  const serviceSelection = query.has("service") ? query.get("service") : "0";
+  // Filter Environments
+  const [serviceFilter, setServiceFilter] = useState(serviceSelection);
+
+
+  // Filter State 
   const [stateFilter, setStateFilter] = useState(stateSelection);
+
+  // gewähltes Release aus URL Parametern
+  const releaseSelection = query.has("release") ? query.get("release") : "0";
+  //Filter Release 
+  const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
+
 
   useEffect(() => {
     const fetchUrl = '/jsonapi/node/release_deployment';
@@ -41,15 +65,23 @@ export default function ReleaseEinsatzmeldungsManager() {
     let url = fetchUrl + defaultFilter;
     // Archiv-Filter
     let archivedFilter = "&filter[field_is_archived]=0";
-    // HIER weitermachen: isArchived wurde umgebaut von true / false zu "0" / "1"
-    // -> funktioniert aber noch nicht richtig.
-    if (isArchived) {
+    if (isArchived == "1" ) {
       archivedFilter = "&filter[field_is_archived]=1";
     }
     url += archivedFilter;
     // Landes-Filter (nur für Gruppen- und Site-Admins)
     if (stateFilter && stateFilter !== "1") {
       url += "&filter[field_user_state]=" + stateFilter;
+    }
+    if (environmentFilter !== "0") {
+      url += "&filter[field_environment]=" + environmentFilter;
+    }
+    if (serviceFilter !== "0") {
+      //url += "&filter[relationship.field_service]=" + serviceFilter;
+      url += "&filter[field_service.drupal_internal__nid]=" + serviceFilter;
+    }
+    if (releaseFilter !== "0") {
+      url += "&filter[field_deployed_release.drupal_internal__nid]=" + releaseFilter;
     }
 
     const headers = new Headers({
@@ -86,7 +118,7 @@ export default function ReleaseEinsatzmeldungsManager() {
         // }
       })
       .catch(error => console.log("error", error));
-  }, [isArchived, stateFilter]);
+  }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter]);
 
   useEffect(() => {
     let pathname;
@@ -108,12 +140,43 @@ export default function ReleaseEinsatzmeldungsManager() {
     } else {
       params.delete("state");
     }
+
+    if (environmentFilter !== "0") {
+      params.append("environment", environmentFilter);
+    } else {
+      params.delete("environment");
+    }
+
+    if (serviceFilter !== "0") {
+      params.append("service", serviceFilter);
+    } else {
+      params.delete("service");
+    }
+
+    if (releaseFilter !== "0") {
+      params.append("release", releaseFilter);
+    } else {
+      params.delete("release");
+    }
+
     history.push({
       pathname: pathname,
       search: params.toString() 
     });
-  }, [stateFilter, isArchived]);
+  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter]);
 
+  // Experiment: Releases für Filter via jsonapi-calls holen? Nachteil: Bei vielen
+  // Releases (>50) sind mehrere calls erforderlich.
+  // useEffect(() => {
+  //   if (serviceFilter !== "0") {
+  //     const headers = new Headers({
+  //       Accept: 'application/vnd.api+json',
+  //     });
+  //     const fetchUrl = '/jsonapi/node/release';
+  //     const defaultFilter = '?include=field_relese_services&page[limit]=20&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
+  //     fetch(url, { headers });
+  //   }
+  // }, [serviceFilter]);
 
   return (
     <div>
@@ -125,7 +188,16 @@ export default function ReleaseEinsatzmeldungsManager() {
           Archiv
         </NavItem>
       </Nav>
-      <EinsatzmeldungsFilter stateFilter={stateFilter} setStateFilter={setStateFilter}/>
+      <EinsatzmeldungsFilter 
+        stateFilter={stateFilter} 
+        setStateFilter={setStateFilter} 
+        environmentFilter={environmentFilter} 
+        setEnvironmentFilter={setEnvironmentFilter} 
+        serviceFilter={serviceFilter} 
+        setServiceFilter={setServiceFilter} 
+        releaseFilter={releaseFilter} 
+        setReleaseFilter={setReleaseFilter}
+      />
       <EinsatzmeldungsTabelle data={data} />
     </div>
   )
