@@ -79,8 +79,10 @@
 
       // @todo Add ignore row zu 'go up" row.
       // Not supported by current version of tablesorter?
-      // let back = $("tr:contains('Zurück')");
-      // back.addClass("tablesorter-ignoreRow");
+      let row = $(".folder-parent-icon").closest("tr");
+      // $(".folder-parent-icon").prependTo(".table-responsive");
+      // $("td a:contains('Zurück')").prependTo(".table-responsive");
+      row.remove();
 
       $('#edit-table').tablesorter({
         headers: {

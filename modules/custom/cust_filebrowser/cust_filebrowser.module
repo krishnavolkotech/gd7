@@ -16,19 +16,29 @@ use Drupal\node\NodeInterface;
 function cust_filebrowser_node_view_alter(array &$build, NodeInterface $node, EntityViewDisplayInterface $display) {
   $view_mode = $display->getOriginalMode();
   if ($view_mode == 'full' && $node->bundle() == 'dir_listing') {
-    // $build['filebrowser_file_list']['table2']['#markup'] = '<input class="form-control" id="myInput2" type="text" placeholder="Suche...">';
-    $tableFilter = array(
+    $tableFilter = [
       '#type' => 'textfield',
       "#placeholder" => "Tabelle filtern...",
       '#size' => 60,
       '#maxlength' => 128,
       '#required' => FALSE,
       '#id' => "search-files",
-    );
+    ];
+    $firstOption = reset($build['filebrowser_file_list']['table']['#options'])['name']->__toString();
+    $goUp = [];
+    if (str_contains($firstOption, "Zurück</a>")) {
+      $goUp = [
+        '#markup' => $firstOption,
+      ];
+      // $key = key($build['filebrowser_file_list']['table']['#options']);
+      // unset($build['filebrowser_file_list']['table']['#options'][$key]);
+    }
+    // Inserts new elements at the right place.
     $prevArray = $build['filebrowser_file_list'];
     $result = array_slice($prevArray, 0, 4, true) +
-      array("table_filter" => $tableFilter) +
-      array_slice($prevArray, 4, count($prevArray) - 1, true) ;
+      ["table_filter" => $tableFilter] +
+      ["go_up" => $goUp] +
+      array_slice($prevArray, 4, count($prevArray) - 1, true);
     $build['filebrowser_file_list'] = $result;
     $build['filebrowser_file_list']['action']['#attributes']['class'][] = 'cust-filebrowser-actions';
   }
