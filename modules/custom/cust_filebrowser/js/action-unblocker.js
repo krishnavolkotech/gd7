@@ -10,10 +10,14 @@
 
   Drupal.behaviors.filebrowserFilter = {
     attach: function (context, settings) {
-      $("#form-action-actions-wrapper").once('cust_filebrowser').after('<input class="form-control" id="myInput" type="text" placeholder="Suche...">');
-      $("#myInput").on("keyup", function () {
+      // Moved this to module hook.
+      // $("#form-action-actions-wrapper").once('cust_filebrowser').after('<input class="form-control" id="myInput" type="text" placeholder="Suche...">');
+      $("#search-files").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $("#edit-table tbody tr").filter(function () {
+          if ($(this).text().toLowerCase().indexOf('zurück') > -1) {
+            return;
+          }
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
       });
@@ -69,6 +73,14 @@
         // set type, either numeric or text
         type: 'numeric'
       });
+
+      // Remove standard tablesorter icon.
+      $(".glyphicon-chevron-up").remove();
+
+      // @todo Add ignore row zu 'go up" row.
+      // Not supported by current version of tablesorter?
+      // let back = $("tr:contains('Zurück')");
+      // back.addClass("tablesorter-ignoreRow");
 
       $('#edit-table').tablesorter({
         headers: {
