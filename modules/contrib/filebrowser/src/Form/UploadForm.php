@@ -108,6 +108,8 @@ class UploadForm extends FormBase {
     }
     // invalidate the cache for this node
     Cache::invalidateTags(['filebrowser:node:' . $this->nid]);
+    // HZD: Invalidate custom cache tag.
+    Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
     $route = $this->common->redirectRoute($this->queryFid, $this->node->id());
     $form_state->setRedirect($route['name'], $route['node'], $route['query']);
   }

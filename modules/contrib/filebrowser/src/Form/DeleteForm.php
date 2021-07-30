@@ -181,6 +181,8 @@ class DeleteForm extends ConfirmFormBase {
         if ($success) {
           // invalidate the cache for this node
           Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
+          // HZD: Invalidate custom cache tag.
+          Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
         }
         else {
           \Drupal::messenger()->addWarning($this->t('Unable to delete @file', ['@file' => $data->uri]));

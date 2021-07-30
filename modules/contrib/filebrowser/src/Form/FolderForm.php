@@ -100,6 +100,8 @@ class FolderForm extends FormBase {
     }
     else{
       Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
+      // HZD: Invalidate custom cache tag.
+      Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->relativeFid]);
     }
     $route = $this->common->redirectRoute($this->relativeFid, $this->node->id());
     $form_state->setRedirect($route['name'], $route['node'], $route['query']);
