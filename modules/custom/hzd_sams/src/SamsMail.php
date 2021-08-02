@@ -42,7 +42,17 @@ class SamsMail {
       $count = 0;
       foreach ($this->xmlData->artifact as $xml) {
         if ($this->checkAbo($subscriber, $xml)) {
-          $path = $xml->repopath ? $xml->repopath : $xml->sourceRepopath;
+          $fullPath = $xml->repopath ? $xml->repopath : $xml->sourceRepopath;
+          $explodedPath = explode("/", $fullPath);
+          array_pop($explodedPath);
+          $folderPath = implode("/", $explodedPath);
+
+          $targetFolderPath = '';
+          if ($xml->targetRepopath) {
+            $explodedPath = explode("/", $xml->targetRepopath);
+            array_pop($explodedPath);
+            $targetFolderPath = implode("/", $explodedPath);
+          }
           // Event.
           $row[] = $xml->eventValue;
           // Name.
@@ -52,16 +62,16 @@ class SamsMail {
           // Pfade.
           switch ($xml->eventValue) {
             case 'deleted':
-              $row[] = $path;
+              $row[] = $folderPath;
               $row[] = '';
               break;
             case 'moved':
-              $row[] = $path;
+              $row[] = $folderPath;
               $row[] = $this->getDownloadLink($xml->targetRepopath);
               break;
             default:
-              $row[] = $this->getDownloadLink($path);
-              $row[] = $xml->targetRepopath;
+              $row[] = $this->getDownloadLink($fullPath);
+              $row[] = $targetFolderPath;
           }
           $count++;
           $render['mail']['#rows'][] = $row;
