@@ -65,6 +65,7 @@ class SamsMail {
               $row[] = $folderPath;
               $row[] = '';
               break;
+            case 'copied':
             case 'moved':
               $row[] = $folderPath;
               $row[] = $this->getDownloadLink($xml->targetRepopath);
