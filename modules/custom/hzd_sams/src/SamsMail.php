@@ -36,7 +36,7 @@ class SamsMail {
         'Name',
         'Checksum',
         'Pfad',
-        'Verschoben nach'
+        'Verschoben/Kopiert nach'
       );
       $render['mail']['#rows'] = []; 
       $count = 0;
