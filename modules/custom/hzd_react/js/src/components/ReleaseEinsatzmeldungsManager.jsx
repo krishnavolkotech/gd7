@@ -1,16 +1,15 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import EinsatzmeldungsTabelle from './EinsatzmeldungsTabelle';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import EinsatzmeldungsFilter from './EinsatzmeldungsFilter';
+import EinsatzmeldungsFormular from './EinsatzmeldungsFormular';
 import useQuery from '../hooks/hooks';
 
 export default function ReleaseEinsatzmeldungsManager() {
+  const fetchCount = useRef(0);
   // Wird verwendet, um URL Parameter auszulesen.
   const query = useQuery();
-
-  /** @const {(string|false)} stateSelection - Gewähltes Land aus URL Parameter. */
-  const stateSelection = query.has("state") ? query.get("state") : false;
 
   // Benötigt, um URL Änderungen durchführen zu können und URL Parameter zu setzen.
   const history = useHistory();
@@ -22,14 +21,20 @@ export default function ReleaseEinsatzmeldungsManager() {
     archivedUrl = "1";
   }
 
+  // Für die Aktualisierung der Liste nach dem Speichern.
+  const [count, setCount] = useState(0);
+
   /** @const {array} data - Daten der Einsatzmeldungen. */
   const [data, setData] = useState([]);
-  console.log(setData);
+  //console.log(setData);
 
   /** @const {string} isArchived - Archiviert oder im Einsatz? */
   const [isArchived, setIsArchived] = useState(archivedUrl);
 
-  //let activeKey = isArchived ? "1" : "0";
+  // True, wenn keine Daten geladen werden können.
+  const [timeout, setTimeout] = useState(false);
+
+  // Welcher Reiter ist gewählt? Eingesetzt / Archiv.
   let activeKey
   if (isArchived == 1) {
     activeKey = "1";
@@ -38,23 +43,18 @@ export default function ReleaseEinsatzmeldungsManager() {
     activeKey = "0";
   }
 
-  // gewählte Umgebung aus URL Parametern
+  // Gewählte Umgebung aus URL Parametern.
   const environmentSelection = query.has("environment") ? query.get("environment") : "0";
-  // Filter Environments
   const [environmentFilter, setEnvironmentFilter] = useState(environmentSelection);
-  
-  // gewähltes Verfahren aus URL Parametern
+  // Gewähltes Verfahren aus URL Parametern.
   const serviceSelection = query.has("service") ? query.get("service") : "0";
-  // Filter Environments
   const [serviceFilter, setServiceFilter] = useState(serviceSelection);
-
-
-  // Filter State 
+  // Filter State.
+  /** @const {(string|false)} stateSelection - Gewähltes Land aus URL Parameter. */
+  const stateSelection = query.has("state") ? query.get("state") : false;
   const [stateFilter, setStateFilter] = useState(stateSelection);
-
-  // gewähltes Release aus URL Parametern
+  // Gewähltes Release aus URL Parametern.
   const releaseSelection = query.has("release") ? query.get("release") : "0";
-  //Filter Release 
   const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
 
 
@@ -83,6 +83,10 @@ export default function ReleaseEinsatzmeldungsManager() {
     if (releaseFilter !== "0") {
       url += "&filter[field_deployed_release.drupal_internal__nid]=" + releaseFilter;
     }
+    setData([]);
+    setTimeout(false);
+    fetchCount.current++;
+    const runner = fetchCount.current;
 
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
@@ -91,7 +95,6 @@ export default function ReleaseEinsatzmeldungsManager() {
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        // console.log(results);
         let deploymentData = results.data.map((deployment) => {
           // Search included relationship for associated service name.
           const serviceId = deployment.relationships.field_service.data.id;
@@ -111,14 +114,14 @@ export default function ReleaseEinsatzmeldungsManager() {
 
           return deployment;
         });
-        // console.log('Läufer angekommen: ' + runner + ". Insgesamt: " + fetchCount.current);
-        // if (runner === fetchCount.current) {
-          // if (releaseData.length === 0) setTimeout(true);
+        console.log('Läufer angekommen: ' + runner + ". Insgesamt: " + fetchCount.current);
+        if (runner === fetchCount.current) {
+          if (deploymentData.length === 0) setTimeout(true);
           setData(deploymentData);
-        // }
+        }
       })
       .catch(error => console.log("error", error));
-  }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter]);
+  }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter, count]);
 
   useEffect(() => {
     let pathname;
@@ -163,23 +166,18 @@ export default function ReleaseEinsatzmeldungsManager() {
       pathname: pathname,
       search: params.toString() 
     });
-  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter]);
+  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter, count]);
 
-  // Experiment: Releases für Filter via jsonapi-calls holen? Nachteil: Bei vielen
-  // Releases (>50) sind mehrere calls erforderlich.
-  // useEffect(() => {
-  //   if (serviceFilter !== "0") {
-  //     const headers = new Headers({
-  //       Accept: 'application/vnd.api+json',
-  //     });
-  //     const fetchUrl = '/jsonapi/node/release';
-  //     const defaultFilter = '?include=field_relese_services&page[limit]=20&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
-  //     fetch(url, { headers });
-  //   }
-  // }, [serviceFilter]);
+  const handleReset = () => {
+    setEnvironmentFilter("0");
+    setReleaseFilter("0");
+    setServiceFilter("0");
+    setStateFilter(false);
+  }
 
   return (
     <div>
+      <EinsatzmeldungsFormular data={data} setData={setData} count={count} setCount={setCount}/>
       <Nav bsStyle="tabs" activeKey={activeKey} onSelect={k => setIsArchived(k)}>
         <NavItem eventKey="0">
           Eingesetzt
@@ -197,8 +195,9 @@ export default function ReleaseEinsatzmeldungsManager() {
         setServiceFilter={setServiceFilter} 
         releaseFilter={releaseFilter} 
         setReleaseFilter={setReleaseFilter}
+        handleReset={handleReset}
       />
-      <EinsatzmeldungsTabelle data={data} />
+      <EinsatzmeldungsTabelle data={data} timeout={timeout} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
-import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { FormGroup, FormControl, Grid, Row, Col, Button } from 'react-bootstrap'
 
-export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter}) {
+export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset}) {
   
   //States Filter
   const statesObject = global.drupalSettings.states;
@@ -10,11 +10,10 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
 
   //Verfahren Filter
   const services = global.drupalSettings.services;
-  
   let servicesArray = Object.entries(services);
   servicesArray.sort(function(a,b) {
-    var serviceA = a[1].toUpperCase();
-    var serviceB = b[1].toUpperCase();
+    var serviceA = a[1][0].toUpperCase();
+    var serviceB = b[1][0].toUpperCase();
     if (serviceA < serviceB) {
       return -1;
     }
@@ -23,8 +22,7 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
     }
     return 0;
   });
-
-  let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1]}</option>)
+  let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
 
 
   //Umgebungen Filter
@@ -50,43 +48,60 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
 
   return (
     <form>
-      <FormGroup controlId="formControlsSelect">
-        <FormControl 
-          componentClass="select"
-          onChange={(e) => setStateFilter(e.target.value)}
-          value={stateFilter}
-        >
-          {optionsStates}
-        </FormControl>
-      </FormGroup>
-      <FormGroup controlId="formControlsSelect2" >
-        <FormControl
-          componentClass="select"
-          onChange={(e) => setEnvironmentFilter(e.target.value)}
-          value={environmentFilter}
-        >
-          {optionsEnvironments}
-        </FormControl>
-      </FormGroup>
-      <FormGroup controlId="formControlsSelect3" >
-        <FormControl
-          componentClass="select"
-          onChange={(e) => setServiceFilter(e.target.value)}
-          value={serviceFilter}
-        >
-          {optionsServices}
-        </FormControl>
-      </FormGroup>
-      <FormGroup controlId="formControlsSelect4" >
-        <FormControl
-          disabled={disabled}
-          componentClass="select"
-          onChange={(e) => setReleaseFilter(e.target.value)}
-          value={releaseFilter}
-        >
-          {optionsReleases}
-        </FormControl>
-      </FormGroup>
+      <Grid>
+        <Row>
+          <Col sm={3}>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect">
+              <FormControl
+                componentClass="select"
+                onChange={(e) => setStateFilter(e.target.value)}
+                value={stateFilter}
+              >
+                {optionsStates}
+              </FormControl>
+            </FormGroup>
+          </Col>
+          <Col sm={3}>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect2" >
+              <FormControl
+                componentClass="select"
+                onChange={(e) => setEnvironmentFilter(e.target.value)}
+                value={environmentFilter}
+              >
+                {optionsEnvironments}
+              </FormControl>
+            </FormGroup>
+          </Col>
+          <Col sm={3}>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect3" >
+              <FormControl
+                componentClass="select"
+                onChange={(e) => setServiceFilter(e.target.value)}
+                value={serviceFilter}
+              >
+                {optionsServices}
+              </FormControl>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={3}>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect4" >
+              <FormControl
+                disabled={disabled}
+                componentClass="select"
+                onChange={(e) => setReleaseFilter(e.target.value)}
+                value={releaseFilter}
+              >
+                {optionsReleases}
+              </FormControl>
+            </FormGroup>
+          </Col>
+          <Col sm={3}>
+            <Button onClick={() => handleReset()} bsStyle="primary">Zurücksetzen</Button>
+          </Col>
+        </Row>
+      </Grid>
     </form>
   )
 }

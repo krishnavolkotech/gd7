@@ -135,25 +135,102 @@ class ReactController extends ControllerBase {
 
     // Get Service names.
     $services = [
-      0 => '<Verfahren>',
+      0 => ['<Verfahren>', 0],
     ];
 
-    $query1 = \Drupal::service('entity.query');
-    $result1 = $query->get('node')
+    $query = \Drupal::service('entity.query');
+    $result = $query->get('node')
       ->condition('type', 'services')
       ->condition('release_type' , 459)
       ->condition('field_release_name', '', '!=')
       ->execute();
 
-    foreach ($result1 as $element => $nid) {
+    foreach ($result as $element => $nid) {
       $node = $this->entityTypeManager->getStorage('node')->load($nid);
-      $services[$nid] = $node->title->value;
+      $services[$nid][] = $node->title->value;
+      $services[$nid][] = $node->uuid();
     }
 
+
+    //Alle Service mit langer id
+    // $serviceslang = [];
+
+    // $query = \Drupal::service('entity.query');
+    // $result = $query->get('node')
+    //   ->condition('type', 'services')
+    //   ->condition('release_type' , 459)
+    //   ->condition('field_release_name', '', '!=')
+    //   ->execute();
+
+    // foreach ($result as $element => $nid) {
+    //   $node = $this->entityTypeManager->getStorage('node')->load($nid);
+    //   $serviceslang[$nid] = $node->id;
+    // }
+
+
     //Get releases
-    $releases = [
-      0 => '<Release>',
-    ];
+    // $prevreleases = [
+    //   0 => '<Release>',
+    // ];
+
+    // Get previous releases' names
+
+    $prevreleases=[];
+
+    // @todo 10.08.2021 - prüfen, ob notwendig.
+    function hzd_user_state($uid = NULL) {
+      if (!$uid) {
+        $account = \Drupal::currentUser();
+        $uid = $account->id();
+      }
+      $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+      return $state;
+    }
+
+    $user_state = hzd_user_state($uid = NULL);
+
+    $query3 = \Drupal::service('entity.query');
+    $result3 = $query->get('node')
+      ->condition('type', 'release_deployment')
+      ->condition('field_is_archived', false)
+      ->condition('field_user_state', $user_state)
+      ->execute();
+
+    //release it und titel aus einsatzmeldung als array?
+
+    foreach ($result3 as $nid) {
+      $node = $this->entityTypeManager->getStorage('node')->load($nid);
+      //Release:
+      $referencedEntities = $node->field_deployed_release->referencedEntities();
+      //Verfahren:
+      $referencedEntities2 = $node->field_service->referencedEntities();
+
+      $serviceId = $referencedEntities2[0]->id();
+      $prevreleases[$serviceId][] =[$referencedEntities[0]->id(), $referencedEntities[0]->title->value ];
+    }
+
+    //Get prev releases with drupalid in order to find long id fpr the post request in EinsatzmeldungsFormular
+  
+    $prevreleaseslong=[];
+
+    $query4 = \Drupal::service('entity.query');
+    $result4 = $query->get('node')
+      ->condition('type', 'release_deployment')
+      ->condition('field_is_archived', false)
+      ->condition('field_user_state', $user_state)
+      ->execute();
+
+    foreach ($result4 as $nid) {
+      $node2 = $this->entityTypeManager->getStorage('node')->load($nid);
+      //Release:
+      $LreferencedEntities = $node2->field_deployed_release->referencedEntities();
+      //Verfahren:
+      $LreferencedEntities2 = $node2->field_service->referencedEntities();
+
+      $prevreleaseslong[$LreferencedEntities[0]->id() ][] =[$LreferencedEntities[0]->uuid(), $LreferencedEntities[0]->title->value, $LreferencedEntities[0]->id() ];
+    }
+
+    //Get releases' names
 
     /*
       Conditions:
@@ -164,18 +241,14 @@ class ReactController extends ControllerBase {
         - Interner Status 1 oder 2
     */
     $query = \Drupal::service('entity.query');
-    $result2 = $query->get('node')
+    $result = $query->get('node')
       ->condition('type', 'release')
       ->condition('field_release_type', 3, '<')
       ->sort('title', 'ASC')
       ->execute();
 
-    // foreach ($result2 as $element => $nid) {
-    //   $node = $this->entityTypeManager->getStorage('node')->load($nid);
-    //   $releases[$nid] = $node->title->value;
-    // }
     $releases = [];
-    foreach ($result2 as $element => $nid) {
+    foreach ($result as $element => $nid) {
       $node = $this->entityTypeManager->getStorage('node')->load($nid);
       $referencedEntities = $node->field_relese_services->referencedEntities();
       if (count($referencedEntities) > 0) {
@@ -184,10 +257,34 @@ class ReactController extends ControllerBase {
       else {
         $serviceId = "error";
       }
-      $releases[$serviceId][] = [$node->id() => $node->title->value];
+      $releases[$serviceId][] = [$node->id() => $node->title->value, $node->uuid() ];
     }
 
-    // Get states from database.
+    //Get releases with drupalid in order to find long id fpr the post request in EinsatzmeldungsFormular
+
+    $query = \Drupal::service('entity.query');
+    $result = $query->get('node')
+      ->condition('type', 'release')
+      ->condition('field_release_type', 3, '<')
+      ->sort('title', 'ASC')
+      ->execute();
+
+    $releaseslong = [];
+    foreach ($result as $element => $nid) {
+      $node = $this->entityTypeManager->getStorage('node')->load($nid);
+      $referencedEntities = $node->field_relese_services->referencedEntities();
+      if (count($referencedEntities) > 0) {
+        $serviceId = $referencedEntities[0]->id();
+      }
+      else {
+        $serviceId = "error";
+      }
+      $releaseslong[$node->id()][] = [$node->title->value, $node->uuid() ];
+
+    }
+
+    // Get states from database
+
     $database = \Drupal::database();
     $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
       ->fetchAll();
@@ -208,6 +305,10 @@ class ReactController extends ControllerBase {
           'states' => $finalStates,
           'services' => $services,
           'releases' => $releases,
+          'prevreleases' => $prevreleases,
+          'userstate' => $user_state,
+          'prevreleaseslong' => $prevreleaseslong,
+          'releaseslong' => $releaseslong,
         ],
       ],
     ];
