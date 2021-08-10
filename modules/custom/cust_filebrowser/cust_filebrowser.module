@@ -31,41 +31,43 @@ function cust_filebrowser_node_view_alter(array &$build, NodeInterface $node, En
     ];
 
     // Build markup for folder breadcrumbs.
-    $explodedPath = explode("/", $result['path']);
-    $currentFolder = '<span class="current-folder">' . array_pop($explodedPath) . '</span>';
-    $explodedPath[] = $currentFolder;
-    $folderPathMarkup = '<p class="folder-path">';
-    array_shift($explodedPath);
-    $folderPathMarkup .= array_shift($explodedPath);
-    foreach ($explodedPath as $folder) {
-      $folderPathMarkup .= '  ›  ' . $folder;
-    }
-    $folderPathMarkup .= '</p>';
-    $folderPath = [
-      '#markup' => $folderPathMarkup,
-    ];
-
-    // Build markup for the "go up" link.
-    $firstOption = reset($build['filebrowser_file_list']['table']['#options'])['name']->__toString();
-    $goUp = [];
-    if (str_contains($firstOption, "Zurück</a>")) {
-      $goUp = [
-        '#markup' => $firstOption,
+    if ($result) {
+      $explodedPath = explode("/", $result['path']);
+      $currentFolder = '<span class="current-folder">' . array_pop($explodedPath) . '</span>';
+      $explodedPath[] = $currentFolder;
+      $folderPathMarkup = '<p class="folder-path">';
+      array_shift($explodedPath);
+      $folderPathMarkup .= array_shift($explodedPath);
+      foreach ($explodedPath as $folder) {
+        $folderPathMarkup .= '  ›  ' . $folder;
+      }
+      $folderPathMarkup .= '</p>';
+      $folderPath = [
+        '#markup' => $folderPathMarkup,
       ];
-      // $key = key($build['filebrowser_file_list']['table']['#options']);
-      // unset($build['filebrowser_file_list']['table']['#options'][$key]);
-    }
-    // Insert new elements at the right place in $build render array.
-    $prevArray = $build['filebrowser_file_list'];
-    $result = array_slice($prevArray, 0, 3, true) +
-      $folderPath +
-      array_slice($prevArray, 3, 1, true) +
-      ["table_filter" => $tableFilter] +
-      ["go_up" => $goUp] +
-      array_slice($prevArray, 4, count($prevArray) - 1, true
-    );
 
-    $build['filebrowser_file_list'] = $result;
+      // Build markup for the "go up" link.
+      $firstOption = reset($build['filebrowser_file_list']['table']['#options'])['name']->__toString();
+      $goUp = [];
+      if (str_contains($firstOption, "Zurück</a>")) {
+        $goUp = [
+          '#markup' => $firstOption,
+        ];
+        // $key = key($build['filebrowser_file_list']['table']['#options']);
+        // unset($build['filebrowser_file_list']['table']['#options'][$key]);
+      }
+      // Insert new elements at the right place in $build render array.
+      $prevArray = $build['filebrowser_file_list'];
+      $result = array_slice($prevArray, 0, 3, true) +
+        $folderPath +
+        array_slice($prevArray, 3, 1, true) +
+        ["table_filter" => $tableFilter] +
+        ["go_up" => $goUp] +
+        array_slice($prevArray, 4, count($prevArray) - 1, true
+      );
+
+      $build['filebrowser_file_list'] = $result;
+    }
     $build['filebrowser_file_list']['action']['#attributes']['class'][] = 'cust-filebrowser-actions';
   }
 }
