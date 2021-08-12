@@ -40,7 +40,8 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
   if (previousRelease == "0") {
     firstDeployment = true;
   }
-  //lange Service id suchen:
+
+  // UUID des Verfahrens.
   const serviceslangObject = global.drupalSettings.services;
   
   let serviceslangArray = Object.entries(serviceslangObject);
@@ -52,6 +53,7 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
     }
   }
 
+  // UUID des Vorgängerrelease.
   const prevreleaseslangObject = global.drupalSettings.prevreleaseslong;
   
   let prevreleaseslangArray = Object.entries(prevreleaseslangObject);
@@ -63,7 +65,7 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
     }
   }
 
-  //lange releaseid suchen:
+  // UUID des gemeldeten Release.
   const releaseslangObject = global.drupalSettings.releaseslong;
   let releaseslangArray = Object.entries(releaseslangObject);
   var idRelease;
@@ -73,82 +75,52 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
       break;
     }
   }
-  // in case a previous release has been selected in the deployed_releases_form, var data should be completed with relationsship field_prev_release
-
-  if (previousRelease != "") {
-    var postdata = {
-      "data": {
-        "type": "node--deployed_releases",
-        "attributes": {
-          "title": "title",
-          "field_deployment_status": isArchived ? '2' : '1',
-          "field_first_deployment": firstDeployment,
-          "field_abnormalities_bool": abnormalities,
-          "field_automated_deployment_bool": isAutomated,
-          "field_abnormality_description": description,
-          "field_date_deployed": date,
-          "field_installation_time": installationTime,
-          "field_user_state": global.drupalSettings.userstate,
-          "field_environment": environment,
-        },
-        "relationships": {
-          "field_deployed_release": {
-            "data": {
-              "type": "node--release",
-              "id": idRelease
-            },
-          },
-          "field_service": {
-            "data": {  
-              "type": "node--services",
-              "id": idVerfahren,
-            },
-          },
-          "field_prev_release": {
-            "data": {  
-              "type": "node--services",
-              "id": idPrevRelease,
-            },
-          },
-        }
-      }
-    }
-  }
-  else {
-    var postdata = {
-      "data": {
-        "type": "node--deployed_releases",
-        "attributes": {
-          "title": "title",
-          "field_deployment_status": isArchived ? '2' : '1',
-          "field_first_deployment": firstDeployment,
-          "field_abnormalities_bool": abnormalities,
-          "field_automated_deployment_bool": isAutomated,
-          "field_abnormality_description": description,
-          "field_date_deployed": date,
-          "field_installation_time": installationTime,
-          "field_user_state": global.drupalSettings.userstate,
-          "field_environment": environment,
-        },
-        "relationships": {
-          "field_deployed_release": {
+  
+  var postdata = {
+    "data": {
+      "type": "node--deployed_releases",
+      "attributes": {
+        "title": "title",
+        "field_deployment_status": isArchived ? '2' : '1',
+        "field_first_deployment": firstDeployment,
+        "field_abnormalities_bool": abnormalities,
+        "field_automated_deployment_bool": isAutomated,
+        "field_abnormality_description": description,
+        "field_date_deployed": date,
+        "field_installation_time": installationTime,
+        "field_user_state": global.drupalSettings.userstate,
+        "field_environment": environment,
+      },
+      "relationships": {
+        "field_deployed_release": {
           "data": {
             "type": "node--release",
             "id": idRelease
-            },
           },
-          "field_service": {
-            "data": {
-              "type": "node--services",
-              "id": idVerfahren,
-            },
+        },
+        "field_service": {
+          "data": {
+            "type": "node--services",
+            "id": idVerfahren,
           },
-        }
+        },
       }
     }
   }
-
+  
+  // in case a previous release has been selected in the deployed_releases_form,
+  // var data should be completed with relationsship field_prev_release
+  if (previousRelease != "0") {
+    let field_prev_release = {
+      "data": {
+        "type": "node--release",
+        "id": idPrevRelease,
+      },
+    }
+    postdata["data"]["relationships"] = { ...postdata["data"]["relationships"], field_prev_release };
+  }
   function handleSave() {
+    console.log(postdata);
     const csrfUrl = `/session/token?_format=json`;
     const fetchUrl = "/jsonapi/node/deployed_releases";
     const fetchOptions = {
@@ -220,27 +192,30 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
       <h1>Einsatzmeldung</h1>
       <FormGroup controlId="1">
         <ControlLabel bsClass="control-label js-form-required form-required">Umgebung</ControlLabel>
-        <FormControl
-          componentClass="select"
-          name="umgebung"
-          value={environment}
-          onChange={(e) => setEnvironment(e.target.value)}
-        >
-          {optionsEnvironments}
-        </FormControl>
+        <div className="select-wrapper">
+          <FormControl
+            componentClass="select"
+            name="umgebung"
+            value={environment}
+            onChange={(e) => setEnvironment(e.target.value)}
+          >
+            {optionsEnvironments}
+          </FormControl>
+        </div>
       </FormGroup>
 
       <FormGroup controlId="2">
         <ControlLabel bsClass="control-label js-form-required form-required">Verfahren</ControlLabel>
-        <FormControl
-          componentClass="select"
-          name= "verfahren"
-          value={service}
-          onChange={(e) => setService(e.target.value) }
-        >
-          {optionsServices}
-        </FormControl>
-
+        <div className="select-wrapper">
+          <FormControl
+            componentClass="select"
+            name= "verfahren"
+            value={service}
+            onChange={(e) => setService(e.target.value) }
+          >
+            {optionsServices}
+          </FormControl>
+        </div>
       </FormGroup>
 
       <SelectRelease

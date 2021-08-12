@@ -38,7 +38,10 @@ export default function SelectPreviousRelease({ service, previousRelease, setPre
           const relatedRelaseNid = relatedReleaseObject.attributes.drupal_internal__nid;
           return relatedRelaseNid;
         });
-        let allReleases = [...global.drupalSettings.releases[service]];
+        let allReleases = [];
+        if (service in global.drupalSettings.releases) {
+          allReleases = [...global.drupalSettings.releases[service]];
+        }
         let found = [];
         deployedReleaseNids.map(nid => {
           allReleases.filter((release, index) => {
@@ -78,15 +81,17 @@ export default function SelectPreviousRelease({ service, previousRelease, setPre
   return (
     <FormGroup controlId="4">
       <ControlLabel>Vorgängerrelease</ControlLabel>
-      <FormControl
-        componentClass="select"
-        name="vorgaengerrelease"
-        value={previousRelease}
-        onChange={(e) => setPreviousRelease(e.target.value)}
-        disabled={disabled}
-      >
-        {optionsPrevReleases}
-      </FormControl>
+      <div className="select-wrapper">
+        <FormControl
+          componentClass="select"
+          name="vorgaengerrelease"
+          value={previousRelease}
+          onChange={(e) => setPreviousRelease(e.target.value)}
+          disabled={disabled}
+        >
+          {optionsPrevReleases}
+        </FormControl>
+      </div>
     </FormGroup>
   )
 }

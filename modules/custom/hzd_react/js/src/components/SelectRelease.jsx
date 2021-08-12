@@ -40,7 +40,10 @@ export default function SelectRelease({ service, release, setRelease, environmen
           const relatedRelaseNid = relatedReleaseObject.attributes.drupal_internal__nid;
           return relatedRelaseNid;
         });
-        let releases = [...global.drupalSettings.releases[service]];
+        let releases = [];
+        if (service in global.drupalSettings.releases) {
+          releases = [...global.drupalSettings.releases[service]];
+        }
         let found = [];
         deployedReleaseNids.map(nid => {
           releases.filter((release, index) => {
@@ -78,15 +81,17 @@ export default function SelectRelease({ service, release, setRelease, environmen
   return (
     <FormGroup controlId="3">
       <ControlLabel bsClass="control-label js-form-required form-required">Release</ControlLabel>
-      <FormControl
-        disabled={disabled}
-        componentClass="select"
-        name="release"
-        value={release}
-        onChange={(e) => setRelease(e.target.value)}
-      >
-        {optionsReleases}
-      </FormControl>
+      <div className="select-wrapper">
+        <FormControl
+          disabled={disabled}
+          componentClass="select"
+          name="release"
+          value={release}
+          onChange={(e) => setRelease(e.target.value)}
+        >
+          {optionsReleases}
+        </FormControl>
+      </div>
     </FormGroup>
   )
 }
