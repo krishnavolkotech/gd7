@@ -178,6 +178,10 @@ export default function ReleaseEinsatzmeldungsManager() {
     setStateFilter(false);
   }
 
+  const handleAction = (userState, environment, service, release, deploymentId) => {
+    console.log(userState, environment, service, release, deploymentId);
+  }
+
   return (
     <div>
       <EinsatzmeldungsFormular data={data} setData={setData} count={count} setCount={setCount}/>
@@ -200,7 +204,7 @@ export default function ReleaseEinsatzmeldungsManager() {
         setReleaseFilter={setReleaseFilter}
         handleReset={handleReset}
       />
-      <EinsatzmeldungsTabelle data={data} timeout={timeout} />
+      <EinsatzmeldungsTabelle data={data} timeout={timeout} handleAction={handleAction} />
     </div>
   )
 }

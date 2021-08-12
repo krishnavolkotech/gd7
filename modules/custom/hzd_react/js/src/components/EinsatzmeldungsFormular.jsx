@@ -16,6 +16,7 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
   const [isAutomated, setIsAutomated] = useState(false);
   const [abnormalities, setAbnormalities] = useState(false);
   const [description, setDescription] = useState("");
+  const [userState, setUserState] = useState(global.drupalSettings.userstate);
 
   console.log(
     environment,
@@ -88,7 +89,7 @@ export default function EinsatzmeldungsFormular({data, setData, count, setCount}
         "field_abnormality_description": description,
         "field_date_deployed": date,
         "field_installation_time": installationTime,
-        "field_user_state": global.drupalSettings.userstate,
+        "field_user_state": userState,
         "field_environment": environment,
       },
       "relationships": {

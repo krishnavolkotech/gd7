@@ -1,7 +1,8 @@
 import React from 'react'
-import {Table} from 'react-bootstrap';
+import {Table, Button} from 'react-bootstrap';
+import EinsatzmeldungsZeile from "./EinsatzmeldungsZeile";
 
-export default function EinsatzmeldungsTabelle({ data, timeout }) {
+export default function EinsatzmeldungsTabelle({ data, timeout, handleAction }) {
 
   const tableHead = (
     <thead>
@@ -31,21 +32,8 @@ export default function EinsatzmeldungsTabelle({ data, timeout }) {
     <Table hover>
       { tableHead }
       { data.length ? data.map(deployment => {
-        const date = new Date(deployment.attributes.field_date_deployed);
-        const localeDate = date.toLocaleDateString('de-DE', {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
         return(
-          <tbody>
-            <td>{global.drupalSettings.states[deployment.attributes.field_user_state]}</td>
-            <td>{global.drupalSettings.environments[deployment.attributes.field_environment]}</td>
-            <td>{deployment.service}</td>
-            <td>{deployment.release}</td>
-            <td>{localeDate}</td>
-            <td><button>Aktion</button></td>
-          </tbody>
+          <EinsatzmeldungsZeile deployment={deployment} handleAction={handleAction} />
         );
       }) : <tbody><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tbody> }
     </Table>
