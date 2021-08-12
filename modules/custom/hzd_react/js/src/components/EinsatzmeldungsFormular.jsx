@@ -1,86 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../utils/fetch";
+import SelectRelease from "./SelectRelease";
+import SelectPreviousRelease from "./SelectPreviousRelease";
 
-export default function EinsatzmeldungsFormular( {data, setData, count, setCount}) {
+export default function EinsatzmeldungsFormular({data, setData, count, setCount}) {
 
-  const[state, setState] = useState({
-    umgebung: "",
-    verfahren: "",
-    release: "",
-    vorgaengerrelease: "",
-    datum:"",
-    installationsdauer: "",
-    archiviert: false,
-    automatisiert: false,
-    auffaelligkeiten: false,
-    beschreibung: "",
-  });
+  const [environment, setEnvironment] = useState(1);
+  const [service, setService] = useState(0);
+  const [release, setRelease] = useState(false);
+  const [previousRelease, setPreviousRelease] = useState("0");
+  const [date, setDate] = useState(false);
+  const [installationTime, setInstallationTime] = useState(false);
+  const [isArchived, setIsArchived] = useState(false);
+  const [isAutomated, setIsAutomated] = useState(false);
+  const [abnormalities, setAbnormalities] = useState(false);
+  const [description, setDescription] = useState("");
 
+  console.log(
+    environment,
+    service,
+    release,
+    previousRelease,
+    date,
+    installationTime,
+    isArchived,
+    isAutomated,
+    abnormalities,
+    description
+  );
+  // Release und Vorgängerrelease zurücksetzen, sobald ein anderes Verfahren 
+  // gewählt wird.
+  useEffect(() => {
+    setRelease("0");
+    setPreviousRelease("0");
+  }, [service])
 
-  function handleChange(event) {
-    let result = event.target.type === "checkbox" ? event.target.checked : event.target.value;
-    setState({...state, [event.target.name] : result});
-    //setState({...state, [event.target.name] : event.target.value});
+  let firstDeployment = false;
+  if (previousRelease == "0") {
+    firstDeployment = true;
   }
-    
-  //console.log(state);
-
   //lange Service id suchen:
   const serviceslangObject = global.drupalSettings.services;
   
   let serviceslangArray = Object.entries(serviceslangObject);
   var idVerfahren;
   for (var i = 0, len = serviceslangArray.length; i < len; i++) {
-    if (serviceslangArray[i][0] === state.verfahren ) {
+    if (serviceslangArray[i][0] === service ) {
       idVerfahren = serviceslangArray[i][1][1];
       break;
     }
   }
-  //console.log(idVerfahren);
 
-  //lange vorgaengerid suchen:
   const prevreleaseslangObject = global.drupalSettings.prevreleaseslong;
   
   let prevreleaseslangArray = Object.entries(prevreleaseslangObject);
   var idPrevRelease;
   for (var i = 0, len = prevreleaseslangArray.length; i < len; i++) {
-    if (prevreleaseslangArray[i][0] === state.vorgaengerrelease) {
+    if (prevreleaseslangArray[i][0] === previousRelease) {
       idPrevRelease = prevreleaseslangArray[i][1][0][0];
       break;
     }
   }
-  console.log(idPrevRelease);
 
   //lange releaseid suchen:
   const releaseslangObject = global.drupalSettings.releaseslong;
   let releaseslangArray = Object.entries(releaseslangObject);
   var idRelease;
   for (var i = 0, len = releaseslangArray.length; i < len; i++) {
-    if (releaseslangArray[i][0] === state.release) {
+    if (releaseslangArray[i][0] === release) {
       idRelease = releaseslangArray[i][1][0][1];
       break;
     }
   }
-  //console.log(idRelease)
+  // in case a previous release has been selected in the deployed_releases_form, var data should be completed with relationsship field_prev_release
 
-  //     // in case a previous release has been selected in the release_deployment_form, var data should be completed with relationsship field_prev_release
-
-  if (state.vorgaengerrelease != "") {
+  if (previousRelease != "") {
     var postdata = {
       "data": {
-        "type": "node--release_deployment",
+        "type": "node--deployed_releases",
         "attributes": {
           "title": "title",
-          "field_is_archived": state.archiviert,
-          "field_has_abnormalities": state.auffaelligkeiten,
-          "field_deployed_automatically": state.automatisiert,
-          "field_description_abnormality": state.beschreibung,
-          "field_date_deployed": state.datum,
-          "field_installation_time": state.installationsdauer,
+          "field_deployment_status": isArchived ? '2' : '1',
+          "field_first_deployment": firstDeployment,
+          "field_abnormalities_bool": abnormalities,
+          "field_automated_deployment_bool": isAutomated,
+          "field_abnormality_description": description,
+          "field_date_deployed": date,
+          "field_installation_time": installationTime,
           "field_user_state": global.drupalSettings.userstate,
-          "field_environment": state.umgebung,
-          "field_einsatz_status": true,
+          "field_environment": environment,
         },
         "relationships": {
           "field_deployed_release": {
@@ -108,18 +117,18 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
   else {
     var postdata = {
       "data": {
-        "type": "node--release_deployment",
+        "type": "node--deployed_releases",
         "attributes": {
           "title": "title",
-          "field_is_archived": state.archiviert,
-          "field_has_abnormalities": state.auffaelligkeiten,
-          "field_deployed_automatically": state.automatisiert,
-          "field_description_abnormality": state.beschreibung,
-          "field_date_deployed": state.datum,
-          "field_installation_time": state.installationsdauer,
+          "field_deployment_status": isArchived ? '2' : '1',
+          "field_first_deployment": firstDeployment,
+          "field_abnormalities_bool": abnormalities,
+          "field_automated_deployment_bool": isAutomated,
+          "field_abnormality_description": description,
+          "field_date_deployed": date,
+          "field_installation_time": installationTime,
           "field_user_state": global.drupalSettings.userstate,
-          "field_environment": state.umgebung,
-          "field_einsatz_status": true,
+          "field_environment": environment,
         },
         "relationships": {
           "field_deployed_release": {
@@ -129,7 +138,7 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
             },
           },
           "field_service": {
-            "data": {  
+            "data": {
               "type": "node--services",
               "id": idVerfahren,
             },
@@ -139,21 +148,9 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
     }
   }
 
-    
-  // if (state.vorgaengerrelease != "") {
-  //     console.log('text:');
-  //     Object.defineProperty (data.data.relationships, "field_prev_release", {
-  //         "data": {  
-  //             "type": "node--release",
-  //             "id": idPrevRelease,
-  //           },
-  //     }
-  //     );
-  // }
-
   function handleSave() {
     const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = "/jsonapi/node/release_deployment";
+    const fetchUrl = "/jsonapi/node/deployed_releases";
     const fetchOptions = {
       method: 'POST',
       headers: new Headers ({
@@ -164,31 +161,28 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
       body: JSON.stringify(postdata),
     }
   
-      
-      fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
-        .then(antwort => antwort.json())
-        .then(antwort => {
-            console.log (antwort);
-            setCount(count + 1);
-          })
-        .catch(error => {
-          console.log ('fehler:', error);
-        });
+    fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
+      .then(antwort => antwort.json())
+      .then(antwort => {
+          console.log (antwort);
+          setCount(count + 1);
+        })
+      .catch(error => {
+        console.log ('fehler:', error);
+      });
 
-    setState({
-      umgebung: "",
-      verfahren: "",
-      release: "",
-      vorgaengerrelease: "",
-      datum:"",
-      installationsdauer: "",
-      archiviert: false,
-      automatisiert: false,
-      auffaeligkeiten: false,
-      beschreibung: "",
-    });
+    // Nach Absendung des Formulars alles zurücksetzen.
+    setEnvironment(1);
+    setService(0);
+    setRelease(false);
+    setPreviousRelease(false);
+    setDate(false);
+    setInstallationTime(false);
+    setIsArchived(false);
+    setIsAutomated(false);
+    setAbnormalities(false);
+    setDescription("");
 
-     
     // data.push(postdata);
     // setData(data);
 
@@ -221,40 +215,6 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
 
   let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
 
-  //Release Drop Down
-  let defaultRelease = [<option value="0">&lt;Release&gt;</option>];
-  let optionsReleases = [];
-  //let disabled = true;
-  if (state.verfahren != "") {
-    //disabled = false;
-    const releases = global.drupalSettings.releases;
-    console.log(releases);
-    if (state.verfahren in releases) {
-      optionsReleases = releases[state.verfahren].map(releaseObject => {
-      //service State anstatt service Filter?
-      let release = Object.entries(releaseObject);
-      return <option value={release[0][0]}>{release[0][1]}</option>;
-      });
-    }
-  }
-  optionsReleases = [...defaultRelease, ...optionsReleases];
-
-
-   //Previous Release Drop Down
-  let defaultPrevRelease = [<option value="0">&lt;Vorgängerrelease&gt;</option>];
-  let optionsPrevReleases = [];
-  let disabled = true;
-  if (state.verfahren != "") {
-    disabled = false;
-    const prevreleases = global.drupalSettings.prevreleases;
-    if (state.verfahren in prevreleases) {
-      optionsPrevReleases = prevreleases[state.verfahren].map(releaseObject => {
-        return <option value={releaseObject[0]}>{releaseObject[1]}</option>;
-      });
-    }
-  }
-  optionsPrevReleases = [...defaultPrevRelease, ...optionsPrevReleases];
-
   return (
     <Form>
       <h1>Einsatzmeldung</h1>
@@ -263,8 +223,8 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
         <FormControl
           componentClass="select"
           name="umgebung"
-          value={state.umgebung}
-          onChange={handleChange}
+          value={environment}
+          onChange={(e) => setEnvironment(e.target.value)}
         >
           {optionsEnvironments}
         </FormControl>
@@ -275,45 +235,34 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
         <FormControl
           componentClass="select"
           name= "verfahren"
-          value={state.verfahren}
-          onChange={handleChange}
+          value={service}
+          onChange={(e) => setService(e.target.value) }
         >
           {optionsServices}
         </FormControl>
 
       </FormGroup>
-      <FormGroup controlId="3">
-        <ControlLabel bsClass="control-label js-form-required form-required">Release</ControlLabel>
-        <FormControl
-          componentClass="select"
-          name="release"
-          value={state.release}
-          onChange={handleChange}
-        >
-          {optionsReleases}
-        </FormControl>
-      </FormGroup>
 
-      <FormGroup controlId="4">
-        <ControlLabel>Vorgängerrelease</ControlLabel>
-        <FormControl
-          componentClass="select"
-          name="vorgaengerrelease"
-          value={state.vorgaengerrelease} 
-          onChange={handleChange}
-          disabled={disabled}
-        >
-          {optionsPrevReleases}
-        </FormControl>
-      </FormGroup>
+      <SelectRelease
+        service={ service }
+        release={ release }
+        setRelease={ setRelease }
+        environment={ environment }
+      />
+
+      <SelectPreviousRelease
+        service={service}
+        previousRelease={previousRelease}
+        setPreviousRelease={setPreviousRelease}
+      />
 
       <FormGroup controlId="5">
         <ControlLabel bsClass="control-label js-form-required form-required">Datum</ControlLabel>
         <FormControl
           type ="date"
           name="datum"
-          value={state.datum} 
-          onChange={handleChange}
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
         >
         </FormControl>
       </FormGroup>
@@ -326,27 +275,42 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
           step="1"
           min="1"
           name="installationsdauer"
-          value={state.installationsdauer} 
-          onChange={handleChange}
+          value={installationTime} 
+          onChange={(e) => setInstallationTime(e.target.value)}
           placeholder= "in Minuten"
         >
         </FormControl>
       </FormGroup>
 
       <FormGroup controlId="7">
-        <Checkbox name="archiviert" type="checkbox" checked={state.archiviert} onChange={handleChange} >
+        <Checkbox
+          name="archiviert"
+          type="checkbox"
+          checked={isArchived}
+          onChange={(e) => setIsArchived(e.target.checked)}
+        >
           Archiviert
         </Checkbox>
       </FormGroup>
 
       <FormGroup controlId="8">
-        <Checkbox name="automatisiert" type="checkbox" checked={state.automatisiert} onChange={handleChange} >
+        <Checkbox
+          name="automatisiert"
+          type="checkbox"
+          checked={isAutomated}
+          onChange={(e) => setIsAutomated(e.target.checked)}
+        >
           Automatisiertes Deployment
         </Checkbox>
       </FormGroup>
 
       <FormGroup controlId="9">
-        <Checkbox  name="auffaelligkeiten" type ="checkbox" checked={state.auffaelligkeiten} onChange={handleChange} >
+        <Checkbox
+          name="auffaelligkeiten"
+          type ="checkbox"
+          checked={abnormalities}
+          onChange={(e) => setAbnormalities(e.target.checked)}
+        >
           Auffälligkeiten
         </Checkbox>
       </FormGroup>
@@ -356,12 +320,12 @@ export default function EinsatzmeldungsFormular( {data, setData, count, setCount
         <FormControl
           componentClass="textarea"
           name="beschreibung"
-          value={state.beschreibung}
-          onChange={handleChange}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         >
         </FormControl>
       </FormGroup>
       <Button bsStyle="success" onClick={handleSave} >Speichern</Button>
-    </Form> 
+    </Form>
   );
 }

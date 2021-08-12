@@ -7,7 +7,10 @@ import EinsatzmeldungsFormular from './EinsatzmeldungsFormular';
 import useQuery from '../hooks/hooks';
 
 export default function ReleaseEinsatzmeldungsManager() {
+  // @var fetchCount {number} Der aktuelle fetch counter, um zu verhindern, dass
+  // ein neuer Request von einem Älteren überholt wird.
   const fetchCount = useRef(0);
+
   // Wird verwendet, um URL Parameter auszulesen.
   const query = useQuery();
 
@@ -59,14 +62,14 @@ export default function ReleaseEinsatzmeldungsManager() {
 
 
   useEffect(() => {
-    const fetchUrl = '/jsonapi/node/release_deployment';
+    const fetchUrl = '/jsonapi/node/deployed_releases';
     const defaultFilter = '?include=field_deployed_release,field_prev_release,field_service,field_service.release_type&page[limit]=20&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
     // Always apply default filter.
     let url = fetchUrl + defaultFilter;
     // Archiv-Filter
-    let archivedFilter = "&filter[field_is_archived]=0";
+    let archivedFilter = "&filter[field_deployment_status]=1";
     if (isArchived == "1" ) {
-      archivedFilter = "&filter[field_is_archived]=1";
+      archivedFilter = "&filter[field_deployment_status]=2";
     }
     url += archivedFilter;
     // Landes-Filter (nur für Gruppen- und Site-Admins)
@@ -164,7 +167,7 @@ export default function ReleaseEinsatzmeldungsManager() {
 
     history.push({
       pathname: pathname,
-      search: params.toString() 
+      search: params.toString(),
     });
   }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter, count]);
 

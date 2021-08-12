@@ -133,7 +133,7 @@ class ReactController extends ControllerBase {
       $environments[$nid] = $node->title->value;
     }
 
-    // Get Service names.
+    // Get KONSENS Service names.
     $services = [
       0 => ['<Verfahren>', 0],
     ];
@@ -174,7 +174,6 @@ class ReactController extends ControllerBase {
     // ];
 
     // Get previous releases' names
-
     $prevreleases=[];
 
     // @todo 10.08.2021 - prüfen, ob notwendig.
@@ -189,10 +188,11 @@ class ReactController extends ControllerBase {
 
     $user_state = hzd_user_state($uid = NULL);
 
+    // Redundant?
     $query3 = \Drupal::service('entity.query');
     $result3 = $query->get('node')
-      ->condition('type', 'release_deployment')
-      ->condition('field_is_archived', false)
+      ->condition('type', 'deployed_releases')
+      ->condition('field_deployment_status', '1')
       ->condition('field_user_state', $user_state)
       ->execute();
 
@@ -206,7 +206,10 @@ class ReactController extends ControllerBase {
       $referencedEntities2 = $node->field_service->referencedEntities();
 
       $serviceId = $referencedEntities2[0]->id();
-      $prevreleases[$serviceId][] =[$referencedEntities[0]->id(), $referencedEntities[0]->title->value ];
+      $prevreleases[$serviceId][] =[
+        $referencedEntities[0]->id(),
+        $referencedEntities[0]->title->value
+      ];
     }
 
     //Get prev releases with drupalid in order to find long id fpr the post request in EinsatzmeldungsFormular
@@ -215,8 +218,8 @@ class ReactController extends ControllerBase {
 
     $query4 = \Drupal::service('entity.query');
     $result4 = $query->get('node')
-      ->condition('type', 'release_deployment')
-      ->condition('field_is_archived', false)
+      ->condition('type', 'deployed_releases')
+      ->condition('field_deployment_status', '1')
       ->condition('field_user_state', $user_state)
       ->execute();
 
@@ -227,11 +230,14 @@ class ReactController extends ControllerBase {
       //Verfahren:
       $LreferencedEntities2 = $node2->field_service->referencedEntities();
 
-      $prevreleaseslong[$LreferencedEntities[0]->id() ][] =[$LreferencedEntities[0]->uuid(), $LreferencedEntities[0]->title->value, $LreferencedEntities[0]->id() ];
+      $prevreleaseslong[$LreferencedEntities[0]->id()][] = [
+        $LreferencedEntities[0]->uuid(),
+        $LreferencedEntities[0]->title->value,
+        $LreferencedEntities[0]->id()
+      ];
     }
 
-    //Get releases' names
-
+    // Get releases.
     /*
       Conditions:
         - Typ: Release
@@ -240,6 +246,7 @@ class ReactController extends ControllerBase {
         - nicht zurückgewiesen
         - Interner Status 1 oder 2
     */
+    // Redundant?
     $query = \Drupal::service('entity.query');
     $result = $query->get('node')
       ->condition('type', 'release')
@@ -257,11 +264,13 @@ class ReactController extends ControllerBase {
       else {
         $serviceId = "error";
       }
-      $releases[$serviceId][] = [$node->id() => $node->title->value, $node->uuid() ];
+      $releases[$serviceId][] = [
+        $node->id() => $node->title->value,
+        $node->uuid(),
+      ];
     }
 
-    //Get releases with drupalid in order to find long id fpr the post request in EinsatzmeldungsFormular
-
+    // Get releases with drupalid in order to find long id for the post request in EinsatzmeldungsFormular.
     $query = \Drupal::service('entity.query');
     $result = $query->get('node')
       ->condition('type', 'release')
@@ -279,12 +288,13 @@ class ReactController extends ControllerBase {
       else {
         $serviceId = "error";
       }
-      $releaseslong[$node->id()][] = [$node->title->value, $node->uuid() ];
-
+      $releaseslong[$node->id()][] = [
+        $node->title->value,
+        $node->uuid(),
+      ];
     }
 
     // Get states from database
-
     $database = \Drupal::database();
     $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
       ->fetchAll();
