@@ -1609,3 +1609,14 @@ span.field-content::first-letter {
 .reset-button {
     margin-top: -5px;
 }
+
+.left {
+    float: left;
+    width: auto;
+    margin-right: 5px;
+    margin-top: 7px;
+}
+.right {
+    float: left;
+    width: 52%;
+}
