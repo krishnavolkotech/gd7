@@ -1684,7 +1684,7 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
       $group_alias = $token->replace('[node:group_raw]', $data);
       $node_alias = $entity->path->getValue('list')[0]['alias'];
 
-      if ($group_alias) {
+      if ($group_alias && $node_alias) {
         if(strpos($node_alias, "/".$group_alias) === 0) {
         }
         else {
@@ -1699,6 +1699,33 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
     }
   }
 }
+
+/*
+function content_type_pattern($type) {
+  switch($type) {
+    case 'release':
+      return 'release-management/release/[node:nid]';
+    case 'quickinfo':
+      return 'release-management/rz-schnellinfos/[node:field_unique_id]';
+    case 'early_warnings':
+      return 'release-management/early-warnings/[node:field_earlywarning_release_title]/[node:title]';
+    case 'downtimes':
+      return 'incident-management/stoerung/[node:nid]';
+    case 'measure':
+      return '/risikomanagement-betrieb/massnahme/[node:field_risk_id]';
+    case 'risk':
+      return '/risikomanagement-betrieb/risiko/[node:field_risk_id]';
+    case 'risk_cluster':
+      return '/risikomanagement-betrieb/risikocluster/[node:field_risk_id]';
+    case 'problem':
+      return 'problem-management/problem/[node:nid]';
+    case 'page':
+      return '[node:group_raw]/[node:menu-link:parents:join-path]/[node:title]';
+    case 'forum':
+      return '[node:group_raw]/forum/[node:title]';
+  }
+}
+*/
 
 /*
 function update_group_alias($path_alias) {
