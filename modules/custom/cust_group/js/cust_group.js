@@ -52,21 +52,23 @@
 
             });
 
-	    jQuery('.node-form #edit-submit').prop('disabled', true);
-	    var send_notification = jQuery('input[name="node_notification_checkbox"]:checked').val();
-	    if (typeof send_notification != 'undefined') {
-		jQuery('.node-form #edit-submit').prop('disabled', false);
-	    }
-
-	    $("input[name='node_notification_checkbox']").click(function(){
+	    if (jQuery("input[name='node_notification_checkbox']").length > 0) {
+		jQuery('.node-form #edit-submit').prop('disabled', true);
 		var send_notification = jQuery('input[name="node_notification_checkbox"]:checked').val();
 		if (typeof send_notification != 'undefined') {
 		    jQuery('.node-form #edit-submit').prop('disabled', false);
 		}
-		else {
-		    jQuery('.node-form #edit-submit').prop('disabled', true);
-		}
-	    });
+			
+		$("input[name='node_notification_checkbox']").click(function(){
+		    var send_notification = jQuery('input[name="node_notification_checkbox"]:checked').val();
+		    if (typeof send_notification != 'undefined') {
+			jQuery('.node-form #edit-submit').prop('disabled', false);
+		    }
+		    else {
+			jQuery('.node-form #edit-submit').prop('disabled', true);
+		    }
+		});
+	    }
 	    
 
         }
