@@ -754,10 +754,15 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       '#type' => 'fieldset',
       '#weight' => 99,
     );
+    $form['notification']['node_notification_checkbox'] = send_notification_form_element();
+    /*
     $form['notification']['node_notification_checkbox'] = array(
-      '#type' => 'checkbox',
+      '#type' => 'radios',
+      '#options' => [0 => 'No', 1 => 'Yes'],
+      '#required' => TRUE,
       '#title' => t('Do not send notifications for this update.'),
     );
+    */
   }
 
   //Sending the group id to browser for IMCE to request folder structure within the group
