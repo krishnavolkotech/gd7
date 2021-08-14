@@ -10,7 +10,6 @@ weight: 0
 is_admin: false
 permissions:
   - 'access ckeditor'
-  - 'access content'
   - 'access frontpage'
   - 'access site-wide contact form'
   - 'view field_contact_from_pretext'
