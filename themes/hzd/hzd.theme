@@ -1342,6 +1342,9 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:node/type":
             $result['type'] = $contentTypes[$val[0]];
           break;
+	  case "entity:group/label":
+            $result['center'] = $val[0];
+          break;
           case "entity:group_content/gid:entity:label":
             $result['center'] = $val[0];
           break;
@@ -1370,6 +1373,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
             $result['body'] = $out;
           break;
           case "entity:group_content/entity_id:entity:body":
+	  case "entity:group/field_group_body":
           case "entity:node/body":
             // $body = $val[0]->getText();
             $body = $val[0];
@@ -1382,8 +1386,18 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:group_content/entity_id":
             $result['entity'] = $val[0]->getText();
           break;
+	  case "entity:group/_object":
+	    $group_entity = $val[0]->getValue('entity');
+	    if(isset($group_entity)) {
+              $result['gid'] = $group_entity->id();
+  	      $result['entity'] = $group_entity->id();
+   	      $result['title'] = $group_entity->get('label');
+	      $result['type'] = $group_entity->getEntityTypeId();
+              $result['changed'] = date('d.m.Y', $group_entity->getChangedTime());
+            }
+          break;
         }
-
+	
         if (isset($result['gid']) && isset($result['center'])) {
           $result['group_link'] = Link::createFromRoute($result['center'], 'entity.group.canonical', ['group' => $result['gid']])->toString();
         }
@@ -1393,15 +1407,17 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
         }
 
       }
-      if (count($result) > 0 && isset($result['node_link'])) {
+
+     if (count($result) > 0 && isset($result['node_link'])) {
         if ($result['type'] != 'Kommentar' && $result['type'] != 'Meldung' && !isset($result['group_link'])) {
         }
         else {
-          $data[] = $result;
+	  $data[] = $result;
         }
       }
     }
   }
+
   $variables['results'] = $data;
 
   $primary_menus = load_primary_menus();
