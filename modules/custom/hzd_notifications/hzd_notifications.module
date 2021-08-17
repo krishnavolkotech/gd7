@@ -998,7 +998,7 @@ function cust_group_entity_delete(EntityInterface $entity) {
 function send_notification_form_element() {
   $element = array(
     '#type' => 'radios',
-    '#options' => [1 => 'Yes', 0 => 'No'],
+    '#options' => [1 => t('Yes'), 0 => t('No')],
     '#required' => TRUE,
     '#title' => t('Do not send notifications for this update.'),
   );

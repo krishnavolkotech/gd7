@@ -4118,3 +4118,6 @@ table.released tr th:last-child {
 .panel-light > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #EDF0F3 !important;
 }
+fieldset#edit-node-notification-checkbox--wrapper {
+    clear: both;
+}
