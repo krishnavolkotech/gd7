@@ -1651,7 +1651,7 @@ function hzd_preprocess_input(&$variables) {
       }
       $variables['group_name'] = '';
       if ($group_alias) {
-         $variables['group_name'] = ltrim($group_alias, '/')."/";
+         $variables['group_name'] = "/" . ltrim($group_alias, '/');
       }
       
     }

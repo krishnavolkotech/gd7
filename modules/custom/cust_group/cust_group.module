@@ -689,6 +689,29 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
         $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
       }
       break;
+    case 'node_page_edit_form':
+     $current_user = \Drupal::currentUser();    
+     if (!in_array('site_administrator', $current_user->getRoles())) {
+       $alias = $form['path']['widget'][0]['alias']['#default_value'];
+       $current_path = \Drupal::service('path.current')->getPath();
+       
+       $path = explode('/', $current_path);
+       $end_path = end($path);
+
+       $group_alias = '';
+       if ($end_path == 'edit' && is_numeric($path[2]) && $path[1] == 'node') {
+         $parent_group = get_parent_group($path[2]);
+         $group_alias = get_group_node_alias($parent_group);
+	 if ($alias) {
+            if(strpos($alias, $group_alias) === 0) {
+              $alias_new = str_replace($group_alias, "",$alias);
+	      $form['path']['widget'][0]['alias']['#default_value'] = $alias_new;
+            }
+	 }
+	 
+       }
+     }
+    break;
     case 'node_faqs_delete_form':
 //            kint($_SERVER);
       $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
