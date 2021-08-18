@@ -54,6 +54,7 @@ class GroupAccess extends ProcessorPluginBase {
     $conditions->addCondition('gid', $userGroups, 'IN')
       ->addCondition('field_group_body', db_like($val) . '%', 'LIKE')
       ->addCondition('label_1', db_like($val) . '%', 'LIKE')
+      ->addCondition('field_einfuehrung', db_like($val) . '%', 'LIKE')
       ->addCondition('field_description', db_like($val) . '%', 'LIKE');
     $query->addConditionGroup($conditions);
 //    dump($query->getKeys());

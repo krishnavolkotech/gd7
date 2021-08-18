@@ -16,6 +16,7 @@ dependencies:
   config:
     - field.storage.comment.comment_body
     - field.storage.group.field_description
+    - field.storage.group.field_einfuehrung
     - field.storage.group.field_group_body
     - field.storage.node.field_custom_title
     - field.storage.node.field_related_transfer_number
@@ -91,11 +92,13 @@ third_party_settings:
       maxntp: 2000
       boost: false
       interestingTerms: none
-    advanced:
-      index_prefix: ''
     term_modifiers:
       slop: 10000000
       fuzzy: 2
+    advanced:
+      index_prefix: ''
+      collection: ''
+      timezone: ''
 id: hzd_solr_index
 name: 'Solr Index Produktion'
 description: ''
@@ -346,6 +349,14 @@ field_settings:
         - node
       config:
         - field.storage.node.field_diagnose
+  field_einfuehrung:
+    label: Einfuehrung
+    datasource_id: 'entity:group'
+    property_path: field_einfuehrung
+    type: text
+    dependencies:
+      config:
+        - field.storage.group.field_einfuehrung
   field_eroffnet:
     label: 'Inhalt » Inhalt » Created'
     datasource_id: 'entity:group_content'
@@ -847,7 +858,8 @@ datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected: {  }
+      selected:
+        - group
     languages:
       default: true
       selected: {  }

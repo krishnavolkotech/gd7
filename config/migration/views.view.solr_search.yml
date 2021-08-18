@@ -654,6 +654,7 @@ display:
             - field_description
             - field_detailed_question
             - field_diagnose
+            - field_einfuehrung
             - field_eroffnet
             - field_group_body
             - field_intial_situation
