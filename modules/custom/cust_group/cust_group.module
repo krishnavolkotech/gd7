@@ -1707,17 +1707,30 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
       $group_alias = $token->replace('[node:group_raw]', $data);
       $node_alias = $entity->path->getValue('list')[0]['alias'];
 
-      if ($group_alias && $node_alias) {
-        if(strpos($node_alias, "/".$group_alias) === 0) {
+      $pathurl_state = $entity->get('path')->first()->get('pathauto')->getValue();
+      if ($pathurl_state) {
+          $entity->path = [
+            'pathauto' => PathautoState::CREATE,
+          ];
+      }
+      else {
+        if ($group_alias && $node_alias) {
+          if(strpos($node_alias, "/".$group_alias) === 0) {
+          }
+          else {
+            $new_alias = "/".$group_alias. $node_alias;
+            $entity->path = [
+              'alias' => $new_alias,
+              'pathauto' => PathautoState::SKIP,
+            ];
+          }
         }
         else {
-          $new_alias = "/".$group_alias. $node_alias;
           $entity->path = [
-            'alias' => $new_alias,
-            'pathauto' => PathautoState::SKIP,
+            'pathauto' => PathautoState::CREATE,
           ];
-        }
-      }// END OF groupAlias
+        }// END OF groupAlias
+      }
       
     }
   }
