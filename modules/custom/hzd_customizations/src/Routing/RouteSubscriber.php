@@ -66,6 +66,10 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('entity.user.edit_form')) {
       $route->setRequirement('_custom_access', "\Drupal\cust_group\Controller\AccessController::userEditAcces");
     }
+
+    if ($route = $collection->get('forum.page')) {
+      $route->setRequirement('_permission', "view releases");
+    }
   }
 
   /**
