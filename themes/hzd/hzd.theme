@@ -1391,7 +1391,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
 	    if(isset($group_entity)) {
               $result['gid'] = $group_entity->id();
   	      $result['entity'] = $group_entity->id();
-   	      $result['title'] = $group_entity->get('label');
+   	      $result['title'] = $group_entity->get('label')->getValue()[0]['value'];
 	      $result['type'] = $group_entity->getEntityTypeId();
               $result['changed'] = date('d.m.Y', $group_entity->getChangedTime());
             }
