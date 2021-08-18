@@ -69,6 +69,29 @@
 		    }
 		});
 	    }
+
+
+	    if (jQuery("input[name='notifications_content_disable']").length > 0) {
+		jQuery('.cancel-form #reason').prop('disabled', true);
+		jQuery('.resolve-form #reason').prop('disabled', true);
+		var send_notification = jQuery('input[name="notifications_content_disable"]:checked').val();
+		if (typeof send_notification != 'undefined') {
+		    jQuery('.cancel-form #reason').prop('disabled', false);
+		    jQuery('.resolve-form #reason').prop('disabled', false);
+		}
+			
+		$("input[name='notifications_content_disable']").click(function(){
+		    var send_notification = jQuery('input[name="notifications_content_disable"]:checked').val();
+		    if (typeof send_notification != 'undefined') {
+			jQuery('.cancel-form #reason').prop('disabled', false);
+			jQuery('.resolve-form #reason').prop('disabled', false);
+		    }
+		    else {
+			jQuery('.cancel-form #reason').prop('disabled', true);
+			jQuery('.resolve-form #reason').prop('disabled', true);
+		    }
+		});
+	    }
 	    
 
         }
