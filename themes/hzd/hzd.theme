@@ -1403,7 +1403,12 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
         }
 
         if (isset($result['entity']) && isset($result['title'])) {
-          $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+	  if ($result['type'] == 'group') {
+	    $result['node_link'] = Link::createFromRoute($result['title'], 'entity.group.canonical', ['group' => $result['entity']])->toString();
+	  }
+	  else {
+            $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+          }
         }
 
       }
