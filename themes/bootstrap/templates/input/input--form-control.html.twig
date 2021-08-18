@@ -26,7 +26,16 @@
       'form-control',
     ]
   %}
-  {% block input %}
-    <input{{ attributes.addClass(classes) }} />
+{% block input %}
+  {% if group_name %}
+     <div>
+       <div class='left'>{{ group_name }}</div>
+       <div class='right'><input{{ attributes.addClass(classes) }} /></div>
+       <div style='clear:both'></div>
+     </div>
+   {% else %}
+     <input{{ attributes.addClass(classes) }} />
+   {% endif %}
+     
   {% endblock %}
 {% endspaceless %}
