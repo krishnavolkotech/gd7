@@ -116,7 +116,8 @@ class ReactController extends ControllerBase {
    *   Return markup array.
    */
   public function deployedReleases($group ) {
-    // Get environments.
+    // Get environments(0.0579s).
+    $startTime = microtime(true);
     $query = \Drupal::service('entity.query');
     $result = $query->get('node')
     ->condition('type', 'non_production_environment')
@@ -132,8 +133,10 @@ class ReactController extends ControllerBase {
       $node = $this->entityTypeManager->getStorage('node')->load($nid);
       $environments[$nid] = $node->title->value;
     }
+    $envTime = number_format(( microtime(true) - $startTime), 4);
 
-    // Get KONSENS Service names.
+    // Get KONSENS Service names (0.0489s).
+    $startTime = microtime(true);
     $services = [
       0 => ['<Verfahren>', 0],
     ];
@@ -150,53 +153,22 @@ class ReactController extends ControllerBase {
       $services[$nid][] = $node->title->value;
       $services[$nid][] = $node->uuid();
     }
-
-
-    //Alle Service mit langer id
-    // $serviceslang = [];
-
-    // $query = \Drupal::service('entity.query');
-    // $result = $query->get('node')
-    //   ->condition('type', 'services')
-    //   ->condition('release_type' , 459)
-    //   ->condition('field_release_name', '', '!=')
-    //   ->execute();
-
-    // foreach ($result as $element => $nid) {
-    //   $node = $this->entityTypeManager->getStorage('node')->load($nid);
-    //   $serviceslang[$nid] = $node->id;
-    // }
-
-
-    //Get releases
-    // $prevreleases = [
-    //   0 => '<Release>',
-    // ];
-
-    // Get previous releases' names
-    $prevreleases=[];
-
-    // @todo 10.08.2021 - prüfen, ob notwendig.
-    function hzd_user_state($uid = NULL) {
-      if (!$uid) {
-        $account = \Drupal::currentUser();
-        $uid = $account->id();
-      }
-      $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
-      return $state;
-    }
-
+    $srvTime = number_format(( microtime(true) - $startTime), 4);
+    
     $user_state = hzd_user_state($uid = NULL);
+    // Get previous releases' names (4.2647s !!!)
+    // @todo performance verbessern
+    /*
+    $startTime = microtime(true);
+    $prevReleases=[];
 
-    // Redundant?
+
     $query3 = \Drupal::service('entity.query');
     $result3 = $query->get('node')
       ->condition('type', 'deployed_releases')
       ->condition('field_deployment_status', '1')
       ->condition('field_user_state', $user_state)
       ->execute();
-
-    //release it und titel aus einsatzmeldung als array?
 
     foreach ($result3 as $nid) {
       $node = $this->entityTypeManager->getStorage('node')->load($nid);
@@ -206,38 +178,13 @@ class ReactController extends ControllerBase {
       $referencedEntities2 = $node->field_service->referencedEntities();
 
       $serviceId = $referencedEntities2[0]->id();
-      $prevreleases[$serviceId][] =[
-        $referencedEntities[0]->id(),
-        $referencedEntities[0]->title->value
+      $prevReleases[$serviceId][$referencedEntities[0]->id()] =[
+        $referencedEntities[0]->uuid(),
+        $referencedEntities[0]->title->value,
       ];
     }
-
-    //Get prev releases with drupalid in order to find long id fpr the post request in EinsatzmeldungsFormular
-  
-    $prevreleaseslong=[];
-
-    $query4 = \Drupal::service('entity.query');
-    $result4 = $query->get('node')
-      ->condition('type', 'deployed_releases')
-      ->condition('field_deployment_status', '1')
-      ->condition('field_user_state', $user_state)
-      ->execute();
-
-    foreach ($result4 as $nid) {
-      $node2 = $this->entityTypeManager->getStorage('node')->load($nid);
-      //Release:
-      $LreferencedEntities = $node2->field_deployed_release->referencedEntities();
-      //Verfahren:
-      $LreferencedEntities2 = $node2->field_service->referencedEntities();
-
-      $prevreleaseslong[$LreferencedEntities[0]->id()][] = [
-        $LreferencedEntities[0]->uuid(),
-        $LreferencedEntities[0]->title->value,
-        $LreferencedEntities[0]->id()
-      ];
-    }
-
-    // Get releases.
+    $prevTime = number_format(( microtime(true) - $startTime), 4);
+*/
     /*
       Conditions:
         - Typ: Release
@@ -246,7 +193,17 @@ class ReactController extends ControllerBase {
         - nicht zurückgewiesen
         - Interner Status 1 oder 2
     */
-    // Redundant?
+    // Releases
+    /*
+    Structure:
+      $releases[$serviceId][$node->id()] = [
+        $node->uuid(),
+        $node->title->value,
+      ];
+    */
+    /*
+    $startTime = microtime(true);
+
     $query = \Drupal::service('entity.query');
     $result = $query->get('node')
       ->condition('type', 'release')
@@ -264,37 +221,15 @@ class ReactController extends ControllerBase {
       else {
         $serviceId = "error";
       }
-      $releases[$serviceId][] = [
-        $node->id() => $node->title->value,
+      $releases[$serviceId][$node->id()] = [
         $node->uuid(),
-      ];
-    }
-
-    // Get releases with drupalid in order to find long id for the post request in EinsatzmeldungsFormular.
-    $query = \Drupal::service('entity.query');
-    $result = $query->get('node')
-      ->condition('type', 'release')
-      ->condition('field_release_type', 3, '<')
-      ->sort('title', 'ASC')
-      ->execute();
-
-    $releaseslong = [];
-    foreach ($result as $element => $nid) {
-      $node = $this->entityTypeManager->getStorage('node')->load($nid);
-      $referencedEntities = $node->field_relese_services->referencedEntities();
-      if (count($referencedEntities) > 0) {
-        $serviceId = $referencedEntities[0]->id();
-      }
-      else {
-        $serviceId = "error";
-      }
-      $releaseslong[$node->id()][] = [
         $node->title->value,
-        $node->uuid(),
       ];
     }
-
-    // Get states from database
+    $relTime = number_format(( microtime(true) - $startTime), 4);
+*/
+    // Get states from database (0.0005s)
+    $startTime = microtime(true);
     $database = \Drupal::database();
     $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
       ->fetchAll();
@@ -304,6 +239,7 @@ class ReactController extends ControllerBase {
       $finalStates[intval($state->id)] = $state->state;
       $finalStates[intval($state->id)] .= $state->abbr ? ' (' . $state->abbr . ')' : '';
     }
+    $stTime = number_format(( microtime(true) - $startTime), 4);
 
     $build = [
       '#type' => 'markup',
@@ -314,11 +250,9 @@ class ReactController extends ControllerBase {
           'environments' => $environments,
           'states' => $finalStates,
           'services' => $services,
-          'releases' => $releases,
-          'prevreleases' => $prevreleases,
+          // 'releases' => $releases,
+          // 'prevReleases' => $prevReleases,
           'userstate' => $user_state,
-          'prevreleaseslong' => $prevreleaseslong,
-          'releaseslong' => $releaseslong,
         ],
       ],
     ];

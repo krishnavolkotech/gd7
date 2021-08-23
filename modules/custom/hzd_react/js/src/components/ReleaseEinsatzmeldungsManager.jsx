@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import EinsatzmeldungsTabelle from './EinsatzmeldungsTabelle';
-import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import EinsatzmeldungsFilter from './EinsatzmeldungsFilter';
 import EinsatzmeldungsFormular from './EinsatzmeldungsFormular';
@@ -37,6 +37,12 @@ export default function ReleaseEinsatzmeldungsManager() {
   // True, wenn keine Daten geladen werden können.
   const [timeout, setTimeout] = useState(false);
 
+  // Wird verwendet, um Fehlermeldungen anzuzeigen.
+  const [error, setError] = useState(false);
+
+  // Alle bereitgestellten Releases.
+  const [releases, setReleases] = useState([]);
+
   // Welcher Reiter ist gewählt? Eingesetzt / Archiv.
   let activeKey
   if (isArchived == 1) {
@@ -60,7 +66,23 @@ export default function ReleaseEinsatzmeldungsManager() {
   const releaseSelection = query.has("release") ? query.get("release") : "0";
   const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
 
+  // Kontrollierter State für EinsatzmeldungsFormular.
+  const [environment, setEnvironment] = useState(1);
+  const [service, setService] = useState(0);
+  const [previousRelease, setPreviousRelease] = useState("0");
+  const [userState, setUserState] = useState(global.drupalSettings.userstate);
+  const [show, setShow] = useState(false);
+  const [prevDeploymentId, setPrevDeploymentId] = useState(false);
+  const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
+  // Loading Spinner für Neues Release und Vorgängerrelease.
+  const [isLoading, setIsLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [deploymentHistory, setDeploymentHistory] = useState([]);
 
+  /**
+   * Implements hook useEffect().
+   * Fetches the deployed releases.
+   */
   useEffect(() => {
     const fetchUrl = '/jsonapi/node/deployed_releases';
     const defaultFilter = '?include=field_deployed_release,field_prev_release,field_service,field_service.release_type&page[limit]=20&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
@@ -123,9 +145,16 @@ export default function ReleaseEinsatzmeldungsManager() {
           setData(deploymentData);
         }
       })
-      .catch(error => console.log("error", error));
+      .catch(error => {
+        console.log("error", error);
+        setError(<li>Fehler beim Laden der Einsatzmeldungen. Bitte kontaktieren Sie das BpK-Team.</li>);
+      });
   }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter, count]);
 
+  /**
+   * Implements hook useEffect().
+   * Changes URL-Params depending on Nav / Filters.
+   */
   useEffect(() => {
     let pathname;
     switch (isArchived) {
@@ -171,6 +200,80 @@ export default function ReleaseEinsatzmeldungsManager() {
     });
   }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter, count]);
 
+  /**
+   * Implements hook useEffect().
+   * Fetcht alle Releases, dient zur Befüllung von:
+   *  - Release Filter
+   *  - Release Auswahl
+   *  - Auswahl Vorgängerrelease
+   */
+  useEffect(() => {
+    // Prevent multiple fetches for the same serviceFilter.
+    console.log("Service in Filter gewählt: ", serviceFilter);
+    fetchReleases(serviceFilter);
+  }, [serviceFilter])
+
+  /**
+   * Implements hook useEffect().
+   * Fetcht alle Releases, dient zur Befüllung von:
+   *  - Release Filter
+   *  - Release Auswahl (Für Meldung)
+   *  - Auswahl Vorgängerrelease
+   */
+  useEffect(() => {
+    console.log("Service in Formular gewählt: ", service);
+    // Aktiviert den Spinner für Release und Vorgängerrelease-Dropdowns im Formular.
+    if (service != "0") {
+      setIsLoading(true);
+    }
+    setDisabled(true);
+    fetchReleases(service);
+  }, [service])
+
+  const fetchReleases = (mixedService) => {
+    if (Number.isInteger(mixedService)) {
+      mixedService = mixedService.toString();
+    }
+    console.log("Fetchen für: ", mixedService);
+    if (mixedService in releases) {
+      console.log("Service schon vorhanden - Releases werden nicht nochmal geladen.");
+      setTriggerReleaseSelect(true);
+      return;
+    }
+    if (mixedService == "0") {
+      return;
+    }
+
+    let url = '/api/v1/releases/' + mixedService;
+    const headers = new Headers({
+      Accept: 'application/vnd.api+json',
+    });
+
+    fetch(url, { headers })
+      .then(response => response.json())
+      .then(results => {
+        let releaseData = { ...releases };
+        releaseData[mixedService] = [];
+        results.map((result) => {
+          let release = {
+            "uuid": result.uuid,
+            "nid": result.nid,
+            "title": result.title,
+            "service": result.service,
+          };
+          releaseData[mixedService].push(release);
+        });
+        console.log('Releases geladen.');
+        setReleases(releaseData);
+        setTriggerReleaseSelect(true);
+        console.log(releaseData);
+      })
+      .catch(error => {
+        console.log(error);
+        setError(<li>Fehler beim Laden der Releases. Bitte kontaktieren Sie das BpK-Team.</li>);
+      });
+  }
+
   const handleReset = () => {
     setEnvironmentFilter("0");
     setReleaseFilter("0");
@@ -179,12 +282,17 @@ export default function ReleaseEinsatzmeldungsManager() {
   }
 
   const handleAction = (userState, environment, service, release, deploymentId) => {
+    setShow(!show);
+    setUserState(userState);
+    setEnvironment(environment);
+    setService(service);
+    setPreviousRelease(release);
+    setPrevDeploymentId(deploymentId);
     console.log(userState, environment, service, release, deploymentId);
   }
 
   return (
     <div>
-      <EinsatzmeldungsFormular data={data} setData={setData} count={count} setCount={setCount}/>
       <Nav bsStyle="tabs" activeKey={activeKey} onSelect={k => setIsArchived(k)}>
         <NavItem eventKey="0">
           Eingesetzt
@@ -193,6 +301,17 @@ export default function ReleaseEinsatzmeldungsManager() {
           Archiv
         </NavItem>
       </Nav>
+      {error &&
+      <Alert bsStyle="danger" onDismiss={() => setError(false)}>
+        <h4>Fehler</h4>
+        <ul>
+          {error}
+        </ul>
+        <p></p>
+        <p>
+          <Button onClick={() => setError(false)} bsStyle="danger">Meldung schließen</Button>
+        </p>
+      </Alert>}
       <EinsatzmeldungsFilter 
         stateFilter={stateFilter} 
         setStateFilter={setStateFilter} 
@@ -203,8 +322,40 @@ export default function ReleaseEinsatzmeldungsManager() {
         releaseFilter={releaseFilter} 
         setReleaseFilter={setReleaseFilter}
         handleReset={handleReset}
+        count={count}
+        setCount={setCount}
+        releases={releases}
       />
-      <EinsatzmeldungsTabelle data={data} timeout={timeout} handleAction={handleAction} />
+      <EinsatzmeldungsFormular
+        count={count}
+        setCount={setCount}
+        environment={environment}
+        setEnvironment={setEnvironment}
+        service={service}
+        setService={setService}
+        previousRelease={previousRelease}
+        setPreviousRelease={setPreviousRelease}
+        userState={userState}
+        setUserState={setUserState}
+        show={show}
+        setShow={setShow}
+        prevDeploymentId={prevDeploymentId}
+        setError={setError}
+        releases={releases}
+        triggerReleaseSelect={triggerReleaseSelect}
+        setTriggerReleaseSelect={setTriggerReleaseSelect}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        disabled={disabled}
+        setDisabled={setDisabled}
+        setDeploymentHistory={setDeploymentHistory}
+      />
+      <EinsatzmeldungsTabelle
+        data={data}
+        timeout={timeout}
+        handleAction={handleAction}
+        deploymentHistory={deploymentHistory}
+      />
     </div>
   )
 }

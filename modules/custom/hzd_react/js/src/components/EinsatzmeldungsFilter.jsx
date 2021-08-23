@@ -1,7 +1,7 @@
 import React from 'react'
-import { FormGroup, FormControl, Grid, Row, Col, Button } from 'react-bootstrap'
+import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset}) {
+export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset, count, setCount, releases}) {
   
   //States Filter
   const statesObject = global.drupalSettings.states;
@@ -36,15 +36,23 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
   let defaultRelease = [<option value="0">&lt;Release&gt;</option>];
   let optionsReleases = [];
   let disabled = true;
-  if (serviceFilter != "0") {
+  if (serviceFilter != "0" && releases.length > 0) {
     disabled = false;
-    const releases = global.drupalSettings.releases;
-    optionsReleases = releases[serviceFilter].map(releaseObject => {
-      let release = Object.entries(releaseObject);
-      return <option value={release[0][0]}>{release[0][1]}</option>;
+    optionsReleases = releases.map(release => {
+      return <option value={release["nid"]}>{release["title"]}</option>;
     });
   }
   optionsReleases = [...defaultRelease, ...optionsReleases];
+
+  const ttReset = (
+    <Tooltip id="ttReset">
+      Filter <strong>zurücksetzen</strong>.
+    </Tooltip>);
+
+  const ttRefresh = (
+    <Tooltip id="ttRefresh">
+      Einsatzmeldungen <strong>neu laden</strong>.
+    </Tooltip>);
 
   return (
     <form>
@@ -98,7 +106,15 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
             </FormGroup>
           </Col>
           <Col sm={3}>
-            <Button onClick={() => handleReset()} bsStyle="primary">Zurücksetzen</Button>
+            <div>
+              <OverlayTrigger placement="top" overlay={ttReset}>
+                <Button onClick={() => handleReset()} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
+              </OverlayTrigger>
+              &nbsp;
+              <OverlayTrigger placement="top" overlay={ttRefresh}>
+                <Button onClick={() => setCount(count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
+              </OverlayTrigger>
+            </div>
           </Col>
         </Row>
       </Grid>

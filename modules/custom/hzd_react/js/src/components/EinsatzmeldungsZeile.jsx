@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-export default function EinsatzmeldungsZeile({ deployment, handleAction }) {
+export default function EinsatzmeldungsZeile({ deployment, handleAction, highlight }) {
   const date = new Date(deployment.attributes.field_date_deployed);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
@@ -13,16 +13,25 @@ export default function EinsatzmeldungsZeile({ deployment, handleAction }) {
   const service = deployment.serviceNid;
   const release = deployment.releaseNid;
   const deploymentId = deployment.id;
-  console.log(deployment);
+
+  const ttReportSuccessor = (
+    <Tooltip id="ttReportSuccessor">
+      Nachfolgerelease melden
+    </Tooltip>
+  );
 
   return (
-    <tbody>
+    <tr className={highlight}>
       <td>{global.drupalSettings.states[deployment.attributes.field_user_state]}</td>
       <td>{global.drupalSettings.environments[deployment.attributes.field_environment]}</td>
       <td>{deployment.service}</td>
       <td>{deployment.release}</td>
       <td>{localeDate}</td>
-      <td><Button onClick={() => handleAction(userState, environment, service, release, deploymentId)}>Nachfolgerelease melden</Button></td>
-    </tbody>
-  )
+      <td>
+        <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
+          <Button bsStyle="primary" onClick={() => handleAction(userState, environment, service, release, deploymentId)}><span className="glyphicon glyphicon-forward" /></Button>
+        </OverlayTrigger>
+      </td>
+    </tr>
+  );
 }
