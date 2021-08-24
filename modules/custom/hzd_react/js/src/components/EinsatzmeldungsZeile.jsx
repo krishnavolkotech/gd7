@@ -2,14 +2,14 @@ import React from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default function EinsatzmeldungsZeile({ deployment, handleAction, highlight }) {
-  const date = new Date(deployment.attributes.field_date_deployed);
+  const date = new Date(deployment.date);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-  const userState = deployment.attributes.field_user_state;
-  const environment = deployment.attributes.field_environment;
+  const userState = deployment.state;
+  const environment = deployment.environment;
   const service = deployment.serviceNid;
   const release = deployment.releaseNid;
   const deploymentId = deployment.id;
@@ -22,8 +22,8 @@ export default function EinsatzmeldungsZeile({ deployment, handleAction, highlig
 
   return (
     <tr className={highlight}>
-      <td>{global.drupalSettings.states[deployment.attributes.field_user_state]}</td>
-      <td>{global.drupalSettings.environments[deployment.attributes.field_environment]}</td>
+      <td>{global.drupalSettings.states[deployment.state]}</td>
+      <td>{global.drupalSettings.environments[deployment.environment]}</td>
       <td>{deployment.service}</td>
       <td>{deployment.release}</td>
       <td>{localeDate}</td>

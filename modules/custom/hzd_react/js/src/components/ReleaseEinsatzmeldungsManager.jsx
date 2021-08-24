@@ -78,36 +78,51 @@ export default function ReleaseEinsatzmeldungsManager() {
   const [isLoading, setIsLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [deploymentHistory, setDeploymentHistory] = useState([]);
+  // Modus des Meldeformulars (Integer):
+  // true: Ersteinsatz
+  // false: Nachfolgerelease
+  const [firstDeployment, setFirstDeployment] = useState(true);
 
   /**
    * Implements hook useEffect().
    * Fetches the deployed releases.
    */
   useEffect(() => {
-    const fetchUrl = '/jsonapi/node/deployed_releases';
-    const defaultFilter = '?include=field_deployed_release,field_prev_release,field_service,field_service.release_type&page[limit]=20&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
-    // Always apply default filter.
-    let url = fetchUrl + defaultFilter;
-    // Archiv-Filter
-    let archivedFilter = "&filter[field_deployment_status]=1";
+    let url = '/api/v1/deployments/';
+    
+    // Status-Filter
+    let archivedFilter = "1/";
     if (isArchived == "1" ) {
-      archivedFilter = "&filter[field_deployment_status]=2";
+      archivedFilter = "2/";
     }
+
     url += archivedFilter;
+
     // Landes-Filter (nur für Gruppen- und Site-Admins)
+    let stateUrl = 'all/'
     if (stateFilter && stateFilter !== "1") {
-      url += "&filter[field_user_state]=" + stateFilter;
+      stateUrl = stateFilter + '/';
     }
+    url += stateUrl;
+
+    // Umgebung.
+    let environmentUrl = 'all/'
     if (environmentFilter !== "0") {
-      url += "&filter[field_environment]=" + environmentFilter;
+      environmentUrl = environmentFilter + '/';
     }
+    url += environmentUrl;
+
+    // Verfahren.
+    let serviceUrl = 'all'
     if (serviceFilter !== "0") {
-      //url += "&filter[relationship.field_service]=" + serviceFilter;
-      url += "&filter[field_service.drupal_internal__nid]=" + serviceFilter;
+      serviceUrl = serviceFilter;
     }
-    if (releaseFilter !== "0") {
-      url += "&filter[field_deployed_release.drupal_internal__nid]=" + releaseFilter;
-    }
+    url += serviceUrl;
+
+    // Release-Filter unnötig? Filterung direkt in React besser?
+    // if (releaseFilter !== "0") {
+    //   url += "&filter[field_deployed_release.drupal_internal__nid]=" + releaseFilter;
+    // }
     setData([]);
     setTimeout(false);
     fetchCount.current++;
@@ -120,29 +135,10 @@ export default function ReleaseEinsatzmeldungsManager() {
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        let deploymentData = results.data.map((deployment) => {
-          // Search included relationship for associated service name.
-          const serviceId = deployment.relationships.field_service.data.id;
-          const relatedServiceObject = results.included.find(({ id }) => id === serviceId);
-          const relatedServiceName = relatedServiceObject.attributes.title;
-          const relatedServiceNid = relatedServiceObject.attributes.drupal_internal__nid;
-          deployment.service = relatedServiceName;
-          deployment.serviceNid = relatedServiceNid;
-
-          // Search included relationship for associated release name.
-          const releaseId = deployment.relationships.field_deployed_release.data.id;
-          const relatedReleaseObject = results.included.find(({ id }) => id === releaseId);
-          const relatedRelaseName = relatedReleaseObject.attributes.title;
-          const relatedRelaseNid = relatedReleaseObject.attributes.drupal_internal__nid;
-          deployment.release = relatedRelaseName;
-          deployment.releaseNid = relatedRelaseNid;
-
-          return deployment;
-        });
         console.log('Läufer angekommen: ' + runner + ". Insgesamt: " + fetchCount.current);
         if (runner === fetchCount.current) {
-          if (deploymentData.length === 0) setTimeout(true);
-          setData(deploymentData);
+          if (results.length === 0) setTimeout(true);
+          setData(results);
         }
       })
       .catch(error => {
@@ -282,6 +278,7 @@ export default function ReleaseEinsatzmeldungsManager() {
   }
 
   const handleAction = (userState, environment, service, release, deploymentId) => {
+    setFirstDeployment(false);
     setShow(!show);
     setUserState(userState);
     setEnvironment(environment);
@@ -349,6 +346,8 @@ export default function ReleaseEinsatzmeldungsManager() {
         disabled={disabled}
         setDisabled={setDisabled}
         setDeploymentHistory={setDeploymentHistory}
+        firstDeployment={firstDeployment}
+        setFirstDeployment={setFirstDeployment}
       />
       <EinsatzmeldungsTabelle
         data={data}

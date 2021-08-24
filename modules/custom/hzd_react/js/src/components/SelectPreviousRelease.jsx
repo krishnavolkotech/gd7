@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function SelectPreviousRelease({ previousRelease, setPreviousRelease, prevReleases, isLoading, setIsLoading, disabled, setDisabled }) {
+export default function SelectPreviousRelease({ previousRelease, setPreviousRelease, prevReleases, isLoading, setIsLoading, disabledPrevRelease }) {
   const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function SelectPreviousRelease({ previousRelease, setPreviousRele
   if (isLoading) {
     loading = <span> <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></span>;
   }
-
+console.log("Disabled? ", disabledPrevRelease);
   return (
     <FormGroup controlId="4">
       <ControlLabel>Vorgängerrelease{loading}</ControlLabel>
@@ -40,7 +40,7 @@ export default function SelectPreviousRelease({ previousRelease, setPreviousRele
           name="vorgaengerrelease"
           value={previousRelease}
           onChange={(e) => setPreviousRelease(e.target.value)}
-          disabled={disabled}
+          disabled={disabledPrevRelease}
         >
           {releaseOptions}
         </FormControl>

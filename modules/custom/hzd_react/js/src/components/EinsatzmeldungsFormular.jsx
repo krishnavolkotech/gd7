@@ -18,6 +18,7 @@ export default function EinsatzmeldungsFormular(props) {
   const [newReleases, setNewReleases] = useState([]);
   // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
   const [prevReleases, setPrevReleases] = useState([]);
+  const [disabledPrevRelease, setDisabledPrevRelease] = useState(true);
 
 
   // console.log(
@@ -68,21 +69,13 @@ export default function EinsatzmeldungsFormular(props) {
     }
     // JsonAPI Fetch vorbereiten.
     // @todo Umbauen auf REST API. Vorteil: Mehr als 50 Elemente auf einmal fetchen.
-    const fetchUrl = '/jsonapi/node/deployed_releases';
-    const defaultFilter = '?include=field_deployed_release&page[limit]=50&sort[sort-date][path]=field_date_deployed&sort[sort-date][direction]=DESC';
-    // Always apply default filter.
-    let url = fetchUrl + defaultFilter;
-
     // Fehlmeldungen sollen rausgefiltert werden.
-    let archivedFilter = '&filter[deployed-releases][condition][path]=field_deployment_status'
-      + '&filter[deployed-releases][condition][operator]=%3C%3E'
-      + '&filter[deployed-releases][condition][value]=3';
-    url += archivedFilter;
+    let url = '/api/v1/deployments/1+2/';
 
     const userState = global.drupalSettings.userstate;
-    url += "&filter[field_user_state]=" + userState;
-    url += "&filter[field_environment]=" + props.environment;
-    url += "&filter[field_service.drupal_internal__nid]=" + props.service;
+    url += userState + '/';
+    url += props.environment + '/';
+    url += props.service;
 
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
@@ -91,11 +84,8 @@ export default function EinsatzmeldungsFormular(props) {
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        let deployedReleaseNids = results.data.map((deployment) => {
-          const releaseId = deployment.relationships.field_deployed_release.data.id;
-          const relatedReleaseObject = results.included.find(({ id }) => id === releaseId);
-          const relatedRelaseNid = relatedReleaseObject.attributes.drupal_internal__nid;
-          return relatedRelaseNid;
+        let deployedReleaseNids = results.map((deployment) => {
+          return deployment.releaseNid;
         });
         if (props.service in props.releases) {
           // All provided releases for the selected service.
@@ -105,7 +95,7 @@ export default function EinsatzmeldungsFormular(props) {
         
         // Releases filtern: Eingesetzt (Vorgängerreleases).
         let filteredPrevReleases = releaseArray.filter(release => {
-          return deployedReleaseNids.indexOf(parseInt(release.nid)) >= 0;
+          return deployedReleaseNids.indexOf(release.nid) >= 0;
         })
         let deployedReleases = [];
         let product = false;
@@ -122,10 +112,12 @@ export default function EinsatzmeldungsFormular(props) {
         // Releases filtern: Nicht Eingesetzt (Neue Einsatzmeldung).
         let filteredNewReleases = releaseArray.filter(release => {
           let result = false;
-          if (deployedReleaseNids.indexOf(parseInt(release.nid)) === -1) {
+          if (deployedReleaseNids.indexOf(release.nid) === -1) {
+            console.log("Release schon vorhanden!");
             result = true;
           }
           if (product && release.title.indexOf(product) == -1) {
+            console.log("Falsches Produkt! -> false" + product);
             result = false;
           }
           return result;
@@ -318,9 +310,10 @@ export default function EinsatzmeldungsFormular(props) {
     setArchivePrevRelease(false);
   }
   
-  // Handler für Button "Neue Einsatzmeldung".
+  // Handler für Button "Ersteinsatz melden".
   const handleClick = () => {
     // Für neue Einsatzmeldung alles zurücksetzen.
+    props.setFirstDeployment(true);
     props.setEnvironment(1);
     props.setService(0);
     setRelease(false);
@@ -367,6 +360,21 @@ export default function EinsatzmeldungsFormular(props) {
     </Tooltip>
   );
 
+  useEffect(() => {
+    if (props.firstDeployment) {
+      setDisabledPrevRelease(true);
+    }
+    else {
+      setDisabledPrevRelease(false);
+    }
+
+    if (props.disabled) {
+      setDisabledPrevRelease(true);
+    }
+    setDisabledPrevRelease(props.disabled);
+
+  }, [firstDeployment, props.disabled])
+
   return (
     <div>
       <OverlayTrigger placement="top" overlay={ttNewReport}>
@@ -376,7 +384,7 @@ export default function EinsatzmeldungsFormular(props) {
       </OverlayTrigger>
       <Modal show={props.show} onHide={handleClick}>
         <Modal.Header closeButton>
-          <Modal.Title>Einsatzmeldung</Modal.Title>
+          {props.firstDeployment ? <Modal.Title>Ersteinsatz melden</Modal.Title> : <Modal.Title>Nachfolger melden</Modal.Title>}
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -424,8 +432,7 @@ export default function EinsatzmeldungsFormular(props) {
               prevReleases={prevReleases}
               isLoading={props.isLoading}
               setIsLoading={props.setIsLoading}
-              disabled={props.disabled}
-              setDisabled={props.setDisabled}
+              disabledPrevRelease={disabledPrevRelease}
             />
 
             <FormGroup controlId="5">
@@ -512,7 +519,7 @@ export default function EinsatzmeldungsFormular(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="success" onClick={handleSave} >Speichern</Button>
-          <Button onClick={() => props.setShow(!props.show)}>Schließen</Button>
+          <Button onClick={handleClick}>Schließen</Button>
         </Modal.Footer>
       </Modal>
     </div>
