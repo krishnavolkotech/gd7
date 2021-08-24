@@ -3,12 +3,11 @@
 namespace Drupal\serial;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Database\Database;
-use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Entity\Query\QueryFactory;
 
 /**
  * Serial storage service definition.
@@ -20,13 +19,6 @@ use Drupal\Core\Entity\Query\QueryFactory;
 class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface {
 
   /**
-   * Drupal\Core\Entity\Query\QueryInterface definition.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryInterface
-   */
-  protected $entityQuery;
-
-  /**
    * Drupal\Core\Entity\EntityTypeManager definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManager
@@ -36,9 +28,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function __construct(QueryFactory $entityQuery,
-                              EntityTypeManager $entityTypeManager) {
-    $this->entityQuery = $entityQuery;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
   }
 
@@ -47,7 +37,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.query'),
       $container->get('entity_type.manager')
     );
   }
@@ -86,7 +75,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       // Insert a temporary record to get a new unique serial value.
       $uniqid = uniqid('', TRUE);
       $sid = $connection->insert($storageName)
-        ->fields(array('uniqid' => $uniqid))
+        ->fields(['uniqid' => $uniqid])
         ->execute();
 
       // If there's a reason why it's come back undefined, reset it.
@@ -125,9 +114,9 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function getSchema() {
-    $schema = array(
-      'fields' => array(
-        'sid' => array(
+    $schema = [
+      'fields' => [
+        'sid' => [
           // Serial Drupal DB type
           // not SerialStorageInterface::SERIAL_FIELD_TYPE
           // means auto increment.
@@ -136,21 +125,21 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
           'not null' => TRUE,
           'unsigned' => TRUE,
           'description' => 'The atomic serial field.',
-        ),
-        'uniqid' => array(
+        ],
+        'uniqid' => [
           'type' => 'varchar',
           'length' => 23,
           'default' => '',
           'not null' => TRUE,
           // @todo review UUID instead
           'description' => 'Unique temporary allocation Id.',
-        ),
-      ),
-      'primary key' => array('sid'),
-      'unique keys' => array(
-        'uniqid' => array('uniqid'),
-      ),
-    );
+        ],
+      ],
+      'primary key' => ['sid'],
+      'unique keys' => [
+        'uniqid' => ['uniqid'],
+      ],
+    ];
     return $schema;
   }
 
@@ -158,7 +147,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function getAllFields() {
-    return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
+    return \Drupal::getContainer()->get('entity_field.manager')->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
   }
 
   /**
@@ -197,11 +186,11 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function initOldEntries($entityTypeId, $entityBundle, $fieldName) {
-    $query = $this->entityQuery->get($entityTypeId);
+  public function initOldEntries($entityTypeId, $entityBundle, $fieldName, $startValue) {
+    $storage = $this->entityTypeManager->getStorage($entityTypeId);
+    $query = $storage->getQuery();
     // @todo shall we assign serial id to unpublished as well?
     // $query->condition('status', 1);
-    $storage = $this->entityTypeManager->getStorage($entityTypeId);
     $bundleKey = $storage->getEntityType()->getKey('bundle');
     $query->condition($bundleKey, $entityBundle);
     $query->accessCheck(FALSE);
@@ -218,7 +207,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       $entity = $storage->loadUnchanged($entityId);
       $serial = $this->generateValueFromName($storageName);
       // @todo review multilingual
-      $entity->{$fieldName}->value = $serial;
+      $entity->{$fieldName}->value = $startValue + $serial - 1;
       if ($entity->save() === SAVED_UPDATED) {
         ++$updated;
       }

@@ -55,7 +55,7 @@ class resolve_form extends FormBase {
     }
     $breadcrumb[] = l(t('Downtime'), 'node/' . $nid);
     $breadcrumb[] = t('Resolve');
-    $resolved_title = db_result(db_query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
+    $resolved_title = db_result(\Drupal::database()->query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
     if ($resolved_title == 0) {
       drupal_set_title(t('Resolve Incident'));
     } else {
@@ -145,7 +145,7 @@ class resolve_form extends FormBase {
    */
 
   function resolve_form_validate($form, &$form_state) {
-    $sql = db_fetch_object(db_query("select startdate_planned  from {state_downtimes} where down_id = %d", $form_state['values']['nid']));
+    $sql = db_fetch_object(\Drupal::database()->query("select startdate_planned  from {state_downtimes} where down_id = %d", $form_state['values']['nid']));
     $startdate = $sql->startdate_planned;
     $enddate = get_unix_timestamp($_POST['date_reported']['date']);
     $currentdate = time();

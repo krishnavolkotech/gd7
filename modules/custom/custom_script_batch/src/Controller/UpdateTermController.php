@@ -31,7 +31,7 @@ class UpdateTermController extends ControllerBase {
       foreach ($vocabulary_entities as $term) {
         $term->Save();
       }
-      drupal_set_message('Updated Terms for @vid successfully.', ['@vid' => $vid]);
+      \Drupal::messenger()->addMessage('Updated Terms for @vid successfully.', ['@vid' => $vid]);
     }
     return [
       '#type' => 'markup',

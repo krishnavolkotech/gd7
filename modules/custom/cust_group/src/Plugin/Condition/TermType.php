@@ -53,7 +53,7 @@ class TermType extends ConditionPluginBase implements ContainerFactoryPluginInte
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('entity.manager')->getStorage('taxonomy_vocabulary'),
+      $container->get('entity_type.manager')->getStorage('taxonomy_vocabulary'),
       $configuration,
       $plugin_id,
       $plugin_definition

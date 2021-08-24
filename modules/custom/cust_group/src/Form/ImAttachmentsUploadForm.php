@@ -137,9 +137,9 @@ class ImAttachmentsUploadForm extends FormBase {
         $node->save();
         $message = t('File was successfully uploaded!');
       }
-//      drupal_set_message(t('File was successfully uploaded!'));
+//      \Drupal::messenger()->addMessage(t('File was successfully uploaded!'));
     }
-    drupal_set_message($message);
+    \Drupal::messenger()->addMessage($message);
   }
 
 }

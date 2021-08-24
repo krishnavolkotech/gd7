@@ -32,7 +32,7 @@ function hzd_get_default_interval($uid, $rel_type) {
  * get all services of a release type
  */
 function hzd_get_all_services($rel_type = NULL) {
-  $query = db_select('node_field_data', 'n');
+  $query = \Drupal::database()->select('node_field_data', 'n');
   $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
   $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
   $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -57,7 +57,7 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($interval as $vals) {
     $uids_list = array();
-    $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
+    $uids_query = \Drupal::database()->query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
       array(
         ":sid" => $nid,
         ":type" => $type,
@@ -71,7 +71,7 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
       $uids_list[] = $uid;
     }
     $serialized_uid = serialize($uids_list);
-    db_update('service_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
       ->condition('service_id', $nid)
       ->condition('type', $type)
       ->condition('send_interval', $vals)
@@ -699,14 +699,14 @@ function _notify_users(&$entity, $action, $user_data){
       $error ="Die Seite hat " . strlen($body->__toString()) . " Zeichen. "
         . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
         . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link zu dieser Seite.";
-      drupal_set_message($error, 'warning');
+      \Drupal::messenger()->addMessage($error, 'warning');
       $body = "Der Inhalt der Seite ist zu groß zum Versenden. Untenstehender Link führt zum Inhalt.";
     }
     elseif (strlen($body) > 65535) {
       $error ="Ihre RZ-Schnellinfo hat " . strlen($body) . " Zeichen. "
         . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
         . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link sowie eine PDF-Datei.";
-      drupal_set_message($error, 'warning');
+      \Drupal::messenger()->addMessage($error, 'warning');
       $body = "RZ-Schnellinfo ist zu groß um im Mailbody versendet zu werden. Den Inhalt finden Sie im angehängten PDF oder wenn Sie dem Link folgen.";
     }
     // These bundles have condition for notifications.
@@ -943,7 +943,7 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
     $affetced_services[] = $options[$val['value']];
   }
 
-  $query = db_select('quickinfo_notifications', 'q')
+  $query = \Drupal::database()->select('quickinfo_notifications', 'q')
     ->fields('q', array('uids'))
     ->condition('q.cck', $affetced_services, 'IN')
     ->condition('q.send_interval', 0, '=');

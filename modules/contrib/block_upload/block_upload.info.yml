@@ -4,5 +4,6 @@ description: 'Upload new files/images to node through the block.'
 package: Other
 version: VERSION
 core: 8.x
+core_version_requirement: ^8 || ^9
 configure: block_upload.admin
 

@@ -2,8 +2,10 @@
 
 /**
  * @file
- * Module install file.
+ * Install, update and uninstall functions for the Views Merge Rows module.
  */
+
+declare(strict_types = 1);
 
 /**
  * Implements hook_install().
@@ -27,5 +29,56 @@ function views_merge_rows_uninstall() {
     unset($display_extenders[$key]);
     $config->set('display_extenders', $display_extenders);
     $config->save();
+  }
+}
+
+/**
+ * Remove Unused "use_grouping" entry in views config.
+ */
+function views_merge_rows_update_8200() {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('views.view.') as $view_config_name) {
+    $view = $config_factory->getEditable($view_config_name);
+    $save = FALSE;
+    foreach ($view->get('display') as $display_name => $display) {
+      if (isset($display['display_options']['use_grouping'])) {
+        unset($display['display_options']['use_grouping']);
+        $view->set("display.$display_name", $display);
+        $save = TRUE;
+      }
+    }
+    if ($save) {
+      $view->save();
+    }
+  }
+}
+
+/**
+ * Move config from display handler options to display extender.
+ */
+function views_merge_rows_update_8201() {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('views.view.') as $view_config_name) {
+    $view = $config_factory->getEditable($view_config_name);
+    $save = FALSE;
+    foreach ($view->get('display') as $display_name => $display) {
+      if (isset($display['display_options']['merge_rows']) || isset($display['display_options']['field_config'])) {
+        $merge_rows = $display['display_options']['merge_rows'] ?? FALSE;
+        $field_config = $display['display_options']['field_config'] ?? [];
+        $display['display_options']['display_extenders']['views_merge_rows'] = [
+          'merge_rows' => $merge_rows,
+          'field_config' => $field_config,
+        ];
+
+        unset($display['display_options']['merge_rows']);
+        unset($display['display_options']['field_config']);
+
+        $view->set("display.$display_name", $display);
+        $save = TRUE;
+      }
+    }
+    if ($save) {
+      $view->save();
+    }
   }
 }

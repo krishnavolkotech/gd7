@@ -154,7 +154,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       $path_info = '/' . substr($path_info, strlen($language_prefix));
     }
 
-    return rtrim(urldecode($path_info),'/');
+    return $path_info;
   }
 
   /**

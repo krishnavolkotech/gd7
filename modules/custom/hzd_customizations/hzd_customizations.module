@@ -102,10 +102,10 @@ function get_related_downtime_services($type) {
  * Get related file attachments of planning files.
  */
 function get_related_files($planning_filename) {
-  $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
+  $fids = \Drupal::database()->query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
   $files_details = '';
   foreach ($fids as $fid) {
-    $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
+    $fileObject = \Drupal::database()->query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
     if ($fid->display == 1) {
       // $icon = theme('filefield_icon', $fileObject);.
       $files_heading = "<p><b>Dateien:</b></p>";
@@ -133,7 +133,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
   if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo') {
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
     $display = $context['display'];
-    $entityManager = Drupal::service('entity.manager');
+    $entityManager = Drupal::service('entity_type.manager');
     $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
     foreach ($fields as $field_name => $definition) {
       if (in_array($field_name, [

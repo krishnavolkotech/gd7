@@ -11,7 +11,7 @@
  * This version is made available under the GNU GPL License.
  */
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Utility\Html;
 use GuzzleHttp\Exception\RequestException;
 
 /**
@@ -34,7 +34,7 @@ function xmlrpc_value($data, $type = FALSE) {
   }
   $xmlrpc_value->type = $type;
   if ($type == 'struct') {
-    // Turn all the values in the array into new xmlrpc_values
+    // Turn all the values in the array into new xmlrpc_values.
     foreach ($xmlrpc_value->data as $key => $value) {
       $xmlrpc_value->data[$key] = xmlrpc_value($value);
     }
@@ -72,7 +72,7 @@ function xmlrpc_value_calculate_type($xmlrpc_value) {
   }
   if (is_array($xmlrpc_value->data)) {
     // Empty or integer-indexed arrays are 'array',
-    // string-indexed arrays 'struct'
+    // string-indexed arrays 'struct'.
     return empty($xmlrpc_value->data) || range(0, count($xmlrpc_value->data) - 1) === array_keys($xmlrpc_value->data) ? 'array' : 'struct';
   }
   if (is_object($xmlrpc_value->data)) {
@@ -126,7 +126,7 @@ function xmlrpc_value_get_xml($xmlrpc_value) {
     case 'struct':
       $return = '<struct>' . "\n";
       foreach ($xmlrpc_value->data as $name => $value) {
-        $return .= "  <member><name>" . SafeMarkup::checkPlain($name) . "</name><value>";
+        $return .= "  <member><name>" . Html::escape($name) . "</name><value>";
         $return .= xmlrpc_value_get_xml($value) . "</value></member>\n";
       }
       $return .= '</struct>';
@@ -154,12 +154,12 @@ function xmlrpc_value_get_xml($xmlrpc_value) {
  */
 function xmlrpc_message($message) {
   $xmlrpc_message = new stdClass();
-  // The stack used to keep track of the current array/struct
-  $xmlrpc_message->array_structs = array();
+  // The stack used to keep track of the current array/struct.
+  $xmlrpc_message->array_structs = [];
   // The stack used to keep track of if things are structs or array.
-  $xmlrpc_message->array_structs_types = array();
+  $xmlrpc_message->array_structs_types = [];
   // A stack as well.
-  $xmlrpc_message->current_struct_name = array();
+  $xmlrpc_message->current_struct_name = [];
   $xmlrpc_message->message = $message;
   return $xmlrpc_message;
 }
@@ -258,12 +258,12 @@ function xmlrpc_message_tag_open($parser, $tag, array $attribs) {
     // Deal with stacks of arrays and structs.
     case 'data':
       $xmlrpc_message->array_structs_types[] = 'array';
-      $xmlrpc_message->array_structs[] = array();
+      $xmlrpc_message->array_structs[] = [];
       break;
 
     case 'struct':
       $xmlrpc_message->array_structs_types[] = 'struct';
-      $xmlrpc_message->array_structs[] = array();
+      $xmlrpc_message->array_structs[] = [];
       break;
   }
   xmlrpc_message_set($xmlrpc_message);
@@ -378,7 +378,7 @@ function xmlrpc_message_tag_close($parser, $tag) {
       $xmlrpc_message->params[] = $value;
     }
   }
-  if (!in_array($tag, array("data", "struct", "member"))) {
+  if (!in_array($tag, ["data", "struct", "member"])) {
     $xmlrpc_message->current_tag_contents = '';
   }
   xmlrpc_message_set($xmlrpc_message);
@@ -502,7 +502,7 @@ function xmlrpc_date($time) {
   }
   else {
     $xmlrpc_date->iso8601 = $time;
-    $time = str_replace(array('-', ':'), '', $time);
+    $time = str_replace(['-', ':'], '', $time);
     $xmlrpc_date->year = substr($time, 0, 4);
     $xmlrpc_date->month = substr($time, 4, 2);
     $xmlrpc_date->day = substr($time, 6, 2);
@@ -578,15 +578,15 @@ function xmlrpc_base64_get_xml($xmlrpc_base64) {
  *   is returned, see xmlrpc_errno() and xmlrpc_error_msg() to get more
  *   information.
  */
-function _xmlrpc($url, array $args, array $headers = array()) {
+function _xmlrpc($url, array $args, array $headers = []) {
   xmlrpc_clear_error();
   if (count($args) > 1) {
-    $multicall_args = array();
+    $multicall_args = [];
     foreach ($args as $method => $call) {
-      $multicall_args[] = array('methodName' => $method, 'params' => $call);
+      $multicall_args[] = ['methodName' => $method, 'params' => $call];
     }
     $method = 'system.multicall';
-    $args = array($multicall_args);
+    $args = [$multicall_args];
   }
   else {
     $method = key($args);
@@ -597,10 +597,10 @@ function _xmlrpc($url, array $args, array $headers = array()) {
   $headers['Content-Type'] = 'text/xml; charset=utf-8';
 
   try {
-    $response = \Drupal::httpClient()->post($url, array(
+    $response = \Drupal::httpClient()->post($url, [
       'headers' => $headers,
       'body' => $xmlrpc_request->xml,
-    ));
+    ]);
   }
   catch (RequestException $exception) {
     xmlrpc_error(-32300, $exception->getMessage());
@@ -621,9 +621,9 @@ function _xmlrpc($url, array $args, array $headers = array()) {
   // We now know that the message is well-formed and a non-fault result.
   if ($method == 'system.multicall') {
     // Return per-method results or error objects.
-    $return = array();
+    $return = [];
     foreach ($message->params[0] as $result) {
-      if (array_keys($result) == array(0)) {
+      if (array_keys($result) == [0]) {
         $return[] = $result[0];
       }
       else {

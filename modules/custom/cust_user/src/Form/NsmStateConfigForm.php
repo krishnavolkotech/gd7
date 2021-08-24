@@ -81,7 +81,7 @@ class NsmStateConfigForm extends FormBase {
       }
       
     }
-    drupal_set_message(t('Data saved succesfully'));
+    \Drupal::messenger()->addMessage(t('Data saved succesfully'));
   }
   
 }

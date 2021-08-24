@@ -23,7 +23,7 @@ class GroupContentAddController extends GroupContentController {
   
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('user.private_tempstore'),
+      $container->get('tempstore.private'),
       $container->get('entity_type.manager'),
       $container->get('entity.form_builder'),
       $container->get('renderer')

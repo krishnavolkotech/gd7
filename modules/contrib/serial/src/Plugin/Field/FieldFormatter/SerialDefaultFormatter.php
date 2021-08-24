@@ -12,8 +12,8 @@ use Drupal\Core\Field\FieldItemListInterface;
  *   id = "serial_default_formatter",
  *   label = @Translation("Serial default"),
  *   field_types = {
- *     "serial",
- *   },
+ *     "serial"
+ *   }
  * )
  */
 class SerialDefaultFormatter extends FormatterBase {
@@ -30,7 +30,7 @@ class SerialDefaultFormatter extends FormatterBase {
         '#serial_id' => $item->value,
       ];
       $elements[$delta] = [
-        '#markup' => \Drupal::service('renderer')->render($source),
+        '#markup' => \Drupal::service('renderer')->renderPlain($source),
       ];
     }
     return $elements;

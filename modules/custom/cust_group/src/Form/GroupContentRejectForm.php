@@ -78,7 +78,7 @@ class GroupContentRejectForm extends ConfirmFormBase {
     ]);
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
-      drupal_set_message(t('Mail sent.'), 'status');
+      \Drupal::messenger()->addMessage(t('Mail sent.'), 'status');
     }
     
     \Drupal::logger('group_content')->notice('@type: rejected %title.', [

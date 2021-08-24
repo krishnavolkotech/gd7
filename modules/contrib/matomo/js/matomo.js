@@ -31,6 +31,9 @@
         var href = $.colorbox.element().attr("href");
         if (href) {
           _paq.push(["setCustomUrl", href]);
+          if (drupalSettings.matomo.disableCookies) {
+            _paq.push(["disableCookies"]);
+          }
           _paq.push(["trackPageView"]);
         }
       });

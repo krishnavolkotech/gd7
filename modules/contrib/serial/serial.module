@@ -31,7 +31,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 function serial_field_config_create(FieldConfig $field) {
   if ($field->getType() == 'serial' && !$field->isDeleted()) {
     // Create the assistant storage.
-    /** @var SerialStorageInterface $serialStorage */
+    /** @var \Drupal\serial\SerialStorageInterface $serialStorage */
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
     $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
@@ -39,22 +39,7 @@ function serial_field_config_create(FieldConfig $field) {
       $field->getFieldStorageDefinition()->getName()
     );
     $serialStorage->createStorageFromName($storageName);
-
-    // Commit the change before setting values for existing entities.
     $field->save();
-
-    // Set serial values for existing entities.
-    $oldCount = $serialStorage->initOldEntries(
-      $field->getTargetEntityTypeId(),
-      $field->getTargetBundle(),
-      $field->getFieldStorageDefinition()->getName()
-    );
-
-    if ($oldCount > 0) {
-      drupal_set_message(t('Serial values have been automatically set for %count existing entities.', array(
-        '%count' => $oldCount,
-      )));
-    }
   }
 }
 
@@ -82,7 +67,7 @@ function serial_field_config_delete(FieldConfig $field) {
  */
 function serial_clone_node_alter(Node &$node, $context) {
   // Reset values of all serial fields when cloning a node.
-  foreach (\Drupal::entityManager()->getFieldDefinitions('node', $node->bundle()) as $field_name => $field_definition) {
+  foreach (\Drupal::getContainer()->get('entity_field.manager')->getFieldDefinitions('node', $node->bundle()) as $field_name => $field_definition) {
     if (!empty($field_definition->getTargetBundle())
       && $field_definition->getType() == SerialStorageInterface::SERIAL_FIELD_TYPE) {
       $node->{$field_name} = [];
@@ -95,7 +80,7 @@ function serial_clone_node_alter(Node &$node, $context) {
  */
 function serial_theme() {
   // Register the theme for the serial default.
-  return array('serial_default' => array('variables' => array('serial_id' => NULL)));
+  return ['serial_default' => ['variables' => ['serial_id' => NULL]]];
 }
 
 /**

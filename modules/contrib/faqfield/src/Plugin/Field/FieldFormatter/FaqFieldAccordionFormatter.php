@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\faqfield\Plugin\field\formatter\FaqFieldAccordionFormatter.
- */
-
 namespace Drupal\faqfield\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FormatterBase;
@@ -29,15 +24,15 @@ class FaqFieldAccordionFormatter extends FormatterBase {
    */
   public static function defaultSettings() {
     return [
-        'active' => 0,
-        'heightStyle' => 'auto',
-        'collapsible' => FALSE,
-        'event' => 'click',
-        'animate' => [
-          'easing' => 'linear',
-          'duration' => 200,
-        ],
-      ] + parent::defaultSettings();
+      'active' => 0,
+      'heightStyle' => 'auto',
+      'collapsible' => FALSE,
+      'event' => 'click',
+      'animate' => [
+        'easing' => 'linear',
+        'duration' => 200,
+      ],
+    ] + parent::defaultSettings();
   }
 
   /**
@@ -45,45 +40,43 @@ class FaqFieldAccordionFormatter extends FormatterBase {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $elements = parent::settingsForm($form, $form_state);
-
     // Number of first active element.
     $elements['active'] = [
       '#type' => 'number',
-      '#title' => t('Default active'),
-      '#placeholder' => t('None'),
+      '#title' => $this->t('Default active'),
+      '#placeholder' => $this->t('None'),
       '#default_value' => $this->getSetting('active'),
-      '#description' => t('Index of the active question starting from 0. If left empty and <em>Fully collapsible</em> is on, no question will be opened by default.'),
+      '#description' => $this->t('Index of the active question starting from 0. If left empty and <em>Fully collapsible</em> is on, no question will be opened by default.'),
       '#maxlength' => 3,
       '#size' => 5,
     ];
     // Whether auto heigth is enabled.
     $elements['heightStyle'] = [
       '#type' => 'select',
-      '#title' => t('Height style'),
+      '#title' => $this->t('Height style'),
       '#default_value' => $this->getSetting('heightStyle'),
       '#options' => [
-        'auto' => t('Auto') . ': ' . t('All panels will be set to the height of the tallest question.'),
-        'fill' => t('Fill') . ': ' . t('Expand to the available height based on the accordions question height.'),
-        'content' => t('Content') . ': ' . t('Each panel will be only as tall as its question.'),
+        'auto' => $this->t('Auto : All panels will be set to the height of the tallest question.'),
+        'fill' => $this->t('Fill : Expand to the available height based on the accordions question height.'),
+        'content' => $this->t('Content : Each panel will be only as tall as its question.'),
       ],
-      '#description' => t('Controls the height of the accordion and each panel.'),
+      '#description' => $this->t('Controls the height of the accordion and each panel.'),
     ];
     // Whether elements are collabsible.
     $elements['collapsible'] = [
       '#type' => 'checkbox',
-      '#title' => t('Fully collapsible'),
+      '#title' => $this->t('Fully collapsible'),
       '#default_value' => $this->getSetting('collapsible'),
-      '#description' => t('Whether all the questions can be closed at once. Allows collapsing the active section.'),
+      '#description' => $this->t('Whether all the questions can be closed at once. Allows collapsing the active section.'),
     ];
     // Name of triggering event.
     $elements['event'] = [
       '#type' => 'textfield',
-      '#title' => t('Event'),
+      '#title' => $this->t('Event'),
       '#placeholder' => 'click',
       '#default_value' => $this->getSetting('event'),
-      '#description' => t('The event on which to open a question. Multiple events can be specified, separated by a space.'),
+      '#description' => $this->t('The event on which to open a question. Multiple events can be specified, separated by a space.'),
     ];
-
     // Animation options for the accordion formatter.
     $elements['animate'] = [
       '#type' => 'details',
@@ -115,34 +108,32 @@ class FaqFieldAccordionFormatter extends FormatterBase {
    */
   public function settingsSummary() {
     $summary = [];
-
     if (is_numeric($this->getSetting('active'))) {
       $active = $this->getSetting('active');
     }
     else {
-      $active = t('None');
+      $active = $this->t('None');
     }
-    $summary[] = t('Default active: @element', ['@element' => $active]);
-
+    $summary[] = $this->t('Default active: @element', ['@element' => $active]);
     $height_style = '';
     switch ($this->getSetting('heightStyle')) {
       case 'auto':
-        $height_style = t('Auto');
+        $height_style = $this->t('Auto');
         break;
+
       case 'fill':
-        $height_style = t('Fill');
+        $height_style = $this->t('Fill');
         break;
+
       case 'content':
-        $height_style = t('Content');
+        $height_style = $this->t('Content');
         break;
     }
-    $summary[] = t('Height style') . ': ' . $height_style;
-
+    $summary[] = $this->t('Height style : @style', ['@style' => $height_style]);
     if ($this->getSetting('collapsible')) {
-      $summary[] = t('Fully collapsible');
+      $summary[] = $this->t('Fully collapsible');
     }
-
-    $summary[] = t('Event: @event', ['@event' => $this->getSetting('event')]);
+    $summary[] = $this->t('Event: @event', ['@event' => $this->getSetting('event')]);
 
     return $summary;
   }
@@ -155,47 +146,44 @@ class FaqFieldAccordionFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-
     $default_format = $this->getFieldSetting('default_format');
     $settings = $this->getSettings();
-
     // Generate faqfield id by fieldname and entity id.
     $faqfield_id = 'faqfield_' . $this->fieldDefinition->getName() . '_' . $items->getEntity()
-        ->getEntityTypeId() . '_' . $items->getEntity()->id();
-
-    // If active setting was left blank, we set FALSE so no element will be active.
+      ->getEntityTypeId() . '_' . $items->getEntity()->id();
+    // If active setting was blank, set FALSE so no element will be active.
     if (!is_numeric($settings['active'])) {
       $settings['active'] = FALSE;
     }
-
     $element_items = [];
     foreach ($items as $item) {
       // Decide whether to use the default format or the custom one.
       $format = (!empty($item->answer_format) ? $item->answer_format : $default_format);
-
       $element_items[] = [
         'question' => $item->question,
         'answer' => $item->answer,
         'answer_format' => $format,
       ];
     }
-
-    $elements[0] = [
-      '#theme' => 'faqfield_jquery_accordion_formatter',
-      '#items' => $element_items,
-      '#id' => $faqfield_id,
-      '#attached' => [
-        // Add FAQ Field accordion library.
-        'library' => [
-          'faqfield/faqfield.accordion',
-        ],
-        'drupalSettings' => [
-          'faqfield' => [
-            '#' . $faqfield_id => $settings,
+    if ($element_items) {
+      $elements[0] = [
+        '#theme' => 'faqfield_jquery_accordion_formatter',
+        '#items' => $element_items,
+        '#id' => $faqfield_id,
+        '#attached' => [
+          // Add FAQ Field accordion library.
+          'library' => [
+            'faqfield/faqfield.accordion',
+          ],
+          'drupalSettings' => [
+            'faqfield' => [
+              '#' . $faqfield_id => $settings,
+            ],
           ],
         ],
-      ],
-    ];
+      ];
+    }
+
     return $elements;
   }
 

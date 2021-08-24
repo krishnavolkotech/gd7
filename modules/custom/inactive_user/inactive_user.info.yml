@@ -1,7 +1,6 @@
 name: 'Inactive User'
 type: module
 description: 'Automatic handling of inactive users.'
-package: user
 version: 1.x
 core: 8.x
 package: "HZD Custom"

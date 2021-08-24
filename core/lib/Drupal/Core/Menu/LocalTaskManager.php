@@ -8,10 +8,8 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\Core\Controller\ControllerResolverInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Plugin\Discovery\ContainerDerivativeDiscoveryDecorator;
 use Drupal\Core\Plugin\Discovery\YamlDiscovery;
@@ -58,21 +56,6 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
    * @var \Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface
    */
   protected $argumentResolver;
-
-  /**
-   * A controller resolver object.
-   *
-   * @var \Symfony\Component\HttpKernel\Controller\ControllerResolverInterface
-   *
-   * @deprecated
-   *   Using the 'controller_resolver' service as the first argument is
-   *   deprecated, use the 'http_kernel.controller.argument_resolver' instead.
-   *   If your subclass requires the 'controller_resolver' service add it as an
-   *   additional argument.
-   *
-   * @see https://www.drupal.org/node/2959408
-   */
-  protected $controllerResolver;
 
   /**
    * The request stack.
@@ -124,20 +107,12 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
   protected $account;
 
   /**
-   * The logger service.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
    * Constructs a \Drupal\Core\Menu\LocalTaskManager object.
    *
    * @param \Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface $argument_resolver
    *   An object to use in resolving route arguments.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
-   *   The request object to use for building titles and paths for plugin
-   *   instances.
+   *   The request object to use for building titles and paths for plugin instances.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
    * @param \Drupal\Core\Routing\RouteProviderInterface $route_provider
@@ -152,23 +127,16 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
    *   The access manager.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
-   *   The logger factory service.
    */
-  public function __construct(ArgumentResolverInterface $argument_resolver, RequestStack $request_stack, RouteMatchInterface $route_match, RouteProviderInterface $route_provider, ModuleHandlerInterface $module_handler, CacheBackendInterface $cache, LanguageManagerInterface $language_manager, AccessManagerInterface $access_manager, AccountInterface $account, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(ArgumentResolverInterface $argument_resolver, RequestStack $request_stack, RouteMatchInterface $route_match, RouteProviderInterface $route_provider, ModuleHandlerInterface $module_handler, CacheBackendInterface $cache, LanguageManagerInterface $language_manager, AccessManagerInterface $access_manager, AccountInterface $account) {
     $this->factory = new ContainerFactory($this, '\Drupal\Core\Menu\LocalTaskInterface');
     $this->argumentResolver = $argument_resolver;
-    if ($argument_resolver instanceof ControllerResolverInterface) {
-      @trigger_error("Using the 'controller_resolver' service as the first argument is deprecated, use the 'http_kernel.controller.argument_resolver' instead. If your subclass requires the 'controller_resolver' service add it as an additional argument. See https://www.drupal.org/node/2959408.", E_USER_DEPRECATED);
-      $this->controllerResolver = $argument_resolver;
-    }
     $this->requestStack = $request_stack;
     $this->routeMatch = $route_match;
     $this->routeProvider = $route_provider;
     $this->accessManager = $access_manager;
     $this->account = $account;
     $this->moduleHandler = $module_handler;
-    $this->logger = $logger_factory->get('menu');
     $this->alterInfo('local_tasks');
     $this->setCacheBackend($cache, 'local_task_plugins:' . $language_manager->getCurrentLanguage()->getId(), ['local_task']);
   }
@@ -249,10 +217,6 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
             // reference like &$task_info causes bugs.
             $definitions[$plugin_id]['base_route'] = $definitions[$task_info['parent_id']]['base_route'];
           }
-          if (!isset($task_info['route_name'])) {
-            $this->logger->error('Local task "@plugin" is missing a route name', ['@plugin' => $plugin_id]);
-            continue;
-          }
           if ($route_name == $task_info['route_name']) {
             if (!empty($task_info['base_route'])) {
               $base_routes[$task_info['base_route']] = $task_info['base_route'];
@@ -271,10 +235,6 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
           // Find all the plugins with the same root and that are at the top
           // level or that have a visible parent.
           foreach ($definitions as $plugin_id => $task_info) {
-            if (!isset($task_info['base_route'])) {
-              $this->logger->error('Local task "@plugin" is missing a base route', ['@plugin' => $plugin_id]);
-              continue;
-            }
             if (!empty($base_routes[$task_info['base_route']]) && (empty($task_info['parent_id']) || !empty($parents[$task_info['parent_id']]))) {
               // Concat '> ' with root ID for the parent of top-level tabs.
               $parent = empty($task_info['parent_id']) ? '> ' . $task_info['base_route'] : $task_info['parent_id'];
@@ -344,7 +304,7 @@ class LocalTaskManager extends DefaultPluginManager implements LocalTaskManagerI
     }
 
     foreach ($tree as $level => $instances) {
-      /** @var $instances \Drupal\Core\Menu\LocalTaskInterface[] */
+      /** @var \Drupal\Core\Menu\LocalTaskInterface[] $instances */
       foreach ($instances as $plugin_id => $child) {
         $route_name = $child->getRouteName();
         $route_parameters = $child->getRouteParameters($this->routeMatch);

@@ -63,7 +63,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $lastcomment = array('data' => t('Last Comment'), 'class' => 'last-comment-hdr');
     $header = array($earlywarnings, $date, $responses, $lastcomment);
     0
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
     $query->join('node__release_type', 'nrt', 'nfrs.field_release_service_value = nrt.entity_id');
@@ -95,7 +95,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $result = $paged_query->execute()->fetchAll();
 
     foreach($result as $vals) {
-    $user_query = db_select('cust_profile', 'cp');
+    $user_query = \Drupal::database()->select('cust_profile', 'cp');
     $user_query->condition('cp.uid', $vals->uid, '=')
     ->fields('cp', array('firstname', 'lastname'));
     $author = $user_query->execute()->fetchAll();
@@ -133,13 +133,13 @@ class HzdEarlyWarnings extends ControllerBase {
    * Get early warning responses info.
    */
   public function get_earlywarning_responses_info($earlywarnings_nid) {
-    $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid", array(":nid" => $earlywarnings_nid))->fetchField();
-    $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1", array(":eid" => $earlywarnings_nid))->fetchAll();
+    $total_responses = \Drupal::database()->query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid", array(":nid" => $earlywarnings_nid))->fetchField();
+    $resonses_sql = \Drupal::database()->query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1", array(":eid" => $earlywarnings_nid))->fetchAll();
     foreach ($resonses_sql as $vals) {
       $responses['uid'] = $vals->uid;
       $responses['last_posted'] = date('d.m.Y', $vals->created);
       if ($responses['last_posted']) {
-        $user_query = db_select('cust_profile', 'cp');
+        $user_query = \Drupal::database()->select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $vals->uid, '=')
           ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAll();
@@ -245,7 +245,7 @@ class HzdEarlyWarnings extends ControllerBase {
     } else {
       $default_type = null;
       if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-        $default_type = db_query("SELECT release_type FROM "
+        $default_type = \Drupal::database()->query("SELECT release_type FROM "
           . "{default_release_type} WHERE group_id = :gid",
           array(
             ":gid" => $group_id

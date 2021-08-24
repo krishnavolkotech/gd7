@@ -144,7 +144,7 @@ class ConditionGroup extends ConditionPluginBase implements ContainerFactoryPlug
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $container->get('block_visibility_groups.group_evaluator');
     return new static(
-      $container->get('entity.manager')->getStorage('block_visibility_group'),
+      $container->get('entity_type.manager')->getStorage('block_visibility_group'),
       $container->get('plugin.manager.condition'),
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('block_visibility_groups.group_evaluator'),

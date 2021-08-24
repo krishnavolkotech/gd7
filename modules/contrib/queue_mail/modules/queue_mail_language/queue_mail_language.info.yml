@@ -1,0 +1,12 @@
+name: Queue Mail Language
+type: module
+core_version_requirement: ^8 || ^9
+description: Adds language support for queued mails.
+package: Mail
+dependencies:
+  - drupal:language
+
+# Information added by Drupal.org packaging script on 2020-05-05
+version: '8.x-1.3'
+project: 'queue_mail'
+datestamp: 1588684758

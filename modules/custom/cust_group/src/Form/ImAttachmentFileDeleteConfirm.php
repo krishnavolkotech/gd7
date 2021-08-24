@@ -101,7 +101,7 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
         $node->save();
         $exposedFilterData = \Drupal::request()->query->all();
         $form_state->setRedirect('entity.node.canonical', ['node' => 826],['query' => $exposedFilterData]);
-        drupal_set_message('File was successfully deleted!');
+        \Drupal::messenger()->addMessage('File was successfully deleted!');
     }
 }
 

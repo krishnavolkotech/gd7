@@ -39,7 +39,7 @@ class HzdStorage {
    */
   static public function insert_import_status($status, $msg) {
     // Populate the node access table.
-    db_insert('problem_import_history')
+     \Drupal::database()->insert('problem_import_history')
       ->fields(array(
         'problem_date' => time(),
         'import_status' => $status,
@@ -47,7 +47,7 @@ class HzdStorage {
       ))
       ->execute();
     // $sql = "insert into {problem_import_history} (problem_date, import_status, error_message) values (%d, '%s', '%s') ";
-    // db_query($sql, time(), $status, $msg);.
+    //  \Drupal::database()->query($sql, time(), $status, $msg);.
   }
 
   /**
@@ -79,7 +79,7 @@ class HzdStorage {
           ->insert('group_problems_view')
           ->fields(array('group_id' => $group_id, 'service_id' => $service))
           ->execute();
-        // db_query($sql, $_SESSION['Group_id'], $service);.
+        //  \Drupal::database()->query($sql, $_SESSION['Group_id'], $service);.
       }
     }
     return $counter;
@@ -398,7 +398,7 @@ class HzdStorage {
       $header[7] = array('data' => t('Closed On'), 'class' => 'closed');
     }
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+    $tempstore = \Drupal::service('tempstore.private')->get('problem_management');
     $tempstore->set('problem_paginations', implode(',', $resultall));
 //        pr($header);exit;
 //        if ($rows) {

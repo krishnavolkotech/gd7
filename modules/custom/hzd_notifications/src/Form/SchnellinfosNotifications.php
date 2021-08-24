@@ -70,7 +70,7 @@ class SchnellinfosNotifications extends FormBase {
     $uid = $form_state->getValue('account');
     $default_send_interval = HzdNotificationsHelper::get_default_quickinfo_timeintervals($uid);
     //DELETE the previous default intervals for the submitted user
-    db_query("DELETE FROM {quickinfo_notifications_user_default_interval} where uid = :uid", array(":uid" => $uid));
+    \Drupal::database()->query("DELETE FROM {quickinfo_notifications_user_default_interval} where uid = :uid", array(":uid" => $uid));
 
     $options = \Drupal\field\Entity\FieldStorageConfig::loadByName('node','field_other_services')->getSetting('allowed_values');
     foreach($options as $content_key => $content) {
@@ -128,6 +128,6 @@ class SchnellinfosNotifications extends FormBase {
         }
       }
     }
-    drupal_set_message(t('Quickinfo subscriptions are inserted sucessfully'), 'status');
+    \Drupal::messenger()->addMessage(t('Quickinfo subscriptions are inserted sucessfully'), 'status');
   }
 }

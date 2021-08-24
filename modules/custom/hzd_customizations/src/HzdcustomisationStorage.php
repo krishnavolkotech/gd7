@@ -35,7 +35,7 @@ class HzdcustomisationStorage {
    * Change url alias when the path to problems or releases is changed.
    */
   static public function change_url_alias($dst_path = NULL, $src_path = NULL) {
-    // $result = db_query("SELECT nid,title FROM {node} where type = '%s'", 'group');.
+    // $result = \Drupal::database()->query("SELECT nid,title FROM {node} where type = '%s'", 'group');.
     $query = \Drupal::database()->select('node_field_data', 'n');
     $query->Fields('n', array('nid', 'title'));
     $query->condition('type', 'group', '=');
@@ -84,20 +84,20 @@ class HzdcustomisationStorage {
     $link = $values['documentation_link'];
     $values_date = $values['date'];
     
-    $service = strtolower(db_result(db_query("SELECT title FROM {node} where nid= %d", $values_service)));
-    $nid = db_result(db_query("SELECT nid FROM {node} where title = '%s' ", $values_title));
+    $service = strtolower(db_result(\Drupal::database()->query("SELECT title FROM {node} where nid= %d", $values_service)));
+    $nid = db_result(\Drupal::database()->query("SELECT nid FROM {node} where title = '%s' ", $values_title));
     
     // Create url alias.
-    $release_value_type = db_result(db_query("SELECT field_release_type_value
+    $release_value_type = db_result(\Drupal::database()->query("SELECT field_release_type_value
                                             FROM {content_type_release} WHERE nid = %d ", $nid));
     if ($release_value_type != 3) {
       $url_alias = create_url_alias($nid, $service, $values);
     }
     
-    $count_nid = db_result(db_query("SELECT count(*)
+    $count_nid = db_result(\Drupal::database()->query("SELECT count(*)
                                    FROM {release_doc_failed_download_info}
                                    WHERE nid = %d", $nid));
-    $field_release_type_value = db_result(db_query("SELECT field_release_type_value
+    $field_release_type_value = db_result(\Drupal::database()->query("SELECT field_release_type_value
                                                   FROM {content_type_release}
                                                   WHERE nid=%d", $nid));
     
@@ -162,7 +162,7 @@ class HzdcustomisationStorage {
             $username = variable_get('release_import_username', NULL);
             $password = variable_get('release_import_password', NULL);
             release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
-            $nid_count = db_result(db_query("SELECT count(*)
+            $nid_count = db_result(\Drupal::database()->query("SELECT count(*)
                                            FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));
             if ($nid_count == 3) {
               release_not_import_mail($nid);
@@ -205,7 +205,7 @@ class HzdcustomisationStorage {
         // droy: Create a URL alias for the new downtimes view
         // This is probably not the right place to do this so please move when you see this comment.
         if ($link_path == 'downtimes') {
-          // $group_path = db_result(db_query("select dst from url_alias where src = '%s'", "node/$gid"));.
+          // $group_path = db_result(\Drupal::database()->query("select dst from url_alias where src = '%s'", "node/$gid"));.
           $query = \Drupal::database()->select('url_alias', 'ua')
             ->Fields('ua', array('dst'))
             ->condition('source', "node/$gid", '=');
@@ -217,15 +217,13 @@ class HzdcustomisationStorage {
       else {
         // The item is present but it is in hidden state. so make the hidden value to 0. The $group_link contains mlid and also place the correct router_path and link_path for old groups.
         // check once the hidden value before updating.
-        // $hidden_value = db_result(db_query("SELECT hidden from {menu_links} WHERE mlid = %d", $group_link));.
+        // $hidden_value = db_result(\Drupal::database()->query("SELECT hidden from {menu_links} WHERE mlid = %d", $group_link));.
         $query = \Drupal::database()->select('menu_link_content_data', 'mlcd');
         $query->fields('mlcd', array('enabled'));
         $query->condition('id', $group_link, '=');
         $hidden_value = $query->execute()->fetchAssoc();
         if ($hidden_value['enabled'] == 0) {
           // droy: When hiding a menu entry, we only set hidden = 1. Why the need to update many more fields when unhiding?
-          // db_query("UPDATE {menu_links} set hidden = %d, link_path= '%s', router_path = '%s' WHERE mlid = %d", 0, "node/$gid/$link_path", "node/%/$link_path", $group_link);
-          // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 0, $group_link);.
           \Drupal::database()
             ->update('menu_link_content_data')
             ->fields(array('enabled' => 1))
@@ -240,7 +238,7 @@ class HzdcustomisationStorage {
     else {
       // All links were unset. So we need to make the menu item hidden.
       if ($group_link) {
-        // db_query("UPDATE {menu_links} set hidden = %d WHERE mlid = %d", 1, $group_link);.
+
         \Drupal::database()
           ->update('menu_link_content_data')
           ->fields(array('enabled' => 0))
@@ -405,7 +403,7 @@ class HzdcustomisationStorage {
     if ($nid) {
       foreach ($downtime_services as $val) {
         if (!array_key_exists($val, $service_names)) {
-          $service_title = db_query("SELECT title FROM {node_field_data} WHERE nid = $val")->fetchField();
+          $service_title = \Drupal::database()->query("SELECT title FROM {node_field_data} WHERE nid = $val")->fetchField();
           $sdata = self::get_service_data($val, $service_title);
           $c_data = trim($services[$val]) . "|<div class='service-tooltip' style='display:none' id = '" . $val . "'><img height=10 src = '/" . $img . "'></div><div class='service-profile-data service-profile-data-" . $nid . "' style='display:none'><div class='wrapper'><div class='service-profile-close' style='display:none' id='close-" . $nid . "'><a id='close-" . $nid . "'>Close</a></div>" . $sdata . "</div></div>";
           $service_names[$val] = $c_data;
@@ -631,7 +629,7 @@ class HzdcustomisationStorage {
     if (!$group->getMember($user)) {
       return FALSE;
     }
-    $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
+    $owner_state = \Drupal::database()->query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $user->id()))->fetchField();
 
     if (in_array(19, $content_state_id)) {
       return TRUE;
@@ -644,7 +642,7 @@ class HzdcustomisationStorage {
       $current_user_state_id = '';
     }
     // dsm(\Drupal\user\Entity\User::load($owner_id));
-    $owner_state = db_query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
+    $owner_state = \Drupal::database()->query('SELECT state_id FROM {cust_profile} WHERE uid = :id', array('id' => $owner_id))->fetchField();
     if ($owner_state) {
       $owner_state_id = $owner_state;
     }
@@ -946,7 +944,7 @@ class HzdcustomisationStorage {
       $startdate = ($client->startdate_planned ? date('d.m.Y H:i', $client->startdate_planned) . ' Uhr' : "unbekannt");
       if ($type == 'archived') {
         if (isset($client->cancelled) && $client->cancelled == 1) {
-                    $enddate_cancelled = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
+                    $enddate_cancelled = \Drupal::database()->query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
                     if (!empty($enddate_cancelled)) {
                         if (!empty($enddate_cancelled->end_date)) {
                             $enddate = date("d.m.Y H:i", $enddate_cancelled->end_date) . ' Uhr';
@@ -958,7 +956,7 @@ class HzdcustomisationStorage {
                     }
         }
         else {
-          $enddate_resolved = db_query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
+          $enddate_resolved = \Drupal::database()->query("select end_date,date_reported from {resolve_cancel_incident} where downtime_id = ?", array($client->downtime_id))->fetchObject();
           if (!empty($enddate_resolved)) {
             if (!empty($enddate_resolved->end_date)) {
               $enddate = date("d.m.Y H:i", $enddate_resolved->end_date) . ' Uhr';
@@ -975,8 +973,8 @@ class HzdcustomisationStorage {
       else {
         $enddate = ($client->enddate_planned ? date("d.m.Y H:i", $client->enddate_planned) . ' Uhr' : "");
       }
-      $reporter_uid = db_query("SELECT uid FROM {node_field_data} WHERE nid = $client->downtime_id")->fetchField();
-//      $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = $reporter_uid")->fetchField();
+      $reporter_uid = \Drupal::database()->query("SELECT uid FROM {node_field_data} WHERE nid = $client->downtime_id")->fetchField();
+
 //      $user_url = Url::fromUserInput('/user/' . $reporter_uid);
 //      $user_name = ($user->id() ? \Drupal::l($name, $user_url) : $name);
       
@@ -1071,7 +1069,7 @@ class HzdcustomisationStorage {
       }
 
 //            $query_seralized = serialize($query_params)
-      $downtime_type = db_query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
+      $downtime_type = \Drupal::database()->query("SELECT scheduled_p FROM {downtimes} WHERE downtime_id = $client->downtime_id")->fetchField();
       if ($downtime_type == 1) {
         if ($maintenance_edit && (INCIDENT_MANAGEMENT == $group_id) && $type != 'archived') {
           $links['action']['edit'] = [
@@ -1117,7 +1115,7 @@ class HzdcustomisationStorage {
       if (!$isPrintFormat) {
         $headersNew = array_merge($headersNew, ['action' => t('Action')]);
 //        $entity = Node::load($client->downtime_id);
-        $view_builder = \Drupal::entityManager()->getViewBuilder('node');
+        $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
         $links['action']['popup']['node'] = ['#type'=>'container','#attributes'=>['id' => [$client->downtime_id],'class'=>['downtime-popover-wrapper']]];
 //        $links['action']['popup']['node'][] = $view_builder->view($entity, 'popup', 'de');
         $links['action']['popup']['node'][] = [];
@@ -1347,7 +1345,7 @@ class HzdcustomisationStorage {
    * Display all non production lists.
    */
   static public function get_non_productions_list() {
-    // $non_productions_lists = db_query("SELECT n.nid, n.title,
+    // $non_productions_lists = \Drupal::database()->query("SELECT n.nid, n.title,
     //  ctn.field_non_production_state_value "
     //      . "FROM {node} n, {content_type_non_production_environment} ctn "
     //      . "WHERE n.nid = ctn.nid and type = '%s'", 'non_production_environment');

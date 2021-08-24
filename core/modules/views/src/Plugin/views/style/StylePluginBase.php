@@ -85,8 +85,6 @@ abstract class StylePluginBase extends PluginBase {
    *
    * @see \Drupal\views\Plugin\views\style\StylePluginBase::renderFields()
    * @see \Drupal\views\Plugin\views\style\StylePluginBase::getField()
-   * @see \Drupal\views\Plugin\views\style\StylePluginBase::getRenderedFields()
-   * @see \Drupal\views\Plugin\views\style\StylePluginBase::setRenderedFields()
    *
    * @var array|null
    */
@@ -248,7 +246,8 @@ abstract class StylePluginBase extends PluginBase {
   }
 
   /**
-   * Should the output of the style plugin be rendered even if it's a empty view.
+   * Should the output of the style plugin be rendered even if it's an empty
+   * view.
    */
   public function evenEmpty() {
     return !empty($this->definition['even empty']);
@@ -388,8 +387,14 @@ abstract class StylePluginBase extends PluginBase {
    *   The current state of the form.
    * @param string $type
    *   The display type, either block or page.
+   *
+   * @deprecated in drupal:9.2.0 and is removed from drupal:10.0.0. No direct
+   *   replacement is provided.
+   *
+   * @see https://www.drupal.org/node/3186502
    */
   public function wizardForm(&$form, FormStateInterface $form_state, $type) {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:9.2.0 and is removed from drupal:10.0.0. No direct replacement is provided. See https://www.drupal.org/node/3186502', E_USER_DEPRECATED);
   }
 
   /**
@@ -656,7 +661,7 @@ abstract class StylePluginBase extends PluginBase {
    * @param array $result
    *   The result array from $view->result
    */
-  public function renderFields(array $result) {
+  protected function renderFields(array $result) {
     if (!$this->usesFields()) {
       return;
     }
@@ -794,32 +799,6 @@ abstract class StylePluginBase extends PluginBase {
     if (isset($this->rendered_fields[$index][$field])) {
       return $this->rendered_fields[$index][$field];
     }
-  }
-
-  /**
-   * Gets all rendered fields.
-   *
-   * @return array|null
-   *   The output of all rendered fields, or NULL if it was empty.
-   */
-  public function getRenderedFields() {
-    return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
-  }
-
-  /**
-   * Sets a rendered field.
-   *
-   * @param $field_value
-   *   The modified value of the rendered field.
-   *
-   * @param $row_index
-   *   The index count of the row.
-   *
-   *  @param $field_name
-   *    The id of the rendered field.
-   */
-  public function setRenderedField($field_value, $row_index, $field_name) {
-    $this->rendered_fields[$row_index][$field_name] = $field_value;
   }
 
   /**

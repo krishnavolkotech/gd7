@@ -111,7 +111,7 @@ class HzdReleaseCommentsStorage {
       $responses['uid'] = $last_comment->uid->value;
       $responses['last_posted'] = date('d.m.Y', $last_comment->created->value);
       if ($responses['last_posted']) {
-        $user_query = db_select('cust_profile', 'cp');
+        $user_query = \Drupal::database()->select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $last_comment->getOwnerId(), '=')
           ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAssoc();
@@ -151,7 +151,7 @@ class HzdReleaseCommentsStorage {
     $release_comments_intro_text_nid = \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid');
     $body = NULL;
     if($release_comments_intro_text_nid) {
-      $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
+      $body = \Drupal::database()->query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
     }
     $output = "<div class = 'earlywarnings_text'>" . $body;
     $build['#markup'] = $output;

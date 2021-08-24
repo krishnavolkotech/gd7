@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Test module to support XmlRpcMessagesTest and XmlRpcValidatorTest.
@@ -33,13 +34,13 @@ function xmlrpc_test_array_of_structs_test(array $array) {
  *   A hash of the count of occurrences of escapes by type.
  */
 function xmlrpc_test_count_the_entities($string) {
-  return array(
+  return [
     'ctLeftAngleBrackets' => substr_count($string, '<'),
     'ctRightAngleBrackets' => substr_count($string, '>'),
     'ctAmpersands' => substr_count($string, '&'),
     'ctApostrophes' => substr_count($string, "'"),
     'ctQuotes' => substr_count($string, '"'),
-  );
+  ];
 }
 
 /**
@@ -89,14 +90,14 @@ function xmlrpc_test_echo_struct_test(array $array) {
  */
 function xmlrpc_test_many_types_test($number, $boolean, $string, $double, $date_time, $base64) {
   $timestamp = gmmktime($date_time->hour, $date_time->minute, $date_time->second, $date_time->month, $date_time->day, $date_time->year);
-  return array(
+  return [
     $number,
     $boolean,
     $string,
     $double,
     xmlrpc_date($timestamp),
     xmlrpc_Base64($base64),
-  );
+  ];
 }
 
 /**
@@ -135,11 +136,11 @@ function xmlrpc_test_nested_struct_test(array $array) {
  *   The incoming number, multiplied by 10, 100, 1000 as hash/struct values.
  */
 function xmlrpc_test_simple_struct_return_test($number) {
-  return array(
+  return [
     "times10" => ($number * 10),
     "times100" => ($number * 100),
     "times1000" => ($number * 1000),
-  );
+  ];
 }
 
 /**
@@ -201,7 +202,7 @@ function xmlrpc_test_xmlrpc_alter(&$services) {
  *   Generated message structure.
  */
 function xmlrpc_test_message_sized_in_kb($size) {
-  $message = array();
+  $message = [];
   $line = [];
 
   $word = 'abcdefg';

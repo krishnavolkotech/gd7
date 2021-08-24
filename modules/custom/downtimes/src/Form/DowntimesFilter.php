@@ -226,7 +226,7 @@ class DowntimesFilter extends FormBase
         }
         
         $sql = $select . $from . $where;
-      $services = db_query($sql)->fetchAllKeyed(1,0);
+      $services = \Drupal::database()->query($sql)->fetchAllKeyed(1,0);
 //        foreach ($services_obj as $services_data) {
 //            $services[$services_data->nid] = $services_data->title;
 //        }

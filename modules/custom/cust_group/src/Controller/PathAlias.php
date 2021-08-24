@@ -61,7 +61,7 @@ class PathAlias extends ControllerBase {
   }
 
   static function batchFinished($success, $results, $operations) {
-    drupal_set_message(t('Done.'));
+    \Drupal::messenger()->addMessage(t('Done.'));
   }
 
 }

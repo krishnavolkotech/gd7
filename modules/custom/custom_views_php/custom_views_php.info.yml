@@ -3,4 +3,4 @@ type: module
 description: Custom views field to include PHP logic in views.
 core: 8.x
 package: "HZD Custom"
-package: Other
+
