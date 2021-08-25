@@ -67,7 +67,7 @@ abstract class AccountForm extends ContentEntityForm implements TrustedCallbackI
     $user = $this->currentUser();
     $config = \Drupal::config('user.settings');
     $form['#cache']['tags'] = $config->getCacheTags();
-
+    $admin = $user->hasPermission('administer users');
     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
     // Check for new account.
@@ -115,7 +115,7 @@ abstract class AccountForm extends ContentEntityForm implements TrustedCallbackI
         'spellcheck' => 'false',
       ],
       '#default_value' => (!$register ? $account->getAccountName() : ''),
-      '#access' => $account->name->access('edit'),
+      '#access' => ($register || ($user->id() == $account->id() && $user->hasPermission('change own username')) || $admin),
     ];
 
     // Display password field only for existing users or when user is allowed to

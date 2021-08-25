@@ -1,0 +1,13 @@
+diff --git a/core/modules/views/src/Plugin/views/style/StylePluginBase.php b/core/modules/views/src/Plugin/views/style/StylePluginBase.php
+index a7b1917..be7c449 100644
+--- a/core/modules/views/src/Plugin/views/style/StylePluginBase.php
++++ b/core/modules/views/src/Plugin/views/style/StylePluginBase.php
+@@ -651,7 +651,7 @@ public function renderGrouping($records, $groupings = array(), $group_rendered =
+    * @param array $result
+    *   The result array from $view->result
+    */
+-  protected function renderFields(array $result) {
++  public function renderFields(array $result) {
+     if (!$this->usesFields()) {
+       return;
+     }
