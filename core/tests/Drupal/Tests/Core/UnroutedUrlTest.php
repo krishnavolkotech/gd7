@@ -124,6 +124,7 @@ class UnroutedUrlTest extends UnitTestCase {
       // Disallowed characters in the authority (host name) that are valid
       // elsewhere in the path.
       ['base://(:;2&+h^'],
+      ['base://AKI@&hO@'],
     ];
   }
 

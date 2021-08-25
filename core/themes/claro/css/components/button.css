@@ -187,6 +187,7 @@ a.button--danger:active {
 
 .button.is-disabled {
   -webkit-user-select: none;
+  -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   pointer-events: none;
