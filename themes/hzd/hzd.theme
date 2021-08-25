@@ -1636,6 +1636,7 @@ function hzd_preprocess_input(&$variables) {
 
   if (!in_array('site_administrator', $current_user->getRoles())) {
     $element = $variables['element'];
+    if (isset($element['#id'])) {
     if ($element['#id'] == 'edit-path-0-alias') {
       $current_path = \Drupal::service('path.current')->getPath();
       $route_match = \Drupal::routeMatch();
@@ -1659,6 +1660,7 @@ function hzd_preprocess_input(&$variables) {
          $variables['group_name'] = "/" . ltrim($group_alias, '/');
       }
       
+    }
     }
     
   }
