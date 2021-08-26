@@ -170,10 +170,13 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
       '#group' => 'advanced',
       '#weight' => 33
     );
+    $form['notification']['node_notification_checkbox'] = send_notification_form_element();
+    /*
     $form['notification']['node_notification_checkbox'] = array(
       '#type' => 'checkbox',
       '#title' => t('Do not send notifications for this update.'),
     );
+    */
     $form['actions']['#weight'] = 34;
   }
   if (\Drupal::currentUser()->hasPermission('administer group') || $group->hasPermission('administer group',\Drupal::currentUser())) {
@@ -346,10 +349,8 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
           //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
           //'#group' => 'advanced',
         );
-        $form['notification']['node_notification_checkbox'] = array(
-          '#type' => 'checkbox',
-          '#title' => t('Do not send notifications for this update.'),
-        );
+	$notification_element = send_notification_form_element();
+        $form['notification']['node_notification_checkbox'] = $notification_element;
       }
       else {
         if ((CustNodeController::isGroupAdmin($group_id) == TRUE) && in_array($form_id, $for_groupadmin_formids)) {
@@ -360,10 +361,7 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
             //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
             //'#group' => 'advanced',
           );
-          $form['notification']['node_notification_checkbox'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Do not send notifications for this update.'),
-          );
+          $form['notification']['node_notification_checkbox'] = send_notification_form_element();
         }
         else {
             //if (($group->getMember($current_user) && $group->getMember($current_user)->getGroupContent()->get('request_status')->value == 1) && in_array($form_id, $for_groupmemeber_formids)) {
@@ -375,10 +373,7 @@ function hzd_notifications_form_node_form_alter(&$form, \Drupal\Core\Form\FormSt
               //'#open' => FALSE, // Controls the HTML5 'open' attribute. Defaults to FALSE.
               //'#group' => 'advanced',
             );
-            $form['notification']['node_notification_checkbox'] = array(
-              '#type' => 'checkbox',
-              '#title' => t('Do not send notifications for this update.'),
-            );
+            $form['notification']['node_notification_checkbox'] = send_notification_form_element();
           }
         }
       }
@@ -1018,4 +1013,14 @@ function cust_group_entity_delete(EntityInterface $entity) {
       }
     }
   }
+}
+
+function send_notification_form_element() {
+  $element = array(
+    '#type' => 'radios',
+    '#options' => [1 => t('Yes'), 0 => t('No')],
+    '#required' => TRUE,
+    '#title' => t('Do not send notifications for this update.'),
+  );
+  return $element;
 }

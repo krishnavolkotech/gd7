@@ -4,56 +4,59 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - group
-    - node
     - comment
-    - cust_group
+    - node
+    - group
     - file
     - filefield_paths
+    - cust_group
     - search_api
-    - hzd_customizations
     - downtimes
+    - hzd_customizations
   config:
-    - field.storage.node.body
-    - field.storage.node.field_abnormality_description
-    - field.storage.node.field_attachment
-    - field.storage.node.field_author_name
+    - field.storage.comment.comment_body
+    - field.storage.group.field_description
+    - field.storage.group.field_einfuehrung
+    - field.storage.group.field_group_body
+    - field.storage.node.field_custom_title
+    - field.storage.node.field_related_transfer_number
+    - field.storage.node.field_other_services
+    - field.storage.node.field_recipients
+    - field.storage.node.field_intial_situation
+    - field.storage.node.field_professional_conditions
+    - field.storage.node.field_tech_requirements
+    - field.storage.node.field_depend_other_services
     - field.storage.node.field_business_impact
+    - field.storage.node.field_technical_impact
     - field.storage.node.field_business_impact_services
+    - field.storage.node.field_technical_impact_services
+    - field.storage.node.field_special_notes
+    - field.storage.node.field_dates
+    - field.storage.node.field_creators
+    - field.storage.node.field_contact
+    - field.storage.node.field_abnormality_description
     - field.storage.node.field_closed
     - field.storage.node.field_comments
-    - field.storage.node.field_contact
-    - field.storage.node.field_creators
-    - field.storage.node.field_custom_title
-    - field.storage.node.field_dates
-    - field.storage.node.field_depend_other_services
+    - field.storage.node.field_eroffnet
+    - field.storage.node.field_attachment
+    - field.storage.node.field_page_files
+    - field.storage.node.field_im_upload_page_files
     - field.storage.node.field_detailed_question
     - field.storage.node.field_diagnose
-    - field.storage.node.field_eroffnet
-    - field.storage.node.field_intial_situation
-    - field.storage.node.field_other_services
+    - field.storage.node.field_processing
     - field.storage.node.field_problem_name
+    - field.storage.node.field_release_name
     - field.storage.node.field_problem_status
     - field.storage.node.field_problem_symptoms
-    - field.storage.node.field_processing
-    - field.storage.node.field_professional_conditions
-    - field.storage.node.field_recipients
-    - field.storage.node.field_related_transfer_number
-    - field.storage.node.field_release_name
-    - field.storage.node.field_release_service
     - field.storage.node.field_solution
-    - field.storage.node.field_special_notes
     - field.storage.node.field_task_force
-    - field.storage.node.field_tech_requirements
-    - field.storage.node.field_technical_impact
-    - field.storage.node.field_technical_impact_services
-    - field.storage.node.field_work_around
-    - field.storage.node.upload
+    - field.storage.node.body
     - field.storage.node.field_upload_planning_file
+    - field.storage.node.upload
     - field.storage.node.field_upload
-    - field.storage.node.field_im_upload_page_files
-    - field.storage.node.field_page_files
-    - field.storage.comment.comment_body
+    - field.storage.node.field_release_service
+    - field.storage.node.field_author_name
+    - field.storage.node.field_work_around
     - search_api.server.solr_bpk_migration
 third_party_settings:
   search_api_solr:
@@ -89,11 +92,13 @@ third_party_settings:
       maxntp: 2000
       boost: false
       interestingTerms: none
-    advanced:
-      index_prefix: ''
     term_modifiers:
       slop: 10000000
       fuzzy: 2
+    advanced:
+      index_prefix: ''
+      collection: ''
+      timezone: ''
 id: hzd_solr_index
 name: 'Solr Index Produktion'
 description: ''
@@ -314,6 +319,14 @@ field_settings:
         - node
       config:
         - field.storage.node.field_depend_other_services
+  field_description:
+    label: Description
+    datasource_id: 'entity:group'
+    property_path: field_description
+    type: text
+    dependencies:
+      config:
+        - field.storage.group.field_description
   field_detailed_question:
     label: 'Inhalt » Inhalt » Detailed Question'
     datasource_id: 'entity:group_content'
@@ -336,6 +349,14 @@ field_settings:
         - node
       config:
         - field.storage.node.field_diagnose
+  field_einfuehrung:
+    label: Einfuehrung
+    datasource_id: 'entity:group'
+    property_path: field_einfuehrung
+    type: text
+    dependencies:
+      config:
+        - field.storage.group.field_einfuehrung
   field_eroffnet:
     label: 'Inhalt » Inhalt » Created'
     datasource_id: 'entity:group_content'
@@ -347,6 +368,14 @@ field_settings:
         - node
       config:
         - field.storage.node.field_eroffnet
+  field_group_body:
+    label: 'Group Body'
+    datasource_id: 'entity:group'
+    property_path: field_group_body
+    type: text
+    dependencies:
+      config:
+        - field.storage.group.field_group_body
   field_intial_situation:
     label: 'Inhalt » Inhalt » 2.1 Ausgangslage'
     datasource_id: 'entity:group_content'
@@ -636,6 +665,14 @@ field_settings:
         - group
         - group
         - group
+  label_1:
+    label: Title
+    datasource_id: 'entity:group'
+    property_path: label
+    type: text
+    dependencies:
+      module:
+        - group
   nid:
     label: NID
     datasource_id: 'entity:node'
@@ -670,7 +707,7 @@ field_settings:
     property_path: sort_datasources_result
     type: string
   status:
-    label: null
+    label: status
     datasource_id: 'entity:comment'
     property_path: status
     type: boolean
@@ -678,7 +715,7 @@ field_settings:
       module:
         - comment
   status_1:
-    label: null
+    label: status_1
     datasource_id: 'entity:node'
     property_path: status
     type: boolean
@@ -768,7 +805,7 @@ field_settings:
         - node
         - node
   uid_1:
-    label: null
+    label: uid_1
     datasource_id: 'entity:node'
     property_path: uid
     type: integer
@@ -821,7 +858,8 @@ datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected: {  }
+      selected:
+        - group
     languages:
       default: true
       selected: {  }
