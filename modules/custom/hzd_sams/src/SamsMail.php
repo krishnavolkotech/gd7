@@ -4,7 +4,7 @@ namespace Drupal\hzd_sams;
 
 use Drupal\user\Entity\User;
 use Drupal\group\Entity\Group;
-
+use Drupal\Core\Url;
 class SamsMail {
   
   protected $xmlData;
@@ -35,54 +35,50 @@ class SamsMail {
         'Event',
         'Name',
         'Checksum',
-        // 'CreatedBy',
-        // 'RepoKey',
         'Pfad',
-        'Verschoben nach'
+        'Verschoben/Kopiert nach'
       );
       $render['mail']['#rows'] = []; 
       $count = 0;
       foreach ($this->xmlData->artifact as $xml) {
         if ($this->checkAbo($subscriber, $xml)) {
+          $fullPath = $xml->repopath ? $xml->repopath : $xml->sourceRepopath;
+          $explodedPath = explode("/", $fullPath);
+          array_pop($explodedPath);
+          $folderPath = implode("/", $explodedPath);
+
+          $targetFolderPath = '';
+          if ($xml->targetRepopath) {
+            $explodedPath = explode("/", $xml->targetRepopath);
+            array_pop($explodedPath);
+            $targetFolderPath = implode("/", $explodedPath);
+          }
+          // Event.
           $row[] = $xml->eventValue;
+          // Name.
           $row[] = $xml->name;
+          // Checksum.
           $row[] = $xml->id;
-          // $row[] = reset($xml->createdBy);
-          // $row[] = reset($xml->repoKey);
-          $row[] = $xml->repopath ? $xml->repopath : $xml->sourceRepopath;
-          $row[] = $xml->targetRepopath;
+          // Pfade.
+          switch ($xml->eventValue) {
+            case 'deleted':
+              $row[] = $folderPath;
+              $row[] = '';
+              break;
+            case 'copied':
+            case 'moved':
+              $row[] = $folderPath;
+              $row[] = $this->getDownloadLink($xml->targetRepopath);
+              break;
+            default:
+              $row[] = $this->getDownloadLink($fullPath);
+              $row[] = $targetFolderPath;
+          }
           $count++;
           $render['mail']['#rows'][] = $row;
           $row = array();
         }
-    }
-      // @todo Downloadlink in Email bauen
-      // Code aus HzdSamsStorage f�r Bauen von Donwloadlink in Mail analog zu Donwloadlink in Tabelle
-      // Anpassung schon gegonnen
-      // foreach ($pageRows as $key => $row) {
-      // /* Downloadlink bauen */
-      // unset($link);
-      // $link = '';
-      // if ($xml->eventValue == "publish"){
-      // $urlpath = 'https://sams-konsens-tst.hessen.doi-de.net/artifactory/'
-             // . $xml->repopath;
-      // }
-       // if ($xml->eventValue == "move"){
-      // $urlpath = 'https://sams-konsens-tst.hessen.doi-de.net/artifactory/'
-             // . $xml->targetRepopath;
-      // }
-      // $url = Url::fromUri($urlpath);
-      // $download_link = array('#title' => array('#markup' => $download //hier muss statt dem Downloadikon der Text aus xml hin), '#type' => 'link', '#url' => $url);
-      // $link_path = \Drupal::service('renderer')->renderRoot($download_link);
-      // $link = t('@link_path @link', array(
-          // '@link_path' => $link_path,
-          // '@link' => $link
-              // )
-        // );
-      // $pageRows[$key]['download'] = $link;
-      // foreach ($render as $row) {
-        // echo $row;
-      // }
+      }
       $user = User::load($subscriber);
       $render['result']['abo']['#rows'][] = [$user->getEmail(), $count];
       if (count($render['mail']['#rows']) > 0) {
@@ -98,6 +94,36 @@ class SamsMail {
     return $render['result'];
   }
   
+  /**
+   * Generates the download link from the repository path.
+   * 
+   * @param string $path
+   *   The repository path.
+   * 
+   * @return Drupal\Core\Render\Markup $link
+   *   The rendered download link.
+   */
+  private function getDownloadLink(string $path) {
+    // Cut link-text from repo path.
+    $explodedPath = explode("/", $path);
+    array_pop($explodedPath);
+    $linkText = implode("/", $explodedPath);
+
+    // Create the rendered link.
+    $urlPath = 'https://sams-konsens.hessen.doi-de.net/artifactory/' . $path;
+    $url = Url::fromUri($urlPath);
+    $download_link = [
+      '#title' => $linkText,
+      '#type' => 'link', 
+      '#url' => $url,
+    ];
+    $link_path = \Drupal::service('renderer')->renderRoot($download_link);
+    return $link_path;
+  }
+
+  /**
+   * Reads and archives the sams.xml file. Stores the data in $this->xmlData.
+   */
   private function readXml() {
     if (file_exists('../imports/sams/sams.xml')) {
       $xml = simplexml_load_file('../imports/sams/sams.xml');
@@ -183,7 +209,7 @@ class SamsMail {
     $params['subject'] = "[SAMS KONSENS] Information über neue Events "; 
     // kint($render['mail']);
     $params['message'] = \Drupal::service('renderer')->render($render['mail']);
-    //echo $params['message'];exit; // Kommentar entfernen, um nur Mailbody anzuschauen.
+    // echo $params['message'];exit; // Kommentar entfernen, um nur Mailbody anzuschauen.
     $send = True;
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
