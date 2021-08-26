@@ -1133,7 +1133,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{{ group_roles }}\r\n{{ comment_release_status }}"
+            text: '{{ group_roles }}{% if comment_release_status %}{% if group_roles %}, {% endif %}{{ comment_release_status }} {% endif %}'
             make_link: false
             path: ''
             absolute: false

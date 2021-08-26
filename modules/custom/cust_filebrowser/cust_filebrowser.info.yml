@@ -1,0 +1,9 @@
+name: Custom Filebrowser
+type: module
+description: Provides compatibility for the group module.
+package: HZD
+core: 8.x
+dependencies:
+  - filebrowser
+  - group
+  - gnode

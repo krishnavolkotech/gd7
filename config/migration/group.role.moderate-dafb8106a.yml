@@ -14,4 +14,5 @@ internal: true
 audience: member
 group_type: moderate
 permissions_ui: true
-permissions: {  }
+permissions:
+  - 'view group_node:dir_listing entity'

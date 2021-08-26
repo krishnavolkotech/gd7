@@ -37,11 +37,15 @@ hzd_release_management.release_management_release_tab:
   base_route: hzd_release_management.released
   weight: 0
 
-hzd_release_management.release_management_archived_tab:
-  title: Archived (DSL)
-  route_name: hzd_release_management.archived
-  base_route: hzd_release_management.released
-  weight: 1
+# 02.07.2021 - Robin Schomburg
+# Archivierte Releases nicht mehr von Relevanz. Ansicht enthält auch Releases,
+# die älter als 5 Jahre sind und damit in der DSL möglicherweise schon gelöscht 
+# wurden.
+# hzd_release_management.release_management_archived_tab:
+#   title: Archived (DSL)
+#   route_name: hzd_release_management.archived
+#   base_route: hzd_release_management.released
+#   weight: 1
   
 hzd_release_management.release_management_progress_tab:
   title: In Progress

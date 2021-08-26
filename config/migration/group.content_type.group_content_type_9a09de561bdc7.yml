@@ -1,0 +1,19 @@
+uuid: 807bb4cf-2d72-40fb-896d-cc6689b96d47
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed_private
+    - node.type.dir_listing
+  module:
+    - gnode
+    - node
+id: group_content_type_9a09de561bdc7
+label: 'Geschlossen Privat: Gruppeninhalt (Directory listing)'
+description: '<em class="placeholder">Directory listing</em> in der Gruppe erstellen'
+group_type: closed_private
+content_plugin: 'group_node:dir_listing'
+plugin_config:
+  group_cardinality: 1
+  entity_cardinality: 1
+  use_creation_wizard: false
