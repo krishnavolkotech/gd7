@@ -7,6 +7,7 @@ dependencies:
     - field.field.comment.comment_no_subject.comment_body
     - field.field.comment.comment_no_subject.field_do_not_send_notifications
   module:
+    - cust_group
     - field_group
     - text
 third_party_settings:
@@ -23,6 +24,7 @@ third_party_settings:
         classes: ''
         id: ''
         required_fields: true
+      region: hidden
 id: comment.comment_no_subject.default
 targetEntityType: comment
 bundle: comment_no_subject
@@ -42,11 +44,12 @@ content:
     third_party_settings: {  }
     region: content
   field_do_not_send_notifications:
-    type: boolean_checkbox
+    type: options_buttons
     weight: 0
-    settings:
-      display_label: true
-    third_party_settings: {  }
+    settings: {  }
+    third_party_settings:
+      cust_group:
+        group_files: 0
     region: content
 hidden:
   langcode: true

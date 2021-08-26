@@ -1348,6 +1348,9 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:node/type":
             $result['type'] = $contentTypes[$val[0]];
           break;
+	  case "entity:group/label":
+            $result['center'] = $val[0];
+          break;
           case "entity:group_content/gid:entity:label":
             $result['center'] = $val[0];
           break;
@@ -1376,6 +1379,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
             $result['body'] = $out;
           break;
           case "entity:group_content/entity_id:entity:body":
+	  case "entity:group/field_group_body":
           case "entity:node/body":
             // $body = $val[0]->getText();
             $body = $val[0];
@@ -1388,26 +1392,43 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:group_content/entity_id":
             $result['entity'] = $val[0]->getText();
           break;
+	  case "entity:group/_object":
+	    $group_entity = $val[0]->getValue('entity');
+	    if(isset($group_entity)) {
+              $result['gid'] = $group_entity->id();
+  	      $result['entity'] = $group_entity->id();
+   	      $result['title'] = $group_entity->get('label')->getValue()[0]['value'];
+	      $result['type'] = $group_entity->getEntityTypeId();
+              $result['changed'] = date('d.m.Y', $group_entity->getChangedTime());
+            }
+          break;
         }
-
+	
         if (isset($result['gid']) && isset($result['center'])) {
           $result['group_link'] = Link::createFromRoute($result['center'], 'entity.group.canonical', ['group' => $result['gid']])->toString();
         }
 
         if (isset($result['entity']) && isset($result['title'])) {
-          $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+	  if ($result['type'] == 'group') {
+	    $result['node_link'] = Link::createFromRoute($result['title'], 'entity.group.canonical', ['group' => $result['entity']])->toString();
+	  }
+	  else {
+            $result['node_link'] = Link::createFromRoute($result['title'], 'entity.node.canonical', ['node' => $result['entity']])->toString();
+          }
         }
 
       }
-      if (count($result) > 0 && isset($result['node_link'])) {
+
+     if (count($result) > 0 && isset($result['node_link'])) {
         if ($result['type'] != 'Kommentar' && $result['type'] != 'Meldung' && !isset($result['group_link'])) {
         }
         else {
-          $data[] = $result;
+	  $data[] = $result;
         }
       }
     }
   }
+
   $variables['results'] = $data;
 
   $primary_menus = load_primary_menus();
@@ -1613,4 +1634,40 @@ function get_menu_items($menu_name) {
   $menu = $menu_tree->build($tree);
 
   return $menu;
+}
+
+function hzd_preprocess_input(&$variables) {
+  $current_user = \Drupal::currentUser();
+  $roles = $current_user->getRoles();
+
+  if (!in_array('site_administrator', $current_user->getRoles())) {
+    $element = $variables['element'];
+    if (isset($element['#id'])) {
+    if ($element['#id'] == 'edit-path-0-alias') {
+      $current_path = \Drupal::service('path.current')->getPath();
+      $route_match = \Drupal::routeMatch();
+      $gid = $route_match->getRawParameters()->get('group');
+
+      $group_alias = '';
+      if ($gid) {
+         $group_alias = get_group_node_alias($gid);
+      }  
+
+      $node =  \Drupal::routeMatch()->getParameter('node');
+
+      if ($node) {
+        $token_type = \Drupal::service('token.entity_mapper');
+        $data = ['node' => $node,];
+        $token = Drupal::token();
+        $group_alias = $token->replace('[node:group_raw]', $data);
+      }
+      $variables['group_name'] = '';
+      if ($group_alias) {
+         $variables['group_name'] = "/" . ltrim($group_alias, '/');
+      }
+      
+    }
+    }
+    
+  }
 }

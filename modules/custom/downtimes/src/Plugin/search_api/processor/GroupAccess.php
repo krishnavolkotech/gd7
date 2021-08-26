@@ -48,7 +48,16 @@ class GroupAccess extends ProcessorPluginBase {
       $group = $groupMembership->getGroup();
       $userGroups[] = $group->id();
     }
-    $query->addCondition('gid', $userGroups, 'IN');
+    $text = $query->getKeys();
+    $val = isset($text[0])?$text[0]:'';
+    $conditions = $query->createConditionGroup('OR');
+    $conditions->addCondition('gid', $userGroups, 'IN')
+      ->addCondition('field_group_body', db_like($val) . '%', 'LIKE')
+      ->addCondition('label_1', db_like($val) . '%', 'LIKE')
+      ->addCondition('field_einfuehrung', db_like($val) . '%', 'LIKE')
+      ->addCondition('field_description', db_like($val) . '%', 'LIKE');
+    $query->addConditionGroup($conditions);
+//    dump($query->getKeys());
 //    pr($userGroups);exit;
   }
   
