@@ -1630,6 +1630,7 @@ span.field-content::first-letter {
 .cust-filebrowser-actions .btn-danger:hover {
   color: #fff !important;
   background-color: #c9302c !important;
+}
 
 .left {
     float: left;
