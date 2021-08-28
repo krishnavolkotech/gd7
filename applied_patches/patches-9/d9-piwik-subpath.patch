@@ -1,0 +1,39 @@
+diff --git a/modules/contrib/piwik/piwik.module b/modules/contrib/piwik/piwik.module
+index 18dd4b3e5..b27cbf428 100644
+--- a/modules/contrib/piwik/piwik.module
++++ b/modules/contrib/piwik/piwik.module
+@@ -649,7 +649,7 @@ function _piwik_visibility_pages() {
+       if ($visibility_request_path_mode < 2) {
+         // Compare the lowercase path alias (if any) and internal path.
+         $path = \Drupal::service('path.current')->getPath();
+-        $path_alias = Unicode::strtolower(\Drupal::service('path.alias_manager')->getAliasByPath($path));
++        $path_alias = Unicode::strtolower(\Drupal::service('path_alias.manager')->getAliasByPath($path));
+         $page_match = \Drupal::service('path.matcher')->matchPath($path_alias, $pages) || (($path != $path_alias) && \Drupal::service('path.matcher')->matchPath($path, $pages));
+         // When $visibility_request_path_mode has a value of 0, the tracking
+         // code is displayed on all pages except those listed in $pages. When
+diff --git a/modules/contrib/subpathauto/tests/src/Functional/SubPathautoFunctionalTest.php b/modules/contrib/subpathauto/tests/src/Functional/SubPathautoFunctionalTest.php
+index 1b92606ea..a291d2a49 100644
+--- a/modules/contrib/subpathauto/tests/src/Functional/SubPathautoFunctionalTest.php
++++ b/modules/contrib/subpathauto/tests/src/Functional/SubPathautoFunctionalTest.php
+@@ -55,7 +55,7 @@ public function setUp() {
+     ]);
+     $path_alias->save();
+ 
+-    $alias_white_list = $this->container->get('path.alias_whitelist');
++    $alias_white_list = $this->container->get('path_alias.whitelist');
+     $alias_white_list->set('node', TRUE);
+ 
+     $admin_user = $this->drupalCreateUser([
+diff --git a/modules/contrib/subpathauto/tests/src/Kernel/SubPathautoKernelTest.php b/modules/contrib/subpathauto/tests/src/Kernel/SubPathautoKernelTest.php
+index f6db606c6..ec12e9d79 100644
+--- a/modules/contrib/subpathauto/tests/src/Kernel/SubPathautoKernelTest.php
++++ b/modules/contrib/subpathauto/tests/src/Kernel/SubPathautoKernelTest.php
+@@ -62,7 +62,7 @@ protected function setUp() {
+     $type->save();
+ 
+     $this->sut = $this->container->get('path_processor_subpathauto');
+-    $this->aliasWhiteList = $this->container->get('path.alias_whitelist');
++    $this->aliasWhiteList = $this->container->get('path_alias.whitelist');
+ 
+     Node::create(['type' => 'page', 'title' => 'test'])->save();
+ 

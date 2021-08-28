@@ -1190,7 +1190,7 @@ function hzd_getmenucontent_menuid($node) {
     $result = $query->execute();
     $id = (!empty($result)) ? reset($result) : FALSE;
     if (!$id) {
-      $urlalias = \Drupal::service('path.alias_manager')
+      $urlalias = \Drupal::service('path_alias.manager')
         ->getAliasByPath('/node/' . $node->id());
 
       $query = \Drupal::entityQuery('menu_link_content')
