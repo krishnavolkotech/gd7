@@ -250,8 +250,8 @@ function gforum_preprocess_forums(&$variables) {
 function gforum_container_groups($root_tid) {
 
   // Make sure there is at least one Group type.
-  $group_types = entity_get_bundles('group');
-
+  //$group_types = entity_get_bundles('group');
+  $group_types = \Drupal::service('entity_type.bundle.info')->getBundleInfo('group');
   if (empty($group_types)) {
 
     $roles = \Drupal::currentUser()->getRoles();
