@@ -700,8 +700,7 @@ class ModuleHandler implements ModuleHandlerInterface {
   public function getModuleDirectories() {
     $dirs = [];
     foreach ($this->getModuleList() as $name => $module) {
-    if ($module)
-     $dirs[$name] = $this->root . '/' . $module->getPath();
+      $dirs[$name] = $this->root . '/' . $module->getPath();
     }
     return $dirs;
   }

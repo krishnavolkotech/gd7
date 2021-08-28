@@ -128,10 +128,7 @@ class Container implements ContainerInterface, ResetInterface {
    * {@inheritdoc}
    */
   public function get($id, $invalid_behavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE) {
-   if ($id == 'path.alias_manager') {
-     $id = 'path_alias.manager';
-   }
-   if ($this->hasParameter('_deprecated_service_list')) {
+    if ($this->hasParameter('_deprecated_service_list')) {
       if ($deprecation = $this->getParameter('_deprecated_service_list')[$id] ?? '') {
         @trigger_error($deprecation, E_USER_DEPRECATED);
       }
@@ -155,6 +152,7 @@ class Container implements ContainerInterface, ResetInterface {
       if (!$id) {
         throw new ServiceNotFoundException('');
       }
+
       throw new ServiceNotFoundException($id, NULL, NULL, $this->getServiceAlternatives($id));
     }
 

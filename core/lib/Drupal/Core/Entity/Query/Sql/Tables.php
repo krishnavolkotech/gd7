@@ -352,9 +352,6 @@ class Tables implements TablesInterface {
    */
   protected function ensureEntityTable($index_prefix, $property, $type, $langcode, $base_table, $id_field, $entity_tables) {
     foreach ($entity_tables as $table => $mapping) {
-    if (!isset($mapping['default_langcode'])) {
-$mapping['default_langcode'] = 10;
-    }  
       if (isset($mapping[$property])) {
         // Ensure a table joined multiple times through different index prefixes
         // has unique entityTables entries by concatenating the index prefix

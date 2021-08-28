@@ -94,9 +94,9 @@ class Query extends QueryBase implements QueryInterface {
    */
   protected function prepare() {
     if ($this->allRevisions) {
-      //if (!$base_table = $this->entityType->getRevisionTable()) {
-       // throw new QueryException("No revision table for " . $this->entityTypeId . ", invalid query.");
-     // }
+      if (!$base_table = $this->entityType->getRevisionTable()) {
+        throw new QueryException("No revision table for " . $this->entityTypeId . ", invalid query.");
+      }
     }
     else {
       if (!$base_table = $this->entityType->getBaseTable()) {

@@ -31,11 +31,9 @@ class FilesystemLoader extends TwigFilesystemLoader {
     // Add namespaced paths for modules and themes.
     $namespaces = [];
     foreach ($module_handler->getModuleList() as $name => $extension) {
-      if ($extension)
       $namespaces[$name] = $extension->getPath();
     }
     foreach ($theme_handler->listInfo() as $name => $extension) {
-          if ($extension)
       $namespaces[$name] = $extension->getPath();
     }
 
