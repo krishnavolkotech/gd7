@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
@@ -9,16 +9,20 @@ export default function EinsatzmeldungsFormular(props) {
   const [release, setRelease] = useState(false);
   const [date, setDate] = useState(false);
   const [installationTime, setInstallationTime] = useState(false);
-  const [isArchived, setIsArchived] = useState(false);
+  const [archive, setArchive] = useState(false);
   const [isAutomated, setIsAutomated] = useState(false);
   const [abnormalities, setAbnormalities] = useState(false);
   const [description, setDescription] = useState("");
-  const [archivePrevRelease, setArchivePrevRelease] = useState(false);
+  const [archivePrevRelease, setArchivePrevRelease] = useState('null');
   // Für SelectRelease Komponente. Die nicht-eingesetzten Releases.
   const [newReleases, setNewReleases] = useState([]);
   // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
   const [prevReleases, setPrevReleases] = useState([]);
   const [disabledPrevRelease, setDisabledPrevRelease] = useState(true);
+  const [disableSubmit, setDisableSubmit] = useState(false);
+  const [validateMessage, setValidateMessage] = useState([]);
+  const [radioValue, setRadioValue] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState(false);
 
 
   // console.log(
@@ -35,14 +39,14 @@ export default function EinsatzmeldungsFormular(props) {
   //   "\n Installationsdauer: ",
   //   installationTime,
   //   "\n Ist Archiviert: ",
-  //   isArchived,
+  //   archive,
   //   "\n Ist Automatisch: ",
   //   isAutomated,
   //   "\n Hat Aufälligkeiten: ",
   //   abnormalities,
   //   "\n Auffälligkeiten: ",
   //   description,
-  //   "\n Vorgänger archivieren: ",
+  //   "\n archivePrevRelease: ",
   //   archivePrevRelease
   // );
 
@@ -61,14 +65,13 @@ export default function EinsatzmeldungsFormular(props) {
     // Trigger zurücksetzen.
     props.setTriggerReleaseSelect(false);
 
-    console.log("Eingesetzte Releases werden geholt, damit Releases für den Dropdown gefiltert werden können...");
     // setNewReleases(false); ???
     // Service und Umgebung müssen ausgewählt sein.
     if (props.environment == 0 || props.service == 0) {
       return;
     }
+
     // JsonAPI Fetch vorbereiten.
-    // @todo Umbauen auf REST API. Vorteil: Mehr als 50 Elemente auf einmal fetchen.
     // Fehlmeldungen sollen rausgefiltert werden.
     let url = '/api/v1/deployments/1+2/';
 
@@ -80,7 +83,7 @@ export default function EinsatzmeldungsFormular(props) {
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
-
+    props.setLoadingMessage(<p>Lade Einsatzmeldungen um Releases zu filtern ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
@@ -113,11 +116,9 @@ export default function EinsatzmeldungsFormular(props) {
         let filteredNewReleases = releaseArray.filter(release => {
           let result = false;
           if (deployedReleaseNids.indexOf(release.nid) === -1) {
-            console.log("Release schon vorhanden!");
             result = true;
           }
           if (product && release.title.indexOf(product) == -1) {
-            console.log("Falsches Produkt! -> false" + product);
             result = false;
           }
           return result;
@@ -137,6 +138,12 @@ export default function EinsatzmeldungsFormular(props) {
         // }
 
         console.log("Eingesetzte Releases wurden geholt und Releaseoptionen gefiltert.");
+        if (undeployedReleases.length === 0) {
+          props.setLoadingMessage(<p>Es stehen keine Releases zur Auswahl zur Verfügung.</p>);
+        }
+        else {
+          props.setLoadingMessage("");
+        }
         setNewReleases(undeployedReleases);
         setPrevReleases(deployedReleases);
         props.setDisabled(false);
@@ -146,54 +153,63 @@ export default function EinsatzmeldungsFormular(props) {
   }, [props.triggerReleaseSelect])
 
 
-  let firstDeployment = false;
-  if (props.previousRelease == "0") {
-    firstDeployment = true;
-  }
+  // let firstDeployment = false;
+  // if (props.previousRelease == "0") {
+  //   firstDeployment = true;
+  // }
 
   // Neue Meldung wird erstellt (POST) und/oder eine Meldung archiviert (PATCH).
   function handleSave() {
-    console.log("!##### HANDLE SAVE START #####!")
+    console.log("##### HANDLE SAVE START #####")
+    postDeployment();
+    
+    // Nach Absendung des Formulars alles zurücksetzen.
+    props.setEnvironment(1);
+    props.setService("0");
+    setRelease(false);
+    props.setPreviousRelease("0");
+    setDate(false);
+    setInstallationTime(false);
+    setArchive(false);
+    setIsAutomated(false);
+    setAbnormalities(false);
+    setDescription("");
+    setArchivePrevRelease('null');
+  }
+
+  // POST Request zum anlegen einer neuen Einsatzmeldung.
+  const postDeployment = () => {
     // UUID des gemeldeten Release.
     // @todo releases aus Manager beziehen
     const allReleases = props.releases;
-    // console.log(props.service);
-    // console.log(allReleases);
-    // if (release in allReleases[props.service]) {
-    //   console.log(allReleases[props.service][release]);
-    //   var uuidRelease = allReleases[props.service][release][0];
-    // }
-    let uuidRelease = allReleases[props.service].filter(element => {
+    let currentRelease = allReleases[props.service].filter(element => {
       return release === element.nid;
     })
-
-    if (uuidRelease.length == 0) {
+    
+    if (currentRelease.length == 0) {
       props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
+      setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
       return;
     }
-    uuidRelease = uuidRelease[0].uuid;
-    
+    const uuidRelease = currentRelease[0].uuid;
+    const releaseName = currentRelease[0].title;
+    setSubmitMessage(<p>Einsatzmeldung für {releaseName} wird gespeichert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
+    const product = releaseName.substring(0, releaseName.indexOf('_'));
+
     // UUID des Verfahrens.
     const allServices = global.drupalSettings.services;
     if (props.service in allServices) {
-      console.log(allServices[props.service][1]);
       var uuidService = allServices[props.service][1];
     }
-
-    // UUID des Vorgängerrelease.
-    // @todo prevReleases aus Manager ziehen
-    // const allPreviousReleases = global.drupalSettings.prevReleases;
-    // if (props.previousRelease in allPreviousReleases[props.service]) {
-    //   var uuidPrevRelease = allPreviousReleases[props.service][props.previousRelease][0];
-    // }
+    const deploymentTitle = props.userState + "_" + props.environment + "_" + props.service + "_" + product;
 
     var postdata = {
       "data": {
         "type": "node--deployed_releases",
         "attributes": {
-          "title": "title",
-          "field_deployment_status": isArchived ? '2' : '1',
-          "field_first_deployment": firstDeployment,
+          "title": deploymentTitle,
+          "field_deployment_status": archive ? '2' : '1',
+          "field_first_deployment": props.firstDeployment,
           "field_abnormalities_bool": abnormalities,
           "field_automated_deployment_bool": isAutomated,
           "field_abnormality_description": description,
@@ -222,6 +238,18 @@ export default function EinsatzmeldungsFormular(props) {
     // in case a previous release has been selected in the deployed_releases_form,
     // var data should be completed with relationsship field_prev_release
     if (props.previousRelease != "0") {
+      // UUID des Vorgängerrelease.
+      // @todo prevReleases aus Manager ziehen
+      let pRelease = allReleases[props.service].filter(element => {
+        return props.previousRelease === element.nid;
+      })
+
+      if (pRelease.length == 0) {
+        props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
+        return;
+      }
+      const uuidPrevRelease = pRelease[0].uuid;
+
       let field_prev_release = {
         "data": {
           "type": "node--release",
@@ -231,38 +259,50 @@ export default function EinsatzmeldungsFormular(props) {
       postdata["data"]["relationships"] = { ...postdata["data"]["relationships"], field_prev_release };
     }
 
+    console.log("POST");
     console.log(postdata);
     const csrfUrl = `/session/token?_format=json`;
     let fetchUrl = "/jsonapi/node/deployed_releases";
     let fetchOptions = {
       method: 'POST',
-      headers: new Headers ({
+      headers: new Headers({
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
         'Cache': 'no-cache',
       }),
       body: JSON.stringify(postdata),
     }
-  
+
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
       .then(antwort => antwort.json())
       .then(antwort => {
-        console.log (antwort);
+        console.log(antwort);
         props.setCount(props.count + 1);
         if ("errors" in antwort) {
           props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
+          setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
         }
         else {
           props.setDeploymentHistory(prev => [...prev, release]);
+          if (props.prevDeploymentId && archivePrevRelease === true) {
+            patchDeployment();
+          }
+          else {
+            setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
+            handleClose();
+          }
         }
       })
       .catch(error => {
         console.log('fehler:', error);
         props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
+        setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
       });
-    
-    if (props.prevDeploymentId && archivePrevRelease === true) {
-      let archiveBody = {
+  }
+
+  // PATCH: Vorgängerrelease archivieren.
+  const patchDeployment = () => {
+      const archiveBody = {
         "data": {
           "type": "node--deployed_releases",
           "id": props.prevDeploymentId,
@@ -271,8 +311,9 @@ export default function EinsatzmeldungsFormular(props) {
           }
         }
       }
-      fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentId;
-      fetchOptions = {
+      const csrfUrl = `/session/token?_format=json`;
+      const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentId;
+      const fetchOptions = {
         method: 'PATCH',
         headers: new Headers({
           'Accept': 'application/vnd.api+json',
@@ -281,53 +322,78 @@ export default function EinsatzmeldungsFormular(props) {
         }),
         body: JSON.stringify(archiveBody),
       }
+      setSubmitMessage(<p>Vorgängerrelease wird archiviert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
       fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
         .then(antwort => antwort.json())
         .then(antwort => {
           console.log(antwort);
           props.setCount(props.count + 1);
           if ("errors" in antwort) {
+            setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
             props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
+          }
+          else {
+            setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
+            handleClose();
           }
         })
         .catch(error => {
           console.log('fehler:', error);
+          setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
           props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
         });
-    }
 
-    // Nach Absendung des Formulars alles zurücksetzen.
-    props.setEnvironment(1);
-    props.setService(0);
-    setRelease(false);
-    props.setPreviousRelease(false);
-    setDate(false);
-    setInstallationTime(false);
-    setIsArchived(false);
-    setIsAutomated(false);
-    setAbnormalities(false);
-    setDescription("");
-    setArchivePrevRelease(false);
   }
-  
+
   // Handler für Button "Ersteinsatz melden".
   const handleClick = () => {
     // Für neue Einsatzmeldung alles zurücksetzen.
+    // setSubmitMessage(false);
     props.setFirstDeployment(true);
-    props.setEnvironment(1);
-    props.setService(0);
+    // Auswahl basierend auf Filterung sinnvoll?
+    props.setUserState(props.stateFilter);
+    props.setEnvironment(props.environmentFilter);
+    props.setService(props.serviceFilter);
     setRelease(false);
     props.setPreviousRelease(false);
     setDate(false);
     setInstallationTime(false);
-    setIsArchived(false);
+    setArchive(false);
     setIsAutomated(false);
     setAbnormalities(false);
     setDescription("");
-    setArchivePrevRelease(false);
+    setArchivePrevRelease('null');
     // Formular anzeigen.
-    props.setShow(!props.show);
+    props.setShow(true);
   }
+
+  // Handler für Button "Ersteinsatz melden".
+  const handleClose = () => {
+    // Für neue Einsatzmeldung alles zurücksetzen.
+    // setSubmitMessage(false);
+    props.setFirstDeployment(true);
+    // Auswahl basierend auf Filterung sinnvoll?
+    props.setUserState(global.drupalSettings.userstate);
+    props.setEnvironment("0");
+    props.setService("0");
+    setRelease(false);
+    props.setPreviousRelease(false);
+    setDate(false);
+    setInstallationTime(false);
+    setArchive(false);
+    setIsAutomated(false);
+    setAbnormalities(false);
+    setDescription("");
+    setArchivePrevRelease('null');
+    // Formular anzeigen.
+    props.setShow(false);
+  }
+
+  useEffect(() => {
+    if (props.show === true) {
+      setSubmitMessage(false);
+    }
+  }, [props.show])
 
   //Umgebungen Drop Down
   const environments = global.drupalSettings.environments;
@@ -353,13 +419,23 @@ export default function EinsatzmeldungsFormular(props) {
   let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
 
   // Tooltip für Button "Neue Einsatzmeldung".
-  const ttNewReport = (
-    <Tooltip id="ttNewReport">
-      Einen neuen Ersteinsatz melden.<br/>
-      <strong>Hinweis: </strong> Möchten Sie ein Nachfolgerelease melden? Dies können Sie tun, indem sie in der untenstehenden Tabelle auf  <span className="glyphicon glyphicon-forward" /> klicken.
+  // const ttNewReport = (
+  //   <Tooltip id="ttNewReport">
+  //     Einen neuen Ersteinsatz melden.<br/>
+  //     <strong>Hinweis: </strong> Möchten Sie ein Nachfolgerelease melden? Dies können Sie tun, indem sie in der untenstehenden Tabelle auf  <span className="glyphicon glyphicon-forward" /> klicken.
+  //   </Tooltip>
+  // );
+
+  const ttValidateMessage = (
+    <Tooltip id="ttValidateMessage">
+      <ul>
+        {validateMessage}
+      </ul>
+      Erstellt die neue Einsatzmeldung.
     </Tooltip>
   );
 
+  // Disables SelectPreviousRelease.
   useEffect(() => {
     if (props.firstDeployment) {
       setDisabledPrevRelease(true);
@@ -371,21 +447,70 @@ export default function EinsatzmeldungsFormular(props) {
     if (props.disabled) {
       setDisabledPrevRelease(true);
     }
-    setDisabledPrevRelease(props.disabled);
+  }, [props.firstDeployment, props.disabled])
 
-  }, [firstDeployment, props.disabled])
+  // Validate form.
+  useEffect(() => {
+    setValidateMessage([]);
+    setDisableSubmit(false);
 
-  return (
+    if (props.environment === "0") {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
+    }
+
+    if (props.service == 0) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
+    }
+
+    if (release == 0) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
+    }
+
+    if (props.previousRelease == 0 || props.previousRelease == "0") {
+      setArchivePrevRelease('null');
+    }
+
+    if (props.previousRelease != 0) {
+      if (archivePrevRelease == 'null') {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
+      }
+    }
+
+    if (!date) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
+    }
+
+    if (abnormalities) {
+      if (description.length == 0) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>])
+      }
+    }
+
+    if (!abnormalities) {
+      setDescription("");
+    }
+
+  }, [props.environment, props.service, release, props.previousRelease, date, abnormalities, description, archivePrevRelease])
+
+  const handleRadio = (e) => {
+    if (e.target.value == "ja") {
+      setArchivePrevRelease(true);
+    }
+    if (e.target.value == "nein") {
+      setArchivePrevRelease(false);
+    }
+  }
+
+  const submitClass = disableSubmit ? "glyphicon glyphicon-floppy-remove" : "glyphicon glyphicon-floppy-saved";
+
+  var formBody = (
     <div>
-      <OverlayTrigger placement="top" overlay={ttNewReport}>
-        <Button bsStyle="primary" bsSize="large" onClick={handleClick}>
-          <span className="glyphicon glyphicon-plus" /> Ersteinsatz melden
-        </Button>
-      </OverlayTrigger>
-      <Modal show={props.show} onHide={handleClick}>
-        <Modal.Header closeButton>
-          {props.firstDeployment ? <Modal.Title>Ersteinsatz melden</Modal.Title> : <Modal.Title>Nachfolger melden</Modal.Title>}
-        </Modal.Header>
         <Modal.Body>
           <Form>
             <FormGroup controlId="1">
@@ -410,55 +535,24 @@ export default function EinsatzmeldungsFormular(props) {
                   name="verfahren"
                   value={props.service}
                   onChange={(e) => props.setService(e.target.value)}
+                  disabled={!props.firstDeployment}
                 >
                   {optionsServices}
                 </FormControl>
               </div>
             </FormGroup>
-
-            <SelectRelease
-              release={release}
-              setRelease={setRelease}
-              newReleases={newReleases}
-              isLoading={props.isLoading}
-              setIsLoading={props.setIsLoading}
-              disabled={props.disabled}
-              setDisabled={props.setDisabled}
-            />
-
-            <SelectPreviousRelease
-              previousRelease={props.previousRelease}
-              setPreviousRelease={props.setPreviousRelease}
-              prevReleases={prevReleases}
-              isLoading={props.isLoading}
-              setIsLoading={props.setIsLoading}
-              disabledPrevRelease={disabledPrevRelease}
-            />
-
-            <FormGroup controlId="5">
-              <Checkbox
-                name="archivieren"
-                type="checkbox"
-                checked={archivePrevRelease}
-                onChange={(e) => setArchivePrevRelease(e.target.checked)}
-              >
-                Vorgängerrelease archivieren
-              </Checkbox>
-            </FormGroup>
-
-            <FormGroup controlId="6">
-              <ControlLabel bsClass="control-label js-form-required form-required">Datum</ControlLabel>
-              <FormControl
-                type="date"
-                name="datum"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              >
-              </FormControl>
-            </FormGroup>
-
+              <FormGroup controlId="6">
+                <ControlLabel bsClass="control-label js-form-required form-required">Datum</ControlLabel>
+                <FormControl
+                  type="date"
+                  name="datum"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                >
+                </FormControl>
+              </FormGroup>
             <FormGroup controlId="7">
-              <ControlLabel bsClass="control-label js-form-required form-required">Installationsdauer</ControlLabel>
+              <ControlLabel bsClass="control-label">Installationsdauer</ControlLabel>
               <FormControl
                 componentClass="input"
                 type="number"
@@ -470,17 +564,6 @@ export default function EinsatzmeldungsFormular(props) {
                 placeholder="in Minuten"
               >
               </FormControl>
-            </FormGroup>
-
-            <FormGroup controlId="8">
-              <Checkbox
-                name="archiviert"
-                type="checkbox"
-                checked={isArchived}
-                onChange={(e) => setIsArchived(e.target.checked)}
-              >
-                Archiviert
-              </Checkbox>
             </FormGroup>
 
             <FormGroup controlId="9">
@@ -504,9 +587,9 @@ export default function EinsatzmeldungsFormular(props) {
                 Auffälligkeiten
               </Checkbox>
             </FormGroup>
-
+{ abnormalities &&
             <FormGroup controlId="11">
-              <ControlLabel>Beschreibung der Auffälligkeiten</ControlLabel>
+              <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
               <FormControl
                 componentClass="textarea"
                 name="beschreibung"
@@ -515,12 +598,99 @@ export default function EinsatzmeldungsFormular(props) {
               >
               </FormControl>
             </FormGroup>
+}
+          <div className="panel panel-default">
+            <div className="panel-body">
+              {props.loadingMessage}
+              <SelectRelease
+                release={release}
+                setRelease={setRelease}
+                newReleases={newReleases}
+                isLoading={props.isLoading}
+                setIsLoading={props.setIsLoading}
+                disabled={props.disabled}
+                setDisabled={props.setDisabled}
+              />
+              <Table>
+                <thead>
+                  <tr>
+                    <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
+                    <th><ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease archivieren?</ControlLabel></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+              <SelectPreviousRelease
+                previousRelease={props.previousRelease}
+                setPreviousRelease={props.setPreviousRelease}
+                prevReleases={prevReleases}
+                isLoading={props.isLoading}
+                setIsLoading={props.setIsLoading}
+                disabled={disabledPrevRelease}
+                setArchivePrevRelease={setArchivePrevRelease}
+              />
+                    </td>
+                    <td>
+              {props.previousRelease > 0 &&
+                <FormGroup onChange={handleRadio} controlId="5">
+                  <Radio
+                    value="ja"
+                    checked={archivePrevRelease === true}
+                  >
+                    Ja
+                  </Radio>
+                  <Radio
+                    value="nein"
+                    checked={archivePrevRelease === false}
+                  >
+                    Nein
+                  </Radio>
+                </FormGroup>
+              }
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
+          </div>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="success" onClick={handleSave} >Speichern</Button>
-          <Button onClick={handleClick}>Schließen</Button>
+          <OverlayTrigger placement="top" overlay={ttValidateMessage}>
+            <Button disabled={disableSubmit} bsStyle="primary" onClick={handleSave} ><span className={submitClass} /> Speichern</Button>
+          </OverlayTrigger>
+          <Button bsStyle="danger" onClick={handleClose}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
+        </Modal.Footer>  
+    </div>
+    );
+
+  if (submitMessage !== false) {
+    formBody = (
+      <div>
+        <Modal.Body>
+          {submitMessage}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button bsStyle="danger" onClick={handleClose}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
         </Modal.Footer>
+      </div>
+    );
+  }
+
+
+  return (
+    <div>
+      { props.isArchived == "0" &&
+      <Button bsStyle="primary" bsSize="large" onClick={handleClick}>
+        <span className="glyphicon glyphicon-plus" /> Ersteinsatz melden
+      </Button>
+      }
+      <Modal show={props.show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          {props.firstDeployment ? <Modal.Title>Ersteinsatz melden - {global.drupalSettings.states[props.userState]}</Modal.Title> : <Modal.Title>Nachfolger melden - {global.drupalSettings.states[props.userState]}</Modal.Title>}
+        </Modal.Header>
+      {formBody}
       </Modal>
     </div>
   );

@@ -46,12 +46,12 @@ export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, env
 
   const ttReset = (
     <Tooltip id="ttReset">
-      Filter <strong>zurücksetzen</strong>.
+      Filter zurücksetzen.
     </Tooltip>);
 
   const ttRefresh = (
     <Tooltip id="ttRefresh">
-      Einsatzmeldungen <strong>neu laden</strong>.
+      Einsatzmeldungen neu laden.
     </Tooltip>);
 
   return (

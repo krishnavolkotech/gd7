@@ -241,6 +241,22 @@ class ReactController extends ControllerBase {
     }
     $stTime = number_format(( microtime(true) - $startTime), 4);
 
+    // Rolle: site-admin, zrmk, zrml?
+    $role = '';
+    $group = Group::load(Zentrale_Release_Manager_Lander);
+    $member = $group->getMember(\Drupal::currentUser());
+    if ($member && group_request_status($member)) {
+      $roles = $member->getRoles();
+      $role = "ZRML";
+      if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
+        $role = "ZRMK";
+      }
+    }
+    
+    if (array_intersect(['site_administrator','administrator'], \Drupal::currentUser()->getRoles())) {
+      $role = "SITE-ADMIN";
+    }
+
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
@@ -253,6 +269,7 @@ class ReactController extends ControllerBase {
           // 'releases' => $releases,
           // 'prevReleases' => $prevReleases,
           'userstate' => $user_state,
+          'role' => $role,
         ],
       ],
     ];

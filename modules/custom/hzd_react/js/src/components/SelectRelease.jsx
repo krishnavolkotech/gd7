@@ -5,7 +5,6 @@ export default function SelectRelease({ release, setRelease, newReleases, isLoad
   const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
 
   useEffect(() => {
-    console.log("Befülle Release Dropdown für die Meldung ...")
     //Release Drop Down
     setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
     let defaultRelease = [<option value="0">&lt;Release&gt;</option>];

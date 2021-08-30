@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function SelectPreviousRelease({ previousRelease, setPreviousRelease, prevReleases, isLoading, setIsLoading, disabledPrevRelease }) {
+export default function SelectPreviousRelease({ previousRelease, setPreviousRelease, prevReleases, isLoading, setIsLoading, disabled }) {
   const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
 
+  //Previous Release Drop Down
   useEffect(() => {
-    //Previous Release Drop Down
     setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
     let defaultPrevRelease = [<option value="0">Ersteinsatz</option>];
     let optionsPrevReleases = [];
@@ -30,17 +30,22 @@ export default function SelectPreviousRelease({ previousRelease, setPreviousRele
   if (isLoading) {
     loading = <span> <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></span>;
   }
-console.log("Disabled? ", disabledPrevRelease);
+
+  const handleChange = (e) => {
+    setPreviousRelease(e.target.value);
+    setArchivePrevRelease(false);
+  }
+
   return (
     <FormGroup controlId="4">
-      <ControlLabel>Vorgängerrelease{loading}</ControlLabel>
+      {/* <ControlLabel>Vorgängerrelease{loading}</ControlLabel> */}
       <div className="select-wrapper">
         <FormControl
           componentClass="select"
           name="vorgaengerrelease"
           value={previousRelease}
-          onChange={(e) => setPreviousRelease(e.target.value)}
-          disabled={disabledPrevRelease}
+          onChange={handleChange}
+          disabled={true}
         >
           {releaseOptions}
         </FormControl>

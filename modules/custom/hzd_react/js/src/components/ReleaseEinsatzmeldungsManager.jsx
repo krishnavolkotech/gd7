@@ -4,6 +4,8 @@ import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootst
 import { Link, useHistory } from 'react-router-dom';
 import EinsatzmeldungsFilter from './EinsatzmeldungsFilter';
 import EinsatzmeldungsFormular from './EinsatzmeldungsFormular';
+import EinsatzmeldungArchivieren from './EinsatzmeldungArchivieren';
+import EinsatzmeldungBearbeiten from './EinsatzmeldungBearbeiten';
 import useQuery from '../hooks/hooks';
 
 export default function ReleaseEinsatzmeldungsManager() {
@@ -19,7 +21,7 @@ export default function ReleaseEinsatzmeldungsManager() {
 
   // Benötigt für die Initiale Befüllung der isArchived-State-Variablen. Wurde
   // die Seite "archiviert" initial aufgerufen?
-  let archivedUrl = false;
+  let archivedUrl = "0";
   if (history.location.pathname.indexOf('archiviert') > 0) {
     archivedUrl = "1";
   }
@@ -43,9 +45,13 @@ export default function ReleaseEinsatzmeldungsManager() {
   // Alle bereitgestellten Releases.
   const [releases, setReleases] = useState([]);
 
+  // Pagination.
+  const [page, setPage] = useState(1);
+
+
   // Welcher Reiter ist gewählt? Eingesetzt / Archiv.
   let activeKey
-  if (isArchived == 1) {
+  if (isArchived == "1") {
     activeKey = "1";
   }
   else {
@@ -61,16 +67,17 @@ export default function ReleaseEinsatzmeldungsManager() {
   // Filter State.
   /** @const {(string|false)} stateSelection - Gewähltes Land aus URL Parameter. */
   const stateSelection = query.has("state") ? query.get("state") : false;
-  const [stateFilter, setStateFilter] = useState(stateSelection);
+  const [stateFilter, setStateFilter] = useState(global.drupalSettings.userstate);
   // Gewähltes Release aus URL Parametern.
   const releaseSelection = query.has("release") ? query.get("release") : "0";
   const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
 
   // Kontrollierter State für EinsatzmeldungsFormular.
-  const [environment, setEnvironment] = useState(1);
-  const [service, setService] = useState(0);
+  const [environment, setEnvironment] = useState("1");
+  const [service, setService] = useState("0");
   const [previousRelease, setPreviousRelease] = useState("0");
   const [userState, setUserState] = useState(global.drupalSettings.userstate);
+  // Formular anzeigen.
   const [show, setShow] = useState(false);
   const [prevDeploymentId, setPrevDeploymentId] = useState(false);
   const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
@@ -78,11 +85,23 @@ export default function ReleaseEinsatzmeldungsManager() {
   const [isLoading, setIsLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [deploymentHistory, setDeploymentHistory] = useState([]);
+  // Infotext während Releaseauswahl befüllt wird.
+  const [loadingMessage, setLoadingMessage] = useState("");
+
   // Modus des Meldeformulars (Integer):
   // true: Ersteinsatz
   // false: Nachfolgerelease
   const [firstDeployment, setFirstDeployment] = useState(true);
 
+  // Formular zum Archivieren von Einsatzmeldungen anzeigen.
+  const [showArchiveForm, setShowArchiveForm] = useState(false);
+
+  const [prevName, setPrevName] = useState("");
+
+  const [showEditForm, setShowEditForm] = useState(false);
+
+  // Für Formular zum Bearbeiten der Einsatzmeldung.
+  const [deploymentUuid, setDeploymentUuid] = useState(false);
   /**
    * Implements hook useEffect().
    * Fetches the deployed releases.
@@ -119,6 +138,15 @@ export default function ReleaseEinsatzmeldungsManager() {
     }
     url += serviceUrl;
 
+    if (isArchived === "0") {
+      url += '?items_per_page=All';
+    }
+
+    if (isArchived === "1") {
+      url += '?page=' + (page -1);
+    }
+
+
     // Release-Filter unnötig? Filterung direkt in React besser?
     // if (releaseFilter !== "0") {
     //   url += "&filter[field_deployed_release.drupal_internal__nid]=" + releaseFilter;
@@ -144,12 +172,14 @@ export default function ReleaseEinsatzmeldungsManager() {
       .catch(error => {
         console.log("error", error);
         setError(<li>Fehler beim Laden der Einsatzmeldungen. Bitte kontaktieren Sie das BpK-Team.</li>);
+        setTimeout(true)
       });
   }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter, count]);
 
   /**
    * Implements hook useEffect().
    * Changes URL-Params depending on Nav / Filters.
+   * Resets Pagination.
    */
   useEffect(() => {
     let pathname;
@@ -194,7 +224,10 @@ export default function ReleaseEinsatzmeldungsManager() {
       pathname: pathname,
       search: params.toString(),
     });
-  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter, count]);
+
+    // Reset Pagination.
+    setPage(1);
+  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter]);
 
   /**
    * Implements hook useEffect().
@@ -206,6 +239,7 @@ export default function ReleaseEinsatzmeldungsManager() {
   useEffect(() => {
     // Prevent multiple fetches for the same serviceFilter.
     console.log("Service in Filter gewählt: ", serviceFilter);
+    setLoadingMessage(<p>Bereitgestellte Releases werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
     fetchReleases(serviceFilter);
   }, [serviceFilter])
 
@@ -271,10 +305,11 @@ export default function ReleaseEinsatzmeldungsManager() {
   }
 
   const handleReset = () => {
+    setPage(1);
     setEnvironmentFilter("0");
     setReleaseFilter("0");
     setServiceFilter("0");
-    setStateFilter(false);
+    setStateFilter(global.drupalSettings.userstate);
   }
 
   const handleAction = (userState, environment, service, release, deploymentId) => {
@@ -288,9 +323,25 @@ export default function ReleaseEinsatzmeldungsManager() {
     console.log(userState, environment, service, release, deploymentId);
   }
 
+  const handleNav = (k) => {
+    setIsArchived(k)
+    setPage(1);
+  }
+
+  const handleArchive = (deploymentId, releaseName) => {
+    setPrevDeploymentId(deploymentId);
+    setPrevName(releaseName);
+    setShowArchiveForm(true);
+  }
+
+  const handleEdit = (deploymentId) => {
+    setDeploymentUuid(deploymentId);
+    setShowEditForm(true);
+  }
+
   return (
     <div>
-      <Nav bsStyle="tabs" activeKey={activeKey} onSelect={k => setIsArchived(k)}>
+      <Nav bsStyle="tabs" activeKey={activeKey} onSelect={handleNav}>
         <NavItem eventKey="0">
           Eingesetzt
         </NavItem>
@@ -348,12 +399,48 @@ export default function ReleaseEinsatzmeldungsManager() {
         setDeploymentHistory={setDeploymentHistory}
         firstDeployment={firstDeployment}
         setFirstDeployment={setFirstDeployment}
+        serviceFilter={serviceFilter}
+        environmentFilter={environmentFilter}
+        stateFilter={stateFilter}
+        isArchived={isArchived}
+        loadingMessage={loadingMessage}
+        setLoadingMessage={setLoadingMessage}
       />
       <EinsatzmeldungsTabelle
         data={data}
         timeout={timeout}
         handleAction={handleAction}
         deploymentHistory={deploymentHistory}
+        isArchived={isArchived}
+        page={page}
+        setPage={setPage}
+        count={count}
+        setCount={setCount}
+        handleArchive={handleArchive}
+        handleEdit={handleEdit}
+      />
+      <EinsatzmeldungArchivieren
+        showArchiveForm={showArchiveForm}
+        setShowArchiveForm={setShowArchiveForm}
+        prevDeploymentId={prevDeploymentId}
+        count={count}
+        setCount={setCount}
+        prevName={prevName}
+      />
+      <EinsatzmeldungBearbeiten 
+        showEditForm={showEditForm}
+        setShowEditForm={setShowEditForm}
+        prevDeploymentId={prevDeploymentId}
+        triggerReleaseSelect={triggerReleaseSelect}
+        setTriggerReleaseSelect={setTriggerReleaseSelect}
+        releases={releases}
+        setService={setService}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        disabled={disabled}
+        setDisabled={setDisabled}
+        deploymentUuid={deploymentUuid}
+        setDeploymentUuid={setDeploymentUuid}
       />
     </div>
   )
