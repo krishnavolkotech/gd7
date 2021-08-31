@@ -52,6 +52,7 @@
 
             });
 
+	    /*
 	    if (jQuery("input[name='node_notification_checkbox']").length > 0) {
 		jQuery('.node-form #edit-submit').prop('disabled', true);
 		var send_notification = jQuery('input[name="node_notification_checkbox"]:checked').val();
@@ -92,7 +93,7 @@
 		    }
 		});
 	    }
-	    
+	    */
 
         }
     }

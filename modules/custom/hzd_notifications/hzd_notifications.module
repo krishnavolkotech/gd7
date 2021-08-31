@@ -173,8 +173,8 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
     $form['notification']['node_notification_checkbox'] = send_notification_form_element();
     /*
     $form['notification']['node_notification_checkbox'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not send notifications for this update.'),
+    //'#type' => 'checkbox',
+    //'#title' => t('Do not send notifications for this update.'),
     );
     */
     $form['actions']['#weight'] = 34;
@@ -998,9 +998,9 @@ function cust_group_entity_delete(EntityInterface $entity) {
 function send_notification_form_element() {
   $element = array(
     '#type' => 'radios',
-    '#options' => [1 => t('Yes'), 0 => t('No')],
+    '#options' => [0 => t('Yes'), 1 => t('No')],
     '#required' => TRUE,
-    '#title' => t('Do not send notifications for this update.'),
+    '#title' => t('Do you want to send notifications for this update?'),
   );
   return $element;
 }
