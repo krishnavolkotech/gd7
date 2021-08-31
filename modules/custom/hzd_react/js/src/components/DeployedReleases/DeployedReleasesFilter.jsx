@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default function EinsatzmeldungsFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset, count, setCount, releases}) {
+export default function DeployedReleasesFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset, count, setCount, releases}) {
   
   //States Filter
   const statesObject = global.drupalSettings.states;
