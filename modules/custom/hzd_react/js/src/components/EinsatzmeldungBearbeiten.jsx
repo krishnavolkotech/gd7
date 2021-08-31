@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../utils/fetch";
-import SelectRelease from "./SelectRelease";
-import SelectPreviousRelease from "./SelectPreviousRelease";
+import SelectRelease from "./DeployedReleases/SelectRelease";
+import SelectPreviousRelease from "./DeployedReleases/SelectPreviousRelease";
 
 export default function EinsatzmeldungBearbeiten(props) {
   const defaultValues = {

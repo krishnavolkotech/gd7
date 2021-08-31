@@ -9,7 +9,7 @@ import ReleaseManagementDashboard from "./ReleaseManagementDashboard";
 import { Jumbotron, Button, Panel, Grid, Row, Col } from 'react-bootstrap';
 import ReleaseDeploymentHome from './ReleaseDeploymentHome';
 import DeployedReleasesZrmlView from './DeployedReleasesZrmlView';
-import ReleaseEinsatzmeldungsManager from './ReleaseEinsatzmeldungsManager';
+import DeploymentManager from './DeployedReleases/DeploymentManager';
 
 class App extends React.Component {
   constructor(props) {
@@ -32,10 +32,10 @@ class App extends React.Component {
               <ReleaseDeploymentHome />
             </Route>
             <Route exact path="/zrml/r/einsatzmeldungen/eingesetzt">
-              <ReleaseEinsatzmeldungsManager />
+              <DeploymentManager />
             </Route>
             <Route exact path="/zrml/r/einsatzmeldungen/archiviert">
-              <ReleaseEinsatzmeldungsManager />
+              <DeploymentManager />
             </Route>
           </Switch>
         </div>
