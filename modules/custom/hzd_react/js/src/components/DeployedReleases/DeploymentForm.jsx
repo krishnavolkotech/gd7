@@ -4,7 +4,7 @@ import { fetchWithCSRFToken } from "../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
 
-export default function EinsatzmeldungsFormular(props) {
+export default function DeploymentForm(props) {
 
   const [release, setRelease] = useState(false);
   const [date, setDate] = useState(false);
@@ -21,7 +21,6 @@ export default function EinsatzmeldungsFormular(props) {
   const [disabledPrevRelease, setDisabledPrevRelease] = useState(true);
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [validateMessage, setValidateMessage] = useState([]);
-  const [radioValue, setRadioValue] = useState(false);
   const [submitMessage, setSubmitMessage] = useState(false);
 
 

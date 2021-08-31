@@ -1,14 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react'
-import EinsatzmeldungsTabelle from './EinsatzmeldungsTabelle';
+import EinsatzmeldungsTabelle from '../EinsatzmeldungsTabelle';
 import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
-import EinsatzmeldungsFilter from './EinsatzmeldungsFilter';
-import EinsatzmeldungsFormular from './EinsatzmeldungsFormular';
-import EinsatzmeldungArchivieren from './EinsatzmeldungArchivieren';
-import EinsatzmeldungBearbeiten from './EinsatzmeldungBearbeiten';
-import useQuery from '../hooks/hooks';
+import EinsatzmeldungsFilter from '../EinsatzmeldungsFilter';
+import DeploymentForm from './DeploymentForm';
+import EinsatzmeldungArchivieren from '../EinsatzmeldungArchivieren';
+import EinsatzmeldungBearbeiten from '../EinsatzmeldungBearbeiten';
+import useQuery from '../../hooks/hooks';
 
-export default function ReleaseEinsatzmeldungsManager() {
+export default function DeploymentManager() {
   // @var fetchCount {number} Der aktuelle fetch counter, um zu verhindern, dass
   // ein neuer Request von einem Älteren überholt wird.
   const fetchCount = useRef(0);
@@ -72,7 +72,40 @@ export default function ReleaseEinsatzmeldungsManager() {
   const releaseSelection = query.has("release") ? query.get("release") : "0";
   const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
 
-  // Kontrollierter State für EinsatzmeldungsFormular.
+  /**
+   * Object holding the form state information for the DeploymentForm.
+   * @param {Object} emptyFormState - The form state object.
+   * @param {string} emptyFormState.uuid - The uuid of the deployment (if editing existing deployment).
+   * @param {string} emptyFormState.state - The state of the deployment.
+   * @param {string} emptyFormState.environment - The environment of the deployment.
+   * @param {string} emptyFormState.service - The service of the deployment.
+   * @param {string} emptyFormState.date - The deployment date.
+   * @param {string} emptyFormState.installationTime - The deployment installation time.
+   * @param {bool} emptyFormState.isAutomated - The employee's department.
+   * @param {bool} emptyFormState.abnormalities - Does the deployment have abnormalities?
+   * @param {string} emptyFormState.description - The abnormality description.
+   * @param {string} emptyFormState.releaseNid - The nid of the deployed release.
+   * @param {array} emptyFormState.previousRelease - Array containing nids of previous releases.
+   * @param {array} emptyFormState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
+   * @param {bool} emptyFormState.archiveThis - Should this deployment be archived?
+   */
+  const emptyFormState = {
+    "uuid": "",
+    "state": "0",
+    "environment": "0",
+    "service": "0",
+    "date": "",
+    "installationTime": "",
+    "isAutomated": false,
+    "abnormalities": false,
+    "description": "",
+    "releaseNid": "0",
+    "previousRelease": [],
+    "archivePrevRelease": [],
+    "archiveThis": false,
+  };
+  const [formState, setFormState] = useState(initialState);
+  
   const [environment, setEnvironment] = useState("1");
   const [service, setService] = useState("0");
   const [previousRelease, setPreviousRelease] = useState("0");
@@ -406,7 +439,7 @@ export default function ReleaseEinsatzmeldungsManager() {
         loadingMessage={loadingMessage}
         setLoadingMessage={setLoadingMessage}
       />
-      <EinsatzmeldungsTabelle
+      {/* <EinsatzmeldungsTabelle
         data={data}
         timeout={timeout}
         handleAction={handleAction}
@@ -441,7 +474,7 @@ export default function ReleaseEinsatzmeldungsManager() {
         setDisabled={setDisabled}
         deploymentUuid={deploymentUuid}
         setDeploymentUuid={setDeploymentUuid}
-      />
+      /> */}
     </div>
   )
 }
