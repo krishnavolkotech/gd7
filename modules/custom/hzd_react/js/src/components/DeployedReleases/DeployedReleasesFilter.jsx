@@ -1,19 +1,24 @@
 import React from 'react'
 import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 
-export default function DeployedReleasesFilter({ stateFilter, setStateFilter, environmentFilter, setEnvironmentFilter, serviceFilter, setServiceFilter, releaseFilter, setReleaseFilter, handleReset, count, setCount, releases}) {
+export default function DeployedReleasesFilter(props) {
   
   //States Filter
   const statesObject = global.drupalSettings.states;
-  let statesArray = Object.entries(statesObject);
-  let optionsStates = statesArray.map(state => <option value={state[0]}>{state[1]}</option>)
+  const statesArray = Object.entries(statesObject);
+  const optionsStates = statesArray.map(state => <option value={state[0]}>{state[1]}</option>)
+
+  //Umgebungen Filter
+  const environments = global.drupalSettings.environments;
+  const environmentsArray = Object.entries(environments);
+  const optionsEnvironments = environmentsArray.map(environment => <option value={environment[0]}>{environment[1]}</option>)
 
   //Verfahren Filter
   const services = global.drupalSettings.services;
   let servicesArray = Object.entries(services);
   servicesArray.sort(function(a,b) {
-    var serviceA = a[1][0].toUpperCase();
-    var serviceB = b[1][0].toUpperCase();
+    const serviceA = a[1][0].toUpperCase();
+    const serviceB = b[1][0].toUpperCase();
     if (serviceA < serviceB) {
       return -1;
     }
@@ -22,27 +27,27 @@ export default function DeployedReleasesFilter({ stateFilter, setStateFilter, en
     }
     return 0;
   });
-  let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
+  const optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
 
 
-  //Umgebungen Filter
-  //Objekt mit Umgebungen suchen
-  const environments = global.drupalSettings.environments;
-  //Objekt in Array ändern
-  let environmentsArray = Object.entries(environments);
-  let optionsEnvironments = environmentsArray.map(environment => <option value={environment[0]}>{environment[1]}</option>)
 
   // Release Filter
-  let defaultRelease = [<option value="0">&lt;Release&gt;</option>];
+  const defaultRelease = [<option value="0">&lt;Release&gt;</option>];
   let optionsReleases = [];
   let disabled = true;
-  if (serviceFilter != "0" && releases.length > 0) {
+  if (props.filterState.service != "0" && props.releases.length > 0) {
     disabled = false;
     optionsReleases = releases.map(release => {
       return <option value={release["nid"]}>{release["title"]}</option>;
     });
   }
   optionsReleases = [...defaultRelease, ...optionsReleases];
+
+  const handleFilterSelect = (e) => {
+    let val = {};
+    val[e.target.name] = e.target.value;
+    props.setFilterState(prev => ({ ...prev, ...val }))
+  }
 
   const ttReset = (
     <Tooltip id="ttReset">
@@ -59,33 +64,36 @@ export default function DeployedReleasesFilter({ stateFilter, setStateFilter, en
       <Grid>
         <Row>
           <Col sm={3}>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect">
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="state-filter">
               <FormControl
+                name="state"
                 componentClass="select"
-                onChange={(e) => setStateFilter(e.target.value)}
-                value={stateFilter}
+                onChange={handleFilterSelect}
+                value={props.filterState.state}
               >
                 {optionsStates}
               </FormControl>
             </FormGroup>
           </Col>
           <Col sm={3}>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect2" >
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="environment-filter" >
               <FormControl
+                name="environment"
                 componentClass="select"
-                onChange={(e) => setEnvironmentFilter(e.target.value)}
-                value={environmentFilter}
+                onChange={handleFilterSelect}
+                value={props.filterState.environment}
               >
                 {optionsEnvironments}
               </FormControl>
             </FormGroup>
           </Col>
           <Col sm={3}>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect3" >
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="service-filter" >
               <FormControl
+                name="service"
                 componentClass="select"
-                onChange={(e) => setServiceFilter(e.target.value)}
-                value={serviceFilter}
+                onChange={handleFilterSelect}
+                value={props.filterState.service}
               >
                 {optionsServices}
               </FormControl>
@@ -94,12 +102,13 @@ export default function DeployedReleasesFilter({ stateFilter, setStateFilter, en
         </Row>
         <Row>
           <Col sm={3}>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="formControlsSelect4" >
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="release-filter" >
               <FormControl
+                name="release"
                 disabled={disabled}
                 componentClass="select"
-                onChange={(e) => setReleaseFilter(e.target.value)}
-                value={releaseFilter}
+                onChange={handleFilterSelect}
+                value={props.filterState.release}
               >
                 {optionsReleases}
               </FormControl>
@@ -108,11 +117,11 @@ export default function DeployedReleasesFilter({ stateFilter, setStateFilter, en
           <Col sm={3}>
             <div>
               <OverlayTrigger placement="top" overlay={ttReset}>
-                <Button onClick={() => handleReset()} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
+                <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
               </OverlayTrigger>
               &nbsp;
               <OverlayTrigger placement="top" overlay={ttRefresh}>
-                <Button onClick={() => setCount(count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
+                <Button onClick={() => props.setCount(count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
               </OverlayTrigger>
             </div>
           </Col>

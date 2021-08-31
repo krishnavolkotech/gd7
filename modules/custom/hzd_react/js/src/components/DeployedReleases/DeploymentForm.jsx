@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table } from 'react-bootstrap';
-import { fetchWithCSRFToken } from "../utils/fetch";
+import { fetchWithCSRFToken } from "../../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
 

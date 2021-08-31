@@ -2,47 +2,46 @@ import React, {useState, useEffect, useRef} from 'react'
 import EinsatzmeldungsTabelle from '../EinsatzmeldungsTabelle';
 import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
-import EinsatzmeldungsFilter from '../EinsatzmeldungsFilter';
+import DeployedReleasesFilter from './DeployedReleasesFilter';
 import DeploymentForm from './DeploymentForm';
 import EinsatzmeldungArchivieren from '../EinsatzmeldungArchivieren';
 import EinsatzmeldungBearbeiten from '../EinsatzmeldungBearbeiten';
 import useQuery from '../../hooks/hooks';
 
 export default function DeploymentManager() {
-  // @var fetchCount {number} Der aktuelle fetch counter, um zu verhindern, dass
-  // ein neuer Request von einem Älteren überholt wird.
+  /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
 
-  // Wird verwendet, um URL Parameter auszulesen.
+  /** @const {URLSearchParams} query - Read URL Params. */
   const query = useQuery();
 
-  // Benötigt, um URL Änderungen durchführen zu können und URL Parameter zu setzen.
+  /** @const {object} history - The history object (URL modifications). */
   const history = useHistory();
 
+  /** @const {number} count - Changing this triggers fetch of deployed releases. */
+  const [count, setCount] = useState(0);
+  
+  /** @const {array} data - Daten der Einsatzmeldungen. */
+  const [data, setData] = useState([]);
+  
   // Benötigt für die Initiale Befüllung der isArchived-State-Variablen. Wurde
   // die Seite "archiviert" initial aufgerufen?
   let archivedUrl = "0";
   if (history.location.pathname.indexOf('archiviert') > 0) {
     archivedUrl = "1";
   }
-
-  // Für die Aktualisierung der Liste nach dem Speichern.
-  const [count, setCount] = useState(0);
-
-  /** @const {array} data - Daten der Einsatzmeldungen. */
-  const [data, setData] = useState([]);
-  //console.log(setData);
-
   /** @const {string} isArchived - Archiviert oder im Einsatz? */
   const [isArchived, setIsArchived] = useState(archivedUrl);
 
-  // True, wenn keine Daten geladen werden können.
+  /** @const {bool} timeout - True triggers display of "No data found.". */
   const [timeout, setTimeout] = useState(false);
 
   // Wird verwendet, um Fehlermeldungen anzuzeigen.
+  /** @const {React.Component|bool} error - React Component with error message or false. */
   const [error, setError] = useState(false);
 
   // Alle bereitgestellten Releases.
+  // {"[serviceNid]": ["releaseNids"]}, ???
   const [releases, setReleases] = useState([]);
 
   // Pagination.
@@ -58,38 +57,41 @@ export default function DeploymentManager() {
     activeKey = "0";
   }
 
-  // Gewählte Umgebung aus URL Parametern.
-  const environmentSelection = query.has("environment") ? query.get("environment") : "0";
-  const [environmentFilter, setEnvironmentFilter] = useState(environmentSelection);
-  // Gewähltes Verfahren aus URL Parametern.
-  const serviceSelection = query.has("service") ? query.get("service") : "0";
-  const [serviceFilter, setServiceFilter] = useState(serviceSelection);
-  // Filter State.
-  /** @const {(string|false)} stateSelection - Gewähltes Land aus URL Parameter. */
-  const stateSelection = query.has("state") ? query.get("state") : false;
-  const [stateFilter, setStateFilter] = useState(global.drupalSettings.userstate);
-  // Gewähltes Release aus URL Parametern.
-  const releaseSelection = query.has("release") ? query.get("release") : "0";
-  const [releaseFilter, setReleaseFilter] = useState(releaseSelection);
+  /**
+   * The initial filter state.
+   * @property {Object} initialFilterState - The object holding the filter state.
+   * @property {string} initialFilterState.state - The state id.
+   * @property {string} initialFilterState.environment - The environment id.
+   * @property {string} initialFilterState.service - The service id.
+   * @property {string} initialFilterState.product - The product name.
+   */
+  const initialFilterState = {
+    "state": query.has("state") ? query.get("state") : global.drupalSettings.userstate,
+    "environment": query.has("environment") ? query.get("environment") : "0",
+    "service": query.has("service") ? query.get("service") : "0",
+    "product": query.has("product") ? query.get("product") : "",
+  };
+  const [filterState, setFilterState] = useState(initialFilterState);
 
   /**
    * Object holding the form state information for the DeploymentForm.
-   * @param {Object} emptyFormState - The form state object.
-   * @param {string} emptyFormState.uuid - The uuid of the deployment (if editing existing deployment).
-   * @param {string} emptyFormState.state - The state of the deployment.
-   * @param {string} emptyFormState.environment - The environment of the deployment.
-   * @param {string} emptyFormState.service - The service of the deployment.
-   * @param {string} emptyFormState.date - The deployment date.
-   * @param {string} emptyFormState.installationTime - The deployment installation time.
-   * @param {bool} emptyFormState.isAutomated - The employee's department.
-   * @param {bool} emptyFormState.abnormalities - Does the deployment have abnormalities?
-   * @param {string} emptyFormState.description - The abnormality description.
-   * @param {string} emptyFormState.releaseNid - The nid of the deployed release.
-   * @param {array} emptyFormState.previousRelease - Array containing nids of previous releases.
-   * @param {array} emptyFormState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
-   * @param {bool} emptyFormState.archiveThis - Should this deployment be archived?
+   * @property {Object} initialFormState - The form state object.
+   * @property {string} initialFormState.uuid - The uuid of the deployment (if editing existing deployment).
+   * @property {string} initialFormState.state - The state of the deployment.
+   * @property {string} initialFormState.environment - The environment of the deployment.
+   * @property {string} initialFormState.service - The service of the deployment.
+   * @property {string} initialFormState.date - The deployment date.
+   * @property {string} initialFormState.installationTime - The deployment installation time.
+   * @property {bool}   initialFormState.isAutomated - The employee's department.
+   * @property {bool}   initialFormState.abnormalities - Does the deployment have abnormalities?
+   * @property {string} initialFormState.description - The abnormality description.
+   * @property {string} initialFormState.releaseNid - The nid of the deployed release.
+   * @property {array}  initialFormState.previousRelease - Array containing nids of previous releases.
+   * @property {array}  initialFormState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
+   * @property {bool}   initialFormState.archiveThis - Should this deployment be archived?
+   * @property {bool}   initialFormState.firstDeployment - First deployment of this product?
    */
-  const emptyFormState = {
+  const initialFormState = {
     "uuid": "",
     "state": "0",
     "environment": "0",
@@ -103,13 +105,10 @@ export default function DeploymentManager() {
     "previousRelease": [],
     "archivePrevRelease": [],
     "archiveThis": false,
+    "firstDeployment": true,
   };
-  const [formState, setFormState] = useState(initialState);
-  
-  const [environment, setEnvironment] = useState("1");
-  const [service, setService] = useState("0");
-  const [previousRelease, setPreviousRelease] = useState("0");
-  const [userState, setUserState] = useState(global.drupalSettings.userstate);
+  const [formState, setFormState] = useState(initialFormState);
+
   // Formular anzeigen.
   const [show, setShow] = useState(false);
   const [prevDeploymentId, setPrevDeploymentId] = useState(false);
@@ -135,6 +134,7 @@ export default function DeploymentManager() {
 
   // Für Formular zum Bearbeiten der Einsatzmeldung.
   const [deploymentUuid, setDeploymentUuid] = useState(false);
+
   /**
    * Implements hook useEffect().
    * Fetches the deployed releases.
@@ -152,22 +152,22 @@ export default function DeploymentManager() {
 
     // Landes-Filter (nur für Gruppen- und Site-Admins)
     let stateUrl = 'all/'
-    if (stateFilter && stateFilter !== "1") {
-      stateUrl = stateFilter + '/';
+    if (filterState.state && filterState.state !== "1") {
+      stateUrl = filterState.state + '/';
     }
     url += stateUrl;
 
     // Umgebung.
     let environmentUrl = 'all/'
-    if (environmentFilter !== "0") {
-      environmentUrl = environmentFilter + '/';
+    if (filterState.environment !== "0") {
+      environmentUrl = filterState.environment + '/';
     }
     url += environmentUrl;
 
     // Verfahren.
     let serviceUrl = 'all'
-    if (serviceFilter !== "0") {
-      serviceUrl = serviceFilter;
+    if (filterState.service !== "0") {
+      serviceUrl = filterState.service;
     }
     url += serviceUrl;
 
@@ -207,7 +207,7 @@ export default function DeploymentManager() {
         setError(<li>Fehler beim Laden der Einsatzmeldungen. Bitte kontaktieren Sie das BpK-Team.</li>);
         setTimeout(true)
       });
-  }, [isArchived, stateFilter, environmentFilter, serviceFilter, releaseFilter, count]);
+  }, [isArchived, filterState, count]);
 
   /**
    * Implements hook useEffect().
@@ -229,28 +229,28 @@ export default function DeploymentManager() {
     }
     // Change URL Params
     const params = new URLSearchParams();
-    if (stateFilter !== "1" && stateFilter) {
-      params.append("state", stateFilter);
+    if (filterState.state !== "1" && filterState.state) {
+      params.append("state", filterState.state);
     } else {
       params.delete("state");
     }
 
-    if (environmentFilter !== "0") {
-      params.append("environment", environmentFilter);
+    if (filterState.environment !== "0") {
+      params.append("environment", filterState.environment);
     } else {
       params.delete("environment");
     }
 
-    if (serviceFilter !== "0") {
-      params.append("service", serviceFilter);
+    if (filterState.service !== "0") {
+      params.append("service", filterState.service);
     } else {
       params.delete("service");
     }
 
-    if (releaseFilter !== "0") {
-      params.append("release", releaseFilter);
+    if (filterState.product !== "") {
+      params.append("product", filterState.product);
     } else {
-      params.delete("release");
+      params.delete("product");
     }
 
     history.push({
@@ -260,7 +260,7 @@ export default function DeploymentManager() {
 
     // Reset Pagination.
     setPage(1);
-  }, [stateFilter, isArchived, environmentFilter, serviceFilter, releaseFilter]);
+  }, [isArchived, filterState]);
 
   /**
    * Implements hook useEffect().
@@ -271,10 +271,10 @@ export default function DeploymentManager() {
    */
   useEffect(() => {
     // Prevent multiple fetches for the same serviceFilter.
-    console.log("Service in Filter gewählt: ", serviceFilter);
+    console.log("Service in Filter gewählt: ", filterState.service);
     setLoadingMessage(<p>Bereitgestellte Releases werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
-    fetchReleases(serviceFilter);
-  }, [serviceFilter])
+    fetchReleases(filterState.service);
+  }, [filterState.service])
 
   /**
    * Implements hook useEffect().
@@ -284,14 +284,14 @@ export default function DeploymentManager() {
    *  - Auswahl Vorgängerrelease
    */
   useEffect(() => {
-    console.log("Service in Formular gewählt: ", service);
+    console.log("Service in Formular gewählt: ", formState.service);
     // Aktiviert den Spinner für Release und Vorgängerrelease-Dropdowns im Formular.
-    if (service != "0") {
+    if (formState.service != "0") {
       setIsLoading(true);
     }
     setDisabled(true);
-    fetchReleases(service);
-  }, [service])
+    fetchReleases(formState.service);
+  }, [formState.service])
 
   const fetchReleases = (mixedService) => {
     if (Number.isInteger(mixedService)) {
@@ -339,10 +339,12 @@ export default function DeploymentManager() {
 
   const handleReset = () => {
     setPage(1);
-    setEnvironmentFilter("0");
-    setReleaseFilter("0");
-    setServiceFilter("0");
-    setStateFilter(global.drupalSettings.userstate);
+    setFilterState({
+      "state": global.drupalSettings.userstate,
+      "environment": "0",
+      "service": "0",
+      "product": "",
+    });
   }
 
   const handleAction = (userState, environment, service, release, deploymentId) => {
@@ -353,7 +355,6 @@ export default function DeploymentManager() {
     setService(service);
     setPreviousRelease(release);
     setPrevDeploymentId(deploymentId);
-    console.log(userState, environment, service, release, deploymentId);
   }
 
   const handleNav = (k) => {
@@ -371,6 +372,7 @@ export default function DeploymentManager() {
     setDeploymentUuid(deploymentId);
     setShowEditForm(true);
   }
+  console.log("Filter State:", filterState);
 
   return (
     <div>
@@ -393,21 +395,15 @@ export default function DeploymentManager() {
           <Button onClick={() => setError(false)} bsStyle="danger">Meldung schließen</Button>
         </p>
       </Alert>}
-      <EinsatzmeldungsFilter 
-        stateFilter={stateFilter} 
-        setStateFilter={setStateFilter} 
-        environmentFilter={environmentFilter} 
-        setEnvironmentFilter={setEnvironmentFilter} 
-        serviceFilter={serviceFilter} 
-        setServiceFilter={setServiceFilter} 
-        releaseFilter={releaseFilter} 
-        setReleaseFilter={setReleaseFilter}
+      <DeployedReleasesFilter
+        filterState={filterState}
+        setFilterState={setFilterState}
         handleReset={handleReset}
         count={count}
         setCount={setCount}
         releases={releases}
       />
-      <EinsatzmeldungsFormular
+      {/* <DeploymentForm
         count={count}
         setCount={setCount}
         environment={environment}
@@ -434,12 +430,11 @@ export default function DeploymentManager() {
         setFirstDeployment={setFirstDeployment}
         serviceFilter={serviceFilter}
         environmentFilter={environmentFilter}
-        stateFilter={stateFilter}
         isArchived={isArchived}
         loadingMessage={loadingMessage}
         setLoadingMessage={setLoadingMessage}
       />
-      {/* <EinsatzmeldungsTabelle
+      <EinsatzmeldungsTabelle
         data={data}
         timeout={timeout}
         handleAction={handleAction}
