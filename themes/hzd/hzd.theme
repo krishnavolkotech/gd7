@@ -1381,8 +1381,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:group_content/entity_id:entity:body":
 	  case "entity:group/field_group_body":
           case "entity:node/body":
-            // $body = $val[0]->getText();
-            $body = $val[0];
+	    $body = $val[0]->getText();
+            //$body = $val[0];
             $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
             $result['body'] = $out;
           break;
@@ -1398,7 +1398,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
               $result['gid'] = $group_entity->id();
   	      $result['entity'] = $group_entity->id();
    	      $result['title'] = $group_entity->get('label')->getValue()[0]['value'];
-	      $result['type'] = $group_entity->getEntityTypeId();
+	      $result['type'] = t($group_entity->getEntityTypeId());
+	      $result['gtype'] = $group_entity->getEntityTypeId();
               $result['changed'] = date('d.m.Y', $group_entity->getChangedTime());
             }
           break;
@@ -1409,7 +1410,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
         }
 
         if (isset($result['entity']) && isset($result['title'])) {
-	  if ($result['type'] == 'group') {
+	  if (isset($result['gtype']) && $result['gtype'] == 'group') {
 	    $result['node_link'] = Link::createFromRoute($result['title'], 'entity.group.canonical', ['group' => $result['entity']])->toString();
 	  }
 	  else {
