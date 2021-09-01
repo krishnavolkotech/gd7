@@ -25,6 +25,7 @@ module:
   contact: 0
   contextual: 0
   cust_address_book: 0
+  cust_filebrowser: 0
   cust_group: 0
   cust_node: 0
   cust_pdf: 0
@@ -51,6 +52,7 @@ module:
   field_permissions: 0
   field_ui: 0
   file: 0
+  filebrowser: 0
   filefield_paths: 0
   filter: 0
   flood_control: 0
