@@ -183,6 +183,7 @@ unstemmed_field_type:
           words: stopwords_de.txt
         -
           class: solr.RemoveDuplicatesTokenFilterFactory
+spellcheck_field_type: null
 collated_field_type:
   name: collated_de
   class: solr.ICUCollationField

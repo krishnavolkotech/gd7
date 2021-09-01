@@ -91,5 +91,8 @@ field_type:
           protected: protwords_de.txt
         -
           class: solr.RemoveDuplicatesTokenFilterFactory
+unstemmed_field_type: null
+spellcheck_field_type: null
+collated_field_type: null
 solr_configs: {  }
 text_files: {  }
