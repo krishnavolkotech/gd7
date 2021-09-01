@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import EinsatzmeldungsTabelle from '../EinsatzmeldungsTabelle';
+import DeployedReleasesTable from './DeployedReleasesTable';
 import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import DeployedReleasesFilter from './DeployedReleasesFilter';
@@ -452,8 +452,8 @@ export default function DeploymentManager() {
         isArchived={isArchived}
         loadingMessage={loadingMessage}
         setLoadingMessage={setLoadingMessage}
-      />
-      <EinsatzmeldungsTabelle
+      />*/}
+      <DeployedReleasesTable
         data={data}
         timeout={timeout}
         handleAction={handleAction}
@@ -466,7 +466,7 @@ export default function DeploymentManager() {
         handleArchive={handleArchive}
         handleEdit={handleEdit}
       />
-      <EinsatzmeldungArchivieren
+      {/*<EinsatzmeldungArchivieren
         showArchiveForm={showArchiveForm}
         setShowArchiveForm={setShowArchiveForm}
         prevDeploymentId={prevDeploymentId}

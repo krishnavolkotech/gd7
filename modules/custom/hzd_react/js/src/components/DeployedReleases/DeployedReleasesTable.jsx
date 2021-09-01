@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Table, Button, Pagination, Pager} from 'react-bootstrap';
-import EinsatzmeldungsZeile from "./EinsatzmeldungsZeile";
+import DeployedReleasesTableRow from "./DeployedReleasesTableRow";
 
-export default function EinsatzmeldungsTabelle(props) {
+export default function DeployedReleasesTable(props) {
 
   const handlePagination = (e) => {
     if (e.target.name == "next") {
@@ -65,7 +65,7 @@ export default function EinsatzmeldungsTabelle(props) {
             highlight = "success";
           }
           return (
-            <EinsatzmeldungsZeile
+            <DeployedReleasesTableRow
               deployment={deployment}
               handleAction={props.handleAction}
               key={deployment.id}

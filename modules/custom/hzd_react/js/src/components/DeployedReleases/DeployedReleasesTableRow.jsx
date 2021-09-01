@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-export default function EinsatzmeldungsZeile({ deployment, handleAction, highlight, handleArchive, handleEdit, isArchived }) {
+export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, isArchived }) {
   const date = new Date(deployment.date);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
