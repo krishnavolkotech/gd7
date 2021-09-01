@@ -40,9 +40,18 @@ export default function DeploymentManager() {
   /** @const {React.Component|bool} error - React Component with error message or false. */
   const [error, setError] = useState(false);
 
-  // Alle bereitgestellten Releases.
-  // {"[serviceNid]": ["releaseNids"]}, ???
-  const [releases, setReleases] = useState([]);
+  /**
+   * @typedef {{
+   *    [nid: nid of release]: {
+   *      uuid: string,
+   *      nid: string,
+   *      title: string,
+   *      service: string,
+   *    }
+   *  }} release
+   * @property {{[nid: nid of service]: release}} releases - The provided releases.
+   */
+  const [releases, setReleases] = useState({});
 
   // Pagination.
   const [page, setPage] = useState(1);
@@ -57,40 +66,22 @@ export default function DeploymentManager() {
     activeKey = "0";
   }
 
-  /**
-   * The initial filter state.
-   * @property {Object} initialFilterState - The object holding the filter state.
-   * @property {string} initialFilterState.state - The state id.
-   * @property {string} initialFilterState.environment - The environment id.
-   * @property {string} initialFilterState.service - The service id.
-   * @property {string} initialFilterState.product - The product name.
-   */
   const initialFilterState = {
     "state": query.has("state") ? query.get("state") : global.drupalSettings.userstate,
     "environment": query.has("environment") ? query.get("environment") : "0",
     "service": query.has("service") ? query.get("service") : "0",
     "product": query.has("product") ? query.get("product") : "",
   };
+  /**
+   * The filter state object.
+   * @property {Object} filterState - The object holding the filter state.
+   * @property {string} filterState.state - The state id.
+   * @property {string} filterState.environment - The environment id.
+   * @property {string} filterState.service - The service id.
+   * @property {string} filterState.product - The product name.
+   */
   const [filterState, setFilterState] = useState(initialFilterState);
 
-  /**
-   * Object holding the form state information for the DeploymentForm.
-   * @property {Object} initialFormState - The form state object.
-   * @property {string} initialFormState.uuid - The uuid of the deployment (if editing existing deployment).
-   * @property {string} initialFormState.state - The state of the deployment.
-   * @property {string} initialFormState.environment - The environment of the deployment.
-   * @property {string} initialFormState.service - The service of the deployment.
-   * @property {string} initialFormState.date - The deployment date.
-   * @property {string} initialFormState.installationTime - The deployment installation time.
-   * @property {bool}   initialFormState.isAutomated - The employee's department.
-   * @property {bool}   initialFormState.abnormalities - Does the deployment have abnormalities?
-   * @property {string} initialFormState.description - The abnormality description.
-   * @property {string} initialFormState.releaseNid - The nid of the deployed release.
-   * @property {array}  initialFormState.previousRelease - Array containing nids of previous releases.
-   * @property {array}  initialFormState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
-   * @property {bool}   initialFormState.archiveThis - Should this deployment be archived?
-   * @property {bool}   initialFormState.firstDeployment - First deployment of this product?
-   */
   const initialFormState = {
     "uuid": "",
     "state": "0",
@@ -107,10 +98,31 @@ export default function DeploymentManager() {
     "archiveThis": false,
     "firstDeployment": true,
   };
+
+  /**
+   * The form state object.
+   * @property {Object} formState - The form state object.
+   * @property {string} formState.uuid - The uuid of the deployment (if editing existing deployment).
+   * @property {string} formState.state - The state of the deployment.
+   * @property {string} formState.environment - The environment of the deployment.
+   * @property {string} formState.service - The service of the deployment.
+   * @property {string} formState.date - The deployment date.
+   * @property {string} formState.installationTime - The deployment installation time.
+   * @property {bool}   formState.isAutomated - The employee's department.
+   * @property {bool}   formState.abnormalities - Does the deployment have abnormalities?
+   * @property {string} formState.description - The abnormality description.
+   * @property {string} formState.releaseNid - The nid of the deployed release.
+   * @property {array}  formState.previousRelease - Array containing nids of previous releases.
+   * @property {array}  formState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
+   * @property {bool}   formState.archiveThis - Should this deployment be archived?
+   * @property {bool}   formState.firstDeployment - First deployment of this product?
+   */
   const [formState, setFormState] = useState(initialFormState);
 
-  // Formular anzeigen.
+  /** @const {bool} show - Show deployment form. */
   const [show, setShow] = useState(false);
+
+  /** @const {string} prevDeploymentId  ???? */
   const [prevDeploymentId, setPrevDeploymentId] = useState(false);
   const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
   // Loading Spinner für Neues Release und Vorgängerrelease.
@@ -210,9 +222,9 @@ export default function DeploymentManager() {
   }, [isArchived, filterState, count]);
 
   /**
+   * Changes URL-Params depending on Nav / Filters, resets Pagination.
+   * 
    * Implements hook useEffect().
-   * Changes URL-Params depending on Nav / Filters.
-   * Resets Pagination.
    */
   useEffect(() => {
     let pathname;
@@ -263,11 +275,12 @@ export default function DeploymentManager() {
   }, [isArchived, filterState]);
 
   /**
-   * Implements hook useEffect().
    * Fetcht alle Releases, dient zur Befüllung von:
    *  - Release Filter
    *  - Release Auswahl
    *  - Auswahl Vorgängerrelease
+   * 
+   * Implements hook useEffect().
    */
   useEffect(() => {
     // Prevent multiple fetches for the same serviceFilter.
@@ -277,11 +290,12 @@ export default function DeploymentManager() {
   }, [filterState.service])
 
   /**
-   * Implements hook useEffect().
    * Fetcht alle Releases, dient zur Befüllung von:
    *  - Release Filter
    *  - Release Auswahl (Für Meldung)
    *  - Auswahl Vorgängerrelease
+   * 
+   * Implements hook useEffect().
    */
   useEffect(() => {
     console.log("Service in Formular gewählt: ", formState.service);
@@ -293,6 +307,11 @@ export default function DeploymentManager() {
     fetchReleases(formState.service);
   }, [formState.service])
 
+  /**
+   * Fetches and appends releases (as state) for a given service nid.
+   * 
+   * @param {string|number} mixedService - The service nid.
+   */
   const fetchReleases = (mixedService) => {
     if (Number.isInteger(mixedService)) {
       mixedService = mixedService.toString();
@@ -316,7 +335,7 @@ export default function DeploymentManager() {
       .then(response => response.json())
       .then(results => {
         let releaseData = { ...releases };
-        releaseData[mixedService] = [];
+        releaseData[mixedService] = {};
         results.map((result) => {
           let release = {
             "uuid": result.uuid,
@@ -324,7 +343,7 @@ export default function DeploymentManager() {
             "title": result.title,
             "service": result.service,
           };
-          releaseData[mixedService].push(release);
+          releaseData[mixedService][result.nid] = release;
         });
         console.log('Releases geladen.');
         setReleases(releaseData);
