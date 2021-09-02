@@ -25,8 +25,9 @@ class DowntimeController extends ControllerBase {
   }
 
   function create_downtime($group) {
-    $type = node_type_load("downtimes"); // replace this with the node type in which we need to display the form for
-    $samplenode = $this->entityManager()->getStorage('node')->create(array(
+    //$type = node_type_load("downtimes"); // replace this with the node type in which we need to display the form for
+    $type = \Drupal\node\Entity\NodeType::load("downtimes");
+    $samplenode = $this->entityTypeManager()->getStorage('node')->create(array(
       'type' => $type->id(),
     ));
     return $this->entityFormBuilder()->getForm($samplenode);

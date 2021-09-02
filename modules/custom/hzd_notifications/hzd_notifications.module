@@ -1000,7 +1000,7 @@ function send_notification_form_element() {
     '#type' => 'radios',
     '#options' => [1 => t('Yes'), 0 => t('No')],
     '#required' => TRUE,
-    '#title' => t('Do not send notifications for this update.'),
+    '#title' => t('Do you want to send notfications for this update.'),
   );
   return $element;
 }

@@ -102,7 +102,7 @@ class ImAttachmentsUploadForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_get_messages(null, TRUE);
+   // drupal_get_messages(null, TRUE);
     $values = $form_state->getValues();
     $action = $form_state->getTriggeringElement()['#parents'][0];
 //    pr($action);exit;

@@ -287,7 +287,8 @@ class HzdcustomisationStorage {
         // $url = Url::fromUserInput($path_alias . '/edit');.
         
         $url = Url::fromUserInput('/node/' . $id . '/edit?destination=' . $current_uri);
-        $data[] = \Drupal::l($text, $url);
+	$link = Link::fromTextAndUrl($text, $url)->toString();
+        $data[] = $link;
       }
       else {
         $text = $service->service;

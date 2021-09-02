@@ -12,6 +12,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\file\Entity\File;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
@@ -358,14 +359,18 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
           $active = 'active';
       }
       $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
-      $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $link = Link::fromTextAndUrl($gloss->lname, $url)->toString();
+      //$glossarydata[] = '<span class="user-group-list ' . $active .'">'. \Drupal::l($gloss->lname, $url) . '</span>';
+       $glossarydata[] = '<span class="user-group-list ' . $active .'">' . $link . '</span>';
       $active = '';
     }
     if('all' == $lastElement) {
         $active = 'active';
     }
     $allurl = Url::fromUserInput('/admin/people/list/all');
-    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
+    $link = Link::fromTextAndUrl(t('All'), $allurl)->toString();
+    //$glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
+    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . $link . '</span>';
     $glossary = implode(' | ', $glossarydata);
     $form['glossarylist'] = array(
         '#markup' => $glossary,
