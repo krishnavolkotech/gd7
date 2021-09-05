@@ -135,7 +135,7 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
     $display = $context['display'];
     $entityManager = Drupal::service('entity_type.manager');
-    $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
+    $fields = \Drupal::service('entity_field.manager')->getFieldDefinitions('node', 'quickinfo');
     foreach ($fields as $field_name => $definition) {
       if (in_array($field_name, [
                   'field_business_impact',
@@ -674,7 +674,7 @@ function hzd_customizations_quickinfo_save($node) {
           'uid' => \Drupal::currentUser()->id(),
         ]);
         $file_new->save();
-        file_delete($file->id());
+        \Drupal::service('file_system')->delete($file->id());
         $node->upload->appendItem([
           'target_id' => $file_new->id(),
           'display' => 1,

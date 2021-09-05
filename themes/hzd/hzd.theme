@@ -329,7 +329,9 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo') {
     $variables['base_url'] = 'http://' . \Drupal::request()->getHost();
     /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-      $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
+      $link =  Link::fromTextAndUrl("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url)->toString();
+      $urldata = '<span class="user-group-list">' . $link . '</span>';
+//$urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
       if ($variables['node']->isPublished()) {
       $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
       } */
@@ -341,7 +343,9 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished() && $viewMode == 'full') {
 
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
-    $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
+    $link =  Link::fromTextAndUrl('Edit', $url)->toString();
+    $urldata = '<span class="user-group-list">' . $link . '</span>';
+    //$urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
 
     $pdfLink = [
@@ -363,7 +367,9 @@ function hzd_preprocess_node(&$variables) {
     //$url = Url::fromUserInput('/entityprint/node/' . $nid);
 
     /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-      $urldata = \Drupal::l("PDF preview", $url);
+      $link =  Link::fromTextAndUrl('PDF preview', $url)->toString();
+      $urldata = $link;
+      //$urldata = \Drupal::l("PDF preview", $url);
       $variables['pdf_priview'] = array('#markup' => $urldata); */
   }
   elseif ($variables['node']->getType() == 'quickinfo' && $viewMode == 'mail' && $variables['node']->hasField('field_unique_id')) {

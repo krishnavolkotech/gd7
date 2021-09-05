@@ -102,7 +102,7 @@ class RevisionLogFormatter extends FormatterBase {
     $elements = [];
     $i = 0;
     $entity = $items->getEntity();
-    $vids = \Drupal::entityManager()->getStorage($entity->getEntityTypeId())->revisionIds($entity);
+    $vids = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId())->revisionIds($entity);
     $versions = \Drupal::entityTypeManager()
       ->getStorage($entity->getEntityTypeId())
       ->loadMultipleRevisions($vids);

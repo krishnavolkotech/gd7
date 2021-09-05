@@ -15,6 +15,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 
 if (!defined('SITE_ADMIN_ROLE')) {
   define('SITE_ADMIN_ROLE', 'site_administrator');
@@ -1257,7 +1258,8 @@ function downtimes_node_view_alter(array &$build, Drupal\Core\Entity\EntityInter
   if ($build['#node']->getType() == 'quickinfo' && empty($build['#node']->in_preview) && !$build['#node']->isPublished()) {
     $date_formatter = \Drupal::service('date.formatter');
     $renderer = \Drupal::service('renderer');
-    $revisions_data = new Drupal\node\Controller\NodeController($date_formatter, $renderer);
+    $repo =   \Drupal::service('entity.repository');
+    $revisions_data = new Drupal\node\Controller\NodeController($date_formatter, $renderer, $repo);
     $build['#revisions_table_print'] = $revisions_data->revisionOverview($entity);
   }
 }
