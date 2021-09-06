@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function SelectRelease({ release, setRelease, newReleases, isLoading, setIsLoading, disabled, setDisabled}) {
+export default function SelectRelease({ formState, handleChange, newReleases, isLoading, setIsLoading, disabled, setDisabled}) {
   const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
 
   useEffect(() => {
@@ -39,8 +39,8 @@ export default function SelectRelease({ release, setRelease, newReleases, isLoad
           disabled={disabled}
           componentClass="select"
           name="release"
-          value={release}
-          onChange={(e) => setRelease(e.target.value)}
+          value={formState.release}
+          onChange={handleChange}
         >
           {releaseOptions}
         </FormControl>

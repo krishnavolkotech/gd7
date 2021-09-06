@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger, Dropdown, MenuItem } from 'react-bootstrap'
 
 /**
  * Deployed Releases Filter Component.
@@ -20,7 +20,7 @@ export default function DeployedReleasesFilter(props) {
   const [disableProductFilter, setDisableProductFilter] = useState(true);
 
   /** @const {Object[]} productOptions - The product option components array. */
-  const [productOptions, setProductOptions] = useState(<option value="0">&lt;Produkt&gt;</option>);
+  const [productOptions, setProductOptions] = useState(<option value="0">&lt;Komponente&gt;</option>);
 
   /**
    * Changes to selected service filter or releases for the service will trigger
@@ -64,7 +64,7 @@ export default function DeployedReleasesFilter(props) {
    */
   const populateProductFilter = () => {
     // Product Filter.
-    const defaultProduct = [<option value="0">&lt;Produkt&gt;</option>];
+    const defaultProduct = [<option value="0">&lt;Komponente&gt;</option>];
     let optionsProducts = [];
     if (props.filterState.service != "0" && Object.keys(props.releases).length > 0) {
       // Verify that the releases for the selected service are loaded.
@@ -85,6 +85,20 @@ export default function DeployedReleasesFilter(props) {
       // Remove duplicate products.
       products = products.filter((value, index, self) => {
         return self.indexOf(value) === index;
+      });
+
+      // Sort products.
+      products = products.sort((a, b) => {
+        var nameA = a.toUpperCase(); // Groß-/Kleinschreibung ignorieren
+        var nameB = b.toUpperCase(); // Groß-/Kleinschreibung ignorieren
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        // Namen müssen gleich sein
+        return 0;
       });
       
       // Populate options for selected input.
@@ -107,6 +121,10 @@ export default function DeployedReleasesFilter(props) {
     props.setFilterState(prev => ({ ...prev, ...val }));
     if (e.target.name == "service") {
       setDisableProductFilter(true);
+      props.setFilterState(prev => ({ ...prev, "product": "0" }));
+    }
+    if (props.filterState.status === "2" && e.target.name === "product") {
+      props.setCount(props.count + 1);
     }
   }
 
@@ -120,9 +138,23 @@ export default function DeployedReleasesFilter(props) {
       Einsatzmeldungen neu laden.
     </Tooltip>);
 
+  const ttFilter = (
+    <Tooltip id="ttFilter">
+      Filter anwenden.
+    </Tooltip>);
+    
+  const ttWarning = (
+    <Tooltip id="ttWarning">
+      Keine Umgebung und/oder Verfahren gewählt - Performance eingeschränkt. <br /><strong>TIPP:</strong> Wählen Sie eine Umgebung und ein Verfahren aus, um die die Performance zu verbessern.
+    </Tooltip>);
+
+  const ttLoading = (
+    <Tooltip id="ttLoading">
+      Meldbare Releases werden identifiziert ...
+    </Tooltip>);
+
   return (
     <form>
-      <Grid>
         <Row>
           <Col sm={3}>
             <FormGroup bsClass="select-wrapper hzd-form-element" controlId="state-filter">
@@ -143,8 +175,10 @@ export default function DeployedReleasesFilter(props) {
                 componentClass="select"
                 onChange={handleFilterSelect}
                 value={props.filterState.environment}
+                validationState="warning"
               >
                 {optionsEnvironments}
+          <span className="glyphicon-warning-sign" />
               </FormControl>
             </FormGroup>
           </Col>
@@ -160,8 +194,6 @@ export default function DeployedReleasesFilter(props) {
               </FormControl>
             </FormGroup>
           </Col>
-        </Row>
-        <Row>
           <Col sm={3}>
             <FormGroup bsClass="select-wrapper hzd-form-element" controlId="product-filter" >
               <FormControl
@@ -175,19 +207,37 @@ export default function DeployedReleasesFilter(props) {
               </FormControl>
             </FormGroup>
           </Col>
-          <Col sm={3}>
+          </Row>
+          <Row>
+          <Col sm={6}>
             <div>
+              {/* <OverlayTrigger placement="top" overlay={ttFilter}>
+                <Button onClick={props.fetchDeployments} bsStyle="success"><span className="glyphicon glyphicon-filter" /></Button>
+              </OverlayTrigger>
+              &nbsp; */}
               <OverlayTrigger placement="top" overlay={ttReset}>
                 <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
               </OverlayTrigger>
               &nbsp;
               <OverlayTrigger placement="top" overlay={ttRefresh}>
-                <Button onClick={() => props.setCount(count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
+                <Button onClick={() => props.setCount(props.count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
               </OverlayTrigger>
+              &nbsp;
             </div>
           </Col>
+          <Col sm={6}>
+          { props.loadingReleasesSpinner &&
+            <OverlayTrigger placement="top" overlay={ttLoading}>
+              <span className="pull-right glyphicon glyphicon-refresh glyphicon-spin" role="status" />
+            </OverlayTrigger>
+          }
+          { (props.filterState.environment == "0" || props.filterState.service == "0") &&
+            <OverlayTrigger placement="top" overlay={ttWarning}>
+              <span className="pull-right glyphicon-warning-sign" />
+            </OverlayTrigger>
+          }
+          </Col>
         </Row>
-      </Grid>
     </form>
   )
 }

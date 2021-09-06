@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table, Row } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
 
 export default function DeploymentForm(props) {
 
-  const [release, setRelease] = useState(false);
-  const [date, setDate] = useState(false);
-  const [installationTime, setInstallationTime] = useState(false);
-  const [archive, setArchive] = useState(false);
-  const [isAutomated, setIsAutomated] = useState(false);
-  const [abnormalities, setAbnormalities] = useState(false);
-  const [description, setDescription] = useState("");
-  const [archivePrevRelease, setArchivePrevRelease] = useState('null');
-  // Für SelectRelease Komponente. Die nicht-eingesetzten Releases.
-  const [newReleases, setNewReleases] = useState([]);
-  // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
-  const [prevReleases, setPrevReleases] = useState([]);
+  // const [release, setRelease] = useState(false);
+  // const [date, setDate] = useState(false);
+  // const [installationTime, setInstallationTime] = useState(false);
+  // const [archive, setArchive] = useState(false);
+  // const [isAutomated, setIsAutomated] = useState(false);
+  // const [abnormalities, setAbnormalities] = useState(false);
+  // const [description, setDescription] = useState("");
+  // const [archivePrevRelease, setArchivePrevRelease] = useState('null');
   const [disabledPrevRelease, setDisabledPrevRelease] = useState(true);
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [validateMessage, setValidateMessage] = useState([]);
@@ -48,109 +44,6 @@ export default function DeploymentForm(props) {
   //   "\n archivePrevRelease: ",
   //   archivePrevRelease
   // );
-
-  // Release und Vorgängerrelease zurücksetzen, sobald ein anderes Verfahren 
-  // gewählt wird.
-  // useEffect(() => {
-  //   setRelease("0");
-  //   props.setPreviousRelease("0");
-  // }, [props.service])
-
-  // Fetches and filters deployed releases from releases.
-  useEffect(() => {
-    if (props.triggerReleaseSelect === false) {
-      return;
-    }
-    // Trigger zurücksetzen.
-    props.setTriggerReleaseSelect(false);
-
-    // setNewReleases(false); ???
-    // Service und Umgebung müssen ausgewählt sein.
-    if (props.environment == 0 || props.service == 0) {
-      return;
-    }
-
-    // JsonAPI Fetch vorbereiten.
-    // Fehlmeldungen sollen rausgefiltert werden.
-    let url = '/api/v1/deployments/1+2/';
-
-    const userState = global.drupalSettings.userstate;
-    url += userState + '/';
-    url += props.environment + '/';
-    url += props.service;
-
-    const headers = new Headers({
-      Accept: 'application/vnd.api+json',
-    });
-    props.setLoadingMessage(<p>Lade Einsatzmeldungen um Releases zu filtern ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
-    fetch(url, { headers })
-      .then(response => response.json())
-      .then(results => {
-        let deployedReleaseNids = results.map((deployment) => {
-          return deployment.releaseNid;
-        });
-        if (props.service in props.releases) {
-          // All provided releases for the selected service.
-          var releaseArray = props.releases[props.service];
-        }
-
-        
-        // Releases filtern: Eingesetzt (Vorgängerreleases).
-        let filteredPrevReleases = releaseArray.filter(release => {
-          return deployedReleaseNids.indexOf(release.nid) >= 0;
-        })
-        let deployedReleases = [];
-        let product = false;
-        for (const release in filteredPrevReleases) {
-          deployedReleases.push(filteredPrevReleases[release]);
-          // console.log(filteredPrevReleases[release].nid.toString(), props.previousRelease);
-          if (filteredPrevReleases[release].nid.toString() == props.previousRelease) {
-            const title = filteredPrevReleases[release].title;
-            product = title.substring(0, title.indexOf('_')+1);
-          }
-        }
-        deployedReleases.sort((a, b) => b - a);
-
-        // Releases filtern: Nicht Eingesetzt (Neue Einsatzmeldung).
-        let filteredNewReleases = releaseArray.filter(release => {
-          let result = false;
-          if (deployedReleaseNids.indexOf(release.nid) === -1) {
-            result = true;
-          }
-          if (product && release.title.indexOf(product) == -1) {
-            result = false;
-          }
-          return result;
-        })
-        let undeployedReleases = [];
-        for (const release in filteredNewReleases) {
-          undeployedReleases.push(filteredNewReleases[release]);
-        }
-        undeployedReleases.sort((a, b) => b - a);
-
-        // Produktfilterung, wenn Vorgängerrelease gewählt ist.
-        // if (props.previousRelease != "0") {
-        //   let product = 
-        //   filteredNewReleases = filteredNewReleases.filter(release => {
-
-        //   })
-        // }
-
-        console.log("Eingesetzte Releases wurden geholt und Releaseoptionen gefiltert.");
-        if (undeployedReleases.length === 0) {
-          props.setLoadingMessage(<p>Es stehen keine Releases zur Auswahl zur Verfügung.</p>);
-        }
-        else {
-          props.setLoadingMessage("");
-        }
-        setNewReleases(undeployedReleases);
-        setPrevReleases(deployedReleases);
-        props.setDisabled(false);
-        props.setIsLoading(false);
-      })
-      .catch(error => console.log("error", error));
-  }, [props.triggerReleaseSelect])
-
 
   // let firstDeployment = false;
   // if (props.previousRelease == "0") {
@@ -288,7 +181,7 @@ export default function DeploymentForm(props) {
           }
           else {
             setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
-            handleClose();
+            props.handleClose();
           }
         }
       })
@@ -333,7 +226,7 @@ export default function DeploymentForm(props) {
           }
           else {
             setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
-            handleClose();
+            props.handleClose();
           }
         })
         .catch(error => {
@@ -344,55 +237,11 @@ export default function DeploymentForm(props) {
 
   }
 
-  // Handler für Button "Ersteinsatz melden".
-  const handleClick = () => {
-    // Für neue Einsatzmeldung alles zurücksetzen.
-    // setSubmitMessage(false);
-    props.setFirstDeployment(true);
-    // Auswahl basierend auf Filterung sinnvoll?
-    props.setUserState(props.stateFilter);
-    props.setEnvironment(props.environmentFilter);
-    props.setService(props.serviceFilter);
-    setRelease(false);
-    props.setPreviousRelease(false);
-    setDate(false);
-    setInstallationTime(false);
-    setArchive(false);
-    setIsAutomated(false);
-    setAbnormalities(false);
-    setDescription("");
-    setArchivePrevRelease('null');
-    // Formular anzeigen.
-    props.setShow(true);
-  }
-
-  // Handler für Button "Ersteinsatz melden".
-  const handleClose = () => {
-    // Für neue Einsatzmeldung alles zurücksetzen.
-    // setSubmitMessage(false);
-    props.setFirstDeployment(true);
-    // Auswahl basierend auf Filterung sinnvoll?
-    props.setUserState(global.drupalSettings.userstate);
-    props.setEnvironment("0");
-    props.setService("0");
-    setRelease(false);
-    props.setPreviousRelease(false);
-    setDate(false);
-    setInstallationTime(false);
-    setArchive(false);
-    setIsAutomated(false);
-    setAbnormalities(false);
-    setDescription("");
-    setArchivePrevRelease('null');
-    // Formular anzeigen.
-    props.setShow(false);
-  }
-
   useEffect(() => {
-    if (props.show === true) {
+    if (props.showDeploymentForm === true) {
       setSubmitMessage(false);
     }
-  }, [props.show])
+  }, [props.showDeploymentForm])
 
   //Umgebungen Drop Down
   const environments = global.drupalSettings.environments;
@@ -446,56 +295,58 @@ export default function DeploymentForm(props) {
     if (props.disabled) {
       setDisabledPrevRelease(true);
     }
-  }, [props.firstDeployment, props.disabled])
+  }, [props.formState.firstDeployment, props.disabled])
 
   // Validate form.
   useEffect(() => {
     setValidateMessage([]);
     setDisableSubmit(false);
 
-    if (props.environment === "0") {
+    if (props.formState.environment === "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
     }
 
-    if (props.service == 0) {
+    if (props.formState.service == 0) {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
     }
 
-    if (release == 0) {
+    if (props.formState.release == 0) {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
     }
 
-    if (props.previousRelease == 0 || props.previousRelease == "0") {
-      setArchivePrevRelease('null');
+    if (props.formState.previousRelease == 0 || props.formState.previousRelease == "0") {
+      props.setFormState(prev => ({...prev, "archivePrevRelease": "null"}));
+      // setArchivePrevRelease('null');
     }
 
-    if (props.previousRelease != 0) {
-      if (archivePrevRelease == 'null') {
+    if (props.formState.previousRelease != 0) {
+      if (props.formState.archivePrevRelease == 'null') {
         setDisableSubmit(true);
         setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
       }
     }
 
-    if (!date) {
+    if (!props.formState.date) {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
     }
 
-    if (abnormalities) {
+    if (props.formState.abnormalities) {
       if (description.length == 0) {
         setDisableSubmit(true);
         setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>])
       }
     }
 
-    if (!abnormalities) {
-      setDescription("");
+    if (!props.formState.abnormalities) {
+      props.setFormState(prev => ({ ...prev, "description": "" }));
+
     }
 
-  }, [props.environment, props.service, release, props.previousRelease, date, abnormalities, description, archivePrevRelease])
+  }, [props.formState.environment, props.formState.service, props.formState.release, props.formState.previousRelease, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease])
 
   const handleRadio = (e) => {
     if (e.target.value == "ja") {
@@ -504,6 +355,12 @@ export default function DeploymentForm(props) {
     if (e.target.value == "nein") {
       setArchivePrevRelease(false);
     }
+  }
+
+  const handleChange = (e) => {
+    let val = {};
+    val[e.target.name] = e.target.value;
+    props.setFormState(prev => ({ ...prev, ...val }));
   }
 
   const submitClass = disableSubmit ? "glyphicon glyphicon-floppy-remove" : "glyphicon glyphicon-floppy-saved";
@@ -517,9 +374,9 @@ export default function DeploymentForm(props) {
               <div className="select-wrapper">
                 <FormControl
                   componentClass="select"
-                  name="umgebung"
-                  value={props.environment}
-                  onChange={(e) => props.setEnvironment(e.target.value)}
+                  name="environment"
+                  value={props.formState.environment}
+                  onChange={handleChange}
                 >
                   {optionsEnvironments}
                 </FormControl>
@@ -531,10 +388,10 @@ export default function DeploymentForm(props) {
               <div className="select-wrapper">
                 <FormControl
                   componentClass="select"
-                  name="verfahren"
-                  value={props.service}
-                  onChange={(e) => props.setService(e.target.value)}
-                  disabled={!props.firstDeployment}
+                  name="service"
+                  value={props.formState.service}
+                  onChange={handleChange}
+                  disabled={!props.formState.firstDeployment}
                 >
                   {optionsServices}
                 </FormControl>
@@ -544,9 +401,9 @@ export default function DeploymentForm(props) {
                 <ControlLabel bsClass="control-label js-form-required form-required">Datum</ControlLabel>
                 <FormControl
                   type="date"
-                  name="datum"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  name="date"
+                  value={props.formState.date}
+                  onChange={handleChange}
                 >
                 </FormControl>
               </FormGroup>
@@ -557,9 +414,9 @@ export default function DeploymentForm(props) {
                 type="number"
                 step="1"
                 min="1"
-                name="installationsdauer"
-                value={installationTime}
-                onChange={(e) => setInstallationTime(e.target.value)}
+                name="installationTime"
+                value={props.formState.installationTime}
+                onChange={handleChange}
                 placeholder="in Minuten"
               >
               </FormControl>
@@ -567,10 +424,10 @@ export default function DeploymentForm(props) {
 
             <FormGroup controlId="9">
               <Checkbox
-                name="automatisiert"
+                name="isAutomated"
                 type="checkbox"
-                checked={isAutomated}
-                onChange={(e) => setIsAutomated(e.target.checked)}
+                checked={props.formState.isAutomated}
+                onChange={(e) => props.setFormState(prev => ({...prev, "isAutomated": e.target.checked}))}
               >
                 Automatisiertes Deployment
               </Checkbox>
@@ -578,22 +435,22 @@ export default function DeploymentForm(props) {
 
             <FormGroup controlId="10">
               <Checkbox
-                name="auffaelligkeiten"
+                name="abnormalities"
                 type="checkbox"
-                checked={abnormalities}
-                onChange={(e) => setAbnormalities(e.target.checked)}
+                checked={props.formState.abnormalities}
+                onChange={handleChange}
               >
                 Auffälligkeiten
               </Checkbox>
             </FormGroup>
-{ abnormalities &&
+          {props.formState.abnormalities &&
             <FormGroup controlId="11">
               <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
               <FormControl
                 componentClass="textarea"
-                name="beschreibung"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                name="description"
+                value={props.formState.description}
+                onChange={handleChange}
               >
               </FormControl>
             </FormGroup>
@@ -602,9 +459,9 @@ export default function DeploymentForm(props) {
             <div className="panel-body">
               {props.loadingMessage}
               <SelectRelease
-                release={release}
-                setRelease={setRelease}
-                newReleases={newReleases}
+                formState={props.formState}
+                handleChange={handleChange}
+                newReleases={props.newReleases}
                 isLoading={props.isLoading}
                 setIsLoading={props.setIsLoading}
                 disabled={props.disabled}
@@ -620,7 +477,7 @@ export default function DeploymentForm(props) {
                 <tbody>
                   <tr>
                     <td>
-              <SelectPreviousRelease
+              {/* <SelectPreviousRelease
                 previousRelease={props.previousRelease}
                 setPreviousRelease={props.setPreviousRelease}
                 prevReleases={prevReleases}
@@ -628,7 +485,7 @@ export default function DeploymentForm(props) {
                 setIsLoading={props.setIsLoading}
                 disabled={disabledPrevRelease}
                 setArchivePrevRelease={setArchivePrevRelease}
-              />
+              /> */}
                     </td>
                     <td>
               {props.previousRelease > 0 &&
@@ -659,7 +516,7 @@ export default function DeploymentForm(props) {
           <OverlayTrigger placement="top" overlay={ttValidateMessage}>
             <Button disabled={disableSubmit} bsStyle="primary" onClick={handleSave} ><span className={submitClass} /> Speichern</Button>
           </OverlayTrigger>
-          <Button bsStyle="danger" onClick={handleClose}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
+          <Button bsStyle="danger" onClick={props.handleClose}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
         </Modal.Footer>  
     </div>
     );
@@ -671,7 +528,7 @@ export default function DeploymentForm(props) {
           {submitMessage}
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="danger" onClick={handleClose}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
+          <Button bsStyle="danger" onClick={props.handleClose}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
         </Modal.Footer>
       </div>
     );
@@ -680,12 +537,15 @@ export default function DeploymentForm(props) {
 
   return (
     <div>
-      { props.isArchived == "0" &&
-      <Button bsStyle="primary" bsSize="large" onClick={handleClick}>
-        <span className="glyphicon glyphicon-plus" /> Ersteinsatz melden
-      </Button>
+      { props.filterState.status == "1" &&
+      <div>
+        <p />
+        <Button bsStyle="primary" bsSize="large" onClick={props.handleFirstDeployment}>
+          <span className="glyphicon glyphicon-plus" /> Ersteinsatz melden
+        </Button>
+      </div>
       }
-      <Modal show={props.show} onHide={handleClose}>
+      <Modal show={props.showDeploymentForm} onHide={props.handleClose}>
         <Modal.Header closeButton>
           {props.firstDeployment ? <Modal.Title>Ersteinsatz melden - {global.drupalSettings.states[props.userState]}</Modal.Title> : <Modal.Title>Nachfolger melden - {global.drupalSettings.states[props.userState]}</Modal.Title>}
         </Modal.Header>
