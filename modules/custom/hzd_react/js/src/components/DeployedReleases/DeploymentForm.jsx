@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table, Row } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table, Row, Well } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
@@ -248,7 +248,9 @@ export default function DeploymentForm(props) {
 }
           <div className="panel panel-default">
             <div className="panel-body">
+              <Well bsSize="small">
               {props.loadingMessage}
+              </Well>
               <SelectRelease
                 formState={props.formState}
                 handleChange={handleChange}

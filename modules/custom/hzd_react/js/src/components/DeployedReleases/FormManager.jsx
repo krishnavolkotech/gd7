@@ -23,7 +23,7 @@ export default function FormManager(props) {
   const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
 
   // Infotext während Releaseauswahl befüllt wird.
-  const [loadingMessage, setLoadingMessage] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState(<p />);
 
   const [showEditForm, setShowEditForm] = useState(false);
 
@@ -125,7 +125,6 @@ export default function FormManager(props) {
   }, [deploymentData])
 
   useEffect(() => {
-    console.log(props.triggerAction);
     if (props.triggerAction.action == "successor") {
       setFormState(prev => ({
         ...prev,
@@ -141,12 +140,11 @@ export default function FormManager(props) {
       props.setTriggerAction(false);
     }
     if (props.triggerAction.action == "archive") {
-      setPrevDeploymentData({ "uuid": props.triggerAction.args.uuid, "releaseName": props.triggerAction.args.releaseName});
+      setPrevDeploymentData(props.triggerAction.args);
       setShowArchiveForm(true);
       props.setTriggerAction(false);
     }
   }, [props.triggerAction])
-
 
   /**
    * Loads deployment data asnychronous to filter selection.
@@ -311,7 +309,7 @@ export default function FormManager(props) {
       setLoadingMessage(<p>Es stehen keine Releases zur Auswahl zur Verfügung.</p>);
     }
     else {
-      setLoadingMessage("");
+      setLoadingMessage(<p>Releaseauswahl bereit.</p>);
     }
     setNewReleases(undeployedReleases);
     setPrevReleases(deployedReleases);
@@ -563,6 +561,8 @@ export default function FormManager(props) {
       showArchiveForm={showArchiveForm}
       setShowArchiveForm={setShowArchiveForm}
       prevDeploymentData={prevDeploymentData}
+      setPrevDeploymentData={setPrevDeploymentData}
+      setDeploymentHistory={props.setDeploymentHistory}
       count={props.count}
       setCount={props.setCount}
     />

@@ -14,6 +14,7 @@ export default function ArchiveForm(props) {
 
   const handleHide = () => {
     props.setShowArchiveForm(false);
+    props.setPrevDeploymentData(false);
     setShowSaving(false);
     setIsLoading(false);
     setHasError(false);
@@ -25,14 +26,14 @@ export default function ArchiveForm(props) {
     const archiveBody = {
       "data": {
         "type": "node--deployed_releases",
-        "id": props.prevDeploymentId,
+        "id": props.prevDeploymentData.uuid,
         "attributes": {
           "field_deployment_status": "2"
         }
       }
     }
     const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentId;
+    const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentData.uuid;
     const fetchOptions = {
       method: 'PATCH',
       headers: new Headers({
@@ -48,10 +49,12 @@ export default function ArchiveForm(props) {
       .then(antwort => {
         console.log(antwort);
         setIsLoading(false);
-        console.log(props.count);
-        props.setCount(props.count + 1);
         if ("errors" in antwort) {
           setHasError(true);
+        }
+        else {
+          props.setDeploymentHistory(prev => [...prev, props.prevDeploymentData.nid]);
+          props.setCount(props.count + 1);
         }
       })
       .catch(error => {
@@ -75,9 +78,8 @@ export default function ArchiveForm(props) {
             <p>Die Einsatzmeldung wurde erfolgreich archiviert. <span className="glyphicon glyphicon-ok" /></p>
           }
           {hasError &&
-            <p>Die Einsatzmeldung konnte nicht archiviert werden. Bitte wenden Sie sich an das BpK Team. <span className="glyphicon glyphicon-exclamation-sign" /></p>
+            <p>Die Einsatzmeldung konnte nicht archiviert werden. Bitte probieren Sie es erneut. Bitte wenden Sie sich an das BpK Team, sollte der Fehler bestehen bleiben. <span className="glyphicon glyphicon-exclamation-sign" /></p>
           }
-
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="danger" onClick={handleHide}>Schließen</Button>

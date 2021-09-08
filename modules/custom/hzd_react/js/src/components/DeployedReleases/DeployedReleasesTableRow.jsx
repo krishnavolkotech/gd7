@@ -15,6 +15,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
   const releaseName = deployment.release;
   const [product] = releaseName.split("_") + "_";
   const uuid = deployment.uuid;
+  const nid= deployment.nid;
 
   const ttReportSuccessor = (
     <Tooltip id="ttReportSuccessor">
@@ -59,7 +60,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttArchive}>
-            <Button bsStyle="info" onClick={() => handleArchive("archive", uuid, releaseName)}><span className="glyphicon glyphicon-folder-close" /></Button>
+            <Button bsStyle="info" onClick={() => handleAction("archive", {nid, uuid, releaseName})}><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
