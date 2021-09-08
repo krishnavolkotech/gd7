@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import DeploymentForm from './DeploymentForm';
+import ArchiveForm from './ArchiveForm';
 import { Button } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
@@ -8,11 +9,6 @@ export default function FormManager(props) {
   /** @const {number} fetchCountForm - Ensures that the latest fetch gets processed. */
   const fetchCountForm = useRef(0);
 
-  // Modus des Meldeformulars (Integer):
-  // true: Ersteinsatz
-  // false: Nachfolgerelease
-  const [firstDeployment, setFirstDeployment] = useState(true);
-
   const [showDeploymentForm, setShowDeploymentForm] = useState(false);
 
   // Formular zum Archivieren von Einsatzmeldungen anzeigen.
@@ -20,15 +16,20 @@ export default function FormManager(props) {
 
   // Loading Spinner für Neues Release und Vorgängerrelease.
   const [isLoading, setIsLoading] = useState(false);
+
   // disabled state for Relase Selectors.
   const [disabled, setDisabled] = useState(true);
 
   const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
+
   // Infotext während Releaseauswahl befüllt wird.
   const [loadingMessage, setLoadingMessage] = useState("");
+
   const [showEditForm, setShowEditForm] = useState(false);
+
   // Für SelectRelease Komponente. Die nicht-eingesetzten Releases.
   const [newReleases, setNewReleases] = useState([]);
+
   // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
   const [prevReleases, setPrevReleases] = useState([]);
 
@@ -37,11 +38,16 @@ export default function FormManager(props) {
 
   const [submitMessage, setSubmitMessage] = useState(false);
 
-  // The form action: "successor", "first-deployment", "edit-deployment".
+  // The form action: "successor", "archive", "first-deployment", "edit-deployment". ?? wip
   /** @const {string|bool} formAction - The form action. */
   const [formAction, setFormAction] = useState(false);
 
-  const [prevDeploymentUuid, setPrevDeploymentUuid] = useState(false);
+  /**
+   * @const {Object|bool} prevDeploymentData - Array der Einsatzmeldungsobjekte.
+   * @property {string} prevDeploymentData.uuid - Die UUID der Einsatzmeldung.
+   * @property {string} prevDeploymentData.releaseName - Der Name des eingesetzten Release.
+   */
+  const [prevDeploymentData, setPrevDeploymentData] = useState(false);
 
   /**
    * @const {Object[]} deploymentData - Array der Einsatzmeldungsobjekte.
@@ -58,7 +64,6 @@ export default function FormManager(props) {
    * @property {string} deploymentData[].status - Der Status der Einsatzmeldung.
    */
   const [deploymentData, setDeploymentData] = useState([false, false, false]);
-
 
   const initialFormState = {
     "uuid": "",
@@ -99,23 +104,6 @@ export default function FormManager(props) {
    */
   const [formState, setFormState] = useState(initialFormState);
 
-  /**
- * Fetcht alle Releases, dient zur Befüllung von:
- *  - Release Filter
- *  - Release Auswahl (Für Meldung)
- *  - Auswahl Vorgängerrelease
- * 
- * Implements hook useEffect().
- */
-  // useEffect(() => {
-  //   console.log("Service in Formular gewählt: ", formState.service);
-  //   // Aktiviert den Spinner für Release und Vorgängerrelease-Dropdowns im Formular.
-  //   if (formState.service != "0" && formState.environment != "0") {
-  //     setIsLoading(true);
-  //   }
-  //   fetchDeployments();
-  // }, [formState.service, formState.environment])
-  
   // Trigger 1/3 release-selector filtering.
   useEffect(() => {
     if (formState.environment !== "0" && formState.service !== "0") {
@@ -137,33 +125,28 @@ export default function FormManager(props) {
   }, [deploymentData])
 
   useEffect(() => {
-    if (props.triggerAction) {
-      console.log(props.triggerAction);
+    console.log(props.triggerAction);
+    if (props.triggerAction.action == "successor") {
       setFormState(prev => ({
         ...prev,
-        "state": props.triggerAction.userState,
-        "environment": props.triggerAction.environment,
-        "service": props.triggerAction.service,
-        "previousRelease": props.triggerAction.release,
-        "product": props.triggerAction.product,
+        "state": props.triggerAction.args.userState,
+        "environment": props.triggerAction.args.environment,
+        "service": props.triggerAction.args.service,
+        "previousRelease": props.triggerAction.args.release,
+        "product": props.triggerAction.args.product,
       }));
-      setPrevDeploymentUuid(props.triggerAction.deploymentId);
-      setFormAction(props.triggerAction.action);
+      setPrevDeploymentData(prev => ({...prev, "uuid": props.triggerAction.args.deploymentId}));
+      setFormAction(props.triggerAction.action); // ??? Noch nicht verwendet
       setShowDeploymentForm(true);
+      props.setTriggerAction(false);
+    }
+    if (props.triggerAction.action == "archive") {
+      setPrevDeploymentData({ "uuid": props.triggerAction.args.uuid, "releaseName": props.triggerAction.args.releaseName});
+      setShowArchiveForm(true);
       props.setTriggerAction(false);
     }
   }, [props.triggerAction])
 
-  // Falsche UUID!! Vom Release und nicht von der Einsatzmeldung!
-  // useEffect(() => {
-  //   if (prevDeploymentUuid && formState.archivePrevRelease === true) {
-  //     patchDeployment();
-  //   }
-  //   else if (prevDeploymentUuid === "skip-patch") {
-  //     handleClose();
-  //     setPrevDeploymentUuid(false);
-  //   }
-  // }, [prevDeploymentUuid])
 
   /**
    * Loads deployment data asnychronous to filter selection.
@@ -437,7 +420,7 @@ export default function FormManager(props) {
         return;
       }
       const uuidPrevRelease = pRelease.uuid;
-      setPrevDeploymentUuid(uuidPrevRelease);
+      setPrevDeploymentData(prev => ({ ...prev, "uuid": uuidPrevRelease }));
       let field_prev_release = {
         "data": {
           "type": "node--release",
@@ -445,9 +428,6 @@ export default function FormManager(props) {
         },
       }
       postdata["data"]["relationships"] = { ...postdata["data"]["relationships"], field_prev_release };
-    }
-    else {
-      setPrevDeploymentUuid("skip-patch");
     }
 
     console.log("POST");
@@ -477,13 +457,13 @@ export default function FormManager(props) {
           props.setDeploymentHistory(prev => [...prev, formState.releaseNid]);
           setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
           // Is the previous deployment supposed to be archived?
-          if (prevDeploymentUuid && formState.archivePrevRelease === true) {
+          if (prevDeploymentData && formState.archivePrevRelease === true) {
             patchDeployment();
           }
           // No further action needed, reset everything.
           else {
             handleClose();
-            setPrevDeploymentUuid(false);
+            setPrevDeploymentData(false);
             props.setCount(props.count + 1);
           }
         }
@@ -500,14 +480,14 @@ export default function FormManager(props) {
     const archiveBody = {
       "data": {
         "type": "node--deployed_releases",
-        "id": prevDeploymentUuid,
+        "id": prevDeploymentData.uuid,
         "attributes": {
           "field_deployment_status": "2"
         }
       }
     }
     const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = '/jsonapi/node/deployed_releases/' + prevDeploymentUuid;
+    const fetchUrl = '/jsonapi/node/deployed_releases/' + prevDeploymentData.uuid;
     const fetchOptions = {
       method: 'PATCH',
       headers: new Headers({
@@ -517,7 +497,7 @@ export default function FormManager(props) {
       }),
       body: JSON.stringify(archiveBody),
     }
-    setPrevDeploymentUuid(false);
+    setPrevDeploymentData(false);
     setSubmitMessage(<p>Vorgängerrelease wird archiviert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
       .then(antwort => antwort.json())
@@ -529,6 +509,7 @@ export default function FormManager(props) {
           props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
         }
         else {
+          props.setDeploymentHistory(prev => [...prev, formState.previousRelease]);
           setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
           handleClose();
         }
@@ -577,6 +558,13 @@ export default function FormManager(props) {
       handleSave={handleSave}
       submitMessage={submitMessage}
       setSubmitMessage={setSubmitMessage}
+    />
+    <ArchiveForm
+      showArchiveForm={showArchiveForm}
+      setShowArchiveForm={setShowArchiveForm}
+      prevDeploymentData={prevDeploymentData}
+      count={props.count}
+      setCount={props.setCount}
     />
     </div>
   )

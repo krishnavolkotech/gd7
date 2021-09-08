@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio } from 'react-bootstrap';
-import { fetchWithCSRFToken } from "../utils/fetch";
+import { fetchWithCSRFToken } from "../../utils/fetch";
 
-export default function EinsatzmeldungArchivieren(props) {
+export default function ArchiveForm(props) {
   const [showSaving, setShowSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -93,7 +93,7 @@ export default function EinsatzmeldungArchivieren(props) {
           <Modal.Title>Einsatzmeldung archivieren</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Möchten Sie <strong>{props.prevName}</strong> wirklich archivieren?</p>
+          <p>Möchten Sie <strong>{props.prevDeploymentData.releaseName}</strong> wirklich archivieren?</p>
           <p><strong>Hinweis:</strong> Führen Sie die Archivierung bitte nur dann durch, wenn das Produkt in der entsprechenden Umgebung nicht mehr eingesetzt werden soll. Die Meldung eines Nachfolgereleases ist dann nicht mehr möglich.</p>
           <p>Die Aktion kann nicht rückgängig gemacht werden.</p>
         </Modal.Body>

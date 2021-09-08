@@ -8,13 +8,13 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
     month: "2-digit",
     day: "2-digit",
   });
-  const userState = deployment.state;
+  const state = deployment.state;
   const environment = deployment.environment;
   const service = deployment.serviceNid;
   const release = deployment.releaseNid;
   const releaseName = deployment.release;
   const [product] = releaseName.split("_") + "_";
-  const deploymentId = deployment.uuid;
+  const uuid = deployment.uuid;
 
   const ttReportSuccessor = (
     <Tooltip id="ttReportSuccessor">
@@ -51,7 +51,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="primary" onClick={() => handleAction("successor", userState, environment, service, release, product, deploymentId)}><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsStyle="primary" onClick={() => handleAction("successor", {state, environment, service, release, product, uuid})}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -59,7 +59,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttArchive}>
-            <Button bsStyle="info" onClick={() => handleArchive(deploymentId, releaseName)}><span className="glyphicon glyphicon-folder-close" /></Button>
+            <Button bsStyle="info" onClick={() => handleArchive("archive", uuid, releaseName)}><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>

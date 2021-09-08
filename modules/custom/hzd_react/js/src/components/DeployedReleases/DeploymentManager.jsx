@@ -4,7 +4,7 @@ import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootst
 import { Link, useHistory } from 'react-router-dom';
 import DeployedReleasesFilter from './DeployedReleasesFilter';
 import DeploymentForm from './DeploymentForm';
-import EinsatzmeldungArchivieren from '../EinsatzmeldungArchivieren';
+import ArchiveForm from './ArchiveForm';
 import EinsatzmeldungBearbeiten from '../EinsatzmeldungBearbeiten';
 import useQuery from '../../hooks/hooks';
 import FormManager from './FormManager';
@@ -308,8 +308,9 @@ export default function DeploymentManager() {
   }
 
   // Nachfolgerelase melden
-  const handleAction = (action, userState, environment, service, release, product, deploymentId) => {
-    setTriggerAction({ action, userState, environment, service, release, product, deploymentId });
+  const handleAction = (action, args) => {
+    setTriggerAction({ action, args });
+
     // setFirstDeployment(false);
     // setTriggerForm(!triggerForm);
     // setUserState(userState);
