@@ -100,7 +100,7 @@ export default function DeployedReleasesTable(props) {
               highlight={highlight}
               handleArchive={props.handleArchive}
               handleEdit={props.handleEdit}
-              isArchived={props.filterState.status}
+              status={props.filterState.status}
             />
           );
         }) : <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr> }

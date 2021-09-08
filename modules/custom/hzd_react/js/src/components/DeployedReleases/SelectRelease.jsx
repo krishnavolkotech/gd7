@@ -4,6 +4,7 @@ import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 export default function SelectRelease({ formState, handleChange, newReleases, isLoading, setIsLoading, disabled, setDisabled}) {
   const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
 
+  // Befüllt Release Releaseoptionen basierend auf newReleases (prop).
   useEffect(() => {
     //Release Drop Down
     setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
@@ -38,8 +39,8 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
         <FormControl
           disabled={disabled}
           componentClass="select"
-          name="release"
-          value={formState.release}
+          name="releaseNid"
+          value={formState.releaseNid}
           onChange={handleChange}
         >
           {releaseOptions}

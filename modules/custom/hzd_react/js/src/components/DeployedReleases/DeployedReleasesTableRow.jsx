@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, isArchived }) {
+export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, status }) {
   const date = new Date(deployment.date);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
@@ -13,6 +13,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
   const service = deployment.serviceNid;
   const release = deployment.releaseNid;
   const releaseName = deployment.release;
+  const [product] = releaseName.split("_") + "_";
   const deploymentId = deployment.uuid;
 
   const ttReportSuccessor = (
@@ -47,15 +48,15 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
       <td>{deployment.release}</td>
       <td>{localeDate}</td>
       <td>
-        { isArchived == "0" &&
+        { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="primary" onClick={() => handleAction(userState, environment, service, release, deploymentId)}><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsStyle="primary" onClick={() => handleAction("successor", userState, environment, service, release, product, deploymentId)}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
-        { isArchived == "0" &&
+        { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttArchive}>
             <Button bsStyle="info" onClick={() => handleArchive(deploymentId, releaseName)}><span className="glyphicon glyphicon-folder-close" /></Button>
