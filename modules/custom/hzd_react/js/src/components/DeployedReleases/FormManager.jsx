@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import DeploymentForm from './DeploymentForm';
 import ArchiveDeploymentForm from './ArchiveDeploymentForm';
-import EditDeploymentForm from './EditDeploymentForm';
+import FailedDeploymentForm from './FailedDeploymentForm';
 import { Button } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
@@ -14,6 +14,9 @@ export default function FormManager(props) {
 
   // Formular zum Archivieren von Einsatzmeldungen anzeigen.
   const [showArchiveForm, setShowArchiveForm] = useState(false);
+
+  // Formular zum Markieren einer Fehlmeldung.
+  const [showFailedForm, setShowFailedForm] = useState(false);
 
   // Loading Spinner für Neues Release und Vorgängerrelease.
   const [isLoading, setIsLoading] = useState(false);
@@ -132,14 +135,19 @@ export default function FormManager(props) {
         "product": props.triggerAction.args.product,
         "action": props.triggerAction.action,
       }));
-      setPrevDeploymentData(prev => ({...prev, "uuid": props.triggerAction.args.deploymentId}));
-      setFormAction(props.triggerAction.action); // ??? Noch nicht verwendet
+      setPrevDeploymentData(prev => ({...prev, "uuid": props.triggerAction.args.uuid}));
+      // setFormAction(props.triggerAction.action); // ??? Noch nicht verwendet
       setShowDeploymentForm(true);
       props.setTriggerAction(false);
     }
     if (props.triggerAction.action == "archive") {
       setPrevDeploymentData(props.triggerAction.args);
       setShowArchiveForm(true);
+      props.setTriggerAction(false);
+    }
+    if (props.triggerAction.action == "failed") {
+      setPrevDeploymentData(props.triggerAction.args);
+      setShowFailedForm(true);
       props.setTriggerAction(false);
     }
     if (props.triggerAction.action == "edit") {
@@ -570,38 +578,46 @@ export default function FormManager(props) {
           </Button>
         </div>
       }
-    <DeploymentForm
-      count={props.count}
-      setCount={props.setCount}
-      formState={formState}
-      setFormState={setFormState}
-      releases={props.releases}
-      isLoading={isLoading}
-      setIsLoading={setIsLoading}
-      disabled={disabled}
-      setDisabled={setDisabled}
-      setDeploymentHistory={props.setDeploymentHistory}
-      loadingMessage={loadingMessage}
-      setLoadingMessage={setLoadingMessage}
-      newReleases={newReleases}
-      prevReleases={prevReleases}
-      handleFirstDeployment={handleFirstDeployment}
-      showDeploymentForm={showDeploymentForm}
-      setShowDeploymentForm={setShowDeploymentForm}
-      handleClose={handleClose}
-      handleSave={handleSave}
-      submitMessage={submitMessage}
-      setSubmitMessage={setSubmitMessage}
-    />
-    <ArchiveDeploymentForm
-      showArchiveForm={showArchiveForm}
-      setShowArchiveForm={setShowArchiveForm}
-      prevDeploymentData={prevDeploymentData}
-      setPrevDeploymentData={setPrevDeploymentData}
-      setDeploymentHistory={props.setDeploymentHistory}
-      count={props.count}
-      setCount={props.setCount}
-    />
+      <DeploymentForm
+        count={props.count}
+        setCount={props.setCount}
+        formState={formState}
+        setFormState={setFormState}
+        releases={props.releases}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        disabled={disabled}
+        setDisabled={setDisabled}
+        setDeploymentHistory={props.setDeploymentHistory}
+        loadingMessage={loadingMessage}
+        setLoadingMessage={setLoadingMessage}
+        newReleases={newReleases}
+        prevReleases={prevReleases}
+        handleFirstDeployment={handleFirstDeployment}
+        showDeploymentForm={showDeploymentForm}
+        setShowDeploymentForm={setShowDeploymentForm}
+        handleClose={handleClose}
+        handleSave={handleSave}
+        submitMessage={submitMessage}
+        setSubmitMessage={setSubmitMessage}
+      />
+      <ArchiveDeploymentForm
+        showArchiveForm={showArchiveForm}
+        setShowArchiveForm={setShowArchiveForm}
+        prevDeploymentData={prevDeploymentData}
+        setPrevDeploymentData={setPrevDeploymentData}
+        setDeploymentHistory={props.setDeploymentHistory}
+        count={props.count}
+        setCount={props.setCount}
+      />
+      <FailedDeploymentForm
+        showFailedForm={showFailedForm}
+        setShowFailedForm={setShowFailedForm}
+        prevDeploymentData={prevDeploymentData}
+        setPrevDeploymentData={setPrevDeploymentData}
+        count={props.count}
+        setCount={props.setCount}
+      />
     </div>
   )
 }

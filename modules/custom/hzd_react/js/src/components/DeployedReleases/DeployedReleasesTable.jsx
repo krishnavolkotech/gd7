@@ -109,7 +109,7 @@ export default function DeployedReleasesTable(props) {
     { (props.filterState.status === "1") &&
       <Pagination bsSize="small">{items}</Pagination>
     }
-    { (props.filterState.status === "2") &&
+    { (props.filterState.status !== "1") &&
         <SimplePager
           page={props.page}
           count={tableData.length}
@@ -121,7 +121,6 @@ export default function DeployedReleasesTable(props) {
 }
 
 function SimplePager(props) {
-  console.log("Datacount: ", props.count);
   return (
     <div>
       <Pager>

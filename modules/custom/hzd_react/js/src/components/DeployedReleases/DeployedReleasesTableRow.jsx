@@ -52,7 +52,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="primary" onClick={() => handleAction("successor", {state, environment, service, release, product, uuid})}><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsStyle="success" onClick={() => handleAction("successor", {state, environment, service, release, product, uuid})}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -74,11 +74,15 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
           &nbsp;
         </span>
         }
-        { global.drupalSettings.role !== "ZRML" &&
-        <OverlayTrigger placement="top" overlay={ttFail}>
-          <Button bsStyle="danger" onClick={() => handleEdit(deploymentId)}><span className="glyphicon glyphicon-fire" /></Button>
-        </OverlayTrigger>
+        { global.drupalSettings.role !== "ZRML" && status =="1" &&
+        <span>
+          <OverlayTrigger placement="top" overlay={ttFail}>
+            <Button bsStyle="danger" onClick={() => handleAction("failed", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
+          </OverlayTrigger>
+          &nbsp;
+        </span>
         }
+        <Button bsStyle="link" href={"/node/" + nid}><span className="glyphicon glyphicon-eye-open" /></Button>
       </td>
     </tr>
   );

@@ -343,6 +343,11 @@ export default function DeploymentManager() {
         <NavItem eventKey="2">
           Archiv
         </NavItem>
+        {global.drupalSettings.role !== "ZRML" &&
+        <NavItem eventKey="3">
+          Fehlmeldungen
+        </NavItem>
+        }
       </Nav>
       {error &&
       <Alert bsStyle="danger" onDismiss={() => setError(false)}>

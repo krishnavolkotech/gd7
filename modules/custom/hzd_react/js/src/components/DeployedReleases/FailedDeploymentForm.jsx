@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
-export default function ArchiveDeploymentForm(props) {
+export default function FailedDeploymentForm(props) {
   const [showSaving, setShowSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   const handleHide = () => {
-    props.setShowArchiveForm(false);
+    props.setShowFailedForm(false);
     props.setPrevDeploymentData(false);
     setShowSaving(false);
     setIsLoading(false);
@@ -18,25 +18,25 @@ export default function ArchiveDeploymentForm(props) {
   const handleSave = () => {
     setShowSaving(true);
     setIsLoading(true);
-    const archiveBody = {
+    const body = {
       "data": {
         "type": "node--deployed_releases",
         "id": props.prevDeploymentData.uuid,
         "attributes": {
-          "field_deployment_status": "2"
+          "field_deployment_status": "3"
         }
       }
     }
     const csrfUrl = `/session/token?_format=json`;
     const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentData.uuid;
     const fetchOptions = {
-      method: 'PATCH',
-      headers: new Headers({
+      "method": 'PATCH',
+      "headers": new Headers({
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
         'Cache': 'no-cache',
       }),
-      body: JSON.stringify(archiveBody),
+      "body": JSON.stringify(body),
     }
 
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
@@ -47,7 +47,6 @@ export default function ArchiveDeploymentForm(props) {
           setHasError(true);
         }
         else {
-          props.setDeploymentHistory(prev => [...prev, props.prevDeploymentData.nid]);
           props.setCount(props.count + 1);
         }
       })
@@ -62,17 +61,17 @@ export default function ArchiveDeploymentForm(props) {
     return (
       <Modal show={true} onHide={handleHide}>
         <Modal.Header closeButton>
-          <Modal.Title>Einsatzmeldung archivieren</Modal.Title>
+          <Modal.Title>Fehlmeldung kennzeichnen</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isLoading &&
             <p>Die Einsatzmeldung wird aktualisiert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>
           }
           {!isLoading && !hasError &&
-            <p>Die Einsatzmeldung wurde erfolgreich archiviert. <span className="glyphicon glyphicon-ok" /></p>
+            <p>Die Einsatzmeldung wurde als Fehlmeldung markiert. <span className="glyphicon glyphicon-ok" /></p>
           }
           {hasError &&
-            <p>Die Einsatzmeldung konnte nicht archiviert werden. Bitte probieren Sie es erneut. Bitte wenden Sie sich an das BpK Team, sollte der Fehler bestehen bleiben. <span className="glyphicon glyphicon-exclamation-sign" /></p>
+            <p>Die Einsatzmeldung konnte nicht aktualisiert werden. Bitte probieren Sie es erneut. Wenden Sie sich an das BpK Team, sollte der Fehler bestehen bleiben. <span className="glyphicon glyphicon-exclamation-sign" /></p>
           }
         </Modal.Body>
         <Modal.Footer>
@@ -84,17 +83,16 @@ export default function ArchiveDeploymentForm(props) {
 
   return (
     <div>
-      <Modal show={props.showArchiveForm} onHide={handleHide}>
+      <Modal show={props.showFailedForm} onHide={handleHide}>
         <Modal.Header closeButton>
-          <Modal.Title>Einsatzmeldung archivieren</Modal.Title>
+          <Modal.Title>Fehlmeldung kennzeichnen</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Möchten Sie <strong>{props.prevDeploymentData.releaseName}</strong> wirklich archivieren?</p>
-          <p><strong>Hinweis:</strong> Führen Sie die Archivierung bitte nur dann durch, wenn das Produkt in der entsprechenden Umgebung nicht mehr eingesetzt werden soll. Die Meldung eines Nachfolgereleases ist dann nicht mehr möglich.</p>
-          <p>Die Aktion kann nicht rückgängig gemacht werden.</p>
+          <p>Möchten Sie <strong>{props.prevDeploymentData.releaseName}</strong> wirklich den Status "Fehlmeldung" zuweisen?</p>
+          <p>Die Änderung kann nicht rückgängig gemacht werden.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="primary" onClick={handleSave} >Archivieren</Button>
+          <Button bsStyle="primary" onClick={handleSave} >Speichern</Button>
           <Button bsStyle="danger" onClick={handleHide}>Abbrechen</Button>
         </Modal.Footer>
       </Modal>
